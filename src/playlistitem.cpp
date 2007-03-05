@@ -69,8 +69,10 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
 {
     setDragEnabled( true );
 
+    Playlist::instance()->m_urlIndex.add( this );
     if( !uniqueId().isEmpty() )
         Playlist::instance()->addToUniqueMap( uniqueId(), this );
+
 
     refAlbum();
 
@@ -99,6 +101,9 @@ PlaylistItem::~PlaylistItem()
         listView()->m_hoveredRating = 0;
 
     Playlist::instance()->removeFromUniqueMap( uniqueId(), this );
+    Playlist::instance()->m_urlIndex.remove(this);
+
+
 }
 
 
@@ -141,13 +146,15 @@ QString PlaylistItem::text( int column ) const
 
 void PlaylistItem::aboutToChange( const QValueList<int> &columns )
 {
-    bool totals = false, ref = false, length = false;
+    bool totals = false, ref = false, length = false, url = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
         switch( columns[i] )
         {
 	    case Length: length = true; break;
             case Artist: case Album: ref = true; //note, no breaks
-            case Track: case Rating: case Score: case LastPlayed: totals = true;
+            case Track: case Rating: case Score: case LastPlayed:
+                totals = true; break;
+            case Filename: case Directory: url = true; break;
         }
     if ( length )
         decrementLengths();
@@ -155,12 +162,14 @@ void PlaylistItem::aboutToChange( const QValueList<int> &columns )
         decrementTotals();
     if( ref )
         derefAlbum();
+    if ( url )
+        Playlist::instance()->m_urlIndex.remove(this);
 }
 
 void PlaylistItem::reactToChanges( const QValueList<int> &columns )
 {
     MetaBundle::reactToChanges(columns);
-    bool totals = false, ref = false, length = false;
+    bool totals = false, ref = false, length = false, url = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
       {
         if( columns[i] == Mood )
@@ -173,10 +182,14 @@ void PlaylistItem::reactToChanges( const QValueList<int> &columns )
         switch( columns[i] )
         {
             case Artist: case Album: ref = true; //note, no breaks
-            case Track: case Rating: case Score: case LastPlayed: totals = true;
-            default: updateColumn( columns[i] );
+            case Track: case Rating: case Score: case LastPlayed:
+                totals = true; break;
+            case Filename: case Directory: url = true;
         }
+        updateColumn( columns[i] );
       }
+    if ( url )
+        Playlist::instance()->m_urlIndex.add(this);
     if( ref )
         refAlbum();
     if( totals )

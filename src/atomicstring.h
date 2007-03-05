@@ -94,7 +94,12 @@ public:
      * This operation takes constant time.
      * @return whether this string and \p string are equivalent
      */
-    bool operator==( const AtomicString &other ) const;
+    bool operator==( const AtomicString &other ) const { return m_string == other.m_string; }
+
+
+    bool operator<( const AtomicString &other ) const { return m_string < other.m_string; }
+
+//     bool operator!=( const AtomicString &other ) const { return m_string != other.m_string; }
 
     /**
      * Returns a reference to this string, avoiding copies if possible.

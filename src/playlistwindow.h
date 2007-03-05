@@ -125,11 +125,11 @@ class DynamicTitle : public QWidget
 {
     Q_OBJECT
     public:
-        DynamicTitle(QWidget* parent);
-        void setTitle(const QString& newTitle);
+        DynamicTitle( QWidget* parent );
+        void setTitle( const QString& newTitle );
 
     protected:
-        virtual void paintEvent(QPaintEvent* e);
+        virtual void paintEvent( QPaintEvent* e );
 
     private:
         static const int s_curveWidth = 5;
@@ -142,12 +142,12 @@ class DynamicBar : public QHBox
 {
     Q_OBJECT
     public:
-        DynamicBar(QWidget* parent);
+        DynamicBar( QWidget* parent );
         void init();
 
     public slots:
-        void slotNewDynamicMode(const DynamicMode* mode);
-        void changeTitle(const QString& title);
+        void slotNewDynamicMode( const DynamicMode* mode );
+        void changeTitle( const QString& title );
 
     private:
         DynamicTitle* m_titleWidget;

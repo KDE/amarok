@@ -108,7 +108,7 @@ public:
     UrlLoader( const KURL::List&, QListViewItem*, int options = 0 );
    ~UrlLoader();
 
-    static const uint OPTIMUM_BUNDLE_COUNT = 50;
+    static const uint OPTIMUM_BUNDLE_COUNT = 200;
 
 signals:
     void queueChanged( const PLItemList &, const PLItemList & );

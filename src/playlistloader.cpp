@@ -236,22 +236,12 @@ UrlLoader::customEvent( QCustomEvent *e)
     case 1000:
         foreachType( BundleList, e->bundles )
         {
-            //passing by value is quick for QValueLists, though it is slow
-            //if we change the list, but this is unlikely
-            KURL::List::Iterator jt;
             int alreadyOnPlaylist = 0;
 
             PlaylistItem *item = 0;
             if( m_options & (Playlist::Unique | Playlist::Queue) )
             {
-                for( PlaylistIterator jt( Playlist::instance(), PlaylistIterator::All ); *jt; ++jt )
-                {
-                    if( (*jt)->url() == (*it).url() )
-                    {
-                        item = *jt;
-                        break;
-                    }
-                }
+                item = Playlist::instance()->m_urlIndex.getFirst( (*it).url() );
             }
 
             if( item )

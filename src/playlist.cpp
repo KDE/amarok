@@ -196,6 +196,8 @@ Playlist::Playlist( QWidget *parent )
         , m_oldRepeat( 0 )
         , m_playlistName( i18n( "Untitled" ) )
         , m_proposeOverwriting( false )
+        , m_urlIndex( &PlaylistItem::url )
+         
 {
     s_instance = this;
 
@@ -444,7 +446,7 @@ Playlist::mediumChange( int deviceid ) // SLOT
 }
 
 void
-Playlist::insertMedia( KURL::List list, int options )
+Playlist::insertMedia( const KURL::List &list, int options )
 {
     if( list.isEmpty() ) {
         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
@@ -463,67 +465,47 @@ Playlist::insertMedia( KURL::List list, int options )
 
     PlaylistItem *after = lastItem();
 
+    KURL::List addMe;
+    QPtrList<PlaylistItem> alreadyHave;
+
+    // Filter out duplicates
+    foreachType( KURL::List, list ) {
+        PlaylistItem *item = m_urlIndex.getFirst( *it );
+        if ( item )
+            alreadyHave.append( item );
+        else 
+            addMe.append( *it );
+    }
+
     if( options & Queue )
     {
-        KURL::List addMe = list;
-        KURL::List::Iterator jt;
-
-        // add any songs not in the playlist to it.
-        for( MyIt it( this, MyIt::All ); *it; ++it ) {
-            jt = addMe.find( (*it)->url() );
-
-            if ( jt != addMe.end() ) {
-                addMe.remove( jt ); //don't want to add a track which is already present in the playlist
-            }
-        }
-
         if ( addMe.isEmpty() ) // all songs to be queued are already in the playlist
         {
-            // find the songs and queue them.
-            for (MyIt it( this, MyIt::All ); *it; ++it ) {
-                jt = list.find( (*it)->url() );
-
-                if ( jt != list.end() )
-                {
-                    queue( *it, false, false );
-                    list.remove( jt );
-                }
-            }
+            // queue all the songs
+            foreachType( QPtrList<PlaylistItem>, alreadyHave )
+                queue( *it, false, false );
+            return;
         } else {
             // We add the track after the last track on queue, or after current if the queue is empty
             after = m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.getLast();
             // If there's no tracks on the queue, and there's no current track, fall back to the last item
             if ( !after )
                 after = lastItem();
-
-            insertMediaInternal( addMe, after, options );
         }
-        return;
-
     }
     else if( options & Unique ) {
-        //passing by value is quick for QValueLists, though it is slow
-        //if we change the list, but this is unlikely
-        KURL::List::Iterator jt;
-        int alreadyOnPlaylist = 0;
-        for( MyIt it( this, MyIt::All ); *it; ++it ) {
-            jt = list.find( (*it)->url() );
-
-            if ( jt != list.end() ) {
-                if ( directPlay && jt == list.begin() ) {
-                    directPlay = false;
-                    activate( *it );
-                }
-
-                list.remove( jt );
-                alreadyOnPlaylist++;
-            }
-        }
+        int alreadyOnPlaylist = alreadyHave.count();
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it was not added.", "%n tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+        {
+            if (directPlay) activate( alreadyHave.getFirst() );
+            Amarok::StatusBar::instance()->shortMessage(
+                i18n("One track was already in the playlist, so it was not added.",
+                     "%n tracks were already in the playlist, so they were not added.",
+                     alreadyOnPlaylist ) );
+        }
     }
 
-    insertMediaInternal( list, after, options );
+    insertMediaInternal( addMe, after, options );
 }
 
 void
@@ -4706,7 +4688,6 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
 
     // Playlist::unlock();
 }
-
 
 #include <kactivelabel.h>
 #include <kdialog.h>

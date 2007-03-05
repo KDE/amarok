@@ -41,7 +41,6 @@
 
 class KAction;
 class KActionCollection;
-class MyAtomicString;
 class PlaylistItem;
 class PlaylistEntry;
 class PlaylistLoader;
@@ -68,6 +67,13 @@ class Medium;
  * inside this class or inside PlaylistWindow.
  *
  */
+
+
+// template <class FieldType>
+// AtomicString Index<FieldType>::fieldString(const FieldType &field) { return AtomicString(field); }
+
+// template<>
+// AtomicString Index<KURL>::fieldString(const KURL &field);
 
 
 class Playlist : private KListView, public EngineObserver, public Amarok::ToolTipClient
@@ -100,7 +106,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
          *  @param sql     Sql program to execute */
-        LIBAMAROK_EXPORT void insertMedia( KURL::List, int options = Append );
+        LIBAMAROK_EXPORT void insertMedia( const KURL::List &, int options = Append );
         void insertMediaSql( const QString& sql, int options = Append );
 
         // Dynamic mode functions
@@ -341,8 +347,8 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void removeFromPreviousTracks( PlaylistItem *item = 0 );
         void removeFromPreviousAlbums( PlaylistAlbum *album = 0 );
 
-        typedef QMap<MyAtomicString, PlaylistAlbum*> AlbumMap;
-        typedef QMap<MyAtomicString, AlbumMap> ArtistAlbumMap;
+        typedef QMap<AtomicString, PlaylistAlbum*> AlbumMap;
+        typedef QMap<AtomicString, AlbumMap> ArtistAlbumMap;
         ArtistAlbumMap m_albums;
         uint m_startupTime_t; //QDateTime::currentDateTime().toTime_t as of startup
         uint m_oldestTime_t; //the createdate of the oldest song in the collection
@@ -421,15 +427,61 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         QString m_playlistName;
         bool m_proposeOverwriting;
-};
 
-class MyAtomicString: public AtomicString
-{
-public:
-    MyAtomicString() { }
-    MyAtomicString(const QString &string): AtomicString( string ) { }
-    MyAtomicString(const AtomicString &other): AtomicString( other ) { }
-    bool operator<(const AtomicString &other) const { return ptr() < other.ptr(); }
+        // indexing stuff
+        // An index of playlist items by some field. The index is backed by AtomicStrings, to avoid
+        // duplication thread-safely. 
+        template <class FieldType>
+        class Index : private QMap<AtomicString, QPtrList<PlaylistItem> >
+        {
+          public:
+            // constructors take the PlaylistItem getter to index by
+            Index( FieldType (PlaylistItem::*getter)( ) const)
+            : m_getter( getter ), m_useGetter( true ) { };
+            Index( const FieldType &(PlaylistItem::*refGetter)() const)
+                : m_refGetter( refGetter ), m_useGetter( false ) { };
+        
+            // we specialize this method, below, for KURLs
+            AtomicString fieldString( const FieldType &field) { return AtomicString( field ); }
+            
+            AtomicString keyOf( const PlaylistItem &item) {
+                return m_useGetter ? fieldString( ( item.*m_getter ) () )
+                    : fieldString( ( item.*m_refGetter ) () );
+            }
+
+            bool contains( const FieldType &key ) { return contains( fieldString( key ) ); }
+            
+            // Just first match, or NULL
+            PlaylistItem *getFirst( const FieldType &field )  {
+                Iterator it = find( fieldString( field ) );
+                return it == end() || it.data().isEmpty() ? 0 : it.data().getFirst();
+            }
+
+            void add( PlaylistItem *item ) {
+                QPtrList<PlaylistItem> &row = operator[]( keyOf( *item ) );  // adds one if needed
+                if ( !row.containsRef(item) ) row.append( item );
+            }
+
+            void remove( PlaylistItem *item ) {
+                Iterator it = find( keyOf( *item ) );
+                if (it != end()) {
+                    while ( it.data().removeRef( item ) ) { };
+                    if ( it.data().isEmpty() ) erase( it );
+                }
+            }
+                           
+          private:
+            FieldType (PlaylistItem::*m_getter) () const;
+            const FieldType &(PlaylistItem::*m_refGetter) () const;
+            bool m_useGetter;       // because a valid *member can be zero in C++
+        };
+    
+        Index<KURL> m_urlIndex;
+        // TODO: we can convert m_unique to this, to remove some code and for uniformity and thread
+        //  safety
+        // TODO: we should just store the url() as AtomicString, it will save headaches (e.g. at least a
+        //  crash with multicore enabled traces back to KURL refcounting)
+        //Index<QString> m_uniqueIndex;
 };
 
 class PlaylistAlbum
@@ -484,4 +536,12 @@ public:
 
 };
 
+// Specialization of Index::fieldString for URLs
+template<>
+inline AtomicString Playlist::Index<KURL>::fieldString( const KURL &url )
+{
+    return AtomicString( url.url() );
+}
+
 #endif //AMAROK_PLAYLIST_H
+

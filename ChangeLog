@@ -11,6 +11,8 @@ VERSION 1.4.6
   BUGFIXES:
     * Fix detection of vfat devices on FreeBSD. (BR 141614)
     * Right-click on volume slider would change the volume. (BR 141672)
+    * Fix Quadratic loading in Playlists (BR 142255) Patch by Ovy
+    <ovy@alum.mit.edu>
 
 
 VERSION 1.4.5
