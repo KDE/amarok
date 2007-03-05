@@ -86,3 +86,81 @@ class SqlArtist : public Artist
         QMutex m_mutex;
 
 };
+
+class SqlAlbum : public Album
+{
+    public:
+        SqlAlbum( const QString &name );
+
+        virtual QString name() const { return m_name; }
+        virtual QString prettyName() const { return m_name; }
+
+        virtual void invalidateCache();
+
+        virtual TrackList tracks();
+
+        virtual bool isCompilation() const { return false; } //TODO: fixme
+
+        virtual bool hasAlbumArtist() const { return false; } //TODO: fixme
+        virtual ArtistPtr albumArtist() const { return ArtistPtr(); }
+
+        //updating album images is possible or local tracks, but let's ignore it for now
+        virtual bool canUpdateImage() const { return false; }
+        virtual void image() const { }  //TODO: fixme
+        virtual void updateImage() { }
+
+    private:
+        QString m_name;
+        bool m_tracksLoaded;
+        TrackList m_tracks;
+        //QReadWriteLock doesnt support lock upgrades :(
+        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
+        //switch to QReadWriteLock as soon as it does!
+        QMutex m_mutex;
+
+        //TODO: add album artist
+};
+
+class SqlComposer : public Composer
+{
+    public:
+        SqlComposer( const QString &name );
+
+        virtual QString name() const { return m_name; }
+        virtual QString prettyName() const { return m_name; }
+
+        virtual void invalidateCache();
+
+        virtual TrackList tracks();
+
+    private:
+        QString m_name;
+        bool m_tracksLoaded;
+        TrackList m_tracks;
+        //QReadWriteLock doesnt support lock upgrades :(
+        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
+        //switch to QReadWriteLock as soon as it does!
+        QMutex m_mutex;
+};
+
+class SqlGenre : public Genre
+{
+    public:
+        SqlGenre( const QString &name );
+
+        virtual QString name() const { return m_name; }
+        virtual QString prettyName() const { return m_name; }
+
+        virtual void invalidateCache();
+
+        virtual TrackList tracks();
+
+    private:
+        QString m_name;
+        bool m_tracksLoaded;
+        TrackList m_tracks;
+        //QReadWriteLock doesnt support lock upgrades :(
+        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
+        //switch to QReadWriteLock as soon as it does!
+        QMutex m_mutex;
+};

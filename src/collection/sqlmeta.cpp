@@ -129,3 +129,114 @@ SqlArtist::tracks()
         return m_tracks;
     }
 }
+
+//---------------SqlAlbum---------------------------------
+
+SqlAlbum::SqlAlbum( const QString &name ) : Album()
+    ,m_name( name )
+    ,m_tracksLoaded( false )
+    ,m_mutex()
+    ,m_tracks()
+{
+    //nothing to do
+}
+
+void
+SqlAlbum::invalidateCache()
+{
+    m_mutex.lock();
+    m_tracksLoaded = false;
+    m_tracks = TrackList();
+    m_mutex.unlock();
+}
+
+TrackList
+SqlAlbum::tracks()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else
+    {
+        QueryBuilder qb;
+        //build query, create SqlTrack objects and add to tracklist
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+}
+
+//---------------SqlComposer---------------------------------
+
+SqlComposer::SqlComposer( const QString &name ) : Composer()
+    ,m_name( name )
+    ,m_tracksLoaded( false )
+    ,m_mutex()
+    ,m_tracks()
+{
+    //nothing to do
+}
+
+void
+SqlComposer::invalidateCache()
+{
+    m_mutex.lock();
+    m_tracksLoaded = false;
+    m_tracks = TrackList();
+    m_mutex.unlock();
+}
+
+TrackList
+SqlComposer::tracks()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else
+    {
+        QueryBuilder qb;
+        //build query, create SqlTrack objects and add to tracklist
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+}
+
+//---------------SqlGenre---------------------------------
+
+SqlGenre::SqlGenre( const QString &name ) : Genre()
+    ,m_name( name )
+    ,m_tracksLoaded( false )
+    ,m_mutex()
+    ,m_tracks()
+{
+    //nothing to do
+}
+
+void
+SqlGenre::invalidateCache()
+{
+    m_mutex.lock();
+    m_tracksLoaded = false;
+    m_tracks = TrackList();
+    m_mutex.unlock();
+}
+
+TrackList
+SqlGenre::tracks()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else
+    {
+        QueryBuilder qb;
+        //build query, create SqlTrack objects and add to tracklist
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+}

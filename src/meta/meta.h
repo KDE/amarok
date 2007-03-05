@@ -124,7 +124,7 @@ namespace Meta
 
             virtual void image() const = 0; //TODO: choose return value
             virtual bool canUpdateImage() const { return false; }
-            virtual bool updateImage() {} //TODO: choose parameter
+            virtual void updateImage() {} //TODO: choose parameter
 
             virtual void invalidateCache() = 0;
     };
@@ -133,7 +133,7 @@ namespace Meta
     {
         public:
             typedef QList<ComposerPtr> ComposerList;
-            virtual TrackList tracks() const = 0;
+            virtual TrackList tracks() = 0;
 
             virtual void invalidateCache() = 0;
     };
@@ -143,7 +143,7 @@ namespace Meta
         public:
             typedef QList<GenrePtr> GenreList;
 
-            virtual TrackList tracks() const = 0;
+            virtual TrackList tracks() = 0;
 
             virtual void invalidateCache() = 0;
     };
