@@ -110,6 +110,7 @@ qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrows
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
 
 
+
 set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.cpp
@@ -141,6 +142,12 @@ set(libservicebrowser_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelitembase.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelbase.cpp)
+
+set(libscriptableservice_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.cpp)
+
+
+qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 set(libmagnatunestore_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneinfoparser.cpp
@@ -190,7 +197,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
-        ${libsqlite_SRCS} ${libservicebrowser_SRCS}
+        ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
         ${libmagnatunestore_SRCS} ${libanalyzers_SRCS}
    collection/sqlmeta.cpp
    Options1.ui.h
@@ -275,8 +282,8 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
 
 set(amarok_collectionscanner_xml  ${CMAKE_SOURCE_DIR}/amarok/src/collectionscanner/org.kde.amarok.scanner.xml)
-QT4_ADD_DBUS_INTERFACE( amarok_LIB_SRCS ${amarok_collectionscanner_xml} amarok_collection_scanner_interface )
 
+QT4_ADD_DBUS_INTERFACE( amarok_LIB_SRCS ${amarok_collectionscanner_xml} amarok_collection_scanner_interface )
 
 
 

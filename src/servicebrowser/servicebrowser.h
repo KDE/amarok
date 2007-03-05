@@ -20,6 +20,8 @@
 #ifndef AMAROKSERVICEBROWSER_H
 #define AMAROKSERVICEBROWSER_H
 
+
+#include "scriptableservice/scriptableservicemanager.h"
 #include "servicebase.h"
 
 #include <klistwidget.h>
@@ -54,6 +56,8 @@ public:
         return s_instance;
     }
 
+public slots:
+
     void addService( ServiceBase * service );
 
 private:
@@ -69,6 +73,9 @@ private:
 
     QMap<QString, ServiceBase *> m_services;
     ServiceBase * m_currentService;
+
+    ScriptableServiceManager * m_scriptableServiceManager;
+
 
 private slots:
 

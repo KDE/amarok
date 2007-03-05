@@ -52,10 +52,13 @@ ServiceBrowser::ServiceBrowser( const char *name )
     debug() << "Adding dummy services to list..." << endl;
 
     addService( testService1 );
-    addService( testService2 );
-    addService( testService3 );
+    //addService( testService2 );
+    //addService( testService3 );
 
     m_currentService = 0;
+
+    m_scriptableServiceManager = new ScriptableServiceManager( this );
+    connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
 
     
 }
