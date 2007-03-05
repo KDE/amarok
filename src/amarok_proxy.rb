@@ -190,7 +190,7 @@ class LastFM < Proxy
     else
       url = "#{remote_uri.path || '/'}?#{remote_uri.query}"
     end
-    get = "GET #{url} HTTP/1.1" + ENDL
+    get = "GET #{url} HTTP/1.0" + ENDL
     get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
   end
 
@@ -205,7 +205,7 @@ class DaapProxy < Proxy
 
   def get_request( remote_uri, via_proxy )
     # via_proxy ignored for now
-    get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
+    get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.0" + ENDL
     get += "Accept: */*" + ENDL
     get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
     get += "Client-DAAP-Version: 3.0" + ENDL
