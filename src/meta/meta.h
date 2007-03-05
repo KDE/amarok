@@ -94,7 +94,9 @@ namespace Meta
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
             virtual void setDiscNumber( int newDiscNumber ) = 0;
+            /** Returns the time the song was last played, or 0 if it has not been played yet */
             virtual uint lastPlayed() const = 0;
+            /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
@@ -106,8 +108,11 @@ namespace Meta
         public:
             typedef QList<ArtistPtr> ArtistList;
 
+            /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
+            /** invalidates the object's track cache. Call this method
+                if a track's artist either changed from or to this artist */
             virtual void invalidateCache() = 0;
     };
 
@@ -118,14 +123,22 @@ namespace Meta
 
             virtual bool isCompilation() const = 0;
 
+            /** Returns true if this album has an album artist */
             virtual bool hasAlbumArtist() const = 0;
+            /** Returns a pointer to the album's artist */
             virtual ArtistPtr albumArtist() const = 0;
+            /** returns all tracks on this artist */
             virtual TrackList tracks() = 0;
 
+            /** returns the cover of the album */
             virtual void image() const = 0; //TODO: choose return value
+            /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
+            /** updates the cover of the album */ 
             virtual void updateImage() {} //TODO: choose parameter
 
+            /** invalidates the object's track cache. Call this method
+                if a track's album either changed from or to this album */
             virtual void invalidateCache() = 0;
     };
 
@@ -133,8 +146,12 @@ namespace Meta
     {
         public:
             typedef QList<ComposerPtr> ComposerList;
+
+            /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
+            /** invalidates the object's track cache. Call this method
+                if a track's composer either changed from or to this composer */
             virtual void invalidateCache() = 0;
     };
 
@@ -143,8 +160,11 @@ namespace Meta
         public:
             typedef QList<GenrePtr> GenreList;
 
+            /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 
+            /** invalidates the object's track cache. Call this method
+                if a track's genre either changed from or to this genre */
             virtual void invalidateCache() = 0;
     };
 }
