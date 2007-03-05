@@ -15,6 +15,8 @@ VERSION 1.4.6
     <ovy@alum.mit.edu> (BR 142255)
     * Make amarok_proxy.rb use HTTP/1.0 as we don't support chunked responses.
     Patch by solsTiCE <solstice.dhiver@laposte.net> (BR 141819)
+    * amarok_live.py now uses popen correctly.  Patch by Luke Macken
+    <lmacken@fedoraproject.org> (BR 127804)
 
 
 VERSION 1.4.5
