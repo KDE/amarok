@@ -20,6 +20,7 @@
 #include "sqlmeta.h"
 
 #include <QFile>
+#include <QListIterator>
 #include <QMutexLocker>
 
 #include <klocale.h>
@@ -91,6 +92,26 @@ SqlTrack::setArtist( const QString &newArtist )
 {
     //TODO get new artist from registry and set it
     m_artist->invalidateCache();
+}
+
+void
+SqlTrack::subscribe( TrackObserver *observer )
+{
+    if( !m_observers.contains( observer ) )
+        m_observers.append( observer );
+}
+
+void
+SqlTrack::unsubscribe( TrackObserver *observer )
+{
+    m_observers.removeAll( observer );
+}
+
+void
+SqlTrack::notifyObservers()
+{
+    for( QListIterator<TrackObserver*> iter( m_observers ) ; iter.hasNext(); )
+        iter.next()->metadataChanged( this );
 }
 
 //---------------------- class Artist --------------------------

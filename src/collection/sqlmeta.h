@@ -42,6 +42,12 @@ class SqlTrack : public Track
         //helper functions
         static QString prettyTitle( const QString &filename );
 
+        virtual void subscribe( TrackObserver *observer );
+        virtual void unsubscribe( TrackObserver *observer );
+
+    protected:
+        void notifyObservers();
+
     private:
 
         QString m_title;
@@ -62,6 +68,8 @@ class SqlTrack : public Track
         ArtistPtr m_artist;
         GenrePtr m_genre;
         ComposerPtr m_composer;
+
+        QList<TrackObserver*> m_observers;
 };
 
 class SqlArtist : public Artist

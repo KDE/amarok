@@ -35,6 +35,14 @@ namespace Meta
     typedef KSharedPtr<Composer> ComposerPtr;
     typedef KSharedPtr<Genre> GenrePtr;
 
+    class TrackObserver
+    {
+        public:
+            /** This method is called when the metadata of track have changed.
+                The called class may not cache the pointer */
+            virtual void metadataChanged( Track *track ) = 0;
+    };
+
     class MetaBase : public QSharedData
     {
         public:
@@ -101,6 +109,9 @@ namespace Meta
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
+
+            virtual void subscribe( TrackObserver *observer ) = 0;
+            virtual void unsubscribe( TrackObserver *observer ) = 0;
     };
 
     class Artist : public MetaBase
