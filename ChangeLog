@@ -11,8 +11,10 @@ VERSION 1.4.6
   BUGFIXES:
     * Fix detection of vfat devices on FreeBSD. (BR 141614)
     * Right-click on volume slider would change the volume. (BR 141672)
-    * Fix Quadratic loading in Playlists (BR 142255) Patch by Ovy
-    <ovy@alum.mit.edu>
+    * Fix Quadratic loading in Playlists Patch by Ovy
+    <ovy@alum.mit.edu> (BR 142255)
+    * Make amarok_proxy.rb use HTTP/1.0 as we don't support chunked responses.
+    Patch by solsTiCE <solstice.dhiver@laposte.net> (BR 141819)
 
 
 VERSION 1.4.5
