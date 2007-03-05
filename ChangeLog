@@ -7,6 +7,9 @@ VERSION 1.4.6
   CHANGES:
     * First rating star now lets you toggle between no rating, half a star,
       and one full star.
+    * Allow for lyrics scripts to specifiy site, site_url, and add_url from
+    within the script.  This will allow for "meta lyrics" scripts. .Patch by
+    Sergio Pistone <sergio_pistone@yahoo.com.ar> (BR 141885)
 
   BUGFIXES:
     * Fix detection of vfat devices on FreeBSD. (BR 141614)

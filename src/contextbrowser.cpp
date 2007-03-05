@@ -3372,12 +3372,16 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
     KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ), true, false );
     spec.setGroup( "Lyrics" );
 
-    m_lyricAddUrl = spec.readPathEntry( "add_url" );
-    m_lyricAddUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
-    m_lyricAddUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
-    m_lyricAddUrl.replace( "MAGIC_ALBUM", KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
-    m_lyricAddUrl.replace( "MAGIC_YEAR", KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
-
+    if ( el.attribute( "add_url" ).isEmpty() )
+    {
+        m_lyricAddUrl = spec.readPathEntry( "add_url" );
+        m_lyricAddUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
+        m_lyricAddUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
+        m_lyricAddUrl.replace( "MAGIC_ALBUM", KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
+        m_lyricAddUrl.replace( "MAGIC_YEAR", KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
+    }
+    else
+        m_lyricAddUrl = el.attribute( "add_url" );
 
     if ( el.tagName() == "suggestions" )
     {
@@ -3408,10 +3412,10 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
         lyrics = el.text();
         lyrics.replace( "\n", "<br/>\n" ); // Plaintext -> HTML
 
-        const QString title      = el.attribute( "title" );
-        const QString artist     = el.attribute( "artist" );
-        const QString site       = spec.readEntry( "site" );
-        const QString site_url   = spec.readEntry( "site_url" );
+        const QString title    = el.attribute( "title" );
+        const QString artist   = el.attribute( "artist" );
+        const QString site     = el.attribute( "site" ).isEmpty() ? spec.readEntry( "site" ) : el.attribute( "site" );
+        const QString site_url = el.attribute( "site_url" ).isEmpty() ? spec.readEntry( "site_url" ) : el.attribute( "site_url" );
 
         lyrics.prepend( "<font size='2'><b>\n" + title + "</b><br/><u>\n" + artist+ "</font></u></font><br/>\n" );
 
