@@ -261,3 +261,40 @@ SqlGenre::tracks()
         return m_tracks;
     }
 }
+
+//---------------SqlYear---------------------------------
+
+SqlYear::SqlYear( const QString &name ) : Year()
+    ,m_name( name )
+    ,m_tracksLoaded( false )
+    ,m_mutex()
+    ,m_tracks()
+{
+    //nothing to do
+}
+
+void
+SqlYear::invalidateCache()
+{
+    m_mutex.lock();
+    m_tracksLoaded = false;
+    m_tracks = TrackList();
+    m_mutex.unlock();
+}
+
+TrackList
+SqlYear::tracks()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else
+    {
+        QueryBuilder qb;
+        //build query, create SqlTrack objects and add to tracklist
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+}

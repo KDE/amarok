@@ -172,3 +172,25 @@ class SqlGenre : public Genre
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 };
+
+class SqlYear : public Year
+{
+    public:
+        SqlYear( const QString &name );
+
+        virtual QString name() const { return m_name; }
+        virtual QString prettyName() const { return m_name; }
+
+        virtual void invalidateCache();
+
+        virtual TrackList tracks();
+
+    private:
+        QString m_name;
+        bool m_tracksLoaded;
+        TrackList m_tracks;
+        //QReadWriteLock doesnt support lock upgrades :(
+        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
+        //switch to QReadWriteLock as soon as it does!
+        QMutex m_mutex;
+};

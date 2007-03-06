@@ -27,6 +27,7 @@ namespace Meta
     class Album;
     class Genre;
     class Composer;
+    class Year;
 
     typedef KSharedPtr<Track> TrackPtr;
     typedef QList<TrackPtr> TrackList;
@@ -34,11 +35,12 @@ namespace Meta
     typedef KSharedPtr<Album> AlbumPtr;
     typedef KSharedPtr<Composer> ComposerPtr;
     typedef KSharedPtr<Genre> GenrePtr;
+    typedef KSharedPtr<Year> YearPtr;
 
     class TrackObserver
     {
         public:
-            /** This method is called when the metadata of track have changed.
+            /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
             virtual void metadataChanged( Track *track ) = 0;
     };
@@ -138,7 +140,7 @@ namespace Meta
             virtual bool hasAlbumArtist() const = 0;
             /** Returns a pointer to the album's artist */
             virtual ArtistPtr albumArtist() const = 0;
-            /** returns all tracks on this artist */
+            /** returns all tracks on this album */
             virtual TrackList tracks() = 0;
 
             /** returns the cover of the album */
@@ -176,6 +178,18 @@ namespace Meta
 
             /** invalidates the object's track cache. Call this method
                 if a track's genre either changed from or to this genre */
+            virtual void invalidateCache() = 0;
+    };
+
+    class Year : public MetaBase
+    {
+        public:
+            typedef QList<YearPtr> YearList;
+
+            /** returns all tracks which are tagged with this year */
+            virtual TrackList tracks() = 0;
+
+            /** invalidates the object's tack cache. */
             virtual void invalidateCache() = 0;
     };
 }
