@@ -5,6 +5,8 @@
 #include <QString>
 
 #include "../servicebase.h"
+#include "scriptableservice.h"
+#include "scriptableservicecontentmodel.h"
  
 class ScriptableServiceManager : public QObject
 {
@@ -19,5 +21,11 @@ class ScriptableServiceManager : public QObject
 
     public Q_SLOTS:
         Q_SCRIPTABLE bool createService( QString name );
+        Q_SCRIPTABLE int insertElement( QString name, QString url, QString infoHtml, int parentId);
+        Q_SCRIPTABLE void updateComplete( );
+
+    private:
+
+    ScriptableServiceContentModel * m_model;
 };
 #endif

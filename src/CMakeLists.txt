@@ -144,7 +144,10 @@ set(libservicebrowser_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelbase.cpp)
 
 set(libscriptableservice_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.cpp)
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservice.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp)
 
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)

@@ -23,6 +23,7 @@
 
 #include "amarok.h"
 #include "servicemodelitembase.h"
+#include "servicemodelbase.h"
 
 #include <khtml_part.h>
 //#include <klistwidget.h>
@@ -64,6 +65,8 @@ public:
     QString getLongDescription();
     void setIcon( QIcon pixmap );
     QIcon getIcon();
+    void setModel( ServiceModelBase * model );
+    ServiceModelBase * getModel();
 
 
 signals:
@@ -108,6 +111,8 @@ protected:
     KUrl::List   m_urlsToInsert;
 
     void addToPlaylist( ServiceModelItemBase * item );
+
+    ServiceModelBase * m_model;
 
 };
 

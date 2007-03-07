@@ -1,4 +1,4 @@
- /*
+/*
   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
   This library is free software; you can redistribute it and/or
@@ -15,25 +15,40 @@
   along with this library; see the file COPYING.LIB.  If not, write to
   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
   Boston, MA 02110-1301, USA.
-*/ 
+*/
 
-#ifndef AMAROKSERVICEMODELBASEL_H
-#define AMAROKSERVICEMODELBASEL_H
+#ifndef AMAROKSCRIPTABLESERVICE_H
+#define AMAROKSCRIPTABLESERVICE_H
 
-#include <QAbstractItemModel>
 
-class ServiceModelBase : public QAbstractItemModel
+#include "amarok.h"
+#include "../servicebase.h"
+
+
+
+class ScriptableService : public ServiceBase
 {
     Q_OBJECT
 
 public:
-    ServiceModelBase( QObject *parent );
-    virtual void requestHtmlInfo ( const QModelIndex & item ) const = 0;
+    
+     /**
+     * Constructor
+     */
+    ScriptableService( const char *name );
+    /**
+     * Destructor
+     */
+    ~ScriptableService() { }
 
-signals:
+private slots:
 
-    void infoChanged( QString infoHtml ) const;
+
+
+    //void treeItemSelected( const QModelIndex & index );
+    //void infoChanged ( QString infoHtml );
 
 };
 
- #endif
+
+#endif

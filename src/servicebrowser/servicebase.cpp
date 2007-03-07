@@ -89,11 +89,11 @@ ServiceBase::ServiceBase( QString name )
 
 
 
-    QDirModel * dirModel = new QDirModel ( m_contentView );
+    //QDirModel * dirModel = new QDirModel ( m_contentView );
 
-    m_contentView->setModel( dirModel );
-    m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
-    m_contentView->show();
+    //m_contentView->setModel( dirModel );
+    //m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
+    //m_contentView->show();
 
 }
 
@@ -186,6 +186,16 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
             addToPlaylist( childItems.at(i) );
         }
     }
+}
+
+void ServiceBase::setModel( ServiceModelBase * model ) {
+    m_contentView->setModel( model );
+    m_model  = model;
+}
+
+
+ServiceModelBase * ServiceBase::getModel() {
+    return m_model;
 }
 
 
