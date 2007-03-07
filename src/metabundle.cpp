@@ -1522,8 +1522,8 @@ static inline void xmlEncode(QTextStream &stream, const QString &str)
             flush = false;
         else if ( uc == '<' )  stream << "&lt;";
         else if ( uc == '>' )  stream << "&gt;";
-        else if ( uc == '&' )   stream << "&quot;";
-        else if ( uc == '"')    stream << "&amp;";
+        else if ( uc == '&' )   stream << "&amp;";
+        else if ( uc == '"')    stream << "&quot;";
         else
         {
             // see if it's a XML-valid unicode char at all
