@@ -79,6 +79,7 @@ class IpodMediaDevice : public MediaDevice
         bool              lockDevice(bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
         void              unlockDevice() { m_mutex.unlock(); }
         void              initView();
+        void              detectModel();
 
         virtual MediaItem *copyTrackToDevice( const MetaBundle& bundle );
         /**
