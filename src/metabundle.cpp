@@ -29,7 +29,6 @@
 #include <kio/netaccess.h>
 #include <kmdcodec.h>
 #include <qdeepcopy.h>
-#include <qdom.h>
 #include <qfile.h> //decodePath()
 #include <taglib/attachedpictureframe.h>
 #include <taglib/fileref.h>
@@ -1503,30 +1502,70 @@ MetaBundle::save( TagLib::FileRef* fileref )
     return returnval;
 }
 
-bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) const
+// QT's version encodeAttr is 1) private to QDom, and 2) a litte slow. This
+// one can be made public if needed. It happens to be on a critical path
+// (each char of playlist / undo save). QStyleSheet::escape does not deal with
+// unicode chars illegal for XML. There's a lot of junk in those tags
+static inline void xmlEncode(QTextStream &stream, const QString &str)
 {
-    QDomDocument qDomSucksItNeedsADocument;
-    QDomElement item = qDomSucksItNeedsADocument.createElement( "item" );
-    item.setAttribute( "url", url().url() );
-    item.setAttribute( "uniqueid", uniqueId() );
-    if( m_isCompilation )
-        item.setAttribute( "compilation", "true" );
-
-    for( int i = 0, n = attributes.count(); i < n; i += 2 )
-        item.setAttribute( attributes[i], attributes[i+1] );
-
-    for( int i = 0; i < NUM_COLUMNS; ++i )
+    QString tmp;
+    const QString *cur = &str;
+    uint i = 0;
+    while ( i < cur->length() )
     {
-        QDomElement tag = qDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
-        //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
-        QDomText text = qDomSucksItNeedsADocument.createTextNode( exactText( i, true ) );
-        //debug() << "exactText(i) = " << exactText( i ) << endl;
-        tag.appendChild( text );
-
-        item.appendChild( tag );
+        uint uc = (*cur)[i].unicode();
+        // we try to accumulate unescaped chars before writing to stream
+        bool flush = true;
+        // careful about the order of tests, common before less common
+        if ( 'a' <= uc && uc <= 'z' || '0' <= uc && uc <= '9' || 'A' <= uc && uc <= 'Z' )
+            // most common case
+            flush = false;
+        else if ( uc == '<' )  stream << "&lt;";
+        else if ( uc == '>' )  stream << "&gt;";
+        else if ( uc == '&' )   stream << "&quot;";
+        else if ( uc == '"')    stream << "&amp;";
+        else
+        {
+            // see if it's a XML-valid unicode char at all
+            if ( (0x20 <= uc && uc <= 0xD7FF || 0xE000 <= uc && uc <= 0xFFFD
+                  || uc == 0x9 || uc == 0xA || uc == 0xD) )
+                // fairly common, other ascii chars
+                flush = false;
+            else
+                stream << "&#x" << QString::number(uc, 16) << ';';
+        }
+        if ( flush )
+        {
+            if ( i > 0 ) stream << cur->left(i);
+            tmp = cur->right(cur->length() - i - 1);
+            cur = &tmp;
+            i = 0;
+        } else i++;
     }
 
-    item.save( stream, 1 );
+    if (!cur->isEmpty()) stream << *cur;
+}
+
+bool MetaBundle::save(QTextStream &stream, const QStringList &attributes) const
+{
+    // QDom is too slow to use here
+    // url is already encoded
+    stream << " <item url=\"" << url().url() << "\" uniqueid=\"" << uniqueId() << '\"';
+    if ( m_isCompilation )
+        stream << " compilation=\"True\"";
+    // attrs are never custom text (e.g. ID3 tags)
+    for( int i = 0, n = attributes.count(); i < n; i += 2 )
+        stream << " " << attributes[i] << "=\"" << attributes[i+1] << "\"";
+    stream << ">\n";            // end of <item ...>
+    for (int i = 0; i < NUM_COLUMNS; ++i) {
+        if ( i == Filename ) continue;  // the file name is already in the URL
+        const QString &tag = exactColumnName( i );
+        // 2 indents
+        stream << "  <" << tag << ">";
+        xmlEncode( stream, exactText( i, true ) );
+        stream << "</" << tag << ">\n";
+    }
+    stream << " </item>\n";
     return true;
 }
 

@@ -47,6 +47,7 @@
 
 #include <cmath> //for pow() in playNextTrack()
 
+#include <qbuffer.h>
 #include <qclipboard.h>      //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
 #include <qevent.h>
@@ -3056,10 +3057,15 @@ Playlist::saveXML( const QString &path )
     DEBUG_BLOCK
 
     QFile file( path );
-    if( !file.open( IO_WriteOnly ) ) return;
+    if( !file.open( IO_WriteOnly | IO_Truncate | IO_Raw ) ) return;
 
-    QString buffer;
-    QTextStream stream( &buffer, IO_WriteOnly );
+    // Manual buffering since QFile's is slow for whatever reason
+    const uint kWriteSize = 256 * 1024;
+
+    QBuffer buffer;
+    buffer.open(IO_WriteOnly);
+    
+    QTextStream stream( &buffer );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
@@ -3095,13 +3101,17 @@ Playlist::saveXML( const QString &path )
             attributes << "stop_after" << "true";
 
         item->save( stream, attributes );
+
+        if ( buffer.at() >= kWriteSize )
+        {
+            file.writeBlock( buffer.buffer().data(), buffer.at() );
+            buffer.reset();
+        }
     }
 
     stream << "</playlist>\n";
-
-    QTextStream fstream( &file );
-    fstream.setEncoding( QTextStream::UnicodeUTF8 );
-    fstream << buffer;
+    file.writeBlock(buffer.buffer().data(), buffer.at());
+    file.close();
 }
 
 void
