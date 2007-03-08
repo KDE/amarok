@@ -1,1 +1,1 @@
-SKIP /src/sqlite/
+SKIP /src/sqlite/\|/src/engine/helix/helix-sp/helix-include/\|/src/mediadevice/daap/mongrel/
