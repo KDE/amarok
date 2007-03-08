@@ -182,7 +182,11 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         warning() << "Skipping, " << strerror(errno) << ": " << dir << endl;
         return;
     }
+#ifdef USE_SOLARIS
+    int dfd = d->d_fd;
+#else
     int dfd = dirfd(d);
+#endif
     if (dfd == -1) {
 	warning() << "Skipping, unable to obtain file descriptor: " << dir << endl;
 	closedir(d);
