@@ -47,3 +47,5 @@ stations.each() do |station|
     system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertElement", station[0], station[1], "Dummy html info", parentId, "Cool Streams")
 end
 
+`qdbus org.kde.amarok /ScriptableServiceManager updateComplete "Cool Streams"`
+

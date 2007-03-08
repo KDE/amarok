@@ -56,9 +56,17 @@ int ScriptableServiceManager::insertElement( QString name, QString url, QString 
 }
 
 
-void ScriptableServiceManager::updateComplete( ) {
+bool ScriptableServiceManager::updateComplete( QString serviceName ) {
 
-// uhm... do stuff
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return false;
+    }
+
+    ScriptableServiceContentModel * model = static_cast< ScriptableServiceContentModel *> ( m_serviceMap[serviceName]->getModel() );
+    model->resetModel();
+
+    return true;
 
 }
 

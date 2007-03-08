@@ -48,7 +48,6 @@ int ScriptableServiceContentModel::insertItem( QString name, QString url, QStrin
         ScriptableServiceContentItem * newItem = new ScriptableServiceContentItem( name, url, infoHtml, m_contentItemMap[parentId] );
         m_contentItemMap[m_contentIndex] = newItem;
         m_contentItemMap[parentId]->addChildItem ( newItem );
-        reset (); //fixme
         return m_contentIndex;
     }
 

@@ -29,6 +29,7 @@ class ServiceModelBase : public QAbstractItemModel
 public:
     ServiceModelBase( QObject *parent );
     virtual void requestHtmlInfo ( const QModelIndex & item ) const = 0;
+    void resetModel();
 
 signals:
 

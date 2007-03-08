@@ -22,7 +22,7 @@ class ScriptableServiceManager : public QObject
     public Q_SLOTS:
         Q_SCRIPTABLE bool createService( QString name, QString listHeader);
         Q_SCRIPTABLE int insertElement( QString name, QString url, QString infoHtml, int parentId, QString serviceName);
-        Q_SCRIPTABLE void updateComplete( );
+        Q_SCRIPTABLE bool updateComplete( QString serviceName );
 
     private:
 

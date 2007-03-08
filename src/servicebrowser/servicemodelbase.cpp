@@ -25,4 +25,8 @@ ServiceModelBase::ServiceModelBase( QObject *parent )
 {
 }
 
+void ServiceModelBase::resetModel() {
+   reset();
+}
+
 #include "servicemodelbase.moc"
