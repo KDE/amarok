@@ -1,6 +1,6 @@
 project(Amarok)
 
-find_package(KDE4)
+find_package(KDE4 REQUIRED)
 #following lines are copied from the koffice CMakeLists.txt
 #not sure what they do, but they sound useful. Remove if necessary
 include(KDE4Defaults)
