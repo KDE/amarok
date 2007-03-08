@@ -43,6 +43,7 @@ public:
     QList<ServiceModelItemBase*> getChildItems() const;
     bool hasChildren () const;
     QString getUrl();
+    QString getInfoHtml();
 
 private:
 

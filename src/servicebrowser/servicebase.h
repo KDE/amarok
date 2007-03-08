@@ -72,6 +72,7 @@ public:
 signals:
 
     void home();
+    
 
 protected slots:
 
@@ -84,6 +85,13 @@ protected slots:
     void homeButtonClicked();
 
     void itemActivated ( const QModelIndex & index );
+
+    void treeItemSelected( const QModelIndex & index );
+
+    void infoChanged ( QString infoHtml );
+
+
+
 
 
 protected:

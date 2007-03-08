@@ -468,7 +468,7 @@ void MagnatuneBrowser::genreChanged( QString genre )
 {
     debug() << "Genre changed to: " << genre << endl;
     //updateList( );
-    m_model->setGenre( genre );
+    static_cast< MagnatuneContentModel *>( m_model )->setGenre( genre );
 }
 
 
@@ -533,17 +533,15 @@ void MagnatuneBrowser::polish( )
         m_polished = true;
 
 
-        m_model = new MagnatuneContentModel ( this );
-        connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
-
+        setModel(new MagnatuneContentModel ( this ) );
+        //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
        
         m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder ); 
-        m_contentView->setModel( m_model );
 
-        connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
+        //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
 
         //updateList( );
 
@@ -563,7 +561,7 @@ void MagnatuneBrowser::polish( )
 }
 
 
-void MagnatuneBrowser::treeItemSelected( const QModelIndex & index ) {
+/*void MagnatuneBrowser::treeItemSelected( const QModelIndex & index ) {
 
     m_model->requestHtmlInfo( index );
 
@@ -575,7 +573,7 @@ void MagnatuneBrowser::infoChanged ( QString infoHtml ) {
     m_infoBox->write( infoHtml );
     m_infoBox->end();
 
-}
+}*/
 
 
 

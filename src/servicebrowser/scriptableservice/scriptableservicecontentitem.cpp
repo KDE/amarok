@@ -31,6 +31,7 @@ ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString
     m_name = name;
     m_url = url;
     m_parent = parent;
+    m_infoHtml = infoHtml;
     //m_hasPopulatedChildItems = false;
 }
 
@@ -88,4 +89,8 @@ bool ScriptableServiceContentItem::hasChildren () const {
 QString ScriptableServiceContentItem::getUrl() {
 
     return m_url;
+}
+
+QString ScriptableServiceContentItem::getInfoHtml() {
+    return m_infoHtml;
 }

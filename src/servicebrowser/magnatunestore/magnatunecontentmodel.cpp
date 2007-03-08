@@ -173,7 +173,7 @@ void MagnatuneContentModel::setGenre( QString genre ) {
 
 void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const {
 
-
+    debug() << "MagnatuneContentModel::requestHtmlInfo"  << endl;
     MagnatuneContentItem* item;
 
     if (!index.isValid())
@@ -194,6 +194,7 @@ void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const 
 }
 
 void MagnatuneContentModel::infoParsed( QString infoHtml ) {
+    debug() << "MagnatuneContentModel::infoParsed"  << endl;
     emit( infoChanged ( infoHtml ) );
 }
 

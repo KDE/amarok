@@ -62,6 +62,8 @@ ServiceBase::ServiceBase( QString name )
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new QTreeView( m_mainSplitter );
 
+    
+    connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
     m_infoBox = new KHTMLPart( m_mainSplitter );
@@ -191,11 +193,26 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
 void ServiceBase::setModel( ServiceModelBase * model ) {
     m_contentView->setModel( model );
     m_model  = model;
+    connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 }
 
 
 ServiceModelBase * ServiceBase::getModel() {
     return m_model;
+}
+
+void ServiceBase::treeItemSelected( const QModelIndex & index ) {
+
+    m_model->requestHtmlInfo( index );
+
+}
+
+void ServiceBase::infoChanged ( QString infoHtml ) {
+
+    m_infoBox->begin( );
+    m_infoBox->write( infoHtml );
+    m_infoBox->end();
+
 }
 
 

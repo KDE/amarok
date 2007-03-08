@@ -29,20 +29,6 @@ ScriptableService::ScriptableService( QString name )
 }
 
 
-/*void MagnatuneBrowser::treeItemSelected( const QModelIndex & index ) {
-
-    m_model->requestHtmlInfo( index );
-
-}
-
-void MagnatuneBrowser::infoChanged ( QString infoHtml ) {
-
-    m_infoBox->begin( );
-    m_infoBox->write( infoHtml );
-    m_infoBox->end();
-
-}*/
-
 
 
 #include "scriptableservice.moc"

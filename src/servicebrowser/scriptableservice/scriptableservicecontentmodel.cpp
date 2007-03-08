@@ -188,7 +188,7 @@ void ScriptableServiceContentModel::requestHtmlInfo ( const QModelIndex & index 
      else
          item = static_cast<ScriptableServiceContentItem*>(index.internalPointer());
 
-    emit( infoChanged ( item->getUrl() ) );
+    emit( infoChanged ( item->getInfoHtml() ) );
 }
 
 

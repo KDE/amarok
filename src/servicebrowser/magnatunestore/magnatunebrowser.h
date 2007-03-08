@@ -170,8 +170,8 @@ private slots:
      */
     void polish();
 
-    void treeItemSelected( const QModelIndex & index );
-    void infoChanged ( QString infoHtml );
+    //void treeItemSelected( const QModelIndex & index );
+    //void infoChanged ( QString infoHtml );
 
 private:
     /**
@@ -223,7 +223,7 @@ private:
     static MagnatuneBrowser *s_instance;
 
     //MagnatuneListView         *m_listView;
-    MagnatuneArtistInfoBox    *m_artistInfobox;
+    //MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
@@ -237,7 +237,7 @@ private:
     QComboBox   *m_genreComboBox;
     bool         m_purchaseInProgress;
 
-    MagnatuneContentModel * m_model;
+    //MagnatuneContentModel * m_model;
    
 
     KIO::FileCopyJob * m_listDownloadJob;
