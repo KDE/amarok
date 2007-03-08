@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
+#include "statusbar.h"
 
 #include <QFile>
 
@@ -46,6 +47,9 @@ void MagnatuneInfoParser::getInfo( MagnatuneArtist *artist ) {
     m_infoDownloadJob = KIO::storedGet( artist->getHomeURL(), false, true );
     //Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
+
+    Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob )
+    .setDescription( i18n( "Fetching artist info..." ) );
 
 }
 
