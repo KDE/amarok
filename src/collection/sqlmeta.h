@@ -16,6 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#ifndef SQLMETA_H
+#define SQLMETA_H
+
 #include "meta.h"
 
 #include <QMutex>
@@ -29,19 +32,25 @@ class SqlTrack : public Track
         SqlTrack( const QStringList &queryResult );
 
         virtual QString name() const { return m_title; }
-        virtual QString prettyTitle() const;
+        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const { return m_url; }
         virtual QString prettyUrl() const { return m_url.path(); }
+        virtual QString url() const { return m_url.path(); }
 
         virtual bool isPlayable() const;
         virtual bool isEditable() const;
 
         virtual AlbumPtr album() const { return m_album; }
+        virtual void setAlbum( const QString &newAlbum );
         virtual void setArtist( const QString &newArtist );
         virtual ArtistPtr artist() const { return m_artist; }
         virtual ComposerPtr composer() const { return m_composer; }
+        virtual void setComposer( const QString &newComposer );
+        virtual YearPtr year() const { return m_year; }
+        virtual void setYear( const QString &newYear );
         virtual GenrePtr genre() const { return m_genre; }
+        virtual void setGenre( const QString &newGenre );
 
         virtual QString type() const;
 
@@ -50,6 +59,21 @@ class SqlTrack : public Track
 
         virtual void subscribe( TrackObserver *observer );
         virtual void unsubscribe( TrackObserver *observer );
+
+        virtual double score() const { return m_score; }
+        virtual void setScore( double newScore );
+        virtual int rating() const { return m_rating; }
+        virtual void setRating( int newRating );
+        virtual int length() const { return m_length; }
+        virtual int filesize() const { return m_filesize; }
+        virtual int sampleRate() const { return m_sampleRate; }
+        virtual int bitrate() const { return m_bitrate; }
+        virtual int trackNumber() const { return m_trackNumber; }
+        virtual void setTrackNumber( int newTrackNumber );
+        virtual int discNumber() const { return m_discNumber; }
+        virtual void setDiscNumber( int newDiscNumber );
+        virtual uint lastPlayed() const { return m_lastPlayed; }
+        virtual int playCount() const { return m_playCount; }
 
     protected:
         void notifyObservers();
@@ -74,6 +98,7 @@ class SqlTrack : public Track
         ArtistPtr m_artist;
         GenrePtr m_genre;
         ComposerPtr m_composer;
+        YearPtr m_year;
 
         QList<TrackObserver*> m_observers;
 };
@@ -200,3 +225,5 @@ class SqlYear : public Year
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 };
+
+#endif /* SQLMETA_H */

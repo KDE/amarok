@@ -89,6 +89,9 @@ namespace Meta
             /** Returns the genre of this track */
             virtual GenrePtr genre() const = 0;
             virtual void setGenre( const QString &newGenre ) = 0;
+            /** Returns the year of this track */
+            virtual YearPtr year() const = 0;
+            virtual void setYear( const QString &newYear ) = 0;
 
             /** Returns the score of this track */
             virtual double score() const = 0;

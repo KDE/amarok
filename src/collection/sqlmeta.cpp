@@ -18,6 +18,7 @@
 
 #include "collectiondb.h"
 #include "sqlmeta.h"
+#include "sqlregistry.h"
 
 #include <QFile>
 #include <QListIterator>
@@ -51,7 +52,7 @@ SqlTrack::type() const
 }
 
 QString
-SqlTrack::prettyTitle() const
+SqlTrack::prettyName() const
 {
     QString s = m_artist->name();
 
@@ -90,8 +91,48 @@ SqlTrack::prettyTitle( const QString &filename ) //static
 void
 SqlTrack::setArtist( const QString &newArtist )
 {
-    //TODO get new artist from registry and set it
+    //invalidate cache of the old artist...
     m_artist->invalidateCache();
+    m_artist = SqlRegistry::instance()->getArtist( newArtist );
+    //and the new one
+    m_artist->invalidateCache();
+    notifyObservers();
+}
+
+void
+SqlTrack::setGenre( const QString &newGenre )
+{
+    m_genre->invalidateCache();
+    m_genre = SqlRegistry::instance()->getGenre( newGenre );
+    m_genre->invalidateCache();
+    notifyObservers();
+}
+
+void
+SqlTrack::setComposer( const QString &newComposer )
+{
+    m_composer->invalidateCache();
+    m_composer = SqlRegistry::instance()->getComposer( newComposer );
+    m_composer->invalidateCache();
+    notifyObservers();
+}
+
+void
+SqlTrack::setYear( const QString &newYear )
+{
+    m_year->invalidateCache();
+    m_year = SqlRegistry::instance()->getYear( newYear );
+    m_year->invalidateCache();
+    notifyObservers();
+}
+
+void
+SqlTrack::setAlbum( const QString &newAlbum )
+{
+    m_album->invalidateCache();
+    m_album = SqlRegistry::instance()->getAlbum( newAlbum );
+    m_album->invalidateCache();
+    notifyObservers();
 }
 
 void
@@ -114,6 +155,34 @@ SqlTrack::notifyObservers()
         iter.next()->metadataChanged( this );
 }
 
+void
+SqlTrack::setScore( double newScore )
+{
+    m_score = newScore;
+    notifyObservers();
+}
+
+void
+SqlTrack::setRating( int newRating )
+{
+    m_rating = newRating;
+    notifyObservers();
+}
+
+void
+SqlTrack::setTrackNumber( int newTrackNumber )
+{
+    m_trackNumber= newTrackNumber;
+    notifyObservers();
+}
+
+void
+SqlTrack::setDiscNumber( int newDiscNumber )
+{
+    m_discNumber = newDiscNumber;
+    notifyObservers();
+}
+
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( const QString &name ) : Artist()
@@ -130,7 +199,7 @@ SqlArtist::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
-    m_tracks = TrackList();
+    m_tracks.clear();
     m_mutex.unlock();
 }
 
@@ -167,7 +236,7 @@ SqlAlbum::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
-    m_tracks = TrackList();
+    m_tracks.clear();
     m_mutex.unlock();
 }
 
@@ -204,7 +273,7 @@ SqlComposer::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
-    m_tracks = TrackList();
+    m_tracks.clear();
     m_mutex.unlock();
 }
 
@@ -241,7 +310,7 @@ SqlGenre::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
-    m_tracks = TrackList();
+    m_tracks.clear();
     m_mutex.unlock();
 }
 
@@ -278,7 +347,7 @@ SqlYear::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
-    m_tracks = TrackList();
+    m_tracks.clear();
     m_mutex.unlock();
 }
 
