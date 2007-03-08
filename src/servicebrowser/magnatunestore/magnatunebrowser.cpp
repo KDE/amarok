@@ -468,7 +468,7 @@ void MagnatuneBrowser::genreChanged( QString genre )
 {
     debug() << "Genre changed to: " << genre << endl;
     //updateList( );
-    static_cast< MagnatuneContentModel *>( m_model )->setGenre( genre );
+    static_cast< MagnatuneContentModel *>( getModel() )->setGenre( genre );
 }
 
 

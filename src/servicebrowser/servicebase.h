@@ -120,7 +120,10 @@ protected:
 
     void addToPlaylist( ServiceModelItemBase * item );
 
-    ServiceModelBase * m_model;
+   
+
+private: // need to move stuff here
+     ServiceModelBase * m_model;
 
 };
 
