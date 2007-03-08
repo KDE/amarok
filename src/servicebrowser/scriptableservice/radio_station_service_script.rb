@@ -39,7 +39,7 @@ stations = [ [ 'Bassdrive [Drum \'n Bass]',                   'http://www.bassdr
 
 
 # create new browser
-`qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams" "Streams"`
+`qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams" "Streams" "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"`
 
 parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertElement "The Amarok crews top picks" "" "Just a parent item to show how nesting works" 0 "Cool Streams"`.chomp
 

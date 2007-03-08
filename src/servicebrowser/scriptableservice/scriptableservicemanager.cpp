@@ -18,7 +18,7 @@ ScriptableServiceManager::ScriptableServiceManager(QObject* parent)
 
 }
 
-bool ScriptableServiceManager::createService( QString name, QString listHeader ) {
+bool ScriptableServiceManager::createService( QString name, QString listHeader, QString rootHtml) {
     
     debug() << "ScriptableServiceManager::CreateService, name: " << name << ", header: "<< listHeader <<  endl;
 
@@ -27,8 +27,11 @@ bool ScriptableServiceManager::createService( QString name, QString listHeader )
         return false;
     }
 
+    m_rootHtml = rootHtml;
     ScriptableService * service = new ScriptableService ( name );
     service->setIcon( KIcon( Amarok::icon( "download" ) ) );
+
+    service->infoChanged( m_rootHtml );
     
     m_serviceMap[name] = service;
     service->setModel( new ScriptableServiceContentModel( this, listHeader ) ); 

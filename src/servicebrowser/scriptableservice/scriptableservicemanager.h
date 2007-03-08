@@ -20,12 +20,13 @@ class ScriptableServiceManager : public QObject
         void addService( ServiceBase * service );
 
     public Q_SLOTS:
-        Q_SCRIPTABLE bool createService( QString name, QString listHeader);
+        Q_SCRIPTABLE bool createService( QString name, QString listHeader, QString rootHtml);
         Q_SCRIPTABLE int insertElement( QString name, QString url, QString infoHtml, int parentId, QString serviceName);
         Q_SCRIPTABLE bool updateComplete( QString serviceName );
 
     private:
 
     QMap<QString, ScriptableService *> m_serviceMap;
+    QString m_rootHtml;
 };
 #endif

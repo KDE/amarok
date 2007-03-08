@@ -68,6 +68,10 @@ public:
     void setModel( ServiceModelBase * model );
     ServiceModelBase * getModel();
 
+public slots:
+
+     void infoChanged ( QString infoHtml );
+
 
 signals:
 
@@ -88,7 +92,7 @@ protected slots:
 
     void treeItemSelected( const QModelIndex & index );
 
-    void infoChanged ( QString infoHtml );
+   
 
 
 

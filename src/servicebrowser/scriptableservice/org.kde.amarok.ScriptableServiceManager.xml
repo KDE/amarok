@@ -5,6 +5,7 @@
       <arg type="b" direction="out"/>
       <arg name="name" type="s" direction="in"/>
       <arg name="listHeader" type="s" direction="in"/>
+      <arg name="rootHtml" type="s" direction="in"/>
     </method>
     <method name="insertElement">
       <arg type="i" direction="out"/>
