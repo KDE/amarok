@@ -22,11 +22,9 @@ Boston, MA 02110-1301, USA.
 #include "debug.h"
 
 
-ScriptableService::ScriptableService( const char *name )
+ScriptableService::ScriptableService( QString name )
         : ServiceBase( name )
 {
-    setObjectName(name);
-    DEBUG_BLOCK
 
 }
 

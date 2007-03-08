@@ -4,6 +4,7 @@
     <method name="createService">
       <arg type="b" direction="out"/>
       <arg name="name" type="s" direction="in"/>
+      <arg name="listHeader" type="s" direction="in"/>
     </method>
     <method name="insertElement">
       <arg type="i" direction="out"/>
@@ -11,6 +12,7 @@
       <arg name="url" type="s" direction="in"/>
       <arg name="infoHtml" type="s" direction="in"/>
       <arg name="parentId" type="i" direction="in"/>
+      <arg name="serviceName" type="s" direction="in"/>
     </method>
     <method name="updateComplete">
     </method>

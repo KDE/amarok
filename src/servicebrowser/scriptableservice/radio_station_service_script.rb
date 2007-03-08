@@ -39,11 +39,11 @@ stations = [ [ 'Bassdrive [Drum \'n Bass]',                   'http://www.bassdr
 
 
 # create new browser
-`qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams"`
+`qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams" "Streams"`
 
-parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertElement "The Amarok crews top picks" "" "Dummy html info" 0`.chomp
+parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertElement "The Amarok crews top picks" "" "Dummy html info" 0 "Cool Streams"`.chomp
 
 stations.each() do |station|
-    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertElement", station[0], station[1], "Dummy html info", parentId)
+    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertElement", station[0], station[1], "Dummy html info", parentId, "Cool Streams")
 end
 
