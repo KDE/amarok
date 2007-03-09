@@ -187,7 +187,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
-    renameButton   = new KAction( KIcon( "editclear" ), i18n("Rename"), m_ac );
+    renameButton   = new KAction( KIcon( "edit-clear" ), i18n("Rename"), m_ac );
     connect( renameButton, SIGNAL( triggered( bool ) ), this, SLOT( renameSelectedItem() ) );
     removeButton   = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n("Delete"), m_ac );
     connect( removeButton, SIGNAL( triggered( bool ) ), this, SLOT( removeSelectedItems() ) );

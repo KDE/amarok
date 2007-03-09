@@ -171,13 +171,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_treeViewAction = new KAction(this);
     m_treeViewAction->setText(i18n( "Tree View" ));
-    m_treeViewAction->setIcon(KIcon("view_tree"));
+    m_treeViewAction->setIcon(KIcon("view-tree"));
     ac->addAction("Tree View", m_treeViewAction);
     connect( m_treeViewAction, SIGNAL( triggered( bool ) ), m_view, SLOT(setTreeMode()) );
 
     m_flatViewAction = new KAction(this);
     m_flatViewAction->setText(i18n( "Flat View" ));
-    m_flatViewAction->setIcon(KIcon("view_detailed"));
+    m_flatViewAction->setIcon(KIcon("view-icon"));
     ac->addAction("Tree View", m_flatViewAction);
     connect( m_flatViewAction, SIGNAL( triggered( bool ) ), m_view, SLOT(setFlatMode()) );
 
@@ -240,7 +240,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_tagfilterMenuButton = new KActionMenu( this );
     m_tagfilterMenuButton->setText(i18n( "Group By" ) );
-    m_tagfilterMenuButton->setIcon(KIcon("filter"));
+    m_tagfilterMenuButton->setIcon(KIcon("search-filter"));
     ac->addAction( "filter", m_tagfilterMenuButton );
 
     m_tagfilterMenuButton->setDelayed( false );
