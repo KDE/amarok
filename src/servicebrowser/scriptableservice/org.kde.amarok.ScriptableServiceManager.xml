@@ -15,6 +15,15 @@
       <arg name="parentId" type="i" direction="in"/>
       <arg name="serviceName" type="s" direction="in"/>
     </method>
+    <method name="insertDynamicElement">
+      <arg type="i" direction="out"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="callbackScript" type="s" direction="in"/>
+      <arg name="callbackArgument" type="s" direction="in"/>
+      <arg name="infoHtml" type="s" direction="in"/>
+      <arg name="parentId" type="i" direction="in"/>
+      <arg name="serviceName" type="s" direction="in"/>
+    </method>
     <method name="updateComplete">
       <arg type="b" direction="out"/>
       <arg name="serviceName" type="s" direction="in"/>

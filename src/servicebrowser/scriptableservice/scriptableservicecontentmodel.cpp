@@ -17,6 +17,7 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include "amarok.h"
 #include "debug.h"
 #include "scriptableservicecontentmodel.h"
 
@@ -30,6 +31,11 @@ ScriptableServiceContentModel::ScriptableServiceContentModel( QObject *parent, Q
     
     m_contentIndex = 0;
     m_contentItemMap[m_contentIndex] = m_rootContentItem;
+
+ 
+    m_populatingDynamicItem = false;
+    int m_indexBeingUpdated = -1;
+    int m_updateCount = 0;
     
 
 }
@@ -44,21 +50,51 @@ int ScriptableServiceContentModel::insertItem( QString name, QString url, QStrin
     if (! m_contentItemMap.contains( parentId ) ) {
         return -1;
     } else {
+
+       
+
         m_contentIndex++;
         ScriptableServiceContentItem * newItem = new ScriptableServiceContentItem( name, url, infoHtml, m_contentItemMap[parentId] );
+        m_contentItemMap[m_contentIndex] = newItem;
+
+
+         if (m_populatingDynamicItem) {
+            m_updateCount++;
+            beginInsertRows(createIndex(m_contentItemMap[parentId]->row(), 0, m_contentItemMap[parentId]), m_updateCount - 1, m_updateCount);
+         }
+
+        m_contentItemMap[parentId]->addChildItem ( newItem );
+
+
+        if (m_populatingDynamicItem) {
+
+            //insertRow ( m_updateCount - 1, createIndex(m_contentItemMap[parentId]->row(), 0, m_contentItemMap[parentId]) );
+            endInsertRows();
+        }
+
+        return m_contentIndex;
+    }
+
+}
+
+int ScriptableServiceContentModel::insertDynamicItem( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId ){
+
+    if (! m_contentItemMap.contains( parentId ) ) {
+        return -1;
+    } else {
+        m_contentIndex++;
+        ScriptableServiceContentItem * newItem = new ScriptableServiceContentItem( name, callbackScript, callbackArgument, infoHtml, m_contentItemMap[parentId] );
         m_contentItemMap[m_contentIndex] = newItem;
         m_contentItemMap[parentId]->addChildItem ( newItem );
         return m_contentIndex;
     }
-
-   
 
 }
 
 int ScriptableServiceContentModel::columnCount( const QModelIndex &parent ) const
 {
 
-   debug() << "ScriptableServiceContentModel::columnCount" << endl;
+   //debug() << "ScriptableServiceContentModel::columnCount" << endl;
 
 
     if (parent.isValid())
@@ -70,7 +106,7 @@ int ScriptableServiceContentModel::columnCount( const QModelIndex &parent ) cons
 
 QVariant ScriptableServiceContentModel::data( const QModelIndex &index, int role ) const
 {
-    debug() << "ScriptableServiceContentModel::data" << endl;
+    //debug() << "ScriptableServiceContentModel::data" << endl;
     
 
     if ( !index.isValid() )
@@ -88,7 +124,7 @@ QVariant ScriptableServiceContentModel::data( const QModelIndex &index, int role
 Qt::ItemFlags ScriptableServiceContentModel::flags(const QModelIndex &index) const
 {
 
-    debug() << "ScriptableServiceContentModel::flags" << endl;
+    //debug() << "ScriptableServiceContentModel::flags" << endl;
     if (!index.isValid())
         return Qt::ItemIsEnabled;
 
@@ -98,7 +134,7 @@ Qt::ItemFlags ScriptableServiceContentModel::flags(const QModelIndex &index) con
 QVariant ScriptableServiceContentModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
-    debug() << "ScriptableServiceContentModel::headerData" << endl;
+    //debug() << "ScriptableServiceContentModel::headerData" << endl;
 
          if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
          return m_header;
@@ -110,20 +146,28 @@ QVariant ScriptableServiceContentModel::headerData(int section, Qt::Orientation 
 QModelIndex ScriptableServiceContentModel::index(int row, int column, const QModelIndex &parent) const
 {
 
-     debug() << "ScriptableServiceContentModel::index, row: " << row << ", column: " << column << endl;
+    //debug() << "ScriptableServiceContentModel::index, row: " << row << ", column: " << column << endl;
 
-     ScriptableServiceContentItem *parentItem;
+    ScriptableServiceContentItem *parentItem;
 
-     if (!parent.isValid())
-         parentItem = m_rootContentItem;
-     else
+    if (!parent.isValid())
+        parentItem = m_rootContentItem;
+    else
          parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
-     ScriptableServiceContentItem *childItem = parentItem->child(row);
-     if (childItem)
-         return createIndex(row, column, childItem);
-     else
-         return QModelIndex();
+
+    if ( parentItem->getType() == DYNAMIC ) {
+       if ( !parentItem->isPopulated() ) {
+           triggerUpdateScript(parentItem->getCallbackScript(), parentItem->getCallbackArgument(), m_contentItemMap.key( parentItem ) );
+           return QModelIndex();
+       }
+    }
+
+    ScriptableServiceContentItem *childItem = parentItem->child(row);
+    if (childItem)
+        return createIndex(row, column, childItem);
+    else
+        return QModelIndex();
 
 
 }
@@ -132,9 +176,9 @@ QModelIndex ScriptableServiceContentModel::parent(const QModelIndex &index) cons
 {
 
 
-      debug() << "ScriptableServiceContentModel::parent" << endl; 
+      //debug() << "ScriptableServiceContentModel::parent" << endl; 
       if (!index.isValid()) {
-         debug() << "ScriptableServiceContentModel::parent, index invalid... " << endl; 
+         //debug() << "ScriptableServiceContentModel::parent, index invalid... " << endl; 
          return QModelIndex();
      }
 
@@ -152,7 +196,7 @@ QModelIndex ScriptableServiceContentModel::parent(const QModelIndex &index) cons
 
 int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
 {
-      debug() << "MagnatuneContentModel::rowCount"  << endl;
+      //debug() << "MagnatuneContentModel::rowCount"  << endl;
 
       ScriptableServiceContentItem *parentItem;
 
@@ -160,6 +204,13 @@ int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
          parentItem = m_rootContentItem;
      else
          parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
+
+
+     if ( parentItem->getType() == DYNAMIC) {
+       if ( !parentItem->isPopulated() ) {
+           triggerUpdateScript(parentItem->getCallbackScript(), parentItem->getCallbackArgument(), m_contentItemMap.key( parentItem ));
+       }
+    }
 
      return parentItem->childCount();
 
@@ -191,6 +242,29 @@ void ScriptableServiceContentModel::requestHtmlInfo ( const QModelIndex & index 
 }
 
 
+void ScriptableServiceContentModel::triggerUpdateScript(QString script, QString argument, int nodeId) const {
+
+    
+    m_populatingDynamicItem = true;
+    m_indexBeingUpdated = nodeId;
+
+    //This will cause "unsafe" warnings all over the place...
+    // but if the script that inserted the callback script value cannot be trusted, it has already had plenty
+    // of opportunity to wreck havoc!
+    QString scriptString = script + " " + KProcess::quote( QString().setNum(nodeId) ) + " " + KProcess::quote( argument ) + " &";
+
+    debug() << "ScriptableServiceContentModel::triggerUpdateScript String: " << scriptString << endl;
+    system( scriptString.toAscii() );
+
+}
+
+void ScriptableServiceContentModel::resetModel() {
+   
+    if (m_populatingDynamicItem) {
+        m_populatingDynamicItem = false;
+    } else
+        reset();
+}
 
 
 

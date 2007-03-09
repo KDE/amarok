@@ -32,7 +32,22 @@ ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString
     m_url = url;
     m_parent = parent;
     m_infoHtml = infoHtml;
-    //m_hasPopulatedChildItems = false;
+    m_hasPopulatedChildItems = true;
+
+    m_type = STATIC;
+}
+
+ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString callbackScript, QString callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent) {
+   
+    m_name = name;
+    m_parent = parent;
+    m_infoHtml = infoHtml;
+    
+    m_callbackScript = callbackScript;
+    m_callbackArgument = callbackArgument;
+
+    m_hasPopulatedChildItems = false;
+    m_type = DYNAMIC;
 }
 
  ScriptableServiceContentItem::~ScriptableServiceContentItem()
@@ -43,6 +58,7 @@ ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString
 void ScriptableServiceContentItem::addChildItem ( ScriptableServiceContentItem * childItem ) {
 
     m_childItems.append( childItem );
+    m_hasPopulatedChildItems = true;
 
 }
 
@@ -83,7 +99,11 @@ QList<ServiceModelItemBase*> ScriptableServiceContentItem::getChildItems() const
 }
 
 bool ScriptableServiceContentItem::hasChildren () const {
-    return ( m_childItems.size() > 0 );
+    
+    if (m_type == STATIC)
+        return ( m_childItems.size() > 0 );
+    else
+        return true;
 }
 
 QString ScriptableServiceContentItem::getUrl() {
@@ -94,3 +114,22 @@ QString ScriptableServiceContentItem::getUrl() {
 QString ScriptableServiceContentItem::getInfoHtml() {
     return m_infoHtml;
 }
+
+int ScriptableServiceContentItem::getType() { 
+    return m_type; 
+}
+
+bool ScriptableServiceContentItem::isPopulated() {
+    return m_hasPopulatedChildItems;
+}
+
+QString ScriptableServiceContentItem::getCallbackScript() { 
+    return m_callbackScript; 
+}
+
+
+QString ScriptableServiceContentItem::getCallbackArgument() { 
+    return m_callbackArgument; 
+}
+
+

@@ -39,6 +39,11 @@ private:
 
     ScriptableServiceContentItem *m_rootContentItem;
     QString m_header;
+    mutable bool m_populatingDynamicItem;
+    mutable int m_indexBeingUpdated;
+    mutable int m_updateCount;
+
+    void triggerUpdateScript(QString script, QString argument, int nodeId) const;
 
 
 public:
@@ -57,8 +62,11 @@ public:
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
     int insertItem( QString name, QString url, QString infoHtml, int parentId );
+    int insertDynamicItem( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId );
 
     void requestHtmlInfo ( const QModelIndex & item ) const;
+
+    void resetModel();
 
 signals:
 

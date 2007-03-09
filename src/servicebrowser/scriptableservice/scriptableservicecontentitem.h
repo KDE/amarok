@@ -26,11 +26,20 @@ Boston, MA 02110-1301, USA.
 #include <QList>
 
 
+enum {STATIC, DYNAMIC};
+
+
+
 class ScriptableServiceContentItem : public ServiceModelItemBase
 {
 public:
     
     ScriptableServiceContentItem(QString name, QString url, QString infoHtml, ScriptableServiceContentItem * parent); //starting out with the very simple version
+    
+
+    //used for creating items that use a script to populate their child items
+    ScriptableServiceContentItem(QString name, QString callbackScript, QString callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent);
+
     ~ScriptableServiceContentItem();
 
     void addChildItem ( ScriptableServiceContentItem * childItem );
@@ -45,6 +54,11 @@ public:
     QString getUrl();
     QString getInfoHtml();
 
+    int getType();
+    QString getCallbackScript();
+    QString getCallbackArgument();
+    bool isPopulated();
+
 private:
 
     /*mutable QList<MagnatuneContentItem*> m_childItems;*/
@@ -52,7 +66,12 @@ private:
     QString m_url; 
     QString m_name;
     QString m_infoHtml;
-    //bool m_hasPopulatedChildItems;
+
+    QString m_callbackScript;
+    QString m_callbackArgument;
+
+    int m_type;
+    bool m_hasPopulatedChildItems;
 
 };
 

@@ -59,6 +59,24 @@ int ScriptableServiceManager::insertElement( QString name, QString url, QString 
 }
 
 
+int ScriptableServiceManager::insertDynamicElement( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId, QString serviceName){
+
+     debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
+
+    //get the service
+    
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return -1;
+    }
+
+    ScriptableServiceContentModel * model = static_cast< ScriptableServiceContentModel *> ( m_serviceMap[serviceName]->getModel() );
+    
+    return model->insertDynamicItem( name, callbackScript, callbackArgument, infoHtml, parentId );
+
+}
+
+
 bool ScriptableServiceManager::updateComplete( QString serviceName ) {
 
     if ( !m_serviceMap.contains( serviceName ) ) {

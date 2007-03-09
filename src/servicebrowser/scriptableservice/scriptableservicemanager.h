@@ -20,8 +20,12 @@ class ScriptableServiceManager : public QObject
         void addService( ServiceBase * service );
 
     public Q_SLOTS:
+
         Q_SCRIPTABLE bool createService( QString name, QString listHeader, QString rootHtml);
         Q_SCRIPTABLE int insertElement( QString name, QString url, QString infoHtml, int parentId, QString serviceName);
+        Q_SCRIPTABLE int insertDynamicElement( QString name, QString callbackScript, 
+                                               QString callbackArgument, QString infoHtml, 
+                                               int parentId, QString serviceName);
         Q_SCRIPTABLE bool updateComplete( QString serviceName );
 
     private:
