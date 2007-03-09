@@ -59,7 +59,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["files2"]               = "folder_red";
         iconMap["info"]                 = "info";
         iconMap["lyrics"]               = "text-center";
-        iconMap["magnatune"]            = "media-optical";
+        iconMap["magnatune"]            = "services";
         iconMap["mostplayed"]           = "favorites";
         iconMap["music"]                = "media-podcast";
         iconMap["next"]                 = "media-skip-forward";
@@ -71,10 +71,10 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["queue"]                = "goto";
         iconMap["queue_track"]          = "2rightarrow";
         iconMap["dequeue_track"]        = "2leftarrow";
-        iconMap["random"]               = "random";
+        iconMap["random"]               = "roll";
         iconMap["random_album"]         = "drive-optical";
         iconMap["random_no"]            = "forward";
-        iconMap["random_track"]         = "random";
+        iconMap["random_track"]         = "roll";
         iconMap["redo"]                 = "edit-redo";
         iconMap["refresh"]              = "view-refresh";
         iconMap["remove"]               = "edit-delete";
@@ -89,10 +89,10 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["scripts"]              = "pencil";
         iconMap["search"]               = "find";
         iconMap["settings_engine"]      = "amarok";
-        iconMap["settings_general"]     = "misc";
+        iconMap["settings_general"]     = "configure";
         iconMap["settings_indicator"]   = "tv";
-        iconMap["settings_playback"]    = "kmix";
-        iconMap["settings_view"]        = "colors";
+        iconMap["settings_playback"]    = "speaker";
+        iconMap["settings_view"]        = "edit-find";
         iconMap["stop"]                 = "media-playback-stop";
         iconMap["podcast"]              = "media-podcast";
         iconMap["podcast2"]             = "podcast_new";
