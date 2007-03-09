@@ -40,7 +40,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["love"]                 = "bookmark";
         iconMap["back"]                 = "media-skip-backward";
-        iconMap["burn"]                 = "cdrom_unmount";
+        iconMap["burn"]                 = "media-optical";
         iconMap["change_language"]      = "configure";
         iconMap["clock"]                = "history";
         iconMap["collection"]           = "collection";
@@ -59,7 +59,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["files2"]               = "folder_red";
         iconMap["info"]                 = "info";
         iconMap["lyrics"]               = "document";
-        iconMap["magnatune"]            = "cd";
+        iconMap["magnatune"]            = "media-optical";
         iconMap["mostplayed"]           = "favorites";
         iconMap["music"]                = "today";
         iconMap["next"]                 = "media-skip-forward";
