@@ -35,9 +35,10 @@
 typedef Medium::List MediumList;
 
 MountPointManager::MountPointManager()
-    : QObject( 0, "MountPointManager" )
+    : QObject( 0 )
     , m_noDeviceManager( false )
 {
+    setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" )->readEntry( "DynamicCollection", true ) )
     {
