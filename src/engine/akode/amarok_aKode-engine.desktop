@@ -2,9 +2,11 @@
 Encoding=UTF-8
 Type=Service
 Name=aKode Engine
+Name[el]=Μηχανή aKode
 ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for Amarok
+Comment[el]=Μηχανή ήχου aKode για το AmaroK
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=akode-engine

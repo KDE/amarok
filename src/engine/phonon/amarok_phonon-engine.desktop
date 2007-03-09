@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Phonon Engine
+Name[el]=Μηχανή Phonon
 X-KDE-Library=libamarok_phonon-engine
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

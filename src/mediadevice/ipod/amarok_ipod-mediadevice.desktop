@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Apple iPod Media Device
+Name[el]=Συσκευή πολυμέσων Apple iPod
 X-KDE-Library=libamarok_ipod-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Generic Audio Player
+Name[el]=Γενικός αναπαραγωγέας ήχου
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

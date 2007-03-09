@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Music Sharing
+Name[el]=Κοινή χρήση μουσικής
 X-KDE-Library=libamarok_daap-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

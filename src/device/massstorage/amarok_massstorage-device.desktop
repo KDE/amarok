@@ -2,7 +2,9 @@
 Encoding=UTF-8
 Type=Service
 Name=Mass Storage Device
+Name[el]=Συσκευή μαζικής αποθήκευσης
 Comment=Device plugin for Amarok
+Comment[el]=Πρόσθετο συσκευής για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_massstorage-device

@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=<no engine>
+Name[el]=<χωρίς μηχανή>
 X-KDE-Library=libamarok_void-engine_plugin
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

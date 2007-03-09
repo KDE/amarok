@@ -4,5 +4,6 @@ ServiceTypes=text/html,text/xml,application/xml,text/rss,text/rdf
 Actions=addAsPodcast;
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
+Name[el]=Προσθήκη ως εκπομπή Pod στο Amarok
 Icon=amarok
 Exec=qdbus org.kde.amarok  /PlaylistBrowser addPodcast %u

@@ -3,6 +3,7 @@ Encoding=UTF-8
 Type=ServiceType
 X-KDE-ServiceType=Amarok/Plugin
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 
 # Type of plugin, e.g. "engine".
 [PropertyDef::X-KDE-Amarok-plugintype]

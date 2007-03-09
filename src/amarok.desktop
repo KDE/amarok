@@ -3,9 +3,12 @@ Type=Application
 Version=0.9.4
 Encoding=UTF-8
 Name=Amarok
+Name[el]=AmaroK
 GenericName=Audio Player
+GenericName[el]=Αναπαραγωγή ήχου
 Exec=amarok %U
 Comment=Uncle Rodney says, "10/10, Amarok is seriously super!"
+Comment[el]=Ο θείος Rodney δηλώνει, "10/10, το AmaroK είναι θαυμάσιο!"
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior

@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=iRiver iFP Media Device
+Name[el]=Συσκευή πολυμέσων iRiver iFP
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

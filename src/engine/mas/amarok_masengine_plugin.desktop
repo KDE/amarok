@@ -2,7 +2,9 @@
 Encoding=UTF-8
 Type=Service
 Name=MAS Engine
+Name[el]=Μηχανή MAS
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 
 ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_masengine_plugin

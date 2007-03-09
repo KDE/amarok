@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Rio Karma Media Device
+Name[el]=Συσκευή πολυμέσων Rio Karma
 X-KDE-Library=libamarok_riokarma-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

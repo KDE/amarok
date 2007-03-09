@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=NMM Engine
+Name[el]=Μηχανή NMM
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=Amarok plugin
+Comment[el]=Πρόσθετο AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

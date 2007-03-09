@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=GStreamer 0.10 Engine
+Name[el]=Μηχανή GStreamer 0.10
 X-KDE-Library=libamarok_gst10engine_plugin
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

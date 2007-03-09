@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=xine Engine
+Name[el]=Μηχανή xine
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

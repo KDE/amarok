@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Helix Engine
+Name[el]=Μηχανή Helix
 X-KDE-Library=libamarok_helixengine_plugin
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

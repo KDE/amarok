@@ -2,7 +2,9 @@
 Encoding=UTF-8
 Type=Service
 Name=SMB Device
+Name[el]=Συσκευή SMB
 Comment=Device plugin for Amarok which supports SMBFS
+Comment[el]=Πρόσθετο συσκευής για το AmaroK με υποστήριξη SMBFS
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device

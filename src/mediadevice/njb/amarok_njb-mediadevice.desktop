@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Creative Nomad Jukebox Media Device
+Name[el]=Συσκευή πολυμέσων Creative Nomad Jukebox
 X-KDE-Library=libamarok_njb-mediadevice
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 ServiceTypes=Amarok/Plugin
 X-KDE-Amarok-plugintype=mediadevice
 X-KDE-Amarok-name=njb-mediadevice

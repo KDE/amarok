@@ -3,18 +3,22 @@ Encoding=UTF-8
 ServiceTypes=application/asx,audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 X-KDE-Submenu=Amarok
+X-KDE-Submenu[el]=AmaroK
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
+Name[el]=Προσθήκη στη λίστα αναπαραγωγής
 Icon=amarok
 Exec=amarok -e %U
 
 [Desktop Action appendAndPlay]
 Name=Append & Play
+Name[el]=Προσθήκη & αναπαραγωγή
 Icon=amarok
 Exec=qdbus org.kde.amarok /PlayerList playMedia %U
 
 [Desktop Action queueTrack]
 Name=Queue Track
+Name[el]=Εισαγωγή του κομματιού στην ουρά
 Icon=amarok
 Exec=amarok --queue %U
