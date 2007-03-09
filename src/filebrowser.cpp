@@ -224,7 +224,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         a = new KActionMenu( this );
 
         a->setText( i18n("Bookmarks") );
-        a->setIcon(KIcon("bookmark"));
+        a->setIcon(KIcon("bookmark-toolbar"));
         actionCollection->addAction( "bookmarks", a );
 
         a->setDelayed( false );
