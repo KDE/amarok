@@ -34,12 +34,12 @@ Amarok::icon( const QString& name ) //declared in amarok.h
 
     if( iconMap.empty() ) {
         iconMap["add_lyrics"]           = "edit_add";
-        iconMap["add_playlist"]         = "1downarrow";
+        iconMap["add_playlist"]         = "arrow_down";
         iconMap["album"]                = "cdrom_unmount";
         iconMap["artist"]               = "personal";
         iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["love"]                 = "bookmark";
-        iconMap["back"]                 = "player_start";
+        iconMap["back"]                 = "media-skip-backward";
         iconMap["burn"]                 = "cdrom_unmount";
         iconMap["change_language"]      = "configure";
         iconMap["clock"]                = "history";
@@ -62,11 +62,11 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["magnatune"]            = "cd";
         iconMap["mostplayed"]           = "favorites";
         iconMap["music"]                = "today";
-        iconMap["next"]                 = "player_end";
-        iconMap["pause"]                = "player_pause";
-        iconMap["play"]                 = "player_play";
+        iconMap["next"]                 = "media-skip-forward";
+        iconMap["pause"]                = "media-playback-pause";
+        iconMap["play"]                 = "media-playback-start";
         iconMap["playlist"]             = "player_playlist_2";
-        iconMap["playlist_clear"]       = "view_remove";
+        iconMap["playlist_clear"]       = "edit-clear";
         iconMap["playlist_refresh"]     = "rebuild";
         iconMap["queue"]                = "goto";
         iconMap["queue_track"]          = "2rightarrow";
@@ -75,17 +75,17 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["random_album"]         = "cd";
         iconMap["random_no"]            = "forward";
         iconMap["random_track"]         = "random";
-        iconMap["redo"]                 = "redo";
-        iconMap["refresh"]              = "reload";
-        iconMap["remove"]               = "editdelete";
+        iconMap["redo"]                 = "edit-redo";
+        iconMap["refresh"]              = "view-refresh";
+        iconMap["remove"]               = "edit-delete";
         iconMap["remove_from_playlist"] = "remove";
         iconMap["repeat_album"]         = "cdrom_unmount";
         iconMap["repeat_no"]            = "bottom";
         iconMap["repeat_playlist"]      = "repeat_playlist";
         iconMap["repeat_track"]         = "repeat_track";
-        iconMap["rescan"]               = "reload";
+        iconMap["rescan"]               = "edit-refresh";
         iconMap["rewind"]               = "2leftarrow";
-        iconMap["save"]                 = "filesave";
+        iconMap["save"]                 = "document-save";
         iconMap["scripts"]              = "pencil";
         iconMap["search"]               = "find";
         iconMap["settings_engine"]      = "amarok";
@@ -93,13 +93,13 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["settings_indicator"]   = "tv";
         iconMap["settings_playback"]    = "kmix";
         iconMap["settings_view"]        = "colors";
-        iconMap["stop"]                 = "player_stop";
+        iconMap["stop"]                 = "media-playback-stop";
         iconMap["podcast"]              = "podcast";
         iconMap["podcast2"]             = "podcast_new";
         iconMap["track"]                = "sound";
-        iconMap["undo"]                 = "undo";
+        iconMap["undo"]                 = "edit-undo";
         iconMap["visualizations"]       = "visualizations";
-        iconMap["zoom"]                 = "find";
+        iconMap["zoom"]                 = "edit-find";
     }
 
     static QMap<QString, QString> amarokMap;
