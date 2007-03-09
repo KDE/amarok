@@ -2767,16 +2767,16 @@ CollectionView::iconForCategory( const int cat ) const
     switch( cat )
     {
         case IdAlbum:
-            icon = "cdrom_unmount";
+            icon = "album";
             break;
         case IdVisYearAlbum:
-            icon = "cdrom_unmount";
+            icon = "album";
             break;
         case IdArtist:
-            icon = "personal";
+            icon = "artist";
             break;
         case IdComposer:
-            icon = "personal";
+            icon = "artist";
             break;
 
         case IdGenre:
@@ -2784,7 +2784,7 @@ CollectionView::iconForCategory( const int cat ) const
             break;
 
         case IdYear:
-            icon = "history";
+            icon = "clock";
             break;
 
         case IdLabel:
@@ -2792,7 +2792,7 @@ CollectionView::iconForCategory( const int cat ) const
             break;
     }
 
-    return KIconLoader::global()->loadIcon( icon, K3Icon::Toolbar, K3Icon::SizeSmall );
+    return KIconLoader::global()->loadIcon( Amarok::icon( icon ), K3Icon::Toolbar, K3Icon::SizeSmall );
 }
 
 QString

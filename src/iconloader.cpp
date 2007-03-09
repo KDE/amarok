@@ -36,7 +36,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["add_lyrics"]           = "edit_add";
         iconMap["add_playlist"]         = "arrow_down";
         iconMap["album"]                = "drive-optical";
-        iconMap["artist"]               = "user";
+        iconMap["artist"]               = "user-female";
         iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["love"]                 = "love";
         iconMap["back"]                 = "media-skip-backward";
