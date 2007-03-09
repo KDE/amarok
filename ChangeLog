@@ -12,6 +12,7 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Fix compilation on kde-3.3 systems
     * amarok_live.py now uses popen correctly. Patch by Luke Macken
       <lmacken@fedoraproject.org>. (BR 127804)
     * Make amarok_proxy.rb use HTTP/1.0 as we don't support chunked responses.

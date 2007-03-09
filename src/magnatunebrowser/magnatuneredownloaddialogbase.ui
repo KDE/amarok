@@ -75,9 +75,6 @@
             <property name="name">
                 <cstring>redownloadListView</cstring>
             </property>
-            <property name="shadeSortColumn">
-                <bool>false</bool>
-            </property>
         </widget>
     </grid>
 </widget>
