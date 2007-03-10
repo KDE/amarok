@@ -23,8 +23,6 @@
 //Added by qt3to4:
 #include <pthread.h>
 
-#include <qatomic.h>
-
 #include "atomicstring.h"
 
 #if __GNUC__ >= 3
@@ -92,78 +90,151 @@
 class AtomicString::Data: public QString
 {
 public:
-    QBasicAtomic refcount;
-    Data() { refcount.init( 0 ); }
-    Data( const QString &s ): QString( s ){ refcount.init( 0 ); }
+    mutable uint refcount;
+    Data(): refcount( 0 ) { }
+    Data( const QString &s ): QString( s ), refcount( 0 ) { }
 };
-
-
 
 AtomicString::AtomicString(): m_string( 0 ) { }
 
 AtomicString::AtomicString( const AtomicString &other )
 {
+    s_storeMutex.lock();
     m_string = other.m_string;
-    // No need to lock here: ref() is atomic, and it could not be deleted in between because
-    // at least one other ref exists (other's)
-    m_string->refcount.ref();
+    ref( m_string );
+    s_storeMutex.unlock();
 }
 
 AtomicString::AtomicString( const QString &string ): m_string( 0 )
 {
     if( string.isEmpty() )
         return;
-    
-    Data *s = new Data( string );
+
+    Data *s = new Data( string );  // note: s is a shallow copy
     s_storeMutex.lock();
-    m_string = static_cast<Data *>( *( s_store.insert( s ).first ) );
-    // The atomic increment and test here is important to protect from the unlocked deref()
-    if( m_string->refcount.ref() == 1 && m_string != s ) {
-        // Well, it *is* about to be deleted! (see deref() ). In this case it's a bad idea
-        // to use it, we'll have a hard time synchronizing with the deleter. So we mark it
-        // removed (ref=-1) and replace it with our copy. This is safe because nobody but
-        // us and the deleter has a pointer to *m_string, and we're about to forget ours
-        m_string->refcount = -1;
-        s_store.erase( m_string );
-        m_string = s;
-        s_store.insert( m_string );
-        m_string->refcount.ref();
-    }
+    m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
+    ref( m_string );
+    uint rc = s->refcount;
     s_storeMutex.unlock();
-    
-    if ( m_string != s ) delete( s );
+    if ( !rc ) delete( s );	// already present
 }
 
 AtomicString::~AtomicString()
 {
+    s_storeMutex.lock();
     deref( m_string );
+    s_storeMutex.unlock();
+}
+
+QString AtomicString::string() const
+{
+    if ( !m_string ) return QString();
+    // References to the stored string are only allowed to circulate in the main thread
+    return *m_string;
+}
+
+bool AtomicString::isEmpty() const
+{
+    return !m_string;
+}
+
+const QString *AtomicString::ptr() const
+{
+    if( !m_string ) {
+        Data *s = new Data( QString() );  // note: s is a shallow copy
+        s_storeMutex.lock();
+        m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
+        ref( m_string );
+        uint rc = s->refcount;
+        s_storeMutex.unlock();
+        if ( !rc ) delete( s );	// already present
+    }
+
+    return m_string;
+}
+
+uint AtomicString::refcount() const
+{
+    if ( m_string ) {
+	s_storeMutex.lock();
+	uint rc = m_string->refcount;
+	s_storeMutex.unlock();
+	return rc;
+    }
+    return 0;
 }
 
 AtomicString &AtomicString::operator=( const AtomicString &other )
 {
     if( m_string == other.m_string )
         return *this;
+    s_storeMutex.lock();
     deref( m_string );
     m_string = other.m_string;
-    // no need for store lock: other is holding a ref
-    if( m_string ) m_string->refcount.ref();
+    ref( m_string );
+    s_storeMutex.unlock();
     return *this;
 }
 
-// call without holding the lock. if needed, it will acquire the lock itself
+bool AtomicString::operator==( const AtomicString &other ) const
+{
+    return m_string == other.m_string;
+}
+
+bool AtomicString::operator!=( const AtomicString &other ) const
+{
+    return m_string != other.m_string;
+}
+
+// needs to be called holding the lock
 inline void AtomicString::deref( Data *s )
 {
-    if ( !s ) return;
-    Data *old_s = s;
-    if ( s->refcount.deref() == 0 ) {
-        s_storeMutex.lock();
-        // check again, in case an AtomicString(const QString &) was just happening
-        if( s->refcount == 0 ) s_store.erase( s );
-        s_storeMutex.unlock();
-        delete s;
+    checkLazyDeletes();         // a good time to do this
+    if( !s )
+        return;
+    if( !( --s->refcount ) )
+    {
+        s_store.erase( s );
+        // only the main thread is allowed to delete stored strings
+        if ( isMainThread() )
+            delete s;
+        else
+            s_lazyDeletes.append(s);
+    }
+}
+
+// needs to be called holding the lock
+inline void AtomicString::ref( Data *s ) const
+{
+    //checkLazyDeletes();         // a good time to do this
+    if( s )
+        s->refcount++;
+}
+
+// It is not necessary to hold the store mutex here.
+bool AtomicString::isMainThread()
+{
+    // For isMainThread(), we could use QThread::currentThread(), except the
+    // docs say it's unreliable. And in general QThreads don't like to be called from
+    // app destructors. Good old pthreads will serve us well. As for Windows, these
+    // two calls surely have equivalents; better yet we'll have QT4 and thread safe
+    // QStrings by then.
+    // Note that the the static local init is thread safe.
+    static pthread_t main_thread = pthread_self();
+    return pthread_equal(pthread_self(), main_thread);
+}
+
+// call holding the store mutex
+inline void AtomicString::checkLazyDeletes()
+{
+    // only the main thread is allowed to delete
+    if ( isMainThread() )
+    {
+        s_lazyDeletes.setAutoDelete(true);
+        s_lazyDeletes.clear();
     }
 }
 
 AtomicString::set_type AtomicString::s_store;
+Q3PtrList<QString> AtomicString::s_lazyDeletes;
 QMutex AtomicString::s_storeMutex;
-QString AtomicString::s_emptyString;
