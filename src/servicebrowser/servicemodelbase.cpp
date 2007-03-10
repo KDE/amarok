@@ -23,10 +23,19 @@
 ServiceModelBase::ServiceModelBase( QObject *parent ) 
      : QAbstractItemModel(parent)
 {
+
+    setSupportedDragActions( Qt::CopyAction );
 }
 
 void ServiceModelBase::resetModel() {
    reset();
 }
+
+Qt::ItemFlags ServiceModelBase::flags ( const QModelIndex & index ) const {
+
+    //By default all items are dragable. Override in subclass if not happy with this... :-)
+    return Qt::ItemIsSelectable & Qt::ItemIsDragEnabled & Qt::ItemIsEnabled;
+}
+
 
 #include "servicemodelbase.moc"

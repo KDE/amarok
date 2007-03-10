@@ -17,6 +17,7 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include "amarok.h"
 #include "debug.h"
 #include "magnatunecontentmodel.h"
 #include "magnatunedatabasehandler.h"
@@ -29,6 +30,12 @@ MagnatuneContentModel::MagnatuneContentModel(QObject *parent, QString genre )
      m_rootContentItem = new MagnatuneContentItem( m_genre );
      m_infoParser = new MagnatuneInfoParser();
      connect( m_infoParser, SIGNAL (info ( QString ) ), this, SLOT( infoParsed( QString ) ) );
+
+
+    m_artistIcon = KIcon( Amarok::icon( "artist" ) );
+    m_albumIcon = KIcon( Amarok::icon( "album" ) );
+    m_trackIcon = KIcon( Amarok::icon( "track" ) );
+
      
 }
 
@@ -55,17 +62,29 @@ QVariant MagnatuneContentModel::data(const QModelIndex &index, int role) const
     //debug() << "MagnatuneContentModel::data" << endl;
     
 
-        if (!index.isValid())
-         return QVariant();
-
-     if (role != Qt::DisplayRole)
-         return QVariant();
-
-     MagnatuneContentItem *item = static_cast<MagnatuneContentItem*>(index.internalPointer());
-
-     return item->data(index.column());
+    if (!index.isValid())
+        return QVariant();
 
 
+
+    if (role == Qt::DisplayRole) {
+        MagnatuneContentItem *item = static_cast<MagnatuneContentItem*>(index.internalPointer());
+        return item->data(index.column());
+    } else if ( role == Qt::DecorationRole ) {
+        MagnatuneContentItem *item = static_cast<MagnatuneContentItem*>(index.internalPointer());
+
+        if ( item->getType() == MAGNATUNE_ARTIST )
+            return m_artistIcon;
+        else if ( item->getType() == MAGNATUNE_ALBUM )
+            return m_albumIcon;
+        else if ( item->getType() == MAGNATUNE_TRACK )
+            return m_trackIcon;
+        else 
+            return QVariant();
+
+    } else {
+        return QVariant();
+    }
 }
 
 Qt::ItemFlags MagnatuneContentModel::flags(const QModelIndex &index) const

@@ -20,6 +20,7 @@ public:
     virtual QString getUrl() = 0;
 
 
+
 protected:
      mutable QList<ServiceModelItemBase*> m_childItems;
      ServiceModelItemBase *m_parent;

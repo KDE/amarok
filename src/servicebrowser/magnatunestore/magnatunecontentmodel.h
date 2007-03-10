@@ -27,6 +27,7 @@
 #include <QMap>
 #include <QModelIndex>
 #include <QVariant>
+#include <kicon.h>
 
 #include "magnatunecontentitem.h"
 #include "magnatuneinfoparser.h"
@@ -46,6 +47,11 @@ private:
     MagnatuneContentItem *m_rootContentItem;
     QString m_genre;
     MagnatuneInfoParser * m_infoParser;
+
+    KIcon m_artistIcon;
+    KIcon m_albumIcon;
+    KIcon m_trackIcon;
+    
 
 private slots:
 

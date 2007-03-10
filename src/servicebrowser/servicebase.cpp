@@ -62,6 +62,9 @@ ServiceBase::ServiceBase( QString name )
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new QTreeView( m_mainSplitter );
 
+    m_contentView->setDragEnabled ( true );
+    m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
+
     
     connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );

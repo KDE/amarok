@@ -30,6 +30,7 @@ public:
     ServiceModelBase( QObject *parent );
     virtual void requestHtmlInfo ( const QModelIndex & item ) const = 0;
     void resetModel();
+    Qt::ItemFlags flags ( const QModelIndex & index ) const;
 
 signals:
 
