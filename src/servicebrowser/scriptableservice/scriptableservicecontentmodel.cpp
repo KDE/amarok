@@ -34,8 +34,8 @@ ScriptableServiceContentModel::ScriptableServiceContentModel( QObject *parent, Q
 
  
     m_populatingDynamicItem = false;
-    int m_indexBeingUpdated = -1;
-    int m_updateCount = 0;
+    m_indexBeingUpdated = -1;
+    m_updateCount = 0;
     
 
 }
