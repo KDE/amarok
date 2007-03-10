@@ -327,6 +327,10 @@ target_link_libraries(amarok
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
 
+# uncomment these to stress-test AtomicString
+#set(atomicstring_unittest_SRCS atomicstring_unittest.cpp atomicstring.cpp)
+#kde4_add_executable(atomicstring_unittest ${atomicstring_unittest_SRCS})
+#target_link_libraries(atomicstring_unittest  ${KDE4_KDECORE_LIBS}  ${KDE4_KDE3SUPPORT_LIBS})
 
 ########### next target ###############
 

@@ -181,11 +181,6 @@ App::App()
      new Amarok::DbusScriptHandler();
      new Amarok::DbusDevicesHandler();
 
-    // tell AtomicString that this is the GUI thread
-    if ( !AtomicString::isMainThread() )
-        qWarning("AtomicString was initialized from a thread other than the GUI "
-                 "thread. This could lead to memory leaks.");
-
 #ifdef Q_WS_MAC
     appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
     AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, (long)this, true);
