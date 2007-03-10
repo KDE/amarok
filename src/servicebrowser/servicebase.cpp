@@ -207,6 +207,7 @@ ServiceModelBase * ServiceBase::getModel() {
 void ServiceBase::treeItemSelected( const QModelIndex & index ) {
 
     m_model->requestHtmlInfo( index );
+    emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( index.internalPointer() ) ) );
 
 }
 

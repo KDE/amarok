@@ -54,7 +54,6 @@ public slots:
 
     void addService( ServiceBase * service );
     void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
-    // why not more handlers with diffrent names for one browser?
 
 private:
 

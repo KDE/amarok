@@ -170,8 +170,11 @@ private slots:
      */
     void polish();
 
-    //void treeItemSelected( const QModelIndex & index );
-    //void infoChanged ( QString infoHtml );
+    /**
+     * Slot for recieving notifications from base class that the selected item has chaged
+     * @param selectedItem The selected item
+     */
+    void slotSelectionChanged( ServiceModelItemBase * selectedItem );
 
 private:
     /**
@@ -208,11 +211,6 @@ private:
      * @param item the artist to add
      */
     void addArtistToPlaylist( MagnatuneArtist *item );
-
-    /**
-     * Clears the list view and inserts artists based on the currently selected genre
-     */
-    void updateList();
 
     /**
      * Clears the genre combo box and inserts all genres from the database

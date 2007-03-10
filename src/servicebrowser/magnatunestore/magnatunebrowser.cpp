@@ -397,22 +397,6 @@ void MagnatuneBrowser::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    //KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
-    //QString list = QString( storedJob->data() );
-
-
- /*   QFile file( "/tmp/album_info.xml" );
-
-    if ( file.exists() )
-        file.remove();
-
-    if ( file.open( QIODevice::WriteOnly ) )
-    {
-        QTextStream stream( &file );
-        stream << list;
-        file.close();
-    }*/
-
     debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -447,23 +431,6 @@ void MagnatuneBrowser::showInfo( bool show )
     }
 }
 
-void MagnatuneBrowser::updateList()
-{
-
-  /*  DEBUG_BLOCK  //FIXME!! or remove...
-    const QString genre = m_genreComboBox->currentText();
-
-    MagnatuneArtistList artists;
-    artists = MagnatuneDatabaseHandler::instance() ->getArtistsByGenre( genre );
-
-    m_contentList->clear();
-    MagnatuneArtistList::iterator it;
-    for ( it = artists.begin(); it != artists.end(); ++it )
-        new MagnatuneListViewArtistItem( ( *it ), m_contentList );
-
-    //m_contentList->repaintContents(); */
-}
-
 void MagnatuneBrowser::genreChanged( QString genre )
 {
     debug() << "Genre changed to: " << genre << endl;
@@ -476,9 +443,9 @@ void MagnatuneBrowser::doneParsing()
 {
 
     debug() << "MagnatuneBrowser: done parsing" << endl;
-    updateList();
+    //updateList();
     updateGenreBox( );
-    updateList(); // stupid stupid hack....
+    //updateList(); // stupid stupid hack....
 }
 
 void MagnatuneBrowser::updateGenreBox()
@@ -523,6 +490,19 @@ void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
 
 }
 
+void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
+
+   MagnatuneContentItem * magnatuneItem = static_cast<MagnatuneContentItem*>( selectedItem );
+   if ( ( magnatuneItem->getType() == MAGNATUNE_ALBUM ) ||  ( magnatuneItem->getType() == MAGNATUNE_TRACK )  ) {
+
+       m_purchaseAlbumButton->setEnabled( true );
+   } else {
+       m_purchaseAlbumButton->setEnabled( false );
+   } 
+
+
+}
+
 void MagnatuneBrowser::polish( )
 {
 
@@ -537,13 +517,12 @@ void MagnatuneBrowser::polish( )
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
        
+        connect ( this, SIGNAL( selectionChanged ( ServiceModelItemBase * ) ) , this, SLOT( slotSelectionChanged( ServiceModelItemBase * ) ) );
+
         m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder ); 
 
-        //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
-
-        //updateList( );
 
         m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
         m_infoBox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
@@ -561,19 +540,6 @@ void MagnatuneBrowser::polish( )
 }
 
 
-/*void MagnatuneBrowser::treeItemSelected( const QModelIndex & index ) {
-
-    m_model->requestHtmlInfo( index );
-
-}
-
-void MagnatuneBrowser::infoChanged ( QString infoHtml ) {
-
-    m_infoBox->begin( );
-    m_infoBox->write( infoHtml );
-    m_infoBox->end();
-
-}*/
 
 
 

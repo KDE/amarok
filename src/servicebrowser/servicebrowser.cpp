@@ -35,16 +35,6 @@ ServiceBrowser::ServiceBrowser( const char *name )
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
     
-    //debug() << "Setting up dummy services..." << endl;
-
-    //ServiceBase * testService1 = new MagnatuneBrowser( "Dummy service 1" );
-
-
-    //debug() << "Adding dummy services to list..." << endl;
-
-    //addService( testService1 );
-    //addService( testService2 );
-    //addService( testService3 );
 
     m_currentService = 0;
     m_scriptableServiceManager = 0;

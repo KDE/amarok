@@ -76,6 +76,7 @@ public slots:
 signals:
 
     void home();
+    void selectionChanged ( ServiceModelItemBase * );
     
 
 protected slots:
@@ -91,11 +92,6 @@ protected slots:
     void itemActivated ( const QModelIndex & index );
 
     void treeItemSelected( const QModelIndex & index );
-
-   
-
-
-
 
 
 protected:
