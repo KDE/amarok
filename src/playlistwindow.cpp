@@ -39,8 +39,10 @@
 #include "statistics.h"
 #include "statusbar.h"
 #include "threadmanager.h"
-#include "magnatunebrowser/magnatunebrowser.h"
 #include "servicebrowser/servicebrowser.h"
+#include "servicebrowser/magnatunestore/magnatunebrowser.h"
+#include "servicebrowser/scriptableservice/scriptableservice.h"
+
 #include "dockwidget.h"
 
 #include <QEvent>           //eventFilter()
@@ -305,7 +307,25 @@ void PlaylistWindow::init()
         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
         //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
-        addInstBrowserMacro( ServiceBrowser, "ServiceBrowser", i18n("Services"), Amarok::icon( "magnatune" ) )
+        
+
+        //cant use macros here since we need access to the browsers directly
+        ServiceBrowser * storeServiceBrowser = new ServiceBrowser( "Stores" );;
+        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser ); 
+        m_browserNames.append( "Stores" );
+        storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
+        
+        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser( "Internet Content" );;
+        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet Content"), internetContentServiceBrowser ); 
+        m_browserNames.append( "Internet Content" );
+        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) ); 
+
+        //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
+        //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
+        
+
+
+
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )

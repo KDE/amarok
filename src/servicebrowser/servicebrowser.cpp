@@ -24,8 +24,6 @@ Boston, MA 02110-1301, USA.
 
 #include <kiconloader.h> 
 
-ServiceBrowser *ServiceBrowser::s_instance = 0;
-
 ServiceBrowser::ServiceBrowser( const char *name )
         : KVBox( 0)
 {
@@ -37,33 +35,26 @@ ServiceBrowser::ServiceBrowser( const char *name )
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
     
-    debug() << "Setting up dummy services..." << endl;
+    //debug() << "Setting up dummy services..." << endl;
 
-    ServiceBase * testService1 = new MagnatuneBrowser( "Dummy service 1" );
+    //ServiceBase * testService1 = new MagnatuneBrowser( "Dummy service 1" );
 
-    ServiceBase * testService2 = new ServiceBase( "Dummy service 2" );
-    testService2->setShortDescription("Slightly grumpy in the morning!");
-    testService2->setIcon( KIcon( Amarok::icon( "download" ) ) );
 
-    ServiceBase * testService3 = new ServiceBase( "Dummy service 3" );
-    testService3->setShortDescription("do NOT select this service");
-    testService3->setIcon( KIcon( Amarok::icon( "info" ) ) );
+    //debug() << "Adding dummy services to list..." << endl;
 
-    debug() << "Adding dummy services to list..." << endl;
-
-    addService( testService1 );
+    //addService( testService1 );
     //addService( testService2 );
     //addService( testService3 );
 
     m_currentService = 0;
-
-    m_scriptableServiceManager = new ScriptableServiceManager( this );
-    connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
-
-    
+    m_scriptableServiceManager = 0;
 }
 
-
+void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
+    m_scriptableServiceManager = scriptableServiceManager;
+    m_scriptableServiceManager->setParent( this );
+    connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
+}
 
 void ServiceBrowser::addService( ServiceBase * service ) {
 

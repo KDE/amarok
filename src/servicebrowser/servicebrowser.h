@@ -42,32 +42,23 @@ class ServiceBrowser : public KVBox
     Q_OBJECT
 
 public:
+
+     ServiceBrowser( const char *name );
     /**
      * Destructor
      */
     ~ServiceBrowser() { }
 
-    /**
-     * Retrieves the class instance (Singleton pattern)
-     * @return pointer to the class instance
-     */
-    static ServiceBrowser *instance() {
-        if(!s_instance)  s_instance = new ServiceBrowser("ServiceBrowser");
-        return s_instance;
-    }
 
 public slots:
 
     void addService( ServiceBase * service );
+    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
+    // why not more handlers with diffrent names for one browser?
 
 private:
 
-    static ServiceBrowser *s_instance;
-
-
     QListWidget * m_serviceSelectionList;
-
-    ServiceBrowser( const char *name );
     
     void showService( QString name );
 
