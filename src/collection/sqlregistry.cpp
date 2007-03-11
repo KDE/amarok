@@ -16,8 +16,14 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#define DEBUG_PREFIX "SqlRegistry"
+
+#include "debug.h"
+
 #include "sqlregistry.h"
 
+#include <QHashIterator>
+#include <QMutableHashIterator>
 #include <QMutexLocker>
 
 SqlRegistry *
@@ -30,6 +36,11 @@ SqlRegistry::instance()
 SqlRegistry::SqlRegistry() : QObject( 0 )
 {
     setObjectName( "SqlRegistry" );
+    m_timer = new QTimer( this );
+    m_timer->setInterval( 60000 );  //try to clean up every 60 seconds, change if necessary
+    m_timer->setSingleShot( false );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
+    m_timer->start();
 }
 
 TrackPtr
@@ -119,6 +130,7 @@ SqlRegistry::getAlbum( const QString &name )
 void
 SqlRegistry::emptyCache()
 {
+    DEBUG_BLOCK
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
 
@@ -130,8 +142,36 @@ SqlRegistry::emptyCache()
          && ( hasGenre = m_genreMutex.tryLock() )
          && ( hasComposer = m_composerMutex.tryLock() ) )
     {
-        //do stuff
-        
+        //this very simple garbage collector doesn't handle cylclic object graphs
+        //so care has to be taken to make that we are not dealing with a cyclic graph
+        //by invalidating the tracks cache on all objects
+        #define foreachInvalidateCache( Type, x ) \
+        for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
+            iter.next().value()->invalidateCache()
+
+        foreachInvalidateCache( AlbumPtr, m_albumMap );
+        foreachInvalidateCache( ArtistPtr, m_artistMap );
+        foreachInvalidateCache( GenrePtr, m_genreMap );
+        foreachInvalidateCache( ComposerPtr, m_composerMap );
+        foreachInvalidateCache( YearPtr, m_yearMap );
+
+        //elem.count() == 2 is correct because elem is one pointer to the object
+        //and the other is stored in the hash map
+        #define foreachCollectGarbage( Type, x ) \
+        for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
+        { \
+            Type elem = iter.next().value(); \
+            if( elem.count() == 2 ) \
+                iter.remove(); \
+        }
+
+        foreachCollectGarbage( TrackPtr, m_trackMap )
+        //run before artist so that album artist pointers can be garbage collected
+        foreachCollectGarbage( AlbumPtr, m_albumMap )
+        foreachCollectGarbage( ArtistPtr, m_artistMap )
+        foreachCollectGarbage( GenrePtr, m_genreMap )
+        foreachCollectGarbage( ComposerPtr, m_composerMap )
+        foreachCollectGarbage( YearPtr, m_yearMap )
     }
 
     //make sure to unlock all necessary locks

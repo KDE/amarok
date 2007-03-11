@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QMutex>
 #include <QObject>
+#include <QTimer>
 
 class SqlRegistry : public QObject
 {
@@ -59,6 +60,8 @@ class SqlRegistry : public QObject
         QMutex m_genreMutex;
         QMutex m_yearMutex;
         QMutex m_albumMutex;
+
+        QTimer *m_timer;
 };
 
 #endif /* SQLREGISTRY_H */
