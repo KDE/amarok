@@ -169,7 +169,7 @@ void NmmConfigDialog::addHost()
   bool ok;
   QString hostname = QInputDialog::getText(
       "New NMM sink host", "Enter hostname to add:", QLineEdit::Normal,
-      QString::null, &ok, NULL);
+      QString(), &ok, NULL);
   if( ok && !hostname.isEmpty() )
   {
     new HostListItem( m_user_list, hostname );

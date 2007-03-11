@@ -376,13 +376,13 @@ HSPAudioDevice::HSPAudioDevice(HelixSimplePlayer *player, const char *device) :
     m_pMixerDeviceName (NULL),
     m_pMixerElementName (NULL),
 
-    m_bHasHardwarePauseAndResume (FALSE),
+    m_bHasHardwarePauseAndResume (false),
     m_nBytesPlayedBeforeLastTrigger(0),
 
     m_nLastBytesPlayed(0),
 
-    m_bGotInitialTrigger(FALSE),
-    m_bUseMMAPTStamps(TRUE),
+    m_bGotInitialTrigger(false),
+    m_bUseMMAPTStamps(true),
     m_lRefCount(0),
     m_wLastError(0),
     m_SWPause(false),
@@ -590,7 +590,7 @@ HX_RESULT HSPAudioDevice::_OpenAudio()
 
     if(err == 0)
     {
-        err = snd_pcm_nonblock(m_pAlsaPCMHandle, TRUE);
+        err = snd_pcm_nonblock(m_pAlsaPCMHandle, true);
         if(err < 0)
         {
            m_Player->print2stderr("########## snd_pcm_nonblock: %s\n", snd_strerror (err));
@@ -1506,14 +1506,14 @@ HX_RESULT HSPAudioDevice::GetBytesActuallyPlayedUsingTStamps(UINT64 &nBytesPlaye
                XXXRGG: Is there a better way to figure out if the driver supports mmap'd 
                timestamps? */
 
-            m_bUseMMAPTStamps = FALSE;
+            m_bUseMMAPTStamps = false;
         }
         else
         {
             /* Timestamp seems to be valid */
             if(!m_bGotInitialTrigger)
             {
-                m_bGotInitialTrigger = TRUE;
+                m_bGotInitialTrigger = true;
                 memcpy(&m_tstampLastTrigger, &trigger_tstamp, sizeof(m_tstampLastTrigger));
             }
             else
@@ -1663,7 +1663,7 @@ UINT64 HSPAudioDevice::GetBytesActualyPlayed(void) const
     }
 
     // XXXRGG: Always use the delay method for now.
-    m_bUseMMAPTStamps = FALSE;
+    m_bUseMMAPTStamps = false;
 
     if (m_bUseMMAPTStamps)
     {

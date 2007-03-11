@@ -248,7 +248,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 return false;
             }
 
-            transmitData( QString::null );
+            transmitData( QString() );
             connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
             return true;
         }

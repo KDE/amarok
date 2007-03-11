@@ -147,7 +147,7 @@ gst_equalizer_set_caps (GstBaseTransform * base, GstCaps * incaps, GstCaps * out
     /* Zero the history arrays */
     memset(obj->data_history, 0, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
     kDebug() << "Samplerate " << obj->samplerate << ", channels: " << obj->channels << endl;    
-    return TRUE;
+    return true;
 }
 
 

@@ -262,7 +262,7 @@ gst_streamsrc_setcaps(GstPad *pad, GstCaps *caps)
     * That means we can set the given caps unmodified on the next
     * element, and use that negotiation return value as ours. */
    if (!gst_pad_set_caps (streamsrc->srcpad, caps))
-      return FALSE;
+      return false;
    
    /* Capsnego succeeded, get the stream properties for internal
     * usage and return success. */
@@ -271,7 +271,7 @@ gst_streamsrc_setcaps(GstPad *pad, GstCaps *caps)
    
    kDebug() << "Caps negotiation succeeded in streamsrc\n";
    
-   return TRUE;
+   return true;
 }
 
 

@@ -67,7 +67,7 @@ PhononEngine::init()
 {
    DEBUG_BLOCK
 
-   debug() << "'Phonon Engine has been sucessfully created.'\n";
+   debug() << "'Phonon Engine has been successfully created.'\n";
 
     m_mediaObject = new Phonon::MediaObject( this );
     m_audioPath   = new Phonon::AudioPath( this );

@@ -274,7 +274,7 @@ yauapEngine::scope(){
             m_scope[i] = data[i];
     }else
        debug() << "get_scopedata returned the wrong amount of data " << arr->len << endl;
-    g_array_free( arr, TRUE);
+    g_array_free( arr, true);
     return m_scope;
 }
 
