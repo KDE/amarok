@@ -53,9 +53,9 @@ HostListItem::HostListItem( Q3ListView *parent, QString hostname, bool audio, bo
 {
   setText( HostListItem::Hostname, hostname);
 
-  setPixmap( HostListItem::Status, SmallIcon("document-properties") );
+  setPixmap( HostListItem::Status, SmallIcon("info") );
   setText( HostListItem::Status, i18n("Unknown") );
-  setPixmap( HostListItem::Playback, SmallIcon("document-properties") );
+  setPixmap( HostListItem::Playback, SmallIcon("info") );
   setText( HostListItem::Playback, i18n("Unknown") );
 
   if( 24 /*m_pixmapInset.height()*/ > height() )

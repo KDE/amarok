@@ -650,7 +650,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 
     menu.insertSeparator();
 
-    menu.insertItem( KIcon( Amarok::icon( "document-properties" ) ), i18n( "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( p ) )
     {

@@ -299,7 +299,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
     layout = new QHBoxLayout( layout, 6 );
 
     layout->addItem( new QSpacerItem( 6, 6, QSizePolicy::Expanding ) );
-    layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail-send" ), this, "email" ) );
+    layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail_send" ), this, "email" ) );
     layout->add( new KPushButton( KStandardGuiItem::close(), this, "close" ) );
 
     child<QPushButton*>("email")->setDefault( true );

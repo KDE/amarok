@@ -142,7 +142,7 @@ Controller::Controller()
     , m_service( 0 )
 {
     KActionCollection* ac = Amarok::actionCollection();
-    KAction *action = new KAction( KIcon( Amarok::icon( "list-remove" ) ), i18n( "Ban" ), ac );
+    KAction *action = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n( "Ban" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( ban() ) );
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_B ) );
     m_actionList.append( action );
@@ -152,7 +152,7 @@ Controller::Controller()
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_L ) );
     m_actionList.append( action );
 
-    action = new KAction( KIcon( Amarok::icon( "find-next" ) ), i18n( "Skip" ), ac );
+    action = new KAction( KIcon( Amarok::icon( "next" ) ), i18n( "Skip" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT(  skip() ) );
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_K ) );
     m_actionList.append( action );

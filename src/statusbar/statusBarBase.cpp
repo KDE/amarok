@@ -140,7 +140,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
     b1->setIcon( KIcon( "cancel" ) );
-    b2->setIcon( KIcon( "arrow-up-double") );
+    b2->setIcon( KIcon( "2uparrow") );
     b2->setCheckable( true );
     b1->setToolTip( i18n( "Abort all background-operations" ) );
     b2->setToolTip( i18n( "Show progress detail" ) );
@@ -317,16 +317,16 @@ StatusBar::longMessage( const QString &text, int type )
     {
         case Information:
         case Question:
-            image = KIconLoader::global()->iconPath( "dialog-information", -K3Icon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
             break;
 
         case Sorry:
         case Warning:
-            image = KIconLoader::global()->iconPath( "dialog-warning", -K3Icon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_warning", -K3Icon::SizeHuge );
             break;
 
         case Error:
-            image = KIconLoader::global()->iconPath( "dialog-error", -K3Icon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_critical", -K3Icon::SizeHuge );
             // don't hide error messages.
 //             message->setTimeout( 0 );
             break;

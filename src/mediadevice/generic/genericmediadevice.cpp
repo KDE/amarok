@@ -958,7 +958,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     {
         KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( Amarok::icon( "arrow-down" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
@@ -969,7 +969,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
         // NOTE: need better icon
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );

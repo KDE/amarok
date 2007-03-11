@@ -203,11 +203,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     m_gui->installButton  ->setIconSet( KIcon( Amarok::icon( "files" ) ) );
     m_gui->retrieveButton ->setIconSet( KIcon( Amarok::icon( "download" ) ) );
-    m_gui->uninstallButton->setIconSet( KIcon( Amarok::icon( "list-remove" ) ) );
+    m_gui->uninstallButton->setIconSet( KIcon( Amarok::icon( "remove" ) ) );
     m_gui->runButton      ->setIconSet( KIcon( Amarok::icon( "play" ) ) );
-    m_gui->stopButton     ->setIconSet( KIcon( Amarok::icon( "process-stop" ) ) );
+    m_gui->stopButton     ->setIconSet( KIcon( Amarok::icon( "stop" ) ) );
     m_gui->configureButton->setIconSet( KIcon( Amarok::icon( "configure" ) ) );
-    m_gui->aboutButton    ->setIconSet( KIcon( Amarok::icon( "document-properties" ) ) );
+    m_gui->aboutButton    ->setIconSet( KIcon( Amarok::icon( "info" ) ) );
 
     QSize sz = sizeHint();
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );

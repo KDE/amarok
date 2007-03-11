@@ -38,8 +38,8 @@ void TagGuesserConfigDialog::init()
     lvSchemes->setItemsRenameable( true );
     lvSchemes->setSorting( -1 );
     lvSchemes->setDefaultRenameAction( Q3ListView::Accept );
-    bMoveUp->setIconSet( SmallIconSet( "arrow-up" ) );
-    bMoveDown->setIconSet( SmallIconSet( "arrow-down" ) );
+    bMoveUp->setIconSet( SmallIconSet( "1uparrow" ) );
+    bMoveDown->setIconSet( SmallIconSet( "1downarrow" ) );
 
     const QStringList schemes = TagGuesser::schemeStrings();
     QStringList::ConstIterator it = schemes.begin();

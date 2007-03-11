@@ -311,15 +311,15 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
 
-    wikiHistoryBackAction = new KAction(KIcon( "go-previous" ), i18n("Back"), this);
+    wikiHistoryBackAction = new KAction(KIcon( "back" ), i18n("Back"), this);
     connect(wikiHistoryBackAction, SIGNAL(triggered()), this, SLOT(wikiHistoryBack()));
     m_wikiToolBar->addAction(wikiHistoryBackAction);
-    //m_wikiToolBar->insertButton( "go-previous", WIKI_BACK, false, i18n("Back") );
+    //m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
 
-    wikiHistoryForwardAction = new KAction(KIcon( "go-next" ), i18n("Forward"), this);
+    wikiHistoryForwardAction = new KAction(KIcon( "forward" ), i18n("Forward"), this);
     connect(wikiHistoryForwardAction, SIGNAL(triggered()), this, SLOT(wikiHistoryForward()));
     m_wikiToolBar->addAction(wikiHistoryForwardAction);
-    //m_wikiToolBar->insertButton( "go-next", WIKI_FORWARD, false, i18n("Forward") );
+    //m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
 
 
     m_wikiToolBar->addSeparator();
@@ -1003,7 +1003,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
         //menu.insertSeparator();
-        //menu.insertItem( KIcon( "go-down" ), i18n( "&Download" ), DOWNLOAD );
+        //menu.insertItem( KIcon( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
     else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" || url.protocol() == "albumdisc" || url.protocol() == "compilationdisc")
     {
@@ -1017,7 +1017,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
-        menu.insertItem( KIcon( Amarok::icon( "document-properties" ) ), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
         {
@@ -1830,9 +1830,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( QString* url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    const QString skipIcon = KIconLoader::global()->iconPath( Amarok::icon("find-next"),   -K3Icon::SizeSmallMedium );
+    const QString skipIcon = KIconLoader::global()->iconPath( Amarok::icon("next"),   -K3Icon::SizeSmallMedium );
     const QString loveIcon = KIconLoader::global()->iconPath( Amarok::icon("love"),   -K3Icon::SizeSmallMedium );
-    const QString banIcon  = KIconLoader::global()->iconPath( Amarok::icon("list-remove"), -K3Icon::SizeSmallMedium );
+    const QString banIcon  = KIconLoader::global()->iconPath( Amarok::icon("remove"), -K3Icon::SizeSmallMedium );
 
 
     m_HTMLSource.append( QStringx(
@@ -3380,7 +3380,7 @@ void ContextBrowser::showLyrics( const QString &url )
         saveHtmlData(); // Send html code to file
 
 
-        if( url.isNull() || url == "document-revert" )
+        if( url.isNull() || url == "reload" )
             ScriptManager::instance()->notifyFetchLyrics( artist, title );
         else
             ScriptManager::instance()->notifyFetchLyricsByUrl( url );

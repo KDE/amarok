@@ -234,7 +234,7 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( "connect_creating" ), i18n( "&Connect" ), CONNECT );
             if( sitem && !m_serverItemMap.contains( sitem->key() ) )
             {
-                menu.insertItem( SmallIconSet( "list-remove" ), i18n("&Remove Computer"), REMOVE );
+                menu.insertItem( SmallIconSet( "remove" ), i18n("&Remove Computer"), REMOVE );
             }
             {
                 QStringList sl = m_serverItemMap.keys();
@@ -256,7 +256,7 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
             {
-                menu.insertItem( SmallIconSet( Amarok::icon( "document-properties" ) ), i18n( "Track &Information..." ), INFO );
+                menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Track &Information..." ), INFO );
             }
             break;
     }

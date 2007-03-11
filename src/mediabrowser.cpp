@@ -253,7 +253,7 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
     MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( Amarok::icon( "folder" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
     MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( Amarok::icon( "play" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
-    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "process-stop" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "stop" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
     MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
 
     setSpacing( 4 );
@@ -268,10 +268,10 @@ MediaBrowser::MediaBrowser( const char *name )
 //     m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );
 //     m_toolbar->getButton(CONNECT)->setToolTip( i18n( "Connect media device" ) );
 
-    m_disconnectAction = new KAction(KIcon("media-eject"), i18n("Disconnect"), this);
+    m_disconnectAction = new KAction(KIcon("player_eject"), i18n("Disconnect"), this);
     connect(m_disconnectAction, SIGNAL(triggered()), this, SLOT(disconnectClicked()));
     m_toolbar->addAction(m_disconnectAction);
-//     m_toolbar->insertButton( "media-eject", DISCONNECT, true, i18n("Disconnect") );
+//     m_toolbar->insertButton( "player_eject", DISCONNECT, true, i18n("Disconnect") );
 //     m_toolbar->getButton(DISCONNECT)->setToolTip( i18n( "Disconnect media device" ) );
 
     m_transferAction = new KAction(KIcon("rebuild"), i18n("Transfer"), this);
@@ -2605,8 +2605,8 @@ MediaBrowser::disconnectClicked()
         int action = KMessageBox::questionYesNoCancel( MediaBrowser::instance(),
                 i18n( "Transfer in progress. Finish or stop after current track?" ),
                 i18n( "Stop Transfer?" ),
-                KGuiItem(i18n("&Finish"), "goto-page"),
-                KGuiItem(i18n("&Stop"), "media-eject") );
+                KGuiItem(i18n("&Finish"), "goto"),
+                KGuiItem(i18n("&Stop"), "player_eject") );
         if( action == KMessageBox::Cancel )
         {
             return;
@@ -3243,7 +3243,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
                         numFiles
                         ),
                     QString::null,
-                    KGuiItem(i18n("&Delete"),"edit-delete") );
+                    KGuiItem(i18n("&Delete"),"editdelete") );
 
             if ( button != KMessageBox::Continue )
             {

@@ -69,12 +69,12 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
     if(shouldDelete) {
         ddDeleteText->setText(i18n("<qt>These items will be <b>permanently "
             "deleted</b> from your hard disk.</qt>"));
-        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("dialog-warning",
+        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("messagebox_warning",
             K3Icon::Desktop, K3Icon::SizeLarge));
     }
     else {
         ddDeleteText->setText(i18n("<qt>These items will be moved to the Trash Bin.</qt>"));
-        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("user-trash-full",
+        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("trashcan_full",
             K3Icon::Desktop, K3Icon::SizeLarge));
     }
 }
@@ -85,7 +85,7 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
 
 DeleteDialog::DeleteDialog(QWidget *parent, const char *name) :
     KDialog( parent ),
-    m_trashGuiItem(i18n("&Send to Trash"), "user-trash-full")
+    m_trashGuiItem(i18n("&Send to Trash"), "trashcan_full")
 {
 //Swallow, Qt::WStyle_DialogBorder, parent, name,
         //true /* modal */, i18n("About to delete selected files"),

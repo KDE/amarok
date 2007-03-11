@@ -412,7 +412,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
     if( isFolder() ) {
         QAction* renameAction = new QAction( KIcon( Amarok::icon("edit") ), i18n( "&Rename" ), &menu );
         connectDirect( renameAction, renameSelectedItem() );
-        QAction* deleteAction = new QAction( KIcon( Amarok::icon("list-remove") ), i18n( "&Delete" ), &menu );
+        QAction* deleteAction = new QAction( KIcon( Amarok::icon("remove") ), i18n( "&Delete" ), &menu );
         connectDirect( deleteAction, removeSelectedItems() );
 
         menu.addAction( renameAction );
@@ -1062,7 +1062,7 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
     menu.insertSeparator();
 
     menu.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove" ), REMOVE );
-    menu.insertItem( KIcon( Amarok::icon( "document-properties" ) ), i18n( "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( position ) ) {
         case LOAD:
@@ -1264,7 +1264,7 @@ StreamEntry::showContextMenu( const QPoint &position )
         menu.insertItem( KIcon( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
     }
     else
-        menu.insertItem( KIcon( Amarok::icon( "document-properties" ) ), i18n( "Show &Information" ), EDIT );
+        menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Show &Information" ), EDIT );
 
     switch( menu.exec( position ) )
     {
@@ -2268,7 +2268,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
     menu.insertSeparator();
-    menu.insertItem( KIcon( Amarok::icon( "list-remove" ) ), i18n( "&Delete" ), DELETE );
+    menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Delete" ), DELETE );
     menu.insertItem( KIcon( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &New" ), NEW );
@@ -2473,7 +2473,7 @@ PodcastEpisode::updatePixmap()
     if( isNew() )
         setPixmap( 0, SmallIcon( Amarok::icon( "podcast2" ) ) );
     else if( m_onDisk )
-        setPixmap( 0, SmallIcon( "go-down" ) );
+        setPixmap( 0, SmallIcon( "down" ) );
     else
         setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 }
@@ -2793,7 +2793,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     KService::List offers = KMimeTypeTrader::self()->query( mimetype->name(), "Type == 'Application'" );
     if( offers.empty() || (offers.size()==1 && offers.first()->name()=="Amarok") )
     {
-        menu.insertItem( KIcon( Amarok::icon( "system-run" ) ), i18n( "&Open With..."), OPEN_WITH );
+        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Open With..."), OPEN_WITH );
     }
     else
     {
@@ -2808,8 +2808,8 @@ PodcastEpisode::showContextMenu( const QPoint &position )
             ++i;
         }
         openMenu->insertSeparator();
-        openMenu->insertItem( KIcon( Amarok::icon( "system-run" ) ), i18n( "&Other..."), OPEN_WITH );
-        menu.insertItem( KIcon( Amarok::icon( "system-run" ) ), i18n("&Open With"), openMenu, OPEN_WITH );
+        openMenu->insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Other..."), OPEN_WITH );
+        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n("&Open With"), openMenu, OPEN_WITH );
     }
 
     if( MediaBrowser::isAvailable() )
@@ -2825,7 +2825,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &New" ),  NEW );
-    menu.insertItem( KIcon( Amarok::icon("list-remove") ), i18n( "De&lete Downloaded Podcast" ), DELETE );
+    menu.insertItem( KIcon( Amarok::icon("remove") ), i18n( "De&lete Downloaded Podcast" ), DELETE );
 
     menu.setItemEnabled( GET, !isOnDisk() );
     menu.setItemEnabled( ASSOCIATE, !isOnDisk() );

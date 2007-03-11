@@ -214,7 +214,7 @@ CoverManager::CoverManager()
     m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
     m_statusLabel->setIndent( 3 );
     m_statusBar->addWidget( m_progressBox = new KHBox( m_statusBar ), 1, true );
-    KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "process-stop"), m_progressBox );
+    KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new QProgressBar( m_progressBox );
     m_progress->setTextVisible( true );
@@ -518,7 +518,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
         , i18np( "Set &Custom Cover", "Set &Custom Cover for Selected Albums", nSelected )
         , &menu );
     connect( setCustomAction, SIGNAL( triggered() ), this, SLOT( setCustomSelectedCovers() ) );
-    QAction* unsetAction = new QAction( KIcon( Amarok::icon( "list-remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
+    QAction* unsetAction = new QAction( KIcon( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
     connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
 
     if( nSelected > 1 ) {
