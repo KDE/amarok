@@ -58,16 +58,6 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     initBottomPanel();
 
-    //connect (m_listView, SIGNAL(executed(K3ListViewItem *)), this, SLOT(itemExecuted(K3ListViewItem *)));
-  /*  connect( m_contentList, SIGNAL( doubleClicked( Q3ListViewItem * ) ),  //FIXME!!
-             this, SLOT( itemExecuted( Q3ListViewItem * ) ) );
-    connect( m_contentList, SIGNAL( selectionChanged( Q3ListViewItem * ) ),
-             this, SLOT( selectionChanged( Q3ListViewItem * ) ) );
-    connect( m_contentList, SIGNAL( rightButtonClicked ( Q3ListViewItem *, const QPoint &, int ) ),
-             this, SLOT( showPopupMenu( Q3ListViewItem *, const QPoint &, int ) ) );
-    connect( m_popupMenu, SIGNAL( aboutToShow() ),
-             this, SLOT( menuAboutToShow() ) );
-*/
     m_currentInfoUrl = "";
 
     m_purchaseHandler = 0;
@@ -81,29 +71,6 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     polish( );  //FIXME not happening when shown for some reason
 
 }
-
-/*void MagnatuneBrowser::itemExecuted( QListWidgetItem * item ) //FIXME!!!!
-{
-    DEBUG_BLOCK;
-    if ( !item ) return;
-    switch ( item->type() )
-    {
-    case 1002:
-        addTrackToPlaylist( dynamic_cast<MagnatuneListViewTrackItem *>( item ) );
-        break;
-
-    case 1001:
-        addAlbumToPlaylist( dynamic_cast<MagnatuneListViewAlbumItem *>( item ) );
-        break;
-
-    case 1000:
-        addArtistToPlaylist( dynamic_cast<MagnatuneListViewArtistItem *>( item ) );
-        break;
-
-    default:
-        break;
-    }
-}*/
 
 void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
 {
@@ -140,65 +107,6 @@ void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist *item )
         addAlbumToPlaylist( &( *it ) );
 }
 
-/*void MagnatuneBrowser::selectionChanged( QListWidgetItem *item )
-{
-    if ( !item ) return ; // sanity check
-
-    debug() << "Selection changed..." << endl;
-
-
-    if ( item->type() == 100 )
-        m_purchaseAlbumButton->setEnabled( false );
-    else
-        if ( ! m_purchaseInProgress )
-            m_purchaseAlbumButton->setEnabled( true );
-
-
-    if ( !m_isInfoShown )
-        return ;
-
-    switch ( item->type() )
-    {
-    case 1000:
-        {
-            MagnatuneListViewArtistItem * artistItem = dynamic_cast<MagnatuneListViewArtistItem *>( item );
-            if ( artistItem && m_currentInfoUrl != artistItem->getHomeURL() )
-            {
-                m_currentInfoUrl = artistItem->getHomeURL();
-                //m_infoBox->displayArtistInfo( KUrl( m_currentInfoUrl ) );  //FIXME!!!
-            }
-        }
-        break;
-
-    case 1001:
-        {
-            MagnatuneListViewAlbumItem *albumItem = dynamic_cast<MagnatuneListViewAlbumItem *>( item );
-            if ( albumItem && m_currentInfoUrl != albumItem->getCoverURL() )
-            {
-                m_currentInfoUrl = albumItem->getCoverURL();
-                //m_infoBox->displayAlbumInfo( albumItem ); //FIXME!!!
-            }
-        }
-        break;
-
-    case 1002:
-        {
-            // a track is selected, show the corrosponding album info!
-            MagnatuneListViewTrackItem *trackItem = dynamic_cast<MagnatuneListViewTrackItem*>( item );
-	    if (!trackItem) {
-		debug() << "dynamic_cast to trackItem failed!" << endl;
-		return;
-	    }
-            int albumId = trackItem->getAlbumId();
-            MagnatuneAlbum album = MagnatuneDatabaseHandler::instance() ->getAlbumById( albumId );
-            //m_infoBox->displayAlbumInfo( &album ); //FIXME!!!
-        }
-        break;
-
-    default:
-        break;
-    }
-}*/
 
 /*void MagnatuneBrowser::showPopupMenu( QListWidgetItem * item, const QPoint & pos, int column )
 {
@@ -304,8 +212,6 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 
     MagnatuneAlbum * selectedAlbum = albumContentItem->getContentUnion().albumValue;
 
-
-    //MagnatuneAlbum album( MagnatuneDatabaseHandler::instance()->getAlbumById( selectedTrack->getAlbumId() ) );
     m_purchaseHandler->purchaseAlbum( *selectedAlbum );
 }
 
@@ -390,7 +296,6 @@ bool MagnatuneBrowser::updateMagnatuneList()
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
 
-    //connect( m_listDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( listDownloadComplete( KIO::Job* ) ) );
 
     return true;
 }
@@ -449,7 +354,6 @@ void MagnatuneBrowser::showInfo( bool show )
 void MagnatuneBrowser::genreChanged( QString genre )
 {
     debug() << "Genre changed to: " << genre << endl;
-    //updateList( );
     static_cast< MagnatuneContentModel *>( getModel() )->setGenre( genre );
 }
 
@@ -458,9 +362,7 @@ void MagnatuneBrowser::doneParsing()
 {
 
     debug() << "MagnatuneBrowser: done parsing" << endl;
-    //updateList();
     updateGenreBox( );
-    //updateList(); // stupid stupid hack....
 }
 
 void MagnatuneBrowser::updateGenreBox()
