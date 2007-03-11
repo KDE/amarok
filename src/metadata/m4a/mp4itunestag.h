@@ -87,7 +87,7 @@ namespace TagLib
       Tag &operator=(const Tag &);
   
       class TagPrivate;
-      TagPrivate *d;
+      TagPrivate * const d;
     };
   } // namespace MP4
 

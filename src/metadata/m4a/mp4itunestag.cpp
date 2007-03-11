@@ -43,9 +43,8 @@ public:
 };
 
 
-MP4::Tag::Tag( )
+MP4::Tag::Tag( ): d( new TagPrivate() )
 {
-  d = new TagPrivate();
   d->year  = 0;
   d->track = 0;
   d->disk  = 0;

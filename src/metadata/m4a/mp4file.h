@@ -159,7 +159,7 @@ namespace TagLib {
       File &operator=(const File &);
 
       class FilePrivate;
-      FilePrivate *d;
+      FilePrivate * const d;
     };
 
   } // namespace MP4

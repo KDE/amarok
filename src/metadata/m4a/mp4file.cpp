@@ -57,11 +57,8 @@ static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 
 MP4::File::File(const char *file, bool , TagLib::AudioProperties::ReadStyle  )
 	:TagLib::File( file )
+    ,d( new MP4::File::FilePrivate() )
 {
-  // create member container
-  d = new MP4::File::FilePrivate();
-
-
   d->isValid = false;
   TagLib::uint size;
   MP4::Fourcc  fourcc;
