@@ -239,6 +239,8 @@ private:
    
 
     KIO::FileCopyJob * m_listDownloadJob;
+
+    MagnatuneContentItem * m_currentlySelectedItem;
 };
 
 

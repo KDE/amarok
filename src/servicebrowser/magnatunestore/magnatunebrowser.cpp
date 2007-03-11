@@ -75,6 +75,8 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     m_purchaseInProgress = 0;
 
+    m_currentlySelectedItem = 0;
+
     m_polished = false;
     polish( );  //FIXME not happening when shown for some reason
 
@@ -248,50 +250,63 @@ void MagnatuneBrowser::menuAboutToShow( )
 void MagnatuneBrowser::purchaseButtonClicked( )
 {
 
-   /* if ( !m_purchaseInProgress ) //FIXME!!
+    if ( !m_purchaseInProgress && m_currentlySelectedItem != 0)
     {
-        m_purchaseInProgress = true;
-        m_purchaseAlbumButton->setEnabled( false );
 
-        if ( m_contentList->selectedItems()[0]->type() == 1001 )
+        if ( m_currentlySelectedItem->getType() == MAGNATUNE_ALBUM )
             purchaseSelectedAlbum( );
-        else if ( m_contentList->selectedItems()[0]->type() == 1002 )
+        else if ( m_currentlySelectedItem->getType() == MAGNATUNE_TRACK )
             purchaseAlbumContainingSelectedTrack( );
-    }*/
+    }
 }
 
 void MagnatuneBrowser::purchaseSelectedAlbum( )
 {
-   /* if ( !m_purchaseHandler ) //FIXME!!
+
+   m_purchaseInProgress = true;
+   m_purchaseAlbumButton->setEnabled( false );
+
+    if ( !m_purchaseHandler ) //FIXME!!
     {
         m_purchaseHandler = new MagnatunePurchaseHandler();
         m_purchaseHandler->setParent( this );
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
 
-    MagnatuneListViewAlbumItem * selectedAlbum = dynamic_cast<MagnatuneListViewAlbumItem *>(  m_contentList->selectedItems()[0] );  //FIXME!!!
+    MagnatuneAlbum * selectedAlbum = m_currentlySelectedItem->getContentUnion().albumValue;
 
     if (selectedAlbum)
-        m_purchaseHandler->purchaseAlbum( *selectedAlbum ); */
+        m_purchaseHandler->purchaseAlbum( *selectedAlbum );
 }
 
 void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 {
-   /* if ( !m_purchaseHandler ) //FIXME!!
+
+   m_purchaseInProgress = true;
+   m_purchaseAlbumButton->setEnabled( false );
+
+    if ( !m_purchaseHandler ) //FIXME!!
     {
         m_purchaseHandler = new MagnatunePurchaseHandler();
         m_purchaseHandler->setParent( this );
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
 
-    MagnatuneListViewTrackItem *selectedTrack = dynamic_cast<MagnatuneListViewTrackItem *>( m_contentList->selectedItems()[0] ); //FIXME!!!
-    if (!selectedTrack) {
-	debug() << "dynamic_cast to selected track failed!" << endl;
+    MagnatuneContentItem *albumContentItem = dynamic_cast<MagnatuneContentItem*>( m_currentlySelectedItem->parent() );
+   
+    if (!albumContentItem) {
+	debug() << "dynamic_cast to albumContentItem failed!" << endl;
+
+        m_purchaseInProgress = false;
+        m_purchaseAlbumButton->setEnabled( true );
 	return;
     }
 
-    MagnatuneAlbum album( MagnatuneDatabaseHandler::instance() ->getAlbumById( selectedTrack->getAlbumId() ) );
-    m_purchaseHandler->purchaseAlbum( album ); */
+    MagnatuneAlbum * selectedAlbum = albumContentItem->getContentUnion().albumValue;
+
+
+    //MagnatuneAlbum album( MagnatuneDatabaseHandler::instance()->getAlbumById( selectedTrack->getAlbumId() ) );
+    m_purchaseHandler->purchaseAlbum( *selectedAlbum );
 }
 
 void MagnatuneBrowser::initTopPanel( )
@@ -492,8 +507,8 @@ void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
 
 void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
 
-   MagnatuneContentItem * magnatuneItem = static_cast<MagnatuneContentItem*>( selectedItem );
-   if ( ( magnatuneItem->getType() == MAGNATUNE_ALBUM ) ||  ( magnatuneItem->getType() == MAGNATUNE_TRACK )  ) {
+   m_currentlySelectedItem = static_cast<MagnatuneContentItem*>( selectedItem );
+   if ( ( m_currentlySelectedItem->getType() == MAGNATUNE_ALBUM ) ||  ( m_currentlySelectedItem->getType() == MAGNATUNE_TRACK )  ) {
 
        m_purchaseAlbumButton->setEnabled( true );
    } else {
