@@ -116,8 +116,7 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
 
-    //FIXME:
-    //Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
