@@ -32,7 +32,6 @@
 
 #include "amarok.h"
 #include "playlist.h"
-#include "collectiondb.h"
 #include "deletedialog.h"
 #include "statusbar.h"
 

@@ -7,7 +7,7 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "amarok_export.h"
 
 #include <kdialog.h>     //baseclass

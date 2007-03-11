@@ -15,7 +15,8 @@
 
 #define DEBUG_PREFIX "DynamicMode"
 
-#include "collectiondb.h" // querybuilder, similar artists
+#include "querybuilder.h" // querybuilder
+#include "collectiondb.h" // similar artists
 #include "debug.h"
 #include "enginecontroller.h" // HACK to get current artist for suggestion retrieval
 #include "mountpointmanager.h" // device ids
@@ -213,7 +214,7 @@ DEBUG_BLOCK
             //trackCountTotal might be 0
             int itemsForThisSource = trackCountTotal ? CACHE_SIZE * trackCount[i] / trackCountTotal : 1;
             if (itemsForThisSource == 0)
-              itemsForThisSource = 1; 
+              itemsForThisSource = 1;
             debug() << "this source will return " << itemsForThisSource << " entries" << endl;
 
             if( entry->rtti() == PlaylistEntry::RTTI )

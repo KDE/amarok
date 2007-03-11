@@ -13,7 +13,7 @@
 
 #include "amarok.h"            //actionCollection()
 #include "browserToolBar.h"
-#include "collectiondb.h"      //smart playlists
+#include "querybuilder.h"      //smart playlists
 #include "debug.h"
 #include "htmlview.h"
 #include "k3bexporter.h"

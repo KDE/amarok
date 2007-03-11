@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "amarok_export.h"
-#include "collectiondb.h"
 #include "medium.h"
 #include "plugin/plugin.h"
 #include "pluginmanager.h"

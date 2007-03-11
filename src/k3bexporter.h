@@ -18,7 +18,6 @@
 #define K3BEXPORTER_H
 
 #include "amarok_export.h"
-#include "collectiondb.h"
 #include <kurl.h>
 
 //class DCOPRef;

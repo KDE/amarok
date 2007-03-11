@@ -12,7 +12,7 @@
  ***************************************************************************/
 
 #include "amarok.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "debug.h"
 #include "dynamicmode.h"
 #include "k3bexporter.h"

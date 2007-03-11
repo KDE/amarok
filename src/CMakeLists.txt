@@ -116,7 +116,7 @@ set(libplugin_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.cpp
 )
 
-#set(libmagnatunebrowser_SRCS 
+#set(libmagnatunebrowser_SRCS
 #	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneartistinfobox.cpp
 #	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunebrowser.cpp
 #	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloaddialog.cpp
@@ -165,8 +165,8 @@ set(libmagnatunestore_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunealbumdownloader.cpp 
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunecontentitem.cpp  
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunecontentitem.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunecontentmodel.cpp)
 
 kde4_add_ui3_files(libmagnatunestore_SRCS
@@ -260,6 +260,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    pluginmanager.cpp
    podcastsettings.cpp
    prettypopupmenu.cpp
+   querybuilder.cpp
    queuemanager.cpp
    refreshimages.cpp
    scancontroller.cpp
@@ -280,7 +281,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    tracktooltip.cpp
    transferdialog.cpp
    xmlloader.cpp
-   xspfplaylist.cpp 
+   xspfplaylist.cpp
    dockwidget.cpp )
 
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
@@ -311,7 +312,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    trackpickerdialogbase.ui )
 
 kde4_add_ui_files(amarok_LIB_SRCS
-    tagguesserconfigdialog.ui 
+    tagguesserconfigdialog.ui
     deletedialogbase.ui)
 
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})

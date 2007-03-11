@@ -8,7 +8,7 @@
 
 #include "amarok.h" //oldForeach
 #include "debug.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "smartplaylisteditor.h"

@@ -12,7 +12,7 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "collectionbrowser.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "covermanager.h"
 #include "debug.h"
 #include "deletedialog.h"

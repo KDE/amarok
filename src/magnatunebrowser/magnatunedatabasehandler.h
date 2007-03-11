@@ -20,7 +20,6 @@
 #ifndef MAGNATUNEDATABASEHANDLER_H
 #define MAGNATUNEDATABASEHANDLER_H
 
-#include "collectiondb.h"
 #include "magnatunetypes.h"
 
 #include <QStringList>
@@ -34,7 +33,7 @@
 */
 class MagnatuneDatabaseHandler{
 public:
-    
+
 
     /**
      * Function for retrieving the singleton
@@ -56,7 +55,7 @@ public:
 
     /**
      * Inserts a new track into the Magnatune database
-     * @param track pointer to the track to insert 
+     * @param track pointer to the track to insert
      * @param albumId id of the album containing the track
      * @param artistId id of the artist performing the track
      * @return the database id of the newly inserted track
@@ -70,7 +69,7 @@ public:
      * @return the database id of the newly inserted album
      */
     int insertAlbum(MagnatuneAlbum *album, int artistId);
-   
+
     /**
      * inserts a new artist into the Magnatune database
      * @param artist pointer to the artist to insert
@@ -136,7 +135,7 @@ public:
      * @param id The id of the artist
      * @return A list of tracks. Empty if artist is not found, artist has no albums or albums have no tracks
      */
-    MagnatuneTrackList getTracksByArtistId(int id); 
+    MagnatuneTrackList getTracksByArtistId(int id);
 
     /**
      * Retrieves a list of all genres present in the databse

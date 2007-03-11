@@ -15,7 +15,7 @@
 #define DEBUG_PREFIX "PlaylistLoader"
 
 #include "amarok.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "mountpointmanager.h"

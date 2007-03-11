@@ -13,7 +13,7 @@
 
 #include "amarok.h"             //oldForeach macro
 #include "browserToolBar.h"     //search toolbar
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "debug.h"
 #include "playlist.h"
 #include "statistics.h"

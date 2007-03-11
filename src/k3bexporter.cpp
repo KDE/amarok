@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include "playlist.h"
 #include "playlistitem.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "k3bexporter.h"
 #include "amarok.h"
 

@@ -7,7 +7,7 @@
 #include "debug.h"
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "coverfetcher.h"
 #include "metabundle.h"
 #include "playlist.h"

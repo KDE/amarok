@@ -19,7 +19,6 @@
 #include "amarokconfig.h"
 #include "app.h"
 #include "debug.h"
-#include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "columnlist.h"
 #include "deletedialog.h"

@@ -5,7 +5,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "config.h"        //for AMAZON_SUPPORT
 #include "covermanager.h"
 #include "coverfetcher.h"

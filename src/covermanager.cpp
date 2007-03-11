@@ -7,7 +7,7 @@
 #include "browserToolBar.h"
 #include "debug.h"
 #include "collectionbrowser.h" //manipulateThe()
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "config.h"
 #include "coverfetcher.h"
 #include "covermanager.h"

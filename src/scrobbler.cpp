@@ -10,7 +10,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "config.h"
 #include "debug.h"
 #include "enginecontroller.h"

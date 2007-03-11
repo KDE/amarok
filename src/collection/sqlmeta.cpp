@@ -16,7 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "collectiondb.h"
+#include "querybuilder.h"
 #include "sqlmeta.h"
 #include "sqlregistry.h"
 
@@ -66,7 +66,7 @@ SqlTrack::prettyName() const
     else
         s = i18n("%1 - %2", m_artist->name(), name() );
 
-    //TODO 
+    //TODO
     if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
 
     return s;
