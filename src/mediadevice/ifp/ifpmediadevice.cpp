@@ -455,7 +455,7 @@ IfpMediaDevice::downloadSelectedItems()
 {
 //     KConfig *config = Amarok::config( "MediaDevice" );
 //     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
-    QString save = QString::null;
+    QString save;
 
     KUrlRequesterDlg dialog( save, 0, 0 );
     dialog.setCaption( KDialog::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );

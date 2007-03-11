@@ -217,9 +217,9 @@ class GenericMediaFile
         setBaseName( QString &name ) { m_baseName = name; }
 
         void
-        setNamesFromBase( const QString &name = QString::null )
+        setNamesFromBase( const QString &name = QString() )
         {
-            if( name != QString::null )
+            if( name != QString() )
                 m_baseName = name;
             if( m_parent )
                 m_fullName = m_parent->getFullName() + '/' + m_baseName;
@@ -324,8 +324,8 @@ GenericMediaDevice::GenericMediaDevice()
     m_ignoreThePrefix     = false;
     m_asciiTextOnly       = false;
 
-    m_songLocation = QString::null;
-    m_podcastLocation = QString::null;
+    m_songLocation = QString();
+    m_podcastLocation = QString();
 
     m_supportedFileTypes.clear();
 

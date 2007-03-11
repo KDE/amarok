@@ -128,7 +128,7 @@ class IpodMediaDevice : public MediaDevice
         void              addPlaylistToView( Itdb_Playlist *playlist );
         void              playlistFromItem( IpodMediaItem *item );
 
-        QString           itunesDir( const QString &path = QString::null ) const;
+        QString           itunesDir( const QString &path = QString() ) const;
         QString           realPath( const char *ipodPath );
         QString           ipodPath( const QString &realPath );
         bool              pathExists( const QString &ipodPath, QString *realPath=0 );

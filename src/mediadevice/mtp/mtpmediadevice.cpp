@@ -680,7 +680,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
     Q3PtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
 
-    KTempDir tempdir( QString::null );
+    KTempDir tempdir( QString() );
     tempdir.setAutoDelete( true );
     KUrl::List urls;
     QString genericError = i18n( "Could not copy track from device." );
@@ -1341,7 +1341,7 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
                                 "<p>You are updating cover art for %n tracks. This may take some time.",
                                 items->count()
                                 ),
-                            QString::null );
+                            QString() );
 
                     if( button != KMessageBox::Continue )
                         return;

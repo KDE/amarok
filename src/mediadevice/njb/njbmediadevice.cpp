@@ -336,7 +336,7 @@ int
 NjbMediaDevice::downloadSelectedItems()
 {
     /* Copied from ifpmediadevice */
-    QString save = QString::null;
+    QString save;
 
     KUrlRequesterDlg dialog( save, 0, 0 );
     dialog.setCaption( KDialog::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );
@@ -381,7 +381,7 @@ NjbMediaDevice::downloadToCollection()
     Q3PtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
 
-    KTempDir tempdir( QString::null ); // Default prefix is fine with us
+    KTempDir tempdir( QString() ); // Default prefix is fine with us
     tempdir.setAutoDelete( true ); // We don't need it once the work is done.
     QString path = tempdir.name(), filepath;
     KUrl::List urls;

@@ -734,7 +734,7 @@ ServerItem::setOpen( bool o )
         setText( 0, i18n( "Loading %1", text( 0 ) ) );
 
         Daap::Reader* reader = new Daap::Reader( m_ip, m_port, this,
-                                                 QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
+                                                 QString(), m_daapClient, ( m_ip + ":3689" ).ascii() );
         setReader ( reader );
 
         connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
@@ -865,7 +865,7 @@ DaapDownloader::dataReadProgress( int done, int total )
 void
 DaapDownloader::downloadFailed( const QString & error )
 {
- //   Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "An error occured while downloading from remote music server." ), Amarok::StatusBar::Error );
+ //   Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "An error occurred while downloading from remote music server." ), Amarok::StatusBar::Error );
     DEBUG_BLOCK
     debug() << "failed on " << error << endl;
     m_successful = false;

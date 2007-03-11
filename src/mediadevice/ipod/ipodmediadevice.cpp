@@ -941,7 +941,7 @@ IpodMediaDevice::createLockFile( bool silent )
         if( !silent )
         {
             if( KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Remove iTunes Lock File?" ),
-                        KGuiItem(i18n("&Remove"), "editdelete"), QString::null, KMessageBox::Dangerous )
+                        KGuiItem(i18n("&Remove"), "editdelete"), QString(), KMessageBox::Dangerous )
                     == KMessageBox::Continue )
             {
                 msg = i18n( "Media Device: removing lockfile %1 failed: %2. " )
@@ -1355,14 +1355,14 @@ IpodMediaDevice::checkIntegrity()
 
     QString musicpath;
     pathExists( itunesDir( "Music" ), &musicpath );
-    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
+    QDir dir( musicpath, QString(), QDir::Unsorted, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
         if(dir[i] == "." || dir[i] == "..")
             continue;
 
         QString hashpath = musicpath + '/' + dir[i];
-        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
+        QDir hashdir( hashpath, QString(), QDir::Unsorted, QDir::Files );
         for(unsigned j=0; j<hashdir.count(); j++)
         {
             QString filename = hashpath + '/' + hashdir[j];
@@ -2351,7 +2351,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                 if( playlistsMenu && id >= FIRST_PLAYLIST )
                 {
                     QString name = playlistsMenu->text(id);
-                    if( name != QString::null )
+                    if( name != QString() )
                     {
                         MediaItem *list = m_playlistItem->findItem(name);
                         if(list)
