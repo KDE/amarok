@@ -421,7 +421,7 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
  */
 void ScrobblerSubmitter::performHandshake()
 {
-    QString handshakeUrl = QString::null;
+    QString handshakeUrl;
     uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
 
     if ( PROTOCOL_VERSION == "1.1" )
@@ -795,7 +795,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
 
-        m_challenge = QString::null;
+        m_challenge = QString();
         enqueueJob( job );
     }
     else
@@ -1143,7 +1143,7 @@ bool ScrobblerSubmitter::schedule( bool failure )
 
     if ( m_needHandshake || m_challenge.isEmpty() )
     {
-        m_challenge = QString::null;
+        m_challenge = QString();
         m_needHandshake = false;
 
         if ( when == 0 )

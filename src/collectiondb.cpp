@@ -4123,7 +4123,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 
     // Get just the directory.
     KUrl dir = dstURL;
-    dir.setFileName(QString::null);
+    dir.setFileName(QString());
 
     // Create the directory.
     if(!KStandardDirs::exists(dir.path()))

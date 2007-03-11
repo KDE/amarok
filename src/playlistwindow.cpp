@@ -157,7 +157,7 @@ PlaylistWindow::~PlaylistWindow()
 ///////// public interface
 
 /**
- * This funtion will initialize the playlist window.
+ * This function will initialize the playlist window.
  */
 void PlaylistWindow::init()
 {

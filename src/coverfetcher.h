@@ -108,7 +108,7 @@ private:
     void finishWithError( const QString &message, KJob *job = 0 );
 
     /// Prompt the user for a query
-    void getUserQuery( QString explanation = QString::null );
+    void getUserQuery( QString explanation = QString() );
 
     /// Will try all available queries, and then prompt the user, if allowed
     void attemptAnotherFetch();

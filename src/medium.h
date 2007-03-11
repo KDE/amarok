@@ -86,7 +86,7 @@ public:
     void mountableState(const QString &deviceNode,
                         const QString &mountPoint,
                         const QString &fsType, bool mounted);
-    void unmountableState(const QString &baseURL = QString::null);
+    void unmountableState(const QString &baseURL = QString());
 
     void setMimeType(const QString &mimeType);
     void setIconName(const QString &iconName);

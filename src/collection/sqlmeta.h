@@ -119,7 +119,7 @@ class SqlArtist : public Artist
         QString m_name;
         bool m_tracksLoaded;
         TrackList m_tracks;
-        //QReadWriteLock doesnt support lock upgrades :(
+        //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
@@ -152,7 +152,7 @@ class SqlAlbum : public Album
         QString m_name;
         bool m_tracksLoaded;
         TrackList m_tracks;
-        //QReadWriteLock doesnt support lock upgrades :(
+        //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
@@ -176,7 +176,7 @@ class SqlComposer : public Composer
         QString m_name;
         bool m_tracksLoaded;
         TrackList m_tracks;
-        //QReadWriteLock doesnt support lock upgrades :(
+        //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
@@ -198,7 +198,7 @@ class SqlGenre : public Genre
         QString m_name;
         bool m_tracksLoaded;
         TrackList m_tracks;
-        //QReadWriteLock doesnt support lock upgrades :(
+        //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
@@ -220,7 +220,7 @@ class SqlYear : public Year
         QString m_name;
         bool m_tracksLoaded;
         TrackList m_tracks;
-        //QReadWriteLock doesnt support lock upgrades :(
+        //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;

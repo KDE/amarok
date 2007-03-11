@@ -473,7 +473,7 @@ void PlaylistBrowser::loadCoolStreams()
 
 void PlaylistBrowser::addStream( Q3ListViewItem *parent )
 {
-    StreamEditor dialog( this, i18n( "Radio Stream" ), QString::null );
+    StreamEditor dialog( this, i18n( "Radio Stream" ), QString() );
     dialog.setCaption( i18n( "Add Radio Stream" ) );
 
     if( !parent ) parent = static_cast<Q3ListViewItem*>(m_streamsCategory);
@@ -591,7 +591,7 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 
 void PlaylistBrowser::addLastFmRadio( Q3ListViewItem *parent )
 {
-    StreamEditor dialog( this, i18n( "Last.fm Radio" ), QString::null );
+    StreamEditor dialog( this, i18n( "Last.fm Radio" ), QString() );
     dialog.setCaption( i18n( "Add Last.fm Radio" ) );
 
     if( !parent ) parent = static_cast<Q3ListViewItem*>(m_lastfmCategory);
@@ -1301,7 +1301,7 @@ void PlaylistBrowser::refreshPodcasts( Q3ListViewItem *parent )
 void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 {
     bool ok;
-    const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter Podcast URL:"), QString::null, &ok, this);
+    const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter Podcast URL:"), QString(), &ok, this);
 
     if( ok && !name.isEmpty() )
     {
@@ -1512,7 +1512,7 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
         button = KMessageBox::warningContinueCancel( this,
                     i18np( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
                           "<p>You have selected %1 podcast episodes to be <b>irreversibly</b> deleted. ",
-                           urls.count() ), QString::null, KStandardGuiItem::del() );
+                           urls.count() ), QString(), KStandardGuiItem::del() );
     if( silent || button != KMessageBox::Continue )
         return false;
 
@@ -2235,7 +2235,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     if( totalCount > 0 )
     {
-        int button = KMessageBox::warningContinueCancel( this, message, QString::null, KStandardGuiItem::del() );
+        int button = KMessageBox::warningContinueCancel( this, message, QString(), KStandardGuiItem::del() );
         if( button != KMessageBox::Continue )
             return;
     }
@@ -2730,7 +2730,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
                     QString title = suggestion == 1 ? album
                                                   : suggestion == 2 ? artist
-                                                  : QString::null;
+                                                  : QString();
                     if ( pb->createPlaylist( item, false, title ) )
                         pb->m_lastPlaylist->insertTracks( 0, bundles );
                 }
@@ -2912,7 +2912,7 @@ void PlaylistBrowserView::startDrag()
     K3MultipleDrag *drag = new K3MultipleDrag( this );
 
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
-    QString pixText = QString::null;
+    QString pixText;
     uint count = 0;
 
     for( ; it.current(); ++it )
@@ -3031,7 +3031,7 @@ void PlaylistBrowserView::startDrag()
     if( !podList.isEmpty() )
         urls += podList;
 
-    if( count > 1 ) pixText = QString::null;
+    if( count > 1 ) pixText.clear();
 
     drag->addDragObject( new K3URLDrag( urls, viewport() ) );
     drag->setPixmap( CollectionDB::createDragPixmap( itemList, pixText ),
@@ -3246,7 +3246,7 @@ InfoPane::setInfo( const QString &title, const QString &info )
                   "</tr>"
                   "</table>"
                   "</div>" ).arg( title, info ) :
-        QString::null );
+        QString() );
 }
 
 #include "playlistbrowser.moc"

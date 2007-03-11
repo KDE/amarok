@@ -58,7 +58,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
-        , m_logfile( Amarok::saveLocation( QString::null ) + "collection_scan.log"  )
+        , m_logfile( Amarok::saveLocation( QString() ) + "collection_scan.log"  )
         , m_pause( false )
 {
     DbusCollectionScannerHandler* dcsh = new DbusCollectionScannerHandler();
@@ -118,7 +118,7 @@ CollectionScanner::doJob() //SLOT
             logFile.close();
         }
 
-        QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
+        QFile folderFile( Amarok::saveLocation( QString() ) + "collection_scan.files"   );
         if ( !folderFile.open( QIODevice::ReadOnly ) )
             warning() << "Failed to open folder file " << folderFile.fileName()
             << " read-only" << endl;
@@ -147,7 +147,7 @@ CollectionScanner::doJob() //SLOT
             readDir( dir, entries );
         }
 
-        QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
+        QFile folderFile( Amarok::saveLocation( QString() ) + "collection_scan.files"   );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );

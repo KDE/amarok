@@ -152,7 +152,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
         m_timeLabel2->setEnabled( false );
-        setMainText( QString::null );
+        setMainText( QString() );
         break;
 
     case Engine::Paused:

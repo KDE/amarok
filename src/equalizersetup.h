@@ -62,7 +62,7 @@ class EqualizerSetup : public KDialog
 
         void    loadPresets();
         void    savePresets();
-        void    updatePresets(QString selectTitle = QString::null);
+        void    updatePresets(QString selectTitle = QString());
         QString presetsCache() const;
 
         Amarok::Slider* m_slider_preamp;

@@ -76,7 +76,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         {
             const int button = KMessageBox::warningContinueCancel( parent,
                 i18n( "Are you sure you want to remove this cover from the Collection?" ),
-                QString::null,
+                QString(),
                 KStandardGuiItem::del() );
 
             if ( button == KMessageBox::Continue )
@@ -205,7 +205,7 @@ CoverFetcher::startFetch()
     m_coverAsins.clear();
     m_coverUrls.clear();
     m_coverNames.clear();
-    m_xml = QString::null;
+    m_xml.clear();
     m_size = 2;
 
     if ( m_queries.isEmpty() ) {

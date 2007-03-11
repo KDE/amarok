@@ -989,7 +989,7 @@ Playlist::updateEntriesStatusAdded( const QMap<QString,QString> &map )
     }
 
     for( it = uniquecopy.begin(); it != uniquecopy.end(); ++it )
-        updateEntriesStatusDeleted( QString::null, it.key() );
+        updateEntriesStatusDeleted( QString(), it.key() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1617,7 +1617,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
     if( !item->checkExists() )
     {
         //debug() << "not found, finding new url" << endl;
-        QString path = QString::null;
+        QString path;
         if( !item->uniqueId().isEmpty() )
         {
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
@@ -1745,13 +1745,13 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
 {
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( pos ) );
     if( !item )
-        return QPair<QString, QRect>( QString::null, QRect() );
+        return QPair<QString, QRect>( QString(), QRect() );
 
     const QPoint contentsPos = viewportToContents( pos );
     const int col = header()->sectionAt( contentsPos.x() );
 
     if( item == m_renameItem && col == m_renameColumn )
-        return QPair<QString, QRect>( QString::null, QRect() );
+        return QPair<QString, QRect>( QString(), QRect() );
 
     QString text;
     if( col == PlaylistItem::Rating )
@@ -1784,7 +1784,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     }
 
     if( col != PlaylistItem::Rating && fontMetrics().width( text ) <= itemWidth )
-        return QPair<QString, QRect>( QString::null, QRect() );
+        return QPair<QString, QRect>( QString(), QRect() );
 
     QRect globalRect( viewport()->mapToGlobal( irect.topLeft() ), irect.size() );
     Q3SimpleRichText t( text, font() );
@@ -1808,7 +1808,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         return QPair<QString, QRect>( text, globalRect );
     }
 
-    return QPair<QString, QRect>( QString::null, QRect() );
+    return QPair<QString, QRect>( QString(), QRect() );
 }
 
 void
@@ -1962,7 +1962,7 @@ Playlist::setCurrentTrackPixmap( int state )
     if( !m_currentTrack )
         return;
 
-    QString pixmap = QString::null;
+    QString pixmap;
 
     if( state < 0 )
         state = EngineController::engine()->state();
@@ -2313,7 +2313,7 @@ Playlist::writeTag( Q3ListViewItem *qitem, const QString &, int column ) //SLOT
         static_cast<PlaylistItem*>(qitem)->setDynamicEnabled( dynamicEnabled );
 
     m_itemsToChangeTagsFor.clear();
-    m_editOldTag = QString::null;
+    m_editOldTag.clear();
 }
 
 void

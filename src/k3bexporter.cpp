@@ -72,7 +72,7 @@ void K3bExporter::exportSelectedTracks( int openmode )
 
 void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
-    exportAlbum( QString::null, album, openmode );
+    exportAlbum( QString(), album, openmode );
 }
 
 void K3bExporter::exportAlbum( const QString &artist, const QString &album, int openmode )

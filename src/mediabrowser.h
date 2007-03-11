@@ -149,9 +149,9 @@ class MediaQueue : public K3ListView
         void save( const QString &path );
         void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
         void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
-        void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
+        void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString() );
         void addUrl( const KUrl& url, MediaItem *item );
-        void addUrls( const KUrl::List urls, const QString &playlistName=QString::null );
+        void addUrls( const KUrl::List urls, const QString &playlistName=QString() );
 
         void URLsAdded(); // call after finishing adding single urls
 
@@ -459,7 +459,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual void applyConfig() {}
         virtual void loadConfig();
 
-        QString configString( const QString &name, const QString &defValue = QString::null );
+        QString configString( const QString &name, const QString &defValue = QString() );
         void setConfigString( const QString &name, const QString &value );
         bool configBool( const QString &name, bool defValue=false );
         void setConfigBool( const QString &name, bool value );
