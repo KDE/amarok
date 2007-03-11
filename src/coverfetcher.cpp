@@ -54,7 +54,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         menu.setItemEnabled( CUSTOM, disable );
         menu.insertSeparator();
 
-        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
+        menu.insertItem( KIcon( Amarok::icon( "list-remove" ) ), i18n( "&Unset Cover" ), DELETE );
         if ( showCoverManager ) {
             menu.insertSeparator();
             menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );

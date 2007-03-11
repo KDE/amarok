@@ -430,7 +430,7 @@ void App::initGlobalShortcuts()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( playPause() ) );
 
-//    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0, ec, SLOT( stop() ), true, true );
+//    m_pGlobalAccel->insert( "process-stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0, ec, SLOT( stop() ), true, true );
     action = new KAction( i18n( "Stop" ), m_pPlaylistWindow );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( stop() ) );
@@ -440,7 +440,7 @@ void App::initGlobalShortcuts()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::CTRL + Qt::Key_V ) );
     connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
 
-//    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0, ec, SLOT( next() ), true, true );
+//    m_pGlobalAccel->insert( "find-next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0, ec, SLOT( next() ), true, true );
     action = new KAction( i18n( "Next Track" ), m_pPlaylistWindow );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( next() ) );

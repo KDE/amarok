@@ -340,8 +340,8 @@ Playlist::Playlist( QWidget *parent )
     ac->addAction("playlist_undo", m_undoButton);
     m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), this );
     ac->addAction("playlist_redo", m_redoButton);
-    m_undoButton ->setIcon( KIcon( Amarok::icon( "undo" ) ) );
-    m_redoButton ->setIcon( KIcon( Amarok::icon( "redo" ) ) );
+    m_undoButton ->setIcon( KIcon( Amarok::icon( "edit-undo" ) ) );
+    m_redoButton ->setIcon( KIcon( Amarok::icon( "edit-redo" ) ) );
 
     KAction *a = new KAction( this );
     a->setText(i18n( "&Repopulate" ));
@@ -379,7 +379,7 @@ Playlist::Playlist( QWidget *parent )
     KToggleAction *stopafter = new KToggleAction( this );
     stopafter->setShortcut( Qt::ControlModifier+Qt::AltModifier+Qt::Key_V );
     stopafter->setText(i18n( "&Stop Playing After Track" ));
-    stopafter->setIcon( KIcon( Amarok::icon( "stop" ) ) );
+    stopafter->setIcon( KIcon( Amarok::icon( "process-stop" ) ) );
     ac->addAction("stop_after", stopafter);
     connect( stopafter, SIGNAL( triggered( bool ) ), this, SLOT( toggleStopAfterCurrentItem() ) );
 
@@ -2099,7 +2099,7 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     {
     case Engine::Playing:
         Amarok::actionCollection()->action( "pause" )->setEnabled( true );
-        Amarok::actionCollection()->action( "stop" )->setEnabled( true );
+        Amarok::actionCollection()->action( "process-stop" )->setEnabled( true );
 
         Glow::startTimer();
 
@@ -3875,18 +3875,18 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
-        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Organize File...", "&Organize %1 Files...", itemCount), ORGANIZE );
+        fileMenu.insertItem( KIcon( "document-save-as" ), i18np("&Organize File...", "&Organize %1 Files...", itemCount), ORGANIZE );
     }
     else
     {
-        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
-        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
+        fileMenu.insertItem( KIcon( "document-save-as" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
+        fileMenu.insertItem( KIcon( "document-save-as" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
+    fileMenu.insertItem( KIcon( Amarok::icon( "list-remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
     popup.insertItem( KIcon( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
-        popup.insertItem( KIcon( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
+        popup.insertItem( KIcon( Amarok::icon( "edit-copy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
 
     if( itemCount > 1 )
         popup.insertItem( trackColumn
@@ -3898,7 +3898,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             ? i18n( "&Edit Tag '%1'", tagName )
             : i18n( "&Edit '%1' Tag for Selected Tracks", tagName )), EDIT );
 
-    popup.insertItem( KIcon( Amarok::icon( "info" ) )
+    popup.insertItem( KIcon( Amarok::icon( "document-properties" ) )
         , item->url().isLocalFile() ?
               i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", itemCount):
               i18np( "Track &Information...",  "&Information for %1 Tracks...", itemCount)

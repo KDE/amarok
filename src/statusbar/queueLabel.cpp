@@ -81,7 +81,7 @@ void QueueLabel::getCover( const QString &artist, const QString &album )
 {
     m_cover = CollectionDB::instance()->albumImage( artist, album, 50 );
     if( m_cover == CollectionDB::instance()->notAvailCover( 50 ) )
-        m_cover = KIconLoader::global()->iconPath( "goto", -K3Icon::SizeHuge );
+        m_cover = KIconLoader::global()->iconPath( "goto-page", -K3Icon::SizeHuge );
 }
 
 void QueueLabel::setNum( int num )

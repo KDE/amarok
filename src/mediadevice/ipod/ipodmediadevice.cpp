@@ -941,7 +941,7 @@ IpodMediaDevice::createLockFile( bool silent )
         if( !silent )
         {
             if( KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Remove iTunes Lock File?" ),
-                        KGuiItem(i18n("&Remove"), "editdelete"), QString::null, KMessageBox::Dangerous )
+                        KGuiItem(i18n("&Remove"), "edit-delete"), QString::null, KMessageBox::Dangerous )
                     == KMessageBox::Continue )
             {
                 msg = i18n( "Media Device: removing lockfile %1 failed: %2. " )
@@ -2179,10 +2179,10 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
         }
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
+            menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ),
+        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ),
                 i18np( "Delete Track from iPod", "Delete %1 Tracks from iPod", urls.count() ),
                 DELETE_FROM_IPOD );
         menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );

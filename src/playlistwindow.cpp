@@ -296,7 +296,7 @@ void PlaylistWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
              m_browserNames.append( name ); }
 
-//         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
+//         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "document-properties" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
@@ -1130,7 +1130,7 @@ void PlaylistWindow::createActions()
 
     KAction *statistics = new KAction( this );
     statistics->setText( i18n( "Statistics" ) );
-    statistics->setIcon( KIcon(Amarok::icon( "info" )) );
+    statistics->setIcon( KIcon(Amarok::icon( "document-properties" )) );
     ac->addAction( "statistics", statistics );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
 
@@ -1174,7 +1174,7 @@ void PlaylistWindow::createActions()
     addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
 
     KAction *previous = new KAction( this );
-    previous->setIcon( KIcon(Amarok::icon( "back" )) );
+    previous->setIcon( KIcon(Amarok::icon( "go-previous" )) );
     previous->setText( i18n( "Previous Track" ) );
     ac->addAction( "prev", previous );
     connect( previous, SIGNAL(triggered(bool)), ec, SLOT( previous() ) );
@@ -1192,7 +1192,7 @@ void PlaylistWindow::createActions()
     connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
 
     KAction *next = new KAction( this );
-    next->setIcon( KIcon(Amarok::icon( "next" )) );
+    next->setIcon( KIcon(Amarok::icon( "find-next" )) );
     next->setText( i18n( "Next Track" ) );
     ac->addAction( "next", next );
     connect( next, SIGNAL(triggered(bool)), ec, SLOT( next() ) );

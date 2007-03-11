@@ -189,7 +189,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     renameButton   = new KAction( KIcon( "edit-clear" ), i18n("Rename"), m_ac );
     connect( renameButton, SIGNAL( triggered( bool ) ), this, SLOT( renameSelectedItem() ) );
-    removeButton   = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n("Delete"), m_ac );
+    removeButton   = new KAction( KIcon( Amarok::icon( "list-remove" ) ), i18n("Delete"), m_ac );
     connect( removeButton, SIGNAL( triggered( bool ) ), this, SLOT( removeSelectedItems() ) );
 
     m_toolbar = new Browser::ToolBar( browserBox );
@@ -3150,7 +3150,7 @@ InfoPane::InfoPane( QWidget *parent )
         container->setBackgroundMode( Qt::PaletteBase );
     }
 
-    m_pushButton = new KPushButton( KGuiItem( i18n("&Show Extended Info"), "info" ), this );
+    m_pushButton = new KPushButton( KGuiItem( i18n("&Show Extended Info"), "document-properties" ), this );
     m_pushButton->setToggleButton( true );
     m_pushButton->setEnabled( m_enable );
     connect( m_pushButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );

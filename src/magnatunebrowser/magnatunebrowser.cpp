@@ -346,7 +346,7 @@ void MagnatuneBrowser::initBottomPanel()
     m_showInfoToggleButton->setParent( hBox );
     m_showInfoToggleButton->setObjectName( "showInfoCheckbox" );
     m_showInfoToggleButton->setCheckable( true );
-    m_showInfoToggleButton->setIcon( KIcon( Amarok::icon( "info" ) ) );
+    m_showInfoToggleButton->setIcon( KIcon( Amarok::icon( "document-properties" ) ) );
     m_showInfoToggleButton->setChecked( true );
 
     m_isInfoShown = true;

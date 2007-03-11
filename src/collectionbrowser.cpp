@@ -1519,8 +1519,8 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         menu.insertSeparator();
 
         KMenu fileMenu;
-        fileMenu.insertItem( KIcon( "filesaveas" ), i18np( "&Organize File..." , "&Organize %1 Files..." , selection.count() ) , ORGANIZE );
-        fileMenu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18np( "&Delete File..." , "&Delete %1 Files..." , selection.count() ) , DELETE );
+        fileMenu.insertItem( KIcon( "document-save-as" ), i18np( "&Organize File..." , "&Organize %1 Files..." , selection.count() ) , ORGANIZE );
+        fileMenu.insertItem( KIcon( Amarok::icon( "list-remove" ) ), i18np( "&Delete File..." , "&Delete %1 Files..." , selection.count() ) , DELETE );
         menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Manage &Files" ), &fileMenu, FILE_MENU );
 
         if( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() == 1 ) // cover fetch isn't multiselection capable
@@ -1543,7 +1543,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
 
         menu.insertSeparator();
 
-        menu.insertItem( KIcon( Amarok::icon( "info" ) )
+        menu.insertItem( KIcon( Amarok::icon( "document-properties" ) )
             , i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
 

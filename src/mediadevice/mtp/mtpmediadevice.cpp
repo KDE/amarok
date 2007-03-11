@@ -1304,7 +1304,7 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
             break;
         }
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )

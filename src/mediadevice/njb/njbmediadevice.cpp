@@ -637,7 +637,7 @@ NjbMediaDevice::rmbPressed(Q3ListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
         menu.insertSeparator();
         //menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete from device" ), DELETE );
 
 
         int id =  menu.exec( point );

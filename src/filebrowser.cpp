@@ -200,10 +200,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
-        actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "remove" ) ) );
+        actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "list-remove" ) ) );
         menu->addAction( actionCollection->action( "delete" ) );
         menu->insertSeparator();
-        menu->insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
+        menu->insertItem( KIcon( Amarok::icon( "document-properties" ) ), i18n( "Edit Track &Information..." ), EditTags );
         menu->addAction( actionCollection->action( "properties" ) );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
@@ -646,7 +646,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         connect( m_listView, SIGNAL(executed( Q3ListViewItem* )), SLOT(activate( Q3ListViewItem* )) );
     }
 
-    KPushButton *button = new KPushButton( KGuiItem( i18n("&Show Search Panel"), "find" ), this );
+    KPushButton *button = new KPushButton( KGuiItem( i18n("&Show Search Panel"), "edit-find" ), this );
     button->setToggleButton( true );
     connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 

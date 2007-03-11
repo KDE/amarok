@@ -89,7 +89,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 //    widgetParent->resize(580,300);
     KToolBar *topBar = new KToolBar( widget, "Topbar" );
     topBar->setIconSize(16);
-    topBar->insertButton( "today",    0, SIGNAL( clicked() ), this, SLOT( currentTrack() ) );
+    topBar->insertButton( "calendar-today",    0, SIGNAL( clicked() ), this, SLOT( currentTrack() ) );
     topBar->insertButton( "document", 0, SIGNAL( clicked() ), this, SLOT( lyrics() ) );
     topBar->insertButton( "personal", 0, SIGNAL( clicked() ), this, SLOT( wiki() ) );
 
@@ -110,11 +110,11 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
 
     toolBar->setIconSize(16);
-    toolBar->insertButton( "player_start",0, SIGNAL( clicked() ), this, SLOT( sendPrev() ) );
-    toolBar->insertButton( "player_play", 0, SIGNAL( clicked() ), this, SLOT( sendPlay() ) );
-    toolBar->insertButton( "player_pause",0, SIGNAL( clicked() ), this, SLOT( sendPause() ) );
-    toolBar->insertButton( "player_stop", 0, SIGNAL( clicked() ), this, SLOT( sendStop() ) );
-    toolBar->insertButton( "player_end",  0, SIGNAL( clicked() ), this, SLOT( sendNext() ) );
+    toolBar->insertButton( "media-skip-backward",0, SIGNAL( clicked() ), this, SLOT( sendPrev() ) );
+    toolBar->insertButton( "media-playback-start", 0, SIGNAL( clicked() ), this, SLOT( sendPlay() ) );
+    toolBar->insertButton( "media-playback-pause",0, SIGNAL( clicked() ), this, SLOT( sendPause() ) );
+    toolBar->insertButton( "media-playback-stop", 0, SIGNAL( clicked() ), this, SLOT( sendStop() ) );
+    toolBar->insertButton( "media-skip-forward",  0, SIGNAL( clicked() ), this, SLOT( sendNext() ) );
 
     toolBar->insertSeparator();
     toolBar->insertButton( "arts",        0, SIGNAL( clicked() ), this, SLOT( sendMute() ) );

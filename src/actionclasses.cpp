@@ -150,7 +150,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( KIcon("help"), i18n( "&Help" ), helpMenu( this ) );
+    insertItem( KIcon("help-contents"), i18n( "&Help" ), helpMenu( this ) );
 
     insertSeparator();
 
@@ -584,7 +584,7 @@ StopAction::StopAction( KActionCollection *ac )
   : KAction( 0 )
 {
     setText(i18n( "Stop" ));
-    setIcon(KIcon(Amarok::icon( "stop" )));
+    setIcon(KIcon(Amarok::icon( "process-stop" )));
     connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
     ac->addAction("stop", this);
 }
@@ -610,7 +610,7 @@ StopAction::plug( QWidget *w, int index )
         //KToolBarButton* button = bar->getButton( id );
         //button->setDelayedPopup( Amarok::StopMenu::instance() );
         //button->setObjectName( "toolbutton_stop_menu" );
-        //button->setIcon( Amarok::icon( "stop" ) );
+        //button->setIcon( Amarok::icon( "process-stop" ) );
         //button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
         return associatedWidgets().count() - 1;

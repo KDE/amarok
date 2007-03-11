@@ -394,7 +394,7 @@ RioKarmaMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int
     if( item )
     {
         KMenu menu( m_view );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )

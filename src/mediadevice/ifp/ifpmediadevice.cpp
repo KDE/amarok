@@ -656,7 +656,7 @@ IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "list-remove" ) ), i18n( "Delete" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )

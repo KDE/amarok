@@ -65,11 +65,11 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
 
     KVBox *buttonbox = new KVBox( this );
 
-    m_up = new KPushButton( KGuiItem( QString::null, "up" ), buttonbox );
+    m_up = new KPushButton( KGuiItem( QString::null, "go-up" ), buttonbox );
     m_up->setToolTip( i18n( "Move column up" ) );
     connect( m_up, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
 
-    m_down = new KPushButton( KGuiItem( QString::null, "down" ), buttonbox );
+    m_down = new KPushButton( KGuiItem( QString::null, "go-down" ), buttonbox );
     m_down->setToolTip( i18n( "Move column down" ) );
     connect( m_down, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
 
