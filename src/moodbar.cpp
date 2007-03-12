@@ -471,7 +471,7 @@ MoodServer::slotNewJob( void )
   // don't think the mood data exists while the analyzer is
   // running.  Then rename the file later.
   m_currentProcess = new Amarok::Process( this );
-  m_currentProcess->setPriority( 19 );  // Nice the process
+  m_currentProcess->setPriority( 18 );  // Nice the process
   *m_currentProcess << KStandardDirs::findExe( "moodbar" ) << "-o"
                     << (m_currentData.m_outfile + ".tmp")
                     << m_currentData.m_infile;
