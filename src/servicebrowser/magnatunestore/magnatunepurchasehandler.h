@@ -65,7 +65,7 @@ private:
     MagnatuneAlbum m_currentAlbum;
     QString m_currentAlbumCoverName;
 
-    bool parseDownloadXml( QString xml );
+    bool parseDownloadXml( const QString &xml );
 
     /**
      * This function saves the xml download info received from Magnatune.com after a
@@ -76,19 +76,19 @@ private:
      * is genereated from the artist and album names.
      * @param infoXml The info to store.
      */
-    void saveDownloadInfo(QString infoXml);
+    void saveDownloadInfo(const QString &infoXml);
 
 
 protected slots:
 
-    void showPurchaseDialog( QString coverTempLocation );
+    void showPurchaseDialog( const QString &coverTempLocation );
     void xmlDownloadComplete( KJob* downLoadJob );
     void albumDownloadComplete(bool success);
     void albumPurchaseCancelled();
 
 public slots:
 
-    void processPayment( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount );
+    void processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
 
     
 

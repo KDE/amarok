@@ -61,7 +61,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( QString ) ), this, SLOT( showPurchaseDialog( QString ) ) );
+        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( const QString &) ), this, SLOT( showPurchaseDialog( const QString &) ) );
     }
 
     m_currentAlbumCoverName = album.getName() + " - cover.jpg";
@@ -71,7 +71,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
 
 }
 
-void MagnatunePurchaseHandler::showPurchaseDialog(  QString coverTempLocation )
+void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLocation )
 {
 
     if ( m_albumDownloader != 0 )
@@ -104,7 +104,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  QString coverTempLocation )
     }
 }
 
-void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount )
+void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount )
 {
     QString amountString;
     amountString.setNum( amount, 10 );
@@ -188,7 +188,7 @@ void MagnatunePurchaseHandler::setParent( QWidget * parent )
 
 }
 
-void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
+void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
 {
 
     QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );

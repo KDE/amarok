@@ -26,7 +26,7 @@ Boston, MA 02110-1301, USA.
 
 
 
-MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, QString genre, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, const QString &genre, MagnatuneContentItem *parent )
 {
     m_genre = genre;
     m_content.artistValue = new MagnatuneArtist( artist );
@@ -36,7 +36,7 @@ MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, QString genre
 }
 
 
-MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, QString genre, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, const QString &genre, MagnatuneContentItem *parent )
 {
 
     m_genre = genre;
@@ -47,7 +47,7 @@ MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, QString genre,
 }
 
 
-MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, QString genre, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, const QString &genre, MagnatuneContentItem *parent )
 {
 
     m_genre = genre;
@@ -57,7 +57,7 @@ MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, QString genre,
     m_hasPopulatedChildItems = true;
 }
 
-MagnatuneContentItem::MagnatuneContentItem( QString genre )
+MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
 {
     m_genre = genre;
     m_type = MAGNATUNE_ROOT;

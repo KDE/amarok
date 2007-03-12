@@ -26,7 +26,7 @@ Boston, MA 02110-1301, USA.
 
 
 
-ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString url, QString infoHtml, ScriptableServiceContentItem * parent)
+ScriptableServiceContentItem::ScriptableServiceContentItem(const QString &name, const QString &url, const QString &infoHtml, ScriptableServiceContentItem * parent)
 {
     m_name = name;
     m_url = url;
@@ -37,7 +37,7 @@ ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString
     m_type = STATIC;
 }
 
-ScriptableServiceContentItem::ScriptableServiceContentItem(QString name, QString callbackScript, QString callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent) {
+ScriptableServiceContentItem::ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent) {
    
     m_name = name;
     m_parent = parent;

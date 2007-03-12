@@ -71,7 +71,7 @@ void ServiceBrowser::serviceSelected( QListWidgetItem * item ) {
     showService(  item->text() );
 }
 
-void ServiceBrowser::showService( QString name ) {
+void ServiceBrowser::showService( const QString &name ) {
 
     
     ServiceBase * service = 0;

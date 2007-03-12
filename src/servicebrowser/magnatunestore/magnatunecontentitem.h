@@ -39,10 +39,10 @@ union contentTypeUnion
 class MagnatuneContentItem : public ServiceModelItemBase
 {
 public:
-    MagnatuneContentItem( MagnatuneArtist content, QString genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneAlbum content, QString genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneTrack content, QString genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( QString genre );
+    MagnatuneContentItem( MagnatuneArtist content, const QString &genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( MagnatuneAlbum content, const QString &genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( MagnatuneTrack content, const QString &genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( const QString &genre );
 
 
 

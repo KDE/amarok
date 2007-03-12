@@ -84,7 +84,7 @@ public:
      * @param name artist name to retrieve
      * @return id of artist. -1 if no artist is found
      */
-    int getArtistIdByExactName(QString name);
+    int getArtistIdByExactName(const QString &name);
 
 
     /**
@@ -92,7 +92,7 @@ public:
      * @param albumcode The album code.
      * @return The id of the album, -1 if not foud.
      */
-    int getAlbumIdByAlbumCode( QString albumcode );
+    int getAlbumIdByAlbumCode( const QString &albumcode );
 
     /**
      * Returns all artist that has albums in a given genre. If an artist has both a Rock
@@ -100,7 +100,7 @@ public:
      * @param genre the genre
      * @return  A list of artist in the genre
      */
-    MagnatuneArtistList getArtistsByGenre(QString genre);
+    MagnatuneArtistList getArtistsByGenre(const QString &genre);
 
     /**
      * Returns the artist with a given id
@@ -130,7 +130,7 @@ public:
      * @param genre Limits the albums to a specific genre. Use "All" to get all albums
      * @return List of albums. empty if none are found
      */
-    MagnatuneAlbumList getAlbumsByArtistId(int id, QString genre);
+    MagnatuneAlbumList getAlbumsByArtistId(int id, const QString &genre);
 
     /**
      * Retrieves all tracks on a given album

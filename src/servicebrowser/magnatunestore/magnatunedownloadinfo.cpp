@@ -36,7 +36,7 @@ MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 MagnatuneDownloadInfo::~MagnatuneDownloadInfo()
 {}
 
-bool MagnatuneDownloadInfo::initFromFile( QString downloadInfoFileName )
+bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName )
 {
     QString xml;
 
@@ -59,7 +59,7 @@ bool MagnatuneDownloadInfo::initFromFile( QString downloadInfoFileName )
     return initFromString( xml );
 }
 
-bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
+bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
 {
 
     //complete overkill to do a full SAX2 parser for this at the moment... I think....
@@ -218,7 +218,7 @@ DownloadFormatMap MagnatuneDownloadInfo::getFormatMap()
     return m_downloadFormats;
 }
 
-void MagnatuneDownloadInfo::setFormatSelection( QString selectedFormat )
+void MagnatuneDownloadInfo::setFormatSelection( const QString &selectedFormat )
 {
     m_selectedDownloadFormat = selectedFormat;
 }
@@ -238,7 +238,7 @@ KUrl MagnatuneDownloadInfo::getCompleteDownloadUrl( )
    return downloadUrl;
 }
 
-void MagnatuneDownloadInfo::setUnpackUrl( QString unpackUrl )
+void MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
 {
     m_unpackUrl = unpackUrl;
 }

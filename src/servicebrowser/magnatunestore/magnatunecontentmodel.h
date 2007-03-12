@@ -55,11 +55,11 @@ private:
 
 private slots:
 
-    void infoParsed( QString infoHtml );
+    void infoParsed( const QString &infoHtml );
 
 public:
     
-    MagnatuneContentModel(QObject *parent = 0, QString genre = "All");
+    explicit MagnatuneContentModel(QObject *parent = 0, const QString &genre = "All");
     
     ~MagnatuneContentModel();
 
@@ -81,7 +81,7 @@ public:
 
     void requestHtmlInfo ( const QModelIndex & index ) const;
 
-    void setGenre( QString genre );
+    void setGenre( const QString &genre );
 
 //signals:
     //void infoChanged ( QString infoHtml );

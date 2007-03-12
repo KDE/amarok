@@ -39,8 +39,8 @@ public:
     MagnatuneDownloadInfo();
     ~MagnatuneDownloadInfo();
 
-    bool initFromString( QString downloadInfoString );
-    bool initFromFile( QString downloadInfoFileName );
+    bool initFromString( const QString &downloadInfoString );
+    bool initFromFile( const QString &downloadInfoFileName );
 
     DownloadFormatMap getFormatMap();
     QString getUserName();
@@ -49,8 +49,8 @@ public:
     int getAlbumId();
 
 
-    void setFormatSelection(QString selectedFormat);
-    void setUnpackUrl(QString unpackUrl);
+    void setFormatSelection(const QString &selectedFormat);
+    void setUnpackUrl(const QString &unpackUrl);
     void setAlbumId(int id);
     bool isReadyForDownload();
     KUrl getCompleteDownloadUrl();

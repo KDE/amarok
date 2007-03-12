@@ -33,7 +33,7 @@ Boston, MA 02110-1301, USA.
 
 ServiceBase *ServiceBase::s_instance = 0;
 
-ServiceBase::ServiceBase( QString name )
+ServiceBase::ServiceBase( const QString &name )
         : KVBox( 0)
 {
 
@@ -123,7 +123,7 @@ QString ServiceBase::getName( )
     return m_name;
 }
 
-void ServiceBase::setShortDescription( QString shortDescription )
+void ServiceBase::setShortDescription( const QString &shortDescription )
 {
     m_shortDescription = shortDescription;
 }
@@ -133,7 +133,7 @@ QString ServiceBase::getShortDescription( )
     return m_shortDescription;
 }
 
-void ServiceBase::setLongDescription( QString longDescription )
+void ServiceBase::setLongDescription( const QString &longDescription )
 {
     m_longDescription = longDescription;
 }
@@ -196,7 +196,7 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
 void ServiceBase::setModel( ServiceModelBase * model ) {
     m_contentView->setModel( model );
     m_model  = model;
-    connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
+    connect ( m_model, SIGNAL( infoChanged ( const QString &) ), this, SLOT( infoChanged ( const QString &) ) );
 }
 
 
@@ -211,7 +211,7 @@ void ServiceBase::treeItemSelected( const QModelIndex & index ) {
 
 }
 
-void ServiceBase::infoChanged ( QString infoHtml ) {
+void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
     m_infoBox->begin( );
     m_infoBox->write( infoHtml );

@@ -24,7 +24,7 @@
 #include "statusbar.h"
 
 
-MagnatuneXmlParser::MagnatuneXmlParser( QString filename )
+MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         : ThreadManager::Job( "MagnatuneXmlParser" )
 {
     m_currentArtist = "";
@@ -58,7 +58,7 @@ MagnatuneXmlParser::completeJob( )
 }
 
 void 
-MagnatuneXmlParser::readConfigFile( QString filename )
+MagnatuneXmlParser::readConfigFile( const QString &filename )
 {
     m_nNumberOfTracks = 0;
     m_nNumberOfAlbums = 0;

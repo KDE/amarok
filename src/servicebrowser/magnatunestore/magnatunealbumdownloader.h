@@ -41,7 +41,7 @@ public:
 
     ~MagnatuneAlbumDownloader();
 
-     void downloadCover( QString albumCoverUrlString, QString fileName );
+     void downloadCover( const QString &albumCoverUrlString, const QString &fileName );
 
 signals:
 
@@ -50,7 +50,7 @@ signals:
      * @param success true is download completed, false if download was cancelled.
      */
     void downloadComplete(bool success);
-    void coverDownloadCompleted(QString coverFileName);
+    void coverDownloadCompleted(const QString &coverFileName);
 
 public slots:
     /**

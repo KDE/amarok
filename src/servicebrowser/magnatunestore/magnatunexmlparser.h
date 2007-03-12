@@ -45,7 +45,7 @@ public:
      * @param fileName The file to parse 
      * @return Pointer to new object
      */
-    MagnatuneXmlParser( QString fileName );
+    MagnatuneXmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited fromThreadManager::Job 
@@ -69,7 +69,7 @@ public:
      * Reads, and starts parsing, file. Should not be used directly.
      * @param filename The file to read
      */
-    void readConfigFile( QString filename );
+    void readConfigFile( const QString &filename );
 
 signals:
 

@@ -22,7 +22,7 @@
 #include "scriptableservicecontentmodel.h"
 
 
-ScriptableServiceContentModel::ScriptableServiceContentModel( QObject *parent, QString header )
+ScriptableServiceContentModel::ScriptableServiceContentModel( QObject *parent, const QString &header )
      : ServiceModelBase( parent )
 {
 
@@ -45,7 +45,7 @@ ScriptableServiceContentModel::~ScriptableServiceContentModel()
       delete m_rootContentItem;
 }
 
-int ScriptableServiceContentModel::insertItem( QString name, QString url, QString infoHtml, const int parentId ) {
+int ScriptableServiceContentModel::insertItem( const QString &name, const QString &url, const QString &infoHtml, const int parentId ) {
 
     if (! m_contentItemMap.contains( parentId ) ) {
         return -1;
@@ -77,7 +77,7 @@ int ScriptableServiceContentModel::insertItem( QString name, QString url, QStrin
 
 }
 
-int ScriptableServiceContentModel::insertDynamicItem( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId ){
+int ScriptableServiceContentModel::insertDynamicItem( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId ){
 
     if (! m_contentItemMap.contains( parentId ) ) {
         return -1;
@@ -242,7 +242,7 @@ void ScriptableServiceContentModel::requestHtmlInfo ( const QModelIndex & index 
 }
 
 
-void ScriptableServiceContentModel::triggerUpdateScript(QString script, QString argument, int nodeId) const {
+void ScriptableServiceContentModel::triggerUpdateScript(const QString &script, const QString &argument, int nodeId) const {
 
     
     m_populatingDynamicItem = true;

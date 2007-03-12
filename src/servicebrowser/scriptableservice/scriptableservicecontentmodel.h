@@ -43,14 +43,14 @@ private:
     mutable int m_indexBeingUpdated;
     mutable int m_updateCount;
 
-    void triggerUpdateScript(QString script, QString argument, int nodeId) const;
+    void triggerUpdateScript(const QString &script, const QString &argument, int nodeId) const;
 
 
 public:
 
    
 
-    ScriptableServiceContentModel(QObject *parent, QString header);
+    ScriptableServiceContentModel(QObject *parent, const QString &header);
     ~ScriptableServiceContentModel();
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -61,8 +61,8 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
-    int insertItem( QString name, QString url, QString infoHtml, int parentId );
-    int insertDynamicItem( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId );
+    int insertItem( const QString &name, const QString &url, const QString &infoHtml, int parentId );
+    int insertDynamicItem( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId );
 
     void requestHtmlInfo ( const QModelIndex & item ) const;
 

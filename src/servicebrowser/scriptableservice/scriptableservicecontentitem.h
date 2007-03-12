@@ -34,11 +34,11 @@ class ScriptableServiceContentItem : public ServiceModelItemBase
 {
 public:
     
-    ScriptableServiceContentItem(QString name, QString url, QString infoHtml, ScriptableServiceContentItem * parent); //starting out with the very simple version
+    ScriptableServiceContentItem(const QString &name, const QString &url, const QString &infoHtml, ScriptableServiceContentItem * parent); //starting out with the very simple version
     
 
     //used for creating items that use a script to populate their child items
-    ScriptableServiceContentItem(QString name, QString callbackScript, QString callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent);
+    ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent);
 
     ~ScriptableServiceContentItem();
 

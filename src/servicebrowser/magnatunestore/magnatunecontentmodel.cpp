@@ -23,13 +23,13 @@
 #include "magnatunedatabasehandler.h"
 
 
-MagnatuneContentModel::MagnatuneContentModel(QObject *parent, QString genre )
+MagnatuneContentModel::MagnatuneContentModel(QObject *parent, const QString &genre )
      : ServiceModelBase(parent)
 {
      m_genre = genre;
      m_rootContentItem = new MagnatuneContentItem( m_genre );
      m_infoParser = new MagnatuneInfoParser();
-     connect( m_infoParser, SIGNAL (info ( QString ) ), this, SLOT( infoParsed( QString ) ) );
+     connect( m_infoParser, SIGNAL (info ( const QString &) ), this, SLOT( infoParsed( const QString &) ) );
 
 
     m_artistIcon = KIcon( Amarok::icon( "artist" ) );
@@ -180,7 +180,7 @@ bool MagnatuneContentModel::hasChildren ( const QModelIndex & parent ) const {
     return item->hasChildren();
 }
 
-void MagnatuneContentModel::setGenre( QString genre ) {
+void MagnatuneContentModel::setGenre( const QString &genre ) {
 
     m_genre = genre;
     delete m_rootContentItem;
@@ -212,7 +212,7 @@ void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const 
 
 }
 
-void MagnatuneContentModel::infoParsed( QString infoHtml ) {
+void MagnatuneContentModel::infoParsed( const QString &infoHtml ) {
     debug() << "MagnatuneContentModel::infoParsed"  << endl;
     emit( infoChanged ( infoHtml ) );
 }

@@ -142,7 +142,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 }
 
 
-void MagnatunePurchaseDialog::setCover( QString coverFile )
+void MagnatunePurchaseDialog::setCover( const QString &coverFile )
 {
     coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
 }

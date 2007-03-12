@@ -60,7 +60,7 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
 
     if (m_redownloadDialog == 0) {
         m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
-        connect( m_redownloadDialog, SIGNAL( redownload( QString) ), this, SLOT( redownload( QString ) ) );
+        connect( m_redownloadDialog, SIGNAL( redownload( const QString &) ), this, SLOT( redownload( const QString &) ) );
         connect( m_redownloadDialog, SIGNAL(cancelled() ), this, SLOT( selectionDialogCancelled() ));
     }
 
@@ -100,7 +100,7 @@ QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
 
 }
 
-void MagnatuneRedownloadHandler::redownload( QString storedInfoFileName )
+void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
 {
 
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );

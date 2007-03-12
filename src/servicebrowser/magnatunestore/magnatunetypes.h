@@ -43,16 +43,16 @@ public:
     void setId( int id );
     int getId() const;
 
-    void setName( QString name );
+    void setName( const QString &name );
     QString getName() const;
 
-    void setDescription( QString description );
+    void setDescription( const QString &description );
     QString getDescription() const;
 
-    void setPhotoURL( QString photoURL );
+    void setPhotoURL( const QString &photoURL );
     QString getPhotoURL() const;
   
-    void setHomeURL( QString homeURL );
+    void setHomeURL( const QString &homeURL );
     QString getHomeURL() const;
 };
 
@@ -75,22 +75,22 @@ public:
     void setId( int id );
     int getId() const;
 
-    void setName( QString name );
+    void setName( const QString &name );
     QString getName() const;
 
-    void setCoverURL( QString coverURL );
+    void setCoverURL( const QString &coverURL );
     QString getCoverURL() const;
 
     void setLaunchDate( QDate launchDate );
     QDate getLaunchDate() const;
 
-    void setAlbumCode( QString albumCode );
+    void setAlbumCode( const QString &albumCode );
     QString getAlbumCode() const;
 
-    void setMp3Genre( QString mp3Genre );
+    void setMp3Genre( const QString &mp3Genre );
     QString getMp3Genre() const;
 
-    void setMagnatuneGenres( QString magnatuneGenres );
+    void setMagnatuneGenres( const QString &magnatuneGenres );
     QString getMagnatuneGenres() const;
 
     void setArtistId( int artistId );
@@ -117,7 +117,7 @@ public:
     void setId( int id );
     int getId() const;
  
-    void setName( QString name );
+    void setName( const QString &name );
     QString getName() const;
 
     void setTrackNumber( int trackNumber );
@@ -126,10 +126,10 @@ public:
     void setDuration( int duration );
     int getDuration() const;
 
-    void setHifiURL( QString hifiURL );
+    void setHifiURL( const QString &hifiURL );
     QString getHifiURL() const;
 
-    void setLofiURL( QString lofiURL );
+    void setLofiURL( const QString &lofiURL );
     QString getLofiURL() const;
 
     void setAlbumId( int albumId );

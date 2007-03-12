@@ -22,7 +22,7 @@ Boston, MA 02110-1301, USA.
 #include "debug.h"
 
 
-ScriptableService::ScriptableService( QString name )
+ScriptableService::ScriptableService( const QString &name )
         : ServiceBase( name )
 {
 

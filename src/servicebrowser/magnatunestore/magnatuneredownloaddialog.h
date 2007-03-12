@@ -30,15 +30,15 @@ class MagnatuneRedownloadDialog : public magnatuneReDownloadDialogBase
     Q_OBJECT
 
 public:
-    MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    explicit MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
     ~MagnatuneRedownloadDialog();
     /*$PUBLIC_FUNCTIONS$*/
 
-    void setRedownloadItems(QStringList items);
+    void setRedownloadItems(const QStringList &items);
 
 signals:
 
-    void redownload(QString downloadInfoFileName);
+    void redownload(const QString &downloadInfoFileName);
     void cancelled();
 
 public slots:

@@ -36,7 +36,7 @@ public:
      * @param modal Sets modal state.
      * @param fl Additional dialog flags.
      */
-    MagnatunePurchaseDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    explicit MagnatunePurchaseDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
 
     /**
      * Destructor
@@ -55,7 +55,7 @@ public:
      * Loads image into the cover label.
      * @param coverFile image file to load.
      */
-    void setCover( QString coverFile );
+    void setCover( const QString &coverFile );
 
 
 signals:
@@ -71,7 +71,7 @@ signals:
      * @param albumCode The album code of the album.
      * @param amount The amount to pay (in us $)
      */
-    void makePurchase( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount );
+    void makePurchase( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
 
     /**
      * Signal emitted if purchase operation is cancelled

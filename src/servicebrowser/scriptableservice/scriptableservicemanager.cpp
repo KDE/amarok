@@ -37,7 +37,7 @@ ScriptableServiceManager::ScriptableServiceManager(QObject* parent)
 
 }
 
-bool ScriptableServiceManager::createService( QString name, QString listHeader, QString rootHtml) {
+bool ScriptableServiceManager::createService( const QString &name, const QString &listHeader, const QString &rootHtml) {
     
     debug() << "ScriptableServiceManager::CreateService, name: " << name << ", header: "<< listHeader <<  endl;
 
@@ -60,7 +60,7 @@ bool ScriptableServiceManager::createService( QString name, QString listHeader, 
 }
 
 
-int ScriptableServiceManager::insertElement( QString name, QString url, QString infoHtml, int parentId, QString serviceName) {
+int ScriptableServiceManager::insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName) {
 
      debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
@@ -78,7 +78,7 @@ int ScriptableServiceManager::insertElement( QString name, QString url, QString 
 }
 
 
-int ScriptableServiceManager::insertDynamicElement( QString name, QString callbackScript, QString callbackArgument, QString infoHtml, int parentId, QString serviceName){
+int ScriptableServiceManager::insertDynamicElement( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId, const QString &serviceName){
 
      debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
@@ -96,7 +96,7 @@ int ScriptableServiceManager::insertDynamicElement( QString name, QString callba
 }
 
 
-bool ScriptableServiceManager::updateComplete( QString serviceName ) {
+bool ScriptableServiceManager::updateComplete( const QString &serviceName ) {
 
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name

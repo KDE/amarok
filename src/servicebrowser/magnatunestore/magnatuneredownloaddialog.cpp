@@ -36,7 +36,7 @@ MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()
 {
 }
 
-void MagnatuneRedownloadDialog::setRedownloadItems( QStringList items )
+void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
 {
 
      QStringListIterator it(items);

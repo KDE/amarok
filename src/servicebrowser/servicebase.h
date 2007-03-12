@@ -49,7 +49,7 @@ public:
      /**
       * Constructor
       */
-    ServiceBase( QString name );
+    ServiceBase( const QString &name );
     
     /**
      * Destructor
@@ -59,9 +59,9 @@ public:
 
     QString getName();
 
-    void setShortDescription( QString shortDescription );
+    void setShortDescription( const QString &shortDescription );
     QString getShortDescription();
-    void setLongDescription( QString longDescription );
+    void setLongDescription( const QString &longDescription );
     QString getLongDescription();
     void setIcon( QIcon pixmap );
     QIcon getIcon();
@@ -70,7 +70,7 @@ public:
 
 public slots:
 
-     void infoChanged ( QString infoHtml );
+     void infoChanged ( const QString &infoHtml );
 
 
 signals:

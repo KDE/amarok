@@ -59,7 +59,7 @@ private:
 
     QListWidget * m_serviceSelectionList;
     
-    void showService( QString name );
+    void showService( const QString &name );
 
     QMap<QString, ServiceBase *> m_services;
     ServiceBase * m_currentService;

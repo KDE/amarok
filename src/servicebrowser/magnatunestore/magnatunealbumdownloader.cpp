@@ -61,7 +61,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
 
-void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QString fileName )
+void MagnatuneAlbumDownloader::downloadCover( const QString &albumCoverUrlString, const QString &fileName )
 {
     KUrl downloadUrl( albumCoverUrlString );
 

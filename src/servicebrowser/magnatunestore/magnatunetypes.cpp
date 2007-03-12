@@ -39,7 +39,7 @@ int MagnatuneArtist::getId( ) const
     return m_id;
 }
 
-void MagnatuneArtist::setName( QString name )
+void MagnatuneArtist::setName( const QString &name )
 {
     m_name = name;
 }
@@ -49,7 +49,7 @@ QString MagnatuneArtist::getName( ) const
     return m_name;
 }
 
-void MagnatuneArtist::setDescription( QString description )
+void MagnatuneArtist::setDescription( const QString &description )
 {
     m_description = description;
 }
@@ -59,7 +59,7 @@ QString MagnatuneArtist::getDescription( ) const
     return m_description;
 }
 
-void MagnatuneArtist::setPhotoURL( QString photoURL )
+void MagnatuneArtist::setPhotoURL( const QString &photoURL )
 {
     m_photoURL = photoURL;
 }
@@ -69,7 +69,7 @@ QString MagnatuneArtist::getPhotoURL( ) const
     return m_photoURL;
 }
 
-void MagnatuneArtist::setHomeURL( QString homeURL )
+void MagnatuneArtist::setHomeURL( const QString &homeURL )
 {
     m_homeURL = homeURL;
 }
@@ -114,7 +114,7 @@ int MagnatuneAlbum::getArtistId( ) const
 }
 
 
-void MagnatuneAlbum::setName( QString name )
+void MagnatuneAlbum::setName( const QString &name )
 {
     m_name = name;
 }
@@ -124,7 +124,7 @@ QString MagnatuneAlbum::getName( ) const
     return m_name;
 }
 
-void MagnatuneAlbum::setCoverURL( QString coverURL )
+void MagnatuneAlbum::setCoverURL( const QString &coverURL )
 {
     m_coverURL = coverURL;
 }
@@ -144,7 +144,7 @@ QDate MagnatuneAlbum::getLaunchDate( ) const
     return m_launchDate;
 }
 
-void MagnatuneAlbum::setAlbumCode( QString albumCode )
+void MagnatuneAlbum::setAlbumCode( const QString &albumCode )
 {
     m_albumCode = albumCode;
 }
@@ -154,7 +154,7 @@ QString MagnatuneAlbum::getAlbumCode( ) const
     return m_albumCode;
 }
 
-void MagnatuneAlbum::setMp3Genre( QString mp3Genre )
+void MagnatuneAlbum::setMp3Genre( const QString &mp3Genre )
 {
     m_mp3Genre = mp3Genre;
 }
@@ -164,7 +164,7 @@ QString MagnatuneAlbum::getMp3Genre( ) const
     return m_mp3Genre;
 }
 
-void MagnatuneAlbum::setMagnatuneGenres( QString magnatuneGenres )
+void MagnatuneAlbum::setMagnatuneGenres( const QString &magnatuneGenres )
 {
     m_magnatuneGenres = magnatuneGenres;
 }
@@ -225,7 +225,7 @@ int MagnatuneTrack::getAlbumId( ) const
 
 
 
-void MagnatuneTrack::setName( QString name )
+void MagnatuneTrack::setName( const QString &name )
 {
     m_name = name;
 }
@@ -255,7 +255,7 @@ int MagnatuneTrack::getDuration( ) const
     return m_duration;
 }
 
-void MagnatuneTrack::setHifiURL( QString hifiURL )
+void MagnatuneTrack::setHifiURL( const QString &hifiURL )
 {
    m_hifiURL = hifiURL;
 }
@@ -265,7 +265,7 @@ QString MagnatuneTrack::getHifiURL( ) const
     return m_hifiURL;
 }
 
-void MagnatuneTrack::setLofiURL( QString lofiURL )
+void MagnatuneTrack::setLofiURL( const QString &lofiURL )
 {
     m_lofiURL = lofiURL;
 }

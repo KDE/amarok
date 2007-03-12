@@ -59,7 +59,7 @@ protected:
 
 protected slots:
 
-    void redownload(QString storedInfoFileName);
+    void redownload(const QString &storedInfoFileName);
     void selectionDialogCancelled();
     void albumDownloadComplete( bool success );
 

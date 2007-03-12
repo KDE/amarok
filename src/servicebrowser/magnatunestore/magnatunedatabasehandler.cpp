@@ -195,7 +195,7 @@ MagnatuneDatabaseHandler::insertArtist( MagnatuneArtist *artist )
 
 
 int 
-MagnatuneDatabaseHandler::getArtistIdByExactName( QString name )
+MagnatuneDatabaseHandler::getArtistIdByExactName( const QString &name )
 {
     CollectionDB *db = CollectionDB::instance();
 
@@ -213,7 +213,7 @@ MagnatuneDatabaseHandler::getArtistIdByExactName( QString name )
 
 }
 
-int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode( QString albumcode )
+int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode( const QString &albumcode )
 {
 
     CollectionDB *db = CollectionDB::instance();
@@ -233,7 +233,7 @@ int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode( QString albumcode )
 
 
 MagnatuneArtistList 
-MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
+MagnatuneDatabaseHandler::getArtistsByGenre( const QString &genre )
 {
 
     QString genreSql = "";
@@ -287,7 +287,7 @@ MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
 }
 
 MagnatuneAlbumList 
-MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, QString genre )
+MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
 {
 
     QString genreSqlString;
