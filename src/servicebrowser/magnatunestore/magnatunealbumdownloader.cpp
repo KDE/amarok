@@ -110,7 +110,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
         MagnatuneAlbum album = MagnatuneDatabaseHandler::instance()->getAlbumById( m_currentAlbumId );
         MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
 
-        QString finalAlbumPath = m_currentAlbumUnpackLocation + "/" + artist.getName() + "/" + album.getName();
+        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + artist.getName() + '/' + album.getName();
         QString coverUrlString = album.getCoverURL();
 
 
