@@ -101,7 +101,7 @@ main( int argc, char *argv[] )
         dbus_args << "--cwd" << QDir::currentPath();
 
         dbus_args += args;
-        dbus_args += "]";
+        dbus_args += "]"; // krazy:exclude=doublequote_chars
 
         Q3Process proc( dbus_args );
         proc.start();
