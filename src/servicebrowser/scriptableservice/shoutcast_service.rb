@@ -1,5 +1,20 @@
+
+# Simple script for testing the scriptable service browser 
+# by creating a simple dynamic shoutcast directory browser.
+# when called with no arguments it creates the service, and 
+# when called with a parent node id and a genre, it populates that
+# parent node with all stations in that genre
+#
+# (c) 2007 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>
+#
+# License: GNU General Public License V2
+
+
 require 'net/http'
 require 'uri'
+
+
+
 
 def parse_genre(nodeId, genre)
 

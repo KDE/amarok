@@ -1,4 +1,4 @@
- /*
+/*
   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
   This library is free software; you can redistribute it and/or
