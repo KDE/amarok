@@ -22,8 +22,6 @@
 
 
 #include "amarok.h"
-#include "magnatuneartistinfobox.h"
-#include "magnatunelistview.h"
 #include "magnatunepurchasedialog.h"
 #include "magnatunepurchasehandler.h"
 #include "magnatuneredownloadhandler.h"

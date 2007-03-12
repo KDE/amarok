@@ -86,7 +86,6 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
-	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore
 	${CMAKE_SOURCE_DIR}/amarok/src
@@ -116,26 +115,6 @@ set(libplugin_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.cpp
 )
 
-#set(libmagnatunebrowser_SRCS
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneartistinfobox.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunebrowser.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloaddialog.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunepurchasedialog.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunepurchasehandler.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunetypes.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunexmlparser.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedatabasehandler.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunelistviewitems.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunelistview.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloaddialog.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloadhandler.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloadinfo.cpp
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunealbumdownloader.cpp)
-
-#kde4_add_ui3_files(libmagnatunebrowser_SRCS
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloaddialogbase.ui
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunepurchasedialogbase.ui
-#	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloaddialogbase.ui)
 
 set(libservicebrowser_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp
@@ -161,7 +140,6 @@ set(libmagnatunestore_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunetypes.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunexmlparser.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunelistview.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
