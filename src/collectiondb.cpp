@@ -310,7 +310,7 @@ CollectionDB::~CollectionDB()
 }
 
 
-inline QString
+QString
 CollectionDB::exactCondition( const QString &right )
 {
     if ( DbConnection::mysql == instance()->getDbConnectionType() )

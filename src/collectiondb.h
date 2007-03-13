@@ -272,7 +272,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
 
-        inline static QString exactCondition( const QString &right );
+        static QString exactCondition( const QString &right );
         static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
         int getType() { return getDbConnectionType(); }
 
