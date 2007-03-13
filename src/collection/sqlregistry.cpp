@@ -57,6 +57,21 @@ SqlRegistry::getTrack( const QString &url )
     }
 }
 
+
+QList<DataPtr>
+SqlRegistry::getArtists( QueryBuilder querybuilder )
+{
+    querybuilder.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
+    QStringList values = querybuilder.run();
+
+    QList<DataPtr> resultList;
+
+    foreach( QString name, values ) {
+        resultList += DataPtr::staticCast( getArtist( name ) );
+    }
+    return resultList;
+}
+
 ArtistPtr
 SqlRegistry::getArtist( const QString &name )
 {
@@ -69,6 +84,20 @@ SqlRegistry::getArtist( const QString &name )
         m_artistMap.insert( name, artist );
         return artist;
     }
+}
+
+QList<DataPtr>
+SqlRegistry::getGenres( QueryBuilder querybuilder )
+{
+    querybuilder.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
+    QStringList values = querybuilder.run();
+
+    QList<DataPtr> resultList;
+
+    foreach( QString name, values ) {
+        resultList += DataPtr::staticCast( getGenre( name ) );
+    }
+    return resultList;
 }
 
 GenrePtr
@@ -85,6 +114,20 @@ SqlRegistry::getGenre( const QString &name )
     }
 }
 
+QList<DataPtr>
+SqlRegistry::getComposers( QueryBuilder querybuilder )
+{
+    querybuilder.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName, true );
+    QStringList values = querybuilder.run();
+
+    QList<DataPtr> resultList;
+
+    foreach( QString name, values ) {
+        resultList += DataPtr::staticCast( getComposer( name ) );
+    }
+    return resultList;
+}
+
 ComposerPtr
 SqlRegistry::getComposer( const QString &name )
 {
@@ -99,6 +142,20 @@ SqlRegistry::getComposer( const QString &name )
     }
 }
 
+QList<DataPtr>
+SqlRegistry::getYears( QueryBuilder querybuilder )
+{
+    querybuilder.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
+    QStringList values = querybuilder.run();
+
+    QList<DataPtr> resultList;
+
+    foreach( QString name, values ) {
+        resultList += DataPtr::staticCast( getYear( name ) );
+    }
+    return resultList;
+}
+
 YearPtr
 SqlRegistry::getYear( const QString &name )
 {
@@ -111,6 +168,20 @@ SqlRegistry::getYear( const QString &name )
         m_yearMap.insert( name, year );
         return year;
     }
+}
+
+QList<DataPtr>
+SqlRegistry::getAlbums( QueryBuilder querybuilder )
+{
+    querybuilder.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
+    QStringList values = querybuilder.run();
+
+    QList<DataPtr> resultList;
+
+    foreach( QString name, values ) {
+        resultList += DataPtr::staticCast( getAlbum( name ) );
+    }
+    return resultList;
 }
 
 AlbumPtr

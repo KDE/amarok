@@ -28,12 +28,16 @@
 
 namespace Meta
 {
+    class MetaBase;
     class Track;
     class Artist;
     class Album;
     class Genre;
     class Composer;
     class Year;
+
+
+    typedef KSharedPtr<MetaBase> DataPtr;
 
     typedef KSharedPtr<Track> TrackPtr;
     typedef QList<TrackPtr> TrackList;
@@ -156,7 +160,7 @@ namespace Meta
             virtual void image() const = 0; //TODO: choose return value
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
-            /** updates the cover of the album */ 
+            /** updates the cover of the album */
             virtual void updateImage() {} //TODO: choose parameter
 
             /** invalidates the object's track cache. Call this method

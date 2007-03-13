@@ -20,11 +20,13 @@
 #define SQLREGISTRY_H
 
 #include "sqlmeta.h"
+#include "querybuilder.h"
 
 #include <QHash>
 #include <QMutex>
 #include <QObject>
 #include <QTimer>
+#include <QList>
 
 class SqlRegistry : public QObject
 {
@@ -34,11 +36,18 @@ class SqlRegistry : public QObject
         static SqlRegistry * instance();
 
         TrackPtr getTrack( const QString &url );
+
         ArtistPtr getArtist( const QString &name );
+        QList<DataPtr> getArtists( QueryBuilder querybuilder = QueryBuilder() );
         GenrePtr getGenre( const QString &name );
+        QList<DataPtr> getGenres( QueryBuilder querybuilder = QueryBuilder() );
         ComposerPtr getComposer( const QString &name );
+        QList<DataPtr> getComposers( QueryBuilder querybuilder = QueryBuilder() );
         YearPtr getYear( const QString &year );
+        QList<DataPtr> getYears( QueryBuilder querybuilder = QueryBuilder() );
         AlbumPtr getAlbum( const QString &album ); //TODO fix this
+        QList<DataPtr> getAlbums( QueryBuilder querybuilder = QueryBuilder() );
+
 
     private slots:
         void emptyCache();
