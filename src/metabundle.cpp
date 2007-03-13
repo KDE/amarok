@@ -420,14 +420,14 @@ MetaBundle::init( TagLib::AudioProperties *ap )
 void
 MetaBundle::init( const KFileMetaInfo& info )
 {
-    if( info.isValid() && !info.isEmpty() )
+    if( info.isValid() )
     {
-        m_artist     = info.item( "Artist" ).string();
-        m_album      = info.item( "Album" ).string();
-        m_comment    = info.item( "Comment" ).string();
-        m_genre      = info.item( "Genre" ).string();
-        m_year       = info.item( "Year" ).string().toInt();
-        m_track      = info.item( "Track" ).string().toInt();
+        m_artist     = info.item( "Artist" ).value().toString();
+        m_album      = info.item( "Album" ).value().toString();
+        m_comment    = info.item( "Comment" ).value().toString();
+        m_genre      = info.item( "Genre" ).value().toString();
+        m_year       = info.item( "Year" ).value().toString().toInt();
+        m_track      = info.item( "Track" ).value().toString().toInt();
         m_bitrate    = info.item( "Bitrate" ).value().toInt();
         m_length     = info.item( "Length" ).value().toInt();
         m_sampleRate = info.item( "Sample Rate" ).value().toInt();
@@ -435,10 +435,10 @@ MetaBundle::init( const KFileMetaInfo& info )
         // For title, check if it is valid. If not, use prettyTitle.
         // @see bug:83650
         const KFileMetaInfoItem itemtitle = info.item( "Title" );
-        m_title = itemtitle.isValid() ? itemtitle.string() : prettyTitle( m_url.fileName() );
+        m_title = itemtitle.isValid() ? itemtitle.value().toString() : prettyTitle( m_url.fileName() );
 
         const KFileMetaInfoItem itemid = info.item( "Unique ID" );
-        m_uniqueId = itemid.isValid() ? itemid.string() : QString::null;
+        m_uniqueId = itemid.isValid() ? itemid.value().toString() : QString::null;
 
         // because whoever designed KMetaInfoItem is a donkey
         #define makeSane( x ) if( x.string() == "---" ) x = null;
