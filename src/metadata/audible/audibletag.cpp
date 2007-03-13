@@ -28,6 +28,7 @@
 #include <taglib/tag.h>
 
 #include <netinet/in.h> // ntohl
+#include <stdlib.h>
 
 using namespace TagLib;
 
