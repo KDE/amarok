@@ -1,14 +1,24 @@
 project(Amarok)
 
-find_package(KDE4 REQUIRED)
-#following lines are copied from the koffice CMakeLists.txt
-#not sure what they do, but they sound useful. Remove if necessary
-include(KDE4Defaults)
-include(MacroLibrary)
-
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS) 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #we're still worrying about all the errors
 OPTION(AMAROK_AMAZON_SUPPORT   "Enable Amazon cover download support")
+
+find_package(Taglib REQUIRED)
+find_package(RUBY REQUIRED)
+
+macro_optional_find_package(Njb)
+macro_optional_find_package(Sqlite)
+macro_optional_find_package(Ifp)
+macro_optional_find_package(MySQL)
+macro_optional_find_package(PostgreSQL)
+macro_optional_find_package(Libvisual)
+macro_optional_find_package(Mp4v2)
+macro_optional_find_package(Xine)
+macro_optional_find_package(Helix)
+macro_optional_find_package(Mtp)
+macro_optional_find_package(GObject)
+macro_optional_find_package(GStreamer)
 
 add_subdirectory( src )
 
