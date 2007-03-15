@@ -68,7 +68,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["playlist"]             = "media-playlist";
         iconMap["playlist_clear"]       = "media-playlist-clear";
         iconMap["playlist_refresh"]     = "rebuild";
-        iconMap["queue"]                = "goto";
+        iconMap["queue"]                = "arrow-down-double";
         iconMap["queue_track"]          = "2rightarrow";
         iconMap["dequeue_track"]        = "2leftarrow";
         iconMap["random"]               = "roll";
