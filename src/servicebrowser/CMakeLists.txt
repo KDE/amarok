@@ -21,7 +21,7 @@ set(libservicebrowser_SRCS
 
 kde4_automoc( ${libmagnatunebrowser_SRCS} )
 
-ADD_LIBRARY( libservicebrowser.la ${libmagnatunebrowser_SRCS} )
+KDE4_ADD_LIBRARY( libservicebrowser.la ${libmagnatunebrowser_SRCS} )
 
 
 ########### next target ###############
