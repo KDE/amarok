@@ -1515,31 +1515,35 @@ static inline void xmlEncode(QTextStream &stream, const QString &str)
     {
         uint uc = (*cur)[i].unicode();
         // we try to accumulate unescaped chars before writing to stream
-        bool flush = true;
+        const char *escaped;
         // careful about the order of tests, common before less common
         if ( 'a' <= uc && uc <= 'z' || '0' <= uc && uc <= '9' || 'A' <= uc && uc <= 'Z' )
             // most common case
-            flush = false;
-        else if ( uc == '<' )  stream << "&lt;";
-        else if ( uc == '>' )  stream << "&gt;";
-        else if ( uc == '&' )   stream << "&amp;";
-        else if ( uc == '"')    stream << "&quot;";
+            escaped = NULL;
+        else if ( uc == '<' ) escaped = "&lt;";
+        else if ( uc == '>' ) escaped = "&gt;";
+        else if ( uc == '&' ) escaped = "&amp;";
+        else if ( uc == '"' ) escaped = "&quot;";
         else
         {
             // see if it's a XML-valid unicode char at all
             if ( (0x20 <= uc && uc <= 0xD7FF || 0xE000 <= uc && uc <= 0xFFFD
                   || uc == 0x9 || uc == 0xA || uc == 0xD) )
                 // fairly common, other ascii chars
-                flush = false;
+                escaped = NULL;
             else
-                stream << "&#x" << QString::number(uc, 16) << ';';
+                escaped = "";   // special char, will write later
         }
-        if ( flush )
+        if ( escaped )
         {
+            // flush previous unescaped chars
             if ( i > 0 ) stream << cur->left(i);
             tmp = cur->right(cur->length() - i - 1);
             cur = &tmp;
             i = 0;
+            // now write escaped string
+            if ( escaped[0] ) stream << escaped;
+            else stream << "&#x" << QString::number(uc, 16) << ';';
         } else i++;
     }
 
