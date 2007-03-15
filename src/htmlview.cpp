@@ -134,7 +134,7 @@ HTMLView::loadStyleSheet()
         styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; font-family: %4; }" )
                 .arg( pxSize )
                 .arg( text )
-                .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
+                .arg( gradientColor.name() )
                 .arg( fontFamily );
 
         QTextStream eCSSts( &ExternalCSS );
@@ -207,7 +207,7 @@ HTMLView::loadStyleSheet()
         styleSheet = QString( "body { margin: 4px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; font-family: %5; }" )
                 .arg( pxSize )
                 .arg( text )
-                .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
+                .arg( gradientColor.name() )
                 .arg( m_bgGradientImage->name() )
                 .arg( fontFamily );
 

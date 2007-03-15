@@ -468,34 +468,6 @@
     </entry>
 </group>
 
-<group name="Colors">
-    <entry key="Scheme Amarok" type="Bool">
-        <label>Whether to use Amarok standard colors in the playlist window</label>
-        <whatsthis>If set, Amarok uses the Amarok standard colors in the playlist.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Scheme KDE" type="Bool">
-        <label>Whether to use global KDE colors in the playlist window</label>
-        <whatsthis>If set, Amarok uses the KDE standard colors in the playlist.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Scheme Custom" type="Bool">
-        <label>Whether to use user-defined colors in the playlist window</label>
-        <whatsthis>If set, Amarok uses the user-defined colors in the playlist.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Playlist Window Fg Color" type="Color">
-        <label>Playlist window foreground color</label>
-        <whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
-        <default>#80a0ff</default>
-    </entry>
-    <entry key="Playlist Window Bg Color" type="Color">
-        <label>Playlist window background color</label>
-        <whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
-        <default>#000000</default>
-    </entry>
-</group>
-
 <group name="Session">
     <entry key="Resume Playback" type="Bool">
         <label>Resume playback of last played track on startup</label>

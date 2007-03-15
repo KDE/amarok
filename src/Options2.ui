@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>447</width>
-            <height>556</height>
+            <height>422</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options2</string>
     </property>
     <vbox>
         <property name="name">
@@ -216,269 +219,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QButtonGroup">
-                    <property name="name">
-                        <cstring>radioGroup</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property name="title">
-                        <string></string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <widget class="QLayoutWidget" row="2" column="0">
-                            <property name="name">
-                                <cstring>layout2</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="spacing">
-                                    <number>0</number>
-                                </property>
-                                <widget class="QRadioButton">
-                                    <property name="name">
-                                        <cstring>kcfg_SchemeCustom</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Custom color scheme</string>
-                                    </property>
-                                    <property name="checked">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>If selected, Amarok uses the user-defined colors in the playlist.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>If selected, Amarok uses the user-defined colors in the playlist.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QGroupBox">
-                                    <property name="name">
-                                        <cstring>customSchemeBox</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>NoFocus</enum>
-                                    </property>
-                                    <property name="frameShape">
-                                        <enum>NoFrame</enum>
-                                    </property>
-                                    <property name="title">
-                                        <string></string>
-                                    </property>
-                                    <property name="flat">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="checked">
-                                        <bool>false</bool>
-                                    </property>
-                                    <grid>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="QLabel" row="0" column="0">
-                                            <property name="name">
-                                                <cstring>fgLabel</cstring>
-                                            </property>
-                                            <property name="enabled">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>4</hsizetype>
-                                                    <vsizetype>5</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>0</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Fo&amp;reground:</string>
-                                            </property>
-                                            <property name="textFormat">
-                                                <enum>AutoText</enum>
-                                            </property>
-                                            <property name="buddy" stdset="0">
-                                                <cstring>kcfg_PlaylistWindowFgColor</cstring>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>Selects the color to use as foreground color in the playlist.</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="KColorButton" row="0" column="1">
-                                            <property name="name">
-                                                <cstring>kcfg_PlaylistWindowFgColor</cstring>
-                                            </property>
-                                            <property name="enabled">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>5</hsizetype>
-                                                    <vsizetype>0</vsizetype>
-                                                    <horstretch>2</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                            <property name="color">
-                                                <color>
-                                                    <red>255</red>
-                                                    <green>255</green>
-                                                    <blue>255</blue>
-                                                </color>
-                                            </property>
-                                            <property name="toolTip" stdset="0">
-                                                <string>Click to select the foreground text color in the playlist window.</string>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>Selects the color to use as foreground (text) color in the playlist.</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="1" column="0">
-                                            <property name="name">
-                                                <cstring>bgColor</cstring>
-                                            </property>
-                                            <property name="enabled">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>4</hsizetype>
-                                                    <vsizetype>5</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>&amp;Background:</string>
-                                            </property>
-                                            <property name="textFormat">
-                                                <enum>AutoText</enum>
-                                            </property>
-                                            <property name="buddy" stdset="0">
-                                                <cstring>kcfg_PlaylistWindowBgColor</cstring>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>Selects the color to use as background color in the playlist.</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="KColorButton" row="1" column="1">
-                                            <property name="name">
-                                                <cstring>kcfg_PlaylistWindowBgColor</cstring>
-                                            </property>
-                                            <property name="enabled">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>5</hsizetype>
-                                                    <vsizetype>0</vsizetype>
-                                                    <horstretch>2</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>0</height>
-                                                </size>
-                                            </property>
-                                            <property name="maximumSize">
-                                                <size>
-                                                    <width>192</width>
-                                                    <height>32767</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                            <property name="color">
-                                                <color>
-                                                    <red>32</red>
-                                                    <green>32</green>
-                                                    <blue>80</blue>
-                                                </color>
-                                            </property>
-                                            <property name="toolTip" stdset="0">
-                                                <string>Click to select the background color in the playlist window.</string>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>Selects the color to use as background color in the playlist.</string>
-                                            </property>
-                                        </widget>
-                                    </grid>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="0">
-                            <property name="name">
-                                <cstring>kcfg_SchemeKDE</cstring>
-                            </property>
-                            <property name="text">
-                                <string>The current &amp;KDE color-scheme</string>
-                            </property>
-                            <property name="buttonGroupId">
-                                <number>0</number>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>If selected, Amarok uses the KDE standard colors in the playlist.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>If selected, Amarok uses the KDE standard colors in the playlist.</string>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="1" column="0">
-                            <property name="name">
-                                <cstring>kcfg_SchemeAmarok</cstring>
-                            </property>
-                            <property name="text">
-                                <string>The classic &amp;Amarok, "funky-monkey", theme</string>
-                            </property>
-                            <property name="buttonGroupId">
-                                <number>1</number>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>If selected, Amarok uses the Amarok standard colors in the playlist.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>If selected, Amarok uses the Amarok standard colors in the playlist.</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout5</cstring>
@@ -657,19 +397,11 @@
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>
         <signal>toggled(bool)</signal>
         <receiver>fontGroupBox</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_SchemeCustom</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>customSchemeBox</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
@@ -714,9 +446,6 @@
 <includehints>
     <includehint>kfontrequester.h</includehint>
     <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kcombobox.h</includehint>
 </includehints>

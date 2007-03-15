@@ -75,8 +75,6 @@ email                : markey@web.de
 #include <QEvent>              //genericEventHandler()
 #include <QEventLoop>          //applySettings()
 #include <QFile>
-#include <QObject>         //applyColorScheme()
-#include <QPalette>            //applyColorScheme()
 #include <Q3PopupMenu>          //genericEventHandler
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
@@ -580,9 +578,6 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    //determine and apply colors first
-    applyColorScheme();
-
 #ifdef Q_WS_X11
     //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
     //TrackToolTip::instance()->removeFromWidget( m_pTray );
@@ -748,115 +743,6 @@ App::continueInit()
 
 
     handleCliArgs();
-}
-
-void
-App::applyColorScheme()
-{
-    QColorGroup group;
-    using Amarok::ColorScheme::AltBase;
-    int h, s, v;
-    QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->sideBar() );
-    QWidget* const contextBrowser = static_cast<QWidget*>( ContextBrowser::instance() );
-
-    if( AmarokConfig::schemeKDE() )
-    {
-        AltBase = KGlobalSettings::alternateBackgroundColor();
-
-        playlistWindow()->setPalette(QPalette());
-        //browserBar->setPalette(QPalette());
-        contextBrowser->setPalette(QPalette());
-
-//        PlayerWidget::determineAmarokColors();
-    }
-
-    else if( AmarokConfig::schemeAmarok() )
-    {
-        group = QApplication::palette().active();
-        const QColor bg( Amarok::blue );
-        AltBase.setRgb( 57, 64, 98 );
-
-        group.setColor( QColorGroup::Text, Qt::white );
-        group.setColor( QColorGroup::Link, 0xCCCCCC );
-        group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Foreground, 0xd7d7ef );
-        group.setColor( QColorGroup::Background, AltBase );
-
-        group.setColor( QColorGroup::Button, AltBase );
-        group.setColor( QColorGroup::ButtonText, 0xd7d7ef );
-
-//         group.setColor( QColorGroup::Light,    Qt::cyan   /*lighter than Button color*/ );
-//         group.setColor( QColorGroup::Midlight, Qt::blue   /*between Button and Light*/ );
-//         group.setColor( QColorGroup::Dark,     Qt::green  /*darker than Button*/ );
-//         group.setColor( QColorGroup::Mid,      Qt::red    /*between Button and Dark*/ );
-//         group.setColor( QColorGroup::Shadow,   Qt::yellow /*a very dark color. By default, the shadow color is Qt::black*/ );
-
-        group.setColor( QColorGroup::Highlight, Qt::white );
-        group.setColor( QColorGroup::HighlightedText, bg );
-        //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
-
-        AltBase.getHsv( &h, &s, &v );
-        group.setColor( QColorGroup::Midlight, QColor::fromHsv( h, s/3, (int)(v * 1.2) ) ); //column separator in playlist
-
-        //TODO set all colours, even button colours, that way we can change the dark,
-        //light, etc. colours and Amarok scheme will look much better
-
-        using namespace Amarok::ColorScheme;
-        Base       = Amarok::blue;
-        Text       = Qt::white;
-        Background = 0x002090;
-        Foreground = 0x80A0FF;
-
-        //all children() derive their palette from this
-        playlistWindow()->setPalette( QPalette( group, group, group ) );
-        browserBar->setPalette(QPalette());
-        contextBrowser->setPalette( QPalette( group, group, group ) );
-    }
-
-    else if( AmarokConfig::schemeCustom() )
-    {
-        // we try to be smart: this code figures out contrasting colors for
-        // selection and alternate background rows
-        group = QApplication::palette().active();
-        const QColor fg( AmarokConfig::playlistWindowFgColor() );
-        const QColor bg( AmarokConfig::playlistWindowBgColor() );
-
-        //TODO use the ensureContrast function you devised in BlockAnalyzer
-
-        bg.getHsv( &h, &s, &v );
-        v += (v < 128) ? +50 : -50;
-        v &= 255; //ensures 0 <= v < 256
-        AltBase.setHsv( h, s, v );
-
-        fg.getHsv( &h, &s, &v );
-        v += (v < 128) ? +150 : -150;
-        v &= 255; //ensures 0 <= v < 256
-        QColor highlight = QColor::fromHsv( h, s, v );
-
-        group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Background, bg.dark( 115 ) );
-        group.setColor( QColorGroup::Text, fg );
-        group.setColor( QColorGroup::Link, fg.light( 120 ) );
-        group.setColor( QColorGroup::Highlight, highlight );
-        group.setColor( QColorGroup::HighlightedText, Qt::white );
-        group.setColor( QColorGroup::Dark, Qt::darkGray );
-
-//        PlayerWidget::determineAmarokColors();
-
-        // we only colour the middle section since we only
-        // allow the user to choose two colours
-        browserBar->setPalette( QPalette( group, group, group ) );
-        contextBrowser->setPalette( QPalette( group, group, group ) );
-        playlistWindow()->setPalette(QPalette());
-    }
-
-#if 0
-    // set the K3ListView alternate colours
-    QObjectList* const list = playlistWindow()->queryList( "K3ListView" );
-    for( QObject *o = list->first(); o; o = list->next() )
-        static_cast<K3ListView*>(o)->setAlternateBackground( AltBase );
-    delete list; //heap allocated!
-#endif
 }
 
 

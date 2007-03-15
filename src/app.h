@@ -98,7 +98,6 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
 
     private:
         void initGlobalShortcuts();
-        void applyColorScheme();
         void firstRunWizard();
 
         /** returns the playlistWindow */
