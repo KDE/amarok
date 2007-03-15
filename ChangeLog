@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * Faster playlist handling. Patch by Ovy <ovy@alum.mit.edu>. (BR 142255)
     * The moodbar process has been given a higher priority. (BR 136867)
     * Allow for lyrics scripts to specifiy site, site_url, and add_url from
       within the script. This will allow for "meta lyrics" scripts. Patch by
