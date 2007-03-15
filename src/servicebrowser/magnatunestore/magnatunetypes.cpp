@@ -27,6 +27,7 @@
 MagnatuneArtist::MagnatuneArtist( )
     : m_id(0)
 {
+    m_description = QString();
 }
 
 void MagnatuneArtist::setId( int id )
@@ -273,6 +274,16 @@ void MagnatuneTrack::setLofiURL( const QString &lofiURL )
 QString MagnatuneTrack::getLofiURL( ) const
 {
     return m_lofiURL;
+}
+
+void MagnatuneAlbum::setDescription(const QString description)
+{
+    m_description = description;
+}
+
+QString MagnatuneAlbum::getDescription()
+{
+    return m_description;
 }
 
 

@@ -176,6 +176,9 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
             else if ( sElementName == "Track" )
                 parseTrack( childElement );
 
+            else if ( sElementName == "album_notes" )
+                m_pCurrentAlbum->setDescription( childElement.text() );
+
         }
 
         n = n.nextSibling();

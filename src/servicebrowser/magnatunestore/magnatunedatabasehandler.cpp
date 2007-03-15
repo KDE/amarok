@@ -95,9 +95,10 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "artist_id INTEGER,"
                   "genre " + db->textColumnType() + ',' +
                   "album_code " + db->textColumnType() + ',' +
-                  "cover_url " + db->exactTextColumnType() + ");";
+                  "cover_url " + db->exactTextColumnType() + ',' +
+                  "description " + db->exactTextColumnType() + ");";
 
-    debug() << "Creating mangnatune_albums: " << queryString << endl;
+    debug() << "Creating Mangnatune_albums: " << queryString << endl;
 
     result = db->query( queryString );
 
@@ -161,13 +162,14 @@ MagnatuneDatabaseHandler::insertAlbum( MagnatuneAlbum *album, int artistId )
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
     queryString = "INSERT INTO magnatune_albums ( name, year, artist_id, "
-                  "genre, album_code, cover_url ) VALUES ( '"
+                  "genre, album_code, cover_url, description ) VALUES ( '"
                   + db->escapeString( db->escapeString( album->getName() ) ) + "', "
                   + QString::number( album->getLaunchDate().year() ) + ", "
                   + QString::number( artistId ) + ", '"
                   + db->escapeString( album->getMp3Genre() ) + "', '"
                   + album->getAlbumCode() + "', '"
-                  + db->escapeString( album->getCoverURL() ) + "' );";
+                  + db->escapeString( album->getCoverURL() ) + "', '"
+                  + db->escapeString( album->getDescription() )+ "' );";
 
     //debug() << "Adding Magnatune album " << queryString << endl;
 
@@ -308,7 +310,7 @@ MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
     queryString = "SELECT DISTINCT id, "
                   "name, year, "
                   "artist_id, genre, "
-                  "album_code, cover_url "
+                  "album_code, cover_url, description "
                   "FROM magnatune_albums "
                   "WHERE artist_id = '" + QString::number( id ) + '\'';
 
@@ -347,6 +349,9 @@ MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
         result.pop_front();
 
         album.setCoverURL( result.front() );
+        result.pop_front();
+
+        album.setDescription( result.front() );
         result.pop_front();
 
         list.append( album );
@@ -506,7 +511,7 @@ MagnatuneDatabaseHandler::getAlbumById( int id )
     queryString = "SELECT id, "
                   "name, year, "
                   "artist_id, genre, "
-                  "album_code, cover_url "
+                  "album_code, cover_url, description "
                   "FROM magnatune_albums "
                   "WHERE id = '" + QString::number( id ) + "';";
 
@@ -514,7 +519,7 @@ MagnatuneDatabaseHandler::getAlbumById( int id )
 
     MagnatuneAlbum album;
 
-    if ( result.size() == 7 )
+    if ( result.size() == 8 )
     {
 
         album.setId( result.front().toInt() );
@@ -538,6 +543,8 @@ MagnatuneDatabaseHandler::getAlbumById( int id )
         album.setCoverURL( result.front() );
         result.pop_front();
 
+        album.setDescription( result.front() );
+        result.pop_front();
     }
 
     return album;

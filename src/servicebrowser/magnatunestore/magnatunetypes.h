@@ -67,6 +67,7 @@ private:
     QString m_albumCode;
     QString m_mp3Genre;
     QString m_magnatuneGenres;
+    QString m_description;
     int m_artistId;
 
 public:
@@ -95,6 +96,9 @@ public:
 
     void setArtistId( int artistId );
     int getArtistId() const;
+
+    void setDescription( const QString description );
+    QString getDescription();
 
 
 };
