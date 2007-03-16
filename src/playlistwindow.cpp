@@ -253,6 +253,7 @@ void PlaylistWindow::init()
     plSplitter->addWidget( cb );
     plSplitter->addWidget( playlistwindow );
     setCentralWidget( centralWidget );
+    setStatusBar( statusbar );
 
     addToolBar( Qt::TopToolBarArea, m_toolbar );
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
