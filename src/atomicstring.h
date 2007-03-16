@@ -27,6 +27,16 @@
  * can hash 5 million 256 byte strings in 1.34s on a 1.62GHz Athlon XP.) For
  * other use, the overhead compared to a plain QString should be minimal.
  *
+ * Added note: due to QString's thread unsafe refcounting, special precautions have to be
+ * taken to avoid memory corruption, while still maintaining some level of efficiency.
+ * Also, deletions from other threads are delayed until that first thread
+ * calls AtomicString again. Thus, we would appear to leak memory if many AtomicStrings
+ * are deleted in a different thread than the main thread, and the main thread would
+ * never call AtomicString again. But this is unlikely since the GUI thread is the one
+ * manipulating AtomicStrings mostly. You can call the static method
+ * AtomicString::isMainString first thing in the app to make sure the GUI thread is
+ * identified correctly. This workaround can be removed with QT4.
+ *
  * @author Gábor Lehel <illissius@gmail.com>
  */
 
@@ -83,23 +93,20 @@ public:
      * This operation takes constant time.
      * @return whether this string and \p string are equivalent
      */
-    bool operator==( const AtomicString &other ) const { return m_string == other.m_string; }
+    bool operator==( const AtomicString &other ) const;
 
     /**
      * This operation takes constant time.
      * @return whether this string and \p string are not equivalent
      */
-    bool operator!=( const AtomicString &other ) const { return m_string != other.m_string; }
+    bool operator!=( const AtomicString &other ) const;
 
     /**
-     * Returns a reference to this string
+     * Returns a reference to this string, avoiding copies if possible.
      *
      * @return the string.
      */
-    const QString &string() const
-    {
-        return m_string ? *reinterpret_cast<QString*>(m_string) : s_emptyString;
-    }
+    QString string() const;
 
     /**
      * Implicitly casts to a QString.
@@ -112,7 +119,7 @@ public:
      * @return whether the string is empty
      * @see isNull
      */
-    bool isEmpty() const { return !m_string; }
+    bool isEmpty() const;
 
     /**
      * For convenience. Equivalent to isEmpty().
@@ -127,15 +134,16 @@ public:
      * different ones. This can be useful for certain kinds of hacks, but
      * shouldn't normally be used.
      *
+     * Note: DO NOT COPY this pointer with QString() or QString=. It is not
+     * thread safe to do it (QString internal refcount)
      * @return the internal pointer to the string
      */
-    const QString *ptr() const {
-        return m_string ? reinterpret_cast<QString*>(m_string) : &s_emptyString;
-    }
+    const QString *ptr() const;
 
     /**
      * For convenience, so you can do atomicstring->QStringfunction(),
-     * instead of atomicstring.string().QStringfunction().
+     * instead of atomicstring.string().QStringfunction(). The same warning
+     * applies as for the above ptr() function.
      */
     inline const QString *operator->() const { return ptr(); }
 
@@ -144,6 +152,13 @@ public:
      * @return the number of nonempty AtomicStrings equivalent to this one
      */
     uint refcount() const;
+
+    /**
+     * If called first thing in the app, this makes sure that AtomicString optimizes
+     * string usage for the main thread.
+     * @return true if this thread is considered the "main thread".
+     */
+    static bool isMainThread();
 
 
 private:
@@ -163,6 +178,7 @@ private:
     class Data;
     friend class Data;
 
+    void ref( Data* ) const;
     void deref( Data* );
 
     static void checkLazyDeletes();
@@ -171,8 +187,9 @@ private:
 
     // static data
     static set_type s_store;    // main string store
+    static Q3PtrList<QString> s_lazyDeletes;  // strings scheduled for deletion
+                                             // by main thread
     static QMutex s_storeMutex;  // protects the static data above
-    static QString s_emptyString;
 };
 
 #endif
