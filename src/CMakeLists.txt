@@ -258,8 +258,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    tracktooltip.cpp
    transferdialog.cpp
    xmlloader.cpp
-   xspfplaylist.cpp
-   dockwidget.cpp )
+   xspfplaylist.cpp )
 
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
 

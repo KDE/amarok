@@ -43,11 +43,8 @@
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 
-#include "dockwidget.h"
-
 #include <QEvent>           //eventFilter()
 #include <QFont>
-#include <Q3Header>
 #include <QLayout>
 #include <QLabel>           //search filter label
 
@@ -198,17 +195,6 @@ void PlaylistWindow::init()
       plTwoolBar->addAction( actionCollection()->action( "random_mode" ) );
     }
 
-
-
-    { //TODO: <Slider>
-#if 0
-        Amarok::PrettySlider *m_slider = new Amarok::PrettySlider( Qt::Horizontal,
-                                     Amarok::PrettySlider::Normal, m_toolbar );
-        QLabel *m_timeLabel = new TimeLabel( positionBox );
-        QLabel *m_timeLabel2;
-#endif
-    }
-
     dynamicBar->init();
     this->toolBars().clear();
 
@@ -258,20 +244,13 @@ void PlaylistWindow::init()
 
     createMenus();
 
-    QStackedWidget *cbCover = new QStackedWidget();
     cb = new ContextBrowser( "contextBrowser" );
-    cbCover->addWidget( cb );
-//     m_videoWidget = new Phonon::VideoWidget( this );
-//     cbCover->addWidget( m_videoWidget );
-//     m_videoWidget->hide();
-    setCentralWidget( cbCover );
-    setStatusBar( statusbar );
-
-    addDockWidget( Qt::LeftDockWidgetArea, m_browsers );
-
-    DockWidget *playlistWidget = new DockWidget();
-    playlistWidget->setWidget( playlistwindow );
-    addDockWidget( Qt::RightDockWidgetArea, playlistWidget );
+    KVBox *centralWidget = new KVBox( this );
+    QSplitter *plSplitter = new QSplitter( centralWidget );
+    plSplitter->addWidget( m_browsers );
+    plSplitter->addWidget( cb );
+    plSplitter->addWidget( playlistwindow );
+    setCentralWidget( centralWidget );
 
     addToolBar( Qt::TopToolBarArea, m_toolbar );
     m_toolbar->setFocusPolicy( Qt::WheelFocus );

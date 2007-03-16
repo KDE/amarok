@@ -25,11 +25,10 @@
 #include <QStackedWidget>
 #include <khbox.h>
 #include "sidebarwidget.h"
-#include "dockwidget.h"
 
-class SideBar: public DockWidget
+class SideBar: public KHBox
 {
-    typedef DockWidget super;
+    typedef KHBox super;
     Q_OBJECT
 
     signals:
@@ -38,27 +37,24 @@ class SideBar: public DockWidget
 
     public:
         SideBar( QWidget *parent, QWidget *contentsWidget = 0 )
-            : super( /*parent*/ )
+            : super( parent )
+            , m_bar( new SideBarWidget( this ) )
             , m_frame( new KHBox( this ) )
-            , m_bar( new SideBarWidget( m_frame ) )
-            , m_contentFrame( new KHBox( m_frame ) )
-            , m_widgets( new QStackedWidget( m_contentFrame ) )
+            , m_widgets( new QStackedWidget( m_frame ) )
             , m_current( -1 )
         {
             connect( m_bar, SIGNAL( opened( int ) ), SLOT( openWidget( int ) ) );
             connect( m_bar, SIGNAL( closed() ), SLOT( closeWidgets() ) );
-            m_contentFrame->hide();
-            m_widgets->setParent( m_contentFrame );
+            m_frame->hide();
+            m_widgets->setParent( m_frame );
             setContentsWidget( contentsWidget );
-
-            setWidget( m_frame );
         }
 
         void setContentsWidget( QWidget *w )
         {
             m_contentsWidget = w;
             if( w )
-                w->setParent( m_frame );
+                w->setParent( this );
         }
 
         QWidget *contentsWidget() const { return m_contentsWidget; }
@@ -94,8 +90,8 @@ class SideBar: public DockWidget
     private slots:
         void openWidget( int index )
         {
-            m_contentsWidget->setParent( m_contentFrame );
-            m_contentFrame->show();
+            m_contentsWidget->setParent( m_frame );
+            m_frame->show();
             m_widgets->setCurrentIndex( index );
             m_current = index;
             emit widgetActivated( currentIndex() );
@@ -105,16 +101,15 @@ class SideBar: public DockWidget
         void closeWidgets()
         {
             m_contentsWidget->setParent( this );
-            m_contentFrame->hide();
+            m_frame->hide();
             m_current = -1;
             emit widgetActivated( currentIndex() );
             emit widgetActivated( currentWidget() );
         }
 
     private:
-        KHBox *m_frame;
         SideBarWidget *m_bar;
-        KHBox *m_contentFrame;
+        KHBox *m_frame;
         QStackedWidget *m_widgets;
         QWidget *m_contentsWidget;
         int m_current;
