@@ -875,12 +875,15 @@ ScriptManager::loadScript( const QString& path )
         QTreeWidgetItem* li = 0;
         const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
+            debug() << "Spec file found: " << specPath << endl;
             KConfig spec( specPath, KConfig::NoGlobals );
             if( spec.hasKey( "name" ) )
                 name = spec.readEntry( "name" );
             if( spec.hasKey( "type" ) ) {
+                debug() << "Has key Type" << endl;
                 type = spec.readEntry( "type" );
                 if( type == "lyrics" ) {
+                    debug() << "Type: Lyrics" << endl;
                     li = new QTreeWidgetItem( m_lyricsCategory );
                     li->setText( 0, name );
                 }
