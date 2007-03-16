@@ -20,7 +20,22 @@
     <number>6</number>
    </property>
    <item>
-    <widget class="QTreeWidget" name="treeWidget" />
+    <widget class="QTreeWidget" name="treeWidget" >
+     <property name="contextMenuPolicy" >
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
+     <property name="columnCount" >
+      <number>1</number>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Scripts</string>
+      </property>
+     </column>
+    </widget>
    </item>
    <item>
     <layout class="QVBoxLayout" >

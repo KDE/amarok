@@ -161,12 +161,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->setupUi( main );
 
     setMainWidget( main );
-    m_gui->treeWidget->setRootIsDecorated( true );
-    //m_gui->listView->setFullWidth( true );
-    //m_gui->listView->setResizeMode( Q3ListView::AllColumns );
-    //m_gui->listView->setShowSortIndicator( true );
-    m_gui->treeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
-
 
     /// Category items
     m_generalCategory    = new QTreeWidgetItem( m_gui->treeWidget );
@@ -184,10 +178,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     //m_scoreCategory    ->setSelectable( false );
     //m_transcodeCategory->setSelectable( false );
 
-    //m_generalCategory  ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    //m_lyricsCategory   ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    //m_scoreCategory    ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    //m_transcodeCategory->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_generalCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_lyricsCategory   ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_scoreCategory    ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_transcodeCategory->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     // Restore the open/closed state of the category items
     KSharedConfigPtr config = Amarok::config( "ScriptManager" );
