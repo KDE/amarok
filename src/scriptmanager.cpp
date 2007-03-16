@@ -369,9 +369,10 @@ ScriptManager::findScripts() //SLOT
 
     // Add found scripts to treeWidget:
     {
-        oldForeach( allFiles )
-            if( QFileInfo( *it ).isExecutable() )
-                loadScript( *it );
+        QString str;
+        foreach( str, allFiles )
+            if( QFileInfo( str ).isExecutable() )
+                loadScript( str );
     }
 
     // Handle auto-run:
@@ -380,10 +381,11 @@ ScriptManager::findScripts() //SLOT
     const QStringList runningScripts = config->readEntry( "Running Scripts", QStringList() );
 
     {
-        oldForeach( runningScripts )
-            if( m_scripts.contains( *it ) ) {
-                debug() << "Auto-running script: " << *it << endl;
-                m_gui->treeWidget->setCurrentItem( m_scripts[*it].li );
+        QString str;
+        foreach( str, runningScripts )
+            if( m_scripts.contains( str ) ) {
+                debug() << "Auto-running script: " << str << endl;
+                m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
                 slotRunScript();
             }
     }
@@ -474,9 +476,9 @@ void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
     const QStringList entries = archiveDir->entries();
+    QString entry;
 
-    oldForeach( entries ) {
-        const QString entry = *it;
+    foreach( entry, entries ) {
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
         if( archEntry->isDirectory() ) {
