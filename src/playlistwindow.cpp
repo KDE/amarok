@@ -105,6 +105,7 @@ namespace Amarok
         ToolBar( QMainWindow *parent, const char *name )
             : KToolBar( name, parent, Qt::TopToolBarArea, false, false, false )
         {
+            setIconSize( QSize( 32, 32 ) );
         }
 
     protected:
