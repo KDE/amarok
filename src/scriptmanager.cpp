@@ -195,8 +195,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setExpanded( config->readEntry( "Score category State", false ) );
     m_transcodeCategory->setExpanded( config->readEntry( "Transcode category open", false ) );
 
-    connect( m_gui->treeWidget, SIGNAL( currentChanged( Q3ListViewItem* ) ), SLOT( slotCurrentChanged( Q3ListViewItem* ) ) );
-    connect( m_gui->treeWidget, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
+    connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
+    connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
     connect( m_gui->treeWidget, SIGNAL( contextMenuRequested ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint& ) ) );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
