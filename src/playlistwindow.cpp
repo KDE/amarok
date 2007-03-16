@@ -166,8 +166,10 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
+    //This is our clear/undo/redo/save buttons
+    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" );
     Playlist *playlist = new Playlist( playlistwindow ); //Playlist
-    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" ); //This is our clear/undo/redo/save buttons
+
 
     m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
 
