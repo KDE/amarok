@@ -110,7 +110,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         KToolBar* searchToolBar = new Browser::ToolBar( this );
 
         QToolButton *button = new QToolButton( searchToolBar );
-        button->setIcon( KIcon( "locationbar_erase") );
+        button->setIcon( KIcon( "locationbar-erase") );
 
         m_filter = new KLineEdit( searchToolBar );
         m_filter->setClickMessage( i18n( "Enter search terms here" ) );

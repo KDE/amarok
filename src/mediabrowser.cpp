@@ -303,10 +303,8 @@ MediaBrowser::MediaBrowser( const char *name )
     // searching/filtering
     { //<Search LineEdit>
         KToolBar* searchToolBar = new Browser::ToolBar( this );
-//         QToolButton *button = new QToolButton( "locationbar_erase", 0, searchToolBar );
         QToolButton *button = new QToolButton( searchToolBar );
-//         button.icon = QIcon("locationbar_erase");
-        button->setIcon( KIcon( "locationbar_erase" ) );
+        button->setIcon( KIcon( "locationbar-erase" ) );
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );

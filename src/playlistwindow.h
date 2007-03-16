@@ -40,7 +40,7 @@ class KMenu;
 class KToolBar;
 class QLabel;
 class QTimer;
-class K3ListViewSearchLineWidget;
+class KLineEdit;
 
 // namespace Phonon {
 //     class VideoWidget;
@@ -123,13 +123,13 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, pub
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
         QMenuBar      *m_menubar;
-        KMenu    *m_toolsMenu;
-        KMenu    *m_settingsMenu;
-        SideBar    *m_browsers;
-        QStringList m_browserNames;
-        KMenu    *m_searchMenu;
-        //KLineEdit *m_lineEdit;
-	K3ListViewSearchLineWidget *m_searchLine;
+        KMenu         *m_toolsMenu;
+        KMenu         *m_settingsMenu;
+        SideBar       *m_browsers;
+        QStringList    m_browserNames;
+        KMenu         *m_searchMenu;
+
+        KLineEdit     *m_searchLine;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;

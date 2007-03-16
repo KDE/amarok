@@ -79,7 +79,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         bar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
         QToolButton *clearButton = new QToolButton( bar );
-        clearButton->setIcon( KIcon("locationbar_erase") );
+        clearButton->setIcon( KIcon("locationbar-erase") );
         clearButton->setToolTip( i18n( "Clear search field" ) );
 
         m_lineEdit = new KLineEdit( bar );

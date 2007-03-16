@@ -267,8 +267,8 @@ ContextBrowser::ContextBrowser( const char *name )
       // m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
       // m_lyricsTextBar->boxLayout()->addStretch();
 
-       //QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
-       QAction* clearAction = new QAction("locationbar_erase", this );
+       //QWidget *button = new KToolBarButton( "locationbar-erase", 1, m_lyricsTextBar );
+       QAction* clearAction = new QAction("locationbar-erase", this );
        clearAction->setToolTip( i18n( "Clear search text in lyric" ) );
        m_lyricsTextBar->addAction( clearAction );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );

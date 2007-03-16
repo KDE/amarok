@@ -76,6 +76,7 @@
 #include <khtml_part.h>       //Welcome Tab
 #include <kiconloader.h>      //ClearFilter button
 #include <kinputdialog.h>     //slotAddStream()
+#include <klineedit.h>
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kmessagebox.h>      //savePlaylist()
@@ -88,7 +89,7 @@
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
 #include <fixx11h.h>
-#include <k3listviewsearchline.h>
+
 // #include <phonon/ui/videowidget.h>
 
 
@@ -122,9 +123,7 @@ namespace Amarok
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
 PlaylistWindow::PlaylistWindow()
-        //: QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
-        //, KXMLGUIClient()
-	:KMainWindow( 0, "PlaylistWindow", Qt::WGroupLeader )
+        :KMainWindow( 0, "PlaylistWindow", Qt::WGroupLeader )
         , m_lastBrowser( 0 )
 {
     s_instance = this;
@@ -211,15 +210,18 @@ void PlaylistWindow::init()
 
     dynamicBar->init();
     this->toolBars().clear();
-    m_searchLine = new K3ListViewSearchLineWidget( playlist, m_toolbar );
 
     { //BEGIN Maintoolbar
-        QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n" );
-        m_searchLine->setToolTip( filtertip );
+        m_searchLine = new KLineEdit( m_toolbar );
+        m_searchLine->setClickMessage( i18n("Enter search terms here" ) );
+        m_searchLine->setFrame( QFrame::Sunken );
+        m_searchLine->setToolTip( i18n( "Enter space-separated terms to search in the playlist." ) );
+
         KPushButton *filterButton = new KPushButton( "...", m_toolbar );
         filterButton->setObjectName( "filter" );
         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
         filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+
         m_toolbar->addAction( actionCollection()->action( "prev" ) );
         m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
         m_toolbar->addAction( actionCollection()->action( "stop" ) );
@@ -229,10 +231,18 @@ void PlaylistWindow::init()
         m_toolbar->addSeparator();
         m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
         m_toolbar->addSeparator();
-        QStackedWidget *spacer = new QStackedWidget(); //FIXME: ugly hack
-        QSpacerItem *spacerItem = new QSpacerItem( 0, 0 );
+
+        QStackedWidget *spacer     = new QStackedWidget(); //FIXME: ugly hack
+        QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
         spacer->layout()->addItem( spacerItem );
+
         m_toolbar->addWidget( spacer );
+
+        QToolButton *clearButton   = new QToolButton( m_toolbar );
+        clearButton->setIcon( KIcon("locationbar-erase") );
+        clearButton->setToolTip( i18n( "Clear search field" ) );
+        m_toolbar->addWidget( clearButton );
+
         m_toolbar->addWidget( m_searchLine );
         m_toolbar->addWidget( filterButton );
 #ifndef Q_WS_MAC
@@ -307,22 +317,22 @@ void PlaylistWindow::init()
         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
         //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
-        
+
 
         //cant use macros here since we need access to the browsers directly
         ServiceBrowser * storeServiceBrowser = new ServiceBrowser( "Stores" );;
-        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser ); 
+        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser );
         m_browserNames.append( "Stores" );
         storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
-        
+
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser( "Internet Content" );;
-        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet Content"), internetContentServiceBrowser ); 
+        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet Content"), internetContentServiceBrowser );
         m_browserNames.append( "Internet Content" );
-        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) ); 
+        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
-        
+
 
 
 
@@ -368,7 +378,7 @@ void PlaylistWindow::slotEditFilter() //SLOT
     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchLine->searchLine()->updateSearch( fd->filter() );
+        m_searchLine->setText( fd->filter() );
     delete fd;
 }
 
@@ -609,7 +619,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                m_searchLine->searchLine()->updateSearch("");
+                m_searchLine->clear();
                 return true;
 
             default:
