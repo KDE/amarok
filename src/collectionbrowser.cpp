@@ -83,7 +83,7 @@ class CoverFetcher;
 CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
-    : QWidget( 0, name )
+    : KVBox( 0 )
     , m_cat1Menu( new KMenu( this ) )
     , m_cat2Menu( new KMenu( this ) )
     , m_cat3Menu( new KMenu( this ) )
@@ -91,12 +91,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_returnPressed( false )
 {
     s_instance = this;
+    setObjectName( name );
 
-    QVBoxLayout *browserLayout = new QVBoxLayout;
+//     QVBoxLayout *browserLayout = new QVBoxLayout;
 
     m_toolbar = new Browser::ToolBar( this );
-    m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    browserLayout->addWidget( m_toolbar );
+    m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+//     browserLayout->addWidget( m_toolbar );
 
     { //<Search LineEdit>
         QToolBar    *searchToolBar = new Browser::ToolBar( this );
@@ -119,7 +120,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
         searchToolBar->addWidget( filterButton );
 
-        browserLayout->addWidget( searchToolBar );
+//         browserLayout->addWidget( searchToolBar );
 
         connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
@@ -131,10 +132,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // hidden when not in iPod browsing mode; it is shown and hidden
     // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
     // and m_ipodToolbar
-    QWidget *m_timeHBox = new QWidget( this );
-    QHBoxLayout *layout = new QHBoxLayout;
-    m_timeHBox->setLayout( layout );
-    m_timeHBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    KHBox *m_timeHBox = new KHBox( this );
+//     QHBoxLayout *layout = new QHBoxLayout;
+//     m_timeHBox->setLayout( layout );
+    m_timeHBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Minimum );
 
     m_timeFilter = new KComboBox( m_timeHBox );
     m_timeFilter->setObjectName( "timeFilter" );
@@ -146,23 +147,23 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
     m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
-    layout->addWidget( m_timeFilter );
+//     m_timeHBox->addWidget( m_timeFilter );
 
 
     // m_ipodToolbar just holds the forward and back buttons, which are
     // plugged below
     m_ipodToolbar = new Browser::ToolBar( m_timeHBox );
     m_ipodToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    layout->addWidget( m_ipodToolbar );
+//     m_timeHBox->addWidget( m_ipodToolbar );
 
-    browserLayout->addWidget( m_timeHBox );
+//     browserLayout->addWidget( m_timeHBox );
 
     KActionCollection* ac = new KActionCollection( this );
 
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
 
-    browserLayout->addWidget( m_view );
+//     browserLayout->addWidget( m_view );
 
     m_configureAction = new KAction( KIcon(Amarok::icon( "configure" )), i18n( "Configure Folders" ), this );
     connect( m_configureAction, SIGNAL( triggered( bool ) ), this, SLOT( setupDirs() ) );
@@ -249,7 +250,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
-    setLayout( browserLayout );
+//     setLayout( browserLayout );
 
     m_categoryMenu = m_tagfilterMenuButton->popupMenu();
     m_categoryMenu->insertItem( i18n( "Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtist );

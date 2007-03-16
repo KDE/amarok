@@ -13,6 +13,7 @@
 #include <kdialog.h>     //baseclass
 #include <k3listview.h>       //baseclass
 #include <kurl.h>            //stack allocated
+#include <kvbox.h>
 
 #include <Q3CString>
 #include <QDragEnterEvent>
@@ -25,7 +26,6 @@
 #include <QPixmap>
 #include <QResizeEvent>
 #include <Q3ValueList>      //stack allocated
-#include <QWidget>
 
 #include <QStringList>     //stack allocated
 
@@ -64,7 +64,7 @@ namespace CollectionBrowserIds
     };
 }
 
-class CollectionBrowser: public QWidget
+class CollectionBrowser: public KVBox
 {
     Q_OBJECT
     friend class CollectionView;
