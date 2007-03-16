@@ -711,7 +711,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     menu.insertItem( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
     menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
-    const int id = menu.exec( pos );
+    const int id = menu.exec( mapToGlobal( pos ) );
 
     switch( id )
     {
