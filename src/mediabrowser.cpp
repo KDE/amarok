@@ -259,6 +259,7 @@ MediaBrowser::MediaBrowser( const char *name )
     setSpacing( 4 );
 
     m_toolbar = new Browser::ToolBar( this );
+    m_toolbar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     //TODO: how to fix getButton
@@ -309,7 +310,8 @@ MediaBrowser::MediaBrowser( const char *name )
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
-        m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+        filterButton->setSizePolicy( QSizePolicy::Preferred,
+        QSizePolicy::Fixed );
         m_searchEdit->setFrame( QFrame::Sunken );
 
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );

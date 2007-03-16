@@ -22,6 +22,7 @@ namespace Browser
                     : KToolBar( parent, "NotMainToolBar" )
             {
                 setMovable(false);
+                setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
                 setIconDimensions( 16 );
                 setContextMenuEnabled( false );
             }
