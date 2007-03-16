@@ -207,13 +207,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_gui->installButton  ->setIconSet( KIcon( Amarok::icon( "files" ) ) );
-    m_gui->retrieveButton ->setIconSet( KIcon( Amarok::icon( "download" ) ) );
-    m_gui->uninstallButton->setIconSet( KIcon( Amarok::icon( "remove" ) ) );
-    m_gui->runButton      ->setIconSet( KIcon( Amarok::icon( "play" ) ) );
-    m_gui->stopButton     ->setIconSet( KIcon( Amarok::icon( "stop" ) ) );
-    m_gui->configureButton->setIconSet( KIcon( Amarok::icon( "configure" ) ) );
-    m_gui->aboutButton    ->setIconSet( KIcon( Amarok::icon( "info" ) ) );
+    m_gui->installButton  ->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    m_gui->retrieveButton ->setIcon( KIcon( Amarok::icon( "download" ) ) );
+    m_gui->uninstallButton->setIcon( KIcon( Amarok::icon( "remove" ) ) );
+    m_gui->runButton      ->setIcon( KIcon( Amarok::icon( "play" ) ) );
+    m_gui->stopButton     ->setIcon( KIcon( Amarok::icon( "stop" ) ) );
+    m_gui->configureButton->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+    m_gui->aboutButton    ->setIcon( KIcon( Amarok::icon( "info" ) ) );
 
     QSize sz = sizeHint();
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
