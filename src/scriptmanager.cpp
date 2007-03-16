@@ -34,16 +34,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <Q3PopupMenu>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileInfo>
-#include <qfont.h>
+#include <QFont>
 #include <QLabel>
+#include <QPixmap>
+#include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3PopupMenu>
 
 #include <k3aboutdialog.h>
 #include <kapplication.h>
@@ -868,14 +868,12 @@ ScriptManager::loadScript( const QString& path )
         const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
             debug() << "Spec file found: " << specPath << endl;
-            KConfig spec( specPath, KConfig::NoGlobals );
-            if( spec.hasKey( "name" ) )
-                name = spec.readEntry( "name" );
-            if( spec.hasKey( "type" ) ) {
-                debug() << "Has key Type" << endl;
-                type = spec.readEntry( "type" );
+            QSettings spec( specPath, QSettings::IniFormat );
+            if( spec.contains( "name" ) )
+                name = spec.value( "name" ).toString();
+            if( spec.contains( "type" ) ) {
+                type = spec.value( "type" ).toString();
                 if( type == "lyrics" ) {
-                    debug() << "Type: Lyrics" << endl;
                     li = new QTreeWidgetItem( m_lyricsCategory );
                     li->setText( 0, name );
                 }
