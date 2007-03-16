@@ -3332,7 +3332,7 @@ Playlist::repopulate() //SLOT
 void
 Playlist::shuffle() //SLOT
 {
-    if( dynamicMode() )
+    if( dynamicMode() || isEmpty() )
         return;
 
     QList<Q3ListViewItem*> list;
