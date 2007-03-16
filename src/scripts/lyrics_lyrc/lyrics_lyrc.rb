@@ -112,7 +112,7 @@ def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
     if ( @proxy == nil )
-        @proxy = `dcop amarok script proxyForUrl #{@page_url.shellquote}"`
+        @proxy = `dcop amarok script proxyForUrl #{@page_url.shellquote}`
     end
     proxy_uri = URI.parse( @proxy )
     if ( proxy_uri.class != URI::Generic )
