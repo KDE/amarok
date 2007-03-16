@@ -80,98 +80,98 @@ endif(SQLITE_FOUND)
 
 
 include_directories(
-	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore
-	${CMAKE_SOURCE_DIR}/amarok/src/analyzers
-	${CMAKE_SOURCE_DIR}/amarok/src/plugin
-	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
-	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore
-	${CMAKE_SOURCE_DIR}/amarok/src
-	${CMAKE_SOURCE_DIR}/amarok/src/meta
-	${CMAKE_SOURCE_DIR}/amarok/src/collection
-	${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
+	${CMAKE_CURRENT_SOURCE_DIR}/amarokcore
+	${CMAKE_CURRENT_SOURCE_DIR}/analyzers
+	${CMAKE_CURRENT_SOURCE_DIR}/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/statusbar
+	${CMAKE_CURRENT_SOURCE_DIR}/mediadevice
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/meta
+	${CMAKE_CURRENT_SOURCE_DIR}/collection
+	${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
 
 
 set(libamarokcore_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/crashhandler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/crashhandler.cpp
 	)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.contextbrowser.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusContextBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.contextbrowser.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusContextBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
 
 
 
 set(libplugin_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/plugin/plugin.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/plugin/pluginconfig.cpp
 )
 
 
 set(libservicebrowser_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelitembase.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelbase.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/servicebrowser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/servicebase.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/servicemodelitembase.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/servicemodelbase.cpp)
 
 set(libscriptableservice_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservice.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/scriptableservice/scriptableservicemanager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/scriptableservice/scriptableservice.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp)
 
 
-qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
+qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 set(libmagnatunestore_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneinfoparser.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunebrowser.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunetypes.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunexmlparser.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunecontentitem.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunecontentmodel.cpp)
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatuneinfoparser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunebrowser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunetypes.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunexmlparser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunecontentitem.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunecontentmodel.cpp)
 
 kde4_add_ui3_files(libmagnatunestore_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui)
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
+	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui)
 
 set(libanalyzers_SRCS
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp
-     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp
-     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp
-     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp
-     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerbase.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerfactory.cpp
+     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/baranalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/blockanalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer2.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer3.cpp
+     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/sonogram.cpp
+     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/turbine.cpp
+     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/boomanalyzer.cpp
  )
 
 set(libstatusbar_SRCS
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusBarBase.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusbar.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/overlayWidget.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/popupMessage.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/progressBar.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/squeezedtextlabel.cpp
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/queueLabel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/statusBarBase.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/statusbar.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/overlayWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/popupMessage.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/progressBar.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/squeezedtextlabel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/queueLabel.cpp
 	)
 
 ########### next target ###############
@@ -260,9 +260,9 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    xmlloader.cpp
    xspfplaylist.cpp )
 
-kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
+kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/amarokcore/amarokconfig.kcfgc)
 
-set(amarok_collectionscanner_xml  ${CMAKE_SOURCE_DIR}/amarok/src/collectionscanner/org.kde.amarok.scanner.xml)
+set(amarok_collectionscanner_xml  ${CMAKE_CURRENT_SOURCE_DIR}/collectionscanner/org.kde.amarok.scanner.xml)
 
 QT4_ADD_DBUS_INTERFACE( amarok_LIB_SRCS ${amarok_collectionscanner_xml} amarok_collection_scanner_interface )
 
