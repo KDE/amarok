@@ -23,6 +23,7 @@
 
 #include "engineobserver.h"   //baseclass
 #include "playlistwindow.h"
+#include "ui_scriptmanagerbase.h"
 
 #include <qmap.h>
 
@@ -30,8 +31,6 @@
 #include <kurl.h>
 
 class MetaBundle;
-class ScriptManagerBase;
-class Q3ListViewItem;
 class KArchiveDirectory;
 class KProcess;
 class KProcIO;
@@ -124,7 +123,7 @@ class ScriptManager : public KDialog, public EngineObserver
         void findScripts();
 
         /** Enables/disables the buttons */
-        void slotCurrentChanged( Q3ListViewItem* );
+        void slotCurrentChanged( QTreeWidgetItem* );
 
         bool slotInstallScript( const QString& path = QString::null );
         void slotRetrieveScript();
@@ -133,7 +132,7 @@ class ScriptManager : public KDialog, public EngineObserver
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
-        void slotShowContextMenu( Q3ListViewItem*, const QPoint& );
+        void slotShowContextMenu( QTreeWidgetItem*, const QPoint& );
 
         void slotReceivedStdout( KProcess*, char*, int );
         void slotReceivedStderr( KProcess*, char*, int );
@@ -168,22 +167,22 @@ class ScriptManager : public KDialog, public EngineObserver
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
-        static ScriptManager* s_instance;
-        ScriptManagerBase*    m_gui;
+        static ScriptManager*  s_instance;
+        Ui::ScriptManagerBase* m_gui;
 
-        Q3ListViewItem*        m_generalCategory;
-        Q3ListViewItem*        m_lyricsCategory;
-        Q3ListViewItem*        m_scoreCategory;
-        Q3ListViewItem*        m_transcodeCategory;
+        QTreeWidgetItem*       m_generalCategory;
+        QTreeWidgetItem*       m_lyricsCategory;
+        QTreeWidgetItem*       m_scoreCategory;
+        QTreeWidgetItem*       m_transcodeCategory;
 
-        bool                  m_installSuccess;
+        bool                   m_installSuccess;
 
         struct ScriptItem {
-            KUrl           url;
-            QString        type;
-            KProcIO*       process;
-            Q3ListViewItem* li;
-            QString        log;
+            KUrl             url;
+            QString          type;
+            KProcIO*         process;
+            QTreeWidgetItem* li;
+            QString          log;
             ScriptItem() : process( 0 ), li( 0 ) {}
         };
 

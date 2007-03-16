@@ -283,14 +283,15 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    newdynamic.ui
    organizecollectiondialog.ui
    podcastsettingsbase.ui
-   scriptmanagerbase.ui
    tagdialogbase.ui
 #   tagguesserconfigdialog.ui
    trackpickerdialogbase.ui )
 
 kde4_add_ui_files(amarok_LIB_SRCS
+    deletedialogbase.ui
+    scriptmanagerbase.ui
     tagguesserconfigdialog.ui
-    deletedialogbase.ui)
+)
 
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 

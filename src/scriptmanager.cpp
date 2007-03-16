@@ -29,7 +29,6 @@
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "scriptmanager.h"
-#include "scriptmanagerbase.h"
 #include "statusbar.h"
 
 #include <sys/stat.h>
@@ -51,7 +50,6 @@
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <kio/netaccess.h>
-#include <k3listview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmenu.h>
@@ -140,7 +138,7 @@ ScriptManager* ScriptManager::s_instance = 0;
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialog( parent )
         , EngineObserver( EngineController::instance() )
-        , m_gui( new ScriptManagerBase( this ) )
+        , m_gui( new Ui::ScriptManagerBase() )
 {
     DEBUG_BLOCK
     setObjectName( name );
@@ -159,39 +157,47 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    setMainWidget( m_gui );
-    m_gui->listView->setRootIsDecorated( true );
+    QWidget* main = new QWidget( this );
+    m_gui->setupUi( main );
+
+    setMainWidget( main );
+    //m_gui->listView->setRootIsDecorated( true );
     //m_gui->listView->setFullWidth( true );
-    m_gui->listView->setResizeMode( Q3ListView::AllColumns );
-    m_gui->listView->setShowSortIndicator( true );
+    //m_gui->listView->setResizeMode( Q3ListView::AllColumns );
+    //m_gui->listView->setShowSortIndicator( true );
 
 
     /// Category items
-    m_generalCategory    = new K3ListViewItem( m_gui->listView, i18n( "General" ) );
-    m_lyricsCategory     = new K3ListViewItem( m_gui->listView, i18n( "Lyrics" ) );
-    m_scoreCategory      = new K3ListViewItem( m_gui->listView, i18n( "Score" ) );
-    m_transcodeCategory  = new K3ListViewItem( m_gui->listView, i18n( "Transcoding" ) );
+    m_generalCategory    = new QTreeWidgetItem( m_gui->treeWidget );
+    m_lyricsCategory     = new QTreeWidgetItem( m_gui->treeWidget );
+    m_scoreCategory      = new QTreeWidgetItem( m_gui->treeWidget );
+    m_transcodeCategory  = new QTreeWidgetItem( m_gui->treeWidget );
 
-    m_generalCategory  ->setSelectable( false );
-    m_lyricsCategory   ->setSelectable( false );
-    m_scoreCategory    ->setSelectable( false );
-    m_transcodeCategory->setSelectable( false );
+    m_generalCategory  ->setText( 0, i18n( "General" ) );
+    m_lyricsCategory   ->setText( 0, i18n( "Lyrics" ) );
+    m_scoreCategory    ->setText( 0, i18n( "Score" ) );
+    m_transcodeCategory->setText( 0, i18n( "Transcoding" ) );
 
-    m_generalCategory  ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_lyricsCategory   ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_scoreCategory    ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_transcodeCategory->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    //m_generalCategory  ->setSelectable( false );
+    //m_lyricsCategory   ->setSelectable( false );
+    //m_scoreCategory    ->setSelectable( false );
+    //m_transcodeCategory->setSelectable( false );
+
+    //m_generalCategory  ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    //m_lyricsCategory   ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    //m_scoreCategory    ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    //m_transcodeCategory->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     // Restore the open/closed state of the category items
     KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    m_generalCategory  ->setOpen( config->readEntry( "General category open", false ) );
-    m_lyricsCategory   ->setOpen( config->readEntry( "Lyrics category open", false ) );
-    m_scoreCategory    ->setOpen( config->readEntry( "Score category State", false ) );
-    m_transcodeCategory->setOpen( config->readEntry( "Transcode category open", false ) );
+    m_generalCategory  ->setExpanded( config->readEntry( "General category open", false ) );
+    m_lyricsCategory   ->setExpanded( config->readEntry( "Lyrics category open", false ) );
+    m_scoreCategory    ->setExpanded( config->readEntry( "Score category State", false ) );
+    m_transcodeCategory->setExpanded( config->readEntry( "Transcode category open", false ) );
 
-    connect( m_gui->listView, SIGNAL( currentChanged( Q3ListViewItem* ) ), SLOT( slotCurrentChanged( Q3ListViewItem* ) ) );
-    connect( m_gui->listView, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
-    connect( m_gui->listView, SIGNAL( contextMenuRequested ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint& ) ) );
+    connect( m_gui->treeWidget, SIGNAL( currentChanged( Q3ListViewItem* ) ), SLOT( slotCurrentChanged( Q3ListViewItem* ) ) );
+    connect( m_gui->treeWidget, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
+    connect( m_gui->treeWidget, SIGNAL( contextMenuRequested ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint& ) ) );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
@@ -240,10 +246,10 @@ ScriptManager::~ScriptManager()
     config->writeEntry( "Running Scripts", runningScripts );
 
     // Save the open/closed state of the category items
-    config->writeEntry( "General category open", m_generalCategory->isOpen() );
-    config->writeEntry( "Lyrics category open", m_lyricsCategory->isOpen() );
-    config->writeEntry( "Score category open", m_scoreCategory->isOpen() );
-    config->writeEntry( "Transcode category open", m_transcodeCategory->isOpen() );
+    config->writeEntry( "General category open", m_generalCategory->isExpanded() );
+    config->writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
+    config->writeEntry( "Score category open", m_scoreCategory->isExpanded() );
+    config->writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
 
     s_instance = 0;
 }
@@ -259,7 +265,7 @@ ScriptManager::runScript( const QString& name, bool silent )
     if( !m_scripts.contains( name ) )
         return false;
 
-    m_gui->listView->setCurrentItem( m_scripts[name].li );
+    m_gui->treeWidget->setCurrentItem( m_scripts[name].li );
     return slotRunScript( silent );
 }
 
@@ -270,7 +276,7 @@ ScriptManager::stopScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return false;
 
-    m_gui->listView->setCurrentItem( m_scripts[name].li );
+    m_gui->treeWidget->setCurrentItem( m_scripts[name].li );
     slotStopScript();
 
     return true;
@@ -360,7 +366,7 @@ ScriptManager::findScripts() //SLOT
 {
     const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*",KStandardDirs::Recursive );
 
-    // Add found scripts to listview:
+    // Add found scripts to treeWidget:
     {
         oldForeach( allFiles )
             if( QFileInfo( *it ).isExecutable() )
@@ -376,18 +382,18 @@ ScriptManager::findScripts() //SLOT
         oldForeach( runningScripts )
             if( m_scripts.contains( *it ) ) {
                 debug() << "Auto-running script: " << *it << endl;
-                m_gui->listView->setCurrentItem( m_scripts[*it].li );
+                m_gui->treeWidget->setCurrentItem( m_scripts[*it].li );
                 slotRunScript();
             }
     }
 
-    m_gui->listView->setCurrentItem( m_gui->listView->firstChild() );
-    slotCurrentChanged( m_gui->listView->currentItem() );
+//FIXME    m_gui->treeWidget->setCurrentItem( m_gui->treeWidget->firstChild() );
+    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
 
 
 void
-ScriptManager::slotCurrentChanged( Q3ListViewItem* item )
+ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
 {
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
@@ -513,7 +519,7 @@ ScriptManager::slotRetrieveScript()
 void
 ScriptManager::slotUninstallScript()
 {
-    const QString name = m_gui->listView->currentItem()->text( 0 );
+    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
@@ -555,7 +561,7 @@ ScriptManager::slotRunScript( bool silent )
 {
     if( !m_gui->runButton->isEnabled() ) return false;
 
-    Q3ListViewItem* const li = m_gui->listView->currentItem();
+    QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
     const QString name = li->text( 0 );
 
     if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() != QString::null ) {
@@ -590,7 +596,7 @@ ScriptManager::slotRunScript( bool silent )
         if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
         {
             stopScript( scoreScriptRunning() );
-            m_gui->listView->setCurrentItem( li );
+            m_gui->treeWidget->setCurrentItem( li );
         }
         AmarokConfig::setLastScoreScript( name );
     }
@@ -603,11 +609,11 @@ ScriptManager::slotRunScript( bool silent )
         return false;
     }
 
-    li->setPixmap( 0, SmallIcon( Amarok::icon( "play" ) ) );
+    li->setIcon( 0, SmallIcon( Amarok::icon( "play" ) ) );
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
-    slotCurrentChanged( m_gui->listView->currentItem() );
+    slotCurrentChanged( m_gui->treeWidget->currentItem() );
     if( m_scripts[name].type == "lyrics" )
         emit lyricsScriptChanged();
 
@@ -618,7 +624,7 @@ ScriptManager::slotRunScript( bool silent )
 void
 ScriptManager::slotStopScript()
 {
-    Q3ListViewItem* const li = m_gui->listView->currentItem();
+    QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
     const QString name = li->text( 0 );
 
     // Just a sanity check
@@ -627,16 +633,16 @@ ScriptManager::slotStopScript()
 
     terminateProcess( &m_scripts[name].process );
     m_scripts[name].log = QString::null;
-    slotCurrentChanged( m_gui->listView->currentItem() );
+    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 
-    li->setPixmap( 0, QPixmap() );
+    li->setIcon( 0, QPixmap() );
 }
 
 
 void
 ScriptManager::slotConfigureScript()
 {
-    const QString name = m_gui->listView->currentItem()->text( 0 );
+    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
     if( !m_scripts[name].process ) return;
 
     const KUrl url = m_scripts[name].url;
@@ -650,7 +656,7 @@ void
 ScriptManager::slotAboutScript()
 {
 
-    const QString name = m_gui->listView->currentItem()->text( 0 );
+    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
 
@@ -681,7 +687,7 @@ ScriptManager::slotAboutScript()
 
 
 void
-ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
+ScriptManager::slotShowContextMenu( QTreeWidgetItem* item, const QPoint& pos )
 {
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
@@ -777,8 +783,8 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     delete it.data().process;
     it.data().process = 0;
     it.data().log = QString::null;
-    it.data().li->setPixmap( 0, QPixmap() );
-    slotCurrentChanged( m_gui->listView->currentItem() );
+    it.data().li->setIcon( 0, QPixmap() );
+    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
 
 
@@ -866,7 +872,7 @@ ScriptManager::loadScript( const QString& path )
 
         // Read and parse .spec file, if exists
         QFileInfo info( path );
-        K3ListViewItem* li = 0;
+        QTreeWidgetItem* li = 0;
         const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, KConfig::NoGlobals );
@@ -874,19 +880,27 @@ ScriptManager::loadScript( const QString& path )
                 name = spec.readEntry( "name" );
             if( spec.hasKey( "type" ) ) {
                 type = spec.readEntry( "type" );
-                if( type == "lyrics" )
-                    li = new K3ListViewItem( m_lyricsCategory, name );
-                if( type == "transcode" )
-                    li = new K3ListViewItem( m_transcodeCategory, name );
-                if( type == "score" )
-                    li = new K3ListViewItem( m_scoreCategory, name );
+                if( type == "lyrics" ) {
+                    li = new QTreeWidgetItem( m_lyricsCategory );
+                    li->setText( 0, name );
+                }
+                if( type == "transcode" ) {
+                    li = new QTreeWidgetItem( m_transcodeCategory );
+                    li->setText( 0, name );
+                }
+                if( type == "score" ) {
+                    li = new QTreeWidgetItem( m_scoreCategory );
+                    li->setText( 0, name );
+                }
             }
         }
 
-        if( !li )
-            li = new K3ListViewItem( m_generalCategory, name );
+        if( !li ) {
+            li = new QTreeWidgetItem( m_generalCategory );
+            li->setText( 0, name );
+        }
 
-        li->setPixmap( 0, QPixmap() );
+        li->setIcon( 0, QPixmap() );
 
         ScriptItem item;
         item.url = url;
@@ -897,7 +911,7 @@ ScriptManager::loadScript( const QString& path )
         m_scripts[name] = item;
         debug() << "Loaded: " << name << endl;
 
-        slotCurrentChanged( m_gui->listView->currentItem() );
+        slotCurrentChanged( m_gui->treeWidget->currentItem() );
     }
 }
 

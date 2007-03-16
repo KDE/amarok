@@ -1,138 +1,123 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>ScriptManagerBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>ScriptManagerBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>367</width>
-            <height>237</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>DirectoryListBase</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="K3ListView" row="0" column="0" rowspan="9" colspan="1">
-            <column>
-                <property name="text">
-                    <string>Scripts</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>listView</cstring>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>These scripts are currently known to Amarok.</string>
-            </property>
-        </widget>
-        <spacer row="8" column="1">
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>30</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QPushButton" row="0" column="1">
-            <property name="name">
-                <cstring>retrieveButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Get More Scripts</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>installButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Install Script</string>
-            </property>
-        </widget>
-        <widget class="Line" row="2" column="1">
-            <property name="name">
-                <cstring>line2_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="3" column="1">
-            <property name="name">
-                <cstring>aboutButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;About</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="1">
-            <property name="name">
-                <cstring>runButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Run</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="5" column="1">
-            <property name="name">
-                <cstring>stopButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Stop</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="6" column="1">
-            <property name="name">
-                <cstring>configureButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Configure</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="1">
-            <property name="name">
-                <cstring>uninstallButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Uninstall</string>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<includes>
-    <include location="global" impldecl="in implementation">kdialog.h</include>
-</includes>
-<layoutdefaults spacing="6" margin="0"/>
-<layoutfunctions spacing="KDialog::spacingHint"/>
-<includehints>
-    <includehint>k3listview.h</includehint>
-</includehints>
-</UI>
+<ui version="4.0" >
+ <class>ScriptManagerBase</class>
+ <widget class="QWidget" name="ScriptManagerBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>467</width>
+    <height>313</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>DirectoryListBase</string>
+  </property>
+  <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QTreeWidget" name="treeWidget" />
+   </item>
+   <item>
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="retrieveButton" >
+       <property name="text" >
+        <string>&amp;Get More Scripts</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="installButton" >
+       <property name="text" >
+        <string>&amp;Install Script</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line2_2" >
+       <property name="frameShape" >
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="aboutButton" >
+       <property name="text" >
+        <string>&amp;About</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="runButton" >
+       <property name="text" >
+        <string>&amp;Run</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="stopButton" >
+       <property name="text" >
+        <string>&amp;Stop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="configureButton" >
+       <property name="text" >
+        <string>&amp;Configure</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="uninstallButton" >
+       <property name="text" >
+        <string>&amp;Uninstall</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>347</width>
+         <height>16</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="0" />
+ <layoutfunction spacing="KDialog::spacingHint" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <includes>
+  <include location="local" >k3listview.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>
