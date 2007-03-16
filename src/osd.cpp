@@ -684,12 +684,12 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 	    if(hour!=0)
 	    {
 		    timeformat += QString::number(hour);
-		    timeformat +=":";
+		    timeformat +=':';
 	    }
 	    timeformat +=QString::number(min);
-	    timeformat +=":";
+	    timeformat +=':';
 	    if(sec<10)
-		    timeformat +="0";
+		    timeformat +='0';
 	    timeformat +=QString::number(sec);
 	    args["elapsed"]=timeformat;
             QStringx osd = AmarokConfig::osdText();

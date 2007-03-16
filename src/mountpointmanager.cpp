@@ -122,7 +122,7 @@ MountPointManager::init()
 }
 
 int
-MountPointManager::getIdForUrl( KUrl url )
+MountPointManager::getIdForUrl( const KUrl &url )
 {
     uint mountPointLength = 0;
     int id = -1;

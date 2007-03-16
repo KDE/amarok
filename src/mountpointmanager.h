@@ -165,7 +165,7 @@ public:
      * @param url
      * @return
      */
-    int getIdForUrl( KUrl url );
+    int getIdForUrl( const KUrl &url );
     int getIdForUrl( const QString &url );
     /**
      *
