@@ -172,4 +172,5 @@ class SelectLabel : public QLabel
         bool               m_tooltipHidden;
 
 };
+
 #endif

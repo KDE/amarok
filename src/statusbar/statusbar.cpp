@@ -43,7 +43,8 @@
 #include "timeLabel.h"
 #include "toggleLabel.h"
 #include "toggleLabel.moc"
-
+#include "selectLabel.h"
+#include "selectLabel.moc"
 
 
 namespace Amarok {
@@ -174,11 +175,13 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 void
 StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
+//     #define Qt::escape(s) QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
     QString title       = Qt::escape( bundle.title() );
     QString prettyTitle = Qt::escape( bundle.prettyTitle() );
     QString artist      = Qt::escape( bundle.artist() );
     QString album       = Qt::escape( bundle.album() );
     QString length      = Qt::escape( bundle.prettyLength() );
+//     #undef escapeHTML
 
     if ( bundle.artist() == QString("Mike Oldfield") && bundle.title() == QString("Amarok") ) {
         longMessage( i18n(

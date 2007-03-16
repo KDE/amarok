@@ -36,10 +36,8 @@
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
-#include "selectLabel.h"
 #include "statistics.h"
 #include "statusbar.h"
-#include "selectLabel.moc"
 #include "threadmanager.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
@@ -168,9 +166,8 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
-    //This is our clear/undo/redo/save buttons
-    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" );
     Playlist *playlist = new Playlist( playlistwindow ); //Playlist
+    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" ); //This is our clear/undo/redo/save buttons
 
     m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
 
@@ -184,13 +181,18 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
-        plBar->addSeparator();
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>(
-                        actionCollection()->action( "repeat" ) ), plBar ) );
-        plBar->addWidget( new SelectLabel(
-                static_cast<Amarok::SelectAction*>(actionCollection()->action(
-                "random_mode" ) ), plBar ) );
     //END Playlist Toolbar
+    }
+    { //START Playlist Statusbar
+      KToolBar *plTwoolBar = new KToolBar( playlistwindow );
+      plTwoolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+      plTwoolBar->setMovable( false );
+      QLabel *repeatLabel = new QLabel( i18n( "Repeat: " ), plTwoolBar );
+      plTwoolBar->addWidget( repeatLabel );
+      plTwoolBar->addAction( actionCollection()->action( "repeat" ) );
+      QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plTwoolBar );
+      plTwoolBar->addWidget( randomLabel );
+      plTwoolBar->addAction( actionCollection()->action( "random_mode" ) );
     }
 
     dynamicBar->init();
