@@ -169,7 +169,6 @@ CoverManager::CoverManager()
     m_viewMenu->setItemChecked( AllAlbums, true );
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
 
-    #ifdef AMAZON_SUPPORT
     // amazon locale menu
     m_amazonLocaleMenu = new KMenu( this );
     m_amazonLocaleMenu->insertItem( i18n("International"), CoverFetcher::International );
@@ -179,7 +178,6 @@ CoverManager::CoverManager()
     m_amazonLocaleMenu->insertItem( i18n("Japan"), CoverFetcher::Japan);
     m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), CoverFetcher::UK );
     connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
-    #endif
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -190,7 +188,6 @@ CoverManager::CoverManager()
         viewMenuAction->setMenu( m_viewMenu );
         toolBar->addAction( viewMenuAction );
     }
-    #ifdef AMAZON_SUPPORT
     {
         QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this );
         localeMenuAction->setMenu( m_amazonLocaleMenu );
@@ -203,7 +200,7 @@ CoverManager::CoverManager()
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), Amarok::icon( "download" ) ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
-    #endif
+
 
     //cover view
     m_coverView = new CoverView( vbox );
@@ -236,14 +233,12 @@ CoverManager::CoverManager()
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
                            SLOT(slotSetFilterTimeout()) );
 
-    #ifdef AMAZON_SUPPORT
     connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )),
                                        SLOT(coverFetched( const QString&, const QString& )) );
     connect( CollectionDB::instance(), SIGNAL(coverRemoved( const QString&, const QString& )),
                                        SLOT(coverRemoved( const QString&, const QString& )) );
     connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )),
                                        SLOT(coverFetcherError()) );
-    #endif
 
     m_currentView = AllAlbums;
 
@@ -326,8 +321,6 @@ QString CoverManager::amazonTld() //static
 
 void CoverManager::fetchMissingCovers() //SLOT
 {
-    #ifdef AMAZON_SUPPORT
-
     DEBUG_BLOCK
 
     for ( Q3IconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
@@ -344,13 +337,11 @@ void CoverManager::fetchMissingCovers() //SLOT
     updateStatusBar();
     m_fetchButton->setEnabled( false );
 
-    #endif
 }
 
 
 void CoverManager::fetchCoversLoop() //SLOT
 {
-    #ifdef AMAZON_SUPPORT
 
     if( m_fetchCounter < m_fetchCovers.count() ) {
         //get artist and album from keyword
@@ -369,7 +360,6 @@ void CoverManager::fetchCoversLoop() //SLOT
         m_fetchCounter = 0;
     }
 
-    #endif
 }
 
 
@@ -537,9 +527,6 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 
         menu.addAction( unsetAction );
     }
-    #ifndef AMAZON_SUPPORT
-        fetchSelectedAction->setEnabled( false );
-    #endif
 
     menu.exec( p );
 
@@ -863,9 +850,7 @@ void CoverManager::updateStatusBar()
         if( missingCounter )
             text += i18n(" - ( <b>%1</b> without cover )", missingCounter );
 
-        #ifdef AMAZON_SUPPORT
         m_fetchButton->setEnabled( missingCounter );
-        #endif
     }
 
     m_statusLabel->setText( text );

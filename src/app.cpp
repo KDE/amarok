@@ -727,9 +727,7 @@ App::continueInit()
     }
 
     // Refetch covers every 80 days to comply with Amazon license
-    #ifdef AMAZON_SUPPORT
     new RefreshImages();
-    #endif
 
     CollectionDB *collDB = CollectionDB::instance();
     //Collection scan is triggered in firstRunWizard if the colelction folder setup was changed in the wizard

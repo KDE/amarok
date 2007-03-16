@@ -4,7 +4,6 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
    ${CMAKE_SOURCE_DIR}/amarok/cmake/modules )
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS) 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #we're still worrying about all the errors
-OPTION(AMAROK_AMAZON_SUPPORT   "Enable Amazon cover download support")
 
 find_package(Taglib REQUIRED)
 find_package(RUBY REQUIRED)

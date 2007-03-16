@@ -1512,9 +1512,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         if( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() == 1 ) // cover fetch isn't multiselection capable
         {
             menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch Cover From amazon.%1", CoverManager::amazonTld() ), this, SLOT( fetchCover() ), 0, FETCH );
-            #ifndef AMAZON_SUPPORT
-            menu.setItemEnabled( FETCH, false );
-            #endif
+
             if( trueItemText.isEmpty() ) // disable cover fetch for unknown albums
                 menu.setItemEnabled( FETCH, false );
         }
@@ -1702,7 +1700,6 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
 void
 CollectionView::fetchCover() //SLOT
 {
-    #ifdef AMAZON_SUPPORT
     CollectionItem* item = static_cast<CollectionItem*>( currentItem() );
     if ( !item ) return;
 
@@ -1738,7 +1735,6 @@ CollectionView::fetchCover() //SLOT
 
     if ( !values.isEmpty() )
         CollectionDB::instance()->fetchCover( this, values[0], album, false, static_cast<Q3ListViewItem*>(item) );
-    #endif
 }
 
 void

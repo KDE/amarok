@@ -6,7 +6,6 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "querybuilder.h"
-#include "config.h"        //for AMAZON_SUPPORT
 #include "covermanager.h"
 #include "coverfetcher.h"
 #include "debug.h"
@@ -59,9 +58,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
             menu.insertSeparator();
             menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
         }
-        #ifndef AMAZON_SUPPORT
-        menu.setItemEnabled( FETCH, false );
-        #endif
+
         disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
         menu.setItemEnabled( SHOW, disable );
         menu.setItemEnabled( DELETE, disable );
@@ -85,10 +82,8 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         }
 
         case FETCH:
-        #ifdef AMAZON_SUPPORT
             CollectionDB::instance()->fetchCover( parent, artist, album, false );
             break;
-        #endif
 
         case CUSTOM:
         {

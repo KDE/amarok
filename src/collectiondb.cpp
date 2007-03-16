@@ -4913,7 +4913,6 @@ CollectionDB::timerEvent( QTimerEvent* )
 void
 CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item ) //SLOT
 {
-    #ifdef AMAZON_SUPPORT
     debug() << "Fetching cover for " << artist << " - " << album << endl;
 
     const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
@@ -4932,7 +4931,6 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
     fetcher->setUserCanEditQuery( !noedit );
     fetcher->startFetch();
-    #endif
 }
 
 void
