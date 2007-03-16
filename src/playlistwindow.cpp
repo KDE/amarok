@@ -204,7 +204,20 @@ void PlaylistWindow::init()
         m_searchLine = new KLineEdit( m_toolbar );
         m_searchLine->setClickMessage( i18n("Enter search terms here" ) );
         m_searchLine->setFrame( QFrame::Sunken );
-        m_searchLine->setToolTip( i18n( "Enter space-separated terms to search in the playlist." ) );
+        m_searchLine->setToolTip( i18n(
+            "Enter space-separated terms to search in the playlist." ) );
+
+        QStackedWidget *spacer     = new QStackedWidget(); //FIXME: ugly hack
+        QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
+        spacer->layout()->addItem( spacerItem );
+
+        QStackedWidget *spacer1     = new QStackedWidget(); //FIXME: ugly hack
+        QSpacerItem    *spacerItem1 = new QSpacerItem( 0, 0 );
+        spacer1->layout()->addItem( spacerItem1 );
+
+        QStackedWidget *spacer2     = new QStackedWidget(); //FIXME: ugly hack
+        QSpacerItem    *spacerItem2 = new QSpacerItem( 0, 0 );
+        spacer2->layout()->addItem( spacerItem2 );
 
         KPushButton *filterButton = new KPushButton( "...", m_toolbar );
         filterButton->setObjectName( "filter" );
@@ -215,17 +228,12 @@ void PlaylistWindow::init()
         m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
         m_toolbar->addAction( actionCollection()->action( "stop" ) );
         m_toolbar->addAction( actionCollection()->action( "next" ) );
-        m_toolbar->addSeparator();
-        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
-        m_toolbar->addSeparator();
-        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
-        m_toolbar->addSeparator();
-
-        QStackedWidget *spacer     = new QStackedWidget(); //FIXME: ugly hack
-        QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
-        spacer->layout()->addItem( spacerItem );
-
         m_toolbar->addWidget( spacer );
+        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
+        m_toolbar->addWidget( spacer1 );
+        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
+
+        m_toolbar->addWidget( spacer2 );
 
         QToolButton *clearButton   = new QToolButton( m_toolbar );
         clearButton->setIcon( KIcon("locationbar-erase") );
