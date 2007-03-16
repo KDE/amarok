@@ -166,9 +166,9 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
+    Playlist *playlist = new Playlist( playlistwindow ); //Playlist
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" );
-    Playlist *playlist = new Playlist( playlistwindow ); //Playlist
 
 
     m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
@@ -183,18 +183,10 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
+        plBar->addSeparator();
+        plBar->addAction( actionCollection()->action( "repeat" ) );
+        plBar->addAction(actionCollection()->action( "random_mode" ) );
     //END Playlist Toolbar
-    }
-    { //START Playlist Statusbar
-      KToolBar *plTwoolBar = new KToolBar( playlistwindow );
-      plTwoolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-      plTwoolBar->setMovable( false );
-      QLabel *repeatLabel = new QLabel( i18n( "Repeat: " ), plTwoolBar );
-      plTwoolBar->addWidget( repeatLabel );
-      plTwoolBar->addAction( actionCollection()->action( "repeat" ) );
-      QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plTwoolBar );
-      plTwoolBar->addWidget( randomLabel );
-      plTwoolBar->addAction( actionCollection()->action( "random_mode" ) );
     }
 
     dynamicBar->init();
@@ -202,20 +194,21 @@ void PlaylistWindow::init()
 
     { //BEGIN Maintoolbar
         m_searchLine = new KLineEdit( m_toolbar );
-        m_searchLine->setClickMessage( i18n("Enter search terms here" ) );
+        m_searchLine->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchLine->setFrame( QFrame::Sunken );
         m_searchLine->setToolTip( i18n(
             "Enter space-separated terms to search in the playlist." ) );
 
-        QStackedWidget *spacer     = new QStackedWidget(); //FIXME: ugly hack
+        //Spacers between items in toolbar
+        QStackedWidget *spacer     = new QStackedWidget();
         QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
         spacer->layout()->addItem( spacerItem );
 
-        QStackedWidget *spacer1     = new QStackedWidget(); //FIXME: ugly hack
+        QStackedWidget *spacer1     = new QStackedWidget();
         QSpacerItem    *spacerItem1 = new QSpacerItem( 0, 0 );
         spacer1->layout()->addItem( spacerItem1 );
 
-        QStackedWidget *spacer2     = new QStackedWidget(); //FIXME: ugly hack
+        QStackedWidget *spacer2     = new QStackedWidget();
         QSpacerItem    *spacerItem2 = new QSpacerItem( 0, 0 );
         spacer2->layout()->addItem( spacerItem2 );
 
