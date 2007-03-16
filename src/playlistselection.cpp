@@ -218,7 +218,7 @@ SelectionListItem::name() const
     QString fullName = text(0).replace('/', "\\/");
     Q3ListViewItem *p = parent();
     while ( p ) {
-        fullName.prepend( p->text(0).replace('/', "\\/") + "/" );
+        fullName.prepend( p->text(0).replace('/', "\\/") + '/' );
         p = p->parent();
     }
     return fullName;

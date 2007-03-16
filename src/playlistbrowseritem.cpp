@@ -3620,7 +3620,7 @@ void ShoutcastGenre::setOpen( bool open )
 
 void ShoutcastGenre::startGenreDownload( QString genre, QString tmppath )
 {
-    QString tmpfile = tmppath + "/amarok-list-" + genre + "-" + KRandom::randomString(10) + ".xml";
+    QString tmpfile = tmppath + "/amarok-list-" + genre + '-' + KRandom::randomString(10) + ".xml";
     KIO::CopyJob *cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
     connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool ) ),
              this,   SLOT( doneListDownload( KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool ) ) );
