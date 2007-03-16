@@ -1,5 +1,6 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/amarok/src/plugin ${CMAKE_SOURCE_DIR}/amarok/src ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### next target ###############
@@ -23,30 +24,3 @@ install(FILES  amarok_void-engine_plugin.desktop  DESTINATION ${SERVICES_INSTALL
 
 
 
-#original Makefile.am contents follow:
-
-#kde_module_LTLIBRARIES = \
-#    libamarok_void-engine_plugin.la
-#
-#INCLUDES = \
-#    -I$(top_srcdir)/amarok/src/plugin \
-#    -I$(top_srcdir)/amarok/src \
-#    $(all_includes)
-#
-#libamarok_void_engine_plugin_la_LIBADD = \
-#    $(top_builddir)/amarok/src/libamarok.la \
-#    $(top_builddir)/amarok/src/plugin/libplugin.la \
-#    $(LIB_KDECORE)
-#
-#libamarok_void_engine_plugin_la_SOURCES = \
-#    void-engine.cpp
-#
-#libamarok_void_engine_plugin_la_LDFLAGS = \
-#    $(KDE_PLUGIN) \
-#    $(all_libraries)
-#
-#METASOURCES = \
-#    AUTO
-#
-#kde_services_DATA = \
-#    amarok_void-engine_plugin.desktop
