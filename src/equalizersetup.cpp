@@ -72,7 +72,8 @@ EqualizerSetup::EqualizerSetup()
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    QWidget* vbox( this );
+    QWidget* vbox = new QWidget( this );
+    setMainWidget( vbox );
     QVBoxLayout *vboxLayout = new QVBoxLayout;
     vbox->setLayout( vboxLayout );
     vboxLayout->setSpacing( KDialog::spacingHint() );
