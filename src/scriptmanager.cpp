@@ -161,10 +161,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->setupUi( main );
 
     setMainWidget( main );
-    //m_gui->listView->setRootIsDecorated( true );
+    m_gui->treeWidget->setRootIsDecorated( true );
     //m_gui->listView->setFullWidth( true );
     //m_gui->listView->setResizeMode( Q3ListView::AllColumns );
     //m_gui->listView->setShowSortIndicator( true );
+    m_gui->treeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
 
 
     /// Category items
@@ -197,7 +198,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
     connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
-    connect( m_gui->treeWidget, SIGNAL( contextMenuRequested ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint& ) ) );
+    connect( m_gui->treeWidget, SIGNAL( customContextMenuRequested ( const QPoint& ) ), SLOT( slotShowContextMenu( const QPoint& ) ) );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
@@ -687,8 +688,10 @@ ScriptManager::slotAboutScript()
 
 
 void
-ScriptManager::slotShowContextMenu( QTreeWidgetItem* item, const QPoint& pos )
+ScriptManager::slotShowContextMenu( const QPoint& pos )
 {
+    QTreeWidgetItem* item = m_gui->treeWidget->itemAt( pos );
+
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||

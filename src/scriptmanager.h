@@ -132,7 +132,7 @@ class ScriptManager : public KDialog, public EngineObserver
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
-        void slotShowContextMenu( QTreeWidgetItem*, const QPoint& );
+        void slotShowContextMenu( const QPoint& );
 
         void slotReceivedStdout( KProcess*, char*, int );
         void slotReceivedStderr( KProcess*, char*, int );
