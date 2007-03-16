@@ -80,6 +80,7 @@ PhononEngine::init()
                                                   KDE::StatusBar::Error );
        return false;
    }
+
     m_mediaObject->addAudioPath( m_audioPath );
 //     m_mediaObject->addVideoPath( m_videoPath );
     m_audioPath->addOutput( m_audioOutput );
@@ -179,7 +180,7 @@ Engine::State PhononEngine::convertState( Phonon::State s )
         case Phonon::StoppedState:
         case Phonon::BufferingState:
         case Phonon::LoadingState:
-            return Engine::Idle;
+            return Engine::Empty;
     }
     return Engine::Empty; //default to this.. possibly a bad idea.
 }
