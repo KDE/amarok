@@ -362,27 +362,21 @@ ScriptManager::findScripts() //SLOT
     const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*",KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
-    {
-        QString str;
-        foreach( str, allFiles )
-            if( QFileInfo( str ).isExecutable() )
-                loadScript( str );
-    }
+    foreach( QString str, allFiles )
+        if( QFileInfo( str ).isExecutable() )
+            loadScript( str );
 
     // Handle auto-run:
 
     KSharedConfigPtr config = Amarok::config( "ScriptManager" );
     const QStringList runningScripts = config->readEntry( "Running Scripts", QStringList() );
 
-    {
-        QString str;
-        foreach( str, runningScripts )
-            if( m_scripts.contains( str ) ) {
-                debug() << "Auto-running script: " << str << endl;
-                m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
-                slotRunScript();
-            }
-    }
+    foreach( QString str, runningScripts )
+        if( m_scripts.contains( str ) ) {
+            debug() << "Auto-running script: " << str << endl;
+            m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
+            slotRunScript();
+        }
 
 //FIXME    m_gui->treeWidget->setCurrentItem( m_gui->treeWidget->firstChild() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
@@ -470,9 +464,8 @@ void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
     const QStringList entries = archiveDir->entries();
-    QString entry;
 
-    foreach( entry, entries ) {
+    foreach( QString entry, entries ) {
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
         if( archEntry->isDirectory() ) {

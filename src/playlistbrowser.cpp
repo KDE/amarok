@@ -88,9 +88,8 @@ namespace Amarok {
         Q3ListViewItem *prox = view->firstChild();
         Q3ListViewItem *item = 0;
 
-        oldForeach( path ) {
+        foreach( QString text, path ) {
             item = prox;
-            QString text( *it );
             text.replace( escaped, sep );
 
             for ( ; item; item = item->nextSibling() ) {
@@ -565,10 +564,10 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
     tagsFolder->setKept( false );
     LastFmEntry *last = 0;
 
-    oldForeach( globaltags )
+    foreach( QString str, globaltags )
     {
-        const KUrl url( "lastfm://globaltags/" + *it );
-        last = new LastFmEntry( tagsFolder, last, url, *it );
+        const KUrl url( "lastfm://globaltags/" + str );
+        last = new LastFmEntry( tagsFolder, last, url, str );
         last->setKept( false );
     }
 
@@ -821,11 +820,11 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortByFavorite();
     qb.setLimit( 0, 15 );
-    oldForeach( artists ) {
+    foreach( QString str, artists ) {
         QueryBuilder qbTemp( qb );
-        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+        qbTemp.addMatch( QueryBuilder::tabArtist, str );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1", str ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -841,11 +840,11 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
-    oldForeach( artists ) {
+    foreach( QString str, artists ) {
         QueryBuilder qbTemp( qb );
-        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+        qbTemp.addMatch( QueryBuilder::tabArtist, str );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1", str ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -861,11 +860,11 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.setLimit( 0, 15 );
-    oldForeach( artists ) {
+    foreach( QString str, artists ) {
         QueryBuilder qbTemp( qb );
-        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+        qbTemp.addMatch( QueryBuilder::tabArtist, str );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query( true ));
+        last = new SmartPlaylist( item, last, i18n( "By %1", str ), qbTemp.query( true ));
         last->setKept( false );
     }
 
@@ -907,11 +906,11 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    oldForeach( genres ) {
+    foreach( QString str, genres ) {
         QueryBuilder qbTemp( qb );
-        qbTemp.addMatch( QueryBuilder::tabGenre, *it );
+        qbTemp.addMatch( QueryBuilder::tabGenre, str );
 
-        last = new SmartPlaylist( item, last, i18n( "%1", *it ), qbTemp.query( true ) );
+        last = new SmartPlaylist( item, last, i18n( "%1", str ), qbTemp.query( true ) );
         last->setKept( false );
     }
 
@@ -1032,8 +1031,8 @@ PlaylistBrowser::fixDynamicPlaylistPath( Q3ListViewItem *item )
     if ( entry ) {
         QStringList names = entry->items();
         QStringList paths;
-        oldForeach( names ) {
-            QString path = guessPathFromPlaylistName( *it );
+        foreach( QString str, names ) {
+            QString path = guessPathFromPlaylistName( str );
             if ( !path.isNull() )
                 paths+=path;
         }
