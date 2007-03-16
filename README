@@ -14,7 +14,7 @@ interface that really makes playlist handling easy.
 
     * Quick and simple drag and drop playlist creation
     * Music library (built-in SQLite, MySQL, or PostgreSQL)
-    * Multiple backends supported (xine, GStreamer, Helix, and NMM)
+    * Multiple backends supported (xine, Helix, and NMM)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
@@ -148,19 +148,6 @@ Packages for popular distributions are available at http://amarok.kde.org
 
  INSTALLATION-FAQ
 ==================
-
-Q: I have the required version of GStreamer installed but configure doesn't
-   find it!
-Q: I have pkg-config problems.
-A: Here's an extract from the PKG-CONFIG man page:
-
-     pkg-config retrieves information about packages from  special metadata
-     files. These files are named after the package, with the extension
-     .pc. By default, pkg-config looks in the directory prefix/lib/pkgconfig
-     for these  files;  it will  also  look in the colon-separated list of
-     directories specified by the PKG_CONFIG_PATH environment variable.
-
-   So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
 
 Q: Can I improve Amarok's startup time?
 A: Prelinking Amarok has spectacular results; however if you have binary openGL
