@@ -423,7 +423,7 @@ QueryBuilder::addFilter( int tables, qint64 value, const QString& filter, int mo
         if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
             escapedFilter = CollectionDB::instance()->escapeString( filter );
         else
-            escapedFilter = "'" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            escapedFilter = '\'' + CollectionDB::instance()->escapeString( filter ) + "' ";
         s = ( mode == modeLess ? "< " : "> " ) + escapedFilter;
     }
     else
@@ -566,7 +566,7 @@ QueryBuilder::excludeFilter( int tables, qint64 value, const QString& filter, in
             bool isNumber;
             filter.toInt( &isNumber );
             if (isNumber)
-                s = " <> " + CollectionDB::instance()->escapeString( filter ) + " ";
+                s = " <> " + CollectionDB::instance()->escapeString( filter ) + ' ';
             else
                 s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
         }
@@ -1192,7 +1192,7 @@ QueryBuilder::sortByFavoriteAvg() {
                    .arg( functionName( funcAvg ), tableName(tabStats), valueName(valRating) );
     m_having += QString("%1(%2.%3) > 0")
                    .arg( functionName( funcAvg ), tableName(tabStats), valueName(valPlayCounter) );
-    m_having += ")";
+    m_having += ')';
 }
 
 // Helper method -- given a value, returns the index of the bit that is

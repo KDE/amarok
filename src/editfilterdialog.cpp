@@ -454,7 +454,7 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
             {
                 if (m_strPrefixNOT.isEmpty())
                     result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
-                        " " + keyword + ":<" + QString::number(m_spinMin1->value() + 1) + unit;
+                        ' ' + keyword + ":<" + QString::number(m_spinMin1->value() + 1) + unit;
                 else
                     result = keyword + ":<" + QString::number(m_spinMin1->value()) + unit +
                         " OR " + keyword + ":>" + QString::number(m_spinMin1->value()) + unit;
@@ -475,7 +475,7 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
             {
                 if (m_strPrefixNOT.isEmpty())
                     result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
-                        " " + keyword + ":<" + QString::number(m_spinMax1->value() + 1) + unit;
+                        ' ' + keyword + ":<" + QString::number(m_spinMax1->value() + 1) + unit;
                 else
                     result = keyword + ":<" + QString::number(m_spinMin1->value() - 1) + unit +
                         " OR " + keyword + ":>" + QString::number(m_spinMax1->value() + 1) + unit;
@@ -740,7 +740,7 @@ void EditFilterDialog::slotDefault() // SLOT
     m_previousFilterText = m_filterText;
     if (!m_filterText.isEmpty())
     {
-        m_filterText += " ";
+        m_filterText += ' ';
         if (m_checkOR->isChecked())
             m_filterText += "OR ";
     }
