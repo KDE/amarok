@@ -44,7 +44,5 @@ private:
 static bool isSplashEnabled();
 static bool amarokIsRunning();
 
-#define oldForeach( x ) \
-    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 #endif
