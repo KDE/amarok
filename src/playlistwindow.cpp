@@ -309,8 +309,8 @@ void PlaylistWindow::init()
         storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
 
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser( "Internet Content" );;
-        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet Content"), internetContentServiceBrowser );
-        m_browserNames.append( "Internet Content" );
+        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
+        m_browserNames.append( "Internet" );
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
