@@ -172,6 +172,7 @@ set(libstatusbar_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/progressBar.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/squeezedtextlabel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/queueLabel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/statusbar/selectLabel.cpp
 	)
 
 ########### next target ###############

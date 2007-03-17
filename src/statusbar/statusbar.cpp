@@ -43,8 +43,6 @@
 #include "timeLabel.h"
 #include "toggleLabel.h"
 #include "toggleLabel.moc"
-#include "selectLabel.h"
-#include "selectLabel.moc"
 
 
 namespace Amarok {

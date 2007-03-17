@@ -88,6 +88,7 @@
 #include <fixx11h.h>
 
 // #include <phonon/ui/videowidget.h>
+#include "selectLabel.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -184,8 +185,8 @@ void PlaylistWindow::init()
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
         plBar->addSeparator();
-        plBar->addAction( actionCollection()->action( "repeat" ) );
-        plBar->addAction(actionCollection()->action( "random_mode" ) );
+        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat")), plBar ) );
+        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode")), plBar ) );
     //END Playlist Toolbar
     }
 

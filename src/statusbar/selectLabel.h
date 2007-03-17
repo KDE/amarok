@@ -25,6 +25,8 @@
 #define AMAROK_SELECTLABEL_H
 
 #include "actionclasses.h"
+#include "amarok.h"
+#include "amarokconfig.h"
 #include "overlayWidget.h"
 #include "popupMessage.h"
 
@@ -39,6 +41,7 @@
 #include <QPixmap>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QStyle>
 
 class SelectLabel : public QLabel
 {
