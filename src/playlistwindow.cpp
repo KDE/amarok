@@ -222,9 +222,9 @@ void PlaylistWindow::init()
         m_toolbar->addAction( actionCollection()->action( "stop" ) );
         m_toolbar->addAction( actionCollection()->action( "next" ) );
         m_toolbar->addWidget( spacer );
-        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
-        m_toolbar->addWidget( spacer1 );
         m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
+        m_toolbar->addWidget( spacer1 );
+        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ));
 
         m_toolbar->addWidget( spacer2 );
 
