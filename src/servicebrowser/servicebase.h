@@ -63,7 +63,7 @@ public:
     QString getShortDescription();
     void setLongDescription( const QString &longDescription );
     QString getLongDescription();
-    void setIcon( QIcon pixmap );
+    void setIcon( const QIcon &icon );
     QIcon getIcon();
     void setModel( ServiceModelBase * model );
     ServiceModelBase * getModel();

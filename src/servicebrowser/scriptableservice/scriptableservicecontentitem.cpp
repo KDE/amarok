@@ -37,7 +37,7 @@ ScriptableServiceContentItem::ScriptableServiceContentItem(const QString &name, 
     m_type = STATIC;
 }
 
-ScriptableServiceContentItem::ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent) {
+ScriptableServiceContentItem::ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, const QString &infoHtml, ScriptableServiceContentItem * parent) {
    
     m_name = name;
     m_parent = parent;

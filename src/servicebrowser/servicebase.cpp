@@ -148,7 +148,7 @@ QString ServiceBase::getLongDescription( )
     return m_longDescription;
 }
 
-void ServiceBase::setIcon( QIcon icon )
+void ServiceBase::setIcon( const QIcon &icon )
 {
     m_icon = icon;
 }

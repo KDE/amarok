@@ -38,7 +38,7 @@ public:
     
 
     //used for creating items that use a script to populate their child items
-    ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, QString infoHtml, ScriptableServiceContentItem * parent);
+    ScriptableServiceContentItem(const QString &name, QString const &callbackScript, const QString & callbackArgument, const QString &infoHtml, ScriptableServiceContentItem * parent);
 
     ~ScriptableServiceContentItem();
 

@@ -111,7 +111,7 @@ MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 }
 
 QString
-MagnatuneInfoParser::extractArtistInfo( QString artistPage )
+MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 {
     QString trimmedHtml;
 

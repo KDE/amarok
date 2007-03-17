@@ -71,8 +71,7 @@ private:
       
     KIO::StoredTransferJob *m_infoDownloadJob;
 
-    QString MextractArtistInfo( QString artistPage );
-    QString extractArtistInfo( QString artistPage );
+    QString extractArtistInfo( const QString &artistPage );
 
 protected slots:
 

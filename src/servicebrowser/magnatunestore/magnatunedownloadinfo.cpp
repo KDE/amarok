@@ -28,7 +28,7 @@
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {
-    m_selectedDownloadFormat = QString::null;
+    m_selectedDownloadFormat.clear();
     m_albumId = -1;
 }
 

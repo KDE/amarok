@@ -82,7 +82,7 @@ public:
     void setCoverURL( const QString &coverURL );
     QString getCoverURL() const;
 
-    void setLaunchDate( QDate launchDate );
+    void setLaunchDate( const QDate &launchDate );
     QDate getLaunchDate() const;
 
     void setAlbumCode( const QString &albumCode );

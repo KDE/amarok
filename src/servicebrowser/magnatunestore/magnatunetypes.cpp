@@ -135,7 +135,7 @@ QString MagnatuneAlbum::getCoverURL( ) const
     return m_coverURL;
 }
 
-void MagnatuneAlbum::setLaunchDate( QDate launchDate )
+void MagnatuneAlbum::setLaunchDate( const QDate &launchDate )
 {
     m_launchDate = launchDate;
 }
