@@ -284,7 +284,7 @@ class PlaylistDialog: public KDialog
 {
     Q_OBJECT
     public:
-        static QString getSaveFileName( const QString &suggestion = QString::null, bool proposeOverwriting = false );
+        static QString getSaveFileName( const QString &suggestion = QString(), bool proposeOverwriting = false );
 
     private:
         KLineEdit *edit;
