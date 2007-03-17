@@ -104,6 +104,8 @@ namespace Amarok
         ToolBar( QMainWindow *parent, const char *name )
             : KToolBar( name, parent, Qt::TopToolBarArea, false, false, false )
         {
+            QGridLayout *gl = new QGridLayout( this );
+            setLayout( gl );
             setIconSize( QSize( 32, 32 ) );
         }
 
@@ -188,7 +190,6 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat")), plBar ) );
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode")), plBar ) );
-//         plBar->addAction( actionCollection()->action( "progress_bar" ) );
     //END Playlist Toolbar
     }
 
@@ -198,11 +199,12 @@ void PlaylistWindow::init()
 #ifndef Q_WS_MAC
         m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-    Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
+    Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     createMenus();
+
 
     cb = new ContextBrowser( "contextBrowser" );
     KVBox *centralWidget = new KVBox( this );
@@ -211,7 +213,7 @@ void PlaylistWindow::init()
     plSplitter->addWidget( cb );
     plSplitter->addWidget( playlistwindow );
     setCentralWidget( centralWidget );
-    setStatusBar( statusbar );
+//     setStatusBar( statusbar );
 
     addToolBar( Qt::TopToolBarArea, m_toolbar );
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
@@ -427,8 +429,9 @@ void PlaylistWindow::createGUI()
 //             button->modeChange();
             button->setFocusPolicy( Qt::NoFocus );
         }
-        m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
     }
+
+    m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
     m_toolbar->setMovable( false );
