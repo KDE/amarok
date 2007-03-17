@@ -30,6 +30,7 @@
 #include <kauthorized.h>
 
 #include <QPixmap>
+#include <QStackedWidget>
 #include <QToolTip>
 #include <Q3PopupMenu>
 
@@ -462,8 +463,8 @@ VolumeAction::engineVolumeChanged( int value )
 // SearchAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SearchAction::SearchAction( KActionCollection *ac ) :
-    KAction( 0 ),
+SearchAction::SearchAction( KActionCollection *ac )
+    : KAction( 0 ),
     m_searchWidget( 0 )
 {
     setText( i18n( "Search Bar" ) );
@@ -495,6 +496,24 @@ QWidget *SearchAction::createWidget( QWidget *w )
             SLOT(slotEditFilter() ) );
 
     return searchBox;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// SpacerAction
+//////////////////////////////////////////////////////////////////////////////////////////
+SpacerAction::SpacerAction( KActionCollection *ac )
+    : KAction( 0 )
+{
+    ac->addAction( "spacer", this );
+}
+
+QWidget *SpacerAction::createWidget( QWidget *w )
+{
+    QStackedWidget *spacer     = new QStackedWidget();
+    QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
+    spacer->layout()->addItem( spacerItem );
+
+    return spacer;
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction

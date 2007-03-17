@@ -199,9 +199,6 @@ void PlaylistWindow::init()
 #ifndef Q_WS_MAC
         m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-//         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-    //END MainToolBar
-    }
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
@@ -1165,6 +1162,9 @@ void PlaylistWindow::createActions()
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
     new Amarok::SearchAction( ac );
+    new Amarok::SpacerAction( ac );
+    new Amarok::SpacerAction( ac );
+    new Amarok::SpacerAction( ac );
 
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );

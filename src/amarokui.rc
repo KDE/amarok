@@ -8,14 +8,17 @@
  <Action name="stop" />
  <Action name="next" />
 
- <Separator lineSeparator="true"/>
+ <Action name="spacer" />
 
  <Action name="toolbar_volume"/>
 
- <Separator lineSeparator="true"/>
+ <Action name="spacer" />
+
 
  <Action name="toolbar_analyzer" />
- <Separator />
+
+ <Action name="spacer" />
+
  <Action name="search_bar" />
 </ToolBar>
 
