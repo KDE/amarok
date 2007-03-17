@@ -24,8 +24,8 @@ Boston, MA 02110-1301, USA.
 
 #include <kiconloader.h> 
 
-ServiceBrowser::ServiceBrowser( const char *name )
-        : KVBox( 0)
+ServiceBrowser::ServiceBrowser(QWidget * parent, const char *name )
+        : KVBox( parent)
 {
     
 

@@ -62,6 +62,8 @@ ServiceBase::ServiceBase( const QString &name )
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new QTreeView( m_mainSplitter );
 
+    m_contentView->setAlternatingRowColors ( true );
+
     m_contentView->setDragEnabled ( true );
     m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
 
