@@ -16,6 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "amarok.h"
 #include "querybuilder.h"
 #include "sqlmeta.h"
 #include "sqlregistry.h"
@@ -28,7 +29,29 @@
 
 SqlTrack::SqlTrack( const QStringList &result ) : Track()
 {
-    //TODO
+    SqlRegistry *registry = SqlRegistry::instance();
+    m_url = KUrl( result[0] );
+    m_title = result[1];
+    m_comment = result[2];
+    m_trackNumber = result[3].toInt();
+    m_discNumber = result[4].toInt();
+    m_score = result[5].toDouble();
+    m_rating = result[6].toInt();
+    m_bitrate = result[7].toInt();
+    m_length = result[8].toInt();
+    m_filesize = result[9].toInt();
+    m_sampleRate = result[10].toInt();
+    //create date
+    m_lastPlayed = result[12].toUInt();
+    m_playCount = result[13].toInt();
+    //file type
+    //BPM
+    m_artist = registry->getArtist( result[16] );
+    m_album = registry->getAlbum( result[17] );
+    //isCompilation
+    m_genre = registry->getGenre( result[19] );
+    m_composer = registry->getComposer( result[20] );
+    m_year = registry->getYear( result[21] );
 }
 
 bool
@@ -180,6 +203,13 @@ void
 SqlTrack::setDiscNumber( int newDiscNumber )
 {
     m_discNumber = newDiscNumber;
+    notifyObservers();
+}
+
+void
+SqlTrack::setComment( const QString &newComment )
+{
+    m_comment = newComment;
     notifyObservers();
 }
 

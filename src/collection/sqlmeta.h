@@ -60,6 +60,8 @@ class SqlTrack : public Track
         virtual void subscribe( TrackObserver *observer );
         virtual void unsubscribe( TrackObserver *observer );
 
+        virtual QString comment() const { return m_comment; }
+        virtual void setComment( const QString &newComment );
         virtual double score() const { return m_score; }
         virtual void setScore( double newScore );
         virtual int rating() const { return m_rating; }
@@ -93,6 +95,7 @@ class SqlTrack : public Track
         int m_sampleRate;
         int m_rating;
         double m_score;
+        QString m_comment;
 
         AlbumPtr m_album;
         ArtistPtr m_artist;

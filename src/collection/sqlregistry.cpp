@@ -51,7 +51,36 @@ SqlRegistry::getTrack( const QString &url )
         return m_trackMap.value( url );
     else
     {
-        TrackPtr track( new SqlTrack( QStringList() ) );
+        QueryBuilder qb;
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valURL, url, QueryBuilder::modeNormal, true );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
+
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+        qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+
+        QStringList result = qb.run();
+        TrackPtr track( new SqlTrack( result ) );
         m_trackMap.insert( url, track );
         return track;
     }
