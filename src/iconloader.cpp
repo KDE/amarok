@@ -73,14 +73,14 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["dequeue_track"]        = "2leftarrow";
         iconMap["random"]               = "roll";
         iconMap["random_album"]         = "drive-optical";
-        iconMap["random_no"]            = "forward";
+        iconMap["random_no"]            = "arrow-right";
         iconMap["random_track"]         = "roll";
         iconMap["redo"]                 = "edit-redo";
         iconMap["refresh"]              = "view-refresh";
         iconMap["remove"]               = "edit-delete";
         iconMap["remove_from_playlist"] = "remove";
         iconMap["repeat_album"]         = "drive-optical";
-        iconMap["repeat_no"]            = "bottom";
+        iconMap["repeat_no"]            = "arrow-down";
         iconMap["repeat_playlist"]      = "repeat_playlist";
         iconMap["repeat_track"]         = "repeat_track";
         iconMap["rescan"]               = "edit-refresh";
