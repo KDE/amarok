@@ -563,17 +563,17 @@ CollectionDB::createTables( const bool temporary )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url " + exactTextColumnType() + ","
-                    "dir " + exactTextColumnType() + ","
+                    "url " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "dir " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "createdate INTEGER,"
                     "modifydate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
                     "composer INTEGER,"
                     "genre INTEGER,"
-                    "title " + textColumnType() + ","
+                    "title " + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "year INTEGER,"
-                    "comment " + longTextColumnType() + ","
+                    "comment " + longTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "track NUMERIC(4),"
                     "discnumber INTEGER,"
                     "bitrate INTEGER,"
@@ -660,25 +660,25 @@ CollectionDB::createTables( const bool temporary )
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
-                    "path " + exactTextColumnType() + ","
+                    "path " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
-                    "artist " + textColumnType() + ","
+                    "artist " + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "album " + textColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create embed table
     query( QString( "CREATE %1 TABLE embed%2 ("
-                    "url " + exactTextColumnType() + ","
+                    "url " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
-                    "hash " + exactTextColumnType() + ","
+                    "hash " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "description " + textColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
-                    "dir " + exactTextColumnType() + ","
+                    "dir " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
                     "changedate INTEGER);" )
                     .arg( temporary ? "TEMPORARY" : "" )
@@ -686,7 +686,7 @@ CollectionDB::createTables( const bool temporary )
 
     //create uniqueid table
     query( QString( "CREATE %1 TABLE uniqueid%2 ("
-                    "url " + exactTextColumnType() + ","
+                    "url " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
                     "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
                     "dir " + exactTextColumnType() + ");" )
@@ -714,8 +714,8 @@ CollectionDB::createTables( const bool temporary )
 
         // create related artists cache
         query( QString( "CREATE TABLE related_artists ("
-                        "artist " + textColumnType() + ","
-                        "suggestion " + textColumnType() + ","
+                        "artist " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                        "suggestion " + textColumnType() + "," //krazy:exclude=doublequote_chars
                         "changedate INTEGER );" ) );
         query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
@@ -949,11 +949,11 @@ CollectionDB::createDevicesTable()
     }
     query( QString( "CREATE TABLE devices ("
                     "id INTEGER PRIMARY KEY %1,"
-                    "type " + textColumnType() + ","
-                    "label " + textColumnType() + ","
-                    "lastmountpoint " + textColumnType() + ","
-                    "uuid " + textColumnType() + ","
-                    "servername " + textColumnType() + ","
+                    "type " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "label " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "lastmountpoint " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "uuid " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "servername " + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "sharename " + textColumnType() + ");" )
                  .arg( deviceAutoIncrement ) );
     query( "CREATE INDEX devices_type ON devices( type );" );
@@ -966,7 +966,7 @@ CollectionDB::createStatsTable()
 {
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
-                    "url " + exactTextColumnType() + ","
+                    "url " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
@@ -974,7 +974,7 @@ CollectionDB::createStatsTable()
                     "rating INTEGER DEFAULT 0,"
                     "playcounter INTEGER,"
                     "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
-                    "deleted BOOL DEFAULT " + boolF() + ","
+                    "deleted BOOL DEFAULT " + boolF() + "," //krazy:exclude=doublequote_chars
                     "PRIMARY KEY(url, deviceid) );" ) );
 
 }
@@ -1007,7 +1007,7 @@ CollectionDB::createStatsTableV10( bool temp )
 {
     // create music statistics database
     query( QString( "CREATE %1 TABLE statistics%2 ("
-                    "url " + exactTextColumnType() + ","
+                    "url " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
                     "deviceid INTEGER,"
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
@@ -1015,7 +1015,7 @@ CollectionDB::createStatsTableV10( bool temp )
                     "rating INTEGER DEFAULT 0,"
                     "playcounter INTEGER,"
                     "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
-                    "deleted BOOL DEFAULT " + boolF() + ","
+                    "deleted BOOL DEFAULT " + boolF() + "," //krazy:exclude=doublequote_chars
                     "PRIMARY KEY(url, deviceid) );"
                     ).arg( temp ? "TEMPORARY" : "" )
                      .arg( temp ? "_fix_ten" : "" ) );
@@ -1107,7 +1107,7 @@ CollectionDB::createPersistentTablesV12()
 
     // create labels table
     query( QString( "CREATE TABLE label ("
-        "url " + textColumnType() + ","
+        "url " + textColumnType() + "," //krazy:exclude=doublequote_chars
         "label " + textColumnType() + ");" ) );
 
     query( QString( "CREATE TABLE playlists ("
@@ -1176,13 +1176,13 @@ CollectionDB::createPodcastTables()
     // create podcast channels table
     query( QString( "CREATE TABLE podcastchannels ("
                     "url " + exactTextColumnType() + " UNIQUE,"
-                    "title " + textColumnType() + ","
-                    "weblink " + exactTextColumnType() + ","
-                    "image " + exactTextColumnType() + ","
-                    "comment " + longTextColumnType() + ","
-                    "copyright "  + textColumnType() + ","
+                    "title " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "weblink " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "image " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "comment " + longTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "copyright "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "parent INTEGER,"
-                    "directory "  + textColumnType() + ","
+                    "directory "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "autoscan BOOL, fetchtype INTEGER, "
                     "autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
 
@@ -1190,15 +1190,15 @@ CollectionDB::createPodcastTables()
     query( QString( "CREATE TABLE podcastepisodes ("
                     "id INTEGER PRIMARY KEY %1, "
                     "url " + exactTextColumnType() + " UNIQUE,"
-                    "localurl " + exactTextColumnType() + ","
-                    "parent " + exactTextColumnType() + ","
-                    "guid " + exactTextColumnType() + ","
-                    "title " + textColumnType() + ","
-                    "subtitle " + textColumnType() + ","
-                    "composer " + textColumnType() + ","
-                    "comment " + longTextColumnType() + ","
-                    "filetype "  + textColumnType() + ","
-                    "createdate "  + textColumnType() + ","
+                    "localurl " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "parent " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "guid " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "title " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "subtitle " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "composer " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "comment " + longTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "filetype "  + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "createdate "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "length INTEGER,"
                     "size INTEGER,"
                     "isNew BOOL );" )
@@ -1207,7 +1207,7 @@ CollectionDB::createPodcastTables()
     // create podcast folders table
     query( QString( "CREATE TABLE podcastfolders ("
                     "id INTEGER PRIMARY KEY %1, "
-                    "name " + textColumnType() + ","
+                    "name " + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "parent INTEGER, isOpen BOOL );" )
                     .arg( podcastFolderAutoInc ) );
 
@@ -1243,13 +1243,13 @@ CollectionDB::createPodcastTablesV2( bool temp )
     // create podcast channels table
     query( QString( "CREATE %1 TABLE podcastchannels%2 ("
                     "url " + exactTextColumnType() + " UNIQUE,"
-                    "title " + textColumnType() + ","
-                    "weblink " + exactTextColumnType() + ","
-                    "image " + exactTextColumnType() + ","
-                    "comment " + longTextColumnType() + ","
-                    "copyright "  + textColumnType() + ","
+                    "title " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "weblink " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "image " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "comment " + longTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "copyright "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "parent INTEGER,"
-                    "directory "  + textColumnType() + ","
+                    "directory "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "autoscan BOOL, fetchtype INTEGER, "
                     "autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ).arg( a,b ) );
 
@@ -1257,15 +1257,15 @@ CollectionDB::createPodcastTablesV2( bool temp )
     query( QString( "CREATE %2 TABLE podcastepisodes%3 ("
                     "id INTEGER PRIMARY KEY %1, "
                     "url " + exactTextColumnType() + " UNIQUE,"
-                    "localurl " + exactTextColumnType() + ","
-                    "parent " + exactTextColumnType() + ","
-                    "guid " + exactTextColumnType() + ","
-                    "title " + textColumnType() + ","
-                    "subtitle " + textColumnType() + ","
-                    "composer " + textColumnType() + ","
-                    "comment " + longTextColumnType() + ","
-                    "filetype "  + textColumnType() + ","
-                    "createdate "  + textColumnType() + ","
+                    "localurl " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "parent " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "guid " + exactTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "title " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "subtitle " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "composer " + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "comment " + longTextColumnType() + "," //krazy:exclude=doublequote_chars
+                    "filetype "  + textColumnType() + "," //krazy:exclude=doublequote_chars
+                    "createdate "  + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "length INTEGER,"
                     "size INTEGER,"
                     "isNew BOOL );" )
@@ -1274,7 +1274,7 @@ CollectionDB::createPodcastTablesV2( bool temp )
     // create podcast folders table
     query( QString( "CREATE %2 TABLE podcastfolders%3 ("
                     "id INTEGER PRIMARY KEY %1, "
-                    "name " + textColumnType() + ","
+                    "name " + textColumnType() + "," //krazy:exclude=doublequote_chars
                     "parent INTEGER, isOpen BOOL );" )
                     .arg( podcastFolderAutoInc, a, b ) );
 
@@ -2160,7 +2160,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     QString deviceIds;
     oldForeachType( IdList, list )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds = deviceIds + ",";
+        if ( !deviceIds.isEmpty() ) deviceIds = deviceIds + ","; //krazy:exclude=doublequote_chars
         deviceIds += QString::number(*it);
     }
 
