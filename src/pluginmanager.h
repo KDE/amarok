@@ -53,7 +53,7 @@ class PluginManager
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static KService::List query( const QString& constraint = QString::null );
+        static KService::List query( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from query
@@ -62,7 +62,7 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static Amarok::Plugin* createFromQuery( const QString& constraint = QString::null );
+        static Amarok::Plugin* createFromQuery( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from service

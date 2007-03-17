@@ -41,7 +41,7 @@ class CoverManager : public QSplitter
 
         static CoverManager *instance() { return s_instance; }
 
-        static void showOnce( const QString &artist = QString::null );
+        static void showOnce( const QString &artist = QString() );
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
 
         void setStatusText( QString text );
@@ -145,7 +145,7 @@ class CoverViewItem : public K3IconViewItem
         void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
         void dragEntered();
         void dragLeft();
-        void calcRect( const QString& text_=QString::null );
+        void calcRect( const QString& text_ = QString() );
 
     private:
         QString m_artist;

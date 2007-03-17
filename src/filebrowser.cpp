@@ -608,7 +608,7 @@ public:
         }
     }
 
-    void unsetText() { setText( QString::null ); }
+    void unsetText() { setText( QString() ); }
     void setText( const QString &text ) { m_text = text; viewport()->update(); }
 
 private:

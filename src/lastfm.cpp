@@ -517,7 +517,7 @@ WebService::changeStation( QString url )
         emit stationChanged( _url, m_station );
     }
     else
-        emit stationChanged( _url, QString::null );
+        emit stationChanged( _url, QString() );
 
     return true;
 }

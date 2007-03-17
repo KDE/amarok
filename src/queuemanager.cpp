@@ -267,11 +267,11 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_listview = new QueueList( box );
 
     KVBox *buttonBox = new KVBox( box );
-    m_up     = new KPushButton( KGuiItem( QString::null, "up" ), buttonBox );
-    m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
-    m_remove = new KPushButton( KGuiItem( QString::null, Amarok::icon( "dequeue_track" ) ), buttonBox );
-    m_add    = new KPushButton( KGuiItem( QString::null, Amarok::icon( "queue_track" ) ), buttonBox );
-    m_clear  = new KPushButton( KGuiItem( QString::null, Amarok::icon( "playlist_clear" ) ), buttonBox );
+    m_up     = new KPushButton( KGuiItem( QString(), "up" ), buttonBox );
+    m_down   = new KPushButton( KGuiItem( QString(), "down" ), buttonBox );
+    m_remove = new KPushButton( KGuiItem( QString(), Amarok::icon( "dequeue_track" ) ), buttonBox );
+    m_add    = new KPushButton( KGuiItem( QString(), Amarok::icon( "queue_track" ) ), buttonBox );
+    m_clear  = new KPushButton( KGuiItem( QString(), Amarok::icon( "playlist_clear" ) ), buttonBox );
 
     m_up->setToolTip(     i18n( "Move up" ) );
     m_down->setToolTip(   i18n( "Move down" ) );
@@ -416,7 +416,7 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
     QString title = i18n("%1 - %2", item->artist(), item->title() );
 
     QList<QListWidgetItem*> items = m_listview->findItems( title, 0 );
-     
+
     if( items.count() > 0 )
     {
         QListWidgetItem *removableItem = items.first();

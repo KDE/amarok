@@ -748,7 +748,7 @@ MediaBrowser::transcode( const KUrl &src, const QString &filetype )
     m_transcodedUrl = KUrl();
     ScriptManager::instance()->notifyTranscode( src.url(), filetype );
 
-    while( m_waitForTranscode && sm->transcodeScriptRunning() != QString::null )
+    while( m_waitForTranscode && !sm->transcodeScriptRunning().isEmpty() )
     {
         usleep( 10000 );
         kapp->processEvents( QEventLoop::AllEvents );
@@ -854,7 +854,7 @@ MediaItem::init()
     m_bundle=0;
     m_order=0;
     m_type=UNKNOWN;
-    m_playlistName = QString::null;
+    m_playlistName.clear();
     m_device=0;
     m_flags=0;
     setExpandable( false );
@@ -1521,7 +1521,7 @@ MediaItem *
 MediaView::newDirectory( MediaItem *parent )
 {
     bool ok;
-    const QString name = KInputDialog::getText(i18n("Add Directory"), i18n("Directory Name:"), QString::null, &ok, this);
+    const QString name = KInputDialog::getText(i18n("Add Directory"), i18n("Directory Name:"), QString(), &ok, this);
 
     if( ok && !name.isEmpty() )
     {
@@ -2340,7 +2340,7 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
         text = item->bundle()->url().prettyUrl();
-    if( item->m_playlistName != QString::null )
+    if( !item->m_playlistName.isEmpty() )
     {
         text += " (" + item->m_playlistName + ')';
     }
@@ -2800,7 +2800,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
 
                     // increase Amarok playcount
                     QString url = CollectionDB::instance()->getURL( *bundle );
-                    if( url != QString::null )
+                    if( !url.isEmpty() )
                     {
                         QDateTime t = it->playTime();
                         CollectionDB::instance()->addSongPercentage( url, 100, "mediadevice", t.isValid() ? &t : 0 );
@@ -2813,7 +2813,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     // copy rating from media device to Amarok
                     QString url = CollectionDB::instance()->getURL( *bundle );
                     debug() << "rating changed " << url << ": " << it->rating()/10 << endl;
-                    if( url != QString::null )
+                    if( !url.isEmpty() )
                     {
                         CollectionDB::instance()->setSongRating( url, it->rating()/10 );
                         it->setRating( it->rating() ); // prevent setting it again next time
@@ -3242,7 +3242,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
                         "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.",
                         numFiles
                         ),
-                    QString::null,
+                    QString(),
                     KGuiItem(i18n("&Delete"),"editdelete") );
 
             if ( button != KMessageBox::Continue )
@@ -3443,7 +3443,7 @@ MediaQueue::save( const QString &path )
             i.appendChild( attr );
         }
 
-        if(item->m_playlistName != QString::null)
+        if( !item->m_playlistName.isEmpty() )
         {
             i.setAttribute( "playlist", item->m_playlistName );
         }

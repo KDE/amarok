@@ -61,7 +61,7 @@ public:
             QString p = rxArg.capturedTexts()[0].mid(1, len-1);
 
             result += mid( start, pos-start );
-            if( args[p] != QString::null )
+            if( !args[p].isEmpty() )
                 result += args[p];
             else if( opt )
                 return QString();

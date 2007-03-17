@@ -703,7 +703,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     // open a file selector to add media to the playlist
     KUrl::List files;
     //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
-    KFileDialog dlg( KUrl(QString::null), QString("*.*|"), this );
+    KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.exec();
@@ -723,7 +723,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 void PlaylistWindow::slotAddStream() //SLOT
 {
     bool ok;
-    QString url = KInputDialog::getText( i18n("Add Stream"), i18n("URL"), QString::null, &ok, this );
+    QString url = KInputDialog::getText( i18n("Add Stream"), i18n("URL"), QString(), &ok, this );
 
     if ( !ok ) return;
 
@@ -822,7 +822,7 @@ void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
 void PlaylistWindow::playAudioCD() //SLOT
 {
     KUrl::List urls;
-    if( EngineController::engine()->getAudioCDContents(QString::null, urls) )
+    if( EngineController::engine()->getAudioCDContents(QString(), urls) )
     {
         if (!urls.isEmpty())
             Playlist::instance()->insertMedia(urls, Playlist::Replace);

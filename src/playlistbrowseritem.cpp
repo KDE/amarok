@@ -144,7 +144,7 @@ PlaylistBrowserEntry::setKept( bool k )
 void
 PlaylistBrowserEntry::updateInfo()
 {
-    PlaylistBrowser::instance()->setInfo( QString::null, QString::null );
+    PlaylistBrowser::instance()->setInfo( QString(), QString() );
     return;
 }
 
@@ -1892,7 +1892,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     setText( 0, t );
 
-    QString l = QString::null;
+    QString l = QString();
 
     if( isAtom )
         l = xml.namedItem( "link" ).toElement().attribute( "rel" );
