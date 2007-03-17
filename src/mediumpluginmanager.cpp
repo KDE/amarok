@@ -296,7 +296,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     new QLabel( "", vbox1 );
     QLabel* nameLabel = new QLabel( vbox1 );
     nameLabel->setText( i18n( "Enter a &name for this device (required):" ) );
-    m_mdaName = new HintLineEdit( QString::null, vbox1);
+    m_mdaName = new HintLineEdit( QString(), vbox1);
     nameLabel->setBuddy( m_mdaName );
     m_mdaName->setHint( i18n( "Example: My_Ipod" ) );
     m_mdaName->setToolTip( i18n( "Enter a name for the device.  The name must be unique across all devices, including autodetected devices.  It must not contain the pipe ( | ) character." ) );
@@ -351,7 +351,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
             MediaBrowser::instance()->getInternalPluginName( string ) == "njb-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
-        m_mdaMountPoint->setText( QString::null );
+        m_mdaMountPoint->setText( QString() );
         m_mdaMountPoint->setEnabled(false);
     }
     else if( m_mdaMountPoint->isEnabled() == false )
@@ -449,7 +449,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
-    m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString::null, this );
+    m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString(), this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     m_configButton->setToolTip( i18n( "Configure device settings" ) );

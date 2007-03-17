@@ -30,16 +30,16 @@ Medium::Medium(const QString &id, const QString &name)
 	m_properties+= id; /* ID */
 	m_properties+= name; /* NAME */
 	m_properties+= name; /* LABEL */
-	m_properties+= QString::null; /* USER_LABEL */
+	m_properties+= QString(); /* USER_LABEL */
 
 	m_properties+= "false"; /* MOUNTABLE */
-	m_properties+= QString::null; /* DEVICE_NODE */
-	m_properties+= QString::null; /* MOUNT_POINT */
-	m_properties+= QString::null; /* FS_TYPE */
+	m_properties+= QString(); /* DEVICE_NODE */
+	m_properties+= QString(); /* MOUNT_POINT */
+	m_properties+= QString(); /* FS_TYPE */
 	m_properties+= "false"; /* MOUNTED */
-	m_properties+= QString::null; /* BASE_URL */
-	m_properties+= QString::null; /* MIME_TYPE */
-	m_properties+= QString::null; /* ICON_NAME */
+	m_properties+= QString(); /* BASE_URL */
+	m_properties+= QString(); /* MIME_TYPE */
+	m_properties+= QString(); /* ICON_NAME */
 
 	loadUserLabel();
 }
@@ -64,20 +64,20 @@ Medium::Medium(const Medium *medium)
 
 Medium::Medium()
 {
-        m_properties+= QString::null; /* AUTODETECTED */
-	m_properties+= QString::null; /* ID */
-	m_properties+= QString::null; /* NAME */
-	m_properties+= QString::null; /* LABEL */
-	m_properties+= QString::null; /* USER_LABEL */
+        m_properties+= QString(); /* AUTODETECTED */
+	m_properties+= QString(); /* ID */
+	m_properties+= QString(); /* NAME */
+	m_properties+= QString(); /* LABEL */
+	m_properties+= QString(); /* USER_LABEL */
 
-	m_properties+= QString::null; /* MOUNTABLE */
-	m_properties+= QString::null; /* DEVICE_NODE */
-	m_properties+= QString::null; /* MOUNT_POINT */
-	m_properties+= QString::null; /* FS_TYPE */
-	m_properties+= QString::null; /* MOUNTED */
-	m_properties+= QString::null; /* BASE_URL */
-	m_properties+= QString::null; /* MIME_TYPE */
-	m_properties+= QString::null; /* ICON_NAME */
+	m_properties+= QString(); /* MOUNTABLE */
+	m_properties+= QString(); /* DEVICE_NODE */
+	m_properties+= QString(); /* MOUNT_POINT */
+	m_properties+= QString(); /* FS_TYPE */
+	m_properties+= QString(); /* MOUNTED */
+	m_properties+= QString(); /* BASE_URL */
+	m_properties+= QString(); /* MIME_TYPE */
+	m_properties+= QString(); /* ICON_NAME */
 }
 
 const Medium Medium::create(const QStringList &properties)
@@ -191,7 +191,7 @@ void Medium::loadUserLabel()
 	}
 	else
 	{
-		m_properties[USER_LABEL] = QString::null;
+		m_properties[USER_LABEL] = QString();
 	}
 }
 

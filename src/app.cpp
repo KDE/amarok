@@ -206,7 +206,7 @@ App::~App()
             AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyUrl() );
             AmarokConfig::setResumeTime( engine->position() );
         }
-        else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
+        else AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
     }
 
     EngineController::instance()->endSession(); //records final statistics

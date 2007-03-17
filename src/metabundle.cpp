@@ -153,7 +153,7 @@ int MetaBundle::columnIndex( const QString &name )
 }
 
 MetaBundle::MetaBundle()
-        : m_uniqueId( QString::null )
+        : m_uniqueId( QString() )
         , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
@@ -174,8 +174,8 @@ MetaBundle::MetaBundle()
         , m_notCompilation( false )
         , m_safeToSave( false )
         , m_waitingOnKIO( 0 )
-        , m_tempSavePath( QString::null )
-        , m_origRenamedSavePath( QString::null )
+        , m_tempSavePath( QString() )
+        , m_origRenamedSavePath( QString() )
         , m_tempSaveDigest( 0 )
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
@@ -187,7 +187,7 @@ MetaBundle::MetaBundle()
 
 MetaBundle::MetaBundle( const KUrl &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
     : m_url( url )
-    , m_uniqueId( QString::null )
+    , m_uniqueId( QString() )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
@@ -208,8 +208,8 @@ MetaBundle::MetaBundle( const KUrl &url, bool noCache, TagLib::AudioProperties::
     , m_notCompilation( false )
     , m_safeToSave( false )
     , m_waitingOnKIO( 0 )
-    , m_tempSavePath( QString::null )
-    , m_origRenamedSavePath( QString::null )
+    , m_tempSavePath( QString() )
+    , m_origRenamedSavePath( QString() )
     , m_tempSaveDigest( 0 )
     , m_saveFileref( 0 )
     , m_podcastBundle( 0 )
@@ -243,7 +243,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
-        , m_uniqueId( QString::null )
+        , m_uniqueId( QString() )
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
@@ -264,8 +264,8 @@ MetaBundle::MetaBundle( const QString& title,
         , m_notCompilation( false )
         , m_safeToSave( false )
         , m_waitingOnKIO( 0 )
-        , m_tempSavePath( QString::null )
-        , m_origRenamedSavePath( QString::null )
+        , m_tempSavePath( QString() )
+        , m_origRenamedSavePath( QString() )
         , m_tempSaveDigest( 0 )
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
@@ -1642,7 +1642,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
             return QString();
     }
 
-    return QString::null;
+    return QString();
 }
 
 int

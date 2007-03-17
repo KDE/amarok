@@ -121,7 +121,7 @@ namespace Amarok
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    AMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+    AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); //defined in collectionreader.cpp
 
     KIO::Job *trashFiles( const KUrl::List &files ); //defined in app.cpp
 

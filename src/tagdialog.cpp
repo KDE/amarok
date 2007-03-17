@@ -1065,7 +1065,7 @@ TagDialog::storeTags( const KUrl &kurl )
         storedRatings.replace( url, kComboBox_rating->currentIndex() ? kComboBox_rating->currentIndex() + 1 : 0 );
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( kTextEdit_lyrics->text().isEmpty() )
-            storedLyrics.replace( url, QString::null );
+            storedLyrics.replace( url, QString() );
         else {
             QDomDocument doc;
             QDomElement e = doc.createElement( "lyrics" );
@@ -1133,7 +1133,7 @@ TagDialog::loadLyrics( const KUrl &url )
     if( doc.setContent( xml ) )
         m_lyrics = doc.documentElement().text();
     else
-        m_lyrics = QString::null;
+        m_lyrics.clear();
 }
 
 void

@@ -88,7 +88,7 @@ namespace LastFm
 
             static bool    checkCredentials();
             static QString createCustomStation();
-            static QString stationDescription( QString url = QString::null );   // necessary for translation
+            static QString stationDescription( QString url = QString() );   // necessary for translation
 
         public slots:
             void playbackStopped();
@@ -184,7 +184,7 @@ namespace LastFm
             enum errorCode { E_NOCONTENT    = 1, E_NOMEMBERS = 2, E_NOFANS = 3, E_NOAVAIL = 4, E_NOSUBSCRIBER = 5,
                              E_NONEIGHBOURS = 6, E_NOSTOPPED = 7, E_OTHER  = 0 };
 
-            void        showError( int code, QString message = QString::null );
+            void        showError( int code, QString message = QString() );
 
             QString     parameter( const QString keyName, const QString data )      const;
             QStringList parameterArray( const QString keyName, const QString data ) const;
