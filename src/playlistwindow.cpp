@@ -431,7 +431,7 @@ void PlaylistWindow::createGUI()
         }
     }
 
-    m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
+//     m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
     m_toolbar->setMovable( false );

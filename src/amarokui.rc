@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="amarok" version="17">
+<kpartgui name="amarok" version="18">
 <ToolBar name="mainToolBar" iconText="icononly">
 <Text>Playlist Toolbar</Text>
 
