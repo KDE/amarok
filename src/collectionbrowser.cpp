@@ -656,7 +656,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
             QKeyEvent e2 ( e->type(),
                     (e->key() == Qt::Key_Up ? Qt::Key_End : Qt::Key_Home),
                     0, e->state(),
-                    QString::null, e->isAutoRepeat(), e->count() );
+                    QString(), e->isAutoRepeat(), e->count() );
             QApplication::sendEvent( this, &e2 );
             cur = currentItem();
 
@@ -3007,8 +3007,8 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         m_ipodFilterYear.clear();
 
     m_ipodSelected[m_currentDepth].clear();
-    m_ipodCurrent[m_currentDepth] = QString::null;
-    m_ipodTopItem[m_currentDepth] = QString::null;
+    m_ipodCurrent[m_currentDepth].clear();
+    m_ipodTopItem[m_currentDepth].clear();
 
     // Save the current item
     if( currentItem() )
@@ -3041,7 +3041,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
             // selection, since All will then be reselected automatically
             // in selectIpodItems()
             m_ipodSelected[m_currentDepth].clear();
-            m_ipodCurrent[m_currentDepth] = QString::null;
+            m_ipodCurrent[m_currentDepth].clear();
 
             break;
         }
@@ -3100,8 +3100,8 @@ CollectionView::decrementDepth ( bool rerender /*= true*/ )
     for( int i = m_currentDepth + 1; i < 3; ++i )
     {
         m_ipodSelected[i].clear();
-        m_ipodCurrent[i] = QString::null;
-        m_ipodTopItem[i] = QString::null;
+        m_ipodCurrent[i].clear();
+        m_ipodTopItem[i].clear();
     }
 
     if( rerender )
@@ -3227,7 +3227,7 @@ CollectionView::buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filter
         qb.sortBy( q_cat, QueryBuilder::valName );
 
         // ensure we don't get empty genres/albums/etc due to tag changes
-        qb.addFilter( QueryBuilder::tabSong, QString::null );
+        qb.addFilter( QueryBuilder::tabSong, QString() );
 
     }
 
@@ -3979,7 +3979,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     // ensure we don't get empty genres/albums/etc due to tag changes
-    qb.addFilter( QueryBuilder::tabSong, QString::null );
+    qb.addFilter( QueryBuilder::tabSong, QString() );
 
     values = qb.run();
 

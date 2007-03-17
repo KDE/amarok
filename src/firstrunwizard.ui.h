@@ -66,7 +66,7 @@ inline void
 FirstRunWizard::invokeHandbook() //SLOT
 {
     // Show handbook
-    KToolInvocation::invokeHelp( QString::null, QString::null, 0 );
+    KToolInvocation::invokeHelp( QString(), QString(), 0 );
 }
 
 void

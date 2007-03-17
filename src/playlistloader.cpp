@@ -844,9 +844,9 @@ PlaylistFile::loadASX( QTextStream &stream )
 
     while (!node.isNull())
     {
-       url = QString::null;
-       title = QString::null;
-       author = QString::null;
+       url.clear();
+       title.clear();
+       author.clear();
        length = QTime();
        if (node.nodeName().toLower() == "entry")
        {
@@ -867,7 +867,7 @@ PlaylistFile::loadASX( QTextStream &stream )
               }
 		if ((subNode.nodeName().toLower() == "duration") && (subNode.isElement()))
                 {
-                   duration = QString::null;
+                   duration.clear();
                    element = subNode.toElement();
                    if (element.hasAttribute("value"))
                       duration = element.attribute("value");
@@ -932,7 +932,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 	{
         MetaBundle b;
 		node = nodeList.item(i);
-		url = QString::null;
+		url.clear();
 		if( (node.nodeName().toLower() == "audio") && (node.isElement()) )
 		{
 			element = node.toElement();

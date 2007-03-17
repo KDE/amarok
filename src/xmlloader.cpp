@@ -165,7 +165,7 @@ bool MetaBundle::XmlLoader::startElement( const QString &, const QString &localN
         for( int i = 0, n = atts.count(); i < n; ++i )
             newAttribute( atts.localName( i ), atts.value( i ) );
 
-        m_currentElement = QString::null;
+        m_currentElement.clear();
     }
     else
         m_currentElement = localName;
@@ -184,7 +184,7 @@ bool MetaBundle::XmlLoader::endElement( const QString &, const QString &localNam
             return false;
     }
 
-    m_currentElement = QString::null;
+    m_currentElement.clear();
 
     return true;
 }

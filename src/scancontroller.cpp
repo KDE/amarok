@@ -272,7 +272,7 @@ main_loop:
 
             QString data = m_xmlData;
             m_source->setData( data );
-            m_xmlData = QString::null;
+            m_xmlData.clear();
 
             m_dataMutex.unlock();
             if ( !sessionStarted )
@@ -523,7 +523,7 @@ ScanController::customEvent( QCustomEvent* e )
     {
         debug() << "RestartEvent received." << endl;
 
-        QFile log( Amarok::saveLocation( QString::null ) + "collection_scan.log" );
+        QFile log( Amarok::saveLocation( QString() ) + "collection_scan.log" );
         if ( !log.open( QIODevice::ReadOnly ) )
         ::warning() << "Failed opening log file " << log.name() << endl;
         else {
@@ -533,7 +533,7 @@ ScanController::customEvent( QCustomEvent* e )
         }
 
         m_dataMutex.lock();
-        m_xmlData = QString::null;
+        m_xmlData.clear();
         delete m_source;
         m_source = new QXmlInputSource();
         m_dataMutex.unlock();
