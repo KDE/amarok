@@ -23,7 +23,6 @@
 #include "popupMessage.h"
 #include "debug.h"
 
-#include <k3activelabel.h>
 #include <kpushbutton.h>
 #include <kstandardguiitem.h>
 
@@ -64,7 +63,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     QHBoxLayout *hbox;
     QLabel *label;
-    K3ActiveLabel *alabel;
+    QLabel *alabel;
 
     m_layout = new QVBoxLayout( this );
     m_layout->setMargin( 9 );
@@ -85,7 +84,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     label->setObjectName( "image" );
     hbox->addWidget( label );
 
-    alabel = new K3ActiveLabel;
+    alabel = new QLabel;
     alabel->setParent( this );
     alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
@@ -126,7 +125,7 @@ void PopupMessage::setShowCounter( const bool show )
 
 void PopupMessage::setText( const QString &text )
 {
-    findChild<K3ActiveLabel*>( "label" )->setText( text );
+    findChild<QLabel*>( "label" )->setText( text );
     adjustSize();
 }
 

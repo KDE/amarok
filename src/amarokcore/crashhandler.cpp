@@ -84,7 +84,7 @@ namespace Amarok
         else if ( pid == 0 )
         {
             // we are the child process (the result of the fork)
-            std::cout << "Amarok is crashing...\n";
+            std::cout << "Amarok is crashing!\n";
 
             QString subject = APP_VERSION " ";
             QString body = i18n(
