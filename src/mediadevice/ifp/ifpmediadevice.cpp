@@ -74,9 +74,9 @@ class IfpMediaItem : public MediaItem
         }
 
         void
-        setEncodedName( Q3CString &name ) { m_encodedName = name; }
+        setEncodedName( QByteArray &name ) { m_encodedName = name; }
 
-        Q3CString
+        QByteArray
         encodedName() { return m_encodedName; }
 
         // List directories first, always
@@ -102,7 +102,7 @@ class IfpMediaItem : public MediaItem
 
     private:
         bool     m_dir;
-        Q3CString m_encodedName;
+        QByteArray m_encodedName;
 };
 
 
@@ -262,11 +262,11 @@ IfpMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
 
     #define item static_cast<IfpMediaItem*>(item)
 
-    Q3CString src  = QFile::encodeName( getFullPath( item, false ) );
+    QByteArray src  = QFile::encodeName( getFullPath( item, false ) );
     src.append( item->encodedName() );
 
      //the rename line edit has already changed the QListViewItem text
-    Q3CString dest = QFile::encodeName( getFullPath( item ) );
+    QByteArray dest = QFile::encodeName( getFullPath( item ) );
 
     debug() << "Renaming " << src << " to: " << dest << endl;
 
@@ -286,7 +286,7 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 
     QString cleanedName = cleanPath( name );
 
-    const Q3CString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
+    const QByteArray dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
     debug() << "Creating directory: " << dirPath << endl;
     int err = ifp_mkdir( &m_ifpdev, dirPath );
 
@@ -313,7 +313,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
     {
         debug() << "Checking folder: " << progress << endl;
         progress += *it;
-        const Q3CString dirPath = QFile::encodeName( progress );
+        const QByteArray dirPath = QFile::encodeName( progress );
 
         if( ifp_exists( &m_ifpdev, dirPath ) == IFP_DIR )
         {
@@ -362,8 +362,8 @@ IfpMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items
     m_tmpParent = directory;
     for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
     {
-        Q3CString src  = QFile::encodeName( getFullPath( *it ) );
-        Q3CString dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
+        QByteArray src  = QFile::encodeName( getFullPath( *it ) );
+        QByteArray dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
         debug() << "Moving: " << src << " to: " << dest << endl;
 
         int err = ifp_rename( &m_ifpdev, src, dest );
@@ -383,7 +383,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     if( !m_connected ) return 0;
     m_transferring = true;
 
-    const Q3CString src  = QFile::encodeName( bundle.url().path() );
+    const QByteArray src  = QFile::encodeName( bundle.url().path() );
 
     QString directory = "\\"; //root
     bool cleverFilename = false;
@@ -419,7 +419,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     else
         newFilename = cleanPath( bundle.prettyTitle() ) + '.' + bundle.type();
 
-    const Q3CString dest = QFile::encodeName( cleanPath(directory + newFilename) );
+    const QByteArray dest = QFile::encodeName( cleanPath(directory + newFilename) );
 
     kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
@@ -435,7 +435,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 /// File transfer methods
 
 int
-IfpMediaDevice::uploadTrack( const Q3CString& src, const Q3CString& dest )
+IfpMediaDevice::uploadTrack( const QByteArray& src, const QByteArray& dest )
 {
     debug() << "Transferring " << src << " to: " << dest << endl;
 
@@ -443,7 +443,7 @@ IfpMediaDevice::uploadTrack( const Q3CString& src, const Q3CString& dest )
 }
 
 int
-IfpMediaDevice::downloadTrack( const Q3CString& src, const Q3CString& dest )
+IfpMediaDevice::downloadTrack( const QByteArray& src, const QByteArray& dest )
 {
     debug() << "Downloading " << src << " to: " << dest << endl;
 
@@ -474,8 +474,8 @@ IfpMediaDevice::downloadSelectedItems()
     Q3ListViewItemIterator it( m_view, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
-        Q3CString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
-        Q3CString src = QFile::encodeName( getFullPath( *it ) );
+        QByteArray dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
+        QByteArray src = QFile::encodeName( getFullPath( *it ) );
 
         downloadTrack( src, dest );
     }
@@ -519,7 +519,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 
     QString path = getFullPath( item );
 
-    Q3CString encodedPath = QFile::encodeName( path );
+    QByteArray encodedPath = QFile::encodeName( path );
     int err;
     int count = 0;
 

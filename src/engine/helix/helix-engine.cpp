@@ -11,7 +11,7 @@
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -64,7 +64,7 @@ extern "C"
 
 
 ///returns the configuration we will use
-static inline Q3CString configPath() { return QFile::encodeName( QDir::homePath() + "/.helix/config" ); }
+static inline QByteArray configPath() { return QFile::encodeName( QDir::homePath() + "/.helix/config" ); }
 
 
 HelixEngine::HelixEngine()
@@ -300,7 +300,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
    }
 
    debug() << "xfadeLength is " << m_xfadeLength << endl;
-   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream && 
+   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream &&
         ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
          (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
          (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually)
@@ -423,7 +423,7 @@ HelixEngine::stop()
 
    debug() << "In stop where=" << where(m_current) << " duration=" << duration(m_current) << endl;
 
-   if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() == Engine::Playing ) 
+   if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() == Engine::Playing )
    {
       debug() << "fading out...\n";
       m_state = Engine::Empty;
@@ -897,7 +897,7 @@ HelixEngine::setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGai
 namespace Debug
 {
     #undef helix_indent
-    Q3CString helix_indent;
+    QByteArray helix_indent;
 }
 
 #include "helix-engine.moc"

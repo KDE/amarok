@@ -15,7 +15,7 @@
 
 #include <q3http.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 class QDataStream;
 class QFile;
@@ -47,7 +47,7 @@ class ContentFetcher : public Q3Http
     private:
         QString m_hostname;
         quint16 m_port;
-        Q3CString m_authorize;
+        QByteArray m_authorize;
         bool m_selfDestruct;
         static int s_requestId; //! Apple needs this for some reason
 };

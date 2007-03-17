@@ -40,7 +40,7 @@
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kapplication.h>
 #include <kio/job.h>
@@ -1011,7 +1011,7 @@ GstEngine::errorNoOutput() //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstElement*
-GstEngine::createElement( const Q3CString& factoryName, GstElement* bin, const Q3CString& name ) //static
+GstEngine::createElement( const QByteArray& factoryName, GstElement* bin, const QByteArray& name ) //static
 {
     GstElement* element = gst_element_factory_make( factoryName, name );
 
@@ -1031,7 +1031,7 @@ GstEngine::createElement( const Q3CString& factoryName, GstElement* bin, const Q
 
 
 QStringList
-GstEngine::getPluginList( const Q3CString& classname ) const
+GstEngine::getPluginList( const QByteArray& classname ) const
 {
     GList* features = NULL;
     QString name;
@@ -1071,7 +1071,7 @@ GstEngine::createPipeline()
     debug() << "Output Params: " << GstConfig::outputParams() << endl;
 
     // Let gst construct the output element from a string
-    Q3CString output  = GstConfig::soundOutput().toLatin1();
+    QByteArray output  = GstConfig::soundOutput().toLatin1();
     if ( GstConfig::useCustomOutputParams() ) {
         output += ' ';
         output += GstConfig::outputParams().toLatin1();

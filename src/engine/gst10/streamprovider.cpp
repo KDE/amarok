@@ -27,7 +27,7 @@ email                : markey@web.de
 #include <QTextCodec>
 #include <QTimer>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 #include <klocale.h>
 #include <kcodecs.h>
@@ -116,8 +116,8 @@ StreamProvider::sendRequest() //SLOT
 {
     DEBUG_BLOCK
 
-    const Q3CString username = m_url.user().toUtf8();
-    const Q3CString password = m_url.pass().toUtf8();
+    const QByteArray username = m_url.user().toUtf8();
+    const QByteArray password = m_url.pass().toUtf8();
     const QString authString = KCodecs::base64Encode( username + ':' + password );
     const bool auth = !( username.isEmpty() && password.isEmpty() );
 

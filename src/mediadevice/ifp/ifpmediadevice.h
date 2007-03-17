@@ -1,5 +1,5 @@
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 /***************************************************************************
  * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                                                                         *
@@ -76,9 +76,9 @@ class IfpMediaDevice : public MediaDevice
 
         // file transfer
         MediaItem        *newDirectoryRecursive( const QString &name, MediaItem *parent );
-        int               uploadTrack( const Q3CString& src, const Q3CString& dest );
+        int               uploadTrack( const QByteArray& src, const QByteArray& dest );
         void              downloadSelectedItems();
-        int               downloadTrack( const Q3CString& src, const Q3CString& dest );
+        int               downloadTrack( const QByteArray& src, const QByteArray& dest );
 
         // listDir
         void              listDir( const QString &dir );
@@ -92,7 +92,7 @@ class IfpMediaDevice : public MediaDevice
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
         QString           getFullPath( const Q3ListViewItem *item, const bool getFilename = true );
         QString           cleanPath( const QString &component );
-        
+
         MediaItem        *findChildItem( const QString &name, MediaItem *parent );
 
         // IFP device

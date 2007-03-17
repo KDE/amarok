@@ -20,7 +20,7 @@
 #include <qdatastream.h>
 #include <q3http.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kfilterdev.h>
 #include <kcodecs.h>
@@ -35,7 +35,7 @@ ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QS
  , m_selfDestruct( false )
 {
     connect( this, SIGNAL( stateChanged( int ) ), this , SLOT( checkForErrors( int ) ) );
-    Q3CString pass = password.toUtf8();
+    QByteArray pass = password.toUtf8();
     if( !password.isNull() )
     {
         m_authorize = "Basic " + KCodecs::base64Encode( "none:" + pass );

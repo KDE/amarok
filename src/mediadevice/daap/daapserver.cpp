@@ -21,7 +21,7 @@
 #if DNSSD_SUPPORT
     #include <dnssd/publicservice.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #endif
 DaapServer::DaapServer(QObject* parent, char* name)
   : QObject( parent, name )
@@ -54,8 +54,8 @@ DaapServer::~DaapServer()
 void
 DaapServer::readSql()
 {
-    static const Q3CString sqlPrefix = "SQL QUERY: ";
-    static const Q3CString serverStartPrefix = "SERVER STARTING: ";
+    static const QByteArray sqlPrefix = "SQL QUERY: ";
+    static const QByteArray serverStartPrefix = "SERVER STARTING: ";
     QString line;
     while( m_server->readln( line ) != -1 )
     {

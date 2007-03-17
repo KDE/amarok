@@ -30,7 +30,7 @@ what                 : interface to the Media Application Server (MAS)
 #include <QTimer>
 #include <QFile>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -172,7 +172,7 @@ bool MasEngine::load( const KUrl& url, bool stream )
     masc_pushk_int16( &pkg, (char*)"pos", pos );
     //masc_push_string( &pkg, (char *)m_url.path().toLatin1() );
 
-    Q3CString cs= QFile::encodeName( m_url.path());
+    QByteArray cs= QFile::encodeName( m_url.path());
     const char *pcs = cs;
     masc_push_string( &pkg, (char *)pcs);
     masc_finalize_package( &pkg );
@@ -403,7 +403,7 @@ bool MasEngine::masinit()
     {
         warning() << "MAS daemon not running. Starting! Please provide password..." << endl;
         // masd seems not to be running, let's try to run it
-        Q3CString cmdline;
+        QByteArray cmdline;
         cmdline = QFile::encodeName( KStandardDirs::findExe( QString::fromLatin1( "kdesu" ) ) );
         // TODO !!!hardcoded path
         cmdline += " -n -f /usr/local/mas/log/mas-1.log -c ";

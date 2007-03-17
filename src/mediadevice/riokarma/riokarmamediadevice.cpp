@@ -22,7 +22,7 @@
 #include <config.h>
 #include "riokarmamediadevice.h"
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
@@ -565,7 +565,7 @@ RioKarmaTrack::readMetaData()
     bundle->setTitle( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "title" ) ) ) );
 
     // translate codecs to file types
-    QString codec = Q3CString( lk_properties_get_property( m_id, "codec" ) );
+    QString codec = QByteArray( lk_properties_get_property( m_id, "codec" ) );
     if( codec == "mp3" )
         bundle->setFileType( MetaBundle::mp3 );
     else if( codec == "wma" )

@@ -12,7 +12,7 @@
 #include <dcopclient.h>
 #include <kapplication.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 //#include <kdebug.h>
 
 void EqDialog::init()
@@ -25,7 +25,7 @@ void EqDialog::init()
     canvasView->setCanvas(canvas);
     canvasView->init();
     QByteArray send_data, reply_data;
-    Q3CString reply_type;
+    QByteArray reply_type;
     //kDebug() << "continue" << endl;
     if(!KApplication::dcopClient()->call("amarok","player","equalizerEnabled()", send_data, reply_type, reply_data,true,1000));
     //kDebug() << "called" << endl;

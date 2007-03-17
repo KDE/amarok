@@ -30,7 +30,7 @@
 #include <q3ptrlist.h>
 #include <QStringList>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <QTimerEvent>
 #include <Q3ValueList>
 
@@ -121,7 +121,7 @@ class GstEngine : public Engine::Base
          * @param name Identifier for the element.
          * @return Pointer to the created element, or NULL for failure.
          */
-        static GstElement* createElement( const Q3CString& factoryName, GstElement* bin = 0, const Q3CString& name = 0 );
+        static GstElement* createElement( const QByteArray& factoryName, GstElement* bin = 0, const QByteArray& name = 0 );
 
         /**
          * Fetches a list of available output sink plugins
@@ -150,7 +150,7 @@ class GstEngine : public Engine::Base
         static void kio_resume_cb();
 
         /** Get a list of available plugins from a specified Class */
-        QStringList getPluginList( const Q3CString& classname ) const;
+        QStringList getPluginList( const QByteArray& classname ) const;
 
         /** Construct the output pipeline */
         bool createPipeline();

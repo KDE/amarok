@@ -60,19 +60,19 @@ namespace Debug
     #define qOApp reinterpret_cast<QObject*>(qApp)
     class Indent : QObject
     {
-        friend Q3CString &modifieableIndent();
+        friend QByteArray &modifieableIndent();
         Indent() : QObject( qOApp ) { setObjectName( "DEBUG_indent" ); }
-        Q3CString m_string;
+        QByteArray m_string;
     };
 
-    inline Q3CString &modifieableIndent()
+    inline QByteArray &modifieableIndent()
     {
         QObject* o = qOApp ? qOApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
-        Q3CString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
+        QByteArray &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
     }
 
-    inline Q3CString indent()
+    inline QByteArray indent()
     {
         return modifieableIndent();
     }
@@ -101,10 +101,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { mutex.lock(); Q3CString ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { mutex.lock(); Q3CString ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { mutex.lock(); Q3CString ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { mutex.lock(); Q3CString ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_INFO  ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
+        static inline kdbgstream fatal()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
 
