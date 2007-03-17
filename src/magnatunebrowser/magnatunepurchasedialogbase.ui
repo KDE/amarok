@@ -72,7 +72,7 @@
                         <cstring>infoLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>You have choosen to purchase the following album from Magnatune.com</string>
+                        <string>You have chosen to purchase the following album from Magnatune.com</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>

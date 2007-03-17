@@ -284,7 +284,7 @@ struct HelixCoreErrors
    {0x800401c9, i18n("Invalid Metafile")},
    {0x800401ca, i18n("Browser Launch")},
    {0x800401cb, i18n("View Source Noclip")},
-   {0x800401cc, i18n("View Source Dissabled")},
+   {0x800401cc, i18n("View Source Disabled")},
    {0x800401ce, i18n("Timeline Suspended")},
    {0x800401cf, i18n("Buffer Not Available")},
    {0x800401d0, i18n("Could Not Display")},

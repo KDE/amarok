@@ -34,7 +34,7 @@
             <default code="true">"default"</default>
         </entry>
         <entry key="Device enabled" type="Bool">
-            <label>DeviceEnabled</label>
+            <label>Device Enabled</label>
             <whatsthis>Is the device selected</whatsthis>
             <default code="true">false</default>
         </entry>

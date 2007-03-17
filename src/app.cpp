@@ -561,7 +561,7 @@ void App::showHyperThreadingWarning() // SLOT
         i18n( "<p>You are using a system with multiple CPUs. "
               "Please note that Amarok may be unstable with this "
               "configuration.</p>"
-              "<p>If your systems has hyperthreading, you can improve Amarok's stability by using the Linux kernel option 'NOHT', "
+              "<p>If your system has hyperthreading, you can improve Amarok's stability by using the Linux kernel option 'NOHT', "
               "or by disabling <i>HyperThreading</i> in your BIOS setup.</p>"
               "<p>More information can be found in the README file. For further assistance "
               "join us at #amarok on irc.freenode.net.</p>" );
@@ -1150,11 +1150,11 @@ void App::slotConfigAmarok( const QCString& page )
     //FIXME it seems that if the dialog is on a different desktop it gets lost
     //      what do to? detect and move it?
 
-    if ( page.isNull() ) 
+    if ( page.isNull() )
         dialog->showPage( AmarokConfigDialog::s_currentPage );
     else
         dialog->showPageByName( page );
-    
+
     dialog->show();
     dialog->raise();
     dialog->setActiveWindow();

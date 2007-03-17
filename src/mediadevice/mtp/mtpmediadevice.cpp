@@ -551,7 +551,7 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
     if( artist.isEmpty() )
         artist = i18n( "Unknown Artist" );
     if( bundle.compilation() == MetaBundle::CompilationYes )
-        artist = i18n( "Various Artists" );    
+        artist = i18n( "Various Artists" );
     QString album = bundle.album();
     if( album.isEmpty() )
         album = i18n( "Unknown Album" );
@@ -1369,7 +1369,7 @@ MtpMediaDevice::addConfigElements( QWidget *parent )
         + i18n( "%a will be replaced with the artist name, ")
         + i18n( "%b with the album name," ) + '\n'
         + i18n( "%g with the genre.") + '\n'
-        + i18n( "An empty path means the files will placed unsorted in the default music folder." ) );
+        + i18n( "An empty path means the files will be placed unsorted in the default music folder." ) );
 }
 
 /**

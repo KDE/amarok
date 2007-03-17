@@ -239,7 +239,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
-       m_lyricsSearchText = new ClickLineEdit( i18n( "Search text in lyric" ), m_lyricsTextBar );
+       m_lyricsSearchText = new ClickLineEdit( i18n( "Search in lyrics" ), m_lyricsTextBar );
        filter_label->setBuddy( m_lyricsSearchText );
 
        m_lyricsTextBar->setStretchableWidget(m_lyricsSearchText );
@@ -249,8 +249,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
        connect( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
 
-       QToolTip::add( button, i18n( "Clear search text in lyric" ) );
-       QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
+       QToolTip::add( button, i18n( "Clear search" ) );
+       QString filtertip = i18n( "Enter text to search for. Press enter to advance to the next match." );
 
        QToolTip::add( m_lyricsSearchText, filtertip );
 
@@ -689,14 +689,14 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                 debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files." << endl;
 
                 bool foundCueFile = false;
-                QDir dir ( bundle.directory() );    
+                QDir dir ( bundle.directory() );
                 dir.setFilter( QDir::Files ) ;
                 dir.setNameFilter( "*.cue *.CUE" ) ;
 
                 QStringList cueFilesList = dir.entryList();
 
                 if ( !cueFilesList.empty() )
-                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it ) 
+                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it )
                     {
                         QFile file ( dir.filePath(*it) );
                         if( file.open( IO_ReadOnly ) )
