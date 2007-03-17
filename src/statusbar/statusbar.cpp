@@ -88,7 +88,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
     m_timeLabel2 = new TimeLabel( positionBox );
-    m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    m_timeLabel2->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_slider->setMinimumWidth( m_timeLabel2->width() );
 
     QWidget *hbox = new QWidget( this );
