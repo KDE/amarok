@@ -17,7 +17,7 @@
 #include <QSocketNotifier>  //baseclass
 //Added by qt3to4:
 #include <QPaintEvent>
-#include <Q3CString>
+#include <QByteArray>
 
 class QPoint;
 class KProcess;
@@ -33,7 +33,7 @@ namespace Amarok
 
     protected:
         int      m_sockfd;
-        Q3CString m_path;
+        QByteArray m_path;
     };
 }
 
@@ -47,7 +47,7 @@ namespace Vis
 
         void newConnection( int );
 
-        Q3CString path() const { return m_path; }
+        QByteArray path() const { return m_path; }
     };
 
     class SocketNotifier : public QSocketNotifier

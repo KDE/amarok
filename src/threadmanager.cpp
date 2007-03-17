@@ -11,7 +11,7 @@
 #include <QApplication>
 //Added by qt3to4:
 #include <QCustomEvent>
-#include <Q3CString>
+#include <QByteArray>
 #include <QEvent>
 
 #include <pthread.h>//we're emulating features of Qt 4, so this can be removed for Amarok 2.0
@@ -47,7 +47,7 @@ ThreadManager::~ThreadManager()
 #ifdef HAVE_INOTIFY
         // we don't delete the thread's job as amarok is gone
         // and the Job dtor may expect amarok to be there etc.
-        if ( (*it)->job() && (*it)->job()->name() == Q3CString( "INotify" ) )
+        if ( (*it)->job() && (*it)->job()->name() == QByteArray( "INotify" ) )
         {
             debug() << "Forcibly terminating INotify thread...\n";
             (*it)->terminate();
@@ -64,7 +64,7 @@ ThreadManager::~ThreadManager()
 }
 
 uint
-ThreadManager::jobCount( const Q3CString &name )
+ThreadManager::jobCount( const QByteArray &name )
 {
     uint count = 0;
 
@@ -104,7 +104,7 @@ ThreadManager::queueJobs( const JobList &jobs )
 
     m_jobs += jobs;
 
-    const Q3CString name = jobs.front()->name();
+    const QByteArray name = jobs.front()->name();
     const uint count = jobCount( name );
 
     if ( count == jobs.count() )
@@ -118,7 +118,7 @@ ThreadManager::onlyOneJob( Job *job )
 {
     SHOULD_BE_GUI
 
-    const Q3CString name = job->name();
+    const QByteArray name = job->name();
 
     // first cause all current jobs with this name to be aborted
     abortAllJobsNamed( name );
@@ -135,7 +135,7 @@ ThreadManager::onlyOneJob( Job *job )
 }
 
 int
-ThreadManager::abortAllJobsNamed( const Q3CString &name )
+ThreadManager::abortAllJobsNamed( const QByteArray &name )
 {
     SHOULD_BE_GUI
 
@@ -170,7 +170,7 @@ ThreadManager::event( QEvent *e )
     case JobCompletedEvent::Type: {
         Job *job = static_cast<JobCompletedEvent*>( e )->job;
         DebugStream d = debug() << "Job ";
-        const Q3CString name = job->name();
+        const QByteArray name = job->name();
         Thread *thread = job->m_thread;
 
         QApplication::postEvent(

@@ -148,12 +148,12 @@ App::App()
             char bundlePath[1024];
             if( CFURLGetFileSystemRepresentation( urlRef, true, (UInt8 *)bundlePath, sizeof(bundlePath) ) )
             {
-                Q3CString bp( bundlePath );
+                QByteArray bp( bundlePath );
                 size_t len = bp.length();
                 if( len > 4 && bp.right( 4 ) == ".app" )
                 {
                     bp.append( "/Contents/MacOS" );
-                    Q3CString path = getenv( "PATH" );
+                    QByteArray path = getenv( "PATH" );
                     if( path.length() > 0 )
                     {
                         path.prepend( ":" );
@@ -556,7 +556,7 @@ class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
-        const Q3CString qcs = m_codec->fromUnicode( TStringToQString(ts) );
+        const QByteArray qcs = m_codec->fromUnicode( TStringToQString(ts) );
         return TagLib::ByteVector( qcs, (uint) qcs.length() );
     }
 
@@ -917,7 +917,7 @@ void App::slotConfigEqualizer() //SLOT
 }
 
 
-void App::slotConfigAmarok( const Q3CString& page )
+void App::slotConfigAmarok( const QByteArray& page )
 {
     DEBUG_THREAD_FUNC_INFO
 

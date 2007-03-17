@@ -19,7 +19,7 @@ email                : markey@web.de
 #include <qmap.h>
 #include <q3valuelist.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kconfigdialog.h>
 
@@ -43,7 +43,7 @@ class AmarokConfigDialog : public KConfigDialog
 
         void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
                       const QString &header=QString::null, bool manage=true);
-        void showPageByName( const Q3CString& page );
+        void showPageByName( const QByteArray& page );
     protected slots:
         void updateButtons();
         void updateSettings();

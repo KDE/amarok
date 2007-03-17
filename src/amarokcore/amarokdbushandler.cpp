@@ -46,7 +46,7 @@
 #include <QFile>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kactioncollection.h>
 #include <kstartupinfo.h>

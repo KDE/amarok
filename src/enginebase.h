@@ -12,7 +12,7 @@
 #include <QObject>       //baseclass
 #include <q3valuelist.h>    //stack alloc
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <vector>
 
 #include <sys/types.h>
@@ -85,7 +85,7 @@ namespace Engine
         void stateChanged( Engine::State );
 
         /** Shows Amarok config dialog at specified page */
-        void showConfigDialog( const Q3CString& );
+        void showConfigDialog( const QByteArray& );
 
     public:
         virtual ~Base();

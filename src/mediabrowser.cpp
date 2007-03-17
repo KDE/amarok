@@ -64,7 +64,7 @@
 #include <Q3PopupMenu>
 #include <QKeyEvent>
 #include <QDropEvent>
-#include <Q3CString>
+#include <QByteArray>
 #include <QPaintEvent>
 #include <Q3PtrList>
 

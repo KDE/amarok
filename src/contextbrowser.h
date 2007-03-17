@@ -15,7 +15,7 @@
 #include <kurl.h>
 #include <ktoolbar.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <QEvent>
 
 class KLineEdit;

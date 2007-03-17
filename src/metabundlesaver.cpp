@@ -165,7 +165,7 @@ MetaBundleSaver::doSave()
 
     int errcode;
 
-    Q3CString origRenamedDigest;
+    QByteArray origRenamedDigest;
 
     if( !m_saveFileref || m_tempSavePath.isEmpty() || m_tempSaveDigest.isEmpty() || m_origRenamedSavePath.isEmpty() )
     {
@@ -292,7 +292,7 @@ MetaBundleSaver::cleanupSave()
 
     m_tempSavePath = QString::null;
     m_origRenamedSavePath = QString::null;
-    m_tempSaveDigest = Q3CString( 0 );
+    m_tempSaveDigest = QByteArray( 0 );
     if( m_saveFileref )
     {
         delete m_saveFileref;

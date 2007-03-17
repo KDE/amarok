@@ -32,7 +32,7 @@
 #include <QFile> //decodePath()
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 #include <attachedpictureframe.h>
 #include <fileref.h>
 #include <id3v1genres.h> //used to load genre list
@@ -73,7 +73,7 @@ MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const 
     m_data = QByteArray( data.data(), data.size() );
 }
 
-const Q3CString &MetaBundle::EmbeddedImage::hash() const
+const QByteArray &MetaBundle::EmbeddedImage::hash() const
 {
     if( m_hash.isEmpty() ) {
         m_hash = KMD5( m_data ).hexDigest();
@@ -1625,7 +1625,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
 
     char databuf[8192];
     int readlen = 0;
-    Q3CString size = 0;
+    QByteArray size = 0;
     QString returnval;
 
     md5.update( bv.data(), bv.size() );
@@ -1635,7 +1635,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
         if( ( readlen = qfile.read( databuf, 8192 ) ) > 0 )
         {
             md5.update( databuf, readlen );
-            md5.update( size.setNum( (ulong)qfile.size() ) );
+            md5.update( size.setNum( qfile.size() ) );
             return QString( md5.hexDigest().data() );
         }
         else

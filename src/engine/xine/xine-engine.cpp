@@ -26,7 +26,7 @@
 #include <QTimerEvent>
 #include <Q3ValueList>
 #include <QCustomEvent>
-#include <Q3CString>
+#include <QByteArray>
 #include <QEvent>
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
@@ -67,7 +67,7 @@ namespace Log
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
-static inline Q3CString configPath() { return QFile::encodeName(KStandardDirs::locate( "data", "amarok/") + "xine-config" ); }
+static inline QByteArray configPath() { return QFile::encodeName(KStandardDirs::locate( "data", "amarok/") + "xine-config" ); }
 static Fader *s_fader = 0;
 static OutFader *s_outfader = 0;
 

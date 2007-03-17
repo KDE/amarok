@@ -14,7 +14,7 @@
 #include <QStringList>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <audioproperties.h>
@@ -92,14 +92,14 @@ public:
         EmbeddedImage() {}
         EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
 
-        const Q3CString &hash() const;
+        const QByteArray &hash() const;
         const QString &description() const { return m_description; }
         bool save( const QDir& dir ) const;
 
     private:
         QByteArray m_data;
         QString m_description;
-        mutable Q3CString m_hash;
+        mutable QByteArray m_hash;
    };
 
     typedef Q3ValueList<EmbeddedImage> EmbeddedImageList;
@@ -399,7 +399,7 @@ protected:
     int m_waitingOnKIO;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
-    Q3CString m_tempSaveDigest;
+    QByteArray m_tempSaveDigest;
     TagLib::FileRef* m_saveFileref;
 
     PodcastEpisodeBundle *m_podcastBundle;

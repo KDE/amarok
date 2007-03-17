@@ -25,7 +25,7 @@
 #include <kapplication.h>   //baseclass
 #include <kurl.h>
 
-#include <Q3CString>
+#include <QByteArray>
 
 namespace Amarok {
     class TrayIcon;
@@ -83,7 +83,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
 
     public slots:
         void applySettings( bool firstTime = false );
-        void slotConfigAmarok( const Q3CString& page = Q3CString() );
+        void slotConfigAmarok( const QByteArray& page = QByteArray() );
         void slotConfigShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();

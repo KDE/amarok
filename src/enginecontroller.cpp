@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QTimer>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kapplication.h>
 #include <kfileitem.h>
@@ -177,8 +177,8 @@ EngineController::loadEngine( const QString &engineName )
             }
             connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
                        this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
-            connect( engine, SIGNAL(showConfigDialog( const Q3CString& )),
-                       kapp,   SLOT(slotConfigAmarok( const Q3CString& )) );
+            connect( engine, SIGNAL(showConfigDialog( const QByteArray& )),
+                       kapp,   SLOT(slotConfigAmarok( const QByteArray& )) );
 
             if( engine->init() )
                 return engine;

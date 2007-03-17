@@ -34,7 +34,7 @@
 #include <QLabel>
 #include <Q3ValueList>
 #include <QEvent>
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3PtrList>
 #include "scriptmanager.h"
 #include "statusbar.h"

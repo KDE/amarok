@@ -40,7 +40,7 @@
 #include <QFile>
 #include <QTimer>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3ValueList>
 #include <QDBusReply>
 #include <kglobal.h>
@@ -179,7 +179,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
 
-    const Q3CString dir8Bit = QFile::encodeName( dir );
+    const QByteArray dir8Bit = QFile::encodeName( dir );
     DIR *d = opendir( dir8Bit );
     if( d == NULL ) {
         warning() << "Skipping, " << strerror(errno) << ": " << dir << endl;
@@ -229,8 +229,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     m_processedDirs[m_processedDirs.size() - 1] = de;
 
     for( dirent *ent; ( ent = readdir( d ) ); ) {
-        Q3CString entry (ent->d_name);
-        Q3CString entryname (ent->d_name);
+        QByteArray entry (ent->d_name);
+        QByteArray entryname (ent->d_name);
 
         if ( entry == "." || entry == ".." )
             continue;
@@ -303,7 +303,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( !m_logfile.isEmpty() ) {
             QFile log( m_logfile );
             if( log.open( QIODevice::WriteOnly ) ) {
-                Q3CString cPath = path.toUtf8();
+                QByteArray cPath = path.toUtf8();
                 log.write( cPath, cPath.length() );
                 log.close();
             }

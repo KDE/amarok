@@ -23,7 +23,7 @@
 #include <QRegExp>
 #include <q3textstream.h>
 #include <qglobal.h> //qVersion()
-#include <Q3CString>
+#include <QByteArray>
 
 
 #include <cstdio>         //popen, fread
@@ -52,7 +52,7 @@ namespace Amarok
     #endif
 
     static QString
-    runCommand( const Q3CString &command )
+    runCommand( const QByteArray &command )
     {
         static const uint SIZE = 40960; //40 KiB
         static char stdoutBuf[ SIZE ] = {0};
@@ -153,7 +153,7 @@ namespace Amarok
 //                     "bt\n" "echo \\n\n"
 //                     "thread apply all bt\n";
 
-            const Q3CString gdb_batch =
+            const QByteArray gdb_batch =
                     "bt\n"
                     "echo \\n\\n\n"
                     "bt full\n"
@@ -168,11 +168,11 @@ namespace Amarok
             ::dup2( fileno( stdout ), fileno( stderr ) );
 
 
-            Q3CString gdb;
+            QByteArray gdb;
             gdb  = "gdb --nw -n --batch -x ";
             gdb += temp.name().toLatin1();
             gdb += " amarokapp ";
-            gdb += Q3CString().setNum( ::getppid() );
+            gdb += QByteArray().setNum( ::getppid() );
 
             QString bt = runCommand( gdb );
 

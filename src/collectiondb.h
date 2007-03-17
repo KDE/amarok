@@ -34,7 +34,7 @@
 #include <QPixmap>
 #include <Q3ValueList>
 #include <QCustomEvent>
-#include <Q3CString>
+#include <QByteArray>
 
 namespace KIO { class Job; }
 
@@ -508,7 +508,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void cancelMovingFileJob();
 
     protected:
-        Q3CString md5sum( const QString& artist, const QString& album, const QString& file = QString() );
+        QByteArray md5sum( const QString& artist, const QString& album, const QString& file = QString() );
         void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
@@ -569,8 +569,8 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void customEvent( QEvent * );
 
         // helpers for embedded images
-        QString loadHashFile( const Q3CString& hash, uint width );
-        bool extractEmbeddedImage( const MetaBundle &trackInformation, Q3CString& hash );
+        QString loadHashFile( const QByteArray& hash, uint width );
+        bool extractEmbeddedImage( const MetaBundle &trackInformation, QByteArray& hash );
 
         //general management methods
         void createStatsTable();
@@ -594,7 +594,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void dropPodcastTablesV2();
 
 
-        Q3CString makeWidthKey( uint width );
+        QByteArray makeWidthKey( uint width );
         QString artistValue( uint id );
         QString composerValue( uint id );
         QString albumValue( uint id );

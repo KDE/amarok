@@ -45,7 +45,7 @@ void K3bExporter::exportTracks( const KUrl::List &urls, int openmode )
         return;
 
     DCOPClient *client = DCOPClient::mainClient();
-    Q3CString appId, appObj;
+    QByteArray appId, appObj;
     QByteArray data;
 
     if( openmode == -1 )
@@ -153,7 +153,7 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
 
 void K3bExporter::exportViaCmdLine( const KUrl::List &urls, int openmode )
 {
-    Q3CString cmdOption;
+    QByteArray cmdOption;
 
     switch( openmode ) {
     case AudioCD:
@@ -208,7 +208,7 @@ void K3bExporter::DCOPErrorMessage()
 
 bool K3bExporter::startNewK3bProject( DCOPRef &ref, int openmode )
 {
-    Q3CString request;
+    QByteArray request;
     //K3bOpenMode mode = openMode();
 
     switch( openmode ) {

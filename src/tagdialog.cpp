@@ -32,7 +32,7 @@
 #include <QCheckBox>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 #include <QPixmap>
 
 #include <kapplication.h>
@@ -1421,7 +1421,7 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
 bool
 TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
-    Q3CString path = QFile::encodeName( mb.url().path() );
+    QByteArray path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         Amarok::StatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
@@ -1460,7 +1460,7 @@ bool
 TagDialogWriter::doJob()
 {
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        Q3CString path = QFile::encodeName( m_tags[i].url().path() );
+        QByteArray path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );

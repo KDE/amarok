@@ -22,7 +22,7 @@
 #include <q3ptrlist.h>
 #include <QTimer>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <kapplication.h>
@@ -62,7 +62,7 @@ DeviceManager::DeviceManager()
             //run the DCOP query here because apparently if you don't run KDE as a DM the first call will fail
             //...go figure
             QByteArray data, replyData;
-            Q3CString replyType;
+            QByteArray replyType;
             QDataStream arg(data, QIODevice::WriteOnly);
             QStringList result;
             arg << 5;
@@ -174,7 +174,7 @@ DeviceManager::getDeviceStringList()
     int autodetect_insert = Medium::PROPERTIES_COUNT - 1;
 
     QByteArray data, replyData;
-    Q3CString replyType;
+    QByteArray replyType;
     QDataStream arg(data, QIODevice::WriteOnly);
     QStringList result;
     arg << 5;

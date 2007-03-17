@@ -30,7 +30,7 @@
 #include <QRegExp>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <Q3CString>
+#include <QByteArray>
 
 #include <kaction.h>
 #include <klineedit.h>

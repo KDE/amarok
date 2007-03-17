@@ -15,7 +15,7 @@
 #include <kurl.h>            //stack allocated
 #include <kvbox.h>
 
-#include <Q3CString>
+#include <QByteArray>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
@@ -33,7 +33,7 @@
 class ClickLineEdit;
 class CollectionDB;
 
-class Q3CString;
+class QByteArray;
 class Q3DragObject;
 class QPixmap;
 class QPoint;

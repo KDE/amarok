@@ -15,7 +15,7 @@
 #include <q3valuelist.h>
 #include <QMutex>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <QCustomEvent>
 #include "debug.h"
 
@@ -142,17 +142,17 @@ public:
      *
      * @return how many jobs were aborted, or -1 if no thread was found
      */
-    int abortAllJobsNamed( const Q3CString &name );
+    int abortAllJobsNamed( const QByteArray &name );
 
     /**
      * @return true if a Job with name is queued or is running
      */
-    bool isJobPending( const Q3CString &name ) { return jobCount( name ) > 0; }
+    bool isJobPending( const QByteArray &name ) { return jobCount( name ) > 0; }
 
     /**
      * @return the number of jobs running, pending, aborted and otherwise.
      */
-    uint jobCount( const Q3CString &name );
+    uint jobCount( const QByteArray &name );
 
 private:
     ThreadManager();

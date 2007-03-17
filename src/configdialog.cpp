@@ -50,7 +50,7 @@ email                : markey@web.de
 #include <QToolTip>
 #include <kvbox.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <QPixmap>
 
 #include <kapplication.h> //kapp
@@ -231,7 +231,7 @@ void AmarokConfigDialog::addPage( QWidget *page, const QString &itemName, const 
 }
 
 /** Show page by object name */
-void AmarokConfigDialog::showPageByName( const Q3CString& page )
+void AmarokConfigDialog::showPageByName( const QByteArray& page )
 {
     for( uint index = 0; index < m_pageList.count(); index++ ) {
         if ( m_pageList[index]->name() == page ) {

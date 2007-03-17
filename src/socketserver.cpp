@@ -24,7 +24,7 @@
 #include <kdialog.h>
 #include <QToolTip>         //Vis::Selector ctor
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3PopupMenu>
 #include <QPaintEvent>
 #include "socketserver.h"
@@ -119,7 +119,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
     if( nbytes > 0 )
     {
-        Q3CString result( buf );
+        QByteArray result( buf );
 
         if( result == "REG" )
         {

@@ -34,7 +34,7 @@
 #include <QTextCodec>
 //Added by qt3to4:
 #include <QCustomEvent>
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3ValueList>
 
 #include <kapplication.h>
@@ -527,7 +527,7 @@ ScanController::customEvent( QCustomEvent* e )
         if ( !log.open( QIODevice::ReadOnly ) )
         ::warning() << "Failed opening log file " << log.name() << endl;
         else {
-            Q3CString path = Q3CString(log.readAll());
+            QByteArray path = QByteArray(log.readAll());
             m_crashedFiles << QString::fromUtf8( path, path.length() );
 
         }

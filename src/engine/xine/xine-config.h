@@ -19,7 +19,7 @@
 
 #include <xine.h>
 //Added by qt3to4:
-#include <Q3CString>
+#include <QByteArray>
 #include <Q3PtrList>
 
 class XineConfigDialog;
@@ -69,7 +69,7 @@ class XineStrEntry : public XineGeneralEntry
     Q_OBJECT
 
     public:
-        XineStrEntry(QLineEdit* input, const Q3CString & key, xine_t *m_xine, XineConfigDialog* xcf);
+        XineStrEntry(QLineEdit* input, const QByteArray & key, xine_t *m_xine, XineConfigDialog* xcf);
         void save();
 
     private slots:
@@ -85,7 +85,7 @@ class XineIntEntry : public XineGeneralEntry
     Q_OBJECT
 
     public:
-        XineIntEntry(QSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
+        XineIntEntry(QSpinBox* input, const QByteArray & key, xine_t *xine, XineConfigDialog* xcf);
         XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
 
@@ -101,7 +101,7 @@ class XineEnumEntry : public XineIntEntry
 {
     Q_OBJECT
 public:
-    XineEnumEntry(QComboBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
+    XineEnumEntry(QComboBox* input, const QByteArray & key, xine_t *xine, XineConfigDialog* xcf);
 };
 
 
