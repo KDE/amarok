@@ -36,10 +36,10 @@ void Options1::init()
     }
 #endif
 #ifdef Q_WS_MAC
-    if ( KStandardDirs::findExe( "open" ) != QString::null )
+    if ( !KStandardDirs::findExe( "open" ).isEmpty() )
         browsers.prepend( i18n( "Default Browser" ) );
 #else
-    if ( KStandardDirs::findExe( "kfmclient" ) != QString::null )
+    if ( !KStandardDirs::findExe( "kfmclient" ).isEmpty() )
         browsers.prepend( i18n( "Default KDE Browser" ) );
 #endif
 

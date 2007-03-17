@@ -394,7 +394,7 @@ class OrganizeCollectionDialogBase : public KDialog
     Q_OBJECT
     public:
     OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
-            const QString &caption=QString::null,
+            const QString &caption=QString(),
             QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel )
         : KDialog( parent )
     {

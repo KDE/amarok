@@ -333,10 +333,10 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl );
         void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
         void emitFileAdded( const QString &absPath,
-                            const QString &uniqueid = QString::null );
+                            const QString &uniqueid = QString() );
         void emitFilesAdded( const QMap<QString,QString> &map ) { emit filesAdded( map ); }
         void emitFileDeleted( const QString &absPath,
-                              const QString &uniqueid = QString::null );
+                              const QString &uniqueid = QString() );
         bool newUniqueIdForFile( const QString &path );
         bool removeUniqueIdFromFile( const QString &path );
         QString urlFromUniqueId( const QString &id );
@@ -439,7 +439,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KUrl& url );
         /** Saves images obtained from CoverFetcher */
-        bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null, const QString& asin = QString::null );
+        bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString(), const QString& asin = QString() );
 
         QString findAmazonImage( const QString &artist, const QString &album, const uint width = 1 );
         QString findDirectoryImage( const QString& artist, const QString& album, uint width = 0 );
@@ -447,8 +447,8 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString findMetaBundleImage( const MetaBundle &trackInformation, const uint = 1 );
 
         /// ensure the sql only return urls to tracks for efficiency
-        static QPixmap createDragPixmapFromSQL( const QString &sql, QString textOverRide=QString::null );
-        static QPixmap createDragPixmap( const KUrl::List &urls, QString textOverRide=QString::null );
+        static QPixmap createDragPixmapFromSQL( const QString &sql, QString textOverRide=QString() );
+        static QPixmap createDragPixmap( const KUrl::List &urls, QString textOverRide=QString() );
         static const int DRAGPIXMAP_OFFSET_X = -12;
         static const int DRAGPIXMAP_OFFSET_Y = -28;
 
@@ -486,7 +486,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void applySettings();
 
-        void setLyrics( const QString& url, const QString& lyrics, const QString &uniqueid = QString::null );
+        void setLyrics( const QString& url, const QString& lyrics, const QString &uniqueid = QString() );
         QString getLyrics( const QString& url );
 
         /** Remove from the amazon table the item with the specified md5sum **/
@@ -508,7 +508,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void cancelMovingFileJob();
 
     protected:
-        Q3CString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
+        Q3CString md5sum( const QString& artist, const QString& album, const QString& file = QString() );
         void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
