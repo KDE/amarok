@@ -6,7 +6,7 @@
 #define AMAROK_DEBUG_H
 
 #include <kdebug.h>
-#include <q3cstring.h>
+#include <QByteArray>
 #include <QMutex>
 #include <QObject>
 //Added by qt3to4:

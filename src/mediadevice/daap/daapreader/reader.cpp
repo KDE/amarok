@@ -17,7 +17,7 @@
 #include "metabundle.h"
 #include "qstringx.h"
 
-#include <q3cstring.h>
+#include <QByteArray>
 #include <qdatastream.h>
 #include <q3ptrlist.h>
 #include <q3valuevector.h>

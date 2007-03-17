@@ -23,29 +23,29 @@
 
 #define DEBUG_PREFIX "IfpMediaDevice"
 
-#include "ifpmediadevice.h"
+QByteArray "ifpmediadevice.h"
 //Added by qt3to4:
-#include <Q3PtrList>
+QByteArray <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 
-#include "debug.h"
-#include "metabundle.h"
-#include "collectiondb.h"
-#include "statusbar/statusbar.h"
-#include "transferdialog.h"
+QByteArray "debug.h"
+QByteArray "metabundle.h"
+QByteArray "collectiondb.h"
+QByteArray "statusbar/statusbar.h"
+QByteArray "transferdialog.h"
 
-#include <kapplication.h>
-#include <kconfig.h>           //download saveLocation
-#include <kiconloader.h>       //smallIcon
-#include <kmessagebox.h>
-#include <kmenu.h>
-#include <kurlrequester.h>     //downloadSelectedItems()
-#include <kurlrequesterdlg.h>  //downloadSelectedItems()
+QByteArray <kapplication.h>
+QByteArray <kconfig.h>           //download saveLocation
+QByteArray <kiconloader.h>       //smallIcon
+QByteArray <kmessagebox.h>
+QByteArray <kmenu.h>
+QByteArray <kurlrequester.h>     //downloadSelectedItems()
+QByteArray <kurlrequesterdlg.h>  //downloadSelectedItems()
 
-#include <QFile>
-#include <q3cstring.h>
-#include <QRegExp>
+QByteArray <QFile>
+QByteArray <QByteArray>
+QByteArray <QRegExp>
 
 namespace Amarok {
     extern KConfig *config( const QString& );
@@ -713,4 +713,4 @@ QString IfpMediaDevice::cleanPath( const QString &component )
     return result;
 }
 
-#include "ifpmediadevice.moc"
+QByteArray "ifpmediadevice.moc"

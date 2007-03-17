@@ -35,7 +35,7 @@
 #include "playlist.h"
 #include "track.h"
 
-#include <q3cstring.h>
+#include <QByteArray>
 #include <QString>
 #include <q3valuelist.h>
 
@@ -74,7 +74,7 @@ class NjbMediaItem : public MediaItem
         {
             //m_track->removeItem(this);
         }
-        
+
         void setTrack( NjbTrack *track ) { m_track = track; m_track->addItem(this); }
         NjbTrack *track() { return m_track; }
         QString filename() { return m_track->bundle()->url().path(); }
@@ -121,7 +121,7 @@ class NjbMediaDevice : public MediaDevice
         static njb_t *theNjb();
     public slots:
         void expandItem( Q3ListViewItem *item );
-        
+
     protected:
 
         virtual bool closeDevice();
@@ -148,7 +148,7 @@ class NjbMediaDevice : public MediaDevice
         virtual void unlockDevice();
 
         virtual void updateRootItems() {};
-        
+
     private:
         // TODO:
         MediaItem        *trackExists( const MetaBundle& );
@@ -157,14 +157,14 @@ class NjbMediaDevice : public MediaDevice
 
         int readJukeboxMusic( void);
         void clearItems();
-        
+
         NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
         NjbMediaItem* addAlbums( const QString &artist, NjbMediaItem *item );
         NjbMediaItem* addTracks( const QString &artist, const QString &track, NjbMediaItem *item );
         NjbMediaItem* addTrack( NjbTrack *track );
         NjbMediaItem* addArtist( NjbTrack *track );
         TransferDialog      *m_td;
-        
+
         Q3ListView *listAmarokPlayLists;
         QString devNode;
         QString m_errMsg;
@@ -173,7 +173,7 @@ class NjbMediaDevice : public MediaDevice
         njb_t njbs[NJB_MAX_DEVICES];
         static njb_t* m_njb;
         trackValueList trackList;
-        
+
         int m_libcount;
         bool m_busy;
         unsigned m_progressStart;

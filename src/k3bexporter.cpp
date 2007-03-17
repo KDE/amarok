@@ -24,7 +24,7 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-#include <q3cstring.h>
+#include <QByteArray>
 #include <QStringList>
 //Added by qt3to4:
 #include <Q3ValueList>

@@ -27,7 +27,7 @@
 #include <kcodecs.h>
 #include <kurl.h>
 #include <QFile> //decodePath()
-#include <q3cstring.h>
+#include <QByteArray>
 #include <QString>
 #include <fileref.h>
 

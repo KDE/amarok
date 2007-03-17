@@ -55,7 +55,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include <unistd.h>            //usleep()
 
-#include <q3cstring.h>
+#include <QByteArray>
 #include <QFile>
 #include <qstringx.h>
 #include <QStringList>
