@@ -18,9 +18,12 @@
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "threadmanager.h"
 
+#include <khbox.h>
 #include <khelpmenu.h>
 #include <kiconloader.h>
+#include <klineedit.h>
 #include <klocale.h>
+#include <kpushbutton.h>
 #include <kstandarddirs.h>
 #include <ktoolbar.h>
 #include <kurl.h>
@@ -455,6 +458,44 @@ VolumeAction::engineVolumeChanged( int value )
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// SearchAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SearchAction::SearchAction( KActionCollection *ac ) :
+    KAction( 0 ),
+    m_searchWidget( 0 )
+{
+    setText( i18n( "Search Bar" ) );
+    ac->addAction( "search_bar", this );
+}
+
+
+QWidget *SearchAction::createWidget( QWidget *w )
+{
+    KHBox *searchBox = new KHBox( w );
+    searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+
+    QToolButton *clearButton   = new QToolButton( searchBox );
+    clearButton->setIcon( KIcon("locationbar-erase") );
+    clearButton->setToolTip( i18n( "Clear search field" ) );
+
+    m_searchWidget = new KLineEdit( searchBox );
+    m_searchWidget->setClickMessage( i18n( "Enter search terms here" ) );
+    m_searchWidget->setFrame( QFrame::Sunken );
+    m_searchWidget->setToolTip( i18n(
+        "Enter space-separated terms to search in the playlist." ) );
+
+    KPushButton *filterButton = new KPushButton( "...", searchBox );
+    filterButton->setObjectName( "filter" );
+    filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+
+    connect( filterButton, SIGNAL( clicked() ), PlaylistWindow::self(),
+            SLOT(slotEditFilter() ) );
+
+    return searchBox;
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction
 //////////////////////////////////////////////////////////////////////////////////////////

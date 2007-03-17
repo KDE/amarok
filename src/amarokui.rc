@@ -10,11 +10,13 @@
 
  <Separator lineSeparator="true"/>
 
- <Action name="toolbar_analyzer"/>
+ <Action name="toolbar_volume"/>
 
  <Separator lineSeparator="true"/>
 
- <Action name="toolbar_volume" />
+ <Action name="toolbar_analyzer" />
+ <Separator />
+ <Action name="search_bar" />
 </ToolBar>
 
 </kpartgui>

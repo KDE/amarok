@@ -192,53 +192,14 @@ void PlaylistWindow::init()
     dynamicBar->init();
     this->toolBars().clear();
 
-    { //BEGIN Maintoolbar
-        m_searchLine = new KLineEdit( m_toolbar );
-        m_searchLine->setClickMessage( i18n( "Enter search terms here" ) );
-        m_searchLine->setFrame( QFrame::Sunken );
-        m_searchLine->setToolTip( i18n(
-            "Enter space-separated terms to search in the playlist." ) );
-
         //Spacers between items in toolbar
-        QStackedWidget *spacer     = new QStackedWidget();
-        QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
-        spacer->layout()->addItem( spacerItem );
-
-        QStackedWidget *spacer1     = new QStackedWidget();
-        QSpacerItem    *spacerItem1 = new QSpacerItem( 0, 0 );
-        spacer1->layout()->addItem( spacerItem1 );
-
-        QStackedWidget *spacer2     = new QStackedWidget();
-        QSpacerItem    *spacerItem2 = new QSpacerItem( 0, 0 );
-        spacer2->layout()->addItem( spacerItem2 );
-
-        KPushButton *filterButton = new KPushButton( "...", m_toolbar );
-        filterButton->setObjectName( "filter" );
-        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-        filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
-
-        m_toolbar->addAction( actionCollection()->action( "prev" ) );
-        m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
-        m_toolbar->addAction( actionCollection()->action( "stop" ) );
-        m_toolbar->addAction( actionCollection()->action( "next" ) );
-        m_toolbar->addWidget( spacer );
-        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
-        m_toolbar->addWidget( spacer1 );
-        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ));
-
-        m_toolbar->addWidget( spacer2 );
-
-        QToolButton *clearButton   = new QToolButton( m_toolbar );
-        clearButton->setIcon( KIcon("locationbar-erase") );
-        clearButton->setToolTip( i18n( "Clear search field" ) );
-        m_toolbar->addWidget( clearButton );
-
-        m_toolbar->addWidget( m_searchLine );
-        m_toolbar->addWidget( filterButton );
+//         QStackedWidget *spacer     = new QStackedWidget();
+//         QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
+//         spacer->layout()->addItem( spacerItem );
 #ifndef Q_WS_MAC
         m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
+//         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     //END MainToolBar
     }
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
@@ -264,17 +225,17 @@ void PlaylistWindow::init()
 
 
     //<XMLGUI>
-//     {
-//         QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
-//
-//         // this bug can bite you if you are a pre 1.2 user, we
-//         // deleted amarokui_first.rc, but we must still support it
-//         // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
-//         xmlFile = "amarokui.rc";
-//
-//         setXMLFile( xmlFile );
-//         createGUI(); //NOTE we implement this
-//     }
+    {
+        QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
+
+        // this bug can bite you if you are a pre 1.2 user, we
+        // deleted amarokui_first.rc, but we must still support it
+        // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
+        xmlFile = "amarokui.rc";
+
+        setXMLFile( xmlFile );
+        createGUI(); //NOTE we implement this
+    }
     //</XMLGUI>
 
     //<Browsers>
@@ -474,7 +435,7 @@ void PlaylistWindow::createGUI()
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
     m_toolbar->setMovable( false );
-    m_toolbar->setAllowedAreas( Qt::BottomToolBarArea );
+    m_toolbar->setAllowedAreas( Qt::TopToolBarArea );
     KToolBar::setToolBarsLocked( true );
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 //TODO: is this okay to remove? kdelibs-todo talks about removing it
@@ -1203,6 +1164,7 @@ void PlaylistWindow::createActions()
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
+    new Amarok::SearchAction( ac );
 
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );

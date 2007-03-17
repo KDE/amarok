@@ -20,6 +20,7 @@
 
 class KActionCollection;
 class KHelpMenu;
+class KLineEdit;
 
 
 namespace Amarok
@@ -94,6 +95,15 @@ namespace Amarok
         private:
             void engineVolumeChanged( int value );
             QPointer<Amarok::VolumeSlider> m_slider;
+    };
+
+    class SearchAction : public KAction
+    {
+        public:
+            SearchAction( KActionCollection* );
+            virtual QWidget* createWidget( QWidget * );
+        private:
+            KLineEdit *m_searchWidget;
     };
 
 
