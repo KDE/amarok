@@ -133,7 +133,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
     {
 
         QMessageBox::information( m_parent, i18n( "Could not re-download album" ),
-                                  i18n( "There seems to be a problem with the selected redownload info file." ) + "\n" );
+                                  i18n( "There seems to be a problem with the selected redownload info file." ) + '\n' );
 
     }
 

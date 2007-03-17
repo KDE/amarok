@@ -73,9 +73,10 @@ void MagnatuneInfoParser::getInfo( MagnatuneAlbum *album )
     infoHtml += "<br><br>Genre: " + album->getMp3Genre();
     infoHtml += "<br>Release Year: " + QString::number( album->getLaunchDate().year() );
 
-    if ( !(album->getDescription().isEmpty() || album->getDescription() == "" ) ) {
+    if ( !album->getDescription().isEmpty() ) {
  
-    infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" " + album->getDescription();
+        //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'" << endl;
+       infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + album->getDescription();
 
     }
 
