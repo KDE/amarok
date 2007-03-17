@@ -106,13 +106,6 @@ namespace Amarok
             KLineEdit *m_searchWidget;
     };
 
-    class SpacerAction : public KAction
-    {
-        public:
-            SpacerAction( KActionCollection * );
-            virtual QWidget* createWidget( QWidget * );
-    };
-
     class ToggleAction : public KToggleAction
     {
         public:

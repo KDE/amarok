@@ -82,6 +82,7 @@
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <kstatusbar.h>
 #include <ktoolbar.h>
+#include <ktoolbarspaceraction.h>
    //createGUI()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
@@ -1150,6 +1151,16 @@ void PlaylistWindow::createActions()
     toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
     connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
 
+    KAction *spacer = new KToolBarSpacerAction( this );
+    ac->addAction( "spacer", spacer );
+
+    KAction *spacer1 = new KToolBarSpacerAction( this );
+    ac->addAction( "spacer1", spacer1 );
+
+    KAction *spacer2 = new KToolBarSpacerAction( this );
+    ac->addAction( "spacer2", spacer2 );
+
+
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
     new Amarok::PlayPauseAction( ac );
@@ -1159,7 +1170,7 @@ void PlaylistWindow::createActions()
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
     new Amarok::SearchAction( ac );
-    new Amarok::SpacerAction( ac );
+
 
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );

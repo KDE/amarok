@@ -12,12 +12,12 @@
 
  <Action name="toolbar_volume"/>
 
- <Action name="spacer" />
+ <Action name="spacer1" />
 
 
  <Action name="toolbar_analyzer" />
 
- <Action name="spacer" />
+ <Action name="spacer2" />
 
  <Action name="search_bar" />
 </ToolBar>

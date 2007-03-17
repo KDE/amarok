@@ -30,7 +30,6 @@
 #include <kauthorized.h>
 
 #include <QPixmap>
-#include <QStackedWidget>
 #include <QToolTip>
 #include <Q3PopupMenu>
 
@@ -498,23 +497,6 @@ QWidget *SearchAction::createWidget( QWidget *w )
     return searchBox;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// SpacerAction
-//////////////////////////////////////////////////////////////////////////////////////////
-SpacerAction::SpacerAction( KActionCollection *ac )
-    : KAction( 0 )
-{
-    ac->addAction( "spacer", this );
-}
-
-QWidget *SpacerAction::createWidget( QWidget *w )
-{
-    QStackedWidget *spacer     = new QStackedWidget();
-    QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
-    spacer->layout()->addItem( spacerItem );
-
-    return spacer;
-}
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction
 //////////////////////////////////////////////////////////////////////////////////////////
