@@ -192,10 +192,6 @@ void PlaylistWindow::init()
     dynamicBar->init();
     this->toolBars().clear();
 
-        //Spacers between items in toolbar
-//         QStackedWidget *spacer     = new QStackedWidget();
-//         QSpacerItem    *spacerItem = new QSpacerItem( 0, 0 );
-//         spacer->layout()->addItem( spacerItem );
 #ifndef Q_WS_MAC
         m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
@@ -1162,8 +1158,6 @@ void PlaylistWindow::createActions()
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
     new Amarok::SearchAction( ac );
-    new Amarok::SpacerAction( ac );
-    new Amarok::SpacerAction( ac );
     new Amarok::SpacerAction( ac );
 
     if( K3bExporter::isAvailable() )
