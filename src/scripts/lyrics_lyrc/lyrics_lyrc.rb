@@ -112,7 +112,7 @@ def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
     if ( @proxy == nil )
-        @proxy = `qdbus org.kde.amarok /Script proxyForUrl #{@page_url.shellquote}"`
+        @proxy = `qdbus org.kde.amarok /Script proxyForUrl #{@page_url.shellquote}`
     end
     proxy_uri = URI.parse( @proxy )
     if ( proxy_uri.class != URI::Generic )
