@@ -1,5 +1,10 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_SOURCE_DIR}/amarok/src/klegendary ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore ${CMAKE_SOURCE_DIR}/amarok/src/engine ${CMAKE_SOURCE_DIR}/amarok/src/mediadevice ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../klegendary
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../mediadevice
+    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### next target ###############
@@ -39,7 +44,7 @@ install(FILES amarok_njb-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR}
 #	-I$(top_srcdir)/amarok/src/mediadevice \
 #	$(taglib_includes) \
 #	$(all_includes)
-# 
+#
 #METASOURCES = AUTO
 #kde_module_LTLIBRARIES = libamarok_njb-mediadevice.la
 #

@@ -1,20 +1,21 @@
 
 add_subdirectory( helix-sp )
 
-include_directories( 
-${CMAKE_SOURCE_DIR}/amarok/src
-${CMAKE_SOURCE_DIR}/amarok/src/amarokcore ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
+include_directories(
+${CMAKE_CURRENT_SOURCE_DIR}/../..
+${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
+${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
 ${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
-${CMAKE_SOURCE_DIR}/amarok/src/engine/helix/helix-sp 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/runtime 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/audio/fixptutil 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/include 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/client/include 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/container 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/system 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/dbgtool 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/util 
-${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/log 
+${CMAKE_CURRENT_SOURCE_DIR}/../../engine/helix/helix-sp
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/runtime
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/audio/fixptutil
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/include
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/client/include
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/container
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/system
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/dbgtool
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/util
+${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/log
 )
 
 FIND_PACKAGE(Alsa)
@@ -34,20 +35,20 @@ add_definitions( -DHELIX_LIBS='"'${HELIX_LIBRARY_PATH}'"' -DHELIX_CONFIG_DISABLE
 
 ########### next target ###############
 
-set(amarok_helixengine_plugin_PART_SRCS 
-   helix-sp/hspcontext.cpp 
-   helix-sp/hspadvisesink.cpp 
-   helix-sp/hsperror.cpp 
-   helix-sp/hspauthmgr.cpp 
-   helix-sp/hsphook.cpp 
-   helix-sp/iids.cpp 
-   helix-sp/utils.cpp 
-   helix-sp/gain.cpp 
-   helix-sp/hspalsadevice.cpp 
+set(amarok_helixengine_plugin_PART_SRCS
+   helix-sp/hspcontext.cpp
+   helix-sp/hspadvisesink.cpp
+   helix-sp/hsperror.cpp
+   helix-sp/hspauthmgr.cpp
+   helix-sp/hsphook.cpp
+   helix-sp/iids.cpp
+   helix-sp/utils.cpp
+   helix-sp/gain.cpp
+   helix-sp/hspalsadevice.cpp
    helix-sp/helix-sp.cpp
-   helix-engine.cpp 
-   helix-errors.cpp 
-   helix-configdialog.cpp 
+   helix-engine.cpp
+   helix-errors.cpp
+   helix-configdialog.cpp
    hxplayercontrol.cpp
    helixconfig.cpp )
 
@@ -67,51 +68,5 @@ install(TARGETS amarok_helixengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 ########### install files ###############
 
 install( FILES helixconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-install(FILES  amarok_helixengine_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-
-#original Makefile.am contents follow:
-
-#kde_module_LTLIBRARIES = \
-#    libamarok_helixengine_plugin.la
-#
-#SUBDIRS = \
-#    helix-sp \
-#    config
-#
-#INCLUDES = \
-#    -I$(top_srcdir)/amarok/src \
-#    -I$(top_srcdir)/amarok/src/amarokcore \
-#    $(all_includes)
-#
-#AM_CPPFLAGS = \
-#    -D_UNIX \
-#    -Wall -Wreturn-type \
-#    -fno-exceptions \
-#    -I$(top_srcdir)/amarok/src/engine/helix/helix-sp \
-#    -I$(top_srcdir)/amarok/src/engine/helix/config \
-#    -I$(top_srcdir)/amarok/src/ \
-#    -include $(top_srcdir)/amarok/src/engine/helix/helix-sp/helixdefines.h \
-#    $(all_includes)
-#
-#libamarok_helixengine_plugin_la_SOURCES = \
-#    helix-engine.cpp \
-#    helix-errors.cpp \
-#    helix-configdialog.cpp \
-#    hxplayercontrol.cpp
-#
-#libamarok_helixengine_plugin_la_LIBADD = \
-#    $(top_builddir)/amarok/src/libamarok.la \
-#    $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \
-#    $(top_builddir)/amarok/src/engine/helix/config/libhelixconfig.la \
-#    $(top_builddir)/amarok/src/plugin/libplugin.la \
-#    -lkdeui -lkdecore $(ALSALIB_LIBS)
-#
-#libamarok_helixengine_plugin_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-#
-#METASOURCES = \
-#    AUTO
-#
-#kde_services_DATA = \
-#    amarok_helixengine_plugin.desktop
-#
-#KDE_OPTIONS=nofinal
+install(FILES  amarok_helixengine_plugin.desktop DESTINATION
+${SERVICES_INSTALL_DIR} )

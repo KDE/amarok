@@ -1,4 +1,6 @@
-include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_SOURCE_DIR}/amarok/src/device ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../device
+    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 ########### next target ###############
 
@@ -6,7 +8,7 @@ set(amarok_massstorage-device_PART_SRCS massstoragedevicehandler.cpp )
 
 kde4_automoc(${amarok_massstorage-device_PART_SRCS})
 
-kde4_add_plugin(amarok_massstorage-device WITH_PREFIX 
+kde4_add_plugin(amarok_massstorage-device WITH_PREFIX
 ${amarok_massstorage-device_PART_SRCS})
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_massstorage-device )

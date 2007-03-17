@@ -1,5 +1,12 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_SOURCE_DIR}/amarok/src/klegendary ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore ${CMAKE_SOURCE_DIR}/amarok/src/statusbar ${CMAKE_SOURCE_DIR}/amarok/src/engine ${CMAKE_SOURCE_DIR}/amarok/src/plugin ${CMAKE_SOURCE_DIR}/amarok/src/mediadevice ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
+	${CMAKE_CURRENT_SOURCE_DIR}/../../klegendary
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../statusbar
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../mediadevice
+    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### next target ###############
@@ -21,36 +28,3 @@ install(TARGETS amarok_ifp-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR}  )
 ########### install files ###############
 
 install( FILES  amarok_ifp-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-
-
-
-#original Makefile.am contents follow:
-
-#kde_module_LTLIBRARIES = libamarok_ifp-mediadevice.la
-#kde_services_DATA = amarok_ifp-mediadevice.desktop
-#
-#INCLUDES = \
-#    -I$(top_srcdir)/amarok/src \
-#    -I$(top_srcdir)/amarok/src/klegendary \
-#    -I$(top_srcdir)/amarok/src/amarokcore \
-#    -I$(top_srcdir)/amarok/src/statusbar \
-#    -I$(top_srcdir)/amarok/src/engine \
-#    -I$(top_srcdir)/amarok/src/plugin \
-#    -I$(top_srcdir)/amarok/src/mediadevice \
-#    $(IFP_CFLAGS) \
-#    $(taglib_includes) \
-#    $(all_includes)
-#
-#libamarok_ifp_mediadevice_la_LIBADD = \
-#    $(top_builddir)/amarok/src/libamarok.la \
-#    -lusb -lifp \
-#    -lkdeui -lkdecore -lkio
-#
-#libamarok_ifp_mediadevice_la_LDFLAGS = \
-#    $(KDE_PLUGIN) \
-#    $(all_libraries)
-#
-#libamarok_ifp_mediadevice_la_SOURCES = \
-#    ifpmediadevice.cpp
-#
-#METASOURCES = AUTO
