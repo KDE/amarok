@@ -258,12 +258,12 @@ void PlaylistWindow::init()
 
 
         //cant use macros here since we need access to the browsers directly
-        ServiceBrowser * storeServiceBrowser = new ServiceBrowser( "Stores" );;
+        ServiceBrowser * storeServiceBrowser = new ServiceBrowser(this, "Stores" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser );
         m_browserNames.append( "Stores" );
         storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
 
-        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser( "Internet Content" );;
+        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
