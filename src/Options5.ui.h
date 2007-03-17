@@ -92,7 +92,7 @@ void Options5::init()
             << "%year "  << "%length"  << "%track"   << "%filename"  << "%directory"
             << "%type"   << "%comment" << "%score"   << "%playcount" << "%discnumber"
             << "%rating" << "%moodbar" << "%elapsed"
-            << "%title {Score: %score}" ) );
+            << "%title {" + i18n( "Score: %1" ).arg( "%score" ) +'}' ) );
 }
 
 void

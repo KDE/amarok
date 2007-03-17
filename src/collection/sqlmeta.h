@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007 Alexandre Oliveira <aleprj@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +27,15 @@
 
 using namespace Meta;
 
-class SqlTrack : public Track
+
+class QueryBuilder;
+
+class SqlSearchable {
+    public:
+        virtual void addToQuery( QueryBuilder &qb ) = 0;
+};
+
+class SqlTrack : public Track /*, public SqlSearchable*/
 {
     public:
         SqlTrack( const QStringList &queryResult );
@@ -106,7 +115,7 @@ class SqlTrack : public Track
         QList<TrackObserver*> m_observers;
 };
 
-class SqlArtist : public Artist
+class SqlArtist : public Artist, public SqlSearchable
 {
     public:
         SqlArtist( const QString &name );
@@ -118,6 +127,7 @@ class SqlArtist : public Artist
 
         virtual TrackList tracks();
 
+        virtual void addToQuery( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -129,7 +139,7 @@ class SqlArtist : public Artist
 
 };
 
-class SqlAlbum : public Album
+class SqlAlbum : public Album, public SqlSearchable
 {
     public:
         SqlAlbum( const QString &name );
@@ -151,6 +161,8 @@ class SqlAlbum : public Album
         virtual void image() const { }  //TODO: fixme
         virtual void updateImage() { }
 
+        virtual void addToQuery( QueryBuilder &qb );
+
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -163,7 +175,7 @@ class SqlAlbum : public Album
         //TODO: add album artist
 };
 
-class SqlComposer : public Composer
+class SqlComposer : public Composer, public SqlSearchable
 {
     public:
         SqlComposer( const QString &name );
@@ -175,6 +187,7 @@ class SqlComposer : public Composer
 
         virtual TrackList tracks();
 
+        virtual void addToQuery( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -185,7 +198,7 @@ class SqlComposer : public Composer
         QMutex m_mutex;
 };
 
-class SqlGenre : public Genre
+class SqlGenre : public Genre, public SqlSearchable
 {
     public:
         SqlGenre( const QString &name );
@@ -197,6 +210,7 @@ class SqlGenre : public Genre
 
         virtual TrackList tracks();
 
+        virtual void addToQuery( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -207,7 +221,7 @@ class SqlGenre : public Genre
         QMutex m_mutex;
 };
 
-class SqlYear : public Year
+class SqlYear : public Year, public SqlSearchable
 {
     public:
         SqlYear( const QString &name );
@@ -219,6 +233,7 @@ class SqlYear : public Year
 
         virtual TrackList tracks();
 
+        virtual void addToQuery( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;

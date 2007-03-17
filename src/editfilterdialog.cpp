@@ -95,8 +95,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
            " (you can specify mp3, ogg, flac, ... and the file extensions will be matched), "
            "<b>genre</b>, <b>comment</b>, <b>composer</b>, <b>directory</b>, <b>lyrics</b>, "
            "<b>title</b>, and <b>label</b>.</p>"
-           "<p>The numeric keywords are: <b>bitrate</b>, <b>disc/discnumber</b> "
-           "<b>length</b> (expressed in seconds), <b>playcount</b>, <b>rating</b> "
+           "<p>The numeric keywords are: <b>bitrate</b>, <b>disc/discnumber</b>, "
+           "<b>length</b> (expressed in seconds), <b>playcount</b>, <b>rating</b>, "
            "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b> (expressed in bytes, "
            "kbytes, and megabytes as specified in the unit for the filesize keyword), "
            "<b>track</b> (i.e. the track number), and <b>year</b>.</p>") );
@@ -283,21 +283,21 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2 );
     m_checkALL->setObjectName( "checkall" );
     m_checkALL->setToolTip(
-      i18n("<p>Check this box to look for the tracks that contains all the words you typed "
+      i18n("<p>Check this box to look for the tracks that contain all the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkALL );
 
     m_checkAtLeastOne = new QRadioButton( i18n("Match any word"), m_groupBox2 );
     m_checkAtLeastOne->setObjectName( "checkor" );
     m_checkAtLeastOne->setToolTip(
-      i18n("<p>Check this box to look for the tracks that contains at least one of the words "
+      i18n("<p>Check this box to look for the tracks that contain at least one of the words "
            "you typed in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkAtLeastOne );
 
     m_checkExactly = new QRadioButton( i18n("Exact match"), m_groupBox2 );
     m_checkExactly->setObjectName( "checkexactly" );
     m_checkExactly->setToolTip(
-      i18n("<p>Check this box to look for all the tracks that contains exactly the words you typed "
+      i18n("<p>Check this box to look for all the tracks that contain exactly the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExactly );
 
@@ -341,14 +341,14 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3 );
     m_checkAND->setObjectName( "checkAND" );
     m_checkAND->setToolTip(
-      i18n("<p>Check this box if you want add another condition and you want that the filter "
+      i18n("<p>Check this box if you want to add another condition and you want that the filter "
            "to match both the previous conditions and this new one</p>"));
     ratioLay2->addWidget( m_checkAND );
 
     m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3 );
     m_checkOR->setObjectName( "checkOR" );
     m_checkOR->setToolTip(
-      i18n("<p>Check this box if you want add another condition and you want that the filter "
+      i18n("<p>Check this box if you want to add another condition and you want that the filter "
            "to match either the previous conditions or this new one</p>"));
     ratioLay2->addWidget( m_checkOR );
 
@@ -359,7 +359,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_prefixNOT->setToolTip(
       i18n("Check this box to negate the defined filter condition"));
     m_prefixNOT->setWhatsThis(
-      i18n("<p>If this option is checked the defined filter condition will be negated."
+      i18n("<p>If this option is checked the defined filter condition will be negated. "
            "This means that, for example, you can define a filter that looks for all "
            "tracks that are not of a specific album, artist, and so on.</p>"));
     verticalCondLay->addWidget( m_prefixNOT );

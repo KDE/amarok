@@ -90,7 +90,7 @@
                         <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>If you downlod to a location that is already being monitored by Amarok, the album wil automatically be added to your collection.</string>
+                        <string>If you download to a location that is already being monitored by Amarok, the album will automatically be added to your collection.</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>

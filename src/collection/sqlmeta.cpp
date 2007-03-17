@@ -250,6 +250,11 @@ SqlArtist::tracks()
     }
 }
 
+void
+SqlArtist::addToQuery( QueryBuilder &qb ) {
+    qb.addMatch( QueryBuilder::tabArtist, m_name, false, true );
+}
+
 //---------------SqlAlbum---------------------------------
 
 SqlAlbum::SqlAlbum( const QString &name ) : Album()
@@ -287,6 +292,12 @@ SqlAlbum::tracks()
     }
 }
 
+void
+SqlAlbum::addToQuery( QueryBuilder &qb ) {
+    qb.addMatch( QueryBuilder::tabAlbum, m_name, false, true );
+}
+
+
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( const QString &name ) : Composer()
@@ -322,6 +333,11 @@ SqlComposer::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+}
+
+void
+SqlComposer::addToQuery( QueryBuilder &qb ) {
+    qb.addMatch( QueryBuilder::tabComposer, m_name, false, true );
 }
 
 //---------------SqlGenre---------------------------------
@@ -361,6 +377,11 @@ SqlGenre::tracks()
     }
 }
 
+void
+SqlGenre::addToQuery( QueryBuilder &qb ) {
+    qb.addMatch( QueryBuilder::tabGenre, m_name, false, true );
+}
+
 //---------------SqlYear---------------------------------
 
 SqlYear::SqlYear( const QString &name ) : Year()
@@ -396,4 +417,9 @@ SqlYear::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+}
+
+void
+SqlYear::addToQuery( QueryBuilder &qb ) {
+    qb.addMatch( QueryBuilder::tabYear, m_name, false, true );
 }

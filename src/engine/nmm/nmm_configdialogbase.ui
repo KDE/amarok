@@ -41,12 +41,12 @@
                 <widget class="QComboBox">
                     <item>
                         <property name="text">
-                            <string>PlaybackNode</string>
+                            <string>Playback node</string>
                         </property>
                     </item>
                     <item>
                         <property name="text">
-                            <string>ALSAPlaybackNode</string>
+                            <string>ALSA playback node</string>
                         </property>
                     </item>
                     <property name="name">
@@ -108,13 +108,13 @@
                         <string>Environment variables are AUDIO_HOSTS and VIDEO_HOSTS.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations.The playback locations will be shown in the host list below. The list is &lt;b&gt;read-only&lt;/b&gt;.
+                        <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations. The playback locations will be shown in the host list below. The list is &lt;b&gt;read-only&lt;/b&gt;.
 
 &lt;h3&gt;Example&lt;/h3&gt;
 AUDIO_HOSTS=desktop:laptop:kitchen&lt;br&gt;
 VIDEO_HOSTS=laptop&lt;br&gt;
 &lt;br&gt;
-This setting will enable audio on the three hosts desktop,laptop and kitchen, and video only on host laptop.</string>
+This setting will enable audio on the three hosts desktop, laptop and kitchen, and video only on host laptop.</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">

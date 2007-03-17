@@ -269,11 +269,11 @@ ContextBrowser::ContextBrowser( const char *name )
 
        //QWidget *button = new KToolBarButton( "locationbar-erase", 1, m_lyricsTextBar );
        QAction* clearAction = new QAction("locationbar-erase", this );
-       clearAction->setToolTip( i18n( "Clear search text in lyric" ) );
+       clearAction->setToolTip( i18n( "Clear search" ) );
        m_lyricsTextBar->addAction( clearAction );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
        m_lyricsSearchText = new KLineEdit( m_lyricsTextBar );
-       m_lyricsSearchText->setClickMessage(i18n( "Search text in lyric" ) );
+       m_lyricsSearchText->setClickMessage(i18n( "Search in lyrics" ) );
        filter_label->setBuddy( m_lyricsSearchText );
        connect( clearAction, SIGNAL( triggered() ), m_lyricsSearchText, SLOT(clear()) );
 
@@ -282,7 +282,7 @@ ContextBrowser::ContextBrowser( const char *name )
        m_lyricsSearchText->setFrame( QFrame::Sunken );
        m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
 
-       QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
+       QString filtertip = i18n( "Enter text to search for. Press enter to advance to the next match." );
 
        m_lyricsSearchText->setToolTip( filtertip );
 
@@ -291,7 +291,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        //TODO: following were broken in 1.4, needs serious consideration
        //Amarok::actionCollection()->setAutoConnectShortcuts ( true );
-       //new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
+       //new KAction( i18n("Search in lyrics"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
        //Amarok::actionCollection()->setAutoConnectShortcuts ( false );
 
     }

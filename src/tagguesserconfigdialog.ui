@@ -20,7 +20,7 @@
    <item rowspan="7" row="0" column="0" >
     <widget class="K3ListView" name="lvSchemes" >
      <property name="toolTip" >
-      <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul>
+      <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one or more of the following placeholders:&lt;ul>
 &lt;li>%title: Song Title&lt;/li>
 &lt;li>%artist: Artist&lt;/li>
 &lt;li>%album: Album&lt;/li>
@@ -32,7 +32,7 @@ For example, the file name scheme "[%track] %artist - %title" would match "[01] 
 Note that the order in which the schemes appear in the list is relevant, since the tag guesser will go through the list from the top to the bottom, and use the first matching scheme.</string>
      </property>
      <property name="whatsThis" >
-      <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul>
+      <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one or more of the following placeholders:&lt;ul>
 &lt;li>%title: Song Title&lt;/li>
 &lt;li>%artist: Artist&lt;/li>
 &lt;li>%album: Album&lt;/li>
