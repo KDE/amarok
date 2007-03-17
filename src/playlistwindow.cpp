@@ -188,6 +188,7 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat")), plBar ) );
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode")), plBar ) );
+//         plBar->addAction( actionCollection()->action( "progress_bar" ) );
     //END Playlist Toolbar
     }
 
@@ -426,6 +427,7 @@ void PlaylistWindow::createGUI()
 //             button->modeChange();
             button->setFocusPolicy( Qt::NoFocus );
         }
+        m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
     }
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
@@ -1170,6 +1172,7 @@ void PlaylistWindow::createActions()
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
     new Amarok::SearchAction( ac );
+    new Amarok::SliderAction( ac );
 
 
     if( K3bExporter::isAvailable() )

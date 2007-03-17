@@ -21,6 +21,7 @@
 class KActionCollection;
 class KHelpMenu;
 class KLineEdit;
+class QLabel;
 
 
 namespace Amarok
@@ -104,6 +105,32 @@ namespace Amarok
             virtual QWidget* createWidget( QWidget * );
         private:
             KLineEdit *m_searchWidget;
+    };
+
+    class SliderAction : public KAction, public EngineObserver
+    {
+        Q_OBJECT
+
+        AMAROK_EXPORT static SliderAction *s_instance;
+
+        public:
+            SliderAction( KActionCollection* );
+            virtual QWidget* createWidget( QWidget * );
+            static SliderAction *instance() { return s_instance; }
+
+        public slots:
+            void drawTimeDisplay( int position );
+
+        protected:
+            virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+            virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+
+        private:
+            QLabel *m_timeLabel;
+            QLabel *m_timeLabel2;
+            QWidget *m_positionBox;
+            int m_timeLength;
+            PrettySlider *m_slider;
     };
 
     class ToggleAction : public KToggleAction

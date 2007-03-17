@@ -104,22 +104,22 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //TODO reimplement insertChild() instead
     addPermanentWidget( m_itemCountLabel );
     addPermanentWidget( hbox );
-    addPermanentWidget( positionBox );
+//     addPermanentWidget( positionBox );
 
-    box->addSpacing( 3 );
-    box->addWidget( m_timeLabel );
-    box->addWidget( m_slider );
-    box->addWidget( m_timeLabel2 );
-#ifdef Q_WS_MAC
-    // don't overlap the resize handle with the time display
-    box->addSpacing( 12 );
-#endif
-
-    if( !AmarokConfig::leftTimeDisplayEnabled() )
-        m_timeLabel->hide();
-
-    connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
-    connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
+//     box->addSpacing( 3 );
+//     box->addWidget( m_timeLabel );
+//     box->addWidget( m_slider );
+//     box->addWidget( m_timeLabel2 );
+// #ifdef Q_WS_MAC
+//     // don't overlap the resize handle with the time display
+//     box->addSpacing( 12 );
+// #endif
+//
+//     if( !AmarokConfig::leftTimeDisplayEnabled() )
+//         m_timeLabel->hide();
+//
+//     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
+//     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
     // set us up the bomb
     engineStateChanged( Engine::Empty );
@@ -141,30 +141,30 @@ void
 StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     m_pauseTimer->stop();
-
+//
     switch ( state ) {
     case Engine::Empty:
-        m_slider->setEnabled( false );
-        m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
-        m_slider->setMaximum( 0 );
-	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
-        m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
-        m_timeLabel2->setEnabled( false );
+//         m_slider->setEnabled( false );
+//         m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+//         m_slider->setMaximum( 0 );
+// 	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
+//         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+//         m_timeLabel2->setEnabled( false );
         setMainText( QString() );
         break;
-
+//
     case Engine::Paused:
         m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
         m_pauseTimer->start( 300 );
         break;
-
+//
     case Engine::Playing:
         DEBUG_LINE_INFO
         resetMainText(); // if we were paused, this is necessary
-        m_timeLabel->setEnabled( true );
-        m_timeLabel2->setEnabled( true );
+//         m_timeLabel->setEnabled( true );
+//         m_timeLabel2->setEnabled( true );
         break;
-
+//
     case Engine::Idle:
         ; //just do nothing, idle is temporary and a limbo state
     }
@@ -250,14 +250,14 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
     m_itemCountLabel->setToolTip(  i18n( "Play-time: %1", MetaBundle::veryPrettyTime( getValue ) ) );
 }
 
-void
-StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
-{
-    m_slider->setValue( position );
-
-    if ( !m_slider->isEnabled() )
-        drawTimeDisplay( position );
-}
+// void
+// StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+// {
+//     m_slider->setValue( position );
+//
+//     if ( !m_slider->isEnabled() )
+//         drawTimeDisplay( position );
+// }
 
 void
 StatusBar::engineTrackLengthChanged( long length )
@@ -268,76 +268,76 @@ StatusBar::engineTrackLengthChanged( long length )
     m_timeLength = MetaBundle::prettyTime( length ).length()+1; // account for - in remaining time
 }
 
-void
-StatusBar::drawTimeDisplay( int ms )  //SLOT
-{
-    int seconds = ms / 1000;
-    int seconds2 = seconds; // for the second label.
-    const uint trackLength = EngineController::instance()->bundle().length();
-
-    if( AmarokConfig::leftTimeDisplayEnabled() )
-        m_timeLabel->show();
-    else
-        m_timeLabel->hide();
-
-    // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
-        seconds2 = seconds;
-        seconds = trackLength - seconds;
-    // when the left label shows the remaining time and it's a stream
-    } else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        seconds2 = seconds;
-        seconds = 0; // for streams
-    // when the right label shows the remaining time and it's not a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
-        seconds2 = trackLength - seconds;
-    // when the right label shows the remaining time and it's a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        seconds2 = 0;
-    }
-
-    QString s1 = MetaBundle::prettyTime( seconds );
-    QString s2 = MetaBundle::prettyTime( seconds2 );
-
-    // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
-        s1.prepend( '-' );
-    // when the right label shows the remaining time and it's not a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
-        s2.prepend( '-' );
-    }
-
-    while( (int)s1.length() < m_timeLength )
-        s1.prepend( ' ' );
-
-    while( (int)s2.length() < m_timeLength )
-        s2.prepend( ' ' );
-
-    s1 += ' ';
-    s2 += ' ';
-
-    m_timeLabel->setText( s1 );
-    m_timeLabel2->setText( s2 );
-
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        m_timeLabel->setEnabled( false );
-        m_timeLabel2->setEnabled( true );
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        m_timeLabel->setEnabled( true );
-        m_timeLabel2->setEnabled( false );
-    } else
-    {
-        m_timeLabel->setEnabled( true );
-        m_timeLabel2->setEnabled( true );
-    }
-}
+// void
+// StatusBar::drawTimeDisplay( int ms )  //SLOT
+// {
+//     int seconds = ms / 1000;
+//     int seconds2 = seconds; // for the second label.
+//     const uint trackLength = EngineController::instance()->bundle().length();
+//
+//     if( AmarokConfig::leftTimeDisplayEnabled() )
+//         m_timeLabel->show();
+//     else
+//         m_timeLabel->hide();
+//
+//     // when the left label shows the remaining time and it's not a stream
+//     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+//     {
+//         seconds2 = seconds;
+//         seconds = trackLength - seconds;
+//     // when the left label shows the remaining time and it's a stream
+//     } else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+//     {
+//         seconds2 = seconds;
+//         seconds = 0; // for streams
+//     // when the right label shows the remaining time and it's not a stream
+//     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+//     {
+//         seconds2 = trackLength - seconds;
+//     // when the right label shows the remaining time and it's a stream
+//     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+//     {
+//         seconds2 = 0;
+//     }
+//
+//     QString s1 = MetaBundle::prettyTime( seconds );
+//     QString s2 = MetaBundle::prettyTime( seconds2 );
+//
+//     // when the left label shows the remaining time and it's not a stream
+//     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+//         s1.prepend( '-' );
+//     // when the right label shows the remaining time and it's not a stream
+//     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+//     {
+//         s2.prepend( '-' );
+//     }
+//
+//     while( (int)s1.length() < m_timeLength )
+//         s1.prepend( ' ' );
+//
+//     while( (int)s2.length() < m_timeLength )
+//         s2.prepend( ' ' );
+//
+//     s1 += ' ';
+//     s2 += ' ';
+//
+//     m_timeLabel->setText( s1 );
+//     m_timeLabel2->setText( s2 );
+//
+//     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+//     {
+//         m_timeLabel->setEnabled( false );
+//         m_timeLabel2->setEnabled( true );
+//     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+//     {
+//         m_timeLabel->setEnabled( true );
+//         m_timeLabel2->setEnabled( false );
+//     } else
+//     {
+//         m_timeLabel->setEnabled( true );
+//         m_timeLabel2->setEnabled( true );
+//     }
+// }
 
 void
 StatusBar::slotPauseTimer()  //slot

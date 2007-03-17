@@ -20,6 +20,8 @@
 #ifndef AMAROK_TIMELABEL_H
 #define AMAROK_TIMELABEL_H
 
+#include "actionclasses.h"
+
 #include <QLabel>
 #include <kglobalsettings.h>
 //Added by qt3to4:
@@ -52,7 +54,7 @@ public:
             AmarokConfig::setLeftTimeDisplayEnabled( true );
         }
 
-        Amarok::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
+        Amarok::SliderAction::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
 

@@ -16,7 +16,9 @@
 #include "playlistwindow.h"
 #include "playlist.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
+#include "statusbar.h"
 #include "threadmanager.h"
+#include "timeLabel.h"
 
 #include <khbox.h>
 #include <khelpmenu.h>
@@ -497,6 +499,169 @@ QWidget *SearchAction::createWidget( QWidget *w )
     return searchBox;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// SliderAction
+//////////////////////////////////////////////////////////////////////////////////////////
+SliderAction *SliderAction::s_instance = 0;
+SliderAction::SliderAction( KActionCollection *ac )
+    : KAction( 0 ),
+    m_positionBox( 0 )
+{
+    s_instance = this;
+    debug() << "SLIDER WIDGET CREATED---------------------------------\n";
+    setText( i18n( "Progress Slider" ) );
+    debug() << "SLIDER WIDGET TEXT SET--------------------------------\n";
+    ac->addAction( "progress_bar", this );
+    debug() << "progress_bar ADDED TO ACTIONCOLLECTION-----------------\n";
+}
+
+QWidget *SliderAction::createWidget( QWidget *w )
+{
+    debug() << "ENTERED CREATEWIDGET-------------------------------\n";
+    m_positionBox = new QWidget( w );
+//     w->addPermanentWidget( positionBox );
+    m_positionBox->setObjectName( "positionBox" );
+    QHBoxLayout *box = new QHBoxLayout( m_positionBox );
+    m_positionBox->setLayout( box );
+    box->setMargin( 1 );
+    box->setSpacing( 3 );
+
+    m_slider = new Amarok::PrettySlider(
+            Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox );
+
+    // the two time labels. m_timeLable is the left one,
+    // m_timeLabel2 the right one.
+    m_timeLabel = new TimeLabel( m_positionBox );
+    m_timeLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
+    m_slider->setMinimumWidth( m_timeLabel->width() );
+
+    m_timeLabel2 = new TimeLabel( m_positionBox );
+    m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    m_slider->setMinimumWidth( m_timeLabel2->width() );
+
+    box->addSpacing( 3 );
+    box->addWidget( m_timeLabel );
+    box->addWidget( m_slider );
+    box->addWidget( m_timeLabel2 );
+#ifdef Q_WS_MAC
+    // don't overlap the resize handle with the time display
+    box->addSpacing( 12 );
+#endif
+
+    if( !AmarokConfig::leftTimeDisplayEnabled() )
+        m_timeLabel->hide();
+
+    engineStateChanged( Engine::Empty );
+
+    connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
+    connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
+
+    debug() << "returning positionBox-----------------------------------------\n";
+    return m_positionBox;
+}
+
+void SliderAction::drawTimeDisplay( int ms )  //SLOT
+{
+    int seconds = ms / 1000;
+    int seconds2 = seconds; // for the second label.
+    const uint trackLength = EngineController::instance()->bundle().length();
+
+    if( AmarokConfig::leftTimeDisplayEnabled() )
+        m_timeLabel->show();
+    else
+        m_timeLabel->hide();
+
+    // when the left label shows the remaining time and it's not a stream
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
+        seconds2 = seconds;
+        seconds = trackLength - seconds;
+    // when the left label shows the remaining time and it's a stream
+    } else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        seconds2 = seconds;
+        seconds = 0; // for streams
+    // when the right label shows the remaining time and it's not a stream
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
+        seconds2 = trackLength - seconds;
+    // when the right label shows the remaining time and it's a stream
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        seconds2 = 0;
+    }
+
+    QString s1 = MetaBundle::prettyTime( seconds );
+    QString s2 = MetaBundle::prettyTime( seconds2 );
+
+    // when the left label shows the remaining time and it's not a stream
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+        s1.prepend( '-' );
+    // when the right label shows the remaining time and it's not a stream
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
+        s2.prepend( '-' );
+    }
+
+    while( (int)s1.length() < m_timeLength )
+        s1.prepend( ' ' );
+
+    while( (int)s2.length() < m_timeLength )
+        s2.prepend( ' ' );
+
+    s1 += ' ';
+    s2 += ' ';
+
+    m_timeLabel->setText( s1 );
+    m_timeLabel2->setText( s2 );
+
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        m_timeLabel->setEnabled( false );
+        m_timeLabel2->setEnabled( true );
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( false );
+    } else
+    {
+        m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( true );
+    }
+}
+
+void SliderAction::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+{
+    m_slider->setValue( position );
+
+    if ( !m_slider->isEnabled() )
+        drawTimeDisplay( position );
+}
+
+void
+SliderAction::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+{
+
+    switch ( state ) {
+    case Engine::Empty:
+        m_slider->setEnabled( false );
+        m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+        m_slider->setMaximum( 0 );
+    m_slider->newBundle( MetaBundle() ); // Set an empty bundle
+        m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+        m_timeLabel2->setEnabled( false );
+        break;
+
+    case Engine::Playing:
+        DEBUG_LINE_INFO
+        m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( true );
+        break;
+
+    case Engine::Idle:
+        ; //just do nothing, idle is temporary and a limbo state
+    }
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction
 //////////////////////////////////////////////////////////////////////////////////////////

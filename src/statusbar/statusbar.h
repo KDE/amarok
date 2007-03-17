@@ -52,10 +52,10 @@ namespace Amarok
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
         void updateQueueLabel() { m_queueLabel->update(); }
-        void drawTimeDisplay( int position );
+//         void drawTimeDisplay( int position );
     protected:  /* reimpl from engineobserver */
-        virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-        virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+       virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+//         virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         virtual void engineTrackLengthChanged( long length );
         virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
