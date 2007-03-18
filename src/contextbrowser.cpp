@@ -497,7 +497,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
         if ( url.hasHTMLRef() )
         {
             KUrl base = url;
-            base.setRef(QString::null);
+            base.setRef(QString());
             // Wikipedia also has links to otherpages with Anchors, so we have to check if it's for the current one
             if ( m_wikiCurrentUrl == base.url() ) {
                 m_wikiPage->gotoAnchor( url.htmlRef() );
@@ -506,7 +506,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
         }
         // new page
         m_dirtyWikiPage = true;
-        m_wikiCurrentEntry = QString::null;
+        m_wikiCurrentEntry.clear();
         showWikipedia( url.url() );
     }
 
@@ -1245,8 +1245,8 @@ ContextBrowser::showContext( const KUrl &url, bool fromHistory )
     {
         m_browseArtists = false;
         m_browseLabels = false;
-        m_label = QString::null;
-        m_artist = QString::null;
+        m_label.clear();
+        m_artist.clear();
         m_contextBackHistory.clear();
         m_contextBackHistory.push_back( "current://track" );
     }
@@ -1254,14 +1254,14 @@ ContextBrowser::showContext( const KUrl &url, bool fromHistory )
     {
         m_browseArtists = true;
         m_browseLabels = false;
-        m_label = QString::null;
+        m_label.clear();
         m_artist = unescapeHTMLAttr( url.path() );
     }
     else if( url.protocol() == "showlabel" )
     {
         m_browseLabels = true;
         m_browseArtists = false;
-        m_artist = QString::null;
+        m_artist.clear();
         m_label = unescapeHTMLAttr( url.path() );
     }
 
@@ -1326,7 +1326,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     if( !m_dirtyCurrentTrackPage )
         return;
     m_currentURL = EngineController::instance()->bundle().url();
-    m_currentTrackPage->write( QString::null );
+    m_currentTrackPage->write( QString() );
     ThreadManager::instance()->onlyOneJob( new CurrentTrackJob( this ) );
 }
 
@@ -1452,7 +1452,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
             for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues())
                 if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                 {
-                    albumYear = QString::null;
+                    albumYear.clear();
                     break;
                 }
         }
@@ -2732,7 +2732,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
-                        albumYear = QString::null;
+                        albumYear.clear();
                         break;
                     }
             }
@@ -2895,7 +2895,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
-                        albumYear = QString::null;
+                        albumYear.clear();
                         break;
                     }
             }
@@ -3112,7 +3112,7 @@ bool CurrentTrackJob::doJob()
         if( artist == m_currentTrack.artist() )
         {
             b->m_browseArtists = false;
-            b->m_artist = QString::null;
+            b->m_artist.clear();
             b->m_contextBackHistory.clear();
             b->m_contextBackHistory.push_back( "current://track" );
         }
@@ -3178,7 +3178,7 @@ void ContextBrowser::showIntroduction()
     }
 
     // Do we have to rebuild the page? I don't care
-    m_HTMLSource = QString::null;
+    m_HTMLSource.clear();
     m_HTMLSource.append(
             "<html><body>\n"
             "<div id='introduction_box' class='box'>\n"
@@ -3531,7 +3531,7 @@ ContextBrowser::lyricsEditToggle() //SLOT
         if( doc.setContent( xml ) )
             lyrics = doc.documentElement().text();
         else
-            lyrics = QString::null;
+            lyrics.clear();
         m_lyricsTextEdit->setText( lyrics );
         m_lyricsPage->hide();
         m_lyricsTextEdit->show();
@@ -4048,7 +4048,7 @@ ContextBrowser::wikiHistoryBack() //SLOT
     m_wikiBackHistory.pop_back();
 
     m_dirtyWikiPage = true;
-    m_wikiCurrentEntry = QString::null;
+    m_wikiCurrentEntry.clear();
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
@@ -4067,7 +4067,7 @@ ContextBrowser::wikiHistoryForward() //SLOT
     m_wikiForwardHistory.pop_back();
 
     m_dirtyWikiPage = true;
-    m_wikiCurrentEntry = QString::null;
+    m_wikiCurrentEntry.clear();
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
@@ -4085,7 +4085,7 @@ ContextBrowser::wikiBackPopupActivated( int id ) //SLOT
     } while( id >= 0 );
 
     m_dirtyWikiPage = true;
-    m_wikiCurrentEntry = QString::null;
+    m_wikiCurrentEntry.clear();
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
@@ -4103,7 +4103,7 @@ ContextBrowser::wikiForwardPopupActivated( int id ) //SLOT
     } while( id >= 0 );
 
     m_dirtyWikiPage = true;
-    m_wikiCurrentEntry = QString::null;
+    m_wikiCurrentEntry.clear();
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
@@ -4210,7 +4210,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( "\n", " " );
     m_wiki.replace( "\t", " " );
 
-    m_wikiLanguages = QString::null;
+    m_wikiLanguages.clear();
     // Get the available language list
     if ( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
@@ -4225,7 +4225,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     {
         copyright = m_wiki.mid( m_wiki.indexOf(copyrightMark) + copyrightMark.length() );
         copyright = copyright.mid( 0, copyright.indexOf( "</li>" ) );
-        copyright.replace( "<br />", QString::null );
+        copyright.replace( "<br />", QString() );
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
@@ -4236,31 +4236,31 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     // Adding back license information
     m_wiki += copyright;
     m_wiki.append( "</div>" );
-    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
+    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString() );
 
-    m_wiki.replace( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ), QString::null );
+    m_wiki.replace( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ), QString() );
 
     m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
 
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString::null );
+    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString() );
 
     // Remove hidden table rows as well
     QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", false );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
-    m_wiki.replace( hidden, QString::null );
+    m_wiki.replace( hidden, QString() );
 
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
-    m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
-    m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString() );
+    m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
-    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString::null );
-    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString::null );
-    m_wiki.replace( "</select>\n" , QString::null );
-    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString::null );
-    m_wiki.replace( "</option>\n" , QString::null );
-    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString::null );
-    m_wiki.replace( "</textarea>" , QString::null );
+    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString() );
+    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString() );
+    m_wiki.replace( "</select>\n" , QString() );
+    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString() );
+    m_wiki.replace( "</option>\n" , QString() );
+    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString() );
+    m_wiki.replace( "</textarea>" , QString() );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );

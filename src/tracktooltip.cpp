@@ -86,7 +86,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
     if( force || m_tags != tags || m_tags.url() != tags.url() )
     {
         m_haspos = false;
-        m_tooltip = QString::null;
+        m_tooltip.clear();
 
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
@@ -231,7 +231,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         {
             m_cover = CollectionDB::instance()->albumImage( tags, true, 150 );
             if ( m_cover == CollectionDB::instance()->notAvailCover() )
-                m_cover = QString::null;
+                m_cover.clear();
         }
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
@@ -264,7 +264,7 @@ void TrackToolTip::setPos( int pos )
 void TrackToolTip::clear()
 {
     m_pos     = 0;
-    m_cover = QString::null;
+    m_cover.clear();
     m_tooltip = i18n( "Amarok - rediscover your music" );
     m_tags    = MetaBundle();
     m_tags.setUrl( KUrl() );
@@ -283,7 +283,7 @@ void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album
     {
         m_cover = CollectionDB::instance()->albumImage( m_tags, true, 150 );
         if( m_cover == CollectionDB::instance()->notAvailCover() )
-            m_cover = QString::null;
+            m_cover.clear();
 
         updateWidgets();
     }
@@ -301,7 +301,7 @@ void TrackToolTip::slotImageChanged( const QString &remoteURL )
             {
                 m_cover = CollectionDB::instance()->podcastImage( remoteURL );
                 if( m_cover == CollectionDB::instance()->notAvailCover() )
-                    m_cover = QString::null;
+                    m_cover.clear();
 
                 updateWidgets();
             }
@@ -320,7 +320,7 @@ void
 TrackToolTip::slotMoodbarEvent( void )
 {
   // Clear this so the moodbar gets redrawn
-  m_moodbarURL = QString::null;
+  m_moodbarURL.clear();
   // Reset the moodbar in case AlterMood has changed
   m_tags.moodbar().reset();
 

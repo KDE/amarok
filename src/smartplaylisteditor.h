@@ -104,7 +104,7 @@ Q_OBJECT
     private:
         enum ValueType { String, AutoCompletionString, Number, Year, Date, Rating, Length };
 
-        void loadCriteriaList( int valueType, QString condition = QString::null );
+        void loadCriteriaList( int valueType, QString condition = QString() );
         int getValueType( int fieldIndex );
         inline int indexToRating( int );
         inline int ratingToIndex( int );

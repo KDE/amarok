@@ -304,7 +304,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     new QLabel( "", vbox1 );
     QLabel* mpLabel = new QLabel( vbox1 );
     mpLabel->setText( i18n( "Enter the &mount point of the device, if applicable:" ) );
-    m_mdaMountPoint = new HintLineEdit( QString::null, vbox1);
+    m_mdaMountPoint = new HintLineEdit( QString(), vbox1);
     mpLabel->setBuddy( m_mdaMountPoint );
     m_mdaMountPoint->setHint( i18n( "Example: /mnt/ipod" ) );
     m_mdaMountPoint->setToolTip( i18n( "Enter the device's mount point.  Some devices (such as iRiver iFP devices) may not have a mount point and this can be ignored.  All other devices (iPods, UMS/VFAT devices) should enter the mount point here." ) );

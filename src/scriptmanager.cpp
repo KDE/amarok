@@ -774,7 +774,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     // Destroy script process
     delete it.data().process;
     it.data().process = 0;
-    it.data().log = QString::null;
+    it.data().log.clear();
     it.data().li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }

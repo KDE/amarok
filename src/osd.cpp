@@ -629,7 +629,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             tags.append(bundle.prettyText( i ));
 
         if( bundle.length() <= 0 )
-            tags[PlaylistItem::Length+1] = QString::null;
+            tags[PlaylistItem::Length+1].clear();
 
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
@@ -671,7 +671,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
                 args[bundle.exactColumnName( i ).toLower()] = bundle.prettyText( i );
 
             if( bundle.length() <= 0 )
-                args["length"] = QString::null;
+                args["length"].clear();
 
 
 	    uint time=EngineController::instance()->engine()->position();
@@ -713,7 +713,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             //avoid showing the generic cover.  we can overwrite this by passing an arg.
             //get large cover for scaling if big cover needed
 
-            QString location = QString::null;
+            QString location = QString();
             if( bundle.podcastBundle() )
                 location = CollectionDB::instance()->podcastImage( bundle, false, 0 );
             else

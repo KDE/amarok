@@ -94,7 +94,7 @@ void ExpressionParser::handleColon( const QChar &c )
     if( m_state <= ExpectField && !m_string.isEmpty() )
     {
         m_element.field = m_string;
-        m_string = QString::null;
+        m_string.clear();
         m_state = ExpectMod;
     }
     else
@@ -161,7 +161,7 @@ void ExpressionParser::finishedToken()
         else
             finishedOrGroup();
 
-        m_string = QString::null;
+        m_string.clear();
         m_state = ExpectMinus;
     }
 }
@@ -172,7 +172,7 @@ void ExpressionParser::finishedElement()
         finishedOrGroup();
     m_inOrGroup = m_haveGroup = false;
     m_element.text = m_string;
-    m_string = QString::null;
+    m_string.clear();
 
     if( !m_element.text.isEmpty() || !m_element.field.isEmpty() )
         m_or.append( m_element );

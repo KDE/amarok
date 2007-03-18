@@ -2050,7 +2050,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         }
 
         QString episodeTitle = xml.namedItem("title").toElement().text();
-        QString episodeURL = QString::null;
+        QString episodeURL = QString();
         QDomNode n = xml.namedItem("link");
         for( ; !n.isNull(); n = n.nextSibling() )
         {

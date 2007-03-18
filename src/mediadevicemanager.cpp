@@ -66,15 +66,15 @@ MediaDeviceManager::MediaDeviceManager()
             manualDevices.append( qit.key() );          //id
             manualDevices.append( currName );          //name
             manualDevices.append( currName );          //label
-            manualDevices.append( QString::null );     //userLabel
+            manualDevices.append( QString() );     //userLabel
             manualDevices.append( "unknown" );         //mountable?
-            manualDevices.append( QString::null );     //device node
+            manualDevices.append( QString() );     //device node
             manualDevices.append( currMountPoint );    //mountPoint
             manualDevices.append( "manual" );          //fsType
             manualDevices.append( "unknown" );         //mounted
-            manualDevices.append( QString::null );     //baseURL
-            manualDevices.append( QString::null );     //MIMEtype
-            manualDevices.append( QString::null );     //iconName
+            manualDevices.append( QString() );     //baseURL
+            manualDevices.append( QString() );     //MIMEtype
+            manualDevices.append( QString() );     //iconName
             manualDevices.append( "---" );             //separator
         }
     }

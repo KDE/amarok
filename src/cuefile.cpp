@@ -69,10 +69,10 @@ bool CueFile::load(int mediaLength)
     {
         QFile file( m_cueFileName );
         int track = 0;
-        QString defaultArtist = QString::null;
-        QString defaultAlbum = QString::null;
-        QString artist = QString::null;
-        QString title = QString::null;
+        QString defaultArtist = QString();
+        QString defaultAlbum = QString();
+        QString artist = QString();
+        QString title = QString();
         long length = 0;
         long prevIndex = -1;
         bool index00Present = false;
@@ -94,7 +94,7 @@ bool CueFile::load(int mediaLength)
                     if( mode == BEGIN )
                     {
                         defaultAlbum = title;
-                        title = QString::null;
+                        title.clear();
                         debug() << "Album: " << defaultAlbum << endl;
                     }
                     else
@@ -107,7 +107,7 @@ bool CueFile::load(int mediaLength)
                     if( mode == BEGIN )
                     {
                         defaultArtist = artist;
-                        artist = QString::null;
+                        artist.clear();
                         debug() << "Album Artist: " << defaultArtist << endl;
                     }
                     else
@@ -132,8 +132,8 @@ bool CueFile::load(int mediaLength)
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
                         prevIndex = index;
-                        title = QString::null;
-                        artist = QString::null;
+                        title.clear();
+                        artist.clear();
                         track  = 0;
                     }
                     track = line.section (' ',1,1).toInt();

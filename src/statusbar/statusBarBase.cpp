@@ -460,7 +460,7 @@ StatusBar::endProgressOperation()
     // if you try to delete http urls for instance <- KDE SUCKS!
 
     if( job && job->error() )
-        shortLongMessage( QString::null, job->errorString(), Error );
+        shortLongMessage( QString(), job->errorString(), Error );
 
     endProgressOperation( owner );
 }
@@ -517,7 +517,7 @@ StatusBar::showShortLongDetails()
         longMessage( m_shortLongText, m_shortLongType );
 
     m_shortLongType = Information;
-    m_shortLongText = QString::null;
+    m_shortLongText.clear();
     shortLongButton()->hide();
 }
 

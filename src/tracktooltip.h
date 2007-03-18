@@ -44,7 +44,7 @@ class TrackToolTip: public QObject, public Amarok::ToolTipClient
     private slots:
     void slotCoverChanged( const QString &artist, const QString &album );
     void slotImageChanged( const QString &remoteURL );
-    void slotUpdate( const QString &url = QString::null );
+    void slotUpdate( const QString &url = QString() );
     void slotMoodbarEvent( void );
 
     private:

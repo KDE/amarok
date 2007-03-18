@@ -61,7 +61,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
-    m_view->addColumn( QString::null );
+    m_view->addColumn( QString() );
     m_view->setRootIsDecorated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_view->setResizeMode( Q3ListView::LastColumn );

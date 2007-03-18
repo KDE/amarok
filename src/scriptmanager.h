@@ -125,7 +125,7 @@ class ScriptManager : public KDialog, public EngineObserver
         /** Enables/disables the buttons */
         void slotCurrentChanged( QTreeWidgetItem* );
 
-        bool slotInstallScript( const QString& path = QString::null );
+        bool slotInstallScript( const QString& path = QString() );
         void slotRetrieveScript();
         void slotUninstallScript();
         bool slotRunScript( bool silent = false );

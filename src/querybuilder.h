@@ -144,7 +144,7 @@ class QueryBuilder
         // allowed; modeBetween needs a second value endRange
         void addNumericFilter(int tables, qint64 value, const QString &n,
                               int mode = modeNormal,
-                              const QString &endRange = QString::null);
+                              const QString &endRange = QString());
 
         void setOptions( int options );
         void sortBy( int table, qint64 value, bool descending = false );

@@ -226,7 +226,7 @@ void TagGuesser::loadSchemes()
 
 void TagGuesser::guess( const QString &absFileName )
 {
-    m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString::null;
+    m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString();
 
     FileNameScheme::List::ConstIterator it = m_schemes.begin();
     FileNameScheme::List::ConstIterator end = m_schemes.end();

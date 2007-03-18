@@ -105,8 +105,8 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         m_transcodeRemove->setChecked( device->m_transcodeRemove );
 
         const ScriptManager *sm = ScriptManager::instance();
-        m_transcodeCheck->setEnabled( sm->transcodeScriptRunning() != QString::null );
-        transcodeGroup->setEnabled( sm->transcodeScriptRunning() != QString::null && device->m_transcode );
+        m_transcodeCheck->setEnabled( !sm->transcodeScriptRunning().isEmpty() );
+        transcodeGroup->setEnabled( !sm->transcodeScriptRunning().isEmpty() && device->m_transcode );
         if( sm->transcodeScriptRunning().isNull() )
         {
             m_transcodeCheck->setToolTip( i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );

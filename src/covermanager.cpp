@@ -747,7 +747,7 @@ void CoverManager::deleteSelectedCovers()
                             i18np( "Are you sure you want to remove this cover from the Collection?",
                                   "Are you sure you want to delete these %1 covers from the Collection?",
                                   selected.count() ),
-                            QString::null,
+                            QString(),
                             KStandardGuiItem::del() );
 
     if ( button == KMessageBox::Continue ) {

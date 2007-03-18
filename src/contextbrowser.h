@@ -66,9 +66,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void lyricsChanged( const QString& );
         void lyricsScriptChanged();
         void lyricsResult(QByteArray  cXmlDoc, bool cached = false );
-	void showLyrics( const QString& url = QString::null );
+	void showLyrics( const QString& url = QString() );
 	void showCurrentTrack();
-	void showWikipedia( const QString& url = QString::null, bool fromHistory = false, bool replaceHistory = false );
+	void showWikipedia( const QString& url = QString(), bool fromHistory = false, bool replaceHistory = false );
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
@@ -77,7 +77,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     protected slots:
         void wheelDelta( int delta );
 
-    
+
     private slots:
         void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );

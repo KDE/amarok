@@ -955,7 +955,7 @@ QString
 StatisticsDetailedItem::getSQL()
 {
     QueryBuilder qb;
-    QString query = QString::null;
+    QString query = QString();
     QString artist, album, track;   // track is unused here
     Amarok::albumArtistTrackFromUrl( url(), artist, album, track );
 
@@ -997,7 +997,7 @@ StatisticsDetailedItem::getURLs()
         return KUrl::List( KUrl(url()) );
 
     QueryBuilder qb;
-    QString query = QString::null;
+    QString query = QString();
     QString artist, album, track;   // track is unused here
     Amarok::albumArtistTrackFromUrl( m_url, artist, album, track );
 

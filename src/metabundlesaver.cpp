@@ -38,8 +38,8 @@
 MetaBundleSaver::MetaBundleSaver( MetaBundle *bundle )
     : QObject()
     , m_bundle( bundle )
-    , m_tempSavePath( QString::null )
-    , m_origRenamedSavePath( QString::null )
+    , m_tempSavePath( QString() )
+    , m_origRenamedSavePath( QString() )
     , m_tempSaveDigest( 0 )
     , m_saveFileref( 0 )
     , m_maxlen( 8192 )
@@ -290,8 +290,8 @@ MetaBundleSaver::cleanupSave()
         }
     }
 
-    m_tempSavePath = QString::null;
-    m_origRenamedSavePath = QString::null;
+    m_tempSavePath.clear();
+    m_origRenamedSavePath.clear();
     m_tempSaveDigest = QByteArray( 0 );
     if( m_saveFileref )
     {

@@ -205,7 +205,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     matchAnyBox->setStretchFactor( new QWidget( matchAnyBox ), 1 );
 
     //criteria box
-    m_criteriaAnyGroupBox = new Q3VGroupBox( QString::null, mainWidget() );
+    m_criteriaAnyGroupBox = new Q3VGroupBox( QString(), mainWidget() );
 
     //match box (all)
     KHBox *matchAllBox = new KHBox( mainWidget() );
@@ -213,7 +213,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     matchAllBox->setStretchFactor( new QWidget( matchAllBox ), 1 );
 
     //criteria box
-    m_criteriaAllGroupBox = new Q3VGroupBox( QString::null, mainWidget() );
+    m_criteriaAllGroupBox = new Q3VGroupBox( QString(), mainWidget() );
 
     //order box
     KHBox *hbox2 = new KHBox( mainWidget() );
