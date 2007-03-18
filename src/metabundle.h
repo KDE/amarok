@@ -55,7 +55,7 @@ namespace LastFm {
  *
  */
 
-class AMAROK_EXPORT MetaBundle
+class MetaBundle
 {
 
 public:
@@ -87,12 +87,12 @@ public:
         NUM_COLUMNS
     };
 
-    class AMAROK_EXPORT EmbeddedImage {
+    class EmbeddedImage {
     public:
-        EmbeddedImage() {}
-        EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
+        AMAROK_EXPORT EmbeddedImage() {}
+        AMAROK_EXPORT EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
 
-        const QByteArray &hash() const;
+        AMAROK_EXPORT const QByteArray &hash() const;
         const QString &description() const { return m_description; }
         bool save( const QDir& dir ) const;
 
@@ -146,7 +146,7 @@ public:
 
     AMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
 
-    virtual ~MetaBundle();
+    AMAROK_EXPORT virtual ~MetaBundle();
 
     MetaBundle& operator=( const MetaBundle& bundle );
     bool operator==( const MetaBundle& bundle ) const;

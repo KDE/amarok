@@ -33,7 +33,7 @@ class MetaBundle;
 class Playlist;
 class PlaylistAlbum;
 
-class AMAROK_EXPORT PlaylistItem : public MetaBundle, public K3ListViewItem
+class PlaylistItem : public MetaBundle, public K3ListViewItem
 {
     typedef MetaBundle super;
     public:

@@ -26,7 +26,7 @@ namespace TagLib {
  * @author Jeff Mitchell <kde-dev@emailgoeshere.com>
  */
 
-class AMAROK_EXPORT MetaBundleSaver : public QObject
+class MetaBundleSaver : public QObject
 {
     Q_OBJECT
 public:
