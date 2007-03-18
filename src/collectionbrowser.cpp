@@ -97,26 +97,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_toolbar = new Browser::ToolBar( this );
     m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
-//     { //<Search LineEdit>
-//         QToolBar    *searchToolBar = new Browser::ToolBar( this );
-//         searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-//
-//         m_searchEdit = new KLineEdit( searchToolBar );
-//         m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
-//         m_searchEdit->setClearButtonShown( true );
-//         m_searchEdit->installEventFilter( this ); // capture key presses
-//         m_searchEdit->setFrame( QFrame::Sunken );
-//         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
-//         searchToolBar->addWidget( m_searchEdit );
-//
-//         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
-//         filterButton->setObjectName( "filter" );
-//         filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
-//         searchToolBar->addWidget( filterButton );
-//
-// //         connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
-//         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-//     } //</Search LineEdit>
     QToolBar    *searchToolBar = new Browser::ToolBar( this );
     searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_searchAction = new Amarok::SearchAction( Amarok::actionCollection(), this );
