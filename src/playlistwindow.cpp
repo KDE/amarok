@@ -192,13 +192,13 @@ void PlaylistWindow::init()
 
     QPalette p;
     QColor startColor;
-    startColor.setHsv( 209, 255, 255 );
-    QColor endColor;
-    endColor.setHsv( 230, 255, 255 );
+    startColor.setHsv( 225, 255, 153 );
+//     QColor endColor;
+//     endColor.setHsv( 230, 255, 255 );
     QLinearGradient toolbarGradiant;
     toolbarGradiant.setColorAt(0, startColor );
-    toolbarGradiant.setColorAt(.5, endColor );
-    toolbarGradiant.setColorAt( 1, startColor );
+//     toolbarGradiant.setColorAt(.5, endColor );
+//     toolbarGradiant.setColorAt( 1, startColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
 
