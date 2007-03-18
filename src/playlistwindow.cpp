@@ -195,23 +195,35 @@ void PlaylistWindow::init()
     startColor.setHsv( 210, 53, 210 );
     QColor middleColor;
     middleColor.setHsv( 210, 107, 178 );
-    QColor endColor;
-    endColor.setHsv( 217, 151, 132 );
+    QColor nextToLastColor;
+    nextToLastColor.setHsv( 217, 151, 150 );
     QRect positionBox;
     positionBox = m_toolbar->contentsRect();
     QLinearGradient toolbarGradiant( positionBox.topLeft(), positionBox.bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .5, middleColor );
-    toolbarGradiant.setColorAt( 1, endColor );
+    toolbarGradiant.setColorAt( 1, nextToLastColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
 
+
     KToolBar *progress = new KToolBar( this, "progressToolBar" );
+    QPalette p2;
+    QColor endColor;
+    endColor.setHsv( 217, 151, 132 );
+    QRect progressBox;
+    progressBox = progress->contentsRect();
+    QLinearGradient progressGradiant( progressBox.topLeft(), progressBox.bottomLeft() );
+    progressGradiant.setColorAt(0, nextToLastColor );
+    progressGradiant.setColorAt(1, endColor );
+    QBrush b2( progressGradiant );
+    p2.setBrush( QPalette::Window, b2 );
     progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    progress->setContentsMargins( 0, 0, 0, 0 );
     progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     progress->setMovable( false );
     progress->setAutoFillBackground( true );
-    progress->setPalette( p );
+    progress->setPalette( p2 );
     progress->addAction( actionCollection()->action( "progress_bar") );
 
     dynamicBar->init();
