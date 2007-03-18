@@ -181,6 +181,7 @@ void PlaylistWindow::init()
         plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
+        plBar->addAction( new KToolBarSpacerAction( this ) );
         plBar->addAction( actionCollection()->action( "playlist_clear") );
         plBar->addAction( actionCollection()->action( "playlist_save") );
         plBar->addSeparator();
@@ -189,6 +190,7 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat")), plBar ) );
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode")), plBar ) );
+        plBar->addAction( new KToolBarSpacerAction( this ) );
     //END Playlist Toolbar
     }
 
