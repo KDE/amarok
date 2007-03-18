@@ -55,7 +55,7 @@ class DeleteDialog : public KDialog
     Q_OBJECT
 
 public:
-    DeleteDialog(QWidget *parent, const char *name = "delete_dialog");
+    explicit DeleteDialog(QWidget *parent, const char *name = "delete_dialog");
     static bool showTrashDialog(QWidget* parent, const KUrl::List &files);
 
     bool confirmDeleteList(const KUrl::List &condemnedFiles);

@@ -20,7 +20,7 @@ class KJob;
 
 class CoverLabel : public QLabel {
     public:
-    CoverLabel ( QWidget * parent, const char * name = 0, Qt::WFlags f = 0 );
+    explicit CoverLabel ( QWidget * parent, const char * name = 0, Qt::WFlags f = 0 );
 
     void setInformation( const QString artist, const QString album ) {
         m_artist = artist;

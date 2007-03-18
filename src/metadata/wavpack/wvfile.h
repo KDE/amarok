@@ -1,9 +1,9 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
-    copyright            : (C) 2004 by Allan Sandfeld Jensen 
-    email                : kde@carewolf.org 
+
+    copyright            : (C) 2004 by Allan Sandfeld Jensen
+    email                : kde@carewolf.org
                            (original MPC implementation)
  ***************************************************************************/
 
@@ -43,7 +43,7 @@ namespace TagLib {
    * This is implementation of WavPack metadata.
    *
    * This supports ID3v1 and APE (v1 and v2) style comments as well as reading stream
-   * properties from the file. 
+   * properties from the file.
    */
 
   namespace WavPack {
@@ -73,14 +73,14 @@ namespace TagLib {
         APE     = 0x0002,
         //! Matches all tag types.
         AllTags = 0xffff
-      }; 
-      
+      };
+
       /*!
        * Contructs an WavPack file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      File(const char *file, bool readProperties = true,
+      explicit File(const char *file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
@@ -91,7 +91,7 @@ namespace TagLib {
       /*!
        * Returns the Tag for this file.  This will be an APE tag, an ID3v1 tag
        * or a combination of the two.
-       */ 
+       */
       virtual TagLib::Tag *tag() const;
 
       /*!
@@ -117,14 +117,14 @@ namespace TagLib {
        * deleted by the user.  It will be deleted when the file (object) is
        * destroyed.
        */
-      ID3v1::Tag *ID3v1Tag(bool create = false); 
+      ID3v1::Tag *ID3v1Tag(bool create = false);
 
       /*!
        * Returns a pointer to the APE tag of the file.
        *
        * If \a create is false (the default) this will return a null pointer
        * if there is no valid APE tag.  If \a create is true it will create
-       * a APE tag if one does not exist. 
+       * a APE tag if one does not exist.
        *
        * \note The Tag <b>is still</b> owned by the APE::File and should not be
        * deleted by the user.  It will be deleted when the file (object) is
@@ -140,15 +140,15 @@ namespace TagLib {
        * as their memory will be freed.
        * \note In order to make the removal permanent save() still needs to be called
        */
-      void remove(int tags = AllTags); 
-      
+      void remove(int tags = AllTags);
+
     private:
       File(const File &);
       File &operator=(const File &);
 
       void read(bool readProperties, Properties::ReadStyle propertiesStyle);
       void scan();
-      long findID3v1(); 
+      long findID3v1();
       long findAPE();
 
       class FilePrivate;

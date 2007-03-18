@@ -51,17 +51,17 @@ namespace TagLib
       enum PROPERTY_TYPES
       {
          MPT_TEXT = 1, // The value is string data.
-         MPT_TEXTLIST, // The value is a separated list of strings, 
+         MPT_TEXTLIST, // The value is a separated list of strings,
                        // separator specified as sub-property/type descriptor.
          MPT_FLAG,     // The value is a boolean flag-either 1 byte or 4 bytes, check size value.
          MPT_ULONG,    // The value is a four-byte integer.
          MPT_BINARY,   // The value is a byte stream.
          MPT_URL,      // The value is string data.
-         MPT_DATE,     // The value is a string representation of the date in the form: 
+         MPT_DATE,     // The value is a string representation of the date in the form:
                        // YYYYmmDDHHMMSS (m = month, M = minutes).
          MPT_FILENAME, // The value is string data.
          MPT_GROUPING, // This property has subproperties, but its own value is empty.
-         MPT_REFERENCE // The value is a large buffer of data, use sub-properties/type 
+         MPT_REFERENCE // The value is a large buffer of data, use sub-properties/type
                        // descriptors to identify mime-type.
       };
 
@@ -71,34 +71,34 @@ namespace TagLib
          MPT_PRIVATE = 2,        // Private, do not expose to users.
          MPT_TYPE_DESCRIPTOR = 4 // Type descriptor used to further define type of value.
       };
-      
+
       struct Collectable
       {
          Collectable() : fwd(0) {}
          virtual ~Collectable() {}
          Collectable *fwd;
       };
-      
+
       struct File_Header_Start
       {
          UINT32    object_id;
          UINT32    size;
       };
-      
+
       struct File_Header_v0_v1 : public Collectable
       {
          File_Header_Start s;
          UINT16   object_version;
-         
+
          UINT32   file_version;
          UINT32   num_headers;
       };
-      
+
       struct RMProperties : public Collectable
       {
          File_Header_Start s;
          UINT16   object_version;
-         
+
          UINT32   max_bit_rate;
          UINT32   avg_bit_rate;
          UINT32   max_packet_size;
@@ -126,14 +126,14 @@ namespace TagLib
          UINT32   type;
          UINT16   value_length;
          UINT8   *value_data;
-      }; 
+      };
 
 
       struct LogicalStream
       {
          LogicalStream() : physical_stream_numbers(0), data_offsets(0), rule_to_physical_stream_number_map(0), properties(0) {}
-         virtual ~LogicalStream() 
-            { delete [] physical_stream_numbers; delete [] data_offsets; 
+         virtual ~LogicalStream()
+            { delete [] physical_stream_numbers; delete [] data_offsets;
             delete [] rule_to_physical_stream_number_map; delete [] properties; }
 
          UINT32  size;
@@ -146,16 +146,16 @@ namespace TagLib
          UINT16             *rule_to_physical_stream_number_map;
          UINT16              num_properties;
          NameValueProperty  *properties;
-      }; 
-      
+      };
+
       struct MediaProperties : public Collectable
       {
          MediaProperties() : type_specific_data(0), lstr(0) {}
          virtual ~MediaProperties() { delete lstr; delete [] type_specific_data;  }
-         
+
          File_Header_Start s;
          UINT16   object_version;
-         
+
          UINT16   stream_number;
          UINT32   max_bit_rate;
          UINT32   avg_bit_rate;
@@ -173,16 +173,16 @@ namespace TagLib
 
          LogicalStream *lstr; // only one of these
       };
-      
-      
+
+
       struct ContentDescription : public Collectable
       {
          ContentDescription() : title(0), author(0), copyright(0), comment(0) {}
          virtual ~ContentDescription() { delete [] title; delete [] author; delete [] copyright; delete [] comment; }
-         
+
          File_Header_Start s;
          UINT16   object_version;
-         
+
          UINT16   title_len;
          UINT8   *title;
          UINT16   author_len;
@@ -192,20 +192,20 @@ namespace TagLib
          UINT16   comment_len;
          UINT8   *comment;
       };
-      
-      
+
+
       struct PropListEntry
       {
          UINT32 offset;
          UINT32 num_props_for_name;
       };
-      
+
       struct MDProperties
       {
          MDProperties() : name(0), value(0), subproperties(0) {}
-         virtual ~MDProperties() 
+         virtual ~MDProperties()
             { delete [] name; delete [] value; delete [] subproperties_list; delete [] subproperties; }
-         
+
          UINT32            size;
          UINT32            type;
          UINT32            flags;
@@ -216,24 +216,24 @@ namespace TagLib
          UINT8            *name;
          UINT32            value_length;
          UINT8            *value;
-         PropListEntry    *subproperties_list; // num_subproperties 
+         PropListEntry    *subproperties_list; // num_subproperties
          MDProperties     *subproperties;      // num_subproperties
       };
-      
+
       struct MetadataSection : public Collectable
       {
          File_Header_Start s;
-         
+
          UINT32  object_id;
          UINT32  object_version;
 
-         // this is the 1 "unnamed root property"         
+         // this is the 1 "unnamed root property"
          MDProperties properties;
       };
-      
+
       class Tag;
       class File;
-      
+
       // RealMedia File Format contains a normal ID3v1 Tag at the end of the file
       // no sense reinventing the wheel, so this class is just so we can use TagLib
       // to manage it
@@ -245,24 +245,24 @@ namespace TagLib
          bool save();
          TagLib::Tag *tag() const { return m_id3tag; }
          TagLib::AudioProperties *audioProperties() const { return 0; }
-         
+
       private:
          TagLib::ID3v1::Tag *m_id3tag;
       };
-      
+
       class TagLib::AudioProperties;
-      
+
       class RealMediaFF
       {
       public:
-         RealMediaFF(const char *file, bool readProperties = true, 
+         explicit RealMediaFF(const char *file, bool readProperties = true,
                      TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average);
          RealMediaFF(RealMediaFF &src);
          ~RealMediaFF();
-         
+
          int err() const { return m_err; }
          bool isEmpty() const;
-         
+
          // tag
          TagLib::String   title () const;
          TagLib::String   artist () const;
@@ -279,17 +279,17 @@ namespace TagLib
          //void     setGenre (const String &s);
          //void     setYear (uint i);
          //void     setTrack (uint i);
-         
+
          // properties
          int length () const;
          int bitrate () const;
          int sampleRate () const;
          int channels () const;
-         
+
 #ifdef TESTING
          std::ostream &operator<<(std::ostream &os);
 #endif
-         
+
       private:
          RealMediaFF();
          char               *m_filename;
@@ -297,18 +297,18 @@ namespace TagLib
          Collectable        *m_tail;
          int                 m_fd;
          int                 m_err;
-         
+
          File_Header_v0_v1  *m_hdr;
          RMProperties       *m_props;
          MediaProperties    *media_hdrs;
          ContentDescription *m_contenthdr;
          MetadataSection    *m_md;
-         
+
          char               *m_title;
          char               *m_author;
          char               *m_copyright;
          char               *m_comment;
-         
+
          RMFFile            *m_id3v1tag;
 
          bool                m_flipYearInMetadataSection;
@@ -318,7 +318,7 @@ namespace TagLib
          int initMetadataSection();
          void saveHeader(Collectable *hdr);
          int seekChunk(UINT32 object_id);
-         
+
          int getHdr(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz);
          int getChunk(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz, UINT32 &consumed);
          int getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *buf, UINT32 object_id, int sz);
@@ -327,7 +327,7 @@ namespace TagLib
          int getContentDescription(ContentDescription *cont, const unsigned char *buf, UINT32 object_id, int sz);
          int getMDProperties(MDProperties *md, const unsigned char *buf);
 
-#ifdef TESTING         
+#ifdef TESTING
          void printRealFileHeader(std::ostream &os);
          void printRealPropHeader(std::ostream &os);
          void printMediaPropHeaders(std::ostream &os);
@@ -337,7 +337,7 @@ namespace TagLib
          void printMDProperties(std::ostream &os, char *name, MDProperties *props);
 #endif
       };
-      
+
    } // namespace RealMedia
 } // namespace TagLib
 

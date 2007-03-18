@@ -33,7 +33,7 @@ class SqueezedTextLabel : public QLabel {
   Q_OBJECT
 
 public:
-  SqueezedTextLabel( QWidget *parent, const char *name = 0 );
+  explicit SqueezedTextLabel( QWidget *parent, const char *name = 0 );
   SqueezedTextLabel( const QString &text, QWidget *parent, const char *name = 0 );
 
   virtual QSize minimumSizeHint() const;

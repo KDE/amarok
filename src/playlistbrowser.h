@@ -256,7 +256,7 @@ class PlaylistBrowserView : public K3ListView
     friend class PlaylistEntry;
 
     public:
-        PlaylistBrowserView( QWidget *parent, const char *name=0 );
+        explicit PlaylistBrowserView( QWidget *parent, const char *name=0 );
         ~PlaylistBrowserView();
 
         void rename( Q3ListViewItem *item, int c );

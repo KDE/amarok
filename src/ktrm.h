@@ -134,7 +134,7 @@ public:
      * Creates and starts a lookup for \a file.  If \a autoDelete is set to
      * true the lookup will delete itself when it has finished.
      */
-    KTRMLookup(const QString &file, bool autoDelete = false);
+    explicit KTRMLookup(const QString &file, bool autoDelete = false);
 
     virtual ~KTRMLookup();
 

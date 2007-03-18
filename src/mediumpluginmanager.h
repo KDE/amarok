@@ -89,7 +89,7 @@ class MediumPluginManager : public QObject
     public:
         //nographics only for the initial run of detectDevices...pass in
         //directly to detectDevices after
-        MediumPluginManager( QWidget *widget, const bool nographics=false );
+        explicit MediumPluginManager( QWidget *widget, const bool nographics=false );
         ~MediumPluginManager();
         void finished();
         bool hasChanged();

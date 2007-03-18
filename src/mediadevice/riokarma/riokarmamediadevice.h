@@ -55,9 +55,9 @@ class RioKarmaTrack {
 class RioKarmaMediaItem : public MediaItem
 {
     public:
-        RioKarmaMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
+        explicit RioKarmaMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
-        RioKarmaMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
+        explicit RioKarmaMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
         ~RioKarmaMediaItem()
         {

@@ -36,7 +36,7 @@ class SideBar: public KHBox
         void widgetActivated( QWidget* );
 
     public:
-        SideBar( QWidget *parent, QWidget *contentsWidget = 0 )
+        explicit SideBar( QWidget *parent, QWidget *contentsWidget = 0 )
             : super( parent )
             , m_bar( new SideBarWidget( this ) )
             , m_frame( new KHBox( this ) )

@@ -39,7 +39,7 @@ class TagDialog : public TagDialogBase
         enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8, LABELSCHANGED=16 };
         enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB, LABELSTAB };
 
-        TagDialog( const KUrl& url, QWidget* parent = 0 );
+        explicit TagDialog( const KUrl& url, QWidget* parent = 0 );
         TagDialog( const KUrl::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
         ~TagDialog();

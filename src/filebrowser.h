@@ -57,7 +57,7 @@ class FileBrowser : public KVBox
     enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, QueueTrack, QueueTracks, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, OrganizeFiles, EditTags };
 
 public:
-    FileBrowser( const char *name = 0, Medium *medium = 0 );
+    explicit FileBrowser( const char *name = 0, Medium *medium = 0 );
    ~FileBrowser();
 
     KUrl url() const { return m_dir->url(); }

@@ -30,7 +30,7 @@
 #include "audibleproperties.h"
 #include "audibletag.h"
 
-namespace TagLib { 
+namespace TagLib {
 
     namespace Audible {
 
@@ -44,7 +44,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                File(const char *file, bool readProperties = true,
+                explicit File(const char *file, bool readProperties = true,
                         Properties::ReadStyle propertiesStyle = Properties::Average,
                         FILE *fp=NULL);
 
@@ -63,7 +63,7 @@ namespace TagLib {
                 virtual Audible::Properties *audioProperties() const;
 
                 /*!
-                 * Save the file.  
+                 * Save the file.
                  * This is the same as calling save(AllTags);
                  *
                  * \note As of now, saving Audible tags is not supported.

@@ -11,9 +11,9 @@
 
 class StdinReader : public QObject
 {
-Q_OBJECT    
+Q_OBJECT
     public:
-    StdinReader(QObject * parent = 0, const char * name = 0)
+    explicit StdinReader(QObject * parent = 0, const char * name = 0)
     :QObject(parent,name)
     {
         QSocketNotifier* streamListener = new QSocketNotifier(0, QSocketNotifier::Read, this, "stdinWatcher");
@@ -33,8 +33,8 @@ Q_OBJECT
         if(signal == "configure")
             emit openWindow();
     }
-    
-    
+
+
 };
 
 #endif

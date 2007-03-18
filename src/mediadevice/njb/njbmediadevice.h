@@ -64,10 +64,10 @@ extern trackValueList* theTracks;
 class NjbMediaItem : public MediaItem
 {
     public:
-        NjbMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
+        explicit NjbMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
 
-        NjbMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
+        explicit NjbMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
 
         ~NjbMediaItem()

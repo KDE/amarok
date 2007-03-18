@@ -1,7 +1,7 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
+
     copyright            : (C) 2004 by Allan Sandfeld Jensen
     email                : kde@carewolf.org
                            (original MPC implementation)
@@ -43,7 +43,7 @@ namespace TagLib {
    * This is implementation of TTA metadata.
    *
    * This supports ID3v1 and ID3v2 tags as well as reading stream
-   * properties from the file. 
+   * properties from the file.
    */
 
   namespace TTA {
@@ -80,19 +80,19 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      File(const char *file, bool readProperties = true,
+      explicit File(const char *file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
        * Contructs an MPC file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored. The frames will be created using
-       * \a frameFactory. 
+       * \a frameFactory.
        */
       File(const char *file, ID3v2::FrameFactory *frameFactory,
            bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
-      
+
       /*!
        * Destroys this instance of the File.
        */
@@ -115,7 +115,7 @@ namespace TagLib {
        *
        * \see ID3v2FrameFactory
        */
-      void setID3v2FrameFactory(const ID3v2::FrameFactory *factory); 
+      void setID3v2FrameFactory(const ID3v2::FrameFactory *factory);
 
       /*!
        * Saves the file.

@@ -34,7 +34,7 @@ class QueueLabel: public QLabel //homonym, heh heh
     Q_OBJECT
 
     public:
-        QueueLabel( QWidget *parent, const char *name = 0 );
+        explicit QueueLabel( QWidget *parent, const char *name = 0 );
 
     signals:
         void queueChanged( const PLItemList &, const PLItemList & );

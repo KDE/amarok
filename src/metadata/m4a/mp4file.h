@@ -76,7 +76,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      File(const char *file, bool readProperties = true,
+      explicit File(const char *file, bool readProperties = true,
            TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average);
 
       /*!
@@ -130,7 +130,7 @@ namespace TagLib {
        * Helper function for reading an unsigned short out of the file (big endian method)
        */
       bool readShort( TagLib::uint& toRead );
-      
+
       /*!
        * Helper function for reading an unsigned long long (64bit) out of the file (big endian method)
        */

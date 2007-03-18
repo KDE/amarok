@@ -462,13 +462,13 @@ public:
 class PlaylistIterator : public Q3ListViewItemIterator
 {
 public:
-    PlaylistIterator( Q3ListViewItem *item, int flags = 0 )
+    explicit PlaylistIterator( Q3ListViewItem *item, int flags = 0 )
         //QListViewItemIterator is not great and doesn't allow you to see everything if you
         //mask both Visible and Invisible :( instead just visible items are returned
         : Q3ListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
     {}
 
-    PlaylistIterator( Q3ListView *view, int flags = 0 )
+    explicit PlaylistIterator( Q3ListView *view, int flags = 0 )
         : Q3ListViewItemIterator( view, flags == All ? 0 : flags | Visible )
     {}
 

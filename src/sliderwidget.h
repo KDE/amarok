@@ -127,7 +127,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            VolumeSlider( QWidget *parent, uint max = 0 );
+            explicit VolumeSlider( QWidget *parent, uint max = 0 );
 
         protected:
             virtual void paintEvent( QPaintEvent* );

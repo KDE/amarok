@@ -30,48 +30,48 @@
 namespace TagLib {
 
   namespace WMA {
-  
+
     struct GUID;
-    
+
     typedef unsigned char BYTE;
     typedef unsigned short WORD;
     typedef unsigned int DWORD;
     typedef unsigned long long QWORD;
-    
+
     class File : public TagLib::File
     {
-        
+
       friend class Attribute;
 
     public:
 
-      File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
-      
+      explicit File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+
       virtual ~File();
-    
+
       /*!
-       * Returns the TagLib::Tag for this file. 
+       * Returns the TagLib::Tag for this file.
        */
       virtual TagLib::Tag *tag() const;
 
       /*!
-       * Returns the WMA::Tag for this file. 
+       * Returns the WMA::Tag for this file.
        */
       virtual Tag *WMATag() const;
 
       /*!
-       * Returns the WMA::Properties for this file. 
+       * Returns the WMA::Properties for this file.
        */
       virtual Properties *audioProperties() const;
 
 
       /*!
-       * Save the file. 
+       * Save the file.
        *
        * This returns true if the save was successful.
        */
       virtual bool save();
-    
+
     protected:
 
       int readBYTE();
@@ -83,18 +83,18 @@ namespace TagLib {
 
       ByteVector renderContentDescription();
       ByteVector renderExtendedContentDescription();
-      
+
       void read(bool readProperties, Properties::ReadStyle propertiesStyle);
 
     private:
-      
+
       class FilePrivate;
       FilePrivate *d;
-      
+
     };
-  
+
   }
 
-}  
+}
 
 #endif

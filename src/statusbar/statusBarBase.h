@@ -87,7 +87,7 @@ namespace KDE
         Q_OBJECT
 
     public:
-        StatusBar( QWidget *parent, const char *name = "mainStatusBar" );
+        explicit StatusBar( QWidget *parent, const char *name = "mainStatusBar" );
 
         enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None };
 

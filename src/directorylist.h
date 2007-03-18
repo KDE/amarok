@@ -33,7 +33,7 @@ class QFixedListView : public Q3ListView
 // Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
 {
 public:
-    QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
+    explicit QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
                    :Q3ListView(parent, name, f) {};
     QSize sizeHint() const
     {

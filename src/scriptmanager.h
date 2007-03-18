@@ -59,7 +59,7 @@ class ScriptManager : public KDialog, public EngineObserver
     friend class AmarokScriptNewStuff;
 
     public:
-        ScriptManager( QWidget *parent = 0, const char *name = 0 );
+        explicit ScriptManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~ScriptManager();
 
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }

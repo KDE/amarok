@@ -33,7 +33,7 @@ class ColumnList: public KHBox
 {
     Q_OBJECT
 public:
-    ColumnList( QWidget *parent = 0, const char *name = 0 );
+    explicit ColumnList( QWidget *parent = 0, const char *name = 0 );
     Q3ValueList<int> visibleColumns() const;
     Q3ValueList<int> columnOrder() const;
     bool isChanged() const;

@@ -1,9 +1,9 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
+
     copyright            : (C) 2002 by Scott Wheeler
-    email                : wheeler@kde.org 
+    email                : wheeler@kde.org
                            (original Vorbis implementation)
  ***************************************************************************/
 
@@ -54,7 +54,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      File(const char *file, bool readProperties = true,
+      explicit File(const char *file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!

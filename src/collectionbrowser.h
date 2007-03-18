@@ -154,12 +154,12 @@ private:
 
 class CollectionItem : public K3ListViewItem {
     public:
-        CollectionItem( Q3ListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
+        explicit CollectionItem( Q3ListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : K3ListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
             , m_isSampler( sampler ) {};
-        CollectionItem( Q3ListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
+        explicit CollectionItem( Q3ListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : K3ListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
@@ -393,7 +393,7 @@ class OrganizeCollectionDialogBase : public KDialog
 {
     Q_OBJECT
     public:
-    OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
+    explicit OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
             const QString &caption=QString(),
             QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel )
         : KDialog( parent )

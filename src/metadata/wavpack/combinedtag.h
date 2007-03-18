@@ -38,7 +38,7 @@ namespace TagLib {
   class CombinedTag : public TagLib::Tag
   {
   public:
-    CombinedTag(Tag *tag1 = 0, Tag *tag2 = 0)
+    explicit CombinedTag(Tag *tag1 = 0, Tag *tag2 = 0)
                : TagLib::Tag(),
                  tag1(tag1), tag2(tag2) {}
 

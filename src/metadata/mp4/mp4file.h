@@ -25,7 +25,7 @@ email                : andrew.leadbetter@gmail.com
 #include <tfile.h>
 #include "mp4properties.h"
 #include <amarok_export.h>
-namespace TagLib { 
+namespace TagLib {
 
     namespace MP4 {
 
@@ -39,7 +39,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                File(const char *file, bool readProperties = true,
+                explicit File(const char *file, bool readProperties = true,
                         TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average,
                         MP4FileHandle handle=MP4_INVALID_FILE_HANDLE);
 
@@ -58,7 +58,7 @@ namespace TagLib {
                 virtual MP4::Properties *audioProperties() const;
 
                 /*!
-                 * Save the file.  
+                 * Save the file.
                  * This is the same as calling save(AllTags);
                  *
                  * \note As of now, saving MP4 tags is not supported.

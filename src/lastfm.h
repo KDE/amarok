@@ -45,7 +45,7 @@ class AmarokHttp : public QObject
     Q_OBJECT
 
     public:
-    AmarokHttp ( const QString & hostname, quint16 port = 80, QObject* parent = 0 );
+    explicit AmarokHttp ( const QString & hostname, quint16 port = 80, QObject* parent = 0 );
     int get ( const QString & path );
     Q3Http::State state() const;
     QByteArray readAll ();

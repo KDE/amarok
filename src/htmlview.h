@@ -18,7 +18,7 @@ class HTMLView : public KHTMLPart
     Q_OBJECT
 
     public:
-        HTMLView( QWidget *parentWidget = 0, const char *widgetname = 0, const bool DNDEnabled = false, const bool JScriptEnabled = true );
+        explicit HTMLView( QWidget *parentWidget = 0, const char *widgetname = 0, const bool DNDEnabled = false, const bool JScriptEnabled = true );
        ~HTMLView();
 
         static QString loadStyleSheet();

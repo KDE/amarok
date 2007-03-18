@@ -41,7 +41,7 @@
 class AmarokThemeNewStuff : public KNewStuff
 {
     public:
-    AmarokThemeNewStuff(const QString &type, QWidget *parentWidget=0)
+    explicit AmarokThemeNewStuff(const QString &type, QWidget *parentWidget=0)
              : KNewStuff( type, parentWidget )
     {}
 

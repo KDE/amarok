@@ -50,7 +50,7 @@ class PodcastSettingsDialog : public KDialog
     Q_OBJECT
 
     public:
-        PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
+        explicit PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
         PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent=0 );
 
         bool    configure();

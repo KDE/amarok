@@ -29,7 +29,7 @@
 #include <tfile.h>
 #include "wavproperties.h"
 
-namespace TagLib { 
+namespace TagLib {
 
     namespace Wav {
 
@@ -43,7 +43,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                File(const char *file, bool readProperties = true,
+                explicit File(const char *file, bool readProperties = true,
                         Properties::ReadStyle propertiesStyle = Properties::Average,
                         FILE *fp=NULL);
 
@@ -62,7 +62,7 @@ namespace TagLib {
                 virtual Wav::Properties *audioProperties() const;
 
                 /*!
-                 * Save the file.  
+                 * Save the file.
                  * This is the same as calling save(AllTags);
                  *
                  * \note As of now, saving Wav tags is not supported.

@@ -93,9 +93,9 @@ class MtpAlbum {
 class MtpMediaItem : public MediaItem
 {
     public:
-        MtpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
+        explicit MtpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after ) {}
-        MtpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
+        explicit MtpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after ) {}
         MtpMediaItem( Q3ListView *parent, MediaDevice *dev )
             : MediaItem( parent ) { init( dev ); }

@@ -34,7 +34,7 @@ class OSDWidget : public QWidget
     public:
         enum Alignment { Left, Middle, Center, Right };
 
-        OSDWidget( QWidget *parent, const char *name = "osd" );
+        explicit OSDWidget( QWidget *parent, const char *name = "osd" );
 
         /** resets the colours to defaults */
         void unsetColors();

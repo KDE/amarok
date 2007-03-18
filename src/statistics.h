@@ -36,7 +36,7 @@ class Statistics : public KDialog
         Q_OBJECT
 
     public:
-        Statistics( QWidget *parent = 0, const char *name = 0 );
+        explicit Statistics( QWidget *parent = 0, const char *name = 0 );
         ~Statistics();
 
         static Statistics *instance() { return s_instance; }
@@ -58,7 +58,7 @@ class StatisticsList : public K3ListView
         Q_OBJECT
 
     public:
-        StatisticsList( QWidget *parent, const char *name=0 );
+        explicit StatisticsList( QWidget *parent, const char *name=0 );
         ~StatisticsList() {};
 
         QString filter()                           { return m_filter; }

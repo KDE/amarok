@@ -118,7 +118,7 @@ class CoverView : public K3IconView
         Q_OBJECT
 
     public:
-        CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
+        explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
 
     protected:
         Q3DragObject *dragObject();

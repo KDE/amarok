@@ -33,7 +33,7 @@ class KPushButton;
 
 class QueueItem : public QListWidgetItem
 {
- 
+
      public:
         QueueItem( const QString& s ) : QListWidgetItem( s ) { }
 #if 0
@@ -48,7 +48,7 @@ class QueueList : public QListWidget
     friend class QueueManager;
 
     public:
-        QueueList( QWidget *parent, const char *name = 0 );
+        explicit QueueList( QWidget *parent, const char *name = 0 );
         ~QueueList() {};
 
         bool    hasSelection();
@@ -77,7 +77,7 @@ class QueueManager : public KDialog
         Q_OBJECT
 
     public:
-        QueueManager( QWidget *parent = 0, const char *name = 0 );
+        explicit QueueManager( QWidget *parent = 0, const char *name = 0 );
         ~QueueManager();
 
         QList<PlaylistItem* > newQueue();

@@ -46,7 +46,7 @@ namespace TagLib {
       class Tag : public TagLib::Tag
       {
       public:
-         Tag(RealMediaFF *rmff, bool allocnew = false);
+         explicit Tag(RealMediaFF *rmff, bool allocnew = false);
          virtual   ~Tag ();
          virtual String   title () const;
          virtual String   artist () const;
@@ -64,7 +64,7 @@ namespace TagLib {
          virtual void   setTrack (uint i);
 
          bool isEmpty() const;
-         void duplicate(const Tag *source, Tag *target, bool overwrite); 
+         void duplicate(const Tag *source, Tag *target, bool overwrite);
 
       private:
          Tag();
@@ -87,47 +87,47 @@ namespace TagLib {
          Properties();
          RealMediaFF *m_rmff;
       };
-  
+
       class File : public TagLib::File
       {
       public:
 
-         File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
-      
+         explicit File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+
          virtual ~File();
-    
+
          /*
-          * Returns the TagLib::Tag for this file. 
+          * Returns the TagLib::Tag for this file.
           */
          virtual TagLib::Tag *tag() const;
-         
+
          /*
-          * Returns the RealMedia::RealMediaTag for this file. 
+          * Returns the RealMedia::RealMediaTag for this file.
           */
          virtual Tag *RealMediaTag() const;
-         
+
          /*
-          * Returns the RealMedia::Properties for this file. 
+          * Returns the RealMedia::Properties for this file.
           */
          virtual Properties *audioProperties() const;
 
 
          /*
-          * Save the file. 
+          * Save the file.
           *
           * This returns true if the save was successful.
           */
          virtual bool save() { return false; } // for now
-    
+
       private:
-      
+
          RealMediaFF *m_rmfile;
          Tag         *m_tag;
          Properties  *m_props;
       };
-      
+
    }
 
-}  
+}
 
 #endif
