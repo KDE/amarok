@@ -505,18 +505,13 @@ SliderAction::SliderAction( KActionCollection *ac )
     m_positionBox( 0 )
 {
     s_instance = this;
-    debug() << "SLIDER WIDGET CREATED---------------------------------\n";
     setText( i18n( "Progress Slider" ) );
-    debug() << "SLIDER WIDGET TEXT SET--------------------------------\n";
     ac->addAction( "progress_bar", this );
-    debug() << "progress_bar ADDED TO ACTIONCOLLECTION-----------------\n";
 }
 
 QWidget *SliderAction::createWidget( QWidget *w )
 {
-    debug() << "ENTERED CREATEWIDGET-------------------------------\n";
     m_positionBox = new QWidget( w );
-//     w->addPermanentWidget( positionBox );
     m_positionBox->setObjectName( "positionBox" );
     QHBoxLayout *box = new QHBoxLayout( m_positionBox );
     m_positionBox->setLayout( box );
@@ -526,7 +521,7 @@ QWidget *SliderAction::createWidget( QWidget *w )
     m_slider = new Amarok::PrettySlider(
             Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox );
 
-    // the two time labels. m_timeLable is the left one,
+    // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
     m_timeLabel = new TimeLabel( m_positionBox );
     m_timeLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
@@ -553,7 +548,6 @@ QWidget *SliderAction::createWidget( QWidget *w )
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
-    debug() << "returning positionBox-----------------------------------------\n";
     return m_positionBox;
 }
 
@@ -658,6 +652,19 @@ SliderAction::engineStateChanged( Engine::State state, Engine::State /*oldState*
     case Engine::Idle:
         ; //just do nothing, idle is temporary and a limbo state
     }
+}
+void SliderAction::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+{
+    m_slider->newBundle( bundle );
+    engineTrackLengthChanged( bundle.length() );
+}
+
+void SliderAction::engineTrackLengthChanged( long length )
+{
+    m_slider->setMinimum( 0 );
+    m_slider->setMaximum( length * 1000 );
+    m_slider->setEnabled( length > 0 );
+    m_timeLength = MetaBundle::prettyTime( length ).length()+1; // account for - in remaining time
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction

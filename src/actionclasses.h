@@ -124,6 +124,8 @@ namespace Amarok
         protected:
             virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
             virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+            virtual void engineTrackLengthChanged( long length );
+            virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
         private:
             QLabel *m_timeLabel;

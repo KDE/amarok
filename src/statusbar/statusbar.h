@@ -46,18 +46,13 @@ namespace Amarok
 
         static StatusBar* instance() { return s_instance; }
 
-        PrettySlider *slider() { return m_slider; }
-
     public slots:
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
         void updateQueueLabel() { m_queueLabel->update(); }
-//         void drawTimeDisplay( int position );
     protected:  /* reimpl from engineobserver */
        virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-//         virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
-        virtual void engineTrackLengthChanged( long length );
-        virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+       virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
     private slots:
         void slotPauseTimer();
@@ -68,7 +63,6 @@ namespace Amarok
         int m_timeLength;
         QLabel *m_itemCountLabel;
         QueueLabel *m_queueLabel;
-        Amarok::PrettySlider *m_slider;
         QTimer *m_pauseTimer;
     };
     /**

@@ -44,7 +44,7 @@
 #include <QHideEvent>
 #include <QEvent>
 #include <QStyle>
-#include <Q3RangeControl>
+#include <QAbstractSlider>
 #include <QPolygon>
 #include <QStyleOptionComplex>
 
@@ -106,9 +106,9 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
     else QSlider::mouseMoveEvent( e );
 }
 
-class IReallyHateProtected : public Q3RangeControl {
+class IReallyHateProtected : public QAbstractSlider {
     public: int valueFromPosition( int a, int b) {
-        return Q3RangeControl::valueFromPosition(a, b);
+        return QStyle::sliderValueFromPosition(a, b, 0, 0 ); //TODO: is the 0 0 really what we want?
     }
     public: static int sValueFromPosition( int a, int b) {
         return IReallyHateProtected().valueFromPosition(a, b);
