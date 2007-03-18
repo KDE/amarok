@@ -487,7 +487,7 @@ QWidget *SearchAction::createWidget( QWidget *w )
         "Enter space-separated terms to search in the playlist." ) );
 
     KPushButton *filterButton = new KPushButton( "...", searchBox );
-//     filterButton->setFlat( true ); //TODO: maybe?
+    filterButton->setFlat( true ); //TODO: maybe?
     filterButton->setObjectName( "filter" );
     filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
