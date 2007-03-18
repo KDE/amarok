@@ -191,9 +191,16 @@ void PlaylistWindow::init()
     }
 
     QPalette p;
-    QColor h;
-    h.setHsv( 230, 255, 255 );
-    p.setColor( QPalette::Window, h );
+    QColor startColor;
+    startColor.setHsv( 209, 255, 255 );
+    QColor endColor;
+    endColor.setHsv( 230, 255, 255 );
+    QLinearGradient toolbarGradiant;
+    toolbarGradiant.setColorAt(0, startColor );
+    toolbarGradiant.setColorAt(.5, endColor );
+    toolbarGradiant.setColorAt( 1, startColor );
+    QBrush b( toolbarGradiant );
+    p.setBrush( QPalette::Window, b );
 
     KToolBar *progress = new KToolBar( this, "progressToolBar" );
     progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
