@@ -18,7 +18,6 @@
  <Action name="toolbar_analyzer" />
 
  <Spacer/>
- <Action name="progress_bar" />
 
  <Action name="search_bar" />
 </ToolBar>

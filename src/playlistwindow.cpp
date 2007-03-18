@@ -192,6 +192,13 @@ void PlaylistWindow::init()
     //END Playlist Toolbar
     }
 
+
+    KToolBar *progress = new KToolBar( this, "progressToolBar" );
+    progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    progress->setMovable( false );
+    progress->addAction( actionCollection()->action( "progress_bar") );
+
     dynamicBar->init();
     this->toolBars().clear();
 
@@ -215,6 +222,9 @@ void PlaylistWindow::init()
 //     setStatusBar( statusbar );
 
     addToolBar( Qt::TopToolBarArea, m_toolbar );
+    addToolBarBreak();
+    addToolBar( Qt::TopToolBarArea, progress );
+
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
     m_toolbar->setMovable( false );
     playlist->setContentsMargins( 2,2,2,2 );
