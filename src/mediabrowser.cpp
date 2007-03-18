@@ -304,20 +304,17 @@ MediaBrowser::MediaBrowser( const char *name )
     // searching/filtering
     { //<Search LineEdit>
         KToolBar* searchToolBar = new Browser::ToolBar( this );
-        QToolButton *button = new QToolButton( searchToolBar );
-        button->setIcon( KIcon( "locationbar-erase" ) );
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
+        m_searchEdit->setClearButtonShown( true );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "search-filter" );
         filterButton->setSizePolicy( QSizePolicy::Preferred,
         QSizePolicy::Fixed );
         m_searchEdit->setFrame( QFrame::Sunken );
 
-        connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
-        button->setToolTip( i18n( "Clear filter" ) );
         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search" ) );
         filterButton->setToolTip( i18n( "Click to edit filter" ) );
     } //</Search LineEdit>

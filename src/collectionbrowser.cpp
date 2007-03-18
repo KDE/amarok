@@ -100,13 +100,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolBar    *searchToolBar = new Browser::ToolBar( this );
         searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 
-        QToolButton *clearButton   = new QToolButton( searchToolBar );
-        clearButton->setIcon( KIcon("locationbar-erase") );
-        clearButton->setToolTip( i18n( "Clear search field" ) );
-        searchToolBar->addWidget( clearButton );
-
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
+        m_searchEdit->setClearButtonShown( true );
         m_searchEdit->installEventFilter( this ); // capture key presses
         m_searchEdit->setFrame( QFrame::Sunken );
         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
@@ -117,7 +113,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
         searchToolBar->addWidget( filterButton );
 
-        connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
+//         connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     } //</Search LineEdit>
 

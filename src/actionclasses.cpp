@@ -478,12 +478,9 @@ QWidget *SearchAction::createWidget( QWidget *w )
     KHBox *searchBox = new KHBox( w );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
-    QToolButton *clearButton   = new QToolButton( searchBox );
-    clearButton->setIcon( KIcon("locationbar-erase") );
-    clearButton->setToolTip( i18n( "Clear search field" ) );
-
     m_searchWidget = new KLineEdit( searchBox );
     m_searchWidget->setClickMessage( i18n( "Enter search terms here" ) );
+    m_searchWidget->setClearButtonShown( true );
     m_searchWidget->setFrame( QFrame::Sunken );
     m_searchWidget->setToolTip( i18n(
         "Enter space-separated terms to search in the playlist." ) );

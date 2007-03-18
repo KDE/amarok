@@ -109,17 +109,12 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     { //Filter LineEdit
         KToolBar* searchToolBar = new Browser::ToolBar( this );
 
-        QToolButton *button = new QToolButton( searchToolBar );
-        button->setIcon( KIcon( "locationbar-erase") );
-
         m_filter = new KLineEdit( searchToolBar );
+        m_filter->setClearButtonShown( true );
         m_filter->setClickMessage( i18n( "Enter search terms here" ) );
 
-         m_filter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+        m_filter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
-        connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
-
-        button->setToolTip( i18n( "Clear search field" ) );
         m_filter->setToolTip( i18n( "Enter space-separated terms to search in the directory-listing" ) );
     }
 

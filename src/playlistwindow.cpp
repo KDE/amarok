@@ -73,7 +73,6 @@
 #include <khtml_part.h>       //Welcome Tab
 #include <kiconloader.h>      //ClearFilter button
 #include <kinputdialog.h>     //slotAddStream()
-#include <klineedit.h>
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kmessagebox.h>      //savePlaylist()
@@ -430,8 +429,6 @@ void PlaylistWindow::createGUI()
             button->setFocusPolicy( Qt::NoFocus );
         }
     }
-
-//     m_toolbar->addAction( actionCollection()->action( "progress_bar" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
     m_toolbar->setMovable( false );
