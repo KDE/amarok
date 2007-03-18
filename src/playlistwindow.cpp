@@ -192,11 +192,15 @@ void PlaylistWindow::init()
     //END Playlist Toolbar
     }
 
+    QPalette p;
+    p.setColor( QPalette::Window, Qt::darkBlue );
 
     KToolBar *progress = new KToolBar( this, "progressToolBar" );
     progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
     progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     progress->setMovable( false );
+    progress->setAutoFillBackground( true );
+    progress->setPalette( p );
     progress->addAction( actionCollection()->action( "progress_bar") );
 
     dynamicBar->init();
@@ -230,6 +234,8 @@ void PlaylistWindow::init()
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
 
+    m_toolbar->setAutoFillBackground( true );
+    m_toolbar->setPalette( p );
 
     //<XMLGUI>
     {
