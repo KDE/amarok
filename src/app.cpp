@@ -819,7 +819,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
         }
         case Qt::ShiftModifier:
         {
-            EngineController::instance()->seekRelative( ( e->delta() / 120 ) * 10000 ); // 10 seconds
+            EngineController::instance()->seekRelative( ( e->delta() / 120 ) ); //TODO: I removed the change delta.. is this going to be a problem?
             break;
         }
         default:

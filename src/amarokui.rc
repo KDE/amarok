@@ -17,7 +17,7 @@
 
  <Action name="toolbar_analyzer" />
 
- <Spacer/>
+ <Action name="spacer2" />
 
  <Action name="search_bar" />
 </ToolBar>
