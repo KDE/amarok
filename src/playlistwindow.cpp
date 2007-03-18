@@ -193,12 +193,8 @@ void PlaylistWindow::init()
     QPalette p;
     QColor startColor;
     startColor.setHsv( 225, 255, 153 );
-//     QColor endColor;
-//     endColor.setHsv( 230, 255, 255 );
     QLinearGradient toolbarGradiant;
     toolbarGradiant.setColorAt(0, startColor );
-//     toolbarGradiant.setColorAt(.5, endColor );
-//     toolbarGradiant.setColorAt( 1, startColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
 
@@ -343,7 +339,7 @@ void PlaylistWindow::slotEditFilter() //SLOT
     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchLine->setText( fd->filter() );
+        m_searchAction->searchWidget()->setText( fd->filter() );
     delete fd;
 }
 
@@ -524,7 +520,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         }
 
 
-        if( o == m_searchLine ) //the search lineedit
+        if( o == m_searchAction->searchWidget() ) //the search lineedit
         {
             Q3ListViewItem *item;
             switch( e->key() )
@@ -584,7 +580,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                m_searchLine->clear();
+                m_searchAction->searchWidget()->clear();
                 return true;
 
             default:
@@ -625,8 +621,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             }
             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
-                m_searchLine->setFocus();
-                QApplication::sendEvent( m_searchLine, e );
+                m_searchAction->searchWidget();
+                QApplication::sendEvent( m_searchAction->searchWidget(), e );
                 return true;
             }
         }
@@ -885,7 +881,7 @@ void PlaylistWindow::showStatistics() //SLOT
 
 void PlaylistWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchLine->hasFocus() ) )
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchAction->searchWidget()->hasFocus() ) )
         m_browsers->currentWidget()->setFocus();
 }
 
@@ -1194,7 +1190,7 @@ void PlaylistWindow::createActions()
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );
     new Amarok::VolumeAction( ac );
-    new Amarok::SearchAction( ac );
+    m_searchAction = new Amarok::SearchAction( ac, this );
     new Amarok::SliderAction( ac );
 
 

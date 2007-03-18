@@ -51,6 +51,11 @@ class CollectionItem;
 class DividerItem;
 class OrganizeCollectionDialog;
 
+namespace Amarok
+{
+    class SearchAction;
+}
+
 namespace CollectionBrowserIds
 {
     enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
@@ -80,7 +85,6 @@ class CollectionBrowser: public KVBox
         void toggleDivider();
 
     private slots:
-        void slotClearFilter();
         void slotSetFilterTimeout();
         void slotSetFilter();
         void slotSetFilter( const QString &filter );
@@ -95,6 +99,7 @@ class CollectionBrowser: public KVBox
         KTabBar* m_tabs; //tree-view, flat-view tabs
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
+        Amarok::SearchAction           *m_searchAction;
         // For iPod-style browsing
         KAction           *m_ipodIncrement, *m_ipodDecrement;
         class KToolBar    *m_ipodToolbar;
@@ -111,7 +116,6 @@ class CollectionBrowser: public KVBox
         KMenu* m_cat1Menu;
         KMenu* m_cat2Menu;
         KMenu* m_cat3Menu;
-        KLineEdit*  m_searchEdit;
         KComboBox* m_timeFilter;
         CollectionView* m_view;
         QTimer*     m_timer;

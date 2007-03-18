@@ -464,11 +464,12 @@ VolumeAction::engineVolumeChanged( int value )
 // SearchAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SearchAction::SearchAction( KActionCollection *ac )
+SearchAction::SearchAction( KActionCollection *ac, QWidget *caller )
     : KAction( 0 ),
     m_searchWidget( 0 )
 {
     setText( i18n( "Search Bar" ) );
+    m_caller = caller;
     ac->addAction( "search_bar", this );
 }
 
@@ -486,12 +487,15 @@ QWidget *SearchAction::createWidget( QWidget *w )
         "Enter space-separated terms to search in the playlist." ) );
 
     KPushButton *filterButton = new KPushButton( "...", searchBox );
+//     filterButton->setFlat( true ); //TODO: maybe?
     filterButton->setObjectName( "filter" );
     filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
 
-    connect( filterButton, SIGNAL( clicked() ), PlaylistWindow::self(),
+    connect( filterButton, SIGNAL( clicked() ), m_caller,
             SLOT(slotEditFilter() ) );
+    connect( m_searchWidget, SIGNAL( textChanged( const QString & ) ), m_caller,
+            SLOT( slotSetFilterTimeout() ) );
 
     return searchBox;
 }

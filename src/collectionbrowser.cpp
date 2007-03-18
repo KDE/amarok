@@ -8,6 +8,7 @@
 
 #include <config.h>
 
+#include "actionclasses.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "browserToolBar.h"
@@ -96,27 +97,30 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_toolbar = new Browser::ToolBar( this );
     m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
-    { //<Search LineEdit>
-        QToolBar    *searchToolBar = new Browser::ToolBar( this );
-        searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-
-        m_searchEdit = new KLineEdit( searchToolBar );
-        m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
-        m_searchEdit->setClearButtonShown( true );
-        m_searchEdit->installEventFilter( this ); // capture key presses
-        m_searchEdit->setFrame( QFrame::Sunken );
-        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
-        searchToolBar->addWidget( m_searchEdit );
-
-        KPushButton *filterButton = new KPushButton( "...", searchToolBar );
-        filterButton->setObjectName( "filter" );
-        filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
-        searchToolBar->addWidget( filterButton );
-
-//         connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
-        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-    } //</Search LineEdit>
-
+//     { //<Search LineEdit>
+//         QToolBar    *searchToolBar = new Browser::ToolBar( this );
+//         searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+//
+//         m_searchEdit = new KLineEdit( searchToolBar );
+//         m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
+//         m_searchEdit->setClearButtonShown( true );
+//         m_searchEdit->installEventFilter( this ); // capture key presses
+//         m_searchEdit->setFrame( QFrame::Sunken );
+//         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
+//         searchToolBar->addWidget( m_searchEdit );
+//
+//         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
+//         filterButton->setObjectName( "filter" );
+//         filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
+//         searchToolBar->addWidget( filterButton );
+//
+// //         connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
+//         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
+//     } //</Search LineEdit>
+    QToolBar    *searchToolBar = new Browser::ToolBar( this );
+    searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    m_searchAction = new Amarok::SearchAction( Amarok::actionCollection(), this );
+    searchToolBar->addAction( m_searchAction );
 
     // We put a little toolbar for the forward/back buttons for iPod
     // navigation to the right of m_timeFilter.  This toolbar is
@@ -281,19 +285,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view->setViewMode( m_view->m_viewMode );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
 
     setFocusProxy( m_view ); //default object to get focus
-}
-
-void
-CollectionBrowser::slotClearFilter() //SLOT
-{
-    m_searchEdit->clear();
-    kapp->processEvents();  //Let the search bar redraw fully.
-    QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
-    QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
 }
 
 void
@@ -308,7 +302,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 {
     m_timer->stop();
     m_view->m_dirty = true;
-    m_view->setFilter( m_searchEdit->text() );
+    m_view->setFilter( m_searchAction->searchWidget()->text() );
     m_view->setTimeFilter( m_timeFilter->currentIndex() );
     m_view->renderView();
     if ( m_returnPressed )
@@ -319,7 +313,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 void
 CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 {
-    m_searchEdit->setText( filter );
+    m_searchAction->searchWidget()->setText( filter );
     kapp->processEvents();  //Let the search bar redraw fully.
     QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
     QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
@@ -328,10 +322,10 @@ CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 void
 CollectionBrowser::slotEditFilter() //SLOT
 {
-    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchEdit->text() );
+    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchAction->searchWidget()->text() );
     connect( cod, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( cod->exec() )
-        m_searchEdit->setText( cod->filter() );
+        m_searchAction->searchWidget()->setText( cod->filter() );
     delete cod;
 }
 
@@ -351,12 +345,12 @@ void
 CollectionBrowser::appendSearchResults()
 {
     //If we are not filtering, or the search string has changed recently, do nothing
-    if ( m_searchEdit->text().trimmed().isEmpty() || m_timer->isActive() )
+    if ( m_searchAction->searchWidget()->text().trimmed().isEmpty() || m_timer->isActive() )
         return;
     m_view->selectAll();
     Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
     m_view->clearSelection();
-    slotClearFilter();
+
 }
 
 bool
@@ -370,7 +364,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         #define e static_cast<QKeyEvent*>(e)
 
-        if( o == m_searchEdit ) //the search lineedit
+        if( o == m_searchAction->searchWidget() ) //the search lineedit
         {
             switch( e->key() )
             {
@@ -383,7 +377,6 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                slotClearFilter();
                 return true;
 
             case Qt::Key_Return:
@@ -414,8 +407,8 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         if( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape )
         {
-            m_searchEdit->setFocus();
-            QApplication::sendEvent( m_searchEdit, e );
+            m_searchAction->searchWidget()->setFocus();
+            QApplication::sendEvent( m_searchAction->searchWidget(), e );
             return true;
         }
         #undef e

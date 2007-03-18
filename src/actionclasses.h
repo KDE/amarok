@@ -101,10 +101,12 @@ namespace Amarok
     class SearchAction : public KAction
     {
         public:
-            SearchAction( KActionCollection* );
+            SearchAction( KActionCollection*, QWidget * );
             virtual QWidget* createWidget( QWidget * );
+            KLineEdit *searchWidget() { return m_searchWidget; }
         private:
             KLineEdit *m_searchWidget;
+            QWidget *m_caller;
     };
 
     class SliderAction : public KAction, public EngineObserver
