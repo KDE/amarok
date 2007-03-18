@@ -197,10 +197,13 @@ void PlaylistWindow::init()
     QPalette p;
     QColor startColor;
     startColor.setHsv( 210, 53, 210 );
+    startColor.setAlpha( 255 );
     QColor middleColor;
     middleColor.setHsv( 210, 107, 178 );
+    middleColor.setAlpha( 175 );
     QColor nextToLastColor;
     nextToLastColor.setHsv( 217, 151, 150 );
+    nextToLastColor.setAlpha( 100 );
     QRect positionBox;
     positionBox = m_toolbar->contentsRect();
     QLinearGradient toolbarGradiant( positionBox.topLeft(), positionBox.bottomLeft() );
@@ -215,6 +218,7 @@ void PlaylistWindow::init()
     QPalette p2;
     QColor endColor;
     endColor.setHsv( 217, 151, 132 );
+    endColor.setAlpha( 0 );
     QRect progressBox;
     progressBox = progress->contentsRect();
     QLinearGradient progressGradiant( progressBox.topLeft(), progressBox.bottomLeft() );
