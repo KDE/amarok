@@ -217,8 +217,6 @@ App::~App()
 
     CollectionDB::instance()->stopScan();
 
-    delete m_pPlaylistWindow; //sets some XT keys
-
     ThreadManager::deleteInstance(); //waits for jobs to finish
 
     // this must be deleted before the connection to the Xserver is
