@@ -389,7 +389,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
       //make a complimentary fadebar colour
       //TODO dark is not always correct, dumbo!
       int h,s,v; palette().active().background().dark( 150 ).getHsv( &h, &s, &v );
-      const QColor fg = QColor::fromHsv( h + 120, s, v );
+      const QColor fg = QColor::fromHsv( h + 60, s, v );
 
       const double dr = fg.red() - bg.red();
       const double dg = fg.green() - bg.green();

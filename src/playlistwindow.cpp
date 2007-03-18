@@ -103,8 +103,6 @@ namespace Amarok
         ToolBar( QMainWindow *parent, const char *name )
             : KToolBar( name, parent, Qt::TopToolBarArea, false, false, false )
         {
-            QGridLayout *gl = new QGridLayout( this );
-            setLayout( gl );
             setIconSize( QSize( 32, 32 ) );
         }
 
@@ -193,7 +191,9 @@ void PlaylistWindow::init()
     }
 
     QPalette p;
-    p.setColor( QPalette::Window, Qt::darkBlue );
+    QColor h;
+    h.setHsv( 230, 255, 255 );
+    p.setColor( QPalette::Window, h );
 
     KToolBar *progress = new KToolBar( this, "progressToolBar" );
     progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
