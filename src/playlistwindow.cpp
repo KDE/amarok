@@ -116,6 +116,8 @@ namespace Amarok
         wheelEvent( QWheelEvent *e ) {
             EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
         }
+        virtual void paintEvent( QPaintEvent *e ) {
+            }
     };
 }
 
@@ -207,7 +209,7 @@ void PlaylistWindow::init()
     p.setBrush( QPalette::Window, b );
 
 
-    KToolBar *progress = new KToolBar( this, "progressToolBar" );
+    KToolBar *progress = new Amarok::ToolBar( this, "progressToolBar" );
     QPalette p2;
     QColor endColor;
     endColor.setHsv( 217, 151, 132 );
