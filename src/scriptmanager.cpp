@@ -34,7 +34,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <Q3PopupMenu>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileInfo>
@@ -690,12 +689,18 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
         if( m_scripts[key].li == item ) break;
 
     enum { SHOW_LOG, EDIT };
-    Q3PopupMenu menu;
-    menu.setTitle( i18n( "Debugging" ) );
-    menu.insertItem( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
-    menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
-    menu.setItemEnabled( SHOW_LOG, m_scripts[key].process );
-    const int id = menu.exec( mapToGlobal( pos ) );
+    KMenu menu;
+    menu.addTitle( i18n( "Debugging" ) );
+    QAction* logAction = menu.addAction( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ) );
+    QAction* editAction = menu.addAction( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ) );
+    logAction->setData( SHOW_LOG );
+    editAction->setData( EDIT );
+    
+    logAction->setEnabled( m_scripts[key].process != 0 );
+
+    QAction* choice = menu.exec( mapToGlobal( pos ) );
+    if( !choice ) return;
+    const int id = choice->data().toInt();
 
     switch( id )
     {
