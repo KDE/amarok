@@ -3,6 +3,8 @@
 <ToolBar name="mainToolBar" iconText="icononly">
 <Text>Playlist Toolbar</Text>
 
+ <Action name="spacer3" />
+
  <Action name="prev" />
  <Action name="play_pause" />
  <Action name="stop" />

@@ -1209,6 +1209,9 @@ void PlaylistWindow::createActions()
     KAction *spacer2 = new KToolBarSpacerAction( this );
     ac->addAction( "spacer2", spacer2 );
 
+    KAction *spacer3 = new KToolBarSpacerAction( this );
+    ac->addAction( "spacer3", spacer3 );
+
 
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
