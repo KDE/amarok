@@ -80,6 +80,7 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN Presets
     QWidget* presetBox = new QWidget( vbox );
+    vboxLayout->addWidget( presetBox );
     QHBoxLayout *presetLayout = new QHBoxLayout;
     presetLayout->setSpacing( KDialog::spacingHint() );
     presetBox->setLayout( presetLayout );
@@ -162,6 +163,7 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN Equalizer Graph Widget
     Q3GroupBox* graphGBox = new Q3GroupBox( 2, Qt::Horizontal, 0, vbox );
+    vboxLayout->addWidget( graphGBox );
     graphGBox->setInsideMargin( KDialog::marginHint() );
 
     KVBox* graphVBox = new KVBox( graphGBox );

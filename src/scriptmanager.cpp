@@ -650,7 +650,7 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    KAboutData aboutData( name.toLatin1(), name.toLatin1(), 0, readme.readAll() );
+    KAboutData aboutData( name.toLatin1(), name.toLatin1(), "1.0", readme.readAll() );
     
     KAboutApplicationDialog* about = new KAboutApplicationDialog( &aboutData, this );
     about->setButtons( KDialog::Ok );
