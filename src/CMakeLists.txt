@@ -19,6 +19,7 @@ include_directories( ${MP4V2_INCLUDE_DIR} )
 endif(MP4V2_FOUND)
 
 add_subdirectory( amarokcore )
+add_subdirectory( contextview )
 add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( loader )
@@ -158,6 +159,10 @@ set(libcollectionbrowser_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/collectionbrowser/collectiontreeitem.cpp
 )
 
+set(libcontextview_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/contextview/contextview.cpp
+)
+
 
 set(libanalyzers_SRCS
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerbase.cpp
@@ -188,6 +193,7 @@ set(libstatusbar_SRCS
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
         ${libmagnatunestore_SRCS} ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS}
+        ${libcontextview_SRCS}
    collection/sqlregistry.cpp
    collection/sqlmeta.cpp
    Options1.ui.h
