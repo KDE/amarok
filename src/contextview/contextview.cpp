@@ -13,9 +13,12 @@
 
 #include "contextview.h"
 
+#include <math.h> // scaleView()
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsTextItem>
+#include <QGraphicsScene>
+#include <QWheelEvent>
 
 
 ContextView *ContextView::s_instance = 0;
@@ -46,5 +49,17 @@ void ContextView::showHome()
     welcome->setPos( 5, 5 );
 }
 
+void ContextView::scaleView( qreal factor )
+{
+    qreal scaleF = matrix().scale( factor, factor).mapRect(QRectF(0, 0, 1, 1)).width();
+    if( scaleF < 0.07 || scaleF > 100 )
+         return;
 
+    scale( factor, factor );
+}
+
+void ContextView::wheelEvent( QWheelEvent *event )
+{
+     scaleView( pow( (double)2, -event->delta() / 240.0) );
+}
 

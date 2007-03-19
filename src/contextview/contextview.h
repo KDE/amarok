@@ -15,8 +15,9 @@
 #define AMAROK_CONTEXTVIEW_H
 
 #include <QGraphicsView>
-#include <QGraphicsScene>
 
+class QGraphicsScene;
+class QWheelEvent;
 
 class ContextView : public QGraphicsView
 {
@@ -36,12 +37,17 @@ class ContextView : public QGraphicsView
             return s_instance;
         }
 
+    protected:
+        void wheelEvent( QWheelEvent *event );
+
     private:
         /*
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class
          */
         ContextView();
+
+        void scaleView( qreal factor );
 
         /// Page Views ////////////////////////////////////////
         //
