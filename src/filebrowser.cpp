@@ -107,9 +107,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
     { //Filter LineEdit
-        KToolBar* searchToolBar = new Browser::ToolBar( this );
-
-        m_filter = new KLineEdit( searchToolBar );
+//        KToolBar* searchToolBar = new Browser::ToolBar( this );
+//
+        m_filter = new KLineEdit( 0 );
+	toolbar->addWidget(m_filter);
         m_filter->setClearButtonShown( true );
         m_filter->setClickMessage( i18n( "Enter search terms here" ) );
 
