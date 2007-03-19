@@ -108,17 +108,20 @@ EqualizerSetup::EqualizerSetup()
     // END Presets
 
     // BEGIN GroupBox
-    m_groupBoxSliders = new Q3GroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
+    m_groupBoxSliders = new QGroupBox( vbox );
     vboxLayout->addWidget( m_groupBoxSliders );
+    m_groupBoxSliders->setTitle( i18n("Enable Equalizer") );
     m_groupBoxSliders->setCheckable( true );
     m_groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
-    m_groupBoxSliders->setInsideMargin( KDialog::marginHint() );
     connect( m_groupBoxSliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
+    QVBoxLayout *v = new QVBoxLayout( m_groupBoxSliders );
 
     // Helper widget for layouting inside the groupbox
     QWidget* slidersLayoutWidget = new QWidget( m_groupBoxSliders );
+    v->addWidget( slidersLayoutWidget );
     slidersLayoutWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    Q3GridLayout* slidersGridLayout = new Q3GridLayout( slidersLayoutWidget, 1, 1, 0, KDialog::spacingHint() );
+    QGridLayout* slidersGridLayout = new QGridLayout( slidersLayoutWidget );
+    slidersGridLayout->setSpacing( KDialog::spacingHint() );
     // END GroupBox
 
     // BEGIN Preamp slider

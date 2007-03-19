@@ -24,7 +24,7 @@
 #include <kdialog.h>
 
 class EqualizerGraph;
-class Q3GroupBox;
+class QGroupBox;
 class QCheckBox;
 class KComboBox;
 class KMenu;
@@ -69,7 +69,7 @@ class EqualizerSetup : public KDialog
         EqualizerGraph* m_equalizerGraph;
         Q3PtrList<Amarok::Slider> m_bandSliders;
 
-        Q3GroupBox*      m_groupBoxSliders;
+        QGroupBox*      m_groupBoxSliders;
         KComboBox*      m_presetCombo;
         uint            m_manualPos;
 
