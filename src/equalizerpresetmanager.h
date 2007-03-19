@@ -23,8 +23,6 @@
 #include "equalizersetup.h"
 
 #include <kdialog.h>      //baseclass
-//Added by qt3to4:
-#include <Q3ValueList>
 
 class QPushButton;
 class QStringList;
@@ -38,8 +36,8 @@ class EqualizerPresetManager : public KDialog
         explicit EqualizerPresetManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~EqualizerPresetManager();
 
-        void setPresets(QMap< QString, Q3ValueList<int> > presets);
-        QMap< QString, Q3ValueList<int> > presets();
+        void setPresets(QMap< QString, QList<int> > presets);
+        QMap< QString, QList<int> > presets();
 
     private slots:
         void slotRename();
@@ -49,7 +47,7 @@ class EqualizerPresetManager : public KDialog
         void updateButtonState();
 
     private:
-        QMap< QString, Q3ValueList<int> > m_presets;
+        QMap< QString, QList<int> > m_presets;
         K3ListView* m_presetsView;
 
         //QPushButton* m_addBtn;

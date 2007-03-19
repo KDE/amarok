@@ -39,7 +39,6 @@
 #include <kvbox.h>
 //Added by qt3to4:
 #include <Q3GridLayout>
-#include <Q3ValueList>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -208,14 +207,14 @@ EqualizerSetup::setActive( bool active )
 }
 
 void
-EqualizerSetup::setBands( int preamp, Q3ValueList<int> gains )
+EqualizerSetup::setBands( int preamp, QList<int> gains )
 {
     m_slider_preamp->setValue( preamp );
 
     // Note: As a side effect, this automatically switches the
     //       preset to 'Manual', which is by intention
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
-        m_bandSliders.at(i)->setValue( ( *gains.at(i) ) );
+        m_bandSliders.at(i)->setValue( gains.at(i) );
 
     setEqualizerParameters();
 }
@@ -255,7 +254,7 @@ void
 EqualizerSetup::loadPresets()
 {
     // Create predefined presets 'Zero' and 'Manual'
-    Q3ValueList<int> zeroGains;
+    QList<int> zeroGains;
     zeroGains << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0;
     m_presets[ i18n("Manual") ] = zeroGains;
     m_presets[ i18n("Zero") ] = zeroGains;
@@ -282,7 +281,7 @@ EqualizerSetup::loadPresets()
         QDomElement e = n.toElement();
         QString title = e.attribute( "name" );
 
-        Q3ValueList<int> gains;
+        QList<int> gains;
         gains << e.namedItem( "b0" ).toElement().text().toInt();
         gains << e.namedItem( "b1" ).toElement().text().toInt();
         gains << e.namedItem( "b2" ).toElement().text().toInt();
@@ -328,7 +327,7 @@ EqualizerSetup::savePresets()
         if ( title == i18n("Zero") )
             continue;
 
-        Q3ValueList<int> gains = m_presets[ title ];
+        QList<int> gains = m_presets[ title ];
 
         QDomElement i = doc.createElement("preset");
         i.setAttribute( "name", title );
@@ -360,10 +359,10 @@ EqualizerSetup::editPresets()
     editor->setPresets(m_presets);
 
     if ( editor->exec() ) {
-        QMap< QString, Q3ValueList<int> > presets = editor->presets();
+        QMap< QString, QList<int> > presets = editor->presets();
 
         QString currentTitle = m_presetCombo->currentText();
-        Q3ValueList<int> currentGains= m_presets[ currentTitle ];
+        QList<int> currentGains= m_presets[ currentTitle ];
 
         QString newTitle = currentTitle;
 
@@ -371,8 +370,8 @@ EqualizerSetup::editPresets()
         if ( presets.find( currentTitle ) == presets.end() || currentGains != presets[ currentTitle ] ) {
 
             // Find the new name
-            QMap< QString, Q3ValueList<int> >::Iterator end = presets.end();
-            for ( QMap< QString, Q3ValueList<int> >::Iterator it = presets.begin(); it != end; ++it ) {
+            QMap< QString, QList<int> >::Iterator end = presets.end();
+            for ( QMap< QString, QList<int> >::Iterator it = presets.begin(); it != end; ++it ) {
                 if ( it.data() == currentGains ) {
                     newTitle = it.key();
                     break;
@@ -404,7 +403,7 @@ EqualizerSetup::addPreset()
         }
 
         // Add the new preset based on the current slider positions
-        Q3ValueList <int> gains;
+        QList <int> gains;
         for ( uint i = 0; i < m_bandSliders.count(); i++ )
             gains += m_bandSliders.at( i )->value();
         m_presets[ title ] = gains;
@@ -426,8 +425,8 @@ EqualizerSetup::updatePresets(QString selectTitle)
 
     // Sort titles
     QStringList titles;
-    QMap< QString, Q3ValueList<int> >::Iterator end = m_presets.end();
-    for ( QMap< QString, Q3ValueList<int> >::Iterator it = m_presets.begin(); it != end; ++it )
+    QMap< QString, QList<int> >::Iterator end = m_presets.end();
+    for ( QMap< QString, QList<int> >::Iterator it = m_presets.begin(); it != end; ++it )
         titles << it.key();
 
     titles.sort();
@@ -465,12 +464,12 @@ EqualizerSetup::presetChanged( int id ) //SLOT
 void
 EqualizerSetup::presetChanged( QString title ) //SLOT
 {
-    const Q3ValueList<int> gains = m_presets[ title ];
+    const QList<int> gains = m_presets[ title ];
 
     for ( uint i = 0; i < m_bandSliders.count(); i++ ) {
         // Block signals to prevent unwanted setting to 'Manual'
         m_bandSliders.at(i)->blockSignals(true);
-        m_bandSliders.at(i)->setValue( ( *gains.at(i) ) );
+        m_bandSliders.at(i)->setValue( gains.at(i) );
         m_bandSliders.at(i)->blockSignals(false);
     }
 
@@ -512,7 +511,7 @@ EqualizerSetup::sliderChanged() //SLOT
 {
     m_presetCombo->setCurrentIndex( m_manualPos );
 
-    Q3ValueList<int> gains;
+    QList<int> gains;
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
         gains += m_bandSliders.at( i )->value();
 

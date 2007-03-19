@@ -20,7 +20,6 @@
 
 #include <q3ptrlist.h>           //stack alloc
 //Added by qt3to4:
-#include <Q3ValueList>
 #include <kdialog.h>
 
 class EqualizerGraph;
@@ -45,7 +44,7 @@ class EqualizerSetup : public KDialog
 
         // for use by DCOP
         void setActive( bool active );
-        void setBands( int preamp, Q3ValueList<int> gains );
+        void setBands( int preamp, QList<int> gains );
         void setPreset( QString name );
 
     private slots:
@@ -73,7 +72,7 @@ class EqualizerSetup : public KDialog
         KComboBox*      m_presetCombo;
         uint            m_manualPos;
 
-        QMap< QString, Q3ValueList<int> > m_presets;
+        QMap< QString, QList<int> > m_presets;
 };
 
 #endif /*AMAROK_EQUALIZERSETUP_H*/

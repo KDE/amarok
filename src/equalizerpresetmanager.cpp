@@ -25,8 +25,6 @@
 #include <QPushButton>
 #include <kvbox.h>
 #include <QTextStream>
-//Added by qt3to4:
-#include <Q3ValueList>
 
 #include <kapplication.h>
 #include <kinputdialog.h>
@@ -82,7 +80,7 @@ EqualizerPresetManager::~EqualizerPresetManager()
 }
 
 void
-EqualizerPresetManager::setPresets(QMap< QString, Q3ValueList<int> > presets)
+EqualizerPresetManager::setPresets(QMap< QString, QList<int> > presets)
 {
     if ( presets.empty() )
         return;
@@ -90,13 +88,13 @@ EqualizerPresetManager::setPresets(QMap< QString, Q3ValueList<int> > presets)
     m_presets = presets;
     m_presetsView->clear();
 
-    QMap< QString, Q3ValueList<int> >::Iterator end = presets.end();
-    for ( QMap< QString, Q3ValueList<int> >::Iterator it = presets.begin(); it != end; ++it )
+    QMap< QString, QList<int> >::Iterator end = presets.end();
+    for ( QMap< QString, QList<int> >::Iterator it = presets.begin(); it != end; ++it )
         if ( it.key() != i18n( "Zero" ) && it.key() != i18n( "Manual" ) ) // Don't add 'Manual' and 'Zero'
             new K3ListViewItem( m_presetsView, it.key() );
 }
 
-QMap< QString, Q3ValueList<int> >
+QMap< QString, QList<int> >
 EqualizerPresetManager::presets()
 {
     return m_presets;
@@ -134,13 +132,13 @@ EqualizerPresetManager::slotDefault()
         return;
 
     // Preserve the 'Manual' preset
-    Q3ValueList<int> manualGains = m_presets[ i18n("Manual") ];
+    QList<int> manualGains = m_presets[ i18n("Manual") ];
 
     // Delete all presets
     m_presets.clear();
 
     // Create predefined presets 'Zero' and 'Manual'
-    Q3ValueList<int> zeroGains;
+    QList<int> zeroGains;
     zeroGains << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0;
     m_presets[ i18n("Zero") ] = zeroGains;
     m_presets[ i18n("Manual") ] = manualGains;
@@ -163,7 +161,7 @@ EqualizerPresetManager::slotDefault()
         QDomElement e = n.toElement();
         QString title = e.attribute( "name" );
 
-        Q3ValueList<int> gains;
+        QList<int> gains;
         gains << e.namedItem( "b0" ).toElement().text().toInt();
         gains << e.namedItem( "b1" ).toElement().text().toInt();
         gains << e.namedItem( "b2" ).toElement().text().toInt();
