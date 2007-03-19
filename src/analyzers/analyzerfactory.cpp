@@ -89,7 +89,7 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 
 QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
 {
-    return new BlockAnalyzer( parent );
+    return new BarAnalyzer( parent );
 
 #if 0
     QWidget *analyzer = 0;

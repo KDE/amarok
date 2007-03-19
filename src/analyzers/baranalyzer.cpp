@@ -21,10 +21,10 @@
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 12, 8 )
-    //, m_bands( BAND_COUNT )
-    //, barVector( BAND_COUNT, 0 )
-    //, roofVector( BAND_COUNT, 50 )
-    //, roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
+    , m_bands( BAND_COUNT )
+    , barVector( BAND_COUNT, 0 )
+    , roofVector( BAND_COUNT, 50 )
+    , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
     m_bg = parent->paletteBackgroundColor();
@@ -38,7 +38,7 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
 
     for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
-        m_pixRoof[i].resize( COLUMN_WIDTH, 1 );
+        m_pixRoof[i] = QPixmap( COLUMN_WIDTH, 1 );
         m_pixRoof[i].fill( QColor( fg.red()+int(dr*i), fg.green()+int(dg*i), fg.blue()+int(db*i) ) );
     }
 
@@ -82,7 +82,20 @@ void BarAnalyzer::init()
     m_pixBarGradient.resize( height()*COLUMN_WIDTH, height() );
     m_pixCompose.resize( size() );
 
+    setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
+}
+
+
+void BarAnalyzer::analyze( const Scope &s )
+{
+    Analyzer::interpolate( s, m_scope );
+    update();
+}
+void
+BarAnalyzer::paintEvent( QPaintEvent* )
+{
     QPainter p( &m_pixBarGradient );
+
     for ( int x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
           x < height(); ++x )
     {
@@ -95,21 +108,9 @@ void BarAnalyzer::init()
             p.drawLine( x*COLUMN_WIDTH, height() - y, (x+1)*COLUMN_WIDTH, height() - y );
         }
     }
-
-
-    setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
-}
-
-
-void BarAnalyzer::analyze( const Scope &s )
-{
-    //start with a blank canvas
-//     eraseCanvas();
-
     //Analyzer::interpolate( s, m_bands );
 
     Scope &v = m_scope;
-    Analyzer::interpolate( s, v );
 
     for ( uint i = 0, x = 0, y2; i < v.size(); ++i, x+=COLUMN_WIDTH+1 )
     {
@@ -148,13 +149,11 @@ void BarAnalyzer::analyze( const Scope &s )
         //blt last n roofs, a.k.a motion blur
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
-            bitBlt( canvas(), x, m_roofMem[i][c], &m_pixRoof[ NUM_ROOFS - 1 - c ] );
-//TODO port it to kde4
-#if 0
+            p.drawPixmap( x, m_roofMem[i][c], m_pixRoof[ NUM_ROOFS - 1 - c ] );
         //blt the bar
-        bitBlt( canvas(), x, height() - y2,
-                gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2, Qt::CopyROP );
-#endif
+        bitBlt( this, x, height() - y2,
+                gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
+//         p.drawPixmap( x, height() - y2, gradient(), y2* COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
         m_roofMem[i].push_back( height() - roofVector[i] - 2 );
 
         //set roof parameters for the NEXT draw

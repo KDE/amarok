@@ -167,7 +167,7 @@ set(libcontextview_SRCS
 set(libanalyzers_SRCS
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerbase.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerfactory.cpp
-     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/baranalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/baranalyzer.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/blockanalyzer.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer2.cpp

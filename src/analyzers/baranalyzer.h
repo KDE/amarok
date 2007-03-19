@@ -40,8 +40,9 @@ class BarAnalyzer : public Analyzer::Base2D
     protected:
         QPixmap m_pixRoof[NUM_ROOFS];
         //vector<uint> m_roofMem[BAND_COUNT];
+        virtual void paintEvent( QPaintEvent* );
 
-        //Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
+        Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
         uint  m_lvlMapper[256];
         std::vector<aroofMemVec> m_roofMem;
         std::vector<uint> barVector;          //positions of bars
