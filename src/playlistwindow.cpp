@@ -216,15 +216,9 @@ void PlaylistWindow::init()
         m_toolbar->addAction( actionCollection()->action( "search_bar" ) );
     }
     QPalette p;
-    QColor startColor;
-    startColor.setHsv( 210, 53, 210 );
-    startColor.setAlpha( 200 );
-    QColor middleColor;
-    middleColor.setHsv( 210, 107, 178 );
-    middleColor.setAlpha( 175 );
-    QColor nextToLastColor;
-    nextToLastColor.setHsv( 240, 255, 150 );
-    nextToLastColor.setAlpha( 100 );
+    QColor startColor( 166, 188, 210, 200 ); //r,g,b,a
+    QColor middleColor( 103, 141, 178, 175 );
+    QColor nextToLastColor( 0, 0, 150, 100 );
     QLinearGradient toolbarGradiant( m_toolbar->contentsRect().topLeft(), m_toolbar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .5, middleColor );
@@ -235,9 +229,7 @@ void PlaylistWindow::init()
 
     KToolBar *progress = new Amarok::ToolBar( this, "progressToolBar" );
     QPalette p2;
-    QColor endColor;
-    endColor.setHsv( 240, 255, 132 );
-    endColor.setAlpha( 0 );
+    QColor endColor( 0, 0, 132, 0 ); //r,g,b,a
     QLinearGradient progressGradiant( progress->contentsRect().topLeft(), progress->contentsRect().bottomLeft() );
     progressGradiant.setColorAt(0, nextToLastColor );
     progressGradiant.setColorAt(1, endColor );
