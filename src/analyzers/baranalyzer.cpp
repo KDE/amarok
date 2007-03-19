@@ -104,7 +104,7 @@ void BarAnalyzer::init()
 void BarAnalyzer::analyze( const Scope &s )
 {
     //start with a blank canvas
-    eraseCanvas();
+//     eraseCanvas();
 
     //Analyzer::interpolate( s, m_bands );
 
