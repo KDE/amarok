@@ -179,7 +179,7 @@ void PlaylistWindow::init()
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        plBar->setIconDimensions( 32 );
+        plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
         plBar->addAction( actionCollection()->action( "playlist_clear") );
