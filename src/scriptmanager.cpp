@@ -44,7 +44,8 @@
 #include <QTextCodec>
 #include <QTimer>
 
-#include <k3aboutdialog.h>
+#include <kaboutapplicationdialog.h>
+#include <kaboutdata.h>
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -640,31 +641,23 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
-
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
-    QFile readme( m_scripts[name].url.directory( false ) + "README" );
-    QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
+    QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
+    QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
 
     if( !readme.open( QIODevice::ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
 
-    K3AboutDialog* about = new K3AboutDialog( K3AboutDialog::Tabbed|K3AboutDialog::Product,
-                                              QString::null, this );
+    KAboutData aboutData( name.toLatin1(), name.toLatin1(), 0, readme.readAll() );
+    
+    KAboutApplicationDialog* about = new KAboutApplicationDialog( &aboutData, this );
     about->setButtons( KDialog::Ok );
     about->setDefaultButton( KDialog::Ok );
 
     kapp->setTopWidget( about );
     about->setCaption( KDialog::makeStandardCaption( i18n( "About %1", name ) ) );
-    about->setProduct( "", "", "", "" );
-    // Get rid of the confusing KDE version text
-    QLabel* product = about->mainWidget()->findChild<QLabel*>( "version" );
-    if( product ) product->setText( i18n( "%1 Amarok Script", name ));
-
-    about->addTextPage( i18n( "About" ), readme.readAll(), true );
-    if( license.open( QIODevice::ReadOnly ) )
-        about->addLicensePage( i18n( "License" ), license.readAll() );
 
     about->setInitialSize( QSize( 500, 350 ) );
     about->show();
