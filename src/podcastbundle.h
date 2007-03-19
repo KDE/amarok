@@ -7,7 +7,7 @@
 #include "podcastsettings.h"
 #include <kurl.h>
 #include <krfcdate.h>
-#include <QDateTime>
+#include <kdatetime.h>
 
 class PodcastChannelBundle
 {
@@ -173,7 +173,7 @@ class PodcastEpisodeBundle
         const QString &subtitle()    const;
         const QString &description() const;
         const QString &date()        const;
-        QDateTime dateTime()  const;
+        KDateTime dateTime()  const;
         /// File type of the podcast episode, eg ogg, mp3 etc
         const QString &type()        const;
         int     duration()    const; // duration in seconds
@@ -208,7 +208,7 @@ class PodcastEpisodeBundle
         QString m_subtitle;
         QString m_description;
         QString m_date;
-        QDateTime m_dateTime;
+        KDateTime m_dateTime;
         QString m_type;
         int     m_duration;
         uint    m_size;
@@ -225,7 +225,7 @@ inline const QString &PodcastEpisodeBundle::title()       const { return m_title
 inline const QString &PodcastEpisodeBundle::subtitle()    const { return m_subtitle; }
 inline const QString &PodcastEpisodeBundle::description() const { return m_description; }
 inline const QString &PodcastEpisodeBundle::date()        const { return m_date; }
-inline QDateTime      PodcastEpisodeBundle::dateTime()    const { return m_dateTime; }
+inline KDateTime      PodcastEpisodeBundle::dateTime()    const { return m_dateTime; }
 inline const QString &PodcastEpisodeBundle::type()        const { return m_type; }
 inline int            PodcastEpisodeBundle::duration()    const { return m_duration; }
 inline uint           PodcastEpisodeBundle::size()        const { return m_size; }
@@ -241,7 +241,7 @@ inline void    PodcastEpisodeBundle::setTitle( const QString &t )       { m_titl
 inline void    PodcastEpisodeBundle::setSubtitle( const QString &t )    { m_subtitle = t; }
 inline void    PodcastEpisodeBundle::setDescription( const QString &d ) { m_description = d; }
 inline void    PodcastEpisodeBundle::setDate( const QString &d )
-               { m_date = d; if( !d.isEmpty() ) m_dateTime.setTime_t( KRFCDate::parseDate( d ) );}
+               { m_date = d; if( !d.isEmpty() ) m_dateTime = KDateTime::fromString( d ) ;}
 inline void    PodcastEpisodeBundle::setType( const QString &t )        { m_type = t; }
 inline void    PodcastEpisodeBundle::setDuration( const int i )         { m_duration = i; }
 inline void    PodcastEpisodeBundle::setSize( const uint i )            { m_size = i; }
