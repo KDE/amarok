@@ -23,8 +23,8 @@
 void Options1::init()
 {
     slotUpdateMoodFrame();
-    kcfg_CustomRatingsColors->setChecked( AmarokConfig::customRatingsColors() );
-    slotUpdateRatingsFrame();
+    //kcfg_CustomRatingsColors->setChecked( AmarokConfig::customRatingsColors() );
+    //slotUpdateRatingsFrame();
 
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"
@@ -86,6 +86,7 @@ void Options1::slotUpdateMoodFrame()
     }
 }
 
+/*
 void Options1::slotUpdateRatingsFrame()
 {
     kcfg_CustomRatingsColors->setEnabled( kcfg_UseRatings->isChecked() );
@@ -214,3 +215,4 @@ void Options1::slotPickColorFive()
         slotUpdateRatingsFrame();
     }
 }
+*/

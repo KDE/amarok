@@ -44,6 +44,7 @@ StarManager::StarManager()
     m_halfStarColor = AmarokConfig::starColorHalf();
     m_margin = 1;
     m_height = 20;
+    reinitStars();
 }
 
 StarManager::~StarManager() {}

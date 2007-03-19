@@ -69,7 +69,7 @@
     <entry key="Fixed Half Star Color" type="Bool">
         <label>Whether half-stars should use a fixed color or follow the one above</label>
         <whatsthis>Selects whether the user wants to define a custom color for the half-star.</whatsthis>
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry key="Repeat" type="Enum">
         <label>Which track(s) to play repeatedly</label>
