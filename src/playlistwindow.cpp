@@ -179,7 +179,7 @@ void PlaylistWindow::init()
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        plBar->setIconDimensions( 22 );
+        plBar->setIconDimensions( 32 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
         plBar->addAction( actionCollection()->action( "playlist_clear") );
@@ -188,8 +188,8 @@ void PlaylistWindow::init()
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
         plBar->addSeparator();
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat")), plBar ) );
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode")), plBar ) );
+        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
+        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode") ), plBar ) );
         plBar->addAction( new KToolBarSpacerAction( this ) );
     //END Playlist Toolbar
     }
