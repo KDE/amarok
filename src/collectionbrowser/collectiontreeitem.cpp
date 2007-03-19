@@ -21,6 +21,8 @@
 
 #include "querybuilder.h"
 
+#include <KLocale>
+
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
     , m_parent( parent )
@@ -41,8 +43,12 @@ CollectionTreeItem::appendChild(CollectionTreeItem *child) {
 
 QVariant
 CollectionTreeItem::data(int column) const {
-    if ( column == 0 && m_data )
-        return m_data->prettyName();
+    if ( column == 0 && m_data ) {
+        QString name = m_data->prettyName();
+        if ( name.isEmpty() )
+            return i18n( "Unknown" );
+        return name;
+    }
     else
         return QVariant();
 }
