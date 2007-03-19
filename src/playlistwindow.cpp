@@ -194,19 +194,38 @@ void PlaylistWindow::init()
     //END Playlist Toolbar
     }
 
+    { //START Main toolbar
+        m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        m_toolbar->setIconDimensions( 32 );
+        m_toolbar->setMovable( false );
+
+        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
+        m_toolbar->addAction( actionCollection()->action( "prev" ) );
+        m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
+        m_toolbar->addAction( actionCollection()->action( "stop" ) );
+        m_toolbar->addAction( actionCollection()->action( "next" ) );
+
+        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
+        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
+
+        m_toolbar->addAction( new KToolBarSpacerAction(this ) );
+        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
+
+        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
+        m_toolbar->addAction( actionCollection()->action( "search_bar" ) );
+    }
     QPalette p;
     QColor startColor;
     startColor.setHsv( 210, 53, 210 );
-    startColor.setAlpha( 255 );
+    startColor.setAlpha( 200 );
     QColor middleColor;
     middleColor.setHsv( 210, 107, 178 );
     middleColor.setAlpha( 175 );
     QColor nextToLastColor;
-    nextToLastColor.setHsv( 217, 151, 150 );
+    nextToLastColor.setHsv( 240, 255, 150 );
     nextToLastColor.setAlpha( 100 );
-    QRect positionBox;
-    positionBox = m_toolbar->contentsRect();
-    QLinearGradient toolbarGradiant( positionBox.topLeft(), positionBox.bottomLeft() );
+    QLinearGradient toolbarGradiant( m_toolbar->contentsRect().topLeft(), m_toolbar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .5, middleColor );
     toolbarGradiant.setColorAt( 1, nextToLastColor );
@@ -217,11 +236,9 @@ void PlaylistWindow::init()
     KToolBar *progress = new Amarok::ToolBar( this, "progressToolBar" );
     QPalette p2;
     QColor endColor;
-    endColor.setHsv( 217, 151, 132 );
+    endColor.setHsv( 240, 255, 132 );
     endColor.setAlpha( 0 );
-    QRect progressBox;
-    progressBox = progress->contentsRect();
-    QLinearGradient progressGradiant( progressBox.topLeft(), progressBox.bottomLeft() );
+    QLinearGradient progressGradiant( progress->contentsRect().topLeft(), progress->contentsRect().bottomLeft() );
     progressGradiant.setColorAt(0, nextToLastColor );
     progressGradiant.setColorAt(1, endColor );
     QBrush b2( progressGradiant );
@@ -279,7 +296,7 @@ void PlaylistWindow::init()
         xmlFile = "amarokui.rc";
 
         setXMLFile( xmlFile );
-        createGUI(); //NOTE we implement this
+//         createGUI(); //NOTE we implement this
     }
     //</XMLGUI>
 
