@@ -36,6 +36,7 @@ class SqlRegistry : public QObject
         static SqlRegistry * instance();
 
         TrackPtr getTrack( const QString &url );
+        QList<DataPtr> getTracks( QueryBuilder querybuilder = QueryBuilder() );
 
         ArtistPtr getArtist( const QString &name );
         QList<DataPtr> getArtists( QueryBuilder querybuilder = QueryBuilder() );

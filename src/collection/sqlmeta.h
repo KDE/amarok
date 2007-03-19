@@ -32,16 +32,17 @@ class QueryBuilder;
 
 class SqlSearchable {
     public:
-        virtual void addToQuery( QueryBuilder &qb ) = 0;
+        virtual void addToQueryFilter( QueryBuilder &qb ) const = 0;
 };
 
-class SqlTrack : public Track /*, public SqlSearchable*/
+class SqlTrack : public Track , public SqlSearchable
 {
     public:
         SqlTrack( const QStringList &queryResult );
 
         virtual QString name() const { return m_title; }
         virtual QString prettyName() const;
+        virtual QString fullPrettyName() const;
 
         virtual KUrl playableUrl() const { return m_url; }
         virtual QString prettyUrl() const { return m_url.path(); }
@@ -86,6 +87,9 @@ class SqlTrack : public Track /*, public SqlSearchable*/
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual int playCount() const { return m_playCount; }
 
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
+
     protected:
         void notifyObservers();
 
@@ -127,7 +131,8 @@ class SqlArtist : public Artist, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQuery( QueryBuilder &qb );
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -161,7 +166,8 @@ class SqlAlbum : public Album, public SqlSearchable
         virtual void image() const { }  //TODO: fixme
         virtual void updateImage() { }
 
-        virtual void addToQuery( QueryBuilder &qb );
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
 
     private:
         QString m_name;
@@ -187,7 +193,8 @@ class SqlComposer : public Composer, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQuery( QueryBuilder &qb );
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -210,7 +217,8 @@ class SqlGenre : public Genre, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQuery( QueryBuilder &qb );
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;
@@ -233,7 +241,8 @@ class SqlYear : public Year, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQuery( QueryBuilder &qb );
+        virtual void addToQueryFilter( QueryBuilder &qb ) const;
+        static void addToQueryResult( QueryBuilder &qb );
     private:
         QString m_name;
         bool m_tracksLoaded;

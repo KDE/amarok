@@ -75,7 +75,7 @@ SqlTrack::type() const
 }
 
 QString
-SqlTrack::prettyName() const
+SqlTrack::fullPrettyName() const
 {
     QString s = m_artist->name();
 
@@ -109,6 +109,14 @@ SqlTrack::prettyTitle( const QString &filename ) //static
     s = QUrl::fromPercentEncoding( s.toAscii() );
 
     return s;
+}
+
+
+QString
+SqlTrack::prettyName() const
+{
+    //FIXME: This should handle cases when name() is empty!
+    return name();
 }
 
 void
@@ -213,6 +221,42 @@ SqlTrack::setComment( const QString &newComment )
     notifyObservers();
 }
 
+
+void
+SqlTrack::addToQueryFilter( QueryBuilder &qb ) const {
+    //FIXME: implement me!
+}
+
+void
+SqlTrack::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
+
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+}
+
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( const QString &name ) : Artist()
@@ -251,8 +295,15 @@ SqlArtist::tracks()
 }
 
 void
-SqlArtist::addToQuery( QueryBuilder &qb ) {
+SqlArtist::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabArtist, m_name, false, true );
+}
+
+
+void
+SqlArtist::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
 }
 
 //---------------SqlAlbum---------------------------------
@@ -293,8 +344,14 @@ SqlAlbum::tracks()
 }
 
 void
-SqlAlbum::addToQuery( QueryBuilder &qb ) {
+SqlAlbum::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabAlbum, m_name, false, true );
+}
+
+void
+SqlAlbum::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
 }
 
 
@@ -336,8 +393,14 @@ SqlComposer::tracks()
 }
 
 void
-SqlComposer::addToQuery( QueryBuilder &qb ) {
+SqlComposer::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabComposer, m_name, false, true );
+}
+
+void
+SqlComposer::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName, true );
 }
 
 //---------------SqlGenre---------------------------------
@@ -378,8 +441,14 @@ SqlGenre::tracks()
 }
 
 void
-SqlGenre::addToQuery( QueryBuilder &qb ) {
+SqlGenre::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabGenre, m_name, false, true );
+}
+
+void
+SqlGenre::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
 }
 
 //---------------SqlYear---------------------------------
@@ -420,6 +489,12 @@ SqlYear::tracks()
 }
 
 void
-SqlYear::addToQuery( QueryBuilder &qb ) {
+SqlYear::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabYear, m_name, false, true );
+}
+
+void
+SqlYear::addToQueryResult( QueryBuilder &qb ) {
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
 }

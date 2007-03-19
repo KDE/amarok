@@ -151,6 +151,14 @@ kde4_add_ui3_files(libmagnatunestore_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
 	${CMAKE_CURRENT_SOURCE_DIR}/servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui)
 
+
+set(libcollectionbrowser_SRCS
+    ${CMAKE_SOURCE_DIR}/amarok/src/collectionbrowser/collectionbrowserview.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/collectionbrowser/collectiontreeitemmodel.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/collectionbrowser/collectiontreeitem.cpp
+)
+
+
 set(libanalyzers_SRCS
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerbase.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/analyzerfactory.cpp
@@ -179,7 +187,7 @@ set(libstatusbar_SRCS
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
-        ${libmagnatunestore_SRCS} ${libanalyzers_SRCS}
+        ${libmagnatunestore_SRCS} ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS}
    collection/sqlregistry.cpp
    collection/sqlmeta.cpp
    Options1.ui.h

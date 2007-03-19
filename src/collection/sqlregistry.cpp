@@ -43,6 +43,40 @@ SqlRegistry::SqlRegistry() : QObject( 0 )
     m_timer->start();
 }
 
+
+QList<DataPtr>
+SqlRegistry::getTracks( QueryBuilder querybuilder )
+{
+    SqlTrack::addToQueryResult( querybuilder );
+
+    QStringList result = querybuilder.run();
+
+    QList<DataPtr> resultList;
+    QStringList partialResult;
+
+
+    QMutexLocker locker( &m_trackMutex );
+
+    for ( int i = 0; i<result.count(); ++i ) {
+        partialResult << result[i];
+        // FIXME: hardcoding this number here sucks! We should move it to SqlTrack.
+        // Maybe a static QList<SqlTrack> SqlTrack( StringList ) ?
+        if ( i>1 && !((i+1) % 22) ) {
+            if( m_trackMap.contains( partialResult[0] ) )
+                 resultList += DataPtr::staticCast( m_trackMap.value( partialResult[0] ) );
+            else
+            {
+                TrackPtr track( new SqlTrack( partialResult ) );
+                m_trackMap.insert( partialResult[0], track );
+                resultList += DataPtr::staticCast( track );
+            }
+            partialResult.clear();
+        }
+    }
+    return resultList;
+}
+
+
 TrackPtr
 SqlRegistry::getTrack( const QString &url )
 {
@@ -53,31 +87,8 @@ SqlRegistry::getTrack( const QString &url )
     {
         QueryBuilder qb;
         qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valURL, url, QueryBuilder::modeNormal, true );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
 
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
-
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
-        qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+        SqlTrack::addToQueryResult( qb );
 
         QStringList result = qb.run();
         TrackPtr track( new SqlTrack( result ) );
@@ -90,7 +101,7 @@ SqlRegistry::getTrack( const QString &url )
 QList<DataPtr>
 SqlRegistry::getArtists( QueryBuilder querybuilder )
 {
-    querybuilder.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
+    SqlArtist::addToQueryResult( querybuilder );
     QStringList values = querybuilder.run();
 
     QList<DataPtr> resultList;
@@ -118,7 +129,7 @@ SqlRegistry::getArtist( const QString &name )
 QList<DataPtr>
 SqlRegistry::getGenres( QueryBuilder querybuilder )
 {
-    querybuilder.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
+    SqlGenre::addToQueryResult( querybuilder );
     QStringList values = querybuilder.run();
 
     QList<DataPtr> resultList;
@@ -146,7 +157,7 @@ SqlRegistry::getGenre( const QString &name )
 QList<DataPtr>
 SqlRegistry::getComposers( QueryBuilder querybuilder )
 {
-    querybuilder.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName, true );
+    SqlComposer::addToQueryResult( querybuilder );
     QStringList values = querybuilder.run();
 
     QList<DataPtr> resultList;
@@ -174,7 +185,7 @@ SqlRegistry::getComposer( const QString &name )
 QList<DataPtr>
 SqlRegistry::getYears( QueryBuilder querybuilder )
 {
-    querybuilder.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
+    SqlYear::addToQueryResult( querybuilder );
     QStringList values = querybuilder.run();
 
     QList<DataPtr> resultList;
@@ -202,7 +213,7 @@ SqlRegistry::getYear( const QString &name )
 QList<DataPtr>
 SqlRegistry::getAlbums( QueryBuilder querybuilder )
 {
-    querybuilder.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
+    SqlAlbum::addToQueryResult( querybuilder );
     QStringList values = querybuilder.run();
 
     QList<DataPtr> resultList;

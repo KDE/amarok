@@ -32,6 +32,9 @@
 #include "threadmanager.h"
 #include "qstringx.h"
 
+#include "collectionbrowser/collectiontreeitemmodel.h"
+#include "collectionbrowser/collectionbrowserview.h"
+
 #include <tfile.h>   //TagLib::File::isWritable
 
 #include <unistd.h>         //CollectionView ctor
@@ -129,6 +132,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     KActionCollection* ac = new KActionCollection( this );
 
     m_view = new CollectionView( this );
+
+    /*QList<int> cats;
+    cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
+    CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
+    CollectionBrowserView *newView = new CollectionBrowserView( this );
+    newView->setModel( model );*/
+
     m_view->installEventFilter( this );
 
     m_configureAction = new KAction( KIcon(Amarok::icon( "configure" )), i18n( "Configure Folders" ), this );
