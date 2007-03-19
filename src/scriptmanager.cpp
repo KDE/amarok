@@ -282,9 +282,9 @@ QStringList
 ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
-    oldForeachType( ScriptMap, m_scripts )
-        if( it.data().process )
-            runningScripts << it.key();
+    foreach( QString key, m_scripts.keys() )
+        if( m_scripts[key].process )
+            runningScripts << key;
 
     return runningScripts;
 }
@@ -529,19 +529,15 @@ ScriptManager::slotUninstallScript()
     QStringList keys;
 
     // Find all scripts that were in the uninstalled folder
-    {
-        oldForeachType( ScriptMap, m_scripts )
-            if( it.data().url.directory() == directory )
-                keys << it.key();
-    }
+    foreach( QString key, m_scripts.keys() )
+        if( m_scripts[key].url.directory() == directory )
+            keys << key;
 
     // Terminate script processes, remove entries from script list
-    {
-        oldForeach( keys ) {
-            delete m_scripts[*it].li;
-            terminateProcess( &m_scripts[*it].process );
-            m_scripts.erase( *it );
-        }
+    foreach( QString key, keys ) {
+        delete m_scripts[key].li;
+        terminateProcess( &m_scripts[key].process );
+        m_scripts.remove( key );
     }
 }
 
@@ -788,9 +784,9 @@ QStringList
 ScriptManager::scriptsOfType( const QString &type ) const
 {
     QStringList scripts;
-    oldForeachType( ScriptMap, m_scripts )
-        if( it.data().type == type )
-            scripts += it.key();
+    foreach( QString key, m_scripts.keys() )
+        if( m_scripts[key].type == type )
+            scripts += key;
 
     return scripts;
 }
@@ -799,10 +795,9 @@ ScriptManager::scriptsOfType( const QString &type ) const
 QString
 ScriptManager::scriptRunningOfType( const QString &type ) const
 {
-    oldForeachType( ScriptMap, m_scripts )
-        if( it.data().process )
-            if( it.data().type == type )
-                return it.key();
+    foreach( QString key, m_scripts.keys() )
+        if( m_scripts[key].process && m_scripts[key].type == type )
+            return key;
 
     return QString();
 }
@@ -847,8 +842,8 @@ ScriptManager::terminateProcess( KProcIO** proc )
 void
 ScriptManager::notifyScripts( const QString& message )
 {
-    oldForeachType( ScriptMap, m_scripts ) {
-        KProcIO* const proc = it.data().process;
+    foreach( ScriptItem item, m_scripts ) {
+        KProcIO* const proc = item.process;
         if( proc ) proc->writeStdin( message );
     }
 }
