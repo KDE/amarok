@@ -53,7 +53,6 @@
 #include <ksqueezedtextlabel.h> //status label
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstatusbar.h>
-#include <kstringhandler.h>    //paintItem
 #include <ktoolbar.h>
     //clear filter button
 #include <kurl.h>
@@ -995,10 +994,8 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     QString str = text();
     QFontMetrics fm = p->fontMetrics();
     int nameWidth = fm.width( str );
-    if( nameWidth > textRect().width() )
-    {
-        str = KStringHandler::rPixelSqueeze( str, p->fontMetrics(), textRect().width() );
-    }
+    str = fm.elidedText( str, Qt::ElideRight, textRect().width() );
+    
     p->setPen( cg.text() );
     p->drawText( textRect(), Qt::AlignCenter, str );
 

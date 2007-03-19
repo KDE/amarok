@@ -43,7 +43,6 @@
 #include <kglobal.h>
 #include <kiconeffect.h>
 #include <kstandarddirs.h>
-#include <kstringhandler.h>
 
 #include "playlistitem.h"
 
@@ -656,7 +655,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                     p.setPen( cg.highlightedText() );
 //                  paint.setPen( glowText );
                     const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
-                    const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+                    const QString _text = painter->fontMetrics().elidedText( colText, Qt::ElideRight, _width );
                     p.drawText( leftMargin, 0, _width, height(), align, _text );
                     font.setItalic( italic );
                     p.setFont( font );
@@ -721,7 +720,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             p.setPen( ( m_isNew && isEnabled() && !isSelected() ) ? AmarokConfig::newPlaylistItemsColor() : textc );
 
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
-            const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+            const QString _text = painter->fontMetrics().elidedText( colText, Qt::ElideRight, _width );
             p.drawText( leftMargin, 0, _width, height(), align, _text );
         }
     }

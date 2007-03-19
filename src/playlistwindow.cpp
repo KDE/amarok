@@ -23,6 +23,7 @@
 #include "sidebar.moc"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
+#include "contextview/contextview.h"
 #include "debug.h"
 #include "mediadevicemanager.h"
 #include "editfilterdialog.h"
@@ -90,6 +91,7 @@
 // #include <phonon/ui/videowidget.h>
 #include "selectLabel.h"
 
+#define USE_CONTEXT_VIEW 1
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Amarok::ToolBar
@@ -256,12 +258,18 @@ void PlaylistWindow::init()
 
     createMenus();
 
-
-    cb = new ContextBrowser( "contextBrowser" );
     KVBox *centralWidget = new KVBox( this );
     QSplitter *plSplitter = new QSplitter( centralWidget );
     plSplitter->addWidget( m_browsers );
+
+#ifndef USE_CONTEXT_VIEW
+    cb = new ContextBrowser( "contextBrowser" );
     plSplitter->addWidget( cb );
+#else
+    ContextView *cv = ContextView::instance();
+    plSplitter->addWidget( cv );
+#endif
+
     plSplitter->addWidget( playlistwindow );
     setCentralWidget( centralWidget );
 //     setStatusBar( statusbar );

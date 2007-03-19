@@ -56,7 +56,6 @@
 #include <krun.h>
 #include <kstandarddirs.h>     //podcast loading icons
 #include <kmimetypetrader.h>
-#include <kstringhandler.h>
 #include <kurlrequester.h>
 #include <krandom.h>
 #include <kvbox.h>
@@ -973,10 +972,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     QString name = text(column);
     const int _width = width - text_x - lv->itemMargin()*2;
-    if( fmName.width( name ) > _width )
-    {
-        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
-    }
+    name = fmName.elidedText( name, Qt::ElideRight, _width ); // use ... at the end if the text is longer that _width
 
     pBuf.drawText( text_x, 0, width - text_x, textHeight, Qt::AlignVCenter, name );
 
@@ -1235,10 +1231,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     QString name = text(column);
     const int _width = width - text_x - lv->itemMargin()*2;
-    if( fmName.width( name ) > _width )
-    {
-        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
-    }
+    name = fmName.elidedText( name, Qt::ElideRight, _width ); // use ... at the end if the text is longer that _width
 
     pBuf.drawText( text_x, 0, width - text_x, textHeight, Qt::AlignVCenter, name );
 
@@ -2730,8 +2723,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     {
         //decapitateString removes the channels title from the epsiodes title
         name = Amarok::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
-        if( fmName.width( name ) > _width )
-            name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
+        name = fmName.elidedText( name, Qt::ElideRight, _width ); // use ... at the end if the text is longer that _width
     }
 
     pBuf.drawText( text_x, 0, width - text_x, textHeight, Qt::AlignVCenter, name );
