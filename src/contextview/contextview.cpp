@@ -28,9 +28,8 @@ ContextView::ContextView()
     m_contextScene = new QGraphicsScene( this );
     m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex ); //mainly static, so let's keep an index
 
-    QColor color = QColor( 210, 53, 210 );
-    QBrush brush = QBrush( color, Qt::LinearGradientPattern );
-    setBackgroundBrush( brush );
+    QColor color = palette().highlight();
+    m_contextScene->setBackgroundBrush( color );
 
     setRenderHints( QPainter::Antialiasing );
     setCacheMode( QGraphicsView::CacheBackground ); // this won't be changing regularly
