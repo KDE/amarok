@@ -684,34 +684,33 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
     if( !item || isCategory ) return;
 
-    // Look up script entry in our map
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
-        if( it.data().li == item ) break;
+    // Find the script entry in our map
+    QString key;
+    foreach( key, m_scripts.keys() )
+        if( m_scripts[key].li == item ) break;
 
     enum { SHOW_LOG, EDIT };
     Q3PopupMenu menu;
     menu.setTitle( i18n( "Debugging" ) );
     menu.insertItem( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
     menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
-    menu.setItemEnabled( SHOW_LOG, it.data().process );
+    menu.setItemEnabled( SHOW_LOG, m_scripts[key].process );
     const int id = menu.exec( mapToGlobal( pos ) );
 
     switch( id )
     {
         case EDIT:
-            KRun::runCommand( "kwrite " + it.data().url.path() );
+            KRun::runCommand( "kwrite " + m_scripts[key].url.path() );
             break;
 
         case SHOW_LOG:
             QString line;
-            while( it.data().process->readln( line ) != -1 )
-                it.data().log += line;
+            while( m_scripts[key].process->readln( line ) != -1 )
+                m_scripts[key].log += line;
 
-            KTextEdit* editor = new KTextEdit( it.data().log );
+            KTextEdit* editor = new KTextEdit( m_scripts[key].log );
             kapp->setTopWidget( editor );
-            editor->setCaption( KDialog::makeStandardCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
+            editor->setCaption( KDialog::makeStandardCaption( i18n( "Output Log for %1" ).arg( key ) ) );
             editor->setReadOnly( true );
 
             QFont font( "fixed" );
