@@ -153,9 +153,9 @@ kde4_add_ui3_files(libmagnatunestore_SRCS
 
 
 set(libcollectionbrowser_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/amarok/src/collectionbrowser/collectionbrowserview.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/amarok/src/collectionbrowser/collectiontreeitemmodel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/amarok/src/collectionbrowser/collectiontreeitem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/collectionbrowser/collectionbrowserview.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/collectionbrowser/collectiontreeitemmodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/collectionbrowser/collectiontreeitem.cpp
 )
 
 
