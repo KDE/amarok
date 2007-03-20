@@ -21,26 +21,18 @@
 
 #include <QPainter>
 #include <QPixmap>
-#include <q3valuelist.h>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <Q3MemArray>
-#include <QPaintEvent>
+#include <QVector>
 
-#include <kapplication.h>
 
 EqualizerGraph::EqualizerGraph( QWidget* parent )
     : QWidget( parent, 0, Qt::WNoAutoErase )
     , m_backgroundPixmap( new QPixmap() )
-    , m_composePixmap( new QPixmap() )
-{
-}
+{}
 
 
 EqualizerGraph::~EqualizerGraph()
 {
     delete m_backgroundPixmap;
-    delete m_composePixmap;
 }
 
 
@@ -63,9 +55,8 @@ EqualizerGraph::sizeHint() const
 void
 EqualizerGraph::paintEvent( QPaintEvent* )
 {
-    bitBlt( m_composePixmap, 0, 0, m_backgroundPixmap );
-
-    QPainter p( m_composePixmap );
+    QPainter p( this );
+    p.drawPixmap( 0, 0, *m_backgroundPixmap );
 
     // Draw middle line
     int middleLineY = (int) ( ( height() - 1 ) / 2.0 + AmarokConfig::equalizerPreamp() * ( height() - 1 ) / 200.0 );
@@ -129,9 +120,6 @@ EqualizerGraph::paintEvent( QPaintEvent* )
             p.drawPoint( i, y );
         }
     }
-
-    p.end();
-    bitBlt( this, 0, 0, m_composePixmap );
 }
 
 
@@ -143,7 +131,6 @@ void
 EqualizerGraph::drawBackground()
 {
     m_backgroundPixmap->resize( size() );
-    m_composePixmap->resize( size() );
 
     m_backgroundPixmap->fill( colorGroup().background().dark( 105 ) );
     QPainter p( m_backgroundPixmap );
@@ -165,7 +152,7 @@ EqualizerGraph::init_spline( float* x, float* y, int n, float* y2 )
 {
     int i, k;
     float p, qn, sig, un;
-    Q3MemArray<float> u(n * sizeof(float));
+    QVector<float> u(n * sizeof(float));
 
     y2[ 0 ] = u[ 0 ] = 0.0;
 

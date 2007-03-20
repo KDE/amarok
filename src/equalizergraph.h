@@ -19,12 +19,10 @@
 #define AMAROK_EQUALIZERGRAPH_H
 
 #include <qwidget.h>     //baseclass
-//Added by qt3to4:
-#include <QPixmap>
-#include <QPaintEvent>
-#include <QResizeEvent>
 
+class QPaintEvent;
 class QPixmap;
+class QResizeEvent;
 
 
 class EqualizerGraph : public QWidget
@@ -47,7 +45,6 @@ class EqualizerGraph : public QWidget
         float eval_spline( float xa[], float ya[], float y2a[], int n, float x );
 
         QPixmap* m_backgroundPixmap;
-        QPixmap* m_composePixmap;
 };
 
 
