@@ -57,7 +57,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["favourite_genres"]     = "kfm";
         iconMap["files"]                = "folder";
         iconMap["files2"]               = "folder_red";
-        iconMap["info"]                 = "info";
+        iconMap["info"]                 = "dialog-information";
         iconMap["lyrics"]               = "text-center";
         iconMap["magnatune"]            = "services";
         iconMap["mostplayed"]           = "favorites";
