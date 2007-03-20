@@ -302,26 +302,13 @@ MediaBrowser::MediaBrowser( const char *name )
     m_deviceCombo = new KComboBox( this );
 
     // searching/filtering
-    { //<Search LineEdit>
-        KToolBar* searchToolBar = new Browser::ToolBar( this );
-        m_searchEdit = new KLineEdit( searchToolBar );
-        m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
-        m_searchEdit->setClearButtonShown( true );
-        KPushButton *filterButton = new KPushButton( "...", searchToolBar );
-        filterButton->setObjectName( "search-filter" );
-        filterButton->setSizePolicy( QSizePolicy::Preferred,
-        QSizePolicy::Fixed );
-        m_searchEdit->setFrame( QFrame::Sunken );
-
-        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-
-        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search" ) );
-        filterButton->setToolTip( i18n( "Click to edit filter" ) );
-    } //</Search LineEdit>
-
+    QToolBar* searchToolBar = new Browser::ToolBar( this );
+    searchToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    m_searchAction = new Amarok::SearchAction( Amarok::actionCollection(), this );
+    searchToolBar->addAction( m_searchAction );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
+//     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+//     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // connect to device manager
     connect( MediaDeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
@@ -767,23 +754,23 @@ MediaBrowser::slotSetFilter() //SLOT
     m_timer->stop();
 
     if( currentDevice() )
-        currentDevice()->view()->setFilter( m_searchEdit->text() );
+        currentDevice()->view()->setFilter( m_searchAction->searchWidget()->text() );
 }
 
 void
 MediaBrowser::slotSetFilter( const QString &text )
 {
-    m_searchEdit->setText( text );
+    m_searchAction->searchWidget()->setText( text );
     slotSetFilter();
 }
 
 void
 MediaBrowser::slotEditFilter()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchEdit->text() );
+    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchAction->searchWidget()->text() );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchEdit->setText( fd->filter() );
+        m_searchAction->searchWidget()->setText( fd->filter() );
     delete fd;
 }
 

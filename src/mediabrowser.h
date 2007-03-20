@@ -217,7 +217,7 @@ class MediaBrowser : public KVBox
         KAction *transferAction() const { return m_transferAction; }
         KAction *configAction() const { return m_configAction; }
         KAction *customAction() const { return m_customAction; }
- 
+
     signals:
         void availabilityChanged( bool isAvailable );
 
@@ -250,7 +250,6 @@ class MediaBrowser : public KVBox
         MediaDevice *loadDevicePlugin( const QString &deviceName );
         void         unloadDevicePlugin( MediaDevice *device );
 
-        KLineEdit* m_searchEdit;
         QTimer *m_timer;
         AMAROK_EXPORT static MediaBrowser *s_instance;
 
@@ -288,6 +287,7 @@ class MediaBrowser : public KVBox
         KAction *m_customAction;
         KAction *m_configAction;
         KAction *m_transferAction;
+        Amarok::SearchAction *m_searchAction;
 };
 
 class MediaView : public K3ListView
