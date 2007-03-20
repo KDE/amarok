@@ -38,60 +38,6 @@
 //separate from analyzerbase.cpp to save compile time
 
 
-QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
-{
-//     return new Sonogram( parent );
-
-
-    QWidget *analyzer = 0;
-
-    switch( AmarokConfig::currentAnalyzer() )
-    {
-    case 1:
-        analyzer = new BarAnalyzer( parent );
-        break;
-    case 2:
-        analyzer = new Sonogram( parent );
-        break;
-    case 3:
-#if 0
-        analyzer = new TurbineAnalyzer( parent );
-        break;
-#endif
-    case 4:
-        analyzer = new BarAnalyzer( parent );
-        break;
-    case 5:
-        analyzer = new BlockAnalyzer( parent );
-        break;
-#ifdef HAVE_QGLWIDGET
-    case 6:
-        analyzer = new GLAnalyzer( parent );
-        break;
-    case 7:
-        analyzer = new GLAnalyzer2( parent );
-        break;
-    case 8:
-        analyzer = new GLAnalyzer3( parent );
-        break;
-    case 9:
-#else
-    case 6:
-#endif
-        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
-        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
-    break;
-    case 0:
-    default:
-        AmarokConfig::setCurrentAnalyzer( 0 );
-//     case 0:
-#if 0
-        analyzer = new BoomAnalyzer( parent );
-#endif
-    }
-
-    return analyzer;
-}
 
 QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
 {
