@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "contextbox.h"
 #include "contextview.h"
 
 #include <math.h> // scaleView()
@@ -44,9 +45,12 @@ ContextView::ContextView()
 
 void ContextView::showHome()
 {
-    QGraphicsTextItem *welcome = m_contextScene->addText( "Hooray, and welcome to Amarok::ContextView!" );
-    welcome->setDefaultTextColor( Qt::black );
-    welcome->setPos( 5, 5 );
+    ContextBox *welcomeBox = new ContextBox( 0, m_contextScene );
+    welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
+
+    m_contextScene->addItem( welcomeBox );
+    
+    welcomeBox->setPos( 2, 2 );
 }
 
 void ContextView::scaleView( qreal factor )
