@@ -47,26 +47,33 @@ class CollectionTreeItemModel: public QAbstractItemModel {
         CollectionTreeItemModel( const QList<int> &levelType );
         virtual ~CollectionTreeItemModel();
 
-        QVariant data(const QModelIndex &index, int role) const;
-        Qt::ItemFlags flags(const QModelIndex &index) const;
-        QVariant headerData(int section, Qt::Orientation orientation,
+        virtual QVariant data(const QModelIndex &index, int role) const;
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+        virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
-        QModelIndex index(int row, int column,
+        virtual QModelIndex index(int row, int column,
                         const QModelIndex &parent = QModelIndex()) const;
-        QModelIndex parent(const QModelIndex &index) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
-        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual QModelIndex parent(const QModelIndex &index) const;
+        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+
+        virtual void sort ( int column, Qt::SortOrder order = Qt::AscendingOrder );
 
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
 
     private:
 
         void setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent);
+        void initializeHeaderText();
+        QString nameForLevel( int level ) const;
+
+        QString m_headerText;
+
 
         CollectionTreeItem *m_rootItem;
 
         QList<int> m_levelType;
-
 };
 
 #endif

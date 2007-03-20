@@ -25,9 +25,13 @@
 
 #include <QList>
 
+class CollectionTreeItem;
+
+static bool collectionTreeItemLessThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2);
+static bool collectionTreeItemMoreThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2);
 
 class CollectionTreeItem {
-
+    friend class JustBecauseQSortWontSortAListOfPointersProperly;
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
 
@@ -50,15 +54,31 @@ class CollectionTreeItem {
 
         QueryBuilder queryBuilder() const;
 
+        bool operator<( const CollectionTreeItem& other ) const;
+        void sortChildren( Qt::SortOrder order = Qt::AscendingOrder );
 /*        bool childrenSet() { return  m_childrenSet; }
         void setChildrenSet( bool childrenSet ) { m_childrenSet = childrenSet; } */
+
+        const Meta::DataPtr data() const { return m_data; }
 
     private:
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
         QList<CollectionTreeItem*> m_childItems;
         //bool m_childrenSet;
+
+        friend bool collectionTreeItemLessThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2);
+        friend bool collectionTreeItemMoreThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2);
 };
 
+bool collectionTreeItemLessThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2)
+{
+    return (n1->m_data->sortableName() < n2->m_data->sortableName());
+}
+
+bool collectionTreeItemMoreThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2)
+{
+    return (n1->m_data->sortableName() > n2->m_data->sortableName());
+}
 
 #endif

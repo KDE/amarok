@@ -22,11 +22,14 @@
 #include "collection/sqlregistry.h"
 #include "debug.h"
 
+#include <KLocale>
+
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     :QAbstractItemModel()
     , m_levelType( levelType )
 {
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
+    initializeHeaderText();
     setupModelData( listForLevel(0), m_rootItem );
 }
 
@@ -36,8 +39,8 @@ CollectionTreeItemModel::~CollectionTreeItemModel() {
 }
 
 
-QModelIndex CollectionTreeItemModel::index(int row, int column, const QModelIndex &parent)
-             const
+QModelIndex
+CollectionTreeItemModel::index(int row, int column, const QModelIndex &parent) const
 {
 
      CollectionTreeItem *parentItem;
@@ -54,7 +57,8 @@ QModelIndex CollectionTreeItemModel::index(int row, int column, const QModelInde
          return QModelIndex();
 }
 
-QModelIndex CollectionTreeItemModel::parent(const QModelIndex &index) const
+QModelIndex
+CollectionTreeItemModel::parent(const QModelIndex &index) const
 {
      if (!index.isValid())
          return QModelIndex();
@@ -68,7 +72,8 @@ QModelIndex CollectionTreeItemModel::parent(const QModelIndex &index) const
      return createIndex(parentItem->row(), 0, parentItem);
 }
 
-int CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
+int
+CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
      CollectionTreeItem *parentItem;
 
@@ -80,13 +85,15 @@ int CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
      return parentItem->childCount();
 }
 
-int CollectionTreeItemModel::columnCount(const QModelIndex &parent) const
+int
+CollectionTreeItemModel::columnCount(const QModelIndex &parent) const
 {
     return 1;
 }
 
 
-QVariant CollectionTreeItemModel::data(const QModelIndex &index, int role) const
+QVariant
+CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
      if (!index.isValid())
          return QVariant();
@@ -99,7 +106,8 @@ QVariant CollectionTreeItemModel::data(const QModelIndex &index, int role) const
      return item->data(index.column());
 }
 
-Qt::ItemFlags CollectionTreeItemModel::flags(const QModelIndex &index) const
+Qt::ItemFlags
+CollectionTreeItemModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::ItemIsEnabled;
@@ -107,14 +115,25 @@ Qt::ItemFlags CollectionTreeItemModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant CollectionTreeItemModel::headerData(int section, Qt::Orientation orientation,
+QVariant
+CollectionTreeItemModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+        if (section == 0)
+            return m_headerText;
     return QVariant();
 }
 
 
-void CollectionTreeItemModel::setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) {
+void
+CollectionTreeItemModel::sort ( int column, Qt::SortOrder order ) {
+    m_rootItem->sortChildren( order );
+    emit layoutChanged();
+}
+
+void
+CollectionTreeItemModel::setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) {
     foreach( Meta::DataPtr data, dataList ) {
         CollectionTreeItem *item = new CollectionTreeItem( data, parent );
         QList<Meta::DataPtr> childrenData = listForLevel( item->level(), item->queryBuilder() );
@@ -122,7 +141,8 @@ void CollectionTreeItemModel::setupModelData(const QList<Meta::DataPtr> &dataLis
     }
 }
 
-QList<Meta::DataPtr> CollectionTreeItemModel::listForLevel( int level, QueryBuilder qb ) const {
+QList<Meta::DataPtr>
+CollectionTreeItemModel::listForLevel( int level, QueryBuilder qb ) const {
     if ( level > m_levelType.count() )
         return QList<Meta::DataPtr>();
     if ( level == m_levelType.count() ) {
@@ -135,5 +155,26 @@ QList<Meta::DataPtr> CollectionTreeItemModel::listForLevel( int level, QueryBuil
         case CategoryId::Genre : return SqlRegistry::instance()->getGenres( qb );
         case CategoryId::Year : return SqlRegistry::instance()->getYears( qb );
         default: return QList<Meta::DataPtr>();
+    }
+}
+
+void
+CollectionTreeItemModel::initializeHeaderText() {
+    m_headerText.clear();
+    for( int i=0; i< m_levelType.count(); ++i ) {
+        m_headerText += nameForLevel( i ) + " / ";
+    }
+    m_headerText.chop( 3 );
+}
+
+QString
+CollectionTreeItemModel::nameForLevel( int level ) const {
+    switch( m_levelType[level] ) {
+        case CategoryId::Album : return i18n( "Album" );
+        case CategoryId::Artist : return i18n( "Artist" );
+        case CategoryId::Composer : return i18n( "Composer" );
+        case CategoryId::Genre : return i18n( "Genre" );
+        case CategoryId::Year : return i18n( "Year" );
+        default: return QString();
     }
 }

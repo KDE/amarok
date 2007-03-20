@@ -135,11 +135,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_view = new CollectionView( this );
 
-    /*QList<int> cats;
+    QList<int> cats;
     cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
     CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
     CollectionBrowserView *newView = new CollectionBrowserView( this );
-    newView->setModel( model );*/
+    newView->setModel( model );
+    newView->setSortingEnabled( true );
+    newView->sortByColumn( 0, Qt::AscendingOrder );
 
     m_view->installEventFilter( this );
 

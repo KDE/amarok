@@ -61,6 +61,7 @@ namespace Meta
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
             virtual QString fullPrettyName() const { return prettyName(); };
+            virtual QString sortableName() const { return prettyName(); };
     };
 
     class Track : public MetaBase

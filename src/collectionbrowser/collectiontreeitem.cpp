@@ -23,6 +23,8 @@
 
 #include <KLocale>
 
+#include <QtAlgorithms>
+
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
     , m_parent( parent )
@@ -56,7 +58,7 @@ CollectionTreeItem::data(int column) const {
 int
 CollectionTreeItem::row() const {
     if (m_parent)
-        return m_parent->m_childItems.indexOf(const_cast<CollectionTreeItem*>(this));
+        return m_parent->m_childItems.indexOf( const_cast<CollectionTreeItem*>(this) );
 
     return 0;
 }
@@ -77,3 +79,21 @@ CollectionTreeItem::queryBuilder() const {
         searchable->addToQueryFilter( qb );
     return qb;
 }
+
+bool
+CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
+    return m_data->sortableName() < other.m_data->sortableName();
+}
+
+void
+CollectionTreeItem::sortChildren( Qt::SortOrder order ) {
+    if ( order == Qt::AscendingOrder )
+        qSort( m_childItems.begin(), m_childItems.end(), collectionTreeItemLessThan );
+    else
+        qSort( m_childItems.begin(), m_childItems.end(), collectionTreeItemMoreThan );
+    foreach( CollectionTreeItem *item, m_childItems ) {
+        item->sortChildren( order );
+    }
+}
+
+
