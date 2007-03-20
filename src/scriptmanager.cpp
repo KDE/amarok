@@ -173,10 +173,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setText( 0, i18n( "Score" ) );
     m_transcodeCategory->setText( 0, i18n( "Transcoding" ) );
 
-    //m_generalCategory  ->setSelectable( false );
-    //m_lyricsCategory   ->setSelectable( false );
-    //m_scoreCategory    ->setSelectable( false );
-    //m_transcodeCategory->setSelectable( false );
+    m_generalCategory  ->setFlags( Qt::ItemIsEnabled );
+    m_lyricsCategory   ->setFlags( Qt::ItemIsEnabled );
+    m_scoreCategory    ->setFlags( Qt::ItemIsEnabled );
+    m_transcodeCategory->setFlags( Qt::ItemIsEnabled );
 
     m_generalCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
     m_lyricsCategory   ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
