@@ -226,7 +226,6 @@ void PlaylistWindow::init()
     progress->setAutoFillBackground( true );
     progress->setPalette( p2 );
     progress->addAction( actionCollection()->action( "progress_bar") );
-    progress->addAction( new KToolBarSpacerAction( this ) );
 
     dynamicBar->init();
     this->toolBars().clear();
