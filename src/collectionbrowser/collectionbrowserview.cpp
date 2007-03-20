@@ -21,4 +21,8 @@
 
 CollectionBrowserView::CollectionBrowserView( QWidget *parent)
     : QTreeView( parent )
-{}
+{
+    setAnimated( true );
+    setAlternatingRowColors( true );    
+}
+
