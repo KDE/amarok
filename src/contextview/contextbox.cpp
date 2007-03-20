@@ -53,4 +53,9 @@ void ContextBox::setTitle( const QString &title )
         m_titleItem->setPlainText( title );
 }
 
+void ContextBox::setBoundingRectSize( const QSize &sz )
+{
+    QRectF newRect = QRectF( 0, 0, sz.width(), sz.height() );
+    m_boundingBox->setRect( newRect );
+}
 

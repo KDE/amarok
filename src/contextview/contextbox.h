@@ -31,11 +31,11 @@ class ContextBox : public QGraphicsItemGroup
         ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
         ~ContextBox() { /* delete, disconnect and disembark */ }
         
-        void setTitle( const QString &title );
+        virtual void setTitle( const QString &title );
 
-    private:
-        void createBox();
-        void setBoundingRectSize( const QSize &sz );
+    protected:
+        virtual void createBox();
+        virtual void setBoundingRectSize( const QSize &sz );
 
         QGraphicsRectItem *m_boundingBox;
         QGraphicsTextItem *m_titleItem;
