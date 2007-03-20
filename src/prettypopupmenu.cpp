@@ -76,13 +76,12 @@ PrettyPopupMenu::sideImageRect() const
 QColor
 PrettyPopupMenu::calcPixmapColor()
 {
-    KSharedConfigPtr config = KGlobal::config();
-    config->setGroup("WM");
+    KConfigGroup cg = KGlobal::config()->group("WM");
     QColor color = QApplication::palette().active().highlight();
 //     QColor activeTitle = QApplication::palette().active().background();
 //     QColor inactiveTitle = QApplication::palette().inactive().background();
-    QColor activeTitle = config->readColorEntry("activeBackground", &color);
-    QColor inactiveTitle = config->readColorEntry("inactiveBackground", &color);
+    QColor activeTitle = cg.readEntry("activeBackground", color);
+    QColor inactiveTitle = cg.readEntry("inactiveBackground", color);
 
     // figure out which color is most suitable for recoloring to
     int h1, s1, v1, h2, s2, v2, h3, s3, v3;
