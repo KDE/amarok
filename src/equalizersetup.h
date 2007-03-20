@@ -18,13 +18,13 @@
 #ifndef AMAROK_EQUALIZERSETUP_H
 #define AMAROK_EQUALIZERSETUP_H
 
-#include <q3ptrlist.h>           //stack alloc
-//Added by qt3to4:
+#include <QList>           //stack alloc
+
 #include <kdialog.h>
 
 class EqualizerGraph;
-class QGroupBox;
 class QCheckBox;
+class QGroupBox;
 class KComboBox;
 class KMenu;
 
@@ -66,7 +66,7 @@ class EqualizerSetup : public KDialog
 
         Amarok::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
-        Q3PtrList<Amarok::Slider> m_bandSliders;
+        QList<Amarok::Slider*> m_bandSliders;
 
         QGroupBox*      m_groupBoxSliders;
         KComboBox*      m_presetCombo;

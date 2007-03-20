@@ -27,18 +27,15 @@
 #include <QCheckBox>
 #include <qdom.h>
 #include <QFile>
-#include <q3groupbox.h>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
 #include <QStringList>
 #include <QTextStream>   //presets
 #include <QToolTip>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <kvbox.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QVBoxLayout>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -48,6 +45,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kstandarddirs.h> //locate()
+#include <kvbox.h>
 #include <kwin.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
@@ -164,11 +162,12 @@ EqualizerSetup::EqualizerSetup()
     // END
 
     // BEGIN Equalizer Graph Widget
-    Q3GroupBox* graphGBox = new Q3GroupBox( 2, Qt::Horizontal, 0, vbox );
+    QGroupBox* graphGBox = new QGroupBox();
     vboxLayout->addWidget( graphGBox );
-    graphGBox->setInsideMargin( KDialog::marginHint() );
+    QHBoxLayout* h = new QHBoxLayout( graphGBox );
 
-    KVBox* graphVBox = new KVBox( graphGBox );
+    KVBox* graphVBox = new KVBox();
+    h->addWidget( graphVBox );
     QLabel* graphLabel1 = new QLabel(graphVBox);
     graphLabel1->setText("+20 db");
     QLabel* graphLabel2 = new QLabel(graphVBox);
@@ -180,6 +179,7 @@ EqualizerSetup::EqualizerSetup()
     graphLabel3->setAlignment( Qt::AlignRight | Qt::AlignBottom );
 
     m_equalizerGraph = new EqualizerGraph( graphGBox );
+    h->addWidget( m_equalizerGraph );
     m_equalizerGraph->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     // END Graph Widget
 
