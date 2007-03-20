@@ -227,12 +227,10 @@ ScriptManager::~ScriptManager()
     DEBUG_BLOCK
 
     QStringList runningScripts;
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it ) {
-        if( it.data().process ) {
-            terminateProcess( &it.data().process );
-            runningScripts << it.key();
+    foreach( QString key, m_scripts.keys() ) {
+        if( m_scripts[key].process ) {
+            terminateProcess( &m_scripts[key].process );
+            runningScripts << key;
         }
     }
 
