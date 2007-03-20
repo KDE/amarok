@@ -808,11 +808,9 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     QFontMetrics fmName( font );
 
     QString name = text(column);
-    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
-    {
-        const int _width = width - text_x - lv->itemMargin()*2;
-        name = fmName.elidedText( name, Qt::ElideRight, _width );
-    }
+    // we need to take into account that the item is indented, hence the itemMargin.
+    const int _width = width - text_x - lv->itemMargin()*2;
+    name = fmName.elidedText( name, Qt::ElideRight, _width );
 
     pBuf.drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
 
