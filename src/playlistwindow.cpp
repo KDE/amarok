@@ -91,8 +91,6 @@
 // #include <phonon/ui/videowidget.h>
 #include "selectLabel.h"
 
-#define USE_CONTEXT_VIEW 1
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Amarok::ToolBar
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -262,13 +260,15 @@ void PlaylistWindow::init()
     QSplitter *plSplitter = new QSplitter( centralWidget );
     plSplitter->addWidget( m_browsers );
 
-#ifndef USE_CONTEXT_VIEW
     cb = new ContextBrowser( "contextBrowser" );
-    plSplitter->addWidget( cb );
-#else
     ContextView *cv = ContextView::instance();
-    plSplitter->addWidget( cv );
-#endif
+
+    const bool useContextView = false;
+    
+    if( !useContextView )
+        plSplitter->addWidget( cb );
+    else
+        plSplitter->addWidget( cv );
 
     plSplitter->addWidget( playlistwindow );
     setCentralWidget( centralWidget );
