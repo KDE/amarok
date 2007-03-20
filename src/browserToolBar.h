@@ -11,17 +11,18 @@
 #ifndef BROWSER_TOOLBAR_H
 #define BROWSER_TOOLBAR_H
 
-#include <ktoolbar.h>
+#include "toolbar.h"
 
 namespace Browser
 {
-    class ToolBar : public KToolBar
+    class ToolBar : public Amarok::ToolBar
     {
         public:
             ToolBar( QWidget *parent )
-                    : KToolBar( parent, "NotMainToolBar" )
+                    : Amarok::ToolBar( parent )
             {
-                setMovable(false);
+                setObjectName( "notMainToolBar" );
+                setMovable( false );
                 setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
                 setIconDimensions( 16 );
                 setContextMenuEnabled( false );

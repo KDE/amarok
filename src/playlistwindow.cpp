@@ -43,6 +43,7 @@
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
+#include "toolbar.h"
 
 #include <QEvent>           //eventFilter()
 #include <QFont>
@@ -90,36 +91,6 @@
 
 // #include <phonon/ui/videowidget.h>
 #include "selectLabel.h"
-
-//////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS Amarok::ToolBar
-//////////////////////////////////////////////////////////////////////////////////////////
-
-namespace Amarok
-{
-    class ToolBar : public KToolBar
-    {
-    public:
-        ToolBar( QMainWindow *parent, const char *name )
-            : KToolBar( name, parent, Qt::TopToolBarArea, false, false, false )
-        {
-            setIconSize( QSize( 32, 32 ) );
-        }
-
-    protected:
-        virtual void
-        contextMenuEvent( QContextMenuEvent *e ) {
-            Amarok::Menu::instance()->popup( e->globalPos() );
-        }
-
-        virtual void
-        wheelEvent( QWheelEvent *e ) {
-            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
-        }
-        virtual void paintEvent( QPaintEvent *e ) {
-            }
-    };
-}
 
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
@@ -171,10 +142,11 @@ void PlaylistWindow::init()
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( playlistwindow ); //Playlist
     //This is our clear/undo/redo/save buttons
-    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" );
+    KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
+    plBar->setObjectName( "PlaylistToolBar" );
 
 
-    m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
+    m_toolbar = new Amarok::PrettyToolBar( this, "mainToolBar" );
 
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -227,7 +199,7 @@ void PlaylistWindow::init()
     p.setBrush( QPalette::Window, b );
 
 
-    KToolBar *progress = new Amarok::ToolBar( this, "progressToolBar" );
+    KToolBar *progress = new Amarok::PrettyToolBar( this, "progressToolBar" );
     QPalette p2;
     QColor endColor( 0, 0, 132, 0 ); //r,g,b,a
     QLinearGradient progressGradiant( progress->contentsRect().topLeft(), progress->contentsRect().bottomLeft() );
