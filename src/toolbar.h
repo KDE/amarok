@@ -28,7 +28,8 @@ namespace Amarok {
         public:
             /**
             * Create a Toolbar with no Border.
-            * @param parent The Widget that should be the parent of this toolbar
+            * @param parent The Main Window that
+            * this toolbar belongs to.
             * @param name The QObject name of this toolbar
             */
             ToolBar( QMainWindow *parent, const char *name )
@@ -36,6 +37,11 @@ namespace Amarok {
             {
             }
 
+            /**
+             * Create a borderless toolbar that can live anywhere.
+             * @param parent The Widget that should be the parent of this toolbar
+             * @param name The QObject name of this toolbar
+             */
             ToolBar( QWidget *parent )
                 : KToolBar( parent, false, false )
             {
@@ -57,8 +63,8 @@ namespace Amarok {
             * @param parent The Widget that should be the parent of this toolbar
             * @param name The QObject name of this toolbar
             */
-            PrettyToolBar( QWidget *parent, const char *name )
-                : ToolBar( parent )
+            PrettyToolBar( QMainWindow *parent, const char *name )
+                : ToolBar( parent, name )
             {
             }
 
