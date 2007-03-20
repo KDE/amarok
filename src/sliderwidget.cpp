@@ -419,7 +419,7 @@ Amarok::VolumeSlider::generateGradient()
     const QBitmap mask( temp.createHeuristicMask() );
 
     m_pixmapGradient = QPixmap( m_pixmapInset.size() );
-    KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
+    KPixmapEffect::gradient( m_pixmapGradient, colorGroup().alternateBase(), colorGroup().highlight(),
                              KPixmapEffect::HorizontalGradient );
     m_pixmapGradient.setMask( mask );
 }
