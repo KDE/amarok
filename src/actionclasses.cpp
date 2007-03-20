@@ -506,7 +506,8 @@ QWidget *SearchAction::createWidget( QWidget *w )
 SliderAction *SliderAction::s_instance = 0;
 SliderAction::SliderAction( KActionCollection *ac )
     : KAction( 0 ),
-    m_positionBox( 0 )
+      EngineObserver( EngineController::instance() ),
+      m_positionBox( 0 )
 {
     s_instance = this;
     setText( i18n( "Progress Slider" ) );
@@ -523,7 +524,7 @@ QWidget *SliderAction::createWidget( QWidget *w )
     box->setSpacing( 3 );
 
     m_slider = new Amarok::PrettySlider(
-            Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox );
+            Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox, 1000 );
 
     // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
