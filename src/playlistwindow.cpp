@@ -263,12 +263,12 @@ void PlaylistWindow::init()
     cb = new ContextBrowser( "contextBrowser" );
     ContextView *cv = ContextView::instance();
 
-    const bool useContextView = false;
-    
-    if( !useContextView )
-        plSplitter->addWidget( cb );
-    else
-        plSplitter->addWidget( cv );
+    KVBox *contextWidget = new KVBox( this );
+    QSplitter *contextSplitter = new QSplitter( Qt::Vertical, contextWidget );
+    contextSplitter->addWidget( cb );
+    contextSplitter->addWidget( cv );
+
+    plSplitter->addWidget( contextWidget );
 
     plSplitter->addWidget( playlistwindow );
     setCentralWidget( centralWidget );
