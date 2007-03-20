@@ -47,7 +47,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["configure"]            = "configure";
         iconMap["covermanager"]         = "covermanager";
         iconMap["device"]               = "ipod-unmount";
-        iconMap["download"]             = "khtml_kget";
+        iconMap["download"]             = "get-hot-new-stuff";
         iconMap["dynamic"]              = "dynamic";
         iconMap["edit"]                 = "edit";
         iconMap["editcopy"]             = "editcopy";
@@ -84,9 +84,9 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["repeat_playlist"]      = "repeat_playlist";
         iconMap["repeat_track"]         = "repeat_track";
         iconMap["rescan"]               = "edit-refresh";
-        iconMap["rewind"]               = "2leftarrow";
+        iconMap["rewind"]               = "media-seek-backward";
         iconMap["save"]                 = "document-save";
-        iconMap["scripts"]              = "pencil";
+        iconMap["scripts"]              = "signature";
         iconMap["search"]               = "find";
         iconMap["settings_engine"]      = "amarok";
         iconMap["settings_general"]     = "configure";
@@ -98,7 +98,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["podcast2"]             = "podcast_new";
         iconMap["track"]                = "sound";
         iconMap["undo"]                 = "edit-undo";
-        iconMap["visualizations"]       = "visualizations";
+        iconMap["visualizations"]       = "color-fill";
         iconMap["zoom"]                 = "edit-find";
     }
 
