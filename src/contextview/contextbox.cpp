@@ -18,6 +18,7 @@
 #include <QGraphicsScene>
 #include <QRectF>
 
+using namespace Context;
 
 ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     : QGraphicsItemGroup( parent, scene )

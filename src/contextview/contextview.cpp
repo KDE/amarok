@@ -21,6 +21,7 @@
 #include <QGraphicsScene>
 #include <QWheelEvent>
 
+using namespace Context;
 
 ContextView *ContextView::s_instance = 0;
 

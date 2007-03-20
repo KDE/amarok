@@ -21,6 +21,9 @@ class QGraphicsRectItem;
 class QGraphicsScene;
 class QSize;
 
+namespace Context
+{
+
 class ContextBox : public QGraphicsItemGroup
 {
 
@@ -37,6 +40,8 @@ class ContextBox : public QGraphicsItemGroup
         QGraphicsRectItem *m_boundingBox;
         QGraphicsTextItem *m_titleItem;
 };
+
+}
 
 #endif
 
