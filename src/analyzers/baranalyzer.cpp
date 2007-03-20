@@ -151,6 +151,7 @@ BarAnalyzer::paintEvent( QPaintEvent* )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
             p.drawPixmap( x, m_roofMem[i][c], m_pixRoof[ NUM_ROOFS - 1 - c ] );
         //blt the bar
+        //TODO: this isn't very kde4ish
         bitBlt( this, x, height() - y2,
                 gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
 //         p.drawPixmap( x, height() - y2, gradient(), y2* COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );

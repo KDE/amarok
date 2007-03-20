@@ -34,6 +34,10 @@ protected:
     void transform(Scope&);
     void demo();
     void resizeEvent(QResizeEvent*);
+    virtual void paintEvent( QPaintEvent * );
+
+    private:
+        Scope m_scope;
 };
 
 #endif

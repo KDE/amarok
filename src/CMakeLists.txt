@@ -172,9 +172,9 @@ set(libanalyzers_SRCS
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer2.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/glanalyzer3.cpp
-     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/sonogram.cpp
-     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/turbine.cpp
-     #${CMAKE_CURRENT_SOURCE_DIR}/analyzers/boomanalyzer.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/sonogram.cpp
+#    ${CMAKE_CURRENT_SOURCE_DIR}/analyzers/turbine.cpp
+#${CMAKE_CURRENT_SOURCE_DIR}/analyzers/boomanalyzer.cpp
  )
 
 set(libstatusbar_SRCS

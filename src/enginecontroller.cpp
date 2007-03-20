@@ -187,7 +187,7 @@ EngineController::loadEngine( const QString &engineName )
         }
     }
 
-    KRun::runCommand( "kbuildsycoca" );
+    KRun::runCommand( "kbuildsycoca4" );
 
     KMessageBox::error( 0, i18n(
             "<p>Amarok could not find any sound-engine plugins. "

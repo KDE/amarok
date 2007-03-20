@@ -14,6 +14,8 @@
 #include <QPainter>
 //Added by qt3to4:
 #include <QResizeEvent>
+#include <QPaintEvent>
+#include "debug.h"
 #include "sonogram.h"
 
 Sonogram::Sonogram(QWidget *parent) :
@@ -29,34 +31,40 @@ Sonogram::~Sonogram()
 
 void Sonogram::init()
 {
-    eraseCanvas();
 }
 
 
 void Sonogram::resizeEvent(QResizeEvent *e)
 {
-    QWidget::resizeEvent(e);
-    canvas()->resize(size());
-    background()->resize(size());
+    DEBUG_BLOCK
 
 //only for gcc < 4.0
 #if !( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 0 ) )
     resizeForBands(height() < 128 ? 128 : height());
 #endif
 
-    background()->fill(backgroundColor());
-    bitBlt(canvas(), 0, 0, background());
-    bitBlt(this, 0, 0, background());
+        Analyzer::Base2D::resizeEvent( e );
+//     p.drawPixmap( 0, 0, background() )
+//     bitBlt(this, 0, 0, background());
 }
 
 
 void Sonogram::analyze(const Scope &s)
 {
+//     Analyzer::interpolate( s, m_scope );
+    update();
+}
+
+void
+Sonogram::paintEvent( QPaintEvent * )
+{
     int x = width() - 1;
     QColor c;
-    QPainter p(canvas());
+    QPainter p( this );
 
-    bitBlt(canvas(), 0, 0, canvas(), 1, 0, x, height());
+//     bitBlt(canvas(), 0, 0, canvas(), 1, 0, x, height());
+//     p.drawPixmap( 0, 0, this, 1, 0, x, height() );
+    const Scope &s = m_scope;
     Scope::const_iterator it = s.begin(), end = s.end();
     for (int y = height() - 1; y;) {
         if (it >= end || *it < .005)
