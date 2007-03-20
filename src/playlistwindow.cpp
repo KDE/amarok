@@ -305,7 +305,7 @@ void PlaylistWindow::init()
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
+        //addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
         //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
 
