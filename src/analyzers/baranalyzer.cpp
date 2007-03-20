@@ -21,10 +21,10 @@
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 12, 8 )
-    , m_bands( BAND_COUNT )
-    , barVector( BAND_COUNT, 0 )
-    , roofVector( BAND_COUNT, 50 )
-    , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
+//     , m_bands( BAND_COUNT )
+//     , barVector( BAND_COUNT, 0 )
+//     , roofVector( BAND_COUNT, 50 )
+//     , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
     m_bg = parent->paletteBackgroundColor();
