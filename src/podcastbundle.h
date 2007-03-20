@@ -6,7 +6,6 @@
 
 #include "podcastsettings.h"
 #include <kurl.h>
-#include <k3rfcdate.h>
 #include <kdatetime.h>
 
 class PodcastChannelBundle
@@ -157,7 +156,7 @@ class PodcastEpisodeBundle
             m_isNew = isNew;
 
             if( !date.isEmpty() )
-                m_dateTime.setTime_t( K3RFCDate::parseDate( date ) );
+                m_dateTime = KDateTime::fromString( date );
         }
 
         /// The row id which this podcast episode has in the database
