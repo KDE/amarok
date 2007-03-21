@@ -7,13 +7,9 @@
 #ifndef _EQUALIZERCANVASVIEW_H_
 #define _EQUALIZERCANVASVIEW_H_
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
 #include <q3canvas.h>
 #include <QPen>
 #include <QSlider>
-
-#endif
 
 #include <kmainwindow.h>
 //Added by qt3to4:

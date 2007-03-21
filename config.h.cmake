@@ -19,22 +19,11 @@
 #define HAVE_LIBGPOD 1
 
 /* Define if you have libjpeg */
-#cmakedefine HAVE_LIBJPEG 1
-
 /* have libnjb */
 #cmakedefine HAVE_LIBNJB 1
 
-/* Define if you have libpng */
-#cmakedefine HAVE_LIBPNG 1
-
-/* Define if you have a working libpthread (will enable threaded code) */
-#define HAVE_LIBPTHREAD 1
-
 /* have LIBVISUAL */
 #cmakedefine HAVE_LIBVISUAL 1
-
-/* Define if you have libz */
-#define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
