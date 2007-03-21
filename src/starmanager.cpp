@@ -36,6 +36,8 @@ StarManager* StarManager::instance()
 
 StarManager::StarManager()
 {
+    if( AmarokConfig::customRatingsColors() )
+        AmarokConfig::setCustomRatingsColors( false );
     m_colors[0] = AmarokConfig::starColorOne();
     m_colors[1] = AmarokConfig::starColorTwo();
     m_colors[2] = AmarokConfig::starColorThree();
