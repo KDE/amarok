@@ -24,20 +24,18 @@ class QSize;
 namespace Context
 {
 
-class ContextBox : public QGraphicsItemGroup
+class ContextBox : public QGraphicsRectItem
 {
 
     public:
         ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
         ~ContextBox() { /* delete, disconnect and disembark */ }
-        
+
         virtual void setTitle( const QString &title );
 
     protected:
-        virtual void createBox();
         virtual void setBoundingRectSize( const QSize &sz );
 
-        QGraphicsRectItem *m_boundingBox;
         QGraphicsTextItem *m_titleItem;
 };
 

@@ -21,19 +21,11 @@
 using namespace Context;
 
 ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
-    : QGraphicsItemGroup( parent, scene )
-      , m_boundingBox( 0 )
+    : QGraphicsRectItem( parent, scene )
       , m_titleItem( 0 )
 {
-    createBox();
-}
-
-
-void ContextBox::createBox()
-{
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
-    m_boundingBox = new QGraphicsRectItem( boundingRect, this, scene() );
-    addToGroup( m_boundingBox );
+    setRect( boundingRect );
 }
 
 void ContextBox::setTitle( const QString &title )
@@ -47,7 +39,6 @@ void ContextBox::setTitle( const QString &title )
         font.setPointSize( 12 );
         m_titleItem->setFont( font );
 
-        addToGroup( m_titleItem );
     }
     else
         m_titleItem->setPlainText( title );
@@ -56,6 +47,5 @@ void ContextBox::setTitle( const QString &title )
 void ContextBox::setBoundingRectSize( const QSize &sz )
 {
     QRectF newRect = QRectF( 0, 0, sz.width(), sz.height() );
-    m_boundingBox->setRect( newRect );
+    setRect( newRect );
 }
-

@@ -49,14 +49,14 @@ ContextView::ContextView()
 
 void ContextView::showHome()
 {
-    /*
-    ContextBox *welcomeBox = new ContextBox( 0, m_contextScene );
-    welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
 
-    m_contextScene->addItem( welcomeBox );
-    
-    welcomeBox->setPos( 2, 2 );
-    */
+//     ContextBox *welcomeBox = new ContextBox( 0, m_contextScene );
+//     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
+//
+//     m_contextScene->addItem( welcomeBox );
+//
+//     welcomeBox->setPos( 2, 2 );
+
     AlbumBox *album = new AlbumBox( 0, m_contextScene );
     const QString &cover = CollectionDB::instance()->albumImage( "3 Doors Down", "The Better Life", false, 50 );
     debug() << "cover: " << cover ;

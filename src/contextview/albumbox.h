@@ -54,13 +54,9 @@ namespace Context
         public:
             AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 ) { }
             ~AlbumBox() { /* delete, disconnect and disembark */ }
-        
+
             void addAlbumInfo( const QString &pixLocation, const QString &text );
             void addAlbumInfo( const QPixmap &pixmap, const QString &text );
-
-        private:
-            QGraphicsRectItem *m_boundingBox;
-            QGraphicsTextItem *m_titleItem;
     };
 
 }
