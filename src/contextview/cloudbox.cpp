@@ -29,14 +29,17 @@ using namespace Context;
 Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 : ContextBox( parent, scene )
 {
-   runningX = 0.0;
-   runningY = 0.0;
+   m_maxFontSize = 20;
+   m_minFontSize = 4;
 
-   currentLineMaxHeight = 0.0;
+   m_runningX = 0.0;
+   m_runningY = 0.0;
+
+   m_currentLineMaxHeight = 0.0;
 
     for ( int i = 0; i < 20; i++) {
 
-        int random = ( rand() % 16 ) + 5;
+        int random = ( rand() % (m_maxFontSize - m_minFontSize) ) + m_minFontSize + 1;
 
         debug() << "randum font size: " << random ;
 
@@ -57,17 +60,17 @@ void CloudBox::addText(QString text, int weight)
     QRectF itemRect = item->boundingRect();
     QRectF parentRect = boundingRect();
 
-    if (itemRect.height() > currentLineMaxHeight)
-        currentLineMaxHeight = itemRect.height();
+    if (itemRect.height() > m_currentLineMaxHeight)
+        m_currentLineMaxHeight = itemRect.height();
 
-    if ( ( itemRect.width() + runningX ) > parentRect.width() ) {
-        runningY += currentLineMaxHeight;
-        runningX = 0;
-        currentLineMaxHeight = 0;
+    if ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
+        m_runningY += m_currentLineMaxHeight;
+        m_runningX = 0;
+        m_currentLineMaxHeight = 0;
     }
 
-    item->setPos( QPointF( runningX, runningY ) );
-    runningX += itemRect.width(); 
+    item->setPos( QPointF( m_runningX, m_runningY + m_maxFontSize - weight ) );
+    m_runningX += itemRect.width(); 
 
 
 }

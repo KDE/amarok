@@ -39,9 +39,12 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
     private:
 
-        qreal runningX;
-        qreal runningY;
-        qreal currentLineMaxHeight;
+        qreal m_runningX;
+        qreal m_runningY;
+        qreal m_currentLineMaxHeight;
+
+        int m_maxFontSize;
+        int m_minFontSize;
        
 
     };
