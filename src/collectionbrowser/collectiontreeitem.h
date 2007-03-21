@@ -31,7 +31,6 @@ static bool collectionTreeItemLessThan(const CollectionTreeItem *n1, const Colle
 static bool collectionTreeItemMoreThan(const CollectionTreeItem *n1, const CollectionTreeItem *n2);
 
 class CollectionTreeItem {
-    friend class JustBecauseQSortWontSortAListOfPointersProperly;
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
 
@@ -60,6 +59,8 @@ class CollectionTreeItem {
         void setChildrenSet( bool childrenSet ) { m_childrenSet = childrenSet; } */
 
         const Meta::DataPtr data() const { return m_data; }
+
+        KUrl::List urls() const;
 
     private:
         Meta::DataPtr m_data;

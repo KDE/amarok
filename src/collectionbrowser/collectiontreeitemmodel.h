@@ -59,6 +59,7 @@ class CollectionTreeItemModel: public QAbstractItemModel {
 
 
         virtual void sort ( int column, Qt::SortOrder order = Qt::AscendingOrder );
+        virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
 

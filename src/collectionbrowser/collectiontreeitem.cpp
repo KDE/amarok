@@ -80,6 +80,17 @@ CollectionTreeItem::queryBuilder() const {
     return qb;
 }
 
+KUrl::List CollectionTreeItem::urls() const {
+    QueryBuilder qb = queryBuilder();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    QStringList values = qb.run();
+    KUrl::List list;
+    foreach( QString s, values ) {
+        list += KUrl( s );
+    }
+    return list;
+}
+
 bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
     return m_data->sortableName() < other.m_data->sortableName();

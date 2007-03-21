@@ -142,6 +142,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     newView->setModel( model );
     newView->setSortingEnabled( true );
     newView->sortByColumn( 0, Qt::AscendingOrder );
+    newView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    newView->setDragDropMode( QAbstractItemView::DragOnly );
 
     m_view->installEventFilter( this );
 

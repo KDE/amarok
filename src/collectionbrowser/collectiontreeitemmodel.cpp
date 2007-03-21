@@ -23,6 +23,7 @@
 #include "debug.h"
 
 #include <KLocale>
+#include <QMimeData>
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     :QAbstractItemModel()
@@ -112,7 +113,7 @@ CollectionTreeItemModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::ItemIsEnabled;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 QVariant
@@ -130,6 +131,27 @@ void
 CollectionTreeItemModel::sort ( int column, Qt::SortOrder order ) {
     m_rootItem->sortChildren( order );
     emit layoutChanged();
+}
+
+
+QMimeData*
+CollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const {
+    if ( indices.isEmpty() )
+        return 0;
+
+    KUrl::List urls;
+
+    foreach( QModelIndex index, indices ) {
+        if (index.isValid()) {
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
+            urls += item->urls();
+        }
+    }
+
+    QMimeData *mimeData = new QMimeData();
+    urls.populateMimeData(mimeData);
+
+    return mimeData;
 }
 
 void
