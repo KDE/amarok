@@ -15,6 +15,7 @@
 #define AMAROK_ALBUMBOX_H
 
 #include "contextbox.h"
+#include <QPixmap>
 
 class QGraphicsItem;
 class QGraphicsPixmapItem;
@@ -37,8 +38,11 @@ namespace Context
             void setCover( const QString &location );
             void setCover( const QPixmap &image );
 
+            void setText( const QString &text );
+
         private:
             QGraphicsPixmapItem *m_coverItem;
+            QGraphicsTextItem   *m_textItem;
     };
 
     /*
@@ -48,15 +52,13 @@ namespace Context
     class AlbumBox : public ContextBox
     {
         public:
-            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 ) { }
             ~AlbumBox() { /* delete, disconnect and disembark */ }
         
-            void setTitle( const QString &title );
+            void addAlbumInfo( const QString &pixLocation, const QString &text );
+            void addAlbumInfo( const QPixmap &pixmap, const QString &text );
 
         private:
-            void createBox();
-            void setBoundingRectSize( const QSize &sz );
-
             QGraphicsRectItem *m_boundingBox;
             QGraphicsTextItem *m_titleItem;
     };

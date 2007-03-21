@@ -162,6 +162,7 @@ set(libcollectionbrowser_SRCS
 set(libcontextview_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/contextview/contextview.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contextview/contextbox.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contextview/albumbox.cpp
 )
 
 

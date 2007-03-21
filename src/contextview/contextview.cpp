@@ -11,6 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "albumbox.h"
+#include "collectiondb.h"
 #include "contextbox.h"
 #include "contextview.h"
 
@@ -43,15 +45,23 @@ ContextView::ContextView()
     showHome();
 }
 
+#include "debug.h"
 
 void ContextView::showHome()
 {
+    /*
     ContextBox *welcomeBox = new ContextBox( 0, m_contextScene );
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
 
     m_contextScene->addItem( welcomeBox );
     
     welcomeBox->setPos( 2, 2 );
+    */
+    AlbumBox *album = new AlbumBox( 0, m_contextScene );
+    const QString &cover = CollectionDB::instance()->albumImage( "3 Doors Down", "The Better Life", false, 50 );
+    debug() << "cover: " << cover ;
+    album->addAlbumInfo( cover, "3 Doors Down - The Better Life" );
+    m_contextScene->addItem( album );
 }
 
 void ContextView::scaleView( qreal factor )
