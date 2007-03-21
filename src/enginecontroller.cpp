@@ -32,7 +32,6 @@
 #include <QByteArray>
 
 #include <kapplication.h>
-#include <kfileitem.h>
 #include <kio/global.h>
 #include <kio/job.h>
 #include <kmessagebox.h>
@@ -212,7 +211,6 @@ EngineController::loadEngine( const QString &engineName )
 bool EngineController::canDecode( const KUrl &url ) //static
 {
    //NOTE this function must be thread-safe
-    //TODO a KFileItem version? <- presumably so we can mimetype check
 
     const QString fileName = url.fileName();
     const QString ext = Amarok::extension( fileName );
@@ -235,8 +233,7 @@ bool EngineController::canDecode( const KUrl &url ) //static
 
     // If file has 0 bytes, ignore it and return false, not to infect the cache with corrupt files.
     // TODO also ignore files that are too small?
-    KFileItem f( KFileItem::Unknown, KFileItem::Unknown, url, false );
-    if ( !f.size() )
+    if ( !QFileInfo(url.path()).size() )
         return false;
 
     const bool valid = engine()->canDecode( url );

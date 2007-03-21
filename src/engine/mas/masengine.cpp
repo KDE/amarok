@@ -34,7 +34,6 @@ what                 : interface to the Media Application Server (MAS)
 
 #include <kapplication.h>
 #include <kconfig.h>
-#include <kfileitem.h>
 #include <kgenericfactory.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -124,11 +123,10 @@ bool MasEngine::canDecode( const KUrl &url ) const
     if (url.protocol() == "http" ) return false;
 
     // TODO determine list of supported MimeTypes/Extensions from MAS
-    list += QString("audio/x-mp3");
+    list += QString("audio/mpeg");
 
-    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
-    KMimeType::Ptr mimetype = fileItem.determineMimeType();
-    debug() << "mimetype: " << mimetype->name().toLatin1() << endl;
+    KMimeType::Ptr mimetype = KMimeType::findByUrl( url );
+    debug() << "mimetype: " << mimetype->name() << endl;
 
     playable = list.contains( mimetype->name().toLatin1() );
     if ( !playable )

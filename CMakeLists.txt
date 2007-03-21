@@ -19,7 +19,6 @@ include (ConfigureChecks.cmake)
 configure_file (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 macro_optional_find_package(Njb)
-macro_optional_find_package(Sqlite)
 macro_optional_find_package(Ifp)
 macro_optional_find_package(MySQL)
 macro_optional_find_package(PostgreSQL)

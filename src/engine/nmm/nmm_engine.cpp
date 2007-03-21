@@ -51,7 +51,6 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 
-#include <kfileitem.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmimetype.h>
@@ -609,23 +608,15 @@ uint NmmEngine::length() const
 
 bool NmmEngine::canDecode(const KUrl& url) const
 {
-    static QStringList types;
-
     if (url.protocol() == "http" ) return false;
 
-    // the following MIME types can be decoded
-    types += QString("audio/x-mp3");
-    types += QString("audio/x-wav");
-    types += QString("audio/ac3");
-    types += QString("audio/vorbis");
-    types += QString("video/mpeg");
-    types += QString("video/x-msvideo");
-    types += QString("video/x-ogm");
-
-    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
-    KMimeType::Ptr mimetype = fileItem.determineMimeType();
-
-    return types.contains(mimetype->name());
+    KMimeType::Ptr mimetype = KMimeType::findByUrl(url);
+    return (mimetype->is("audio/mpeg")
+            || mimetype->is("audio/x-wav")
+            || mimetype->is("audio/x-vorbis+ogg")
+            || mimetype->is("video/mpeg")
+            || mimetype->is("video/x-msvideo")
+            || mimetype->is("video/x-ogm+ogg");
 }
 
 

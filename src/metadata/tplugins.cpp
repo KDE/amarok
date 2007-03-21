@@ -76,17 +76,12 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
     QString fn = QFile::decodeName( fileName );
-    int accuracy = 0;
-
-    KMimeType::Ptr mimetype = KMimeType::findByFileContent( fn, &accuracy );
-    if( accuracy <= 0 )
-        mimetype = KMimeType::findByPath( fn );
+    KMimeType::Ptr mimetype = KMimeType::findByPath( fn );
 
     if( mimetype->is( "audio/aac" )
             || mimetype->is( "audio/mpeg" )
-            || mimetype->is( "audio/mpegurl" )
             || mimetype->is( "audio/x-mpegurl" )
-            || mimetype->is( "audio/x-mp3" ))
+            || mimetype->is( "audio/mpeg" ))
     {
         return new TagLib::MPEG::File(fileName, readProperties, propertiesStyle);
     }
@@ -102,17 +97,16 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
         return new TagLib::WMA::File(fileName, readProperties, propertiesStyle);
     }
     else if( mimetype->is( "audio/vnd.rn-realaudio" )
-            || mimetype->is( "audio/x-pn-realaudio" )
             || mimetype->is( "audio/x-pn-realaudioplugin" )
             || mimetype->is( "audio/vnd.rn-realvideo" ) )
     {
         return new TagLib::RealMedia::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype->is( "audio/vorbis" ) )
+    else if( mimetype->is( "audio/x-vorbis+ogg" ) )
     {
         return new TagLib::Ogg::Vorbis::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype->is( "audio/x-oggflac" ) )
+    else if( mimetype->is( "audio/x-flac+ogg" ) )
     {
         return new TagLib::Ogg::FLAC::File(fileName, readProperties, propertiesStyle);
     }
