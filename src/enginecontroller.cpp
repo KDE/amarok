@@ -456,14 +456,12 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         //* For repeat album, the number of songs tried is the number of tracks from the
         //  album that are in the playlist.
         //* For repeat track, no attempts are made
-        //* For the nmm engine, no attempts are made (necessary? / FIXME)
         //* To prevent GUI freezes we don't try to play again after 0.5s of failure
         int totalTracks = Playlist::instance()->totalTrackCount();
         int currentTrack = Playlist::instance()->currentTrackIndex();
         if ( ( ( Amarok::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
             || ( Amarok::repeatNone() && currentTrack != totalTracks - 1 )
             || ( Amarok::repeatAlbum() && m_playFailureCount < Playlist::instance()->repeatAlbumTrackCount() ) )
-            && AmarokConfig::soundSystem() != "nmm-engine"
             && failure_time.elapsed() < 500 )
         {
 

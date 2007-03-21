@@ -524,7 +524,7 @@ QWidget *SliderAction::createWidget( QWidget *w )
     box->setSpacing( 3 );
 
     m_slider = new Amarok::PrettySlider(
-            Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox, 1000 );
+            Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox, 50 );
 
     // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
