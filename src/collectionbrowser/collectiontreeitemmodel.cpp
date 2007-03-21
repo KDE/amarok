@@ -126,14 +126,6 @@ CollectionTreeItemModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-
-void
-CollectionTreeItemModel::sort ( int column, Qt::SortOrder order ) {
-    m_rootItem->sortChildren( order );
-    emit layoutChanged();
-}
-
-
 QMimeData*
 CollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const {
     if ( indices.isEmpty() )

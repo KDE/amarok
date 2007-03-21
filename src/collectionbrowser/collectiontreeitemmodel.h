@@ -57,8 +57,6 @@ class CollectionTreeItemModel: public QAbstractItemModel {
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-
-        virtual void sort ( int column, Qt::SortOrder order = Qt::AscendingOrder );
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;

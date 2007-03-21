@@ -74,6 +74,7 @@
 #include <QToolButton>
 #include <QToolTip>       //QToolTip::add()
 #include <QVBoxLayout>
+#include <QSortFilterProxyModel>
 
 
  //ctor
@@ -138,8 +139,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
     QList<int> cats;
     cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
     CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
+
+    QSortFilterProxyModel *filterModel = new QSortFilterProxyModel( this );
+    filterModel->setSourceModel( model );
+
     CollectionBrowserView *newView = new CollectionBrowserView( this );
-    newView->setModel( model );
+    newView->setModel( filterModel );
     newView->setSortingEnabled( true );
     newView->sortByColumn( 0, Qt::AscendingOrder );
     newView->setSelectionMode(QAbstractItemView::ExtendedSelection);

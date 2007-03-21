@@ -95,16 +95,3 @@ bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
     return m_data->sortableName() < other.m_data->sortableName();
 }
-
-void
-CollectionTreeItem::sortChildren( Qt::SortOrder order ) {
-    if ( order == Qt::AscendingOrder )
-        qSort( m_childItems.begin(), m_childItems.end(), collectionTreeItemLessThan );
-    else
-        qSort( m_childItems.begin(), m_childItems.end(), collectionTreeItemMoreThan );
-    foreach( CollectionTreeItem *item, m_childItems ) {
-        item->sortChildren( order );
-    }
-}
-
-
