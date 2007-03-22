@@ -221,6 +221,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    deviceconfiguredialog.cpp
    devicemanager.cpp
    directorylist.cpp
+   dockwidget.cpp
    dynamicmode.cpp
    editfilterdialog.cpp
    enginebase.cpp

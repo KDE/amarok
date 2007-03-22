@@ -24,6 +24,7 @@
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "contextview/contextview.h"
+#include "dockwidget.h"
 #include "debug.h"
 #include "mediadevicemanager.h"
 #include "editfilterdialog.h"
@@ -239,9 +240,15 @@ void PlaylistWindow::init()
 
     createMenus();
 
-    KVBox *centralWidget = new KVBox( this );
-    QSplitter *plSplitter = new QSplitter( centralWidget );
-    plSplitter->addWidget( m_browsers );
+//     KVBox *centralWidget = new KVBox( this );
+//     QSplitter *plSplitter = new QSplitter( centralWidget );
+//     plSplitter->addWidget( m_browsers );
+
+    setDockNestingEnabled( true );
+    DockWidget *browsersDWidget = new DockWidget();
+    browsersDWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    browsersDWidget->setWidget( m_browsers );
+    addDockWidget( Qt::LeftDockWidgetArea, browsersDWidget );
 
     cb = new ContextBrowser( "contextBrowser" );
     ContextView *cv = ContextView::instance();
@@ -251,10 +258,13 @@ void PlaylistWindow::init()
     contextSplitter->addWidget( cb );
     contextSplitter->addWidget( cv );
 
-    plSplitter->addWidget( contextWidget );
+//     plSplitter->addWidget( contextWidget );
 
-    plSplitter->addWidget( playlistwindow );
-    setCentralWidget( centralWidget );
+//     plSplitter->addWidget( playlistwindow );
+    DockWidget *plDWidget = new DockWidget();
+    plDWidget->setWidget( playlistwindow );
+    addDockWidget( Qt::RightDockWidgetArea, plDWidget );
+    setCentralWidget( contextWidget );
 //     setStatusBar( statusbar );
 
     addToolBar( Qt::TopToolBarArea, m_toolbar );
