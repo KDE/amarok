@@ -34,6 +34,7 @@
 
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "collectionbrowser/collectionbrowserview.h"
+#include "collectionbrowser/collectiontreeitem.h" //just for the custom roles
 
 
 
@@ -141,6 +142,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
 
     QSortFilterProxyModel *filterModel = new QSortFilterProxyModel( this );
+    filterModel->setSortRole( CustomRoles::SortRole );
+    filterModel->setFilterRole( CustomRoles::FilterRole );
+    filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     filterModel->setSourceModel( model );
 
     CollectionBrowserView *newView = new CollectionBrowserView( this );

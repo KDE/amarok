@@ -25,6 +25,14 @@
 
 #include <QList>
 
+namespace CustomRoles
+{
+    enum CustomRolesId {
+    SortRole = Qt::UserRole + 1,
+    FilterRole = Qt::UserRole + 2
+    };
+}
+
 class CollectionTreeItem {
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
@@ -40,7 +48,7 @@ class CollectionTreeItem {
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
 
-        QVariant data(int column) const;
+        QVariant data(int role) const;
 
         int row() const;
 

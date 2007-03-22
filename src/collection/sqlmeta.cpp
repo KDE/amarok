@@ -294,6 +294,23 @@ SqlArtist::tracks()
     }
 }
 
+
+QString
+SqlArtist::sortableName() const
+{
+    if ( m_modifiedName.isEmpty() && !m_name.isEmpty() ) {
+        if ( m_name.startsWith( "the ", Qt::CaseInsensitive ) ) {
+            QString begin = m_name.left( 3 );
+            m_modifiedName = QString( "%1, %2" ).arg( m_name, begin );
+            m_modifiedName = m_modifiedName.mid( 4 );
+        }
+        else {
+            m_modifiedName = m_name;
+        }
+    }
+    return m_modifiedName;
+}
+
 void
 SqlArtist::addToQueryFilter( QueryBuilder &qb ) const {
     qb.addMatch( QueryBuilder::tabArtist, m_name, false, true );

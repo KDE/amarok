@@ -44,15 +44,19 @@ CollectionTreeItem::appendChild(CollectionTreeItem *child) {
 }
 
 QVariant
-CollectionTreeItem::data(int column) const {
-    if ( column == 0 && m_data ) {
-        QString name = m_data->prettyName();
-        if ( name.isEmpty() )
-            return i18n( "Unknown" );
-        return name;
+CollectionTreeItem::data( int role ) const {
+
+    if ( m_data ) {
+        if ( role == Qt::DisplayRole ) {
+            QString name = m_data->prettyName();
+            if ( name.isEmpty() )
+                return i18n( "Unknown" );
+            return name;
+        }
+        else if ( role == CustomRoles::SortRole )
+        return m_data->sortableName();
     }
-    else
-        return QVariant();
+    return QVariant();
 }
 
 int

@@ -99,12 +99,9 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
      if (!index.isValid())
          return QVariant();
 
-     if (role != Qt::DisplayRole)
-         return QVariant();
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
 
-     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
-
-     return item->data(index.column());
+    return item->data( role );
 }
 
 Qt::ItemFlags

@@ -39,8 +39,6 @@ namespace CategoryId
     };
 }
 
-
-
 class CollectionTreeItemModel: public QAbstractItemModel {
 
     public:

@@ -126,6 +126,8 @@ class SqlArtist : public Artist, public SqlSearchable
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
+        virtual QString sortableName() const;
+
 
         virtual void invalidateCache();
 
@@ -135,6 +137,7 @@ class SqlArtist : public Artist, public SqlSearchable
         static void addToQueryResult( QueryBuilder &qb );
     private:
         QString m_name;
+        mutable QString m_modifiedName;
         bool m_tracksLoaded;
         TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
