@@ -52,7 +52,7 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
 
-    setDefaultTextColor( QColor( 0, 0, 0 ) );
+    //setDefaultTextColor( QColor( 0, 0, 0 ) );
 
 
 
