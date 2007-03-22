@@ -14,8 +14,9 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Made the settings dialog less tall. (BR 141250)
     * lyrc script did not work behind proxy due to a stray quote mark. Gentoo
-    Bug 166050
+      Bug 166050
     * Fix compilation on kde-3.3 systems
     * amarok_live.py now uses popen correctly. Patch by Luke Macken
       <lmacken@fedoraproject.org>. (BR 127804)
