@@ -26,6 +26,56 @@
 
 using namespace Context;
 
+
+CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScene * scene)
+: QGraphicsTextItem ( text, parent, scene )
+{
+
+    setAcceptsHoverEvents( true );
+
+    m_timeLine = new QTimeLine( 1000, this );
+    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( colorFadeSlot( int ) ) );
+
+}
+
+void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+{
+    
+    // debug() << "hoverEnterEvent! " << endl;
+    //font().setUnderline( true );
+    
+    setDefaultTextColor( QColor( 255, 255, 255 ) );
+
+
+}
+
+void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+{
+
+    setDefaultTextColor( QColor( 0, 0, 0 ) );
+
+
+
+     // Construct a 1-second timeline with a frame range of 0 - 100
+     m_timeLine->setFrameRange(0, 100);
+     m_timeLine->start();
+
+}
+
+void CloudTextItem::colorFadeSlot( int step ) {
+
+    int colorValue = 255 - step * 2.55;
+    if ( step == 100 ) colorValue = 0;
+
+     setDefaultTextColor( QColor( colorValue, colorValue, colorValue ) );
+     update();
+}
+
+
+
+
+
+
 Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 : ContextBox( parent, scene )
 {
@@ -53,8 +103,11 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
 void CloudBox::addText(QString text, int weight)
 {
-    QGraphicsTextItem * item = new QGraphicsTextItem ( text, this, scene() );
-    QFont font("Helvetica", weight, QFont::Bold);
+    CloudTextItem * item = new CloudTextItem ( text, this, scene() );
+
+    QFont font = item->font();
+
+    font.setPointSize( weight );
     item->setFont( font );
     
     QRectF itemRect = item->boundingRect();
@@ -74,6 +127,10 @@ void CloudBox::addText(QString text, int weight)
 
 
 }
+
+#include "cloudbox.moc"
+
+
 
 
 

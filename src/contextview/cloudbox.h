@@ -22,8 +22,40 @@
 
 #include "contextbox.h"
 
+#include <QTimeLine>
+
 namespace Context
 {
+
+
+
+/**
+A simple text item to go in a coud box
+
+	@author 
+*/
+    class CloudTextItem : public QGraphicsTextItem
+    {
+
+    Q_OBJECT
+    public:
+        CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+
+    protected:
+        void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
+        void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+
+    public slots:
+        void colorFadeSlot( int step );
+
+    private:
+        QTimeLine * m_timeLine;
+
+    };
+
+
+
+
 /**
 A simple ContextBox that provides a cloud like view of a group of weighted items. Just for fun at this point! :-)
 
