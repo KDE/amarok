@@ -263,6 +263,7 @@ void PlaylistWindow::init()
 //     plSplitter->addWidget( playlistwindow );
     DockWidget *plDWidget = new DockWidget();
     plDWidget->setWidget( playlistwindow );
+    plDWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     addDockWidget( Qt::RightDockWidgetArea, plDWidget );
     setCentralWidget( contextWidget );
 //     setStatusBar( statusbar );
