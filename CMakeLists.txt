@@ -41,6 +41,9 @@ macro_bool_to_01(IFP_FOUND HAVE_IFP)
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 macro_bool_to_01(MTP_FOUND HAVE_MTP)
 
+check_type_size("int" SIZEOF_INT)
+check_type_size("long" SIZEOF_LONG)
+
 configure_file (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 add_subdirectory( src )

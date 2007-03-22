@@ -22,23 +22,11 @@
 /* have libnjb */
 #cmakedefine HAVE_LIBNJB 1
 
-/* The size of a `char *', as computed by sizeof. */
-#define SIZEOF_CHAR_P 4
-
 /* The size of a `int', as computed by sizeof. */
-#define SIZEOF_INT 4
+#define SIZEOF_INT ${SIZEOF_INT}
 
 /* The size of a `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
-
-/* The size of a `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
-
-/* The size of a `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
-
-/* The size of a `unsigned long', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_LONG 4
+#define SIZEOF_LONG ${SIZEOF_LONG}
 
 /* have LIBVISUAL */
 #cmakedefine HAVE_LIBVISUAL 1
