@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>425</width>
-            <height>686</height>
+            <height>540</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -650,6 +650,8 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>

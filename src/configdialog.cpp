@@ -206,6 +206,11 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_opt7->dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt1->kComboBox_browser, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt1->kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), SLOT( updateButtons() ) );
+
+    //HACK The dialog always comes up too tall.. is there a proper fix?
+    QSize size = minimumSizeHint();
+    size.setHeight( size.height() - 70 );
+    resize( size );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
