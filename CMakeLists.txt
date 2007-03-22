@@ -36,10 +36,7 @@ macro_optional_find_package(Mtp)
 macro_optional_find_package(GObject)
 macro_optional_find_package(GStreamer)
 
-macro_bool_to_01(NJB_FOUND HAVE_LIBNJB)
-macro_bool_to_01(IFP_FOUND HAVE_IFP)
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
-macro_bool_to_01(MTP_FOUND HAVE_MTP)
 
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)

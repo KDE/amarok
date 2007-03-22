@@ -3,25 +3,6 @@
 /* have HELIX */
 /* #undef HAVE_HELIX */
 
-/* have ifp */
-#cmakedefine HAVE_IFP 1
-
-/* Define to 1 if you have the `itdb_get_mountpoint' function. */
-/* #undef HAVE_ITDB_GET_MOUNTPOINT */
-
-/* have libgpod movie flag */
-/* #undef HAVE_ITDB_MOVIE_FLAG */
-
-/* Define to 1 if you have the `itdb_track_set_thumbnails' function. */
-#define HAVE_ITDB_TRACK_SET_THUMBNAILS 1
-
-/* have libgpod */
-#define HAVE_LIBGPOD 1
-
-/* Define if you have libjpeg */
-/* have libnjb */
-#cmakedefine HAVE_LIBNJB 1
-
 /* The size of a `int', as computed by sizeof. */
 #define SIZEOF_INT ${SIZEOF_INT}
 
@@ -31,9 +12,6 @@
 /* have LIBVISUAL */
 #cmakedefine HAVE_LIBVISUAL 1
 
-/* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
-
 /* have mp4v2 */
 /* #undef HAVE_MP4V2 */
 
@@ -42,9 +20,6 @@
 
 /* have NMM */
 /* #undef HAVE_NMM */
-
-/* Define if your system needs _NSGetEnviron to set up the environment */
-/* #undef HAVE_NSGETENVIRON */
 
 /* have Qt with OpenGL support */
 /* #undef HAVE_QGLWIDGET */
