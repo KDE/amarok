@@ -41,8 +41,7 @@ CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScen
 void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
     
-    // debug() << "hoverEnterEvent! " << endl;
-    //font().setUnderline( true );
+    m_timeLine->stop();
     
     setDefaultTextColor( QColor( 255, 255, 255 ) );
 
@@ -57,14 +56,14 @@ void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
 
      // Construct a 1-second timeline with a frame range of 0 - 100
-     m_timeLine->setFrameRange(0, 100);
+     m_timeLine->setFrameRange(0, 30);
      m_timeLine->start();
 
 }
 
 void CloudTextItem::colorFadeSlot( int step ) {
 
-    int colorValue = 255 - step * 2.55;
+    int colorValue = 255 - step * 8.5;
     if ( step == 100 ) colorValue = 0;
 
      setDefaultTextColor( QColor( colorValue, colorValue, colorValue ) );
