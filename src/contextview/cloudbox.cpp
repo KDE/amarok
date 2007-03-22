@@ -86,7 +86,7 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
    m_currentLineMaxHeight = 0.0;
 
-    for ( int i = 0; i < 20; i++) {
+    for ( int i = 0; i < 50; i++) {
 
         int random = ( rand() % (m_maxFontSize - m_minFontSize) ) + m_minFontSize + 1;
 
@@ -120,6 +120,17 @@ void CloudBox::addText(QString text, int weight)
         m_runningX = 0;
         m_currentLineMaxHeight = 0;
     }
+
+    // check if item will fit inside cloud at all... if not, just skip it
+    // (Does anyone have a better idea how to handle this? )
+
+     if ( ( ( itemRect.width() + m_runningX ) > parentRect.width() ) 
+     || ( ( itemRect.height() + m_runningY + m_maxFontSize - weight ) > parentRect.height() ) ) 
+     {
+        
+         delete item;
+         return;
+     }
 
     item->setPos( QPointF( m_runningX, m_runningY + m_maxFontSize - weight ) );
     m_runningX += itemRect.width(); 
