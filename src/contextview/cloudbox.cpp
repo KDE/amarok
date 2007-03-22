@@ -41,7 +41,7 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
         int random = ( rand() % (m_maxFontSize - m_minFontSize) ) + m_minFontSize + 1;
 
-        debug() << "randum font size: " << random ;
+        debug() << "randum font size: " << random << endl;
 
         addText( "Amarok", random);
 
