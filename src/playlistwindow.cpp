@@ -38,6 +38,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
+#include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "statistics.h"
@@ -186,19 +187,13 @@ void PlaylistWindow::init()
             playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
             playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
         }
-        KToolBar *progress = new Amarok::PrettyToolBar( this, "progressToolBar" );
-        progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        progress->setContentsMargins( 0, 0, 0, 0 );
-        progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        progress->setMovable( false );
-        progress->addAction( actionCollection()->action( "progress_bar") );
         m_controlBar->setLayout( gl );
         gl->addWidget( playerControlsToolbar, 0, 0 );
         gl->addWidget( new VolumeWidget( m_controlBar ), 0, 1 );
         gl->addWidget( new AnalyzerWidget( m_controlBar ), 0, 2);
         m_searchWidget = new SearchWidget( m_controlBar, this );
         gl->addWidget( m_searchWidget, 0, 3 );
-        gl->addWidget( progress, 1, 0, 1, 4 );
+        gl->addWidget( new TimeSlider( m_controlBar ), 1, 0, 1, 4 );
 
     }
 
@@ -1213,8 +1208,6 @@ void PlaylistWindow::createActions()
     new Amarok::RepeatAction( ac );
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );
-    new Amarok::SliderAction( ac );
-
 
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );

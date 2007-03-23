@@ -262,6 +262,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    pluginmanager.cpp
    podcastsettings.cpp
    prettypopupmenu.cpp
+   progressslider.cpp
    querybuilder.cpp
    queuemanager.cpp
    refreshimages.cpp
