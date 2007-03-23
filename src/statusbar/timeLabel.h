@@ -21,6 +21,7 @@
 #define AMAROK_TIMELABEL_H
 
 #include "actionclasses.h"
+#include "progressslider.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>
@@ -54,7 +55,7 @@ public:
             AmarokConfig::setLeftTimeDisplayEnabled( true );
         }
 
-        Amarok::SliderAction::instance()->drawTimeDisplay( EngineController::engine()->position() );
+        TimeSlider::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
 
