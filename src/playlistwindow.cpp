@@ -25,7 +25,6 @@
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "contextview/contextview.h"
-#include "dockwidget.h"
 #include "debug.h"
 #include "mediadevicemanager.h"
 #include "editfilterdialog.h"
@@ -226,12 +225,6 @@ void PlaylistWindow::init()
 
     createMenus();
 
-    setDockNestingEnabled( true );
-    DockWidget *browsersDWidget = new DockWidget();
-    browsersDWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    browsersDWidget->setWidget( m_browsers );
-    addDockWidget( Qt::LeftDockWidgetArea, browsersDWidget );
-
     cb = new ContextBrowser( "contextBrowser" );
     ContextView *cv = ContextView::instance();
 
@@ -240,15 +233,15 @@ void PlaylistWindow::init()
     contextSplitter->addWidget( cb );
     contextSplitter->addWidget( cv );
 
-    DockWidget *plDWidget = new DockWidget();
-    plDWidget->setWidget( playlistwindow );
-    plDWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    addDockWidget( Qt::RightDockWidgetArea, plDWidget );
-    setCentralWidget( contextWidget );
+    KHBox *centralWidget = new KHBox( this );
+    QSplitter *verticalSplitter = new QSplitter( Qt::Vertical, centralWidget );
+    verticalSplitter->addWidget( m_controlBar );
+    QSplitter *horizontalSplitter = new QSplitter( Qt::Horizontal, verticalSplitter );
+    horizontalSplitter->addWidget( m_browsers );
+    horizontalSplitter->addWidget( contextWidget );
+    horizontalSplitter->addWidget( playlistwindow );
 
-    DockWidget *controlBarDWidget = new DockWidget();
-    controlBarDWidget->setWidget( m_controlBar );
-    addDockWidget( Qt::TopDockWidgetArea, controlBarDWidget );
+    setCentralWidget( centralWidget );
 
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents

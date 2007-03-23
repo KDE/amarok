@@ -22,7 +22,7 @@ SearchWidget::SearchWidget( QWidget *parent, QWidget *caller )
       m_sw( 0 )
 {
     m_caller = caller;
-    KHBox *searchBox = new KHBox( parent );
+    KHBox *searchBox = new KHBox( this );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
     m_sw = new KLineEdit( searchBox );

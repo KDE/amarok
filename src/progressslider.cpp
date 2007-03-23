@@ -28,7 +28,7 @@ TimeSlider::TimeSlider( QWidget *parent )
 {
     s_instance = this;
 
-    m_positionBox = new QWidget( parent );
+    m_positionBox = new QWidget( this );
     m_positionBox->setObjectName( "positionBox" );
     QHBoxLayout *box = new QHBoxLayout( m_positionBox );
     m_positionBox->setLayout( box );
