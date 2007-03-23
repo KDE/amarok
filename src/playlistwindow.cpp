@@ -19,6 +19,7 @@
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "analyzerwidget.h"
 #include "sidebar.h"
 #include "sidebar.moc"
 #include "collectionbrowser.h"
@@ -38,6 +39,7 @@
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
+#include "searchwidget.h"
 #include "statistics.h"
 #include "statusbar.h"
 #include "threadmanager.h"
@@ -45,6 +47,7 @@
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "toolbar.h"
+#include "volumewidget.h"
 
 #include <QEvent>           //eventFilter()
 #include <QFont>
@@ -147,7 +150,7 @@ void PlaylistWindow::init()
     plBar->setObjectName( "PlaylistToolBar" );
 
 
-    m_toolbar = new Amarok::PrettyToolBar( this, "mainToolBar" );
+//     m_toolbar = new Amarok::PrettyToolBar( this, "mainToolBar" );
 
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -167,31 +170,39 @@ void PlaylistWindow::init()
     //END Playlist Toolbar
     }
 
-    { //START Main toolbar
-        m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        m_toolbar->setIconDimensions( 32 );
-        m_toolbar->setMovable( false );
+    m_controlBar = new QWidget();
+    m_controlBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    {//START Main toolbar
+        QGridLayout *gl = new QGridLayout( m_controlBar );
+        Amarok::ToolBar *playerControlsToolbar = new Amarok::ToolBar( m_controlBar );
+        {
+            playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+            playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+            playerControlsToolbar->setIconDimensions( 32 );
+            playerControlsToolbar->setMovable( false );
 
-        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
-        m_toolbar->addAction( actionCollection()->action( "prev" ) );
-        m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
-        m_toolbar->addAction( actionCollection()->action( "stop" ) );
-        m_toolbar->addAction( actionCollection()->action( "next" ) );
+            playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
+            playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
+            playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
+            playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
+        }
+        KToolBar *progress = new Amarok::PrettyToolBar( this, "progressToolBar" );
+        progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        progress->setContentsMargins( 0, 0, 0, 0 );
+        progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        progress->setMovable( false );
+        progress->addAction( actionCollection()->action( "progress_bar") );
+        m_controlBar->setLayout( gl );
+        gl->addWidget( playerControlsToolbar, 0, 0 );
+        gl->addWidget( new VolumeWidget( m_controlBar ), 0, 1 );
+        gl->addWidget( new AnalyzerWidget( m_controlBar ), 0, 2);
+        m_searchWidget = new SearchWidget( m_controlBar, this );
+        gl->addWidget( m_searchWidget, 0, 3 );
+        gl->addWidget( progress, 1, 0, 1, 3 );
 
-        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
-        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
-
-        m_toolbar->addAction( new KToolBarSpacerAction(this ) );
-        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
-
-        m_toolbar->addAction( new KToolBarSpacerAction( this ) );
-        m_toolbar->addAction( actionCollection()->action( "search_bar" ) );
     }
+
     QPalette p;
-//     QColor startColor( 166, 188, 210, 200 ); //r,g,b,a
-//     QColor middleColor( 103, 141, 178, 175 );
-//     QColor nextToLastColor( 0, 0, 150, 100 );
     QColor startColor = palette().highlight();
     startColor.setAlpha( 200 );
     QColor endColor = palette().base();
@@ -204,45 +215,21 @@ void PlaylistWindow::init()
                             startColor.green() * .8,
                             startColor.blue() * .8,
                             100 /*alpha*/ );
-    QLinearGradient toolbarGradiant( m_toolbar->contentsRect().topLeft(), m_toolbar->contentsRect().bottomLeft() );
+    QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(), m_controlBar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .5, middleColor );
     toolbarGradiant.setColorAt( 1, nextToLastColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
 
-
-    KToolBar *progress = new Amarok::PrettyToolBar( this, "progressToolBar" );
-    QPalette p2;
-//     QColor endColor/*( 0, 0, 132, 0 )*/; //r,g,b,a
-    QLinearGradient progressGradiant( progress->contentsRect().topLeft(), progress->contentsRect().bottomLeft() );
-    progressGradiant.setColorAt(0, nextToLastColor );
-    progressGradiant.setColorAt(1, endColor );
-    QBrush b2( progressGradiant );
-    p2.setBrush( QPalette::Window, b2 );
-    progress->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    progress->setContentsMargins( 0, 0, 0, 0 );
-    progress->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    progress->setMovable( false );
-    progress->setAutoFillBackground( true );
-    progress->setPalette( p2 );
-    progress->addAction( actionCollection()->action( "progress_bar") );
-
     dynamicBar->init();
     this->toolBars().clear();
 
-#ifndef Q_WS_MAC
-        m_toolbar->setShown( AmarokConfig::showToolbar() );
-#endif
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     createMenus();
-
-//     KVBox *centralWidget = new KVBox( this );
-//     QSplitter *plSplitter = new QSplitter( centralWidget );
-//     plSplitter->addWidget( m_browsers );
 
     setDockNestingEnabled( true );
     DockWidget *browsersDWidget = new DockWidget();
@@ -258,27 +245,21 @@ void PlaylistWindow::init()
     contextSplitter->addWidget( cb );
     contextSplitter->addWidget( cv );
 
-//     plSplitter->addWidget( contextWidget );
-
-//     plSplitter->addWidget( playlistwindow );
     DockWidget *plDWidget = new DockWidget();
     plDWidget->setWidget( playlistwindow );
     plDWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     addDockWidget( Qt::RightDockWidgetArea, plDWidget );
     setCentralWidget( contextWidget );
-//     setStatusBar( statusbar );
 
-    addToolBar( Qt::TopToolBarArea, m_toolbar );
-    addToolBarBreak();
-    addToolBar( Qt::TopToolBarArea, progress );
+    DockWidget *controlBarDWidget = new DockWidget();
+    controlBarDWidget->setWidget( m_controlBar );
+    addDockWidget( Qt::TopDockWidgetArea, controlBarDWidget );
 
-    m_toolbar->setFocusPolicy( Qt::WheelFocus );
-    m_toolbar->setMovable( false );
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
 
-    m_toolbar->setAutoFillBackground( true );
-    m_toolbar->setPalette( p );
+    m_controlBar->setAutoFillBackground( true );
+    m_controlBar->setPalette( p );
 
     //<XMLGUI>
     {
@@ -379,7 +360,7 @@ void PlaylistWindow::slotEditFilter() //SLOT
     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchAction->searchWidget()->setText( fd->filter() );
+        m_searchWidget->searchWidget()->setText( fd->filter() );
     delete fd;
 }
 
@@ -432,6 +413,7 @@ void PlaylistWindow::recreateGUI()
 /**
  * Create the amarok gui from the xml file.
  */
+#if 0
 void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );
@@ -498,7 +480,7 @@ void PlaylistWindow::createGUI()
 //    conserveMemory();
     setUpdatesEnabled( true );
 }
-
+#endif
 
 /**
  * Apply the loaded settings on the playlist window.
@@ -560,7 +542,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         }
 
 
-        if( o == m_searchAction->searchWidget() ) //the search lineedit
+        if( o == m_searchWidget->searchWidget() ) //the search lineedit
         {
             Q3ListViewItem *item;
             switch( e->key() )
@@ -620,7 +602,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                m_searchAction->searchWidget()->clear();
+                m_searchWidget->searchWidget()->clear();
                 return true;
 
             default:
@@ -661,8 +643,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             }
             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
-                m_searchAction->searchWidget();
-                QApplication::sendEvent( m_searchAction->searchWidget(), e );
+                m_searchWidget->searchWidget();
+                QApplication::sendEvent( m_searchWidget->searchWidget(), e );
                 return true;
             }
         }
@@ -921,7 +903,7 @@ void PlaylistWindow::showStatistics() //SLOT
 
 void PlaylistWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchAction->searchWidget()->hasFocus() ) )
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchWidget->searchWidget()->hasFocus() ) )
         m_browsers->currentWidget()->setFocus();
 }
 
@@ -948,10 +930,10 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         Amarok::Menu::instance()->slotActivated( index );
         break;
     case ID_SHOW_TOOLBAR:
-        m_toolbar->setShown( !m_toolbar->isShown() );
+        m_controlBar->setShown( !m_controlBar->isShown() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
-        m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_controlBar->isShown() );
+        m_settingsMenu->changeItem( index, m_controlBar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case Amarok::Menu::ID_RESCAN_COLLECTION:
         CollectionDB::instance()->startScan();
@@ -1228,12 +1210,9 @@ void PlaylistWindow::createActions()
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
     new Amarok::PlayPauseAction( ac );
-    new Amarok::AnalyzerAction( ac );
     new Amarok::RepeatAction( ac );
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );
-    new Amarok::VolumeAction( ac );
-    m_searchAction = new Amarok::SearchAction( ac, this );
     new Amarok::SliderAction( ac );
 
 

@@ -41,11 +41,7 @@ class KToolBar;
 class QLabel;
 class QTimer;
 class KLineEdit;
-
-namespace Amarok
-{
-    class SearchAction;
-}
+class SearchWidget;
 
 // namespace Phonon {
 //     class VideoWidget;
@@ -134,8 +130,9 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, pub
         QStringList    m_browserNames;
         KMenu         *m_searchMenu;
 
-        Amarok::SearchAction    *m_searchAction;
-        KToolBar      *m_toolbar;
+        SearchWidget    *m_searchWidget;
+//         KToolBar      *m_toolbar;
+        QWidget         *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;

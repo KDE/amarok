@@ -35,6 +35,7 @@
 #include "podcastbundle.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
+#include "searchwidget.h"
 #include "statusbar.h"
 #include "transferdialog.h"
 #include "browserToolBar.h"
@@ -304,8 +305,8 @@ MediaBrowser::MediaBrowser( const char *name )
     // searching/filtering
     QToolBar* searchToolBar = new Browser::ToolBar( this );
     searchToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    m_searchAction = new Amarok::SearchAction( Amarok::actionCollection(), this );
-    searchToolBar->addAction( m_searchAction );
+    m_searchWidget = new SearchWidget( searchToolBar, this );
+    searchToolBar->addWidget( m_searchWidget );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 //     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
 //     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
@@ -754,23 +755,23 @@ MediaBrowser::slotSetFilter() //SLOT
     m_timer->stop();
 
     if( currentDevice() )
-        currentDevice()->view()->setFilter( m_searchAction->searchWidget()->text() );
+        currentDevice()->view()->setFilter( m_searchWidget->searchWidget()->text() );
 }
 
 void
 MediaBrowser::slotSetFilter( const QString &text )
 {
-    m_searchAction->searchWidget()->setText( text );
+    m_searchWidget->searchWidget()->setText( text );
     slotSetFilter();
 }
 
 void
 MediaBrowser::slotEditFilter()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchAction->searchWidget()->text() );
+    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchWidget->searchWidget()->text() );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchAction->searchWidget()->setText( fd->filter() );
+        m_searchWidget->searchWidget()->setText( fd->filter() );
     delete fd;
 }
 

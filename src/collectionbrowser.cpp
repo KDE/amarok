@@ -26,6 +26,7 @@
 #include "organizecollectiondialog.h"
 #include "playlist.h"       //insertMedia()
 #include "playlistbrowser.h"
+#include "searchwidget.h"
 #include "sidebar.h"
 #include "statusbar.h"
 #include "tagdialog.h"
@@ -106,8 +107,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     QToolBar    *searchToolBar = new Browser::ToolBar( this );
     searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    m_searchAction = new Amarok::SearchAction( Amarok::actionCollection(), this );
-    searchToolBar->addAction( m_searchAction );
+    m_searchWidget = new SearchWidget( searchToolBar, this );
+    searchToolBar->addWidget( m_searchWidget );
 
     // We put a little toolbar for the forward/back buttons for iPod
     // navigation to the right of m_timeFilter.  This toolbar is
@@ -308,7 +309,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 {
     m_timer->stop();
     m_view->m_dirty = true;
-    m_view->setFilter( m_searchAction->searchWidget()->text() );
+    m_view->setFilter( m_searchWidget->searchWidget()->text() );
     m_view->setTimeFilter( m_timeFilter->currentIndex() );
     m_view->renderView();
     if ( m_returnPressed )
@@ -319,7 +320,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 void
 CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 {
-    m_searchAction->searchWidget()->setText( filter );
+    m_searchWidget->searchWidget()->setText( filter );
     kapp->processEvents();  //Let the search bar redraw fully.
     QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
     QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
@@ -328,10 +329,10 @@ CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 void
 CollectionBrowser::slotEditFilter() //SLOT
 {
-    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchAction->searchWidget()->text() );
+    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchWidget->searchWidget()->text() );
     connect( cod, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( cod->exec() )
-        m_searchAction->searchWidget()->setText( cod->filter() );
+        m_searchWidget->searchWidget()->setText( cod->filter() );
     delete cod;
 }
 
@@ -351,7 +352,7 @@ void
 CollectionBrowser::appendSearchResults()
 {
     //If we are not filtering, or the search string has changed recently, do nothing
-    if ( m_searchAction->searchWidget()->text().trimmed().isEmpty() || m_timer->isActive() )
+    if ( m_searchWidget->searchWidget()->text().trimmed().isEmpty() || m_timer->isActive() )
         return;
     m_view->selectAll();
     Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
@@ -370,7 +371,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         #define e static_cast<QKeyEvent*>(e)
 
-        if( o == m_searchAction->searchWidget() ) //the search lineedit
+        if( o == m_searchWidget->searchWidget() ) //the search lineedit
         {
             switch( e->key() )
             {
@@ -413,8 +414,8 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         if( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape )
         {
-            m_searchAction->searchWidget()->setFocus();
-            QApplication::sendEvent( m_searchAction->searchWidget(), e );
+            m_searchWidget->searchWidget()->setFocus();
+            QApplication::sendEvent( m_searchWidget->searchWidget(), e );
             return true;
         }
         #undef e

@@ -955,11 +955,11 @@ void App::slotConfigToolBars()
 
     dialog.showButton( KEditToolbar::Apply, false );
 
-    if( dialog.exec() )
-    {
-        playlistWindow()->reloadXML();
-        playlistWindow()->createGUI();
-    }
+//     if( dialog.exec() )
+//     {
+//         playlistWindow()->reloadXML();
+//         playlistWindow()->createGUI();
+//     }
 }
 
 void App::firstRunWizard()

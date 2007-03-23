@@ -50,11 +50,7 @@ class CollectionView;
 class CollectionItem;
 class DividerItem;
 class OrganizeCollectionDialog;
-
-namespace Amarok
-{
-    class SearchAction;
-}
+class SearchWidget;
 
 namespace CollectionBrowserIds
 {
@@ -99,7 +95,7 @@ class CollectionBrowser: public KVBox
         KTabBar* m_tabs; //tree-view, flat-view tabs
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
-        Amarok::SearchAction           *m_searchAction;
+        SearchWidget           *m_searchWidget;
         // For iPod-style browsing
         KAction           *m_ipodIncrement, *m_ipodDecrement;
         class KToolBar    *m_ipodToolbar;

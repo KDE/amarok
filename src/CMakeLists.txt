@@ -206,6 +206,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    collection/sqlmeta.cpp
    Options1.ui.h
    actionclasses.cpp
+   analyzerwidget.cpp
    app.cpp
    atomicstring.cpp
    collectionbrowser.cpp
@@ -267,6 +268,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    scancontroller.cpp
    scriptmanager.cpp
    scrobbler.cpp
+   searchwidget.cpp
    sidebar.h
    sidebarwidget.cpp
    sliderwidget.cpp
@@ -281,6 +283,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    trackpickerdialog.cpp
    tracktooltip.cpp
    transferdialog.cpp
+   volumewidget.cpp
    xmlloader.cpp
    xspfplaylist.cpp )
 

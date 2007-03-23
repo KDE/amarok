@@ -37,6 +37,7 @@ class MediaDevice;
 class MediaView;
 class SpaceLabel;
 class TransferDialog;
+class SearchWidget;
 
 class KAction;
 class KComboBox;
@@ -287,7 +288,7 @@ class MediaBrowser : public KVBox
         KAction *m_customAction;
         KAction *m_configAction;
         KAction *m_transferAction;
-        Amarok::SearchAction *m_searchAction;
+        SearchWidget *m_searchWidget;
 };
 
 class MediaView : public K3ListView

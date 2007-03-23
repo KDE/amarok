@@ -68,46 +68,6 @@ namespace Amarok
             PlayPauseAction( KActionCollection* );
             virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     };
-    class AnalyzerContainer : public QWidget
-    {
-        public:
-            AnalyzerContainer( QWidget *parent );
-        protected:
-            virtual void resizeEvent( QResizeEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
-            virtual void contextMenuEvent( QContextMenuEvent* );
-        private:
-            void changeAnalyzer();
-            QWidget *m_child;
-    };
-
-    class AnalyzerAction : public KAction
-    {
-        public:
-            AnalyzerAction( KActionCollection* );
-            virtual QWidget* createWidget( QWidget *);
-    };
-
-    class VolumeAction : public KAction, public EngineObserver
-    {
-        public:
-            VolumeAction( KActionCollection* );
-            virtual QWidget* createWidget( QWidget * );
-        private:
-            void engineVolumeChanged( int value );
-            QPointer<Amarok::VolumeSlider> m_slider;
-    };
-
-    class SearchAction : public KAction
-    {
-        public:
-            SearchAction( KActionCollection*, QWidget * );
-            virtual QWidget* createWidget( QWidget * );
-            KLineEdit *searchWidget() { return m_searchWidget; }
-        private:
-            KLineEdit *m_searchWidget;
-            QWidget *m_caller;
-    };
 
     class SliderAction : public KAction, public EngineObserver
     {
