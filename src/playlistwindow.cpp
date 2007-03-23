@@ -170,8 +170,8 @@ void PlaylistWindow::init()
     //END Playlist Toolbar
     }
 
-    m_controlBar = new QWidget();
-    m_controlBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    m_controlBar = new QWidget( this );
+    m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     {//START Main toolbar
         QGridLayout *gl = new QGridLayout( m_controlBar );
         Amarok::ToolBar *playerControlsToolbar = new Amarok::ToolBar( m_controlBar );
@@ -201,20 +201,19 @@ void PlaylistWindow::init()
     startColor.setAlpha( 200 );
     QColor endColor = palette().base();
     endColor.setAlpha( 0 );
-    QColor middleColor( startColor.red() * .4,
-                        startColor.green() * .4,
-                        startColor.blue() * .4,
-                        175 /*alpha*/ );
-    QColor nextToLastColor( startColor.red() * .8,
-                            startColor.green() * .8,
-                            startColor.blue() * .8,
-                            100 /*alpha*/ );
+    QColor middleColor( startColor.red() * .7,
+                        startColor.green() * .7,
+                        startColor.blue() * .7,
+                        100 /*alpha*/ );
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(), m_controlBar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
-    toolbarGradiant.setColorAt( .5, middleColor );
-    toolbarGradiant.setColorAt( 1, nextToLastColor );
+    toolbarGradiant.setColorAt( .7, middleColor );
+    toolbarGradiant.setColorAt( 1, endColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
+
+    m_controlBar->setAutoFillBackground( true );
+    m_controlBar->setPalette( p );
 
     dynamicBar->init();
     this->toolBars().clear();
@@ -245,9 +244,6 @@ void PlaylistWindow::init()
 
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
-
-    m_controlBar->setAutoFillBackground( true );
-    m_controlBar->setPalette( p );
 
     //<XMLGUI>
     {
