@@ -198,7 +198,7 @@ void PlaylistWindow::init()
         gl->addWidget( new AnalyzerWidget( m_controlBar ), 0, 2);
         m_searchWidget = new SearchWidget( m_controlBar, this );
         gl->addWidget( m_searchWidget, 0, 3 );
-        gl->addWidget( progress, 1, 0, 1, 3 );
+        gl->addWidget( progress, 1, 0, 1, 4 );
 
     }
 
