@@ -25,7 +25,7 @@ class SearchWidget : public QWidget
     Q_OBJECT
     public:
         SearchWidget( QWidget *, QWidget * );
-        KLineEdit *searchWidget() { return m_sw; }
+        KLineEdit *lineEdit() { return m_sw; }
     private:
         KLineEdit *m_sw;
         QWidget *m_caller;

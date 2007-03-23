@@ -309,7 +309,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 {
     m_timer->stop();
     m_view->m_dirty = true;
-    m_view->setFilter( m_searchWidget->searchWidget()->text() );
+    m_view->setFilter( m_searchWidget->lineEdit()->text() );
     m_view->setTimeFilter( m_timeFilter->currentIndex() );
     m_view->renderView();
     if ( m_returnPressed )
@@ -320,7 +320,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 void
 CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 {
-    m_searchWidget->searchWidget()->setText( filter );
+    m_searchWidget->lineEdit()->setText( filter );
     kapp->processEvents();  //Let the search bar redraw fully.
     QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
     QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
@@ -329,10 +329,10 @@ CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 void
 CollectionBrowser::slotEditFilter() //SLOT
 {
-    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchWidget->searchWidget()->text() );
+    EditFilterDialog *cod = new EditFilterDialog( this, false, m_searchWidget->lineEdit()->text() );
     connect( cod, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( cod->exec() )
-        m_searchWidget->searchWidget()->setText( cod->filter() );
+        m_searchWidget->lineEdit()->setText( cod->filter() );
     delete cod;
 }
 
@@ -352,7 +352,7 @@ void
 CollectionBrowser::appendSearchResults()
 {
     //If we are not filtering, or the search string has changed recently, do nothing
-    if ( m_searchWidget->searchWidget()->text().trimmed().isEmpty() || m_timer->isActive() )
+    if ( m_searchWidget->lineEdit()->text().trimmed().isEmpty() || m_timer->isActive() )
         return;
     m_view->selectAll();
     Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
@@ -371,7 +371,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         #define e static_cast<QKeyEvent*>(e)
 
-        if( o == m_searchWidget->searchWidget() ) //the search lineedit
+        if( o == m_searchWidget->lineEdit() ) //the search lineedit
         {
             switch( e->key() )
             {
@@ -414,8 +414,8 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         if( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape )
         {
-            m_searchWidget->searchWidget()->setFocus();
-            QApplication::sendEvent( m_searchWidget->searchWidget(), e );
+            m_searchWidget->lineEdit()->setFocus();
+            QApplication::sendEvent( m_searchWidget->lineEdit(), e );
             return true;
         }
         #undef e

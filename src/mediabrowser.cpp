@@ -755,23 +755,23 @@ MediaBrowser::slotSetFilter() //SLOT
     m_timer->stop();
 
     if( currentDevice() )
-        currentDevice()->view()->setFilter( m_searchWidget->searchWidget()->text() );
+        currentDevice()->view()->setFilter( m_searchWidget->lineEdit()->text() );
 }
 
 void
 MediaBrowser::slotSetFilter( const QString &text )
 {
-    m_searchWidget->searchWidget()->setText( text );
+    m_searchWidget->lineEdit()->setText( text );
     slotSetFilter();
 }
 
 void
 MediaBrowser::slotEditFilter()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchWidget->searchWidget()->text() );
+    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchWidget->lineEdit()->text() );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchWidget->searchWidget()->setText( fd->filter() );
+        m_searchWidget->lineEdit()->setText( fd->filter() );
     delete fd;
 }
 

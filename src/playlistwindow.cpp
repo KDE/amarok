@@ -348,7 +348,7 @@ void PlaylistWindow::slotEditFilter() //SLOT
     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_searchWidget->searchWidget()->setText( fd->filter() );
+        m_searchWidget->lineEdit()->setText( fd->filter() );
     delete fd;
 }
 
@@ -530,7 +530,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         }
 
 
-        if( o == m_searchWidget->searchWidget() ) //the search lineedit
+        if( o == m_searchWidget->lineEdit() ) //the search lineedit
         {
             Q3ListViewItem *item;
             switch( e->key() )
@@ -590,7 +590,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                m_searchWidget->searchWidget()->clear();
+                m_searchWidget->lineEdit()->clear();
                 return true;
 
             default:
@@ -631,8 +631,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             }
             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
-                m_searchWidget->searchWidget();
-                QApplication::sendEvent( m_searchWidget->searchWidget(), e );
+                m_searchWidget->lineEdit();
+                QApplication::sendEvent( m_searchWidget->lineEdit(), e );
                 return true;
             }
         }
@@ -891,7 +891,7 @@ void PlaylistWindow::showStatistics() //SLOT
 
 void PlaylistWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchWidget->searchWidget()->hasFocus() ) )
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchWidget->lineEdit()->hasFocus() ) )
         m_browsers->currentWidget()->setFocus();
 }
 
