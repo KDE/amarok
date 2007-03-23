@@ -52,6 +52,14 @@ class DividerItem;
 class OrganizeCollectionDialog;
 class SearchWidget;
 
+class QSortFilterProxyModel;
+
+
+namespace Amarok
+{
+    class SearchAction;
+}
+
 namespace CollectionBrowserIds
 {
     enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
@@ -119,6 +127,8 @@ class CollectionBrowser: public KVBox
         bool m_returnPressed;
 
         static CollectionBrowser *s_instance;
+
+        QSortFilterProxyModel *m_filterModel;
 
     // for CatMenuId
     friend class CollectionItem;

@@ -142,15 +142,15 @@ CollectionBrowser::CollectionBrowser( const char* name )
     cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
     CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
 
-    QSortFilterProxyModel *filterModel = new QSortFilterProxyModel( this );
-    filterModel->setSortRole( CustomRoles::SortRole );
-    filterModel->setFilterRole( CustomRoles::FilterRole );
-    filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    filterModel->setSourceModel( model );
+    m_filterModel = new QSortFilterProxyModel( this );
+    m_filterModel->setSortRole( CustomRoles::SortRole );
+    m_filterModel->setFilterRole( CustomRoles::FilterRole );
+    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setSourceModel( model );
 
     CollectionBrowserView *newView = new CollectionBrowserView( this );
-    newView->setModel( filterModel );
+    newView->setModel( m_filterModel );
     newView->setSortingEnabled( true );
     newView->sortByColumn( 0, Qt::AscendingOrder );
     newView->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -307,6 +307,7 @@ CollectionBrowser::slotSetFilterTimeout() //SLOT
 void
 CollectionBrowser::slotSetFilter() //SLOT
 {
+    m_filterModel->setFilterFixedString( m_searchWidget->lineEdit()->text() );
     m_timer->stop();
     m_view->m_dirty = true;
     m_view->setFilter( m_searchWidget->lineEdit()->text() );

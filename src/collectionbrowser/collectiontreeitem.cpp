@@ -47,7 +47,7 @@ QVariant
 CollectionTreeItem::data( int role ) const {
 
     if ( m_data ) {
-        if ( role == Qt::DisplayRole ) {
+        if ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) {
             QString name = m_data->prettyName();
             if ( name.isEmpty() )
                 return i18n( "Unknown" );
@@ -70,7 +70,7 @@ CollectionTreeItem::row() const {
 int
 CollectionTreeItem::level() const {
     if ( !m_parent )
-        return 0;
+        return -1;
     else
         return m_parent->level() + 1;
 }

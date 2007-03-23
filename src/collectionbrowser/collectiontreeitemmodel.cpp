@@ -21,9 +21,13 @@
 #include "collectiontreeitem.h"
 #include "collection/sqlregistry.h"
 #include "debug.h"
+#include "amarok.h"
 
 #include <KLocale>
+#include <KIcon>
+#include <KIconLoader>
 #include <QMimeData>
+#include <QPixmap>
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     :QAbstractItemModel()
@@ -101,6 +105,12 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
 
+    if ( role == Qt::DecorationRole ) {
+        int level = item->level();
+        if ( level < m_levelType.count() )
+            return iconForLevel( item->level() );
+    }
+
     return item->data( role );
 }
 
@@ -147,7 +157,7 @@ void
 CollectionTreeItemModel::setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) {
     foreach( Meta::DataPtr data, dataList ) {
         CollectionTreeItem *item = new CollectionTreeItem( data, parent );
-        QList<Meta::DataPtr> childrenData = listForLevel( item->level(), item->queryBuilder() );
+        QList<Meta::DataPtr> childrenData = listForLevel( item->level() + 1, item->queryBuilder() );
         setupModelData( childrenData, item );
     }
 }
@@ -188,4 +198,29 @@ CollectionTreeItemModel::nameForLevel( int level ) const {
         case CategoryId::Year : return i18n( "Year" );
         default: return QString();
     }
+}
+
+QPixmap
+CollectionTreeItemModel::iconForLevel( int level ) const {
+    QString icon;
+        switch( m_levelType[level] ) {
+        case CategoryId::Album :
+            icon = "album";
+            break;
+        case CategoryId::Artist :
+            icon = "artist";
+            break;
+        case CategoryId::Composer :
+            icon = "artist";
+            break;
+
+        case CategoryId::Genre :
+            icon = "kfm";
+            break;
+
+        case CategoryId::Year :
+            icon = "clock";
+            break;
+    }
+    return KIconLoader::global()->loadIcon( Amarok::icon( icon ), K3Icon::Toolbar, K3Icon::SizeSmall );
 }

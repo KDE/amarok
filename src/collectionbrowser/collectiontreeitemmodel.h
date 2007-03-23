@@ -57,6 +57,7 @@ class CollectionTreeItemModel: public QAbstractItemModel {
 
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
+        QPixmap iconForLevel( int level ) const;
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
 
     private:
