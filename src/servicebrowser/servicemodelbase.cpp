@@ -17,8 +17,13 @@
   Boston, MA 02110-1301, USA.
 */ 
 
-
+#include "debug.h"
 #include "servicemodelbase.h"
+#include "servicemodelitembase.h"
+
+#include "kurl.h"
+
+#include <QMimeData>
 
 ServiceModelBase::ServiceModelBase( QObject *parent ) 
      : QAbstractItemModel(parent)
@@ -34,7 +39,30 @@ void ServiceModelBase::resetModel() {
 Qt::ItemFlags ServiceModelBase::flags ( const QModelIndex & index ) const {
 
     //By default all items are dragable. Override in subclass if not happy with this... :-)
-    return Qt::ItemIsSelectable & Qt::ItemIsDragEnabled & Qt::ItemIsEnabled;
+       if (!index.isValid())
+        return Qt::ItemIsEnabled;
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+}
+
+QMimeData* ServiceModelBase::mimeData( const QModelIndexList &indices ) const {
+    if ( indices.isEmpty() )
+        return 0;
+
+    KUrl::List urls;
+
+    foreach( QModelIndex index, indices ) {
+        if (index.isValid()) {
+            ServiceModelItemBase *item = static_cast<ServiceModelItemBase*>(index.internalPointer());
+            //debug() << "adding url: " << item->getUrls() << endl;
+            urls += item->getUrls();
+        }
+    }
+
+    QMimeData *mimeData = new QMimeData();
+    urls.populateMimeData(mimeData);
+
+    return mimeData;
 }
 
 

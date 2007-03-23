@@ -172,3 +172,10 @@ QString MagnatuneContentItem::getUrl() {
         return QString();
     }
 }
+
+void MagnatuneContentItem::populate()
+{
+     if ( !m_hasPopulatedChildItems )
+        populateChildItems();
+}
+

@@ -19,6 +19,8 @@
 
 #include "servicemodelitembase.h"
 
+#include "debug.h"
+
 /*QString ServiceModelItemBase::getUrl() {
     return QString();
 } 
@@ -34,6 +36,26 @@ int ServiceModelItemBase::childCount() const {
 ServiceModelItemBase *ServiceModelItemBase::parent() {
     return m_parent;
 }
+
+KUrl::List ServiceModelItemBase::getUrls()
+{
+
+    KUrl::List urls;
+
+    debug() << "own url: " << getUrl() << endl;
+    if ( !getUrl().isEmpty() )
+        urls += KUrl( getUrl() );
+
+    populate();
+
+    foreach( ServiceModelItemBase * childItem, m_childItems ) {
+        debug() << "here!!" << endl;
+        urls += childItem->getUrls();
+    }
+
+    return urls;
+}
+
 
 /*QList<ServiceModelItemBase*> ServiceModelItemBase::getChildItems() const {
     return m_childItems;

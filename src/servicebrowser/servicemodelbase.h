@@ -31,6 +31,7 @@ public:
     virtual void requestHtmlInfo ( const QModelIndex & item ) const = 0;
     void resetModel();
     Qt::ItemFlags flags ( const QModelIndex & index ) const;
+    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
 signals:
 

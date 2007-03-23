@@ -20,6 +20,8 @@
 #ifndef AMAROKSERVICEMODELITEMBASE_H
 #define AMAROKSERVICEMODELITEMBASE_H 
 
+#include "kurl.h"
+
 #include <QString>
 #include <QVariant>
 
@@ -37,6 +39,15 @@ public:
     virtual QList<ServiceModelItemBase*> getChildItems() const = 0;
     virtual bool hasChildren () const = 0;
     virtual QString getUrl() = 0;
+    
+
+    /**
+     * Used for forcing dynamic items to populate themselves. The default implementation does nothing
+     */
+    virtual void populate() {};
+    KUrl::List getUrls();
+
+    
 
 
 

@@ -87,16 +87,6 @@ QVariant MagnatuneContentModel::data(const QModelIndex &index, int role) const
     }
 }
 
-Qt::ItemFlags MagnatuneContentModel::flags(const QModelIndex &index) const
-{
-
-    //debug() << "MagnatuneContentModel::flags" << endl;
-    if (!index.isValid())
-        return Qt::ItemIsEnabled;
-
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
 QVariant MagnatuneContentModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 

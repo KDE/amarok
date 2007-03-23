@@ -24,6 +24,8 @@ Boston, MA 02110-1301, USA.
 #include "../servicemodelitembase.h"
 #include "magnatunetypes.h"
 
+#include "kurl.h"
+
 #include <QList>
 
 
@@ -59,6 +61,8 @@ public:
     bool hasChildren () const;
     contentTypeUnion getContentUnion ( );
     QString getUrl();
+
+    void populate();
 
 private:
 
