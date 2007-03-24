@@ -39,6 +39,8 @@ public:
     virtual QList<ServiceModelItemBase*> getChildItems() const = 0;
     virtual bool hasChildren () const = 0;
     virtual QString getUrl() = 0;
+
+    bool operator<( const ServiceModelItemBase& other ) const;
     
 
     /**

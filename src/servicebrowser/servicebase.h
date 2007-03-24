@@ -30,8 +30,10 @@
 #include <kvbox.h>
 
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QTreeView>
+
 
 
 /**
@@ -124,6 +126,7 @@ protected:
 
 private: // need to move stuff here
      ServiceModelBase * m_model;
+     QSortFilterProxyModel * m_filterModel;
 
 };
 

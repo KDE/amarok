@@ -98,6 +98,12 @@ ServiceBase::ServiceBase( const QString &name )
     m_bottomPanel->setMargin( 2 );
 
 
+    m_filterModel = new QSortFilterProxyModel( this );
+    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+
+
+
 
     //QDirModel * dirModel = new QDirModel ( m_contentView );
 
@@ -170,7 +176,7 @@ void ServiceBase::itemActivated ( const QModelIndex & index ) {
     if (!index.isValid())
         return;
     else {
-       ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(index.internalPointer());
+       ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(m_filterModel->mapToSource( index ).internalPointer());
        addToPlaylist( item );
     }
 
@@ -199,7 +205,9 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
 }
 
 void ServiceBase::setModel( ServiceModelBase * model ) {
-    m_contentView->setModel( model );
+
+    m_filterModel->setSourceModel( model );
+    m_contentView->setModel( m_filterModel );
     m_model  = model;
     connect ( m_model, SIGNAL( infoChanged ( const QString &) ), this, SLOT( infoChanged ( const QString &) ) );
 }

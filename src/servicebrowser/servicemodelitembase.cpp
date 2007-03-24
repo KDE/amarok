@@ -49,11 +49,15 @@ KUrl::List ServiceModelItemBase::getUrls()
     populate();
 
     foreach( ServiceModelItemBase * childItem, m_childItems ) {
-        debug() << "here!!" << endl;
         urls += childItem->getUrls();
     }
 
     return urls;
+}
+
+bool ServiceModelItemBase::operator<( const ServiceModelItemBase& other ) const {
+    debug() << "here!!" << endl;
+    return data(0).toString() < other.data(0).toString();
 }
 
 
