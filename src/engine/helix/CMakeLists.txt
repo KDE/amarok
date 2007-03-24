@@ -5,7 +5,7 @@ include_directories(
 ${CMAKE_CURRENT_SOURCE_DIR}/../..
 ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
 ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
+${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
 ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
 ${CMAKE_CURRENT_SOURCE_DIR}/../../engine/helix/helix-sp
 ${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/runtime
