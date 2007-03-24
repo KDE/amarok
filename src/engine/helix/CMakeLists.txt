@@ -3,9 +3,10 @@ add_subdirectory( helix-sp )
 
 include_directories(
 ${CMAKE_CURRENT_SOURCE_DIR}/../..
+${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
 ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
+${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
-${CMAKE_BINARY_DIR}/src #for amarokconfig.h
 ${CMAKE_CURRENT_SOURCE_DIR}/../../engine/helix/helix-sp
 ${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/runtime
 ${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/audio/fixptutil

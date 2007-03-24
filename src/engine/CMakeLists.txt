@@ -8,7 +8,7 @@ else(XINE_FOUND)
 endif(XINE_FOUND)
 
 if (HELIX_FOUND)
-#add_subdirectory( helix )
+add_subdirectory( helix )
 else(HELIX_FOUND)
    MESSAGE(STATUS "Helix/Realplayer was not found. Helix engine will not be built")
 endif(HELIX_FOUND)

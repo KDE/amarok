@@ -39,6 +39,7 @@
 #include "helix-errors.h"
 #include "helix-sp.h"
 #include "hxplayercontrol.h"
+#include "amarok.h"
 #include "amarokconfig.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
