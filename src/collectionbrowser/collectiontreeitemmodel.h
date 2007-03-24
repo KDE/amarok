@@ -57,12 +57,16 @@ class CollectionTreeItemModel: public QAbstractItemModel {
 
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
+        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
+
+
         QPixmap iconForLevel( int level ) const;
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
 
     private:
 
-        void setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent);
+        void populateChildren(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) const;
+        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
         void initializeHeaderText();
         QString nameForLevel( int level ) const;
 

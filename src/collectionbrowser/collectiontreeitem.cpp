@@ -28,7 +28,7 @@
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
     , m_parent( parent )
-    //, m_childrenSet( false )
+    , m_childrenLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );

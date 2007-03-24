@@ -35,7 +35,7 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
 {
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     initializeHeaderText();
-    setupModelData( listForLevel(0), m_rootItem );
+    populateChildren( listForLevel(0), m_rootItem );
 }
 
 
@@ -48,18 +48,19 @@ QModelIndex
 CollectionTreeItemModel::index(int row, int column, const QModelIndex &parent) const
 {
 
-     CollectionTreeItem *parentItem;
+    CollectionTreeItem *parentItem;
 
-     if (!parent.isValid())
-         parentItem = m_rootItem;
-     else
-         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
+    if (!parent.isValid())
+        parentItem = m_rootItem;
+    else
+        parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-     CollectionTreeItem *childItem = parentItem->child(row);
-     if (childItem)
-         return createIndex(row, column, childItem);
-     else
-         return QModelIndex();
+    ensureChildrenLoaded( parentItem );
+    CollectionTreeItem *childItem = parentItem->child(row);
+    if (childItem)
+        return createIndex(row, column, childItem);
+    else
+        return QModelIndex();
 }
 
 QModelIndex
@@ -80,14 +81,15 @@ CollectionTreeItemModel::parent(const QModelIndex &index) const
 int
 CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
-     CollectionTreeItem *parentItem;
+    CollectionTreeItem *parentItem;
 
-     if (!parent.isValid())
-         parentItem = m_rootItem;
-     else
-         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
+    if (!parent.isValid())
+        parentItem = m_rootItem;
+    else
+        parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-     return parentItem->childCount();
+    ensureChildrenLoaded( parentItem );
+    return parentItem->childCount();
 }
 
 int
@@ -143,6 +145,7 @@ CollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const {
     foreach( QModelIndex index, indices ) {
         if (index.isValid()) {
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
+            ensureChildrenLoaded( item );
             urls += item->urls();
         }
     }
@@ -154,12 +157,11 @@ CollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const {
 }
 
 void
-CollectionTreeItemModel::setupModelData(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) {
+CollectionTreeItemModel::populateChildren(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) const {
     foreach( Meta::DataPtr data, dataList ) {
         CollectionTreeItem *item = new CollectionTreeItem( data, parent );
-        QList<Meta::DataPtr> childrenData = listForLevel( item->level() + 1, item->queryBuilder() );
-        setupModelData( childrenData, item );
     }
+    parent->setChildrenLoaded( true );
 }
 
 QList<Meta::DataPtr>
@@ -224,3 +226,23 @@ CollectionTreeItemModel::iconForLevel( int level ) const {
     }
     return KIconLoader::global()->loadIcon( Amarok::icon( icon ), K3Icon::Toolbar, K3Icon::SizeSmall );
 }
+
+
+bool
+CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
+     if (!parent.isValid())
+         return true; // must be root item!
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
+    return item->level() < m_levelType.count();
+
+}
+
+void
+CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
+    if ( !item->childrenLoaded() ) {
+        QList<Meta::DataPtr> childrenData = listForLevel( item->level() + 1, item->queryBuilder() );
+        populateChildren( childrenData, item );
+    }
+}
+

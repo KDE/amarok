@@ -57,8 +57,8 @@ class CollectionTreeItem {
         QueryBuilder queryBuilder() const;
 
         bool operator<( const CollectionTreeItem& other ) const;
-/*        bool childrenSet() { return  m_childrenSet; }
-        void setChildrenSet( bool childrenSet ) { m_childrenSet = childrenSet; } */
+        bool childrenLoaded() const { return  m_childrenLoaded; }
+        void setChildrenLoaded( bool childrenLoaded ) { m_childrenLoaded = childrenLoaded; }
 
         const Meta::DataPtr data() const { return m_data; }
 
@@ -68,7 +68,7 @@ class CollectionTreeItem {
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
         QList<CollectionTreeItem*> m_childItems;
-        //bool m_childrenSet;
+        bool m_childrenLoaded;
 };
 
 #endif
