@@ -23,6 +23,7 @@
 
 #include <QDateTime>
 #include <QString>
+#include <QStringList>
 #include <q3valuelist.h>
 
 
@@ -114,6 +115,7 @@ private:
     QString m_lofiURL;
     int m_albumId;
     int m_artistId;
+    QStringList m_moods;
 
 public:
     MagnatuneTrack();
@@ -141,6 +143,9 @@ public:
 
     void setArtistId( int artistId );
     int getArtistId() const;
+
+    void setMoods( const QStringList &moods );
+    QStringList getMoods() const;
 };
 
 typedef Q3ValueList<MagnatuneArtist> MagnatuneArtistList;

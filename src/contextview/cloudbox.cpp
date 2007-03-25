@@ -86,7 +86,7 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
    m_currentLineMaxHeight = 0.0;
 
-    for ( int i = 0; i < 50; i++) {
+    /*for ( int i = 0; i < 50; i++) {
 
         int random = ( rand() % (m_maxFontSize - m_minFontSize) ) + m_minFontSize + 1;
 
@@ -94,7 +94,7 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
         addText( "Amarok", random);
 
-    }
+    }*/
 
 
 }

@@ -107,9 +107,16 @@ private:
      */
     void parseTrack( QDomElement e );
 
+    /**
+     * Parse the moods of a track
+     * @param e The moods element to parse
+     */
+    void parseMoods( QDomElement e );
+
     MagnatuneAlbum *m_pCurrentAlbum;
     MagnatuneArtist *m_pCurrentArtist;
     MagnatuneTrackList m_currentAlbumTracksList;
+    QStringList m_currentTrackMoodList;
 
     QString m_sFileName;
 

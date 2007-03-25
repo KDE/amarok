@@ -23,11 +23,14 @@ Boston, MA 02110-1301, USA.
 #include "playlist.h"
 #include "magnatunedatabasehandler.h"
 #include "debug.h"
+#include "../../contextview/contextview.h"
+#include "../../contextview/cloudbox.h"
 
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
 #include <kiconloader.h>   //multiTabBar icons
 
+#include <QGraphicsScene>
 #include <QSplitter>
 #include <q3dragobject.h>
 #include <QLabel>
@@ -420,6 +423,8 @@ void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem
 
 }
 
+using namespace Context;
+
 void MagnatuneBrowser::polish( )
 {
 
@@ -452,7 +457,46 @@ void MagnatuneBrowser::polish( )
         + "</td></tr></tbody></table>" );
         m_infoBox->end();
 
+        MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap();
+
+        int minMoodCount = 10000;
+        int maxMoodCount = 0;
+
+        //determine max and min counts
+        QMapIterator<QString, int> i(moodMap);
+        while (i.hasNext()) {
+           i.next();
+           if ( i.value() > maxMoodCount ) maxMoodCount = i.value();
+           if ( i.value() < minMoodCount ) minMoodCount = i.value();
+        }
+
+
+        //normalize and insert into cloud view
+
+       
+        CloudBox * cloudBox = new CloudBox( 0, 0 );
+
+        int steps = 5;
+        int stepBoundry = maxMoodCount / steps;
+
+
+        i.toFront();
+        while (i.hasNext()) {
+           i.next();
+           if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8 );
+           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 10 );
+           else  if ( i.value() < stepBoundry * 3 ) cloudBox->addText( i.key(), 14 );
+           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 20 );
+           else cloudBox->addText( i.key(), 24 );
+        }
+
+
+         //ContextView::instance()->clear();
+         ContextView::instance()->scene()->addItem( cloudBox );
+
+
     }
+
 
 }
 

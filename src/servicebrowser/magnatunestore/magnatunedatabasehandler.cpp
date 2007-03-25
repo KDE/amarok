@@ -51,16 +51,19 @@ MagnatuneDatabaseHandler::createDatabase( )
     QString tracksAutoIncrement = "";
     QString albumsAutoIncrement = "";
     QString artistAutoIncrement = "";
+    QString moodsAutoIncrement = "";
 
     if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
         db->query( QString( "CREATE SEQUENCE magnatune_track_seq;" ) );
         db->query( QString( "CREATE SEQUENCE magnatune_album_seq;" ) );
         db->query( QString( "CREATE SEQUENCE magnatune_artist_seq;" ) );
+        db->query( QString( "CREATE SEQUENCE magnatune_moods_seq;" ) );
 
         tracksAutoIncrement = QString( "DEFAULT nextval('magnatune_track_seq')" );
         albumsAutoIncrement = QString( "DEFAULT nextval('magnatune_album_seq')" );
         artistAutoIncrement = QString( "DEFAULT nextval('magnatune_artist_seq')" );
+        moodsAutoIncrement  = QString( "DEFAULT nextval('magnatune_moods_seq')" );
 
     }
     else if ( db->getDbConnectionType() == DbConnection::mysql )
@@ -68,7 +71,7 @@ MagnatuneDatabaseHandler::createDatabase( )
         tracksAutoIncrement = "AUTO_INCREMENT";
         albumsAutoIncrement = "AUTO_INCREMENT";
         artistAutoIncrement = "AUTO_INCREMENT";
-
+        moodsAutoIncrement = "AUTO_INCREMENT";
     }
 
     // create table containing tracks
@@ -114,6 +117,16 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
+    //create moods table
+     queryString = "CREATE TABLE magnatune_moods ("
+                  "id INTEGER PRIMARY KEY " + moodsAutoIncrement + ',' +
+                  "track_id INTEGER," +
+                  "mood " + db->textColumnType() + ");";
+
+    debug() << "Creating mangnatune_moods: " << queryString << endl;
+
+    result = db->query( queryString );
+
 
 
 }
@@ -125,12 +138,14 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     QStringList result = db->query( "DROP TABLE magnatune_tracks;" );
     result = db->query( "DROP TABLE magnatune_albums;" );
     result = db->query( "DROP TABLE magnatune_artists;" );
+    result = db->query( "DROP TABLE magnatune_moods;" );
 
     if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
         db->query( QString( "DROP SEQUENCE magnatune_track_seq;" ) );
         db->query( QString( "DROP SEQUENCE magnatune_album_seq;" ) );
         db->query( QString( "DROP SEQUENCE magnatune_artist_seq;" ) );
+        db->query( QString( "DROP SEQUENCE magnatune_moods_seq;" ) );
     }
 }
 
@@ -152,8 +167,23 @@ MagnatuneDatabaseHandler::insertTrack( MagnatuneTrack *track, int albumId, int a
 
 
     // debug() << "Adding Magnatune track " << queryString << endl;
+    int trackId = db->insert( queryString, NULL );
 
-    return db->insert( queryString, NULL );
+    // Process moods:
+
+    QStringList moods = track->getMoods();
+
+    foreach( QString mood, moods ) {
+        queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
+                      + QString::number( trackId ) + ", '"
+                      + db->escapeString( mood ) +  "' );";
+
+
+        //debug() << "Adding Magnatune mood: " << queryString << endl;
+        db->insert( queryString, NULL ); 
+    }
+
+    return trackId;
 }
 
 int 
@@ -416,6 +446,8 @@ MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
         track.setHifiURL( result.front() );
         result.pop_front();
 
+        track.setMoods( getMoodsForTrack( track.getId() ) );
+
         list.append( track );
         debug() << "track end" << endl;
     }
@@ -595,6 +627,8 @@ MagnatuneTrack MagnatuneDatabaseHandler::getTrackById(int id) {
         result.pop_front();
     }
 
+    track.setMoods( getMoodsForTrack( track.getId() ) );
+
     return track;
 }
 
@@ -618,6 +652,75 @@ MagnatuneDatabaseHandler::getTracksByArtistId( int id )
 
     return tracks;
 
+}
+
+QStringList MagnatuneDatabaseHandler::getMoodsForTrack(int id)
+{
+
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString;
+    queryString = "SELECT DISTINCT mood "
+                  "FROM magnatune_moods "
+                  "WHERE track_id = '" + QString::number( id ) + "';";
+
+    QStringList result = db->query( queryString );
+
+    return result;
+
+
+}
+
+MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap()
+{
+    
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString;
+    queryString = "SELECT mood "
+                  "FROM magnatune_moods "
+                  "ORDER BY mood;";
+
+    QStringList result = db->query( queryString );
+
+
+    MagnatuneMoodMap moodMap;
+    QString lastMood;
+    int currentMoodCount = 0;
+
+    //count occurences of each mood
+
+    foreach( QString currentMood, result ) {
+
+        if ( currentMood != lastMood ) {
+            
+            if ( !lastMood.isEmpty() ) 
+                moodMap[lastMood] = currentMoodCount;
+
+            currentMoodCount = 1;
+        } else {
+
+           currentMoodCount++;
+        }
+ 
+        lastMood = currentMood;
+
+    }
+   
+    if ( !lastMood.isEmpty() ) 
+        moodMap[lastMood] = currentMoodCount;
+
+    
+    // just for fun, print the map:
+
+     /*QMapIterator<QString, int> i(moodMap);
+     while (i.hasNext()) {
+         i.next();
+         debug() << "mood:" << i.key() << " count: " << i.value() <<  endl;
+     }*/
+
+    return moodMap;
+    
 }
 
 

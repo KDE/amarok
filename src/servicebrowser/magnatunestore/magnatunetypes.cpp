@@ -175,6 +175,16 @@ QString MagnatuneAlbum::getMagnatuneGenres( ) const
     return m_magnatuneGenres;
 }
 
+void MagnatuneAlbum::setDescription(const QString description)
+{
+    m_description = description;
+}
+
+QString MagnatuneAlbum::getDescription()
+{
+    return m_description;
+}
+
 
 
 
@@ -276,14 +286,16 @@ QString MagnatuneTrack::getLofiURL( ) const
     return m_lofiURL;
 }
 
-void MagnatuneAlbum::setDescription(const QString description)
+
+
+void MagnatuneTrack::setMoods(const QStringList & moods)
 {
-    m_description = description;
+    m_moods = moods;
 }
 
-QString MagnatuneAlbum::getDescription()
+QStringList MagnatuneTrack::getMoods() const
 {
-    return m_description;
+    return m_moods;
 }
 
 

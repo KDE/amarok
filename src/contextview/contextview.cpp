@@ -64,8 +64,8 @@ void ContextView::showHome()
     album->addAlbumInfo( cover, "3 Doors Down - The Better Life" );
     m_contextScene->addItem( album );*/
    
-    CloudBox * cloud = new CloudBox(  0, m_contextScene );
-    m_contextScene->addItem( cloud );
+    //CloudBox * cloud = new CloudBox(  0, m_contextScene );
+    //m_contextScene->addItem( cloud );
 }
 
 void ContextView::scaleView( qreal factor )

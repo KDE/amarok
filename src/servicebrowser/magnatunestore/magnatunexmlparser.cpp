@@ -179,6 +179,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
             else if ( sElementName == "album_notes" )
                 m_pCurrentAlbum->setDescription( childElement.text() );
 
+
         }
 
         n = n.nextSibling();
@@ -230,6 +231,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 void 
 MagnatuneXmlParser::parseTrack( QDomElement e )
 {
+    m_currentTrackMoodList.clear();
 
     QString trackName;
     QString trackNumber;
@@ -275,11 +277,47 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
             {
                 currentTrack.setDuration( childElement.text().toInt() );
             }
+            else if ( sElementName == "moods" )
+            {
+                parseMoods( childElement );
+            }
         }
         n = n.nextSibling();
     }
 
+    currentTrack.setMoods( m_currentTrackMoodList );
     m_currentAlbumTracksList.append( currentTrack );
+
+}
+
+void MagnatuneXmlParser::parseMoods(QDomElement e)
+{
+    QDomNode n = e.firstChild();
+
+    QDomElement childElement;
+
+    while ( !n.isNull() )
+    {
+
+        if ( n.isElement() )
+        {
+
+            childElement = n.toElement();
+
+            QString sElementName = childElement.tagName();
+
+            if ( sElementName == "mood" )
+            {
+                m_currentTrackMoodList.append( childElement.text() );
+            } 
+            else
+            {
+                //error, should not be here....
+            } 
+
+        }
+        n = n.nextSibling();
+    }
 
 }
 

@@ -24,6 +24,9 @@
 #include "magnatunetypes.h"
 
 #include <QStringList>
+#include <QMap>
+
+typedef  QMap<QString, int> MagnatuneMoodMap;
 
 
 /**
@@ -151,6 +154,21 @@ public:
      * @return A list of genres
      */
     QStringList getAlbumGenres();
+
+    /**
+     * Geet all moods for a track
+     * @param id the track id
+     * @return A list of moods
+     */
+    QStringList getMoodsForTrack( int id );
+
+    /**
+     * Returns a map of all defined moods. The key of the map is the moods itself (sorted
+     * alfabetically ) and the value is the number of occurences of the mood.
+     * This is usefull for displaying items in a cloud view
+     * @return A map of all defined moods and their frequency
+     */
+    MagnatuneMoodMap getMoodMap();
 
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
