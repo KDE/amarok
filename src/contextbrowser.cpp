@@ -258,7 +258,7 @@ ContextBrowser::ContextBrowser( const char *name )
        connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
        connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
        Amarok::actionCollection()->setAutoConnectShortcuts ( true );
-       new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
+       new KAction( i18n("Search text in lyrics"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
        Amarok::actionCollection()->setAutoConnectShortcuts ( false );
     }
 
