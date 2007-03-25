@@ -78,7 +78,7 @@ void CloudTextItem::colorFadeSlot( int step ) {
 Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 : ContextBox( parent, scene )
 {
-   m_maxFontSize = 20;
+   m_maxFontSize = 24;
    m_minFontSize = 4;
 
    m_runningX = 0.0;
@@ -124,12 +124,15 @@ void CloudBox::addText(QString text, int weight)
     // check if item will fit inside cloud at all... if not, just skip it
     // (Does anyone have a better idea how to handle this? )
 
-     if ( ( ( itemRect.width() + m_runningX ) > parentRect.width() ) 
-     || ( ( itemRect.height() + m_runningY + m_maxFontSize - weight ) > parentRect.height() ) ) 
-     {
-        
-         delete item;
-         return;
+    if  ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
+        delete item;
+        return;
+    }
+    else if ( ( itemRect.height() + m_runningY + m_maxFontSize - weight ) > parentRect.height() ) 
+    {
+        // we need some more vertical space... add it (ugly hack)
+        int missingHeight = (itemRect.height() + m_runningY + m_maxFontSize - weight) -  parentRect.height();
+        setRect(parentRect.x(), parentRect.y(), parentRect.width(), parentRect.height() + missingHeight );
      }
 
     item->setPos( QPointF( m_runningX, m_runningY + m_maxFontSize - weight ) );

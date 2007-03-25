@@ -476,7 +476,7 @@ void MagnatuneBrowser::polish( )
        
         CloudBox * cloudBox = new CloudBox( 0, 0 );
 
-        int steps = 5;
+        int steps = 10;
         int stepBoundry = maxMoodCount / steps;
 
 
@@ -484,9 +484,9 @@ void MagnatuneBrowser::polish( )
         while (i.hasNext()) {
            i.next();
            if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8 );
-           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 10 );
-           else  if ( i.value() < stepBoundry * 3 ) cloudBox->addText( i.key(), 14 );
-           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 20 );
+           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12 );
+           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16 );
+           else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20 );
            else cloudBox->addText( i.key(), 24 );
         }
 
