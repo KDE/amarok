@@ -20,7 +20,7 @@
 #define SQLREGISTRY_H
 
 #include "sqlmeta.h"
-#include "querybuilder.h"
+#include "../querybuilder.h"
 
 #include <QHash>
 #include <QMutex>

@@ -17,7 +17,7 @@
 */
 
 #include "amarok.h"
-#include "querybuilder.h"
+#include "../querybuilder.h"
 #include "sqlmeta.h"
 #include "sqlregistry.h"
 

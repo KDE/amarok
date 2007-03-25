@@ -52,7 +52,7 @@ class DividerItem;
 class OrganizeCollectionDialog;
 class SearchWidget;
 
-class QSortFilterProxyModel;
+class CollectionTreeView;
 
 
 namespace Amarok
@@ -126,9 +126,10 @@ class CollectionBrowser: public KVBox
 
         bool m_returnPressed;
 
-        static CollectionBrowser *s_instance;
+        CollectionTreeView *m_treeView;
 
-        QSortFilterProxyModel *m_filterModel;
+
+        static CollectionBrowser *s_instance;
 
     // for CatMenuId
     friend class CollectionItem;

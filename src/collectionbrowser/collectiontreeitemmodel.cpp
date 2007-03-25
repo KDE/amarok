@@ -31,11 +31,9 @@
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     :QAbstractItemModel()
-    , m_levelType( levelType )
+    , m_rootItem( 0 )
 {
-    m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
-    initializeHeaderText();
-    populateChildren( listForLevel(0), m_rootItem );
+    setLevels( levelType );
 }
 
 
@@ -43,6 +41,17 @@ CollectionTreeItemModel::~CollectionTreeItemModel() {
     delete m_rootItem;
 }
 
+
+void
+CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
+    delete m_rootItem; //clears the whole tree!
+    m_levelType = levelType;
+    m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
+    updateHeaderText();
+    populateChildren( listForLevel(0), m_rootItem );
+
+    reset(); //resets the whole model, as the data changed
+}
 
 QModelIndex
 CollectionTreeItemModel::index(int row, int column, const QModelIndex &parent) const
@@ -182,7 +191,7 @@ CollectionTreeItemModel::listForLevel( int level, QueryBuilder qb ) const {
 }
 
 void
-CollectionTreeItemModel::initializeHeaderText() {
+CollectionTreeItemModel::updateHeaderText() {
     m_headerText.clear();
     for( int i=0; i< m_levelType.count(); ++i ) {
         m_headerText += nameForLevel( i ) + " / ";

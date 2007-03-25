@@ -34,7 +34,7 @@
 #include "qstringx.h"
 
 #include "collectionbrowser/collectiontreeitemmodel.h"
-#include "collectionbrowser/collectionbrowserview.h"
+#include "collectionbrowser/collectiontreeview.h"
 #include "collectionbrowser/collectiontreeitem.h" //just for the custom roles
 
 
@@ -138,23 +138,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_view = new CollectionView( this );
 
-    QList<int> cats;
-    cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
-    CollectionTreeItemModel *model = new CollectionTreeItemModel( cats );
-
-    m_filterModel = new QSortFilterProxyModel( this );
-    m_filterModel->setSortRole( CustomRoles::SortRole );
-    m_filterModel->setFilterRole( CustomRoles::FilterRole );
-    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setSourceModel( model );
-
-    CollectionBrowserView *newView = new CollectionBrowserView( this );
-    newView->setModel( m_filterModel );
-    newView->setSortingEnabled( true );
-    newView->sortByColumn( 0, Qt::AscendingOrder );
-    newView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    newView->setDragDropMode( QAbstractItemView::DragOnly );
+    m_treeView = new CollectionTreeView( this );
 
     m_view->installEventFilter( this );
 
@@ -307,7 +291,7 @@ CollectionBrowser::slotSetFilterTimeout() //SLOT
 void
 CollectionBrowser::slotSetFilter() //SLOT
 {
-    m_filterModel->setFilterFixedString( m_searchWidget->lineEdit()->text() );
+    m_treeView->filterModel()->setFilterFixedString( m_searchWidget->lineEdit()->text() );
     m_timer->stop();
     m_view->m_dirty = true;
     m_view->setFilter( m_searchWidget->lineEdit()->text() );

@@ -21,7 +21,7 @@
 #define COLLECTIONTREEITEMMODEL_H
 
 #include "meta.h"
-#include "querybuilder.h"
+#include "../querybuilder.h"
 
 #include <QAbstractItemModel>
 
@@ -31,6 +31,7 @@ class CollectionTreeItem;
 namespace CategoryId
 {
     enum CatMenuId {
+    None = 0,
     Album = QueryBuilder::tabAlbum,
     Artist = QueryBuilder::tabArtist,
     Composer = QueryBuilder::tabComposer,
@@ -63,11 +64,15 @@ class CollectionTreeItemModel: public QAbstractItemModel {
         QPixmap iconForLevel( int level ) const;
         QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
 
+
+        void setLevels( const QList<int> &levelType );
+        QList<int> levels() const { return m_levelType; }
+
     private:
 
         void populateChildren(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) const;
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;
-        void initializeHeaderText();
+        void updateHeaderText();
         QString nameForLevel( int level ) const;
 
         QString m_headerText;

@@ -17,17 +17,28 @@
   Boston, MA 02110-1301, USA.
 */
 
-#ifndef COLLECTIONBROWSERVIEW_H
-#define COLLECTIONBROWSERVIEW_H
+#ifndef COLLECTIONTREEVIEW_H
+#define COLLECTIONTREEVIEW_H
 
 
 #include <QTreeView>
 
+class QSortFilterProxyModel;
+class CollectionTreeItemModel;
 
-class CollectionBrowserView: public QTreeView {
+class CollectionTreeView: public QTreeView {
     public:
-    CollectionBrowserView( QWidget *parent = 0 );
+    CollectionTreeView( QWidget *parent = 0 );
+    ~CollectionTreeView();
 
+    QSortFilterProxyModel* filterModel() { return m_filterModel; }
+
+    void setLevels( const QList<int> &levels );
+    void setLevel( int level, int type );
+
+    private:
+        QSortFilterProxyModel *m_filterModel;
+        CollectionTreeItemModel *m_treeModel;
 };
 
 #endif
