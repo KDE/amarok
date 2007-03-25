@@ -457,7 +457,7 @@ void MagnatuneBrowser::polish( )
         + "</td></tr></tbody></table>" );
         m_infoBox->end();
 
-        MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap();
+        MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap( 20 );
 
         int minMoodCount = 10000;
         int maxMoodCount = 0;

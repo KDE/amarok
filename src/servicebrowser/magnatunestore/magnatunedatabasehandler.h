@@ -166,9 +166,10 @@ public:
      * Returns a map of all defined moods. The key of the map is the moods itself (sorted
      * alfabetically ) and the value is the number of occurences of the mood.
      * This is usefull for displaying items in a cloud view
+     * @param threshold Only include moods with more occurences than treshold
      * @return A map of all defined moods and their frequency
      */
-    MagnatuneMoodMap getMoodMap();
+    MagnatuneMoodMap getMoodMap(int threshold = 0);
 
     /**
      * Begins a database transaction. Must be followed by a later call to commit()

@@ -671,7 +671,7 @@ QStringList MagnatuneDatabaseHandler::getMoodsForTrack(int id)
 
 }
 
-MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap()
+MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap(int threshold)
 {
     
     CollectionDB *db = CollectionDB::instance();
@@ -695,7 +695,8 @@ MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap()
         if ( currentMood != lastMood ) {
             
             if ( !lastMood.isEmpty() ) 
-                moodMap[lastMood] = currentMoodCount;
+                if ( currentMoodCount > threshold )
+                    moodMap[lastMood] = currentMoodCount;
 
             currentMoodCount = 1;
         } else {
@@ -708,7 +709,8 @@ MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap()
     }
    
     if ( !lastMood.isEmpty() ) 
-        moodMap[lastMood] = currentMoodCount;
+        if ( currentMoodCount > threshold )
+            moodMap[lastMood] = currentMoodCount;
 
     
     // just for fun, print the map:
