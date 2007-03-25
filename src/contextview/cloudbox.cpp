@@ -102,28 +102,33 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
 void CloudBox::addText(QString text, int weight)
 {
+    //debug() << "adding new text: " << text << " size: " << weight << endl;
+
     CloudTextItem * item = new CloudTextItem ( text, this, scene() );
 
     QFont font = item->font();
 
     font.setPointSize( weight );
     item->setFont( font );
+
     
     QRectF itemRect = item->boundingRect();
     QRectF parentRect = boundingRect();
 
-    if (itemRect.height() > m_currentLineMaxHeight)
-        m_currentLineMaxHeight = itemRect.height();
+    // check if item will fit inside cloud at all... if not, just skip it
+    // (Does anyone have a better idea how to handle this? )
+    if  ( itemRect.width() > parentRect.width() ) {
+        delete item;
+        return;
+    }
+
+
+    if (itemRect.height() - (weight - 8) / 2  > m_currentLineMaxHeight)
+        m_currentLineMaxHeight = itemRect.height()  - (weight - 8) / 2;
 
 
     if ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
        
-         // check if item will fit inside cloud at all... if not, just skip it
-        // (Does anyone have a better idea how to handle this? )
-        if  ( itemRect.width() > parentRect.width() ) {
-            delete item;
-            return;
-        }
 
         m_runningY += m_currentLineMaxHeight;
         m_runningX = 0;
@@ -140,7 +145,7 @@ void CloudBox::addText(QString text, int weight)
         setRect(parentRect.x(), parentRect.y(), parentRect.width(), parentRect.height() + missingHeight );
      }
 
-    item->setPos( QPointF( m_runningX, m_runningY + m_maxFontSize - weight ) );
+    item->setPos( QPointF( m_runningX, m_runningY + (m_maxFontSize - weight ) ) );
     m_runningX += itemRect.width(); 
 
 
