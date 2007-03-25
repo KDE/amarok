@@ -172,6 +172,13 @@ public:
     MagnatuneMoodMap getMoodMap(int threshold = 0);
 
     /**
+     * Returns all tracks that are tagged with a specific mood
+     * @param mood The mood to search for
+     * @return List of tracks
+     */
+    MagnatuneTrackList getTracksByMood( QString mood );
+
+    /**
      * Begins a database transaction. Must be followed by a later call to commit()
      */
     void begin();

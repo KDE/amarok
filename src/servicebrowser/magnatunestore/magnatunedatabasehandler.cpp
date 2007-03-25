@@ -725,6 +725,70 @@ MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap(int threshold)
     
 }
 
+MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByMood( QString mood )
+{
+
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString;
+    queryString = "SELECT DISTINCT magnatune_tracks.id, "
+                  "magnatune_tracks.name, magnatune_tracks.track_number, "
+                  "magnatune_tracks.length, magnatune_tracks.album_id, "
+                  "magnatune_tracks.artist_id, magnatune_tracks.preview_lofi, "
+                  "magnatune_tracks.preview_hifi "
+                  "FROM magnatune_tracks, magnatune_moods "
+                  "WHERE magnatune_moods.mood = '" + db->escapeString( mood )  + "' AND "
+                  "magnatune_moods.track_id = magnatune_tracks.id;";
+
+     debug() << "Looking for tracks..." << endl;
+    debug() << "Query string:" << queryString << endl;
+
+    QStringList result = db->query( queryString );
+
+    MagnatuneTrackList list;
+
+    while ( result.size() > 0 )
+    {
+
+        debug() << "track start" << endl;
+        MagnatuneTrack track;
+
+        track.setId( result.front().toInt() );
+        result.pop_front();
+
+        track.setName( result.front() );
+        result.pop_front();
+
+        track.setTrackNumber( result.front().toInt() );
+        result.pop_front();
+
+        track.setDuration( result.front().toInt() );
+        result.pop_front();
+
+        track.setAlbumId( result.front().toInt() );
+        result.pop_front();
+
+        track.setArtistId( result.front().toInt() );
+        result.pop_front();
+
+        track.setLofiURL( result.front() );
+        result.pop_front();
+
+        track.setHifiURL( result.front() );
+        result.pop_front();
+
+        track.setMoods( getMoodsForTrack( track.getId() ) );
+
+        list.append( track );
+        debug() << "track end" << endl;
+    }
+
+    return list;
+
+
+
+}
+
 
 
 

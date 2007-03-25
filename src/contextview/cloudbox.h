@@ -43,6 +43,7 @@ A simple text item to go in a coud box
     protected:
         void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
         void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+        void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 
     public slots:
         void colorFadeSlot( int step );
@@ -50,6 +51,9 @@ A simple text item to go in a coud box
     private:
         QTimeLine * m_timeLine;
 
+
+    signals:
+        void clicked( QString text );
     };
 
 
@@ -62,11 +66,12 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 */
     class CloudBox : public ContextBox
     {
+
     public:
 
         CloudBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
-        void addText(QString text, int weight );
+        void addText(QString text, int weight, QObject * reciever, const char * slot);
 
     private:
 
@@ -76,7 +81,7 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
         int m_maxFontSize;
         int m_minFontSize;
-       
+
 
     };
 

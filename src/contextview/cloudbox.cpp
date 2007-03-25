@@ -32,7 +32,6 @@ CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScen
 {
 
     setAcceptsHoverEvents( true );
-
     m_timeLine = new QTimeLine( 1000, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( colorFadeSlot( int ) ) );
 
@@ -70,6 +69,12 @@ void CloudTextItem::colorFadeSlot( int step ) {
      update();
 }
 
+void CloudTextItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+     debug() << "Mouse clicked!! " << endl;
+    emit( clicked( toPlainText() ) );
+}
+
 
 
 
@@ -100,11 +105,13 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 }
 
 
-void CloudBox::addText(QString text, int weight)
+void CloudBox::addText(QString text, int weight, QObject * reciever, const char * slot)
 {
     //debug() << "adding new text: " << text << " size: " << weight << endl;
 
     CloudTextItem * item = new CloudTextItem ( text, this, scene() );
+
+    item->connect ( item, SIGNAL( clicked( QString ) ), reciever, slot );
 
     QFont font = item->font();
 
@@ -150,6 +157,8 @@ void CloudBox::addText(QString text, int weight)
 
 
 }
+
+
 
 #include "cloudbox.moc"
 

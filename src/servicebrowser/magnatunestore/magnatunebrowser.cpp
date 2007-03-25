@@ -423,6 +423,17 @@ void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem
 
 }
 
+void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
+{
+   debug() << "addMoody: " << mood << endl;
+   MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByMood( mood );
+   
+   foreach (MagnatuneTrack track, tracks) {
+       addTrackToPlaylist( &track );
+   }
+}
+
+
 using namespace Context;
 
 void MagnatuneBrowser::polish( )
@@ -483,22 +494,24 @@ void MagnatuneBrowser::polish( )
         i.toFront();
         while (i.hasNext()) {
            i.next();
-           if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8 );
-           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12 );
-           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16 );
-           else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20 );
-           else cloudBox->addText( i.key(), 24 );
+           if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+           else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+           else cloudBox->addText( i.key(), 24, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
         }
 
 
          //ContextView::instance()->clear();
          ContextView::instance()->scene()->addItem( cloudBox );
+         //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
 
 
     }
 
 
 }
+
 
 
 

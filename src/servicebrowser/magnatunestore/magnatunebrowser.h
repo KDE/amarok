@@ -174,6 +174,13 @@ private slots:
      */
     void slotSelectionChanged( ServiceModelItemBase * selectedItem );
 
+  
+    /**
+     * Adds all tracks with a common mood to the playlist
+     * @param mood The mood of the tracks to add
+     */
+    void addMoodyTracksToPlaylist( QString mood );
+
 private:
     /**
      * Helper function that initializes the button panel below the list view
