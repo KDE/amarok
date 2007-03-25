@@ -20,6 +20,8 @@
 
 #include "querybuilder.h"
 
+#include <QString>
+
 class Collection
 {
     public:

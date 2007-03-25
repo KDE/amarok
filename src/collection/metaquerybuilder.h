@@ -46,6 +46,6 @@ class MetaQueryBuilder : public QueryBuilder
 
     private:
         QList<QueryBuilder*> builders;
-}
+};
 
 #endif /* AMAROK_COLLECTION_METAQUERYBUILDER_H */

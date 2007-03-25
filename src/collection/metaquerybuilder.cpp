@@ -18,6 +18,8 @@
 
 #include "metaquerybuilder.h"
 
+#include <QGlobal>
+
 MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     : super()
 {

@@ -21,6 +21,7 @@
 #include "collection.h"
 #include "metaquerybuilder.h"
 
+#include <QGlobal>
 #include <QList>
 
 struct CollectionManager::Private

@@ -41,7 +41,7 @@ class QueryBuilder : public QObject
         virtual QueryBuilder* addReturnValue() = 0;
         virtual QueryBuilder* orderBy() = 0;
         
-}
+};
 
 #endif /* AMAROK_COLLECTION_QUERYBUILDER_H */
 
