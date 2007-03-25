@@ -115,19 +115,24 @@ void CloudBox::addText(QString text, int weight)
     if (itemRect.height() > m_currentLineMaxHeight)
         m_currentLineMaxHeight = itemRect.height();
 
+
     if ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
+       
+         // check if item will fit inside cloud at all... if not, just skip it
+        // (Does anyone have a better idea how to handle this? )
+        if  ( itemRect.width() > parentRect.width() ) {
+            delete item;
+            return;
+        }
+
         m_runningY += m_currentLineMaxHeight;
         m_runningX = 0;
         m_currentLineMaxHeight = 0;
     }
 
-    // check if item will fit inside cloud at all... if not, just skip it
-    // (Does anyone have a better idea how to handle this? )
+   
 
-    if  ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
-        delete item;
-        return;
-    }
+
     else if ( ( itemRect.height() + m_runningY + m_maxFontSize - weight ) > parentRect.height() ) 
     {
         // we need some more vertical space... add it (ugly hack)
