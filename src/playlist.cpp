@@ -2456,12 +2456,20 @@ Playlist::contentsDropEvent( QDropEvent *e )
     if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
-        if( dynamicMode() && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
+        QList<Q3ListViewItem*> items = selectedItems();
+        if( dynamicMode() && after )
         {
-            QList<Q3ListViewItem*> items = selectedItems();
-            for(QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
-                static_cast<PlaylistItem *>(*it)->setDynamicEnabled( true );
+            Q3ListViewItem *item;
+            bool enabled = static_cast<PlaylistItem *>(after)->isDynamicEnabled();
+            for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
+                static_cast<PlaylistItem *>(*it)->setDynamicEnabled( enabled );
         }
+        else if( dynamicMode() && !after && (*items.begin()) == Playlist::instance()->firstChild() )
+        {
+                Q3ListViewItem *item;
+                for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
+                	static_cast<PlaylistItem *>(*it)->setDynamicEnabled( false );
+    	}
     }
 
     else {
