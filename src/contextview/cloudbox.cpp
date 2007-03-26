@@ -109,16 +109,14 @@ void CloudBox::addText(QString text, int weight, QObject * reciever, const char 
 {
     //debug() << "adding new text: " << text << " size: " << weight << endl;
 
+    
+    // create the new text item
     CloudTextItem * item = new CloudTextItem ( text, this, scene() );
-
     item->connect ( item, SIGNAL( clicked( QString ) ), reciever, slot );
-
     QFont font = item->font();
-
     font.setPointSize( weight );
     item->setFont( font );
 
-    
     QRectF itemRect = item->boundingRect();
     QRectF parentRect = boundingRect();
 
@@ -129,32 +127,71 @@ void CloudBox::addText(QString text, int weight, QObject * reciever, const char 
         return;
     }
 
-
-    if (itemRect.height() - (weight - 8) / 2  > m_currentLineMaxHeight)
-        m_currentLineMaxHeight = itemRect.height()  - (weight - 8) / 2;
-
-
+    // Check if item will fit on the current line, if not, print current line   
     if ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
-       
 
-        m_runningY += m_currentLineMaxHeight;
+        adjustCurrentLinePos();
         m_runningX = 0;
-        m_currentLineMaxHeight = 0;
+
     }
 
-   
+    m_runningX += itemRect.width();
+
+    m_currentLineItems.append( item );
+
+}
+
+void CloudBox::adjustCurrentLinePos()
+{
+    
+    if ( m_currentLineItems.isEmpty() ) return;
 
 
-    else if ( ( itemRect.height() + m_runningY + m_maxFontSize - weight ) > parentRect.height() ) 
-    {
-        // we need some more vertical space... add it (ugly hack)
-        int missingHeight = (itemRect.height() + m_runningY + m_maxFontSize - weight) -  parentRect.height();
-        setRect(parentRect.x(), parentRect.y(), parentRect.width(), parentRect.height() + missingHeight );
-     }
+    int totalWidth = 0;
+    int maxHeight = 0;
+    int offsetX = 0;
+    int offsetY = 0;
+    int currentX = 0;
 
-    item->setPos( QPointF( m_runningX, m_runningY + (m_maxFontSize - weight ) ) );
-    m_runningX += itemRect.width(); 
 
+    CloudTextItem * currentItem;
+    QRectF currentItemRect;
+    
+
+    //First we run through the list to get the max height of an item
+    // and the total width of all items.
+    foreach( currentItem, m_currentLineItems ) {
+        currentItemRect = currentItem->boundingRect();
+        totalWidth += currentItemRect.width();
+        if ( currentItemRect.height() > maxHeight ) maxHeight = currentItemRect.height();
+    }
+
+    //do we have enough vertical space for this line? If not, create some!
+    if ( ( m_runningY + maxHeight ) > boundingRect().height() ) {
+        int missingHeight = ( m_runningY + maxHeight ) -  boundingRect().height();
+        setRect(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height() + missingHeight );
+    }
+
+    //calc the X offset that makes the line centered horizontally
+    offsetX = ( boundingRect().width() - totalWidth ) / 2;
+
+    //then remove all items from the list, setting the correct position of each
+    // in the process
+    while (!m_currentLineItems.isEmpty()) {
+        currentItem = m_currentLineItems.takeFirst();
+        currentItemRect = currentItem->boundingRect();
+        offsetY = ( (maxHeight - currentItemRect.height()) / 2 );
+        currentItem->setPos( QPointF( currentX + offsetX, m_runningY + offsetY ) );
+        currentX += currentItemRect.width();
+   }
+
+   m_runningY += maxHeight;
+
+}
+
+void Context::CloudBox::done()
+{
+    adjustCurrentLinePos();
 
 }
 

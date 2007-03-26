@@ -73,7 +73,19 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
         void addText(QString text, int weight, QObject * reciever, const char * slot);
 
+        /**
+         * Makes sure all elements are correctly positioned
+         * (the last line might not have been printed yet
+         */
+        void done();
+
     private:
+
+        /**
+         * Adjusts the current line in the cloud so all ellements are alligned vertically
+         * and the whole line is centered in the cloud box
+         */
+        void adjustCurrentLinePos();
 
         qreal m_runningX;
         qreal m_runningY;
@@ -81,6 +93,8 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
         int m_maxFontSize;
         int m_minFontSize;
+ 
+        QList<CloudTextItem *> m_currentLineItems;
 
 
     };

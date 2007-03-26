@@ -516,7 +516,7 @@ void MagnatuneBrowser::polish( )
            else cloudBox->addText( i.key(), 24, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
         }
 
-
+         cloudBox->done();
          //ContextView::instance()->clear();
          ContextView::instance()->scene()->addItem( cloudBox );
          //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
