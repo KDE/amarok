@@ -13,6 +13,7 @@
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "pixmapviewer.h"
+#include "playlist.h"
 
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>
@@ -484,7 +485,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    enum { SHOW, FETCH, CUSTOM, DELETE };
+    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND };
 
     KPopupMenu menu;
 
@@ -495,11 +496,13 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Selected Covers" ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover for Selected Albums" ), CUSTOM );
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Selected Covers" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     }
     else {
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
@@ -530,6 +533,20 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case DELETE:
             deleteSelectedCovers();
             break;
+
+       case APPEND:
+       {
+           CoverViewItem* sel;
+           for ( sel = selected.first(); sel; sel = selected.next() )
+           {
+               QString artist_id;
+               QString album_id;
+               artist_id.setNum( CollectionDB::instance()->artistID( sel->artist() ) );
+               album_id.setNum( CollectionDB::instance()->albumID( sel->album() ) );
+               Playlist::instance()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
+           }
+           break;
+       }
 
         default: ;
     }

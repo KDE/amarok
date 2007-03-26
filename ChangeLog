@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * Append an album to the playlist by right-clicking on it from within
+      the Cover Manager.  Patch by Doug Reich <dreich@hmc.edu>.
     * Faster playlist handling. Patch by Ovy <ovy@alum.mit.edu>. (BR 142255)
     * The moodbar process has been given a higher priority. (BR 136867)
     * Allow for lyrics scripts to specifiy site, site_url, and add_url from
@@ -15,9 +17,11 @@ VERSION 1.4.6
 
   BUGFIXES:
     * Made the settings dialog less tall. (BR 141250)
+    * Star ratings now update instantly in the Context Browser, OSD, and
+      Collection Browser.
     * lyrc script did not work behind proxy due to a stray quote mark. Gentoo
-      Bug 166050
-    * Fix compilation on kde-3.3 systems
+      Bug 166050.
+    * Fix compilation on kde-3.3 systems.
     * amarok_live.py now uses popen correctly. Patch by Luke Macken
       <lmacken@fedoraproject.org>. (BR 127804)
     * Make amarok_proxy.rb use HTTP/1.0 as we don't support chunked responses.
