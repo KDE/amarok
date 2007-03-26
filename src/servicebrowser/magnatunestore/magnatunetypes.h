@@ -24,7 +24,7 @@
 #include <QDateTime>
 #include <QString>
 #include <QStringList>
-#include <q3valuelist.h>
+#include <QList>
 
 
 class MagnatuneArtist 
@@ -148,8 +148,8 @@ public:
     QStringList getMoods() const;
 };
 
-typedef Q3ValueList<MagnatuneArtist> MagnatuneArtistList;
-typedef Q3ValueList<MagnatuneAlbum> MagnatuneAlbumList;
-typedef Q3ValueList<MagnatuneTrack> MagnatuneTrackList;
+typedef QList<MagnatuneArtist> MagnatuneArtistList;
+typedef QList<MagnatuneAlbum> MagnatuneAlbumList;
+typedef QList<MagnatuneTrack> MagnatuneTrackList;
 
 #endif

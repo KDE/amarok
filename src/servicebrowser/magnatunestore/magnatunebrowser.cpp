@@ -427,10 +427,25 @@ void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 {
    debug() << "addMoody: " << mood << endl;
    MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByMood( mood );
-   
-   foreach (MagnatuneTrack track, tracks) {
-       addTrackToPlaylist( &track );
+
+   int numberOfTracks = tracks.size();
+
+   if ( numberOfTracks < 11 ) {
+
+       foreach (MagnatuneTrack track, tracks) {
+           addTrackToPlaylist( &track );
+       }
    }
+
+   int randomIndex;
+   for ( int i = 0; i < 10; i++ ) {
+
+       randomIndex = rand() % (numberOfTracks - i);
+     
+       addTrackToPlaylist( &tracks.takeAt( randomIndex ) );
+       
+    }
+
 }
 
 
