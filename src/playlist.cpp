@@ -2419,12 +2419,19 @@ Playlist::contentsDropEvent( QDropEvent *e )
     if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
-        if( dynamicMode() && after && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
+        QPtrList<QListViewItem> items = selectedItems();
+        if( dynamicMode() && after )
         {
-            QPtrList<QListViewItem> items = selectedItems();
+            QListViewItem *item;
+            bool enabled = static_cast<PlaylistItem *>(after)->isDynamicEnabled();
+            for( item = items.first(); item; item = items.next() )
+                    static_cast<PlaylistItem *>(item)->setDynamicEnabled( enabled );
+        }
+        else if( dynamicMode() && !after && items.first() == Playlist::instance()->firstChild() )
+        {
             QListViewItem *item;
             for( item = items.first(); item; item = items.next() )
-                static_cast<PlaylistItem *>(item)->setDynamicEnabled( true );
+                static_cast<PlaylistItem *>(item)->setDynamicEnabled( false );
         }
     }
 
