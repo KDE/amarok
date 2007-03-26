@@ -75,6 +75,7 @@ class CoverManager : public QSplitter
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         void viewSelectedCover();
+        void playSelectedAlbums();
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 

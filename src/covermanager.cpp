@@ -12,6 +12,7 @@
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "pixmapviewer.h"
+#include "playlist.h"
 
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <QFile>
@@ -488,7 +489,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    enum { SHOW, FETCH, CUSTOM, DELETE };
+    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND };
 
     KMenu menu;
 
@@ -509,9 +510,16 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     QAction* unsetAction = new QAction( KIcon( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
     connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
 
+    QAction* playAlbumAction = new QAction( KIcon( Amarok::icon( "add_playlist" ) )
+        , i18np( "&Append to Playlist", "&Append Selected Albums to Playlist", nSelected )
+        , &menu );
+
+    connect( playAlbumAction, SIGNAL( triggered() ), this, SLOT( playSelectedAlbums() ) );
+
     if( nSelected > 1 ) {
         menu.addAction( fetchSelectedAction );
         menu.addAction( setCustomAction );
+        menu.addAction( playAlbumAction );
         menu.addAction( unsetAction );
     }
     else {
@@ -522,6 +530,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
         menu.addAction( viewAction );
         menu.addAction( fetchSelectedAction );
         menu.addAction( setCustomAction );
+        menu.addAction( playAlbumAction );
         menu.insertSeparator();
 
         menu.addAction( unsetAction );
@@ -758,6 +767,18 @@ void CoverManager::deleteSelectedCovers()
     }
 }
 
+
+void CoverManager::playSelectedAlbums()
+{
+    Q3PtrList<CoverViewItem> selected = selectedItems();
+    QString artist_id, album_id;
+    for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
+    {
+        artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
+        album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
+        Playlist::instance()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
+    }
+}
 
 Q3PtrList<CoverViewItem> CoverManager::selectedItems()
 {
