@@ -2419,7 +2419,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
-        if( dynamicMode() && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
+        if( dynamicMode() && after && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
         {
             QPtrList<QListViewItem> items = selectedItems();
             QListViewItem *item;
