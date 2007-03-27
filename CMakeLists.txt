@@ -22,7 +22,7 @@ find_package(Taglib REQUIRED)
 find_package(RUBY REQUIRED)
 
 add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
 macro_optional_find_package(Njb)
 macro_optional_find_package(Ifp)
