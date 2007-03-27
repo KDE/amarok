@@ -2437,12 +2437,14 @@ Playlist::contentsDropEvent( QDropEvent *e )
     Q3ListViewItem *parent = 0;
     Q3ListViewItem *after  = m_marker;
 
-    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
+    if( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
     {
         // If marker is disabled, and there is a current track, or marker is not the last enabled track
         // don't allow inserting
-        if ( m_currentTrack
-            || ( m_marker->itemBelow() && !( static_cast<PlaylistItem *>(m_marker->itemBelow())->isDynamicEnabled() ) ) ) {
+        if( ( m_marker && ( m_currentTrack || ( m_marker->itemBelow() &&
+                            !( static_cast<PlaylistItem *>(m_marker->itemBelow())->isDynamicEnabled() ) ) ) )
+            || (!m_marker ) )
+        {
             slotEraseMarker();
             return;
         }
@@ -2464,12 +2466,6 @@ Playlist::contentsDropEvent( QDropEvent *e )
             for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
                 static_cast<PlaylistItem *>(*it)->setDynamicEnabled( enabled );
         }
-        else if( dynamicMode() && !after && (*items.begin()) == Playlist::instance()->firstChild() )
-        {
-                Q3ListViewItem *item;
-                for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
-                	static_cast<PlaylistItem *>(*it)->setDynamicEnabled( false );
-    	}
     }
 
     else {
