@@ -17,36 +17,37 @@
 #include "config.h"           //HAVE_LIBVISUAL definition
 
 #include "actionclasses.h"    //see toolbar construction
-#include "amarok.h"
 #include "amarokconfig.h"
+#include "amarok.h"
 #include "analyzerwidget.h"
-#include "sidebar.h"
-#include "sidebar.moc"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "contextview/contextview.h"
 #include "debug.h"
-#include "mediadevicemanager.h"
+#include "dynamicmode.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "mediabrowser.h"
-#include "dynamicmode.h"
-#include "playlist.h"
+#include "mediadevicemanager.h"
 #include "playlistbrowser.h"
+#include "playlist.h"
 #include "playlistwindow.h"
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
+#include "servicebrowser/magnatunestore/magnatunebrowser.h"
+#include "servicebrowser/scriptableservice/scriptableservice.h"
+#include "servicebrowser/servicebrowser.h"
+#include "sidebar.h"
+#include "sidebar.moc"
 #include "statistics.h"
 #include "statusbar.h"
 #include "threadmanager.h"
-#include "servicebrowser/servicebrowser.h"
-#include "servicebrowser/magnatunestore/magnatunebrowser.h"
-#include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "toolbar.h"
+#include "ui_controlbar.h"
 #include "volumewidget.h"
 
 #include <QEvent>           //eventFilter()
@@ -169,31 +170,31 @@ void PlaylistWindow::init()
         plBar->addAction( new KToolBarSpacerAction( this ) );
     //END Playlist Toolbar
     }
+    {
+        m_controlBar = new QWidget( this );
+        m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+        Ui::ControlBar uicb;
+        uicb.setupUi( m_controlBar );
 
-    m_controlBar = new QWidget( this );
-    m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    {//START Main toolbar
-        QGridLayout *gl = new QGridLayout( m_controlBar );
-        Amarok::ToolBar *playerControlsToolbar = new Amarok::ToolBar( m_controlBar );
-        {
-            playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-            playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-            playerControlsToolbar->setIconDimensions( 32 );
-            playerControlsToolbar->setMovable( false );
+        #define center( A, O ) uicb.A##boxLayout->setAlignment( uicb.O, Qt::AlignCenter ); uicb.O->show();
+        center( v, m_progressBar );
+        center( v, m_playerControlsToolbar );
+        center( h, m_searchWidget );
+        center( h, m_analyzerWidget );
+        center( h, m_volumeWidget );
+        #undef center
 
-            playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
-            playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
-            playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
-            playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
-        }
-        m_controlBar->setLayout( gl );
-        gl->addWidget( playerControlsToolbar, 0, 0 );
-        gl->addWidget( new VolumeWidget( m_controlBar ), 0, 1 );
-        gl->addWidget( new AnalyzerWidget( m_controlBar ), 0, 2);
-        m_searchWidget = new SearchWidget( m_controlBar, this );
-        gl->addWidget( m_searchWidget, 0, 3 );
-        gl->addWidget( new TimeSlider( m_controlBar ), 1, 0, 1, 4 );
+        uicb.m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        uicb.m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        uicb.m_playerControlsToolbar->setIconDimensions( 32 );
+        uicb.m_playerControlsToolbar->setMovable( false );
+        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
+        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
+        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
+        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
 
+        m_searchWidget = uicb.m_searchWidget;
+        m_searchWidget->setup( this );
     }
 
     QPalette p;
@@ -232,13 +233,15 @@ void PlaylistWindow::init()
     contextSplitter->addWidget( cb );
     contextSplitter->addWidget( cv );
 
-    KHBox *centralWidget = new KHBox( this );
-    QSplitter *verticalSplitter = new QSplitter( Qt::Vertical, centralWidget );
-    verticalSplitter->addWidget( m_controlBar );
-    QSplitter *horizontalSplitter = new QSplitter( Qt::Horizontal, verticalSplitter );
+    QWidget *centralWidget = new QWidget( this );
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QSplitter *horizontalSplitter = new QSplitter( Qt::Horizontal, centralWidget );
     horizontalSplitter->addWidget( m_browsers );
     horizontalSplitter->addWidget( contextWidget );
     horizontalSplitter->addWidget( playlistwindow );
+    mainLayout->addWidget( m_controlBar );
+    mainLayout->addWidget( horizontalSplitter );
+    centralWidget->setLayout( mainLayout );
 
     setCentralWidget( centralWidget );
 

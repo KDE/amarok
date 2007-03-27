@@ -16,7 +16,7 @@
 #include <QWidget>
 
 class KLineEdit;
-
+class KPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
 
@@ -24,11 +24,15 @@ class SearchWidget : public QWidget
 {
     Q_OBJECT
     public:
-        SearchWidget( QWidget *, QWidget * );
+        SearchWidget( QWidget *parent );
+        SearchWidget( QWidget *parent, QWidget *caller );
         KLineEdit *lineEdit() { return m_sw; }
+        void setup( QObject* caller );
     private:
+        void init( QWidget* parent );
+
         KLineEdit *m_sw;
-        QWidget *m_caller;
+        KPushButton * m_filterButton;
 };
 
 #endif

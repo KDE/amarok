@@ -314,6 +314,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    trackpickerdialogbase.ui )
 
 kde4_add_ui_files(amarok_LIB_SRCS
+    controlbar.ui
     deletedialogbase.ui
     scriptmanagerbase.ui
     tagguesserconfigdialog.ui

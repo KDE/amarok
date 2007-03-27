@@ -132,7 +132,7 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, pub
 
         SearchWidget    *m_searchWidget;
 //         KToolBar      *m_toolbar;
-        QWidget         *m_controlBar;
+        QWidget        *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
