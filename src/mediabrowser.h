@@ -43,7 +43,7 @@ class KAction;
 class KComboBox;
 class KDialog;
 class KPushButton;
-class KShellProcess;
+class K3ShellProcess;
 
 class Q3DragObject;
 class QLabel;
@@ -640,7 +640,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         bool        m_transcodeAlways;
         bool        m_transcodeRemove;
 
-        KShellProcess   *sysProc;
+        K3ShellProcess   *sysProc;
         MediaBrowser    *m_parent;
         MediaView       *m_view;
         Medium           m_medium;

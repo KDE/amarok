@@ -1942,7 +1942,7 @@ MediaDevice::MediaDevice()
     , m_staleItem( 0 )
     , m_orphanedItem( 0 )
 {
-    sysProc = new KShellProcess(); Q_CHECK_PTR(sysProc);
+    sysProc = new K3ShellProcess(); Q_CHECK_PTR(sysProc);
 }
 
 void MediaDevice::init( MediaBrowser* parent )

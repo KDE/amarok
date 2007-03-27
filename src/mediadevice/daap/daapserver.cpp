@@ -29,18 +29,18 @@ DaapServer::DaapServer(QObject* parent, char* name)
 {
     DEBUG_BLOCK
 
-    m_server = new KProcIO();
+    m_server = new K3ProcIO();
     m_server->setComm( K3Process::All );
     *m_server << "amarok_daapserver.rb";
     *m_server << KStandardDirs::locate( "data", "amarok/ruby_lib/" );
     *m_server << KStandardDirs::locate( "lib", "ruby_lib/" );
     *m_server << KStandardDirs::locate( "data", "amarok/scripts/ruby_debug/debug.rb" );
-    if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
+    if( !m_server->start( K3ProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_daapserver.rb" << endl;
         return;
     }
 
-    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readSql() ) );
+    connect( m_server, SIGNAL( readReady( K3ProcIO* ) ), this, SLOT( readSql() ) );
 }
 
 DaapServer::~DaapServer()

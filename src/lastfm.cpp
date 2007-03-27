@@ -28,6 +28,7 @@
 #include <q3http.h>
 #include <QLabel>
 #include <QRegExp>
+#include <kapplication.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QByteArray>
@@ -461,7 +462,7 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << AmarokConfig::soundSystem();
     *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
 
-    if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
+    if( !m_server->start( K3ProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_proxy.rb" << endl;
         return false;
     }
@@ -473,7 +474,7 @@ WebService::handshake( const QString& username, const QString& password )
         if( line == "AMAROK_PROXY: startup" ) break;
     }
 
-    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
+    connect( m_server, SIGNAL( readReady( K3ProcIO* ) ), this, SLOT( readProxy() ) );
     connect( m_server, SIGNAL( processExited( K3Process* ) ), Controller::instance(), SLOT( playbackStopped() ) );
 
     return true;

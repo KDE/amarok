@@ -29,7 +29,7 @@ class DaapServer : public QObject
     public slots:
         void readSql();
     private:
-        KProcIO* m_server;
+        K3ProcIO* m_server;
         #ifdef DNSSD_SUPPORT
             DNSSD::PublicService* m_service;
         #endif

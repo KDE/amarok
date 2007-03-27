@@ -28,7 +28,7 @@
 #include "threadmanager.h" //baseclass
 
 class CollectionDB;
-class KProcIO;
+class K3ProcIO;
 
 /**
  * @class ScanController
@@ -108,7 +108,7 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         static const uint MAX_RESTARTS = 80;
         static const uint MAX_FAILURE_PERCENTAGE = 5;
 
-        KProcIO* m_scanner;
+        K3ProcIO* m_scanner;
         QStringList m_folders;
         QStringList m_foldersToRemove;
         bool m_incremental;

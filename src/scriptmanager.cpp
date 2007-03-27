@@ -53,7 +53,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmenu.h>
-#include <kprocio.h>
+#include <k3procio.h>
 #include <kprotocolmanager.h>
 #include <kpushbutton.h>
 #include <krun.h>
@@ -76,10 +76,10 @@ namespace Amarok {
     }
 
      /**
-    * This constructor is needed so that the correct codec is used. KProcIO defaults
+    * This constructor is needed so that the correct codec is used. K3ProcIO defaults
     * to latin1, while the scanner uses UTF-8.
     */
-    ProcIO::ProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
+    ProcIO::ProcIO() : K3ProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
 
     QString
     proxyForUrl(const QString& url)
@@ -822,7 +822,7 @@ ScriptManager::ensureScoreScriptRunning()
 
 
 void
-ScriptManager::terminateProcess( KProcIO** proc )
+ScriptManager::terminateProcess( K3ProcIO** proc )
 {
     if( *proc ) {
         (*proc)->kill(); // Sends SIGTERM
@@ -838,7 +838,7 @@ void
 ScriptManager::notifyScripts( const QString& message )
 {
     foreach( ScriptItem item, m_scripts ) {
-        KProcIO* const proc = item.process;
+        K3ProcIO* const proc = item.process;
         if( proc ) proc->writeStdin( message );
     }
 }

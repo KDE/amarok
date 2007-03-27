@@ -31,7 +31,7 @@
 
 class KLineEdit;
 class KAction;
-class KProcIO;
+class K3ProcIO;
 class KUrl;
 class Q3Socket;
 class QTimer;
@@ -149,7 +149,7 @@ namespace LastFm
             **/
             void verifyUser( const QString& user, const QString& pass );
 
-            KProcIO* getServer() { return m_server; }
+            K3ProcIO* getServer() { return m_server; }
             QString proxyUrl() { return m_proxyUrl; }
 
         public slots:
@@ -200,7 +200,7 @@ namespace LastFm
             bool    m_subscriber;   // self explanatory
 
             QString    m_proxyUrl;
-            KProcIO   *m_server;
+            K3ProcIO   *m_server;
             MetaBundle m_metaBundle;
 
         private slots:

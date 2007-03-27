@@ -33,7 +33,7 @@
 class MetaBundle;
 class KArchiveDirectory;
 class K3Process;
-class KProcIO;
+class K3ProcIO;
 
 
 /**
@@ -147,8 +147,8 @@ class ScriptManager : public KDialog, public EngineObserver
 
         QString ensureScoreScriptRunning();
 
-        /** Terminates a process with SIGTERM and deletes the KProcIO object */
-        void terminateProcess( KProcIO** proc );
+        /** Terminates a process with SIGTERM and deletes the K3ProcIO object */
+        void terminateProcess( K3ProcIO** proc );
 
         /** Sends a string message to all running scripts */
         void notifyScripts( const QString& message );
@@ -180,7 +180,7 @@ class ScriptManager : public KDialog, public EngineObserver
         struct ScriptItem {
             KUrl             url;
             QString          type;
-            KProcIO*         process;
+            K3ProcIO*         process;
             QTreeWidgetItem* li;
             QString          log;
             ScriptItem() : process( 0 ), li( 0 ) {}

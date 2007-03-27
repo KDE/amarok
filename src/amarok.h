@@ -12,7 +12,7 @@
 #include <kactioncollection.h>
 #include <kconfig.h>
 #include <kurl.h> // recursiveUrlExpand
-#include <kprocio.h> //Amarok::ProcIO
+#include <k3procio.h> //Amarok::ProcIO
 #include <kio/netaccess.h>
 
 #include "amarok_export.h"
@@ -264,12 +264,12 @@ namespace Amarok
     * happens to be called in the forked process
     * See bug #103750 for more information.
     */
-    class AMAROK_EXPORT ProcIO : public KProcIO {
+    class AMAROK_EXPORT ProcIO : public K3ProcIO {
         public:
         ProcIO(); // ctor sets the textcodec to UTF-8, in scriptmanager.cpp
         virtual int commSetupDoneC() {
-            const int i = KProcIO::commSetupDoneC();
-            Amarok::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
+            const int i = K3ProcIO::commSetupDoneC();
+            Amarok::closeOpenFiles( K3ProcIO::out[0],K3ProcIO::in[0],K3ProcIO::err[0] );
             return i;
         };
     };
@@ -287,7 +287,7 @@ namespace Amarok
         Process( QObject *parent = 0 ) : K3Process( parent ) {}
         virtual int commSetupDoneC() {
             const int i = K3Process::commSetupDoneC();
-            Amarok::closeOpenFiles(K3Process::out[0],K3Process::in[0], KProcess::err[0]);
+            Amarok::closeOpenFiles(K3Process::out[0],K3Process::in[0], K3Process::err[0]);
             return i;
         };
     };
