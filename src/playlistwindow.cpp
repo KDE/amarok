@@ -150,8 +150,7 @@ void PlaylistWindow::init()
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );
 
-
-//     m_toolbar = new Amarok::PrettyToolBar( this, "mainToolBar" );
+    playlistwindow->setMinimumSize( QSize(250,100) );
 
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -172,6 +171,7 @@ void PlaylistWindow::init()
     }
     {
         m_controlBar = new QWidget( this );
+        m_controlBar->setContentsMargins( 0, 0, 0, 0 );
         m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
         Ui::ControlBar uicb;
         uicb.setupUi( m_controlBar );
@@ -206,7 +206,8 @@ void PlaylistWindow::init()
                         startColor.green() * .7,
                         startColor.blue() * .7,
                         100 /*alpha*/ );
-    QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(), m_controlBar->contentsRect().bottomLeft() );
+    QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
+                                     m_controlBar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .7, middleColor );
     toolbarGradiant.setColorAt( 1, endColor );
@@ -229,18 +230,25 @@ void PlaylistWindow::init()
     ContextView *cv = ContextView::instance();
 
     KVBox *contextWidget = new KVBox( this );
+    contextWidget->setMinimumSize( QSize(500,100) );
     QSplitter *contextSplitter = new QSplitter( Qt::Vertical, contextWidget );
     contextSplitter->addWidget( cb );
     contextSplitter->addWidget( cv );
 
+    m_browsers->setMaximumSize( QSize(300,7000) );
+    m_browsers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+
     QWidget *centralWidget = new QWidget( this );
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    QSplitter *horizontalSplitter = new QSplitter( Qt::Horizontal, centralWidget );
-    horizontalSplitter->addWidget( m_browsers );
-    horizontalSplitter->addWidget( contextWidget );
-    horizontalSplitter->addWidget( playlistwindow );
+//     QHBoxLayout *childSplitter = new QHBoxLayout;
+    QSplitter *childSplitter = new QSplitter( Qt::Horizontal, centralWidget );
+    childSplitter->addWidget( m_browsers );
+    childSplitter->addWidget( contextWidget );
+    childSplitter->addWidget( playlistwindow );
     mainLayout->addWidget( m_controlBar );
-    mainLayout->addWidget( horizontalSplitter );
+    mainLayout->addWidget( childSplitter );
     centralWidget->setLayout( mainLayout );
 
     setCentralWidget( centralWidget );
