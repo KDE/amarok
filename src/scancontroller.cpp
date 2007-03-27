@@ -84,7 +84,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     *m_scanner << "amarokcollectionscanner";
     *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
 
-    // KProcess must be started from the GUI thread, so we're invoking the scanner
+    // K3Process must be started from the GUI thread, so we're invoking the scanner
     // here in the ctor:
     if( incremental )
     {

@@ -19,7 +19,7 @@
 #include "k3bexporter.h"
 #include "amarok.h"
 
-#include <kprocess.h>
+#include <k3process.h>
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
@@ -168,7 +168,7 @@ void K3bExporter::exportViaCmdLine( const KUrl::List &urls, int openmode )
         return;
     }
 
-    KProcess *process = new KProcess;
+    K3Process *process = new K3Process;
 
     *process << "k3b";
     *process << cmdOption;
@@ -178,7 +178,7 @@ void K3bExporter::exportViaCmdLine( const KUrl::List &urls, int openmode )
     for( it = urls.begin(); it != end; ++it )
         *process << ( *it ).path();
 
-    if( !process->start( KProcess::DontCare ) )
+    if( !process->start( K3Process::DontCare ) )
         KMessageBox::error( 0, i18n("Unable to start K3b.") );
 }
 

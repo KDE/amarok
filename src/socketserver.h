@@ -20,7 +20,7 @@
 #include <QByteArray>
 
 class QPoint;
-class KProcess;
+class K3Process;
 
 
 namespace Amarok
@@ -89,7 +89,7 @@ namespace Vis
 
             virtual void stateChange( bool state );
 
-            KProcess   *m_proc;
+            K3Process   *m_proc;
             int         m_sockfd;
             const char *m_command;
         };
@@ -98,8 +98,8 @@ namespace Vis
         void rightButton( Q3ListViewItem*, const QPoint&, int );
 
     public slots:
-        void processExited( KProcess* );
-        void receivedStdout( KProcess*, char*, int );
+        void processExited( K3Process* );
+        void receivedStdout( K3Process*, char*, int );
     };
 } //namespace VIS
 

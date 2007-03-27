@@ -223,16 +223,16 @@
 // then decides to clear the playlist again.  The jobEvent() signal
 // passes the URL of the job that was completed.
 //
-// The analyzer is actually run using a KProcess.  ThreadManager::Job
+// The analyzer is actually run using a K3Process.  ThreadManager::Job
 // is not a good solution, since we need more flexibility in the
-// queuing process, and in addition, KProcess'es must be started from
+// queuing process, and in addition, K3Process'es must be started from
 // the GUI thread!
 //
 // Important members:
 //   m_jobQueue:       this is a list of MoodServer::ProcData structures,
 //                     which contain the data needed to start and reference
 //                     a process, as well as a refcount.
-//   m_currentProcess: the currently-running KProcess, if any.
+//   m_currentProcess: the currently-running K3Process, if any.
 //   m_currentData:    the ProcData structure for the currently-running
 //                     process.
 //   m_moodbarBroken:  this is set when there's an error running the analyzer
@@ -257,7 +257,7 @@
 //       necessary; otherwise call slotNewJob().
 //
 //   (private slot) slotNewJob(): Called by slotJobCompleted() and queueJob().
-//       Take a job off the queue and start the KProcess.
+//       Take a job off the queue and start the K3Process.
 //
 //   (private slot) slotMoodbarPrefs(): Called when the Amarok config changes.
 //       If the moodbar has been disabled completely, kill the current job
@@ -479,14 +479,14 @@ MoodServer::slotNewJob( void )
                     << (m_currentData.m_outfile + ".tmp")
                     << m_currentData.m_infile;
 
-  connect( m_currentProcess, SIGNAL( processExited( KProcess* ) ),
-           SLOT( slotJobCompleted( KProcess* ) ) );
+  connect( m_currentProcess, SIGNAL( processExited( K3Process* ) ),
+           SLOT( slotJobCompleted( K3Process* ) ) );
 
-  // We have to enable KProcess::Stdout (even though we don't monitor
+  // We have to enable K3Process::Stdout (even though we don't monitor
   // it) since otherwise the child process crashes every time in
-  // KProcess::start() (but only when started from the loader!).  I
+  // K3Process::start() (but only when started from the loader!).  I
   // have no idea why, but I imagine it's a bug in KDE.
-  if( !m_currentProcess->start( KProcess::NotifyOnExit, KProcess::AllOutput ) )
+  if( !m_currentProcess->start( K3Process::NotifyOnExit, K3Process::AllOutput ) )
     {
       // If we have an error starting the process, it's never
       // going to work, so call moodbarBroken()
@@ -509,7 +509,7 @@ MoodServer::slotNewJob( void )
 // This always run in the GUI thread.  It is called
 // when an analyzer process terminates
 void
-MoodServer::slotJobCompleted( KProcess *proc )
+MoodServer::slotJobCompleted( K3Process *proc )
 {
     m_mutex.lock();
 

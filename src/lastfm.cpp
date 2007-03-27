@@ -453,7 +453,7 @@ WebService::handshake( const QString& username, const QString& password )
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
     m_server = new Amarok::ProcIO();
-    m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
+    m_server->setComm( K3Process::Communication( K3Process::AllOutput ) );
     *m_server << "amarok_proxy.rb";
     *m_server << "--lastfm";
     *m_server << QString::number( port );
@@ -474,7 +474,7 @@ WebService::handshake( const QString& username, const QString& password )
     }
 
     connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
-    connect( m_server, SIGNAL( processExited( KProcess* ) ), Controller::instance(), SLOT( playbackStopped() ) );
+    connect( m_server, SIGNAL( processExited( K3Process* ) ), Controller::instance(), SLOT( playbackStopped() ) );
 
     return true;
 }

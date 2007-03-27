@@ -30,7 +30,7 @@ DaapServer::DaapServer(QObject* parent, char* name)
     DEBUG_BLOCK
 
     m_server = new KProcIO();
-    m_server->setComm( KProcess::All );
+    m_server->setComm( K3Process::All );
     *m_server << "amarok_daapserver.rb";
     *m_server << KStandardDirs::locate( "data", "amarok/ruby_lib/" );
     *m_server << KStandardDirs::locate( "lib", "ruby_lib/" );

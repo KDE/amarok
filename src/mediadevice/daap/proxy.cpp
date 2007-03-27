@@ -58,7 +58,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     delete socket;
     m_proxyUrl = KUrl( QString("http://localhost:%1/daap.mp3").arg( port ) );
     //start proxy
-    m_proxy->setComm( KProcess::Communication( KProcess::AllOutput ) );
+    m_proxy->setComm( K3Process::Communication( K3Process::AllOutput ) );
     *m_proxy << "amarok_proxy.rb";
     *m_proxy << "--daap";
     *m_proxy << QString::number( port );
@@ -80,7 +80,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
         if( line == "AMAROK_PROXY: startup" ) break;
     }
     debug() << "started amarok_proxy.rb --daap " << QString::number( port ) << ' ' << realStream.url() << ' ' << AmarokConfig::soundSystem() << ' ' << hash << ' ' << revisionId << endl;
-    connect( m_proxy, SIGNAL( processExited( KProcess* ) ), this, SLOT( playbackStopped() ) );
+    connect( m_proxy, SIGNAL( processExited( K3Process* ) ), this, SLOT( playbackStopped() ) );
     connect( m_proxy, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
 }
 

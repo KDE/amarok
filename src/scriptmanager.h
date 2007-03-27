@@ -32,7 +32,7 @@
 
 class MetaBundle;
 class KArchiveDirectory;
-class KProcess;
+class K3Process;
 class KProcIO;
 
 
@@ -134,9 +134,9 @@ class ScriptManager : public KDialog, public EngineObserver
         void slotAboutScript();
         void slotShowContextMenu( const QPoint& );
 
-        void slotReceivedStdout( KProcess*, char*, int );
-        void slotReceivedStderr( KProcess*, char*, int );
-        void scriptFinished( KProcess* process );
+        void slotReceivedStdout( K3Process*, char*, int );
+        void slotReceivedStderr( K3Process*, char*, int );
+        void scriptFinished( K3Process* process );
 
     private:
         /** Returns all scripts of the given \p type */

@@ -163,12 +163,12 @@ namespace Amarok
     {
         return fileName.section( '/', 0, -2 );
     }
-  /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  /** Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
   * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
   * happens to be called in the forked process
   * See bug #103750 for more information.
   */
-  //TODO ugly hack, fix KProcess for KDE 4.0
+  //TODO ugly hack, fix K3Process for KDE 4.0
     void closeOpenFiles(int out, int in, int err); //defined in scriptmanager.cpp
 
     /**
@@ -259,7 +259,7 @@ namespace Amarok
     // class Amarok::ProcIO
     ////////////////////////////////////////////////////////////////////////////////
     /**
-    * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+    * Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
     * Used by Amarok::ProcIO and AmarokProcess, exploiting commSetupDoneC(), a virtual method that
     * happens to be called in the forked process
     * See bug #103750 for more information.
@@ -277,17 +277,17 @@ namespace Amarok
     ////////////////////////////////////////////////////////////////////////////////
     // class Amarok::Process
     ////////////////////////////////////////////////////////////////////////////////
-    /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+    /** Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
      * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
      * happens to be called in the forked process
      * See bug #103750 for more information.
      */
-    class AMAROK_EXPORT Process : public KProcess {
+    class AMAROK_EXPORT Process : public K3Process {
         public:
-        Process( QObject *parent = 0 ) : KProcess( parent ) {}
+        Process( QObject *parent = 0 ) : K3Process( parent ) {}
         virtual int commSetupDoneC() {
-            const int i = KProcess::commSetupDoneC();
-            Amarok::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
+            const int i = K3Process::commSetupDoneC();
+            Amarok::closeOpenFiles(K3Process::out[0],K3Process::in[0], KProcess::err[0]);
             return i;
         };
     };

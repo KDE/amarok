@@ -18,7 +18,7 @@
 #include "statusbar.h"
 #include <klocale.h>
 #include <kmenu.h>       //Vis::Selector
-#include <kprocess.h>         //Vis::Selector
+#include <k3process.h>         //Vis::Selector
 #include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
 #include <kdialog.h>
@@ -198,7 +198,7 @@ Vis::Selector::Selector( QWidget *parent )
 }
 
 void
-Vis::Selector::processExited( KProcess *proc )
+Vis::Selector::processExited( K3Process *proc )
 {
     for( Item *item = static_cast<Item*>( firstChild() ); item; item = static_cast<Item*>( item->nextSibling() ) )
         if( item->m_proc == proc )
@@ -207,7 +207,7 @@ Vis::Selector::processExited( KProcess *proc )
 
 // Shouldn't be necessary, but it's part of a fix to make libvisual work again when running with amarok binary
 void
-Vis::Selector::receivedStdout( KProcess */*proc*/, char* buffer, int length )
+Vis::Selector::receivedStdout( K3Process */*proc*/, char* buffer, int length )
 {
      debug() << QString::fromLatin1( buffer, length ) << endl;
 }
@@ -291,11 +291,11 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
                << Selector::instance()->m_server->path()
                << text( 0 );
 
-        connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
+        connect( m_proc, SIGNAL(processExited( K3Process* )), listView(), SLOT(processExited( K3Process* )) );
         // Shouldn't be necessary, but make visualizations work again when running with amarok binary
-        connect( m_proc, SIGNAL(receivedStdout (KProcess*, char*, int ) ), listView(), SLOT(receivedStdout (KProcess*, char*, int ) ) );
+        connect( m_proc, SIGNAL(receivedStdout (K3Process*, char*, int ) ), listView(), SLOT(receivedStdout (K3Process*, char*, int ) ) );
         debug() << "Starting visualization..\n";
-        if( m_proc->start( KProcess::NotifyOnExit, KProcess::AllOutput ) )
+        if( m_proc->start( K3Process::NotifyOnExit, K3Process::AllOutput ) )
             break;
 
         //ELSE FALL_THROUGH

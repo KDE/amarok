@@ -566,16 +566,16 @@ ScriptManager::slotRunScript( bool silent )
     if( m_scripts[name].process ) return false;
 
     Amarok::ProcIO* script = new Amarok::ProcIO();
-    script->setComm( static_cast<KProcess::Communication>( KProcess::All ) );
+    script->setComm( static_cast<K3Process::Communication>( K3Process::All ) );
     const KUrl url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
-    connect( script, SIGNAL( receivedStderr( KProcess*, char*, int ) ), SLOT( slotReceivedStderr( KProcess*, char*, int ) ) );
-    connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
-    connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
+    connect( script, SIGNAL( receivedStderr( K3Process*, char*, int ) ), SLOT( slotReceivedStderr( K3Process*, char*, int ) ) );
+    connect( script, SIGNAL( receivedStdout( K3Process*, char*, int ) ), SLOT( slotReceivedStdout( K3Process*, char*, int ) ) );
+    connect( script, SIGNAL( processExited( K3Process* ) ), SLOT( scriptFinished( K3Process* ) ) );
 
-    if( script->start( KProcess::NotifyOnExit ) )
+    if( script->start( K3Process::NotifyOnExit ) )
     {
         if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
         {
@@ -724,14 +724,14 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
 /* This is just a workaround, some scripts crash for some people if stdout is not handled. */
 void
-ScriptManager::slotReceivedStdout( KProcess*, char* buf, int len )
+ScriptManager::slotReceivedStdout( K3Process*, char* buf, int len )
 {
     debug() << QString::fromLatin1( buf, len ) << endl;
 }
 
 
 void
-ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
+ScriptManager::slotReceivedStderr( K3Process* process, char* buf, int len )
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;
@@ -749,7 +749,7 @@ ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
 
 
 void
-ScriptManager::scriptFinished( KProcess* process ) //SLOT
+ScriptManager::scriptFinished( K3Process* process ) //SLOT
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;

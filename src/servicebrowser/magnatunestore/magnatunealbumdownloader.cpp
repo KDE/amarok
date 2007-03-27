@@ -94,7 +94,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip " + KProcess::quote( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + KProcess::quote( m_currentAlbumUnpackLocation ) + " &";
+    QString unzipString = "unzip " + K3Process::quote( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + K3Process::quote( m_currentAlbumUnpackLocation ) + " &";
 
     debug() << "unpacking: " << unzipString << endl;
 

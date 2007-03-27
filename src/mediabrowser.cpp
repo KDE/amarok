@@ -81,7 +81,7 @@
 #include <kmessagebox.h>
 #include <k3multipledrag.h>
 #include <kmenu.h>
-#include <kprocess.h>
+#include <k3process.h>
 #include <kpushbutton.h>
 #include <krun.h>
 #include <kstandarddirs.h> //locate file
@@ -2429,7 +2429,7 @@ int MediaDevice::sysCall( const QString &command )
 
     sysProc->clearArguments();
     (*sysProc) << command;
-    if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
+    if (!sysProc->start( K3Process::Block, K3Process::AllOutput ))
         kFatal() << i18n("could not execute %1", command.local8Bit().data()) << endl;
 
     return (sysProc->exitStatus());
