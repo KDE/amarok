@@ -22,6 +22,7 @@
 #include "collection.h"
 
 #include <QList>
+#include <QMutex>
 
 class MetaQueryBuilder : public QueryBuilder
 {
@@ -44,8 +45,17 @@ class MetaQueryBuilder : public QueryBuilder
         virtual QueryBuilder* addReturnValue();
         virtual QueryBuilder* orderBy();
 
+        virtual QueryBuilder* includeCollection( const QString &collectionId );
+        virtual QueryBuilder* excludeCollection( const QString &collectionId );
+
+    private slots:
+        void slotQueryDone();
+
     private:
         QList<QueryBuilder*> builders;
+        int m_queryDoneCount;
+        QMutex m_queryDoneCountMutex;
+
 };
 
 #endif /* AMAROK_COLLECTION_METAQUERYBUILDER_H */

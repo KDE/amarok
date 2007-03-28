@@ -22,9 +22,15 @@
 
 MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     : super()
+    , m_queryDoneCount( 0 )
+    , m_queryDoneCountMutex()
 {
     foreach( Collection *c, collections )
-        builders.append( c->queryBuilder() );
+    {
+        QueryBuilder *b = c->queryBuilder();
+        builders.append( b );
+        connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
+    }
 }
 
 MetaQueryBuilder::~MetaQueryBuilder()
@@ -36,6 +42,7 @@ MetaQueryBuilder::~MetaQueryBuilder()
 QueryBuilder*
 MetaQueryBuilder::reset()
 {
+    m_queryDoneCount = 0;
     foreach( QueryBuilder *b, collections )
         b->reset();
     return this;
@@ -120,3 +127,36 @@ MetaQueryBuilder::orderBy()
         b->orderBy();
     return this;
 }
+
+QueryBuilder*
+MetaQueryBuilder::includeCollection( const QString &collectionId )
+{
+    foreach( QueryBuilder *b, collections )
+        b->includeCollection( collectionId );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::excludeCollection( const QString &collectionId )
+{
+    foreach( QueryBuilder *b, collections )
+        b->excludeCollection( collectionid );
+    return this;
+}
+
+void
+MetaQueryBuilder::slotQueryDone()
+{
+    m_queryDoneCountMutex.lock();
+    m_queryDoneCount++;
+    if ( m_queryDoneCount == builders.size() )
+    {
+        //make sure we don't give control to code outside this class while holding the lock
+        m_queryDoneCountMutex.unlock();
+        emit queryDone();
+    }
+    else
+        m_queryDoneCountMutex.unlock();
+}
+
+#include "metaquerybuilder.moc"

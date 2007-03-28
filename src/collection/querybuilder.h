@@ -18,10 +18,23 @@
 #ifndef AMAROK_COLLECTION_QUERYBUILDER_H
 #define AMAROK_COLLECTION_QUERYBUILDER_H
 
+#include "meta.h"
+
 #include <QObject>
+#include <QtGlobal>
 
 class QueryBuilder : public QObject
 {
+    Q_OBJECT
+
+    static const qint64 valUrl      = 1LL << 0;
+    static const qint64 valTitle    = 1LL << 1;
+    static const qint64 valArtist   = 1LL << 2;
+    static const qint64 valALbum    = 1LL << 3;
+    static const qint64 valGenre    = 1LL << 4;
+    static const qint64 valComposer = 1LL << 5;
+    static const qint64 valYear     = 1LL << 6;
+
     public:
         virtual QueryBuilder* reset() = 0;
         virtual void run() = 0;
@@ -38,9 +51,32 @@ class QueryBuilder : public QObject
         /**
             only works after starting a custom query with startCustomQuery()
           */
-        virtual QueryBuilder* addReturnValue() = 0;
-        virtual QueryBuilder* orderBy() = 0;
-        
+        virtual QueryBuilder* addReturnValue( qint64 value ) = 0;
+        virtual QueryBuilder* orderBy( qint64 value, bool descending = false ) = 0;
+
+        virtual QueryBuilder* includeCollection( const QString &collectionId ) = 0;
+        virtual QueryBuilder* excludeCollection( const QString &collectionId ) = 0;
+
+        virtual QueryBuilder* addMatch( const TrackPtr &track ) = 0;
+        virtual QueryBuilder* addMatch( const ArtistPtr &artist ) = 0;
+        virtual QueryBuilder* addMatch( const AlbumPtr &album ) = 0;
+        virtual QueryBuilder* addMatch( const ComposerPtr &composer ) = 0;
+        virtual QueryBuilder* addMatch( const GenrePtr &genre ) = 0;
+        virtual QueryBuilder* addMatch( const YearPtr &year ) = 0;
+
+        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
+        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
+
+    public signals:
+        void newResultReady( QString collectionId, TrackList );
+        void newResultReady( QString collectionId, ArtistList );
+        void newResultReady( QString collectionId, AlbumList );
+        void newResultReady( QString collectionId, GenreList );
+        void newResultReady( QString collectionId, ComposerList );
+        void newResultReady( QString collectionId, YearList );
+        void newResultReady( QString collectionId, QStringList );
+
+        void queryDone();
 };
 
 #endif /* AMAROK_COLLECTION_QUERYBUILDER_H */
