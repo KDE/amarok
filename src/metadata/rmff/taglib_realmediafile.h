@@ -38,11 +38,10 @@
 
 #include <iostream>
 
-class RealMediaFF;
 namespace TagLib {
 
    namespace RealMedia {
-
+      class RealMediaFF;
       class Tag : public TagLib::Tag
       {
       public:
