@@ -2437,7 +2437,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
     Q3ListViewItem *parent = 0;
     Q3ListViewItem *after  = m_marker;
 
-    if( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
+    if( dynamicMode() &&
+    	( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() ) )
     {
         // If marker is disabled, and there is a current track, or marker is not the last enabled track
         // don't allow inserting
