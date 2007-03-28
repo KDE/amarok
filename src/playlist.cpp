@@ -2400,9 +2400,9 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
 
-    //make sure to disable only in dynamic mode, and if for some ungodly reason there are no tracks in the
-    //playlist, and you're inserting at the beginning or in the middle of the disabled tracks
-    if( dynamicMode() && Playlist::instance()->firstChild() &&
+    //make sure to disable only if in dynamic mode and you're inserting 
+    //at the beginning or in the middle of the disabled tracks
+    if( dynamicMode() &&
             ( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() )  ) )
     {
         // If marker is disabled, and there is a current track, or marker is not the last enabled track
