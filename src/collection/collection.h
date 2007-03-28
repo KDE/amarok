@@ -18,9 +18,29 @@
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
+#include "amarok.h"
+#include "amarok_export.h"
+#include "plugin/plugin.h"
 #include "querybuilder.h"
 
+#include <QObject>
 #include <QString>
+
+class Collection;
+
+class AMAROK_EXPORT CollectionFactory : public Amarok::Plugin, QObject
+{
+    Q_OBJECT
+    public:
+        CollectionFactory() {};
+        virtual ~CollectionFactory() {};
+
+        virtual void init() = 0;
+
+    public signals:
+        void newCollection( Collection *newCollection );
+
+};
 
 class Collection
 {

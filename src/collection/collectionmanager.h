@@ -18,6 +18,7 @@
 #ifndef AMAROK_COLLECTIONMANAGER_H
 #define AMAROK_COLLECTIONMANAGER_H
 
+#include "collection.h"
 #include "querybuilder.h"
 
 #include <QObject>
@@ -32,8 +33,13 @@ class CollectionManager : public QObject
         QueryBuilder * queryBuilder();
         void startFullScan();
 
+    private slots:
+        void slotNewCollection( Collection *newCollection );
+
     private:
         CollectionManager();
+
+        void init();
 
         class Private;
         Private * const d;

@@ -18,6 +18,8 @@
 
 #include "collectionmanager.h"
 
+#include "debug.h"
+
 #include "collection.h"
 #include "metaquerybuilder.h"
 
@@ -27,6 +29,7 @@
 struct CollectionManager::Private
 {
     QList<Collection*> collections;
+    QList<CollectionFactory*> factories;
 };
 
 CollectionManager::CollectionManager()
@@ -38,10 +41,41 @@ CollectionManager::CollectionManager()
 
 CollectionManager::~CollectionManager()
 {
+    foreach( CollectionFactory *fac, d->factories )
+        delete fac;
+
     foreach( Collection *coll, d->collections )
         delete coll;
 
     delete d;
+}
+
+void
+CollectionManager::init()
+{
+    DEBUG_BLOCK
+
+    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers" << endl;
+    foreach( KService::Ptr service, plugins )
+    {
+        Amarok::Plugin *plugin = PluginManager::createFromService( service );
+        if ( plugin )
+        {
+            CollectionFactory* factory = dynamic_cast<CollectionFactory*> plugin;
+            if ( factory )
+            {
+                connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection* ) );
+                d->factories.append( factory );
+                factory->init();
+            }
+            else
+            {
+                debug() << "Plugin has wrong factory class" << endl;
+                continue;
+            }
+        }
+    }
 }
 
 CollectionManager *
@@ -64,4 +98,10 @@ QueryBuilder*
 CollectionManager::queryBuilder()
 {
     return new MetaQueryBuilder( d->collections );
+}
+
+void
+CollectionManager::slotNewCollection( Collection* newCollection )
+{
+    d->collections.append( newCollection );
 }
