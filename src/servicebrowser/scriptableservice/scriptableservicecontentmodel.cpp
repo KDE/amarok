@@ -47,18 +47,19 @@ ScriptableServiceContentModel::~ScriptableServiceContentModel()
 
 int ScriptableServiceContentModel::insertItem( const QString &name, const QString &url, const QString &infoHtml, const int parentId ) {
 
-    if (! m_contentItemMap.contains( parentId ) ) {
+    if ( !m_contentItemMap.contains( parentId ) ) {
         return -1;
     } else {
 
        
-
+        
         m_contentIndex++;
         ScriptableServiceContentItem * newItem = new ScriptableServiceContentItem( name, url, infoHtml, m_contentItemMap[parentId] );
-        m_contentItemMap[m_contentIndex] = newItem;
+        m_contentItemMap.insert( m_contentIndex, newItem );
 
 
-         if (m_populatingDynamicItem) {
+
+         if ( m_populatingDynamicItem ) {
             m_updateCount++;
             beginInsertRows(createIndex(m_contentItemMap[parentId]->row(), 0, m_contentItemMap[parentId]), m_updateCount - 1, m_updateCount);
          }
@@ -84,7 +85,7 @@ int ScriptableServiceContentModel::insertDynamicItem( const QString &name, const
     } else {
         m_contentIndex++;
         ScriptableServiceContentItem * newItem = new ScriptableServiceContentItem( name, callbackScript, callbackArgument, infoHtml, m_contentItemMap[parentId] );
-        m_contentItemMap[m_contentIndex] = newItem;
+        m_contentItemMap.insert( m_contentIndex, newItem );
         m_contentItemMap[parentId]->addChildItem ( newItem );
         return m_contentIndex;
     }
@@ -255,6 +256,7 @@ void ScriptableServiceContentModel::triggerUpdateScript(const QString &script, c
 void ScriptableServiceContentModel::resetModel() {
    
     if (m_populatingDynamicItem) {
+        m_updateCount = 0;
         m_populatingDynamicItem = false;
     } else
         reset();
