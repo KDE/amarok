@@ -185,19 +185,25 @@ void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const 
     debug() << "MagnatuneContentModel::requestHtmlInfo"  << endl;
     MagnatuneContentItem* item;
 
-    if (!index.isValid())
+    if (!index.isValid()) {
+        debug() << "    invalid item"  << endl;
         item = m_rootContentItem;
-    else
+    } else {
         item = static_cast<MagnatuneContentItem*>(index.internalPointer());
-
+        debug() << "    valid item"  << endl;
+    }
 
    switch ( item->getType() ) {
        case MAGNATUNE_ARTIST:
+           debug() << "    artist"  << endl;
            m_infoParser->getInfo( item->getContentUnion().artistValue );
            break;
        case MAGNATUNE_ALBUM:
+           debug() << "    album"  << endl;
            m_infoParser->getInfo( item->getContentUnion().albumValue );
            break;
+       default:
+           debug() << "    none of the above!?"  << endl;
      }
 
 }

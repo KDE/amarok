@@ -235,8 +235,11 @@ void ScriptableServiceContentModel::requestHtmlInfo ( const QModelIndex & index 
 
 void ScriptableServiceContentModel::triggerUpdateScript(const QString &script, const QString &argument, int nodeId) const {
 
-    
+    //ensure that only one script per model is allowed at any one time
+    //to avoid complete chaos
+    if ( m_populatingDynamicItem ) return;
     m_populatingDynamicItem = true;
+
     m_indexBeingUpdated = nodeId;
 
     //This will cause "unsafe" warnings all over the place...
