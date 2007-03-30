@@ -176,8 +176,9 @@ void ServiceBase::itemActivated ( const QModelIndex & index ) {
     if (!index.isValid())
         return;
     else {
-       ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(m_filterModel->mapToSource( index ).internalPointer());
-       addToPlaylist( item );
+      // ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(m_filterModel->mapToSource( index ).internalPointer() );
+      ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>( index.internalPointer() );
+      addToPlaylist( item );
     }
 
     Playlist::instance()->proposePlaylistName( "test" );
@@ -207,7 +208,8 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
 void ServiceBase::setModel( ServiceModelBase * model ) {
 
     m_filterModel->setSourceModel( model );
-    m_contentView->setModel( m_filterModel );
+    //m_contentView->setModel( m_filterModel );
+    m_contentView->setModel( model );
     m_model  = model;
     connect ( m_model, SIGNAL( infoChanged ( const QString &) ), this, SLOT( infoChanged ( const QString &) ) );
 }
@@ -219,8 +221,11 @@ ServiceModelBase * ServiceBase::getModel() {
 
 void ServiceBase::treeItemSelected( const QModelIndex & index ) {
 
-    m_model->requestHtmlInfo( m_filterModel->mapToSource( index ) );
-    emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( m_filterModel->mapToSource( index ).internalPointer() ) ) );
+    //m_model->requestHtmlInfo( m_filterModel->mapToSource( index ) );
+    //emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( m_filterModel->mapToSource( index ).internalPointer() ) ) );
+
+    m_model->requestHtmlInfo( index  );
+    emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( index.internalPointer() ) ) );
 
 }
 
@@ -230,7 +235,7 @@ void ServiceBase::infoChanged ( const QString &infoHtml ) {
     debug() << "ServiceBase::infoChanged: " << infoHtml << endl;
 
     m_infoBox->begin( );
-    m_infoBox->write( infoHtml ); //crashes hard at the moment...
+    m_infoBox->write( infoHtml ); 
     m_infoBox->end();
 
 }

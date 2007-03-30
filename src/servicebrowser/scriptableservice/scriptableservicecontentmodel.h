@@ -60,6 +60,9 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
+    bool canFetchMore( const QModelIndex & parent ) const;
+    void fetchMore ( const QModelIndex & parent );
+
     int insertItem( const QString &name, const QString &url, const QString &infoHtml, int parentId );
     int insertDynamicItem( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId );
 

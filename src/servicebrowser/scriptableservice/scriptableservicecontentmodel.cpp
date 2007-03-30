@@ -47,6 +47,8 @@ ScriptableServiceContentModel::~ScriptableServiceContentModel()
 
 int ScriptableServiceContentModel::insertItem( const QString &name, const QString &url, const QString &infoHtml, const int parentId ) {
 
+    //debug() << "ScriptableServiceContentModel::insertItem, name: " << name <<  endl;
+
     if ( !m_contentItemMap.contains( parentId ) ) {
         return -1;
     } else {
@@ -197,12 +199,14 @@ int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
      else
          parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
+              debug() << "ScriptableServiceContentModel::rowCount called on node: " << parentItem->data( 0 ).toString()  << ", count; " << parentItem->childCount() <<  endl;
 
-     if ( parentItem->getType() == DYNAMIC) {
+
+    /* if ( parentItem->getType() == DYNAMIC) {
        if ( !parentItem->isPopulated() ) {
            triggerUpdateScript(parentItem->getCallbackScript(), parentItem->getCallbackArgument(), m_contentItemMap.key( parentItem ));
        }
-    }
+    }*/
 
      return parentItem->childCount();
 
@@ -212,13 +216,19 @@ int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
 bool ScriptableServiceContentModel::hasChildren ( const QModelIndex & parent ) const {
 
     ScriptableServiceContentItem* item;
+ 
 
+  
      if (!parent.isValid())
          item = m_rootContentItem;
      else
          item = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
+
+     debug() << "ScriptableServiceContentModel::hasChildren called on node: " << item->data( 0 ).toString()  << endl;
+
     return item->hasChildren();
+    //return true;
 }
 
 void ScriptableServiceContentModel::requestHtmlInfo ( const QModelIndex & index ) const {
@@ -260,6 +270,53 @@ void ScriptableServiceContentModel::resetModel() {
         m_populatingDynamicItem = false;
     } else
         reset();
+}
+
+
+bool ScriptableServiceContentModel::canFetchMore(const QModelIndex & parent) const
+{
+
+   
+
+    ScriptableServiceContentItem *parentItem;
+
+    if (!parent.isValid())
+        parentItem = m_rootContentItem;
+    else
+         parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
+
+    debug() << "ScriptableServiceContentModel::canFetchMore called on node: " << parentItem->data( 0 ).toString()  << endl;
+
+
+    if ( parentItem->getType() == DYNAMIC ) {
+        debug() << "    YES!"  << endl;
+        return true;
+    } else {
+        debug() << "    NO!"  << endl;
+        return false;
+    }
+    
+}
+
+void ScriptableServiceContentModel::fetchMore(const QModelIndex & parent)
+{
+
+     debug() << "ScriptableServiceContentModel::fetchMore called"  << endl;
+     ScriptableServiceContentItem *parentItem;
+
+     if (!parent.isValid())
+         parentItem = m_rootContentItem;
+     else
+         parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
+
+
+     if ( parentItem->getType() == DYNAMIC) {
+       if ( !parentItem->isPopulated() ) {
+           triggerUpdateScript(parentItem->getCallbackScript(), parentItem->getCallbackArgument(), m_contentItemMap.key( parentItem ));
+       }
+    }
+    // TODO: Might be a good idea to just wait here untill update is complete...
+
 }
 
 
