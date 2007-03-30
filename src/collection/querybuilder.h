@@ -30,15 +30,18 @@ class QueryBuilder : public QObject
 {
     Q_OBJECT
 
-    static const qint64 valUrl      = 1LL << 0;
-    static const qint64 valTitle    = 1LL << 1;
-    static const qint64 valArtist   = 1LL << 2;
-    static const qint64 valALbum    = 1LL << 3;
-    static const qint64 valGenre    = 1LL << 4;
-    static const qint64 valComposer = 1LL << 5;
-    static const qint64 valYear     = 1LL << 6;
-
     public:
+        static const qint64 valUrl      = 1LL << 0;
+        static const qint64 valTitle    = 1LL << 1;
+        static const qint64 valArtist   = 1LL << 2;
+        static const qint64 valALbum    = 1LL << 3;
+        static const qint64 valGenre    = 1LL << 4;
+        static const qint64 valComposer = 1LL << 5;
+        static const qint64 valYear     = 1LL << 6;
+
+        QueryBuilder();
+        virtual ~QueryBuilder();
+
         virtual QueryBuilder* reset() = 0;
         virtual void run() = 0;
         virtual void abortQuery() = 0;

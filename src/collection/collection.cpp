@@ -15,45 +15,24 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTION_H
-#define AMAROK_COLLECTION_H
+#include "collection.h"
 
-#include "amarok.h"
-#include "amarok_export.h"
-#include "plugin/plugin.h"
-#include "querybuilder.h"
-
-#include <QObject>
-#include <QString>
-
-class Collection;
-
-class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
+CollectionFactory::CollectionFactory() : Amarok::Plugin()
 {
-    Q_OBJECT
-    public:
-        CollectionFactory();
-        virtual ~CollectionFactory();
+}
 
-        virtual void init() = 0;
-
-    signals:
-        void newCollection( Collection *newCollection );
-
-};
-
-class Collection
+CollectionFactory::~CollectionFactory()
 {
-    public:
+}
 
-        Collection();
-        virtual ~Collection();
 
-        virtual QueryBuilder * queryBuilder() = 0;
-        virtual void startFullScan() { }
+Collection::Collection()
+{
+}
 
-        virtual QString collectionId() const = 0;
-        virtual QString prettyName() const = 0;
-};
+Collection::~Collection()
+{
+}
 
-#endif /* AMAROK_COLLECTION_H */
+
+#include "collection.moc"

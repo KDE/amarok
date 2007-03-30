@@ -205,6 +205,8 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libcontextview_SRCS}
    collection/sqlregistry.cpp
    collection/sqlmeta.cpp
+#   collection/querybuilder.cpp
+   collection/collection.cpp
    Options1.ui.h
    actionclasses.cpp
    analyzerwidget.cpp
