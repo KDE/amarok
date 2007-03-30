@@ -21,13 +21,13 @@
 #include <QGlobal>
 
 MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
-    : super()
+    : QueryMaker()
     , m_queryDoneCount( 0 )
     , m_queryDoneCountMutex()
 {
     foreach( Collection *c, collections )
     {
-        QueryBuilder *b = c->queryBuilder();
+        QueryMaker *b = c->queryBuilder();
         builders.append( b );
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
     }
@@ -35,175 +35,175 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
 
 MetaQueryBuilder::~MetaQueryBuilder()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         delete b;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::reset()
 {
     m_queryDoneCount = 0;
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->reset();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::run()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->run();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::abortQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->abortQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startTrackQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startTrackQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startArtistQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startArtistQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startAlbumQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startAlbumQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startGenreQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startGenreQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startComposerQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startComposerQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::startYearQuery()
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->startYearQuery();
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addReturnValue( qint64 value )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addReturnValue( value );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::orderBy( qint64 value, bool descending = false )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->orderBy( value, descending );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::includeCollection( const QString &collectionId )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->includeCollection( collectionId );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::excludeCollection( const QString &collectionId )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->excludeCollection( collectionid );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addFilter( qint64 value, const QString &filter )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addFilter( value, filter );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->excludeFilter( value, filter );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const TrackPtr &track )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( track );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const ArtistPtr &artist )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( artist );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const ALbumPtr &album )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( album );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const GenrePtr &genre )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( genre );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const ComposerPtr &composer )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( composer );
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 MetaQueryBuilder::addMatch( const YearPtr &year )
 {
-    foreach( QueryBuilder *b, builders )
+    foreach( QueryMaker *b, builders )
         b->addMatch( year );
     return this;
 }

@@ -15,35 +15,16 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTIONMANAGER_H
-#define AMAROK_COLLECTIONMANAGER_H
 
-#include "collection.h"
 #include "querymaker.h"
 
-#include <QObject>
-
-class CollectionManager : public QObject
+QueryMaker::QueryMaker() : QObject()
 {
-    public:
-        static CollectionManager * instance();
+}
 
-        virtual ~CollectionManager();
+QueryMaker::~QueryMaker()
+{
+}
 
-        QueryMaker * queryMaker();
-        void startFullScan();
+#include "querymaker.moc"
 
-    private slots:
-        void slotNewCollection( Collection *newCollection );
-
-    private:
-        CollectionManager();
-
-        void init();
-
-        class Private;
-        Private * const d;
-};
-
-
-#endif /* AMAROK_COLLECTIONMANAGER_H */

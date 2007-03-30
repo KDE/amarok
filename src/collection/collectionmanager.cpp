@@ -94,8 +94,8 @@ CollectionManager::startFullScan()
     }
 }
 
-QueryBuilder*
-CollectionManager::queryBuilder()
+QueryMaker*
+CollectionManager::queryMaker()
 {
     return new MetaQueryBuilder( d->collections );
 }

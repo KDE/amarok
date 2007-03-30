@@ -21,7 +21,7 @@
 #include "amarok.h"
 #include "amarok_export.h"
 #include "plugin/plugin.h"
-#include "querybuilder.h"
+#include "querymaker.h"
 
 #include <QObject>
 #include <QString>
@@ -49,7 +49,7 @@ class Collection
         Collection();
         virtual ~Collection();
 
-        virtual QueryBuilder * queryBuilder() = 0;
+        virtual QueryMaker * queryBuilder() = 0;
         virtual void startFullScan() { }
 
         virtual QString collectionId() const = 0;

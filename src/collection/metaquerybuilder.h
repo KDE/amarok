@@ -18,51 +18,51 @@
 #ifndef AMAROK_COLLECTION_METAQUERYBUILDER_H
 #define AMAROK_COLLECTION_METAQUERYBUILDER_H
 
-#include "querybuilder.h"
+#include "querymaker.h"
 #include "collection.h"
 
 #include <QList>
 #include <QMutex>
 
-class MetaQueryBuilder : public QueryBuilder
+class MetaQueryBuilder : public QueryMaker
 {
     public:
         MetaQueryBuilder( const QList<Collection*> &collections);
         ~MetaQueryBuilder();
 
-        virtual QueryBuilder* reset();
+        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
 
-        virtual QueryBuilder* startTrackQuery();
-        virtual QueryBuilder* startArtistQuery();
-        virtual QueryBuilder* startAlbumQuery();
-        virtual QueryBuilder* startGenreQuery();
-        virtual QueryBuilder* startComposerQuery();
-        virtual QueryBuilder* startYearQuery();
-        virtual QueryBuilder* startCustomQuery();
+        virtual QueryMaker* startTrackQuery();
+        virtual QueryMaker* startArtistQuery();
+        virtual QueryMaker* startAlbumQuery();
+        virtual QueryMaker* startGenreQuery();
+        virtual QueryMaker* startComposerQuery();
+        virtual QueryMaker* startYearQuery();
+        virtual QueryMaker* startCustomQuery();
 
-        virtual QueryBuilder* addReturnValue( qint64 value);
-        virtual QueryBuilder* orderBy( qint64 value, bool descending = false );
+        virtual QueryMaker* addReturnValue( qint64 value);
+        virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
-        virtual QueryBuilder* addMatch( const TrackPtr &track );
-        virtual QueryBuilder* addMatch( const ArtistPtr &artist );
-        virtual QueryBuilder* addMatch( const AlbumPtr &album );
-        virtual QueryBuilder* addMatch( const ComposerPtr &composer );
-        virtual QueryBuilder* addMatch( const GenrePtr &genre );
-        virtual QueryBuilder* addMatch( const YearPtr &year );
+        virtual QueryMaker* addMatch( const TrackPtr &track );
+        virtual QueryMaker* addMatch( const ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const AlbumPtr &album );
+        virtual QueryMaker* addMatch( const ComposerPtr &composer );
+        virtual QueryMaker* addMatch( const GenrePtr &genre );
+        virtual QueryMaker* addMatch( const YearPtr &year );
 
-        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
-        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* excludeFilter( qint64 value, const Qstring &filter );
 
-        virtual QueryBuilder* includeCollection( const QString &collectionId );
-        virtual QueryBuilder* excludeCollection( const QString &collectionId );
+        virtual QueryMaker* includeCollection( const QString &collectionId );
+        virtual QueryMaker* excludeCollection( const QString &collectionId );
 
     private slots:
         void slotQueryDone();
 
     private:
-        QList<QueryBuilder*> builders;
+        QList<QueryMaker*> builders;
         int m_queryDoneCount;
         QMutex m_queryDoneCountMutex;
 
