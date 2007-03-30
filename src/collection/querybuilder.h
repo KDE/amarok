@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTION_QUERYBUILDER_H
-#define AMAROK_COLLECTION_QUERYBUILDER_H
+#ifndef AMAROK_COLLECTION_QUERYMAKER_H
+#define AMAROK_COLLECTION_QUERYMAKER_H
 
 #include "meta.h"
 
@@ -26,7 +26,7 @@
 
 using namespace Meta;
 
-class QueryBuilder : public QObject
+class QueryMaker : public QObject
 {
     Q_OBJECT
 
@@ -39,39 +39,39 @@ class QueryBuilder : public QObject
         static const qint64 valComposer = 1LL << 5;
         static const qint64 valYear     = 1LL << 6;
 
-        QueryBuilder();
-        virtual ~QueryBuilder();
+        QueryMaker();
+        virtual ~QueryMaker();
 
-        virtual QueryBuilder* reset() = 0;
+        virtual QueryMaker* reset() = 0;
         virtual void run() = 0;
         virtual void abortQuery() = 0;
 
-        virtual QueryBuilder* startTrackQuery() = 0;
-        virtual QueryBuilder* startArtistQuery() = 0;
-        virtual QueryBuilder* startAlbumQuery() = 0;
-        virtual QueryBuilder* startGenreQuery() = 0;
-        virtual QueryBuilder* startComposerQuery() = 0;
-        virtual QueryBuilder* startYearQuery() = 0;
-        virtual QueryBuilder* startCustomQuery() = 0;
+        virtual QueryMaker* startTrackQuery() = 0;
+        virtual QueryMaker* startArtistQuery() = 0;
+        virtual QueryMaker* startAlbumQuery() = 0;
+        virtual QueryMaker* startGenreQuery() = 0;
+        virtual QueryMaker* startComposerQuery() = 0;
+        virtual QueryMaker* startYearQuery() = 0;
+        virtual QueryMaker* startCustomQuery() = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()
           */
-        virtual QueryBuilder* addReturnValue( qint64 value ) = 0;
-        virtual QueryBuilder* orderBy( qint64 value, bool descending = false ) = 0;
+        virtual QueryMaker* addReturnValue( qint64 value ) = 0;
+        virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
 
-        virtual QueryBuilder* includeCollection( const QString &collectionId ) = 0;
-        virtual QueryBuilder* excludeCollection( const QString &collectionId ) = 0;
+        virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
+        virtual QueryMaker* excludeCollection( const QString &collectionId ) = 0;
 
-        virtual QueryBuilder* addMatch( const TrackPtr &track ) = 0;
-        virtual QueryBuilder* addMatch( const ArtistPtr &artist ) = 0;
-        virtual QueryBuilder* addMatch( const AlbumPtr &album ) = 0;
-        virtual QueryBuilder* addMatch( const ComposerPtr &composer ) = 0;
-        virtual QueryBuilder* addMatch( const GenrePtr &genre ) = 0;
-        virtual QueryBuilder* addMatch( const YearPtr &year ) = 0;
+        virtual QueryMaker* addMatch( const TrackPtr &track ) = 0;
+        virtual QueryMaker* addMatch( const ArtistPtr &artist ) = 0;
+        virtual QueryMaker* addMatch( const AlbumPtr &album ) = 0;
+        virtual QueryMaker* addMatch( const ComposerPtr &composer ) = 0;
+        virtual QueryMaker* addMatch( const GenrePtr &genre ) = 0;
+        virtual QueryMaker* addMatch( const YearPtr &year ) = 0;
 
-        virtual QueryBuilder* addFilter( qint64 value, const QString &filter ) = 0;
-        virtual QueryBuilder* excludeFilter( qint64 value, const QString &filter ) = 0;
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter ) = 0;
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter ) = 0;
 
     signals:
         void newResultReady( QString collectionId, TrackList );
@@ -85,5 +85,5 @@ class QueryBuilder : public QObject
         void queryDone();
 };
 
-#endif /* AMAROK_COLLECTION_QUERYBUILDER_H */
+#endif /* AMAROK_COLLECTION_QUERYMAKER_H */
 

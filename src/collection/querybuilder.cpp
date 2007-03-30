@@ -16,15 +16,15 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "querybuilder.h"
+#include "querymaker.h"
 
-QueryBuilder::QueryBuilder() : QObject()
+QueryMaker::QueryMaker() : QObject()
 {
 }
 
-QueryBuilder::~QueryBuilder()
+QueryMaker::~QueryMaker()
 {
 }
 
-#include "querybuilder.moc"
+#include "querymaker.moc"
 
