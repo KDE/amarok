@@ -207,6 +207,8 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    collection/sqlmeta.cpp
    collection/querymaker.cpp
    collection/collection.cpp
+   collection/collectionmanager.cpp
+   collection/metaquerybuilder.cpp
    Options1.ui.h
    actionclasses.cpp
    analyzerwidget.cpp

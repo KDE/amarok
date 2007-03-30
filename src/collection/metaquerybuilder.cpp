@@ -18,7 +18,7 @@
 
 #include "metaquerybuilder.h"
 
-#include <QGlobal>
+#include <QtGlobal>
 
 MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     : QueryMaker()
@@ -48,20 +48,18 @@ MetaQueryBuilder::reset()
     return this;
 }
 
-QueryMaker*
+void
 MetaQueryBuilder::run()
 {
     foreach( QueryMaker *b, builders )
         b->run();
-    return this;
 }
 
-QueryMaker*
+void
 MetaQueryBuilder::abortQuery()
 {
     foreach( QueryMaker *b, builders )
         b->abortQuery();
-    return this;
 }
 
 QueryMaker*
@@ -113,6 +111,14 @@ MetaQueryBuilder::startYearQuery()
 }
 
 QueryMaker*
+MetaQueryBuilder::startCustomQuery()
+{
+    foreach( QueryMaker *b, builders )
+        b->startCustomQuery();
+    return this;
+}
+
+QueryMaker*
 MetaQueryBuilder::addReturnValue( qint64 value )
 {
     foreach( QueryMaker *b, builders )
@@ -121,7 +127,7 @@ MetaQueryBuilder::addReturnValue( qint64 value )
 }
 
 QueryMaker*
-MetaQueryBuilder::orderBy( qint64 value, bool descending = false )
+MetaQueryBuilder::orderBy( qint64 value, bool descending )
 {
     foreach( QueryMaker *b, builders )
         b->orderBy( value, descending );
@@ -140,7 +146,7 @@ QueryMaker*
 MetaQueryBuilder::excludeCollection( const QString &collectionId )
 {
     foreach( QueryMaker *b, builders )
-        b->excludeCollection( collectionid );
+        b->excludeCollection( collectionId );
     return this;
 }
 
@@ -177,7 +183,7 @@ MetaQueryBuilder::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const ALbumPtr &album )
+MetaQueryBuilder::addMatch( const AlbumPtr &album )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( album );

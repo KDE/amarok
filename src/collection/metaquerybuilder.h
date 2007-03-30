@@ -24,8 +24,12 @@
 #include <QList>
 #include <QMutex>
 
+using namespace Meta;
+
 class MetaQueryBuilder : public QueryMaker
 {
+    Q_OBJECT
+
     public:
         MetaQueryBuilder( const QList<Collection*> &collections);
         ~MetaQueryBuilder();
@@ -53,7 +57,7 @@ class MetaQueryBuilder : public QueryMaker
         virtual QueryMaker* addMatch( const YearPtr &year );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter );
-        virtual QueryMaker* excludeFilter( qint64 value, const Qstring &filter );
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
 
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );

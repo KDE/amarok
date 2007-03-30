@@ -22,9 +22,12 @@
 
 #include "collection.h"
 #include "metaquerybuilder.h"
+#include "pluginmanager.h"
 
-#include <QGlobal>
+#include <QtGlobal>
 #include <QList>
+
+#include <kservice.h>
 
 struct CollectionManager::Private
 {
@@ -33,7 +36,7 @@ struct CollectionManager::Private
 };
 
 CollectionManager::CollectionManager()
-    : super()
+    : QObject()
     , d( new Private )
 {
     //init collections
@@ -62,7 +65,7 @@ CollectionManager::init()
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
         if ( plugin )
         {
-            CollectionFactory* factory = dynamic_cast<CollectionFactory*> plugin;
+            CollectionFactory* factory = dynamic_cast<CollectionFactory*>( plugin );
             if ( factory )
             {
                 connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection* ) );
@@ -105,3 +108,5 @@ CollectionManager::slotNewCollection( Collection* newCollection )
 {
     d->collections.append( newCollection );
 }
+
+#include "collectionmanager.moc"

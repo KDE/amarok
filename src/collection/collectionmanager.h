@@ -25,6 +25,8 @@
 
 class CollectionManager : public QObject
 {
+    Q_OBJECT
+
     public:
         static CollectionManager * instance();
 
