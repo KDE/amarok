@@ -18,11 +18,11 @@
 #ifndef AMAROK_COLLECTION_SQLQUERYBUILDER_H
 #define AMAROK_COLLECTION_SQLQUERYBUILDER_H
 
-#include "../querybuilder.h"
+#include "querymaker.h"
 
 class SqlCollection;
 
-class SqlQueryBuilder : public QueryBuilder
+class SqlQueryBuilder : public QueryMaker
 {
     Q_OBJECT
 
@@ -30,33 +30,33 @@ class SqlQueryBuilder : public QueryBuilder
         SqlQueryBuilder( SqlCollection* collection );
         virtual ~SqlQueryBuilder();
 
-        virtual QueryBuilder* reset();
+        virtual QueryMaker* reset();
         virtual void abortQuery();
         virtual void run();
 
-        virtual QueryBuilder* startTrackQuery();
-        virtual QueryBuilder* startArtistQuery();
-        virtual QueryBuilder* startAlbumQuery();
-        virtual QueryBuilder* startGenreQuery();
-        virtual QueryBuilder* startComposerQuery();
-        virtual QueryBuilder* startYearQuery();
-        virtual QueryBuilder* startCustomQuery();
+        virtual QueryMaker* startTrackQuery();
+        virtual QueryMaker* startArtistQuery();
+        virtual QueryMaker* startAlbumQuery();
+        virtual QueryMaker* startGenreQuery();
+        virtual QueryMaker* startComposerQuery();
+        virtual QueryMaker* startYearQuery();
+        virtual QueryMaker* startCustomQuery();
 
-        virtual QueryBuilder* includeCollection( const QString &collectionId );
-        virtual QueryBuilder* excludeCollection( const QString &collectionId );
+        virtual QueryMaker* includeCollection( const QString &collectionId );
+        virtual QueryMaker* excludeCollection( const QString &collectionId );
 
-        virtual QueryBuilder* addMatch( const TrackPtr &track );
-        virtual QueryBuilder* addMatch( const ArtistPtr &artist );
-        virtual QueryBuilder* addMatch( const AlbumPtr &album );
-        virtual QueryBuilder* addMatch( const ComposerPtr &composer );
-        virtual QueryBuilder* addMatch( const GenrePtr &genre );
-        virtual QueryBuilder* addMatch( const YearPtr &year );
+        virtual QueryMaker* addMatch( const TrackPtr &track );
+        virtual QueryMaker* addMatch( const ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const AlbumPtr &album );
+        virtual QueryMaker* addMatch( const ComposerPtr &composer );
+        virtual QueryMaker* addMatch( const GenrePtr &genre );
+        virtual QueryMaker* addMatch( const YearPtr &year );
 
-        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
-        virtual QueryBuilder* excludeFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
 
-        virtual QueryBuilder* addReturnValue( qint64 value );
-        virtual QueryBuilder* orderBy( qint64 value, bool descending = false );
+        virtual QueryMaker* addReturnValue( qint64 value );
+        virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
         QString query();
         QStringList runQuery( const QString &query );

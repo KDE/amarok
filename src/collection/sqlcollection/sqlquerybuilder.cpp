@@ -59,7 +59,7 @@ struct SqlQueryBuilder::Private
 };
 
 SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
-    : QueryBuilder()
+    : QueryMaker()
     , m_collection( collection )
     , d( new Private )
 {
@@ -72,7 +72,7 @@ SqlQueryBuilder::~SqlQueryBuilder()
     delete d;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::reset()
 {
     d->query.clear();
@@ -106,7 +106,7 @@ SqlQueryBuilder::run()
     }
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startTrackQuery()
 {
     if( d->queryType == Private::NONE )
@@ -114,7 +114,7 @@ SqlQueryBuilder::startTrackQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startArtistQuery()
 {
     if( d->queryType == Private::NONE )
@@ -126,7 +126,7 @@ SqlQueryBuilder::startArtistQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startAlbumQuery()
 {
     if( d->queryType == Private::NONE )
@@ -138,7 +138,7 @@ SqlQueryBuilder::startAlbumQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startComposerQuery()
 {
     if( d->queryType == Private::NONE )
@@ -149,7 +149,7 @@ SqlQueryBuilder::startComposerQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startGenreQuery()
 {
     if( d->queryType == Private::NONE )
@@ -160,7 +160,7 @@ SqlQueryBuilder::startGenreQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startYearQuery()
 {
     if( d->queryType == Private::NONE )
@@ -171,7 +171,7 @@ SqlQueryBuilder::startYearQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::startCustomQuery()
 {
     if( d->queryType == Private::NONE )
@@ -179,7 +179,7 @@ SqlQueryBuilder::startCustomQuery()
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::includeCollection( const QString &collectionId )
 {
     if( !d->collectionRestriction )
@@ -192,7 +192,7 @@ SqlQueryBuilder::includeCollection( const QString &collectionId )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::excludeCollection( const QString &collectionId )
 {
     d->collectionRestriction = true;
@@ -201,14 +201,14 @@ SqlQueryBuilder::excludeCollection( const QString &collectionId )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const TrackPtr &track )
 {
     //TODO
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
@@ -216,7 +216,7 @@ SqlQueryBuilder::addMatch( const ArtistPtr &artist )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
@@ -225,7 +225,7 @@ SqlQueryBuilder::addMatch( const AlbumPtr &album )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
@@ -233,7 +233,7 @@ SqlQueryBuilder::addMatch( const GenrePtr &genre )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
@@ -241,7 +241,7 @@ SqlQueryBuilder::addMatch( const ComposerPtr &composer )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
@@ -249,21 +249,21 @@ SqlQueryBuilder::addMatch( const YearPtr &year )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addFilter( qint64 value, const QString &filter )
 {
     //TODO
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter )
 {
     //TODO
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::addReturnValue( qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
@@ -273,7 +273,7 @@ SqlQueryBuilder::addReturnValue( qint64 value )
     return this;
 }
 
-QueryBuilder*
+QueryMaker*
 SqlQueryBuilder::orderBy( qint64 value, bool descending )
 {
     //TODO

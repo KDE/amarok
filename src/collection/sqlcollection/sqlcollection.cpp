@@ -50,7 +50,7 @@ SqlCollection::prettyName() const
     return i18n( "Local collection" );
 }
 
-QueryBuilder*
+QueryMaker*
 SqlCollection::queryBuilder()
 {
     return new SqlQueryBuilder( this );
