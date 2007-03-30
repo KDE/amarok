@@ -219,16 +219,19 @@ ServiceModelBase * ServiceBase::getModel() {
 
 void ServiceBase::treeItemSelected( const QModelIndex & index ) {
 
-    m_model->requestHtmlInfo( index );
+    m_model->requestHtmlInfo( m_filterModel->mapToSource( index ) );
     emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( m_filterModel->mapToSource( index ).internalPointer() ) ) );
 
 }
 
 void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
-    //m_infoBox->begin( );
-    //m_infoBox->write( infoHtml ); //crashes hard at the moment...
-    //m_infoBox->end();
+
+    debug() << "ServiceBase::infoChanged: " << infoHtml << endl;
+
+    m_infoBox->begin( );
+    m_infoBox->write( infoHtml ); //crashes hard at the moment...
+    m_infoBox->end();
 
 }
 

@@ -98,7 +98,7 @@ QList<ServiceModelItemBase*> ScriptableServiceContentItem::getChildItems() const
     return m_childItems;
 }
 
-bool ScriptableServiceContentItem::hasChildren () const {
+bool ScriptableServiceContentItem::hasChildren() const {
     
     if (m_type == STATIC)
         return ( m_childItems.size() > 0 );
