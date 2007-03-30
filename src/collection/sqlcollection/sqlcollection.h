@@ -22,6 +22,8 @@
 
 class SqlCollectionFactory : public CollectionFactory
 {
+    Q_OBJECT
+
     public:
         SqlCollectionFactory() {}
         virtual ~SqlCollectionFactory() {}

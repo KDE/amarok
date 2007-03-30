@@ -23,6 +23,8 @@
 
 #include <klocale.h>
 
+AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
+
 void
 SqlCollectionFactory::init()
 {
@@ -59,4 +61,6 @@ SqlCollection::query( const QString &statement )
 {
     return m_collectionDb->query( statement );
 }
+
+#include "sqlcollection.moc"
 
