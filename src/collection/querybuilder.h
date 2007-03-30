@@ -21,7 +21,10 @@
 #include "meta.h"
 
 #include <QObject>
+#include <QStringList>
 #include <QtGlobal>
+
+using namespace Meta;
 
 class QueryBuilder : public QObject
 {
@@ -65,9 +68,9 @@ class QueryBuilder : public QObject
         virtual QueryBuilder* addMatch( const YearPtr &year ) = 0;
 
         virtual QueryBuilder* addFilter( qint64 value, const QString &filter ) = 0;
-        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter ) = 0;
+        virtual QueryBuilder* excludeFilter( qint64 value, const QString &filter ) = 0;
 
-    public signals:
+    signals:
         void newResultReady( QString collectionId, TrackList );
         void newResultReady( QString collectionId, ArtistList );
         void newResultReady( QString collectionId, AlbumList );

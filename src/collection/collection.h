@@ -37,7 +37,7 @@ class AMAROK_EXPORT CollectionFactory : public Amarok::Plugin, QObject
 
         virtual void init() = 0;
 
-    public signals:
+    signals:
         void newCollection( Collection *newCollection );
 
 };
@@ -48,8 +48,8 @@ class Collection
         virtual QueryBuilder * queryBuilder() = 0;
         virtual void startFullScan() { }
 
-        virtual QString collectionId() = 0;
-        virtual QString prettyName() = 0;
-}
+        virtual QString collectionId() const = 0;
+        virtual QString prettyName() const = 0;
+};
 
 #endif /* AMAROK_COLLECTION_H */
