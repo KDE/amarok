@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+Name=SQL Collection
+Comment=Collection plugin for Amarok
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=libamarok_collection-sqlcollection
+
+X-KDE-Amarok-authors=Maximilian Kossick
+X-KDE-Amarok-email=maximilian.kossick@googlemail.com
+X-KDE-Amarok-framework-version=30
+X-KDE-Amarok-name=sql-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1

@@ -18,17 +18,21 @@
 #ifndef AMAROK_COLLECTION_SQLQUERYBUILDER_H
 #define AMAROK_COLLECTION_SQLQUERYBUILDER_H
 
-#include "querybuilder.h"
+#include "../querybuilder.h"
 
 class SqlCollection;
 
 class SqlQueryBuilder : public QueryBuilder
 {
+    Q_OBJECT
+
     public:
         SqlQueryBuilder( SqlCollection* collection );
         virtual ~SqlQueryBuilder();
 
         virtual QueryBuilder* reset();
+        virtual void abortQuery();
+        virtual void run();
 
         virtual QueryBuilder* startTrackQuery();
         virtual QueryBuilder* startArtistQuery();
@@ -49,16 +53,25 @@ class SqlQueryBuilder : public QueryBuilder
         virtual QueryBuilder* addMatch( const YearPtr &year );
 
         virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
-        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
+        virtual QueryBuilder* excludeFilter( qint64 value, const QString &filter );
 
         virtual QueryBuilder* addReturnValue( qint64 value );
         virtual QueryBuilder* orderBy( qint64 value, bool descending = false );
 
+        QString query();
+        QStringList runQuery( const QString &query );
+        void handleResult( const QStringList &result );
+
     private:
+
+        void linkTables();
+        void buildQuery();
+
         SqlCollection *m_collection;
 
         class Private;
         Private * const d;
+
 };
 
 #endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */
