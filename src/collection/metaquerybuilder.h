@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,8 +42,18 @@ class MetaQueryBuilder : public QueryBuilder
         virtual QueryBuilder* startYearQuery();
         virtual QueryBuilder* startCustomQuery();
 
-        virtual QueryBuilder* addReturnValue();
-        virtual QueryBuilder* orderBy();
+        virtual QueryBuilder* addReturnValue( qint64 value);
+        virtual QueryBuilder* orderBy( qint64 value, bool descending = false );
+
+        virtual QueryBuilder* addMatch( const TrackPtr &track );
+        virtual QueryBuilder* addMatch( const ArtistPtr &artist );
+        virtual QueryBuilder* addMatch( const AlbumPtr &album );
+        virtual QueryBuilder* addMatch( const ComposerPtr &composer );
+        virtual QueryBuilder* addMatch( const GenrePtr &genre );
+        virtual QueryBuilder* addMatch( const YearPtr &year );
+
+        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
+        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
 
         virtual QueryBuilder* includeCollection( const QString &collectionId );
         virtual QueryBuilder* excludeCollection( const QString &collectionId );

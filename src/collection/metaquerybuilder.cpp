@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
 
 MetaQueryBuilder::~MetaQueryBuilder()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         delete b;
 }
 
@@ -43,7 +43,7 @@ QueryBuilder*
 MetaQueryBuilder::reset()
 {
     m_queryDoneCount = 0;
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->reset();
     return this;
 }
@@ -51,7 +51,7 @@ MetaQueryBuilder::reset()
 QueryBuilder*
 MetaQueryBuilder::run()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->run();
     return this;
 }
@@ -59,7 +59,7 @@ MetaQueryBuilder::run()
 QueryBuilder*
 MetaQueryBuilder::abortQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->abortQuery();
     return this;
 }
@@ -67,7 +67,7 @@ MetaQueryBuilder::abortQuery()
 QueryBuilder*
 MetaQueryBuilder::startTrackQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startTrackQuery();
     return this;
 }
@@ -75,7 +75,7 @@ MetaQueryBuilder::startTrackQuery()
 QueryBuilder*
 MetaQueryBuilder::startArtistQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startArtistQuery();
     return this;
 }
@@ -83,7 +83,7 @@ MetaQueryBuilder::startArtistQuery()
 QueryBuilder*
 MetaQueryBuilder::startAlbumQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startAlbumQuery();
     return this;
 }
@@ -91,7 +91,7 @@ MetaQueryBuilder::startAlbumQuery()
 QueryBuilder*
 MetaQueryBuilder::startGenreQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startGenreQuery();
     return this;
 }
@@ -99,7 +99,7 @@ MetaQueryBuilder::startGenreQuery()
 QueryBuilder*
 MetaQueryBuilder::startComposerQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startComposerQuery();
     return this;
 }
@@ -107,31 +107,31 @@ MetaQueryBuilder::startComposerQuery()
 QueryBuilder*
 MetaQueryBuilder::startYearQuery()
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->startYearQuery();
     return this;
 }
 
 QueryBuilder*
-MetaQueryBuilder::addReturnValue()
+MetaQueryBuilder::addReturnValue( qint64 value )
 {
-    foreach( QueryBuilder *b, collections )
-        b->addReturnValue();
+    foreach( QueryBuilder *b, builders )
+        b->addReturnValue( value );
     return this;
 }
 
 QueryBuilder*
-MetaQueryBuilder::orderBy()
+MetaQueryBuilder::orderBy( qint64 value, bool descending = false )
 {
-    foreach( QueryBuilder *b, collections )
-        b->orderBy();
+    foreach( QueryBuilder *b, builders )
+        b->orderBy( value, descending );
     return this;
 }
 
 QueryBuilder*
 MetaQueryBuilder::includeCollection( const QString &collectionId )
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->includeCollection( collectionId );
     return this;
 }
@@ -139,8 +139,72 @@ MetaQueryBuilder::includeCollection( const QString &collectionId )
 QueryBuilder*
 MetaQueryBuilder::excludeCollection( const QString &collectionId )
 {
-    foreach( QueryBuilder *b, collections )
+    foreach( QueryBuilder *b, builders )
         b->excludeCollection( collectionid );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addFilter( qint64 value, const QString &filter )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addFilter( value, filter );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter )
+{
+    foreach( QueryBuilder *b, builders )
+        b->excludeFilter( value, filter );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const TrackPtr &track )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( track );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const ArtistPtr &artist )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( artist );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const ALbumPtr &album )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( album );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const GenrePtr &genre )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( genre );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const ComposerPtr &composer )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( composer );
+    return this;
+}
+
+QueryBuilder*
+MetaQueryBuilder::addMatch( const YearPtr &year )
+{
+    foreach( QueryBuilder *b, builders )
+        b->addMatch( year );
     return this;
 }
 

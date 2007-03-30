@@ -28,6 +28,32 @@ class SqlQueryBuilder : public QueryBuilder
         SqlQueryBuilder( SqlCollection* collection );
         virtual ~SqlQueryBuilder();
 
+        virtual QueryBuilder* reset();
+
+        virtual QueryBuilder* startTrackQuery();
+        virtual QueryBuilder* startArtistQuery();
+        virtual QueryBuilder* startAlbumQuery();
+        virtual QueryBuilder* startGenreQuery();
+        virtual QueryBuilder* startComposerQuery();
+        virtual QueryBuilder* startYearQuery();
+        virtual QueryBuilder* startCustomQuery();
+
+        virtual QueryBuilder* includeCollection( const QString &collectionId );
+        virtual QueryBuilder* excludeCollection( const QString &collectionId );
+
+        virtual QueryBuilder* addMatch( const TrackPtr &track );
+        virtual QueryBuilder* addMatch( const ArtistPtr &artist );
+        virtual QueryBuilder* addMatch( const AlbumPtr &album );
+        virtual QueryBuilder* addMatch( const ComposerPtr &composer );
+        virtual QueryBuilder* addMatch( const GenrePtr &genre );
+        virtual QueryBuilder* addMatch( const YearPtr &year );
+
+        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
+        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
+
+        virtual QueryBuilder* addReturnValue( qint64 value );
+        virtual QueryBuilder* orderBy( qint64 value, bool descending = false );
+
     private:
         SqlCollection *m_collection;
 

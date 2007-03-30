@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,8 +64,8 @@ class QueryBuilder : public QObject
         virtual QueryBuilder* addMatch( const GenrePtr &genre ) = 0;
         virtual QueryBuilder* addMatch( const YearPtr &year ) = 0;
 
-        virtual QueryBuilder* addFilter( qint64 value, const QString &filter );
-        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter );
+        virtual QueryBuilder* addFilter( qint64 value, const QString &filter ) = 0;
+        virtual QueryBuilder* excludeFilter( qint64 value, const Qstring &filter ) = 0;
 
     public signals:
         void newResultReady( QString collectionId, TrackList );
