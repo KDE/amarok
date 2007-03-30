@@ -75,6 +75,10 @@ public:
     
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    bool canFetchMore( const QModelIndex & parent ) const;
+
+    void fetchMore ( const QModelIndex & parent );
+
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
     void requestHtmlInfo ( const QModelIndex & index ) const;

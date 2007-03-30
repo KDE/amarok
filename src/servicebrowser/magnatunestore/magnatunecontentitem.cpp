@@ -63,6 +63,7 @@ MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
     m_type = MAGNATUNE_ROOT;
     m_parent = 0;
     m_hasPopulatedChildItems = false;
+    populate(); // need to fill up artist or there will be nothing to show
 }
 
 
@@ -74,16 +75,16 @@ MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
  MagnatuneContentItem *MagnatuneContentItem::child(int row)
  {
 
-    if ( !m_hasPopulatedChildItems )
-        populateChildItems();
+    //if ( !m_hasPopulatedChildItems )
+        //populateChildItems();
     return dynamic_cast<MagnatuneContentItem*>( m_childItems.value( row ) );
 
  }
 
  int MagnatuneContentItem::childCount() const
  {
-     if ( !m_hasPopulatedChildItems )
-         populateChildItems();
+     //if ( !m_hasPopulatedChildItems )
+         //populateChildItems();
      return m_childItems.count();
  }
 
@@ -97,6 +98,8 @@ QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need mor
    QString leadingZero;
  
    switch ( m_type ) {
+       case MAGNATUNE_ROOT:
+           return  "Root node";
        case MAGNATUNE_ARTIST:
            return  m_content.artistValue->getName();
        case MAGNATUNE_ALBUM:
@@ -117,8 +120,8 @@ QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need mor
 int MagnatuneContentItem::row() const
 {
     if (m_parent){
-        if ( !m_hasPopulatedChildItems )
-            populateChildItems();
+        //if ( !m_hasPopulatedChildItems )
+            //populateChildItems();
         return m_parent->getChildItems().indexOf(const_cast<MagnatuneContentItem*>(this));
     }
     return 0;
@@ -132,6 +135,7 @@ QList<ServiceModelItemBase*> MagnatuneContentItem::getChildItems() const {
 }
 
 void MagnatuneContentItem::populateChildItems() const {
+
 
     switch ( m_type ) {
        case MAGNATUNE_ROOT: {
