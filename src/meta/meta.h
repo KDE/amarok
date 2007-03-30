@@ -40,12 +40,17 @@ namespace Meta
     typedef KSharedPtr<MetaBase> DataPtr;
 
     typedef KSharedPtr<Track> TrackPtr;
-    typedef QList<TrackPtr> TrackList;
+    typedef QList<TrackPtr > TrackList;
     typedef KSharedPtr<Artist> ArtistPtr;
+    typedef QList<ArtistPtr > ArtistList;
     typedef KSharedPtr<Album> AlbumPtr;
+    typedef QList<AlbumPtr > AlbumList;
     typedef KSharedPtr<Composer> ComposerPtr;
+    typedef QList<ComposerPtr> ComposerList;
     typedef KSharedPtr<Genre> GenrePtr;
+    typedef QList<GenrePtr > GenreList;
     typedef KSharedPtr<Year> YearPtr;
+    typedef QList<YearPtr > YearList;
 
     class TrackObserver
     {
@@ -137,7 +142,6 @@ namespace Meta
     class Artist : public MetaBase
     {
         public:
-            typedef QList<ArtistPtr> ArtistList;
 
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
@@ -150,7 +154,6 @@ namespace Meta
     class Album : public MetaBase
     {
         public:
-            typedef QList<AlbumPtr> AlbumList;
 
             virtual bool isCompilation() const = 0;
 
@@ -176,7 +179,6 @@ namespace Meta
     class Composer : public MetaBase
     {
         public:
-            typedef QList<ComposerPtr> ComposerList;
 
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
@@ -202,7 +204,6 @@ namespace Meta
     class Year : public MetaBase
     {
         public:
-            typedef QList<YearPtr> YearList;
 
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
