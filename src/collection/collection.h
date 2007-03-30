@@ -42,7 +42,7 @@ class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
 
 };
 
-class Collection
+class AMAROK_EXPORT Collection
 {
     public:
 

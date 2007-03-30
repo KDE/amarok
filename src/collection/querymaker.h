@@ -18,6 +18,7 @@
 #ifndef AMAROK_COLLECTION_QUERYMAKER_H
 #define AMAROK_COLLECTION_QUERYMAKER_H
 
+#include "amarok_export.h"
 #include "meta.h"
 
 #include <QObject>
@@ -26,7 +27,7 @@
 
 using namespace Meta;
 
-class QueryMaker : public QObject
+class AMAROK_EXPORT QueryMaker : public QObject
 {
     Q_OBJECT
 
@@ -74,15 +75,15 @@ class QueryMaker : public QObject
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter ) = 0;
 
     signals:
-        void newResultReady( QString collectionId, TrackList );
-        void newResultReady( QString collectionId, ArtistList );
-        void newResultReady( QString collectionId, AlbumList );
-        void newResultReady( QString collectionId, GenreList );
-        void newResultReady( QString collectionId, ComposerList );
-        void newResultReady( QString collectionId, YearList );
-        void newResultReady( QString collectionId, QStringList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, TrackList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, ArtistList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, AlbumList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, GenreList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, ComposerList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, YearList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, QStringList );
 
-        void queryDone();
+        AMAROK_EXPORT void queryDone();
 };
 
 #endif /* AMAROK_COLLECTION_QUERYMAKER_H */

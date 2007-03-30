@@ -236,7 +236,7 @@ class CollectionDB : public QObject, public EngineObserver
         CollectionDB();
         ~CollectionDB();
 
-        static CollectionDB *instance();
+        AMAROK_EXPORT static CollectionDB *instance();
 
         /**
          * performs all initializations which require directory or URL data stored in the
@@ -277,7 +277,7 @@ class CollectionDB : public QObject, public EngineObserver
         int getType() { return getDbConnectionType(); }
 
         //sql helper methods
-        QStringList query( const QString& statement, bool suppressDebug = false );
+        AMAROK_EXPORT QStringList query( const QString& statement, bool suppressDebug = false );
         int insert( const QString& statement, const QString& table );
 
         /**

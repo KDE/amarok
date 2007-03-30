@@ -80,14 +80,14 @@
 
 
 /// This class is because moc "is really good" (no nested Q_OBJECT classes)
-class JobBase : public QObject {
+class AMAROK_EXPORT JobBase : public QObject {
 Q_OBJECT
 protected:    JobBase() : QObject(), m_aborted( false ) {}
 public slots: void abort() { m_aborted = true; }
 protected:    bool m_aborted;
 };
 
-class ThreadManager : public QObject
+class AMAROK_EXPORT ThreadManager : public QObject
 {
 public:
     class Thread;
@@ -97,7 +97,7 @@ public:
     friend class Job;
     typedef Q3ValueList<Job*> JobList;
 
-    static ThreadManager *instance();
+    AMAROK_EXPORT static ThreadManager *instance();
     static void deleteInstance();
 
     /**
@@ -110,7 +110,7 @@ public:
      * @return number of jobs in the queue after the call
      * @see ThreadManager::Job
      */
-    int queueJob( Job* );
+    AMAROK_EXPORT int queueJob( Job* );
 
     /**
      * Queue multiple jobs simultaneously, you should use this to avoid the race
@@ -222,7 +222,7 @@ public:
      * doesn't have to be called.
      */
 
-    class Job : public JobBase, public QCustomEvent
+    class AMAROK_EXPORT Job : public JobBase, public QCustomEvent
     {
         friend class ThreadManager;         //access to m_thread
         friend class ThreadManager::Thread; //access to m_aborted
@@ -361,7 +361,7 @@ public:
      * need instead of being dependent.
      */
 
-    class DependentJob : public Job
+    class AMAROK_EXPORT DependentJob : public Job
     {
     public:
         DependentJob( QObject *dependent, const char *name );
