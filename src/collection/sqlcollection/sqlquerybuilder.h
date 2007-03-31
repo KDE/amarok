@@ -67,6 +67,13 @@ class SqlQueryBuilder : public QueryMaker
         void linkTables();
         void buildQuery();
 
+        void handleTracks( const QStringList &result );
+        void handleArtists( const QStringList &result );
+        void handleAlbums( const QStringList &result );
+        void handleGenres( const QStringList &result );
+        void handleComposers( const QStringList &result );
+        void handleYears( const QStringList &result );
+
         SqlCollection *m_collection;
 
         class Private;

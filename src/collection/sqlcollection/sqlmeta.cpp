@@ -21,6 +21,8 @@
 #include "sqlregistry.h"
 #include "sqlcollection.h"
 
+#include "mountpointmanager.h"
+
 #include <QFile>
 #include <QListIterator>
 #include <QMutexLocker>
@@ -31,30 +33,32 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( collection )
 {
-    m_url = KUrl( result[0] );
-    m_title = result[1];
-    m_comment = result[2];
-    m_trackNumber = result[3].toInt();
-    m_discNumber = result[4].toInt();
-    m_score = result[5].toDouble();
-    m_rating = result[6].toInt();
-    m_bitrate = result[7].toInt();
-    m_length = result[8].toInt();
-    m_filesize = result[9].toInt();
-    m_sampleRate = result[10].toInt();
+    int deviceid = result[0].toInt();
+    QString rpath = result[1];
+    m_url = KUrl( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
+    m_title = result[2];
+    m_comment = result[3];
+    m_trackNumber = result[4].toInt();
+    m_discNumber = result[5].toInt();
+    m_score = result[6].toDouble();
+    m_rating = result[7].toInt();
+    m_bitrate = result[8].toInt();
+    m_length = result[9].toInt();
+    m_filesize = result[10].toInt();
+    m_sampleRate = result[11].toInt();
     //create date
-    m_lastPlayed = result[12].toUInt();
-    m_playCount = result[13].toInt();
+    m_lastPlayed = result[13].toUInt();
+    m_playCount = result[14].toInt();
     //file type
     //BPM
 
     SqlRegistry* registry = m_collection->registry();
-    m_artist = registry->getArtist( result[16], result[17].toInt() );
-    m_album = registry->getAlbum( result[18], result[19].toInt() );
+    m_artist = registry->getArtist( result[17], result[18].toInt() );
+    m_album = registry->getAlbum( result[19], result[20].toInt() );
     //isCompilation
     m_genre = registry->getGenre( result[21], result[22].toInt() );
-    m_composer = registry->getComposer( result[23], result[24].toInt() );
-    m_year = registry->getYear( result[25], result[26].toInt() );
+    m_composer = registry->getComposer( result[24], result[25].toInt() );
+    m_year = registry->getYear( result[26], result[27].toInt() );
 }
 
 bool
