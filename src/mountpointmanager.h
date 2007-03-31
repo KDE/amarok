@@ -158,7 +158,7 @@ public:
      * factory method.
      * @return a MountPointManager instance
      */
-    static MountPointManager *instance();
+    AMAROK_EXPORT static MountPointManager *instance();
 
     /**
      *
@@ -181,7 +181,7 @@ public:
      * @return the absolute path
      */
     void getAbsolutePath( const int deviceId, const KUrl& relativePath, KUrl& absolutePath ) const;
-    QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
+    AMAROK_EXPORT QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
     /**
      * calculates a file's/directory's relative path on a given device.
      * @param deviceId the unique id which identifies the device the file/directory is supposed to be on
