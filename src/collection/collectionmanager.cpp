@@ -109,4 +109,10 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     d->collections.append( newCollection );
 }
 
+QList<Collection*>
+CollectionManager::collections()
+{
+    return d->collections;
+}
+
 #include "collectionmanager.moc"

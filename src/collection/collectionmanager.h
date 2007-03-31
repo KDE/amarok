@@ -21,6 +21,7 @@
 #include "collection.h"
 #include "querymaker.h"
 
+#include <QList>
 #include <QObject>
 
 class CollectionManager : public QObject
@@ -34,6 +35,8 @@ class CollectionManager : public QObject
 
         QueryMaker * queryMaker();
         void startFullScan();
+
+        QList<Collection*> collections();
 
     private slots:
         void slotNewCollection( Collection *newCollection );
