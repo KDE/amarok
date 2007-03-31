@@ -55,7 +55,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* startYearQuery() = 0;
         virtual QueryMaker* startCustomQuery() = 0;
 
-        virtual void returnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
+        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()

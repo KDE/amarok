@@ -38,6 +38,7 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
         connect( b, SIGNAL( newResultReady( QString, ComposerList ) ), this, SIGNAL( newResultReady( QString, ComposerList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QString, YearList ) ), this, SIGNAL( newResultReady( QString, YearList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, DataList ) ), this, SIGNAL( newResultReady( QString, DataList ) ), Qt::DirectConnection );
     }
 }
 
@@ -219,6 +220,14 @@ MetaQueryBuilder::addMatch( const YearPtr &year )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( year );
+    return this;
+}
+
+QueryMaker*
+MetaQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
+{
+    foreach( QueryMaker *b, builders )
+        b->returnResultAsDataPtrs( resultAsDataPtrs );
     return this;
 }
 
