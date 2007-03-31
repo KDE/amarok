@@ -55,6 +55,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* startYearQuery() = 0;
         virtual QueryMaker* startCustomQuery() = 0;
 
+        virtual void returnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
+
         /**
             only works after starting a custom query with startCustomQuery()
           */
@@ -81,6 +83,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         AMAROK_EXPORT void newResultReady( QString collectionId, GenreList );
         AMAROK_EXPORT void newResultReady( QString collectionId, ComposerList );
         AMAROK_EXPORT void newResultReady( QString collectionId, YearList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, DataList );
         AMAROK_EXPORT void newResultReady( QString collectionId, QStringList );
 
         AMAROK_EXPORT void queryDone();

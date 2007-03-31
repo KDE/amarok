@@ -42,6 +42,8 @@ class SqlQueryBuilder : public QueryMaker
         virtual QueryMaker* startYearQuery();
         virtual QueryMaker* startCustomQuery();
 
+        virtual void returnResultAsDataPtrs( bool resultAsDataPtrs ) { m_resultAsDataPtrs = resultAsDataPtrs; }
+
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );
 
@@ -78,6 +80,8 @@ class SqlQueryBuilder : public QueryMaker
 
         class Private;
         Private * const d;
+
+        bool m_resultAsDataPtrs;
 
 };
 

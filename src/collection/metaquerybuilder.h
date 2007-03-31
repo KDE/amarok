@@ -46,6 +46,8 @@ class MetaQueryBuilder : public QueryMaker
         virtual QueryMaker* startYearQuery();
         virtual QueryMaker* startCustomQuery();
 
+        virtual void returnResultAsDataPtrs( bool resultAsDataPtrs ) { m_resultAsDataPtrs = resultAsDataPtrs; }
+
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
@@ -69,6 +71,7 @@ class MetaQueryBuilder : public QueryMaker
         QList<QueryMaker*> builders;
         int m_queryDoneCount;
         QMutex m_queryDoneCountMutex;
+        bool m_resultAsDataPtrs;
 
 };
 

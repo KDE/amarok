@@ -384,6 +384,22 @@ SqlQueryBuilder::handleResult( const QStringList &result )
     emit queryDone();
 }
 
+// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
+// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
+// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// signal that takes the list of the specific class.
+
+#define emitProperResult( PointerType, list ) { \
+            if ( m_resultAsDataPtrs ) { \
+                DataList data; \
+                foreach( PointerType p, list ) { \
+                    data << DataPtr::staticCast( p ); \
+                } \
+                emit newResultReady( m_collection->collectionId(), data ); \
+            } \
+            emit newResultReady( m_collection->collectionId(), list ); \
+        }
+
 void
 SqlQueryBuilder::handleTracks( const QStringList &result )
 {
@@ -396,7 +412,7 @@ SqlQueryBuilder::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*28, 28 );
         tracks.append( reg->getTrack( row ) );
     }
-    emit newResultReady( m_collection->collectionId(), tracks );
+    emitProperResult( TrackPtr, tracks );
 }
 
 void
@@ -408,7 +424,7 @@ SqlQueryBuilder::handleArtists( const QStringList &result )
     {
         artists.append( reg->getArtist( iter.next(), iter.next().toInt() ) );
     }
-    emit newResultReady( m_collection->collectionId(), artists );
+    emitProperResult( ArtistPtr, artists );
 }
 
 void
@@ -421,7 +437,7 @@ SqlQueryBuilder::handleAlbums( const QStringList &result )
         albums.append( reg->getAlbum( iter.next(), iter.next().toInt() ) );
         iter.next(); //contains tags.isCompilation, not handled at the moment
     }
-    emit newResultReady( m_collection->collectionId(), albums );
+    emitProperResult( AlbumPtr, albums );
 }
 
 void
@@ -433,7 +449,7 @@ SqlQueryBuilder::handleGenres( const QStringList &result )
     {
         genres.append( reg->getGenre( iter.next(), iter.next().toInt() ) );
     }
-    emit newResultReady( m_collection->collectionId(), genres );
+    emitProperResult( GenrePtr, genres );
 }
 
 void
@@ -445,7 +461,7 @@ SqlQueryBuilder::handleComposers( const QStringList &result )
     {
         composers.append( reg->getComposer( iter.next(), iter.next().toInt() ) );
     }
-    emit newResultReady( m_collection->collectionId(), composers );
+    emitProperResult( ComposerPtr, composers );
 }
 
 void
@@ -457,7 +473,7 @@ SqlQueryBuilder::handleYears( const QStringList &result )
     {
         years.append( reg->getYear( iter.next(), iter.next().toInt() ) );
     }
-    emit newResultReady( m_collection->collectionId(), years );
+    emitProperResult( YearPtr, years );
 }
 
 #include "sqlquerybuilder.moc"
