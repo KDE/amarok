@@ -21,7 +21,8 @@
 #define COLLECTIONTREEITEM_H
 
 #include "meta.h"
-#include "sqlmeta.h"
+//#include "sqlmeta.h"
+#include "querybuilder.h"
 
 #include <QList>
 

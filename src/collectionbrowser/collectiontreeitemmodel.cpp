@@ -19,7 +19,7 @@
 
 #include "collectiontreeitemmodel.h"
 #include "collectiontreeitem.h"
-#include "collection/sqlregistry.h"
+//#include "collection/sqlregistry.h"
 #include "debug.h"
 #include "amarok.h"
 
@@ -175,7 +175,7 @@ CollectionTreeItemModel::populateChildren(const QList<Meta::DataPtr> &dataList, 
 
 QList<Meta::DataPtr>
 CollectionTreeItemModel::listForLevel( int level, QueryBuilder qb ) const {
-    if ( level > m_levelType.count() )
+    /*if ( level > m_levelType.count() )
         return QList<Meta::DataPtr>();
     if ( level == m_levelType.count() ) {
         return SqlRegistry::instance()->getTracks( qb );
@@ -187,7 +187,8 @@ CollectionTreeItemModel::listForLevel( int level, QueryBuilder qb ) const {
         case CategoryId::Genre : return SqlRegistry::instance()->getGenres( qb );
         case CategoryId::Year : return SqlRegistry::instance()->getYears( qb );
         default: return QList<Meta::DataPtr>();
-    }
+    }*/
+    return QList<Meta::DataPtr>();
 }
 
 void

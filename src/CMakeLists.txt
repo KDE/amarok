@@ -203,8 +203,6 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
         ${libmagnatunestore_SRCS} ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS}
         ${libcontextview_SRCS}
-   collection/sqlregistry.cpp
-   collection/sqlmeta.cpp
    collection/querymaker.cpp
    collection/collection.cpp
    collection/collectionmanager.cpp

@@ -78,9 +78,9 @@ CollectionTreeItem::level() const {
 QueryBuilder
 CollectionTreeItem::queryBuilder() const {
     QueryBuilder qb = ( !m_parent ? QueryBuilder() : m_parent->queryBuilder() );
-    const SqlSearchable *searchable = dynamic_cast<const SqlSearchable*>(m_data.data());
+    /*const SqlSearchable *searchable = dynamic_cast<const SqlSearchable*>(m_data.data());
     if ( searchable )
-        searchable->addToQueryFilter( qb );
+        searchable->addToQueryFilter( qb );*/
     return qb;
 }
 
