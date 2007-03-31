@@ -40,6 +40,7 @@ namespace Meta
 
 
     typedef KSharedPtr<MetaBase> DataPtr;
+    typedef QList<DataPtr > DataList;
 
     typedef KSharedPtr<Track> TrackPtr;
     typedef QList<TrackPtr > TrackList;
