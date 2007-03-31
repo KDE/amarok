@@ -19,6 +19,8 @@
 #ifndef META_H
 #define META_H
 
+#include "amarok_export.h"
+
 #include <QList>
 #include <QSharedData>
 #include <QString>
@@ -52,7 +54,7 @@ namespace Meta
     typedef KSharedPtr<Year> YearPtr;
     typedef QList<YearPtr > YearList;
 
-    class TrackObserver
+    class AMAROK_EXPORT TrackObserver
     {
         public:
             /** This method is called when the metadata of a track has changed.
@@ -60,7 +62,7 @@ namespace Meta
             virtual void metadataChanged( Track *track ) = 0;
     };
 
-    class MetaBase : public QSharedData
+    class AMAROK_EXPORT MetaBase : public QSharedData
     {
         public:
             virtual QString name() const = 0;
@@ -69,7 +71,7 @@ namespace Meta
             virtual QString sortableName() const { return prettyName(); };
     };
 
-    class Track : public MetaBase
+    class AMAROK_EXPORT Track : public MetaBase
     {
         public:
 
@@ -139,7 +141,7 @@ namespace Meta
             virtual void unsubscribe( TrackObserver *observer ) = 0;
     };
 
-    class Artist : public MetaBase
+    class AMAROK_EXPORT Artist : public MetaBase
     {
         public:
 
@@ -151,7 +153,7 @@ namespace Meta
             virtual void invalidateCache() = 0;
     };
 
-    class Album : public MetaBase
+    class AMAROK_EXPORT Album : public MetaBase
     {
         public:
 
@@ -176,7 +178,7 @@ namespace Meta
             virtual void invalidateCache() = 0;
     };
 
-    class Composer : public MetaBase
+    class AMAROK_EXPORT Composer : public MetaBase
     {
         public:
 
@@ -188,7 +190,7 @@ namespace Meta
             virtual void invalidateCache() = 0;
     };
 
-    class Genre : public MetaBase
+    class AMAROK_EXPORT Genre : public MetaBase
     {
         public:
             typedef QList<GenrePtr> GenreList;
@@ -201,7 +203,7 @@ namespace Meta
             virtual void invalidateCache() = 0;
     };
 
-    class Year : public MetaBase
+    class AMAROK_EXPORT Year : public MetaBase
     {
         public:
 
