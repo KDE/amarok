@@ -30,6 +30,14 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
         QueryMaker *b = c->queryBuilder();
         builders.append( b );
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
+        //relay signals directly
+        connect( b, SIGNAL( newResultReady( QString, TrackList ) ), this, SIGNAL( newResultReady( QString, TrackList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, ArtistList ) ), this, SIGNAL( newResultReady( QString, ArtistList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, AlbumList ) ), this, SIGNAL( newResultReady( QString, AlbumList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, GenreList ) ), this, SIGNAL( newResultReady( QString, GenreList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, ComposerList ) ), this, SIGNAL( newResultReady( QString, ComposerList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, YearList ) ), this, SIGNAL( newResultReady( QString, YearList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
     }
 }
 
