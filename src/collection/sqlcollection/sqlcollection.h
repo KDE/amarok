@@ -19,6 +19,7 @@
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
 #include "collection.h"
+#include "sqlregistry.h"
 
 class SqlCollectionFactory : public CollectionFactory
 {
@@ -37,7 +38,7 @@ class SqlCollection : public Collection
 {
     public:
         SqlCollection();
-        virtual ~SqlCollection() {}
+        virtual ~SqlCollection();
 
         virtual void startFullScan() {} //TODO
         virtual QueryMaker* queryBuilder();
@@ -47,9 +48,13 @@ class SqlCollection : public Collection
 
         QStringList query( const QString &statement );
 
+        SqlRegistry* registry() const;
+
     private:
         //reuse CollectionDB until we replace it completely
         CollectionDB *m_collectionDb;
+
+        SqlRegistry* const m_registry;
 };
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */

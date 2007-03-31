@@ -17,9 +17,9 @@
 */
 
 #include "amarok.h"
-#include "../querybuilder.h"
 #include "sqlmeta.h"
 #include "sqlregistry.h"
+#include "sqlcollection.h"
 
 #include <QFile>
 #include <QListIterator>
@@ -27,9 +27,10 @@
 
 #include <klocale.h>
 
-SqlTrack::SqlTrack( const QStringList &result ) : Track()
+SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
+    : Track()
+    , m_collection( collection )
 {
-    SqlRegistry *registry = SqlRegistry::instance();
     m_url = KUrl( result[0] );
     m_title = result[1];
     m_comment = result[2];
@@ -46,12 +47,14 @@ SqlTrack::SqlTrack( const QStringList &result ) : Track()
     m_playCount = result[13].toInt();
     //file type
     //BPM
-    m_artist = registry->getArtist( result[16] );
-    m_album = registry->getAlbum( result[17] );
+
+    SqlRegistry* registry = m_collection->registry();
+    m_artist = registry->getArtist( result[16], result[17].toInt() );
+    m_album = registry->getAlbum( result[18], result[19].toInt() );
     //isCompilation
-    m_genre = registry->getGenre( result[19] );
-    m_composer = registry->getComposer( result[20] );
-    m_year = registry->getYear( result[21] );
+    m_genre = registry->getGenre( result[21], result[22].toInt() );
+    m_composer = registry->getComposer( result[23], result[24].toInt() );
+    m_year = registry->getYear( result[25], result[26].toInt() );
 }
 
 bool
@@ -124,7 +127,7 @@ SqlTrack::setArtist( const QString &newArtist )
 {
     //invalidate cache of the old artist...
     m_artist->invalidateCache();
-    m_artist = SqlRegistry::instance()->getArtist( newArtist );
+    m_artist = m_collection->registry()->getArtist( newArtist );
     //and the new one
     m_artist->invalidateCache();
     notifyObservers();
@@ -134,7 +137,7 @@ void
 SqlTrack::setGenre( const QString &newGenre )
 {
     m_genre->invalidateCache();
-    m_genre = SqlRegistry::instance()->getGenre( newGenre );
+    m_genre = m_collection->registry()->getGenre( newGenre );
     m_genre->invalidateCache();
     notifyObservers();
 }
@@ -143,7 +146,7 @@ void
 SqlTrack::setComposer( const QString &newComposer )
 {
     m_composer->invalidateCache();
-    m_composer = SqlRegistry::instance()->getComposer( newComposer );
+    m_composer = m_collection->registry()->getComposer( newComposer );
     m_composer->invalidateCache();
     notifyObservers();
 }
@@ -152,7 +155,7 @@ void
 SqlTrack::setYear( const QString &newYear )
 {
     m_year->invalidateCache();
-    m_year = SqlRegistry::instance()->getYear( newYear );
+    m_year = m_collection->registry()->getYear( newYear );
     m_year->invalidateCache();
     notifyObservers();
 }
@@ -161,7 +164,7 @@ void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
     m_album->invalidateCache();
-    m_album = SqlRegistry::instance()->getAlbum( newAlbum );
+    m_album = m_collection->registry()->getAlbum( newAlbum );
     m_album->invalidateCache();
     notifyObservers();
 }
@@ -221,13 +224,7 @@ SqlTrack::setComment( const QString &newComment )
     notifyObservers();
 }
 
-
-void
-SqlTrack::addToQueryFilter( QueryBuilder &qb ) const {
-    //FIXME: implement me!
-}
-
-void
+/*void
 SqlTrack::addToQueryResult( QueryBuilder &qb ) {
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -255,15 +252,17 @@ SqlTrack::addToQueryResult( QueryBuilder &qb ) {
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-}
+}*/
 
 //---------------------- class Artist --------------------------
 
-SqlArtist::SqlArtist( const QString &name ) : Artist()
+SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()
     ,m_name( name )
+    ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_tracks( )
     ,m_mutex( )
+    ,m_collection( collection )
 {
     //nothing to do (yet)
 }
@@ -287,7 +286,6 @@ SqlArtist::tracks()
     }
     else
     {
-        QueryBuilder qb;
         //build query, create SqlTrack objects and add to tracklist
         m_tracksLoaded = true;
         return m_tracks;
@@ -311,25 +309,21 @@ SqlArtist::sortableName() const
     return m_modifiedName;
 }
 
-void
-SqlArtist::addToQueryFilter( QueryBuilder &qb ) const {
-    qb.addMatch( QueryBuilder::tabArtist, m_name, false, true );
-}
-
-
-void
+/*void
 SqlArtist::addToQueryResult( QueryBuilder &qb ) {
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
-}
+}*/
 
 //---------------SqlAlbum---------------------------------
 
-SqlAlbum::SqlAlbum( const QString &name ) : Album()
+SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name ) : Album()
     ,m_name( name )
+    ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_mutex()
     ,m_tracks()
+    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -353,32 +347,21 @@ SqlAlbum::tracks()
     }
     else
     {
-        QueryBuilder qb;
         //build query, create SqlTrack objects and add to tracklist
         m_tracksLoaded = true;
         return m_tracks;
     }
 }
 
-void
-SqlAlbum::addToQueryFilter( QueryBuilder &qb ) const {
-    qb.addMatch( QueryBuilder::tabAlbum, m_name, false, true );
-}
-
-void
-SqlAlbum::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
-}
-
-
 //---------------SqlComposer---------------------------------
 
-SqlComposer::SqlComposer( const QString &name ) : Composer()
+SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()
     ,m_name( name )
+    ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_mutex()
     ,m_tracks()
+    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -402,31 +385,22 @@ SqlComposer::tracks()
     }
     else
     {
-        QueryBuilder qb;
+        
         //build query, create SqlTrack objects and add to tracklist
         m_tracksLoaded = true;
         return m_tracks;
     }
 }
 
-void
-SqlComposer::addToQueryFilter( QueryBuilder &qb ) const {
-    qb.addMatch( QueryBuilder::tabComposer, m_name, false, true );
-}
-
-void
-SqlComposer::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName, true );
-}
-
 //---------------SqlGenre---------------------------------
 
-SqlGenre::SqlGenre( const QString &name ) : Genre()
+SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : Genre()
     ,m_name( name )
+    ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_mutex()
     ,m_tracks()
+    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -450,31 +424,22 @@ SqlGenre::tracks()
     }
     else
     {
-        QueryBuilder qb;
+        
         //build query, create SqlTrack objects and add to tracklist
         m_tracksLoaded = true;
         return m_tracks;
     }
 }
 
-void
-SqlGenre::addToQueryFilter( QueryBuilder &qb ) const {
-    qb.addMatch( QueryBuilder::tabGenre, m_name, false, true );
-}
-
-void
-SqlGenre::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
-}
-
 //---------------SqlYear---------------------------------
 
-SqlYear::SqlYear( const QString &name ) : Year()
+SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Year()
     ,m_name( name )
+    ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_mutex()
     ,m_tracks()
+    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -498,20 +463,11 @@ SqlYear::tracks()
     }
     else
     {
-        QueryBuilder qb;
+        
         //build query, create SqlTrack objects and add to tracklist
         m_tracksLoaded = true;
         return m_tracks;
     }
 }
 
-void
-SqlYear::addToQueryFilter( QueryBuilder &qb ) const {
-    qb.addMatch( QueryBuilder::tabYear, m_name, false, true );
-}
 
-void
-SqlYear::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
-}

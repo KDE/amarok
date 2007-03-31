@@ -110,7 +110,22 @@ QueryMaker*
 SqlQueryBuilder::startTrackQuery()
 {
     if( d->queryType == Private::NONE )
+    {
         d->queryType = Private::TRACK;
+        d->queryReturnValues =  "tags.deviceid, tags.url, "
+                                "tags.title, tags.comment, "
+                                "tags.track, tags.discnumber, "
+                                "statistics.percentage, statistics.rating, "
+                                "tags.bitrate, tags.length, "
+                                "tags.filesize, tags.samplerate, "
+                                "statistics.createdate, statistics.accessdate, "
+                                "statistics.playcounter, tags.filetype, tags.bpm, "
+                                "artist.name, artist.id, "
+                                "album.name, album.id, tags.sampler"
+                                "genre.name, genre.id, "
+                                "composer.name, composer.id, "
+                                "year.name, year.id";
+    }
     return this;
 }
 
@@ -121,7 +136,7 @@ SqlQueryBuilder::startArtistQuery()
     {
         d->queryType = Private::ARTIST;
         //reading the ids from the database means we don't have to query for them later
-        d->queryReturnValues = "artist.id, artist.name";
+        d->queryReturnValues = "artist.name, artist.id";
     }
     return this;
 }
@@ -133,7 +148,7 @@ SqlQueryBuilder::startAlbumQuery()
     {
         d->queryType = Private::ALBUM;
         //add whatever is necessary to identify compilations
-        d->queryReturnValues = "album.id, album.name";
+        d->queryReturnValues = "album.name, album.id";
     }
     return this;
 }
@@ -144,7 +159,7 @@ SqlQueryBuilder::startComposerQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::COMPOSER;
-        d->queryReturnValues = "composer.id, composer.name";
+        d->queryReturnValues = "composer.name, composer.id";
     }
     return this;
 }
@@ -155,7 +170,7 @@ SqlQueryBuilder::startGenreQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::GENRE;
-        d->queryReturnValues = "genre.id, genre.name";
+        d->queryReturnValues = "genre.name, genre.id";
     }
     return this;
 }
@@ -166,7 +181,7 @@ SqlQueryBuilder::startYearQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::YEAR;
-        d->queryReturnValues = "year.id, year.name";
+        d->queryReturnValues = "year.name, year.id";
     }
     return this;
 }

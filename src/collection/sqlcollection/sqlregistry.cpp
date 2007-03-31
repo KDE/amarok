@@ -26,16 +26,12 @@
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 
-SqlRegistry *
-SqlRegistry::instance()
-{
-    static SqlRegistry instance;
-    return &instance;
-}
-
-SqlRegistry::SqlRegistry() : QObject( 0 )
+SqlRegistry::SqlRegistry( SqlCollection* collection )
+    : QObject( 0 )
+    , m_collection( collection )
 {
     setObjectName( "SqlRegistry" );
+
     m_timer = new QTimer( this );
     m_timer->setInterval( 60000 );  //try to clean up every 60 seconds, change if necessary
     m_timer->setSingleShot( false );
@@ -43,37 +39,9 @@ SqlRegistry::SqlRegistry() : QObject( 0 )
     m_timer->start();
 }
 
-
-QList<DataPtr>
-SqlRegistry::getTracks( QueryBuilder querybuilder )
+SqlRegistry::~SqlRegistry()
 {
-    SqlTrack::addToQueryResult( querybuilder );
-
-    QStringList result = querybuilder.run();
-
-    QList<DataPtr> resultList;
-    QStringList partialResult;
-
-
-    QMutexLocker locker( &m_trackMutex );
-
-    for ( int i = 0; i<result.count(); ++i ) {
-        partialResult << result[i];
-        // FIXME: hardcoding this number here sucks! We should move it to SqlTrack.
-        // Maybe a static QList<SqlTrack> SqlTrack( StringList ) ?
-        if ( i>1 && !((i+1) % 22) ) {
-            if( m_trackMap.contains( partialResult[0] ) )
-                 resultList += DataPtr::staticCast( m_trackMap.value( partialResult[0] ) );
-            else
-            {
-                TrackPtr track( new SqlTrack( partialResult ) );
-                m_trackMap.insert( partialResult[0], track );
-                resultList += DataPtr::staticCast( track );
-            }
-            partialResult.clear();
-        }
-    }
-    return resultList;
+    //don't delete m_collection
 }
 
 
@@ -85,154 +53,94 @@ SqlRegistry::getTrack( const QString &url )
         return m_trackMap.value( url );
     else
     {
-        QueryBuilder qb;
-        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valURL, url, QueryBuilder::modeNormal, true );
+        //TODO
 
-        SqlTrack::addToQueryResult( qb );
-
-        QStringList result = qb.run();
-        TrackPtr track( new SqlTrack( result ) );
+        QStringList result;
+        TrackPtr track( new SqlTrack( m_collection, result ) );
         m_trackMap.insert( url, track );
         return track;
     }
 }
 
-
-QList<DataPtr>
-SqlRegistry::getArtists( QueryBuilder querybuilder )
+TrackPtr
+SqlRegistry::getTrack( const QStringList &rowData )
 {
-    SqlArtist::addToQueryResult( querybuilder );
-    QStringList values = querybuilder.run();
-
-    QList<DataPtr> resultList;
-
-    foreach( QString name, values ) {
-        resultList += DataPtr::staticCast( getArtist( name ) );
+    QMutexLocker locker( &m_trackMutex );
+    if( m_trackMap.contains( rowData.first() ) )
+        return m_trackMap.value( rowData.first() );
+    else
+    {
+        TrackPtr track( new SqlTrack( m_collection, rowData ) );
+        m_trackMap.insert( rowData.first(), track );
+        return track;
     }
-    return resultList;
 }
 
 ArtistPtr
-SqlRegistry::getArtist( const QString &name )
+SqlRegistry::getArtist( const QString &name, int id )
 {
     QMutexLocker locker( &m_artistMutex );
     if( m_artistMap.contains( name ) )
         return m_artistMap.value( name );
     else
     {
-        ArtistPtr artist( new SqlArtist( name ) );
+        ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
         m_artistMap.insert( name, artist );
         return artist;
     }
 }
 
-QList<DataPtr>
-SqlRegistry::getGenres( QueryBuilder querybuilder )
-{
-    SqlGenre::addToQueryResult( querybuilder );
-    QStringList values = querybuilder.run();
-
-    QList<DataPtr> resultList;
-
-    foreach( QString name, values ) {
-        resultList += DataPtr::staticCast( getGenre( name ) );
-    }
-    return resultList;
-}
-
 GenrePtr
-SqlRegistry::getGenre( const QString &name )
+SqlRegistry::getGenre( const QString &name, int id )
 {
     QMutexLocker locker( &m_genreMutex );
     if( m_genreMap.contains( name ) )
         return m_genreMap.value( name );
     else
     {
-        GenrePtr genre( new SqlGenre( name ) );
+        GenrePtr genre( new SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( name, genre );
         return genre;
     }
 }
 
-QList<DataPtr>
-SqlRegistry::getComposers( QueryBuilder querybuilder )
-{
-    SqlComposer::addToQueryResult( querybuilder );
-    QStringList values = querybuilder.run();
-
-    QList<DataPtr> resultList;
-
-    foreach( QString name, values ) {
-        resultList += DataPtr::staticCast( getComposer( name ) );
-    }
-    return resultList;
-}
-
 ComposerPtr
-SqlRegistry::getComposer( const QString &name )
+SqlRegistry::getComposer( const QString &name, int id )
 {
     QMutexLocker locker( &m_composerMutex );
     if( m_composerMap.contains( name ) )
         return m_composerMap.value( name );
     else
     {
-        ComposerPtr composer( new SqlComposer( name ) );
+        ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( name, composer );
         return composer;
     }
 }
 
-QList<DataPtr>
-SqlRegistry::getYears( QueryBuilder querybuilder )
-{
-    SqlYear::addToQueryResult( querybuilder );
-    QStringList values = querybuilder.run();
-
-    QList<DataPtr> resultList;
-
-    foreach( QString name, values ) {
-        resultList += DataPtr::staticCast( getYear( name ) );
-    }
-    return resultList;
-}
-
 YearPtr
-SqlRegistry::getYear( const QString &name )
+SqlRegistry::getYear( const QString &name, int id )
 {
     QMutexLocker locker( &m_yearMutex );
     if( m_yearMap.contains( name ) )
         return m_yearMap.value( name );
     else
     {
-        YearPtr year( new SqlYear( name ) );
+        YearPtr year( new SqlYear( m_collection, id, name ) );
         m_yearMap.insert( name, year );
         return year;
     }
 }
 
-QList<DataPtr>
-SqlRegistry::getAlbums( QueryBuilder querybuilder )
-{
-    SqlAlbum::addToQueryResult( querybuilder );
-    QStringList values = querybuilder.run();
-
-    QList<DataPtr> resultList;
-
-    foreach( QString name, values ) {
-        resultList += DataPtr::staticCast( getAlbum( name ) );
-    }
-    return resultList;
-}
-
 AlbumPtr
-SqlRegistry::getAlbum( const QString &name )
+SqlRegistry::getAlbum( const QString &name, int id )
 {
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( name ) )
         return m_albumMap.value( name );
     else
     {
-        AlbumPtr album( new SqlAlbum( name ) );
+        AlbumPtr album( new SqlAlbum( m_collection, id, name ) );
         m_albumMap.insert( name, album );
         return album;
     }

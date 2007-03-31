@@ -20,7 +20,6 @@
 #define SQLREGISTRY_H
 
 #include "sqlmeta.h"
-#include "../querybuilder.h"
 
 #include <QHash>
 #include <QMutex>
@@ -28,33 +27,30 @@
 #include <QTimer>
 #include <QList>
 
+class SqlCollection;
+
 class SqlRegistry : public QObject
 {
     Q_OBJECT
 
     public:
-        static SqlRegistry * instance();
+        SqlRegistry(SqlCollection *collection);
+        virtual ~SqlRegistry();
 
         TrackPtr getTrack( const QString &url );
-        QList<DataPtr> getTracks( QueryBuilder querybuilder = QueryBuilder() );
+        TrackPtr getTrack( const QStringList &rowData );
 
-        ArtistPtr getArtist( const QString &name );
-        QList<DataPtr> getArtists( QueryBuilder querybuilder = QueryBuilder() );
-        GenrePtr getGenre( const QString &name );
-        QList<DataPtr> getGenres( QueryBuilder querybuilder = QueryBuilder() );
-        ComposerPtr getComposer( const QString &name );
-        QList<DataPtr> getComposers( QueryBuilder querybuilder = QueryBuilder() );
-        YearPtr getYear( const QString &year );
-        QList<DataPtr> getYears( QueryBuilder querybuilder = QueryBuilder() );
-        AlbumPtr getAlbum( const QString &album ); //TODO fix this
-        QList<DataPtr> getAlbums( QueryBuilder querybuilder = QueryBuilder() );
+        ArtistPtr getArtist( const QString &name, int id = -1 );
+        GenrePtr getGenre( const QString &name, int id = -1 );
+        ComposerPtr getComposer( const QString &name, int id = -1 );
+        YearPtr getYear( const QString &year, int id = -1 );
+        AlbumPtr getAlbum( const QString &album, int id = -1 ); //TODO fix this
 
 
     private slots:
         void emptyCache();
 
     private:
-        SqlRegistry();
 
         //we don't care about the ordering so use the faster QHash
         QHash<QString, TrackPtr > m_trackMap;
@@ -72,6 +68,8 @@ class SqlRegistry : public QObject
         QMutex m_albumMutex;
 
         QTimer *m_timer;
+
+        SqlCollection *m_collection;
 };
 
 #endif /* SQLREGISTRY_H */

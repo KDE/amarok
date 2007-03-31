@@ -9,7 +9,11 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
-set(amarok_collection-sqlcollection_PART_SRCS sqlcollection.cpp sqlquerybuilder.cpp )
+set(amarok_collection-sqlcollection_PART_SRCS
+	sqlcollection.cpp
+	sqlquerybuilder.cpp
+	sqlregistry.cpp
+	sqlmeta.cpp )
 
 kde4_automoc(${amarok_collection-sqlcollection_PART_SRCS})
 

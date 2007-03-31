@@ -35,7 +35,13 @@ SqlCollectionFactory::init()
 SqlCollection::SqlCollection()
     : Collection()
     , m_collectionDb( CollectionDB::instance() )
+    , m_registry( new SqlRegistry( this ) )
 {
+}
+
+SqlCollection::~SqlCollection()
+{
+    delete m_registry;
 }
 
 QString
@@ -60,6 +66,12 @@ QStringList
 SqlCollection::query( const QString &statement )
 {
     return m_collectionDb->query( statement );
+}
+
+SqlRegistry*
+SqlCollection::registry() const
+{
+    return m_registry;
 }
 
 #include "sqlcollection.moc"

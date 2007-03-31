@@ -28,17 +28,13 @@
 using namespace Meta;
 
 
-class QueryBuilder;
+class QueryMaker;
+class SqlCollection;
 
-class SqlSearchable {
-    public:
-        virtual void addToQueryFilter( QueryBuilder &qb ) const = 0;
-};
-
-class SqlTrack : public Track , public SqlSearchable
+class SqlTrack : public Track
 {
     public:
-        SqlTrack( const QStringList &queryResult );
+        SqlTrack( SqlCollection *collection, const QStringList &queryResult );
 
         virtual QString name() const { return m_title; }
         virtual QString prettyName() const;
@@ -87,13 +83,11 @@ class SqlTrack : public Track , public SqlSearchable
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual int playCount() const { return m_playCount; }
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
-
     protected:
         void notifyObservers();
 
     private:
+        SqlCollection* m_collection;
 
         QString m_title;
         KUrl m_url;
@@ -119,10 +113,10 @@ class SqlTrack : public Track , public SqlSearchable
         QList<TrackObserver*> m_observers;
 };
 
-class SqlArtist : public Artist, public SqlSearchable
+class SqlArtist : public Artist
 {
     public:
-        SqlArtist( const QString &name );
+        SqlArtist( SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
@@ -133,10 +127,10 @@ class SqlArtist : public Artist, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
     private:
+        SqlCollection* m_collection;
         QString m_name;
+        int m_id;
         mutable QString m_modifiedName;
         bool m_tracksLoaded;
         TrackList m_tracks;
@@ -147,10 +141,10 @@ class SqlArtist : public Artist, public SqlSearchable
 
 };
 
-class SqlAlbum : public Album, public SqlSearchable
+class SqlAlbum : public Album
 {
     public:
-        SqlAlbum( const QString &name );
+        SqlAlbum( SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -169,11 +163,10 @@ class SqlAlbum : public Album, public SqlSearchable
         virtual void image() const { }  //TODO: fixme
         virtual void updateImage() { }
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
-
     private:
+        SqlCollection* m_collection;
         QString m_name;
+        int m_id;
         bool m_tracksLoaded;
         TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
@@ -184,10 +177,10 @@ class SqlAlbum : public Album, public SqlSearchable
         //TODO: add album artist
 };
 
-class SqlComposer : public Composer, public SqlSearchable
+class SqlComposer : public Composer
 {
     public:
-        SqlComposer( const QString &name );
+        SqlComposer( SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -196,10 +189,10 @@ class SqlComposer : public Composer, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
     private:
+        SqlCollection* m_collection;
         QString m_name;
+        int m_id;
         bool m_tracksLoaded;
         TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
@@ -208,10 +201,10 @@ class SqlComposer : public Composer, public SqlSearchable
         QMutex m_mutex;
 };
 
-class SqlGenre : public Genre, public SqlSearchable
+class SqlGenre : public Genre
 {
     public:
-        SqlGenre( const QString &name );
+        SqlGenre( SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -220,10 +213,10 @@ class SqlGenre : public Genre, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
     private:
+        SqlCollection* m_collection;
         QString m_name;
+        int m_id;
         bool m_tracksLoaded;
         TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
@@ -232,10 +225,10 @@ class SqlGenre : public Genre, public SqlSearchable
         QMutex m_mutex;
 };
 
-class SqlYear : public Year, public SqlSearchable
+class SqlYear : public Year
 {
     public:
-        SqlYear( const QString &name );
+        SqlYear( SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -244,10 +237,10 @@ class SqlYear : public Year, public SqlSearchable
 
         virtual TrackList tracks();
 
-        virtual void addToQueryFilter( QueryBuilder &qb ) const;
-        static void addToQueryResult( QueryBuilder &qb );
     private:
+        SqlCollection* m_collection;
         QString m_name;
+        int m_id;
         bool m_tracksLoaded;
         TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
