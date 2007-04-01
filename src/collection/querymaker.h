@@ -72,6 +72,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const ComposerPtr &composer ) = 0;
         virtual QueryMaker* addMatch( const GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const YearPtr &year ) = 0;
+        virtual QueryMaker* addMatch( const DataPtr &data ) = 0;
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter ) = 0;

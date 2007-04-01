@@ -268,6 +268,13 @@ SqlQueryBuilder::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
+SqlQueryBuilder::addMatch( const DataPtr &data )
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
 SqlQueryBuilder::addFilter( qint64 value, const QString &filter )
 {
     //TODO

@@ -224,6 +224,14 @@ MetaQueryBuilder::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
+MetaQueryBuilder::addMatch( const DataPtr &data )
+{
+    foreach( QueryMaker *b, builders )
+        b->addMatch( data );
+    return this;
+}
+
+QueryMaker*
 MetaQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     foreach( QueryMaker *b, builders )

@@ -53,6 +53,7 @@ class SqlQueryBuilder : public QueryMaker
         virtual QueryMaker* addMatch( const ComposerPtr &composer );
         virtual QueryMaker* addMatch( const GenrePtr &genre );
         virtual QueryMaker* addMatch( const YearPtr &year );
+        virtual QueryMaker* addMatch( const DataPtr &data );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
