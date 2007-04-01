@@ -63,7 +63,7 @@ email                : markey@web.de
 #include <kio/copyjob.h>
 #include <kjob.h>
 #include <kjobuidelegate.h>
-#include <kkeydialog.h>          //slotConfigShortcuts()
+#include <kshortcutsdialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <krun.h>                //Amarok::invokeBrowser()
@@ -945,7 +945,7 @@ void App::slotConfigAmarok( const QByteArray& page )
 
 void App::slotConfigShortcuts()
 {
-    KKeyDialog::configure( Amarok::actionCollection(), KKeyChooser::LetterShortcutsAllowed, m_pPlaylistWindow );
+    KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, m_pPlaylistWindow );
 }
 
 void App::slotConfigToolBars()

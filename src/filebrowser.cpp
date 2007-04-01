@@ -154,7 +154,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
         KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
-        m_dir->readConfig( &cg  );
+        m_dir->readConfig( cg  );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
         m_dir->setAcceptDrops( true );
@@ -291,7 +291,7 @@ FileBrowser::~FileBrowser()
 {
     KSharedConfigPtr c = Amarok::config( "Filebrowser" );
     KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
-    m_dir->writeConfig( &cg ); //uses currently set group
+    m_dir->writeConfig( cg ); //uses currently set group
 
     c->writePathEntry( "Location", m_dir->url().url() );
     c->writePathEntry( "Dir History", m_combo->urls() );
