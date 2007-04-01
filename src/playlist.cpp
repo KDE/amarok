@@ -2523,7 +2523,6 @@ Playlist::dragObject()
     return drag;
 }
 
-#include <q3simplerichtext.h>
 void
 Playlist::viewportPaintEvent( QPaintEvent *e )
 {
@@ -4751,7 +4750,6 @@ Playlist::showTagDialog( QList<Q3ListViewItem*> items )
 
 
 #include <k3activelabel.h>
-#include <kdialog.h>
 #include <kpushbutton.h>
 #include <q3groupbox.h>
 #include <QLabel>
@@ -4875,7 +4873,6 @@ Playlist::addCustomColumn()
 
 #include <fileref.h>
 #include <tag.h>
-#include <krandom.h>
 
 TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
         : ThreadManager::Job( "TagWriter" )

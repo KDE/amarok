@@ -601,7 +601,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 //////  Amarok::OSD below /////////////////////
 
-#include "enginecontroller.h"
 #include "metabundle.h"
 #include <QRegExp>
 

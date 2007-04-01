@@ -17,8 +17,8 @@
 
 #include <QObject>
 #include <q3ptrlist.h>
-#include <metabundle.h>
 
+#include "metabundle.h"
 #include "tooltip.h"
 
 class QWidget;

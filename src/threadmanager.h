@@ -6,7 +6,6 @@
 #ifndef THREADMANAGER_H
 #define THREADMANAGER_H
 
-#include "debug.h"
 #include <QEvent>   //baseclass
 #include <QPointer>
 #include <qmap.h>

@@ -38,7 +38,6 @@
 #include "searchwidget.h"
 #include "statusbar.h"
 #include "transferdialog.h"
-#include "browserToolBar.h"
 
 #include <QCheckBox>
 #include <QDateTime>

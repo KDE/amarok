@@ -16,10 +16,10 @@
 #define VOLUMEWIDGET_H
 
 #include "sliderwidget.h"
+#include "engineobserver.h"
 
 #include <QPointer>
 #include <QWidget>
-#include <engineobserver.h>
 
 /*
 * A custom widget that serves as our volume slider within Amarok.

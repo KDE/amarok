@@ -1,8 +1,7 @@
-#include <hintlineedit.h>
+#include "hintlineedit.h"
 #include <kvbox.h>
 #include <QLabel>
 #include <qfont.h>
-#include <kvbox.h>
 
 HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent )
    : KLineEdit( text, 0 )

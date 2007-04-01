@@ -29,7 +29,6 @@
 #include <QObject>
 #include <QStringList>
 #include <QToolButton>
-#include <kvbox.h>
 #include <q3vgroupbox.h>
 
 #include <kvbox.h>

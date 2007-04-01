@@ -28,7 +28,6 @@
 #include <QLayout>
 #include <QSignalMapper>
 #include <QToolTip>
-#include <kvbox.h>
 #include <QAbstractButton>
 
 #include <kapplication.h>

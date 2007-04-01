@@ -12,7 +12,7 @@
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
-#include "qwidget.h"
+#include <QtGui/QWidget>
 
 #include <kurl.h>             //stack alloc
 #include <QDateTime>

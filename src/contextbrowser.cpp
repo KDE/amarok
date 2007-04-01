@@ -46,8 +46,8 @@
 #include <QImage>
 #include <QRegExp>
 #include <q3textstream.h>  // External CSS reading
-#include <kvbox.h> //wiki tab
 #include <khbox.h>
+#include <kvbox.h> //wiki tab
 #include <QLayout>
 #include <QLineEdit>
 #include <Q3PopupMenu>
@@ -73,7 +73,6 @@
 #include <kmenu.h>
 #include <kstandarddirs.h>
 #include <ktextedit.h>
-#include <kvbox.h>
 
 
 #include <unistd.h> //usleep()

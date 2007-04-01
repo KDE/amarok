@@ -22,7 +22,6 @@
 
 #include <QLabel>
 #include <QToolTip>
-#include <kvbox.h>
 #include <q3buttongroup.h>
 
 #include <kapplication.h>

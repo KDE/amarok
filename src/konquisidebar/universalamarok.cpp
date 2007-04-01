@@ -30,7 +30,7 @@
 #include <kinstance.h>
 #include <klocale.h>
 #include <QString>
-#include <qwidget.h>
+#include <QtGui/QWidget>
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <QLayout>

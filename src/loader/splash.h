@@ -15,7 +15,7 @@
 #ifndef SPLASH_H
 #define SPLASH_H
 
-#include <qwidget.h> //baseclass
+#include <QtGui/QWidget> //baseclass
 //Added by qt3to4:
 #include <QMouseEvent>
 

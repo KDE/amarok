@@ -18,7 +18,7 @@
 #ifndef AMAROK_EQUALIZERGRAPH_H
 #define AMAROK_EQUALIZERGRAPH_H
 
-#include <qwidget.h>     //baseclass
+#include <QtGui/QWidget>     //baseclass
 
 class QPaintEvent;
 class QPixmap;

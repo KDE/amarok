@@ -16,11 +16,10 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
-//#include "browserbar.h"
 #include "amarok_export.h"
 
 #include <khbox.h>          //baseclass for DynamicBox
-#include <qwidget.h>        //baseclass
+#include <QtGui/QWidget>        //baseclass
 //Added by qt3to4:
 #include <QShowEvent>
 #include <QEvent>
