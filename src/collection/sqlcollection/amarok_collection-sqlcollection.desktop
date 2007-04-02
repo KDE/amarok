@@ -2,9 +2,15 @@
 Encoding=UTF-8
 Type=Service
 Name=SQL Collection
+Name[nl]=SQL-collectie
+Name[pt]=Colecção de SQL
+Name[pt_BR]=Colecção de SQL
 Name[sv]=SQL-samling
 Comment=Collection plugin for Amarok
 Comment[ja]=Amarok のためのコレクションプラグイン
+Comment[nl]=Collectie-plugin voor Amarok
+Comment[pt]=Um 'plugin' da colecção para o Amarok
+Comment[pt_BR]=Um 'plugin' da colecção para o Amarok
 Comment[sv]=Samlingsinsticksprogram för Amarok
 
 ServiceTypes=Amarok/Plugin
