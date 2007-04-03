@@ -270,7 +270,7 @@ SqlQueryBuilder::addMatch( const YearPtr &year )
 QueryMaker*
 SqlQueryBuilder::addMatch( const DataPtr &data )
 {
-    //TODO
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

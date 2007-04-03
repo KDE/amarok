@@ -28,6 +28,8 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
+class QueryMaker;
+
 namespace Meta
 {
     class MetaBase;
@@ -70,6 +72,8 @@ namespace Meta
             virtual QString prettyName() const = 0;
             virtual QString fullPrettyName() const { return prettyName(); };
             virtual QString sortableName() const { return prettyName(); };
+
+            virtual void addMatchTo( QueryMaker *qm ) = 0;
     };
 
     class AMAROK_EXPORT Track : public MetaBase
@@ -138,6 +142,8 @@ namespace Meta
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
 
+            virtual void addMatchTo( QueryMaker* qm );
+
             virtual void subscribe( TrackObserver *observer ) = 0;
             virtual void unsubscribe( TrackObserver *observer ) = 0;
     };
@@ -152,6 +158,8 @@ namespace Meta
             /** invalidates the object's track cache. Call this method
                 if a track's artist either changed from or to this artist */
             virtual void invalidateCache() = 0;
+
+            virtual void addMatchTo( QueryMaker* qm );
     };
 
     class AMAROK_EXPORT Album : public MetaBase
@@ -177,6 +185,8 @@ namespace Meta
             /** invalidates the object's track cache. Call this method
                 if a track's album either changed from or to this album */
             virtual void invalidateCache() = 0;
+
+            virtual void addMatchTo( QueryMaker* qm );
     };
 
     class AMAROK_EXPORT Composer : public MetaBase
@@ -189,6 +199,8 @@ namespace Meta
             /** invalidates the object's track cache. Call this method
                 if a track's composer either changed from or to this composer */
             virtual void invalidateCache() = 0;
+
+            virtual void addMatchTo( QueryMaker* qm );
     };
 
     class AMAROK_EXPORT Genre : public MetaBase
@@ -202,6 +214,8 @@ namespace Meta
             /** invalidates the object's track cache. Call this method
                 if a track's genre either changed from or to this genre */
             virtual void invalidateCache() = 0;
+
+            virtual void addMatchTo( QueryMaker* qm );
     };
 
     class AMAROK_EXPORT Year : public MetaBase
@@ -213,6 +227,8 @@ namespace Meta
 
             /** invalidates the object's tack cache. */
             virtual void invalidateCache() = 0;
+
+            virtual void addMatchTo( QueryMaker* qm );
     };
 }
 

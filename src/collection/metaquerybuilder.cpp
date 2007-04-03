@@ -226,8 +226,9 @@ MetaQueryBuilder::addMatch( const YearPtr &year )
 QueryMaker*
 MetaQueryBuilder::addMatch( const DataPtr &data )
 {
+    DataPtr tmp = const_cast<DataPtr&>( data );
     foreach( QueryMaker *b, builders )
-        b->addMatch( data );
+        tmp->addMatchTo( b );
     return this;
 }
 
