@@ -951,9 +951,10 @@ void App::slotConfigShortcuts()
 void App::slotConfigToolBars()
 {
     PlaylistWindow* const pw = playlistWindow();
-    KEditToolbar dialog( pw->actionCollection(), pw->xmlFile(), true, pw );
+    KEditToolBar dialog( pw->actionCollection(), pw );
+    dialog.setResourceFile( pw->xmlFile() );
 
-    dialog.showButton( KEditToolbar::Apply, false );
+    dialog.showButton( KEditToolBar::Apply, false );
 
 //     if( dialog.exec() )
 //     {
@@ -1120,7 +1121,9 @@ namespace Amarok
 
     OverrideCursor::OverrideCursor( Qt::CursorShape cursor )
     {
-        QApplication::setOverrideCursor( cursor == Qt::WaitCursor ? KCursor::waitCursor() : KCursor::workingCursor() );
+        QApplication::setOverrideCursor( cursor == Qt::WaitCursor ?
+                                        Qt::WaitCursor :
+                                        Qt::BusyCursor );
     }
 
     OverrideCursor::~OverrideCursor()

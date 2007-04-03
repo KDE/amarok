@@ -1429,7 +1429,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
     }
 
     //visual feedback
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
 
     bool result = mb.save();
     mb.updateFilesize();
@@ -1448,7 +1448,7 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
           m_successCount ( 0 ),
           m_failCount    ( 0 )
 {
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.end();
     for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.begin(); it != end; ++it ) {
         MetaBundle mb = it.data();

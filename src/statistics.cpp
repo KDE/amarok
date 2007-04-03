@@ -26,7 +26,7 @@
 #include <k3multipledrag.h>
     //ctor
 #include <k3urldrag.h>          //startDrag()
-#include <kwin.h>
+#include <kwm.h>
 
 #include <qcolor.h>
 #include <QDateTime>
@@ -61,8 +61,8 @@ Statistics::Statistics( QWidget *parent, const char *name )
     s_instance = this;
 
     // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
+    KWM::setType( winId(), NET::Utility );
+    KWM::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("Collection Statistics") ) );

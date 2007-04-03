@@ -100,7 +100,7 @@ PluginManager::createFromService( const KService::Ptr service )
         return 0;
     }
     //look up address of init function and cast it to pointer-to-function
-    Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->symbol( "create_plugin" );
+    Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->resolveSymbol( "create_plugin" );
 
     if ( !create_plugin ) {
         warning() << k_funcinfo << "create_plugin == NULL\n";

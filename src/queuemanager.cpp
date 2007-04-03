@@ -37,7 +37,7 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kvbox.h>
-#include <kwin.h>
+#include <kwm.h>
 
 #if 0
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -252,8 +252,8 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     s_instance = this;
 
     // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
+    KWM::setType( winId(), NET::Utility );
+    KWM::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("Queue Manager") ) );

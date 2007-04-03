@@ -60,7 +60,7 @@
 #include <kstandarddirs.h>
 #include <ktar.h>
 #include <ktextedit.h>
-#include <kwin.h>
+#include <kwm.h>
 
 #include <knewstuff/downloaddialog.h> // knewstuff script fetching
 #include <knewstuff/engine.h>         // "
@@ -112,6 +112,7 @@ namespace Amarok {
 /**
  * GHNS Customised Download implementation.
  */
+#if 0 //TODO: PORT to KNS2
 class AmarokScriptNewStuff : public KNewStuff
 {
     public:
@@ -126,7 +127,7 @@ class AmarokScriptNewStuff : public KNewStuff
 
     virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
 };
-
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScriptManager
@@ -154,8 +155,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setCaption( KDialog::makeStandardCaption( i18n( "Script Manager" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
+    KWM::setType( winId(), NET::Utility );
+    KWM::setState( winId(), NET::SkipTaskbar );
 
     QWidget* main = new QWidget( this );
     m_gui->setupUi( main );
@@ -485,6 +486,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
+#if 0 //FIXME: PORT To KNS2
     // Delete KNewStuff's configuration entries. These entries reflect which scripts
     // are already installed. As we cannot yet keep them in sync after uninstalling
     // scripts, we deactivate the check marks entirely.
@@ -501,6 +503,7 @@ ScriptManager::slotRetrieveScript()
     p->load( "amarok/script", "http://amarok.kde.org/knewstuff/amarokscripts-providers.xml" );
 
     d->exec();
+#endif
 }
 
 
@@ -649,7 +652,7 @@ ScriptManager::slotAboutScript()
     }
 
     KAboutData aboutData( name.toLatin1(), name.toLatin1(), "1.0", readme.readAll() );
-    
+
     KAboutApplicationDialog* about = new KAboutApplicationDialog( &aboutData, this );
     about->setButtons( KDialog::Ok );
     about->setDefaultButton( KDialog::Ok );
@@ -686,7 +689,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     QAction* editAction = menu.addAction( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ) );
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
-    
+
     logAction->setEnabled( m_scripts[key].process != 0 );
 
     QAction* choice = menu.exec( mapToGlobal( pos ) );

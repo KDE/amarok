@@ -19,7 +19,7 @@
 #include <klocale.h>
 #include <kmenu.h>       //Vis::Selector
 #include <k3process.h>         //Vis::Selector
-#include <kwin.h>             //Vis::Selector
+#include <kwm.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
 #include <kdialog.h>
 #include <QToolTip>         //Vis::Selector ctor
@@ -167,8 +167,8 @@ Vis::Selector::Selector( QWidget *parent )
     setCaption( KDialog::makeStandardCaption( i18n( "Visualizations" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
+    KWM::setType( winId(), NET::Utility );
+    KWM::setState( winId(), NET::SkipTaskbar );
 
     setSorting( 0 );
     setColumnWidthMode( 0, Q3ListView::Maximum );

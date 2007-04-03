@@ -216,7 +216,7 @@ ThreadManager::event( QEvent *e )
     case OverrideCursorEvent:
         // we have to do this for the PlaylistLoader case, as Qt uses the same
         // function for drag and drop operations.
-        QApplication::setOverrideCursor( KCursor::workingCursor() );
+        QApplication::setOverrideCursor( Qt::BusyCursor );
         break;
 
     case RestoreOverrideCursorEvent:

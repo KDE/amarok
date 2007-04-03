@@ -89,6 +89,7 @@
 #include <kstatusbar.h>
 #include <ktoolbar.h>
 #include <ktoolbarspaceraction.h>
+#include <kwin.h>
    //createGUI()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
@@ -114,7 +115,7 @@ PlaylistWindow::PlaylistWindow()
 
     if( AmarokConfig::playlistWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
-        // KWin place us otherwise use the stored values
+        // KWM place us otherwise use the stored values
         resize( AmarokConfig::playlistWindowSize() );
         move( AmarokConfig::playlistWindowPos() );
     }
@@ -947,7 +948,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 }
 
 
-#include <kwin.h>
+#include <kwm.h>
 #include <kwinmodule.h>
 /**
  * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
@@ -965,25 +966,25 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 void PlaylistWindow::showHide() //SLOT
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
-    const uint desktop = KWin::currentDesktop();
+    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
+    const uint desktop = KWM::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
     const bool isShaded = false;
 
     if( isShaded )
     {
-        KWin::clearState( winId(), NET::Shaded );
+        KWM::clearState( winId(), NET::Shaded );
         setShown( true );
     }
 
     if( !isOnThisDesktop )
     {
-        KWin::setOnDesktop( winId(), desktop );
+        KWM::setOnDesktop( winId(), desktop );
         setShown( true );
     }
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
-    if( isShown() ) KWin::deIconifyWindow( winId() );
+    if( isShown() ) KWM::unminimizeWindow( winId() );
 #else
     setShown( !isShown() );
 #endif
@@ -992,14 +993,14 @@ void PlaylistWindow::showHide() //SLOT
 void PlaylistWindow::activate()
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
+    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
 
-    if( KWinModule( NULL, KWinModule::INFO_DESKTOP ).activeWindow() != winId())
+    if( KWM::activeWindow() != winId())
         setShown( true );
     else if( !info.isMinimized() )
         setShown( true );
     if( isShown() )
-        KWin::activateWindow( winId() );
+        KWM::activateWindow( winId() );
 #else
     setShown( true );
 #endif
@@ -1008,8 +1009,8 @@ void PlaylistWindow::activate()
 bool PlaylistWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
-    return isShown() && !info.isMinimized() && info.isOnDesktop( KWin::currentDesktop() );
+    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
+    return isShown() && !info.isMinimized() && info.isOnDesktop( KWM::currentDesktop() );
 #else
     return isShown();
 #endif

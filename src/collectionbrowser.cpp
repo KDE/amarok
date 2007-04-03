@@ -3362,7 +3362,7 @@ void
 CollectionView::setCompilation( const KUrl::List &urls, bool compilation )
 {
     //visual feedback
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
 
     //Set it in the DB. We don't need to update the view now as we do it at the end.
     CollectionDB::instance()->setCompilation( urls, compilation, false );

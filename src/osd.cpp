@@ -521,7 +521,7 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
     m_dragOffset = event->pos();
 
     if( event->button() == Qt::LeftButton && !m_dragging ) {
-        grabMouse( KCursor::sizeAllCursor() );
+        grabMouse( Qt::SizeAllCursor );
         m_dragging = true;
     }
 }

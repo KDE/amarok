@@ -58,7 +58,7 @@
     //clear filter button
 #include <kurl.h>
 #include <k3urldrag.h>
-#include <kwin.h>
+#include <kwm.h>
 #include <klineedit.h>
 
 static QString artistToSelectInInitFunction;
@@ -284,7 +284,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
     setAttribute( Qt::WA_DeleteOnClose );
-    KWin::setType( winId(), NET::Utility );
+    KWM::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 
@@ -408,7 +408,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     kapp->processEvents();
 
     //this can be a bit slow
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     QueryBuilder qb;
     QStringList albums;
 
@@ -1016,7 +1016,7 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     QFontMetrics fm = p->fontMetrics();
     int nameWidth = fm.width( str );
     str = fm.elidedText( str, Qt::ElideRight, textRect().width() );
-    
+
     p->setPen( cg.text() );
     p->drawText( textRect(), Qt::AlignCenter, str );
 

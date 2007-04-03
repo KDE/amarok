@@ -40,6 +40,7 @@
  */
 class AmarokThemeNewStuff : public KNewStuff
 {
+#if 0 //FIXME: Port to KNS2
     public:
     explicit AmarokThemeNewStuff(const QString &type, QWidget *parentWidget=0)
              : KNewStuff( type, parentWidget )
@@ -63,6 +64,7 @@ class AmarokThemeNewStuff : public KNewStuff
     }
 
     virtual bool createUploadFile( const QString& ) { return false; }
+#endif
 };
 
 
@@ -105,6 +107,7 @@ void Options2::installPushButton_clicked()
 
 void Options2::retrievePushButton_clicked()
 {
+#if 0 //FIXME: KNS2
     // Delete KNewStuff's configuration entries. These entries reflect which styles
     // are already installed. As we cannot yet keep them in sync after uninstalling
     // styles, we deactivate the check marks entirely.
@@ -126,6 +129,7 @@ void Options2::retrievePushButton_clicked()
     // Due to kdelibs idiocy, KNS::DownloadDialog is /always/ non-modal. So we have to
     // ensure that closing the settings dialog before the DownloadDialog doesn't crash.
     QTimer::singleShot( 0, d, SLOT( exec() ) );
+#endif
 }
 
 

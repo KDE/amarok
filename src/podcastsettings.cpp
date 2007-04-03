@@ -12,7 +12,7 @@
 #include <kurlrequester.h>
 #include <klocale.h>
 #include <kurl.h>
-#include <kwin.h>
+#include <kwm.h>
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -102,7 +102,7 @@ PodcastSettingsDialog::init()
 {
         m_ps = new PodcastSettingsDialogBase(this);
 
-        KWin::setState( winId(), NET::SkipTaskbar );
+        KWM::setState( winId(), NET::SkipTaskbar );
 
         setMainWidget(m_ps);
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );

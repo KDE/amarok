@@ -46,7 +46,7 @@
 #include <kmenu.h>
 #include <kstandarddirs.h> //locate()
 #include <kvbox.h>
-#include <kwin.h>
+#include <kwm.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 
@@ -66,8 +66,8 @@ EqualizerSetup::EqualizerSetup()
     setCaption( KDialog::makeStandardCaption( i18n( "Equalizer" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
+    KWM::setType( winId(), NET::Utility );
+    KWM::setState( winId(), NET::SkipTaskbar );
 
     QWidget* vbox = new QWidget( this );
     setMainWidget( vbox );

@@ -56,7 +56,7 @@ class ScriptManager : public KDialog, public EngineObserver
 {
     Q_OBJECT
 
-    friend class AmarokScriptNewStuff;
+//     friend class AmarokScriptNewStuff;
 
     public:
         explicit ScriptManager( QWidget *parent = 0, const char *name = 0 );
