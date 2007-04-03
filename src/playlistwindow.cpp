@@ -948,7 +948,6 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 
 
 #include <kwm.h>
-#include <kwinmodule.h>
 /**
  * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
  * RULES:

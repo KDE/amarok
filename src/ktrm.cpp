@@ -30,7 +30,6 @@
 #include <kio/jobclasses.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
-#include <kresolver.h>
 
 #include <qdom.h>
 #include <QMutex>

@@ -18,10 +18,6 @@
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kmessagebox.h>
-#include <knewstuff/downloaddialog.h> // knewstuff theme fetching
-#include <knewstuff/engine.h>         // "
-#include <knewstuff/knewstuff.h>      // "
-#include <knewstuff/provider.h>       // "
 #include <kstandarddirs.h>
 #include <ktar.h>
 #include <kio/netaccess.h>
@@ -38,9 +34,10 @@
 /**
  * GHNS Customised Download implementation.
  */
+#if 0
 class AmarokThemeNewStuff : public KNewStuff
 {
-#if 0 //FIXME: Port to KNS2
+ //FIXME: Port to KNS2
     public:
     explicit AmarokThemeNewStuff(const QString &type, QWidget *parentWidget=0)
              : KNewStuff( type, parentWidget )
@@ -64,9 +61,8 @@ class AmarokThemeNewStuff : public KNewStuff
     }
 
     virtual bool createUploadFile( const QString& ) { return false; }
-#endif
 };
-
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // class Options2

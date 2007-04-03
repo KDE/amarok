@@ -62,11 +62,6 @@
 #include <ktextedit.h>
 #include <kwm.h>
 
-#include <knewstuff/downloaddialog.h> // knewstuff script fetching
-#include <knewstuff/engine.h>         // "
-#include <knewstuff/knewstuff.h>      // "
-#include <knewstuff/provider.h>       // "
-
 
 namespace Amarok {
     void closeOpenFiles(int out, int in, int err) {
