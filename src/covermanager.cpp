@@ -284,7 +284,9 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
     setAttribute( Qt::WA_DeleteOnClose );
+#ifdef Q_WS_X11
     KWM::setType( winId(), NET::Utility );
+#endif
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 

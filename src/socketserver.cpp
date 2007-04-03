@@ -167,8 +167,10 @@ Vis::Selector::Selector( QWidget *parent )
     setCaption( KDialog::makeStandardCaption( i18n( "Visualizations" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
+#ifdef Q_WS_X11
     KWM::setType( winId(), NET::Utility );
     KWM::setState( winId(), NET::SkipTaskbar );
+#endif
 
     setSorting( 0 );
     setColumnWidthMode( 0, Q3ListView::Maximum );

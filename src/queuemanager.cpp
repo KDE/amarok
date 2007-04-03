@@ -252,8 +252,10 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     s_instance = this;
 
     // Gives the window a small title bar, and skips a taskbar entry
+#ifdef Q_WS_X11
     KWM::setType( winId(), NET::Utility );
     KWM::setState( winId(), NET::SkipTaskbar );
+#endif
 
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("Queue Manager") ) );

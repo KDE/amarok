@@ -102,7 +102,9 @@ PodcastSettingsDialog::init()
 {
         m_ps = new PodcastSettingsDialogBase(this);
 
+#ifdef Q_WS_X11
         KWM::setState( winId(), NET::SkipTaskbar );
+#endif
 
         setMainWidget(m_ps);
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );

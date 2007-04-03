@@ -150,8 +150,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setCaption( KDialog::makeStandardCaption( i18n( "Script Manager" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
+#ifdef Q_WS_X11
     KWM::setType( winId(), NET::Utility );
     KWM::setState( winId(), NET::SkipTaskbar );
+#endif
 
     QWidget* main = new QWidget( this );
     m_gui->setupUi( main );
