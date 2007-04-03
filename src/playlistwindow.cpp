@@ -89,7 +89,6 @@
 #include <kstatusbar.h>
 #include <ktoolbar.h>
 #include <ktoolbarspaceraction.h>
-#include <kwin.h>
    //createGUI()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
