@@ -58,14 +58,14 @@ void AlbumItem::setText( const QString &text )
 
 void AlbumBox::addAlbumInfo( const QString &pixLocation, const QString &text )
 {
-    AlbumItem *albumRow = new AlbumItem( this, scene() );
+    AlbumItem *albumRow = new AlbumItem( m_contentRect, scene() );
     albumRow->setCover( pixLocation );
     albumRow->setText( text );
 }
 
 void AlbumBox::addAlbumInfo( const QPixmap &pixmap, const QString &text )
 {
-    AlbumItem *albumRow = new AlbumItem( this, scene() );
+    AlbumItem *albumRow = new AlbumItem( m_contentRect, scene() );
     albumRow->setCover( pixmap );
     albumRow->setText( text );
 }
