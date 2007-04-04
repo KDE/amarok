@@ -82,3 +82,21 @@ void ContextView::wheelEvent( QWheelEvent *event )
      scaleView( pow( (double)2, -event->delta() / 240.0) );
 }
 
+void ContextView::clear()
+{
+    //remove amd delete all elements from scene
+
+    QList<QGraphicsItem *> sceneItems = m_contextScene->items();
+
+    foreach ( QGraphicsItem * item, sceneItems ) {
+        m_contextScene->removeItem( item );
+        delete item;
+    }
+
+}
+
+void ContextView::addContextBox( ContextBox * newBox )
+{
+    m_contextScene->addItem( newBox );
+}
+

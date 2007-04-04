@@ -518,8 +518,8 @@ void MagnatuneBrowser::polish( )
         }
 
          cloudBox->done();
-         //ContextView::instance()->clear();
-         ContextView::instance()->scene()->addItem( cloudBox );
+         ContextView::instance()->clear();
+         ContextView::instance()->addContextBox( cloudBox );
          //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
 
 

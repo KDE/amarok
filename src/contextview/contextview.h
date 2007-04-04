@@ -14,10 +14,14 @@
 #ifndef AMAROK_CONTEXTVIEW_H
 #define AMAROK_CONTEXTVIEW_H
 
+#include "contextbox.h"
+
 #include <QGraphicsView>
 
 class QGraphicsScene;
 class QWheelEvent;
+
+using namespace Context;
 
 class ContextView : public QGraphicsView
 {
@@ -36,6 +40,10 @@ class ContextView : public QGraphicsView
                 return new ContextView();
             return s_instance;
         }
+
+        void clear();
+
+        void addContextBox( ContextBox * newBox );
 
     protected:
         void wheelEvent( QWheelEvent *event );
