@@ -501,6 +501,7 @@ void MagnatuneBrowser::polish( )
 
        
         CloudBox * cloudBox = new CloudBox( 0, 0 );
+        cloudBox->setTitle(" Magnatune Moods" );
 
         int steps = 10;
         int stepBoundry = maxMoodCount / steps;

@@ -35,8 +35,10 @@ class ContextBox : public QGraphicsRectItem
 
     protected:
         virtual void setBoundingRectSize( const QSize &sz );
+        void setContentRectSize( const QSize &sz );
 
         QGraphicsTextItem *m_titleItem;
+        QGraphicsRectItem *m_contentRect;
 };
 
 }

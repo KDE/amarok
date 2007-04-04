@@ -92,16 +92,6 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
    m_currentLineMaxHeight = 0.0;
 
-    /*for ( int i = 0; i < 50; i++) {
-
-        int random = ( rand() % (m_maxFontSize - m_minFontSize) ) + m_minFontSize + 1;
-
-        debug() << "randum font size: " << random << endl;
-
-        addText( "Amarok", random);
-
-    }*/
-
 
 }
 
@@ -112,8 +102,8 @@ void CloudBox::addText(QString text, int weight, QObject * reciever, const char 
 
     
     // create the new text item
-    CloudTextItem * item = new CloudTextItem ( text, this, 0 );
-    item->setParentItem( this );
+    CloudTextItem * item = new CloudTextItem ( text, m_contentRect, 0 );
+    //item->setParentItem( this );
     item->connect ( item, SIGNAL( clicked( QString ) ), reciever, slot );
     QFont font = item->font();
     font.setPointSize( weight );
@@ -169,9 +159,10 @@ void CloudBox::adjustCurrentLinePos()
     }
 
     //do we have enough vertical space for this line? If not, create some!
-    if ( ( m_runningY + maxHeight ) > boundingRect().height() ) {
-        int missingHeight = ( m_runningY + maxHeight ) -  boundingRect().height();
-        setRect(0, 0, boundingRect().width(), boundingRect().height() + missingHeight );
+    if ( ( m_runningY + maxHeight ) > m_contentRect->boundingRect().height() ) {
+        int missingHeight = ( m_runningY + maxHeight ) -  m_contentRect->boundingRect().height();
+       // m_contentRect->setRect(0, 0, boundingRect().width(), boundingRect().height() + missingHeight );
+       setContentRectSize( QSize( boundingRect().width(), boundingRect().height() + missingHeight ) );
     }
 
     //calc the X offset that makes the line centered horizontally

@@ -29,27 +29,38 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
     setPos(100, 300);
+
+
+    m_titleItem = new QGraphicsTextItem( "", this, scene );
+    m_titleItem->setDefaultTextColor( QColor(255, 255, 255 ) );
+    // increase the font size for the title
+    QFont font = m_titleItem->font();
+    font.setPointSize( 14 );
+    font.setBold( true );
+    m_titleItem->setFont( font );
+
+
+    m_contentRect = new QGraphicsRectItem( this, scene );
+    m_contentRect->setRect( 0, 0, boundingRect.width(), boundingRect.height() -  m_titleItem->boundingRect().height());
+    m_contentRect->setPos(0 , m_titleItem->boundingRect().height());
      
 }
 
 void ContextBox::setTitle( const QString &title )
 {
-    if( !m_titleItem )
-    {
-        m_titleItem = new QGraphicsTextItem( title, this, scene() );
-
-        // increase the font size for the title
-        QFont font = m_titleItem->font();
-        font.setPointSize( 12 );
-        m_titleItem->setFont( font );
-
-    }
-    else
-        m_titleItem->setPlainText( title );
+    m_titleItem->setPlainText( title );
 }
 
 void ContextBox::setBoundingRectSize( const QSize &sz )
 {
     QRectF newRect = QRectF( 0, 0, sz.width(), sz.height() );
     setRect( newRect );
+}
+
+void ContextBox::setContentRectSize( const QSize &sz ) {
+   
+     m_contentRect->setRect( QRectF( 0, 0, sz.width(), sz.height() ) );
+    //set correct size of this as well
+    setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleItem->boundingRect().height()) );
+
 }
