@@ -42,7 +42,7 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
     
     m_timeLine->stop();
     
-    setDefaultTextColor( QColor( 255, 255, 255 ) );
+    setDefaultTextColor( QColor( 0, 127, 255 ) );
 
 
 }
@@ -65,7 +65,8 @@ void CloudTextItem::colorFadeSlot( int step ) {
     int colorValue = 255 - step * 8.5;
     if ( step == 100 ) colorValue = 0;
 
-     setDefaultTextColor( QColor( colorValue, colorValue, colorValue ) );
+
+     setDefaultTextColor( QColor( 0, colorValue / 2, colorValue ) );
      update();
 }
 

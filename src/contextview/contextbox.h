@@ -38,6 +38,7 @@ class ContextBox : public QGraphicsRectItem
         void setContentRectSize( const QSize &sz );
 
         QGraphicsTextItem *m_titleItem;
+        QGraphicsRectItem *m_titleBarRect;
         QGraphicsRectItem *m_contentRect;
 };
 
