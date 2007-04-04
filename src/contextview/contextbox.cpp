@@ -73,6 +73,9 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 void ContextBox::setTitle( const QString &title )
 {
     m_titleItem->setPlainText( title );
+
+    int xOffset = ( m_titleBarRect->boundingRect().width() - m_titleItem->boundingRect().width() ) / 2;
+    m_titleItem->setPos( xOffset, 0 );
 }
 
 void ContextBox::setBoundingRectSize( const QSize &sz )
