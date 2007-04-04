@@ -41,6 +41,8 @@ public:
      */
     ~ScriptableService() { }
 
+    void polish() {}
+
 private slots:
 
 

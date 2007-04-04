@@ -71,7 +71,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     m_currentlySelectedItem = 0;
 
     m_polished = false;
-    polish( );  //FIXME not happening when shown for some reason
+    //polish( );  //FIXME not happening when shown for some reason
 
 }
 
@@ -483,49 +483,59 @@ void MagnatuneBrowser::polish( )
         + "</td></tr></tbody></table>" );
         m_infoBox->end();
 
-        MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap( 20 );
-
-        int minMoodCount = 10000;
-        int maxMoodCount = 0;
-
-        //determine max and min counts
-        QMapIterator<QString, int> i(moodMap);
-        while (i.hasNext()) {
-           i.next();
-           if ( i.value() > maxMoodCount ) maxMoodCount = i.value();
-           if ( i.value() < minMoodCount ) minMoodCount = i.value();
-        }
-
-
-        //normalize and insert into cloud view
-
-       
-        CloudBox * cloudBox = new CloudBox( 0, 0 );
-        cloudBox->setTitle(" Magnatune Moods" );
-
-        int steps = 10;
-        int stepBoundry = maxMoodCount / steps;
-
-
-        i.toFront();
-        while (i.hasNext()) {
-           i.next();
-           if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-           else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-           else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-           else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-           else cloudBox->addText( i.key(), 24, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-        }
-
-         cloudBox->done();
-         ContextView::instance()->clear();
-         ContextView::instance()->addContextBox( cloudBox );
-         //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+        
 
 
     }
 
+   
 
+
+}
+
+bool MagnatuneBrowser::updateContextView()
+{
+
+    MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap( 20 );
+
+    int minMoodCount = 10000;
+    int maxMoodCount = 0;
+
+    //determine max and min counts
+    QMapIterator<QString, int> i(moodMap);
+    while (i.hasNext()) {
+        i.next();
+        if ( i.value() > maxMoodCount ) maxMoodCount = i.value();
+        if ( i.value() < minMoodCount ) minMoodCount = i.value();
+    }
+
+
+    //normalize and insert into cloud view
+
+
+    CloudBox * cloudBox = new CloudBox( 0, 0 );
+    cloudBox->setTitle( "Magnatune Moods" );
+
+    int steps = 10;
+    int stepBoundry = maxMoodCount / steps;
+
+
+    i.toFront();
+    while (i.hasNext()) {
+        i.next();
+        if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+        else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+        else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+        else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+        else cloudBox->addText( i.key(), 24, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+    }
+
+    cloudBox->done();
+    ContextView::instance()->clear();
+    ContextView::instance()->addContextBox( cloudBox );
+    //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
+
+    return true;
 }
 
 

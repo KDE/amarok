@@ -65,6 +65,7 @@ private:
     ServiceBase * m_currentService;
 
     ScriptableServiceManager * m_scriptableServiceManager;
+    bool m_usingContextView;
 
 
 private slots:

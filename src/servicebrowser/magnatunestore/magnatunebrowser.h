@@ -62,6 +62,12 @@ public:
      */
     ~MagnatuneBrowser() { }
 
+     /**
+     * Do not do expensive initializations before we are actually shown
+     */
+    void polish();
+    bool updateContextView();
+
 private slots:
 
     /**
@@ -162,11 +168,6 @@ private slots:
      */
     void purchaseCompleted( bool success );
 
-    
-    /**
-     * Don not do expensive initializations before we are actually shown
-     */
-    void polish();
 
     /**
      * Slot for recieving notifications from base class that the selected item has chaged

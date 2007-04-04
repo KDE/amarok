@@ -21,6 +21,7 @@ Boston, MA 02110-1301, USA.
 #include "debug.h"
 #include "servicebrowser.h"
 #include "magnatunestore/magnatunebrowser.h"
+#include "../../contextview/contextview.h"
 
 #include <kiconloader.h> 
 
@@ -38,6 +39,8 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const char *name )
 
     m_currentService = 0;
     m_scriptableServiceManager = 0;
+
+    m_usingContextView = false;
 }
 
 void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
@@ -82,6 +85,8 @@ void ServiceBrowser::showService( const QString &name ) {
 
         m_serviceSelectionList->reparent ( 0,  QPoint( 0,0 ) );
         service->reparent ( this,  QPoint( 0,0 ), true );
+        service->polish();
+        m_usingContextView = service->updateContextView();
         m_currentService = service;
 
     }
@@ -96,6 +101,10 @@ void ServiceBrowser::home()
         m_currentService->reparent( 0,  QPoint( 0, 0 ) );
         m_serviceSelectionList->reparent( this,  QPoint( 0,0 ), true );
         m_currentService = 0;
+        // remove any context stuff we might have added
+
+        if ( m_usingContextView ) 
+            ContextView::instance()->clear();
     }
 
 }

@@ -70,6 +70,9 @@ public:
     void setModel( ServiceModelBase * model );
     ServiceModelBase * getModel();
 
+    virtual void polish() = 0;
+    virtual bool updateContextView() { return false; }
+
 public slots:
 
      void infoChanged ( const QString &infoHtml );
