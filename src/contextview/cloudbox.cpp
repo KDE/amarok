@@ -83,6 +83,7 @@ void CloudTextItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 : ContextBox( parent, scene )
 {
+
    m_maxFontSize = 24;
    m_minFontSize = 4;
 
@@ -111,7 +112,8 @@ void CloudBox::addText(QString text, int weight, QObject * reciever, const char 
 
     
     // create the new text item
-    CloudTextItem * item = new CloudTextItem ( text, this, scene() );
+    CloudTextItem * item = new CloudTextItem ( text, this, 0 );
+    item->setParentItem( this );
     item->connect ( item, SIGNAL( clicked( QString ) ), reciever, slot );
     QFont font = item->font();
     font.setPointSize( weight );
@@ -169,7 +171,7 @@ void CloudBox::adjustCurrentLinePos()
     //do we have enough vertical space for this line? If not, create some!
     if ( ( m_runningY + maxHeight ) > boundingRect().height() ) {
         int missingHeight = ( m_runningY + maxHeight ) -  boundingRect().height();
-        setRect(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height() + missingHeight );
+        setRect(0, 0, boundingRect().width(), boundingRect().height() + missingHeight );
     }
 
     //calc the X offset that makes the line centered horizontally

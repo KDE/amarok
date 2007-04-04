@@ -24,8 +24,12 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     : QGraphicsRectItem( parent, scene )
       , m_titleItem( 0 )
 {
+
+
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
+    setPos(100, 300);
+     
 }
 
 void ContextBox::setTitle( const QString &title )
