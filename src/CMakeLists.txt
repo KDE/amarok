@@ -168,8 +168,9 @@ set(libcollectionbrowser_SRCS
 set(libcontextview_SRCS
     contextview/contextview.cpp
     contextview/contextbox.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/contextview/albumbox.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/contextview/cloudbox.cpp
+    contextview/albumbox.cpp
+    contextview/cloudbox.cpp
+    contextview/fadingimageitem.cpp
 )
 
 

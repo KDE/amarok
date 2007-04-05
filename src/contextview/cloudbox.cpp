@@ -54,7 +54,7 @@ void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
 
 
-     // Construct a 1-second timeline with a frame range of 0 - 100
+     // Construct a 1-second timeline with a frame range of 0 - 30
      m_timeLine->setFrameRange(0, 30);
      m_timeLine->start();
 

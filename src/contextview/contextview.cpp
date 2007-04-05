@@ -16,6 +16,10 @@
 #include "collectiondb.h"
 #include "contextbox.h"
 #include "contextview.h"
+#include "fadingimageitem.h"
+
+
+#include <kstandarddirs.h>
 
 #include <math.h> // scaleView()
 #include <QBrush>
@@ -58,14 +62,25 @@ void ContextView::showHome()
 //
 //     welcomeBox->setPos( 2, 2 );
 
-    AlbumBox *album = new AlbumBox( 0, m_contextScene );
+ /*   AlbumBox *album = new AlbumBox( 0, m_contextScene );
     const QString &cover = CollectionDB::instance()->albumImage( "3 Doors Down", "The Better Life", false, 50 );
     debug() << "cover: " << cover ;
     album->addAlbumInfo( cover, "3 Doors Down - The Better Life" );
     m_contextScene->addItem( album );
-   
-    //CloudBox * cloud = new CloudBox(  0, m_contextScene );
-    //m_contextScene->addItem( cloud );
+   */
+
+   FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
+
+
+   QColor color = palette().highlight();
+   fadeingImage->setFadeColor( color );
+   fadeingImage->setTargetAlpha( 200 );
+
+
+   m_contextScene->addItem(fadeingImage);
+
+   fadeingImage->startFading();
+
 }
 
 void ContextView::scaleView( qreal factor )
