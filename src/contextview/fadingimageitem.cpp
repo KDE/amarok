@@ -36,8 +36,8 @@ FadingImageItem::FadingImageItem( const QPixmap & pixmap, QGraphicsItem * parent
     m_shadeRectItem->setPen( Qt::NoPen );
     m_shadeRectItem->setBrush( QBrush ( QColor ( 255, 255, 255, 0 )  ) );
 
-    // 3 secs at 30 fps
-    m_animationSteps = 90;
+    // 10 secs at 25.5 fps
+    m_animationSteps = 255;
 
      m_timeLine = new QTimeLine( 10000, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
@@ -63,14 +63,14 @@ void Context::FadingImageItem::setTargetAlpha(int alpha)
 void Context::FadingImageItem::fadeSlot(int step)
 {
 
-    m_fadeColor.setAlpha( ( 255 / 90 ) * step );
+    m_fadeColor.setAlpha( m_targetAlpha - ( m_animationSteps -  step ) );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 
 }
 
 void Context::FadingImageItem::startFading()
 {
-     m_timeLine->setFrameRange(0, 90);
+     m_timeLine->setFrameRange(0, m_animationSteps);
      m_timeLine->start();
 }
 
