@@ -103,6 +103,7 @@ Exec=qdbus org.kde.amarok /PlayerList playMedia %U
 Name=Queue Track
 Name[af]=Plaas snit in wagtou
 Name[ar]= اضف المسار الى صفٌ الانتظار
+Name[be]=Дадаць у чаргу
 Name[bg]=На опашката
 Name[bn]=গান সারিবদ্ধ করো
 Name[ca]=Encua la peça
