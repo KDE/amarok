@@ -36,8 +36,11 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
 
     m_shadeRectItem = new QGraphicsRectItem( this );
     m_shadeRectItem->setRect( 0, 0, m_contentItem->boundingRect().width(), m_contentItem->boundingRect().height() );
+    m_shadeRectItem->setPos( -1, -1 );
     m_shadeRectItem->setPen( Qt::NoPen );
-    m_shadeRectItem->setBrush( QBrush ( QColor ( 255, 255, 255, 0 )  ) );
+    
+    m_fadeColor = QColor ( 255, 255, 255, 0 );
+    m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 
 
 
@@ -54,6 +57,8 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
 void GraphicsItemFader::setStartAlpha(int alpha)
 {
     m_startAlpha = alpha;
+    m_fadeColor.setAlpha( m_startAlpha );
+    m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 }
 
 void GraphicsItemFader::setTargetAlpha(int alpha)
@@ -81,7 +86,8 @@ QRectF Context::GraphicsItemFader::boundingRect() const
 void GraphicsItemFader::setFadeColor(const QColor & color)
 {
     m_fadeColor = color;
-    m_fadeColor.setAlpha( 0 );
+    m_fadeColor.setAlpha( m_startAlpha );
+    m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 
 }
 

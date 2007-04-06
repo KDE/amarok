@@ -25,6 +25,7 @@ Boston, MA 02110-1301, USA.
 #include "debug.h"
 #include "../../contextview/contextview.h"
 #include "../../contextview/cloudbox.h"
+#include "../../contextview/graphicsitemfader.h"
 
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
@@ -514,6 +515,7 @@ bool MagnatuneBrowser::updateContextView()
 
 
     CloudBox * cloudBox = new CloudBox( 0, 0 );
+    cloudBox->setPos( 0, 0 );
     cloudBox->setTitle( "Magnatune Moods" );
 
     int steps = 10;
@@ -531,8 +533,20 @@ bool MagnatuneBrowser::updateContextView()
     }
 
     cloudBox->done();
+
+
+
+    GraphicsItemFader * cloudFader = new GraphicsItemFader( cloudBox, 0 );
+    cloudFader->setDuration( 2500 );
+    cloudFader->setFPS( 30 );
+    cloudFader->setStartAlpha( 255 );
+    cloudFader->setTargetAlpha( 0 );
+    cloudFader->setFadeColor( palette().highlight() );
+
     ContextView::instance()->clear();
-    ContextView::instance()->addContextBox( cloudBox );
+    ContextView::instance()->scene()->addItem( cloudFader );
+
+    cloudFader->startFading();
     //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
 
     return true;

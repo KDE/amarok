@@ -122,7 +122,7 @@ void ContextView::clear()
     foreach ( QGraphicsItem * item, sceneItems ) {
         if ( item->scene() == m_contextScene ) { 
             m_contextScene->removeItem( item );
-            delete item;
+            //delete item;
         }
     }
 
