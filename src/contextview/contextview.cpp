@@ -115,16 +115,12 @@ void ContextView::wheelEvent( QWheelEvent *event )
 
 void ContextView::clear()
 {
-    //remove amd delete all elements from scene
 
-    QList<QGraphicsItem *> sceneItems = m_contextScene->items();
-
-    foreach ( QGraphicsItem * item, sceneItems ) {
-        if ( item->scene() == m_contextScene ) { 
-            m_contextScene->removeItem( item );
-            //delete item;
-        }
-    }
+    delete m_contextScene;
+    m_contextScene = new QGraphicsScene( this );
+    m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+    m_contextScene->setBackgroundBrush( palette().highlight() );
+    setScene( m_contextScene );
 
 }
 

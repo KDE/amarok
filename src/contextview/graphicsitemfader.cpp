@@ -54,6 +54,7 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
 }
 
+
 void GraphicsItemFader::setStartAlpha(int alpha)
 {
     m_startAlpha = alpha;
@@ -115,6 +116,7 @@ void GraphicsItemFader::startFading()
 void GraphicsItemFader::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
 }
+
 
 
 
