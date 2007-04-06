@@ -39,12 +39,8 @@ FadingImageItem::FadingImageItem( const QPixmap & pixmap, QGraphicsItem * parent
     // 10 secs at 25.5 fps
     m_animationSteps = 255;
 
-     m_timeLine = new QTimeLine( 10000, this );
+    m_timeLine = new QTimeLine( 5000, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
-
-
-
-
 }
 
 void Context::FadingImageItem::setFadeColor(const QColor & color)
