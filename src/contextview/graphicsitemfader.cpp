@@ -35,8 +35,8 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
     m_contentItem->setParentItem( this );
 
     m_shadeRectItem = new QGraphicsRectItem( this );
-    m_shadeRectItem->setRect( 0, 0, m_contentItem->boundingRect().width(), m_contentItem->boundingRect().height() );
-    m_shadeRectItem->setPos( -1, -1 );
+    m_shadeRectItem->setRect( 0, 0, m_contentItem->boundingRect().width() + 2, m_contentItem->boundingRect().height() + 2 );
+    m_shadeRectItem->setPos( -1, -1 ); // needs a slight offset to cover frames on m_contentItem
     m_shadeRectItem->setPen( Qt::NoPen );
     
     m_fadeColor = QColor ( 255, 255, 255, 0 );
