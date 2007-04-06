@@ -17,6 +17,7 @@
 #include "contextbox.h"
 #include "contextview.h"
 #include "fadingimageitem.h"
+#include "graphicsitemfader.h"
 
 
 #include <kstandarddirs.h>
@@ -69,7 +70,7 @@ void ContextView::showHome()
     m_contextScene->addItem( album );
    */
 
-   FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
+   /*FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
 
 
    QColor color = palette().highlight();
@@ -77,10 +78,25 @@ void ContextView::showHome()
    fadeingImage->setTargetAlpha( 200 );
 
 
-   m_contextScene->addItem(fadeingImage);
+  
+*/
 
-   fadeingImage->startFading();
 
+   QGraphicsPixmapItem * logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ), 0 );
+
+    GraphicsItemFader * logoFader = new GraphicsItemFader( logoItem, 0 );
+
+    logoFader->setDuration( 5000 );
+    logoFader->setFPS( 30 );
+    logoFader->setStartAlpha( 0 );
+    logoFader->setTargetAlpha( 200 );
+    logoFader->setFadeColor( palette().highlight() );
+
+    m_contextScene->addItem( logoFader );
+    logoFader->startFading();
+
+
+   
 }
 
 void ContextView::scaleView( qreal factor )

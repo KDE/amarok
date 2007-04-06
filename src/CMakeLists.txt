@@ -171,6 +171,7 @@ set(libcontextview_SRCS
     contextview/albumbox.cpp
     contextview/cloudbox.cpp
     contextview/fadingimageitem.cpp
+    contextview/graphicsitemfader.cpp
 )
 
 
