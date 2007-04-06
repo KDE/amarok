@@ -16,7 +16,6 @@
 #include "collectiondb.h"
 #include "contextbox.h"
 #include "contextview.h"
-#include "fadingimageitem.h"
 #include "graphicsitemfader.h"
 
 
