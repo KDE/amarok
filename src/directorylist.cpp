@@ -67,7 +67,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setResizeMode( Q3ListView::LastColumn );
 
     reinterpret_cast<QWidget*>(m_view->header())->hide();
-    new Collection::Item( m_view );
+    new CollectionFolder::Item( m_view );
 
     setSpacing( 6 );
 }
@@ -112,7 +112,7 @@ CollectionSetup::writeConfig()
 // CLASS Item
 //////////////////////////////////////////////////////////////////////////////////////////
 
-namespace Collection {
+namespace CollectionFolder {
 
 Item::Item( Q3ListView *parent )
     : Q3CheckListItem( parent, "/", Q3CheckListItem::CheckBox  )

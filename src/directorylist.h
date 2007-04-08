@@ -27,7 +27,7 @@
 #include <kurl.h>       //stack allocated
 
 
-namespace Collection { class Item; }
+namespace CollectionFolder { class Item; }
 
 class QFixedListView : public Q3ListView
 // Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
@@ -44,7 +44,7 @@ public:
 
 class CollectionSetup : public KVBox
 {
-    friend class Collection::Item;
+    friend class CollectionFolder::Item;
 
 public:
     static CollectionSetup* instance() { return s_instance; }
@@ -66,7 +66,7 @@ private:
 };
 
 
-namespace Collection { //just to keep it out of the global namespace
+namespace CollectionFolder { //just to keep it out of the global namespace
 
 class Item : public QObject, public Q3CheckListItem
 {
