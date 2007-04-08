@@ -15,6 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+#define DEBUG_PREFIX "CollectionManager"
 
 #include "collectionmanager.h"
 
@@ -39,7 +40,7 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
-    //init collections
+    init();
 }
 
 CollectionManager::~CollectionManager()
@@ -68,7 +69,7 @@ CollectionManager::init()
             CollectionFactory* factory = dynamic_cast<CollectionFactory*>( plugin );
             if ( factory )
             {
-                connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection* ) );
+                connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
                 d->factories.append( factory );
                 factory->init();
             }
@@ -106,7 +107,14 @@ CollectionManager::queryMaker()
 void
 CollectionManager::slotNewCollection( Collection* newCollection )
 {
+    if( !newCollection )
+    {
+        debug() << "Warning, newCollection in slotNewCollection is 0" << endl;
+        return;
+    }
+    debug() << "New collection with collectionId: " << newCollection->collectionId() << endl;
     d->collections.append( newCollection );
+    emit collectionAdded( newCollection );
 }
 
 QList<Collection*>

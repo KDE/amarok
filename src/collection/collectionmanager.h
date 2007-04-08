@@ -38,6 +38,10 @@ class CollectionManager : public QObject
 
         QList<Collection*> collections();
 
+    signals:
+        void collectionAdded( Collection *newCollection );
+        void collectionRemoved( QString collectionId );
+
     private slots:
         void slotNewCollection( Collection *newCollection );
 
