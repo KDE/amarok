@@ -35,7 +35,6 @@
 #include <QBitmap>
 #include <QDesktopWidget>
 #include <QPainter>
-#include <QPixmap>
 #include <QRegExp>
 #include <QTimer>
 #include <q3valuevector.h>
@@ -602,7 +601,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 //////  Amarok::OSD below /////////////////////
 
 #include "metabundle.h"
-#include <QRegExp>
 
 Amarok::OSD::OSD(): OSDWidget( 0 )
 {

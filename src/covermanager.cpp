@@ -31,7 +31,6 @@
 #include <QStringList>
 #include <QToolTip>
 #include <QTimer>    //search filter timer
-#include <QToolTip>
 #include <kvbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>

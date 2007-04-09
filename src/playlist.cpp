@@ -4753,7 +4753,6 @@ Playlist::showTagDialog( QList<Q3ListViewItem*> items )
 #include <kpushbutton.h>
 #include <q3groupbox.h>
 #include <QLabel>
-#include <QLayout>
 #include <q3process.h>
 #include <unistd.h>      //usleep()
 

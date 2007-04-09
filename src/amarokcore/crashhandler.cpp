@@ -271,7 +271,6 @@ namespace Amarok
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
 #include <kstandarddirs.h>
-#include <ktoolinvocation.h>
 
 Amarok::CrashHandlerWidget::CrashHandlerWidget()
 {

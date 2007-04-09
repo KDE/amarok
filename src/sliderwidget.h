@@ -23,7 +23,6 @@
 #include <config.h>
 #include "metabundle.h"
 
-#include <QPixmap>
 #include <kurl.h>
 
 #include <QPixmap>
@@ -32,10 +31,7 @@
 //Added by qt3to4:
 #include <QShowEvent>
 #include <QWheelEvent>
-#include <QEvent>
-#include <QHideEvent>
 #include <QMouseEvent>
-#include <QContextMenuEvent>
 #include <QPaintEvent>
 
 class QPalette;

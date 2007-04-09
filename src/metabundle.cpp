@@ -44,7 +44,6 @@
 #include <id3v2tag.h>
 #include <id3v1tag.h>
 #include <mpcfile.h>
-#include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <vorbisfile.h>

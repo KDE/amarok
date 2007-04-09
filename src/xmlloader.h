@@ -23,7 +23,8 @@
 
 #include <QEvent>
 #include <QObject>
-#include <QtXml>
+#include <QtXml/QXmlInputSource>
+#include <QtXml/QXmlSimpleReader>
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3ValueList>

@@ -97,7 +97,6 @@
 
 #ifdef HAVE_INOTIFY
     #include <linux/inotify.h>
-#include <krandom.h>
     #include "inotify/inotify-syscalls.h"
 #endif
 
@@ -565,7 +564,7 @@ CollectionDB::createTables( const bool temporary )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url " + exactTextColumnType() + "," 
+                    "url " + exactTextColumnType() + ","
                     "dir " + exactTextColumnType() + ","
                     "createdate INTEGER,"
                     "modifydate INTEGER,"

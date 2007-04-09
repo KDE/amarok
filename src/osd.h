@@ -21,10 +21,6 @@
 #include <QImage>
 #include <q3valuelist.h>
 #include <QWidget> //baseclass
-//Added by qt3to4:
-#include <QPixmap>
-#include <QEvent>
-#include <QMouseEvent>
 
 
 class OSDWidget : public QWidget
