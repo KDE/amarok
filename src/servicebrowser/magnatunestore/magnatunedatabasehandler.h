@@ -164,9 +164,9 @@ public:
 
     /**
      * Returns a map of all defined moods. The key of the map is the moods itself (sorted
-     * alfabetically ) and the value is the number of occurences of the mood.
-     * This is usefull for displaying items in a cloud view
-     * @param threshold Only include moods with more occurences than treshold
+     * alfabetically ) and the value is the number of occurrences of the mood.
+     * This is useful for displaying items in a cloud view
+     * @param threshold Only include moods with more occurrences than treshold
      * @return A map of all defined moods and their frequency
      */
     MagnatuneMoodMap getMoodMap(int threshold = 0);

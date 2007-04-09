@@ -54,5 +54,4 @@ class CollectionManager : public QObject
         Private * const d;
 };
 
-
 #endif /* AMAROK_COLLECTIONMANAGER_H */

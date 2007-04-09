@@ -688,7 +688,7 @@ MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap(int threshold)
     QString lastMood;
     int currentMoodCount = 0;
 
-    //count occurences of each mood
+    //count occurrences of each mood
 
     foreach( QString currentMood, result ) {
 

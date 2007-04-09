@@ -71,7 +71,7 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
         CloudBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
-        void addText(QString text, int weight, QObject * reciever, const char * slot);
+        void addText(QString text, int weight, QObject * receiver, const char * slot);
 
         /**
          * Makes sure all elements are correctly positioned
@@ -82,7 +82,7 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
     private:
 
         /**
-         * Adjusts the current line in the cloud so all ellements are alligned vertically
+         * Adjusts the current line in the cloud so all ellements are aligned vertically
          * and the whole line is centered in the cloud box
          */
         void adjustCurrentLinePos();

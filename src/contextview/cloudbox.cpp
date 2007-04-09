@@ -97,7 +97,7 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 }
 
 
-void CloudBox::addText(QString text, int weight, QObject * reciever, const char * slot)
+void CloudBox::addText(QString text, int weight, QObject * receiver, const char * slot)
 {
     //debug() << "adding new text: " << text << " size: " << weight << endl;
 
@@ -105,7 +105,7 @@ void CloudBox::addText(QString text, int weight, QObject * reciever, const char 
     // create the new text item
     CloudTextItem * item = new CloudTextItem ( text, m_contentRect, 0 );
     //item->setParentItem( this );
-    item->connect ( item, SIGNAL( clicked( QString ) ), reciever, slot );
+    item->connect ( item, SIGNAL( clicked( QString ) ), receiver, slot );
     QFont font = item->font();
     font.setPointSize( weight );
     item->setFont( font );
