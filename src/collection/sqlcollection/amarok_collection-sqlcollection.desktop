@@ -8,6 +8,7 @@ Name[nl]=SQL-collectie
 Name[pt]=Colecção de SQL
 Name[pt_BR]=Colecção de SQL
 Name[sv]=SQL-samling
+Name[th]=จัดการคลังดนตรีด้วย SQL
 Comment=Collection plugin for Amarok
 Comment[el]=Πρόσθετο συλλογής για το AmaroK
 Comment[ja]=Amarok のためのコレクションプラグイン
@@ -16,6 +17,7 @@ Comment[nl]=Collectie-plugin voor Amarok
 Comment[pt]=Um 'plugin' da colecção para o Amarok
 Comment[pt_BR]=Um 'plugin' da colecção para o Amarok
 Comment[sv]=Samlingsinsticksprogram för Amarok
+Comment[th]=โปรแกรมเสริมจัดการคลังดนตรีสำหรับ Amarok
 
 ServiceTypes=Amarok/Plugin
 
