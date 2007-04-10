@@ -691,9 +691,9 @@ void TagDialog::readTags()
 
     summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_bundle.playCount() ) );
     summaryText += body2cols.arg( i18n("First Played:"),
-                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getFirstPlay( m_bundle.url().path() ).date() , true ) : i18n("Never") );
+                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getFirstPlay( m_bundle.url().path() ).date() , KLocale::ShortDate ) : i18n("Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
-                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getLastPlay( m_bundle.url().path() ).date() , true ) : i18n("Never") );
+                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getLastPlay( m_bundle.url().path() ).date() , KLocale::ShortDate ) : i18n("Never") );
 
     summaryText += "</table></td></tr></table>";
     summaryLabel->setText( summaryText );
