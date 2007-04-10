@@ -964,7 +964,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 void PlaylistWindow::showHide() //SLOT
 {
 #ifdef Q_WS_X11
-    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWM::windowInfo( winId(), 0, 0 );
     const uint desktop = KWM::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
     const bool isShaded = false;
@@ -991,7 +991,7 @@ void PlaylistWindow::showHide() //SLOT
 void PlaylistWindow::activate()
 {
 #ifdef Q_WS_X11
-    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWM::windowInfo( winId(), 0, 0 );
 
     if( KWM::activeWindow() != winId())
         setShown( true );
@@ -1007,7 +1007,7 @@ void PlaylistWindow::activate()
 bool PlaylistWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWM::WindowInfo info = KWM::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWM::windowInfo( winId(), 0, 0 );
     return isShown() && !info.isMinimized() && info.isOnDesktop( KWM::currentDesktop() );
 #else
     return isShown();
