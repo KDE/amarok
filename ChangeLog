@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
-    * Upgraded SQLite to 3.3.14.
+    * Upgraded SQLite to 3.3.15.
     * Append an album to the playlist by right-clicking on it from within
       the Cover Manager.  Patch by Doug Reich <dreich@hmc.edu>.
     * Faster playlist handling. Patch by Ovy <ovy@alum.mit.edu>. (BR 142255)
