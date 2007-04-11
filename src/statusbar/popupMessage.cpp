@@ -27,7 +27,7 @@
 #include <kstandardguiitem.h>
 
 #include <qfont.h>
-#include <q3frame.h>
+#include <QFrame>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPainter>

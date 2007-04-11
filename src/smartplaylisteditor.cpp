@@ -22,7 +22,7 @@
 #include <QCheckBox>
 #include <QDateTime>
 #include <q3datetimeedit.h>    //loadEditWidgets()
-#include <q3frame.h>
+#include <QFrame>
 #include <khbox.h>
 #include <QLabel>
 #include <QLayout>

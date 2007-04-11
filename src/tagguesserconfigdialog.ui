@@ -176,10 +176,6 @@ Note that the order in which the schemes appear in the list is relevant, since t
   <include location="local" >kdialog.h</include>
   <include location="local" >k3listview.h</include>
   <include location="local" >kpushbutton.h</include>
-  <include location="local" >kpushbutton.h</include>
-  <include location="local" >kpushbutton.h</include>
-  <include location="local" >kpushbutton.h</include>
-  <include location="local" >kpushbutton.h</include>
  </includes>
  <resources/>
  <connections/>

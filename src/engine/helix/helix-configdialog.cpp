@@ -24,7 +24,7 @@
 #include <QPixmap>
 //Added by qt3to4:
 #include <Q3GridLayout>
-#include <Q3Frame>
+#include <QFrame>
 
 #include <klineedit.h>
 #include <kseparator.h>
@@ -274,7 +274,7 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
 
     sv->setResizePolicy( Q3ScrollView::AutoOneFit );
     sv->setHScrollBarMode( Q3ScrollView::AlwaysOff );
-    sv->setFrameShape( Q3Frame::NoFrame );
+    sv->setFrameShape( QFrame::NoFrame );
     sv->addChild( parent );
 
     grid = new Q3GridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );
