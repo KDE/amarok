@@ -23,19 +23,19 @@ Boston, MA 02110-1301, USA.
 #include "magnatunestore/magnatunebrowser.h"
 #include "../../contextview/contextview.h"
 
-#include <kiconloader.h> 
+#include <kiconloader.h>
 
 ServiceBrowser::ServiceBrowser(QWidget * parent, const char *name )
         : KVBox( parent)
 {
-    
+
 
     debug() << "ServiceBrowser starting..." << endl;
     m_serviceSelectionList = new QListWidget( this );
     m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
-    
+
 
     m_currentService = 0;
     m_scriptableServiceManager = 0;
@@ -58,33 +58,36 @@ void ServiceBrowser::addService( ServiceBase * service ) {
     QListWidgetItem * serviceListItem = new QListWidgetItem( service->getName() , m_serviceSelectionList );
     //serviceListItem->setTextAlignment( Qt::AlignHCenter );
     serviceListItem->setIcon( service->getIcon() );
-    
 
-   
+
+
 
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
-    
+
 
 }
 
 
 void ServiceBrowser::serviceSelected( QListWidgetItem * item ) {
-    
+
     debug() << "Show service: " <<  item->text() << endl;
     showService(  item->text() );
 }
 
 void ServiceBrowser::showService( const QString &name ) {
 
-    
+
     ServiceBase * service = 0;
     if ( m_services.contains( name ) )
        service = m_services.value( name );
 
     if ( service != 0 ) {
 
-        m_serviceSelectionList->reparent ( 0,  QPoint( 0,0 ) );
-        service->reparent ( this,  QPoint( 0,0 ), true );
+        m_serviceSelectionList->setParent ( 0 );
+        m_serviceSelectionList->move ( QPoint( 0,0 ) );
+        service->setParent ( this );
+        service->move( QPoint( 0,0 ) );
+        service->show();
         service->polish();
         m_usingContextView = service->updateContextView();
         m_currentService = service;
@@ -103,7 +106,7 @@ void ServiceBrowser::home()
         m_currentService = 0;
         // remove any context stuff we might have added
 
-        if ( m_usingContextView ) 
+        if ( m_usingContextView )
             ContextView::instance()->clear();
     }
 

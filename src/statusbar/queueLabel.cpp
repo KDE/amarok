@@ -46,12 +46,13 @@
 static const uint MAX_TO_SHOW = 20;
 
 QueueLabel::QueueLabel( QWidget *parent, const char *name )
-    : QLabel( parent, name )
+    : QLabel( parent )
     , m_timer( this )
     , m_tooltip( 0 )
     , m_tooltipShowing( false )
     , m_tooltipHidden( false )
 {
+    setObjectName( name );
     connect( this,                 SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ) );
 
@@ -105,26 +106,26 @@ void QueueLabel::setNum( int num )
         QPixmap pix( w, h );
         QPainter p( &pix );
 
-        p.setBrush( colorGroup().background() );
-        p.setPen( colorGroup().background() );
+        p.setBrush( QColorGroup(palette()).background() );
+        p.setPen( QColorGroup(palette()).background() );
         p.drawRect( pix.rect() );
 
-        p.setBrush( colorGroup().highlight() );
-        p.setPen( colorGroup().highlight().dark() );
+        p.setBrush( QColorGroup(palette()).highlight() );
+        p.setPen( QColorGroup(palette()).highlight().dark() );
         if( w > h )
         {
             p.drawPie( 0, 0, h, h, 90*16, 180*16 );
             p.drawPie( w-1 -h, 0, h, h, -90*16, 180*16 );
             p.drawLine( h/2-1, 0, w-1 - h/2, 0 );
             p.drawLine( h/2-1, h-1, w-1 - h/2, h-1 );
-            p.setPen( colorGroup().highlight() );
+            p.setPen( QColorGroup(palette()).highlight() );
             p.drawRect( h/2-1, 1, w - h + 1, h-2 );
         }
         else
             p.drawEllipse( pix.rect() );
 
         p.setFont( f );
-        p.setPen( colorGroup().highlightedText() );
+        p.setPen( QColorGroup(palette()).highlightedText() );
         p.setBrush( QColorGroup(palette()).highlight().dark() );
         p.drawText( pix.rect(), Qt::AlignCenter | Qt::TextSingleLine, text );
 
@@ -187,22 +188,24 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         menu->addTitle( i18np( "1 Queued Track", "%1 Queued Tracks", count ) );
     menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));
 
-    menu->insertItem( KIcon( Amarok::icon( "rewind" ) ),
-                      count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
-    menu->insertSeparator();
+    menu->insertAction( new QAction( KIcon( Amarok::icon( "rewind" ) ),
+                      count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ),
+                      menu ), 0 );
+    menu->addSeparator();
     uint i = 1;
 
     while( i <= count )
     {
         for( uint n = qMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i )
             menu->insertItem(
-                KStringHandler::rsqueeze( i18n( "%1. %2", i, veryNiceTitle( queue.at(i-1) ) ), 50 ), i );
+                            KStringHandler::rsqueeze( i18n( "%1. %2", i,
+                            veryNiceTitle( queue.at(i-1) ) ), 50 ), i );
         Debug::stamp();
 
         if( i < count )
         {
             menus.append( new KMenu );
-            menu->insertSeparator();
+            menu->addSeparator();
             menu->insertItem( i18np( "1 More Track", "%1 More Tracks", count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
         }

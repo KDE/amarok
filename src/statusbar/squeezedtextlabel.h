@@ -38,7 +38,7 @@ public:
 
   virtual QSize minimumSizeHint() const;
   virtual QSize sizeHint() const;
-  virtual void setAlignment( int );
+  virtual void setAlignment( Qt::Alignment );
 
 public slots:
   void setText( const QString & );

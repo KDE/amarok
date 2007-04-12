@@ -33,7 +33,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
 {
     KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-
     QList<int> cats = config->readEntry( "TreeCategory", QList<int>() );
     if ( cats.isEmpty() )
         cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;

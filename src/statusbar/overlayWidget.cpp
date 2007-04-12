@@ -29,11 +29,12 @@ namespace KDE {
 
 
 OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name )
-        : QFrame( parent->parentWidget(), name )
+        : QFrame( parent->parentWidget() )
         , m_anchor( anchor )
         , m_parent( parent )
 {
     parent->installEventFilter( this );
+    setObjectName( name );
 
     hide();
 }
@@ -68,7 +69,7 @@ OverlayWidget::reposition()
 // {
 //     if ( e->type() == QEvent::Move || e->type() == QEvent::Resize )
 //         reposition();
-// 
+//
 //     return QFrame::eventFilter( o, e );
 // }
 

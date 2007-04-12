@@ -96,7 +96,7 @@ MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
 QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need more columns (for track length and so on...)
 {
    QString leadingZero;
- 
+
    switch ( m_type ) {
        case MAGNATUNE_ROOT:
            return  "Root node";
@@ -105,12 +105,12 @@ QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need mor
        case MAGNATUNE_ALBUM:
            return  m_content.albumValue->getName();
        case MAGNATUNE_TRACK:
-           if (m_content.trackValue->getTrackNumber() < 10) 
+           if (m_content.trackValue->getTrackNumber() < 10)
                leadingZero = "0";
-           
 
 
-           return leadingZero + QString::number( m_content.trackValue->getTrackNumber() ) + ' - ' +  m_content.trackValue->getName();
+
+           return leadingZero + QString::number( m_content.trackValue->getTrackNumber() ) + " - " +  m_content.trackValue->getName();
        default:
            return QVariant();
     }
@@ -125,7 +125,7 @@ int MagnatuneContentItem::row() const
         return m_parent->getChildItems().indexOf(const_cast<MagnatuneContentItem*>(this));
     }
     return 0;
-} 
+}
 
 QList<ServiceModelItemBase*> MagnatuneContentItem::getChildItems() const {
     if ( !m_hasPopulatedChildItems )

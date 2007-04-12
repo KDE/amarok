@@ -78,7 +78,9 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->addWidget( m_countdownFrame );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
-    m_countdownFrame->setPaletteForegroundColor( paletteBackgroundColor().dark() );
+    QPalette pal;
+    pal.setColor( m_countdownFrame->foregroundRole(), p.dark() );
+    m_countdownFrame->setPalette( pal );
 
     label = new QLabel( this );
     label->setObjectName( "image" );

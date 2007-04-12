@@ -30,7 +30,7 @@
 namespace KDE {
 
 SqueezedTextLabel::SqueezedTextLabel( const QString &text , QWidget *parent, const char *name )
- : QLabel() 
+ : QLabel()
 {
     setParent( parent );
     setObjectName( name );
@@ -40,7 +40,7 @@ SqueezedTextLabel::SqueezedTextLabel( const QString &text , QWidget *parent, con
 }
 
 SqueezedTextLabel::SqueezedTextLabel( QWidget *parent, const char *name )
- : QLabel() 
+ : QLabel()
 {
     setObjectName( name );
     setParent( parent );
@@ -125,18 +125,18 @@ void SqueezedTextLabel::squeezeTextToLabel()
             text += "...";
         }
         QLabel::setText( text );
-	QToolTip::remove( this );
+        setToolTip( "" );
         this->setToolTip( fullText );
     }
     else
     {
         QLabel::setText( fullText );
-        QToolTip::remove( this );
+        setToolTip( "" );
         //QToolTip::hide();
     }
 }
 
-void SqueezedTextLabel::setAlignment( int alignment )
+void SqueezedTextLabel::setAlignment( Qt::Alignment alignment )
 {
   // save fullText and restore it
   QString tmpFull(fullText);

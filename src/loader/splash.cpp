@@ -24,13 +24,15 @@ extern "C"
 }
 
 Splash::Splash()
-        : QWidget( 0, 0, Qt::WType_TopLevel | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
+        : QWidget( 0, Qt::WType_TopLevel | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
 {
     QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg");
 
     QPixmap splash( path );
     resize( splash.size() );
-    setBackgroundPixmap( splash );
+    QPalette pal;
+    pal.setBrush( backgroundRole(), QBrush(  splash ) );
+    setPalette( pal );
     //TODO port it
     setFocusPolicy( Qt::NoFocus );
 

@@ -125,9 +125,8 @@ namespace Amarok
             cpucount = QString::number( cpuCount );
 #endif
 
-            KSharedConfigPtr config = KGlobal::config();
-            config->setGroup( "Playback" );
-            QString soundSystem = config->readEntry( "Sound System", QString() );
+            KConfigGroup config = KGlobal::config()->group( "Playback" );
+            QString soundSystem = config.readEntry( "Sound System", QString() );
             body = body.arg( soundSystem )
                     .arg( qVersion() )
                     .arg( TAGLIB_MAJOR_VERSION )

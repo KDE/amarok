@@ -152,7 +152,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-   (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
+    QGridLayout *gl = new QGridLayout( m_popupProgress );
+    gl->setAutoAdd( true );
+    gl->setMargin( 6 );
+    gl->setSpacing( 3 );
 }
 
 void
@@ -259,7 +262,7 @@ StatusBar::resetMainText()
     if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
         return;
 
-    m_mainTextLabel->unsetPalette();
+    m_mainTextLabel->setPalette( QPalette() );
     shortLongButton()->hide();
 
     if( allDone() )
