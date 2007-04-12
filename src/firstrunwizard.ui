@@ -162,8 +162,8 @@
                     <string>Amarok uses a database to store information about your music. If you are not sure which to use, press Next.
 &lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster than &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://amarok.kde.org/amarokwiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://amarok.kde.org/amarokwiki/index.php/Postgresql_HowTo"&gt;Instructions for configuring Postgresql&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/Postgresql_HowTo"&gt;Instructions for configuring Postgresql&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;</string>
                 </property>
             </widget>
@@ -273,10 +273,6 @@
         <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
     </image>
 </images>
-<connections>
-</connections>
-<tabstops>
-</tabstops>
 <forwards>
     <forward>class CollectionSetup;</forward>
 </forwards>
@@ -291,8 +287,8 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="protected">showPage( QWidget * w )</function>
-    <function specifier="non virtual" returnType="FirstRunWizard::Interface">interface()</function>
     <function specifier="non virtual">writeCollectionConfig()</function>
+    <function specifier="non virtual" returnType="FirstRunWizard::Interface">interface()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
