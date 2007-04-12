@@ -773,20 +773,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         textColor = isSelected() ? cg.highlightedText() : cg.text();
     }
 
-    //flicker-free drawing
-    static QPixmap buffer;
-
-    buffer.resize( width, height() );
-
-    if( buffer.isNull() )
-    {
-        K3ListViewItem::paintCell( p, cg, column, width, align );
-        return;
-    }
-
-    buffer.fill( fillColor );
-
-    QPainter pBuf( &buffer );
+    p->fillRect( 0, 0, width, height(), fillColor );
 
     K3ListView *lv = static_cast<K3ListView *>( listView() );
 
@@ -797,16 +784,16 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     int textHeight = height();
     int text_x = 0;
 
-    pBuf.setPen( textColor );
+    p->setPen( textColor );
 
     if( pixmap( column ) )
     {
         int y = (textHeight - pixmap(column)->height())/2;
-        pBuf.drawPixmap( 0, y, *pixmap(column) );
+        p->drawPixmap( 0, y, *pixmap(column) );
         text_x += pixmap(column)->width() + 4;
     }
 
-    pBuf.setFont( font );
+    p->setFont( font );
     QFontMetrics fmName( font );
 
     QString name = text(column);
@@ -814,26 +801,23 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     const int _width = width - text_x - lv->itemMargin()*2;
     name = fmName.elidedText( name, Qt::ElideRight, _width );
 
-    pBuf.drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
+    p->drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
 
     if( !m_subText.isEmpty() )
     {
         font.setBold( false );
-        pBuf.setFont( font );
+        p->setFont( font );
 
-        pBuf.drawText( text_x, fmName.height() + 1, width, textHeight, Qt::AlignVCenter, m_subText );
+        p->drawText( text_x, fmName.height() + 1, width, textHeight, Qt::AlignVCenter, m_subText );
     }
 
     if( m_isExpanded )
     {
         QPen pen( cg.highlight(), 1 );
-        pBuf.setPen( pen );
+        p->setPen( pen );
         int y = textHeight - 1;
-        pBuf.drawLine( 0, y, width, y );
+        p->drawLine( 0, y, width, y );
     }
-
-    pBuf.end();
-    p->drawPixmap( 0, 0, buffer );
 }
 
 QColor
@@ -874,19 +858,8 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
 {
     bool showDetails = !m_subText.isEmpty();
 
-    //flicker-free drawing
-    static QPixmap buffer;
-    buffer.resize( width, height() );
-
-    if( buffer.isNull() )
-    {
-        K3ListViewItem::paintCell( p, cg, column, width, align );
-        return;
-    }
-
-    QPainter pBuf( &buffer );
     // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+    p->fillRect( 0, 0, width, height(), isSelected() ? cg.highlight() : backgroundColor() );
 
     K3ListView *lv = static_cast<K3ListView *>( listView() );
 
@@ -901,36 +874,33 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     else
         textHeight = height();
 
-    pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
+    p->setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     if( pixmap( column ) )
     {
         int y = (textHeight - pixmap(column)->height())/2;
         if( showDetails ) y++;
-        pBuf.drawPixmap( text_x, y, *pixmap(column) );
+        p->drawPixmap( text_x, y, *pixmap(column) );
         text_x += pixmap(column)->width() + 4;
     }
 
-    pBuf.setFont( font );
+    p->setFont( font );
     QFontMetrics fmName( font );
 
     QString name = text(column);
     const int _width = width - text_x - lv->itemMargin()*2;
     name = fmName.elidedText( name, Qt::ElideRight, _width );
 
-    pBuf.drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
+    p->drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
 
     if( showDetails )
     {
         const QColorGroup _cg = listView()->palette().disabled();
         text_x = lv->treeStepSize() + 3;
         font.setItalic( true );
-        pBuf.setPen( isSelected() ? _cg.highlightedText() : _cg.text().dark() );
-        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), Qt::AlignVCenter, m_subText );
+        p->setPen( isSelected() ? _cg.highlightedText() : _cg.text().dark() );
+        p->drawText( text_x, textHeight, width, fm.lineSpacing(), Qt::AlignVCenter, m_subText );
     }
-
-    pBuf.end();
-    p->drawPixmap( 0, 0, buffer );
 }
 
 void
