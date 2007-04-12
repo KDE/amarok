@@ -16,7 +16,6 @@ include(MacroBoolTo01)
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #we're still worrying about all the errors
 
 find_package(Taglib REQUIRED)
 find_package(RUBY REQUIRED)
