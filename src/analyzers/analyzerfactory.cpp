@@ -41,6 +41,9 @@
 
 QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
 {
+    return new BarAnalyzer( parent );
+
+
     QWidget *analyzer = 0;
     switch( AmarokConfig::currentPlaylistAnalyzer() )
     {
