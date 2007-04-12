@@ -244,9 +244,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
         return;
       }
 
-    QPixmap  buf( size() );
-    QPainter p( &buf );
-
+    QPainter p( this );
 
     if ( orientation() == Qt::Vertical )
     {
@@ -294,11 +292,6 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
         p.drawConvexPolygon( pa );
       }
     //</Triangle Marker>
-
-
-    p.end();
-
-    bitBlt( this, 0, 0, &buf );
 }
 
 
