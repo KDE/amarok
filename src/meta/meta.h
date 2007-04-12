@@ -63,11 +63,13 @@ namespace Meta
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
             virtual void metadataChanged( Track *track ) = 0;
+            virtual ~TrackObserver() {}
     };
 
     class AMAROK_EXPORT MetaBase : public QSharedData
     {
         public:
+            virtual ~MetaBase() {}
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
             virtual QString fullPrettyName() const { return prettyName(); };
@@ -80,6 +82,7 @@ namespace Meta
     {
         public:
 
+            ~Track() {}
             /** an url which can be played by the engine backends */
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */
@@ -152,6 +155,7 @@ namespace Meta
     {
         public:
 
+            virtual ~Artist() {}
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
@@ -166,6 +170,7 @@ namespace Meta
     {
         public:
 
+            virtual ~Album() {}
             virtual bool isCompilation() const = 0;
 
             /** Returns true if this album has an album artist */
@@ -193,6 +198,7 @@ namespace Meta
     {
         public:
 
+            virtual ~Composer() {}
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
@@ -206,8 +212,8 @@ namespace Meta
     class AMAROK_EXPORT Genre : public MetaBase
     {
         public:
-            typedef QList<GenrePtr> GenreList;
 
+            virtual ~Genre() {}
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 
@@ -222,6 +228,7 @@ namespace Meta
     {
         public:
 
+            virtual ~Year() {}
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
 

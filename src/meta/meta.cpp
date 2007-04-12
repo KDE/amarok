@@ -55,3 +55,4 @@ Meta::Year::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( YearPtr( this ) );
 }
+
