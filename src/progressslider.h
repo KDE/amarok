@@ -17,7 +17,6 @@
 #include "engineobserver.h"
 #include "sliderwidget.h"
 
-#include <QWidget>
 
 class QLabel;
 
@@ -43,7 +42,6 @@ class TimeSlider : public QWidget, public EngineObserver
     private:
         QLabel *m_timeLabel;
         QLabel *m_timeLabel2;
-        QWidget *m_positionBox;
         int m_timeLength;
         Amarok::PrettySlider *m_slider;
 };

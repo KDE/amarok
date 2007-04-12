@@ -177,8 +177,7 @@ void PlaylistWindow::init()
         uicb.setupUi( m_controlBar );
 
         #define center( A, O ) uicb.A##boxLayout->setAlignment( uicb.O, Qt::AlignCenter ); uicb.O->show();
-        center( v, m_progressBar );
-        center( v, m_playerControlsToolbar );
+        center( h, m_playerControlsToolbar );
         center( h, m_searchWidget );
         center( h, m_analyzerWidget );
         center( h, m_volumeWidget );

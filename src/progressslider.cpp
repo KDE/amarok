@@ -23,30 +23,24 @@
 TimeSlider *TimeSlider::s_instance = 0;
 TimeSlider::TimeSlider( QWidget *parent )
     : QWidget( parent ),
-      EngineObserver( EngineController::instance() ),
-      m_positionBox( 0 )
+      EngineObserver( EngineController::instance() )
 {
     s_instance = this;
 
-    m_positionBox = new QWidget( this );
-    m_positionBox->setObjectName( "positionBox" );
-    QHBoxLayout *box = new QHBoxLayout( m_positionBox );
-    m_positionBox->setLayout( box );
+    QHBoxLayout *box = new QHBoxLayout( this );
+    setLayout( box );
     box->setMargin( 1 );
     box->setSpacing( 3 );
 
-    m_slider = new Amarok::PrettySlider(
-                   Qt::Horizontal, Amarok::PrettySlider::Normal, m_positionBox, 50 );
+    m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, this );
 
     // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
-    m_timeLabel = new TimeLabel( m_positionBox );
+    m_timeLabel = new TimeLabel( this );
     m_timeLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
-    m_slider->setMinimumWidth( m_timeLabel->width() );
 
-    m_timeLabel2 = new TimeLabel( m_positionBox );
+    m_timeLabel2 = new TimeLabel( this );
     m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
-    m_slider->setMinimumWidth( m_timeLabel2->width() );
 
     box->addSpacing( 3 );
     box->addWidget( m_timeLabel );
