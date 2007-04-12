@@ -17,6 +17,7 @@
  */
 #include "sqlquerybuilder.h"
 
+#include "mountpointmanager.h"
 #include "sqlcollection.h"
 #include "threadmanager.h"
 
@@ -82,6 +83,7 @@ SqlQueryBuilder::reset()
     d->queryWhere.clear();
     d->linkedTables = 0;
     d->worker = 0;   //ThreadWeaver deletes the Job
+    return this;
 }
 
 void
@@ -193,7 +195,7 @@ QueryMaker*
 SqlQueryBuilder::startCustomQuery()
 {
     if( d->queryType == Private::NONE )
-        d->queryType == Private::CUSTOM;
+        d->queryType = Private::CUSTOM;
     return this;
 }
 
@@ -222,7 +224,11 @@ SqlQueryBuilder::excludeCollection( const QString &collectionId )
 QueryMaker*
 SqlQueryBuilder::addMatch( const TrackPtr &track )
 {
-    //TODO
+    QString url = track->url();
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    d->queryWhere += QString( " AND tags.deviceid = %1 AND tags.url = '%2'" )
+                        .arg( QString::number( deviceid ), rpath );
     return this;
 }
 
@@ -382,7 +388,8 @@ SqlQueryBuilder::handleResult( const QStringList &result )
             handleYears( result );
             break;
 
-        //handle default?
+        case Private::NONE:
+            debug() << "Warning: queryResult with queryType == NONE" << endl;
         }
     }
     //the worker thread will be deleted by ThreadManager

@@ -166,7 +166,7 @@ public:
      * @return
      */
     int getIdForUrl( const KUrl &url );
-    int getIdForUrl( const QString &url );
+    AMAROK_EXPORT int getIdForUrl( const QString &url );
     /**
      *
      * @param id
@@ -189,7 +189,7 @@ public:
      * @param relativePath the calculated relative path
      */
     void getRelativePath( const int deviceId, const KUrl& absolutePath, KUrl& relativePath ) const;
-    QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
+    AMAROK_EXPORT QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
     /**
      * allows calling code to access the ids of all active devices
      * @return the ids of all devices which are currently mounted or otherwise accessible

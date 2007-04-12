@@ -261,12 +261,10 @@ SqlTrack::addToQueryResult( QueryBuilder &qb ) {
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()
+    ,m_collection( collection )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
-    ,m_tracks( )
-    ,m_mutex( )
-    ,m_collection( collection )
 {
     //nothing to do (yet)
 }
@@ -322,12 +320,10 @@ SqlArtist::addToQueryResult( QueryBuilder &qb ) {
 //---------------SqlAlbum---------------------------------
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name ) : Album()
+    ,m_collection( collection )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
-    ,m_mutex()
-    ,m_tracks()
-    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -360,12 +356,10 @@ SqlAlbum::tracks()
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()
+    ,m_collection( collection )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
-    ,m_mutex()
-    ,m_tracks()
-    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -399,12 +393,10 @@ SqlComposer::tracks()
 //---------------SqlGenre---------------------------------
 
 SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : Genre()
+    ,m_collection( collection )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
-    ,m_mutex()
-    ,m_tracks()
-    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -438,12 +430,10 @@ SqlGenre::tracks()
 //---------------SqlYear---------------------------------
 
 SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Year()
+    ,m_collection( collection )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
-    ,m_mutex()
-    ,m_tracks()
-    ,m_collection( collection )
 {
     //nothing to do
 }
@@ -473,5 +463,4 @@ SqlYear::tracks()
         return m_tracks;
     }
 }
-
 
