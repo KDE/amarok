@@ -80,7 +80,6 @@ void BarAnalyzer::init()
     }
 
     m_pixBarGradient.resize( height()*COLUMN_WIDTH, height() );
-    m_pixCompose.resize( size() );
 
     setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
 }
@@ -91,31 +90,16 @@ void BarAnalyzer::analyze( const Scope &s )
     Analyzer::interpolate( s, m_scope );
     update();
 }
-void
-BarAnalyzer::paintEvent( QPaintEvent* )
+
+
+void BarAnalyzer::paintEvent( QPaintEvent* )
 {
-    QPainter p( &m_pixBarGradient );
+    QPainter p( this );
 
-    for ( int x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
-          x < height(); ++x )
-    {
-        for ( int y = x; y > 0; --y )
-        {
-            const double fraction = (double)y / height();
-
-//          p.setPen( QColor( r + (int)(r2 * fraction), g, b - (int)(255 * fraction) ) );
-            p.setPen( QColor( r + (int)(r2 * fraction), g, b ) );
-            p.drawLine( x*COLUMN_WIDTH, height() - y, (x+1)*COLUMN_WIDTH, height() - y );
-        }
-    }
-    //Analyzer::interpolate( s, m_bands );
-
-    Scope &v = m_scope;
-
-    for ( uint i = 0, x = 0, y2; i < v.size(); ++i, x+=COLUMN_WIDTH+1 )
+    for ( uint i = 0, x = 0, y2; i < m_scope.size(); ++i, x+=COLUMN_WIDTH+1 )
     {
         //assign pre[log10]'d value
-        y2 = uint(v[i] * 256); //256 will be optimised to a bitshift //no, it's a float
+        y2 = uint(m_scope[i] * 256); //256 will be optimised to a bitshift //no, it's a float
         y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints with values 0 to height()
 
         int change = y2 - barVector[i];
@@ -146,15 +130,13 @@ BarAnalyzer::paintEvent( QPaintEvent* )
         if ( m_roofMem[i].size() > NUM_ROOFS )
             m_roofMem[i].erase( m_roofMem[i].begin() );
 
-        //blt last n roofs, a.k.a motion blur
+        //Draw last n roofs, a.k.a motion blur
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
-            //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
             p.drawPixmap( x, m_roofMem[i][c], m_pixRoof[ NUM_ROOFS - 1 - c ] );
-        //blt the bar
-        //TODO: this isn't very kde4ish
-        bitBlt( this, x, height() - y2,
-                gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
-//         p.drawPixmap( x, height() - y2, gradient(), y2* COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
+
+        //Draw the bar
+        p.drawPixmap( x, height() - y2, *gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2 );
+
         m_roofMem[i].push_back( height() - roofVector[i] - 2 );
 
         //set roof parameters for the NEXT draw
