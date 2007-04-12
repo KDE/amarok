@@ -62,7 +62,7 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    KSharedConfig::Ptr config( const QString &group = "General" ); //defined in app.cpp
+    KConfigGroup config( const QString &group = "General" ); //defined in app.cpp
 
     /**
      * @return the KActionCollection used by Amarok

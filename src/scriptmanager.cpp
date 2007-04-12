@@ -182,11 +182,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_transcodeCategory->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     // Restore the open/closed state of the category items
-    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    m_generalCategory  ->setExpanded( config->readEntry( "General category open", false ) );
-    m_lyricsCategory   ->setExpanded( config->readEntry( "Lyrics category open", false ) );
-    m_scoreCategory    ->setExpanded( config->readEntry( "Score category State", false ) );
-    m_transcodeCategory->setExpanded( config->readEntry( "Transcode category open", false ) );
+    KConfigGroup config = Amarok::config( "ScriptManager" );
+    m_generalCategory  ->setExpanded( config.readEntry( "General category open", false ) );
+    m_lyricsCategory   ->setExpanded( config.readEntry( "Lyrics category open", false ) );
+    m_scoreCategory    ->setExpanded( config.readEntry( "Score category State", false ) );
+    m_transcodeCategory->setExpanded( config.readEntry( "Transcode category open", false ) );
 
     connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
     connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
@@ -233,14 +233,14 @@ ScriptManager::~ScriptManager()
     }
 
     // Save config
-    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    config->writeEntry( "Running Scripts", runningScripts );
+    KConfigGroup config = Amarok::config( "ScriptManager" );
+    config.writeEntry( "Running Scripts", runningScripts );
 
     // Save the open/closed state of the category items
-    config->writeEntry( "General category open", m_generalCategory->isExpanded() );
-    config->writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
-    config->writeEntry( "Score category open", m_scoreCategory->isExpanded() );
-    config->writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
+    config.writeEntry( "General category open", m_generalCategory->isExpanded() );
+    config.writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
+    config.writeEntry( "Score category open", m_scoreCategory->isExpanded() );
+    config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
 
     s_instance = 0;
 }
@@ -364,8 +364,8 @@ ScriptManager::findScripts() //SLOT
 
     // Handle auto-run:
 
-    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    const QStringList runningScripts = config->readEntry( "Running Scripts", QStringList() );
+    KConfigGroup config = Amarok::config( "ScriptManager" );
+    const QStringList runningScripts = config.readEntry( "Running Scripts", QStringList() );
 
     foreach( QString str, runningScripts )
         if( m_scripts.contains( str ) ) {

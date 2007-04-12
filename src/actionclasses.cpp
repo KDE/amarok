@@ -118,13 +118,13 @@ Menu::Menu()
     safePlug( ac, "repeat", this );
     safePlug( ac, "random_mode", this );
 
-    insertSeparator();
+    addSeparator();
 
     safePlug( ac, "playlist_playmedia", this );
     safePlug( ac, "play_audiocd", this );
     safePlug( ac, "lastfm_play", this );
 
-    insertSeparator();
+    addSeparator();
 
     insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
@@ -133,7 +133,7 @@ Menu::Menu()
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
 
-    insertSeparator();
+    addSeparator();
 
 
     safePlug( ac, "update_collection", this );
@@ -141,23 +141,23 @@ Menu::Menu()
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 
 #ifndef Q_WS_MAC
-    insertSeparator();
+    addSeparator();
 
     safePlug( ac, KStandardAction::name(KStandardAction::ShowMenubar), this );
 #endif
 
-    insertSeparator();
+    addSeparator();
 
     safePlug( ac, KStandardAction::name(KStandardAction::ConfigureToolbars), this );
     safePlug( ac, KStandardAction::name(KStandardAction::KeyBindings), this );
 //    safePlug( ac, "options_configure_globals", this ); //we created this one
     safePlug( ac, KStandardAction::name(KStandardAction::Preferences), this );
 
-    insertSeparator();
+    addSeparator();
 
     insertItem( KIcon("help"), i18n( "&Help" ), helpMenu( this ) );
 
-    insertSeparator();
+    addSeparator();
 
     safePlug( ac, KStandardAction::name(KStandardAction::Quit), this );
 

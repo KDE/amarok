@@ -85,7 +85,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
-        location = new KUrl( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homePath() ) );
+        location = new KUrl( Amarok::config( "Filebrowser" ).readEntry( "Location", QDir::homePath() ) );
         KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
@@ -141,7 +141,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             m_combo->setAutoDeleteCompletionObject( true );
         }
         m_combo->setMaxItems( 9 );
-        m_combo->setUrls( Amarok::config( "Filebrowser" )->readPathListEntry( "Dir History" ) );
+        m_combo->setUrls( Amarok::config( "Filebrowser" ).readEntry( "Dir History", QStringList() ) );
 
         if (!m_medium)
             m_combo->lineEdit()->setText( location->path() );
@@ -153,7 +153,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
-        KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
+        KConfigGroup cg(Amarok::config( "Filebrowser" ));
         m_dir->readConfig( cg  );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
@@ -289,12 +289,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
 FileBrowser::~FileBrowser()
 {
-    KSharedConfigPtr c = Amarok::config( "Filebrowser" );
-    KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
-    m_dir->writeConfig( cg ); //uses currently set group
+    KConfigGroup c = Amarok::config( "Filebrowser" );
 
-    c->writePathEntry( "Location", m_dir->url().url() );
-    c->writePathEntry( "Dir History", m_combo->urls() );
+    c.writeEntry( "Location", m_dir->url().url() );
+    c.writeEntry( "Dir History", m_combo->urls() );
 }
 
 //END Constructor/Destructor

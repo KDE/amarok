@@ -138,7 +138,7 @@ namespace Amarok
         return verboseTimeSince( dt );
     }
 
-    extern KSharedConfigPtr config( const QString& );
+    extern KConfigGroup config( const QString& );
 
     /**
     * Function that must be used when separating contextBrowser escaped urls
@@ -370,14 +370,14 @@ ContextBrowser::ContextBrowser( const char *name )
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
-    m_showRelated   = Amarok::config( "ContextBrowser" )->readEntry( "ShowRelated", true );
-    m_showSuggested = Amarok::config( "ContextBrowser" )->readEntry( "ShowSuggested", true );
-    m_showFaves     = Amarok::config( "ContextBrowser" )->readEntry( "ShowFaves", true );
-    m_showLabels    = Amarok::config( "ContextBrowser" )->readEntry( "ShowLabels", true );
+    m_showRelated   = Amarok::config( "ContextBrowser" ).readEntry( "ShowRelated", true );
+    m_showSuggested = Amarok::config( "ContextBrowser" ).readEntry( "ShowSuggested", true );
+    m_showFaves     = Amarok::config( "ContextBrowser" ).readEntry( "ShowFaves", true );
+    m_showLabels    = Amarok::config( "ContextBrowser" ).readEntry( "ShowLabels", true );
 
-    m_showFreshPodcasts  = Amarok::config( "ContextBrowser" )->readEntry( "ShowFreshPodcasts", true );
-    m_showNewestAlbums   = Amarok::config( "ContextBrowser" )->readEntry( "ShowNewestAlbums", true );
-    m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readEntry( "ShowFavoriteAlbums", true );
+    m_showFreshPodcasts  = Amarok::config( "ContextBrowser" ).readEntry( "ShowFreshPodcasts", true );
+    m_showNewestAlbums   = Amarok::config( "ContextBrowser" ).readEntry( "ShowNewestAlbums", true );
+    m_showFavoriteAlbums = Amarok::config( "ContextBrowser" ).readEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KUrl( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
@@ -1001,7 +1001,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
-        //menu.insertSeparator();
+        //menu.addSeparator();
         //menu.insertItem( KIcon( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
     else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" || url.protocol() == "albumdisc" || url.protocol() == "compilationdisc")
@@ -1015,7 +1015,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if( MediaBrowser::isAvailable() )
             menu.insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
-        menu.insertSeparator();
+        menu.addSeparator();
         menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
@@ -1075,49 +1075,49 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case RELATED:
         m_showRelated = !menu.isItemChecked( RELATED );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowRelated", m_showRelated );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowRelated", m_showRelated );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
     case SUGGEST:
         m_showSuggested = !menu.isItemChecked( SUGGEST );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowSuggested", m_showSuggested );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowSuggested", m_showSuggested );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
     case FAVES:
         m_showFaves = !menu.isItemChecked( FAVES );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFaves", m_showFaves );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowFaves", m_showFaves );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case LABELS:
         m_showLabels = !menu.isItemChecked( LABELS );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowLabels", m_showLabels );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowLabels", m_showLabels );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case FRESHPODCASTS:
         m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case NEWALBUMS:
         m_showNewestAlbums = !menu.isItemChecked( NEWALBUMS );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case FAVALBUMS:
         m_showFavoriteAlbums = !menu.isItemChecked( FAVALBUMS );
-        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
+        Amarok::config( "ContextBrowser" ).writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
@@ -3878,18 +3878,18 @@ ContextBrowser::eventFilter( QObject *o, QEvent *e )
                 return false;
             }
         }
-	if (o == m_lyricsSearchText)
-	{
-	   switch ( e->key() )
-	   {
-	   case Qt::Key_Escape:
-	   {
-	   	lyricsSearchTextHide();
-		return true;
-	   }
-	   default:
-	       return false;
-	   }
+    if (o == m_lyricsSearchText)
+    {
+       switch ( e->key() )
+       {
+       case Qt::Key_Escape:
+       {
+        lyricsSearchTextHide();
+        return true;
+       }
+       default:
+           return false;
+       }
        }
 
     default:

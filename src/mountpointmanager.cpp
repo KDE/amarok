@@ -40,7 +40,7 @@ MountPointManager::MountPointManager()
 {
     setObjectName( "MountPointManager" );
 
-    if ( !Amarok::config( "Collection" )->readEntry( "DynamicCollection", true ) )
+    if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals" << endl;
         return;
@@ -394,11 +394,11 @@ MountPointManager::collectionFolders( )
 {
     //TODO max: cache data
     QStringList result;
-    KSharedConfigPtr folders = Amarok::config( "Collection Folders" );
+    KConfigGroup folders = Amarok::config( "Collection Folders" );
     IdList ids = getMountedDeviceIds();
     oldForeachType( IdList, ids )
     {
-        QStringList rpaths = folders->readEntry( QString::number( *it ), QStringList() );
+        QStringList rpaths = folders.readEntry( QString::number( *it ), QStringList() );
         for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
         {
             QString absPath;
@@ -422,7 +422,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 {
     //TODO max: cache data
     typedef QMap<int, QStringList> FolderMap;
-    KSharedConfigPtr folderConf = Amarok::config( "Collection Folders" );
+    KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
     oldForeach( folders )
     {
@@ -441,12 +441,12 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     {
         if( !folderMap.contains( *it ) )
         {
-            folderConf->deleteEntry( QString::number( *it ) );
+            folderConf.deleteEntry( QString::number( *it ) );
         }
     }
     oldForeachType( FolderMap, folderMap )
     {
-        folderConf->writeEntry( QString::number( it.key() ), it.data() );
+        folderConf.writeEntry( QString::number( it.key() ), it.data() );
     }
 }
 

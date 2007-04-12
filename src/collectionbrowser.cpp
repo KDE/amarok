@@ -236,7 +236,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_categoryMenu->insertItem( i18n( "Genre / Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdGenreArtist );
     m_categoryMenu->insertItem( i18n( "Genre / Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdGenreArtistAlbum );
 
-    m_categoryMenu->insertSeparator();
+    m_categoryMenu->addSeparator();
 
     m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
     m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
@@ -251,7 +251,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat1Menu ->insertItem( i18n( "&Label" ), m_view, SLOT( cat1Menu( int ) ), 0, IdLabel );
 
     m_cat2Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
-    m_cat2Menu ->insertSeparator();
+    m_cat2Menu ->addSeparator();
     m_cat2Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
     m_cat2Menu ->insertItem( i18n( "(Y&ear) - Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdVisYearAlbum);
     m_cat2Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
@@ -261,7 +261,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( i18n( "&Label" ), m_view, SLOT( cat2Menu( int ) ), 0, IdLabel );
 
     m_cat3Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat3Menu( int ) ), 0, IdNone );
-    m_cat3Menu ->insertSeparator();
+    m_cat3Menu ->addSeparator();
     m_cat3Menu ->insertItem( i18n( "A&lbum" ), m_view, SLOT( cat3Menu( int ) ), 0, IdAlbum );
     m_cat3Menu ->insertItem( i18n( "(Y&ear) - Album" ), m_view, SLOT( cat3Menu( int ) ), 0, IdVisYearAlbum);
     m_cat3Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
@@ -480,11 +480,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
-        KSharedConfigPtr config = Amarok::config( "Collection Browser" );
+        KConfigGroup config = Amarok::config( "Collection Browser" );
 
-        m_cat1 = config->readEntry( "Category1", int(IdArtist) );
-        m_cat2 = config->readEntry( "Category2", int(IdAlbum) );
-        m_cat3 = config->readEntry( "Category3", int(IdNone) );
+        m_cat1 = config.readEntry( "Category1", int(IdArtist) );
+        m_cat2 = config.readEntry( "Category2", int(IdAlbum) );
+        m_cat3 = config.readEntry( "Category3", int(IdNone) );
 
 #define saneCat(x) (x==IdAlbum||x==IdArtist||x==IdComposer||x==IdGenre||x==IdYear \
         ||x==IdNone \
@@ -502,12 +502,12 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
 #undef saneCat
 
-        m_viewMode = config->readEntry( "ViewMode", int(modeTreeView) );
-        m_showDivider = config->readEntry( "ShowDivider", true);
+        m_viewMode = config.readEntry( "ViewMode", int(modeTreeView) );
+        m_showDivider = config.readEntry( "ShowDivider", true);
         updateTrackDepth();
 
         m_flatColumnWidths.clear();
-        QStringList flatWidths = config->readEntry( "FlatColumnWidths", QStringList() );
+        QStringList flatWidths = config.readEntry( "FlatColumnWidths", QStringList() );
         for( QStringList::iterator it = flatWidths.begin();
                 it != flatWidths.end();
                 it++ )
@@ -557,19 +557,19 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 CollectionView::~CollectionView() {
     DEBUG_FUNC_INFO
 
-    KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-    config->writeEntry( "Category1", m_cat1 );
-    config->writeEntry( "Category2", m_cat2 );
-    config->writeEntry( "Category3", m_cat3 );
-    config->writeEntry( "ViewMode", m_viewMode );
-    config->writeEntry( "ShowDivider", m_showDivider );
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    config.writeEntry( "Category1", m_cat1 );
+    config.writeEntry( "Category2", m_cat2 );
+    config.writeEntry( "Category3", m_cat3 );
+    config.writeEntry( "ViewMode", m_viewMode );
+    config.writeEntry( "ShowDivider", m_showDivider );
 
     QStringList flatWidths;
     for( Q3ValueList<int>::iterator it = m_flatColumnWidths.begin();
             it != m_flatColumnWidths.end();
             it++ )
             flatWidths.push_back( QString::number( (*it) ) );
-    config->writeEntry( "FlatColumnWidths", flatWidths );
+    config.writeEntry( "FlatColumnWidths", flatWidths );
 }
 
 void
@@ -1454,7 +1454,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         if( selection.count() > 1 || item->isExpandable() )
             menu.insertItem( KIcon( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SAVE );
 
-        menu.insertSeparator();
+        menu.addSeparator();
 
         if( MediaBrowser::isAvailable() )
             menu.insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
@@ -1483,7 +1483,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
 
-        menu.insertSeparator();
+        menu.addSeparator();
 
         KMenu fileMenu;
         fileMenu.insertItem( KIcon( "filesaveas" ), i18np( "&Organize File..." , "&Organize %1 Files..." , selection.count() ) , ORGANIZE );
@@ -1501,12 +1501,12 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         if ( ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) //album
             || ( !item->isExpandable() && m_viewMode == modeTreeView ) ) //or track
         {
-            menu.insertSeparator();
+            menu.addSeparator();
             menu.insertItem( KIcon( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( KIcon( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
 
-        menu.insertSeparator();
+        menu.addSeparator();
 
         menu.insertItem( KIcon( Amarok::icon( "info" ) )
             , i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", selection.count())

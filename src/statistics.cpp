@@ -649,7 +649,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
     menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
-    menu.insertSeparator();
+    menu.addSeparator();
 
     menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 

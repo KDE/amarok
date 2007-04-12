@@ -98,7 +98,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
 
 TagDialog::~TagDialog()
 {
-    Amarok::config( "TagDialog" )->writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
+    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
 }
 
 void
@@ -384,14 +384,14 @@ void TagDialog::init()
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
 
-    KSharedConfigPtr config = Amarok::config( "TagDialog" );
+    KConfigGroup config = Amarok::config( "TagDialog" );
 
     kTabWidget->addTab( summaryTab, i18n( "Summary" ) );
     kTabWidget->addTab( tagsTab, i18n( "Tags" ) );
     kTabWidget->addTab( lyricsTab, i18n( "Lyrics" ) );
     kTabWidget->addTab( statisticsTab, i18n( "Statistics" ) );
     kTabWidget->addTab( labelsTab, i18n( "Labels" ) );
-    kTabWidget->setCurrentPage( config->readEntry( "CurrentTab", 0 ) );
+    kTabWidget->setCurrentPage( config.readEntry( "CurrentTab", 0 ) );
 
     const QStringList artists = CollectionDB::instance()->artistList();
     kComboBox_artist->insertStringList( artists );

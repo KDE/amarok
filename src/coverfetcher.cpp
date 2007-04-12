@@ -51,11 +51,11 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         bool disable = !album.isEmpty(); // disable setting covers for unknown albums
         menu.setItemEnabled( FETCH, disable );
         menu.setItemEnabled( CUSTOM, disable );
-        menu.insertSeparator();
+        menu.addSeparator();
 
         menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
         if ( showCoverManager ) {
-            menu.insertSeparator();
+            menu.addSeparator();
             menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
         }
 

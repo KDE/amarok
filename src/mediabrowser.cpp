@@ -362,12 +362,12 @@ MediaBrowser::MediaBrowser( const char *name )
             it != mmap.end();
             it++ )
     {
-        QString handler = Amarok::config( "MediaBrowser" )->readEntry( (*it)->id(), QString() );
+        QString handler = Amarok::config( "MediaBrowser" ).readEntry( (*it)->id(), QString() );
         //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler << endl;
         if( handler.isEmpty() )
         {
             //this should probably never be the case with a manually added device, unless amarokrc's been messed with
-            Amarok::config( "MediaBrowser" )->writeEntry( (*it)->id(), "ignore" );
+            Amarok::config( "MediaBrowser" ).writeEntry( (*it)->id(), "ignore" );
             newflag = true;
             mediumAdded( *it, (*it)->name(), true );
         }
@@ -390,7 +390,7 @@ MediaBrowser::MediaBrowser( const char *name )
             SLOT( tagsChanged( const MetaBundle& ) ) );
 
     m_haveDevices = false;
-    QMap<QString,QString> savedDevices = Amarok::config( "MediaBrowser" )->entryMap( "MediaBrowser" );
+    QMap<QString,QString> savedDevices = Amarok::config( "MediaBrowser" ).entryMap();
     for( QMap<QString,QString>::Iterator it = savedDevices.begin();
             it != savedDevices.end();
             ++it )
@@ -1521,7 +1521,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     debug() << "mediumAdded: " << (medium ? medium->properties() : QStringList()) << endl;
     if( medium )
     {
-        QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id(), QString() );
+        QString handler = Amarok::config( "MediaBrowser" ).readEntry( medium->id(), QString() );
         if( handler.isEmpty() )
         {
             if( !constructing && medium->isAutodetected() )
@@ -1549,7 +1549,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     if( !plugin.isEmpty() )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
-        Amarok::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
+        Amarok::config( "MediaBrowser" ).writeEntry( medium->id(), plugin );
 
         bool success = true;
         for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -1727,8 +1727,8 @@ MediaBrowser::configSelectPlugin( int index )
     }
     else if( currentDevice() )
     {
-        KSharedConfigPtr config = Amarok::config( "MediaBrowser" );
-        config->writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
+        KConfigGroup config = Amarok::config( "MediaBrowser" );
+        config.writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
     }
 
     if( !currentDevice() )
@@ -1990,8 +1990,8 @@ MediaDevice::configString( const QString &name, const QString &defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KSharedConfigPtr config = Amarok::config( configName );
-    return config->readEntry( name, defValue );
+    KConfigGroup config = Amarok::config( configName );
+    return config.readEntry( name, defValue );
 }
 
 void
@@ -2000,8 +2000,8 @@ MediaDevice::setConfigString( const QString &name, const QString &value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KSharedConfigPtr config = Amarok::config( configName );
-    config->writeEntry( name, value );
+    KConfigGroup config = Amarok::config( configName );
+    config.writeEntry( name, value );
 }
 
 bool
@@ -2010,8 +2010,8 @@ MediaDevice::configBool( const QString &name, bool defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KSharedConfigPtr config = Amarok::config( configName );
-    return config->readEntry( name, defValue );
+    KConfigGroup config = Amarok::config( configName );
+    return config.readEntry( name, defValue );
 }
 
 void
@@ -2020,8 +2020,8 @@ MediaDevice::setConfigBool( const QString &name, bool value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KSharedConfigPtr config = Amarok::config( configName );
-    config->writeEntry( name, value );
+    KConfigGroup config = Amarok::config( configName );
+    config.writeEntry( name, value );
 }
 
 MediaView *

@@ -416,7 +416,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
 
         menu.addAction( renameAction );
         menu.addAction( deleteAction );
-        menu.insertSeparator();
+        menu.addSeparator();
     }
     #undef connectDirect
     class MenuActions : public QObject
@@ -496,13 +496,13 @@ PlaylistCategory::showContextMenu( const QPoint &position )
         ma.isPodcastFolder = true;
         menu.addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n("Add Podcast..."), &ma, SLOT( newPodcast() ) );
         menu.addAction( KIcon( Amarok::icon( "refresh" ) ), i18n("Refresh All Podcasts"), &ma, SLOT( refreshPodcasts() ) );
-        menu.insertSeparator();
+        menu.addSeparator();
         menu.addAction( KIcon( Amarok::icon( "configure" ) ), i18n( "&Configure Podcasts..." ), &ma, SLOT( configurePodcasts ) );
         if( parentCat == this )
             menu.addAction( KIcon( Amarok::icon( "configure" ) ), i18n("Scan Interval..."), &ma, SLOT( start() ) );
     }
 
-    menu.insertSeparator();
+    menu.addSeparator();
     menu.addAction( KIcon( Amarok::icon( "files" ) ), i18n("Create Sub-Folder"), &ma, SLOT( addSubfolder() ) );
 
     menu.exec( position );
@@ -877,14 +877,14 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
 
     if( MediaBrowser::isAvailable() )
     {
-        menu.insertSeparator();
+        menu.addSeparator();
         menu.addAction( KIcon( Amarok::icon( "device" ) ),
                 i18n( "&Transfer to Media Device" )   , &mb, SLOT( mediaDeviceCopy() ) );
         menu.addAction( KIcon( Amarok::icon( "device" ) ),
                 i18n( "&Synchronize to Media Device" ), &mb, SLOT( mediaDeviceSync() ) );
     }
 
-    menu.insertSeparator();
+    menu.addSeparator();
     menu.addAction( KIcon( Amarok::icon("edit") ), i18n( "&Rename" ), PlaylistBrowser::instance(), SLOT( renameSelectedItem() ), Qt::Key_F2 );
     menu.addAction( KIcon( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), PlaylistBrowser::instance(), SLOT( removeSelectedItems() ), Qt::ShiftModifier+Qt::Key_Delete );
 
@@ -1050,12 +1050,12 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
 
-    menu.insertSeparator();
+    menu.addSeparator();
 
     menu.insertItem( KIcon( Amarok::icon( "burn" ) ), i18n("Burn to CD"), BURN );
     menu.setItemEnabled( BURN, K3bExporter::isAvailable() && url().isLocalFile() );
 
-    menu.insertSeparator();
+    menu.addSeparator();
 
     menu.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove" ), REMOVE );
     menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
@@ -1248,7 +1248,7 @@ StreamEntry::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
-    menu.insertSeparator();
+    menu.addSeparator();
 
     // Forbid editing non removable items
     if( isKept() )
@@ -1442,7 +1442,7 @@ DynamicEntry::showContextMenu( const QPoint &position )
 
     enum Actions { LOAD, RENAME, REMOVE, EDIT };
     menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
-    menu.insertSeparator();
+    menu.addSeparator();
     menu.insertItem( KIcon( Amarok::icon("edit") ), i18n( "E&dit" ), EDIT );
     menu.insertItem( KIcon( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
 
@@ -2260,7 +2260,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
-    menu.insertSeparator();
+    menu.addSeparator();
     menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Delete" ), DELETE );
     menu.insertItem( KIcon( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
@@ -2799,20 +2799,20 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                 openMenu->insertItem( KIcon( (*it)->icon() ), (*it)->name(), OPEN_WITH+i );
             ++i;
         }
-        openMenu->insertSeparator();
+        openMenu->addSeparator();
         openMenu->insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Other..."), OPEN_WITH );
         menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n("&Open With"), openMenu, OPEN_WITH );
     }
 
     if( MediaBrowser::isAvailable() )
     {
-        menu.insertSeparator();
+        menu.addSeparator();
         menu.insertItem( KIcon( Amarok::icon( "device" ) ),
                             i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
         menu.setItemEnabled( MEDIA_DEVICE, isOnDisk() );
     }
 
-    menu.insertSeparator();
+    menu.addSeparator();
     menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Download Media" ), GET );
     menu.insertItem( KIcon( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
     menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
@@ -3354,7 +3354,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
     menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
     if( MediaBrowser::isAvailable() )
     {
-        menu.insertSeparator();
+        menu.addSeparator();
         menu.insertItem( KIcon( Amarok::icon( "device" ) ),
                 i18n( "&Transfer to Media Device" ), MEDIADEVICE_COPY );
         menu.insertItem( KIcon( Amarok::icon( "device" ) ),
@@ -3364,7 +3364,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
     // Forbid removal of Collection
     if( isKept() )
     {
-        menu.insertSeparator();
+        menu.addSeparator();
         if ( isEditable() )
             menu.insertItem( KIcon( Amarok::icon("edit") ), i18n( "E&dit..." ), EDIT );
         menu.insertItem( KIcon( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );

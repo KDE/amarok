@@ -421,7 +421,7 @@ Playlist::Playlist( QWidget *parent )
 
     setDynamicMode( 0 );
 
-    m_smartResizing = Amarok::config( "PlaylistWindow" )->readEntry( "Smart Resizing", true );
+    m_smartResizing = Amarok::config( "PlaylistWindow" ).readEntry( "Smart Resizing", true );
 
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
@@ -735,10 +735,10 @@ Playlist::restoreSession()
 {
     KUrl url;
 
-    if ( Amarok::config()->readEntry( "First 1.4 Run", true ) ) {
+    if ( Amarok::config().readEntry( "First 1.4 Run", true ) ) {
         // On first startup of 1.4, we load a special playlist with an intro track
         url.setPath( KStandardDirs::locate( "data", "amarok/data/firstrun.m3u" ) );
-        Amarok::config()->writeEntry( "First 1.4 Run", false );
+        Amarok::config().writeEntry( "First 1.4 Run", false );
     }
     else
         url.setPath( Amarok::saveLocation() + "current.xml" );
@@ -2774,7 +2774,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         case SMARTRESIZING:
             m_smartResizing = !m_smartResizing;
-            Amarok::config( "PlaylistWindow" )->writeEntry( "Smart Resizing", m_smartResizing );
+            Amarok::config( "PlaylistWindow" ).writeEntry( "Smart Resizing", m_smartResizing );
             if ( m_smartResizing )
                 columnResizeEvent( 0, 0, 0 ); //force refit. FIXME: It doesn't work perfectly
             break;
@@ -3863,7 +3863,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
         popup.setItemChecked( REPEAT, Amarok::repeatTrack() );
     }
 
-    popup.insertSeparator();
+    popup.addSeparator();
 
     if( itemCount > 1 )
     {
@@ -3873,7 +3873,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     popup.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Qt::Key_Delete, REMOVE );
 
-    popup.insertSeparator();
+    popup.addSeparator();
 
     KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
@@ -3918,7 +3918,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     /*
     if( m_customSubmenuItem.count() > 0 )
-        popup.insertSeparator();
+        popup.addSeparator();
     Q3ValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( Q3ValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {

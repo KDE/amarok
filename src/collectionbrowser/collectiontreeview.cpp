@@ -32,8 +32,8 @@
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
 {
-    KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-    QList<int> cats = config->readEntry( "TreeCategory", QList<int>() );
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    QList<int> cats = config.readEntry( "TreeCategory", QList<int>() );
     if ( cats.isEmpty() )
         cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
 
@@ -58,8 +58,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 }
 
 CollectionTreeView::~CollectionTreeView() {
-    KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-    config->writeEntry( "TreeCategory", m_treeModel->levels() );
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    config.writeEntry( "TreeCategory", m_treeModel->levels() );
     //delete m_treeModel;
     //delete m_filterModel;
 }

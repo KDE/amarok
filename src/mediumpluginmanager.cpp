@@ -123,14 +123,14 @@ bool
 MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
-    KSharedConfigPtr config = Amarok::config( "MediaBrowser" );
+    KConfigGroup config = Amarok::config( "MediaBrowser" );
     if( redetect )
         DeviceManager::instance()->reconcileMediumMap();
     MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
     for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {
-        if( !config->readEntry( (*it)->id(), QString() ).isEmpty() &&
-                config->readEntry( (*it)->id(), QString() ) == "deleted" && !redetect)
+        if( !config.readEntry( (*it)->id(), QString() ).isEmpty() &&
+                config.readEntry( (*it)->id(), QString() ) == "deleted" && !redetect)
         {
             debug() << "skipping: deleted" << endl;
             continue;
@@ -219,15 +219,15 @@ MediumPluginManager::finished()
         (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
 
-    KSharedConfig::Ptr config = Amarok::config( "MediaBrowser" );
+    KConfigGroup config = Amarok::config( "MediaBrowser" );
     for( DeletedMap::Iterator dit = m_deletedMap.begin();
             dit != m_deletedMap.end();
             ++dit )
     {
         if( dit.data()->isAutodetected() )
-            config->writeEntry( dit.data()->id(), "deleted" );
+            config.writeEntry( dit.data()->id(), "deleted" );
         else
-            config->deleteEntry( dit.data()->id() );
+            config.deleteEntry( dit.data()->id() );
         MediaDeviceManager::instance()->removeManualDevice( dit.data() );
     }
     m_deletedMap.clear();
@@ -240,7 +240,7 @@ MediumPluginManager::newDevice()
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     if( mda->exec() == QDialog::Accepted && mda->successful() )
     {
-        if( !Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id(), QString() ).isNull() )
+        if( !Amarok::config( "MediaBrowser" ).readEntry( mda->getMedium()->id(), QString() ).isNull() )
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
@@ -250,7 +250,7 @@ MediumPluginManager::newDevice()
         else
         {
             Medium *newdev = new Medium( mda->getMedium() );
-            Amarok::config( "MediaBrowser" )->writeEntry( newdev->id(), mda->getPlugin() );
+            Amarok::config( "MediaBrowser" ).writeEntry( newdev->id(), mda->getPlugin() );
             MediaDeviceManager::instance()->addManualDevice( newdev );
             detectDevices();
         }
@@ -400,8 +400,8 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     if( !m_medium )
         return;
 
-    KSharedConfig::Ptr config = Amarok::config( "MediaBrowser" );
-    m_oldPlugin = config->readEntry( m_medium->id(), QString() );
+    KConfigGroup config = Amarok::config( "MediaBrowser" );
+    m_oldPlugin = config.readEntry( m_medium->id(), QString() );
     if( !m_oldPlugin.isEmpty() )
         m_new = false;
 
@@ -444,7 +444,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             it != MediaBrowser::instance()->getPlugins().end();
             ++it ){
         m_pluginCombo->addItem( (*it)->name() );
-        if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config->readEntry( medium->id(), QString() ) )
+        if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config.readEntry( medium->id(), QString() ) )
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 

@@ -242,7 +242,8 @@ CoverManager::CoverManager()
     m_currentView = AllAlbums;
 
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
-    resize( Amarok::config( "Cover Manager" )->readSizeEntry( "Window Size", &size ) );
+    QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
+    resize( sz.width(), sz.height() );
 
     show();
 
@@ -254,7 +255,7 @@ CoverManager::~CoverManager()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "Cover Manager" )->writeEntry( "Window Size", size() );
+    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
 
     s_instance = 0;
 }
@@ -532,7 +533,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
         menu.addAction( fetchSelectedAction );
         menu.addAction( setCustomAction );
         menu.addAction( playAlbumAction );
-        menu.insertSeparator();
+        menu.addSeparator();
 
         menu.addAction( unsetAction );
     }

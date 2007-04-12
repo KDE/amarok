@@ -159,7 +159,7 @@ QStringList TagGuesser::schemeStrings()
 {
     QStringList schemes;
 
-    schemes = Amarok::config( "TagGuesser" )->readEntry( "Filename schemes", QStringList() );
+    schemes = Amarok::config( "TagGuesser" ).readEntry( "Filename schemes", QStringList() );
 
     if ( schemes.isEmpty() ) {
         schemes += "%track - %title";
@@ -196,12 +196,9 @@ QStringList TagGuesser::schemeStrings()
 
 void TagGuesser::setSchemeStrings( const QStringList &schemes )
 {
-    KSharedConfigPtr cfg = Amarok::config();
-    {
-        KConfigGroup group( cfg, "TagGuesser" );
-        group.writeEntry( "Filename schemes", schemes );
-    }
-    cfg->sync();
+    KConfigGroup cfg = Amarok::config("TagGuesser");
+    cfg.writeEntry( "Filename schemes", schemes );
+    cfg.sync();
 }
 
 TagGuesser::TagGuesser()

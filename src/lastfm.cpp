@@ -443,7 +443,7 @@ WebService::handshake( const QString& username, const QString& password )
         return false;
     }
 
-    Amarok::config( "Scrobbler" )->writeEntry( "Subscriber", m_subscriber );
+    Amarok::config( "Scrobbler" ).writeEntry( "Subscriber", m_subscriber );
 
     // Find free port
     MyServerSocket* socket = new MyServerSocket();

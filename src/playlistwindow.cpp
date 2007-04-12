@@ -123,7 +123,7 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    Amarok::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
+    Amarok::config( "PlaylistWindow" ).writeEntry( "showMenuBar", m_menubar->isShown() );
 
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
@@ -257,7 +257,7 @@ void PlaylistWindow::init()
 
     //<XMLGUI>
     {
-        QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
+        QString xmlFile = Amarok::config().readEntry( "XMLFile", "amarokui.rc" );
 
         // this bug can bite you if you are a pre 1.2 user, we
         // deleted amarokui_first.rc, but we must still support it
@@ -1247,7 +1247,7 @@ void PlaylistWindow::createMenus()
     playlistMenu->addSeparator();
     playlistMenu->addAction( actionCollection()->action("playlist_undo") );
     playlistMenu->addAction( actionCollection()->action("playlist_redo") );
-    playlistMenu->insertSeparator();
+    playlistMenu->addSeparator();
     playlistMenu->addAction( actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
 

@@ -213,7 +213,7 @@ App::~App()
     EngineController::instance()->detach( this );
 
     // do even if trayicon is not shown, it is safe
-    Amarok::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+    Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     CollectionDB::instance()->stopScan();
 
@@ -246,13 +246,13 @@ namespace
            QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
            QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
            if (!reply.isValid()) {
-		debug() << "Invalid reply from mediamanager" << endl;
+        debug() << "Invalid reply from mediamanager" << endl;
                return QString();
            }
-	   QStringList properties = reply;
-	   if( properties.count()< 6 )
-		return QString();
-	  debug() << "Reply from mediamanager " << properties[5] << endl;
+       QStringList properties = reply;
+       if( properties.count()< 6 )
+        return QString();
+      debug() << "Reply from mediamanager " << properties[5] << endl;
           return properties[5];
         }
 
@@ -599,7 +599,7 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
 #ifdef Q_WS_X11
-    if( ( main_window && firstTime && !Amarok::config()->readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
+    if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
 #endif
     {
         main_window->show();
@@ -659,7 +659,7 @@ App::continueInit()
     DEBUG_BLOCK
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
-                                || Amarok::config()->readEntry( "AppendAsDefault", false );
+                                || Amarok::config().readEntry( "AppendAsDefault", false );
 
     // Make this instance so it can start receiving signals
     MoodServer::instance();
@@ -668,11 +668,11 @@ App::continueInit()
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 
 
-    if ( Amarok::config()->readEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
+    if ( Amarok::config().readEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
         firstRunWizard();
-        Amarok::config()->writeEntry( "First Run", false );
-        Amarok::config()->sync();
+        Amarok::config().writeEntry( "First Run", false );
+        Amarok::config().sync();
     }
 
     CollectionDB::instance()->checkDatabase();
@@ -782,7 +782,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             if( b )
                 popup.insertItem( KIcon( Amarok::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
                               Playlist::Queue );
-            popup.insertSeparator();
+            popup.addSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
             const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
@@ -987,7 +987,7 @@ void App::firstRunWizard()
         wizard.writeCollectionConfig();
 
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
-        if ( !Amarok::config()->readEntry( "First Run", true ) &&
+        if ( !Amarok::config().readEntry( "First Run", true ) &&
              oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
             CollectionDB::instance()->startScan();
 
@@ -1096,11 +1096,12 @@ namespace Amarok
         return pApp->playlistWindow()->actionCollection();
     }
 
-    KSharedConfig::Ptr config( const QString &group )
+    KConfigGroup config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
-        KGlobal::config()->setGroup( group );
-        return KGlobal::config();
+//         KGlobal::config()->setGroup( group );
+        KConfigGroup configGroup = KGlobal::config()->group( group );
+        return configGroup;
     }
 
     bool invokeBrowser( const QString& url )
