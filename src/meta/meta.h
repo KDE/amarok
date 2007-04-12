@@ -22,6 +22,7 @@
 #include "amarok_export.h"
 
 #include <QList>
+#include <QMetaType>
 #include <QSharedData>
 #include <QString>
 
@@ -237,6 +238,22 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker* qm );
     };
+
 }
+
+Q_DECLARE_METATYPE( Meta::DataPtr )
+Q_DECLARE_METATYPE( Meta::DataList )
+Q_DECLARE_METATYPE( Meta::TrackPtr )
+Q_DECLARE_METATYPE( Meta::TrackList )
+Q_DECLARE_METATYPE( Meta::ArtistPtr )
+Q_DECLARE_METATYPE( Meta::ArtistList )
+Q_DECLARE_METATYPE( Meta::AlbumPtr )
+Q_DECLARE_METATYPE( Meta::AlbumList )
+Q_DECLARE_METATYPE( Meta::ComposerPtr )
+Q_DECLARE_METATYPE( Meta::ComposerList )
+Q_DECLARE_METATYPE( Meta::GenrePtr )
+Q_DECLARE_METATYPE( Meta::GenreList )
+Q_DECLARE_METATYPE( Meta::YearPtr )
+Q_DECLARE_METATYPE( Meta::YearList )
 
 #endif /* META_H */

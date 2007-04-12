@@ -78,13 +78,13 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter ) = 0;
 
     signals:
-        AMAROK_EXPORT void newResultReady( QString collectionId, TrackList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, ArtistList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, AlbumList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, GenreList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, ComposerList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, YearList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, DataList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::TrackList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::ArtistList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::AlbumList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::GenreList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::ComposerList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::YearList );
+        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::DataList );
         AMAROK_EXPORT void newResultReady( QString collectionId, QStringList );
 
         AMAROK_EXPORT void queryDone();

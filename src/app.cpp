@@ -32,6 +32,7 @@ email                : markey@web.de
 #include "equalizersetup.h"
 //#include "firstrunwizard.h"
 #include "mediabrowser.h"
+#include "meta.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"
@@ -124,6 +125,21 @@ App::App()
     DEBUG_BLOCK
 
     qRegisterMetaType<MetaBundle>();
+
+    qRegisterMetaType<Meta::DataPtr>();
+    qRegisterMetaType<Meta::DataList>();
+    qRegisterMetaType<Meta::TrackPtr>();
+    qRegisterMetaType<Meta::TrackList>();
+    qRegisterMetaType<Meta::AlbumPtr>();
+    qRegisterMetaType<Meta::AlbumList>();
+    qRegisterMetaType<Meta::ArtistPtr>();
+    qRegisterMetaType<Meta::ArtistList>();
+    qRegisterMetaType<Meta::GenrePtr>();
+    qRegisterMetaType<Meta::GenreList>();
+    qRegisterMetaType<Meta::ComposerPtr>();
+    qRegisterMetaType<Meta::ComposerList>();
+    qRegisterMetaType<Meta::YearPtr>();
+    qRegisterMetaType<Meta::YearList>();
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
