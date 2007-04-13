@@ -260,19 +260,17 @@ OSDWidget::paintEvent( QPaintEvent* )
     const uint xround = (M * 200) / size.width();
     const uint yround = (M * 200) / size.height();
 
-#if 0
     {   /// apply the mask
         static QBitmap mask;
 
         mask.resize( size );
-        mask.fill( Qt::black );
+        mask.fill( Qt::white );
 
         QPainter p( &mask );
-        p.setBrush( Qt::white );
+        p.setBrush( Qt::black );
         p.drawRoundRect( rect, xround, yround );
         setMask( mask );
     }
-#endif
 
     QColor shadowColor;
     {
