@@ -1793,7 +1793,7 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
                 coverPm[i] = coverPm[i-1];
 
             QImage im( KStandardDirs::locate( "data","amarok/images/more_albums.png" ) );
-            coverPm[0].convertFromImage( im.scaled( coverW, coverH, Qt::KeepAspectRatio ) );
+            coverPm[0].convertFromImage( im.scaled( coverW, coverH, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
         }
 
         pixmapH = coverPm[0].height();
@@ -2097,7 +2097,7 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
         shadow.load( folder + file );
     else {
         shadow.load( KStandardDirs::locate( "data", "amarok/images/shadow_albumcover.png" ) );
-        shadow = shadow.scaled( original.width() + shadowSize, original.height() + shadowSize );
+        shadow = shadow.scaled( original.width() + shadowSize, original.height() + shadowSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
         shadow.save( folder + file, "PNG" );
     }
 
@@ -2136,7 +2136,7 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
         if ( width > 1 )
         {
             QImage img( imageDir.filePath( key ) );
-            img.scaled( width, width, Qt::KeepAspectRatio ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
+            img.scaled( width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
 
             return cacheCoverDir().filePath( widthKey + key );
         }
@@ -2212,7 +2212,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
             if ( !QFile::exists( path ) )
             {
                 QImage img( image );
-                img.scaled( width, width, Qt::KeepAspectRatio ).save( path, "PNG" );
+                img.scaled( width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
             }
             return path;
         }
@@ -2378,7 +2378,7 @@ CollectionDB::notAvailCover( const bool withShadow, int width )
         s = cacheCoverDir().filePath( widthKey + "nocover.png" );
     else
     {
-        m_noCover.scaled( width, width, Qt::KeepAspectRatio ).save( cacheCoverDir().filePath( widthKey + "nocover.png" ), "PNG" );
+        m_noCover.scaled( width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cacheCoverDir().filePath( widthKey + "nocover.png" ), "PNG" );
         s = cacheCoverDir().filePath( widthKey + "nocover.png" );
     }
 
@@ -5851,7 +5851,7 @@ CollectionDB::loadHashFile( const QByteArray& hash, uint width )
         } else if ( QFileInfo( full ).isReadable() ) {
             //debug() << "loadHashFile: scaling: " << full << endl;
             QImage image( full );
-            if ( image.scaled( width, width, Qt::KeepAspectRatio ).save( path, "PNG" ) ) {
+            if ( image.scaled( width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" ) ) {
                 //debug() << "loadHashFile: scaled: " << path << endl;
                 return path;
             }
