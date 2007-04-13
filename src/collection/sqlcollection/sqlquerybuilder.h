@@ -20,6 +20,8 @@
 
 #include "querymaker.h"
 
+#include "threadmanager.h"
+
 class SqlCollection;
 
 class SqlQueryBuilder : public QueryMaker
@@ -42,7 +44,7 @@ class SqlQueryBuilder : public QueryMaker
         virtual QueryMaker* startYearQuery();
         virtual QueryMaker* startCustomQuery();
 
-        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs ) { m_resultAsDataPtrs = resultAsDataPtrs; return this; }
+        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );
@@ -82,8 +84,20 @@ class SqlQueryBuilder : public QueryMaker
         class Private;
         Private * const d;
 
-        bool m_resultAsDataPtrs;
+};
 
+//=================== SqlWorkerThread ===============================
+class SqlWorkerThread : public ThreadManager::DependentJob
+{
+public:
+
+    SqlWorkerThread( SqlQueryBuilder *queryBuilder );
+    virtual ~SqlWorkerThread();
+
+    virtual bool doJob();
+
+private:
+    SqlQueryBuilder *m_queryBuilder;
 };
 
 #endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */

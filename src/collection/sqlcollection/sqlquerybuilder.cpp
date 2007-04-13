@@ -17,32 +17,34 @@
  */
 #include "sqlquerybuilder.h"
 
+#define DEBUG_PREFIX "SqlQueryBuilder"
+
+#include "debug.h"
+
 #include "mountpointmanager.h"
 #include "sqlcollection.h"
-#include "threadmanager.h"
 
-//=================== SqlWorkerThread ===============================
-class SqlWorkerThread : public ThreadManager::DependentJob
-{
-public:
-
-    SqlWorkerThread( SqlQueryBuilder *queryBuilder )
+SqlWorkerThread::SqlWorkerThread( SqlQueryBuilder *queryBuilder )
         : DependentJob( queryBuilder, "SqlWorkerThread" )
         , m_queryBuilder( queryBuilder )
-    { };
+{
+}
 
-    SqlQueryBuilder *m_queryBuilder;
+SqlWorkerThread::~SqlWorkerThread()
+{
+    debug() << "SqlWorkerThread destructor called!" << endl;
+}
 
-    virtual bool doJob()
-    {
-        QString query = m_queryBuilder->query();
-        QStringList result = m_queryBuilder->runQuery( query );
-        if( !this->isAborted() )
-            m_queryBuilder->handleResult( result );
-
-        return !this->isAborted();
-    };
-};
+bool
+SqlWorkerThread::doJob()
+{
+    DEBUG_BLOCK
+    QString query = m_queryBuilder->query();
+    QStringList result = m_queryBuilder->runQuery( query );
+    if( !this->isAborted() )
+        m_queryBuilder->handleResult( result );
+    return !this->isAborted();
+}
 
 struct SqlQueryBuilder::Private
 {
@@ -56,6 +58,8 @@ struct SqlQueryBuilder::Private
     QString queryWhere;
     bool includedBuilder;
     bool collectionRestriction;
+    bool resultAsDataPtrs;
+    bool withoutDuplicates;
     SqlWorkerThread *worker;
 };
 
@@ -66,6 +70,7 @@ SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
 {
     d->includedBuilder = true;
     d->collectionRestriction = false;
+    reset();
 }
 
 SqlQueryBuilder::~SqlQueryBuilder()
@@ -83,6 +88,8 @@ SqlQueryBuilder::reset()
     d->queryWhere.clear();
     d->linkedTables = 0;
     d->worker = 0;   //ThreadWeaver deletes the Job
+    d->resultAsDataPtrs = false;
+    d->withoutDuplicates = false;
     return this;
 }
 
@@ -93,9 +100,17 @@ SqlQueryBuilder::abortQuery()
         d->worker->abort();
 }
 
+QueryMaker*
+SqlQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
+{
+    d->resultAsDataPtrs = resultAsDataPtrs;
+    return this;
+}
+
 void
 SqlQueryBuilder::run()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
         return; //better error handling?
     if( d->worker )
@@ -105,7 +120,9 @@ SqlQueryBuilder::run()
     }
     else
     {
+        debug() << "Query is " << query() << endl;
         d->worker = new SqlWorkerThread( this );
+        debug() << "job count for " << d->worker->name() << " is " << ThreadManager::instance()->jobCount( d->worker->name() ) << endl;
         ThreadManager::instance()->queueJob( d->worker );
     }
 }
@@ -113,10 +130,18 @@ SqlQueryBuilder::run()
 QueryMaker*
 SqlQueryBuilder::startTrackQuery()
 {
+    DEBUG_BLOCK
     //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::TRACK;
+        d->linkedTables |= Private::TAGS_TAB;
+        d->linkedTables |= Private::GENRE_TAB;
+        d->linkedTables |= Private::ARTIST_TAB;
+        d->linkedTables |= Private::ALBUM_TAB;
+        d->linkedTables |= Private::COMPOSER_TAB;
+        d->linkedTables |= Private::YEAR_TAB;
+        d->linkedTables |= Private::STATISTICS_TAB;
         d->queryReturnValues =  "tags.deviceid, tags.url, "
                                 "tags.title, tags.comment, "
                                 "tags.track, tags.discnumber, "
@@ -137,9 +162,12 @@ SqlQueryBuilder::startTrackQuery()
 QueryMaker*
 SqlQueryBuilder::startArtistQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ARTIST;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::ARTIST_TAB;
         //reading the ids from the database means we don't have to query for them later
         d->queryReturnValues = "artist.name, artist.id";
     }
@@ -149,9 +177,12 @@ SqlQueryBuilder::startArtistQuery()
 QueryMaker*
 SqlQueryBuilder::startAlbumQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ALBUM;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::ALBUM_TAB;
         //add whatever is necessary to identify compilations
         d->queryReturnValues = "album.name, album.id";
     }
@@ -161,9 +192,12 @@ SqlQueryBuilder::startAlbumQuery()
 QueryMaker*
 SqlQueryBuilder::startComposerQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::COMPOSER;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::COMPOSER_TAB;
         d->queryReturnValues = "composer.name, composer.id";
     }
     return this;
@@ -172,9 +206,12 @@ SqlQueryBuilder::startComposerQuery()
 QueryMaker*
 SqlQueryBuilder::startGenreQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::GENRE;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::GENRE_TAB;
         d->queryReturnValues = "genre.name, genre.id";
     }
     return this;
@@ -183,9 +220,12 @@ SqlQueryBuilder::startGenreQuery()
 QueryMaker*
 SqlQueryBuilder::startYearQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::YEAR;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::YEAR_TAB;
         d->queryReturnValues = "year.name, year.id";
     }
     return this;
@@ -194,6 +234,7 @@ SqlQueryBuilder::startYearQuery()
 QueryMaker*
 SqlQueryBuilder::startCustomQuery()
 {
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;
     return this;
@@ -314,6 +355,7 @@ SqlQueryBuilder::orderBy( qint64 value, bool descending )
 void
 SqlQueryBuilder::linkTables()
 {
+    d->linkedTables |= Private::TAGS_TAB; //HACK!!!
     //assuming that tags is always included for now
     if( !d->linkedTables )
         return;
@@ -339,6 +381,8 @@ SqlQueryBuilder::buildQuery()
 {
     linkTables();
     QString query = "SELECT ";
+    if ( d->withoutDuplicates )
+        query += "DISTINCT ";
     query += d->queryReturnValues;
     query += " FROM ";
     query += d->queryFrom;
@@ -351,6 +395,8 @@ SqlQueryBuilder::buildQuery()
 QString
 SqlQueryBuilder::query()
 {
+    if ( d->query.isEmpty() )
+        buildQuery();
     return d->query;
 }
 
@@ -363,6 +409,8 @@ SqlQueryBuilder::runQuery( const QString &query )
 void
 SqlQueryBuilder::handleResult( const QStringList &result )
 {
+    DEBUG_BLOCK
+    debug() << "Result length: " << result.count() << endl;
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -404,19 +452,22 @@ SqlQueryBuilder::handleResult( const QStringList &result )
 // signal that takes the list of the specific class.
 
 #define emitProperResult( PointerType, list ) { \
-            if ( m_resultAsDataPtrs ) { \
+            if ( d->resultAsDataPtrs ) { \
                 DataList data; \
                 foreach( PointerType p, list ) { \
                     data << DataPtr::staticCast( p ); \
                 } \
                 emit newResultReady( m_collection->collectionId(), data ); \
             } \
-            emit newResultReady( m_collection->collectionId(), list ); \
+            else { \
+                emit newResultReady( m_collection->collectionId(), list ); \
+            } \
         }
 
 void
 SqlQueryBuilder::handleTracks( const QStringList &result )
 {
+    DEBUG_BLOCK
     TrackList tracks;
     SqlRegistry* reg = m_collection->registry();
     //there are 28 columns in the result set as generated by startTrackQuery()
@@ -432,11 +483,14 @@ SqlQueryBuilder::handleTracks( const QStringList &result )
 void
 SqlQueryBuilder::handleArtists( const QStringList &result )
 {
+    DEBUG_BLOCK
     ArtistList artists;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
-        artists.append( reg->getArtist( iter.next(), iter.next().toInt() ) );
+        QString name = iter.next();
+        QString id = iter.next();
+        artists.append( reg->getArtist( name, id.toInt() ) );
     }
     emitProperResult( ArtistPtr, artists );
 }
@@ -444,11 +498,14 @@ SqlQueryBuilder::handleArtists( const QStringList &result )
 void
 SqlQueryBuilder::handleAlbums( const QStringList &result )
 {
+    DEBUG_BLOCK
     AlbumList albums;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
-        albums.append( reg->getAlbum( iter.next(), iter.next().toInt() ) );
+        QString name = iter.next();
+        QString id = iter.next();
+        albums.append( reg->getAlbum( name, id.toInt() ) );
         iter.next(); //contains tags.isCompilation, not handled at the moment
     }
     emitProperResult( AlbumPtr, albums );
@@ -461,7 +518,9 @@ SqlQueryBuilder::handleGenres( const QStringList &result )
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
-        genres.append( reg->getGenre( iter.next(), iter.next().toInt() ) );
+        QString name = iter.next();
+        QString id = iter.next();
+        genres.append( reg->getGenre( name, id.toInt() ) );
     }
     emitProperResult( GenrePtr, genres );
 }
@@ -473,7 +532,9 @@ SqlQueryBuilder::handleComposers( const QStringList &result )
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
-        composers.append( reg->getComposer( iter.next(), iter.next().toInt() ) );
+        QString name = iter.next();
+        QString id = iter.next();
+        composers.append( reg->getComposer( name, id.toInt() ) );
     }
     emitProperResult( ComposerPtr, composers );
 }
@@ -485,7 +546,9 @@ SqlQueryBuilder::handleYears( const QStringList &result )
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
-        years.append( reg->getYear( iter.next(), iter.next().toInt() ) );
+        QString name = iter.next();
+        QString id = iter.next();
+        years.append( reg->getYear( name, id.toInt() ) );
     }
     emitProperResult( YearPtr, years );
 }

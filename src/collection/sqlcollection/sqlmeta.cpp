@@ -16,8 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "amarok.h"
 #include "sqlmeta.h"
+
+#include "amarok.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
 
@@ -227,36 +228,6 @@ SqlTrack::setComment( const QString &newComment )
     m_comment = newComment;
     notifyObservers();
 }
-
-/*void
-SqlTrack::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
-
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-}*/
 
 //---------------------- class Artist --------------------------
 
