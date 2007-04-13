@@ -26,34 +26,21 @@
 #include "enginecontroller.h"
 #include "sliderwidget.h"
 
-#include <QApplication>
 #include <QBitmap>
 #include <QBrush>
-#include <QImage>
-#include <QPainter>
-#include <QSize>
-#include <QTimer>
-//Added by qt3to4:
 #include <QContextMenuEvent>
+#include <QImage>
 #include <QMenu>
-#include <QShowEvent>
-#include <QWheelEvent>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QMouseEvent>
-#include <QHideEvent>
-#include <QEvent>
+#include <QPainter>
 #include <QStyle>
-#include <QAbstractSlider>
-#include <QPolygon>
 #include <QStyleOptionComplex>
+#include <QTimer>
 
 #include <kicon.h>
-#include <kiconloader.h>
 #include <kimageeffect.h>
 #include <klocale.h>
-#include <kpixmapeffect.h>
 #include <kmenu.h>
+#include <kpixmapeffect.h>
 #include <kstandarddirs.h>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )

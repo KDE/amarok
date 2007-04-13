@@ -20,19 +20,11 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
-#include <config.h>
 #include "metabundle.h"
-
-#include <kurl.h>
 
 #include <QPixmap>
 #include <QSlider>
-#include <q3valuevector.h>
-//Added by qt3to4:
-#include <QShowEvent>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QPaintEvent>
+#include <QVector>
 
 class QPalette;
 class QTimer;
@@ -156,7 +148,7 @@ namespace Amarok
             QPixmap m_pixmapInset;
             QPixmap m_pixmapGradient;
 
-            Q3ValueVector<QPixmap> m_handlePixmaps;
+            QVector<QPixmap> m_handlePixmaps;
     };
 
 }
