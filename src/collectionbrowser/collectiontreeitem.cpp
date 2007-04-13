@@ -1,5 +1,6 @@
  /*
   Copyright (c) 2007  Alexandre Pereira de Oliveira <aleprj@gmail.com>
+  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General Public
@@ -28,6 +29,17 @@
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
     , m_parent( parent )
+    , m_parentCollection( 0 )
+    , m_childrenLoaded( false )
+{
+    if ( m_parent )
+        m_parent->appendChild( this );
+}
+
+CollectionTreeItem::CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent )
+    : m_data( Meta::DataPtr( 0 ) )
+    , m_parent( parent )
+    , m_parentCollection( parentCollection )
     , m_childrenLoaded( false )
 {
     if ( m_parent )
@@ -43,10 +55,18 @@ CollectionTreeItem::appendChild(CollectionTreeItem *child) {
     m_childItems.append(child);
 }
 
+CollectionTreeItem*
+CollectionTreeItem::child( int row ) {
+    if ( row >= 0 && row < m_childItems.count() )
+        return m_childItems.value(row);
+    else
+        return 0;
+}
+
 QVariant
 CollectionTreeItem::data( int role ) const {
 
-    if ( m_data ) {
+    if ( !m_data.isNull() ) {
         if ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) {
             QString name = m_data->prettyName();
             if ( name.isEmpty() )
@@ -54,9 +74,16 @@ CollectionTreeItem::data( int role ) const {
             return name;
         }
         else if ( role == CustomRoles::SortRole )
-        return m_data->sortableName();
+            return m_data->sortableName();
+
+        return QVariant();
     }
-    return QVariant();
+    else {
+        if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
+            return m_parentCollection->prettyName();
+
+        return QVariant();
+    }
 }
 
 int
@@ -75,23 +102,36 @@ CollectionTreeItem::level() const {
         return m_parent->level() + 1;
 }
 
-QueryBuilder
-CollectionTreeItem::queryBuilder() const {
-    QueryBuilder qb = ( !m_parent ? QueryBuilder() : m_parent->queryBuilder() );
-    /*const SqlSearchable *searchable = dynamic_cast<const SqlSearchable*>(m_data.data());
-    if ( searchable )
-        searchable->addToQueryFilter( qb );*/
-    return qb;
+bool
+CollectionTreeItem::isDataItem() const
+{
+    return !m_data.isNull();
+}
+
+QueryMaker*
+CollectionTreeItem::queryMaker() const {
+    if ( m_data.isNull() )
+        return m_parentCollection->queryBuilder();
+    else {
+        CollectionTreeItem *tmp = m_parent;
+        while( tmp->isDataItem() )
+            tmp = tmp->parent();
+        QueryMaker *qm = tmp->parentCollection()->queryBuilder();
+        qm->addMatch( m_data );
+        return qm;
+    }
 }
 
 KUrl::List CollectionTreeItem::urls() const {
-    QueryBuilder qb = queryBuilder();
+    /*QueryBuilder qb = queryBuilder();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     QStringList values = qb.run();
     KUrl::List list;
     foreach( QString s, values ) {
         list += KUrl( s );
     }
+    return list;*/
+    KUrl::List list;
     return list;
 }
 

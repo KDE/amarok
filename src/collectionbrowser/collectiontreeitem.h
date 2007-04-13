@@ -1,5 +1,6 @@
  /*
   Copyright (c) 2007  Alexandre Pereira de Oliveira <aleprj@gmail.com>
+  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General Public
@@ -23,6 +24,7 @@
 #include "meta.h"
 //#include "sqlmeta.h"
 #include "querybuilder.h"
+#include "collection.h"
 
 #include <QList>
 
@@ -37,6 +39,7 @@ namespace CustomRoles
 class CollectionTreeItem {
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
+        CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent );
 
         ~CollectionTreeItem();
 
@@ -44,7 +47,7 @@ class CollectionTreeItem {
 
         void appendChild(CollectionTreeItem *child);
 
-        CollectionTreeItem *child(int row) { return m_childItems.value(row); }
+        CollectionTreeItem *child(int row);
 
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
@@ -55,19 +58,24 @@ class CollectionTreeItem {
 
         int level() const;
 
-        QueryBuilder queryBuilder() const;
+        bool isDataItem() const;
+
+        QueryMaker* queryMaker() const;
 
         bool operator<( const CollectionTreeItem& other ) const;
         bool childrenLoaded() const { return  m_childrenLoaded; }
         void setChildrenLoaded( bool childrenLoaded ) { m_childrenLoaded = childrenLoaded; }
 
         const Meta::DataPtr data() const { return m_data; }
+        Collection* parentCollection() const { return m_parentCollection; }
 
         KUrl::List urls() const;
 
     private:
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
+        Collection* m_parentCollection;
+
         QList<CollectionTreeItem*> m_childItems;
         bool m_childrenLoaded;
 };

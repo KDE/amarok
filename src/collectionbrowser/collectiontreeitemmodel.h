@@ -1,5 +1,6 @@
  /*
   Copyright (c) 2007  Alexandre Pereira de Oliveira <aleprj@gmail.com>
+  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General Public
@@ -22,11 +23,17 @@
 
 #include "meta.h"
 #include "../querybuilder.h"
+//#include "collection/collection.h"
 
 #include <QAbstractItemModel>
+#include <QMap>
+#include <QPair>
 
+using namespace Meta;
 
 class CollectionTreeItem;
+class Collection;
+typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
 namespace CategoryId
 {
@@ -41,6 +48,7 @@ namespace CategoryId
 }
 
 class CollectionTreeItemModel: public QAbstractItemModel {
+Q_OBJECT
 
     public:
         CollectionTreeItemModel( const QList<int> &levelType );
@@ -60,17 +68,28 @@ class CollectionTreeItemModel: public QAbstractItemModel {
 
         virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
+        virtual bool canFetchMore( const QModelIndex &parent ) const;
+        virtual void fetchMore( const QModelIndex &parent );
+
 
         QPixmap iconForLevel( int level ) const;
-        QList<Meta::DataPtr> listForLevel( int level, QueryBuilder qb = QueryBuilder() ) const;
+        void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
 
 
         void setLevels( const QList<int> &levelType );
         QList<int> levels() const { return m_levelType; }
 
+    public slots:
+        void collectionAdded( Collection *newCollection );
+        void collectionRemoved( QString collectionId );
+
+        void queryDone();
+
+        void newResultReady( QString collectionId, Meta::DataList data );
+
     private:
 
-        void populateChildren(const QList<Meta::DataPtr> &dataList, CollectionTreeItem *parent) const;
+        void populateChildren(const DataList &dataList, CollectionTreeItem *parent) const;
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;
         void updateHeaderText();
         QString nameForLevel( int level ) const;
@@ -81,6 +100,9 @@ class CollectionTreeItemModel: public QAbstractItemModel {
         CollectionTreeItem *m_rootItem;
 
         QList<int> m_levelType;
+
+        class Private;
+        Private * const d;
 };
 
 #endif
