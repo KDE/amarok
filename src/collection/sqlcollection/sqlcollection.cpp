@@ -23,19 +23,31 @@
 
 #include <klocale.h>
 
+#include <QTimer>
+
 AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
 
 void
 SqlCollectionFactory::init()
 {
-    Collection* collection = new SqlCollection();
+    Collection* collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );
     emit newCollection( collection );
+    QTimer::singleShot( 30000, this, SLOT( testMultipleCollections() ) );
 }
 
-SqlCollection::SqlCollection()
+void
+SqlCollectionFactory::testMultipleCollections()
+{
+    Collection* secondCollection = new SqlCollection( "anotherLocalCollection", i18n( "2nd local collecion" ) );
+    emit newCollection( secondCollection );
+}
+
+SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_collectionDb( CollectionDB::instance() )
     , m_registry( new SqlRegistry( this ) )
+    , m_collectionId( id )
+    , m_prettyName( prettyName )
 {
 }
 
@@ -47,13 +59,13 @@ SqlCollection::~SqlCollection()
 QString
 SqlCollection::collectionId() const
 {
-    return "localCollection";
+    return m_collectionId;
 }
 
 QString
 SqlCollection::prettyName() const
 {
-    return i18n( "Local collection" );
+    return m_prettyName;
 }
 
 QueryMaker*

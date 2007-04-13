@@ -30,6 +30,9 @@ class SqlCollectionFactory : public CollectionFactory
         virtual ~SqlCollectionFactory() {}
 
         virtual void init();
+
+    private slots:
+        void testMultipleCollections();
 };
 
 class CollectionDB;
@@ -37,7 +40,7 @@ class CollectionDB;
 class SqlCollection : public Collection
 {
     public:
-        SqlCollection();
+        SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();
 
         virtual void startFullScan() {} //TODO
@@ -55,6 +58,9 @@ class SqlCollection : public Collection
         CollectionDB *m_collectionDb;
 
         SqlRegistry* const m_registry;
+
+        QString m_collectionId;
+        QString m_prettyName;
 };
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */
