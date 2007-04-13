@@ -596,7 +596,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
-                    QImage tmpImage = currentTrackLeft.scaled( 1, height(), Qt::KeepAspectRatioByExpanding );
+                    QImage tmpImage = currentTrackLeft.scaled( 1, height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( 0, 0, tmpImage, 0, 0, tmpImage.width() - 1 ); //HACK
@@ -608,7 +608,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 else
                 if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
-                    QImage tmpImage = currentTrackRight.scaled( 1, height(), Qt::KeepAspectRatioByExpanding );
+                    QImage tmpImage = currentTrackRight.scaled( 1, height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( width - tmpImage.width(), 0, tmpImage );
@@ -621,7 +621,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 QImage tmpImage = currentTrackMid.copy();
                 KIconEffect::colorize( tmpImage, glowBase, colorize );
                 imageTransparency( tmpImage, intensity );
-                tmpImage = tmpImage.scaled( width - leftOffset - rightOffset, height() );
+                tmpImage = tmpImage.scaled( width - leftOffset - rightOffset, height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
                 p.drawImage( leftOffset, 0, tmpImage );
 
 
