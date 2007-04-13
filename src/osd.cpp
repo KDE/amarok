@@ -371,6 +371,8 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     rect.setBottom( rect.bottom() - graphicsHeight );
 
+    // FIXME Disabled because it draws a weird black rectangle 
+#if 0
     if( m_drawShadow )
     {
         QPixmap pixmap( rect.size() + QSize(10,10) );
@@ -386,6 +388,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
+#endif
 
     p.setPen( foregroundColor() );
     p.setFont( font() );
