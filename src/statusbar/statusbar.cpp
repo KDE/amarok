@@ -88,7 +88,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     engineStateChanged( Engine::Empty );
 
     // for great justice!
-    connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
+    // FIXME The slot segfaults for some reason
+    //connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
     slotItemCountChanged( 0, 0, 0, 0, 0, 0 );
 
