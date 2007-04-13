@@ -134,6 +134,8 @@ OSDWidget::show() //virtual
     }
     else
         warning() << "Attempted to make an invalid sized OSD\n";
+
+    update();
 #endif
 }
 
