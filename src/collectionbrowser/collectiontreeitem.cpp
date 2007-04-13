@@ -117,7 +117,6 @@ CollectionTreeItem::queryMaker() const {
         while( tmp->isDataItem() )
             tmp = tmp->parent();
         QueryMaker *qm = tmp->parentCollection()->queryBuilder();
-        qm->addMatch( m_data );
         return qm;
     }
 }

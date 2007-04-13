@@ -155,7 +155,7 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
         if ( role == Qt::DecorationRole ) {
             int level = item->level();
             if ( level < m_levelType.count() )
-                return iconForLevel( item->level() );
+                return iconForLevel( item->level() - 1 );
         }
     }
 
@@ -219,24 +219,31 @@ CollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTree
         if ( level == m_levelType.count() ) {
             qm->startTrackQuery();
         }
-        switch( m_levelType[level] ) {
-            case CategoryId::Album :
-                qm->startAlbumQuery();
-                break;
-            case CategoryId::Artist :
-                qm->startArtistQuery();
-                break;
-            case CategoryId::Composer :
-                qm->startComposerQuery();
-                break;
-            case CategoryId::Genre :
-                qm->startGenreQuery();
-                break;
-            case CategoryId::Year :
-                qm->startYearQuery();
-                break;
-            default : //TODO handle error condition. return tracks?
-                break;
+        else {
+            switch( m_levelType[level] ) {
+                case CategoryId::Album :
+                    qm->startAlbumQuery();
+                    break;
+                case CategoryId::Artist :
+                    qm->startArtistQuery();
+                    break;
+                case CategoryId::Composer :
+                    qm->startComposerQuery();
+                    break;
+                case CategoryId::Genre :
+                    qm->startGenreQuery();
+                    break;
+                case CategoryId::Year :
+                    qm->startYearQuery();
+                    break;
+                default : //TODO handle error condition. return tracks?
+                    break;
+            }
+        }
+        CollectionTreeItem *tmpItem = parent;
+        while ( tmpItem->isDataItem() ) {
+            qm->addMatch( tmpItem->data() );
+            tmpItem = tmpItem->parent();
         }
         qm->returnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
@@ -300,7 +307,8 @@ CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
          return true; // must be root item!
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
-    return !item->isDataItem() || item->level() < m_levelType.count();
+    //we added the collection level so we have to be careful with the item level
+    return !item->isDataItem() || item->level() <= m_levelType.count(); 
 
 }
 
@@ -317,7 +325,7 @@ CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
     if ( !parent.isValid() )
         return false;
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
-    return !item->childrenLoaded();
+    return item->level() <= m_levelType.count() && !item->childrenLoaded();
 }
 
 void
