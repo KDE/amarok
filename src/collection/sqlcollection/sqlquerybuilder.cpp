@@ -122,7 +122,6 @@ SqlQueryBuilder::run()
     {
         debug() << "Query is " << query() << endl;
         d->worker = new SqlWorkerThread( this );
-        debug() << "job count for " << d->worker->name() << " is " << ThreadManager::instance()->jobCount( d->worker->name() ) << endl;
         ThreadManager::instance()->queueJob( d->worker );
     }
 }
@@ -151,7 +150,7 @@ SqlQueryBuilder::startTrackQuery()
                                 "statistics.createdate, statistics.accessdate, "
                                 "statistics.playcounter, tags.filetype, tags.bpm, "
                                 "artist.name, artist.id, "
-                                "album.name, album.id, tags.sampler"
+                                "album.name, album.id, tags.sampler, "
                                 "genre.name, genre.id, "
                                 "composer.name, composer.id, "
                                 "year.name, year.id";
@@ -184,7 +183,7 @@ SqlQueryBuilder::startAlbumQuery()
         d->withoutDuplicates = true;
         d->linkedTables |= Private::ALBUM_TAB;
         //add whatever is necessary to identify compilations
-        d->queryReturnValues = "album.name, album.id";
+        d->queryReturnValues = "album.name, album.id, tags.sampler";
     }
     return this;
 }
@@ -508,6 +507,7 @@ SqlQueryBuilder::handleAlbums( const QStringList &result )
         albums.append( reg->getAlbum( name, id.toInt() ) );
         iter.next(); //contains tags.isCompilation, not handled at the moment
     }
+    debug() << "Returning " << albums.count() << " albums" << endl;
     emitProperResult( AlbumPtr, albums );
 }
 
