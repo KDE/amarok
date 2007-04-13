@@ -246,8 +246,6 @@ OSDWidget::determineMetrics( const uint M )
 void
 OSDWidget::paintEvent( QPaintEvent* )
 {
-    DEBUG_BLOCK
-
     /// render with margin/spacing @param M and @param size
 
     uint M = m_m;
@@ -264,10 +262,10 @@ OSDWidget::paintEvent( QPaintEvent* )
         static QBitmap mask;
 
         mask.resize( size );
-        mask.fill( Qt::white );
+        mask.fill( Qt::color0 );
 
         QPainter p( &mask );
-        p.setBrush( Qt::black );
+        p.setBrush( Qt::color1 );
         p.drawRoundRect( rect, xround, yround );
         setMask( mask );
     }
