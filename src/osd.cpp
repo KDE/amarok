@@ -22,22 +22,19 @@
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
-//Added by qt3to4:
-#include <Q3ValueList>
+
+#include <QBitmap>
+#include <QDesktopWidget>
+#include <QPainter>
 #include <QPixmap>
-#include <QMouseEvent>
-#include <QEvent>
+#include <QRegExp>
+#include <QTimer>
+#include <QVector>
 
 #include <kapplication.h>
 #include <kpixmapeffect.h>
 #include <kstandarddirs.h>   //locate
 
-#include <QBitmap>
-#include <QDesktopWidget>
-#include <QPainter>
-#include <QRegExp>
-#include <QTimer>
-#include <q3valuevector.h>
 
 namespace ShadowEngine
 {
@@ -620,7 +617,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 
     else
     {
-        Q3ValueVector<QString> tags;
+        QVector<QString> tags;
         tags.append(bundle.prettyTitle());
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags.append(bundle.prettyText( i ));
@@ -631,11 +628,11 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
             QString tag;
-            Q3ValueVector<int> availableTags; //eg, ones that aren't empty
-            static const Q3ValueList<int> parens = //display these in parentheses
-                Q3ValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
-                                  << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
-                                  << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
+            QVector<int> availableTags; //eg, ones that aren't empty
+            static const QList<int> parens = //display these in parentheses
+                QList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
+                             << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
+                             << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
             OSDWidget::setMoodbar();
             OSDWidget::setRating( 0 );
             for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )

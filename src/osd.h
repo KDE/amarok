@@ -19,7 +19,6 @@
 
 #include <QPixmap>
 #include <QImage>
-#include <q3valuelist.h>
 #include <QWidget> //baseclass
 
 
