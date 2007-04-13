@@ -20,8 +20,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-TimeSlider *TimeSlider::s_instance = 0;
-TimeSlider::TimeSlider( QWidget *parent )
+ProgressSlider *ProgressSlider::s_instance = 0;
+ProgressSlider::ProgressSlider( QWidget *parent )
     : QWidget( parent ),
       EngineObserver( EngineController::instance() )
 {
@@ -61,7 +61,7 @@ TimeSlider::TimeSlider( QWidget *parent )
 
 }
 
-void TimeSlider::drawTimeDisplay( int ms )  //SLOT
+void ProgressSlider::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
@@ -131,7 +131,7 @@ void TimeSlider::drawTimeDisplay( int ms )  //SLOT
     }
 }
 
-void TimeSlider::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+void ProgressSlider::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     m_slider->setValue( position );
 
@@ -140,7 +140,7 @@ void TimeSlider::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 }
 
 void
-TimeSlider::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ProgressSlider::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
 
     switch ( state ) {
@@ -163,13 +163,13 @@ TimeSlider::engineStateChanged( Engine::State state, Engine::State /*oldState*/ 
             ; //just do nothing, idle is temporary and a limbo state
     }
 }
-void TimeSlider::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+void ProgressSlider::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_slider->newBundle( bundle );
     engineTrackLengthChanged( bundle.length() );
 }
 
-void TimeSlider::engineTrackLengthChanged( long length )
+void ProgressSlider::engineTrackLengthChanged( long length )
 {
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( length * 1000 );

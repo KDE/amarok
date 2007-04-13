@@ -20,15 +20,15 @@
 
 class QLabel;
 
-class TimeSlider : public QWidget, public EngineObserver
+class ProgressSlider : public QWidget, public EngineObserver
 {
     Q_OBJECT
 
-    AMAROK_EXPORT static TimeSlider *s_instance;
+    AMAROK_EXPORT static ProgressSlider *s_instance;
 
     public:
-        TimeSlider( QWidget* );
-        static TimeSlider *instance() { return s_instance; }
+        ProgressSlider( QWidget* );
+        static ProgressSlider *instance() { return s_instance; }
 
     public slots:
         void drawTimeDisplay( int position );

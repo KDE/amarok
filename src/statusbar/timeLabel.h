@@ -55,7 +55,7 @@ public:
             AmarokConfig::setLeftTimeDisplayEnabled( true );
         }
 
-        TimeSlider::instance()->drawTimeDisplay( EngineController::engine()->position() );
+        ProgressSlider::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
 
