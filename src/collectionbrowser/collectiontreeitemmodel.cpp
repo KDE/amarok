@@ -48,17 +48,11 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     , m_rootItem( 0 )
     , d( new Private )
 {
-    setLevels( levelType );
     CollectionManager* collMgr = CollectionManager::instance();
     connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ) );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
-    QList<Collection*> collections = collMgr->collections();
-    foreach( Collection *coll, collections )
-    {
-        debug() << "Adding collection " << coll->collectionId() << " in ctor" << endl;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
-    }
-    m_rootItem->setChildrenLoaded( true ); //childrens of the root item are the collection items
+    setLevels( levelType );
+    debug() << "Collection root has " << m_rootItem->childCount() << " childrens" << endl;
 }
 
 
@@ -73,11 +67,11 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
+    d->m_collections.clear();
     QList<Collection*> collections = CollectionManager::instance()->collections();
     foreach( Collection *coll, collections )
     {
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
-        //listForLevel(0, coll->queryBuilder() );
     }
     m_rootItem->setChildrenLoaded( true ); //childrens of the root item are the collection items
     updateHeaderText();
