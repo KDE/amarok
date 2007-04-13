@@ -328,62 +328,6 @@ OSDWidget::paintEvent( QPaintEvent* )
         rect.rLeft() += m_scaledCover.width() + M;
     }
 
-    if( m_volume )
-    {
-        QPixmap vol;
-        vol = QPixmap( rect.width(), rect.height() + fontMetrics().height() / 4 );
-
-        QPixmap buf( vol.size() );
-        QRect r( rect );
-        r.setLeft( rect.left() + rect.width() / 2 - vol.width() / 2 );
-        r.setTop( size.height() / 2 - vol.height() / 2);
-
-        QPixmap pixmapGradient;
-        { // gradient
-            QBitmap mask;
-            mask.resize( vol.size() );
-            mask.fill( Qt::black );
-
-            QPainter p( &mask );
-            p.setBrush( Qt::white );
-            p.drawRoundRect ( 3, 3, vol.width() - 6, vol.height() - 6,
-                M * 300 / vol.width(), 99 );
-            p.end();
-
-            pixmapGradient = QPixmap( vol.size() );
-            KPixmapEffect::gradient( pixmapGradient, colorGroup().background(),
-                colorGroup().highlight(), KPixmapEffect::EllipticGradient );
-            pixmapGradient.setMask( mask );
-        }
-
-        vol.fill( backgroundColor() );
-
-        { // vol ( bg-alpha )
-            static QBitmap mask;
-            mask.resize( vol.size() );
-            mask.fill( Qt::white );
-
-            QPainter p( &mask );
-            p.setBrush( Qt::black );
-            p.drawRoundRect ( 1, 1, rect.width()-2, rect.height() + fontMetrics().height() / 4 - 2,
-                M * 300 / vol.width(), 99 );
-            p.setBrush( Qt::white );
-            p.drawRoundRect ( 3, 3, vol.width() - 6, vol.height() - 6,
-                M * 300 / vol.width(), 99 );
-            p.end();
-            vol.setMask( mask );
-        }
-        buf.fill( backgroundColor().dark() );
-
-        const int offset = int( double( vol.width() * m_newvolume ) / 100 );
-
-        bitBlt( &buf, 0, 0, &vol ); // bg
-        bitBlt( &buf, 0, 0, &pixmapGradient, 0, 0, offset );
-
-        p.drawPixmap( r.left(), r.top(), buf );
-        m_volume = false;
-    }
-
     QPixmap star;
     star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
     int graphicsHeight = 0;
