@@ -38,7 +38,7 @@ SqlCollectionFactory::init()
 void
 SqlCollectionFactory::testMultipleCollections()
 {
-    Collection* secondCollection = new SqlCollection( "anotherLocalCollection", i18n( "2nd local collecion" ) );
+    Collection* secondCollection = new SqlCollection( "anotherLocalCollection", "2nd local collection" );
     emit newCollection( secondCollection );
 }
 
