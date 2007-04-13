@@ -40,48 +40,7 @@ if (USE_SYSTEM_SQLITE)
 else (USE_SYSTEM_SQLITE)
   # Use our own copy
 	set(libsqlite_SRCS
-			    sqlite/alter.c
-			    sqlite/analyze.c
-			    sqlite/attach.c
-			    sqlite/auth.c
-			    sqlite/btree.c
-			    sqlite/build.c
-			    sqlite/callback.c
-			    sqlite/complete.c
-			    sqlite/date.c
-			    sqlite/delete.c
-			    sqlite/expr.c
-			    sqlite/func.c
-			    sqlite/hash.c
-			    sqlite/insert.c
-			    sqlite/legacy.c
-			    sqlite/loadext.c
-			    sqlite/main.c
-			    sqlite/opcodes.c
-			    sqlite/os.c
-			    sqlite/os_unix.c
-			    sqlite/os_win.c
-			    sqlite/pager.c
-			    sqlite/parse.c
-			    sqlite/pragma.c
-			    sqlite/prepare.c
-			    sqlite/printf.c
-			    sqlite/random.c
-			    sqlite/select.c
-			    sqlite/table.c
-				sqlite/tokenize.c
-			    sqlite/trigger.c
-			    sqlite/update.c
-			    sqlite/utf.c
-			    sqlite/util.c
-			    sqlite/vacuum.c
-				sqlite/vdbe.c
-				sqlite/vdbeapi.c
-				sqlite/vdbeaux.c
-				sqlite/vdbefifo.c
-				sqlite/vdbemem.c
-				sqlite/vtab.c
-				sqlite/where.c
+			    sqlite/sqlite3.c
 )
 endif (USE_SYSTEM_SQLITE)
 
