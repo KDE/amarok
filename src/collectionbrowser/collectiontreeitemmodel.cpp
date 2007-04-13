@@ -119,7 +119,6 @@ CollectionTreeItemModel::parent(const QModelIndex &index) const
 int
 CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
-    DEBUG_BLOCK
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
@@ -341,8 +340,10 @@ CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
     QString collectionId = newCollection->collectionId();
     if ( d->m_collections.contains( collectionId ) )
         return;
-
+    //inserts new collection at the end. sort collection alphabetically?
+    beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem ) ) );
+    endInsertRows();
 }
 
 void
