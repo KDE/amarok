@@ -154,7 +154,7 @@ ThreadManager::Thread*
 ThreadManager::gimmeThread()
 {
     for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
-        if ( !(*it)->running() && (*it)->job() == 0 )
+        if ( !(*it)->isRunning() && (*it)->job() == 0 )
             return *it;
 
     Thread *thread = new Thread;
