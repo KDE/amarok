@@ -372,7 +372,7 @@ SqlQueryBuilder::linkTables()
     if( d->linkedTables & Private::YEAR_TAB )
         d->queryFrom += " LEFT JOIN year ON tags.year = year.id";
     if( d->linkedTables & Private::STATISTICS_TAB )
-        d->queryFrom += " LEFT JOIN statistics ON tags.deviced = statistics.deviceid AND tags.url = statistics.url";
+        d->queryFrom += " LEFT JOIN statistics ON tags.deviceid = statistics.deviceid AND tags.url = statistics.url";
 }
 
 void
