@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2006 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
  *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
