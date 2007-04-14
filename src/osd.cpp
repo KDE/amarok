@@ -368,13 +368,11 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     rect.setBottom( rect.bottom() - graphicsHeight );
 
-    // FIXME Disabled because it draws a weird black rectangle 
-#if 0
+    // Draw "shadow" text effect (black outline)
     if( m_drawShadow )
     {
         QPixmap pixmap( rect.size() + QSize(10,10) );
         pixmap.fill( Qt::black );
-        pixmap.setMask( pixmap.createHeuristicMask( true ) );
 
         QPainter p2( &pixmap );
         p2.setFont( font() );
@@ -385,7 +383,6 @@ OSDWidget::paintEvent( QPaintEvent* )
 
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
-#endif
 
     p.setPen( foregroundColor() );
     p.setFont( font() );
@@ -801,8 +798,6 @@ namespace ShadowEngine
 
     QImage makeShadow( const QPixmap& textPixmap, const QColor &bgColor )
     {
-        QImage result;
-
         const int w   = textPixmap.width();
         const int h   = textPixmap.height();
         const int bgr = bgColor.red();
@@ -812,11 +807,10 @@ namespace ShadowEngine
         int alphaShadow;
 
         // This is the source pixmap
-        QImage img = textPixmap.convertToImage().convertDepth( 32 );
+        QImage img = textPixmap.toImage();
 
-        result.create( w, h, 32 );
+        QImage result( w, h, QImage::Format_ARGB32 );
         result.fill( 0 ); // fill with black
-        result.setAlphaBuffer( true );
 
         static const int M = 5;
         for( int i = M; i < w - M; i++) {
