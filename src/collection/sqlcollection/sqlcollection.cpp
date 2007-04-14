@@ -20,6 +20,9 @@
 
 #include "collectiondb.h"
 #include "sqlquerybuilder.h"
+#include "sqlitecollection.h"
+#include "mysqlcollection.h"
+#include "postgresqlcollection.h"
 
 #include <klocale.h>
 
@@ -30,7 +33,22 @@ AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
 void
 SqlCollectionFactory::init()
 {
-    Collection* collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );
+    Collection* collection;
+    switch( CollectionDB::instance()->getDbConnectionType() )
+    {
+        case DbConnection::sqlite :
+            collection = new SqliteCollection( "localCollection", i18n( "Local collection" ) );
+            break;
+        case DbConnection::mysql :
+            collection = new MySqlCollection( "localCollection", i18n( "Local collection" ) );
+            break;
+        case DbConnection::postgresql :
+            collection = new PostgreSqlCollection( "localCollection", i18n( "Local collection" ) );
+            break;
+        default :
+            collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );
+            break;
+    }
     emit newCollection( collection );
     QTimer::singleShot( 30000, this, SLOT( testMultipleCollections() ) );
 }

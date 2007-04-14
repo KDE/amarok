@@ -113,7 +113,7 @@ class PostgresqlConfig : public DbConfig
 };
 
 
-class DbConnection
+class AMAROK_EXPORT DbConnection
 {
     public:
         enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
@@ -494,7 +494,7 @@ class CollectionDB : public QObject, public EngineObserver
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
 
-        DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
+        AMAROK_EXPORT DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 
