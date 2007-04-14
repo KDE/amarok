@@ -268,7 +268,7 @@ SqlQueryBuilder::addMatch( const TrackPtr &track )
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     d->queryWhere += QString( " AND tags.deviceid = %1 AND tags.url = '%2'" )
-                        .arg( QString::number( deviceid ), rpath );
+                        .arg( QString::number( deviceid ), escape( rpath ) );
     return this;
 }
 
@@ -276,7 +276,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
-    d->queryWhere += QString( " AND artist.name = '%1'" ).arg( artist->name() );
+    d->queryWhere += QString( " AND artist.name = '%1'" ).arg( escape( artist->name() ) );
     return this;
 }
 
@@ -285,7 +285,7 @@ SqlQueryBuilder::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
-    d->queryWhere += QString( " AND album.name = '%1'" ).arg( album->name() );
+    d->queryWhere += QString( " AND album.name = '%1'" ).arg( escape( album->name() ) );
     return this;
 }
 
@@ -293,7 +293,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
-    d->queryWhere += QString( " AND genre.name = '%1'" ).arg( genre->name() );
+    d->queryWhere += QString( " AND genre.name = '%1'" ).arg( escape( genre->name() ) );
     return this;
 }
 
@@ -301,7 +301,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
-    d->queryWhere += QString( " AND composer.name = '%1'" ).arg( composer->name() );
+    d->queryWhere += QString( " AND composer.name = '%1'" ).arg( escape( composer->name() ) );
     return this;
 }
 
@@ -309,7 +309,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
-    d->queryWhere += QString( " AND year.name = '%1'" ).arg( year->name() );
+    d->queryWhere += QString( " AND year.name = '%1'" ).arg( escape( year->name() ) );
     return this;
 }
 
@@ -551,6 +551,12 @@ SqlQueryBuilder::handleYears( const QStringList &result )
         years.append( reg->getYear( name, id.toInt() ) );
     }
     emitProperResult( YearPtr, years );
+}
+
+QString
+SqlQueryBuilder::escape( QString text ) const
+{
+    return text.replace( '\'', "''" );;
 }
 
 #include "sqlquerybuilder.moc"

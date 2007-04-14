@@ -67,6 +67,9 @@ class SqlQueryBuilder : public QueryMaker
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
 
+    protected:
+        virtual QString escape( QString text ) const;
+
     private:
 
         void linkTables();

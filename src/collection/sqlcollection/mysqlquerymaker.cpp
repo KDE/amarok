@@ -16,23 +16,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "mysqlcollection.h"
-
 #include "mysqlquerymaker.h"
 
-MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
-    : SqlCollection( id, prettyName )
+MySqlQueryMaker::MySqlQueryMaker( MySqlCollection *collection )
+    : SqlQueryBuilder( collection )
 {
     //nothing to do
 }
 
-MySqlCollection::~MySqlCollection()
+MySqlQueryMaker::~MySqlQueryMaker()
 {
     //nothing to do
 }
 
-QueryMaker*
-MySqlCollection::queryBuilder()
+QString
+MySqlQueryMaker::escape( QString text ) const
 {
-    return new MySqlQueryMaker( this );
+    return text.replace("\\", "\\\\").replace( '\'', "''" );
 }

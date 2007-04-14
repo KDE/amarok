@@ -16,6 +16,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
 	sqlmeta.cpp
 	sqlitecollection.cpp
 	mysqlcollection.cpp
+	mysqlquerymaker.cpp
 	postgresqlcollection.cpp )
 
 kde4_automoc(${amarok_collection-sqlcollection_PART_SRCS})

@@ -15,24 +15,20 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+#ifndef AMAROK_COLLECTION_MYSQLQUERYMAKER_H
+#define AMAROK_COLLECTION_MYSQLQUERYMAKER_H
 
 #include "mysqlcollection.h"
+#include "sqlquerybuilder.h"
 
-#include "mysqlquerymaker.h"
-
-MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
-    : SqlCollection( id, prettyName )
+class MySqlQueryMaker : public SqlQueryBuilder
 {
-    //nothing to do
-}
+    public:
+        MySqlQueryMaker( MySqlCollection* collection );
+        virtual ~MySqlQueryMaker();
 
-MySqlCollection::~MySqlCollection()
-{
-    //nothing to do
-}
+    protected:
+        virtual QString escape( QString text ) const;
+};
 
-QueryMaker*
-MySqlCollection::queryBuilder()
-{
-    return new MySqlQueryMaker( this );
-}
+#endif
