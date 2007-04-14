@@ -186,9 +186,9 @@ void PlaylistWindow::init()
     startColor.setAlpha( 200 );
     QColor endColor = palette().base();
     endColor.setAlpha( 0 );
-    QColor middleColor( startColor.red() * .7,
-                        startColor.green() * .7,
-                        startColor.blue() * .7,
+    QColor middleColor( static_cast<int>( startColor.red() * .7 ),
+                        static_cast<int>( startColor.green() * .7 ),
+                        static_cast<int>( startColor.blue() * .7 ),
                         100 /*alpha*/ );
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
@@ -854,7 +854,7 @@ void PlaylistWindow::playAudioCD() //SLOT
     else
     { // Default behaviour
         showBrowser( "FileBrowser" );
-        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
+      //FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
       //fb->setUrl( KUrl("audiocd:/Wav/") );
     }
 }
