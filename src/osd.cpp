@@ -208,7 +208,7 @@ OSDWidget::determineMetrics( const uint M )
     }
 
     // expand in all directions by M
-    rect.addCoords( -M, -M, M, M );
+    rect.adjust( -M, -M, M, M );
 
     const QSize newSize = rect.size();
     const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
@@ -253,6 +253,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     QPoint point;
     QRect rect( point, size );
+    rect.adjust( 0, 0, -1, -1 );
 
     // From qt sources
     const uint xround = (M * 200) / size.width();
@@ -286,7 +287,7 @@ OSDWidget::paintEvent( QPaintEvent* )
     p.setPen( backgroundColor().dark() );
     p.drawRoundRect( rect, xround, yround );
 
-    rect.addCoords( M, M, -M, -M );
+    rect.adjust( M, M, -M, -M );
 
     if( !m_cover.isNull() )
     {
