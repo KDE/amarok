@@ -18,29 +18,24 @@
 
 #include "amarok_export.h"
 
+#include <QtGui/QWidget>    //baseclass
+
 #include <khbox.h>          //baseclass for DynamicBox
-#include <QtGui/QWidget>        //baseclass
-//Added by qt3to4:
-#include <QShowEvent>
-#include <QEvent>
-#include <QLabel>
-#include <QCloseEvent>
-#include <QPaintEvent>
-#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 #include <kmainwindow.h>
+#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
+
 // #include <phonon/phononnamespace.h>
-class KLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
-class MediaBrowser;
-class QMenuBar;
-class SideBar;
+class KLineEdit;
 class KMenu;
 class KToolBar;
+class MediaBrowser;
 class QLabel;
+class QMenuBar;
 class QTimer;
-class KLineEdit;
 class SearchWidget;
+class SideBar;
 
 // namespace Phonon {
 //     class VideoWidget;
@@ -53,7 +48,7 @@ class SearchWidget;
   */
 class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         PlaylistWindow();
@@ -129,9 +124,9 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, pub
         QStringList    m_browserNames;
         KMenu         *m_searchMenu;
 
-        SearchWidget    *m_searchWidget;
+        SearchWidget  *m_searchWidget;
 //         KToolBar      *m_toolbar;
-        QWidget        *m_controlBar;
+        QWidget       *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
@@ -149,6 +144,7 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, pub
 class DynamicTitle : public QWidget
 {
     Q_OBJECT
+
     public:
         DynamicTitle(QWidget* parent);
         void setTitle(const QString& newTitle);
@@ -166,6 +162,7 @@ class DynamicTitle : public QWidget
 class DynamicBar : public KHBox
 {
     Q_OBJECT
+
     public:
         DynamicBar(QWidget* parent);
         void init();

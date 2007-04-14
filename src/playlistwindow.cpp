@@ -50,35 +50,20 @@
 #include "ui_controlbar.h"
 #include "volumewidget.h"
 
-#include <QEvent>           //eventFilter()
+#include <Q3PopupMenu>
 #include <QFont>
-#include <QLayout>
 #include <QLabel>           //search filter label
-
 #include <QPainter>         //dynamic title
 #include <QPen>
-
-#include <QSizePolicy>      //qspaceritem in dynamic bar
 #include <QSpacerItem>
 #include <QStackedWidget>   //ContextBrowser holder
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
-#include <kvbox.h>            //contains the playlist
-//Added by qt3to4:
-#include <QContextMenuEvent>
-#include <QWheelEvent>
-#include <QCloseEvent>
-//#include <QDockWidget>
-#include <QShowEvent>
-#include <QPaintEvent>
-#include <Q3PopupMenu>
 
 #include <kaction.h>          //m_actionCollection
 #include <kapplication.h>     //kapp
 #include <kfiledialog.h>      //savePlaylist(), openPlaylist()
 #include <kglobal.h>
-#include <khtml_part.h>       //Welcome Tab
-#include <kiconloader.h>      //ClearFilter button
 #include <kinputdialog.h>     //slotAddStream()
 #include <klocale.h>
 #include <kmenubar.h>
