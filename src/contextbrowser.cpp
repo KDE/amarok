@@ -151,7 +151,7 @@ namespace Amarok
         if ( url.endsWith( " @@@" ) )
             url += ' ';
 
-        const QStringList list = QStringList::split( " @@@ ", url, true );
+        const QStringList list = url.split( " @@@ ", QString::KeepEmptyParts );
 
         int size = list.count();
 
@@ -367,8 +367,8 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_lyricsTab,  KIcon( Amarok::icon( "lyrics" ) ), i18n( "Lyrics" ) );
     addTab( m_wikiTab,    KIcon( Amarok::icon( "artist" ) ), i18n( "Artist" ) );
 
-    setTabEnabled( m_lyricsTab, false );
-    setTabEnabled( m_wikiTab, false );
+    setTabEnabled( indexOf( m_lyricsTab ), false );
+    setTabEnabled( indexOf( m_wikiTab ), false );
 
     m_showRelated   = Amarok::config( "ContextBrowser" ).readEntry( "ShowRelated", true );
     m_showSuggested = Amarok::config( "ContextBrowser" ).readEntry( "ShowSuggested", true );
@@ -642,7 +642,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
 void ContextBrowser::collectionScanStarted()
 {
     m_emptyDB = CollectionDB::instance()->isEmpty();
-    if( m_emptyDB && currentPage() == m_contextTab )
+    if( m_emptyDB && currentWidget() == m_contextTab )
         showCurrentTrack();
 }
 
@@ -652,7 +652,7 @@ void ContextBrowser::collectionScanDone( bool changed )
     if ( CollectionDB::instance()->isEmpty() )
     {
         m_emptyDB = true;
-        if ( currentPage() == m_contextTab )
+        if ( currentWidget() == m_contextTab )
             showCurrentTrack();
     }
     else if ( m_emptyDB )
@@ -660,7 +660,7 @@ void ContextBrowser::collectionScanDone( bool changed )
         m_emptyDB = false;
         PlaylistWindow::self()->showBrowser("CollectionBrowser");
     }
-    else if( changed && currentPage() == m_contextTab )
+    else if( changed && currentWidget() == m_contextTab )
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -682,14 +682,14 @@ void ContextBrowser::renderView()
 void ContextBrowser::lyricsChanged( const QString &url ) {
     if ( url == EngineController::instance()->bundle().url().path() ) {
         m_dirtyLyricsPage = true;
-        if ( currentPage() == m_lyricsTab )
+        if ( currentWidget() == m_lyricsTab )
             showLyrics();
     }
 }
 
 void ContextBrowser::lyricsScriptChanged() {
     m_dirtyLyricsPage = true;
-    if ( currentPage() == m_lyricsTab )
+    if ( currentWidget() == m_lyricsTab )
         showLyrics();
 }
 
@@ -714,9 +714,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + Qt::escape( bundle.prettyTitle() ) + "</td>" ) );
     }
 
-    if ( currentPage() == m_contextTab && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
+    if ( currentWidget() == m_contextTab && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
-    else if ( currentPage() == m_lyricsTab )
+    else if ( currentWidget() == m_lyricsTab )
     {
         EngineController::engine()->isStream() ?
                 lyricsRefresh() : // can't call showLyrics() because the url hasn't changed
@@ -821,14 +821,14 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
     {
         case Engine::Empty:
             m_metadataHistory.clear();
-            if ( currentPage() == m_contextTab || currentPage() == m_lyricsTab )
+            if ( currentWidget() == m_contextTab || currentWidget() == m_lyricsTab )
             {
                 showCurrentTrack();
             }
             blockSignals( true );
-            setTabEnabled( m_lyricsTab, false );
-            if ( currentPage() != m_wikiTab ) {
-                setTabEnabled( m_wikiTab, false );
+            setTabEnabled( indexOf( m_lyricsTab ), false );
+            if ( currentWidget() != m_wikiTab ) {
+                setTabEnabled( indexOf( m_wikiTab ), false );
                 m_dirtyWikiPage = true;
             }
             else // current tab is wikitab, disable some buttons.
@@ -848,8 +848,8 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( oldState != Engine::Paused )
                 m_metadataHistory.clear();
             blockSignals( true );
-            setTabEnabled( m_lyricsTab, true );
-            setTabEnabled( m_wikiTab, true );
+            setTabEnabled( indexOf( m_lyricsTab ), true );
+            setTabEnabled( indexOf( m_wikiTab ), true );
             wikiArtistPageAction->setEnabled(true);
             wikiAlbumPageAction->setEnabled(true);
             wikiTitlePageAction->setEnabled(true);
@@ -901,7 +901,7 @@ void ContextBrowser::wheelDelta( int delta )
     if ( count() < 2 || delta == 0 )
         return;
 
-    int index = currentPageIndex(), start = index;
+    int index = currentIndex(), start = index;
     do
     {
         if( delta < 0 )
@@ -914,8 +914,8 @@ void ContextBrowser::wheelDelta( int delta )
         }
         if( index == start ) // full circle, none enabled
             return;
-    } while( !isTabEnabled( page( index ) ) );
-    setCurrentPage( index );
+    } while( !isTabEnabled( index  ) );
+    setCurrentIndex( index );
 }
 
 
@@ -951,7 +951,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "artistback"   ) ||
         urlString.startsWith( "current"      ) ||
         urlString.startsWith( "lastfm"       ) ||
-        currentPage() != m_contextTab  )
+        currentWidget() != m_contextTab  )
         return;
 
     KUrl url( urlString );
@@ -1230,7 +1230,7 @@ private:
 void
 ContextBrowser::showContext( const KUrl &url, bool fromHistory )
 {
-    if ( currentPage() != m_contextTab )
+    if ( currentWidget() != m_contextTab )
     {
         blockSignals( true );
         showPage( m_contextTab );
@@ -1301,9 +1301,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     }
 #endif
-    if ( currentPage() != m_contextTab ) {
+    if ( currentWidget() != m_contextTab ) {
         blockSignals( true );
-        showPage( m_contextTab );
+        setCurrentIndex( indexOf( m_contextTab ) );
         blockSignals( false );
     }
 
@@ -3169,7 +3169,7 @@ bool CurrentTrackJob::doJob()
 
 void ContextBrowser::showIntroduction()
 {
-    if ( currentPage() != m_contextTab )
+    if ( currentWidget() != m_contextTab )
     {
         blockSignals( true );
         showPage( m_contextTab );
@@ -3209,7 +3209,7 @@ void ContextBrowser::showIntroduction()
 
 void ContextBrowser::showScanning()
 {
-    if ( currentPage() != m_contextTab )
+    if ( currentWidget() != m_contextTab )
     {
         blockSignals( true );
         showPage( m_contextTab );
@@ -3269,7 +3269,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     DEBUG_BLOCK
 
-    if ( currentPage() != m_lyricsTab )
+    if ( currentWidget() != m_lyricsTab )
     {
         blockSignals( true );
         showPage( m_lyricsTab );
@@ -3677,7 +3677,7 @@ ContextBrowser::wikiConfigApply() // SLOT
     const bool changed = m_wikiLocaleEdit->text() != wikiLocale();
     setWikiLocale( m_wikiLocaleEdit->text() );
 
-    if ( changed && currentPage() == m_wikiTab && !m_wikiCurrentEntry.isNull() )
+    if ( changed && currentWidget() == m_wikiTab && !m_wikiCurrentEntry.isNull() )
     {
         m_dirtyWikiPage = true;
         showWikipediaEntry( m_wikiCurrentEntry );
@@ -3910,7 +3910,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     }
     #endif
 
-    if ( currentPage() != m_wikiTab )
+    if ( currentWidget() != m_wikiTab )
     {
         blockSignals( true );
         showPage( m_wikiTab );
@@ -4306,7 +4306,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 void
 ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SLOT
 {
-    if ( currentPage() == m_contextTab &&
+    if ( currentWidget() == m_contextTab &&
             !EngineController::engine()->loaded() &&
             !m_browseArtists )
     {
@@ -4320,7 +4320,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if ( currentPage() == m_contextTab &&
+    if ( currentWidget() == m_contextTab &&
        ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
@@ -4332,7 +4332,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
 void
 ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SLOT
 {
-    if ( currentPage() == m_contextTab &&
+    if ( currentWidget() == m_contextTab &&
             !EngineController::engine()->loaded() &&
             !m_browseArtists )
     {
@@ -4346,7 +4346,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() && m_artist.isNull() )
         return;
 
-    if ( currentPage() == m_contextTab &&
+    if ( currentWidget() == m_contextTab &&
        ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
@@ -4360,7 +4360,7 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
     if( artist == m_artist || EngineController::instance()->bundle().artist().string() == artist ) {
         m_dirtyCurrentTrackPage = true;
-        if ( currentPage() == m_contextTab )
+        if ( currentWidget() == m_contextTab )
             showCurrentTrack();
     }
 }
@@ -4427,7 +4427,7 @@ void ContextBrowser::tagsChanged( const QString &oldArtist, const QString &oldAl
 
 void ContextBrowser::refreshCurrentTrackPage() //SLOT
 {
-    if ( currentPage() == m_contextTab ) // this is for compilations or when artist is empty
+    if ( currentWidget() == m_contextTab ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
