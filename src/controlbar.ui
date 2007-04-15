@@ -112,7 +112,7 @@
     </layout>
    </item>
    <item>
-    <widget class="ProgressSlider" native="1" name="m_progressBar" >
+    <widget class="ProgressWidget" native="1" name="m_progressBar" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="Ignored" >
        <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
    <header>analyzerwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>ProgressSlider</class>
+   <class>ProgressWidget</class>
    <extends>QWidget</extends>
    <header>progressslider.h</header>
   </customwidget>

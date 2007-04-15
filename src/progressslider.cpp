@@ -19,9 +19,52 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QList>
+#include <QPolygon>
 
+// Class ProgressSlider
 ProgressSlider *ProgressSlider::s_instance = 0;
-ProgressSlider::ProgressSlider( QWidget *parent )
+ProgressSlider::ProgressSlider( QWidget *parent ) :
+        Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, parent, 100000 )
+{
+    s_instance = this;
+}
+
+// Add A bookmark to the slider at given second
+void ProgressSlider::addBookmark( uint second )
+{
+    if( !m_bookmarks.contains(second) )
+        m_bookmarks << second;
+    update();
+}
+
+
+void ProgressSlider::addBookmarks( QList<uint> seconds )
+{
+    foreach( uint it, seconds )
+        addBookmark( it );
+}
+
+void ProgressSlider::paintEvent( QPaintEvent *e )
+{
+    Amarok::PrettySlider::paintEvent( e );
+    QPainter p( this );
+    foreach( uint it, m_bookmarks )
+    {
+        const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
+        QPolygon pa( 3 );
+        pa.setPoint( 0, pos - 5, 1 );
+        pa.setPoint( 1, pos + 5, 1 );
+        pa.setPoint( 2, pos,     9 );
+        p.setBrush( Qt::red );
+        p.drawConvexPolygon( pa );
+    }
+}
+// END Class ProgressSlider
+
+//Class ProgressWidget
+ProgressWidget *ProgressWidget::s_instance = 0;
+ProgressWidget::ProgressWidget( QWidget *parent )
     : QWidget( parent ),
       EngineObserver( EngineController::instance() )
 {
@@ -32,7 +75,7 @@ ProgressSlider::ProgressSlider( QWidget *parent )
     box->setMargin( 1 );
     box->setSpacing( 3 );
 
-    m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, this );
+    m_slider = new ProgressSlider( this );
 
     // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
@@ -61,7 +104,7 @@ ProgressSlider::ProgressSlider( QWidget *parent )
 
 }
 
-void ProgressSlider::drawTimeDisplay( int ms )  //SLOT
+void ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
@@ -131,7 +174,7 @@ void ProgressSlider::drawTimeDisplay( int ms )  //SLOT
     }
 }
 
-void ProgressSlider::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+void ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     m_slider->setValue( position );
 
@@ -140,7 +183,7 @@ void ProgressSlider::engineTrackPositionChanged( long position, bool /*userSeek*
 }
 
 void
-ProgressSlider::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
 
     switch ( state ) {
@@ -154,6 +197,7 @@ ProgressSlider::engineStateChanged( Engine::State state, Engine::State /*oldStat
             break;
 
         case Engine::Playing:
+        case Engine::Paused:
             DEBUG_LINE_INFO
             m_timeLabel->setEnabled( true );
             m_timeLabel2->setEnabled( true );
@@ -163,13 +207,20 @@ ProgressSlider::engineStateChanged( Engine::State state, Engine::State /*oldStat
             ; //just do nothing, idle is temporary and a limbo state
     }
 }
-void ProgressSlider::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+void ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_slider->newBundle( bundle );
     engineTrackLengthChanged( bundle.length() );
+    m_slider->setMaximum( EngineController::instance()->bundle().length() * 1000 );
+
+    ProgressSlider::instance()->addBookmark( 20 );
+    ProgressSlider::instance()->addBookmark( 40);
+    QList<uint> bookmarkList;
+    bookmarkList << 30 << 50 << 45;
+    ProgressSlider::instance()->addBookmarks( bookmarkList );
 }
 
-void ProgressSlider::engineTrackLengthChanged( long length )
+void ProgressWidget::engineTrackLengthChanged( long length )
 {
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( length * 1000 );

@@ -17,18 +17,40 @@
 #include "engineobserver.h"
 #include "sliderwidget.h"
 
+#include <unistd.h>
+#include <QList>
+#include <QPainter>
 
 class QLabel;
+class QPolygon;
 
-class ProgressSlider : public QWidget, public EngineObserver
+class ProgressSlider : public Amarok::PrettySlider
+{
+    Q_OBJECT
+    static ProgressSlider *s_instance;
+
+    public:
+        ProgressSlider( QWidget *parent );
+        AMAROK_EXPORT static ProgressSlider *instance() { return s_instance; }
+        void addBookmark( uint second );
+        void addBookmarks( QList<uint> seconds );
+
+    protected:
+        virtual void paintEvent( QPaintEvent *e );
+
+    private:
+        QList<uint> m_bookmarks;
+};
+
+class ProgressWidget : public QWidget, public EngineObserver
 {
     Q_OBJECT
 
-    AMAROK_EXPORT static ProgressSlider *s_instance;
+    AMAROK_EXPORT static ProgressWidget *s_instance;
 
     public:
-        ProgressSlider( QWidget* );
-        static ProgressSlider *instance() { return s_instance; }
+        ProgressWidget( QWidget* );
+        static ProgressWidget *instance() { return s_instance; }
 
     public slots:
         void drawTimeDisplay( int position );
@@ -43,6 +65,6 @@ class ProgressSlider : public QWidget, public EngineObserver
         QLabel *m_timeLabel;
         QLabel *m_timeLabel2;
         int m_timeLength;
-        Amarok::PrettySlider *m_slider;
+        ProgressSlider *m_slider;
 };
 #endif
