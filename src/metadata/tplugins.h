@@ -21,7 +21,7 @@
 
 #ifndef METADATA_TPLUGIN_H
 #define METADATA_TPLUGIN_H
-#include <amarok_export.h>
+#include <amarok_libs_export.h>
 
 void AMAROK_TAGLIB_EXPORT registerTaglibPlugins();
 

@@ -1,5 +1,8 @@
 // Copyright:  See COPYING file that comes with this distribution
 
+// Do not add new exports to this file if you can help it.
+// Use amarok_libs_export.h or amarok_engines_export.h as touching
+// this file forces a largeish rebuild.
 #ifndef _AMAROK_EXPORT_H_
 #define _AMAROK_EXPORT_H_
 
@@ -15,53 +18,10 @@
 # endif
 #endif
 
-#ifndef AMAROK_TAGLIB_EXPORT
-# ifdef MAKE_AMAROK_TAGLIB_LIB
-#  define AMAROK_TAGLIB_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_TAGLIB_EXPORT KDE_IMPORT
-# endif
-#endif
-
-#ifndef AMAROK_XINE_ENGINE_EXPORT
-# ifdef MAKE_AMAROK_XINE_ENGINE_PART
-#  define AMAROK_XINE_ENGINE_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_XINE_ENGINE_EXPORT KDE_IMPORT
-# endif
-#endif
-
-#ifndef AMAROK_HELIX_ENGINE_EXPORT
-# ifdef MAKE_AMAROK_HELIX_ENGINE_PART
-#  define AMAROK_HELIX_ENGINE_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_HELIX_ENGINE_EXPORT KDE_IMPORT
-# endif
-#endif
-
-#ifndef AMAROK_PHONON_ENGINE_EXPORT
-# ifdef MAKE_PHONON_ENGINE_PART
-#  define AMAROK_PHONON_ENGINE_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_PHONON_ENGINE_EXPORT KDE_IMPORT
-# endif
-#endif
-
-#ifndef AMAROK_STATUSBAR_EXPORT
-# ifdef MAKE_AMAROK_STATUSBAR_LIB
-#  define AMAROK_STATUSBAR_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_STATUSBAR_EXPORT KDE_IMPORT
-# endif
-#endif
 #else // not windows
 
 #define AMAROK_EXPORT KDE_EXPORT
-#define AMAROK_TAGLIB_EXPORT KDE_EXPORT
-#define AMAROK_XINE_ENGINE_EXPORT KDE_EXPORT
-#define AMAROK_HELIX_ENGINE_EXPORT KDE_EXPORT
-#define AMAROK_PHONON_ENGINE_EXPORT KDE_EXPORT
-#define AMAROK_STATUSBAR_EXPORT KDE_EXPORT
+
 #endif /* not windows */
 
 #endif /* _AMAROK_EXPORT_H */

@@ -25,7 +25,7 @@
 #include "taglib.h"
 #include "tstring.h"
 #include "tag.h"
-#include "amarok_export.h"
+#include "amarok_libs_export.h"
 
 namespace TagLib
 {

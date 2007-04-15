@@ -45,7 +45,7 @@
 
 #include <tfile.h>
 #include <audioproperties.h>
-#include <amarok_export.h>
+#include <amarok_libs_export.h>
 #include "mp4fourcc.h"
 
 namespace TagLib {

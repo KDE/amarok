@@ -11,6 +11,7 @@
 #ifndef XINE_ENGINE_H
 #define XINE_ENGINE_H
 
+#include "amarok_engines_export.h"
 #include "enginebase.h"
 #include <QThread>
 //Added by qt3to4:

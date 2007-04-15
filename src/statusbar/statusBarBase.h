@@ -21,7 +21,7 @@
 #define KDE_STATUSBAR_H
 
 #include "progressBar.h" //convenience
-#include "amarok_export.h"
+#include "amarok_libs_export.h"
 #include "threadmanager.h"
 #include <QWidget>     //baseclass
 #include <QMap>        //stack allocated

@@ -19,7 +19,7 @@
 #include <QTimerEvent>
 #include <phonon/phononnamespace.h>
 // #include <phonon/ui/videowidget.h>
-#include "amarok_export.h"
+#include "amarok_engines_export.h"
 
 extern "C"
 {

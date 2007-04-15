@@ -1,0 +1,42 @@
+// Copyright:  See COPYING file that comes with this distribution
+
+#ifndef _AMAROK_ENGINES_EXPORT_H_
+#define _AMAROK_ENGINES_EXPORT_H_
+
+#include <kdemacros.h>
+
+#ifdef Q_WS_WIN
+
+#ifndef AMAROK_XINE_ENGINE_EXPORT
+# ifdef MAKE_AMAROK_XINE_ENGINE_PART
+#  define AMAROK_XINE_ENGINE_EXPORT KDE_EXPORT
+# else
+#  define AMAROK_XINE_ENGINE_EXPORT KDE_IMPORT
+# endif
+#endif
+
+#ifndef AMAROK_HELIX_ENGINE_EXPORT
+# ifdef MAKE_AMAROK_HELIX_ENGINE_PART
+#  define AMAROK_HELIX_ENGINE_EXPORT KDE_EXPORT
+# else
+#  define AMAROK_HELIX_ENGINE_EXPORT KDE_IMPORT
+# endif
+#endif
+
+#ifndef AMAROK_PHONON_ENGINE_EXPORT
+# ifdef MAKE_PHONON_ENGINE_PART
+#  define AMAROK_PHONON_ENGINE_EXPORT KDE_EXPORT
+# else
+#  define AMAROK_PHONON_ENGINE_EXPORT KDE_IMPORT
+# endif
+#endif
+
+#else //not windows
+
+#define AMAROK_XINE_ENGINE_EXPORT KDE_EXPORT
+#define AMAROK_HELIX_ENGINE_EXPORT KDE_EXPORT
+#define AMAROK_PHONON_ENGINE_EXPORT KDE_EXPORT
+
+#endif //not windows
+
+#endif //AMAROK_ENGINES_EXPORT_H
