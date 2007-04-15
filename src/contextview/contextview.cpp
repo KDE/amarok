@@ -117,7 +117,7 @@ void ContextView::introAnimationComplete()
 
     ContextBox *welcomeBox = new ContextBox();
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
-    addContextBox( welcomeBox );
+    addContextBox( welcomeBox, -1, true );
 
 
     AlbumBox *albumBox = new AlbumBox();
@@ -145,7 +145,7 @@ void ContextView::introAnimationComplete()
         albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
     }
 
-    addContextBox( albumBox );
+    addContextBox( albumBox, -1, true );
 }
 
 
@@ -170,8 +170,20 @@ void ContextView::clear()
     update();
 }
 
-void ContextView::addContextBox( QGraphicsItem *newBox, int after )
+void ContextView::addContextBox( QGraphicsItem *newBox, int after,  bool fadeIn )
 {
+    if ( fadeIn ) {
+
+        GraphicsItemFader * fader = new GraphicsItemFader( newBox, 0 );
+        fader->setDuration( 2500 );
+        fader->setFPS( 30 );
+        fader->setStartAlpha( 255 );
+        fader->setTargetAlpha( 0 );
+        fader->setFadeColor( palette().highlight() );
+        fader->startFading();
+        newBox = fader;
+    }
+
     // For now, let's assume that all the items are listed in a vertical alignment
     // with a constant padding between the elements. Does this need to be more robust?
     QList<QGraphicsItem*> items = m_contextScene->items();

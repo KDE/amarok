@@ -43,7 +43,7 @@ class ContextView : public QGraphicsView
 
         void clear();
 
-        void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/);
+        void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/, bool fadeIn = false);
 
     protected:
         void wheelEvent( QWheelEvent *event );
