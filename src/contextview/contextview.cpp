@@ -83,6 +83,11 @@ void ContextView::showHome()
     GraphicsItemFader *logoFader = new GraphicsItemFader( logoItem, 0 );
 //     logoFader->setTargetAlpha( 200 );
     logoFader->setFadeColor( palette().highlight() );
+    logoFader->setDuration( 5000 );
+    logoFader->setFPS( 30 );
+    logoFader->setStartAlpha( 0 );
+    logoFader->setTargetAlpha( 200 );
+
 
     addContextBox( logoFader );
     logoFader->startFading();
