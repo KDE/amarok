@@ -87,24 +87,14 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
         : QStatusBar( parent )
         , m_logCounter( -1 )
 {
-    setObjectName( name );
-    QHBoxLayout *mainlayout = new QHBoxLayout;
-    mainlayout->setSpacing( 5 );
-    //this->setLayout( mainlayout );
+    setObjectName( name );;
 
-    //we need extra spacing due to the way we paint the surrounding boxes
-    //TODO: Do we still need to stack layouts?
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->setSpacing( 5 );
-    mainlayout->addLayout( layout );
-
-    //KHBox *statusBarTextBox = new KHBox( this );
     m_mainTextLabel = new QLabel( 0, "mainTextLabel" );
     addPermanentWidget( m_mainTextLabel );
     QToolButton *shortLongButton = new QToolButton( 0 );
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
-    QStatusBar::addWidget(shortLongButton);
+    addWidget(shortLongButton);
 
     KHBox *mainProgressBarBox = new KHBox( this );
     mainProgressBarBox->setObjectName( "progressBox" );
@@ -115,18 +105,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     b2->setObjectName( "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
-    QStatusBar::addWidget(mainProgressBarBox);
-//    layout->addWidget( statusBarTextBox );
-    layout->addWidget( mainProgressBarBox );
-//    layout->setStretchFactor( statusBarTextBox, 3 );
-    layout->setStretchFactor( mainProgressBarBox, 1 );
-
-    m_otherWidgetLayout = new QHBoxLayout;
-    m_otherWidgetLayout->setSpacing( 5 );
-    mainlayout->addLayout( m_otherWidgetLayout );
-
-    mainlayout->setStretchFactor( layout, 6 );
-    mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
+    addWidget(mainProgressBarBox);
 
     shortLongButton->setIcon( KIcon( "edit_add" ) );
     shortLongButton->setToolTip( i18n( "Show details" ) );
@@ -150,14 +129,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     gl->setMargin( 6 );
     gl->setSpacing( 3 );
 }
-
-void
-StatusBar::addWidget( QWidget *widget )
-{
-//    m_otherWidgetLayout->addWidget( widget );
-    QStatusBar::addWidget( widget );
-}
-
 
 /// reimplemented functions
 

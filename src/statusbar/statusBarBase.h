@@ -186,15 +186,7 @@ namespace KDE
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
-         class ShortMessageEvent;
-
-        /**
-         * You must parent the widget to the statusbar, we won't do that
-         * for you! The widget will be added to the right of the layout.
-         * Currently you must add widgets before the statusbar gets shown
-         * for the first time, because we are not currently very flexible.
-         */
-        void addWidget( QWidget *widget );
+        class ShortMessageEvent;
 
         QLabel *m_mainTextLabel;
 
