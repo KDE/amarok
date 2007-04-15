@@ -855,37 +855,6 @@ namespace Amarok
         CollectionDB::instance()->scanModifiedDirs();
     }
 
-    void DbusCollectionHandler::scanPause()
-    {
-#if 0
-        if( ScanController::instance() )
-            ScanController::instance()->requestPause();
-        else
-            debug() << "No ScanController instance available" << endl;
-#endif
-    }
-
-    void DbusCollectionHandler::scanUnpause()
-    {
-#if 0
-        if( ScanController::instance() )
-            ScanController::instance()->requestUnpause();
-        else
-            debug() << "No ScanController instance available" << endl;
-#endif
-    }
-
-    void DbusCollectionHandler::scannerAcknowledged()
-    {
-#if 0
-        DEBUG_BLOCK
-        if( ScanController::instance() )
-            ScanController::instance()->requestAcknowledged();
-        else
-            debug() << "No ScanController instance available" << endl;
-#endif
-    }
-
     int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )
     {
         CollectionDB *db = CollectionDB::instance();

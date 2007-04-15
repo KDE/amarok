@@ -56,10 +56,6 @@ public:
     ~CollectionScanner();
     int newInstance() { return 0; }
 
-public slots:
-    void pause();
-    void resume();
-
 private slots:
     void doJob();
 
@@ -105,7 +101,6 @@ private:
     const bool    m_incremental;
     const bool    m_restart;
     const QString m_logfile;
-    bool          m_pause;
 
     struct direntry {
       dev_t dev;

@@ -26,9 +26,6 @@
     </method>
     <method name="scanCollection" />
     <method name="scanCollectionChanges" />
-    <method name="scanPause" />
-    <method name="scanUnpause" />
-    <method name="scannerAcknowledged" />
     <method name="disableAutoScoring" >
       <arg name="disable" type="b" direction="in"/>
     </method>

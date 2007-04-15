@@ -193,9 +193,6 @@ class DbusCollectionHandler : public QObject
       virtual void scanCollection();
       virtual void scanCollectionChanges();
       virtual void disableAutoScoring( bool disable );
-      virtual void scanUnpause();
-      virtual void scanPause();
-      virtual void scannerAcknowledged();
       virtual int addLabels( const QString &url, const QStringList &labels );
       virtual void removeLabels( const QString &url, const QStringList &oldLabels );
       virtual int deviceId( const QString &url );

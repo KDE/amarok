@@ -59,12 +59,8 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_incremental( incremental )
         , m_restart( restart )
         , m_logfile( Amarok::saveLocation( QString() ) + "collection_scan.log"  )
-        , m_pause( false )
 {
-    DbusCollectionScannerHandler* dcsh = new DbusCollectionScannerHandler();
     amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
-    connect( dcsh, SIGNAL(pauseRequest()), this, SLOT(pause()) );
-    connect( dcsh, SIGNAL(unpauseRequest()), this, SLOT(resume()) );
     kapp->setObjectName( QString( "amarokcollectionscanner" ).toAscii() );
     if( !restart )
         QFile::remove( m_logfile );
@@ -78,21 +74,6 @@ CollectionScanner::~CollectionScanner()
     DEBUG_BLOCK
     delete amarokCollectionInterface;
 }
-
-void
-CollectionScanner::pause()
-{
-    DEBUG_BLOCK
-    m_pause = true;
-}
-
-void
-CollectionScanner::resume()
-{
-    DEBUG_BLOCK
-    m_pause = false;
-}
-
 
 
 void
@@ -369,22 +350,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
             covers.clear();
             images.clear();
         }
-
-        if( itemCount % 20 == 0 )
-        {
-//             kapp->processEvents();  // let DCOP through!
-            if( m_pause )
-            {
-                amarokCollectionInterface->scannerAcknowledged();
-                while( m_pause )
-                {
-                    sleep( 1 );
-//                     kapp->processEvents();
-                }
-		amarokCollectionInterface->scannerAcknowledged();
-            }
-        }
-
     }
 }
 
