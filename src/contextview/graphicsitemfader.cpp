@@ -36,11 +36,13 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
 {
     m_contentItem = item;
     m_contentItem->setParentItem( this );
+    m_contentItem->setZValue ( 1 );
 
     m_shadeRectItem = new QGraphicsRectItem( this );
     m_shadeRectItem->setRect( 0, 0, m_contentItem->boundingRect().width() + 2, m_contentItem->boundingRect().height() + 2 );
     m_shadeRectItem->setPos( -1, -1 ); // needs a slight offset to cover frames on m_contentItem
     m_shadeRectItem->setPen( Qt::NoPen );
+    m_shadeRectItem->setZValue ( 2 );
 
     m_fadeColor = QColor ( 255, 255, 255, 0 );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
@@ -87,17 +89,24 @@ void GraphicsItemFader::setFadeColor(const QColor & color)
 
 void GraphicsItemFader::fadeSlot(int step)
 {
+    int newAlpha = newAlpha;
     m_fadeColor.setAlpha( m_startAlpha + ( step * m_alphaStep ) );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
+
+    debug() << "fading, new alpha =  = " << newAlpha <<  endl;
 }
 
 void GraphicsItemFader::startFading()
 {
+
+
     //total number of animation steps;
     m_animationSteps = m_fps * ( ( float ) m_duration / 1000.0 );
 
     //how much should alpha change each step
     m_alphaStep = ( ( float ) ( m_targetAlpha - m_startAlpha ) ) / ( float ) m_animationSteps;
+
+    debug() << "Start fading, animationSteps = " << m_animationSteps << ", alphaStep = " <<  m_alphaStep << endl;
 
     m_timeLine->setDuration( m_duration );
     m_timeLine->setFrameRange( 0, m_animationSteps );

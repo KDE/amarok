@@ -153,7 +153,7 @@ int MagnatuneContentModel::rowCount(const QModelIndex &parent) const
      else
          parentItem = static_cast<MagnatuneContentItem*>(parent.internalPointer());
 
-      debug() << "MagnatuneContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
+      //debug() << "MagnatuneContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
 
      return parentItem->childCount();
 
@@ -184,7 +184,7 @@ void MagnatuneContentModel::setGenre( const QString &genre ) {
 
 void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const {
 
-    debug() << "MagnatuneContentModel::requestHtmlInfo"  << endl;
+    //debug() << "MagnatuneContentModel::requestHtmlInfo"  << endl;
     MagnatuneContentItem* item;
 
     if (!index.isValid()) {
@@ -211,7 +211,7 @@ void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const 
 }
 
 void MagnatuneContentModel::infoParsed( const QString &infoHtml ) {
-    debug() << "MagnatuneContentModel::infoParsed"  << endl;
+    //debug() << "MagnatuneContentModel::infoParsed"  << endl;
     emit( infoChanged ( infoHtml ) );
 }
 
@@ -225,7 +225,7 @@ bool MagnatuneContentModel::canFetchMore(const QModelIndex & parent) const
      else
          item = static_cast<MagnatuneContentItem*>(parent.internalPointer());
 
-    debug() << "MagnatuneContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
+    //debug() << "MagnatuneContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
 
     if ( ( item->getType() == MAGNATUNE_ARTIST ) || ( item->getType() == MAGNATUNE_ALBUM )  ) {
@@ -246,7 +246,7 @@ void MagnatuneContentModel::fetchMore(const QModelIndex & parent)
      else
          item = static_cast<MagnatuneContentItem*>(parent.internalPointer());
 
-       debug() << "MagnatuneContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
+       //debug() << "MagnatuneContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
      item->populate();
 }
