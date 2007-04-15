@@ -24,7 +24,7 @@ email                : andrew.leadbetter@gmail.com
 
 #include <tfile.h>
 #include "mp4properties.h"
-#include <amarok_export.h>
+#include <amarok_libs_export.h>
 namespace TagLib {
 
     namespace MP4 {
