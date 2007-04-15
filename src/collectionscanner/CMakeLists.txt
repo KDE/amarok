@@ -4,13 +4,11 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. ${KDE4_INCLUDE_DIR} ${QT_INC
 
 ########### next target ###############
 
-set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp collectionscannerdbushandler.cpp)
+set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp)
 
 set(amarok_collection_xml  ${CMAKE_CURRENT_SOURCE_DIR}/../amarokcore/org.kde.amarok.collection.xml)
 QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} amarok_collection_interface )
 
-
-qt4_add_dbus_adaptor( amarokcollectionscanner_SRCS org.kde.amarok.scanner.xml collectionscannerdbushandler.h DbusCollectionScannerHandler )
 
 kde4_automoc(${amarokcollectionscanner_SRCS})
 

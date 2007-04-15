@@ -21,7 +21,6 @@
 
 #include "amarok.h"
 #include "collectionscanner.h"
-#include "collectionscannerdbushandler.h"
 #include "debug.h"
 
 #include <cerrno>
