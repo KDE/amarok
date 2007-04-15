@@ -69,6 +69,7 @@ void ContextBox::setTitle( const QString &title )
     // If the title is too big for the box, make the box bigger
     if( titleWidth > m_titleBarRect->boundingRect().width() )
     {
+        /*
         // Make the context box wider
         QRectF conRect = m_contentRect->boundingRect();
         conRect.setWidth( titleWidth );
@@ -82,6 +83,9 @@ void ContextBox::setTitle( const QString &title )
         QRectF boxRect = boundingRect();
         boxRect.setWidth( titleWidth );
         setRect( boxRect );
+*/
+        // this function takes care of setting everything to the correct size!
+        setContentRectSize( QSize( titleWidth, m_contentRect->boundingRect().height() ) );
     }
 
     // Center the title
