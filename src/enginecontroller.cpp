@@ -25,11 +25,9 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
-#include <QFile>
-#include <QObject>
-#include <QTimer>
-//Added by qt3to4:
 #include <QByteArray>
+#include <QFile>
+#include <QTimer>
 
 #include <kapplication.h>
 #include <kio/global.h>

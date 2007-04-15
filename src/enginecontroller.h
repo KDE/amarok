@@ -17,9 +17,8 @@
 #include "engineobserver.h"
 #include "metabundle.h"
 
-#include <qmap.h>
+#include <QMap>
 #include <QObject>
-#include <q3valuelist.h>
 
 class QTimer;
 
