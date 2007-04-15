@@ -59,17 +59,35 @@ void ContextView::showHome()
 
     ContextBox *welcomeBox = new ContextBox();
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
-
     addContextBox( welcomeBox );
-    debug() << "WELCOME BOX: " << welcomeBox->pos() << endl;
 
-    /*
-    AlbumBox *album = new AlbumBox( 0, m_contextScene );
-    const QString &cover = CollectionDB::instance()->albumImage( "3 Doors Down", "The Better Life", false, 50 );
-    debug() << "cover: " << cover ;
-    album->addAlbumInfo( cover, "3 Doors Down - The Better Life" );
-    addContextBox( album );
-    */
+
+    AlbumBox *albumBox = new AlbumBox();
+    albumBox->setTitle( "Your Newest Albums" );
+
+    // because i don't know how to use the new QueryMaker class...
+    QString query = "SELECT distinct(AL.name), AR.name, YR.name "
+                    "FROM tags T "
+                    "INNER JOIN album AL ON T.album = AL.id "
+                    "INNER JOIN artist AR ON T.artist = AR.id "
+                    "INNER JOIN year YR ON T.year = YR.id "
+                    "WHERE T.sampler=0 "
+                    "ORDER BY T.createdate DESC "
+                     "LIMIT 5 OFFSET 0";
+    QStringList values = CollectionDB::instance()->query( query, false );
+    debug() << "Result count: " << values.count() << endl;
+
+    for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
+    {
+        const QString album = *it;
+        const QString artist = *++it;
+        const QString year = *++it;
+        const QString &cover = CollectionDB::instance()->albumImage( artist, album, false, 50 );
+        debug() << "artist: " << artist << " album: " << album << " cover: " << cover << endl;
+        albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
+    }
+
+    addContextBox( albumBox );
 
     /*
     FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
@@ -78,6 +96,7 @@ void ContextView::showHome()
     fadeingImage->setTargetAlpha( 200 );
     */
 
+    /*
     QGraphicsPixmapItem *logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
 
     GraphicsItemFader *logoFader = new GraphicsItemFader( logoItem, 0 );
@@ -88,12 +107,9 @@ void ContextView::showHome()
     logoFader->setStartAlpha( 0 );
     logoFader->setTargetAlpha( 200 );
 
-
     addContextBox( logoFader );
     logoFader->startFading();
-
-    QGraphicsPixmapItem *logoItem1 = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
-    addContextBox( logoItem1 );
+    */
 }
 
 void ContextView::scaleView( qreal factor )

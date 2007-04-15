@@ -27,7 +27,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
 
-    setPen( QPen( Qt::black, 1, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin ) );
+    setPen( QPen( Qt::black, 1, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin ) );
 
     m_titleBarRect = new QGraphicsRectItem( this, scene );
 
@@ -51,7 +51,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
     m_contentRect = new QGraphicsRectItem( this, scene );
     m_contentRect->setRect( 0, 0, boundingRect.width(), boundingRect.height() - m_titleBarRect->boundingRect().height() );
-    m_contentRect->setPos( 0 , m_titleBarRect->boundingRect().height() );
+    m_contentRect->setPos( 0, m_titleBarRect->boundingRect().height() );
     m_contentRect->setPen( Qt::NoPen );
 
     //make a nice shadow
@@ -69,21 +69,6 @@ void ContextBox::setTitle( const QString &title )
     // If the title is too big for the box, make the box bigger
     if( titleWidth > m_titleBarRect->boundingRect().width() )
     {
-        /*
-        // Make the context box wider
-        QRectF conRect = m_contentRect->boundingRect();
-        conRect.setWidth( titleWidth );
-        m_contentRect->setRect( conRect );
-
-        // make the title box bigger
-        QRectF titleRect = m_titleBarRect->boundingRect();
-        titleRect.setWidth( titleWidth );
-        m_titleBarRect->setRect( titleRect );
-
-        QRectF boxRect = boundingRect();
-        boxRect.setWidth( titleWidth );
-        setRect( boxRect );
-*/
         // this function takes care of setting everything to the correct size!
         setContentRectSize( QSize( titleWidth, m_contentRect->boundingRect().height() ) );
     }

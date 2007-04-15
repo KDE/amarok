@@ -40,6 +40,8 @@ namespace Context
 
             void setText( const QString &text );
 
+            qreal bottom();
+
         private:
             QGraphicsPixmapItem *m_coverItem;
             QGraphicsTextItem   *m_textItem;
@@ -52,11 +54,13 @@ namespace Context
     class AlbumBox : public ContextBox
     {
         public:
-            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 ) { Q_UNUSED( parent ); Q_UNUSED( scene ); }
+            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
             ~AlbumBox() { /* delete, disconnect and disembark */ }
 
             void addAlbumInfo( const QString &pixLocation, const QString &text );
-            void addAlbumInfo( const QPixmap &pixmap, const QString &text );
+
+        private:
+            qreal m_bottom;
     };
 
 }

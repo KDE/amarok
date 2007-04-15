@@ -42,7 +42,8 @@ void AlbumItem::setCover( const QPixmap &pixmap )
         if( m_textItem )
             m_textItem->setPos( 60, 0 );
     }
-    m_coverItem->setPixmap( pixmap );
+    if( !pixmap.isNull() )
+        m_coverItem->setPixmap( pixmap );
 }
 
 void AlbumItem::setText( const QString &text )
@@ -55,19 +56,32 @@ void AlbumItem::setText( const QString &text )
     m_textItem->setPlainText( text );
 }
 
+// finds the lowest point of the group
+qreal AlbumItem::bottom()
+{
+    qreal b = 0;
+    if( m_textItem )
+        b = m_textItem->boundingRect().bottom();
+    if( m_coverItem && m_coverItem->boundingRect().bottom() > b )
+        b = m_coverItem->boundingRect().bottom();
+    return b;
+}
+
+AlbumBox::AlbumBox( QGraphicsItem *parent, QGraphicsScene *scene )
+    : ContextBox( parent, scene )
+    , m_bottom( 0 )
+{
+}
 
 void AlbumBox::addAlbumInfo( const QString &pixLocation, const QString &text )
 {
-    AlbumItem *albumRow = new AlbumItem( m_contentRect, scene() );
+    AlbumItem *albumRow = new AlbumItem( m_contentRect );
     albumRow->setCover( pixLocation );
     albumRow->setText( text );
-}
 
-void AlbumBox::addAlbumInfo( const QPixmap &pixmap, const QString &text )
-{
-    AlbumItem *albumRow = new AlbumItem( m_contentRect, scene() );
-    albumRow->setCover( pixmap );
-    albumRow->setText( text );
-}
+    albumRow->setPos( 0, m_bottom );
+    m_bottom += albumRow->bottom();
 
+    setContentRectSize( QSize( boundingRect().width(), m_bottom ) );
+}
 
