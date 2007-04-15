@@ -19,10 +19,7 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 
-#include <vector>
-
 #include <QFile>
-#include <QString>
 
 #include <klibloader.h>
 #include <klocale.h>
@@ -73,7 +70,7 @@ PluginManager::createFromQuery( const QString &constraint )
     // Select plugin with highest rank
     int rank = 0;
     uint current = 0;
-    for ( uint i = 0; i < offers.count(); i++ ) {
+    for ( int i = 0; i < offers.count(); i++ ) {
         if ( offers[i]->property( "X-KDE-Amarok-rank" ).toInt() > rank )
             current = i;
     }
