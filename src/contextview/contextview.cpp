@@ -37,17 +37,20 @@ ContextView::ContextView()
 {
     s_instance = this; // we are a singleton class
 
-    m_contextScene = new QGraphicsScene( this );
-    m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex ); //mainly static, so let's keep an index
-
-    QColor color = palette().highlight();
-    m_contextScene->setBackgroundBrush( color );
-
+    initiateScene();
+    setAlignment( Qt::AlignTop | Qt::AlignLeft );
     setRenderHints( QPainter::Antialiasing );
     setCacheMode( QGraphicsView::CacheBackground ); // this won't be changing regularly
-    setScene( m_contextScene );
 
     showHome();
+}
+
+void ContextView::initiateScene()
+{
+    m_contextScene = new QGraphicsScene( this );
+    m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+    m_contextScene->setBackgroundBrush( palette().highlight() );
+    setScene( m_contextScene );
 }
 
 void ContextView::showHome()
@@ -109,10 +112,7 @@ void ContextView::wheelEvent( QWheelEvent *event )
 void ContextView::clear()
 {
     delete m_contextScene;
-    m_contextScene = new QGraphicsScene( this );
-    m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
-    m_contextScene->setBackgroundBrush( palette().highlight() );
-    setScene( m_contextScene );
+    initiateScene();
 }
 
 void ContextView::addContextBox( QGraphicsItem *newBox, int after )

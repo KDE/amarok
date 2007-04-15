@@ -56,6 +56,8 @@ class ContextView : public QGraphicsView
          */
         ContextView();
 
+        void initiateScene();
+
         void scaleView( qreal factor );
         static bool higherThan( const QGraphicsItem *i1, const QGraphicsItem *i2 );
 
