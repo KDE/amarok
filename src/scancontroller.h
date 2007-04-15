@@ -20,10 +20,9 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
+#include <QCustomEvent>
 #include <QMutex>
 #include <QtXml>         //baseclass
-//Added by qt3to4:
-#include <QCustomEvent>
 
 #include "threadmanager.h" //baseclass
 

@@ -30,17 +30,14 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
+#include <QByteArray>
 #include <QFileInfo>
 #include <QTextCodec>
-//Added by qt3to4:
-#include <QCustomEvent>
-#include <QByteArray>
-#include <Q3ValueList>
 
+#include <amarok_collection_scanner_interface.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <amarok_collection_scanner_interface.h>
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
@@ -498,7 +495,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         // Deserialize CoverBundle list
         QString data = attrs.value( "list" );
         QStringList list = data.split( "AMAROK_MAGIC" );
-        Q3ValueList< QPair<QString, QString> > covers;
+        QList< QPair<QString, QString> > covers;
 
         for( uint i = 0; i + 1 < list.count(); ) {
             covers += qMakePair( list[i], list[i + 1] );
