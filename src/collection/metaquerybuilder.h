@@ -65,6 +65,8 @@ class MetaQueryBuilder : public QueryMaker
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );
 
+        virtual QueryMaker* limitMaxResultSize( int size );
+
     private slots:
         void slotQueryDone();
 

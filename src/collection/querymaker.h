@@ -77,6 +77,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addFilter( qint64 value, const QString &filter ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter ) = 0;
 
+        virtual QueryMaker* limitMaxResultSize( int size ) = 0;
+
     signals:
         AMAROK_EXPORT void newResultReady( QString collectionId, Meta::TrackList );
         AMAROK_EXPORT void newResultReady( QString collectionId, Meta::ArtistList );

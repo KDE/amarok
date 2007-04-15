@@ -63,6 +63,8 @@ class SqlQueryBuilder : public QueryMaker
         virtual QueryMaker* addReturnValue( qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
+        virtual QueryMaker* limitMaxResultSize( int size );
+
         QString query();
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
@@ -95,7 +97,6 @@ class SqlWorkerThread : public ThreadManager::DependentJob
 public:
 
     SqlWorkerThread( SqlQueryBuilder *queryBuilder );
-    virtual ~SqlWorkerThread();
 
     virtual bool doJob();
 

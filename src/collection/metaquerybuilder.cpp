@@ -240,6 +240,14 @@ MetaQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
     return this;
 }
 
+QueryMaker*
+MetaQueryBuilder::limitMaxResultSize( int size )
+{
+    foreach( QueryMaker *b, builders )
+        b->limitMaxResultSize( size );
+    return this;
+}
+
 void
 MetaQueryBuilder::slotQueryDone()
 {

@@ -28,11 +28,7 @@ SqlWorkerThread::SqlWorkerThread( SqlQueryBuilder *queryBuilder )
         : DependentJob( queryBuilder, "SqlWorkerThread" )
         , m_queryBuilder( queryBuilder )
 {
-}
-
-SqlWorkerThread::~SqlWorkerThread()
-{
-    debug() << "SqlWorkerThread destructor called!" << endl;
+    DEBUG_BLOCK
 }
 
 bool
@@ -41,9 +37,9 @@ SqlWorkerThread::doJob()
     DEBUG_BLOCK
     QString query = m_queryBuilder->query();
     QStringList result = m_queryBuilder->runQuery( query );
-    if( !this->isAborted() )
+    if( !isAborted() )
         m_queryBuilder->handleResult( result );
-    return !this->isAborted();
+    return !isAborted();
 }
 
 struct SqlQueryBuilder::Private
@@ -60,6 +56,7 @@ struct SqlQueryBuilder::Private
     bool collectionRestriction;
     bool resultAsDataPtrs;
     bool withoutDuplicates;
+    int maxResultSize;
     SqlWorkerThread *worker;
 };
 
@@ -90,6 +87,7 @@ SqlQueryBuilder::reset()
     d->worker = 0;   //ThreadWeaver deletes the Job
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
+    d->maxResultSize = -1;
     return this;
 }
 
@@ -351,6 +349,12 @@ SqlQueryBuilder::orderBy( qint64 value, bool descending )
     return this;
 }
 
+QueryMaker*
+SqlQueryBuilder::limitMaxResultSize( int size )
+{
+    return this;
+}
+
 void
 SqlQueryBuilder::linkTables()
 {
@@ -387,6 +391,8 @@ SqlQueryBuilder::buildQuery()
     query += d->queryFrom;
     query += " WHERE 1 ";
     query += d->queryWhere;
+    if ( d->maxResultSize > -1 )
+        query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
     query += ';';
     d->query = query;
 }
