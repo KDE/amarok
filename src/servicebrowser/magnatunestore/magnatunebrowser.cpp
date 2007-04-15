@@ -534,19 +534,9 @@ bool MagnatuneBrowser::updateContextView()
 
     cloudBox->done();
 
-
-
-    GraphicsItemFader * cloudFader = new GraphicsItemFader( cloudBox, 0 );
-    cloudFader->setDuration( 2500 );
-    cloudFader->setFPS( 30 );
-    cloudFader->setStartAlpha( 255 );
-    cloudFader->setTargetAlpha( 0 );
-    cloudFader->setFadeColor( palette().highlight() );
-
     ContextView::instance()->clear();
-    ContextView::instance()->addContextBox( cloudFader );
+    ContextView::instance()->addContextBox( cloudBox, -1 , true );
 
-    cloudFader->startFading();
     //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
 
     return true;
