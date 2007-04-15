@@ -81,7 +81,7 @@ void ContextView::showHome()
     QGraphicsPixmapItem *logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
 
     GraphicsItemFader *logoFader = new GraphicsItemFader( logoItem, 0 );
-    logoFader->setTargetAlpha( 200 );
+//     logoFader->setTargetAlpha( 200 );
     logoFader->setFadeColor( palette().highlight() );
 
     addContextBox( logoFader );
