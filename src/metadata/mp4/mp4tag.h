@@ -24,7 +24,7 @@ email                : andrew.leadbetter@gmail.com
 #include <tag.h>
 #include "mp4file.h"
 #include <mp4.h>
-#include "amarok_export.h"
+#include "amarok_libs_export.h"
 
 namespace TagLib {
 
@@ -36,7 +36,7 @@ namespace TagLib {
         {
             public:
                 static const int Undefined = -1;
-                
+
                 Tag();
 
                 /*!
@@ -135,7 +135,7 @@ namespace TagLib {
                  * Sets the album to \a s.  If \a s is String::null then this value will be
                  * cleared.
                  */
-                virtual void setAlbum(const String &s) { m_album = s; } 
+                virtual void setAlbum(const String &s) { m_album = s; }
 
                 /*!
                  * Sets the album to \a s.  If \a s is String::null then this value will be
