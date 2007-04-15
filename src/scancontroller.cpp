@@ -34,7 +34,6 @@
 #include <QFileInfo>
 #include <QTextCodec>
 
-#include <amarok_collection_scanner_interface.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -63,9 +62,6 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )
     , m_reader( new QXmlSimpleReader() )
-    , m_waitingBundle( 0 )
-    , m_lastCommandPaused( false )
-    , m_isPaused( false )
     , m_tablesCreated( false )
     , m_scanCount( 0 )
 {
@@ -351,40 +347,6 @@ ScanController::slotReadReady()
     m_dataMutex.unlock();
 }
 
-bool
-ScanController::requestPause()
-{
-    DEBUG_BLOCK
-    debug() << "Attempting to pause the collection scanner..." << endl;
-    OrgKdeAmarokScannerInterface scanner("org.kde.amarok", "/Scanner", QDBusConnection::sessionBus());
-    QDBusReply<void> reply = scanner.pause();
-    m_lastCommandPaused = true;
-    return reply.isValid();
-}
-
-bool
-ScanController::requestUnpause()
-{
-    DEBUG_BLOCK
-    debug() << "Attempting to unpause the collection scanner..." << endl;
-    //TODO verify it
-    OrgKdeAmarokScannerInterface scanner("org.kde.amarok", "/Scanner", QDBusConnection::sessionBus());
-    QDBusReply<void> reply = scanner.unpause();
-    m_lastCommandPaused = false;
-    return reply.isValid();
-}
-
-void
-ScanController::requestAcknowledged()
-{
-    DEBUG_BLOCK
-    if( m_waitingBundle )
-        m_waitingBundle->scannerAcknowledged();
-    if( m_lastCommandPaused )
-        m_isPaused = true;
-    else
-        m_isPaused = false;
-}
 
 void
 ScanController::slotFileMoved( const QString &/*src*/, const QString &/*dest*/)
@@ -400,13 +362,6 @@ ScanController::slotFileMoved( const QString &/*src*/, const QString &/*dest*/)
     */
 }
 
-void
-ScanController::notifyThisBundle( MetaBundle* bundle )
-{
-    DEBUG_BLOCK
-    m_waitingBundle = bundle;
-    debug() << "will notify " << m_waitingBundle << endl;
-}
 
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )

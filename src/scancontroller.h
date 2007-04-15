@@ -78,8 +78,6 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         bool isIncremental() const { return m_incremental; }
         bool hasChanged() const { return m_hasChanged; }
 
-        void notifyThisBundle( MetaBundle* bundle );
-        bool isPaused() { return m_isPaused; }
         bool tablesCreated() { return m_tablesCreated; }
 
     signals:
@@ -87,9 +85,6 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         void scanDone( bool changed );
 
     public slots:
-        bool requestPause();
-        bool requestUnpause();
-        void requestAcknowledged();
         void slotFileMoved( const QString &src, const QString &dest );
 
     private slots:
@@ -131,9 +126,6 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
 
         static ScanController* currController;
 
-        MetaBundle* m_waitingBundle;
-        bool m_lastCommandPaused;
-        bool m_isPaused;
         bool m_tablesCreated;
         int m_scanCount;
 };
