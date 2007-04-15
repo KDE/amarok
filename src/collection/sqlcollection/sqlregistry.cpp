@@ -161,8 +161,8 @@ SqlRegistry::emptyCache()
          && ( hasGenre = m_genreMutex.tryLock() )
          && ( hasComposer = m_composerMutex.tryLock() ) )
     {
-        //this very simple garbage collector doesn't handle cylclic object graphs
-        //so care has to be taken to make that we are not dealing with a cyclic graph
+        //this very simple garbage collector doesn't handle cyclic object graphs
+        //so care has to be taken to make sure that we are not dealing with a cyclic graph
         //by invalidating the tracks cache on all objects
         #define foreachInvalidateCache( Type, x ) \
         for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
