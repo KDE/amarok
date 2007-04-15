@@ -99,7 +99,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
             .setDescription( m_description )
             .setStatus( i18n("Preparing") )
             .setAbortSlot( this, SLOT(abort()) )
-            .setTotalSteps( 100 );
+            .setMaximum( 100 );
 
     oldForeachType( KUrl::List, urls ) {
         const KUrl url = Amarok::mostLocalURL( *it );

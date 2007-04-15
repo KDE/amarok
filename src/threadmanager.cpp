@@ -373,7 +373,7 @@ ThreadManager::Job::customEvent( QEvent *e )
         StatusBar::instance()->newProgressOperation( this )
                 .setDescription( m_description )
                 .setAbortSlot( this, SLOT(abort()) )
-                .setTotalSteps( 100 );
+                .setMaximum( 100 );
         break;
 
     default:

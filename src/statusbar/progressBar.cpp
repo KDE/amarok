@@ -33,7 +33,7 @@ namespace KDE {
 
 
 ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
-        : Q3ProgressBar( parent )
+        : QProgressBar( parent )
         , m_label( label )
         , m_done( false )
 {
@@ -90,7 +90,7 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 ProgressBar&
 ProgressBar::setProgressSignal( QObject *sender, const char *signal )
 {
-    setTotalSteps( 100 );
+    setMaximum( 100 );
     connect( sender, signal, Amarok::StatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
     return *this;
 }

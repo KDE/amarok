@@ -23,14 +23,8 @@
 #include "progressBar.h" //convenience
 #include "amarok_export.h"
 #include "threadmanager.h"
-#include <qwidget.h>     //baseclass
-#include <qmap.h>        //stack allocated
-#include <q3valuelist.h>  //stack allocated
-//Added by qt3to4:
-#include <QEvent>
-#include <QCustomEvent>
-#include <QLabel>
-#include <QPaintEvent>
+#include <QWidget>     //baseclass
+#include <QMap>        //stack allocated
 #include <QStatusBar>
 class QLabel;
 class QTimer;

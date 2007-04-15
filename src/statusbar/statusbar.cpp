@@ -19,21 +19,20 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "amarok.h"
 #include "amarokconfig.h"
+#include "amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "queueLabel.h"
-//Added by qt3to4:
-#include <QLabel>
 #include "metabundle.h"
+#include "queueLabel.h"
 #include "sliderwidget.h"
 #include "statusbar.h"
 
+#include <khbox.h>
 #include <kiconloader.h>
 #include <klocale.h>
 
-#include <khbox.h>
+#include <QLabel>
 #include <QLayout>
 #include <QTextDocument>
 #include <QTimer>

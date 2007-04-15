@@ -152,7 +152,7 @@ set(libstatusbar_SRCS
     statusbar/overlayWidget.cpp
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
-    statusbar/squeezedtextlabel.cpp
+#    statusbar/squeezedtextlabel.cpp
     statusbar/queueLabel.cpp
     statusbar/selectLabel.cpp
 	)

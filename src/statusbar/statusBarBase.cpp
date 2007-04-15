@@ -22,38 +22,32 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "squeezedtextlabel.h"
 #include "statusBarBase.h"
 #include "threadmanager.h"
 
+#include <kicon.h>
 #include <kiconloader.h>
 #include <kjob.h>
 #include <klocale.h>
 #include <kstandardguiitem.h>
-#include <kicon.h>
+#include <kvbox.h>
 
-#include <QApplication>
 #include <QDateTime>      //writeLogFile()
 #include <QFile>          //writeLogFile()
 #include <QFrame>
-#include <QPushButton>
 #include <QLabel>
 #include <QLayout>
 #include <QMessageBox>
-#include <QObject> //polish()
 #include <QPainter>
 #include <QPalette>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QStyle>   //class CloseButton
+#include <QStyleOption>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip> //QToolTip::palette()
-#include <kvbox.h>
-//Added by qt3to4:
-#include <QCustomEvent>
-#include <QEvent>
-#include <QPaintEvent>
-#include <QStyleOption>
+
 
 //segregated classes
 #include "popupMessage.h"
@@ -73,7 +67,6 @@ namespace SingleShotPool
             timer->setObjectName( slot );
             receiver->connect( timer, SIGNAL(timeout()), slot );
         }
-
         timer->setSingleShot( true );
         timer->start( timeout );
     }
@@ -106,7 +99,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainlayout->addLayout( layout );
 
     //KHBox *statusBarTextBox = new KHBox( this );
-    m_mainTextLabel = new KDE::SqueezedTextLabel( 0, "mainTextLabel" );
+    m_mainTextLabel = new QLabel( 0, "mainTextLabel" );
     addPermanentWidget( m_mainTextLabel );
     QToolButton *shortLongButton = new QToolButton( 0 );
     shortLongButton->setObjectName( "shortLongButton" );
@@ -442,7 +435,8 @@ StatusBar::newProgressOperation( KJob *job )
     SHOULD_BE_GUI
 
     ProgressBar & bar = newProgressOperation( static_cast<QObject*>( job ) );
-    bar.setTotalSteps( 100 );
+    bar.setMinimum( 0 );
+    bar.setMaximum( 100 );
 
     if(!allDone())
         toggleProgressWindowButton()->show();
@@ -563,7 +557,7 @@ StatusBar::setProgress( const QObject *owner, int steps )
     if ( !m_progressMap.contains( owner ) )
         return ;
 
-    m_progressMap[ owner ] ->setProgress( steps );
+    m_progressMap[ owner ] ->setValue( steps );
 
     updateTotalProgress();
 }
@@ -574,7 +568,7 @@ StatusBar::incrementProgressTotalSteps( const QObject *owner, int inc )
     if ( !m_progressMap.contains( owner ) )
         return ;
 
-    m_progressMap[ owner ] ->setTotalSteps( m_progressMap[ owner ] ->totalSteps() + inc );
+    m_progressMap[ owner ] ->setMaximum( m_progressMap[ owner ] ->maximum() + inc );
 
     updateTotalProgress();
 }
@@ -599,7 +593,7 @@ StatusBar::incrementProgress( const QObject *owner )
     if ( !m_progressMap.contains( owner ) )
         return;
 
-    m_progressMap[owner]->setProgress( m_progressMap[ owner ] ->progress() + 1 );
+    m_progressMap[owner]->setValue( m_progressMap[ owner ] ->value() + 1 );
 
     updateTotalProgress();
 }
@@ -610,9 +604,9 @@ StatusBar::updateTotalProgress()
     uint totalSteps = 0;
     uint progress = 0;
 
-    oldForeachType( ProgressMap, m_progressMap ) {
-        totalSteps += (*it)->totalSteps();
-        progress += (*it)->progress();
+    foreach( ProgressBar *it, m_progressMap ) {
+        totalSteps += it->maximum();
+        progress += it->value();
     }
 
     if( totalSteps == 0 && progress == 0 )

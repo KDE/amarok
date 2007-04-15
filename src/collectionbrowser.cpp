@@ -1850,7 +1850,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
         Amarok::StatusBar::instance()->newProgressOperation( this )
             .setDescription( caption )
             .setAbortSlot( this, SLOT( cancelOrganizingFiles() ) )
-            .setTotalSteps( m_organizeURLs.count() );
+            .setMaximum( m_organizeURLs.count() );
 
         while( !m_organizeURLs.empty() && !m_organizingFileCancelled )
         {
