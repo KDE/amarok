@@ -26,11 +26,14 @@
 using namespace Context;
 
 
-GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent ) 
-: QGraphicsItem ( parent )
-, QObject()
+GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent )
+    : QGraphicsItem ( parent )
+    , QObject()
+    , m_startAlpha( 0 )
+    , m_targetAlpha( 255 )
+    , m_fps ( 30 )
+    , m_duration( 5000 )
 {
-
     m_contentItem = item;
     m_contentItem->setParentItem( this );
 
@@ -38,22 +41,13 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
     m_shadeRectItem->setRect( 0, 0, m_contentItem->boundingRect().width() + 2, m_contentItem->boundingRect().height() + 2 );
     m_shadeRectItem->setPos( -1, -1 ); // needs a slight offset to cover frames on m_contentItem
     m_shadeRectItem->setPen( Qt::NoPen );
-    
+
     m_fadeColor = QColor ( 255, 255, 255, 0 );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
-
-
-
-    // some default values
-    m_startAlpha = 0;
-    m_targetAlpha = 255; 
-    m_duration = 5000;
-    m_fps = 30;
 
     m_timeLine = new QTimeLine( 0, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
 }
-
 
 void GraphicsItemFader::setStartAlpha(int alpha)
 {
@@ -89,15 +83,12 @@ void GraphicsItemFader::setFadeColor(const QColor & color)
     m_fadeColor = color;
     m_fadeColor.setAlpha( m_startAlpha );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
-
 }
 
 void GraphicsItemFader::fadeSlot(int step)
 {
-
     m_fadeColor.setAlpha( m_startAlpha + ( step * m_alphaStep ) );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
-
 }
 
 void GraphicsItemFader::startFading()
@@ -105,7 +96,7 @@ void GraphicsItemFader::startFading()
     //total number of animation steps;
     m_animationSteps = m_fps * ( ( float ) m_duration / 1000.0 );
 
-   //how much should alpha change each step 
+    //how much should alpha change each step
     m_alphaStep = ( ( float ) ( m_targetAlpha - m_startAlpha ) ) / ( float ) m_animationSteps;
 
     m_timeLine->setDuration( m_duration );
@@ -115,16 +106,9 @@ void GraphicsItemFader::startFading()
 
 void GraphicsItemFader::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+    Q_UNUSED( painter );
+    Q_UNUSED( option );
+    Q_UNUSED( widget );
 }
 
-
-
-
-
-
 #include "graphicsitemfader.moc"
-
-
-
-
-
