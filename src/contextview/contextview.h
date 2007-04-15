@@ -43,12 +43,13 @@ class ContextView : public QGraphicsView
 
         void clear();
 
-        void addContextBox( ContextBox * newBox );
+        void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/);
 
     protected:
         void wheelEvent( QWheelEvent *event );
 
     private:
+        static const qreal BOX_PADDING = 20;
         /*
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class
@@ -56,6 +57,7 @@ class ContextView : public QGraphicsView
         ContextView();
 
         void scaleView( qreal factor );
+        static bool higherThan( const QGraphicsItem *i1, const QGraphicsItem *i2 );
 
         /// Page Views ////////////////////////////////////////
         //

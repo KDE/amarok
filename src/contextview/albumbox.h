@@ -52,7 +52,7 @@ namespace Context
     class AlbumBox : public ContextBox
     {
         public:
-            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 ) { }
+            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 ) { Q_UNUSED( parent ); Q_UNUSED( scene ); }
             ~AlbumBox() { /* delete, disconnect and disembark */ }
 
             void addAlbumInfo( const QString &pixLocation, const QString &text );

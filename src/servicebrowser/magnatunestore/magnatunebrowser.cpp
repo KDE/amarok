@@ -205,7 +205,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
     }
 
     MagnatuneContentItem *albumContentItem = dynamic_cast<MagnatuneContentItem*>( m_currentlySelectedItem->parent() );
-   
+
     if (!albumContentItem) {
 	debug() << "dynamic_cast to albumContentItem failed!" << endl;
 
@@ -419,7 +419,7 @@ void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem
        m_purchaseAlbumButton->setEnabled( true );
    } else {
        m_purchaseAlbumButton->setEnabled( false );
-   } 
+   }
 
 
 }
@@ -442,9 +442,9 @@ void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
    for ( int i = 0; i < 10; i++ ) {
 
        randomIndex = rand() % (numberOfTracks - i);
-     
+
        addTrackToPlaylist( &tracks.takeAt( randomIndex ) );
-       
+
     }
 
 }
@@ -465,12 +465,12 @@ void MagnatuneBrowser::polish( )
         setModel(new MagnatuneContentModel ( this ) );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
-       
+
         connect ( this, SIGNAL( selectionChanged ( ServiceModelItemBase * ) ) , this, SLOT( slotSelectionChanged( ServiceModelItemBase * ) ) );
 
         m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );
-        m_contentView->sortByColumn ( 0, Qt::AscendingOrder ); 
+        m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
 
 
         m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
@@ -484,12 +484,12 @@ void MagnatuneBrowser::polish( )
         + "</td></tr></tbody></table>" );
         m_infoBox->end();
 
-        
+
 
 
     }
 
-   
+
 
 
 }
@@ -544,7 +544,7 @@ bool MagnatuneBrowser::updateContextView()
     cloudFader->setFadeColor( palette().highlight() );
 
     ContextView::instance()->clear();
-    ContextView::instance()->scene()->addItem( cloudFader );
+    ContextView::instance()->addContextBox( cloudFader );
 
     cloudFader->startFading();
     //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );

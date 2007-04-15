@@ -24,14 +24,10 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     : QGraphicsRectItem( parent, scene )
       , m_titleItem( 0 )
 {
-
-
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
-    setPos( 100, 300 );
 
     setPen( QPen( Qt::black, 1, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin ) );
-
 
     m_titleBarRect = new QGraphicsRectItem( this, scene );
 
@@ -46,35 +42,30 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     m_titleBarRect->setRect( 0, 0, boundingRect.width(), m_titleItem->boundingRect().height() );
     m_titleBarRect->setPos( 0, 0 );
     m_titleBarRect->setPen( Qt::NoPen );
-   
-  
+
     QLinearGradient titleGradient(QPointF( 0, 0 ), QPointF( 0, m_titleBarRect->boundingRect().height() ) );
     titleGradient.setColorAt( 0, QColor( 200, 200, 255 ) );
     titleGradient.setColorAt( 1, QColor( 50, 50, 255 ) );
-    
 
     m_titleBarRect->setBrush( QBrush( titleGradient ) );
-
 
     m_contentRect = new QGraphicsRectItem( this, scene );
     m_contentRect->setRect( 0, 0, boundingRect.width(), boundingRect.height() - m_titleBarRect->boundingRect().height() );
     m_contentRect->setPos( 0 , m_titleBarRect->boundingRect().height() );
     m_contentRect->setPen( Qt::NoPen );
 
-    //make a nice shadow 
+    //make a nice shadow
     QLinearGradient shadowGradient( QPointF( 0, 0 ), QPointF( 0, 10) );
     shadowGradient.setColorAt( 0, QColor( 150, 150, 150 ) );
     shadowGradient.setColorAt( 1, QColor( 255, 255, 255 ) );
     m_contentRect->setBrush( QBrush( shadowGradient ) );
-
-
 }
 
 void ContextBox::setTitle( const QString &title )
 {
     m_titleItem->setPlainText( title );
 
-    int xOffset = ( m_titleBarRect->boundingRect().width() - m_titleItem->boundingRect().width() ) / 2;
+    qreal xOffset = ( m_titleBarRect->boundingRect().width() - m_titleItem->boundingRect().width() ) / 2;
     m_titleItem->setPos( xOffset, 0 );
 }
 
@@ -85,7 +76,7 @@ void ContextBox::setBoundingRectSize( const QSize &sz )
 }
 
 void ContextBox::setContentRectSize( const QSize &sz ) {
-   
+
      m_contentRect->setRect( QRectF( 0, 0, sz.width(), sz.height() ) );
     //set correct size of this as well
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
