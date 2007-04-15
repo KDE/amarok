@@ -35,15 +35,15 @@
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
-#include <qdom.h>
+#include <QByteArray>
+#include <QDBusReply>
 #include <QFile>
 #include <QTimer>
-//Added by qt3to4:
-#include <QByteArray>
-#include <Q3ValueList>
-#include <QDBusReply>
+#include <qdom.h>
+
 #include <kglobal.h>
 #include <klocale.h>
+
 #include <amarok_collection_interface.h>
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
@@ -114,13 +114,12 @@ CollectionScanner::doJob() //SLOT
 
     }
     else {
-        oldForeachType( QStringList, m_folders ) {
-            if( (*it).isEmpty() )
+        foreach( QString dir, m_folders ) {
+            if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
-            QString dir = *it;
             if( !dir.endsWith( "/" ) )
                 dir += '/';
 
@@ -186,14 +185,10 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     de.ino = statBuf.st_ino;
 
     int f = -1;
-#if __GNUC__ < 4
-    for( unsigned int i = 0; i < m_processedDirs.size(); ++i )
+    for( int i = 0; i < m_processedDirs.size(); ++i )
         if( memcmp( &m_processedDirs[i], &de, sizeof( direntry ) ) == 0 ) {
             f = i; break;
         }
-#else
-    f = m_processedDirs.find( de );
-#endif
 
     if ( ! S_ISDIR( statBuf.st_mode ) || f != -1 ) {
         debug() << "Skipping, already scanned: " << dir << endl;
@@ -267,7 +262,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg";
     QStringList validPlaylists; validPlaylists << "m3u" << "pls";
 
-    Q3ValueList<CoverBundle> covers;
+    QList<CoverBundle> covers;
     QStringList images;
 
     int itemCount = 0;
@@ -332,7 +327,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
-                for( Q3ValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                for( QList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
                     string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
 
                 AttributeMap attributes;

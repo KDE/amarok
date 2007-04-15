@@ -26,10 +26,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <qmap.h>
+#include <QMap>
 #include <QStringList>
-//Added by qt3to4:
-#include <Q3MemArray>
+#include <QVector>
 
 #include <kapplication.h>
 #include <amarok_collection_interface.h>
@@ -107,7 +106,7 @@ private:
       ino_t ino;
     } KDE_PACKED;
 
-    Q3MemArray<direntry> m_processedDirs;
+    QVector<direntry> m_processedDirs;
     OrgKdeAmarokCollectionInterface *amarokCollectionInterface;
 };
 
