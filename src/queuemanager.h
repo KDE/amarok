@@ -20,16 +20,14 @@
 #include <QListWidget>      //baseclass
 #include <QListWidgetItem> //baseclass
 
-#include <qmap.h>
-//Added by qt3to4:
-class QDragEnterEvent;
-class QDropEvent;
-class QDragMoveEvent;
-class QKeyEvent;
-class QPaintEvent;
-#include <Q3PtrList>
+#include <QMap>
 
 class KPushButton;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDropEvent;
+class QKeyEvent;
+class QPaintEvent;
 
 class QueueItem : public QListWidgetItem
 {

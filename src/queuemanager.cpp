@@ -18,16 +18,8 @@
 #include "amarokconfig.h"     //check if dynamic mode
 #include "playlist.h"
 #include "queuemanager.h"
-//Added by qt3to4:
 
-#include <q3ptrlist.h>
-#include <Q3ValueList>
-#include <QDragEnterEvent>
-#include <QDragMoveEvent>
-#include <QDropEvent>
-#include <QKeyEvent>
 #include <QPainter>
-#include <QPaintEvent>
 #include <QTextDocument>
 #include <QToolTip>
 
@@ -103,8 +95,8 @@ QueueList::paintEvent( QPaintEvent *e )
                 "</div>" ) );
         QTextDocument t;
         t.setHtml( minimumText );
-        const uint w = t.size().width();
-        const uint h = t.size().height();
+        const int w = static_cast<int>( t.size().width() );
+        const int h = static_cast<int>( t.size().height() );
         if ( w+30 >= viewport()->width() || h+30 >= viewport()->height() )
             //too big, giving up
             return;
@@ -112,7 +104,7 @@ QueueList::paintEvent( QPaintEvent *e )
         const uint x = (viewport()->width() - w - 30) / 2 ;
         const uint y = (viewport()->height() - h - 30) / 2 ;
 
-        p.setBrush( colorGroup().background() );
+        p.setBrush( palette().window().color() );
         p.drawRoundRect( x, y, w+30, h+30, (8*200)/w, (8*200)/h );
        // t.draw( &p, x+15, y+15, QRect(), colorGroup() );
         t.drawContents( &p, QRect() );
@@ -244,6 +236,7 @@ QueueManager *QueueManager::s_instance = 0;
 QueueManager::QueueManager( QWidget *parent, const char *name )
     : KDialog( parent )
 {
+    setObjectName( name );
     setModal( false );
     setButtons( Ok|Apply|Cancel );
     setDefaultButton( Ok );
@@ -338,9 +331,9 @@ QueueManager::addItems( QListWidgetItem *after )
     bool item_added = false;
     for( QList<Q3ListViewItem*>::const_iterator it = list.begin(); it != list.end(); ++it ) {
         #define item static_cast<PlaylistItem*>(*it)
-        Q3ValueList<PlaylistItem*> current = m_map.values();
+        const QList<PlaylistItem*> current = m_map.values();
 
-        if( current.find( item ) == current.end() ) //avoid duplication
+        if( !current.contains( item ) ) //avoid duplication
         {
             QString title = i18n("%1 - %2", item->artist(), item->title() );
 
@@ -383,12 +376,10 @@ QueueManager::addQueuedItem( PlaylistItem *item )
         after = m_listview->item( find );
     }
 
-    Q3ValueList<PlaylistItem*>         current = m_map.values();
-    Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
+    const QString title = i18n("%1 - %2", item->artist(), item->title() );
+    const QList<PlaylistItem*> current = m_map.values();
 
-    QString title = i18n("%1 - %2", item->artist(), item->title() );
-
-    if( newItem == current.end() ) //avoid duplication
+    if( !current.contains( item ) ) //avoid duplication
     {
         QueueItem* createdItem = new QueueItem( title );
         m_listview->insertItem( m_listview->row( after +1 ), createdItem );
@@ -412,12 +403,9 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
             find = index - 1;
         after = m_listview->item( find );
     }
-    Q3ValueList<PlaylistItem*>         current = m_map.values();
-    Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
-    QString title = i18n("%1 - %2", item->artist(), item->title() );
-
-    QList<QListWidgetItem*> items = m_listview->findItems( title, 0 );
+    const QString title = i18n("%1 - %2", item->artist(), item->title() );
+    const QList<QListWidgetItem*> items = m_listview->findItems( title, 0 );
 
     if( items.count() > 0 )
     {
@@ -491,7 +479,7 @@ QueueManager::removeSelected() //SLOT
         //Remove the key from the map, so we can re-queue the item
         QMap<QListWidgetItem*, PlaylistItem*>::iterator it = m_map.find( item );
 
-        m_map.remove( it );
+        m_map.erase( it );
 
         //Remove the item from the queuelist
         m_listview->takeItem( m_listview->row( item ) );
