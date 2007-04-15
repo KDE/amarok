@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2005 by The Amarok Developers                      *
+ *   Copyright (C) 2003-2007 by The Amarok Developers                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -104,8 +104,8 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         void customEvent( QCustomEvent* );
 
         // Member variables:
-        static const uint MAX_RESTARTS = 80;
-        static const uint MAX_FAILURE_PERCENTAGE = 5;
+        static const int MAX_RESTARTS = 80;
+        static const int MAX_FAILURE_PERCENTAGE = 5;
 
         K3ProcIO* m_scanner;
         QStringList m_folders;

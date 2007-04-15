@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2005 by The Amarok Developers                      *
+ *   Copyright (C) 2003-2007 by The Amarok Developers                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -143,9 +143,9 @@ ScanController::completeJob( void )
                 m_filesDeleted.remove( it.key() );
         }
         for( it = m_filesAdded.begin(); it != m_filesAdded.end(); ++it )
-            CollectionDB::instance()->emitFileAdded( it.data(), it.key() );
+            CollectionDB::instance()->emitFileAdded( it.value(), it.key() );
         for( it = m_filesDeleted.begin(); it != m_filesDeleted.end(); ++it )
-            CollectionDB::instance()->emitFileDeleted( it.data(), it.key() );
+            CollectionDB::instance()->emitFileDeleted( it.value(), it.key() );
     }
 
     m_fileMapsMutex.unlock();
@@ -179,10 +179,10 @@ ScanController::initIncremental()
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
-    oldForeachType( IdList, list )
+    foreach( int id, list )
     {
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
-        deviceIds += QString::number(*it);
+        deviceIds += QString::number( id );
     }
 
     const QStringList values = CollectionDB::instance()->query(
@@ -289,11 +289,11 @@ main_loop:
             CollectionDB::instance()->sanitizeCompilations();
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
-                oldForeach( m_foldersToRemove ) {
+                foreach( QString str, m_foldersToRemove ) {
                     m_fileMapsMutex.lock();
-                    CollectionDB::instance()->removeSongsInDir( *it, &m_filesDeleted );
+                    CollectionDB::instance()->removeSongsInDir( str, &m_filesDeleted );
                     m_fileMapsMutex.unlock();
-                    CollectionDB::instance()->removeDirFromCollection( *it );
+                    CollectionDB::instance()->removeDirFromCollection( str );
                 }
                 CollectionDB::instance()->removeOrphanedEmbeddedImages();
             }
@@ -497,7 +497,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         QStringList list = data.split( "AMAROK_MAGIC" );
         QList< QPair<QString, QString> > covers;
 
-        for( uint i = 0; i + 1 < list.count(); ) {
+        for( int i = 0; i + 1 < list.count(); ) {
             covers += qMakePair( list[i], list[i + 1] );
             i += 2;
         }
@@ -522,7 +522,7 @@ ScanController::customEvent( QCustomEvent* e )
 
         QFile log( Amarok::saveLocation( QString() ) + "collection_scan.log" );
         if ( !log.open( QIODevice::ReadOnly ) )
-        ::warning() << "Failed opening log file " << log.name() << endl;
+        ::warning() << "Failed opening log file " << log.fileName() << endl;
         else {
             QByteArray path = QByteArray(log.readAll());
             m_crashedFiles << QString::fromUtf8( path, path.length() );
