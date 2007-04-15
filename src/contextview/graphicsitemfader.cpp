@@ -89,11 +89,11 @@ void GraphicsItemFader::setFadeColor(const QColor & color)
 
 void GraphicsItemFader::fadeSlot(int step)
 {
-    int newAlpha = newAlpha;
-    m_fadeColor.setAlpha( m_startAlpha + ( step * m_alphaStep ) );
+    int newAlpha = m_startAlpha + ( step * m_alphaStep );
+    m_fadeColor.setAlpha( newAlpha );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 
-    debug() << "fading, new alpha =  = " << newAlpha <<  endl;
+    debug() << "fading, new alpha = " << newAlpha <<  endl;
 }
 
 void GraphicsItemFader::startFading()
