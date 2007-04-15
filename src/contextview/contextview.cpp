@@ -13,11 +13,13 @@
 
 #include "albumbox.h"
 #include "cloudbox.h"
+#include "textfader.h"
 #include "collectiondb.h"
 #include "contextbox.h"
 #include "contextview.h"
 #include "debug.h"
 #include "graphicsitemfader.h"
+#include "introanimation.h"
 
 #include <kstandarddirs.h>
 
@@ -57,6 +59,62 @@ void ContextView::showHome()
 {
     clear();
 
+    /*
+    FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
+    QColor color = palette().highlight();
+    fadeingImage->setFadeColor( color );
+    fadeingImage->setTargetAlpha( 200 );
+    */
+
+    /*
+    QGraphicsPixmapItem *logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
+
+    GraphicsItemFader *logoFader = new GraphicsItemFader( logoItem, 0 );
+//     logoFader->setTargetAlpha( 200 );
+    logoFader->setFadeColor( palette().highlight() );
+    logoFader->setDuration( 5000 );
+    logoFader->setFPS( 30 );
+    logoFader->setStartAlpha( 0 );
+    logoFader->setTargetAlpha( 200 );
+
+    addContextBox( logoFader );
+    logoFader->startFading();
+    */
+
+    //test TextFader
+
+   /* TextFader *textFader = new TextFader("Hello, World", 0);
+    QFont font = textFader->font();
+    font.setPointSize( 20 );
+    textFader->setFont( font );
+
+    textFader->setDuration( 5000 );
+    textFader->setFPS( 30 );
+    textFader->setStartAlpha( 0 );
+    textFader->setTargetAlpha( 255 );
+
+    addContextBox( textFader );
+    textFader->startFading();*/
+
+    IntroAnimation * introAnim = new IntroAnimation( 0 );
+
+    connect( introAnim, SIGNAL( animationComplete() ), this, SLOT( introAnimationComplete() ) );
+
+    introAnim->setFadeColor( palette().highlight() );
+    addContextBox( introAnim );
+    introAnim->startAnimation();
+
+}
+
+
+
+void ContextView::introAnimationComplete()
+{
+    clear();
+    debug() << "introAnimationComplete!"  << endl;
+
+
+
     ContextBox *welcomeBox = new ContextBox();
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
     addContextBox( welcomeBox );
@@ -88,29 +146,8 @@ void ContextView::showHome()
     }
 
     addContextBox( albumBox );
-
-    /*
-    FadingImageItem * fadeingImage = new FadingImageItem (QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
-    QColor color = palette().highlight();
-    fadeingImage->setFadeColor( color );
-    fadeingImage->setTargetAlpha( 200 );
-    */
-
-    /*
-    QGraphicsPixmapItem *logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
-
-    GraphicsItemFader *logoFader = new GraphicsItemFader( logoItem, 0 );
-//     logoFader->setTargetAlpha( 200 );
-    logoFader->setFadeColor( palette().highlight() );
-    logoFader->setDuration( 5000 );
-    logoFader->setFPS( 30 );
-    logoFader->setStartAlpha( 0 );
-    logoFader->setTargetAlpha( 200 );
-
-    addContextBox( logoFader );
-    logoFader->startFading();
-    */
 }
+
 
 void ContextView::scaleView( qreal factor )
 {
@@ -130,6 +167,7 @@ void ContextView::clear()
 {
     delete m_contextScene;
     initiateScene();
+    update();
 }
 
 void ContextView::addContextBox( QGraphicsItem *newBox, int after )
@@ -170,3 +208,5 @@ bool ContextView::higherThan( const QGraphicsItem *i1, const QGraphicsItem *i2 )
 {
     return ( i1->sceneBoundingRect().top() > i2->sceneBoundingRect().top() );
 }
+
+#include "contextview.moc"

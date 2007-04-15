@@ -130,6 +130,8 @@ set(libcontextview_SRCS
     contextview/albumbox.cpp
     contextview/cloudbox.cpp
     contextview/graphicsitemfader.cpp
+    contextview/textfader.cpp
+    contextview/introanimation.cpp
 )
 
 

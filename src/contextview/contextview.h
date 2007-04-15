@@ -25,7 +25,7 @@ using namespace Context;
 
 class ContextView : public QGraphicsView
 {
-
+    Q_OBJECT
     static ContextView *s_instance;
 
     public:
@@ -74,6 +74,10 @@ class ContextView : public QGraphicsView
         /// Attributes ////////////////////////////////////////
         //
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
+
+    private slots:
+
+        void introAnimationComplete();
 
 };
 

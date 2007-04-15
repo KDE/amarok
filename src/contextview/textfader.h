@@ -17,43 +17,37 @@
   Boston, MA 02110-1301, USA.
 */
 
-#ifndef GRAPHICSITEMFADER_H
-#define GRAPHICSITEMFADER_H
+#ifndef CONTEXTTEXTFADER_H
+#define CONTEXTTEXTFADER_H
 
 #include <QObject>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsRectItem>
+#include <QGraphicsTextItem>
 #include <QTimeLine>
 
-namespace Context
-{
+namespace Context {
 
+/**
+A specialized QGraphicsTextItem that can fade in or out. As opposed to the GraphicstemFader 
+(which could also be used on a QGraphicsTextItem) this class provides real fading independent
+of the backgorund
 
-    /**
-    A simple "widget" for the context view that provides a fading image
-    Will be ported to use QGraphicsSvgItem once that successfully renders
-    the Amarok logo file
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-    */
-    class GraphicsItemFader : public QObject, public QGraphicsItem
-    {
-
+	@author Nikolaj Hald Nielsen
+*/
+    class TextFader : public QGraphicsTextItem{
     Q_OBJECT
     public:
-        GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
+        TextFader(const QString & text, QGraphicsItem * parent = 0);
 
-        virtual QRectF boundingRect () const;
-        void paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget);
+        ~TextFader();
 
-        void setFadeColor( const QColor &color );
         void setStartAlpha( int alpha );
         void setTargetAlpha( int alpha );
         void setDuration( int ms );
         void setFPS( int fps );
         void startFading();
+
+        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+
 
     signals:
         void animationComplete();
@@ -61,25 +55,20 @@ namespace Context
     public slots:
         void fadeSlot( int step );
 
+
     private:
         QTimeLine * m_timeLine;
-        QGraphicsItem * m_contentItem;
-        QGraphicsRectItem * m_shadeRectItem;
-
-        QColor m_fadeColor;
         int m_startAlpha;
         int m_targetAlpha;
         float m_alphaStep;
         int m_fps;
         int m_duration;
         int m_animationSteps;
-        int m_width;
-        int m_height;
-        
+        int m_currentAlpha;
+
 
     };
 
 }
-
 
 #endif
