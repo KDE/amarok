@@ -17,6 +17,9 @@
 #include "progressslider.h"
 #include "timeLabel.h"
 
+#include <kpassivepopup.h>
+#include <khbox.h>
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QList>
@@ -25,9 +28,11 @@
 // Class ProgressSlider
 ProgressSlider *ProgressSlider::s_instance = 0;
 ProgressSlider::ProgressSlider( QWidget *parent ) :
-        Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, parent, 100000 )
+        Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, parent )
 {
+    oldpoint = QPoint(0, 0);
     s_instance = this;
+    setMouseTracking( true );
 }
 
 // Add A bookmark to the slider at given second
@@ -52,13 +57,46 @@ void ProgressSlider::paintEvent( QPaintEvent *e )
     foreach( uint it, m_bookmarks )
     {
         const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
-        QPolygon pa( 3 );
+        Polygon pa( 3, it );
         pa.setPoint( 0, pos - 5, 1 );
         pa.setPoint( 1, pos + 5, 1 );
         pa.setPoint( 2, pos,     9 );
         p.setBrush( Qt::red );
+        m_polygons << pa;
         p.drawConvexPolygon( pa );
     }
+}
+void ProgressSlider::mouseMoveEvent( QMouseEvent *e )
+{
+
+    foreach( Polygon p, m_polygons )
+    {
+        //only create a popup if the mouse enters a bookmark, not if it moves inside of one.
+        if( p.contains( e->pos(), Qt::OddEvenFill ) && !p.contains( oldpoint, Qt::OddEvenFill ) )
+        {
+            m_popup = new KPassivePopup( parentWidget() );
+            KHBox *khb = new KHBox( m_popup );
+            new QLabel( p.time(), khb );
+            m_popup->setView( khb );
+            m_popup->setAutoDelete( false );
+            m_popup->show( mapToGlobal( e->pos() ) );
+            oldpoint = e->pos();
+        }
+        //If the mouse moves outside of the bookmark, hide the popup
+        else if ( p.contains( oldpoint, Qt::OddEvenFill) && !p.contains( e->pos(), Qt::OddEvenFill ) )
+        {
+            if( m_popup->isVisible() )
+                m_popup->hide();
+        }
+    }
+    oldpoint = e->pos();
+}
+void ProgressSlider::mousePressEvent( QMouseEvent *e )
+{
+    EngineController *ec = EngineController::instance();
+    foreach( Polygon p, m_polygons )
+        if( p.contains( e->pos(), Qt::OddEvenFill ) )
+            ec->seek( p.seconds() * 1000 );
 }
 // END Class ProgressSlider
 
