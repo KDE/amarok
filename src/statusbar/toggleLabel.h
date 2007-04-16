@@ -24,12 +24,13 @@
 #define AMAROK_TOGGLELABEL_H
 
 #include "debug.h"
-#include "overlayWidget.h"
+// #include "overlayWidget.h"
 #include "popupMessage.h"
 
 #include <ktoggleaction.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
+#include <kpassivepopup.h>
 #include <QIcon>
 #include <QLabel>
 #include <QStyle>
@@ -121,15 +122,15 @@ class ToggleLabel : public QLabel
 
             tip += "&nbsp;";
 
-            m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
-            m_tooltip->setShowCloseButton( false );
-            m_tooltip->setShowCounter( false );
-            m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
-            m_tooltip->setText( tip );
-            m_tooltip->setImage( m_action->icon().pixmap(QSize(22, 22)) );
+            KHBox *khb = new KHBox( this );
+            QLabel *lab = new QLabel( tip, khb );
+            lab->setPixmap( m_action->icon().pixmap(QSize(22, 22) ) );
 
-            m_tooltip->reposition();
-            m_tooltip->display();
+            KPassivePopup::message( QString(), tip, m_action->icon().pixmap(QSize(22,22)), this );
+
+            m_tooltip = new KPassivePopup( parentWidget() );
+            m_tooltip->setView( khb );
+            m_tooltip->show( rect().topLeft() );
         }
 
         void hideToolTip()
@@ -142,7 +143,7 @@ class ToggleLabel : public QLabel
             }
         }
 
-        KDE::PopupMessage *m_tooltip;
+        KPassivePopup      *m_tooltip;
         bool               m_tooltipShowing;
         bool               m_tooltipHidden;
 };

@@ -33,6 +33,7 @@
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <kactioncollection.h>
+#include <kpassivepopup.h>
 #include <QIcon>
 #include <QLabel>
 #include <QTimer>
@@ -145,19 +146,30 @@ class SelectLabel : public QLabel
 
             tip += "&nbsp;";
 
-            m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
-            m_tooltip->setShowCloseButton( false );
-            m_tooltip->setShowCounter( false );
-            m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
-            m_tooltip->setText( tip );
+//             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
+//             m_tooltip->setShowCloseButton( false );
+//             m_tooltip->setShowCounter( false );
+//             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
+//             m_tooltip->setText( tip );
             const QPixmap pix = KIcon( m_action->currentIcon() )
                                 .pixmap( style()->pixelMetric(QStyle::PM_SmallIconSize), m_action->isEnabled()
                                                           ? QIcon::Normal
                                                           : QIcon::Disabled );
-            m_tooltip->setImage( pix );
+            m_tooltip = new KPassivePopup( parentWidget()->parentWidget() );
+//             m_tooltip->setAnchor(  rect().topLeft() );
+            KHBox *labBox = new KHBox( m_tooltip );
+            QLabel *lab = new QLabel( labBox );
+            lab->setPixmap( pix );
+            QLabel *lab1 = new QLabel( labBox );
+            lab1->setText( tip );
+            m_tooltip->setView( labBox );
+            m_tooltip->show( parentWidget()->contentsRect().topLeft() );
+//             KPassivePopup::message( QString(), tip, pix, parentWidget()->parentWidget() );
 
-            m_tooltip->reposition();
-            m_tooltip->display();
+//             m_tooltip->setImage( pix );
+//
+//             m_tooltip->reposition();
+//             m_tooltip->display();
         }
 
         void hideToolTip()
@@ -165,12 +177,12 @@ class SelectLabel : public QLabel
             m_tooltipHidden = true;
             if( m_tooltipShowing )
             {
-                m_tooltip->close();
+                m_tooltip->hide();
                 m_tooltipShowing = false;
             }
         }
 
-        KDE::PopupMessage *m_tooltip;
+        KPassivePopup      *m_tooltip;
         bool               m_tooltipShowing;
         bool               m_tooltipHidden;
 
