@@ -13,11 +13,11 @@
 
 #include "amarok_engines_export.h"
 #include "enginebase.h"
+
+#include <QList>
 #include <QThread>
-//Added by qt3to4:
-#include <QCustomEvent>
-#include <Q3ValueList>
-#include <QTimerEvent>
+
+class QTimerEvent;
 
 extern "C"
 {
@@ -56,7 +56,7 @@ class AMAROK_XINE_ENGINE_EXPORT XineEngine : public Engine::Base
 
     virtual Amarok::PluginConfig *configure() const;
     virtual void setEqualizerEnabled( bool );
-    virtual void setEqualizerParameters( int preamp, const Q3ValueList<int>& );
+    virtual void setEqualizerParameters( int preamp, const QList<int>& );
     virtual void setVolumeSW( uint );
     virtual void fadeOut( uint fadeLength, bool* terminate, bool exiting = false );
 
@@ -90,7 +90,7 @@ class AMAROK_XINE_ENGINE_EXPORT XineEngine : public Engine::Base
     //need to save these for when the audio plugin is changed and xine reloaded
     bool                m_equalizerEnabled;
     int                 m_intPreamp;
-    Q3ValueList<int>     m_equalizerGains;
+    QList<int>          m_equalizerGains;
 
     mutable Engine::SimpleMetaBundle m_currentBundle;
 

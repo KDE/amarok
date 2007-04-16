@@ -19,28 +19,24 @@
 #include "xine-engine.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 //these files are from libamarok
-#include "playlist.h"
 #include "enginecontroller.h"
-//Added by qt3to4:
-#include <QTimerEvent>
-#include <Q3ValueList>
-#include <QCustomEvent>
-#include <QByteArray>
-#include <QEvent>
+#include "playlist.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
 #include <climits>
 #include <cmath>
-#include "debug.h"
+
+#include <QApplication>
+#include <QByteArray>
+#include <QDir>
 
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 
-#include <QApplication>
-#include <QDir>
 
 extern "C"
 {
@@ -610,14 +606,14 @@ XineEngine::setEqualizerEnabled( bool enable )
    post: (1..200) - (1 = down, 100 = middle, 200 = up, 0 = off)
  */
 void
-XineEngine::setEqualizerParameters( int preamp, const Q3ValueList<int> &gains )
+XineEngine::setEqualizerParameters( int preamp, const QList<int> &gains )
 {
     if ( !m_stream )
         return;
 
     m_equalizerGains = gains;
     m_intPreamp = preamp;
-    Q3ValueList<int>::ConstIterator it = gains.begin();
+    QList<int>::ConstIterator it = gains.begin();
 
     xine_set_param( m_stream, XINE_PARAM_EQ_30HZ,    int( (*it  )*0.995 + 100 ) );
     xine_set_param( m_stream, XINE_PARAM_EQ_60HZ,    int( (*++it)*0.995 + 100 ) );
@@ -641,22 +637,22 @@ XineEngine::canDecode( const KUrl &url ) const
     if(list.isEmpty())
     {
         char* exts = xine_get_file_extensions( m_xine );
-        list = QStringList::split( ' ', exts );
-        free( exts ); exts = NULL;
+        list = QString( exts ).split( ' ' );
+        free( exts );
         //images
-        list.remove("png");
-        list.remove("jpg");
-        list.remove("jpeg");
-        list.remove("gif");
-        list.remove("ilbm");
-        list.remove("iff");
+        list.removeAll("png");
+        list.removeAll("jpg");
+        list.removeAll("jpeg");
+        list.removeAll("gif");
+        list.removeAll("ilbm");
+        list.removeAll("iff");
         //subtitles
-        list.remove("asc");
-        list.remove("txt");
-        list.remove("sub");
-        list.remove("srt");
-        list.remove("smi");
-        list.remove("ssa");
+        list.removeAll("asc");
+        list.removeAll("txt");
+        list.removeAll("sub");
+        list.removeAll("srt");
+        list.removeAll("smi");
+        list.removeAll("ssa");
 //HACK we also check for m4a because xine plays them but
 //for some reason doesn't return the extension
         if(!list.contains("m4a"))
