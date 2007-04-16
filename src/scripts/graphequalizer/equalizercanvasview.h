@@ -11,7 +11,7 @@
 #include <QPen>
 #include <QSlider>
 
-#include <kmainwindow.h>
+#include <kxmlguiwindow.h>
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <Q3ValueList>

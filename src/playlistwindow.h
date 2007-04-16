@@ -21,7 +21,7 @@
 #include <QtGui/QWidget>    //baseclass
 
 #include <khbox.h>          //baseclass for DynamicBox
-#include <kmainwindow.h>
+#include <kxmlguiwindow.h>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 // #include <phonon/phononnamespace.h>
@@ -46,7 +46,7 @@ class SideBar;
   *
   * This is the main window widget (the Playlist not Player).
   */
-class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
+class /*AMAROK_EXPORT*/ PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
 {
     Q_OBJECT
 

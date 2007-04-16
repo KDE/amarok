@@ -85,9 +85,10 @@
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
 PlaylistWindow::PlaylistWindow()
-        :KMainWindow( 0, "PlaylistWindow", Qt::WGroupLeader )
+        :KXmlGuiWindow( 0, Qt::WGroupLeader )
         , m_lastBrowser( 0 )
 {
+    setObjectName("PlaylistWindow");
     s_instance = this;
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
@@ -1276,7 +1277,7 @@ void PlaylistWindow::createMenus()
 
     //BEGIN Settings menu
     m_settingsMenu = new KMenu( m_menubar );
-    //TODO use KStandardAction or KMainWindow
+    //TODO use KStandardAction or KXmlGuiWindow
 #ifndef Q_WS_MAC
     static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)) );
