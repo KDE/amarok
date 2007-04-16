@@ -25,7 +25,7 @@
 #include "playlistwindow.h"
 #include "ui_scriptmanagerbase.h"
 
-#include <qmap.h>
+#include <QMap>
 
 #include <kdialog.h>      //baseclass
 #include <kurl.h>

@@ -299,7 +299,7 @@ ScriptManager::specForScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return QString();
     QFileInfo info( m_scripts[name].url.path() );
-    const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
+    const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
 
     return specPath;
 }
@@ -308,7 +308,7 @@ ScriptManager::specForScript( const QString& name )
 void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
-    const QString args = KUrl::encode_string( artist ) + ' ' + KUrl::encode_string( title );
+    const QString args = QUrl::toPercentEncoding( artist ) + ' ' + QUrl::toPercentEncoding( title );
     notifyScripts( "fetchLyrics " + args );
 }
 
@@ -345,7 +345,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
         .arg( length )
         .arg( percentage )
         .arg( reason )
-        .arg( KUrl::encode_string( url ) ) ); //last because it might have %s
+        .arg( QString( QUrl::toPercentEncoding( url ) ) ) ); //last because it might have %s
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -714,7 +714,6 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
             font.setStyleHint( QFont::TypeWriter );
             editor->setFont( font );
 
-            editor->setTextFormat( Qt::PlainText );
             editor->resize( 500, 380 );
             editor->show();
             break;
@@ -737,14 +736,14 @@ ScriptManager::slotReceivedStderr( K3Process* process, char* buf, int len )
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
     for( it = m_scripts.begin(); it != end; ++it )
-        if( it.data().process == process ) break;
+        if( it.value().process == process ) break;
 
     const QString text = QString::fromLatin1( buf, len );
     error() << it.key() << ":\n" << text << endl;
 
-    if( it.data().log.length() > 20000 )
-        it.data().log = "==== LOG TRUNCATED HERE ====\n";
-    it.data().log += text;
+    if( it.value().log.length() > 20000 )
+        it.value().log = "==== LOG TRUNCATED HERE ====\n";
+    it.value().log += text;
 }
 
 
@@ -755,18 +754,18 @@ ScriptManager::scriptFinished( K3Process* process ) //SLOT
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
     for( it = m_scripts.begin(); it != end; ++it )
-        if( it.data().process == process ) break;
+        if( it.value().process == process ) break;
 
     // Check if there was an error on exit
     if( process->normalExit() && process->exitStatus() != 0 )
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() )
-                                           ,it.data().log );
+                                           ,it.value().log );
 
     // Destroy script process
-    delete it.data().process;
-    it.data().process = 0;
-    it.data().log.clear();
-    it.data().li->setIcon( 0, QPixmap() );
+    delete it.value().process;
+    it.value().process = 0;
+    it.value().log.clear();
+    it.value().li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
 
@@ -855,7 +854,7 @@ ScriptManager::loadScript( const QString& path )
         // Read and parse .spec file, if exists
         QFileInfo info( path );
         QTreeWidgetItem* li = 0;
-        const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
+        const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
         if( QFile::exists( specPath ) ) {
             debug() << "Spec file found: " << specPath << endl;
             QSettings spec( specPath, QSettings::IniFormat );
