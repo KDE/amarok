@@ -564,7 +564,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     QString imageUrl = parameter( "albumcover_medium", result );
 
     if( imageUrl == "http://static.last.fm/coverart/" ||
-        imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" ) // krazy:exclude=spelling
+        imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
         imageUrl.clear();
 
     lastFmStuff.setImageUrl ( CollectionDB::instance()->notAvailCover( true ) );
