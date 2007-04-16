@@ -1553,8 +1553,9 @@ static inline void xmlEncode(QTextStream &stream, const QString &str)
 bool MetaBundle::save(QTextStream &stream, const QStringList &attributes) const
 {
     // QDom is too slow to use here
-    // url is already encoded
-    stream << " <item url=\"" << url().url() << "\" uniqueid=\"" << uniqueId() << '\"';
+    stream << " <item url=\"";
+    xmlEncode( stream, url().url() );
+    stream << "\" uniqueid=\"" << uniqueId() << '\"';
     if ( m_isCompilation )
         stream << " compilation=\"True\"";
     // attrs are never custom text (e.g. ID3 tags)
