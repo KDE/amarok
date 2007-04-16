@@ -38,6 +38,7 @@
 #include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistwindow.h"
+#include "progressslider.h"
 #include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
@@ -296,6 +297,11 @@ namespace Amarok
     QString DbusPlayerHandler::year()
     {
         return QString::number( EngineController::instance()->bundle().year() );
+    }
+
+    void DbusPlayerHandler::addBookmark( uint second )
+    {
+        ProgressSlider::instance()->addBookmark( second );
     }
 
     void DbusPlayerHandler::configEqualizer()

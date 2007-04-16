@@ -118,6 +118,9 @@
    <method name="lastfmStation" >
       <arg type="s" direction="out"/>
     </method>
+    <method name="addBookmark">
+        <arg name="second" type="i" direction="in" />
+    </method>
    <method name="configEqualizer" />
    <method name="enableOSD" >
       <arg name="enable" type="b" direction="in"/>

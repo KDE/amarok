@@ -34,6 +34,7 @@ class ProgressSlider : public Amarok::PrettySlider
         AMAROK_EXPORT static ProgressSlider *instance() { return s_instance; }
         void addBookmark( uint second );
         void addBookmarks( QList<uint> seconds );
+        AMAROK_EXPORT QList<uint> bookmarks() { return m_bookmarks; }
 
     protected:
         virtual void paintEvent( QPaintEvent *e );

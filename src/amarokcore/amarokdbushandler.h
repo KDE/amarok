@@ -75,6 +75,7 @@ class DbusPlayerHandler : public QObject
       virtual QString track();
       virtual QString type();
       virtual QString year();
+      virtual void addBookmark( uint seconds );
       virtual void configEqualizer();
       virtual void enableOSD( bool enable );
       virtual void enableRandomMode( bool enable );
