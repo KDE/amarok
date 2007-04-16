@@ -163,13 +163,8 @@ class SelectLabel : public QLabel
             QLabel *lab1 = new QLabel( labBox );
             lab1->setText( tip );
             m_tooltip->setView( labBox );
-            m_tooltip->show( parentWidget()->contentsRect().topLeft() );
-//             KPassivePopup::message( QString(), tip, pix, parentWidget()->parentWidget() );
-
-//             m_tooltip->setImage( pix );
-//
-//             m_tooltip->reposition();
-//             m_tooltip->display();
+            m_tooltip->show( mapToGlobal( QPoint(parentWidget()->contentsRect().topLeft().x() - 70,
+                             parentWidget()->contentsRect().topLeft().y() - 80 ) ) );
         }
 
         void hideToolTip()
