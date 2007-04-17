@@ -38,6 +38,7 @@
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
+#include "selectLabel.h"
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
@@ -55,8 +56,6 @@
 #include <QLabel>           //search filter label
 #include <QPainter>         //dynamic title
 #include <QPen>
-#include <QSpacerItem>
-#include <QStackedWidget>   //ContextBrowser holder
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
 
@@ -78,9 +77,6 @@
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
 #include <fixx11h.h>
-
-// #include <phonon/ui/videowidget.h>
-#include "selectLabel.h"
 
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
@@ -358,23 +354,6 @@ void PlaylistWindow::showBrowser( const QString &name )
     const int index = m_browserNames.indexOf( name );
     if( index >= 0 )
         m_browsers->showWidget( index );
-}
-
-void PlaylistWindow::showVideo( bool show )
-{
-#if 0
-//     show ? m_videoWidget->show() : m_videoWidget->hide();
-    if( show )
-    {
-        m_videoWidget->show();
-        cb->hide();
-    }
-    else
-    {
-        m_videoWidget->hide();
-        cb->show();
-    }
-#endif
 }
 
 /**

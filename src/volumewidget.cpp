@@ -14,10 +14,9 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "volumewidget.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
-#include "volumewidget.h"
-#include <QPointer>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : QWidget( parent ),

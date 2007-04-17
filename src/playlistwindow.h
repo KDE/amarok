@@ -24,7 +24,6 @@
 #include <kxmlguiwindow.h>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-// #include <phonon/phononnamespace.h>
 class CollectionBrowser;
 class ContextBrowser;
 class KLineEdit;
@@ -37,16 +36,13 @@ class QTimer;
 class SearchWidget;
 class SideBar;
 
-// namespace Phonon {
-//     class VideoWidget;
-// }
 /**
   * @class PlaylistWindow
   * @short The PlaylistWindow widget class.
   *
   * This is the main window widget (the Playlist not Player).
   */
-class /*AMAROK_EXPORT*/ PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
+class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
 {
     Q_OBJECT
 
@@ -73,9 +69,6 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KXmlGuiWindow//public QWidget, p
         static PlaylistWindow *self() { return s_instance; }
 
         void activate();
-
-        void showVideo( bool );
-//         Phonon::VideoWidget *videoWidget() { return m_videoWidget; }
 
         SideBar *sideBar() const { return m_browsers; };
 
@@ -125,7 +118,6 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KXmlGuiWindow//public QWidget, p
         KMenu         *m_searchMenu;
 
         SearchWidget  *m_searchWidget;
-//         KToolBar      *m_toolbar;
         QWidget       *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
@@ -135,7 +127,6 @@ class /*AMAROK_EXPORT*/ PlaylistWindow : public KXmlGuiWindow//public QWidget, p
         void    createMenus();
         int m_lastBrowser;
         int m_searchField;
-//         Phonon::VideoWidget *m_videoWidget;
         ContextBrowser *cb;
 
         static PlaylistWindow *s_instance;
