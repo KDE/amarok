@@ -169,6 +169,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    collection/collection.cpp
    collection/collectionmanager.cpp
    collection/metaquerybuilder.cpp
+   collection/blockingquery.cpp
    meta/meta.cpp
    Options1.ui.h
    actionclasses.cpp
