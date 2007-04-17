@@ -16,12 +16,9 @@
 
 #include "playlistwindow.h"
 
-#include <kdialog.h>    //baseclass
-#include <k3listview.h>      //baseclass
+#include <k3listview.h>   //baseclass
+#include <kdialog.h>      //baseclass
 
-#include <QTimer>
-//Added by qt3to4:
-#include <QPaintEvent>
 
 class KLineEdit;
 class QColor;

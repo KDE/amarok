@@ -19,29 +19,23 @@
 #include "statistics.h"
 #include "tagdialog.h"         //showContextMenu()
 
+#include <k3multipledrag.h>
+#include <k3urldrag.h>          //startDrag()
 #include <kapplication.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmenu.h>
-#include <k3multipledrag.h>
-    //ctor
-#include <k3urldrag.h>          //startDrag()
 #include <kwm.h>
 
-#include <qcolor.h>
-#include <QDateTime>
-#include <q3header.h>
-#include <QPainter>
-#include <QPen>
-#include <QPixmap>
-#include <q3simplerichtext.h>
-#include <QTimer>
-#include <QToolTip>
 #include <Q3PopupMenu>
-#include <kvbox.h>
-//Added by qt3to4:
-#include <QPaintEvent>
+#include <QDateTime>
+#include <QPainter>
+#include <QTimer>
 #include <QToolButton>
+#include <QToolTip>
+#include <kvbox.h>
+#include <q3header.h>
+#include <q3simplerichtext.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
