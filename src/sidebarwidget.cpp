@@ -17,41 +17,16 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <QAbstractButton>
+#include "debug.h"
+#include "sidebarwidget.h"
+
 #include <QAbstractItemDelegate>
 #include <QAction>
 #include <QApplication>
 #include <QList>
 #include <QPainter>
+#include <QTimer>
 #include <QWheelEvent>
-#include <QtDebug>
-
-#include "sidebarwidget.h"
-
-class SideBarButton: public QAbstractButton
-{
-    typedef QAbstractButton super;
-    public:
-        SideBarButton( const QIcon &icon, const QString &text, QWidget *parent )
-            : super( parent )
-        {
-            setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-            setCheckable( true );
-            setIcon( icon );
-            setText( text );
-        }
-
-        virtual QSize sizeHint() const;
-
-    protected:
-        virtual void paintEvent( QPaintEvent *e );
-        virtual void enterEvent( QEvent* ) { update(); }
-        virtual void leaveEvent( QEvent* ) { update(); }
-
-    private:
-        int widthHint() const;
-        int heightHint() const;
-};
 
 
 struct SideBarWidget::Private
@@ -202,6 +177,24 @@ void SideBarWidget::updateShortcuts()
         d->shortcuts[ d->visible[i] ]->setShortcut( QKeySequence( Qt::CTRL | ( Qt::Key_1 + i ) ) );
 }
 
+
+//////////////////////////////////////////////////////////////////////
+// Class SideBarButton
+//////////////////////////////////////////////////////////////////////
+
+SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *parent )
+    : super( parent )
+    , m_animCount( 0 )
+    , m_animTimer( new QTimer( this ) )
+{
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    setCheckable( true );
+    setIcon( icon );
+    setText( text );
+
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+}
+
 QSize SideBarButton::sizeHint() const
 {
     return QSize( widthHint(), heightHint() ).expandedTo( QApplication::globalStrut() );
@@ -225,10 +218,43 @@ int SideBarButton::heightHint() const
     if( !icon().isNull() )
         height = iconSize().height();
     if( !height && text().isEmpty() )
-        height = fontMetrics().size( Qt::TextShowMnemonic, "TEXT" ).width();
+        height = fontMetrics().size( Qt::TextShowMnemonic, "text" ).width();
     else
         height += fontMetrics().size( Qt::TextShowMnemonic, text() ).width();
     return height + 12;
+}
+
+void SideBarButton::enterEvent( QEvent* )
+{
+    m_animEnter = true;
+    m_animCount = 0;
+
+    m_animTimer->start( ANIM_INTERVAL );
+}
+
+void SideBarButton::leaveEvent( QEvent* )
+{
+    // This can happen if you enter and leave the tab quickly
+    if ( m_animCount == 0 )
+        m_animCount = 1;
+
+    m_animEnter = false;
+    m_animTimer->start( ANIM_INTERVAL );
+}
+
+void SideBarButton::slotAnimTimer()
+{
+    if ( m_animEnter ) {
+        m_animCount += 1;
+        repaint( false );
+        if ( m_animCount >= ANIM_MAX )
+            m_animTimer->stop();
+    } else {
+        m_animCount -= 1;
+        repaint( false );
+        if ( m_animCount <= 0 )
+            m_animTimer->stop();
+    }
 }
 
 void SideBarButton::paintEvent( QPaintEvent* )
@@ -238,15 +264,15 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     QColor c;
     if( isDown() )
-        c = palette().highlight().color().dark( 150 );
+        c = blendColors( palette().highlight().color().dark( 150 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() && underMouse() )
-        c = palette().highlight().color().light( 110 );
+        c = blendColors( palette().highlight().color().light( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() )
-        c = palette().highlight().color();
+        c = blendColors( palette().highlight().color(), palette().highlight().color().light(), static_cast<int>( m_animCount * 3.5 ) );
     else if( underMouse() )
-        c = palette().highlight().color().light();
+        c = blendColors( palette().highlight().color().light(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
     else
-        c = palette().window().color();
+        c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
     p.setBrush( c );
     p.drawRect( rect() );
 
@@ -260,5 +286,21 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.rotate( -90 );
     p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
+
+QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, int percent ) //static
+{
+    const float factor1 = ( 100 - ( float ) percent ) / 100;
+    const float factor2 = ( float ) percent / 100;
+
+    const int r = static_cast<int>( color1.red() * factor1 + color2.red() * factor2 );
+    const int g = static_cast<int>( color1.green() * factor1 + color2.green() * factor2 );
+    const int b = static_cast<int>( color1.blue() * factor1 + color2.blue() * factor2 );
+
+    QColor result;
+    result.setRgb( r, g, b );
+
+    return result;
+}
+
 
 #include "sidebarwidget.moc"

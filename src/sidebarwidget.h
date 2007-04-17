@@ -20,7 +20,10 @@
 #ifndef AMAROK_SIDEBARWIDGET_H
 #define AMAROK_SIDEBARWIDGET_H
 
+#include <QAbstractButton>
 #include <kvbox.h>
+
+class QTimer;
 
 class SideBarWidget: public KVBox
 {
@@ -52,6 +55,39 @@ class SideBarWidget: public KVBox
         void updateShortcuts();
         class Private;
         Private* const d;
+};
+
+
+class SideBarButton: public QAbstractButton
+{
+    Q_OBJECT
+
+    typedef QAbstractButton super;
+    public:
+        SideBarButton( const QIcon &icon, const QString &text, QWidget *parent );
+
+        virtual QSize sizeHint() const;
+
+    protected:
+        virtual void paintEvent( QPaintEvent *e );
+        virtual void enterEvent( QEvent* );
+        virtual void leaveEvent( QEvent* );
+
+    private slots:
+        virtual void slotAnimTimer();
+
+    private:
+        static QColor blendColors( const QColor& color1, const QColor& color2, int percent );
+
+        int widthHint() const;
+        int heightHint() const;
+
+        static const int ANIM_INTERVAL = 18;
+        static const int ANIM_MAX = 20;
+
+        bool m_animEnter;
+        int m_animCount;
+        QTimer* m_animTimer;
 };
 
 #endif
