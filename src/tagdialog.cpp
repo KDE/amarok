@@ -20,34 +20,31 @@
 
 #include <tfile.h> //TagLib::File::isWritable
 
-#include <qdom.h>
-#include <QFile>
-#include <q3header.h>
-#include <QLabel>
-#include <QLayout>
-#include <QPair>
-#include <QPushButton>
-#include <QToolTip>
-#include <kvbox.h>
-#include <QCheckBox>
-//Added by qt3to4:
-#include <Q3ValueList>
-#include <QByteArray>
-#include <QPixmap>
-
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kcursor.h>
 #include <kglobal.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
-#include <ktabwidget.h>
-#include <ktextedit.h>
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
 #include <krun.h>
 #include <kstandarddirs.h>
+#include <ktabwidget.h>
+#include <ktextedit.h>
+#include <kvbox.h>
+
+
+#include <QCheckBox>
+#include <qdom.h>
+#include <QFile>
+#include <QLabel>
+#include <QLayout>
+#include <QPair>
+#include <QPushButton>
+#include <QToolTip>
+
 
 
 class TagDialogWriter : public ThreadManager::Job
@@ -57,8 +54,8 @@ public:
     bool doJob();
     void completeJob();
 private:
-    Q3ValueList<bool> m_failed;
-    Q3ValueList<MetaBundle> m_tags;
+    QList<bool> m_failed;
+    QList<MetaBundle> m_tags;
     bool    m_updateView;
     int     m_successCount;
     int     m_failCount;

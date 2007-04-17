@@ -12,15 +12,17 @@
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
-#include <QtGui/QWidget>
-
-#include <kurl.h>             //stack alloc
-#include <QDateTime>
-#include <QLabel>
-#include <qmap.h>
-#include <q3ptrlist.h>
 
 #include <khtml_part.h>
+#include <kurl.h>             //stack alloc
+
+#include <QDateTime>
+#include <QLabel>
+#include <QMap>
+#include <QtGui/QWidget>
+
+
+
 
 
 class PlaylistItem;
