@@ -49,7 +49,7 @@ class ContextView : public QGraphicsView
         void wheelEvent( QWheelEvent *event );
 
     private:
-        static const qreal BOX_PADDING = 20;
+        static const int BOX_PADDING = 20;
         /*
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class

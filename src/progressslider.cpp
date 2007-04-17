@@ -72,7 +72,7 @@ void ProgressSlider::mouseMoveEvent( QMouseEvent *e )
     foreach( Polygon p, m_polygons )
     {
         //only create a popup if the mouse enters a bookmark, not if it moves inside of one.
-        if( p.contains( e->pos(), Qt::OddEvenFill ) && !p.contains( oldpoint, Qt::OddEvenFill ) )
+        if( p.containsPoint( e->pos(), Qt::OddEvenFill ) && !p.containsPoint( oldpoint, Qt::OddEvenFill ) )
         {
             m_popup = new KPassivePopup( parentWidget() );
             KHBox *khb = new KHBox( m_popup );
@@ -83,7 +83,7 @@ void ProgressSlider::mouseMoveEvent( QMouseEvent *e )
             oldpoint = e->pos();
         }
         //If the mouse moves outside of the bookmark, hide the popup
-        else if ( p.contains( oldpoint, Qt::OddEvenFill) && !p.contains( e->pos(), Qt::OddEvenFill ) )
+        else if ( p.containsPoint( oldpoint, Qt::OddEvenFill) && !p.containsPoint( e->pos(), Qt::OddEvenFill ) )
         {
             if( m_popup->isVisible() )
                 m_popup->hide();
@@ -95,7 +95,7 @@ void ProgressSlider::mousePressEvent( QMouseEvent *e )
 {
     EngineController *ec = EngineController::instance();
     foreach( Polygon p, m_polygons )
-        if( p.contains( e->pos(), Qt::OddEvenFill ) )
+        if( p.containsPoint( e->pos(), Qt::OddEvenFill ) )
             ec->seek( p.seconds() * 1000 );
 }
 // END Class ProgressSlider
