@@ -246,12 +246,12 @@ void SideBarButton::slotAnimTimer()
 {
     if ( m_animEnter ) {
         m_animCount += 1;
-        repaint( false );
+        repaint();
         if ( m_animCount >= ANIM_MAX )
             m_animTimer->stop();
     } else {
         m_animCount -= 1;
-        repaint( false );
+        repaint();
         if ( m_animCount <= 0 )
             m_animTimer->stop();
     }
