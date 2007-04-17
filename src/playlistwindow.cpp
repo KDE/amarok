@@ -1276,7 +1276,7 @@ void PlaylistWindow::createMenus()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "E&ngage" ), actionsMenu );
+    m_menubar->insertItem( i18n( "&Amarok" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
     m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
