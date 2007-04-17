@@ -22,6 +22,8 @@
 
 #include "sqlregistry.h"
 
+#include "mountpointmanager.h"
+
 #include <QHashIterator>
 #include <QMutableHashIterator>
 #include <QMutexLocker>
@@ -48,16 +50,19 @@ SqlRegistry::~SqlRegistry()
 TrackPtr
 SqlRegistry::getTrack( const QString &url )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    TrackId id(deviceid, rpath);
     QMutexLocker locker( &m_trackMutex );
-    if( m_trackMap.contains( url ) )
-        return m_trackMap.value( url );
+    if( m_trackMap.contains( id ) )
+        return m_trackMap.value( id );
     else
     {
         //TODO
 
         QStringList result;
         TrackPtr track( new SqlTrack( m_collection, result ) );
-        m_trackMap.insert( url, track );
+        m_trackMap.insert( id, track );
         return track;
     }
 }
@@ -65,13 +70,15 @@ SqlRegistry::getTrack( const QString &url )
 TrackPtr
 SqlRegistry::getTrack( const QStringList &rowData )
 {
+    DEBUG_BLOCK
+    TrackId id( rowData[0].toInt(), rowData[1] );
     QMutexLocker locker( &m_trackMutex );
-    if( m_trackMap.contains( rowData.first() ) )
-        return m_trackMap.value( rowData.first() );
+    if( m_trackMap.contains( id ) )
+        return m_trackMap.value( id );
     else
     {
         TrackPtr track( new SqlTrack( m_collection, rowData ) );
-        m_trackMap.insert( rowData.first(), track );
+        m_trackMap.insert( id, track );
         return track;
     }
 }
@@ -176,21 +183,21 @@ SqlRegistry::emptyCache()
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map
-        #define foreachCollectGarbage( Type, x ) \
-        for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
+        #define foreachCollectGarbage( Key, Type, x ) \
+        for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
         { \
             Type elem = iter.next().value(); \
             if( elem.count() == 2 ) \
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackPtr, m_trackMap )
+        foreachCollectGarbage( TrackId, TrackPtr, m_trackMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( AlbumPtr, m_albumMap )
-        foreachCollectGarbage( ArtistPtr, m_artistMap )
-        foreachCollectGarbage( GenrePtr, m_genreMap )
-        foreachCollectGarbage( ComposerPtr, m_composerMap )
-        foreachCollectGarbage( YearPtr, m_yearMap )
+        foreachCollectGarbage( QString, AlbumPtr, m_albumMap )
+        foreachCollectGarbage( QString, ArtistPtr, m_artistMap )
+        foreachCollectGarbage( QString, GenrePtr, m_genreMap )
+        foreachCollectGarbage( QString, ComposerPtr, m_composerMap )
+        foreachCollectGarbage( QString, YearPtr, m_yearMap )
     }
 
     //make sure to unlock all necessary locks

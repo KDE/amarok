@@ -24,10 +24,13 @@
 #include <QHash>
 #include <QMutex>
 #include <QObject>
+#include <QPair>
 #include <QTimer>
 #include <QList>
 
 class SqlCollection;
+
+typedef QPair<int, QString> TrackId;
 
 class SqlRegistry : public QObject
 {
@@ -53,7 +56,7 @@ class SqlRegistry : public QObject
     private:
 
         //we don't care about the ordering so use the faster QHash
-        QHash<QString, TrackPtr > m_trackMap;
+        QHash<TrackId, TrackPtr > m_trackMap;
         QHash<QString, ArtistPtr > m_artistMap;
         QHash<QString, ComposerPtr > m_composerMap;
         QHash<QString, GenrePtr > m_genreMap;
