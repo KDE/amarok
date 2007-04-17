@@ -153,9 +153,9 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
     if ( item->isDataItem() )
     {
         if ( role == Qt::DecorationRole ) {
-            int level = item->level();
+            int level = item->level() -1;
             if ( level < m_levelType.count() )
-                return iconForLevel( item->level() - 1 );
+                return iconForLevel( level );
         }
     }
 
