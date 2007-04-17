@@ -25,7 +25,7 @@ kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_collection-sqlcollection )
 
-target_link_libraries(amarok_collection-sqlcollection amarok ${KDE4_KDECORE_LIBS} )
+target_link_libraries(amarok_collection-sqlcollection amarok ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 install(TARGETS amarok_collection-sqlcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 

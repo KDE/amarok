@@ -22,6 +22,8 @@
 
 #include "threadmanager.h"
 
+#include <threadweaver/Job.h>
+
 class SqlCollection;
 
 class SqlQueryBuilder : public QueryMaker
@@ -72,6 +74,9 @@ class SqlQueryBuilder : public QueryMaker
     protected:
         virtual QString escape( QString text ) const;
 
+    private slots:
+        void done( ThreadWeaver::Job * job );
+
     private:
 
         void linkTables();
@@ -92,7 +97,7 @@ class SqlQueryBuilder : public QueryMaker
 };
 
 //=================== SqlWorkerThread ===============================
-class SqlWorkerThread : public ThreadManager::DependentJob
+/*class SqlWorkerThread : public ThreadManager::DependentJob
 {
 public:
 
@@ -102,6 +107,6 @@ public:
 
 private:
     SqlQueryBuilder *m_queryBuilder;
-};
+};*/
 
 #endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */
