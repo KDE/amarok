@@ -356,6 +356,13 @@ CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
 
 void
 CollectionTreeItemModel::collectionRemoved( QString collectionId ) {
+    int count = m_rootItem->childCount();
+    for ( int i = 0; i < count; i++ ) {
+        CollectionTreeItem *item = m_rootItem->child( i );
+        if ( !item->isDataItem() && item->parentCollection()->collectionId() == collectionId ) {
+            //TODO
+        }
+    }
     d->m_collections.remove( collectionId );
 }
 
@@ -372,6 +379,8 @@ CollectionTreeItemModel::newResultReady( QString collectionId, Meta::DataList da
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
     debug() << "Received " << data.count() << " new data values" << endl;
+    if ( data.count() == 0 )
+        return;
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
@@ -384,11 +393,6 @@ CollectionTreeItemModel::newResultReady( QString collectionId, Meta::DataList da
         endRemoveRows();
         beginInsertRows( parentIndex, 0, data.count() -1 );
         populateChildren( data, parent );
-        /*int rowCount = parent->childCount();
-        QModelIndex topLeft = createIndex( 0, 0, parent->child( 0 ) );
-        QModelIndex bottomRight = createIndex( rowCount - 1, 0, parent->child( rowCount -1 ) );
-        emit dataChanged( topLeft, bottomRight );*/
-        //emit dataChanged( parentIndex, parentIndex );
         endInsertRows();
     }
 }
