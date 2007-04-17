@@ -32,9 +32,9 @@ class Polygon : public QPolygon
         Polygon( int size, int seconds ) : QPolygon( size ),
                  m_seconds( seconds)
         {}
-        QString time() { return prettyTime( m_seconds ); }
+        inline QString time() { return prettyTime( m_seconds ); }
         inline int seconds() { return m_seconds; }
-        void setTime( int seconds ) { m_seconds = seconds; }
+        inline void setTime( int seconds ) { m_seconds = seconds; }
 
     private:
         QString prettyTime( int seconds )

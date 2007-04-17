@@ -11,26 +11,15 @@
 #ifndef PHONON_ENGINE_H
 #define PHONON_ENGINE_H
 
-#include "enginebase.h"
-#include <QThread>
-//Added by qt3to4:
-#include <QCustomEvent>
-#include <Q3ValueList>
-#include <QTimerEvent>
-#include <phonon/phononnamespace.h>
-// #include <phonon/ui/videowidget.h>
 #include "amarok_engines_export.h"
+#include "enginebase.h"
 
-extern "C"
-{
-    #include <sys/types.h>
-}
+#include <phonon/phononnamespace.h>
 
 namespace Phonon {
     class MediaObject;
     class AudioPath;
     class AudioOutput;
-//     class VideoPath;
 }
 
 class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
@@ -61,7 +50,6 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
     Phonon::MediaObject *m_mediaObject;
     Phonon::AudioPath   *m_audioPath;
     Phonon::AudioOutput *m_audioOutput;
-//     Phonon::VideoPath *m_videoPath;
 
 // private slots:
 //     void configChanged();

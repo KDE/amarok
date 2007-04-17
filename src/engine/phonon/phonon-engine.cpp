@@ -12,39 +12,18 @@
 #define DEBUG_PREFIX "phonon-engine"
 
 #include "phonon-engine.h"
-#include "amarok.h"
-#include "amarokconfig.h"
 //these files are from libamarok
-#include "playlist.h"
-// #include "playlistwindow.h" //video output
 #include "enginecontroller.h"
-//Added by qt3to4:
-#include <QTimerEvent>
-#include <QCustomEvent>
-#include <QEvent>
 
 AMAROK_EXPORT_PLUGIN( PhononEngine )
 
 #include "debug.h"
 #include "statusbar/statusbar.h"
 
-// #include <klocale.h>
-#include <kmessagebox.h>
-// #include <kstandarddirs.h>
-
-#include <QApplication>
-#include <QDir>
-
 #include <phonon/mediaobject.h>
 #include <phonon/audiopath.h>
 #include <phonon/audiooutput.h>
-// #include <phonon/videopath.h>
 #include <phonon/backendcapabilities.h>
-
-extern "C"
-{
-    #include <unistd.h>
-}
 
 
 PhononEngine::PhononEngine()
@@ -52,7 +31,6 @@ PhononEngine::PhononEngine()
         , m_mediaObject( 0 )
         , m_audioPath  ( 0 )
         , m_audioOutput( 0 )
-//         , m_videoPath( 0 )
 {
     debug() << "Yay for Phonon being constructed" << endl;
 }
@@ -72,7 +50,6 @@ PhononEngine::init()
     m_mediaObject = new Phonon::MediaObject( this );
     m_audioPath   = new Phonon::AudioPath( this );
     m_audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-//     m_videoPath = new Phonon::VideoPath( this );
 
    if( !m_mediaObject || !m_audioPath || !m_audioOutput )
    {
@@ -82,9 +59,8 @@ PhononEngine::init()
    }
 
     m_mediaObject->addAudioPath( m_audioPath );
-//     m_mediaObject->addVideoPath( m_videoPath );
     m_audioPath->addOutput( m_audioOutput );
-//     m_videoPath->addOutput( PlaylistWindow::self()->videoWidget() );
+
 
     connect( m_mediaObject, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
                               SLOT( convertState( Phonon::State, Phonon::State ) ) );
@@ -119,10 +95,6 @@ PhononEngine::play( uint offset )
 
     if( m_mediaObject )
     {
-//         if( m_mediaObject->hasVideo() )
-//         {
-//             PlaylistWindow::self()->showVideo( m_mediaObject->hasVideo() );
-//         }
         m_mediaObject->play();
 
         connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
@@ -143,7 +115,6 @@ PhononEngine::stop()
     if( m_mediaObject )
     {
         m_mediaObject->stop();
-//         PlaylistWindow::self()->showVideo( false );
         emit stateChanged( Engine::Empty );
     }
 }
