@@ -219,7 +219,7 @@ int SideBarButton::heightHint() const
     if( !icon().isNull() )
         height = iconSize().height();
     if( !height && text().isEmpty() )
-        height = fontMetrics().size( Qt::TextShowMnemonic, "text" ).width();
+        height = fontMetrics().size( Qt::TextShowMnemonic, "Text" ).width();
     else
         height += fontMetrics().size( Qt::TextShowMnemonic, text() ).width();
     return height + 12;
@@ -275,7 +275,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     else
         c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
     p.setBrush( c );
-    p.drawRect( rect() );
+    p.drawRect( rect().adjusted( 0, 0, -1, -1 ) );
 
     const QString txt = text().replace( "&", "" );
 
@@ -283,7 +283,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
-    p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height(), 0 );
+    p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height() - 1, 0 );
     p.rotate( -90 );
     p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
