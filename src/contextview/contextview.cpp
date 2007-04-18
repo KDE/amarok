@@ -40,7 +40,7 @@ ContextView::ContextView()
     s_instance = this; // we are a singleton class
 
     initiateScene();
-    setAlignment( Qt::AlignTop | Qt::AlignLeft );
+    setAlignment( Qt::AlignTop );
     setRenderHints( QPainter::Antialiasing );
     setCacheMode( QGraphicsView::CacheBackground ); // this won't be changing regularly
 
@@ -96,14 +96,15 @@ void ContextView::showHome()
     addContextBox( textFader );
     textFader->startFading();*/
 
-    IntroAnimation * introAnim = new IntroAnimation( 0 );
+    IntroAnimation *introAnim = new IntroAnimation();
 
     connect( introAnim, SIGNAL( animationComplete() ), this, SLOT( introAnimationComplete() ) );
+
+    debug() << "starting intro anim" << endl;
 
     introAnim->setFadeColor( palette().highlight() );
     addContextBox( introAnim );
     introAnim->startAnimation();
-
 }
 
 
@@ -112,8 +113,6 @@ void ContextView::introAnimationComplete()
 {
     clear();
     debug() << "introAnimationComplete!"  << endl;
-
-
 
     ContextBox *welcomeBox = new ContextBox();
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
@@ -170,11 +169,14 @@ void ContextView::clear()
     update();
 }
 
-void ContextView::addContextBox( QGraphicsItem *newBox, int after,  bool fadeIn )
+void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
 {
-    if ( fadeIn ) {
+    if( !newBox || !m_contextScene )
+        return;
 
-        GraphicsItemFader * fader = new GraphicsItemFader( newBox, 0 );
+    if( fadeIn )
+    {
+        GraphicsItemFader *fader = new GraphicsItemFader( newBox, 0 );
         fader->setDuration( 2500 );
         fader->setFPS( 30 );
         fader->setStartAlpha( 255 );
