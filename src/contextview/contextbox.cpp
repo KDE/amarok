@@ -109,7 +109,8 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void ContextBox::toggleVisibility()
 {
-    QTimeLine *timer = new QTimeLine( 5000 );
+    QTimeLine *timer = new QTimeLine( 2500 );
+    timer->setUpdateInterval( 30 ); // ~33 fps
     timer->setFrameRange( 0, 100 );
 
     QGraphicsItemAnimation *animationContent = new QGraphicsItemAnimation();
