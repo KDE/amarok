@@ -283,7 +283,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
-    p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height() - 1, 0 );
+    p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height() - 2, 0 );
     p.rotate( -90 );
     p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
