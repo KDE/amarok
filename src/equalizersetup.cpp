@@ -25,25 +25,22 @@
 #include "sliderwidget.h"
 
 #include <QCheckBox>
-#include <qdom.h>
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
-#include <QStringList>
 #include <QTextStream>   //presets
 #include <QToolTip>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <qdom.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>  //presets
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kmenu.h>
+#include <kmessagebox.h>
 #include <kstandarddirs.h> //locate()
 #include <kvbox.h>
 #include <kwm.h>
@@ -92,13 +89,13 @@ EqualizerSetup::EqualizerSetup()
 
     QPushButton* presetAdd = new QPushButton;
     presetLayout->addWidget( presetAdd );
-    presetAdd->setIconSet( KIcon( Amarok::icon( "add_playlist" ) ) );
+    presetAdd->setIcon( KIcon( Amarok::icon( "add_playlist" ) ) );
     presetAdd->setToolTip( i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton;
     presetLayout->addWidget( presetConf );
-    presetConf->setIconSet( KIcon( Amarok::icon( "configure" ) ) );
+    presetConf->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     presetConf->setToolTip( i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 
@@ -126,7 +123,7 @@ EqualizerSetup::EqualizerSetup()
     // BEGIN Preamp slider
     m_slider_preamp = new Slider( Qt::Vertical, slidersLayoutWidget, 100 );
     m_slider_preamp->setMinimum( -100 );
-    m_slider_preamp->setTickmarks( QSlider::Right );
+    m_slider_preamp->setTickPosition( QSlider::TicksRight );
     m_slider_preamp->setTickInterval( 100 );
     connect( m_slider_preamp, SIGNAL( valueChanged( int ) ), SLOT( setEqualizerParameters() ) );
     slidersGridLayout->addMultiCellWidget(m_slider_preamp, 0, 0, 0, 1, Qt::AlignHCenter );
@@ -215,7 +212,7 @@ EqualizerSetup::setBands( int preamp, QList<int> gains )
 
     // Note: As a side effect, this automatically switches the
     //       preset to 'Manual', which is by intention
-    for ( uint i = 0; i < m_bandSliders.count(); i++ )
+    for ( int i = 0; i < m_bandSliders.count(); i++ )
         m_bandSliders.at(i)->setValue( gains.at(i) );
 
     setEqualizerParameters();
@@ -228,7 +225,7 @@ EqualizerSetup::setPreset( QString name )
     int i, count = m_presetCombo->count();
     bool found = false;
     for( i = 0; i < count; i++ ) {
-        if ( m_presetCombo->text( i ) == name ) {
+        if ( m_presetCombo->itemText( i ) == name ) {
             found = true;
             break;
         }
@@ -270,7 +267,7 @@ EqualizerSetup::loadPresets()
 
     QDomDocument d;
 
-    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) ) {
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.readAll() ) ) {
         // Everything went wrong, so at least provide the two predefined presets
         updatePresets( AmarokConfig::equalizerPreset() );
         return;
@@ -321,9 +318,9 @@ EqualizerSetup::savePresets()
     info << "b0" << "b1" << "b2" << "b3" << "b4"
          << "b5" << "b6" << "b7" << "b8" << "b9";
 
-    for( uint x = 0; x < m_presets.count(); x++ )
+    for( int x = 0; x < m_presets.count(); x++ )
     {
-        const QString title = m_presetCombo->text( x );
+        const QString title = m_presetCombo->itemText( x );
 
         // don't save the 'Zero' preset
         if ( title == i18n("Zero") )
@@ -336,7 +333,7 @@ EqualizerSetup::savePresets()
 
         QDomElement attr;
         QDomText t;
-        for( uint y=0; y < info.count(); y++ )
+        for( int y=0; y < info.count(); y++ )
         {
             attr = doc.createElement( info[y] );
             t    = doc.createTextNode( QString::number( gains.first() ) );
@@ -372,10 +369,9 @@ EqualizerSetup::editPresets()
         if ( presets.find( currentTitle ) == presets.end() || currentGains != presets[ currentTitle ] ) {
 
             // Find the new name
-            QMap< QString, QList<int> >::Iterator end = presets.end();
-            for ( QMap< QString, QList<int> >::Iterator it = presets.begin(); it != end; ++it ) {
-                if ( it.data() == currentGains ) {
-                    newTitle = it.key();
+            foreach( QString key, presets.keys() ) {
+                if ( presets[key] == currentGains ) {
+                    newTitle = key;
                     break;
                 }
             }
@@ -406,7 +402,7 @@ EqualizerSetup::addPreset()
 
         // Add the new preset based on the current slider positions
         QList <int> gains;
-        for ( uint i = 0; i < m_bandSliders.count(); i++ )
+        for ( int i = 0; i < m_bandSliders.count(); i++ )
             gains += m_bandSliders.at( i )->value();
         m_presets[ title ] = gains;
 
@@ -460,7 +456,7 @@ EqualizerSetup::updatePresets(QString selectTitle)
 void
 EqualizerSetup::presetChanged( int id ) //SLOT
 {
-    presetChanged( m_presetCombo->text(id) );
+    presetChanged( m_presetCombo->itemText(id) );
 }
 
 void
@@ -468,7 +464,7 @@ EqualizerSetup::presetChanged( QString title ) //SLOT
 {
     const QList<int> gains = m_presets[ title ];
 
-    for ( uint i = 0; i < m_bandSliders.count(); i++ ) {
+    for ( int i = 0; i < m_bandSliders.count(); i++ ) {
         // Block signals to prevent unwanted setting to 'Manual'
         m_bandSliders.at(i)->blockSignals(true);
         m_bandSliders.at(i)->setValue( gains.at(i) );
@@ -514,7 +510,7 @@ EqualizerSetup::sliderChanged() //SLOT
     m_presetCombo->setCurrentIndex( m_manualPos );
 
     QList<int> gains;
-    for ( uint i = 0; i < m_bandSliders.count(); i++ )
+    for ( int i = 0; i < m_bandSliders.count(); i++ )
         gains += m_bandSliders.at( i )->value();
 
     m_presets[ i18n("Manual") ] = gains;
