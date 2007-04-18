@@ -96,6 +96,7 @@ void ContextView::showHome()
     addContextBox( textFader );
     textFader->startFading();*/
 
+    /*
     IntroAnimation *introAnim = new IntroAnimation();
 
     connect( introAnim, SIGNAL( animationComplete() ), this, SLOT( introAnimationComplete() ) );
@@ -105,6 +106,8 @@ void ContextView::showHome()
     introAnim->setFadeColor( palette().highlight() );
     addContextBox( introAnim );
     introAnim->startAnimation();
+    */
+    introAnimationComplete();
 }
 
 

@@ -28,8 +28,8 @@
 using namespace Context;
 
 IntroAnimation::IntroAnimation( QGraphicsItem * parent )
- : QObject() 
- , QGraphicsItem( parent )
+    : QObject()
+    , QGraphicsItem( parent )
 {
 
     QGraphicsPixmapItem *logoItem = new QGraphicsPixmapItem ( QPixmap( KStandardDirs::locate("data", "amarok/images/splash_screen.jpg" ) ) );
@@ -47,8 +47,6 @@ IntroAnimation::IntroAnimation( QGraphicsItem * parent )
 
     m_width = m_logoFader->boundingRect().width();
     m_height = m_logoFader->boundingRect().height();;
-
-
 
     m_textFader = new TextFader("Amarok 2 will rock your world!", this);
     QFont font = m_textFader->font();
@@ -69,16 +67,11 @@ IntroAnimation::IntroAnimation( QGraphicsItem * parent )
         m_height = m_textFader->boundingRect().height();
 
     //center the items
-
-
     //debug() << "Width of m_logoFader: " << m_logoFader->boundingRect().width() <<  endl;
     //debug() << "Width of m_textFader: " << m_textFader->boundingRect().width() <<  endl;
 
     m_textFader->setPos( ( m_width - m_textFader->boundingRect().width() ) / 2, ( m_height - m_textFader->boundingRect().height() ) / 2 );
-
     m_logoFader->setPos( ( m_width - m_logoFader->boundingRect().width() ) / 2, ( m_height - m_logoFader->boundingRect().height() ) / 2 );
-
-
 }
 
 
@@ -99,9 +92,7 @@ void IntroAnimation::imageFadeoutComplete()
 
 void IntroAnimation::textFadeinComplete()
 {
-
     QTimer::singleShot( 3000, this, SLOT( trailTimeComplete() ) );
-
 }
 
 void IntroAnimation::trailTimeComplete()
@@ -123,14 +114,12 @@ void IntroAnimation::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 
 void Context::IntroAnimation::setFadeColor(const QColor & color)
 {
-
     m_logoFader->setFadeColor( color );
 }
 
 QRectF Context::IntroAnimation::boundingRect() const
 {
-
-    return QRect( 0,0,m_width, m_height );
+    return QRectF( 0,0,m_width, m_height );
 }
 
 #include "introanimation.moc"

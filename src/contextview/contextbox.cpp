@@ -13,17 +13,22 @@
 
 #include "contextbox.h"
 
-#include <QGraphicsRectItem>
+#include <QGraphicsItemAnimation>
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 #include <QRectF>
+#include <QTimeLine>
 
 using namespace Context;
 
 ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     : QGraphicsRectItem( parent, scene )
       , m_titleItem( 0 )
+      , m_visible( true )
 {
+    setHandlesChildEvents( true ); // events from the sub items are passed onto this object
+
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
 
@@ -70,7 +75,7 @@ void ContextBox::setTitle( const QString &title )
     if( titleWidth > m_titleBarRect->boundingRect().width() )
     {
         // this function takes care of setting everything to the correct size!
-        setContentRectSize( QSize( titleWidth, m_contentRect->boundingRect().height() ) );
+        setContentRectSize( QSize( (int)titleWidth, (int)m_contentRect->boundingRect().height() ) );
     }
 
     // Center the title
@@ -91,3 +96,36 @@ void ContextBox::setContentRectSize( const QSize &sz )
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
     m_titleBarRect->setRect( 0, 0, sz.width(), m_titleBarRect->boundingRect().height() );
 }
+
+void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
+    {
+        QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
+        if( m_titleBarRect->contains( pressPoint ) )
+            toggleVisibility();
+    }
+}
+
+void ContextBox::toggleVisibility()
+{
+    QTimeLine *timer = new QTimeLine( 5000 );
+    timer->setFrameRange( 0, 100 );
+
+    QGraphicsItemAnimation *animationContent = new QGraphicsItemAnimation();
+    animationContent->setItem( m_contentRect );
+    animationContent->setTimeLine( timer );
+
+    for( int i = 0; i < 200; ++i )
+    {
+        if( m_visible )
+            animationContent->setScaleAt( i / 200.0, 1.0, (200.0 - i) / 200.0 );
+        else
+            animationContent->setScaleAt( i / 200.0, 1.0, i / 200.0 );
+    }
+
+    timer->start();
+
+    m_visible = !m_visible;
+}
+

@@ -14,11 +14,12 @@
 #ifndef AMAROK_CONTEXTBOX_H
 #define AMAROK_CONTEXTBOX_H
 
-#include <QGraphicsItemGroup>
+#include <QGraphicsRectItem>
 
 class QGraphicsItem;
 class QGraphicsRectItem;
 class QGraphicsScene;
+class QGraphicsSceneMouseEvent;
 class QSize;
 
 namespace Context
@@ -32,14 +33,18 @@ class ContextBox : public QGraphicsRectItem
         ~ContextBox() { /* delete, disconnect and disembark */ }
 
         virtual void setTitle( const QString &title );
+        virtual void toggleVisibility();
 
     protected:
+        virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
         virtual void setBoundingRectSize( const QSize &sz );
         void setContentRectSize( const QSize &sz );
 
         QGraphicsTextItem *m_titleItem;
         QGraphicsRectItem *m_titleBarRect;
         QGraphicsRectItem *m_contentRect;
+
+        bool m_visible;
 };
 
 }
