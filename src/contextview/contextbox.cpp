@@ -120,7 +120,7 @@ void ContextBox::toggleVisibility()
     for( int i = 0; i < 200; ++i )
     {
         if( m_visible )
-            animationContent->setScaleAt( i / 200.0, 1.0, (200.0 - i) / 200.0 );
+            animationContent->setScaleAt( i / 200.0, 1.0, (200.0 - 1 - i) / 200.0 );
         else
             animationContent->setScaleAt( i / 200.0, 1.0, i / 200.0 );
     }
