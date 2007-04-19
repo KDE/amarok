@@ -51,6 +51,8 @@ PhononEngine::init()
     m_audioPath   = new Phonon::AudioPath( this );
     m_audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
+    m_mediaObject->setTickInterval( 100 ); // Needed for position() to work
+
     if( !m_mediaObject || !m_audioPath || !m_audioOutput )
     {
         Amarok::StatusBar::instance()->longMessage( "Amarok could not initialize Phonon.",
