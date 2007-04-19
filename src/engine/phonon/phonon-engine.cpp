@@ -144,9 +144,11 @@ PhononEngine::convertState( Phonon::State s )
     {
         case Phonon::PlayingState:
             state = Engine::Playing;
+            break;
 
         case Phonon::PausedState:
             state = Engine::Paused;
+            break;
 
         case Phonon::StoppedState:
         // fallthrough
@@ -176,8 +178,11 @@ PhononEngine::state() const
 uint
 PhononEngine::position() const
 {
-    if( state() != Engine::Empty && m_mediaObject )
-        return m_mediaObject->currentTime();
+    if( state() != Engine::Empty && m_mediaObject ) { 
+        uint i = m_mediaObject->currentTime();
+        debug() << "Position: " << i << endl;
+        return i;
+    }
 
     return 0;
 }
