@@ -1,6 +1,6 @@
 /******************************************************************************
 ** This file is an amalgamation of many separate C source files from SQLite
-** version 3.3.15.  By combining all the individual C code files into this 
+** version 3.3.16.  By combining all the individual C code files into this 
 ** single large file, the entire code can be compiled as a one translation
 ** unit.  This allows many compilers to do optimizations that would not be
 ** possible if the files were compiled separately.  Performance improvements
@@ -17,7 +17,7 @@
 ** is also in a separate file.  This file contains only code for the core
 ** SQLite library.
 **
-** This amalgamation was generated on 2007-04-09 13:43:48 UTC.
+** This amalgamation was generated on 2007-04-18 15:18:29 UTC.
 */
 #define SQLITE_AMALGAMATION 1
 /************** Begin file sqlite3.h *****************************************/
@@ -54,7 +54,7 @@ extern "C" {
 #ifdef SQLITE_VERSION
 # undef SQLITE_VERSION
 #endif
-#define SQLITE_VERSION         "3.3.15"
+#define SQLITE_VERSION         "3.3.16"
 
 /*
 ** The format of the version string is "X.Y.Z<trailing string>", where
@@ -71,7 +71,7 @@ extern "C" {
 #ifdef SQLITE_VERSION_NUMBER
 # undef SQLITE_VERSION_NUMBER
 #endif
-#define SQLITE_VERSION_NUMBER 3003015
+#define SQLITE_VERSION_NUMBER 3003016
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -1973,7 +1973,7 @@ int sqlite3_overload_function(sqlite3*, const char *zFuncName, int nArg);
 *************************************************************************
 ** Internal interface definitions for SQLite.
 **
-** @(#) $Id: sqliteInt.h,v 1.550 2007/04/06 11:26:00 drh Exp $
+** @(#) $Id: sqliteInt.h,v 1.552 2007/04/16 15:06:25 danielk1977 Exp $
 */
 #ifndef _SQLITEINT_H_
 #define _SQLITEINT_H_
@@ -2964,7 +2964,7 @@ int sqlite3BtreePageDump(Btree*, int, int recursive);
 ** subsystem.  The page cache subsystem reads and writes a file a page
 ** at a time and provides a journal for rollback.
 **
-** @(#) $Id: pager.h,v 1.57 2007/03/30 14:06:34 drh Exp $
+** @(#) $Id: pager.h,v 1.58 2007/04/13 02:14:30 drh Exp $
 */
 
 #ifndef _PAGER_H_
@@ -3060,7 +3060,7 @@ int sqlite3PagerStmtBegin(Pager*);
 int sqlite3PagerStmtCommit(Pager*);
 int sqlite3PagerStmtRollback(Pager*);
 void sqlite3PagerDontRollback(DbPage*);
-void sqlite3PagerDontWrite(Pager*, Pgno);
+void sqlite3PagerDontWrite(DbPage*);
 int sqlite3PagerRefcount(Pager*);
 int *sqlite3PagerStats(Pager*);
 void sqlite3PagerSetSafetyLevel(Pager*,int,int);
@@ -3235,6 +3235,14 @@ struct Db {
 
 /*
 ** An instance of the following structure stores a database schema.
+**
+** If there are no virtual tables configured in this schema, the
+** Schema.db variable is set to NULL. After the first virtual table
+** has been added, it is set to point to the database connection 
+** used to create the connection. Once a virtual table has been
+** added to the Schema structure and the Schema.db variable populated, 
+** only that database connection may use the Schema to prepare 
+** statements.
 */
 struct Schema {
   int schema_cookie;   /* Database schema version number for this file */
@@ -3247,6 +3255,9 @@ struct Schema {
   u8 enc;              /* Text encoding used by this database */
   u16 flags;           /* Flags associated with this schema */
   int cache_size;      /* Number of pages to use in the cache */
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+  sqlite3 *db;         /* "Owner" connection. See comment above */
+#endif
 };
 
 /*
@@ -4120,6 +4131,7 @@ struct Select {
   u8 isAgg;              /* True if this is an aggregate query */
   u8 usesEphm;           /* True if uses an OpenEphemeral opcode */
   u8 disallowOrderBy;    /* Do not allow an ORDER BY to be attached if TRUE */
+  char affinity;         /* MakeRecord with this affinity for SRT_Set */
   SrcList *pSrc;         /* The FROM clause */
   Expr *pWhere;          /* The WHERE clause */
   ExprList *pGroupBy;    /* The GROUP BY clause */
@@ -4485,7 +4497,7 @@ void sqlite3CreateView(Parse*,Token*,Token*,Token*,Select*,int,int);
 #endif
 
 void sqlite3DropTable(Parse*, SrcList*, int, int);
-void sqlite3DeleteTable(sqlite3*, Table*);
+void sqlite3DeleteTable(Table*);
 void sqlite3Insert(Parse*, SrcList*, ExprList*, Select*, IdList*, int);
 void *sqlite3ArrayAllocate(void*,int,int,int*,int*,int*);
 IdList *sqlite3IdListAppend(IdList*, Token*);
@@ -4743,7 +4755,7 @@ int sqlite3OpenTempDatabase(Parse *);
    int sqlite3VtabCommit(sqlite3 *db);
 #endif
 void sqlite3VtabLock(sqlite3_vtab*);
-void sqlite3VtabUnlock(sqlite3_vtab*);
+void sqlite3VtabUnlock(sqlite3*, sqlite3_vtab*);
 void sqlite3VtabBeginParse(Parse*, Token*, Token*, Token*);
 void sqlite3VtabFinishParse(Parse*, Token*);
 void sqlite3VtabArgInit(Parse*);
@@ -10581,6 +10593,7 @@ int sqlite3_diskfull = 0;
          || (sqlite3_io_error_persist && sqlite3_io_error_hit) ) \
                 { local_ioerr(); CODE; }
 static void local_ioerr(){
+  IOTRACE(("IOERR\n"));
   sqlite3_io_error_hit = 1;
 }
 #define SimulateDiskfullError(CODE) \
@@ -11891,6 +11904,7 @@ int sqlite3_diskfull = 0;
          || (sqlite3_io_error_persist && sqlite3_io_error_hit) ) \
                 { local_ioerr(); CODE; }
 static void local_ioerr(){
+  IOTRACE(("IOERR\n"));
   sqlite3_io_error_hit = 1;
 }
 #define SimulateDiskfullError(CODE) \
@@ -14927,6 +14941,7 @@ int sqlite3_diskfull = 0;
          || (sqlite3_io_error_persist && sqlite3_io_error_hit) ) \
                 { local_ioerr(); CODE; }
 static void local_ioerr(){
+  IOTRACE(("IOERR\n"));
   sqlite3_io_error_hit = 1;
 }
 #define SimulateDiskfullError(CODE) \
@@ -15401,6 +15416,12 @@ static void winceDestroyLock(winFile *pFile){
     /* De-reference and close our copy of the shared memory handle */
     UnmapViewOfFile(pFile->shared);
     CloseHandle(pFile->hShared);
+
+    if( pFile->zDeleteOnClose ){
+      DeleteFileW(pFile->zDeleteOnClose);
+      sqliteFree(pFile->zDeleteOnClose);
+      pFile->zDeleteOnClose = 0;
+    }
 
     /* Done with the mutex */
     winceMutexRelease(pFile->hMutex);    
@@ -15969,10 +15990,6 @@ static int winClose(OsFile **pId){
     }while( rc==0 && cnt++ < MX_CLOSE_ATTEMPT && (Sleep(100), 1) );
 #if OS_WINCE
     winceDestroyLock(pFile);
-    if( pFile->zDeleteOnClose ){
-      DeleteFileW(pFile->zDeleteOnClose);
-      sqliteFree(pFile->zDeleteOnClose);
-    }
 #endif
     OpenCounter(-1);
     sqliteFree(pFile);
@@ -16769,7 +16786,7 @@ ThreadData *sqlite3WinThreadSpecificData(int allocateFlag){
 ** file simultaneously, or one process from reading the database while
 ** another is writing.
 **
-** @(#) $Id: pager.c,v 1.326 2007/04/09 11:20:54 danielk1977 Exp $
+** @(#) $Id: pager.c,v 1.329 2007/04/16 15:02:19 drh Exp $
 */
 #ifndef SQLITE_OMIT_DISKIO
 
@@ -16908,6 +16925,7 @@ struct PgHdr {
   u8 dirty;                      /* TRUE if we need to write back changes */
   u8 needSync;                   /* Sync journal before writing this page */
   u8 alwaysRollback;             /* Disable DontRollback() for this page */
+  u8 needRead;                   /* Read content if PagerWrite() is called */
   short int nRef;                /* Number of users of this page */
   PgHdr *pDirty, *pPrevDirty;    /* Dirty pages */
   u32 notUsed;                   /* Buffer space */
@@ -17039,18 +17057,25 @@ struct Pager {
   Pager *pNext;               /* Linked list of pagers in this thread */
 #endif
   char *pTmpSpace;            /* Pager.pageSize bytes of space for tmp use */
-  u32 iChangeCount;           /* Db change-counter for which cache is valid */
+  char dbFileVers[16];        /* Changes whenever database file changes */
 };
 
 /*
-** If SQLITE_TEST is defined then increment the variable given in
-** the argument
+** The following global variables hold counters used for
+** testing purposes only.  These variables do not exist in
+** a non-testing build.  These variables are not thread-safe.
 */
 #ifdef SQLITE_TEST
-# define TEST_INCR(x)  x++
+int sqlite3_pager_readdb_count = 0;    /* Number of full pages read from DB */
+int sqlite3_pager_writedb_count = 0;   /* Number of full pages written to DB */
+int sqlite3_pager_writej_count = 0;    /* Number of pages written to journal */
+int sqlite3_pager_pgfree_count = 0;    /* Number of cache pages freed */
+# define PAGER_INCR(v)  v++
 #else
-# define TEST_INCR(x)
+# define PAGER_INCR(v)
 #endif
+
+
 
 /*
 ** Journal files begin with the following magic string.  The data
@@ -17644,6 +17669,8 @@ static void pager_reset(Pager *pPager){
   PgHdr *pPg, *pNext;
   if( pPager->errCode ) return;
   for(pPg=pPager->pAll; pPg; pPg=pNext){
+    IOTRACE(("PGFREE %p %d\n", pPager, pPg->pgno));
+    PAGER_INCR(sqlite3_pager_pgfree_count);
     pNext = pPg->pNextAll;
     sqliteFree(pPg);
   }
@@ -17867,12 +17894,14 @@ static int pager_playback_one_page(Pager *pPager, OsFile *jfd, int useCksum){
 #ifdef SQLITE_CHECK_PAGES
     pPg->pageHash = pager_pagehash(pPg);
 #endif
-    CODEC1(pPager, pData, pPg->pgno, 3);
-
-    /* If this was page 1, then restore the value of Pager.iChangeCount */
+    /* If this was page 1, then restore the value of Pager.dbFileVers.
+    ** Do this before any decoding. */
     if( pgno==1 ){
-      pPager->iChangeCount = retrieve32bits(pPg, 24);
+      memcpy(&pPager->dbFileVers, &((u8*)pData)[24],sizeof(pPager->dbFileVers));
     }
+
+    /* Decode the page just read from disk */
+    CODEC1(pPager, pData, pPg->pgno, 3);
   }
   return rc;
 }
@@ -17965,51 +17994,6 @@ delmaster_out:
   return rc;
 }
 
-#if 0
-/*
-** Make every page in the cache agree with what is on disk.  In other words,
-** reread the disk to reset the state of the cache.
-**
-** This routine is called after a rollback in which some of the dirty cache
-** pages had never been written out to disk.  We need to roll back the
-** cache content and the easiest way to do that is to reread the old content
-** back from the disk.
-*/
-static int pager_reload_cache(Pager *pPager){
-  PgHdr *pPg;
-  int rc = SQLITE_OK;
-  for(pPg=pPager->pAll; pPg; pPg=pPg->pNextAll){
-    char *zBuf = pPager->pTmpSpace;        /* Temp storage for one page */
-    if( !pPg->dirty ) continue;
-    if( (int)pPg->pgno <= pPager->origDbSize ){
-      rc = sqlite3OsSeek(pPager->fd, pPager->pageSize*(i64)(pPg->pgno-1));
-      if( rc==SQLITE_OK ){
-        rc = sqlite3OsRead(pPager->fd, zBuf, pPager->pageSize);
-      }
-      PAGERTRACE3("REFETCH %d page %d\n", PAGERID(pPager), pPg->pgno);
-      if( rc ) break;
-      CODEC1(pPager, zBuf, pPg->pgno, 2);
-    }else{
-      memset(zBuf, 0, pPager->pageSize);
-    }
-    if( pPg->nRef==0 || memcmp(zBuf, PGHDR_TO_DATA(pPg), pPager->pageSize) ){
-      memcpy(PGHDR_TO_DATA(pPg), zBuf, pPager->pageSize);
-      if( pPager->xReiniter ){
-        pPager->xReiniter(pPg, pPager->pageSize);
-      }else{
-        memset(PGHDR_TO_EXTRA(pPg, pPager), 0, pPager->nExtra);
-      }
-    }
-    pPg->needSync = 0;
-    pPg->dirty = 0;
-#ifdef SQLITE_CHECK_PAGES
-    pPg->pageHash = pager_pagehash(pPg);
-#endif
-  }
-  pPager->pDirty = 0;
-  return rc;
-}
-#endif
 
 static void pager_truncate_cache(Pager *pPager);
 
@@ -18795,6 +18779,8 @@ static void pager_truncate_cache(Pager *pPager){
       ppPg = &pPg->pNextAll;
     }else{
       *ppPg = pPg->pNextAll;
+      IOTRACE(("PGFREE %p %d\n", pPager, pPg->pgno));
+      PAGER_INCR(sqlite3_pager_pgfree_count);
       unlinkPage(pPg);
       makeClean(pPg);
       sqliteFree(pPg);
@@ -19216,9 +19202,13 @@ static int pager_write_pagelist(PgHdr *pList){
     if( pList->pgno<=pPager->dbSize ){
       char *pData = CODEC2(pPager, PGHDR_TO_DATA(pList), pList->pgno, 6);
       PAGERTRACE3("STORE %d page %d\n", PAGERID(pPager), pList->pgno);
-      IOTRACE(("PGOUT %p %d\n", pPager, pList->pgno))
+      IOTRACE(("PGOUT %p %d\n", pPager, pList->pgno));
       rc = sqlite3OsWrite(pPager->fd, pData, pPager->pageSize);
-      TEST_INCR(pPager->nWrite);
+      PAGER_INCR(sqlite3_pager_writedb_count);
+      PAGER_INCR(pPager->nWrite);
+      if( pList->pgno==1 ){
+        memcpy(&pPager->dbFileVers, &pData[24], sizeof(pPager->dbFileVers));
+      }
     }
 #ifndef NDEBUG
     else{
@@ -19420,6 +19410,8 @@ int sqlite3PagerReleaseMemory(int nReq){
           pTmp->pNextAll = pPg->pNextAll;
         }
         nReleased += sqliteAllocSize(pPg);
+        IOTRACE(("PGFREE %p %d\n", pPager, pPg->pgno));
+        PAGER_INCR(sqlite3_pager_pgfree_count);
         sqliteFree(pPg);
       }
 
@@ -19452,8 +19444,14 @@ static int readDbPage(Pager *pPager, PgHdr *pPg, Pgno pgno){
     rc = sqlite3OsRead(pPager->fd, PGHDR_TO_DATA(pPg),
                           pPager->pageSize);
   }
-  IOTRACE(("PGIN %p %d\n", pPager, pgno))
+  PAGER_INCR(sqlite3_pager_readdb_count);
+  PAGER_INCR(pPager->nRead);
+  IOTRACE(("PGIN %p %d\n", pPager, pgno));
   PAGERTRACE3("FETCH %d page %d\n", PAGERID(pPager), pPg->pgno);
+  if( pgno==1 ){
+    memcpy(&pPager->dbFileVers, &((u8*)PGHDR_TO_DATA(pPg))[24],
+                                              sizeof(pPager->dbFileVers));
+  }
   CODEC1(pPager, PGHDR_TO_DATA(pPg), pPg->pgno, 3);
   return rc;
 }
@@ -19554,16 +19552,21 @@ static int pagerSharedLock(Pager *pPager){
       if( pPager->pAll ){
         /* The shared-lock has just been acquired on the database file
         ** and there are already pages in the cache (from a previous
-        ** read or write transaction). If the value of the change-counter
-        ** stored in Pager.iChangeCount matches that found on page 1 of
-        ** the database file, then no database changes have occured since
-        ** the cache was last valid and it is safe to retain the cached
-        ** pages. Otherwise, if Pager.iChangeCount does not match the
-        ** change-counter on page 1 of the file, the current cache contents
-        ** must be discarded.
+        ** read or write transaction).  Check to see if the database
+        ** has been modified.  If the database has changed, flush the
+        ** cache.
+        **
+        ** Database changes is detected by looking at 15 bytes beginning
+        ** at offset 24 into the file.  The first 4 of these 16 bytes are
+        ** a 32-bit counter that is incremented with each change.  The
+        ** other bytes change randomly with each file change when
+        ** a codec is in use.
+        ** 
+        ** There is a vanishingly small chance that a change will not be 
+        ** deteched.  The chance of an undetected change is so small that
+        ** it can be neglected.
         */
-        u8 zC[4];
-        u32 iChangeCounter = 0;
+        char dbFileVers[sizeof(pPager->dbFileVers)];
         sqlite3PagerPagecount(pPager);
 
         if( pPager->errCode ){
@@ -19571,19 +19574,19 @@ static int pagerSharedLock(Pager *pPager){
         }
 
         if( pPager->dbSize>0 ){
-          /* Read the 4-byte change counter directly from the file. */
           rc = sqlite3OsSeek(pPager->fd, 24);
           if( rc!=SQLITE_OK ){
             return rc;
           }
-          rc = sqlite3OsRead(pPager->fd, zC, 4);
+          rc = sqlite3OsRead(pPager->fd, &dbFileVers, sizeof(dbFileVers));
           if( rc!=SQLITE_OK ){
             return rc;
           }
-          iChangeCounter = (zC[0]<<24) + (zC[1]<<16) + (zC[2]<<8) + zC[3];
+        }else{
+          memset(dbFileVers, 0, sizeof(dbFileVers));
         }
 
-        if( iChangeCounter!=pPager->iChangeCount ){
+        if( memcmp(pPager->dbFileVers, dbFileVers, sizeof(dbFileVers))!=0 ){
           pager_reset(pPager);
         }
       }
@@ -19705,12 +19708,20 @@ pager_allocate_out:
 ** Since _lookup() never goes to disk, it never has to deal with locks
 ** or journal files.
 **
-** If clrFlag is false, the page contents are actually read from disk.
-** If clfFlag is true, it means the page is about to be erased and
-** rewritten without first being read so there is no point it doing
-** the disk I/O.
+** If noContent is false, the page contents are actually read from disk.
+** If noContent is true, it means that we do not care about the contents
+** of the page at this time, so do not do a disk read.  Just fill in the
+** page content with zeros.  But mark the fact that we have not read the
+** content by setting the PgHdr.needRead flag.  Later on, if 
+** sqlite3PagerWrite() is called on this page, that means that the
+** content is needed and the disk read should occur at that point.
 */
-int sqlite3PagerAcquire(Pager *pPager, Pgno pgno, DbPage **ppPage, int clrFlag){
+int sqlite3PagerAcquire(
+  Pager *pPager,      /* The pager open on the database file */
+  Pgno pgno,          /* Page number to fetch */
+  DbPage **ppPage,    /* Write a pointer to the page here */
+  int noContent       /* Do not bother reading content from disk if true */
+){
   PgHdr *pPg;
   int rc;
 
@@ -19746,7 +19757,7 @@ int sqlite3PagerAcquire(Pager *pPager, Pgno pgno, DbPage **ppPage, int clrFlag){
     /* The requested page is not in the page cache. */
     int nMax;
     int h;
-    TEST_INCR(pPager->nMiss);
+    PAGER_INCR(pPager->nMiss);
     rc = pagerAllocatePage(pPager, &pPg);
     if( rc!=SQLITE_OK ){
       return rc;
@@ -19782,16 +19793,16 @@ int sqlite3PagerAcquire(Pager *pPager, Pgno pgno, DbPage **ppPage, int clrFlag){
     /* Populate the page with data, either by reading from the database
     ** file, or by setting the entire page to zero.
     */
-    if( nMax<(int)pgno || MEMDB || (clrFlag && !pPager->alwaysRollback) ){
+    if( nMax<(int)pgno || MEMDB || (noContent && !pPager->alwaysRollback) ){
       memset(PGHDR_TO_DATA(pPg), 0, pPager->pageSize);
+      pPg->needRead = noContent && !pPager->alwaysRollback;
+      IOTRACE(("ZERO %p %d\n", pPager, pgno));
     }else{
       rc = readDbPage(pPager, pPg, pgno);
       if( rc!=SQLITE_OK && rc!=SQLITE_IOERR_SHORT_READ ){
         pPg->pgno = 0;
         sqlite3PagerUnref(pPg);
         return rc;
-      }else{
-        TEST_INCR(pPager->nRead);
       }
     }
 
@@ -19811,7 +19822,7 @@ int sqlite3PagerAcquire(Pager *pPager, Pgno pgno, DbPage **ppPage, int clrFlag){
   }else{
     /* The requested page is in the page cache. */
     assert(pPager->nRef>0 || pgno==1);
-    TEST_INCR(pPager->nHit);
+    PAGER_INCR(pPager->nHit);
     page_ref(pPg);
   }
   *ppPage = pPg;
@@ -20111,6 +20122,23 @@ static int pager_write(PgHdr *pPg){
 
   CHECK_PAGE(pPg);
 
+  /* If this page was previously acquired with noContent==1, that means
+  ** we didn't really read in the content of the page.  This can happen
+  ** (for example) when the page is being moved to the freelist.  But
+  ** now we are (perhaps) moving the page off of the freelist for
+  ** reuse and we need to know its original content so that content
+  ** can be stored in the rollback journal.  So do the read at this
+  ** time.
+  */
+  if( pPg->needRead ){
+    rc = readDbPage(pPager, pPg, pPg->pgno);
+    if( rc==SQLITE_OK ){
+      pPg->needRead = 0;
+    }else{
+      return rc;
+    }
+  }
+
   /* Mark the page as dirty.  If the page has already been written
   ** to the journal then we can return right away.
   */
@@ -20171,7 +20199,8 @@ static int pager_write(PgHdr *pPg){
           put32bits(pData2, pPg->pgno);
           rc = sqlite3OsWrite(pPager->jfd, pData2, szPg);
           IOTRACE(("JOUT %p %d %lld %d\n", pPager, pPg->pgno,
-                   pPager->journalOff, szPg))
+                   pPager->journalOff, szPg));
+          PAGER_INCR(sqlite3_pager_writej_count);
           pPager->journalOff += szPg;
           PAGERTRACE4("JOURNAL %d page %d needSync=%d\n",
                   PAGERID(pPager), pPg->pgno, pPg->needSync);
@@ -20354,7 +20383,7 @@ int sqlite3PagerOverwrite(Pager *pPager, Pgno pgno, void *pData){
 
 /*
 ** A call to this routine tells the pager that it is not necessary to
-** write the information on page "pgno" back to the disk, even though
+** write the information on page pPg back to the disk, even though
 ** that page might be marked as dirty.
 **
 ** The overlying software layer calls this routine when all of the data
@@ -20376,13 +20405,11 @@ int sqlite3PagerOverwrite(Pager *pPager, Pgno pgno, void *pData){
 ** page contains critical data, we still need to be sure it gets
 ** rolled back in spite of the sqlite3PagerDontRollback() call.
 */
-void sqlite3PagerDontWrite(Pager *pPager, Pgno pgno){
-  PgHdr *pPg;
+void sqlite3PagerDontWrite(DbPage *pDbPage){
+  PgHdr *pPg = pDbPage;
+  Pager *pPager = pPg->pPager;
 
   if( MEMDB ) return;
-
-  pPg = pager_lookup(pPager, pgno);
-  assert( pPg!=0 );  /* We never call _dont_write unless the page is in mem */
   pPg->alwaysRollback = 1;
   if( pPg->dirty && !pPager->stmtInUse ){
     assert( pPager->state>=PAGER_SHARED );
@@ -20396,8 +20423,8 @@ void sqlite3PagerDontWrite(Pager *pPager, Pgno pgno){
       ** corruption during the next transaction.
       */
     }else{
-      PAGERTRACE3("DONT_WRITE page %d of %d\n", pgno, PAGERID(pPager));
-      IOTRACE(("CLEAN %p %d\n", pPager, pgno))
+      PAGERTRACE3("DONT_WRITE page %d of %d\n", pPg->pgno, PAGERID(pPager));
+      IOTRACE(("CLEAN %p %d\n", pPager, pPg->pgno))
       makeClean(pPg);
 #ifdef SQLITE_CHECK_PAGES
       pPg->pageHash = pager_pagehash(pPg);
@@ -20411,6 +20438,11 @@ void sqlite3PagerDontWrite(Pager *pPager, Pgno pgno){
 ** it is not necessary to restore the data on the given page.  This
 ** means that the pager does not have to record the given page in the
 ** rollback journal.
+**
+** If we have not yet actually read the content of this page (if
+** the PgHdr.needRead flag is set) then this routine acts as a promise
+** that we will never need to read the page content in the future.
+** so the needRead flag can be cleared at this point.
 */
 void sqlite3PagerDontRollback(DbPage *pPg){
   Pager *pPager = pPg->pPager;
@@ -20422,6 +20454,7 @@ void sqlite3PagerDontRollback(DbPage *pPg){
     assert( pPager->aInJournal!=0 );
     pPager->aInJournal[pPg->pgno/8] |= 1<<(pPg->pgno&7);
     pPg->inJournal = 1;
+    pPg->needRead = 0;
     if( pPager->stmtInUse ){
       pPager->aInStmt[pPg->pgno/8] |= 1<<(pPg->pgno&7);
     }
@@ -20461,7 +20494,6 @@ static int pager_incr_changecounter(Pager *pPager){
     /* Increment the value just read and write it back to byte 24. */
     change_counter++;
     put32bits(((char*)PGHDR_TO_DATA(pPgHdr))+24, change_counter);
-    pPager->iChangeCount = change_counter;
   
     /* Release the page reference. */
     sqlite3PagerUnref(pPgHdr);
@@ -21066,7 +21098,7 @@ void sqlite3PagerRefdump(Pager *pPager){
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** $Id: btree.c,v 1.354 2007/04/09 12:45:03 drh Exp $
+** $Id: btree.c,v 1.355 2007/04/13 02:14:30 drh Exp $
 **
 ** This file implements a external (disk-based) database using BTrees.
 ** For a detailed discussion of BTrees, refer to
@@ -22448,13 +22480,20 @@ static void zeroPage(MemPage *pPage, int flags){
 /*
 ** Get a page from the pager.  Initialize the MemPage.pBt and
 ** MemPage.aData elements if needed.
+**
+** If the noContent flag is set, it means that we do not care about
+** the content of the page at this time.  So do not go to the disk
+** to fetch the content.  Just fill in the content with zeros for now.
+** If in the future we call sqlite3PagerWrite() on this page, that
+** means we have started to be concerned about content and the disk
+** read should occur at that point.
 */
-static int getPage(BtShared *pBt, Pgno pgno, MemPage **ppPage, int clrFlag){
+static int getPage(BtShared *pBt, Pgno pgno, MemPage **ppPage, int noContent){
   int rc;
   MemPage *pPage;
   DbPage *pDbPage;
 
-  rc = sqlite3PagerAcquire(pBt->pPager, pgno, (DbPage**)&pDbPage, clrFlag);
+  rc = sqlite3PagerAcquire(pBt->pPager, pgno, (DbPage**)&pDbPage, noContent);
   if( rc ) return rc;
   pPage = (MemPage *)sqlite3PagerGetExtra(pDbPage);
   pPage->aData = sqlite3PagerGetData(pDbPage);
@@ -22463,9 +22502,6 @@ static int getPage(BtShared *pBt, Pgno pgno, MemPage **ppPage, int clrFlag){
   pPage->pgno = pgno;
   pPage->hdrOffset = pPage->pgno==1 ? 100 : 0;
   *ppPage = pPage;
-  if( clrFlag ){
-    sqlite3PagerDontRollback(pPage->pDbPage);
-  }
   return SQLITE_OK;
 }
 
@@ -24882,6 +24918,7 @@ static int allocateBtreePage(
           put4byte(&aData[4], k-1);
           rc = getPage(pBt, *pPgno, ppPage, 1);
           if( rc==SQLITE_OK ){
+            sqlite3PagerDontRollback((*ppPage)->pDbPage);
             rc = sqlite3PagerWrite((*ppPage)->pDbPage);
             if( rc!=SQLITE_OK ){
               releasePage(*ppPage);
@@ -25000,7 +25037,7 @@ static int freePage(MemPage *pPage){
         put4byte(&pTrunk->aData[4], k+1);
         put4byte(&pTrunk->aData[8+k*4], pPage->pgno);
 #ifndef SQLITE_SECURE_DELETE
-        sqlite3PagerDontWrite(pBt->pPager, pPage->pgno);
+        sqlite3PagerDontWrite(pPage->pDbPage);
 #endif
       }
       TRACE(("FREE-PAGE: %d leaf on trunk page %d\n",pPage->pgno,pTrunk->pgno));
@@ -25034,7 +25071,7 @@ static int clearCell(MemPage *pPage, unsigned char *pCell){
     if( ovflPgno==0 || ovflPgno>sqlite3PagerPagecount(pBt->pPager) ){
       return SQLITE_CORRUPT_BKPT;
     }
-    rc = getPage(pBt, ovflPgno, &pOvfl, 0);
+    rc = getPage(pBt, ovflPgno, &pOvfl, nOvfl==0);
     if( rc ) return rc;
     if( nOvfl ){
       ovflPgno = get4byte(pOvfl->aData);
@@ -27613,18 +27650,31 @@ int sqlite3BtreeCopyFile(Btree *pTo, Btree *pFrom){
     rc = sqlite3PagerOverwrite(pBtTo->pPager, i, sqlite3PagerGetData(pDbPage));
     sqlite3PagerUnref(pDbPage);
   }
+
+  /* If the file is shrinking, journal the pages that are being truncated
+  ** so that they can be rolled back if the commit fails.
+  */
   for(i=nPage+1; rc==SQLITE_OK && i<=nToPage; i++){
     DbPage *pDbPage;
     if( i==iSkip ) continue;
     rc = sqlite3PagerGet(pBtTo->pPager, i, &pDbPage);
     if( rc ) break;
     rc = sqlite3PagerWrite(pDbPage);
+    sqlite3PagerDontWrite(pDbPage);
+    /* Yeah.  It seems wierd to call DontWrite() right after Write().  But
+    ** that is because the names of those procedures do not exactly 
+    ** represent what they do.  Write() really means "put this page in the
+    ** rollback journal and mark it as dirty so that it will be written
+    ** to the database file later."  DontWrite() undoes the second part of
+    ** that and prevents the page from being written to the database.  The
+    ** page is still on the rollback journal, though.  And that is the whole
+    ** point of this loop: to put pages on the rollback journal. */
     sqlite3PagerUnref(pDbPage);
-    sqlite3PagerDontWrite(pBtTo->pPager, i);
   }
   if( !rc && nPage<nToPage ){
     rc = sqlite3PagerTruncate(pBtTo->pPager, nPage);
   }
+
   if( rc ){
     sqlite3BtreeRollback(pTo);
   }
@@ -28886,7 +28936,6 @@ int sqlite3VdbeAddOp(Vdbe *p, int op, int p1, int p2){
   VdbeOp *pOp;
 
   i = p->nOp;
-  p->nOp++;
   assert( p->magic==VDBE_MAGIC_INIT );
   if( p->nOpAlloc<=i ){
     resizeOpArray(p, i+1);
@@ -28894,6 +28943,7 @@ int sqlite3VdbeAddOp(Vdbe *p, int op, int p1, int p2){
       return 0;
     }
   }
+  p->nOp++;
   pOp = &p->aOp[i];
   pOp->opcode = op;
   pOp->p1 = p1;
@@ -29298,9 +29348,8 @@ void sqlite3VdbeChangeP3(Vdbe *p, int addr, const char *zP3, int n){
 */
 void sqlite3VdbeComment(Vdbe *p, const char *zFormat, ...){
   va_list ap;
-  assert( p->nOp>0 );
-  assert( p->aOp==0 || p->aOp[p->nOp-1].p3==0 
-          || sqlite3MallocFailed() );
+  assert( p->nOp>0 || p->aOp==0 );
+  assert( p->aOp==0 || p->aOp[p->nOp-1].p3==0 || sqlite3MallocFailed() );
   va_start(ap, zFormat);
   sqlite3VdbeChangeP3(p, -1, sqlite3VMPrintf(zFormat, ap), P3_DYNAMIC);
   va_end(ap);
@@ -29312,8 +29361,8 @@ void sqlite3VdbeComment(Vdbe *p, const char *zFormat, ...){
 */
 VdbeOp *sqlite3VdbeGetOp(Vdbe *p, int addr){
   assert( p->magic==VDBE_MAGIC_INIT );
-  assert( addr>=0 && addr<p->nOp );
-  return &p->aOp[addr];
+  assert( (addr>=0 && addr<p->nOp) || sqlite3MallocFailed() );
+  return ((addr>=0 && addr<p->nOp)?(&p->aOp[addr]):0);
 }
 
 #if !defined(SQLITE_OMIT_EXPLAIN) || !defined(NDEBUG) \
@@ -31794,7 +31843,7 @@ sqlite3 *sqlite3_db_handle(sqlite3_stmt *pStmt){
 ** in this file for details.  If in doubt, do not deviate from existing
 ** commenting and indentation practices when changing or adding code.
 **
-** $Id: vdbe.c,v 1.598 2007/03/30 18:42:56 drh Exp $
+** $Id: vdbe.c,v 1.600 2007/04/17 08:32:34 danielk1977 Exp $
 */
 
 /*
@@ -34268,7 +34317,23 @@ case OP_VerifyCookie: {       /* no-push */
   }
   if( rc==SQLITE_OK && iMeta!=pOp->p2 ){
     sqlite3SetString(&p->zErrMsg, "database schema has changed", (char*)0);
-    sqlite3ResetInternalSchema(db, pOp->p1);
+    /* If the schema-cookie from the database file matches the cookie 
+    ** stored with the in-memory representation of the schema, do
+    ** not reload the schema from the database file.
+    **
+    ** If virtual-tables are in use, this is not just an optimisation.
+    ** Often, v-tables store their data in other SQLite tables, which
+    ** are queried from within xNext() and other v-table methods using
+    ** prepared queries. If such a query is out-of-date, we do not want to
+    ** discard the database schema, as the user code implementing the
+    ** v-table would have to be ready for the sqlite3_vtab structure itself
+    ** to be invalidated whenever sqlite3_step() is called from within 
+    ** a v-table method.
+    */
+    if( db->aDb[pOp->p1].pSchema->schema_cookie!=iMeta ){
+      sqlite3ResetInternalSchema(db, pOp->p1);
+    }
+
     sqlite3ExpirePreparedStatements(db);
     rc = SQLITE_SCHEMA;
   }
@@ -36628,7 +36693,7 @@ case OP_VUpdate: {   /* no-push */
     if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
     sqlite3VtabLock(pVtab);
     rc = pModule->xUpdate(pVtab, nArg, apArg, &rowid);
-    sqlite3VtabUnlock(pVtab);
+    sqlite3VtabUnlock(db, pVtab);
     if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
     if( pOp->p1 && rc==SQLITE_OK ){
       assert( nArg>1 && apArg[0] && (apArg[0]->flags&MEM_Null) );
@@ -36781,7 +36846,7 @@ abort_due_to_interrupt:
 ** This file contains routines used for analyzing expressions and
 ** for generating VDBE code that evaluates expressions in SQLite.
 **
-** $Id: expr.c,v 1.283 2007/03/27 13:36:37 drh Exp $
+** $Id: expr.c,v 1.284 2007/04/13 16:06:33 drh Exp $
 */
 
 /*
@@ -38187,7 +38252,9 @@ void sqlite3CodeSubselect(Parse *pParse, Expr *pExpr){
         int iParm = pExpr->iTable +  (((int)affinity)<<16);
         ExprList *pEList;
         assert( (pExpr->iTable&0x0000FFFF)==pExpr->iTable );
-        sqlite3Select(pParse, pExpr->pSelect, SRT_Set, iParm, 0, 0, 0, 0);
+        if( sqlite3Select(pParse, pExpr->pSelect, SRT_Set, iParm, 0, 0, 0, 0) ){
+          return;
+        }
         pEList = pExpr->pSelect->pEList;
         if( pEList && pEList->nExpr>0 ){ 
           keyInfo.aColl[0] = binaryCompareCollSeq(pParse, pExpr->pLeft,
@@ -38258,7 +38325,9 @@ void sqlite3CodeSubselect(Parse *pParse, Expr *pExpr){
       }
       sqlite3ExprDelete(pSel->pLimit);
       pSel->pLimit = sqlite3Expr(TK_INTEGER, 0, 0, &one);
-      sqlite3Select(pParse, pSel, sop, iMem, 0, 0, 0, 0);
+      if( sqlite3Select(pParse, pSel, sop, iMem, 0, 0, 0, 0) ){
+        return;
+      }
       break;
     }
   }
@@ -40953,7 +41022,7 @@ void sqlite3AuthContextPop(AuthContext *pContext){
 **     COMMIT
 **     ROLLBACK
 **
-** $Id: build.c,v 1.419 2007/04/05 11:25:58 drh Exp $
+** $Id: build.c,v 1.421 2007/04/18 14:47:24 danielk1977 Exp $
 */
 
 /*
@@ -41407,17 +41476,10 @@ static void sqliteResetColumnNames(Table *pTable){
 ** foreign keys from the sqlite.aFKey hash table.  But it does destroy
 ** memory structures of the indices and foreign keys associated with 
 ** the table.
-**
-** Indices associated with the table are unlinked from the "db"
-** data structure if db!=NULL.  If db==NULL, indices attached to
-** the table are deleted, but it is assumed they have already been
-** unlinked.
 */
-void sqlite3DeleteTable(sqlite3 *db, Table *pTable){
+void sqlite3DeleteTable(Table *pTable){
   Index *pIndex, *pNext;
   FKey *pFKey, *pNextFKey;
-
-  db = 0;
 
   if( pTable==0 ) return;
 
@@ -41438,7 +41500,7 @@ void sqlite3DeleteTable(sqlite3 *db, Table *pTable){
 
 #ifndef SQLITE_OMIT_FOREIGN_KEY
   /* Delete all foreign keys associated with this table.  The keys
-  ** should have already been unlinked from the db->aFKey hash table 
+  ** should have already been unlinked from the pSchema->aFKey hash table 
   */
   for(pFKey=pTable->pFKey; pFKey; pFKey=pNextFKey){
     pNextFKey = pFKey->pNextFrom;
@@ -41490,7 +41552,7 @@ void sqlite3UnlinkAndDeleteTable(sqlite3 *db, int iDb, const char *zTabName){
       }
     }
 #endif
-    sqlite3DeleteTable(db, p);
+    sqlite3DeleteTable(p);
   }
   db->flags |= SQLITE_InternChanges;
 }
@@ -41739,7 +41801,7 @@ void sqlite3StartTable(
   pTable->iPKey = -1;
   pTable->pSchema = db->aDb[iDb].pSchema;
   pTable->nRef = 1;
-  if( pParse->pNewTable ) sqlite3DeleteTable(db, pParse->pNewTable);
+  if( pParse->pNewTable ) sqlite3DeleteTable(pParse->pNewTable);
   pParse->pNewTable = pTable;
 
   /* If this is the magic sqlite_sequence table used by autoincrement,
@@ -42413,7 +42475,7 @@ void sqlite3EndTable(
         p->aCol = pSelTab->aCol;
         pSelTab->nCol = 0;
         pSelTab->aCol = 0;
-        sqlite3DeleteTable(0, pSelTab);
+        sqlite3DeleteTable(pSelTab);
       }
     }
 
@@ -42641,7 +42703,7 @@ int sqlite3ViewGetColumnNames(Parse *pParse, Table *pTable){
       pTable->aCol = pSelTab->aCol;
       pSelTab->nCol = 0;
       pSelTab->aCol = 0;
-      sqlite3DeleteTable(0, pSelTab);
+      sqlite3DeleteTable(pSelTab);
       pTable->pSchema->flags |= DB_UnresetViews;
     }else{
       pTable->nCol = 0;
@@ -43139,7 +43201,7 @@ static void sqlite3RefillIndex(Parse *pParse, Index *pIndex, int memRootPage){
     sqlite3VdbeAddOp(v, OP_IsUnique, iIdx, addr2);
     sqlite3VdbeOp3(v, OP_Halt, SQLITE_CONSTRAINT, OE_Abort,
                     "indexed columns are not unique", P3_STATIC);
-    assert( addr2==sqlite3VdbeCurrentAddr(v) );
+    assert( sqlite3MallocFailed() || addr2==sqlite3VdbeCurrentAddr(v) );
   }
   sqlite3VdbeAddOp(v, OP_IdxInsert, iIdx, 0);
   sqlite3VdbeAddOp(v, OP_Next, iTab, addr1+1);
@@ -43888,7 +43950,7 @@ void sqlite3SrcListDelete(SrcList *pList){
     sqliteFree(pItem->zDatabase);
     sqliteFree(pItem->zName);
     sqliteFree(pItem->zAlias);
-    sqlite3DeleteTable(0, pItem->pTab);
+    sqlite3DeleteTable(pItem->pTab);
     sqlite3SelectDelete(pItem->pSelect);
     sqlite3ExprDelete(pItem->pOn);
     sqlite3IdListDelete(pItem->pUsing);
@@ -44303,7 +44365,7 @@ KeyInfo *sqlite3IndexKeyinfo(Parse *pParse, Index *pIdx){
 ** This file contains functions used to access the internal hash tables
 ** of user defined functions and collation sequences.
 **
-** $Id: callback.c,v 1.16 2007/02/02 12:44:37 drh Exp $
+** $Id: callback.c,v 1.17 2007/04/16 15:06:25 danielk1977 Exp $
 */
 
 
@@ -44633,7 +44695,7 @@ void sqlite3SchemaFree(void *p){
   sqlite3HashInit(&pSchema->tblHash, SQLITE_HASH_STRING, 0);
   for(pElem=sqliteHashFirst(&temp1); pElem; pElem=sqliteHashNext(pElem)){
     Table *pTab = sqliteHashData(pElem);
-    sqlite3DeleteTable(0, pTab);
+    sqlite3DeleteTable(pTab);
   }
   sqlite3HashClear(&temp1);
   pSchema->pSeqTab = 0;
@@ -44942,7 +45004,7 @@ int sqlite3_complete16(const void *zSql){
 ** This file contains C code routines that are called by the parser
 ** in order to generate code for DELETE FROM statements.
 **
-** $Id: delete.c,v 1.128 2007/02/07 01:06:53 drh Exp $
+** $Id: delete.c,v 1.129 2007/04/16 15:06:25 danielk1977 Exp $
 */
 
 /*
@@ -44956,7 +45018,7 @@ Table *sqlite3SrcListLookup(Parse *pParse, SrcList *pSrc){
   struct SrcList_item *pItem;
   for(i=0, pItem=pSrc->a; i<pSrc->nSrc; i++, pItem++){
     pTab = sqlite3LocateTable(pParse, pItem->zName, pItem->zDatabase);
-    sqlite3DeleteTable(pParse->db, pItem->pTab);
+    sqlite3DeleteTable(pItem->pTab);
     pItem->pTab = pTab;
     if( pTab ){
       pTab->nRef++;
@@ -45415,7 +45477,7 @@ void sqlite3GenerateIndexKey(
 ** sqliteRegisterBuildinFunctions() found at the bottom of the file.
 ** All other code has file scope.
 **
-** $Id: func.c,v 1.138 2007/03/17 17:52:42 drh Exp $
+** $Id: func.c,v 1.139 2007/04/10 13:51:18 drh Exp $
 */
 /* #include <math.h> */
 
@@ -46049,8 +46111,8 @@ static void hexFunc(
   const unsigned char *pBlob;
   char *zHex, *z;
   assert( argc==1 );
-  pBlob = sqlite3_value_blob(argv[0]);
   n = sqlite3_value_bytes(argv[0]);
+  pBlob = sqlite3_value_blob(argv[0]);
   z = zHex = sqlite3_malloc(n*2 + 1);
   if( zHex==0 ) return;
   for(i=0; i<n; i++, pBlob++){
@@ -46753,7 +46815,7 @@ int sqlite3IsLikeFunction(sqlite3 *db, Expr *pExpr, int *pIsNocase, char *aWc){
 ** This file contains C code routines that are called by the parser
 ** to handle INSERT statements in SQLite.
 **
-** $Id: insert.c,v 1.183 2007/04/01 23:49:52 drh Exp $
+** $Id: insert.c,v 1.185 2007/04/18 14:24:33 danielk1977 Exp $
 */
 
 /*
@@ -47445,7 +47507,7 @@ void sqlite3Insert(
         VdbeOp *pOp;
         sqlite3ExprCode(pParse, pList->a[keyColumn].pExpr);
         pOp = sqlite3VdbeGetOp(v, sqlite3VdbeCurrentAddr(v) - 1);
-        if( pOp->opcode==OP_Null ){
+        if( pOp && pOp->opcode==OP_Null ){
           appendFlag = 1;
           pOp->opcode = OP_NewRowid;
           pOp->p1 = base;
@@ -48114,10 +48176,10 @@ static int xferOptimization(
   int addr1, addr2;                /* Loop addresses */
   int emptyDestTest;               /* Address of test for empty pDest */
   int emptySrcTest;                /* Address of test for empty pSrc */
-  int memRowid = 0;                /* A memcell containing a rowid from pSrc */
   Vdbe *v;                         /* The VDBE we are building */
   KeyInfo *pKey;                   /* Key information for an index */
   int counterMem;                  /* Memory register used by AUTOINC */
+  int destHasUniqueIdx = 0;        /* True if pDest has a UNIQUE index */
 
   if( pSelect==0 ){
     return 0;   /* Must be of the form  INSERT INTO ... SELECT ... */
@@ -48214,6 +48276,9 @@ static int xferOptimization(
     }
   }
   for(pDestIdx=pDest->pIndex; pDestIdx; pDestIdx=pDestIdx->pNext){
+    if( pDestIdx->onError!=OE_None ){
+      destHasUniqueIdx = 1;
+    }
     for(pSrcIdx=pSrc->pIndex; pSrcIdx; pSrcIdx=pSrcIdx->pNext){
       if( xferCompatibleIndex(pDestIdx, pSrcIdx) ) break;
     }
@@ -48244,11 +48309,16 @@ static int xferOptimization(
   iDest = pParse->nTab++;
   counterMem = autoIncBegin(pParse, iDbDest, pDest);
   sqlite3OpenTable(pParse, iDest, iDbDest, pDest, OP_OpenWrite);
-  if( pDest->iPKey<0 && pDest->pIndex!=0 ){
+  if( (pDest->iPKey<0 && pDest->pIndex!=0) || destHasUniqueIdx ){
     /* If tables do not have an INTEGER PRIMARY KEY and there
     ** are indices to be copied and the destination is not empty,
     ** we have to disallow the transfer optimization because the
     ** the rowids might change which will mess up indexing.
+    **
+    ** Or if the destination has a UNIQUE index and is not empty,
+    ** we also disallow the transfer optimization because we cannot
+    ** insure that all entries in the union of DEST and SRC will be
+    ** unique.
     */
     addr1 = sqlite3VdbeAddOp(v, OP_Rewind, iDest, 0);
     emptyDestTest = sqlite3VdbeAddOp(v, OP_Goto, 0, 0);
@@ -48258,11 +48328,6 @@ static int xferOptimization(
   }
   sqlite3OpenTable(pParse, iSrc, iDbSrc, pSrc, OP_OpenRead);
   emptySrcTest = sqlite3VdbeAddOp(v, OP_Rewind, iSrc, 0);
-  if( pDest->pIndex!=0 ){
-    sqlite3VdbeAddOp(v, OP_Rowid, iSrc, 0);
-    memRowid = pParse->nMem++;
-    sqlite3VdbeAddOp(v, OP_MemStore, memRowid, pDest->iPKey>=0);
-  }
   if( pDest->iPKey>=0 ){
     addr1 = sqlite3VdbeAddOp(v, OP_Rowid, iSrc, 0);
     sqlite3VdbeAddOp(v, OP_Dup, 0, 0);
@@ -48302,13 +48367,6 @@ static int xferOptimization(
                    (char*)pKey, P3_KEYINFO_HANDOFF);
     addr1 = sqlite3VdbeAddOp(v, OP_Rewind, iSrc, 0);
     sqlite3VdbeAddOp(v, OP_RowKey, iSrc, 0);
-    if( pDestIdx->onError!=OE_None ){
-      sqlite3VdbeAddOp(v, OP_MemLoad, memRowid, 0);
-      addr2 = sqlite3VdbeAddOp(v, OP_IsUnique, iDest, 0);
-      sqlite3VdbeOp3(v, OP_Halt, SQLITE_CONSTRAINT, onError, 
-                    "UNIQUE constraint failed", P3_STATIC);
-      sqlite3VdbeJumpHere(v, addr2);
-    }
     sqlite3VdbeAddOp(v, OP_IdxInsert, iDest, 1);
     sqlite3VdbeAddOp(v, OP_Next, iSrc, addr1+1);
     sqlite3VdbeJumpHere(v, addr1);
@@ -50956,7 +51014,7 @@ int sqlite3_prepare16_v2(
 ** This file contains C code routines that are called by the parser
 ** to handle SELECT statements in SQLite.
 **
-** $Id: select.c,v 1.333 2007/04/06 01:04:40 drh Exp $
+** $Id: select.c,v 1.338 2007/04/16 17:07:55 drh Exp $
 */
 
 
@@ -51496,6 +51554,7 @@ static int selectInnerLoop(
       sqlite3VdbeAddOp(v, OP_NotNull, -1, addr1+3);
       sqlite3VdbeAddOp(v, OP_Pop, 1, 0);
       addr2 = sqlite3VdbeAddOp(v, OP_Goto, 0, 0);
+      p->affinity = sqlite3CompareAffinity(pEList->a[0].pExpr,(iParm>>16)&0xff);
       if( pOrderBy ){
         /* At first glance you would think we could optimize out the
         ** ORDER BY in this case since the order of entries in the set
@@ -51503,9 +51562,7 @@ static int selectInnerLoop(
         ** case the order does matter */
         pushOntoSorter(pParse, pOrderBy, p);
       }else{
-        char affinity = (iParm>>16)&0xFF;
-        affinity = sqlite3CompareAffinity(pEList->a[0].pExpr, affinity);
-        sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, &affinity, 1);
+        sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, &p->affinity, 1);
         sqlite3VdbeAddOp(v, OP_IdxInsert, (iParm&0x0000FFFF), 0);
       }
       sqlite3VdbeJumpHere(v, addr2);
@@ -51666,7 +51723,7 @@ static void generateSortTail(
       sqlite3VdbeAddOp(v, OP_NotNull, -1, sqlite3VdbeCurrentAddr(v)+3);
       sqlite3VdbeAddOp(v, OP_Pop, 1, 0);
       sqlite3VdbeAddOp(v, OP_Goto, 0, sqlite3VdbeCurrentAddr(v)+3);
-      sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, "c", P3_STATIC);
+      sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, &p->affinity, 1);
       sqlite3VdbeAddOp(v, OP_IdxInsert, (iParm&0x0000FFFF), 0);
       break;
     }
@@ -52041,7 +52098,7 @@ Table *sqlite3ResultSetOfSelect(Parse *pParse, char *zTabName, Select *pSelect){
     sqlite3Dequote(zName);
     if( sqlite3MallocFailed() ){
       sqliteFree(zName);
-      sqlite3DeleteTable(0, pTab);
+      sqlite3DeleteTable(pTab);
       return 0;
     }
 
@@ -52345,8 +52402,11 @@ static int matchOrderbyToColumn(
   }
   pEList = pSelect->pEList;
   for(i=0; i<pOrderBy->nExpr; i++){
+    struct ExprList_item *pItem;
     Expr *pE = pOrderBy->a[i].pExpr;
     int iCol = -1;
+    char *zLabel;
+
     if( pOrderBy->a[i].done ) continue;
     if( sqlite3ExprIsInteger(pE, &iCol) ){
       if( iCol<=0 || iCol>pEList->nExpr ){
@@ -52359,20 +52419,23 @@ static int matchOrderbyToColumn(
       if( !mustComplete ) continue;
       iCol--;
     }
-    for(j=0; iCol<0 && j<pEList->nExpr; j++){
-      if( pEList->a[j].zName && (pE->op==TK_ID || pE->op==TK_STRING) ){
-        char *zName, *zLabel;
-        zName = pEList->a[j].zName;
-        zLabel = sqlite3NameFromToken(&pE->token);
-        assert( zLabel!=0 );
-        if( sqlite3StrICmp(zName, zLabel)==0 ){ 
-          iCol = j;
+    if( iCol<0 && (zLabel = sqlite3NameFromToken(&pE->token))!=0 ){
+      for(j=0, pItem=pEList->a; j<pEList->nExpr; j++, pItem++){
+        char *zName;
+        int isMatch;
+        if( pItem->zName ){
+          zName = sqlite3StrDup(pItem->zName);
+        }else{
+          zName = sqlite3NameFromToken(&pItem->pExpr->token);
         }
-        sqliteFree(zLabel);
+        isMatch = zName && sqlite3StrICmp(zName, zLabel)==0;
+        sqliteFree(zName);
+        if( isMatch ){
+          iCol = j;
+          break;
+        }
       }
-      if( iCol<0 && sqlite3ExprCompare(pE, pEList->a[j].pExpr) ){
-        iCol = j;
-      }
+      sqliteFree(zLabel);
     }
     if( iCol>=0 ){
       pE->op = TK_COLUMN;
@@ -52380,8 +52443,7 @@ static int matchOrderbyToColumn(
       pE->iTable = iTable;
       pE->iAgg = -1;
       pOrderBy->a[i].done = 1;
-    }
-    if( iCol<0 && mustComplete ){
+    }else if( mustComplete ){
       sqlite3ErrorMsg(pParse,
         "ORDER BY term number %d does not match any result column", i+1);
       nErr++;
@@ -53157,7 +53219,7 @@ static int flattenSubquery(
     int nSubSrc = pSubSrc->nSrc;
     int jointype = pSubitem->jointype;
 
-    sqlite3DeleteTable(0, pSubitem->pTab);
+    sqlite3DeleteTable(pSubitem->pTab);
     sqliteFree(pSubitem->zDatabase);
     sqliteFree(pSubitem->zName);
     sqliteFree(pSubitem->zAlias);
@@ -53535,11 +53597,14 @@ int sqlite3SelectResolve(
   */
   sNC.pEList = p->pEList;
   if( sqlite3ExprResolveNames(&sNC, p->pWhere) ||
-      sqlite3ExprResolveNames(&sNC, p->pHaving) ||
-      processOrderGroupBy(&sNC, p->pOrderBy, "ORDER") ||
-      processOrderGroupBy(&sNC, pGroupBy, "GROUP")
-  ){
+     sqlite3ExprResolveNames(&sNC, p->pHaving) ){
     return SQLITE_ERROR;
+  }
+  if( p->pPrior==0 ){
+    if( processOrderGroupBy(&sNC, p->pOrderBy, "ORDER") ||
+        processOrderGroupBy(&sNC, pGroupBy, "GROUP") ){
+      return SQLITE_ERROR;
+    }
   }
 
   /* Make sure the GROUP BY clause does not contain aggregate functions.
@@ -56269,7 +56334,7 @@ end_of_vacuum:
 *************************************************************************
 ** This file contains code used to help implement virtual tables.
 **
-** $Id: vtab.c,v 1.39 2007/01/09 14:01:14 drh Exp $
+** $Id: vtab.c,v 1.42 2007/04/18 14:24:34 danielk1977 Exp $
 */
 #ifndef SQLITE_OMIT_VIRTUALTABLE
 
@@ -56313,10 +56378,18 @@ void sqlite3VtabLock(sqlite3_vtab *pVtab){
 ** Unlock a virtual table.  When the last lock is removed,
 ** disconnect the virtual table.
 */
-void sqlite3VtabUnlock(sqlite3_vtab *pVtab){
+void sqlite3VtabUnlock(sqlite3 *db, sqlite3_vtab *pVtab){
   pVtab->nRef--;
+  assert(db);
+  assert(!sqlite3SafetyCheck(db));
   if( pVtab->nRef==0 ){
-    pVtab->pModule->xDisconnect(pVtab);
+    if( db->magic==SQLITE_MAGIC_BUSY ){
+      sqlite3SafetyOff(db);
+      pVtab->pModule->xDisconnect(pVtab);
+      sqlite3SafetyOn(db);
+    } else {
+      pVtab->pModule->xDisconnect(pVtab);
+    }
   }
 }
 
@@ -56329,7 +56402,7 @@ void sqlite3VtabClear(Table *p){
   sqlite3_vtab *pVtab = p->pVtab;
   if( pVtab ){
     assert( p->pMod && p->pMod->pModule );
-    sqlite3VtabUnlock(pVtab);
+    sqlite3VtabUnlock(p->pSchema->db, pVtab);
     p->pVtab = 0;
   }
   if( p->azModuleArg ){
@@ -56380,6 +56453,11 @@ void sqlite3VtabBeginParse(
 ){
   int iDb;              /* The database the table is being created in */
   Table *pTable;        /* The new virtual table */
+
+  if( sqlite3ThreadDataReadOnly()->useSharedData ){
+    sqlite3ErrorMsg(pParse, "Cannot use virtual tables in shared-cache mode");
+    return;
+  }
 
   sqlite3StartTable(pParse, pName1, pName2, 0, 0, 1, 0);
   pTable = pParse->pNewTable;
@@ -56505,6 +56583,7 @@ void sqlite3VtabFinishParse(Parse *pParse, Token *pEnd){
       assert( pTab==pOld );  /* Malloc must have failed inside HashInsert() */
       return;
     }
+    pSchema->db = pParse->db;
     pParse->pNewTable = 0;
   }
 }
@@ -56553,6 +56632,10 @@ static int vtabCallConstructor(
   int nArg = pTab->nModuleArg;
   char *zErr = 0;
   char *zModuleName = sqlite3MPrintf("%s", pTab->zName);
+
+  if( !zModuleName ){
+    return SQLITE_NOMEM;
+  }
 
   assert( !db->pVTab );
   assert( xConstruct );
@@ -56714,6 +56797,7 @@ int sqlite3_declare_vtab(sqlite3 *db, const char *zCreateTable){
     pTab->nCol = sParse.pNewTable->nCol;
     sParse.pNewTable->nCol = 0;
     sParse.pNewTable->aCol = 0;
+    db->pVTab = 0;
   } else {
     sqlite3Error(db, SQLITE_ERROR, zErr);
     sqliteFree(zErr);
@@ -56722,12 +56806,11 @@ int sqlite3_declare_vtab(sqlite3 *db, const char *zCreateTable){
   sParse.declareVtab = 0;
 
   sqlite3_finalize((sqlite3_stmt*)sParse.pVdbe);
-  sqlite3DeleteTable(0, sParse.pNewTable);
+  sqlite3DeleteTable(sParse.pNewTable);
   sParse.pNewTable = 0;
-  db->pVTab = 0;
 
   assert( (rc&0xff)==rc );
-  return rc;
+  return sqlite3ApiExit(db, rc);
 }
 
 /*
@@ -56775,7 +56858,7 @@ static void callFinaliser(sqlite3 *db, int offset){
     int (*x)(sqlite3_vtab *);
     x = *(int (**)(sqlite3_vtab *))((char *)pVtab->pModule + offset);
     if( x ) x(pVtab);
-    sqlite3VtabUnlock(pVtab);
+    sqlite3VtabUnlock(db, pVtab);
   }
   sqliteFree(db->aVTrans);
   db->nVTrans = 0;
@@ -62819,7 +62902,7 @@ void sqlite3Parser(
 ** individual tokens and sends those tokens one-by-one over to the
 ** parser for analysis.
 **
-** $Id: tokenize.c,v 1.125 2007/01/26 19:31:01 drh Exp $
+** $Id: tokenize.c,v 1.126 2007/04/16 15:06:25 danielk1977 Exp $
 */
 
 /*
@@ -63410,7 +63493,7 @@ abort_parse:
     ** structure built up in pParse->pNewTable. The calling code (see vtab.c)
     ** will take responsibility for freeing the Table structure.
     */
-    sqlite3DeleteTable(pParse->db, pParse->pNewTable);
+    sqlite3DeleteTable(pParse->pNewTable);
   }
 
   sqlite3DeleteTrigger(pParse->pNewTrigger);
@@ -63439,7 +63522,7 @@ abort_parse:
 ** other files are for internal use by SQLite and should not be
 ** accessed by users of the library.
 **
-** $Id: main.c,v 1.368 2007/04/02 16:40:38 drh Exp $
+** $Id: main.c,v 1.370 2007/04/18 14:24:33 danielk1977 Exp $
 */
 
 /*
@@ -63549,8 +63632,18 @@ int sqlite3_close(sqlite3 *db){
   }
 #endif 
 
-  /* If there are any outstanding VMs, return SQLITE_BUSY. */
   sqlite3ResetInternalSchema(db, 0);
+
+  /* If a transaction is open, the ResetInternalSchema() call above
+  ** will not have called the xDisconnect() method on any virtual
+  ** tables in the db->aVTrans[] array. The following sqlite3VtabRollback()
+  ** call will do so. We need to do this before the check for active
+  ** SQL statements below, as the v-table implementation may be storing
+  ** some prepared statements internally.
+  */
+  sqlite3VtabRollback(db);
+
+  /* If there are any outstanding VMs, return SQLITE_BUSY. */
   if( db->pVdbe ){
     sqlite3Error(db, SQLITE_BUSY, 
         "Unable to close due to unfinalised statements");
@@ -63570,8 +63663,6 @@ int sqlite3_close(sqlite3 *db){
     /* printf("DID NOT CLOSE\n"); fflush(stdout); */
     return SQLITE_ERROR;
   }
-
-  sqlite3VtabRollback(db);
 
   for(j=0; j<db->nDb; j++){
     struct Db *pDb = &db->aDb[j];
