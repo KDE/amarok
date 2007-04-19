@@ -20,7 +20,7 @@
 
 /**
  * @class Engine::Base
- * @author Mark Kretshmann
+ * @author Mark Kretschmann
  * @author Max Howell
  *
  * This is an abstract base class that you need to derive when making your own backends.
