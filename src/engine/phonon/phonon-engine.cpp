@@ -43,20 +43,20 @@ PhononEngine::~PhononEngine()
 bool
 PhononEngine::init()
 {
-   DEBUG_BLOCK
+    DEBUG_BLOCK
 
-   debug() << "'Phonon Engine has been successfully created.'\n";
+    debug() << "'Phonon Engine has been successfully created.'\n";
 
     m_mediaObject = new Phonon::MediaObject( this );
     m_audioPath   = new Phonon::AudioPath( this );
     m_audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
-   if( !m_mediaObject || !m_audioPath || !m_audioOutput )
-   {
-       Amarok::StatusBar::instance()->longMessage( "Amarok could not initialize Phonon.",
+    if( !m_mediaObject || !m_audioPath || !m_audioOutput )
+    {
+        Amarok::StatusBar::instance()->longMessage( "Amarok could not initialize Phonon.",
                                                   KDE::StatusBar::Error );
-       return false;
-   }
+        return false;
+    }
 
     m_mediaObject->addAudioPath( m_audioPath );
     m_audioPath->addOutput( m_audioOutput );
@@ -68,7 +68,7 @@ PhononEngine::init()
 
     connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
 
-   return true;
+    return true;
 }
 
 bool
@@ -142,18 +142,30 @@ PhononEngine::unpause()
 //taken verbatim from noatun
 Engine::State PhononEngine::convertState( Phonon::State s )
 {
+    Engine::State state;
+
     switch( s )
     {
         case Phonon::PlayingState:
-            return Engine::Playing;
+            state = Engine::Playing;
+
         case Phonon::PausedState:
-            return Engine::Paused;
+            state = Engine::Paused;
+
         case Phonon::StoppedState:
+        // fallthrough
+
         case Phonon::BufferingState:
+        // fallthrough
+
+        case Phonon::ErrorState:
+        // fallthrough
+        
         case Phonon::LoadingState:
-            return Engine::Empty;
+            state = Engine::Empty;
     }
-    return Engine::Empty; //default to this.. possibly a bad idea.
+
+    return state;
 }
 
 
@@ -187,7 +199,7 @@ PhononEngine::length() const
 void
 PhononEngine::seek( uint ms )
 {
-    if( m_mediaObject && ms >=0 )
+    if( m_mediaObject )
         m_mediaObject->seek( ms );
 }
 
