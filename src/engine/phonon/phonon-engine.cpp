@@ -135,8 +135,8 @@ PhononEngine::unpause()
     }
 }
 
-//taken verbatim from noatun
-Engine::State PhononEngine::convertState( Phonon::State s )
+Engine::State
+PhononEngine::convertState( Phonon::State s )
 {
     Engine::State state;
 
@@ -163,7 +163,6 @@ Engine::State PhononEngine::convertState( Phonon::State s )
 
     return state;
 }
-
 
 Engine::State
 PhononEngine::state() const

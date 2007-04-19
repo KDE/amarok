@@ -26,7 +26,7 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
 {
     Q_OBJECT
 
-   ~PhononEngine();
+    ~PhononEngine();
 
     virtual bool init();
     virtual bool canDecode( const KUrl& ) const;
