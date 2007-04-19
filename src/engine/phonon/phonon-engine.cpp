@@ -61,12 +61,8 @@ PhononEngine::init()
     m_mediaObject->addAudioPath( m_audioPath );
     m_audioPath->addOutput( m_audioOutput );
 
-
-    connect( m_mediaObject, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
-                              SLOT( convertState( Phonon::State, Phonon::State ) ) );
-    connect( m_mediaObject, SIGNAL( finished() ), SLOT( trackEnded() ) );
-
-    connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
+    //connect( m_mediaObject, SIGNAL( finished() ), SLOT( trackEnded() ) );
+    //connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
 
     return true;
 }
