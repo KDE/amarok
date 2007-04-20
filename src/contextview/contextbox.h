@@ -21,12 +21,14 @@ class QGraphicsRectItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
 class QSize;
+class QTimeLine;
 
 namespace Context
 {
 
-class ContextBox : public QGraphicsRectItem
+class ContextBox : public QObject, public QGraphicsRectItem
 {
+    Q_OBJECT
 
     public:
         ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
@@ -44,7 +46,13 @@ class ContextBox : public QGraphicsRectItem
         QGraphicsRectItem *m_titleBarRect;
         QGraphicsRectItem *m_contentRect;
 
-        bool m_visible;
+        bool  m_goingUp;
+        qreal m_optimumHeight;
+        qreal m_animationIncrement;
+        QTimeLine *m_animationTimer;
+
+    protected slots:
+        void visibilityTimerSlot();
 };
 
 }

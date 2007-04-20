@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "contextbox.h"
+#include "debug.h"
 
 #include <QGraphicsItemAnimation>
 #include <QGraphicsTextItem>
@@ -23,9 +24,12 @@
 using namespace Context;
 
 ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
-    : QGraphicsRectItem( parent, scene )
-      , m_titleItem( 0 )
-      , m_visible( true )
+    : QObject()
+    , QGraphicsRectItem( parent, scene )
+    , m_titleItem( 0 )
+    , m_goingUp( false )
+    , m_optimumHeight( 0 )
+    , m_animationTimer( 0 )
 {
     setHandlesChildEvents( true ); // events from the sub items are passed onto this object
 
@@ -64,6 +68,8 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     shadowGradient.setColorAt( 0, QColor( 150, 150, 150 ) );
     shadowGradient.setColorAt( 1, QColor( 255, 255, 255 ) );
     m_contentRect->setBrush( QBrush( shadowGradient ) );
+
+    m_optimumHeight = m_contentRect->rect().height();
 }
 
 void ContextBox::setTitle( const QString &title )
@@ -79,7 +85,7 @@ void ContextBox::setTitle( const QString &title )
     }
 
     // Center the title
-    qreal xOffset = ( m_titleBarRect->boundingRect().width() - titleWidth ) / 2;
+    int xOffset = (int)( m_titleBarRect->boundingRect().width() - titleWidth ) / 2;
     m_titleItem->setPos( xOffset, 0 );
 }
 
@@ -95,6 +101,8 @@ void ContextBox::setContentRectSize( const QSize &sz )
     //set correct size of this as well
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
     m_titleBarRect->setRect( 0, 0, sz.width(), m_titleBarRect->boundingRect().height() );
+
+//     m_optimumHeight = boundingRect().height();
 }
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
@@ -109,24 +117,53 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void ContextBox::toggleVisibility()
 {
-    QTimeLine *timer = new QTimeLine( 2500 );
-    timer->setUpdateInterval( 30 ); // ~33 fps
-    timer->setFrameRange( 0, 100 );
+    static const int range = 100;
 
-    QGraphicsItemAnimation *animationContent = new QGraphicsItemAnimation();
-    animationContent->setItem( m_contentRect );
-    animationContent->setTimeLine( timer );
-
-    for( int i = 0; i < 200; ++i )
+    if( !m_animationTimer )
     {
-        if( m_visible )
-            animationContent->setScaleAt( i / 200.0, 1.0, (200.0 - 1 - i) / 200.0 );
-        else
-            animationContent->setScaleAt( i / 200.0, 1.0, i / 200.0 );
+        m_animationTimer = new QTimeLine( 1000 );
+        m_animationTimer->setUpdateInterval( 30 ); // ~33 fps
+        m_animationTimer->setFrameRange( 0, range );
+        m_animationTimer->setLoopCount( 0 ); // loop forever until we explicitly stop it
     }
 
-    timer->start();
+    if( m_animationTimer->state() == QTimeLine::Running )
+    {
+        m_goingUp = !m_goingUp; // change direction if the is already an animation
+        debug() << "chaning direction!" << endl;
+        return;
+    }
 
-    m_visible = !m_visible;
+    m_animationTimer->setStartFrame( 0 );
+
+    m_animationIncrement = m_optimumHeight / range;
+    debug() << "m_goingUp: " << m_goingUp << endl;
+    debug() << "m_optimumHeight: " << m_optimumHeight << endl;
+    debug() << "m_animationIncrement: " << m_animationIncrement << endl;
+
+    connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
+    m_animationTimer->start();
 }
 
+void ContextBox::visibilityTimerSlot()
+{
+    const qreal desiredHeight = m_goingUp ? m_optimumHeight : 0;
+
+    qreal newHeight = m_goingUp ?
+            m_contentRect->rect().height() + m_animationIncrement: //get bigger if hidden
+            m_contentRect->rect().height() - m_animationIncrement; //get smaller if visible
+
+    debug() << "        : " << newHeight << " -> " << desiredHeight << endl;
+
+    if( ( !m_goingUp && newHeight <= desiredHeight ) ||
+        (  m_goingUp && newHeight >= desiredHeight ) )
+    {
+        newHeight = desiredHeight;
+        m_animationTimer->stop(); //stop the timeline _before_ changing the direction
+        m_goingUp = !m_goingUp;
+    }
+
+    setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ) );
+}
+
+#include "contextbox.moc"
