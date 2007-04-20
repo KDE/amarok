@@ -20,10 +20,11 @@
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-//Added by qt3to4:
-#include <pthread.h>
 
 #include "atomicstring.h"
+
+#include <QThread>
+#include <QCoreApplication>
 
 #if __GNUC__ >= 3
 
@@ -214,14 +215,7 @@ inline void AtomicString::ref( Data *s ) const
 // It is not necessary to hold the store mutex here.
 bool AtomicString::isMainThread()
 {
-    // For isMainThread(), we could use QThread::currentThread(), except the
-    // docs say it's unreliable. And in general QThreads don't like to be called from
-    // app destructors. Good old pthreads will serve us well. As for Windows, these
-    // two calls surely have equivalents; better yet we'll have QT4 and thread safe
-    // QStrings by then.
-    // Note that the the static local init is thread safe.
-    static pthread_t main_thread = pthread_self();
-    return pthread_equal(pthread_self(), main_thread);
+    return QThread::currentThread() == QCoreApplication::instance()->thread();
 }
 
 // call holding the store mutex
