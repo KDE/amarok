@@ -206,12 +206,12 @@ PhononEngine::seek( uint ms )
 }
 
 void
-PhononEngine::setVolumeSW( uint vol )
+PhononEngine::setVolumeSW( uint volume )
 {
     if( m_audioOutput )
     {
-        debug() << "New volume:" << vol << endl;
-        m_audioOutput->setVolume( vol );
+        const float v = volume * 0.01;
+        m_audioOutput->setVolume( v );
     }
 }
 
