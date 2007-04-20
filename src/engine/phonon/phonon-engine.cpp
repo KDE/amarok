@@ -1,6 +1,7 @@
 /***************************************************************************
- *   Copyright (C) 2007   Dan Meltzer <hydrogen@notyetimplemented.com>     *
- *                 2007   Seb Ruiz <me@sebruiz.net>                        *
+ *   Copyright (C) 2007  Dan Meltzer <hydrogen@notyetimplemented.com>      *
+ *   Copyright (C) 2007  Seb Ruiz <me@sebruiz.net>                         *
+ *   Copyright (C) 2007  Mark Kretschmann <markey@web.de>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,6 +20,8 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 
 #include "debug.h"
 #include "statusbar/statusbar.h"
+
+#include <kmimetype.h>
 
 #include <phonon/mediaobject.h>
 #include <phonon/audiopath.h>
@@ -225,10 +228,10 @@ PhononEngine::setVolumeSW( uint volume )
 bool
 PhononEngine::canDecode( const KUrl &url ) const
 {
-    //TODO: phonon only offers mime type checks, need to investigate.
-    return true;
+    const QString mimeType = KMimeType::findByUrl( url, 0, false, true )->name();
+
+    return Phonon::BackendCapabilities::isMimeTypeKnown( mimeType );
 }
 
-//TODO: Configuration?
 
 #include "phonon-engine.moc"
