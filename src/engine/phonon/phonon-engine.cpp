@@ -192,8 +192,15 @@ PhononEngine::position() const
 uint
 PhononEngine::length() const
 {
-    if( m_mediaObject )
-        return ( m_mediaObject->totalTime() / 1000 );
+#if 0
+    DEBUG_BLOCK
+
+    if( m_mediaObject ) {
+        const uint i = m_mediaObject->totalTime();
+        debug() << "Length: " << i << endl;
+        return i;
+    }
+#endif
 
     return 0;
 }
