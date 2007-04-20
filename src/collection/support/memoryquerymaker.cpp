@@ -21,6 +21,122 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+Matcher::Matcher()
+    : m_next( 0 )
+{
+}
+
+Matcher::~Matcher()
+{
+    delete m_next;
+}
+
+bool
+Matcher::isLast() const
+{
+    return !m_next;
+}
+
+Matcher*
+Matcher::next() const
+{
+    return m_next;
+}
+
+void
+Matcher::setNext( Matcher *next )
+{
+    if ( !m_next )
+        delete m_next;
+    m_next = next;
+}
+
+//TODO check if it's possible to use templates here
+
+class ArtistMatcher : public Matcher
+{
+    public:
+     ArtistMatcher( ArtistPtr artist )
+        : Matcher()
+        , m_artist( artist )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        ArtistMap artistMap = memColl->artistMap();
+        if ( artistMap.contains( m_artist->name() ) )
+        {
+            ArtistPtr artist = artistMap.value( m_artist->name() );
+            TrackList matchingTracks = artist->tracks();
+            if ( isLast() )
+                return matchingTracks;
+            else
+                return next()->match( matchingTracks );
+        }
+        else
+            return TrackList();
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList matchingTracks;
+        QString name = m_artist->name();
+        foreach( TrackPtr track, tracks )
+            if ( track->artist()->name() == name )
+                matchingTracks.append( track );
+        if ( isLast() || matchingTracks.count() == 0)
+            return matchingTracks;
+        else
+            return next()->match( matchingTracks );
+    }
+
+    private:
+        ArtistPtr m_artist;
+};
+
+class AlbumMatcher : public Matcher
+{
+    public:
+        AlbumMatcher( AlbumPtr album )
+        : Matcher()
+        , m_album( album )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        AlbumMap albumMap = memColl->albumMap();
+        if ( albumMap.contains( m_album->name() ) )
+        {
+            AlbumPtr album = albumMap.value( m_album->name() );
+            TrackList matchingTracks = album->tracks();
+            if ( isLast() )
+                return matchingTracks;
+            else
+                return next()->match( matchingTracks );
+        }
+        else
+            return TrackList();
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList matchingTracks;
+        QString name = m_album->name();
+        foreach( TrackPtr track, tracks )
+            if ( track->album()->name() == name )
+                matchingTracks.append( track );
+        if ( isLast() || matchingTracks.count() == 0)
+            return matchingTracks;
+        else
+            return next()->match( matchingTracks );
+    }
+
+    private:
+        AlbumPtr m_album;
+};
+
+//QueryJob
+
 class QueryJob : public ThreadWeaver::Job
 {
     public:
@@ -46,6 +162,7 @@ struct MemoryQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     bool returnDataPtrs;
+    Matcher* matcher;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc )
@@ -66,6 +183,7 @@ MemoryQueryMaker::reset()
 {
     d->type = Private::NONE;
     d->returnDataPtrs = false;
+    delete d->matcher;
     return this;
 }
 
@@ -90,7 +208,7 @@ QueryMaker*
 MemoryQueryMaker::startTrackQuery()
 {
     if ( d->type == Private::NONE )
-        d->type = Private:TRACK;
+        d->type = Private::TRACK;
     return this;
 }
 
@@ -187,14 +305,32 @@ MemoryQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 MemoryQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    //TODO stub
+    Matcher *artistMatcher = new ArtistMatcher( artist );
+    if ( d->matcher == 0 )
+        d->matcher = artistMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( artistMatcher );
+    }
     return this;
 }
 
 QueryMaker*
 MemoryQueryMaker::addMatch( const AlbumPtr &album )
 {
-    //TODO stub
+    Matcher *albumMatcher = new AlbumMatcher( album );
+    if ( d->matcher == 0 )
+        d->matcher = albumMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( albumMatcher );
+    }
     return this;
 }
 

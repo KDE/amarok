@@ -71,4 +71,19 @@ class MemoryQueryMaker : public QueryMaker
         Private * const d;
 };
 
+class Matcher {
+    public:
+        Matcher();
+        virtual ~Matcher();
+        virtual TrackList match( MemoryCollection *memColl) = 0;
+        virtual TrackList match( const TrackList &tracks ) = 0;
+        
+        bool isLast() const;
+        void setNext( Matcher *next );
+        Matcher* next() const;
+
+    private:
+        Matcher *m_next;
+};
+
 #endif
