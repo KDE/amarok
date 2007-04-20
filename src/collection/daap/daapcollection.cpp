@@ -22,7 +22,6 @@
 
 #include "amarokconfig.h"
 #include "daapmeta.h"
-#include "daapquerymaker.h"
 #include "debug.h"
 #include "memoryquerymaker.h"
 
