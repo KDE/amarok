@@ -199,7 +199,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "remove" ) ) );
         menu->addAction( actionCollection->action( "delete" ) );
         menu->insertSeparator();
-        menu->insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
+        menu->insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), EditTags );
         menu->addAction( actionCollection->action( "properties" ) );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );

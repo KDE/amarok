@@ -1016,7 +1016,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.addSeparator();
-        menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
         {

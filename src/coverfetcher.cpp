@@ -72,7 +72,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         case DELETE:
         {
             const int button = KMessageBox::warningContinueCancel( parent,
-                i18n( "Are you sure you want to remove this cover from the Collection?" ),
+                i18nc( "[only-singular]", "Are you sure you want to remove this cover from the Collection?" ),
                 QString(),
                 KStandardGuiItem::del() );
 

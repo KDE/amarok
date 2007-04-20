@@ -256,7 +256,7 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
             {
-                menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Track &Information..." ), INFO );
+                menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Track &Information..." ), INFO );
             }
             break;
     }

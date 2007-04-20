@@ -1058,7 +1058,7 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
     menu.addSeparator();
 
     menu.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove" ), REMOVE );
-    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( position ) ) {
         case LOAD:

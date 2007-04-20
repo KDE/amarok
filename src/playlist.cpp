@@ -3885,7 +3885,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
         fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
         fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
+    fileMenu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18np("&Delete Selected File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
     popup.insertItem( KIcon( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
