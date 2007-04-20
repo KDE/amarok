@@ -25,6 +25,7 @@
 
 using namespace Meta;
 
+//QMap is slower than QHash but the items are ordered by key
 typedef QMap<QString, TrackPtr> TrackMap;
 typedef QMap<QString, ArtistPtr> ArtistMap;
 typedef QMap<QString, AlbumPtr> AlbumMap;

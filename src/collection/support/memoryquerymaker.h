@@ -27,7 +27,7 @@ using namespace Meta;
 class MemoryQueryMaker : public QueryMaker
 {
     public:
-        MemoryQueryMaker( MemoryCollection *mc );
+        MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
 
         virtual QueryMaker* reset();
@@ -64,9 +64,12 @@ class MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* limitMaxResultSize( int size );
         //MemoryQueryMaker specific methods
         void runQuery();
+        void handleResult();
+        void handleResult( const TrackList &tracks );
 
     protected:
         MemoryCollection *m_memCollection;
+        QString m_collectionId;
         class Private;
         Private * const d;
 };

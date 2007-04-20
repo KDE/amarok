@@ -165,9 +165,10 @@ struct MemoryQueryMaker::Private {
     Matcher* matcher;
 };
 
-MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc )
+MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
     : QueryMaker()
     , m_memCollection( mc )
+    , m_collectionId( collectionId )
     ,d( new Private )
 {
     reset();
@@ -201,7 +202,74 @@ void
 MemoryQueryMaker::runQuery()
 {
     m_memCollection->acquireReadLock();
+    //naive implementation, fix this
+    //note: we are not handling filtering yet
+    if ( d->matcher )
+    {
+        TrackList result = d->matcher->match( m_memCollection );
+        handleResult( result );
+    }
+    else
+        handleResult();
     m_memCollection->releaseLock();
+}
+
+// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
+// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
+// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// signal that takes the list of the specific class.
+// (copied from sqlquerybuilder.cpp with a few minor tweaks)
+
+#define emitProperResult( PointerType, list ) { \
+            if ( d->returnDataPtrs ) { \
+                DataList data; \
+                foreach( PointerType p, list ) { \
+                    data << DataPtr::staticCast( p ); \
+                } \
+                emit newResultReady( m_collectionId, data ); \
+            } \
+            else { \
+                emit newResultReady( m_collectionId, list ); \
+            } \
+        }
+
+void
+MemoryQueryMaker::handleResult()
+{
+    //this gets called when we want to return all values for the given query type
+    switch( d->type )
+    {
+        case Private::TRACK :
+            emitProperResult( TrackPtr, m_memCollection->trackMap().values() );
+            break;
+        case Private::ALBUM :
+            emitProperResult( AlbumPtr, m_memCollection->albumMap().values() );
+            break;
+        case Private::ARTIST :
+            emitProperResult( ArtistPtr, m_memCollection->artistMap().values() );
+            break;
+        case Private::COMPOSER :
+            emitProperResult( ComposerPtr, m_memCollection->composerMap().values() );
+            break;
+        case Private::GENRE :
+            emitProperResult( GenrePtr, m_memCollection->genreMap().values() );
+            break;
+        case Private::YEAR :
+            emitProperResult( YearPtr, m_memCollection->yearMap().values() );
+            break;
+        case Private::CUSTOM :
+            //TODO stub, fix this
+            break;
+        case Private::NONE :
+            //nothing to do
+            break;
+    }
+    emit queryDone();
+}
+
+void
+MemoryQueryMaker::handleResult( const TrackList &tracks )
+{
 }
 
 QueryMaker*

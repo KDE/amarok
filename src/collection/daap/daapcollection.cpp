@@ -118,7 +118,7 @@ DaapCollection::startFullScan()
 QueryMaker*
 DaapCollection::queryBuilder()
 {
-    return new MemoryQueryMaker( this );
+    return new MemoryQueryMaker( this, collectionId() );
 }
 
 QString
