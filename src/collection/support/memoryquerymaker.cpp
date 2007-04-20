@@ -21,6 +21,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QSet>
+
 Matcher::Matcher()
     : m_next( 0 )
 {
@@ -191,6 +193,12 @@ MemoryQueryMaker::reset()
 void
 MemoryQueryMaker::run()
 {
+    if ( d->type == Private::NONE )
+        //TODO error handling
+        return;
+    else
+    {
+    }
 }
 
 void
@@ -270,6 +278,59 @@ MemoryQueryMaker::handleResult()
 void
 MemoryQueryMaker::handleResult( const TrackList &tracks )
 {
+    switch( d->type )
+    {
+        case Private::TRACK :
+            emitProperResult( TrackPtr, tracks );
+            break;
+        case Private::ALBUM :
+        {
+            QSet<AlbumPtr> albumSet;
+            foreach( TrackPtr track, tracks )
+                albumSet.insert( track->album() );
+            emitProperResult( AlbumPtr, albumSet.toList() );
+            break;
+        }
+        case Private::ARTIST :
+        {
+            QSet<ArtistPtr> artistSet;
+            foreach( TrackPtr track, tracks )
+                artistSet.insert( track->artist() );
+            emitProperResult( ArtistPtr, artistSet.toList() );
+            break;
+        }
+        case Private::GENRE :
+        {
+            QSet<GenrePtr> genreSet;
+            foreach( TrackPtr track, tracks )
+                genreSet.insert( track->genre() );
+            emitProperResult( GenrePtr, genreSet.toList() );
+            break;
+        }
+        case Private::COMPOSER :
+        {
+            QSet<ComposerPtr> composerSet;
+            foreach( TrackPtr track, tracks )
+                composerSet.insert( track->composer() );
+            emitProperResult( ComposerPtr, composerSet.toList() );
+            break;
+        }
+        case Private::YEAR :
+        {
+            QSet<YearPtr> yearSet;
+            foreach( TrackPtr track, tracks )
+                yearSet.insert( track->year() );
+            emitProperResult( YearPtr, yearSet.toList() );
+            break;
+        }
+        case Private::CUSTOM :
+            //hmm, not sure if this makes sense
+            break;
+        case Private::NONE:
+            //should never happen, but handle error anyway
+            break;
+    }
+    emit queryDone();
 }
 
 QueryMaker*
