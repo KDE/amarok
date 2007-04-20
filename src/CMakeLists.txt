@@ -93,6 +93,11 @@ set(libscriptableservice_SRCS
 	servicebrowser/scriptableservice/scriptableservice.cpp
         servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp)
 
+set(libjamendoservice_SRCS
+        servicebrowser/jamendo/jamendoservice.cpp
+	servicebrowser/jamendo/jamendotypes.cpp
+	servicebrowser/jamendo/jamendoxmlparser.cpp)
+
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
@@ -164,7 +169,7 @@ set(libstatusbar_SRCS
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
         ${libmagnatunestore_SRCS} ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS}
-        ${libcontextview_SRCS}
+        ${libcontextview_SRCS} ${libjamendoservice_SRCS}
    collection/querymaker.cpp
    collection/collection.cpp
    collection/collectionmanager.cpp

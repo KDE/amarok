@@ -42,6 +42,7 @@
 #include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
+#include "servicebrowser/jamendo/jamendoservice.h"
 #include "sidebar.h"
 #include "sidebar.moc"
 #include "statistics.h"
@@ -287,6 +288,12 @@ void PlaylistWindow::init()
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
+
+        internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
+
+
+
+
 
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
