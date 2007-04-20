@@ -34,7 +34,34 @@ class MemoryQueryMaker : public QueryMaker
         virtual void run();
         virtual void abortQuery();
 
+        virtual QueryMaker* startTrackQuery();
+        virtual QueryMaker* startArtistQuery();
+        virtual QueryMaker* startAlbumQuery();
+        virtual QueryMaker* startComposerQuery();
+        virtual QueryMaker* startGenreQuery();
+        virtual QueryMaker* startYearQuery();
+        virtual QueryMaker* startCustomQuery();
 
+        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
+
+        virtual QueryMaker* addReturnValue( qint64 value );
+        virtual QueryMaker* orderBy( qint64 value, bool descending = false );
+
+        virtual QueryMaker* includeCollection( const QString &collectionId );
+        virtual QueryMaker* excludeCollection( const QString &collectionId );
+
+        virtual QueryMaker* addMatch( const TrackPtr &track );
+        virtual QueryMaker* addMatch( const ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const AlbumPtr &album );
+        virtual QueryMaker* addMatch( const ComposerPtr &composer );
+        virtual QueryMaker* addMatch( const GenrePtr &genre );
+        virtual QueryMaker* addMatch( const YearPtr &year );
+        virtual QueryMaker* addMatch( const DataPtr &data );
+
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
+
+        virtual QueryMaker* limitMaxResultSize( int size );
         //MemoryQueryMaker specific methods
         void runQuery();
 

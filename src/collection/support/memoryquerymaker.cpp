@@ -43,6 +43,9 @@ class QueryJob : public ThreadWeaver::Job
 };
 
 struct MemoryQueryMaker::Private {
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
+    QueryType type;
+    bool returnDataPtrs;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc )
@@ -50,7 +53,7 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc )
     , m_memCollection( mc )
     ,d( new Private )
 {
-    //nothing to do
+    reset();
 }
 
 MemoryQueryMaker::~MemoryQueryMaker()
@@ -61,6 +64,8 @@ MemoryQueryMaker::~MemoryQueryMaker()
 QueryMaker*
 MemoryQueryMaker::reset()
 {
+    d->type = Private::NONE;
+    d->returnDataPtrs = false;
     return this;
 }
 
@@ -80,3 +85,165 @@ MemoryQueryMaker::runQuery()
     m_memCollection->acquireReadLock();
     m_memCollection->releaseLock();
 }
+
+QueryMaker*
+MemoryQueryMaker::startTrackQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private:TRACK;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startArtistQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private::ARTIST;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startAlbumQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private::ALBUM;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startComposerQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private::COMPOSER;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startGenreQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private::GENRE;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startYearQuery()
+{
+    if ( d->type == Private::NONE )
+        d->type = Private::YEAR;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::startCustomQuery()
+{
+    if ( d->type == Private::CUSTOM )
+        d->type = Private::CUSTOM;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+{
+    d->returnDataPtrs = resultAsDataPtrs;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addReturnValue( qint64 value )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::orderBy( qint64 value, bool descending )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::includeCollection( const QString &collectionId )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::excludeCollection( const QString &collectionId )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const TrackPtr &track )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const ArtistPtr &artist )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const AlbumPtr &album )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const GenrePtr &genre )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const ComposerPtr &composer )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const YearPtr &year )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addMatch( const DataPtr &data )
+{
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addFilter( qint64 value, const QString &filter )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter )
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::limitMaxResultSize( int size )
+{
+    //TODO stub
+    return this;
+}
+
