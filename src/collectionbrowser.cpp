@@ -2921,22 +2921,22 @@ CollectionView::allForCategory( const int cat, const int num ) const
         // The singular forms shouldn't get used
         case IdAlbum:
         case IdVisYearAlbum:
-            return i18np( "Album", "All %1 Albums", num );
+            return i18np( "One Album", "All %1 Albums", num );
             break;
         case IdArtist:
-            return i18np( "Artist", "All %1 Artists", num );
+            return i18np( "One Artist", "All %1 Artists", num );
             break;
         case IdComposer:
-            return i18np( "Composer", "All %1 Composers", num );
+            return i18np( "One Composer", "All %1 Composers", num );
             break;
         case IdGenre:
-            return i18np( "Genre", "All %1 Genres", num );
+            return i18np( "One Genre", "All %1 Genres", num );
             break;
         case IdYear:
-            return i18np( "Year", "All %1 Years", num );
+            return i18np( "One Year", "All %1 Years", num );
             break;
         case IdLabel:
-            return i18np( "Label", "All %1 Labels", num );
+            return i18np( "One Label", "All %1 Labels", num );
             break;
     }
 
