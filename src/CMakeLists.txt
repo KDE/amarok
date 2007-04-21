@@ -96,6 +96,7 @@ set(libscriptableservice_SRCS
 set(libjamendoservice_SRCS
         servicebrowser/jamendo/jamendoservice.cpp
 	servicebrowser/jamendo/jamendotypes.cpp
+	servicebrowser/jamendo/jamendodatabasehandler.cpp
 	servicebrowser/jamendo/jamendoxmlparser.cpp)
 
 

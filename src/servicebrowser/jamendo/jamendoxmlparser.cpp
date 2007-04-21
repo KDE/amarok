@@ -19,6 +19,8 @@
 
 #include "jamendoxmlparser.h"
 
+#include "jamendodatabasehandler.h"
+
 #include "amarok.h"
 #include "debug.h"
 
@@ -79,15 +81,15 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     file.close();
 
 
-    //JamendoDatabaseHandler::instance() ->destroyDatabase();
-    //JamendoDatabaseHandler::instance() ->createDatabase();
+    JamendoDatabaseHandler::instance()->destroyDatabase();
+    JamendoDatabaseHandler::instance()->createDatabase();
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();
 
-    //JamendoDatabaseHandler::instance() ->begin(); //start transaction (MAJOR speedup!!)
+    JamendoDatabaseHandler::instance()->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );
-    //JamendoDatabaseHandler::instance() ->commit(); //complete transaction
+    JamendoDatabaseHandler::instance()->commit(); //complete transaction
 
     completeJob( );
 
@@ -158,13 +160,16 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
     }
 
 
-    debug() << "Found artist: " << endl;
+    JamendoDatabaseHandler::instance()->insertArtist( &currentArtist );
+
+    /*debug() << "Found artist: " << endl;
     debug() << "    Name:       " << currentArtist.getName() << endl;
     debug() << "    Id:         " << currentArtist.getId() << endl;
-    debug() << "    Photo:      " << currentArtist.getPhotoURL() << endl;
+    //debug() << "    Photo:      " << currentArtist.getPhotoURL() << endl;
     debug() << "    J_url:      " << currentArtist.getJamendoURL() << endl;
     debug() << "    H_url:      " << currentArtist.getHomeURL() << endl;
     debug() << "    Decription: " << currentArtist.getDescription() << endl;
+*/
 
 
 }
@@ -198,12 +203,15 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     }
 
 
-    debug() << "Found album: " << endl;
+     JamendoDatabaseHandler::instance()->insertAlbum( &currentAlbum );
+
+    /*debug() << "Found album: " << endl;
     debug() << "    Name:       " << currentAlbum.getName() << endl;
     debug() << "    Id:         " << currentAlbum.getId() << endl;
     debug() << "    Artist_id:  " << currentAlbum.getArtistId() << endl;
     debug() << "    Genre:      " << currentAlbum.getGenre() << endl;
     debug() << "    Decription: " << currentAlbum.getDescription() << endl;
+*/
 
 }
 
@@ -233,13 +241,15 @@ void JamendoXmlParser::parseTrack(QDomElement e)
 
     }
 
+    JamendoDatabaseHandler::instance()->insertTrack( &currentTrack );
 
-    debug() << "Found track: " << endl;
+  /*  debug() << "Found track: " << endl;
     debug() << "    Name:       " << currentTrack.getName() << endl;
     debug() << "    Id:         " << currentTrack.getId() << endl;
     debug() << "    Track No:   " << currentTrack.getTrackNumber() << endl;
     debug() << "    Album_id:  " << currentTrack.getAlbumId() << endl;
     debug() << "    length (s): " << currentTrack.getDuration() << endl;
+*/
 
 }
 
