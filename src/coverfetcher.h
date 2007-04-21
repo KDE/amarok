@@ -5,12 +5,11 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include <QLabel>       //baseclass
 #include <QImage>       //stack allocated
+#include <QLabel>       //baseclass
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
-//Added by qt3to4:
-#include <QMouseEvent>
+
 
 namespace Amarok {
     void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
