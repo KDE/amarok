@@ -215,7 +215,11 @@ inline void AtomicString::ref( Data *s ) const
 // It is not necessary to hold the store mutex here.
 bool AtomicString::isMainThread()
 {
-    return QThread::currentThread() == QCoreApplication::instance()->thread();
+    QCoreApplication* app = QCoreApplication::instance();
+    if( !app )
+        return false;
+
+    return QThread::currentThread() == app->thread();
 }
 
 // call holding the store mutex
