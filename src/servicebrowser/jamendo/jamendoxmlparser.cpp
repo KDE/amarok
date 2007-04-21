@@ -55,6 +55,7 @@ JamendoXmlParser::completeJob( )
 
     debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists << endl;
     debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums << endl;
+    debug() << "JamendoXmlParser: total number of tracks: " << m_nNumberOfTracks << endl;
     emit( doneParsing() );
 }
 
@@ -208,6 +209,38 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 
 void JamendoXmlParser::parseTrack(QDomElement e)
 {
+
+    m_nNumberOfTracks++;
+    JamendoTrack currentTrack;
+
+    currentTrack.setId( e.attribute( "id", "0" ).toInt() );
+    currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
+    currentTrack.setDuration(  e.attribute( "lengths", "0" ).toInt() );
+    currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
+
+    QDomNode n = e.firstChild();
+
+    while ( !n.isNull() )
+    {
+        if ( n.isElement() ) {
+            QDomElement currentChildElement = n.toElement();
+            
+            if ( currentChildElement.tagName() == "dispname" )
+                currentTrack.setName( currentChildElement.text() );
+            //skip lyrics, license and url for now
+            n = n.nextSibling();
+        }
+
+    }
+
+
+    debug() << "Found track: " << endl;
+    debug() << "    Name:       " << currentTrack.getName() << endl;
+    debug() << "    Id:         " << currentTrack.getId() << endl;
+    debug() << "    Track No:   " << currentTrack.getTrackNumber() << endl;
+    debug() << "    Album_id:  " << currentTrack.getAlbumId() << endl;
+    debug() << "    length (s): " << currentTrack.getDuration() << endl;
+
 }
 
 
