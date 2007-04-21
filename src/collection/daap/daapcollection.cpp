@@ -28,7 +28,7 @@
 #include <QStringList>
 #include <QTimer>
 
-#include <kresolver.h>
+#include <k3resolver.h>
 
 AMAROK_EXPORT_PLUGIN( DaapCollectionFactory )
 
