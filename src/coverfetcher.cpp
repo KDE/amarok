@@ -230,7 +230,7 @@ CoverFetcher::startFetch()
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query /*, mibenum */ ) // FIXME: we will have to find something else
+        + "&KeywordSearch=" + QUrl::toPercentEncoding( query, "/" )
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
@@ -577,9 +577,9 @@ CoverFetcher::getUserQuery( QString explanation )
 
         virtual void accept()
         {
-            if( qstrcmp( sender()->name(), "NewSearch" ) == 0 )
+            if( sender()->objectName() == "NewSearch" )
                 done( 1000 );
-            else if( qstrcmp( sender()->name(), "NextCover" ) == 0 )
+            else if( sender()->objectName() == "NextCover" )
                 done( 1001 );
             else
                 KDialog::accept();
