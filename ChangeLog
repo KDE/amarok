@@ -9,7 +9,8 @@ VERSION 2.0
   CHANGES:
     * The custom color theme options have been removed.
     * The player window (small XMMS like thingie) was removed.
-    * Dependencies lifted to KDE 4 and Qt 4.2. Refer to the README.
+    * DCOP interface replaced with D-Bus.
+    * Dependencies lifted to KDE 4 and Qt 4.3. Refer to the README.
 
   BUGFIXES:
 
