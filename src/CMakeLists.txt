@@ -97,7 +97,10 @@ set(libjamendoservice_SRCS
         servicebrowser/jamendo/jamendoservice.cpp
 	servicebrowser/jamendo/jamendotypes.cpp
 	servicebrowser/jamendo/jamendodatabasehandler.cpp
+	servicebrowser/jamendo/jamendocontentitem.cpp
+	servicebrowser/jamendo/jamendocontentmodel.cpp
 	servicebrowser/jamendo/jamendoxmlparser.cpp)
+
 
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)

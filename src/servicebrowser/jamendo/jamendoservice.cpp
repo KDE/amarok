@@ -19,11 +19,15 @@
 
 #include "jamendoservice.h"
 
+#include "jamendocontentmodel.h"
 #include "jamendoxmlparser.h"
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
 {
+
+
+
 }
 
 
@@ -36,6 +40,9 @@ void JamendoService::polish()
 
     JamendoXmlParser * parser = new JamendoXmlParser("hello");
     parser->doJob();
+
+    JamendoContentModel * model = new JamendoContentModel();
+    setModel( model );
 
 }
 

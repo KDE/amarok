@@ -222,6 +222,9 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     JamendoTrack currentTrack;
 
     currentTrack.setId( e.attribute( "id", "0" ).toInt() );
+
+    currentTrack.setLofiURL( "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( currentTrack.getId() ) + "/?aue=ogg2" );
+
     currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
     currentTrack.setDuration(  e.attribute( "lengths", "0" ).toInt() );
     currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
