@@ -62,11 +62,13 @@ public:
     contentTypeUnion getContentUnion ( );
     QString getUrl();
 
+
+    int prePopulate();
     void populate();
 
 private:
 
-    /*mutable QList<JamendoContentItem*> m_childItems;*/
+    mutable QList<JamendoContentItem*> m_prefetchedItems;
 
     contentTypeUnion m_content; 
     QString m_genre;

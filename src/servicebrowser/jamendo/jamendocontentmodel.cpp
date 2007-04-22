@@ -153,7 +153,7 @@ int JamendoContentModel::rowCount(const QModelIndex &parent) const
      else
          parentItem = static_cast<JamendoContentItem*>(parent.internalPointer());
 
-      //debug() << "JamendoContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
+      debug() << "JamendoContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
 
      return parentItem->childCount();
 
@@ -168,6 +168,9 @@ bool JamendoContentModel::hasChildren ( const QModelIndex & parent ) const {
          item = m_rootContentItem;
      else
          item = static_cast<JamendoContentItem*>(parent.internalPointer());
+
+
+     debug() << "JamendoContentModel::hasChildren called on node: " << item->data( 0 ).toString() << ", has children: " << item->hasChildren() << endl;
 
     return item->hasChildren();
 }
@@ -225,7 +228,7 @@ bool JamendoContentModel::canFetchMore(const QModelIndex & parent) const
      else
          item = static_cast<JamendoContentItem*>(parent.internalPointer());
 
-    //debug() << "JamendoContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
+    debug() << "JamendoContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
 
     if ( ( item->getType() == JAMENDO_ARTIST ) || ( item->getType() == JAMENDO_ALBUM )  ) {
@@ -246,9 +249,17 @@ void JamendoContentModel::fetchMore(const QModelIndex & parent)
      else
          item = static_cast<JamendoContentItem*>(parent.internalPointer());
 
-       //debug() << "JamendoContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
+      debug() << "JamendoContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
+     int count = item->prePopulate();
+
+
+      debug() << "JamendoContentModel::fetchMore item has : " << count << " new child items"  << endl;
+
+     beginInsertRows( parent, 0, count );
      item->populate();
+     endInsertRows();
+
 }
 
 

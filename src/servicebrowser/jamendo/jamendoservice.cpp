@@ -38,8 +38,8 @@ JamendoService::~JamendoService()
 void JamendoService::polish()
 {
 
-    JamendoXmlParser * parser = new JamendoXmlParser("hello");
-    parser->doJob();
+/*    JamendoXmlParser * parser = new JamendoXmlParser("hello");
+    parser->doJob();*/
 
     JamendoContentModel * model = new JamendoContentModel();
     setModel( model );

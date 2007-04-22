@@ -63,6 +63,7 @@ JamendoContentItem::JamendoContentItem( const QString &genre )
     m_type = JAMENDO_ROOT;
     m_parent = 0;
     m_hasPopulatedChildItems = false;
+    prePopulate();
     populate(); // need to fill up artist or there will be nothing to show
 }
 
@@ -134,34 +135,50 @@ QList<ServiceModelItemBase*> JamendoContentItem::getChildItems() const {
     return m_childItems;
 }
 
+
+int JamendoContentItem::prePopulate()
+{
+ 
+    int numberOfChildren =0;
+    if ( !m_hasPopulatedChildItems ) {
+
+        switch ( m_type ) {
+            case JAMENDO_ROOT: {
+                JamendoArtistList artists = JamendoDatabaseHandler::instance()->getArtistsByGenre( m_genre );
+                numberOfChildren = artists.size();
+                JamendoArtistList::iterator it;
+                for ( it = artists.begin(); it != artists.end(); ++it ) {
+                   m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
+                }
+                break; }
+            case JAMENDO_ARTIST: {
+                JamendoAlbumList albums = JamendoDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
+                numberOfChildren = albums.size();
+                JamendoAlbumList::iterator it;
+                for ( it = albums.begin(); it != albums.end(); ++it ) {
+                    m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
+                }
+                break; }
+            case JAMENDO_ALBUM: {
+                JamendoTrackList tracks = JamendoDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
+                numberOfChildren = tracks.size();
+                JamendoTrackList::iterator it;
+                for ( it = tracks.begin(); it != tracks.end(); ++it ) {
+                    m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre,  const_cast<JamendoContentItem*>( this ) ) );
+                }
+                break;
+             }
+         }
+    }
+
+    return numberOfChildren;
+}
+
 void JamendoContentItem::populateChildItems() const {
 
 
-    switch ( m_type ) {
-       case JAMENDO_ROOT: {
-           JamendoArtistList artists = JamendoDatabaseHandler::instance()->getArtistsByGenre( m_genre );
-           JamendoArtistList::iterator it;
-           for ( it = artists.begin(); it != artists.end(); ++it ) {
-               m_childItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
-           }
-           break; }
-       case JAMENDO_ARTIST: {
-           JamendoAlbumList albums = JamendoDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
-           JamendoAlbumList::iterator it;
-           for ( it = albums.begin(); it != albums.end(); ++it ) {
-               m_childItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
-           }
-           break; }
-       case JAMENDO_ALBUM: {
-           JamendoTrackList tracks = JamendoDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
-           JamendoTrackList::iterator it;
-           for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-               m_childItems.append( new JamendoContentItem( (*it), m_genre,  const_cast<JamendoContentItem*>( this ) ) );
-           }
-           break; }
-    }
-
-
+    while ( !m_prefetchedItems.isEmpty() )
+        m_childItems.append( m_prefetchedItems.takeFirst() );
     m_hasPopulatedChildItems = true;
 
 }
@@ -189,4 +206,6 @@ void JamendoContentItem::populate()
      if ( !m_hasPopulatedChildItems )
         populateChildItems();
 }
+
+
 
