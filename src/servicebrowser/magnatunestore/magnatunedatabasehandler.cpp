@@ -164,7 +164,7 @@ MagnatuneDatabaseHandler::insertTrack( MagnatuneTrack *track, int albumId, int a
                           + QString::number( albumId ) + ", "
                           + QString::number( artistId ) + ", '"
                           + db->escapeString( track->getLofiURL() ) + "', '"
-                          + db->escapeString( track->getHifiURL() ) + "' );";
+                          + db->escapeString( track->getURL() ) + "' );";
 
 
     // debug() << "Adding Magnatune track " << queryString << endl;
@@ -444,7 +444,7 @@ MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
         track.setLofiURL( result.front() );
         result.pop_front();
 
-        track.setHifiURL( result.front() );
+        track.setURL( result.front() );
         result.pop_front();
 
         track.setMoods( getMoodsForTrack( track.getId() ) );
@@ -624,7 +624,7 @@ MagnatuneTrack MagnatuneDatabaseHandler::getTrackById(int id) {
         track.setLofiURL( result.front() );
         result.pop_front();
 
-        track.setHifiURL( result.front() );
+        track.setURL( result.front() );
         result.pop_front();
     }
 
@@ -775,7 +775,7 @@ MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByMood( QString mood )
         track.setLofiURL( result.front() );
         result.pop_front();
 
-        track.setHifiURL( result.front() );
+        track.setURL( result.front() );
         result.pop_front();
 
         track.setMoods( getMoodsForTrack( track.getId() ) );

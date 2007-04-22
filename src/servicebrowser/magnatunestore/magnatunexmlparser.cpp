@@ -264,7 +264,7 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
             }
             else if ( sElementName == "url" )
             {
-                currentTrack.setHifiURL( childElement.text() );
+                currentTrack.setURL( childElement.text() );
             }
             else if ( sElementName == "mp3lofi" )
             {

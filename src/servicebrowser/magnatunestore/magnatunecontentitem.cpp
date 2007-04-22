@@ -179,7 +179,7 @@ int MagnatuneContentItem::getType()  { return m_type; }
 QString MagnatuneContentItem::getUrl() {
 
     if ( m_type == MAGNATUNE_TRACK ) {
-        return m_content.trackValue->getHifiURL();
+        return m_content.trackValue->getURL();
     } else {
         return QString();
     }

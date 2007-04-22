@@ -82,7 +82,7 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
     if ( !item ) return ; // sanity check
 
     debug() << "Magnatune browser: adding single track" << endl;
-    QString url = item->getHifiURL();
+    QString url = item->getURL();
     Playlist * playlist = Playlist::instance();
     playlist->insertMedia( KUrl( url ) );
 }

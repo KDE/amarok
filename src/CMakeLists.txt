@@ -85,7 +85,8 @@ set(libservicebrowser_SRCS
         servicebrowser/servicebrowser.cpp
 	servicebrowser/servicebase.cpp
 	servicebrowser/servicemodelitembase.cpp
-        servicebrowser/servicemodelbase.cpp)
+        servicebrowser/servicemodelbase.cpp
+        servicebrowser/simpleservicetypes.cpp)
 
 set(libscriptableservice_SRCS
         servicebrowser/scriptableservice/scriptableservicemanager.cpp
