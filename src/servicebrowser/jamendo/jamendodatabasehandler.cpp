@@ -145,7 +145,7 @@ JamendoDatabaseHandler::insertTrack( JamendoTrack *track )
                           + QString::number( track->getTrackNumber() ) + ", "
                           + QString::number( track->getDuration() ) + ", "
                           + QString::number( track->getAlbumId() ) + ", '"
-                          + db->escapeString( track->getLofiURL() ) + "' );";
+                          + db->escapeString( track->getURL() ) + "' );";
 
 
     // debug() << "Adding Jamendo track " << queryString << endl;
@@ -391,7 +391,7 @@ JamendoDatabaseHandler::getTracksByAlbumId( int id )
         track.setAlbumId( result.front().toInt() );
         result.pop_front();
 
-        track.setLofiURL( result.front() );
+        track.setURL( result.front() );
         result.pop_front();
 
         list.append( track );
@@ -554,7 +554,7 @@ JamendoTrack JamendoDatabaseHandler::getTrackById(int id) {
         track.setAlbumId( result.front().toInt() );
         result.pop_front();
 
-        track.setLofiURL( result.front() );
+        track.setURL( result.front() );
         result.pop_front();
 
     }

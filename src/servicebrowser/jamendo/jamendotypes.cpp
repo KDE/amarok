@@ -25,40 +25,11 @@
 //// JamendoArtist ////
 
 JamendoArtist::JamendoArtist( )
-    : m_id(0)
+    : SimpleServiceArtist()
 {
     m_description = QString();
 }
 
-void JamendoArtist::setId( int id )
-{
-    m_id = id;
-}
-
-int JamendoArtist::getId( ) const
-{
-    return m_id;
-}
-
-void JamendoArtist::setName( const QString &name )
-{
-    m_name = name;
-}
-
-QString JamendoArtist::getName( ) const
-{
-    return m_name;
-}
-
-void JamendoArtist::setDescription( const QString &description )
-{
-    m_description = description;
-}
-
-QString JamendoArtist::getDescription( ) const
-{ 
-    return m_description;
-}
 
 void JamendoArtist::setPhotoURL( const QString &photoURL )
 {
@@ -98,39 +69,8 @@ QString JamendoArtist::getJamendoURL() const
 //// JamendoAlbum ////
 
 JamendoAlbum::JamendoAlbum( )
-    : m_id (0)
+    : SimpleServiceAlbum()
 {
-}
-
-void JamendoAlbum::setId( int id )
-{
-    m_id = id;
-}
-
-int JamendoAlbum::getId( ) const
-{
-    return m_id;
-}
-
-void JamendoAlbum::setArtistId( int artistId )
-{
-    m_artistId = artistId;
-}
-
-int JamendoAlbum::getArtistId( ) const
-{
-    return m_artistId;
-}
-
-
-void JamendoAlbum::setName( const QString &name )
-{
-    m_name = name;
-}
-
-QString JamendoAlbum::getName( ) const
-{
-    return m_name;
 }
 
 void JamendoAlbum::setCoverURL( const QString &coverURL )
@@ -173,17 +113,6 @@ QString JamendoAlbum::getGenre( ) const
     return m_genre;
 }
 
-void JamendoAlbum::setDescription( const QString description )
-{
-    m_description = description;
-}
-
-QString JamendoAlbum::getDescription()
-{
-    return m_description;
-}
-
-
 
 
 
@@ -194,22 +123,10 @@ QString JamendoAlbum::getDescription()
 //// JamendoTrack ////
 
 JamendoTrack::JamendoTrack( )
-    : m_id( 0 )
-    , m_trackNumber( 0 )
-    , m_duration( 0 )
-    , m_albumId( 0 )
+    : SimpleServiceTrack()
 {
 }
 
-void JamendoTrack::setId( int id )
-{
-   m_id = id;
-}
-
-int JamendoTrack::getId( ) const
-{
-    return m_id;
-}
 
 void JamendoTrack::setArtistId( int artistId )
 {
@@ -219,58 +136,6 @@ void JamendoTrack::setArtistId( int artistId )
 int JamendoTrack::getArtistId( ) const
 {
    return m_artistId;
-}
-
-void JamendoTrack::setAlbumId( int albumId )
-{
-    m_albumId = albumId;
-}
-
-int JamendoTrack::getAlbumId( ) const
-{
-   return m_albumId;
-}
-
-
-
-void JamendoTrack::setName( const QString &name )
-{
-    m_name = name;
-}
-
-QString JamendoTrack::getName( ) const
-{
-   return m_name;
-}
-
-void JamendoTrack::setTrackNumber( int trackNumber )
-{
-    m_trackNumber = trackNumber;
-}
-
-int JamendoTrack::getTrackNumber( ) const
-{
-    return m_trackNumber;
-}
-
-void JamendoTrack::setDuration( int duration )
-{
-    m_duration = duration;
-}
-
-int JamendoTrack::getDuration( ) const
-{
-    return m_duration;
-}
-
-void JamendoTrack::setLofiURL( const QString &lofiURL )
-{
-    m_lofiURL = lofiURL;
-}
- 
-QString JamendoTrack::getLofiURL( ) const
-{
-    return m_lofiURL;
 }
 
 

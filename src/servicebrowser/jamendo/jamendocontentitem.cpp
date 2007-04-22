@@ -178,7 +178,7 @@ int JamendoContentItem::getType()  { return m_type; }
 QString JamendoContentItem::getUrl() {
 
     if ( m_type == JAMENDO_TRACK ) {
-        return m_content.trackValue->getLofiURL();
+        return m_content.trackValue->getURL();
     } else {
         return QString();
     }
