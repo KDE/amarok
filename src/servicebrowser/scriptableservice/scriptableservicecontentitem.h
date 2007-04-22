@@ -59,6 +59,7 @@ public:
     QString getCallbackArgument();
     bool isPopulated();
 
+
 private:
 
     /*mutable QList<MagnatuneContentItem*> m_childItems;*/

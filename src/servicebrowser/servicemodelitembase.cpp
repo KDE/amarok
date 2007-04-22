@@ -45,7 +45,8 @@ KUrl::List ServiceModelItemBase::getUrls()
     debug() << "own url: " << getUrl() << endl;
     if ( !getUrl().isEmpty() )
         urls += KUrl( getUrl() );
-
+    
+    prePopulate();
     populate();
 
     foreach( ServiceModelItemBase * childItem, m_childItems ) {

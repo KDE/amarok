@@ -44,9 +44,12 @@ public:
     
 
     /**
-     * Used for forcing dynamic items to populate themselves. The default implementation does nothing
+     * Used for forcing dynamic items to populate themselves. The default implementations does nothing
      */
-    virtual void populate() {};
+    virtual int prePopulate() const {};
+    virtual void populate() const {};
+
+
     KUrl::List getUrls();
 
     

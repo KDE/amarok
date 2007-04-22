@@ -198,6 +198,10 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
             m_urlsToInsert += KUrl( url );
         }
     } else {
+
+       item->prePopulate();
+       item->populate();
+
         QList<ServiceModelItemBase*> childItems = item->getChildItems();
         for (int i = 0; i < childItems.size(); ++i) {
             addToPlaylist( childItems.at(i) );
@@ -220,9 +224,6 @@ ServiceModelBase * ServiceBase::getModel() {
 }
 
 void ServiceBase::treeItemSelected( const QModelIndex & index ) {
-
-    //m_model->requestHtmlInfo( m_filterModel->mapToSource( index ) );
-    //emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( m_filterModel->mapToSource( index ).internalPointer() ) ) );
 
     m_model->requestHtmlInfo( index  );
     emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( index.internalPointer() ) ) );
