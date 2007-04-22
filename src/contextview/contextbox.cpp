@@ -20,7 +20,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QRectF>
-#include <QTimeLine>
 
 using namespace Context;
 
@@ -96,14 +95,15 @@ void ContextBox::setBoundingRectSize( const QSize &sz )
     setRect( newRect );
 }
 
-void ContextBox::setContentRectSize( const QSize &sz )
+void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeight )
 {
     m_contentRect->setRect( QRectF( 0, 0, sz.width(), sz.height() ) );
     //set correct size of this as well
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
     m_titleBarRect->setRect( 0, 0, sz.width(), m_titleBarRect->boundingRect().height() );
 
-//     m_optimumHeight = boundingRect().height();
+    if( synchroniseHeight )
+        m_optimumHeight = sz.height();
 }
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
@@ -114,6 +114,7 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
         if( m_titleBarRect->contains( pressPoint ) )
             toggleVisibility();
     }
+    QGraphicsItem::mousePressEvent( event );
 }
 
 void ContextBox::toggleVisibility()
@@ -131,7 +132,7 @@ void ContextBox::toggleVisibility()
     if( m_animationTimer->state() == QTimeLine::Running )
     {
         m_goingUp = !m_goingUp; // change direction if the is already an animation
-        debug() << "chaning direction!" << endl;
+        debug() << "changing direction!" << endl;
         return;
     }
 
@@ -143,6 +144,7 @@ void ContextBox::toggleVisibility()
     debug() << "m_animationIncrement: " << m_animationIncrement << endl;
 
     connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
+    connect( m_animationTimer, SIGNAL( animationStateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
     m_animationTimer->start();
 }
 
@@ -161,10 +163,15 @@ void ContextBox::visibilityTimerSlot()
     {
         newHeight = desiredHeight;
         m_animationTimer->stop(); //stop the timeline _before_ changing the direction
-        m_goingUp = !m_goingUp;
     }
 
-    setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ) );
+    setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ), false );
+}
+
+void ContextBox::animationStateChanged( QTimeLine::State newState )
+{
+    if( newState == QTimeLine::NotRunning )
+        m_goingUp = !m_goingUp;
 }
 
 #include "contextbox.moc"

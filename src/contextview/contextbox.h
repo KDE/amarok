@@ -16,13 +16,13 @@
 #define AMAROK_CONTEXTBOX_H
 
 #include <QGraphicsRectItem>
+#include <QTimeLine>
 
 class QGraphicsItem;
 class QGraphicsRectItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
 class QSize;
-class QTimeLine;
 
 namespace Context
 {
@@ -41,7 +41,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
         virtual void setBoundingRectSize( const QSize &sz );
-        void setContentRectSize( const QSize &sz );
+        void setContentRectSize( const QSize &sz, const bool synchroniseHeight = true );
 
         QGraphicsTextItem *m_titleItem;
         QGraphicsRectItem *m_titleBarRect;
@@ -54,6 +54,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
 
     protected slots:
         void visibilityTimerSlot();
+        void animationStateChanged( QTimeLine::State newState );
 };
 
 }
