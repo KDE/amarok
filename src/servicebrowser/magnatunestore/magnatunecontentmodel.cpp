@@ -249,7 +249,10 @@ void MagnatuneContentModel::fetchMore(const QModelIndex & parent)
 
        //debug() << "MagnatuneContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
+     int count = item->prePopulate();
+     beginInsertRows( parent, 0, count );
      item->populate();
+     endInsertRows();
 }
 
 

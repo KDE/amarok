@@ -64,6 +64,7 @@ MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
     m_type = MAGNATUNE_ROOT;
     m_parent = 0;
     m_hasPopulatedChildItems = false;
+    prePopulate();
     populate(); // need to fill up artist or there will be nothing to show
 }
 
@@ -129,40 +130,59 @@ int MagnatuneContentItem::row() const
 }
 
 QList<ServiceModelItemBase*> MagnatuneContentItem::getChildItems() const {
-    if ( !m_hasPopulatedChildItems )
+    if ( !m_hasPopulatedChildItems ) {
+        prePopulate();
         populateChildItems();
+    }
 
     return m_childItems;
 }
 
-void MagnatuneContentItem::populateChildItems() const {
+int MagnatuneContentItem::prePopulate() const
+{
 
+    int numberOfChildren =0;
+    if ( !m_hasPopulatedChildItems ) {
+        switch ( m_type ) {
+           case MAGNATUNE_ROOT: {
+               MagnatuneArtistList artists = MagnatuneDatabaseHandler::instance()->getArtistsByGenre( m_genre );
+               numberOfChildren = artists.size();
+               MagnatuneArtistList::iterator it;
+               for ( it = artists.begin(); it != artists.end(); ++it ) {
+                   m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
+               }
+               break; }
+           case MAGNATUNE_ARTIST: {
+               MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
+               numberOfChildren = albums.size();
+               MagnatuneAlbumList::iterator it;
+               for ( it = albums.begin(); it != albums.end(); ++it ) {
+                   m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
+               }
+               break; }
+           case MAGNATUNE_ALBUM: {
+               MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
+               numberOfChildren = tracks.size();
+               MagnatuneTrackList::iterator it;
+               for ( it = tracks.begin(); it != tracks.end(); ++it ) {
+                   m_childItems.append( new MagnatuneContentItem( (*it), m_genre,  const_cast<MagnatuneContentItem*>( this ) ) );
+               }
+               break; 
+            }
+        }
 
-    switch ( m_type ) {
-       case MAGNATUNE_ROOT: {
-           MagnatuneArtistList artists = MagnatuneDatabaseHandler::instance()->getArtistsByGenre( m_genre );
-           MagnatuneArtistList::iterator it;
-           for ( it = artists.begin(); it != artists.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
-           }
-           break; }
-       case MAGNATUNE_ARTIST: {
-           MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
-           MagnatuneAlbumList::iterator it;
-           for ( it = albums.begin(); it != albums.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
-           }
-           break; }
-       case MAGNATUNE_ALBUM: {
-           MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
-           MagnatuneTrackList::iterator it;
-           for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), m_genre,  const_cast<MagnatuneContentItem*>( this ) ) );
-           }
-           break; }
     }
 
 
+   
+    return numberOfChildren;
+
+}
+
+void MagnatuneContentItem::populateChildItems() const {
+
+    while ( !m_prefetchedItems.isEmpty() )
+        m_childItems.append( m_prefetchedItems.takeFirst() );
     m_hasPopulatedChildItems = true;
 
 }
@@ -185,9 +205,11 @@ QString MagnatuneContentItem::getUrl() {
     }
 }
 
-void MagnatuneContentItem::populate()
+void MagnatuneContentItem::populate() const
 {
      if ( !m_hasPopulatedChildItems )
         populateChildItems();
 }
+
+
 

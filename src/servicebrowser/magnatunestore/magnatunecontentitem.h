@@ -63,11 +63,14 @@ public:
     contentTypeUnion getContentUnion ( );
     QString getUrl();
 
-    void populate();
+
+    int prePopulate() const;
+    void populate() const;
 
 private:
 
     /*mutable QList<MagnatuneContentItem*> m_childItems;*/
+    mutable QList<MagnatuneContentItem*> m_prefetchedItems;
 
     contentTypeUnion m_content; 
     QString m_genre;

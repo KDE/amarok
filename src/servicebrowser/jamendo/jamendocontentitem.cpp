@@ -136,7 +136,7 @@ QList<ServiceModelItemBase*> JamendoContentItem::getChildItems() const {
 }
 
 
-int JamendoContentItem::prePopulate()
+int JamendoContentItem::prePopulate() const
 {
  
     int numberOfChildren =0;
@@ -201,7 +201,7 @@ QString JamendoContentItem::getUrl() {
     }
 }
 
-void JamendoContentItem::populate()
+void JamendoContentItem::populate() const
 {
      if ( !m_hasPopulatedChildItems )
         populateChildItems();

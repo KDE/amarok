@@ -190,7 +190,7 @@ void ServiceBase::itemActivated ( const QModelIndex & index ) {
 void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
     
 
-    debug() << "ServiceBase::addToPlaylist sadding item: " << item->data(0) << endl;
+    debug() << "ServiceBase::addToPlaylist adding item: " << item->data(0) << endl;
     if (! item->hasChildren() ) {
         QString url = item->getUrl();
         debug() << "ServiceBase::addToPlaylist url to add: " << url << endl;

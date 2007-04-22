@@ -63,8 +63,8 @@ public:
     QString getUrl();
 
 
-    int prePopulate();
-    void populate();
+    int prePopulate() const;
+    void populate() const;
 
 private:
 
