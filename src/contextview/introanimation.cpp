@@ -102,7 +102,7 @@ void IntroAnimation::trailTimeComplete()
 
 QRectF IntroAnimation::QGraphicsItem::boundingRect() const
 {
-
+    return QRectF();
 }
 
 void IntroAnimation::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
