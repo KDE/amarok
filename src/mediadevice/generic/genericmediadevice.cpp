@@ -913,7 +913,7 @@ GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 bool
 GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
-    if( !m_connected ) return false;
+    if( !m_connected || !KURL::fromPathOrURL( m_medium.mountPoint() ).isLocalFile() ) return false;
 
     KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "generic_kdf" );
     kdf->readDF( m_medium.mountPoint() );
