@@ -514,14 +514,19 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 void
 GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
-    if( !directory || items.isEmpty() ) return;
+    if( items.isEmpty() ) return;
 
     GenericMediaFile *dropDir;
-    if( directory->type() == MediaItem::TRACK )
-    #define directory static_cast<GenericMediaItem *>(directory)
-        dropDir = m_mim[directory]->getParent();
+    if( !directory )
+        dropDir = m_initialFile;
     else
-        dropDir = m_mim[directory];
+    {
+        if( directory->type() == MediaItem::TRACK )
+        #define directory static_cast<GenericMediaItem *>(directory)
+            dropDir = m_mim[directory]->getParent();
+        else
+            dropDir = m_mim[directory];
+    }
 
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
@@ -539,6 +544,7 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
             refreshDir( dropDir->getFullName() );
+            //smb: urls don't seem to refresh correctly, but this seems to be a samba issue?
         }
     }
     #undef directory
@@ -615,7 +621,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
-            debug() << "directory does not exist, creating..." << url << endl;            
+            debug() << "directory does not exist, creating..." << url << endl;
             if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
             {
                 debug() << "Failed to create directory " << url << endl;
@@ -867,7 +873,7 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 {
-    QString path = url.path( -1 ); //no trailing slash
+    QString path = url.isLocalFile() ? url.path( -1 ) : url.prettyURL( -1 ); //no trailing slash
     int index = path.findRev( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );
