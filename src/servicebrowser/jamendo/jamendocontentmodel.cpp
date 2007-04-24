@@ -244,22 +244,23 @@ void JamendoContentModel::fetchMore(const QModelIndex & parent)
 {
     JamendoContentItem* item;
 
-     if (!parent.isValid())
-         item = m_rootContentItem;
-     else
-         item = static_cast<JamendoContentItem*>(parent.internalPointer());
+    if (!parent.isValid())
+        item = m_rootContentItem;
+    else
+        item = static_cast<JamendoContentItem*>(parent.internalPointer());
 
-      debug() << "JamendoContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
+    debug() << "JamendoContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
-     int count = item->prePopulate();
+    int count = item->prePopulate();
 
 
-      debug() << "JamendoContentModel::fetchMore item has : " << count << " new child items"  << endl;
+    debug() << "JamendoContentModel::fetchMore item has : " << count << " new child items"  << endl;
 
-     beginInsertRows( parent, 0, count );
-     item->populate();
-     endInsertRows();
-
+    if (!count)
+        return; //no rows to insert
+    beginInsertRows( parent, 0, count - 1 );
+    item->populate();
+    endInsertRows();
 }
 
 
