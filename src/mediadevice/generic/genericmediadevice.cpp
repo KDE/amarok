@@ -516,14 +516,19 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 void
 GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items )
 {
-    if( !directory || items.isEmpty() ) return;
+    if( items.isEmpty() ) return;
 
     GenericMediaFile *dropDir;
-    if( directory->type() == MediaItem::TRACK )
-    #define directory static_cast<GenericMediaItem *>(directory)
-        dropDir = m_mim[directory]->getParent();
+    if( !directory )
+        dropDir = m_initialFile;
     else
-        dropDir = m_mim[directory];
+    {
+        if( directory->type() == MediaItem::TRACK )
+        #define directory static_cast<GenericMediaItem *>(directory)
+            dropDir = m_mim[directory]->getParent();
+        else
+            dropDir = m_mim[directory];
+    }
 
     for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
     {
@@ -541,6 +546,7 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> i
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
             refreshDir( dropDir->getFullName() );
+            //smb: urls don't seem to refresh correctly, but this seems to be a samba issue?
         }
     }
     #undef directory
@@ -869,7 +875,7 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 {
-    QString path = url.path( -1 ); //no trailing slash
+    QString path = url.isLocalFile() ? url.path( -1 ) : url.prettyURL( -1 ); //no trailing slash
     int index = path.lastIndexOf( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );

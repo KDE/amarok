@@ -1385,12 +1385,19 @@ MediaView::contentsDropEvent( QDropEvent *e )
         const QPoint p = contentsToViewport( e->pos() );
         MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
 
-        if( !item )
+        if( !item && MediaBrowser::instance()->currentDevice()->m_type != "generic-mediadevice" )
             return;
 
         Q3PtrList<MediaItem> items;
 
-        if( item->type() == MediaItem::PLAYLIST )
+        if( !item || item->type() == MediaItem::DIRECTORY ||
+                    item->type() == MediaItem::TRACK )
+        {
+            Q3PtrList<MediaItem> items;
+            getSelectedLeaves( 0, &items );
+            m_device->addToDirectory( item, items );
+        }
+        else if( item->type() == MediaItem::PLAYLIST )
         {
             MediaItem *list = item;
             MediaItem *after = 0;
@@ -1435,13 +1442,6 @@ MediaView::contentsDropEvent( QDropEvent *e )
             MediaItem *pl = m_device->newPlaylist(name, item, items);
             ensureItemVisible(pl);
             rename(pl, 0);
-        }
-        else if( item->type() == MediaItem::DIRECTORY ||
-                    item->type() == MediaItem::TRACK )
-        {
-            Q3PtrList<MediaItem> items;
-            getSelectedLeaves( 0, &items );
-            m_device->addToDirectory( item, items );
         }
     }
     else
