@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * Generic media device can now handle any KIO-compatible URL, including
+      obex and smb.  Manage your bluetooth phone's music collection through
+      Amarok!
     * Upgraded SQLite to 3.3.16.
     * Append an album to the playlist by right-clicking on it from within
       the Cover Manager.  Patch by Doug Reich <dreich@hmc.edu>.
@@ -17,6 +20,9 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Generic media device wouldn't allow you to drop a folder on the
+      viewport, meaning you couldn't move subfolders to the top level of the
+      mount point.
     * Made the settings dialog less tall. (BR 141250)
     * Star ratings now update instantly in the Context Browser, OSD, and
       Collection Browser.
