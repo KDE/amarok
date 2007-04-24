@@ -27,26 +27,6 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-/*
-SqlWorkerThread::SqlWorkerThread( SqlQueryBuilder *queryBuilder )
-        : ThreadManager::DependentJob( queryBuilder, "SqlWorkerThread" )
-        , m_queryBuilder( queryBuilder )
-{
-    DEBUG_BLOCK
-}
-
-bool
-SqlWorkerThread::doJob()
-{
-    DEBUG_BLOCK
-    QString query = m_queryBuilder->query();
-    QStringList result = m_queryBuilder->runQuery( query );
-    if( !isAborted() )
-        m_queryBuilder->handleResult( result );
-    debug() << "Returning " << !isAborted() << endl;
-    return !isAborted();
-}*/
-
 class SqlWorkerThread : public ThreadWeaver::Job
 {
     public:
@@ -159,7 +139,7 @@ SqlQueryBuilder::run()
     {
         debug() << "Query is " << query() << endl;
         d->worker = new SqlWorkerThread( this );
-        //ThreadManager::instance()->queueJob( d->worker );
+        connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
 }
@@ -169,6 +149,7 @@ SqlQueryBuilder::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
     delete d->worker;
+    emit queryDone();
 }
 
 QueryMaker*
@@ -492,10 +473,8 @@ SqlQueryBuilder::handleResult( const QStringList &result )
             debug() << "Warning: queryResult with queryType == NONE" << endl;
         }
     }
-    //the worker thread will be deleted by ThreadManager
-    d->worker = 0;
 
-    emit queryDone();
+    //queryDone will be emitted in done(Job*)
 }
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)

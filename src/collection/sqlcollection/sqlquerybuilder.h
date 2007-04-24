@@ -96,17 +96,4 @@ class SqlQueryBuilder : public QueryMaker
 
 };
 
-//=================== SqlWorkerThread ===============================
-/*class SqlWorkerThread : public ThreadManager::DependentJob
-{
-public:
-
-    SqlWorkerThread( SqlQueryBuilder *queryBuilder );
-
-    virtual bool doJob();
-
-private:
-    SqlQueryBuilder *m_queryBuilder;
-};*/
-
 #endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */
