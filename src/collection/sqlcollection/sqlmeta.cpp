@@ -131,46 +131,46 @@ void
 SqlTrack::setArtist( const QString &newArtist )
 {
     //invalidate cache of the old artist...
-    m_artist->invalidateCache();
+    KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
     m_artist = m_collection->registry()->getArtist( newArtist );
     //and the new one
-    m_artist->invalidateCache();
+    KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
     notifyObservers();
 }
 
 void
 SqlTrack::setGenre( const QString &newGenre )
 {
-    m_genre->invalidateCache();
+    KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
     m_genre = m_collection->registry()->getGenre( newGenre );
-    m_genre->invalidateCache();
+    KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
     notifyObservers();
 }
 
 void
 SqlTrack::setComposer( const QString &newComposer )
 {
-    m_composer->invalidateCache();
+    KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
     m_composer = m_collection->registry()->getComposer( newComposer );
-    m_composer->invalidateCache();
+    KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
     notifyObservers();
 }
 
 void
 SqlTrack::setYear( const QString &newYear )
 {
-    m_year->invalidateCache();
+    KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
     m_year = m_collection->registry()->getYear( newYear );
-    m_year->invalidateCache();
+    KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
     notifyObservers();
 }
 
 void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
-    m_album->invalidateCache();
+    KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
     m_album = m_collection->registry()->getAlbum( newAlbum );
-    m_album->invalidateCache();
+    KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
     notifyObservers();
 }
 

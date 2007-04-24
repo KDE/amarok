@@ -171,15 +171,15 @@ SqlRegistry::emptyCache()
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
         //by invalidating the tracks cache on all objects
-        #define foreachInvalidateCache( Type, x ) \
+        #define foreachInvalidateCache( Type, RealType, x ) \
         for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
-            iter.next().value()->invalidateCache()
+            RealType::staticCast( iter.next().value() )->invalidateCache()
 
-        foreachInvalidateCache( AlbumPtr, m_albumMap );
-        foreachInvalidateCache( ArtistPtr, m_artistMap );
-        foreachInvalidateCache( GenrePtr, m_genreMap );
-        foreachInvalidateCache( ComposerPtr, m_composerMap );
-        foreachInvalidateCache( YearPtr, m_yearMap );
+        foreachInvalidateCache( AlbumPtr, KSharedPtr<SqlAlbum>, m_albumMap );
+        foreachInvalidateCache( ArtistPtr, KSharedPtr<SqlArtist>, m_artistMap );
+        foreachInvalidateCache( GenrePtr, KSharedPtr<SqlGenre>, m_genreMap );
+        foreachInvalidateCache( ComposerPtr, KSharedPtr<SqlComposer>, m_composerMap );
+        foreachInvalidateCache( YearPtr, KSharedPtr<SqlYear>, m_yearMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map

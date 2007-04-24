@@ -160,10 +160,6 @@ namespace Meta
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
-            /** invalidates the object's track cache. Call this method
-                if a track's artist either changed from or to this artist */
-            virtual void invalidateCache() = 0;
-
             virtual void addMatchTo( QueryMaker* qm );
     };
 
@@ -188,10 +184,6 @@ namespace Meta
             /** updates the cover of the album */
             virtual void updateImage() {} //TODO: choose parameter
 
-            /** invalidates the object's track cache. Call this method
-                if a track's album either changed from or to this album */
-            virtual void invalidateCache() = 0;
-
             virtual void addMatchTo( QueryMaker* qm );
     };
 
@@ -202,10 +194,6 @@ namespace Meta
             virtual ~Composer() {}
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
-
-            /** invalidates the object's track cache. Call this method
-                if a track's composer either changed from or to this composer */
-            virtual void invalidateCache() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
     };
@@ -218,10 +206,6 @@ namespace Meta
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 
-            /** invalidates the object's track cache. Call this method
-                if a track's genre either changed from or to this genre */
-            virtual void invalidateCache() = 0;
-
             virtual void addMatchTo( QueryMaker* qm );
     };
 
@@ -232,9 +216,6 @@ namespace Meta
             virtual ~Year() {}
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
-
-            /** invalidates the object's tack cache. */
-            virtual void invalidateCache() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
     };
