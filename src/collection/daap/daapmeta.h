@@ -23,6 +23,20 @@
 
 using namespace Meta;
 
+class DaapTrack;
+class DaapAlbum;
+class DaapArtist;
+class DaapGenre;
+class DaapComposer;
+class DaapYear;
+
+typedef KSharedPtr<DaapTrack> DaapTrackPtr;
+typedef KSharedPtr<DaapArtist> DaapArtistPtr;
+typedef KSharedPtr<DaapAlbum> DaapAlbumPtr;
+typedef KSharedPtr<DaapGenre> DaapGenrePtr;
+typedef KSharedPtr<DaapComposer> DaapComposerPtr;
+typedef KSharedPtr<DaapYear> DaapYearPtr;
+
 class DaapTrack : public Meta::Track
 {
     public:
@@ -81,21 +95,21 @@ class DaapTrack : public Meta::Track
         virtual void unsubscribe ( TrackObserver *observer );
 
         //DaapTrack specific methods
-        void setAlbum( AlbumPtr album );
-        void setArtist( ArtistPtr artist ); 
-        void setComposer( ComposerPtr composer );
-        void setGenre( GenrePtr genre );
-        void setYear( YearPtr year );
+        void setAlbum( DaapAlbumPtr album );
+        void setArtist( DaapArtistPtr artist ); 
+        void setComposer( DaapComposerPtr composer );
+        void setGenre( DaapGenrePtr genre );
+        void setYear( DaapYearPtr year );
 
         void setTitle( const QString &newTitle );
         void setLength( int length );
 
     private:
-        ArtistPtr m_artist;
-        AlbumPtr m_album;
-        GenrePtr m_genre;
-        ComposerPtr m_composer;
-        YearPtr m_year;
+        DaapArtistPtr m_artist;
+        DaapAlbumPtr m_album;
+        DaapGenrePtr m_genre;
+        DaapComposerPtr m_composer;
+        DaapYearPtr m_year;
 
         QString m_name;
         QString m_type;
@@ -117,7 +131,7 @@ class DaapArtist : public Meta::Artist
         virtual TrackList tracks();
 
         //DaapArtist specific methods
-        void addTrack( TrackPtr track );
+        void addTrack( DaapTrackPtr track );
 
     private:
         QString m_name;
@@ -143,15 +157,15 @@ class DaapAlbum : public Meta::Album
         virtual void updateImage();
 
         //DaapAlbum specific methods
-        void addTrack( TrackPtr track );
-        void setAlbumArtist( ArtistPtr artist );
+        void addTrack( DaapTrackPtr track );
+        void setAlbumArtist( DaapArtistPtr artist );
         void setIsCompilation( bool compilation );
 
     private:
         QString m_name;
         TrackList m_tracks;
         bool m_isCompilation;
-        ArtistPtr m_albumArtist;
+        DaapArtistPtr m_albumArtist;
 };
 
 class DaapGenre : public Meta::Genre
@@ -166,7 +180,7 @@ class DaapGenre : public Meta::Genre
         virtual TrackList tracks();
 
         //DaapGenre specific methods
-        void addTrack( TrackPtr track );
+        void addTrack( DaapTrackPtr track );
 
     private:
         QString m_name;
@@ -185,7 +199,7 @@ class DaapComposer : public Meta::Composer
         virtual TrackList tracks();
 
         //DaapComposer specific methods
-        void addTrack( TrackPtr track );
+        void addTrack( DaapTrackPtr track );
 
     private:
         QString m_name;
@@ -204,7 +218,7 @@ class DaapYear : public Meta::Year
         virtual TrackList tracks();
 
         //DaapYear specific methods
-        void addTrack( TrackPtr track );
+        void addTrack( DaapTrackPtr track );
 
     private:
         QString m_name;
