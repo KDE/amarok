@@ -421,9 +421,11 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     m_actuallyVfat = (m_medium.fsType() == "vfat" || m_medium.fsType() == "msdosfs") ? 
             true : false;
     m_connected = true;
-    m_transferDir = m_medium.mountPoint();
-    m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
-    listDir( m_medium.mountPoint() );
+    KURL tempurl = KURL::fromPathOrURL( m_medium.mountPoint() );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyURL( -1 ); //no trailing slash
+    m_transferDir = newMountPoint;
+    m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
+    listDir( newMountPoint );
     connect( this, SIGNAL( startTransfer() ), MediaBrowser::instance(), SLOT( transferClicked() ) );
     return true;
 }
@@ -579,7 +581,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).upper();
-    args["filetype"] = mb.url().path().section( ".", -1 ).lower();
+    args["filetype"] = mb.url().pathOrURL().section( ".", -1 ).lower();
     QString track;
     if ( mb.track() )
         track.sprintf( "%02d", mb.track() );
@@ -680,7 +682,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     if( !kioCopyTrack( bundle.url(), desturl ) )
     {
-        debug() << "Failed to copy track: " << bundle.url().path(-1) << " to " << desturl.path(-1) << endl;
+        debug() << "Failed to copy track: " << bundle.url().pathOrURL() << " to " << desturl.pathOrURL() << endl;
         return 0;
     }
 
@@ -849,13 +851,15 @@ GenericMediaDevice::dirListerClear()
     m_mfm.clear();
     m_mim.clear();
 
-    m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
+    KURL tempurl = KURL::fromPathOrURL( m_medium.mountPoint() );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyURL( -1 ); //no trailing slash
+    m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
 }
 
 void
 GenericMediaDevice::dirListerClear( const KURL &url )
 {
-    QString directory = url.path(-1);
+    QString directory = url.pathOrURL();
     GenericMediaFile *vmf = m_mfm[directory];
     if( vmf )
         vmf->deleteAll( false );
@@ -864,7 +868,7 @@ GenericMediaDevice::dirListerClear( const KURL &url )
 void
 GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
-    QString filename = fileitem->url().path(-1);
+    QString filename = fileitem->url().pathOrURL();
     GenericMediaFile *vmf = m_mfm[filename];
     if( vmf )
         vmf->deleteAll( true );
