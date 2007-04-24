@@ -49,7 +49,7 @@ public:
 
 
 
-    ~MagnatuneContentItem();
+    virtual ~MagnatuneContentItem();
 
     MagnatuneContentItem *child(int row);
     int childCount() const;

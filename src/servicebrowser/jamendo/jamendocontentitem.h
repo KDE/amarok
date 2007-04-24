@@ -48,7 +48,7 @@ public:
 
 
 
-    ~JamendoContentItem();
+    virtual ~JamendoContentItem();
 
     JamendoContentItem *child(int row);
     int childCount() const;

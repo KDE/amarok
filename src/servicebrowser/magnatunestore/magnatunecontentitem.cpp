@@ -71,7 +71,6 @@ MagnatuneContentItem::MagnatuneContentItem( const QString &genre )
 
  MagnatuneContentItem::~MagnatuneContentItem()
  {
-     qDeleteAll(m_childItems);
  }
 
  MagnatuneContentItem *MagnatuneContentItem::child(int row)

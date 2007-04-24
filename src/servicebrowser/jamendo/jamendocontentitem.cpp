@@ -70,7 +70,6 @@ JamendoContentItem::JamendoContentItem( const QString &genre )
 
  JamendoContentItem::~JamendoContentItem()
  {
-     qDeleteAll(m_childItems);
  }
 
  JamendoContentItem *JamendoContentItem::child(int row)
