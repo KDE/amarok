@@ -33,6 +33,12 @@ int ServiceModelItemBase::childCount() const {
      return m_childItems.count();
 }
 */
+
+ServiceModelItemBase::~ServiceModelItemBase()
+{
+    qDeleteAll(m_childItems);
+}
+
 ServiceModelItemBase *ServiceModelItemBase::parent() {
     return m_parent;
 }

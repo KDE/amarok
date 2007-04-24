@@ -29,6 +29,8 @@ class ServiceModelItemBase
 {
 public:
 
+    virtual ~ServiceModelItemBase();
+
     virtual QVariant data(int column) const = 0;
 
     virtual ServiceModelItemBase *child(int row) = 0;
@@ -46,7 +48,7 @@ public:
     /**
      * Used for forcing dynamic items to populate themselves. The default implementations does nothing
      */
-    virtual int prePopulate() const {};
+    virtual int prePopulate() const { return 0; };
     virtual void populate() const {};
 
 
