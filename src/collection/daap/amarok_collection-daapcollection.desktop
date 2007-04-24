@@ -2,11 +2,13 @@
 Encoding=UTF-8
 Type=Service
 Name=DAAP Collection
+Name[bg]=DAAP колекция
 Name[ja]=DAAP コレクション
 Name[pt]=Colecção de DAAP
 Name[pt_BR]=Colecção de DAAP
 Name[sk]=DAAP kolekcia
 Comment=DAAP collection plugin for Amarok
+Comment[bg]=Приставка за DAAP колекция за Amarok
 Comment[ja]=Amarok のための DAAP コレクションプラグイン
 Comment[pt]=Um 'plugin' de colecção para DAAP no Amarok
 Comment[pt_BR]=Um 'plugin' de colecção para DAAP no Amarok
