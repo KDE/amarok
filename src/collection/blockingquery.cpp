@@ -200,7 +200,7 @@ BlockingQuery::queryDone()
 }
 
 void
-BlockingQuery::result( QString collectionId, DataList data )
+BlockingQuery::result( const QString &collectionId, DataList data )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -209,7 +209,7 @@ BlockingQuery::result( QString collectionId, DataList data )
 }
 
 void
-BlockingQuery::result( QString collectionId, TrackList tracks )
+BlockingQuery::result( const QString &collectionId, TrackList tracks )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -218,7 +218,7 @@ BlockingQuery::result( QString collectionId, TrackList tracks )
 }
 
 void
-BlockingQuery::result( QString collectionId, ArtistList artists )
+BlockingQuery::result( const QString &collectionId, ArtistList artists )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -227,7 +227,7 @@ BlockingQuery::result( QString collectionId, ArtistList artists )
 }
 
 void
-BlockingQuery::result( QString collectionId, AlbumList albums )
+BlockingQuery::result( const QString &collectionId, AlbumList albums )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -236,7 +236,7 @@ BlockingQuery::result( QString collectionId, AlbumList albums )
 }
 
 void
-BlockingQuery::result( QString collectionId, GenreList genres )
+BlockingQuery::result( const QString &collectionId, GenreList genres )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -245,7 +245,7 @@ BlockingQuery::result( QString collectionId, GenreList genres )
 }
 
 void
-BlockingQuery::result( QString collectionId, ComposerList composers )
+BlockingQuery::result( const QString &collectionId, ComposerList composers )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -254,7 +254,7 @@ BlockingQuery::result( QString collectionId, ComposerList composers )
 }
 
 void
-BlockingQuery::result( QString collectionId, YearList years )
+BlockingQuery::result( const QString &collectionId, YearList years )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -263,7 +263,7 @@ BlockingQuery::result( QString collectionId, YearList years )
 }
 
 void
-BlockingQuery::result( QString collectionId, QStringList list )
+BlockingQuery::result( const QString &collectionId, QStringList list )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
