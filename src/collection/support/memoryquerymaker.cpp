@@ -173,6 +173,7 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collect
     , m_collectionId( collectionId )
     ,d( new Private )
 {
+    d->matcher = 0;
     reset();
 }
 
