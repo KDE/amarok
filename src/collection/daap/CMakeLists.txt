@@ -5,6 +5,8 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../collection
 	${CMAKE_CURRENT_BINARY_DIR}/../..
 	${AMAROK_COLLECTION_SUPPORT_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/daapreader
+	${CMAKE_CURRENT_SOURCE_DIR}/daapreader/authentication
         ${KDE4_INCLUDE_DIR}
         ${QT_INCLUDES} )
 
@@ -14,6 +16,10 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 set(amarok_collection-daapcollection_PART_SRCS
 	daapmeta.cpp
 	daapcollection.cpp
+	daapreader/reader.cpp
+	daapreader/authentication/contentfetcher.cpp
+	daapreader/authentication/hasher.c
+	daapreader/authentication/md5.c
 	${AMAROK_COLLECTION_SUPPORT_DIR}/memoryquerymaker.cpp )
 
 kde4_automoc(${amarok_collection-daapcollection_PART_SRCS})

@@ -14,32 +14,22 @@
 #define DAAPREADER_H
 
 #include <QObject>
-//Added by qt3to4:
-#include <Q3PtrList>
 
 #include <kurl.h>
 
 class QString;
 
-template <class T>
-class Q3PtrList;
 class MemoryCollection;
 class ServerItem;
-class Q3HttpResponseHeader;
+class QHttpResponseHeader;
 
-namespace Q3Http {
+namespace QHttp {
     class Error;
 }
 
 namespace Daap
 {
     typedef QMap<QString, QVariant>    Map;
-
-    //typedef Q3PtrList< MetaBundle >     TrackList;
-    typedef QMap< QString, TrackList > AlbumList;
-    typedef QMap< QString, AlbumList > SongList;
-
-//typedef QMap<QString, QMap<QString, QPtrList<MetaBundle> > > SongList;
 
     enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 2, LONG = 5, LONGLONG = 7,
                         STRING = 9, DATE = 10, DVERSION = 11, CONTAINER = 12 };
@@ -78,7 +68,7 @@ namespace Daap
             quint16 port() const { return m_port; }
         public slots:
             void logoutRequest(int, bool );
-            void loginHeaderReceived( const Q3HttpResponseHeader& resp );
+            void loginHeaderReceived( const QHttpResponseHeader& resp );
             void loginFinished( int id , bool error );
             void updateFinished( int id , bool error );
             void databaseIdFinished( int id , bool error );
@@ -86,7 +76,7 @@ namespace Daap
             void fetchingError( const QString& error );
 
         signals:
-            void daapBundles( const QString& host, Daap::SongList bundles );
+            //void daapBundles( const QString& host, Daap::SongList bundles );
             void httpError( const QString& );
             void passwordRequired();
 

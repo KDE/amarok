@@ -13,8 +13,7 @@
 #ifndef DAAPCONTENTFETCHER_H
 #define DAAPCONTENTFETCHER_H
 
-#include <q3http.h>
-//Added by qt3to4:
+#include <QHttp>
 #include <QByteArray>
 
 class QDataStream;
@@ -27,7 +26,7 @@ namespace Daap {
    that DAAP needs
 	@author Ian Monroe <ian@monroe.nu>
 */
-class ContentFetcher : public Q3Http
+class ContentFetcher : public QHttp
 {
     Q_OBJECT
 
