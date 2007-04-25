@@ -47,6 +47,8 @@ int main( int argc, char *argv[] )
             ( "Developer (aumuell)" ), "aumuell@reserv.at" );
     aboutData.addAuthor( "Max 'Turtle-Power' Howell",
             ( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
+    aboutData.addAuthor( "Maximilian Kossick",
+            ( "Developer (maxx_k)" ), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl",
             ( "DCOP, improvements, Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
     aboutData.addAuthor( "Paul 'Meet me at the Amarok Bar!' Cifarelli",
@@ -80,7 +82,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Jocke Andersson", ( "roKymoter, bug fixer and Swedish Bitch (Firetech)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", ( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Marco Gulino", ( "Konqueror Sidebar, some DCOP methods" ), "marco@kmobiletools.org" );
-    aboutData.addCredit( "Maximilian Kossick", ( "Dynamic Collection, label support, patches" ), "maximilian.kossick@gmail.com" );
     aboutData.addCredit( "Melchior Franz", ( "FHT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Michael Pyne", ( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", ( "Splash screen" ), "mchitman@neobee.net" );
