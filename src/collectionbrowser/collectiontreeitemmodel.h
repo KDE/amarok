@@ -81,11 +81,11 @@ Q_OBJECT
 
     public slots:
         void collectionAdded( Collection *newCollection );
-        void collectionRemoved( QString collectionId );
+        void collectionRemoved( const QString &collectionId );
 
         void queryDone();
 
-        void newResultReady( QString collectionId, Meta::DataList data );
+        void newResultReady( const QString &collectionId, Meta::DataList data );
 
     private:
 

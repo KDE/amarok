@@ -355,7 +355,7 @@ CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
 }
 
 void
-CollectionTreeItemModel::collectionRemoved( QString collectionId ) {
+CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
     int count = m_rootItem->childCount();
     for ( int i = 0; i < count; i++ ) {
         CollectionTreeItem *item = m_rootItem->child( i );
@@ -375,7 +375,7 @@ CollectionTreeItemModel::queryDone() {
 }
 
 void
-CollectionTreeItemModel::newResultReady( QString collectionId, Meta::DataList data ) {
+CollectionTreeItemModel::newResultReady( const QString &collectionId, Meta::DataList data ) {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
     debug() << "Received " << data.count() << " new data values" << endl;
