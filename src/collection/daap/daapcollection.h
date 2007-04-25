@@ -21,6 +21,9 @@
 
 #include "collection.h"
 #include "memorycollection.h"
+#include "reader.h"
+
+using namespace Daap;
 
 class DaapCollectionFactory : public CollectionFactory
 {
@@ -36,8 +39,9 @@ class DaapCollectionFactory : public CollectionFactory
         QString resolve( const QString &hostname );
 };
 
-class DaapCollection : public Collection, public MemoryCollection
+class DaapCollection : public QObject, public Collection, public MemoryCollection
 {
+    Q_OBJECT
     public:
         DaapCollection( const QString &host, const QString &ip, quint16 port );
         virtual ~DaapCollection();
@@ -48,10 +52,16 @@ class DaapCollection : public Collection, public MemoryCollection
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
+    private slots:
+        void passwordRequired();
+        void httpError( const QString &error );
+
     private:
         QString m_host;
         quint16 m_port;
         QString m_ip;
+
+        Reader *m_reader;
 
 };
 

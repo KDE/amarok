@@ -24,6 +24,7 @@
 #include "daapmeta.h"
 #include "debug.h"
 #include "memoryquerymaker.h"
+#include "reader.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -97,16 +98,21 @@ DaapCollectionFactory::resolve( const QString &hostname )
 DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 port )
     : Collection()
     , MemoryCollection()
+    , QObject()
     , m_host( host )
     , m_port( port )
     , m_ip( ip )
+    , m_reader( 0 )
 {
-    //nothing to do
+    m_reader = new Reader( this, host, port, QString(), this, "DaapReader" );
+    connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
+    connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
+    m_reader->loginRequest();
 }
 
 DaapCollection::~DaapCollection()
 {
-    //nothing to do
+    delete m_reader;
 }
 
 void
@@ -131,6 +137,24 @@ QString
 DaapCollection::prettyName() const
 {
     return "daap://" + m_host;
+}
+
+void
+DaapCollection::passwordRequired()
+{
+    //get password
+    QString password;
+    delete m_reader;
+    m_reader = new Reader( this, m_host, m_port, password, this, "DaapReader" );
+    connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
+    connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
+    m_reader->loginRequest();
+}
+
+void
+DaapCollection::httpError( const QString &error )
+{
+    debug() << "Http error in DaapReader: " << error << endl;
 }
 
 #include "daapcollection.moc"

@@ -20,7 +20,6 @@
 class QString;
 
 class MemoryCollection;
-class ServerItem;
 class QHttpResponseHeader;
 
 namespace QHttp {
@@ -53,15 +52,13 @@ namespace Daap
         Q_OBJECT
 
         public:
-            Reader( MemoryCollection *mc, const QString& host, quint16 port, ServerItem* root,
-                    const QString& password, QObject* parent, const char* name );
+            Reader( MemoryCollection *mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name );
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
             enum Options { SESSION_ID = 1, SERVER_VERSION = 2  };
             void loginRequest();
             void logoutRequest();
-            ServerItem* rootMediaItem() const { return m_root; }
 
             int sessionId() const { return m_sessionId; }
             QString host() const { return m_host; }
@@ -98,7 +95,6 @@ namespace Daap
             QString m_loginString;
             QString m_databaseId;
             int m_sessionId;
-            ServerItem* m_root;
             QString m_password;
 
     };

@@ -30,13 +30,12 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader( MemoryCollection* mc, const QString& host, quint16 port, ServerItem* root, const QString& password, QObject* parent, const char* name)
+Reader::Reader( MemoryCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
     : QObject( parent )
     , m_memColl( mc )
     , m_host( host )
     , m_port( port )
     , m_sessionId( -1 )
-    , m_root( root )
     , m_password( password )
 {
     setObjectName( name );
