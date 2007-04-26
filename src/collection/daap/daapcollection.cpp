@@ -48,7 +48,7 @@ void
 DaapCollectionFactory::init()
 {
     DEBUG_BLOCK
-    QTimer::singleShot( 5000, this, SLOT( connectToManualServers() ) );
+    QTimer::singleShot( 20000, this, SLOT( connectToManualServers() ) );
 }
 
 void
@@ -61,7 +61,7 @@ DaapCollectionFactory::connectToManualServers()
         debug() << "Adding server " << server << endl;
         QStringList current = server.split( ':', QString::KeepEmptyParts );
         QString host = current.first();
-        quint16 port = current.last().toInt();
+        quint16 port = current.last().toUShort();
         QString ip = resolve( host );
         if( ip != "0" )
         {
@@ -96,14 +96,15 @@ DaapCollectionFactory::resolve( const QString &hostname )
 //DaapCollection
 
 DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 port )
-    : Collection()
+    : QObject()
+    , Collection()
     , MemoryCollection()
-    , QObject()
     , m_host( host )
     , m_port( port )
     , m_ip( ip )
     , m_reader( 0 )
 {
+    debug() << "Host: " << host << " port: " << port << endl;
     m_reader = new Reader( this, host, port, QString(), this, "DaapReader" );
     connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
     connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );

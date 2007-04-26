@@ -39,6 +39,7 @@ Reader::Reader( MemoryCollection* mc, const QString& host, quint16 port, const Q
     , m_password( password )
 {
     setObjectName( name );
+    debug() << "Host: " << host << " port: " << port << endl;
 
     if( s_codes.size() == 0 )
     {
@@ -182,8 +183,8 @@ Reader::loginRequest()
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
     connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
-    connect( http, SIGNAL(  responseHeaderReceived( const Q3HttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const Q3HttpResponseHeader & ) ) );
+    connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     http->getDaap( "/login" );
 }
 
@@ -192,8 +193,8 @@ Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(  responseHeaderReceived( const Q3HttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const Q3HttpResponseHeader & ) ) );
+    disconnect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     if( resp.statusCode() == 401 /*authorization required*/)
     {
         emit passwordRequired();

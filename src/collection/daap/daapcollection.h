@@ -23,6 +23,8 @@
 #include "memorycollection.h"
 #include "reader.h"
 
+#include <QtGlobal>
+
 using namespace Daap;
 
 class DaapCollectionFactory : public CollectionFactory
