@@ -263,7 +263,7 @@ BlockingQuery::result( const QString &collectionId, YearList years )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, QStringList list )
+BlockingQuery::result( const QString &collectionId, const QStringList &list )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );

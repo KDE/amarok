@@ -64,7 +64,7 @@ class AMAROK_EXPORT BlockingQuery : private QObject
         void result( const QString &collectionId, GenreList genres );
         void result( const QString &collectionId, ComposerList composers );
         void result( const QString &collectionId, YearList years );
-        void result( const QString &collectionId, QStringList list );
+        void result( const QString &collectionId, const QStringList &list );
 
     private:
         class Private;
