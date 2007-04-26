@@ -586,7 +586,7 @@ SqlQueryBuilder::handleYears( const QStringList &result )
 }
 
 QString
-SqlQueryBuilder::escape( QString text ) const
+SqlQueryBuilder::escape( QString text ) const           //krazy:exclude=constref
 {
     return text.replace( '\'', "''" );;
 }

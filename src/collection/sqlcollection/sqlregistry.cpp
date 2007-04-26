@@ -18,9 +18,9 @@
 
 #define DEBUG_PREFIX "SqlRegistry"
 
-#include "debug.h"
-
 #include "sqlregistry.h"
+
+#include "debug.h"
 
 #include "mountpointmanager.h"
 
