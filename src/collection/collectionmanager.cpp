@@ -45,11 +45,11 @@ CollectionManager::CollectionManager()
 
 CollectionManager::~CollectionManager()
 {
-    foreach( CollectionFactory *fac, d->factories )
-        delete fac;
-
     foreach( Collection *coll, d->collections )
         delete coll;
+
+    foreach( CollectionFactory *fac, d->factories )
+        PluginManager::unload( fac );
 
     delete d;
 }
