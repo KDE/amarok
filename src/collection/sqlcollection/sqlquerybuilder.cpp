@@ -69,7 +69,9 @@ struct SqlQueryBuilder::Private
     QString query;
     QString queryReturnValues;
     QString queryFrom;
-    QString queryWhere;
+    QString queryMatch;
+    QString queryFilter;
+    QString queryOrderBy;
     bool includedBuilder;
     bool collectionRestriction;
     bool resultAsDataPtrs;
@@ -100,7 +102,9 @@ SqlQueryBuilder::reset()
     d->queryType = Private::NONE;
     d->queryReturnValues.clear();
     d->queryFrom.clear();
-    d->queryWhere.clear();
+    d->queryMatch.clear();
+    d->queryFilter.clear();
+    d->queryOrderBy.clear();
     d->linkedTables = 0;
     d->worker = 0;   //ThreadWeaver deletes the Job
     d->resultAsDataPtrs = false;
@@ -293,7 +297,7 @@ SqlQueryBuilder::addMatch( const TrackPtr &track )
     QString url = track->url();
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    d->queryWhere += QString( " AND tags.deviceid = %1 AND tags.url = '%2'" )
+    d->queryMatch += QString( " AND tags.deviceid = %1 AND tags.url = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
     return this;
 }
@@ -302,7 +306,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
-    d->queryWhere += QString( " AND artist.name = '%1'" ).arg( escape( artist->name() ) );
+    d->queryMatch += QString( " AND artist.name = '%1'" ).arg( escape( artist->name() ) );
     return this;
 }
 
@@ -311,7 +315,7 @@ SqlQueryBuilder::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
-    d->queryWhere += QString( " AND album.name = '%1'" ).arg( escape( album->name() ) );
+    d->queryMatch += QString( " AND album.name = '%1'" ).arg( escape( album->name() ) );
     return this;
 }
 
@@ -319,7 +323,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
-    d->queryWhere += QString( " AND genre.name = '%1'" ).arg( escape( genre->name() ) );
+    d->queryMatch += QString( " AND genre.name = '%1'" ).arg( escape( genre->name() ) );
     return this;
 }
 
@@ -327,7 +331,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
-    d->queryWhere += QString( " AND composer.name = '%1'" ).arg( escape( composer->name() ) );
+    d->queryMatch += QString( " AND composer.name = '%1'" ).arg( escape( composer->name() ) );
     return this;
 }
 
@@ -335,7 +339,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
-    d->queryWhere += QString( " AND year.name = '%1'" ).arg( escape( year->name() ) );
+    d->queryMatch += QString( " AND year.name = '%1'" ).arg( escape( year->name() ) );
     return this;
 }
 
@@ -365,7 +369,9 @@ SqlQueryBuilder::addReturnValue( qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
     {
-        //TODO
+        if ( !d->queryReturnValues.isEmpty() )
+            d->queryReturnValues += ',';
+        d->queryReturnValues += nameForValue( value );
     }
     return this;
 }
@@ -373,13 +379,17 @@ SqlQueryBuilder::addReturnValue( qint64 value )
 QueryMaker*
 SqlQueryBuilder::orderBy( qint64 value, bool descending )
 {
-    //TODO
+    if ( d->queryOrderBy.isEmpty() )
+        d->queryOrderBy = " ORDER BY ";
+    d->queryOrderBy += nameForValue( value );
+    d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
     return this;
 }
 
 QueryMaker*
 SqlQueryBuilder::limitMaxResultSize( int size )
 {
+    d->maxResultSize = size;
     return this;
 }
 
@@ -418,7 +428,9 @@ SqlQueryBuilder::buildQuery()
     query += " FROM ";
     query += d->queryFrom;
     query += " WHERE 1 ";
-    query += d->queryWhere;
+    query += d->queryMatch;
+    query += d->queryFilter;
+    query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
         query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
     query += ';';
@@ -475,6 +487,76 @@ SqlQueryBuilder::handleResult( const QStringList &result )
     }
 
     //queryDone will be emitted in done(Job*)
+}
+
+QString
+SqlQueryBuilder::nameForValue( qint64 value )
+{
+    switch( value )
+    {
+        case valUrl:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.url";  //TODO figure out how to handle deviceid
+        case valTitle:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.title";
+        case valArtist:
+            d->linkedTables |= Private::ARTIST_TAB;
+            return "artist.name";
+        case valAlbum:
+            d->linkedTables |= Private::ALBUM_TAB;
+            return "album.name";
+        case valGenre:
+            d->linkedTables |= Private::GENRE_TAB;
+            return "genre.name";
+        case valComposer:
+            d->linkedTables |= Private::COMPOSER_TAB;
+            return "composer.name";
+        case valYear:
+            d->linkedTables |= Private::YEAR_TAB;
+            return "year.name";
+        case valComment:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.comment";
+        case valTrackNr:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.track";
+        case valDiscNr:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.discnumber";
+        case valLength:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.length";
+        case valBitrate:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.bitrate";
+        case valSamplerate:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.samplerate";
+        case valFilesize:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.filesize";
+        case valFormat:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tags.filetype";
+        case valScore:
+            d->linkedTables |= Private::STATISTICS_TAB;
+            return "statistics.percentage";
+        case valRating:
+            d->linkedTables |= Private::STATISTICS_TAB;
+            return "statistics.rating";
+        case valFirstPlayed:
+            d->linkedTables |= Private::STATISTICS_TAB;
+            return "statistics.createdate";
+        case valLastPlayed:
+            d->linkedTables |= Private::STATISTICS_TAB;
+            return "statistics.accessdate";
+        case valPlaycount:
+            d->linkedTables |= Private::STATISTICS_TAB;
+            return "statistics.playcounter";
+        default:
+            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64)";
+    }
 }
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)

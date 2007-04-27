@@ -82,6 +82,8 @@ class SqlQueryBuilder : public QueryMaker
         void linkTables();
         void buildQuery();
 
+        QString nameForValue( qint64 value );
+
         void handleTracks( const QStringList &result );
         void handleArtists( const QStringList &result );
         void handleAlbums( const QStringList &result );
