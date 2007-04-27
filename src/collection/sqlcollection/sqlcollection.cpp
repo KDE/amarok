@@ -104,5 +104,23 @@ SqlCollection::registry() const
     return m_registry;
 }
 
+bool
+SqlCollection::isSqlDatabase() const
+{
+    return true;
+}
+
+int
+SqlCollection::sqlDatabasePriority() const
+{
+    return 1;
+}
+
+int
+SqlCollection::insert( const QString &statement, const QString &table )
+{
+    return CollectionDB::instance()->insert( statement, table );
+}
+
 #include "sqlcollection.moc"
 

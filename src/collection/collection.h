@@ -54,6 +54,11 @@ class AMAROK_EXPORT Collection
 
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
+
+        virtual bool isSqlDatabase() const;
+        virtual int sqlDatabasePriority() const;
+        virtual QStringList query( const QString &query );
+        virtual int insert( const QString &statement, const QString &table );
 };
 
 #endif /* AMAROK_COLLECTION_H */

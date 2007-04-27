@@ -49,7 +49,10 @@ class SqlCollection : public Collection
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
-        QStringList query( const QString &statement );
+        virtual bool isSqlDatabase() const;
+        virtual int sqlDatabasePriority() const;
+        virtual QStringList query( const QString &query );
+        virtual int insert( const QString &statement, const QString &table );
 
         SqlRegistry* registry() const;
 

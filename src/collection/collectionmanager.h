@@ -38,6 +38,9 @@ class CollectionManager : public QObject
 
         QList<Collection*> collections();
 
+        QStringList sqlQuery( const QString &query );
+        int sqlInsert( const QString &statement, const QString &table );
+
     signals:
         void collectionAdded( Collection *newCollection );
         void collectionRemoved( QString collectionId );

@@ -34,6 +34,7 @@ struct CollectionManager::Private
 {
     QList<Collection*> collections;
     QList<CollectionFactory*> factories;
+    Collection *sqlDatabase;
 };
 
 CollectionManager::CollectionManager()
@@ -59,6 +60,7 @@ CollectionManager::init()
 {
     DEBUG_BLOCK
 
+    d->sqlDatabase = 0;
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers" << endl;
     foreach( KService::Ptr service, plugins )
@@ -114,6 +116,14 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     }
     debug() << "New collection with collectionId: " << newCollection->collectionId() << endl;
     d->collections.append( newCollection );
+    if( newCollection->isSqlDatabase() )
+    {
+        if( d->sqlDatabase )
+            if( d->sqlDatabase->sqlDatabasePriority() < newCollection->sqlDatabasePriority() )
+                d->sqlDatabase = newCollection;
+        else
+            d->sqlDatabase = newCollection;
+    }
     emit collectionAdded( newCollection );
 }
 
@@ -121,6 +131,18 @@ QList<Collection*>
 CollectionManager::collections()
 {
     return d->collections;
+}
+
+QStringList
+CollectionManager::sqlQuery( const QString &query )
+{
+    return d->sqlDatabase->query( query );
+}
+
+int
+CollectionManager::sqlInsert( const QString &statement, const QString &table )
+{
+    return d->sqlDatabase->insert( statement, table );
 }
 
 #include "collectionmanager.moc"

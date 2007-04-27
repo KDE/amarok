@@ -34,5 +34,31 @@ Collection::~Collection()
 {
 }
 
+bool
+Collection::isSqlDatabase() const
+{
+    return false;
+}
+
+int
+Collection::sqlDatabasePriority() const
+{
+    return 0;
+}
+
+QStringList
+Collection::query( const QString &query )
+{
+    Q_UNUSED( query )
+    return QStringList();
+}
+
+int
+Collection::insert( const QString &statement, const QString &table )
+{
+    Q_UNUSED( statement )
+    Q_UNUSED( table )
+    return 0;
+}
 
 #include "collection.moc"

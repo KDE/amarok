@@ -278,7 +278,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //sql helper methods
         AMAROK_EXPORT QStringList query( const QString& statement, bool suppressDebug = false );
-        int insert( const QString& statement, const QString& table );
+        AMAROK_EXPORT int insert( const QString& statement, const QString& table );
 
         /**
          * TODO: write doc
