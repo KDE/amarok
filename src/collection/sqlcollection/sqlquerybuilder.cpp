@@ -555,7 +555,7 @@ SqlQueryBuilder::nameForValue( qint64 value )
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcounter";
         default:
-            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64)";
+            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64): value=" + value;
     }
 }
 
