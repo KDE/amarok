@@ -174,7 +174,7 @@ PhononEngine::convertState( Phonon::State s )
 Engine::State
 PhononEngine::state() const
 {
-    if( m_mediaObject );
+    if( m_mediaObject )
         return convertState( m_mediaObject->state() );
 
     return Engine::Empty;
