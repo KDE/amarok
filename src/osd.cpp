@@ -69,7 +69,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {
-#ifdef Q_WS_X11
     m_text = text;
     if ( !newImage.isNull() )
     {
@@ -79,10 +78,6 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
     show();
-#else
-    Q_UNUSED( text );
-    Q_UNUSED( newImage );
-#endif
 }
 
 void
@@ -111,7 +106,6 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
-#ifdef Q_WS_X11
     if ( !isEnabled() || m_text.isEmpty() )
         return;
 
@@ -136,7 +130,6 @@ OSDWidget::show() //virtual
         warning() << "Attempted to make an invalid sized OSD\n";
 
     update();
-#endif
 }
 
 QRect
@@ -554,7 +547,6 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
-#ifdef Q_WS_X11
     QString text = "";
     if( bundle.url().isEmpty() )
         text = i18n( "No track playing" );
@@ -676,9 +668,6 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         text = i18n("No information available for this track");
 
     OSDWidget::show( text );
-#else
-    Q_UNUSED( bundle );
-#endif
 }
 
 void
@@ -686,11 +675,7 @@ Amarok::OSD::applySettings()
 {
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
-#ifdef Q_WS_X11
     setEnabled( AmarokConfig::osdEnabled() );
-#else
-    setEnabled( false );
-#endif
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
@@ -706,7 +691,6 @@ Amarok::OSD::applySettings()
 void
 Amarok::OSD::forceToggleOSD()
 {
-#ifdef Q_WS_X11
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
@@ -715,7 +699,6 @@ Amarok::OSD::forceToggleOSD()
     }
     else
         hide();
-#endif
 }
 
 void
