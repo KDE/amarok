@@ -27,7 +27,8 @@
 #include "magnatunepurchasehandler.h"
 #include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"
-#include "magnatunecontentmodel.h"
+#include "magnatunedatabasehandler.h"
+#include "../databasedrivencontentmodel.h"
 #include "../servicebase.h"
 
 #include <kio/job.h>
@@ -211,13 +212,13 @@ private:
      * Adds all preview tracks on a magnatune album to the playlist
      * @param item The album to add
      */
-    void addAlbumToPlaylist ( MagnatuneAlbum  *item );
+    //void addAlbumToPlaylist ( MagnatuneAlbum  *item );
 
     /**
      * Adds all preview tracks on all albums by a given artist to the playlist
      * @param item the artist to add
      */
-    void addArtistToPlaylist( MagnatuneArtist *item );
+    //void addArtistToPlaylist( MagnatuneArtist *item );
 
     /**
      * Clears the genre combo box and inserts all genres from the database
@@ -233,6 +234,7 @@ private:
     QMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
+    MagnatuneDatabaseHandler * m_dbHandler;
 
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
@@ -247,7 +249,7 @@ private:
 
     KIO::FileCopyJob * m_listDownloadJob;
 
-    MagnatuneContentItem * m_currentlySelectedItem;
+    DatabaseDrivenContentItem * m_currentlySelectedItem;
 };
 
 

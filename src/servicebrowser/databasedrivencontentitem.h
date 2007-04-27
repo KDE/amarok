@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
+ *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,40 +22,41 @@
 #define AMAROKMAGNATUENTREEITEM_H
 
 #include "../servicemodelitembase.h"
-#include "magnatunetypes.h"
+#include "simpleservicetypes.h"
+
+#include "databasehandlerbase.h"
 
 #include "kurl.h"
 
 #include <QList>
 
 
-enum {MAGNATUNE_ROOT, MAGNATUNE_ARTIST, MAGNATUNE_ALBUM, MAGNATUNE_TRACK};
+enum {SERVICE_ITEM_ROOT, SERVICE_ITEM_ARTIST, SERVICE_ITEM_ALBUM, SERVICE_ITEM_TRACK};
 
 union contentTypeUnion
 {
-    MagnatuneArtist * artistValue;
-    MagnatuneAlbum * albumValue;
-    MagnatuneTrack * trackValue;
+    SimpleServiceArtist * artistValue;
+    SimpleServiceAlbum * albumValue;
+    SimpleServiceTrack * trackValue;
 };
 
-class MagnatuneContentItem : public ServiceModelItemBase
+class DatabaseDrivenContentItem : public ServiceModelItemBase
 {
 public:
-    MagnatuneContentItem( MagnatuneArtist content, const QString &genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneAlbum content, const QString &genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneTrack content, const QString &genre, MagnatuneContentItem *parent );
-    MagnatuneContentItem( const QString &genre );
+    DatabaseDrivenContentItem( SimpleServiceArtist *content, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler );
+    DatabaseDrivenContentItem( SimpleServiceAlbum *content, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler );
+    DatabaseDrivenContentItem( SimpleServiceTrack *content, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler );
+    DatabaseDrivenContentItem( const QString &genre, DatabaseHandlerBase * dbHandler );
 
 
+    virtual ~DatabaseDrivenContentItem();
 
-    virtual ~MagnatuneContentItem();
-
-    MagnatuneContentItem *child(int row);
+    DatabaseDrivenContentItem *child(int row);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
     int row() const;
-    /*MagnatuneContentItem * parent();*/
+    /*DatabaseDrivenContentItem * parent();*/
     int getType();
     QList<ServiceModelItemBase*> getChildItems() const;
     bool hasChildren () const;
@@ -69,8 +69,9 @@ public:
 
 private:
 
-    /*mutable QList<MagnatuneContentItem*> m_childItems;*/
-    mutable QList<MagnatuneContentItem*> m_prefetchedItems;
+    mutable QList<DatabaseDrivenContentItem*> m_prefetchedItems;
+
+    DatabaseHandlerBase * m_dbHandler;
 
     contentTypeUnion m_content; 
     QString m_genre;
@@ -78,7 +79,7 @@ private:
     int m_type;
     mutable bool m_hasPopulatedChildItems;
 
-    /*MagnatuneContentItem *m_parent;*/
+    /*DatabaseDrivenContentItem *m_parent;*/
 
     void populateChildItems() const;
 };

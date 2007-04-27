@@ -30,6 +30,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
 {
     m_sFileName = filename;
     debug() << "Creating JamendoXmlParser" << endl;
+    m_dbHandler = new JamendoDatabaseHandler();
 }
 
 
@@ -81,15 +82,15 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     file.close();
 
 
-    JamendoDatabaseHandler::instance()->destroyDatabase();
-    JamendoDatabaseHandler::instance()->createDatabase();
+    m_dbHandler->destroyDatabase();
+    m_dbHandler->createDatabase();
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();
 
-    JamendoDatabaseHandler::instance()->begin(); //start transaction (MAJOR speedup!!)
+    m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );
-    JamendoDatabaseHandler::instance()->commit(); //complete transaction
+    m_dbHandler->commit(); //complete transaction
 
     completeJob( );
 
@@ -160,7 +161,7 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
     }
 
 
-    JamendoDatabaseHandler::instance()->insertArtist( &currentArtist );
+    m_dbHandler->insertArtist( &currentArtist );
 
     /*debug() << "Found artist: " << endl;
     debug() << "    Name:       " << currentArtist.getName() << endl;
@@ -203,7 +204,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     }
 
 
-     JamendoDatabaseHandler::instance()->insertAlbum( &currentAlbum );
+     m_dbHandler->insertAlbum( &currentAlbum );
 
     /*debug() << "Found album: " << endl;
     debug() << "    Name:       " << currentAlbum.getName() << endl;
@@ -243,8 +244,7 @@ void JamendoXmlParser::parseTrack(QDomElement e)
         }
 
     }
-
-    JamendoDatabaseHandler::instance()->insertTrack( &currentTrack );
+    m_dbHandler->insertTrack( &currentTrack );
 
   /*  debug() << "Found track: " << endl;
     debug() << "    Name:       " << currentTrack.getName() << endl;
@@ -254,6 +254,11 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     debug() << "    length (s): " << currentTrack.getDuration() << endl;
 */
 
+}
+
+void JamendoXmlParser::setDbHandler(JamendoDatabaseHandler * dbHandler)
+{
+    m_dbHandler = dbHandler;
 }
 
 

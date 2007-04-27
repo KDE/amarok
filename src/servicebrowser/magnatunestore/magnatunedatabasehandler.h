@@ -22,6 +22,7 @@
 #define MAGNATUNEDATABASEHANDLER_H
 
 #include "collectiondb.h"
+#include "databasehandlerbase.h"
 #include "magnatunetypes.h"
 
 #include <QStringList>
@@ -36,16 +37,11 @@ typedef  QMap<QString, int> MagnatuneMoodMap;
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneDatabaseHandler{
+class MagnatuneDatabaseHandler : public DatabaseHandlerBase{
 public:
     
 
-    /**
-     * Function for retrieving the singleton
-     * @return pointer to the singleton
-     */
-    static MagnatuneDatabaseHandler * instance();
-
+    MagnatuneDatabaseHandler();
     ~MagnatuneDatabaseHandler();
 
     /**
@@ -104,21 +100,21 @@ public:
      * @param genre the genre
      * @return  A list of artist in the genre
      */
-    MagnatuneArtistList getArtistsByGenre(const QString &genre);
+    SimpleServiceArtistList getArtistsByGenre(const QString &genre);
 
     /**
      * Returns the artist with a given id
      * @param id The id of the artist to look for
      * @return The artist with the given id. Returns an empty artist if not found.
      */
-    MagnatuneArtist getArtistById(int id);
+    SimpleServiceArtist * getArtistById(int id);
 
     /**
      * Returns the album with a given id
      * @param id The id of the album to look for
      * @return The album with the given id. Returns an empty album if not found.
      */
-    MagnatuneAlbum getAlbumById(int id);
+    SimpleServiceAlbum * getAlbumById(int id);
 
 
      /**
@@ -126,7 +122,7 @@ public:
      * @param id The id of the track to look for
      * @return The track with the given id. Returns an empty album if not found.
      */
-    MagnatuneTrack getTrackById(int id);
+    SimpleServiceTrack * getTrackById(int id);
 
     /**
      * Retrieves all albums by a single artist from the database
@@ -134,21 +130,21 @@ public:
      * @param genre Limits the albums to a specific genre. Use "All" to get all albums
      * @return List of albums. empty if none are found
      */
-    MagnatuneAlbumList getAlbumsByArtistId(int id, const QString &genre);
+    SimpleServiceAlbumList getAlbumsByArtistId(int id, const QString &genre);
 
     /**
      * Retrieves all tracks on a given album
      * @param id The id of the album
      * @return A list of tracks. Empty if album is not found or has no tracks
      */
-    MagnatuneTrackList getTracksByAlbumId(int id);
+    SimpleServiceTrackList getTracksByAlbumId(int id);
 
     /**
      * Retrieves all tracks by given artist
      * @param id The id of the artist
      * @return A list of tracks. Empty if artist is not found, artist has no albums or albums have no tracks
      */
-    MagnatuneTrackList getTracksByArtistId(int id); 
+    SimpleServiceTrackList getTracksByArtistId(int id); 
 
     /**
      * Retrieves a list of all genres present in the databse
@@ -177,7 +173,7 @@ public:
      * @param mood The mood to search for
      * @return List of tracks
      */
-    MagnatuneTrackList getTracksByMood( QString mood );
+    SimpleServiceTrackList getTracksByMood( QString mood );
 
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
@@ -188,16 +184,6 @@ public:
      * Completes (executes) a database transaction. Must be preceded by a call to begin()
      */
     void commit();
-
-
-protected:
-
-    /**
-     * Private constructor (singleton pattern)
-     * @return Pointer to new object
-     */
-    MagnatuneDatabaseHandler();
-    static MagnatuneDatabaseHandler * m_pInstance;
 
 };
 

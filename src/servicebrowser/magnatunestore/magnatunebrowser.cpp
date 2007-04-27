@@ -17,12 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
-
+#include "magnatunebrowser.h"
 
 #include "amarok.h"
-#include "magnatunebrowser.h"
+#include "magnatuneinfoparser.h"
 #include "playlist.h"
-#include "magnatunedatabasehandler.h"
 #include "debug.h"
 #include "../../contextview/contextview.h"
 #include "../../contextview/cloudbox.h"
@@ -48,7 +47,8 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 {
     setObjectName(name);
     DEBUG_BLOCK
-    initTopPanel( );
+    //initTopPanel( );
+
 
     setShortDescription("A very friendly service!");
     setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
@@ -61,7 +61,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     //m_infoBox = new MagnatuneArtistInfoBox( spliter, "ArtistInfoBox" );
 
 
-    initBottomPanel();
+    //initBottomPanel();
 
     m_currentInfoUrl = "";
 
@@ -87,30 +87,30 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
     playlist->insertMedia( KUrl( url ) );
 }
 
-void MagnatuneBrowser::addAlbumToPlaylist( MagnatuneAlbum * item )
+/*void MagnatuneBrowser::addAlbumToPlaylist( MagnatuneAlbum * item )
 {
     if ( !item ) return ; // sanity check
     debug() << "Magnatune browser: adding album" << endl;
 
-    MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance() ->getTracksByAlbumId( item->getId() );
+    MagnatuneTrackList tracks = m_dbHandler ->getTracksByAlbumId( item->getId() );
 
     MagnatuneTrackList::iterator it;
     for ( it = tracks.begin(); it != tracks.end(); ++it )
         addTrackToPlaylist( &( *it ) );
 
-}
+}*/
 
-void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist *item )
+/*void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist *item )
 {
     if ( !item ) return ; // sanity check
     debug() << "Magnatune browser: adding artist" << endl;
 
-    MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance() ->getAlbumsByArtistId( item->getId(), "" );
+    SimpleServiceAlbumList albums = MagnatuneDatabaseHandler::instance() ->getAlbumsByArtistId( item->getId(), "" );
 
-    MagnatuneAlbumList::iterator it;
+    SimpleServiceAlbumList::iterator it;
     for ( it = albums.begin(); it != albums.end(); ++it )
         addAlbumToPlaylist( &( *it ) );
-}
+}*/
 
 
 /*void MagnatuneBrowser::showPopupMenu( QListWidgetItem * item, const QPoint & pos, int column )
@@ -166,9 +166,9 @@ void MagnatuneBrowser::purchaseButtonClicked( )
     if ( !m_purchaseInProgress && m_currentlySelectedItem != 0)
     {
 
-        if ( m_currentlySelectedItem->getType() == MAGNATUNE_ALBUM )
+        if ( m_currentlySelectedItem->getType() == SERVICE_ITEM_ALBUM )
             purchaseSelectedAlbum( );
-        else if ( m_currentlySelectedItem->getType() == MAGNATUNE_TRACK )
+        else if ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )
             purchaseAlbumContainingSelectedTrack( );
     }
 }
@@ -186,7 +186,7 @@ void MagnatuneBrowser::purchaseSelectedAlbum( )
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
 
-    MagnatuneAlbum * selectedAlbum = m_currentlySelectedItem->getContentUnion().albumValue;
+    MagnatuneAlbum * selectedAlbum = dynamic_cast<MagnatuneAlbum *>( m_currentlySelectedItem->getContentUnion().albumValue );
 
     if (selectedAlbum)
         m_purchaseHandler->purchaseAlbum( *selectedAlbum );
@@ -205,7 +205,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
 
-    MagnatuneContentItem *albumContentItem = dynamic_cast<MagnatuneContentItem*>( m_currentlySelectedItem->parent() );
+    DatabaseDrivenContentItem *albumContentItem = dynamic_cast<DatabaseDrivenContentItem*>( m_currentlySelectedItem->parent() );
 
     if (!albumContentItem) {
 	debug() << "dynamic_cast to albumContentItem failed!" << endl;
@@ -215,7 +215,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 	return;
     }
 
-    MagnatuneAlbum * selectedAlbum = albumContentItem->getContentUnion().albumValue;
+    MagnatuneAlbum * selectedAlbum = dynamic_cast<MagnatuneAlbum *> ( albumContentItem->getContentUnion().albumValue );
 
     m_purchaseHandler->purchaseAlbum( *selectedAlbum );
 }
@@ -324,6 +324,7 @@ void MagnatuneBrowser::listDownloadComplete( KJob * downLoadJob )
 
     debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
+    parser->setDbHandler( m_dbHandler );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance() ->queueJob( parser );
@@ -359,7 +360,7 @@ void MagnatuneBrowser::showInfo( bool show )
 void MagnatuneBrowser::genreChanged( QString genre )
 {
     debug() << "Genre changed to: " << genre << endl;
-    static_cast< MagnatuneContentModel *>( getModel() )->setGenre( genre );
+    static_cast< DatabaseDrivenContentModel *>( getModel() )->setGenre( genre );
 }
 
 
@@ -372,7 +373,7 @@ void MagnatuneBrowser::doneParsing()
 
 void MagnatuneBrowser::updateGenreBox()
 {
-    const QStringList genres = MagnatuneDatabaseHandler::instance() ->getAlbumGenres();
+    const QStringList genres = m_dbHandler->getAlbumGenres();
 
     m_genreComboBox->clear();
     m_genreComboBox->addItem( "All" , 0 ); // should not be i18n'ed as it is
@@ -414,8 +415,8 @@ void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
 
 void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
 
-   m_currentlySelectedItem = static_cast<MagnatuneContentItem*>( selectedItem );
-   if ( ( m_currentlySelectedItem->getType() == MAGNATUNE_ALBUM ) ||  ( m_currentlySelectedItem->getType() == MAGNATUNE_TRACK )  ) {
+   m_currentlySelectedItem = static_cast<DatabaseDrivenContentItem*>( selectedItem );
+   if ( ( m_currentlySelectedItem->getType() == SERVICE_ITEM_ALBUM ) ||  ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )  ) {
 
        m_purchaseAlbumButton->setEnabled( true );
    } else {
@@ -428,25 +429,27 @@ void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem
 void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 {
    debug() << "addMoody: " << mood << endl;
-   MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByMood( mood );
+   SimpleServiceTrackList tracks = m_dbHandler->getTracksByMood( mood );
 
    int numberOfTracks = tracks.size();
 
    if ( numberOfTracks < 11 ) {
 
-       foreach (MagnatuneTrack track, tracks) {
-           addTrackToPlaylist( &track );
+       foreach (SimpleServiceTrack * track, tracks) {
+           addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( track ) );
        }
-   }
+   } else {
 
-   int randomIndex;
-   for ( int i = 0; i < 10; i++ ) {
+       int randomIndex;
+       for ( int i = 0; i < 10; i++ ) {
+           randomIndex = rand() % (numberOfTracks - i);
+           addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( tracks.takeAt( randomIndex ) ) );
 
-       randomIndex = rand() % (numberOfTracks - i);
-
-       addTrackToPlaylist( &tracks.takeAt( randomIndex ) );
-
+        }
     }
+
+
+    qDeleteAll( tracks );
 
 }
 
@@ -463,7 +466,23 @@ void MagnatuneBrowser::polish( )
         m_polished = true;
 
 
-        setModel(new MagnatuneContentModel ( this ) );
+
+
+        m_dbHandler = new MagnatuneDatabaseHandler();
+
+
+        initTopPanel( );
+    initBottomPanel();
+
+        DatabaseDrivenContentModel * model = new DatabaseDrivenContentModel ( this );
+        MagnatuneInfoParser * infoParser = new MagnatuneInfoParser();
+        infoParser->setDbHandler( m_dbHandler );
+
+        model->setDbHandler( m_dbHandler );
+        model->setInfoParser( infoParser );
+
+        //setModel(new MagnatuneContentModel ( this ) );
+        setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
 
@@ -498,7 +517,7 @@ void MagnatuneBrowser::polish( )
 bool MagnatuneBrowser::updateContextView()
 {
 
-    MagnatuneMoodMap moodMap = MagnatuneDatabaseHandler::instance()->getMoodMap( 20 );
+    MagnatuneMoodMap moodMap = m_dbHandler->getMoodMap( 20 );
 
     int minMoodCount = 10000;
     int maxMoodCount = 0;

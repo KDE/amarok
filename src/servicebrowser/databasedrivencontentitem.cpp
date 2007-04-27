@@ -18,93 +18,97 @@
  ***************************************************************************/
 
 
-#include "jamendocontentitem.h"
+#include "databasedrivencontentitem.h"
 
 
 #include "debug.h"
-#include "jamendodatabasehandler.h"
+#include "databasehandlerbase.h"
 
 
 
-JamendoContentItem::JamendoContentItem(JamendoArtist artist, const QString &genre, JamendoContentItem *parent )
+DatabaseDrivenContentItem::DatabaseDrivenContentItem( SimpleServiceArtist *artist, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler )
 {
     m_genre = genre;
-    m_content.artistValue = new JamendoArtist( artist );
-    m_type = JAMENDO_ARTIST;
+    m_content.artistValue =  artist;
+    m_type = SERVICE_ITEM_ARTIST;
     m_parent = parent;
     m_hasPopulatedChildItems = false;
+    m_dbHandler = dbHandler;
 }
 
 
-JamendoContentItem::JamendoContentItem( JamendoAlbum album, const QString &genre, JamendoContentItem *parent )
+DatabaseDrivenContentItem::DatabaseDrivenContentItem( SimpleServiceAlbum *album, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler )
 {
 
     m_genre = genre;
-    m_content.albumValue = new JamendoAlbum ( album );
-    m_type = JAMENDO_ALBUM;
+    m_content.albumValue =  album;
+    m_type = SERVICE_ITEM_ALBUM;
     m_parent = parent;
     m_hasPopulatedChildItems = false;
+    m_dbHandler = dbHandler;
 }
 
 
-JamendoContentItem::JamendoContentItem( JamendoTrack track, const QString &genre, JamendoContentItem *parent )
+DatabaseDrivenContentItem::DatabaseDrivenContentItem( SimpleServiceTrack *track, const QString &genre, DatabaseDrivenContentItem *parent, DatabaseHandlerBase * dbHandler )
 {
 
     m_genre = genre;
-    m_content.trackValue = new JamendoTrack (track );
-    m_type = JAMENDO_TRACK;
+    m_content.trackValue = track;
+    m_type = SERVICE_ITEM_TRACK;
     m_parent = parent;
     m_hasPopulatedChildItems = true;
+    m_dbHandler = dbHandler;
 }
 
-JamendoContentItem::JamendoContentItem( const QString &genre )
+DatabaseDrivenContentItem::DatabaseDrivenContentItem( const QString &genre, DatabaseHandlerBase * dbHandler )
 {
     m_genre = genre;
-    m_type = JAMENDO_ROOT;
+    m_type = SERVICE_ITEM_ROOT;
     m_parent = 0;
     m_hasPopulatedChildItems = false;
+    m_dbHandler = dbHandler;
     prePopulate();
     populate(); // need to fill up artist or there will be nothing to show
 }
 
 
- JamendoContentItem::~JamendoContentItem()
+ DatabaseDrivenContentItem::~DatabaseDrivenContentItem()
  {
  }
 
- JamendoContentItem *JamendoContentItem::child(int row)
+ DatabaseDrivenContentItem *DatabaseDrivenContentItem::child(int row)
  {
 
     //if ( !m_hasPopulatedChildItems )
         //populateChildItems();
-    return dynamic_cast<JamendoContentItem*>( m_childItems.value( row ) );
+    return dynamic_cast<DatabaseDrivenContentItem*>( m_childItems.value( row ) );
 
  }
 
- int JamendoContentItem::childCount() const
+ int DatabaseDrivenContentItem::childCount() const
  {
      //if ( !m_hasPopulatedChildItems )
          //populateChildItems();
      return m_childItems.count();
  }
 
- int JamendoContentItem::columnCount() const
+ int DatabaseDrivenContentItem::columnCount() const
  {
      return 1; //FIXME!!
  }
 
-QVariant JamendoContentItem::data(int column) const  //FIXME!!! do We need more columns (for track length and so on...)
+QVariant DatabaseDrivenContentItem::data(int column) const  //FIXME!!! do We need more columns (for track length and so on...)
 {
    QString leadingZero;
 
    switch ( m_type ) {
-       case JAMENDO_ROOT:
+       case SERVICE_ITEM_ROOT:
            return  "Root node";
-       case JAMENDO_ARTIST:
+       case SERVICE_ITEM_ARTIST:
            return  m_content.artistValue->getName();
-       case JAMENDO_ALBUM:
+       case SERVICE_ITEM_ALBUM:
            return  m_content.albumValue->getName();
-       case JAMENDO_TRACK:
+       case SERVICE_ITEM_TRACK:
            if (m_content.trackValue->getTrackNumber() < 10)
                leadingZero = "0";
 
@@ -117,17 +121,17 @@ QVariant JamendoContentItem::data(int column) const  //FIXME!!! do We need more 
 
 }
 
-int JamendoContentItem::row() const
+int DatabaseDrivenContentItem::row() const
 {
     if (m_parent){
         //if ( !m_hasPopulatedChildItems )
             //populateChildItems();
-        return m_parent->getChildItems().indexOf(const_cast<JamendoContentItem*>(this));
+        return m_parent->getChildItems().indexOf(const_cast<DatabaseDrivenContentItem*>(this));
     }
     return 0;
 }
 
-QList<ServiceModelItemBase*> JamendoContentItem::getChildItems() const {
+QList<ServiceModelItemBase*> DatabaseDrivenContentItem::getChildItems() const {
     if ( !m_hasPopulatedChildItems )
         populateChildItems();
 
@@ -135,35 +139,35 @@ QList<ServiceModelItemBase*> JamendoContentItem::getChildItems() const {
 }
 
 
-int JamendoContentItem::prePopulate() const
+int DatabaseDrivenContentItem::prePopulate() const
 {
  
     int numberOfChildren =0;
     if ( !m_hasPopulatedChildItems ) {
 
         switch ( m_type ) {
-            case JAMENDO_ROOT: {
-                JamendoArtistList artists = JamendoDatabaseHandler::instance()->getArtistsByGenre( m_genre );
+            case SERVICE_ITEM_ROOT: {
+                SimpleServiceArtistList artists = m_dbHandler->getArtistsByGenre( m_genre );
                 numberOfChildren = artists.size();
-                JamendoArtistList::iterator it;
+                SimpleServiceArtistList::iterator it;
                 for ( it = artists.begin(); it != artists.end(); ++it ) {
-                   m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
+                   m_prefetchedItems.append( new DatabaseDrivenContentItem( (*it), m_genre, const_cast<DatabaseDrivenContentItem*>( this ), m_dbHandler ) );
                 }
                 break; }
-            case JAMENDO_ARTIST: {
-                JamendoAlbumList albums = JamendoDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
+            case SERVICE_ITEM_ARTIST: {
+                SimpleServiceAlbumList albums = m_dbHandler->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
                 numberOfChildren = albums.size();
-                JamendoAlbumList::iterator it;
+                SimpleServiceAlbumList::iterator it;
                 for ( it = albums.begin(); it != albums.end(); ++it ) {
-                    m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre, const_cast<JamendoContentItem*>( this ) ) );
+                    m_prefetchedItems.append( new DatabaseDrivenContentItem( (*it), m_genre, const_cast<DatabaseDrivenContentItem*>( this ), m_dbHandler  ) );
                 }
                 break; }
-            case JAMENDO_ALBUM: {
-                JamendoTrackList tracks = JamendoDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
+            case SERVICE_ITEM_ALBUM: {
+                SimpleServiceTrackList tracks = m_dbHandler->getTracksByAlbumId( m_content.albumValue->getId() );
                 numberOfChildren = tracks.size();
-                JamendoTrackList::iterator it;
+                SimpleServiceTrackList::iterator it;
                 for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-                    m_prefetchedItems.append( new JamendoContentItem( (*it), m_genre,  const_cast<JamendoContentItem*>( this ) ) );
+                    m_prefetchedItems.append( new DatabaseDrivenContentItem( (*it), m_genre,  const_cast<DatabaseDrivenContentItem*>( this ), m_dbHandler  ) );
                 }
                 break;
              }
@@ -173,7 +177,7 @@ int JamendoContentItem::prePopulate() const
     return numberOfChildren;
 }
 
-void JamendoContentItem::populateChildItems() const {
+void DatabaseDrivenContentItem::populateChildItems() const {
 
 
     while ( !m_prefetchedItems.isEmpty() )
@@ -182,25 +186,25 @@ void JamendoContentItem::populateChildItems() const {
 
 }
 
-bool JamendoContentItem::hasChildren () const {
-    if ( m_type != JAMENDO_TRACK ) return true;
+bool DatabaseDrivenContentItem::hasChildren () const {
+    if ( m_type != SERVICE_ITEM_TRACK ) return true;
     return false;
 }
 
-contentTypeUnion JamendoContentItem::getContentUnion ( ) { return m_content; }
+contentTypeUnion DatabaseDrivenContentItem::getContentUnion ( ) { return m_content; }
 
-int JamendoContentItem::getType()  { return m_type; }
+int DatabaseDrivenContentItem::getType()  { return m_type; }
 
-QString JamendoContentItem::getUrl() {
+QString DatabaseDrivenContentItem::getUrl() {
 
-    if ( m_type == JAMENDO_TRACK ) {
+    if ( m_type == SERVICE_ITEM_TRACK ) {
         return m_content.trackValue->getURL();
     } else {
         return QString();
     }
 }
 
-void JamendoContentItem::populate() const
+void DatabaseDrivenContentItem::populate() const
 {
      if ( !m_hasPopulatedChildItems )
         populateChildItems();

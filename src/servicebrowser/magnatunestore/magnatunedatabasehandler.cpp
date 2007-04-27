@@ -23,20 +23,8 @@
 #include "debug.h"
 
 
-MagnatuneDatabaseHandler *MagnatuneDatabaseHandler::m_pInstance = 0;
-
-MagnatuneDatabaseHandler* 
-MagnatuneDatabaseHandler::instance()
-{
-    if ( m_pInstance == 0 )
-    {
-        m_pInstance = new MagnatuneDatabaseHandler();
-    }
-    return m_pInstance;
-}
-
-
 MagnatuneDatabaseHandler::MagnatuneDatabaseHandler()
+    : DatabaseHandlerBase()
 {}
 
 
@@ -265,7 +253,7 @@ int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode( const QString &albumcode )
 }
 
 
-MagnatuneArtistList 
+SimpleServiceArtistList 
 MagnatuneDatabaseHandler::getArtistsByGenre( const QString &genre )
 {
 
@@ -290,25 +278,25 @@ MagnatuneDatabaseHandler::getArtistsByGenre( const QString &genre )
 
     debug() << "Looking for artist in genre: " <<  genre << endl;
 
-    MagnatuneArtistList list;
+    SimpleServiceArtistList list;
 
     while ( result.size() > 0 )
     {
-        MagnatuneArtist artist;
+        MagnatuneArtist * artist = new MagnatuneArtist();
 
-        artist.setId( result.front().toInt() );
+        artist->setId( result.front().toInt() );
         result.pop_front();
 
-        artist.setName( result.front() );
+        artist->setName( result.front() );
         result.pop_front();
 
-        artist.setHomeURL( result.front() );
+        artist->setHomeURL( result.front() );
         result.pop_front();
 
-        artist.setDescription( result.front() );
+        artist->setDescription( result.front() );
         result.pop_front();
 
-        artist.setPhotoURL( result.front() );
+        artist->setPhotoURL( result.front() );
         result.pop_front();
 
         list.append( artist );
@@ -319,7 +307,7 @@ MagnatuneDatabaseHandler::getArtistsByGenre( const QString &genre )
 
 }
 
-MagnatuneAlbumList 
+SimpleServiceAlbumList 
 MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
 {
 
@@ -352,37 +340,37 @@ MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
     QStringList result = db->query( queryString );
 
 
-    MagnatuneAlbumList list;
+    SimpleServiceAlbumList list;
     debug() << "Looking for Albums..." << endl;
     debug() << "Query string:" << queryString << endl;
 
 
     while ( result.size() > 0 )
     {
-        MagnatuneAlbum album;
+        MagnatuneAlbum * album = new MagnatuneAlbum();
 
-        album.setId( result.front().toInt() );
+        album->setId( result.front().toInt() );
         result.pop_front();
 
-        album.setName( result.front() );
+        album->setName( result.front() );
         result.pop_front();
 
-        album.setLaunchDate( QDate( result.front().toInt(), 1, 1 ) );
+        album->setLaunchDate( QDate( result.front().toInt(), 1, 1 ) );
         result.pop_front();
 
-        album.setArtistId( result.front().toInt() );
+        album->setArtistId( result.front().toInt() );
         result.pop_front();
 
-        album.setMp3Genre( result.front() );
+        album->setMp3Genre( result.front() );
         result.pop_front();
 
-        album.setAlbumCode( result.front() );
+        album->setAlbumCode( result.front() );
         result.pop_front();
 
-        album.setCoverURL( result.front() );
+        album->setCoverURL( result.front() );
         result.pop_front();
 
-        album.setDescription( result.front() );
+        album->setDescription( result.front() );
         result.pop_front();
 
         list.append( album );
@@ -393,7 +381,7 @@ MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
 
 }
 
-MagnatuneTrackList 
+SimpleServiceTrackList 
 MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
 {
 
@@ -411,7 +399,7 @@ MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
     QStringList result = db->query( queryString );
 
 
-    MagnatuneTrackList list;
+    SimpleServiceTrackList list;
 
     debug() << "Looking for tracks..." << endl;
     debug() << "Query string:" << queryString << endl;
@@ -421,33 +409,33 @@ MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
     {
 
         debug() << "track start" << endl;
-        MagnatuneTrack track;
+        MagnatuneTrack * track = new MagnatuneTrack();
 
-        track.setId( result.front().toInt() );
+        track->setId( result.front().toInt() );
         result.pop_front();
 
-        track.setName( result.front() );
+        track->setName( result.front() );
         result.pop_front();
 
-        track.setTrackNumber( result.front().toInt() );
+        track->setTrackNumber( result.front().toInt() );
         result.pop_front();
 
-        track.setDuration( result.front().toInt() );
+        track->setDuration( result.front().toInt() );
         result.pop_front();
 
-        track.setAlbumId( result.front().toInt() );
+        track->setAlbumId( result.front().toInt() );
         result.pop_front();
 
-        track.setArtistId( result.front().toInt() );
+        track->setArtistId( result.front().toInt() );
         result.pop_front();
 
-        track.setLofiURL( result.front() );
+        track->setLofiURL( result.front() );
         result.pop_front();
 
-        track.setURL( result.front() );
+        track->setURL( result.front() );
         result.pop_front();
 
-        track.setMoods( getMoodsForTrack( track.getId() ) );
+        track->setMoods( getMoodsForTrack( track->getId() ) );
 
         list.append( track );
         debug() << "track end" << endl;
@@ -492,7 +480,7 @@ MagnatuneDatabaseHandler::commit( )
 
 }
 
-MagnatuneArtist 
+SimpleServiceArtist *
 MagnatuneDatabaseHandler::getArtistById( int id )
 {
 
@@ -507,24 +495,24 @@ MagnatuneDatabaseHandler::getArtistById( int id )
 
     QStringList result = db->query( queryString );
 
-    MagnatuneArtist artist;
+    MagnatuneArtist * artist = new MagnatuneArtist();
 
     if ( result.size() == 5 )
     {
 
-        artist.setId( result.front().toInt() );
+        artist->setId( result.front().toInt() );
         result.pop_front();
 
-        artist.setName( result.front() );
+        artist->setName( result.front() );
         result.pop_front();
 
-        artist.setHomeURL( result.front() );
+        artist->setHomeURL( result.front() );
         result.pop_front();
 
-        artist.setDescription( result.front() );
+        artist->setDescription( result.front() );
         result.pop_front();
 
-        artist.setPhotoURL( result.front() );
+        artist->setPhotoURL( result.front() );
         result.pop_front();
 
     }
@@ -533,7 +521,7 @@ MagnatuneDatabaseHandler::getArtistById( int id )
     return artist;
 }
 
-MagnatuneAlbum 
+SimpleServiceAlbum *
 MagnatuneDatabaseHandler::getAlbumById( int id )
 {
 
@@ -550,33 +538,33 @@ MagnatuneDatabaseHandler::getAlbumById( int id )
 
     QStringList result = db->query( queryString );
 
-    MagnatuneAlbum album;
+    MagnatuneAlbum * album = new MagnatuneAlbum();
 
     if ( result.size() == 8 )
     {
 
-        album.setId( result.front().toInt() );
+        album->setId( result.front().toInt() );
         result.pop_front();
 
-        album.setName( result.front() );
+        album->setName( result.front() );
         result.pop_front();
 
-        album.setLaunchDate( QDate( result.front().toInt(), 1, 1 ) );
+        album->setLaunchDate( QDate( result.front().toInt(), 1, 1 ) );
         result.pop_front();
 
-        album.setArtistId( result.front().toInt() );
+        album->setArtistId( result.front().toInt() );
         result.pop_front();
 
-        album.setMp3Genre( result.front() );
+        album->setMp3Genre( result.front() );
         result.pop_front();
 
-        album.setAlbumCode( result.front() );
+        album->setAlbumCode( result.front() );
         result.pop_front();
 
-        album.setCoverURL( result.front() );
+        album->setCoverURL( result.front() );
         result.pop_front();
 
-        album.setDescription( result.front() );
+        album->setDescription( result.front() );
         result.pop_front();
     }
 
@@ -584,7 +572,8 @@ MagnatuneDatabaseHandler::getAlbumById( int id )
 
 }
 
-MagnatuneTrack MagnatuneDatabaseHandler::getTrackById(int id) {
+SimpleServiceTrack *
+MagnatuneDatabaseHandler::getTrackById(int id) {
 
 
     CollectionDB *db = CollectionDB::instance();
@@ -600,54 +589,54 @@ MagnatuneTrack MagnatuneDatabaseHandler::getTrackById(int id) {
 
     QStringList result = db->query( queryString );
 
-    MagnatuneTrack track;
+    MagnatuneTrack * track = new MagnatuneTrack();
     if ( result.size() == 8 )
     {
-        track.setId( result.front().toInt() );
+        track->setId( result.front().toInt() );
         result.pop_front();
 
-        track.setName( result.front() );
+        track->setName( result.front() );
         result.pop_front();
 
-        track.setTrackNumber( result.front().toInt() );
+        track->setTrackNumber( result.front().toInt() );
         result.pop_front();
 
-        track.setDuration( result.front().toInt() );
+        track->setDuration( result.front().toInt() );
         result.pop_front();
 
-        track.setAlbumId( result.front().toInt() );
+        track->setAlbumId( result.front().toInt() );
         result.pop_front();
 
-        track.setArtistId( result.front().toInt() );
+        track->setArtistId( result.front().toInt() );
         result.pop_front();
 
-        track.setLofiURL( result.front() );
+        track->setLofiURL( result.front() );
         result.pop_front();
 
-        track.setURL( result.front() );
+        track->setURL( result.front() );
         result.pop_front();
     }
 
-    track.setMoods( getMoodsForTrack( track.getId() ) );
+    track->setMoods( getMoodsForTrack( track->getId() ) );
 
     return track;
 }
 
 
-MagnatuneTrackList 
+SimpleServiceTrackList 
 MagnatuneDatabaseHandler::getTracksByArtistId( int id )
 {
 
-    MagnatuneAlbumList albums = getAlbumsByArtistId( id, "" );
-    MagnatuneAlbumList::iterator it;
-    MagnatuneTrackList tracks;
+    SimpleServiceAlbumList albums = getAlbumsByArtistId( id, "" );
+    SimpleServiceAlbumList::iterator it;
+    SimpleServiceTrackList tracks;
 
 
 
     for ( it = albums.begin(); it != albums.end(); ++it )
     {
 
-        tracks += getTracksByAlbumId( ( *it ).getId() );
+        tracks += getTracksByAlbumId( ( *it )->getId() );
 
     }
 
@@ -726,7 +715,7 @@ MagnatuneMoodMap MagnatuneDatabaseHandler::getMoodMap(int threshold)
     
 }
 
-MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByMood( QString mood )
+SimpleServiceTrackList MagnatuneDatabaseHandler::getTracksByMood( QString mood )
 {
 
     CollectionDB *db = CollectionDB::instance();
@@ -746,39 +735,39 @@ MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByMood( QString mood )
 
     QStringList result = db->query( queryString );
 
-    MagnatuneTrackList list;
+    SimpleServiceTrackList list;
 
     while ( result.size() > 0 )
     {
 
         debug() << "track start" << endl;
-        MagnatuneTrack track;
+        MagnatuneTrack * track = new MagnatuneTrack();
 
-        track.setId( result.front().toInt() );
+        track->setId( result.front().toInt() );
         result.pop_front();
 
-        track.setName( result.front() );
+        track->setName( result.front() );
         result.pop_front();
 
-        track.setTrackNumber( result.front().toInt() );
+        track->setTrackNumber( result.front().toInt() );
         result.pop_front();
 
-        track.setDuration( result.front().toInt() );
+        track->setDuration( result.front().toInt() );
         result.pop_front();
 
-        track.setAlbumId( result.front().toInt() );
+        track->setAlbumId( result.front().toInt() );
         result.pop_front();
 
-        track.setArtistId( result.front().toInt() );
+        track->setArtistId( result.front().toInt() );
         result.pop_front();
 
-        track.setLofiURL( result.front() );
+        track->setLofiURL( result.front() );
         result.pop_front();
 
-        track.setURL( result.front() );
+        track->setURL( result.front() );
         result.pop_front();
 
-        track.setMoods( getMoodsForTrack( track.getId() ) );
+        track->setMoods( getMoodsForTrack( track->getId() ) );
 
         list.append( track );
         debug() << "track end" << endl;

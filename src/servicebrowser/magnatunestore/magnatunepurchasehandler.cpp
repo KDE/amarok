@@ -192,6 +192,8 @@ void MagnatunePurchaseHandler::setParent( QWidget * parent )
 void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
 {
 
+    MagnatuneDatabaseHandler dbHandler;
+
     QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
 
     debug() << "magnatune save location" << purchaseDir.absolutePath() << endl;
@@ -203,8 +205,10 @@ void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
     }
 
     //Create file name
-    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance() ->getArtistById( m_currentAlbum.getArtistId() );
-    QString artistName = artist.getName();
+    SimpleServiceArtist * artist = dbHandler.getArtistById( m_currentAlbum.getArtistId() );
+    QString artistName = artist->getName();
+    delete artist;
+
     QString fileName = artistName + " - " + m_currentAlbum.getName();
 
     QFile file( purchaseDir.absolutePath() + '/' + fileName );

@@ -86,7 +86,10 @@ set(libservicebrowser_SRCS
 	servicebrowser/servicebase.cpp
 	servicebrowser/servicemodelitembase.cpp
         servicebrowser/servicemodelbase.cpp
-        servicebrowser/simpleservicetypes.cpp)
+        servicebrowser/simpleservicetypes.cpp
+        servicebrowser/databasehandlerbase.cpp
+	servicebrowser/databasedrivencontentitem.cpp
+	servicebrowser/databasedrivencontentmodel.cpp)
 
 set(libscriptableservice_SRCS
         servicebrowser/scriptableservice/scriptableservicemanager.cpp
@@ -98,8 +101,6 @@ set(libjamendoservice_SRCS
         servicebrowser/jamendo/jamendoservice.cpp
 	servicebrowser/jamendo/jamendotypes.cpp
 	servicebrowser/jamendo/jamendodatabasehandler.cpp
-	servicebrowser/jamendo/jamendocontentitem.cpp
-	servicebrowser/jamendo/jamendocontentmodel.cpp
 	servicebrowser/jamendo/jamendoxmlparser.cpp)
 
 
@@ -118,9 +119,7 @@ set(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
 	servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-	servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
-        servicebrowser/magnatunestore/magnatunecontentitem.cpp
-        servicebrowser/magnatunestore/magnatunecontentmodel.cpp)
+	servicebrowser/magnatunestore/magnatunealbumdownloader.cpp)
 
 kde4_add_ui3_files(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui

@@ -99,8 +99,8 @@ public:
 
 };
 
-typedef QList<JamendoArtist> JamendoArtistList;
-typedef QList<JamendoAlbum> JamendoAlbumList;
-typedef QList<JamendoTrack> JamendoTrackList;
+//typedef QList<JamendoArtist> JamendoArtistList;
+//typedef QList<JamendoAlbum> JamendoAlbumList;
+//typedef QList<JamendoTrack> JamendoTrackList;
 
 #endif

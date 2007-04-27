@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "magnatunedatabasehandler.h"
 #include "magnatunexmlparser.h"
 #include "statusbar.h"
 
@@ -78,16 +77,16 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     file.close();
 
 
-    MagnatuneDatabaseHandler::instance() ->destroyDatabase();
-    MagnatuneDatabaseHandler::instance() ->createDatabase();
+    m_dbHandler->destroyDatabase();
+    m_dbHandler->createDatabase();
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();
 
 
-    MagnatuneDatabaseHandler::instance() ->begin(); //start transaction (MAJOR speedup!!)
+    m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );
-    MagnatuneDatabaseHandler::instance() ->commit(); //complete transaction
+    m_dbHandler->commit(); //complete transaction
 
     return ;
 }
@@ -192,27 +191,27 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
     //check if artist already exists, if not, create him/her/them/it
 
 
-    int artistId = MagnatuneDatabaseHandler::instance() ->getArtistIdByExactName( m_pCurrentArtist->getName() );
+    int artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->getName() );
 
     if ( artistId == -1 )
     {
         //does not exist, lets create it...
 
         //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
-        artistId = MagnatuneDatabaseHandler::instance()->insertArtist( m_pCurrentArtist );
+        artistId = m_dbHandler->insertArtist( m_pCurrentArtist );
         m_nNumberOfArtists++;
 
         if ( artistId == 0 )
         {
-            artistId = MagnatuneDatabaseHandler::instance() ->getArtistIdByExactName( m_pCurrentArtist->getName() );
+            artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->getName() );
         }
     }
 
 
-    int albumId = MagnatuneDatabaseHandler::instance()->insertAlbum( m_pCurrentAlbum, artistId );
+    int albumId = m_dbHandler->insertAlbum( m_pCurrentAlbum, artistId );
     if ( albumId == 0 ) // again, postgres can play tricks on us...
     {
-            albumId = MagnatuneDatabaseHandler::instance()->getAlbumIdByAlbumCode( m_pCurrentAlbum->getAlbumCode() );
+            albumId = m_dbHandler->getAlbumIdByAlbumCode( m_pCurrentAlbum->getAlbumCode() );
     }
 
     m_nNumberOfAlbums++;
@@ -220,7 +219,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
     MagnatuneTrackList::iterator it;
     for ( it = m_currentAlbumTracksList.begin(); it != m_currentAlbumTracksList.end(); ++it )
     {
-        MagnatuneDatabaseHandler::instance() ->insertTrack( &( *it ), albumId, artistId );
+        m_dbHandler->insertTrack( &( *it ), albumId, artistId );
         m_nNumberOfTracks++;
     }
 
@@ -320,6 +319,11 @@ void MagnatuneXmlParser::parseMoods(QDomElement e)
         n = n.nextSibling();
     }
 
+}
+
+void MagnatuneXmlParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
+{
+    m_dbHandler = dbHandler;
 }
 
 #include "magnatunexmlparser.moc"

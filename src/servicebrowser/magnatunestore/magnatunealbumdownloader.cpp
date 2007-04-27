@@ -108,13 +108,16 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
         //now I really want to add the album cover to the same folder where I just unzipped the album... The
         //only way of getting the actual location where the album was unpacked is using the artist and album names
 
-        MagnatuneAlbum album = MagnatuneDatabaseHandler::instance()->getAlbumById( m_currentAlbumId );
-        MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
+        MagnatuneDatabaseHandler dbHandler;
 
-        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + artist.getName() + '/' + album.getName();
-        QString coverUrlString = album.getCoverURL();
+        MagnatuneAlbum * album = dynamic_cast<MagnatuneAlbum * > ( dbHandler.getAlbumById( m_currentAlbumId ) );
+        MagnatuneArtist * artist = dynamic_cast<MagnatuneArtist * > ( dbHandler.getArtistById( album->getArtistId() ) );
 
+        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + artist->getName() + '/' + album->getName();
+        QString coverUrlString = album->getCoverURL();
 
+        delete album;
+        delete artist;
 
         KUrl downloadUrl( coverUrlString );
 

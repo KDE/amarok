@@ -41,16 +41,19 @@ MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
 
 void MagnatunePurchaseDialog::setAlbum( const MagnatuneAlbum &album )
 {
+    MagnatuneDatabaseHandler dbHandler; //FIXME
 
     //albumEdit->setText("Hello!");
     albumEdit->setText( album.getName() );
 
-    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
-    artistEdit->setText( artist.getName() );
+    SimpleServiceArtist * artist = dbHandler.getArtistById( album.getArtistId() );
+    artistEdit->setText( artist->getName() );
     genresEdit->setText( album.getMp3Genre() );
     launchDateEdit->setText( QString::number( album.getLaunchDate().year() ) );
 
     m_albumCode = album.getAlbumCode();
+
+    delete artist;
 
 }
 

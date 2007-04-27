@@ -17,45 +17,27 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#ifndef MAGNATUNEAINFOPARSER_H
-#define MAGNATUNEAINFOPARSER_H
+#ifndef INFOPARSERBASE_H
+#define INFOPARSERBASE_H
 
-#include "amarok.h"
-#include "../infoparserbase.h"
-#include "magnatunedatabasehandler.h"
-#include "magnatunetypes.h"
-#include "statusbar.h"
+#include "../simpleservicetypes.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
+#include <QObject>
 
 /**
-A helper class to extract info about magnatune artists and albums
- 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+Abstract base class for info parsers
+
+	@author 
 */
-class MagnatuneInfoParser : public InfoParserBase
-{
-    Q_OBJECT
-
+class InfoParserBase  : public QObject{
 public:
-    /**
-     * Constructor
-     */
-    MagnatuneInfoParser(  );
 
-    /**
-     * Destructor
-     * @return Nothing
-     */
-    ~MagnatuneInfoParser();
-
-    /**
+     /**
      * Fetches info about artist and emits infoReady( Qstring ) 
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
-    void getInfo( SimpleServiceArtist *artist );
+    virtual void getInfo( SimpleServiceArtist *artist ) = 0;
 
     /**
      * Overloaded function
@@ -63,37 +45,21 @@ public:
      * with a ready to show html page when the info is ready
      * @param url The album to get info about
      */
-    void getInfo( SimpleServiceAlbum *album );
+    virtual void getInfo( SimpleServiceAlbum *album ) = 0;
 
 
-     /**
+    /**
      * Overloaded function
      * Fetches info about track and emits infoReady( Qstring ) 
      * with a ready to show html page when the info is ready
      * @param url The track to get info about
      */
-    void getInfo( SimpleServiceTrack *album ) {}
-
-    void setDbHandler( MagnatuneDatabaseHandler * dbHandler );
+    virtual void getInfo( SimpleServiceTrack *album ) = 0;
 
 signals:
 
     void info( QString );
 
-private:
-      
-    KIO::StoredTransferJob *m_infoDownloadJob;
-    MagnatuneDatabaseHandler * m_dbHandler;
-
-    QString extractArtistInfo( const QString &artistPage );
-
-protected slots:
-
-    /**
-     * Slot for recieving notifications from the download KIO::Job
-     * @param downLoadJob The job that has completed
-     */
-    void artistInfoDownloadComplete( KJob *downLoadJob);
 
 };
 

@@ -26,7 +26,7 @@
 #include <QFile>
 
 MagnatuneInfoParser::MagnatuneInfoParser(  )
-  : QObject()
+  : m_dbHandler ( 0 )
 
 {
 }
@@ -36,15 +36,17 @@ MagnatuneInfoParser::~MagnatuneInfoParser()
 {}
 
 
-void MagnatuneInfoParser::getInfo( MagnatuneArtist *artist ) {
+void MagnatuneInfoParser::getInfo( SimpleServiceArtist *artist ) {
  
+    MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist );
+
     debug() << "MagnatuneInfoParser: getInfo about artist" << endl;
 
     // first get the entire artist html page
    /* QString tempFile;
     QString orgHtml;*/
 
-    m_infoDownloadJob = KIO::storedGet( artist->getHomeURL(), false, true );
+    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->getHomeURL(), false, true );
     //Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
@@ -54,10 +56,12 @@ void MagnatuneInfoParser::getInfo( MagnatuneArtist *artist ) {
 }
 
 
-void MagnatuneInfoParser::getInfo( MagnatuneAlbum *album )
+void MagnatuneInfoParser::getInfo( SimpleServiceAlbum *album )
 {
-    const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album->getArtistId() );
-    const QString artistName = artist.getName();
+    MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album );
+   
+    SimpleServiceArtist * artist = m_dbHandler->getArtistById( album->getArtistId() );
+    const QString artistName = artist->getName();
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
@@ -65,18 +69,18 @@ void MagnatuneInfoParser::getInfo( MagnatuneAlbum *album )
     infoHtml += "<div align=\"center\"><strong>";
     infoHtml += artistName;
     infoHtml += "</strong><br><em>";
-    infoHtml += album->getName();
+    infoHtml += magnatuneAlbum->getName();
     infoHtml += "</em><br><br>";
-    infoHtml += "<img src=\"" + album->getCoverURL() +
+    infoHtml += "<img src=\"" + magnatuneAlbum->getCoverURL() +
                 "\" align=\"middle\" border=\"1\">";
 
-    infoHtml += "<br><br>Genre: " + album->getMp3Genre();
-    infoHtml += "<br>Release Year: " + QString::number( album->getLaunchDate().year() );
+    infoHtml += "<br><br>Genre: " + magnatuneAlbum->getMp3Genre();
+    infoHtml += "<br>Release Year: " + QString::number( magnatuneAlbum->getLaunchDate().year() );
 
-    if ( !album->getDescription().isEmpty() ) {
+    if ( !magnatuneAlbum->getDescription().isEmpty() ) {
  
         //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'" << endl;
-       infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + album->getDescription();
+       infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->getDescription();
 
     }
 
@@ -150,6 +154,11 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
     view()->horizontalScrollBar()->setValue(0);
     view()->verticalScrollBar()->setValue(0);
 }*/
+
+void MagnatuneInfoParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
+{
+    m_dbHandler = dbHandler;
+}
 
 
 #include "magnatuneinfoparser.moc"

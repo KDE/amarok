@@ -21,7 +21,7 @@
 #ifndef MAGNATUNEXMLPARSER_H
 #define MAGNATUNEXMLPARSER_H
 
-
+#include "magnatunedatabasehandler.h"
 #include "magnatunetypes.h"
 #include "threadmanager.h"
 
@@ -71,6 +71,9 @@ public:
      * @param filename The file to read
      */
     void readConfigFile( const QString &filename );
+
+
+    void setDbHandler( MagnatuneDatabaseHandler * dbHandler );
 
 signals:
 
@@ -124,6 +127,8 @@ private:
     int m_nNumberOfTracks;
     int m_nNumberOfAlbums;
     int m_nNumberOfArtists;
+
+    MagnatuneDatabaseHandler * m_dbHandler;
 
 
 };

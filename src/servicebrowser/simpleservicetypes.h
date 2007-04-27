@@ -35,6 +35,7 @@ protected:
 
 public:
     SimpleServiceArtist();
+    virtual ~SimpleServiceArtist() {};
 
     void setId( int id );
     int getId() const;
@@ -58,6 +59,7 @@ protected:
 
 public:
     SimpleServiceAlbum();
+    virtual ~SimpleServiceAlbum() {};
 
     void setId( int id );
     int getId() const;
@@ -86,6 +88,7 @@ protected:
 
 public:
     SimpleServiceTrack();
+    virtual ~SimpleServiceTrack() {};
 
     void setId( int id );
     int getId() const;
@@ -107,8 +110,8 @@ public:
 
 };
 
-typedef QList<SimpleServiceArtist> SimpleServiceArtistList;
-typedef QList<SimpleServiceAlbum> SimpleServiceAlbumList;
-typedef QList<SimpleServiceTrack> SimpleServiceTrackList;
+typedef QList<SimpleServiceArtist *> SimpleServiceArtistList;
+typedef QList<SimpleServiceAlbum *> SimpleServiceAlbumList;
+typedef QList<SimpleServiceTrack *> SimpleServiceTrackList;
 
 #endif

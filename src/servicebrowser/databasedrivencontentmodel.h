@@ -21,7 +21,10 @@
 #ifndef AMAROKJAMENDOMODEL_H
 #define AMAROKJAMENDOMODEL_H
 
-#include "jamendotypes.h"
+#include "../infoparserbase.h"
+#include "../simpleservicetypes.h"
+
+#include "databasehandlerbase.h"
 
 #include <../servicemodelbase.h>
 #include <QMap>
@@ -29,28 +32,30 @@
 #include <QVariant>
 #include <kicon.h>
 
-#include "jamendocontentitem.h"
-//#include "jamendoinfoparser.h"
+#include "databasedrivencontentitem.h"
 
-class JamendoContentModel : public ServiceModelBase
+
+class DatabaseDrivenContentModel : public ServiceModelBase
 {
     Q_OBJECT
 
 private:
 
-   /* mutable QMap<int, JamendoDatabaseEntry *> m_artistEntriesMap;
-    mutable QMap<int, JamendoDatabaseEntry *> m_albumEntriesMap;
-    mutable QMap<int, JamendoDatabaseEntry *> m_trackEntriesMap;
+   /* mutable QMap<int, DatabaseDrivenDatabaseEntry *> m_artistEntriesMap;
+    mutable QMap<int, DatabaseDrivenDatabaseEntry *> m_albumEntriesMap;
+    mutable QMap<int, DatabaseDrivenDatabaseEntry *> m_trackEntriesMap;
 */
     private:
 
-    JamendoContentItem *m_rootContentItem;
+    DatabaseDrivenContentItem *m_rootContentItem;
     QString m_genre;
-    //JamendoInfoParser * m_infoParser;
+    InfoParserBase * m_infoParser;
 
     KIcon m_artistIcon;
     KIcon m_albumIcon;
     KIcon m_trackIcon;
+
+    DatabaseHandlerBase * m_dbHandler;
     
 
 private slots:
@@ -59,9 +64,9 @@ private slots:
 
 public:
     
-    explicit JamendoContentModel(QObject *parent = 0, const QString &genre = "All");
+    explicit DatabaseDrivenContentModel(QObject *parent = 0, const QString &genre = "All");
     
-    ~JamendoContentModel();
+    ~DatabaseDrivenContentModel();
 
     QVariant data(const QModelIndex &index, int role) const;
     
@@ -84,6 +89,10 @@ public:
     void requestHtmlInfo ( const QModelIndex & index ) const;
 
     void setGenre( const QString &genre );
+
+    void setDbHandler( DatabaseHandlerBase * dhHandler );
+
+    void setInfoParser( InfoParserBase * infoParser );
 
 //signals:
     //void infoChanged ( QString infoHtml );

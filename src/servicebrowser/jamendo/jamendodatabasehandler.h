@@ -21,7 +21,9 @@
 #define JAMENDODATABASEHANDLER_H
 
 #include "collectiondb.h"
+#include "databasehandlerbase.h"
 #include "jamendotypes.h"
+
 
 #include <QStringList>
 #include <QMap>
@@ -34,15 +36,18 @@
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class JamendoDatabaseHandler{
+class JamendoDatabaseHandler : public DatabaseHandlerBase {
 public:
     
-
+     //static DatabaseHandlerBase * instance();
+ 
+    
     /**
-     * Function for retrieving the singleton
-     * @return pointer to the singleton
+     * Private constructor (singleton pattern)
+     * @return Pointer to new object
      */
-    static JamendoDatabaseHandler * instance();
+    JamendoDatabaseHandler();
+
 
     ~JamendoDatabaseHandler();
 
@@ -63,7 +68,7 @@ public:
      * @param artistId id of the artist performing the track
      * @return the database id of the newly inserted track
      */
-    int insertTrack( JamendoTrack *track );
+    int insertTrack( SimpleServiceTrack *track );
 
     /**
      * inserts a new album into the Jamendo database
@@ -71,14 +76,14 @@ public:
      * @param artistId id of the artist performing the album
      * @return the database id of the newly inserted album
      */
-    int insertAlbum( JamendoAlbum *album );
+    int insertAlbum( SimpleServiceAlbum *album );
    
     /**
      * inserts a new artist into the Jamendo database
      * @param artist pointer to the artist to insert
      * @return the database id of the newly inserted artist
      */
-    int insertArtist( JamendoArtist *artist );
+    int insertArtist( SimpleServiceArtist *artist );
 
     //get id, or -1 if artist does not exist
     /**
@@ -94,21 +99,21 @@ public:
      * @param genre the genre
      * @return  A list of artist in the genre
      */
-    JamendoArtistList getArtistsByGenre( const QString &genre );
+    SimpleServiceArtistList getArtistsByGenre( const QString &genre );
 
     /**
      * Returns the artist with a given id
      * @param id The id of the artist to look for
      * @return The artist with the given id. Returns an empty artist if not found.
      */
-    JamendoArtist getArtistById( int id );
+    SimpleServiceArtist * getArtistById( int id );
 
     /**
      * Returns the album with a given id
      * @param id The id of the album to look for
      * @return The album with the given id. Returns an empty album if not found.
      */
-    JamendoAlbum getAlbumById( int id );
+    SimpleServiceAlbum * getAlbumById( int id );
 
 
      /**
@@ -116,7 +121,7 @@ public:
      * @param id The id of the track to look for
      * @return The track with the given id. Returns an empty album if not found.
      */
-    JamendoTrack getTrackById( int id );
+    SimpleServiceTrack * getTrackById( int id );
 
      /**
      * Retrieves all albums by a single artist from the database
@@ -124,14 +129,14 @@ public:
      * @param genre Limits the albums to a specific genre. Use "All" to get all albums
      * @return List of albums. empty if none are found
      */
-    JamendoAlbumList getAlbumsByArtistId(int id, const QString &genre);
+    SimpleServiceAlbumList getAlbumsByArtistId(int id, const QString &genre);
 
      /**
      * Retrieves all tracks on a given album
      * @param id The id of the album
      * @return A list of tracks. Empty if album is not found or has no tracks
      */
-    JamendoTrackList getTracksByAlbumId(int id);
+    SimpleServiceTrackList getTracksByAlbumId(int id);
 
      /**
      * Retrieves a list of all genres present in the databse
@@ -140,25 +145,8 @@ public:
     QStringList getAlbumGenres();
 
 
-    /**
-     * Begins a database transaction. Must be followed by a later call to commit()
-     */
-    void begin();
-
-    /**
-     * Completes (executes) a database transaction. Must be preceded by a call to begin()
-     */
-    void commit();
-
 
 protected:
-
-    /**
-     * Private constructor (singleton pattern)
-     * @return Pointer to new object
-     */
-    JamendoDatabaseHandler();
-    static JamendoDatabaseHandler * m_pInstance;
 
 };
 
