@@ -24,7 +24,7 @@ INCLUDE(UsePkgConfig)
 PKGCONFIG(taglib _taglibIncDir _taglibLinkDir _taglibLinkFlags _taglibCflags)
 
 
-FIND_PATH(TAGLIB_INCLUDE_DIR tag.h
+FIND_PATH(TAGLIB_INCLUDE_DIR taglib/tag.h
    PATHS
    ${_taglibIncDir}
    )
@@ -33,6 +33,8 @@ FIND_LIBRARY(TAGLIB_LIBRARIES NAMES tag
    PATHS
    ${_taglibLinkDir}
    )
+   
+set(TAGLIB_CFLAGS _taglibCflags)
 
 IF (TAGLIB_INCLUDE_DIR)
 ELSE (TAGLIB_INCLUDE_DIR)
