@@ -114,7 +114,7 @@ SqlTrack::prettyTitle( const QString &filename ) //static
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.lastIndexOf( '.' ) ).replace( '_', ' ' );
-    s = QUrl::fromPercentEncoding( s.toAscii() );
+    s = KUrl::fromPercentEncoding( s.toAscii() );
 
     return s;
 }
