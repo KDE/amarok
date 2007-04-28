@@ -123,7 +123,8 @@ void Amarok::ToolTip::updateTip() //static
 }
 
 Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
-    : QFrame(0,  0, Qt::WStyle_Customize | Qt::WStyle_NoBorder | Qt::WStyle_Tool | Qt::WStyle_StaysOnTop | Qt::WX11BypassWM | Qt::WNoAutoErase ),
+    : QFrame(0,  0, Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint
+                    | Qt::X11BypassWindowManagerHint ),
 //      QToolTip( ),
       m_client( client )
 {
