@@ -98,6 +98,7 @@ set(libtagaudible_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/audible/taglib_audiblefiletyperesolver.cpp
 	)
 	
+ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}
