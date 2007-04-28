@@ -268,7 +268,7 @@ class CollectionView : public K3ListView
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-        void organizeFiles( const KUrl::List &list, const QString &caption, bool addToCollection=false ) AMAROK_EXPORT;
+        AMAROK_EXPORT void organizeFiles( const KUrl::List &list, const QString &caption, bool addToCollection=false );
 
     private slots:
         void setupDirs();

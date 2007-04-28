@@ -58,7 +58,6 @@
 #include <QTimer>
 #include <QPainter>             //createDragPixmap()
 #include <QPalette>
-#include <pthread.h>              //debugging, can be removed later
 #include <QIODevice>
 
 #include <kcharsets.h>            //setHTMLLyrics()
