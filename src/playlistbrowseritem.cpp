@@ -1335,8 +1335,8 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
         setButtons( Close );
     }
 
-    QSize min( 480, 110 );
-    setInitialSize( min );
+    QSize minimum( 480, 110 );
+    setInitialSize( minimum );
 }
 
 
@@ -2249,56 +2249,56 @@ PodcastChannel::slotAnimation()
     m_iconCounter++;
 }
 
-
 void
 PodcastChannel::showContextMenu( const QPoint &position )
 {
     Q3PopupMenu menu( listView() );
+    
+    enum AMAROK_Actions { ACTIONS_LOAD, ACTIONS_APPEND, ACTIONS_QUEUE, 
+        ACTIONS_DELETE, ACTIONS_RESCAN, ACTIONS_LISTENED, ACTIONS_NEW, ACTIONS_CONFIG };
 
-    enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, NEW, CONFIG };
-
-    menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
-    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
+    menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), ACTIONS_LOAD );
+    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ACTIONS_APPEND );
+    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), ACTIONS_QUEUE );
     menu.addSeparator();
-    menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Delete" ), DELETE );
-    menu.insertItem( KIcon( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
-    menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
-    menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &New" ), NEW );
-    menu.insertItem( KIcon( Amarok::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
-    menu.setItemEnabled( LISTENED, hasNew() );
-    menu.setItemEnabled( CONFIG, m_settingsValid );
+    menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Delete" ), ACTIONS_DELETE );
+    menu.insertItem( KIcon( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), ACTIONS_RESCAN );
+    menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), ACTIONS_LISTENED );
+    menu.insertItem( KIcon( Amarok::icon( "artist" ) ), i18n( "Mark as &New" ), ACTIONS_NEW );
+    menu.insertItem( KIcon( Amarok::icon( "configure" ) ), i18n( "&Configure..." ), ACTIONS_CONFIG );
+    menu.setItemEnabled( ACTIONS_LISTENED, hasNew() );
+    menu.setItemEnabled( ACTIONS_CONFIG, m_settingsValid );
 
     switch( menu.exec( position ) )
     {
-        case LOAD:
+        case ACTIONS_LOAD:
             Playlist::instance()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
-        case APPEND:
+        case ACTIONS_APPEND:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
 
-        case QUEUE:
+        case ACTIONS_QUEUE:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
 
-        case RESCAN:
+        case ACTIONS_RESCAN:
             rescan();
             break;
 
-        case LISTENED:
+        case ACTIONS_LISTENED:
             setListened();
             break;
 
-        case NEW:
+        case ACTIONS_NEW:
             setListened(false);
             break;
-        case DELETE:
+        case ACTIONS_DELETE:
             PlaylistBrowser::instance()->removeSelectedItems();
             break;
 
-        case CONFIG:
+        case ACTIONS_CONFIG:
         {
             PlaylistBrowser::instance()->configureSelectedPodcasts();
             break;
@@ -2771,10 +2771,12 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 {
     Q3PopupMenu menu( listView() );
 
-    enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, NEW, OPEN_WITH /* has to be last */ };
-    menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
-    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
+    enum AMAROK_Actions { ACTIONS_LOAD, ACTIONS_APPEND, ACTIONS_QUEUE, ACTIONS_GET, 
+        ACTIONS_ASSOCIATE, ACTIONS_DELETE, ACTIONS_MEDIA_DEVICE, ACTIONS_LISTENED, 
+        ACTIONS_NEW, ACTIONS_OPEN_WITH /* has to be last */ };
+    menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), ACTIONS_LOAD );
+    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ACTIONS_APPEND );
+    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), ACTIONS_QUEUE );
 
     int accuracy = 0;
     KMimeType::Ptr mimetype;
@@ -2785,7 +2787,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     KService::List offers = KMimeTypeTrader::self()->query( mimetype->name(), "Type == 'Application'" );
     if( offers.empty() || (offers.size()==1 && offers.first()->name()=="Amarok") )
     {
-        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Open With..."), OPEN_WITH );
+        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Open With..."), ACTIONS_OPEN_WITH );
     }
     else
     {
@@ -2796,63 +2798,63 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                 ++it )
         {
             if( (*it)->name() != "Amarok" )
-                openMenu->insertItem( KIcon( (*it)->icon() ), (*it)->name(), OPEN_WITH+i );
+                openMenu->insertItem( KIcon( (*it)->icon() ), (*it)->name(), ACTIONS_OPEN_WITH+i );
             ++i;
         }
         openMenu->addSeparator();
-        openMenu->insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Other..."), OPEN_WITH );
-        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n("&Open With"), openMenu, OPEN_WITH );
+        openMenu->insertItem( KIcon( Amarok::icon( "run" ) ), i18n( "&Other..."), ACTIONS_OPEN_WITH );
+        menu.insertItem( KIcon( Amarok::icon( "run" ) ), i18n("&Open With"), openMenu, ACTIONS_OPEN_WITH );
     }
 
     if( MediaBrowser::isAvailable() )
     {
         menu.addSeparator();
         menu.insertItem( KIcon( Amarok::icon( "device" ) ),
-                            i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
-        menu.setItemEnabled( MEDIA_DEVICE, isOnDisk() );
+                            i18n( "&Transfer to Media Device" ), ACTIONS_MEDIA_DEVICE );
+        menu.setItemEnabled( ACTIONS_MEDIA_DEVICE, isOnDisk() );
     }
 
     menu.addSeparator();
-    menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Download Media" ), GET );
-    menu.insertItem( KIcon( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
-    menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
-    menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &New" ),  NEW );
-    menu.insertItem( KIcon( Amarok::icon("remove") ), i18n( "De&lete Downloaded Podcast" ), DELETE );
+    menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Download Media" ), ACTIONS_GET );
+    menu.insertItem( KIcon( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ACTIONS_ASSOCIATE );
+    menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  ACTIONS_LISTENED );
+    menu.insertItem( KIcon( Amarok::icon( "artist" ) ),   i18n( "Mark as &New" ),  ACTIONS_NEW );
+    menu.insertItem( KIcon( Amarok::icon("remove") ), i18n( "De&lete Downloaded Podcast" ), ACTIONS_DELETE );
 
-    menu.setItemEnabled( GET, !isOnDisk() );
-    menu.setItemEnabled( ASSOCIATE, !isOnDisk() );
-    menu.setItemEnabled( DELETE, isOnDisk() );
-    menu.setItemVisible( LISTENED, isNew() );
-    menu.setItemVisible( NEW, !isNew() );
+    menu.setItemEnabled( ACTIONS_GET, !isOnDisk() );
+    menu.setItemEnabled( ACTIONS_ASSOCIATE, !isOnDisk() );
+    menu.setItemEnabled( ACTIONS_DELETE, isOnDisk() );
+    menu.setItemVisible( ACTIONS_LISTENED, isNew() );
+    menu.setItemVisible( ACTIONS_NEW, !isNew() );
 
     uint id = menu.exec( position );
     switch( id )
     {
-        case LOAD:
+        case ACTIONS_LOAD:
             Playlist::instance()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
-        case APPEND:
+        case ACTIONS_APPEND:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
 
-        case QUEUE:
+        case ACTIONS_QUEUE:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
 
-         case GET:
+         case ACTIONS_GET:
             PlaylistBrowser::instance()->downloadSelectedPodcasts();
             break;
 
-        case ASSOCIATE:
+        case ACTIONS_ASSOCIATE:
             associateWithLocalFile();
             break;
 
-        case DELETE:
+        case ACTIONS_DELETE:
             PlaylistBrowser::instance()->deleteSelectedPodcastItems();
             break;
 
-        case LISTENED:
+        case ACTIONS_LISTENED:
             for ( Q3ListViewItemIterator it( listView(), Q3ListViewItemIterator::Selected); *it; ++it )
             {
                 if ( isPodcastEpisode( *it ) )
@@ -2860,7 +2862,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
             }
             break;
 
-        case NEW:
+        case ACTIONS_NEW:
             for ( Q3ListViewItemIterator it( listView(), Q3ListViewItemIterator::Selected); *it; ++it )
             {
                 if ( isPodcastEpisode( *it ) )
@@ -2868,7 +2870,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
             }
             break;
 
-        case MEDIA_DEVICE:
+        case ACTIONS_MEDIA_DEVICE:
             // tags on podcasts are sometimes bad, thus use other meta information if available
             if( isSelected() )
             {
@@ -2887,7 +2889,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 
             MediaBrowser::queue()->URLsAdded();
             break;
-        case OPEN_WITH:
+        case ACTIONS_OPEN_WITH:
                 {
                     KUrl::List urlList;
                     urlList.append( isOnDisk() ? localUrl() : url() );
@@ -2896,10 +2898,10 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                 break;
 
         default:
-            if( id >= OPEN_WITH+1 && id <= OPEN_WITH + offers.size() )
+            if( id >= ACTIONS_OPEN_WITH+1 && id <= ACTIONS_OPEN_WITH + offers.size() )
             {
                 KService::List::iterator it = offers.begin();
-                for(uint i = OPEN_WITH+1; i < id && i < OPEN_WITH+offers.size(); ++i )
+                for(uint i = ACTIONS_OPEN_WITH+1; i < id && i < ACTIONS_OPEN_WITH+offers.size(); ++i )
                 {
                     ++it;
                 }
