@@ -14,8 +14,6 @@
 #include <QByteArray>
 #include <QEvent>
 
-#include <pthread.h>//we're emulating features of Qt 4, so this can be removed for Amarok 2.0
-
 #include "debug.h"
 #include "statusbar.h"
 #include "threadmanager.h"
