@@ -87,7 +87,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
       m_yscale.resize( m_rows + 1 );
 
-      const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
+      const float PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
 
       for( uint z = 0; z < m_rows; ++z )
          m_yscale[z] = 1 - (log10( PRE+z ) / log10( PRE+m_rows+PRO ));
@@ -401,7 +401,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
          m_fade_bars[y].fill( palette().active().background() );
          QPainter f( &m_fade_bars[y] );
          for( int z = 0; (uint)z < m_rows; ++z ) {
-            const double Y = 1.0 - (log10( FADE_SIZE - y ) / log10( FADE_SIZE ));
+            const double Y = 1.0 - (log10( static_cast<float>(FADE_SIZE) - y ) / log10( static_cast<float>(FADE_SIZE) ));
             f.fillRect( 0, z*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*Y), g+int(dg*Y), b+int(db*Y) ) );
          }
       }

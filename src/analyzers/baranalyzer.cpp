@@ -57,7 +57,7 @@ void BarAnalyzer::resizeEvent( QResizeEvent * e )
 void BarAnalyzer::init()
 {
     const double MAX_AMPLITUDE = 1.0;
-    const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
+    const double F = double(height() - 2) / (log10( static_cast<double>(255) ) * MAX_AMPLITUDE );
 
     setPaletteBackgroundColor(m_bg);
 
@@ -76,7 +76,7 @@ void BarAnalyzer::init()
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
     for ( uint x = 0; x < 256; ++x )
     {
-        m_lvlMapper[x] = uint( F * log10( x+1 ) );
+        m_lvlMapper[x] = static_cast<uint>( ( F * log10( static_cast<float>(x+1) ) ) );
     }
 
     m_pixBarGradient.resize( height()*COLUMN_WIDTH, height() );
