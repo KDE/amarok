@@ -26,15 +26,15 @@
 
 class QLabel;
 
-class Polygon : public QPolygon
+class Bookmark : public QPolygon
 {
     public:
-        Polygon( int size, int seconds ) : QPolygon( size ),
+        Bookmark( int size, int seconds ) : QPolygon( size ),
                  m_seconds( seconds)
         {}
-        inline QString time() { return prettyTime( m_seconds ); }
-        inline int seconds() { return m_seconds; }
-        inline void setTime( int seconds ) { m_seconds = seconds; }
+        inline const QString time() { return prettyTime( m_seconds ); }
+        inline const int seconds() { return m_seconds; }
+        inline const void setTime( int seconds ) { m_seconds = seconds; }
 
     private:
         QString prettyTime( int seconds )
@@ -83,7 +83,7 @@ class ProgressSlider : public Amarok::PrettySlider
 
     private:
         QList<uint> m_bookmarks;
-        QList<Polygon> m_polygons;
+        QList<Bookmark> m_polygons;
         QPoint oldpoint;
         KPassivePopup *m_popup;
 };

@@ -36,7 +36,8 @@ ProgressSlider::ProgressSlider( QWidget *parent ) :
 }
 
 // Add A bookmark to the slider at given second
-void ProgressSlider::addBookmark( uint second )
+void
+ProgressSlider::addBookmark( uint second )
 {
     if( !m_bookmarks.contains(second) )
         m_bookmarks << second;
@@ -44,20 +45,22 @@ void ProgressSlider::addBookmark( uint second )
 }
 
 
-void ProgressSlider::addBookmarks( QList<uint> seconds )
+void
+ProgressSlider::addBookmarks( QList<uint> seconds )
 {
     foreach( uint it, seconds )
         addBookmark( it );
 }
 
-void ProgressSlider::paintEvent( QPaintEvent *e )
+void
+ProgressSlider::paintEvent( QPaintEvent *e )
 {
     Amarok::PrettySlider::paintEvent( e );
     QPainter p( this );
     foreach( uint it, m_bookmarks )
     {
         const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
-        Polygon pa( 3, it );
+        Bookmark pa( 3, it );
         pa.setPoint( 0, pos - 5, 1 );
         pa.setPoint( 1, pos + 5, 1 );
         pa.setPoint( 2, pos,     9 );
@@ -66,10 +69,12 @@ void ProgressSlider::paintEvent( QPaintEvent *e )
         p.drawConvexPolygon( pa );
     }
 }
-void ProgressSlider::mouseMoveEvent( QMouseEvent *e )
+
+void
+ProgressSlider::mouseMoveEvent( QMouseEvent *e )
 {
 
-    foreach( Polygon p, m_polygons )
+    foreach( Bookmark p, m_polygons )
     {
         //only create a popup if the mouse enters a bookmark, not if it moves inside of one.
         if( p.containsPoint( e->pos(), Qt::OddEvenFill ) && !p.containsPoint( oldpoint, Qt::OddEvenFill ) )
@@ -91,10 +96,12 @@ void ProgressSlider::mouseMoveEvent( QMouseEvent *e )
     }
     oldpoint = e->pos();
 }
-void ProgressSlider::mousePressEvent( QMouseEvent *e )
+
+void
+ProgressSlider::mousePressEvent( QMouseEvent *e )
 {
     EngineController *ec = EngineController::instance();
-    foreach( Polygon p, m_polygons )
+    foreach( Bookmark p, m_polygons )
         if( p.containsPoint( e->pos(), Qt::OddEvenFill ) )
             ec->seek( p.seconds() * 1000 );
 }
@@ -142,7 +149,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
 }
 
-void ProgressWidget::drawTimeDisplay( int ms )  //SLOT
+void
+ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
@@ -212,7 +220,8 @@ void ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     }
 }
 
-void ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+void
+ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     m_slider->setValue( position );
 
@@ -245,7 +254,9 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
             ; //just do nothing, idle is temporary and a limbo state
     }
 }
-void ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+
+void
+ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_slider->newBundle( bundle );
     engineTrackLengthChanged( bundle.length() );
@@ -258,7 +269,8 @@ void ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     ProgressSlider::instance()->addBookmarks( bookmarkList );
 }
 
-void ProgressWidget::engineTrackLengthChanged( long length )
+void
+ProgressWidget::engineTrackLengthChanged( long length )
 {
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( length * 1000 );
