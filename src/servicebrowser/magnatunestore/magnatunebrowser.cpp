@@ -472,10 +472,14 @@ void MagnatuneBrowser::polish( )
 
 
         initTopPanel( );
-    initBottomPanel();
+        initBottomPanel();
 
         DatabaseDrivenContentModel * model = new DatabaseDrivenContentModel ( this );
         MagnatuneInfoParser * infoParser = new MagnatuneInfoParser();
+
+        connect( infoParser, SIGNAL( info( QString ) ), this, SLOT ( infoChanged( QString ) ) );
+
+
         infoParser->setDbHandler( m_dbHandler );
 
         model->setDbHandler( m_dbHandler );

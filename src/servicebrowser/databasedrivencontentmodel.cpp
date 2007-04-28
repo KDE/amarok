@@ -156,7 +156,7 @@ int DatabaseDrivenContentModel::rowCount(const QModelIndex &parent) const
      else
          parentItem = static_cast<DatabaseDrivenContentItem*>(parent.internalPointer());
 
-      debug() << "DatabaseDrivenContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
+      //debug() << "DatabaseDrivenContentModel::rowCount called on node: " << parentItem->data( 0 ).toString() << ", count: " << parentItem->childCount() << endl;
 
      return parentItem->childCount();
 
@@ -173,7 +173,7 @@ bool DatabaseDrivenContentModel::hasChildren ( const QModelIndex & parent ) cons
          item = static_cast<DatabaseDrivenContentItem*>(parent.internalPointer());
 
 
-     debug() << "DatabaseDrivenContentModel::hasChildren called on node: " << item->data( 0 ).toString() << ", has children: " << item->hasChildren() << endl;
+     //debug() << "DatabaseDrivenContentModel::hasChildren called on node: " << item->data( 0 ).toString() << ", has children: " << item->hasChildren() << endl;
 
     return item->hasChildren();
 }
@@ -238,11 +238,11 @@ bool DatabaseDrivenContentModel::canFetchMore(const QModelIndex & parent) const
      else
          item = static_cast<DatabaseDrivenContentItem*>(parent.internalPointer());
 
-    debug() << "DatabaseDrivenContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
+    //debug() << "DatabaseDrivenContentModel::canFetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
 
     if ( ( item->getType() == SERVICE_ITEM_ARTIST ) || ( item->getType() == SERVICE_ITEM_ALBUM )  ) {
-        debug() << "    YES!" << endl;
+        //debug() << "    YES!" << endl;
         return true;
     }
     else 
@@ -259,12 +259,12 @@ void DatabaseDrivenContentModel::fetchMore(const QModelIndex & parent)
     else
         item = static_cast<DatabaseDrivenContentItem*>(parent.internalPointer());
 
-    debug() << "DatabaseDrivenContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
+    //debug() << "DatabaseDrivenContentModel::fetchMore called on node: " << item->data( 0 ).toString()  << endl;
 
     int count = item->prePopulate();
 
 
-    debug() << "DatabaseDrivenContentModel::fetchMore item has : " << count << " new child items"  << endl;
+    //debug() << "DatabaseDrivenContentModel::fetchMore item has : " << count << " new child items"  << endl;
 
     if (!count)
         return; //no rows to insert
