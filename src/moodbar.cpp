@@ -473,7 +473,7 @@ MoodServer::slotNewJob( void )
   // Write to outfile.mood.tmp so that new Moodbar instances
   // don't think the mood data exists while the analyzer is
   // running.  Then rename the file later.
-  m_currentProcess = new Amarok::Process( this );
+  m_currentProcess = new K3Process( this );
   m_currentProcess->setPriority( 19 );  // Nice the process
   *m_currentProcess << KStandardDirs::findExe( "moodbar" ) << "-o"
                     << (m_currentData.m_outfile + ".tmp")
