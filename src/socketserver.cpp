@@ -133,7 +133,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         {
             const Engine::Scope &scope = EngineController::engine()->scope();
 
-            ::send( sockfd, &scope[0], scope.size()*sizeof(int16_t), 0 );
+            ::send( sockfd, (const char *)&scope[0], scope.size()*sizeof(int16_t), 0 );
         }
     }
     else {
@@ -288,7 +288,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 {
     switch( state() ) {
     case On:
-        m_proc = new Amarok::Process();
+        m_proc = new K3Process();
        *m_proc << KStandardDirs::findExe( m_command )
                << Selector::instance()->m_server->path()
                << text( 0 );
