@@ -55,7 +55,7 @@ namespace LastFm {
  *
  */
 
-class AMAROK_EXPORT MetaBundle
+class MetaBundle
 {
 
 public:
@@ -146,7 +146,7 @@ public:
 
     AMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
 
-    virtual ~MetaBundle();
+    AMAROK_EXPORT virtual ~MetaBundle();
 
     MetaBundle& operator=( const MetaBundle& bundle );
     bool operator==( const MetaBundle& bundle ) const;
