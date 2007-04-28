@@ -129,6 +129,10 @@ void ContextBox::toggleVisibility()
         m_animationTimer->setUpdateInterval( 30 ); // ~33 fps
         m_animationTimer->setFrameRange( 0, range );
         m_animationTimer->setLoopCount( 0 ); // loop forever until we explicitly stop it
+     
+        connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
+        connect( m_animationTimer, SIGNAL( stateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
+
     }
 
     if( m_animationTimer->state() == QTimeLine::Running )
@@ -136,8 +140,8 @@ void ContextBox::toggleVisibility()
         m_goingUp = !m_goingUp; // change direction if the is already an animation
         debug() << "changing direction!" << endl;
         return;
-    }
-
+    } 
+   
     m_animationTimer->setStartFrame( 0 );
 
     m_animationIncrement = m_optimumHeight / range;
@@ -145,8 +149,6 @@ void ContextBox::toggleVisibility()
     debug() << "m_optimumHeight: " << m_optimumHeight << endl;
     debug() << "m_animationIncrement: " << m_animationIncrement << endl;
 
-    connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
-    connect( m_animationTimer, SIGNAL( stateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
     m_animationTimer->start();
 }
 
@@ -173,6 +175,7 @@ void ContextBox::visibilityTimerSlot()
 
 void ContextBox::animationStateChanged( QTimeLine::State newState )
 {
+    
     if( newState == QTimeLine::NotRunning )
         m_goingUp = !m_goingUp;
 }
