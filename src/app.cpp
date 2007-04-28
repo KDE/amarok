@@ -499,12 +499,11 @@ void App::initGlobalShortcuts()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), m_pPlaylistWindow, SLOT( showHide() ) );
 
-#ifdef Q_WS_X11
+
 //    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0, Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
     action = new KAction( i18n( "Show OSD" ), m_pPlaylistWindow );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
-#endif
 #if 0
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );

@@ -35,7 +35,6 @@
 #include <kpixmapeffect.h>
 #include <kstandarddirs.h>   //locate
 
-
 namespace ShadowEngine
 {
     QImage makeShadow( const QPixmap &textPixmap, const QColor &bgColor );
@@ -46,7 +45,8 @@ namespace ShadowEngine
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, Qt::WType_TopLevel | Qt::WNoAutoErase | Qt::WStyle_Customize | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
+        : QWidget( parent, Qt::Window | Qt::X11BypassWindowManagerHint | Qt::WindowStaysOnTopHint
+        | Qt::FramelessWindowHint | Qt::CustomizeWindowHint )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
@@ -446,6 +446,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
 {
     m_text = i18n( "OSD Preview - drag to reposition" );
     m_duration = 0;
+    m_alignment = Center;
     m_cover = Amarok::icon();
 }
 
@@ -462,7 +463,6 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 
 void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 {
-#if 0
     if( m_dragging )
     {
         m_dragging = false;
@@ -480,13 +480,11 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
             emit positionChanged();
         }
     }
-#endif
 }
 
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
-#if 0
     if( m_dragging && this == mouseGrabber() )
     {
         // Here we implement a "snap-to-grid" like positioning system for the preview widget
@@ -527,7 +525,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
         move( destination );
     }
-#endif
 }
 
 
