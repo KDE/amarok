@@ -3,16 +3,16 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
 	${CMAKE_CURRENT_BINARY_DIR}/../.. ${KDE4_INCLUDE_DIR}
-        ${QT_INCLUDES} )
+    ${TAGLIB_INCLUDE_DIR}    ${QT_INCLUDES} )
 
 
 ########### next target ###############
 
-set(amarok_phonon-engine_PART_SRCS phonon-engine.cpp )
+set(amarok_phonon-engine_SRCS phonon-engine.cpp )
 
-kde4_automoc(${amarok_phonon-engine_PART_SRCS})
+kde4_automoc(${amarok_phonon-engine_SRCS})
 
-kde4_add_plugin(amarok_phonon-engine WITH_PREFIX ${amarok_phonon-engine_PART_SRCS})
+kde4_add_plugin(amarok_phonon-engine WITH_PREFIX ${amarok_phonon-engine_SRCS})
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_phonon-engine )
 
