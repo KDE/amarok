@@ -13,13 +13,8 @@ include(CheckPrototypeExists)
 include(CheckTypeSize)
 include(MacroBoolTo01)
 
-if(WIN32)
-set( CMAKE_MODULE_PATH    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-                          ${CMAKE_MODULE_PATH} )
-else(WIN32)
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
-                          cmake/modules )
-endif(WIN32)
+                          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 
