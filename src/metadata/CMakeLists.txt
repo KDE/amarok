@@ -1,5 +1,4 @@
 if(MP4V2_FOUND)
-ADD_SUBDIRECTORY( mp4 ) 
 include_directories( ${MP4V2_INCLUDE_DIR} )
 set(libtagmp4_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/mp4/mp4file.cpp
@@ -8,7 +7,6 @@ set(libtagmp4_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/mp4/taglib_mp4filetyperesolver.cpp
 )
 else(MP4V2_FOUND)
-ADD_SUBDIRECTORY( m4a ) 
 set(libtagmp4_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/m4a/taglib_mp4filetyperesolver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4file.cpp
