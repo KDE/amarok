@@ -34,6 +34,9 @@
 #include <unistd.h>       //write, getpid
 #include <string.h>
 
+#ifndef Q_WS_WIN
+#include <pthread.h>
+#endif
 
 
 #ifndef TAGLIB_PATCH_VERSION
@@ -41,6 +44,7 @@
 #define TAGLIB_PATCH_VERSION 0
 #endif
 
+#ifndef Q_WS_WIN
 
 namespace Amarok
 {
@@ -165,7 +169,6 @@ namespace Amarok
 
             // so we can read stderr too
             ::dup2( fileno( stdout ), fileno( stderr ) );
-
 
             QByteArray gdb;
             gdb  = "gdb --nw -n --batch -x ";
@@ -308,4 +311,5 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
     setCaption( i18n("Crash Handler") );
     setFixedSize( sizeHint() );
 }
+#endif
 #endif

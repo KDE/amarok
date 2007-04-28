@@ -20,6 +20,8 @@
 #ifndef AMAROK_DBUS_HANDLER_H
 #define AMAROK_DBUS_HANDLER_H
 
+#include "amarok_export.h"
+
 #include <QObject>
 //Added by qt3to4:
 #include <QByteArray>
@@ -172,7 +174,7 @@ class DbusContextBrowserHandler : public QObject
 };
 
 
-class DbusCollectionHandler : public QObject
+class AMAROK_EXPORT DbusCollectionHandler : public QObject
 {
    Q_OBJECT
 
