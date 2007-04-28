@@ -20,21 +20,19 @@
 #include "loader.h"
 #include <QFile>
 #include <QMessageBox>
-#include <q3process.h>
+#include <Q3Process>
+#include <QSplashScreen>
 #include <QString>
-//Added by qt3to4:
-#include <QTimerEvent>
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <kcomponentdata.h>
-#include "splash.h"
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+
 extern "C"
 {
-    #include <unistd.h> //usleep
+    #include <unistd.h> //::usleep
 }
-
 
 int
 main( int argc, char *argv[] )
@@ -140,7 +138,11 @@ Loader::Loader( QStringList args )
     //FIXME QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
      if( !QApplication::isSessionRestored() && isSplashEnabled() )
-        m_splash = new Splash;
+     {
+        QPixmap splashpix( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg") );
+        m_splash = new QSplashScreen( splashpix );
+        m_splash->show();
+     }
 
     args.prepend( "amarokapp" );
 

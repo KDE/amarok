@@ -1,6 +1,6 @@
 ######### next target ###############
 
-set(amarok_bin_SRCS loader.cpp splash.cpp )
+set(amarok_bin_SRCS loader.cpp )
 
 kde4_automoc(${amarok_bin_SRCS})
 

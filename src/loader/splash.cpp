@@ -24,8 +24,9 @@ extern "C"
 }
 
 Splash::Splash()
-        : QWidget( 0, Qt::WType_TopLevel | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
+        : QWidget( 0 )
 {
+    setWindowFlags( Qt::SplashScreen );
     QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg");
 
     QPixmap splash( path );

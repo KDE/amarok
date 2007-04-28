@@ -19,10 +19,9 @@
 #define LOADER_H
 
 #include <QApplication>
-//Added by qt3to4:
-#include <QTimerEvent>
 
 class Q3Process;
+class QSplashScreen;
 class QStringList;
 
 class Loader : public QApplication
@@ -36,7 +35,7 @@ private:
 
     Q3Process *m_proc;
     int       m_counter;
-    QObject  *m_splash;
+    QSplashScreen  *m_splash;
 
     static const int INTERVAL = 10; //ms
 };
