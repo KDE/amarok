@@ -108,6 +108,8 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
+
+    
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
@@ -144,7 +146,7 @@ void ContextBox::toggleVisibility()
     debug() << "m_animationIncrement: " << m_animationIncrement << endl;
 
     connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
-    connect( m_animationTimer, SIGNAL( animationStateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
+    connect( m_animationTimer, SIGNAL( stateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
     m_animationTimer->start();
 }
 
@@ -163,6 +165,7 @@ void ContextBox::visibilityTimerSlot()
     {
         newHeight = desiredHeight;
         m_animationTimer->stop(); //stop the timeline _before_ changing the direction
+        debug() << "animation timer stopped" << endl;
     }
 
     setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ), false );
