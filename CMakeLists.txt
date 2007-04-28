@@ -13,8 +13,8 @@ include(CheckPrototypeExists)
 include(CheckTypeSize)
 include(MacroBoolTo01)
 
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+set( CMAKE_MODULE_PATH    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+                          ${CMAKE_MODULE_PATH} )
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 
 find_package(Taglib REQUIRED)
