@@ -34,7 +34,7 @@ FIND_LIBRARY(TAGLIB_LIBRARIES NAMES tag
    ${_taglibLinkDir}
    )
    
-set(TAGLIB_CFLAGS _taglibCflags)
+set(TAGLIB_CFLAGS ${_taglibCflags})
 
 IF (TAGLIB_INCLUDE_DIR)
 ELSE (TAGLIB_INCLUDE_DIR)
