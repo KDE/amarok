@@ -13,7 +13,6 @@
 #include <audioproperties.h>
 #include "expression.h"
 #include "atomicstring.h"
-#include "atomicurl.h"
 
 #include "amarok_export.h"
 
