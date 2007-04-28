@@ -22,10 +22,6 @@ class QString;
 class MemoryCollection;
 class QHttpResponseHeader;
 
-namespace QHttp {
-    class Error;
-}
-
 namespace Daap
 {
     typedef QMap<QString, QVariant>    Map;
