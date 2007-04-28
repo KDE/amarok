@@ -35,11 +35,11 @@ namespace Amarok
     class Slider;
     class PrettySlider;
 
-    class StatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
     {
         Q_OBJECT
 
-        AMAROK_STATUSBAR_EXPORT static StatusBar* s_instance;
+        static StatusBar* s_instance;
 
     public:
         explicit StatusBar( QWidget *parent, const char *name = 0 );
