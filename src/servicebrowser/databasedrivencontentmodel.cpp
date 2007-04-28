@@ -215,7 +215,7 @@ void DatabaseDrivenContentModel::requestHtmlInfo ( const QModelIndex & index ) c
         case SERVICE_ITEM_TRACK:
            debug() << "    track"  << endl;
            if( m_infoParser != 0 )
-               m_infoParser->getInfo( item->getContentUnion().albumValue );
+               m_infoParser->getInfo( item->getContentUnion().trackValue );
            break;
        default:
            debug() << "    none of the above!?"  << endl;
