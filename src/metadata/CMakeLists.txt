@@ -99,9 +99,7 @@ set(libtagaudible_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/audible/taglib_audiblefile.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/audible/taglib_audiblefiletyperesolver.cpp
 	)
-
-
-ADD_DEFINITIONS(${TAGLIB_CFLAGS})
+	
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}
@@ -129,6 +127,9 @@ kde4_add_library(amarok_taglib SHARED ${amarok_taglib_SRCS})
 
 set_target_properties(amarok_taglib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 target_link_libraries(amarok_taglib ${TAGLIB_LIBRARIES})
+if(WIN32)
+target_link_libraries(amarok_taglib ws2_32)
+endif(WIN32)
 if(MP4V2_FOUND)
 target_link_libraries(amarok_taglib ${MP4V2_LIBRARY})
 endif(MP4V2_FOUND)
