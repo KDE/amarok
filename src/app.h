@@ -107,7 +107,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
 
         // ATTRIBUTES ------
         PlaylistWindow      *m_pPlaylistWindow;
-#ifdef Q_WS_X11
+#ifndef Q_WS_MAC
         Amarok::TrayIcon    *m_pTray;
 #endif
         MediaDeviceManager  *m_pMediaDeviceManager;

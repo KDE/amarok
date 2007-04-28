@@ -596,7 +596,7 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-#ifdef Q_WS_X11
+#ifndef Q_WS_MAC
     //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
     //TrackToolTip::instance()->removeFromWidget( m_pTray );
 #endif
@@ -604,7 +604,7 @@ void App::applySettings( bool firstTime )
     Scrobbler::instance()->applySettings();
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
-#ifdef Q_WS_X11
+#ifndef Q_WS_MAC
     m_pTray->setVisible( AmarokConfig::showTrayIcon() );
     //TrackToolTip::instance()->addToWidget( m_pTray );
 #endif
@@ -613,7 +613,7 @@ void App::applySettings( bool firstTime )
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
-#ifdef Q_WS_X11
+#ifndef Q_WS_MAC
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
 #endif
     {
@@ -694,7 +694,7 @@ App::continueInit()
 
     m_pMediaDeviceManager = MediaDeviceManager::instance();
     m_pPlaylistWindow = new PlaylistWindow();
-#ifdef Q_WS_X11
+#ifndef Q_WS_MAC
     m_pTray           = new Amarok::TrayIcon( m_pPlaylistWindow );
 #endif
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
