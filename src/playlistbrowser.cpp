@@ -1901,7 +1901,7 @@ bool PlaylistBrowser::deletePlaylists( KUrl::List items )
     // Avoid deleting dirs. See bug #122480
     for ( KUrl::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
         if ( QFileInfo( (*it).path() ).isDir() ) {
-            it = items.remove( it );
+            it = items.erase( it );
             continue;
         }
     }
