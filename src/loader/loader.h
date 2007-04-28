@@ -21,7 +21,7 @@
 #include <QApplication>
 
 class Q3Process;
-class QSplashScreen;
+class KSplashScreen;
 class QStringList;
 
 class Loader : public QApplication
@@ -35,7 +35,7 @@ private:
 
     Q3Process *m_proc;
     int       m_counter;
-    QSplashScreen  *m_splash;
+    KSplashScreen  *m_splash;
 
     static const int INTERVAL = 10; //ms
 };

@@ -21,9 +21,9 @@
 #include <QFile>
 #include <QMessageBox>
 #include <Q3Process>
-#include <QSplashScreen>
 #include <QString>
 #include <kglobal.h>
+#include <KSplashScreen>
 #include <kstandarddirs.h>
 #include <kcomponentdata.h>
 #include <QDBusConnection>
@@ -140,7 +140,7 @@ Loader::Loader( QStringList args )
      if( !QApplication::isSessionRestored() && isSplashEnabled() )
      {
         QPixmap splashpix( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg") );
-        m_splash = new QSplashScreen( splashpix );
+        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
         m_splash->show();
      }
 
