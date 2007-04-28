@@ -917,13 +917,13 @@ WebService::recommend( int type, QString username, QString artist, QString token
 
     QByteArray md5pass = KMD5( KMD5( m_password.toUtf8() ).hexDigest().append( QString::number( currentTime ).toLocal8Bit() ) ).hexDigest();
 
-    QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
+    QString atoken = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
                        .arg( QString( Q3Url( currentUsername() ).encodedPathAndQuery() ) )
                        .arg( QString( Q3Url( md5pass ).encodedPathAndQuery() ) )
                        .arg( QString( Q3Url( challenge ).encodedPathAndQuery() ) )
                        .arg( QString( Q3Url( username ).encodedPathAndQuery() ) );
 
-    Q3HttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.toUtf8() );
+    Q3HttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + atoken.toUtf8() );
     header.setValue( "Host", "wsdev.audioscrobbler.com" );
     header.setContentType( "application/x-www-form-urlencoded" );
     http->request( header, modeToken.toUtf8() );

@@ -491,8 +491,6 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND };
-
     KMenu menu;
 
     menu.addTitle( i18n( "Cover Image" ) );

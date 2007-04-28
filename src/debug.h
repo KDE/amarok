@@ -18,6 +18,9 @@
 
 #include "amarok_export.h"
 
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
 
 /**
  * @namespace Debug

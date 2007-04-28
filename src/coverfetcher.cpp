@@ -5,29 +5,33 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "coverfetcher.h"
-#include "covermanager.h"
-#include "debug.h"
 #include "querybuilder.h"
+#include "covermanager.h"
+#include "coverfetcher.h"
+#include "debug.h"
 #include "statusbar.h"
 
-#include <QLabel>
-#include <QRegExp>
-#include <q3popupmenu.h>
 #include <qdom.h>
+#include <khbox.h>
+#include <q3popupmenu.h>
+#include <QLabel>
+#include <QLayout>
+#include <QRegExp>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kcursor.h> //waiting cursor
 #include <kdialog.h>
-#include <kfiledialog.h>
 #include <kiconloader.h>
+#include <kfiledialog.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klineedit.h>
 #include <klocale.h>
-#include <kmenu.h>
 #include <kmessagebox.h>
+#include <kmenu.h>
 #include <kpushbutton.h>
 #include <kvbox.h>
 #include <kwm.h>
@@ -36,74 +40,75 @@
 void
 Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager )
 {
-    Q3PopupMenu menu;
-    enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
+        Q3PopupMenu menu;
+        enum { ACTIONS_SHOW, ACTIONS_FETCH, 
+            ACTIONS_CUSTOM, ACTIONS_DELETE, ACTIONS_MANAGER };
 
-    menu.setTitle( i18n( "Cover Image" ) );
+        menu.setTitle( i18n( "Cover Image" ) );
 
-    menu.insertItem( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-    menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), FETCH );
-    menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
-    bool disable = !album.isEmpty(); // disable setting covers for unknown albums
-    menu.setItemEnabled( FETCH, disable );
-    menu.setItemEnabled( CUSTOM, disable );
-    menu.addSeparator();
-
-    menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
-    if ( showCoverManager ) {
+        menu.insertItem( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), ACTIONS_SHOW );
+        menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), ACTIONS_FETCH );
+        menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), ACTIONS_CUSTOM );
+        bool disable = !album.isEmpty(); // disable setting covers for unknown albums
+        menu.setItemEnabled( ACTIONS_FETCH, disable );
+        menu.setItemEnabled( ACTIONS_CUSTOM, disable );
         menu.addSeparator();
-        menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
-    }
 
-    disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
-    menu.setItemEnabled( SHOW, disable );
-    menu.setItemEnabled( DELETE, disable );
-
-    switch( menu.exec( point ) )
-    {
-    case SHOW:
-        CoverManager::viewCover( artist, album, parent );
-        break;
-
-    case DELETE:
-    {
-        const int button = KMessageBox::warningContinueCancel( parent,
-            i18nc( "[only-singular]", "Are you sure you want to remove this cover from the Collection?" ),
-            QString(),
-            KStandardGuiItem::del() );
-
-        if ( button == KMessageBox::Continue )
-            CollectionDB::instance()->removeAlbumImage( artist, album );
-        break;
-    }
-
-    case FETCH:
-        CollectionDB::instance()->fetchCover( parent, artist, album, false );
-        break;
-
-    case CUSTOM:
-    {
-        QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( artist ) );
-        QString album_id; album_id.setNum( CollectionDB::instance()->albumID( album ) );
-        QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
-        QString startPath = ":homedir";
-
-        if ( !values.isEmpty() ) {
-            KUrl url;
-            url.setPath( values.first() );
-            startPath = url.directory();
+        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), ACTIONS_DELETE );
+        if ( showCoverManager ) {
+            menu.addSeparator();
+            menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), ACTIONS_MANAGER );
         }
 
-        KUrl file = KFileDialog::getImageOpenUrl( startPath, parent, i18n("Select Cover Image File") );
-        if ( !file.isEmpty() )
-            CollectionDB::instance()->setAlbumImage( artist, album, file );
-        break;
-    }
+        disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
+        menu.setItemEnabled( ACTIONS_SHOW, disable );
+        menu.setItemEnabled( ACTIONS_DELETE, disable );
 
-    case MANAGER:
-        CoverManager::showOnce( album );
-        break;
-    }
+        switch( menu.exec( point ) )
+        {
+        case ACTIONS_SHOW:
+            CoverManager::viewCover( artist, album, parent );
+            break;
+
+        case ACTIONS_DELETE:
+        {
+            const int button = KMessageBox::warningContinueCancel( parent,
+                i18nc( "[only-singular]", "Are you sure you want to remove this cover from the Collection?" ),
+                QString(),
+                KStandardGuiItem::del() );
+
+            if ( button == KMessageBox::Continue )
+                CollectionDB::instance()->removeAlbumImage( artist, album );
+            break;
+        }
+
+        case ACTIONS_FETCH:
+            CollectionDB::instance()->fetchCover( parent, artist, album, false );
+            break;
+
+        case ACTIONS_CUSTOM:
+        {
+            QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( artist ) );
+            QString album_id; album_id.setNum( CollectionDB::instance()->albumID( album ) );
+            QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
+            QString startPath = ":homedir";
+
+            if ( !values.isEmpty() ) {
+                KUrl url;
+                url.setPath( values.first() );
+                startPath = url.directory();
+            }
+
+            KUrl file = KFileDialog::getImageOpenUrl( startPath, parent, i18n("Select Cover Image File") );
+            if ( !file.isEmpty() )
+                CollectionDB::instance()->setAlbumImage( artist, album, file );
+            break;
+        }
+
+        case ACTIONS_MANAGER:
+            CoverManager::showOnce( album );
+            break;
+        }
 }
 
 
@@ -230,7 +235,7 @@ CoverFetcher::startFetch()
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + QUrl::toPercentEncoding( query, "/" )
+        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query /*, mibenum */ ) // FIXME: we will have to find something else
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
@@ -577,9 +582,9 @@ CoverFetcher::getUserQuery( QString explanation )
 
         virtual void accept()
         {
-            if( sender()->objectName() == "NewSearch" )
+            if( qstrcmp( sender()->name(), "NewSearch" ) == 0 )
                 done( 1000 );
-            else if( sender()->objectName() == "NextCover" )
+            else if( qstrcmp( sender()->name(), "NextCover" ) == 0 )
                 done( 1001 );
             else
                 KDialog::accept();
