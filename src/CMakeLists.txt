@@ -19,7 +19,6 @@ if(MP4V2_FOUND)
 endif(MP4V2_FOUND)
 
 add_subdirectory( amarokcore )
-add_subdirectory( contextview )
 add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( loader )
@@ -58,6 +57,7 @@ include_directories(
 	collection
 	${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
+	${TAGLIB_INCLUDE_DIR}
 	${QT_INCLUDES}  )
 
 
@@ -296,10 +296,14 @@ kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 target_link_libraries(amarok
         ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
         ${TAGLIB_LIBRARIES}
-	${KDE4_KFILE_LIBS}
-        ${KDE4_KDE3SUPPORT_LIBS} dl
+	    ${KDE4_KFILE_LIBS}
+        ${KDE4_KDE3SUPPORT_LIBS} 
         amarok_taglib
+        
 )
+if(NOT WIN32)
+    target_link_libraries(amarok dl)
+endif(NOT WIN32)
 
 if(USE_SYSTEM_SQLITE)
 target_link_libraries(amarok  ${SQLITE_LIBRARIES})
