@@ -16,18 +16,38 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AMAROK_COLLECTION_POSTGRESQLCOLLECTION_H
-#define AMAROK_COLLECTION_POSTGRESQLCOLLECTION_H
+#include "postgresqlquerymaker.h"
 
-#include "sqlcollection.h"
-
-class PostgreSqlCollection : public SqlCollection
+PostgreSqlQueryMaker::PostgreSqlQueryMaker( PostgreSqlCollection *collection )
+    : SqlQueryBuilder( collection )
 {
-    public:
-        PostgreSqlCollection( const QString &id, const QString &prettyName );
-        virtual ~PostgreSqlCollection();
+    //nothing to do
+}
 
-        virtual QueryMaker* queryBuilder();
-};
+PostgreSqlQueryMaker::~PostgreSqlQueryMaker()
+{
+    //nothing to do
+}
 
-#endif
+QString
+PostgreSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
+{
+    QString escaped = text;
+    escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
+    escaped = escape( escaped );
+
+    QString ret = " ILIKE "; //case-insensitive according to locale
+
+    ret += '\'';
+    if ( anyBegin )
+            ret += '%';
+    ret += escaped;
+    if ( anyEnd )
+            ret += '%';
+    ret += '\'';
+
+    //Use / as the escape character
+    ret += " ESCAPE '/' ";
+
+    return ret;
+}

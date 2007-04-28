@@ -160,18 +160,18 @@ MetaQueryBuilder::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-MetaQueryBuilder::addFilter( qint64 value, const QString &filter )
+MetaQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )
-        b->addFilter( value, filter );
+        b->addFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
 
 QueryMaker*
-MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter )
+MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )
-        b->excludeFilter( value, filter );
+        b->excludeFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
 

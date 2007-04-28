@@ -493,14 +493,14 @@ MemoryQueryMaker::addMatch( const DataPtr &data )
 }
 
 QueryMaker*
-MemoryQueryMaker::addFilter( qint64 value, const QString &filter )
+MemoryQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     //TODO stub
     return this;
 }
 
 QueryMaker*
-MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter )
+MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     //TODO stub
     return this;

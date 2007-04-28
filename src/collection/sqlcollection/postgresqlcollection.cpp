@@ -18,6 +18,8 @@
 
 #include "postgresqlcollection.h"
 
+#include "postgresqlquerymaker.h"
+
 PostgreSqlCollection::PostgreSqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
 {
@@ -27,4 +29,10 @@ PostgreSqlCollection::PostgreSqlCollection( const QString &id, const QString &pr
 PostgreSqlCollection::~PostgreSqlCollection()
 {
     //nothing to do
+}
+
+QueryMaker*
+PostgreSqlCollection::queryBuilder()
+{
+    return new PostgreSqlQueryMaker( this );
 }

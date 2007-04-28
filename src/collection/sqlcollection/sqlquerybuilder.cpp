@@ -351,14 +351,14 @@ SqlQueryBuilder::addMatch( const DataPtr &data )
 }
 
 QueryMaker*
-SqlQueryBuilder::addFilter( qint64 value, const QString &filter )
+SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     //TODO
     return this;
 }
 
 QueryMaker*
-SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter )
+SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     //TODO
     return this;
@@ -671,6 +671,29 @@ QString
 SqlQueryBuilder::escape( QString text ) const           //krazy:exclude=constref
 {
     return text.replace( '\'', "''" );;
+}
+
+QString
+SqlQueryBuilder::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
+{
+    QString escaped = text;
+    escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
+    escaped = escape( escaped );
+
+    QString ret = " LIKE ";
+
+    ret += '\'';
+    if ( anyBegin )
+            ret += '%';
+    ret += escaped;
+    if ( anyEnd )
+            ret += '%';
+    ret += '\'';
+
+    //Use / as the escape character
+    ret += " ESCAPE '/' ";
+
+    return ret;
 }
 
 #include "sqlquerybuilder.moc"

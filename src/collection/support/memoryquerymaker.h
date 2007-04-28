@@ -58,8 +58,8 @@ class MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const YearPtr &year );
         virtual QueryMaker* addMatch( const DataPtr &data );
 
-        virtual QueryMaker* addFilter( qint64 value, const QString &filter );
-        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 
         virtual QueryMaker* limitMaxResultSize( int size );
         //MemoryQueryMaker specific methods

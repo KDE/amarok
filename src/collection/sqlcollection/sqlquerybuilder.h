@@ -59,8 +59,8 @@ class SqlQueryBuilder : public QueryMaker
         virtual QueryMaker* addMatch( const YearPtr &year );
         virtual QueryMaker* addMatch( const DataPtr &data );
 
-        virtual QueryMaker* addFilter( qint64 value, const QString &filter );
-        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter );
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 
         virtual QueryMaker* addReturnValue( qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
@@ -73,6 +73,7 @@ class SqlQueryBuilder : public QueryMaker
 
     protected:
         virtual QString escape( QString text ) const;
+        virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
     private slots:
         void done( ThreadWeaver::Job * job );

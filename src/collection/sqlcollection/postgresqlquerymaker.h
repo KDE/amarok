@@ -15,19 +15,20 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+#ifndef AMAROK_COLLECTION_POSTGRESQLQUERYMAKER_H
+#define AMAROK_COLLECTION_POSTGRESQLQUERYMAKER_H
 
-#ifndef AMAROK_COLLECTION_POSTGRESQLCOLLECTION_H
-#define AMAROK_COLLECTION_POSTGRESQLCOLLECTION_H
+#include "postgresqlcollection.h"
+#include "sqlquerybuilder.h"
 
-#include "sqlcollection.h"
-
-class PostgreSqlCollection : public SqlCollection
+class PostgreSqlQueryMaker : public SqlQueryBuilder
 {
     public:
-        PostgreSqlCollection( const QString &id, const QString &prettyName );
-        virtual ~PostgreSqlCollection();
+        PostgreSqlQueryMaker( PostgreSqlCollection* collection );
+        virtual ~PostgreSqlQueryMaker();
 
-        virtual QueryMaker* queryBuilder();
+    protected:
+        virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 };
 
 #endif
