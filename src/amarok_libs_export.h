@@ -15,18 +15,10 @@
 # endif
 #endif
 
-#ifndef AMAROK_STATUSBAR_EXPORT
-# ifdef MAKE_AMAROK_STATUSBAR_LIB
-#  define AMAROK_STATUSBAR_EXPORT KDE_EXPORT
-# else
-#  define AMAROK_STATUSBAR_EXPORT KDE_IMPORT
-# endif
-#endif
 
 #else //not windows
 
 #define AMAROK_TAGLIB_EXPORT KDE_EXPORT
-#define AMAROK_STATUSBAR_EXPORT KDE_EXPORT
 
 #endif //not windows
 
