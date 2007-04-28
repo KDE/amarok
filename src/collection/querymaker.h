@@ -97,16 +97,16 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
 
     signals:
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::TrackList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::ArtistList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::AlbumList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::GenreList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::ComposerList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::YearList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, Meta::DataList );
-        AMAROK_EXPORT void newResultReady( QString collectionId, QStringList );
+        void newResultReady( QString collectionId, Meta::TrackList );
+        void newResultReady( QString collectionId, Meta::ArtistList );
+        void newResultReady( QString collectionId, Meta::AlbumList );
+        void newResultReady( QString collectionId, Meta::GenreList );
+        void newResultReady( QString collectionId, Meta::ComposerList );
+        void newResultReady( QString collectionId, Meta::YearList );
+        void newResultReady( QString collectionId, Meta::DataList );
+        void newResultReady( QString collectionId, QStringList );
 
-        AMAROK_EXPORT void queryDone();
+        void queryDone();
 };
 
 #endif /* AMAROK_COLLECTION_QUERYMAKER_H */
