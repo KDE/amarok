@@ -86,7 +86,7 @@ public slots: void abort() { m_aborted = true; }
 protected:    bool m_aborted;
 };
 
-class AMAROK_EXPORT ThreadManager : public QObject
+class ThreadManager : public QObject
 {
 public:
     class Thread;
