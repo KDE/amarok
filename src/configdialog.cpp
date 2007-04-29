@@ -61,6 +61,10 @@ email                : markey@web.de
 #include <kpushbutton.h>
 #include <kstandarddirs.h>
 
+
+#undef Q_WS_X11 //HACK: The OSD is broken anyway
+
+
 namespace Amarok {
     int databaseTypeCode( const QString type )
     {
@@ -95,7 +99,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #endif
             m_opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );
+#ifdef Q_WS_X11
     Options5 *opt5 = new Options5( 0, "OSD" );
+#endif
     KVBox    *opt6 = new KVBox;
             m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
@@ -173,7 +179,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt1, i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
     addPage( m_opt2, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
+#ifdef Q_WS_X11
     addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
+#endif
     addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
     addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
@@ -196,7 +204,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_deviceManager, SIGNAL(changed()), SLOT(updateButtons()) );
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
+#ifdef Q_WS_X11
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
+#endif
     connect( m_opt2->styleComboBox, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt7->dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt1->kComboBox_browser, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
@@ -252,10 +262,12 @@ void AmarokConfigDialog::updateButtons()
  */
 void AmarokConfigDialog::updateSettings()
 {
+#ifdef Q_WS_X11
     OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     Amarok::OSD::instance()->applySettings();
+#endif
 
     CollectionSetup* cs = findChild<CollectionSetup*>("CollectionSetup");
     if ( cs ) cs->writeConfig();
@@ -341,8 +353,9 @@ void AmarokConfigDialog::updateWidgetsDefault()
  */
 bool AmarokConfigDialog::hasChanged()
 {
-
+#ifdef Q_WS_X11
     OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
+#endif
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
 #ifdef Q_WS_X11
