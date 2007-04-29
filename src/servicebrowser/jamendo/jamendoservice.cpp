@@ -27,6 +27,9 @@ JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
 {
 
+    setShortDescription("Another very friendly service!");
+    setIcon( KIcon( Amarok::icon( "download" ) ) );
+
     m_updateListButton = new QPushButton;
     m_updateListButton->setParent( m_bottomPanel );
     m_updateListButton->setText( i18n( "Update" ) );
