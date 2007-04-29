@@ -23,6 +23,7 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "statusbar.h"
 
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
@@ -49,7 +50,7 @@ JamendoXmlParser::doJob( )
 void 
 JamendoXmlParser::completeJob( )
 {
-   /* Amarok::StatusBar::instance() ->longMessage(
+    /*Amarok::StatusBar::instance()->longMessage(
         i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists" )
         .arg( m_nNumberOfTracks )
         .arg( m_nNumberOfAlbums )
@@ -132,6 +133,8 @@ JamendoXmlParser::parseChildren( QDomElement e )
 
 void JamendoXmlParser::parseArtist( QDomElement e ) {
 
+
+      //debug() << "Found artist: " << endl;
     m_nNumberOfArtists++;
     JamendoArtist currentArtist;
 
@@ -163,8 +166,8 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 
     m_dbHandler->insertArtist( &currentArtist );
 
-    /*debug() << "Found artist: " << endl;
-    debug() << "    Name:       " << currentArtist.getName() << endl;
+  
+    /*debug() << "    Name:       " << currentArtist.getName() << endl;
     debug() << "    Id:         " << currentArtist.getId() << endl;
     //debug() << "    Photo:      " << currentArtist.getPhotoURL() << endl;
     debug() << "    J_url:      " << currentArtist.getJamendoURL() << endl;
@@ -177,7 +180,7 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 
 void JamendoXmlParser::parseAlbum(QDomElement e)
 {
-
+    //debug() << "Found album: " << endl;
     m_nNumberOfAlbums++;
     JamendoAlbum currentAlbum;
 
@@ -206,8 +209,8 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 
      m_dbHandler->insertAlbum( &currentAlbum );
 
-    /*debug() << "Found album: " << endl;
-    debug() << "    Name:       " << currentAlbum.getName() << endl;
+    
+   /* debug() << "    Name:       " << currentAlbum.getName() << endl;
     debug() << "    Id:         " << currentAlbum.getId() << endl;
     debug() << "    Artist_id:  " << currentAlbum.getArtistId() << endl;
     debug() << "    Genre:      " << currentAlbum.getGenre() << endl;
@@ -219,6 +222,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 void JamendoXmlParser::parseTrack(QDomElement e)
 {
 
+    //debug() << "Found track: " << endl;
     m_nNumberOfTracks++;
     JamendoTrack currentTrack;
 
@@ -246,8 +250,8 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     }
     m_dbHandler->insertTrack( &currentTrack );
 
-  /*  debug() << "Found track: " << endl;
-    debug() << "    Name:       " << currentTrack.getName() << endl;
+    
+    /*debug() << "    Name:       " << currentTrack.getName() << endl;
     debug() << "    Id:         " << currentTrack.getId() << endl;
     debug() << "    Track No:   " << currentTrack.getTrackNumber() << endl;
     debug() << "    Album_id:  " << currentTrack.getAlbumId() << endl;

@@ -69,7 +69,7 @@ JamendoDatabaseHandler::createDatabase( )
                           "album_id INTEGER,"
                           "preview " + db->exactTextColumnType() + ");";
 
-    debug() << "Creating mangnatune_tracks: " << queryString << endl;
+    debug() << "Creating jamendo_tracks: " << queryString << endl;
 
 
     QStringList result = db->query( queryString );
@@ -82,7 +82,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "genre " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ");";
 
-    debug() << "Creating Mangnatune_albums: " << queryString << endl;
+    debug() << "Creating jamendo_albums: " << queryString << endl;
 
     result = db->query( queryString );
 
@@ -94,7 +94,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "artist_page " + db->exactTextColumnType() + ',' +
                   "description " + db->textColumnType() + ");";
 
-    debug() << "Creating mangnatune_artist: " << queryString << endl;
+    debug() << "Creating jamendo_artists: " << queryString << endl;
 
     result = db->query( queryString );
 

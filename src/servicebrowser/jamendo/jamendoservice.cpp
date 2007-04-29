@@ -19,9 +19,9 @@
 
 #include "jamendoservice.h"
 
-#include "databasedrivencontentmodel.h"
-#include "jamendodatabasehandler.h"
-//#include "jamendoxmlparser.h"
+
+
+#include "jamendoxmlparser.h"
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
@@ -48,10 +48,10 @@ void JamendoService::polish()
 /*    JamendoXmlParser * parser = new JamendoXmlParser("hello");
     parser->doJob();*/
 
-    DatabaseDrivenContentModel * model = new DatabaseDrivenContentModel();
-    JamendoDatabaseHandler * dbHandler = new JamendoDatabaseHandler();
-    model->setDbHandler( dbHandler );
-    setModel( model );
+    m_model = new DatabaseDrivenContentModel();
+    m_dbHandler = new JamendoDatabaseHandler();
+    m_model->setDbHandler( m_dbHandler );
+    setModel( m_model );
 
 }
 
@@ -77,37 +77,50 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 {
     
 
-      if ( downloadJob != m_listDownloadJob )
+    if ( downloadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
     debug() << "MagnatuneBrowser: xml file download complete" << endl;
-    m_updateListButton->setEnabled( true );
-   /* if ( !downloadJob->error() == 0 )
+   
+
+    //testing
+
+   
+
+    if ( !downloadJob->error() == 0 )
     {
         //TODO: error handling here
         return ;
     }
 
+    system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!! 
 
-    debug() << "MagnatuneBrowser: create xml parser" << endl;
-    MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
+    debug() << "JamendoService: create xml parser" << endl;
+    JamendoXmlParser * parser = new JamendoXmlParser( "/tmp/dbdump.en.xml" );
     parser->setDbHandler( m_dbHandler );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadManager::instance() ->queueJob( parser );
-*/
+    ThreadManager::instance()->queueJob( parser );
 
 }
 
 void JamendoService::listDownloadCancelled()
 {
 
-    Amarok::StatusBar::instance() ->endProgressOperation( m_listDownloadJob );
+    Amarok::StatusBar::instance()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;
     debug() << "Aborted xml download" << endl;
 
     m_updateListButton->setEnabled( true );
+}
+
+void JamendoService::doneParsing()
+{
+
+    debug() << "JamendoService: done parsing" << endl;
+    m_updateListButton->setEnabled( true );
+    m_model->setGenre("All");
 }
 
 #include "jamendoservice.moc"
