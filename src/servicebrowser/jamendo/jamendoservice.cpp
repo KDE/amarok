@@ -30,14 +30,6 @@ JamendoService::JamendoService(const QString & name)
     setShortDescription("Another very friendly service!");
     setIcon( KIcon( Amarok::icon( "download" ) ) );
 
-    m_updateListButton = new QPushButton;
-    m_updateListButton->setParent( m_bottomPanel );
-    m_updateListButton->setText( i18n( "Update" ) );
-    m_updateListButton->setObjectName( "updateButton" );
-    m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
-
-    connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
-
 }
 
 
@@ -48,13 +40,22 @@ JamendoService::~JamendoService()
 void JamendoService::polish()
 {
 
-/*    JamendoXmlParser * parser = new JamendoXmlParser("hello");
-    parser->doJob();*/
+    m_updateListButton = new QPushButton;
+    m_updateListButton->setParent( m_bottomPanel );
+    m_updateListButton->setText( i18n( "Update" ) );
+    m_updateListButton->setObjectName( "updateButton" );
+    m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
+
+    connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
+
 
     m_model = new DatabaseDrivenContentModel();
     m_dbHandler = new JamendoDatabaseHandler();
     m_model->setDbHandler( m_dbHandler );
     setModel( m_model );
+
+
+ 
 
 }
 
