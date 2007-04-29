@@ -5,16 +5,20 @@ Name=DAAP Collection
 Name[bg]=DAAP колекция
 Name[el]=Συλλογή DAAP
 Name[ja]=DAAP コレクション
+Name[nl]=DAAP-collectie
 Name[pt]=Colecção de DAAP
 Name[pt_BR]=Coleção DAAP
 Name[sk]=DAAP kolekcia
+Name[sv]=DAAP-samling
 Comment=DAAP collection plugin for Amarok
 Comment[bg]=Приставка за DAAP колекция за Amarok
 Comment[el]=Πρόσθετο συλλογής DAAP για το AmaroK
 Comment[ja]=Amarok のための DAAP コレクションプラグイン
+Comment[nl]=DAAP-collectieplugin voor Amarok
 Comment[pt]=Um 'plugin' de colecção para DAAP no Amarok
 Comment[pt_BR]=Plugin de coleção DAAP para o Amarok
 Comment[sk]=Modul DAAP kolekcie pre Amarok
+Comment[sv]=DAAP-samlingsinsticksprogram för Amarok
 
 ServiceTypes=Amarok/Plugin
 
