@@ -19,8 +19,7 @@
 
 #include "databasehandlerbase.h"
 
-//#include "collectionmanager.h"
-#include "collectiondb.h"
+#include "collectionmanager.h"
 
 /*DatabaseHandlerBase* 
 DatabaseHandlerBase::instance()
@@ -38,17 +37,17 @@ void
 DatabaseHandlerBase::begin( )
 {
 
-    //CollectionManager *mgr = CollectionManager::instance();
+    CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "BEGIN;";
-    CollectionDB::instance()->query(  queryString );
+    mgr->sqlQuery(  queryString );
 }
 
 void 
 DatabaseHandlerBase::commit( )
 {
-    //CollectionManager *mgr = CollectionManager::instance();
+    CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "COMMIT;";
-    CollectionDB::instance()->query( queryString );
+    mgr->sqlQuery( queryString );
 }
 
 
