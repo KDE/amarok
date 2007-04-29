@@ -119,8 +119,10 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     if( newCollection->isSqlDatabase() )
     {
         if( d->sqlDatabase )
+        {
             if( d->sqlDatabase->sqlDatabasePriority() < newCollection->sqlDatabasePriority() )
                 d->sqlDatabase = newCollection;
+        }
         else
             d->sqlDatabase = newCollection;
     }
@@ -143,6 +145,17 @@ int
 CollectionManager::sqlInsert( const QString &statement, const QString &table )
 {
     return d->sqlDatabase->insert( statement, table );
+}
+
+Meta::TrackPtr
+CollectionManager::trackForUrl( const KUrl &url )
+{
+    //TODO method stub
+    //check all collections
+    //might be a podcast, in that case we'll have additional meta information
+    //might be a lastfm track, another stream
+    //or a file which is not in any collection
+    return Meta::TrackPtr( 0 );
 }
 
 #include "collectionmanager.moc"

@@ -19,6 +19,7 @@
 #define AMAROK_COLLECTIONMANAGER_H
 
 #include "collection.h"
+#include "meta.h"
 #include "querymaker.h"
 
 #include <QList>
@@ -37,6 +38,8 @@ class CollectionManager : public QObject
         void startFullScan();
 
         QList<Collection*> collections();
+
+        Meta::TrackPtr trackForUrl( const KUrl &url );
 
         QStringList sqlQuery( const QString &query );
         int sqlInsert( const QString &statement, const QString &table );
