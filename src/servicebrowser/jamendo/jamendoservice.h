@@ -20,7 +20,15 @@
 #ifndef JAMENDOSERVICE_H
 #define JAMENDOSERVICE_H
 
+
+
 #include "../servicebase.h"
+
+#include "amarok.h"
+#include "statusbar.h"
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+
 
 
 /**
@@ -30,6 +38,8 @@ A service for displaying, previewing and downloading music from Jamendo.com
 */
 class JamendoService : public ServiceBase
 {
+
+Q_OBJECT
 public:
     JamendoService( const QString &name );
 
@@ -37,6 +47,17 @@ public:
 
     void polish();
 
+private slots:
+
+    void updateButtonClicked();
+    void listDownloadComplete( KJob* downLoadJob);
+    void listDownloadCancelled();
+
+private:
+
+
+    QPushButton *m_updateListButton;
+    KIO::FileCopyJob * m_listDownloadJob;
 };
 
 #endif
