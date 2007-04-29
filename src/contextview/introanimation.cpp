@@ -112,12 +112,12 @@ void IntroAnimation::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
     Q_UNUSED( widget );
 }
 
-void Context::IntroAnimation::setFadeColor(const QColor & color)
+void IntroAnimation::setFadeColor(const QColor & color)
 {
     m_logoFader->setFadeColor( color );
 }
 
-QRectF Context::IntroAnimation::boundingRect() const
+QRectF IntroAnimation::boundingRect() const
 {
     return QRectF( 0,0,m_width, m_height );
 }

@@ -39,10 +39,12 @@ CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScen
 
 void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
-    
+   // debug() << "CloudTextItem::hoverEnterEvent!! " << endl;
     m_timeLine->stop();
+    m_timeLine->setCurrentTime ( 0 );
     
     setDefaultTextColor( QColor( 0, 127, 255 ) );
+    update();
 
 
 }
@@ -50,13 +52,13 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
 
-    //setDefaultTextColor( QColor( 0, 0, 0 ) );
+   //setDefaultTextColor( QColor( 0, 0, 0 ) );
 
 
-
-     // Construct a 1-second timeline with a frame range of 0 - 30
-     m_timeLine->setFrameRange(0, 30);
-     m_timeLine->start();
+    //debug() << "CloudTextItem::hoverLeaveEvent!! " << endl;
+    // Construct a 1-second timeline with a frame range of 0 - 30
+    m_timeLine->setFrameRange(0, 30);
+    m_timeLine->start();
 
 }
 
@@ -188,7 +190,6 @@ void Context::CloudBox::done()
     adjustCurrentLinePos();
 
 }
-
 
 
 #include "cloudbox.moc"

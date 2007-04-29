@@ -15,6 +15,7 @@
 #ifndef AMAROK_CONTEXTBOX_H
 #define AMAROK_CONTEXTBOX_H
 
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsRectItem>
 #include <QTimeLine>
 

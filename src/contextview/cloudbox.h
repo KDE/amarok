@@ -41,9 +41,9 @@ A simple text item to go in a coud box
         CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
     protected:
-        void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
-        void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
-        void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+        virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
+        virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 
     public slots:
         void colorFadeSlot( int step );

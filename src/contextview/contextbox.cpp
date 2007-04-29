@@ -31,7 +31,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     , m_optimumHeight( 0 )
     , m_animationTimer( 0 )
 {
-    setHandlesChildEvents( true ); // events from the sub items are passed onto this object
+    //setHandlesChildEvents( true ); // events from the sub items are passed onto this object. messes up child items badly though...
 
     const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
     setRect( boundingRect );
@@ -114,9 +114,13 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
         if( m_titleBarRect->contains( pressPoint ) )
-            toggleVisibility();
+           event->accept(); 
+           toggleVisibility();
+            
+    } else {
+        event->ignore();
     }
-    QGraphicsItem::mousePressEvent( event );
+    //QGraphicsRectItem::mousePressEvent( event );
 }
 
 void ContextBox::toggleVisibility()
