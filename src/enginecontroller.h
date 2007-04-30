@@ -54,6 +54,7 @@ public:
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;
+    Kurl previousURL() const { return m_previousUrl; }
     KUrl playingURL() const { return bundle().url(); }
 
     void restoreSession();
@@ -93,7 +94,7 @@ public slots:
     void playlistChanged() { m_engine->playlistChanged(); }
 
     void slotStreamMetaData( const MetaBundle &bundle );
-    void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
+    void currentTrackMetaDataChanged( const MetaBundle& bundle );
 
 signals:
     void orderPrevious();
@@ -124,6 +125,7 @@ private:
     EngineBase*     m_voidEngine;
     MetaBundle      m_bundle;
     BundleList      m_lastMetadata;
+    KUrl            m_previousUrl;
     long            m_delayTime;
     int             m_muteVolume;
     bool            m_xFadeThisTrack;

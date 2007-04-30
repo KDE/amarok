@@ -318,6 +318,7 @@ void EngineController::previous() //SLOT
 
 void EngineController::next( bool forceNext ) //SLOT
 {
+    m_previousUrl = m_bundle.url();
     m_isTiming = false;
     emit orderNext(forceNext);
 }
@@ -421,6 +422,10 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     {
         //assign bundle now so that it is available when the engine
         //emits stateChanged( Playing )
+        if( !m_bundle.url().path().isEmpty() ) //wasn't playing before
+            m_previousUrl = m_bundle.url();
+        else
+            m_previousUrl = bundle.url();
         m_bundle = bundle;
 
         if( m_engine->play( offset ) )
@@ -633,6 +638,7 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 
     m_lastMetadata << bundle;
 
+    m_previousUrl = m_bundle.url();
     m_bundle = bundle;
     m_lastPositionOffset = m_positionOffset;
     if( m_lastFm )
@@ -642,6 +648,12 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
+void EngineController::currentTrackMetaDataChanged( const MetaBundle& bundle )
+{
+    m_previousUrl = m_bundle.url();
+    m_bundle = bundle;
+    newMetaDataNotify( bundle, false /* no track change */ );
+} 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
