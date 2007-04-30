@@ -20,6 +20,8 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * If "Stop after current track" was used, the last track would not be
+      counted or rated in the user's statistics. (BR 140980)
     * Generic media device wouldn't allow you to drop a folder on the
       viewport, meaning you couldn't move subfolders to the top level of the
       mount point.
