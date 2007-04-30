@@ -37,6 +37,7 @@ Name[sv]=Lägg till som podradiosändning i Amarok
 Name[th]=เพิ่มเป็นพ็อดแคสต์ไปยัง Amarok
 Name[tr]=Amarok'a Podcast olarak ekle
 Name[uk]=Додати в Amarok як подкест
+Name[uz]=Amarok'ка подкаст сифатида қўшиш
 Name[zh_CN]=将播客添加到 Aamarok
 Icon=amarok
 Exec=dcop amarok playlistbrowser addPodcast %u

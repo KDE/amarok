@@ -38,6 +38,7 @@ Name[sr@Latn]=NFS uređaj
 Name[sv]=NFS-enhet
 Name[tr]=NFS Aygıtı
 Name[uk]=Пристрій NFS
+Name[uz]=NFS ускунаси
 Name[zh_CN]=NFS 设备
 Name[zh_TW]=NFS 裝置
 Comment=Device plugin for Amarok which supports NFS

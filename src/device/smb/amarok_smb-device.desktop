@@ -38,6 +38,7 @@ Name[sr@Latn]=SMB uređaj
 Name[sv]=SMB-enhet
 Name[tr]=SMB Aygıtı
 Name[uk]=Пристрій SMB
+Name[uz]=SMB ускунаси
 Name[zh_CN]=SMB 设备
 Name[zh_TW]=MSB 裝置
 Comment=Device plugin for Amarok which supports SMBFS
