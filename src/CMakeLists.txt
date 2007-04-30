@@ -5,12 +5,14 @@ FIND_PATH( KONQSIDEBAR_INCLUDE_DIR konqsidebarplugin.h
   /usr/local/include
 )
 
-if(KONQSIDEBAR_INCLUDE_DIR)
+MESSAGE(STATUS "reactivate konquesidebar when it will ported")
+#if(KONQSIDEBAR_INCLUDE_DIR)
 #   add_subdirectory( konquisidebar ) #disabling for now
-else(KONQSIDEBAR_INCLUDE_DIR)
-    MESSAGE(STATUS "You're missing the kdebase header files")
-    MESSAGE(STATUS "Konqueror sidebar will not be compiled.")
-endif(KONQSIDEBAR_INCLUDE_DIR)
+#else(KONQSIDEBAR_INCLUDE_DIR)
+#    MESSAGE(STATUS "You're missing the kdebase header files")
+#    MESSAGE(STATUS "Konqueror sidebar will not be compiled.")
+#endif(KONQSIDEBAR_INCLUDE_DIR)
+
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 if(MP4V2_FOUND)
