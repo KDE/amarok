@@ -12,7 +12,7 @@
 #include <kurlrequester.h>
 #include <klocale.h>
 #include <kurl.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -103,7 +103,7 @@ PodcastSettingsDialog::init()
         m_ps = new PodcastSettingsDialogBase(this);
 
 #ifdef Q_WS_X11
-        KWM::setState( winId(), NET::SkipTaskbar );
+        KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
 
         setMainWidget(m_ps);

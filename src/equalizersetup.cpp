@@ -43,7 +43,7 @@
 #include <kmessagebox.h>
 #include <kstandarddirs.h> //locate()
 #include <kvbox.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 
@@ -64,8 +64,8 @@ EqualizerSetup::EqualizerSetup()
 
     // Gives the window a small title bar, and skips a taskbar entry
 #ifdef Q_WS_X11
-    KWM::setType( winId(), NET::Utility );
-    KWM::setState( winId(), NET::SkipTaskbar );
+    KWindowSystem::setType( winId(), NET::Utility );
+    KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
 
     QWidget* vbox = new QWidget( this );

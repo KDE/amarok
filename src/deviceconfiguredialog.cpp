@@ -29,7 +29,7 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kvbox.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         : KDialog( Amarok::mainWindow() )

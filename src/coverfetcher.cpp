@@ -34,7 +34,7 @@
 #include <kmenu.h>
 #include <kpushbutton.h>
 #include <kvbox.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 
 
 void
@@ -552,8 +552,8 @@ CoverFetcher::getUserQuery( QString explanation )
             setButtons( None );
             showButtonSeparator( false );
             // Gives the window a small title bar, and skips a taskbar entry
-            //KWM::setType( winId(), NET::Utility );
-            //KWM::setState( winId(), NET::SkipTaskbar );
+            //KWindowSystem::setType( winId(), NET::Utility );
+            //KWindowSystem::setState( winId(), NET::SkipTaskbar );
             KVBox *box = new KVBox( this );
             setMainWidget(box);
 

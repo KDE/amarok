@@ -19,7 +19,7 @@
 #include <klocale.h>
 #include <kmenu.h>       //Vis::Selector
 #include <k3process.h>         //Vis::Selector
-#include <kwm.h>             //Vis::Selector
+#include <kwindowsystem.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
 #include <kdialog.h>
 #include <QToolTip>         //Vis::Selector ctor
@@ -168,8 +168,8 @@ Vis::Selector::Selector( QWidget *parent )
 
     // Gives the window a small title bar, and skips a taskbar entry
 #ifdef Q_WS_X11
-    KWM::setType( winId(), NET::Utility );
-    KWM::setState( winId(), NET::SkipTaskbar );
+    KWindowSystem::setType( winId(), NET::Utility );
+    KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
 
     setSorting( 0 );

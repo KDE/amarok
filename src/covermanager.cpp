@@ -57,7 +57,7 @@
     //clear filter button
 #include <kurl.h>
 #include <k3urldrag.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 #include <klineedit.h>
 
 static QString artistToSelectInInitFunction;
@@ -285,7 +285,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
 {
     setAttribute( Qt::WA_DeleteOnClose );
 #ifdef Q_WS_X11
-    KWM::setType( winId(), NET::Utility );
+    KWindowSystem::setType( winId(), NET::Utility );
 #endif
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );

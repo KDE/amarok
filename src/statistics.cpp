@@ -25,7 +25,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmenu.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 
 #include <Q3PopupMenu>
 #include <QDateTime>
@@ -56,8 +56,8 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     // Gives the window a small title bar, and skips a taskbar entry
 #ifdef Q_WS_X11
-    KWM::setType( winId(), NET::Utility );
-    KWM::setState( winId(), NET::SkipTaskbar );
+    KWindowSystem::setType( winId(), NET::Utility );
+    KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
 
     kapp->setTopWidget( this );
