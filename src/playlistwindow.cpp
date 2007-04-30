@@ -43,6 +43,7 @@
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
+#include "servicebrowser/mp3tunes/mp3tunesservice.h"
 #include "sidebar.h"
 #include "sidebar.moc"
 #include "statistics.h"
@@ -290,6 +291,7 @@ void PlaylistWindow::init()
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
+        internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );
 
 
 
