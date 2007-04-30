@@ -940,8 +940,8 @@ Playlist::playNextTrack( bool forceNext )
             m_dynamicDirt = false;
         }
 
-        setStopAfterMode(DoNotStop);
         EngineController::instance()->stop();
+        setStopAfterMode( DoNotStop );
 
         if( !AmarokConfig::randomMode() ) {
             item = MyIt::nextVisible( item );
@@ -1415,7 +1415,8 @@ void Playlist::setStopAfterCurrent( bool on )
         prev_stopafter->update();
 }
 
-void Playlist::setStopAfterItem( PlaylistItem *item ) {
+void Playlist::setStopAfterItem( PlaylistItem *item )
+{
     if( !item ) {
         setStopAfterMode( DoNotStop );
         return;
@@ -2056,9 +2057,6 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
                 m_currentTrack->setPixmap( i, null );
 
             PlaylistItem::setPixmapChanged();
-
-            if( stopAfterMode() == StopAfterCurrent )
-                setStopAfterMode( DoNotStop );
 
             //reset glow state
             slotGlowTimer();

@@ -4842,8 +4842,12 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     // Don't update statistics if song has been played for less than 15 seconds
     // if ( finalPosition < 15000 ) return;
 
-    const KURL url = EngineController::instance()->bundle().url();
-    debug() << "track ended: " << url.url() << endl;
+    //below check is necessary because if stop after current track is selected,
+    //the url's path will be empty, so check the previous URL for the path that
+    //had just played
+    const KURL url = EngineController::instance()->bundle().url().path().isEmpty() ?
+                            EngineController::instance()->previousURL() :
+                            EngineController::instance()->bundle().url();
     PodcastEpisodeBundle peb;
     if( getPodcastEpisodeBundle( url.url(), &peb ) )
     {
