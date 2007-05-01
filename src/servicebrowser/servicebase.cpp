@@ -63,7 +63,7 @@ ServiceBase::ServiceBase( const QString &name )
     m_contentView = new QTreeView( m_mainSplitter );
 
     m_contentView->setAlternatingRowColors ( true );
-    m_contentView->setAnimated( true );
+    //m_contentView->setAnimated( true );
     m_contentView->setSortingEnabled( true );
     m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
 
