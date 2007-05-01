@@ -79,7 +79,7 @@ PhononEngine::load( const KUrl &url, bool isStream )
 
     if( Engine::Base::load( url, isStream ) )
     {
-        m_mediaObject->setUrl( url );
+        m_mediaObject->setCurrentSource( url );
         return true;
     }
 
@@ -104,7 +104,7 @@ PhononEngine::play( uint offset )
         return true;
     }
 
-    debug() << "Could not play file " << m_mediaObject->url().prettyUrl() << endl;
+    debug() << "Could not play file " << m_mediaObject->currentSource().url() << endl;
     emit stateChanged( Engine::Empty );
 
     return false;
@@ -230,7 +230,7 @@ PhononEngine::canDecode( const KUrl &url ) const
 {
     const QString mimeType = KMimeType::findByUrl( url, 0, false, true )->name();
 
-    return Phonon::BackendCapabilities::isMimeTypeKnown( mimeType );
+    return Phonon::BackendCapabilities::isMimeTypeAvailable( mimeType );
 }
 
 

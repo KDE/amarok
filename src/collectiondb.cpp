@@ -4876,7 +4876,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     //below check is necessary because if stop after current track is selected,
     //the url's path will be empty, so check the previous URL for the path that
     //had just played
-    const KURL url = EngineController::instance()->bundle().url().path().isEmpty() ?
+    const KUrl url = EngineController::instance()->bundle().url().path().isEmpty() ?
                             EngineController::instance()->previousURL() :
                             EngineController::instance()->bundle().url(); 
 
