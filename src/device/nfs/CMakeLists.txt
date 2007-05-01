@@ -11,8 +11,6 @@ kde4_automoc(${amarok_nfs-device_PART_SRCS})
 kde4_add_plugin(amarok_nfs-device WITH_PREFIX
 ${amarok_nfs-device_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_nfs-device )
-
 target_link_libraries(amarok_nfs-device amarok ${KDE4_KDECORE_LIBS} )
 
 install( TARGETS amarok_nfs-device DESTINATION ${PLUGIN_INSTALL_DIR} )

@@ -32,8 +32,6 @@ kde4_automoc(${amarok_gst10engine_plugin_PART_SRCS})
 kde4_add_plugin(amarok_gst10engine_plugin WITH_PREFIX
 ${amarok_gst10engine_plugin_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_gst10engine_plugin )
-
 target_link_libraries(amarok_gst10engine_plugin  ${KDE4_KDECORE_LIBS} amarok
 ${GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES} ${GSTREAMER_INTERFACE_LIBRARY} )
 

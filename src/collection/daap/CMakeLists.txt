@@ -26,8 +26,6 @@ kde4_automoc(${amarok_collection-daapcollection_PART_SRCS})
 
 kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection-daapcollection_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_collection-daapcollection )
-
 target_link_libraries(amarok_collection-daapcollection amarok ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )

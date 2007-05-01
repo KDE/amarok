@@ -11,8 +11,6 @@ kde4_automoc(${amarok_massstorage-device_PART_SRCS})
 kde4_add_plugin(amarok_massstorage-device WITH_PREFIX
 ${amarok_massstorage-device_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_massstorage-device )
-
 target_link_libraries(amarok_massstorage-device amarok ${KDE4_KDECORE_LIBS} )
 
 install(TARGETS amarok_massstorage-device DESTINATION ${PLUGIN_INSTALL_DIR} )
