@@ -3746,14 +3746,20 @@ ContextBrowser::showLabelsDialog()
     KDialogBase *dialog = new KDialogBase( this, 0, false, QString::null, KDialogBase::Ok|KDialogBase::Cancel );
     dialog->makeVBoxMainWidget();
 
+    QLabel *labelText = new QLabel( i18n( 
+		"&Add a new label in the field below\nor choose labels from the list"),
+	    			dialog->mainWidget() );
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
     m_addLabelEdit->installEventFilter( this );
     m_addLabelEdit->setFrame( QFrame::Sunken );
     QToolTip::add( m_addLabelEdit, i18n( "Enter a new label and press Return to add it" ) );
+    dialog->setFocusProxy( m_addLabelEdit );
+    labelText->setBuddy( m_addLabelEdit );
 
     m_labelListView = new QListView( dialog->mainWidget() );
     m_labelListView->addColumn( i18n( "Label" ) );
     m_labelListView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_labelListView->setColumnWidthMode( 0, QListView::Maximum );
 
     foreach( allLabels )
     {
