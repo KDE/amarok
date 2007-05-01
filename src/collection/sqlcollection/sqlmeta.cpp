@@ -229,6 +229,25 @@ SqlTrack::setComment( const QString &newComment )
     notifyObservers();
 }
 
+void
+SqlTrack::beginMetaDataUpdate()
+{
+    //TODO method stub
+}
+
+void
+SqlTrack::endMetaDataUpdate()
+{
+    //TODO method stub
+}
+
+void
+SqlTrack::abortMetaDataUpdate()
+{
+    //TODO method stub
+}
+
+
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()

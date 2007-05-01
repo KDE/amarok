@@ -83,6 +83,10 @@ class SqlTrack : public Track
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual int playCount() const { return m_playCount; }
 
+        virtual void beginMetaDataUpdate();
+        virtual void endMetaDataUpdate();
+        virtual void abortMetaDataUpdate();
+
     protected:
         void notifyObservers();
 

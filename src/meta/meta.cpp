@@ -27,6 +27,12 @@ Meta::Track::addMatchTo( QueryMaker *qm )
 }
 
 void
+Meta::Track::finishedPlaying( double playedFraction )
+{
+    Q_UNUSED( playedFraction )
+}
+
+void
 Meta::Artist::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( ArtistPtr( this ) );
@@ -55,4 +61,3 @@ Meta::Year::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( YearPtr( this ) );
 }
-

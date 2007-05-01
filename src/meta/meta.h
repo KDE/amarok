@@ -146,6 +146,18 @@ namespace Meta
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
 
+            /** The track object should not store changed meta data immediately but cache the
+                changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
+            virtual void beginMetaDataUpdate() = 0;
+            /** All meta data has been updated and the object should commit the changed */
+            virtual void endMetaDataUpdate() = 0;
+            /** Abort the meta data update without committing the changes */
+            virtual void abortMetaDataUpdate() = 0;
+
+            /** tell the track object that amarok finished playing it.
+                The argument is the percentage of the track which was played, in the range 0 to 1*/
+            virtual void finishedPlaying( double playedFraction );
+
             virtual void addMatchTo( QueryMaker* qm );
 
             virtual void subscribe( TrackObserver *observer ) = 0;
