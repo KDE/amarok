@@ -66,6 +66,8 @@ GenericName[zh_CN]=音频播放器
 GenericName[zh_TW]=音樂播放程式
 Exec=amarok %U
 Comment=Amarok - Rediscover Your Music!
+Comment[de]=Amarok - Musik neu erleben!
+Comment[sv]=Amarok - Återupptäck din musik!
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior
