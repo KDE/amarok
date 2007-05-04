@@ -90,6 +90,7 @@ set(libservicebrowser_SRCS
         servicebrowser/servicemodelbase.cpp
         servicebrowser/simpleservicetypes.cpp
         servicebrowser/servicemetabase.cpp
+	servicebrowser/servicecollection.cpp
         servicebrowser/databasehandlerbase.cpp
 	servicebrowser/databasedrivencontentitem.cpp
 	servicebrowser/databasedrivencontentmodel.cpp)
@@ -184,6 +185,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    collection/collectionmanager.cpp
    collection/metaquerybuilder.cpp
    collection/blockingquery.cpp
+   collection/support/memoryquerymaker.cpp
    meta/meta.cpp
    Options1.ui.h
    actionclasses.cpp
