@@ -87,7 +87,7 @@ PluginManager::createFromService( const KService::Ptr service )
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
     //try to load the specified library
-    KLibrary *lib = loader->globalLibrary( QFile::encodeName( service->library() ) );
+    KLibrary *lib = loader->library( QFile::encodeName( service->library() ), QLibrary::ExportExternalSymbolsHint );
 
     if ( !lib ) {
         KMessageBox::error( 0, i18n( "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p>"
