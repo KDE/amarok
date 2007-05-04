@@ -83,7 +83,7 @@ namespace Meta
     {
         public:
 
-            ~Track() {}
+            virtual ~Track() {}
             /** an url which can be played by the engine backends */
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */

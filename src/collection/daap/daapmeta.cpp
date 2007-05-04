@@ -251,13 +251,13 @@ DaapTrack::type() const
 void
 DaapTrack::subscribe( TrackObserver *observer )
 {
-    Q_UNUSED( observer )
+    Q_UNUSED( observer )    //read only
 }
 
 void
 DaapTrack::unsubscribe( TrackObserver *observer )
 {
-    Q_UNUSED( observer )
+    Q_UNUSED( observer )    //read only
 }
 
 void
