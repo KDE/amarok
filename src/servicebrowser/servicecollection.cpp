@@ -34,7 +34,7 @@
 
 using namespace Meta;
 
-AMAROK_EXPORT_PLUGIN( ServiceCollectionFactory );
+AMAROK_EXPORT_PLUGIN( ServiceCollectionFactory )
 
 ServiceCollectionFactory::ServiceCollectionFactory()
     : CollectionFactory()
