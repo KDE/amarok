@@ -30,6 +30,9 @@
 
 #include <kservice.h>
 
+//testing
+#include "servicecollection.h"
+
 struct CollectionManager::Private
 {
     QList<Collection*> collections;
@@ -82,6 +85,10 @@ CollectionManager::init()
             }
         }
     }
+
+    //testing
+
+   slotNewCollection( new ServiceCollection() );
 }
 
 CollectionManager *

@@ -89,82 +89,27 @@ ServiceCollection::ServiceCollection( )
     albumMap.insert( "album 1", AlbumPtr::staticCast( albumPtr ) );
 
 
-
     trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track1" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
+    trackMap.insert( "track1", TrackPtr::staticCast( trackPtr ) );
 
     trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track2" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
+    trackMap.insert( "track2", TrackPtr::staticCast( trackPtr ) );
 
     trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track3" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
+    trackMap.insert( "track3", TrackPtr::staticCast( trackPtr ) );
 
-
-
-/*
-        QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
-        QString format = var.toMap()["asfm"].toList()[0].toString();
-        DaapTrackPtr track( new DaapTrack( m_host, m_port, m_databaseId, itemId, format ) );
-        track->setTitle( var.toMap()["minm"].toList()[0].toString() );
-        track->setLength( var.toMap()["astm"].toList()[0].toInt()/1000 );
-        track->setTrackNumber( var.toMap()["astn"].toList()[0].toInt() );
-        QString album = var.toMap()["asal"].toList()[0].toString();
-        DaapAlbumPtr albumPtr;
-        if ( albumMap.contains( album ) )
-            albumPtr = DaapAlbumPtr::staticCast( albumMap.value( album ) );
-        else
-        {
-            albumPtr = DaapAlbumPtr( new DaapAlbum( album ) );
-            albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
-        }
-        albumPtr->addTrack( track );
-        track->setAlbum( albumPtr );
-
-        QString artist = var.toMap()["asar"].toList()[0].toString();
-        DaapArtistPtr artistPtr;
-        if ( artistMap.contains( artist ) )
-            artistPtr = DaapArtistPtr::staticCast( artistMap.value( artist ) );
-        else
-        {
-            artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
-            artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-        }
-        artistPtr->addTrack( track );
-        track->setArtist( artistPtr );
-
-        QString year = var.toMap()["asyr"].toList()[0].toString();
-        DaapYearPtr yearPtr;
-        if ( yearMap.contains( year ) )
-            yearPtr = DaapYearPtr::staticCast( yearMap.value( year ) );
-        else
-        {
-            yearPtr = DaapYearPtr( new DaapYear( year ) );
-            yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
-        }
-        yearPtr->addTrack( track );
-        track->setYear( yearPtr );
-
-        QString genre = var.toMap()["asgn"].toList()[0].toString();
-        DaapGenrePtr genrePtr;
-        if ( genreMap.contains( genre ) )
-            genrePtr = DaapGenrePtr::staticCast( genreMap.value( genre ) );
-        else
-        {
-            genrePtr = DaapGenrePtr( new DaapGenre( genre ) );
-            genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
-        }
-        genrePtr->addTrack( track );
-        track->setGenre( genrePtr );
-    }*/
 
     acquireWriteLock();
     setTrackMap( trackMap );
@@ -197,13 +142,13 @@ ServiceCollection::queryBuilder()
 QString
 ServiceCollection::collectionId() const
 {
-    return "jamendo collection";
+    return "service collection";
 }
 
 QString
 ServiceCollection::prettyName() const
 {
-    return "jamendo collection";
+    return "service collection";
 }
 
 
