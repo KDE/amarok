@@ -204,9 +204,9 @@ puts( "Adjusting new ID3 size: #{id3length + 10}" )
 
 puts()
 print( "Writing file..  " )
-destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
-
-if destfile == nil
+begin
+  destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
+rescue
   puts( "Error: Destination file is not writable." )
   exit( 1 )
 end
