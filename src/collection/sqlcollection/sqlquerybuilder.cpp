@@ -106,7 +106,8 @@ SqlQueryBuilder::reset()
     d->queryFilter.clear();
     d->queryOrderBy.clear();
     d->linkedTables = 0;
-    d->worker = 0;   //ThreadWeaver deletes the Job
+    if( d->worker && d->worker->isFinished() )
+        delete d->worker;   //TODO error handling
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
