@@ -212,8 +212,7 @@ CollectionTreeItemModel::populateChildren(const DataList &dataList, CollectionTr
 
 void
 CollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const {
-    DEBUG_BLOCK
-    if ( qm ) {
+    if ( qm && parent ) {
         if ( level > m_levelType.count() )
             return;
         if ( level == m_levelType.count() ) {
@@ -248,7 +247,6 @@ CollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTree
         qm->returnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-        debug() << "Running querymaker" << endl;
         d->m_childQueries.insert( qm, parent );
         qm->run();
     }

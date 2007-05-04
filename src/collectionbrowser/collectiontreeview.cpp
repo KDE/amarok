@@ -53,7 +53,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
-    setAnimated( true );
+    //setAnimated( true );
     setAlternatingRowColors( true );
 }
 
