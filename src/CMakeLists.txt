@@ -53,7 +53,7 @@ include_directories(
 	statusbar
 	mediadevice
         servicebrowser
-        servicebrowser/magnatunestore
+        #servicebrowser/magnatunestore
 	${CMAKE_CURRENT_SOURCE_DIR}
 	meta
 	collection
@@ -89,6 +89,7 @@ set(libservicebrowser_SRCS
 	servicebrowser/servicemodelitembase.cpp
         servicebrowser/servicemodelbase.cpp
         servicebrowser/simpleservicetypes.cpp
+        servicebrowser/servicemetabase.cpp
         servicebrowser/databasehandlerbase.cpp
 	servicebrowser/databasedrivencontentitem.cpp
 	servicebrowser/databasedrivencontentmodel.cpp)
@@ -176,8 +177,8 @@ set(libstatusbar_SRCS
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
-        ${libmagnatunestore_SRCS} ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS}
-        ${libcontextview_SRCS} ${libjamendoservice_SRCS} ${libmp3tunesservice_SRCS}
+        ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS} ${libcontextview_SRCS}
+        ${libjamendoservice_SRCS} #${libmagnatunestore_SRCS} ${libmp3tunesservice_SRCS}
    collection/querymaker.cpp
    collection/collection.cpp
    collection/collectionmanager.cpp

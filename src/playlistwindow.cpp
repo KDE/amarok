@@ -39,11 +39,11 @@
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "selectLabel.h"
-#include "servicebrowser/magnatunestore/magnatunebrowser.h"
+//#include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
-#include "servicebrowser/mp3tunes/mp3tunesservice.h"
+//#include "servicebrowser/mp3tunes/mp3tunesservice.h"
 #include "sidebar.h"
 #include "sidebar.moc"
 #include "statistics.h"
@@ -283,7 +283,7 @@ void PlaylistWindow::init()
         ServiceBrowser * storeServiceBrowser = new ServiceBrowser(this, "Stores" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser );
         m_browserNames.append( "Stores" );
-        storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
+        //storeServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
 
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
@@ -291,7 +291,7 @@ void PlaylistWindow::init()
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
-        internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );
+        //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );
 
 
 

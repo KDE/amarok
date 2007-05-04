@@ -21,7 +21,7 @@
 #ifndef AMAROKMAGNATUENTREEITEM_H
 #define AMAROKMAGNATUENTREEITEM_H
 
-#include "../servicemodelitembase.h"
+#include "servicemodelitembase.h"
 #include "simpleservicetypes.h"
 
 #include "databasehandlerbase.h"

@@ -21,12 +21,12 @@
 #ifndef AMAROKJAMENDOMODEL_H
 #define AMAROKJAMENDOMODEL_H
 
-#include "../infoparserbase.h"
-#include "../simpleservicetypes.h"
+#include "infoparserbase.h"
+#include "simpleservicetypes.h"
 
 #include "databasehandlerbase.h"
 
-#include <../servicemodelbase.h>
+#include <servicemodelbase.h>
 #include <QMap>
 #include <QModelIndex>
 #include <QVariant>

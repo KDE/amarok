@@ -20,7 +20,7 @@
 #ifndef INFOPARSERBASE_H
 #define INFOPARSERBASE_H
 
-#include "../simpleservicetypes.h"
+#include "simpleservicetypes.h"
 
 #include <QObject>
 

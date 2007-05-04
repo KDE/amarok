@@ -20,8 +20,7 @@
 
 #include "debug.h"
 #include "servicebrowser.h"
-#include "magnatunestore/magnatunebrowser.h"
-#include "../../contextview/contextview.h"
+#include "../contextview/contextview.h"
 
 #include <kiconloader.h>
 
