@@ -22,10 +22,13 @@
 #include "memorycollection.h"
 #include "querymaker.h"
 
+#include <threadweaver/Job.h>
+
 using namespace Meta;
 
 class MemoryQueryMaker : public QueryMaker
 {
+    Q_OBJECT
     public:
         MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
@@ -66,6 +69,9 @@ class MemoryQueryMaker : public QueryMaker
         void runQuery();
         void handleResult();
         void handleResult( const TrackList &tracks );
+
+    protected slots:
+        void done( ThreadWeaver::Job *job );
 
     protected:
         MemoryCollection *m_memCollection;

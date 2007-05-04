@@ -18,7 +18,8 @@
 
 #include "memoryquerymaker.h"
 
-#include <threadweaver/Job.h>
+#include "debug.h"
+
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QSet>
@@ -65,6 +66,7 @@ class ArtistMatcher : public Matcher
 
     virtual TrackList match( MemoryCollection *memColl )
     {
+        DEBUG_BLOCK
         ArtistMap artistMap = memColl->artistMap();
         if ( artistMap.contains( m_artist->name() ) )
         {
@@ -81,6 +83,7 @@ class ArtistMatcher : public Matcher
 
     virtual TrackList match( const TrackList &tracks )
     {
+        DEBUG_BLOCK
         TrackList matchingTracks;
         QString name = m_artist->name();
         foreach( TrackPtr track, tracks )
@@ -106,6 +109,7 @@ class AlbumMatcher : public Matcher
 
     virtual TrackList match( MemoryCollection *memColl )
     {
+        DEBUG_BLOCK
         AlbumMap albumMap = memColl->albumMap();
         if ( albumMap.contains( m_album->name() ) )
         {
@@ -122,6 +126,7 @@ class AlbumMatcher : public Matcher
 
     virtual TrackList match( const TrackList &tracks )
     {
+        DEBUG_BLOCK
         TrackList matchingTracks;
         QString name = m_album->name();
         foreach( TrackPtr track, tracks )
@@ -152,6 +157,7 @@ class QueryJob : public ThreadWeaver::Job
     protected:
         void run()
         {
+            DEBUG_BLOCK
             m_queryMaker->runQuery();
             setFinished( true );
         }
@@ -165,6 +171,7 @@ struct MemoryQueryMaker::Private {
     QueryType type;
     bool returnDataPtrs;
     Matcher* matcher;
+    QueryJob *job;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -174,6 +181,7 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collect
     ,d( new Private )
 {
     d->matcher = 0;
+    d->job = 0;
     reset();
 }
 
@@ -188,6 +196,7 @@ MemoryQueryMaker::reset()
     d->type = Private::NONE;
     d->returnDataPtrs = false;
     delete d->matcher;
+    delete d->job;
     return this;
 }
 
@@ -197,8 +206,17 @@ MemoryQueryMaker::run()
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
+    else if( d->job && !d->job->isFinished() )
+    {
+        //the worker thread seems to be running
+        //TODO: wait or job to complete
+        
+    }
     else
     {
+        d->job = new QueryJob( this );
+        connect( d->job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( d->job );
     }
 }
 
@@ -210,6 +228,7 @@ MemoryQueryMaker::abortQuery()
 void
 MemoryQueryMaker::runQuery()
 {
+    DEBUG_BLOCK
     m_memCollection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
@@ -245,6 +264,7 @@ MemoryQueryMaker::runQuery()
 void
 MemoryQueryMaker::handleResult()
 {
+    DEBUG_BLOCK
     //this gets called when we want to return all values for the given query type
     switch( d->type )
     {
@@ -279,6 +299,7 @@ MemoryQueryMaker::handleResult()
 void
 MemoryQueryMaker::handleResult( const TrackList &tracks )
 {
+    DEBUG_BLOCK
     switch( d->type )
     {
         case Private::TRACK :
@@ -513,3 +534,12 @@ MemoryQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
+void
+MemoryQueryMaker::done( ThreadWeaver::Job *job )
+{
+    ThreadWeaver::Weaver::instance()->dequeue( job );
+    delete d->job;
+    emit queryDone();
+}
+
+#include "memoryquerymaker.moc"
