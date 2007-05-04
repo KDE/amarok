@@ -87,6 +87,7 @@ SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
 {
     d->includedBuilder = true;
     d->collectionRestriction = false;
+    d->worker = 0;
     reset();
 }
 
