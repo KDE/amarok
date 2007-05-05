@@ -93,27 +93,17 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
     else QSlider::mouseMoveEvent( e );
 }
 
-class IReallyHateProtected : public QAbstractSlider {
-    public: int valueFromPosition( int a, int b) {
-        return QStyle::sliderValueFromPosition(a, b, 0, 0 ); //TODO: is the 0 0 really what we want?
-    }
-    public: static int sValueFromPosition( int a, int b) {
-        return IReallyHateProtected().valueFromPosition(a, b);
-    }
-};
-
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-
     QStyleOptionComplex complex;
     QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
 
     QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::isRightToLeft())
-          ? IReallyHateProtected::sValueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
-          : IReallyHateProtected::sValueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
-        : IReallyHateProtected::sValueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );
+          ? QStyle::sliderValueFromPosition( minimum(), maximum(), width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
+          : QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
+        : QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().y() - rect.height()/2, height() - rect.height() ) );
 }
 
 void
@@ -193,8 +183,8 @@ Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
     if( m_mode == Pretty  ||  m_showingMoodbar )
       QSlider::setValue( orientation() == Qt::Horizontal
-          ? IReallyHateProtected::sValueFromPosition( e->pos().x(), width()-2 )
-          : IReallyHateProtected::sValueFromPosition( e->pos().y(), height()-2 ) );
+          ? QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x(), width()-2 )
+          : QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().y(), height()-2 ) );
     else
       Amarok::Slider::slideEvent( e );
 }
@@ -462,7 +452,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( IReallyHateProtected::sValueFromPosition( e->pos().x(), width()-2 ) );
+    QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x(), width()-2 ) );
 }
 
 void

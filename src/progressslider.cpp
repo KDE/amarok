@@ -30,7 +30,6 @@ ProgressSlider *ProgressSlider::s_instance = 0;
 ProgressSlider::ProgressSlider( QWidget *parent ) :
         Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, parent )
 {
-    oldpoint = QPoint(0, 0);
     s_instance = this;
     setMouseTracking( true );
 }
@@ -73,7 +72,6 @@ ProgressSlider::paintEvent( QPaintEvent *e )
 void
 ProgressSlider::mouseMoveEvent( QMouseEvent *e )
 {
-
     foreach( Bookmark p, m_polygons )
     {
         //only create a popup if the mouse enters a bookmark, not if it moves inside of one.
@@ -95,6 +93,8 @@ ProgressSlider::mouseMoveEvent( QMouseEvent *e )
         }
     }
     oldpoint = e->pos();
+
+    Amarok::PrettySlider::mouseMoveEvent( e );
 }
 
 void
@@ -104,6 +104,8 @@ ProgressSlider::mousePressEvent( QMouseEvent *e )
     foreach( Bookmark p, m_polygons )
         if( p.containsPoint( e->pos(), Qt::OddEvenFill ) )
             ec->seek( p.seconds() * 1000 );
+
+    Amarok::PrettySlider::mousePressEvent( e );
 }
 // END Class ProgressSlider
 
