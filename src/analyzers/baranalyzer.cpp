@@ -30,19 +30,13 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
     m_bg = parent->paletteBackgroundColor();
 
     QColor fg( 0xff, 0x50, 0x70 );
-    #define m_bg backgroundColor()
-
-    double dr = double(m_bg.red()   - fg.red())   / (NUM_ROOFS-1); //-1 because we start loop below at 0
-    double dg = double(m_bg.green() - fg.green()) / (NUM_ROOFS-1);
-    double db = double(m_bg.blue()  - fg.blue())  / (NUM_ROOFS-1);
 
     for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
         m_pixRoof[i] = QPixmap( COLUMN_WIDTH, 1 );
-        m_pixRoof[i].fill( QColor( fg.red()+int(dr*i), fg.green()+int(dg*i), fg.blue()+int(db*i) ) );
+        fg.setAlpha( 256 - ( 256 / NUM_ROOFS * i ) );
+        m_pixRoof[i].fill( fg );
     }
-
-    #undef m_bg
 }
 
 void BarAnalyzer::resizeEvent( QResizeEvent * e )
