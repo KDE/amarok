@@ -12,6 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "DaapReader"
+
 #include "reader.h"
 
 #include "authentication/contentfetcher.h"
@@ -217,8 +219,11 @@ Reader::loginFinished( int /* id */, bool error )
         return;
     }
     Map loginResults = parse( http->results() , 0 ,true );
-
-    m_sessionId = loginResults["mlog"].toList()[0].toMap()["mlid"].toList()[0].toInt();
+    debug() << "list size is " << loginResults["mlog"].toList().size() << endl;
+    QVariant tmp = loginResults["mlog"].toList()[0];
+    Debug::stamp();
+    m_sessionId = tmp.toMap()["mlid"].toList()[0].toInt();
+    Debug::stamp();
     m_loginString = "session-id=" + QString::number( m_sessionId );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
     http->getDaap( "/update?" + m_loginString );
@@ -268,6 +273,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
 void
 Reader::songListFinished( int /*id*/, bool error )
 {
+    DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     if( error )
@@ -277,37 +283,7 @@ Reader::songListFinished( int /*id*/, bool error )
     }
 
     Map songResults = parse( http->results(), 0, true );
-    /*
-    SongList result;
-    Q3ValueList<QVariant> songList;
-    songList = songResults["adbs"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList();
-    debug() << "songList.count() = " << songList.count() << endl;
-    Q3ValueList<QVariant>::iterator it;
-    for( it = songList.begin(); it != songList.end(); ++it )
-    {
-        MetaBundle* bundle = new MetaBundle();
-        bundle->setTitle( (*it).toMap()["minm"].toList()[0].toString() );
-//input url: daap://host:port/databaseId/music.ext
-        bundle->setUrl( Amarok::QStringx("daap://%1:%2/%3/%4.%5").args(
-            QStringList() << m_host
-                        << QString::number( m_port )
-                        << m_databaseId
-                        << QString::number( (*it).toMap()["miid"].toList()[0].toInt() )
-                        << (*it).toMap()["asfm"].toList()[0].asString() ) );
-        bundle->setLength( (*it).toMap()["astm"].toList()[0].toInt()/1000 );
-        bundle->setTrack( (*it).toMap()["astn"].toList()[0].toInt() );
 
-        QString album = (*it).toMap()["asal"].toList()[0].toString();
-        bundle->setAlbum( album );
-
-        QString artist = (*it).toMap()["asar"].toList()[0].toString();
-        bundle->setArtist( artist );
-        result[ artist.toLower() ][ album.toLower() ].append(bundle);
-
-        bundle->setYear( (*it).toMap()["asyr"].toList()[0].toInt() );
-
-        bundle->setGenre( (*it).toMap()["asgn"].toList()[0].toString() );
-    }*/
     TrackMap trackMap;
     ArtistMap artistMap;
     AlbumMap albumMap;
@@ -320,13 +296,20 @@ Reader::songListFinished( int /*id*/, bool error )
     debug() << "songList.count() = " << songList.count() << endl;
     foreach( QVariant var, songList )
     {
+        debug() << "begin iteration..." << endl;
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
-        QString format = var.toMap()["asfm"].toList()[0].toString();
+        Debug::stamp();
+        QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
+        Debug::stamp();
         DaapTrackPtr track( new DaapTrack( m_host, m_port, m_databaseId, itemId, format ) );
-        track->setTitle( var.toMap()["minm"].toList()[0].toString() );
-        track->setLength( var.toMap()["astm"].toList()[0].toInt()/1000 );
-        track->setTrackNumber( var.toMap()["astn"].toList()[0].toInt() );
-        QString album = var.toMap()["asal"].toList()[0].toString();
+        track->setTitle( var.toMap()["minm"].toList().size() ? var.toMap()["minm"].toList()[0].toString() : QString() );
+        Debug::stamp();
+        track->setLength( var.toMap()["astm"].toList().size() ? var.toMap()["astm"].toList()[0].toInt()/1000 : 0 );
+        Debug::stamp();
+        track->setTrackNumber( var.toMap()["astn"].toList().size() ? var.toMap()["astn"].toList()[0].toInt() : 0);
+        Debug::stamp();
+        QString album = var.toMap()["asal"].toList().size() ? var.toMap()["asal"].toList()[0].toString() : QString();
+        Debug::stamp();
         DaapAlbumPtr albumPtr;
         if ( albumMap.contains( album ) )
             albumPtr = DaapAlbumPtr::staticCast( albumMap.value( album ) );
@@ -338,7 +321,8 @@ Reader::songListFinished( int /*id*/, bool error )
         albumPtr->addTrack( track );
         track->setAlbum( albumPtr );
 
-        QString artist = var.toMap()["asar"].toList()[0].toString();
+        QString artist = var.toMap()["asar"].toList().size() ? var.toMap()["asar"].toList()[0].toString() : QString();
+        Debug::stamp();
         DaapArtistPtr artistPtr;
         if ( artistMap.contains( artist ) )
             artistPtr = DaapArtistPtr::staticCast( artistMap.value( artist ) );
@@ -350,7 +334,8 @@ Reader::songListFinished( int /*id*/, bool error )
         artistPtr->addTrack( track );
         track->setArtist( artistPtr );
 
-        QString year = var.toMap()["asyr"].toList()[0].toString();
+        QString year = var.toMap()["asyr"].toList().size() ? var.toMap()["asyr"].toList()[0].toString() : QString();
+        Debug::stamp();
         DaapYearPtr yearPtr;
         if ( yearMap.contains( year ) )
             yearPtr = DaapYearPtr::staticCast( yearMap.value( year ) );
@@ -362,7 +347,8 @@ Reader::songListFinished( int /*id*/, bool error )
         yearPtr->addTrack( track );
         track->setYear( yearPtr );
 
-        QString genre = var.toMap()["asgn"].toList()[0].toString();
+        QString genre = var.toMap()["asgn"].toList().size() ? var.toMap()["asgn"].toList()[0].toString() : QString();
+        Debug::stamp();
         DaapGenrePtr genrePtr;
         if ( genreMap.contains( genre ) )
             genrePtr = DaapGenrePtr::staticCast( genreMap.value( genre ) );
@@ -487,9 +473,11 @@ void
 Reader::addElement( Map &parentMap, char* tag, QVariant element )
 {
     if( !parentMap.contains( tag ) )
-        parentMap[tag] = QVariant( Q3ValueList<QVariant>() );
+        parentMap[tag] = QVariant( QList<QVariant>() );
 
-    parentMap[tag].toList().append(element);
+    QList<QVariant> list = parentMap[tag].toList();
+    list.append( element );
+    parentMap.insert( tag, QVariant( list ) );
 }
 
 void
