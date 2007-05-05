@@ -183,11 +183,8 @@ PhononEngine::state() const
 uint
 PhononEngine::position() const
 {
-    if( state() != Engine::Empty && m_mediaObject ) { 
-        uint i = m_mediaObject->currentTime();
-        debug() << "Position: " << i << endl;
-        return i;
-    }
+    if( state() != Engine::Empty && m_mediaObject )
+        return m_mediaObject->currentTime();
 
     return 0;
 }
@@ -195,17 +192,12 @@ PhononEngine::position() const
 uint
 PhononEngine::length() const
 {
-#if 0
     DEBUG_BLOCK
 
-    if( m_mediaObject ) {
-        const uint i = m_mediaObject->totalTime();
-        debug() << "Length: " << i << endl;
-        return i;
-    }
-#endif
+    const uint t = ( m_mediaObject->totalTime() == -1 ) ? 0 : m_mediaObject->totalTime();
+    debug() << "Length: " << t << endl;
 
-    return 0;
+    return t;
 }
 
 void
