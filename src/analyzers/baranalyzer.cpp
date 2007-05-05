@@ -79,7 +79,20 @@ void BarAnalyzer::init()
         m_lvlMapper[x] = static_cast<uint>( ( F * log10( static_cast<float>(x+1) ) ) );
     }
 
-    m_pixBarGradient.resize( height()*COLUMN_WIDTH, height() );
+    m_pixBarGradient = QPixmap( height()*COLUMN_WIDTH, height() );
+
+    QPainter p( &m_pixBarGradient );
+    for ( int x=0, r=0x40, g=0x30, b=0xff, r2=255-r; x < height(); ++x )
+    {
+        for ( int y = x; y > 0; --y )
+        {
+            const double fraction = (double)y / height();
+
+//          p.setPen( QColor( r + (int)(r2 * fraction), g, b - (int)(255 * fraction) ) );
+            p.setPen( QColor( r + (int)(r2 * fraction), g, b ) );
+            p.drawLine( x*COLUMN_WIDTH, height() - y, (x+1)*COLUMN_WIDTH, height() - y );
+        }
+    }
 
     setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
 }
