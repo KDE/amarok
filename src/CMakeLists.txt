@@ -111,7 +111,7 @@ set(libmp3tunesservice_SRCS
         servicebrowser/mp3tunes/mp3tunesservice.cpp
 	servicebrowser/mp3tunes/mp3tunesdatafetcher.cpp)
 
-qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
+#qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 set(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
@@ -136,6 +136,7 @@ kde4_add_ui3_files(libmagnatunestore_SRCS
 set(libcollectionbrowser_SRCS
     collectionbrowser/collectiontreeview.cpp
     collectionbrowser/collectiontreeitemmodel.cpp
+    collectionbrowser/singlecollectiontreeitemmodel.cpp
     collectionbrowser/collectiontreeitem.cpp
 )
 
@@ -177,7 +178,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
-        ${libsqlite_SRCS} ${libservicebrowser_SRCS} ${libscriptableservice_SRCS}
+        ${libsqlite_SRCS} ${libservicebrowser_SRCS} #${libscriptableservice_SRCS}
         ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS} ${libcontextview_SRCS}
         ${libjamendoservice_SRCS} #${libmagnatunestore_SRCS} ${libmp3tunesservice_SRCS}
    collection/querymaker.cpp

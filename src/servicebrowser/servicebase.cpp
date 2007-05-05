@@ -60,7 +60,7 @@ ServiceBase::ServiceBase( const QString &name )
     nameLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
    
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
-    m_contentView = new QTreeView( m_mainSplitter );
+    m_contentView = new CollectionTreeView( m_mainSplitter );
 
     m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
@@ -172,7 +172,7 @@ void ServiceBase::homeButtonClicked( )
 void ServiceBase::itemActivated ( const QModelIndex & index ) {
 
 
-    debug() << "ServiceBase::itemActivated item double clicked: " << endl;
+  /*  debug() << "ServiceBase::itemActivated item double clicked: " << endl;
     if (!index.isValid())
         return;
     else {
@@ -184,10 +184,10 @@ void ServiceBase::itemActivated ( const QModelIndex & index ) {
     Playlist::instance()->proposePlaylistName( "test" );
     Playlist::instance()->insertMedia( m_urlsToInsert , Playlist::Append);
     m_urlsToInsert.clear();
-
+*/
  }
 
-void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
+/*void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
     
 
     debug() << "ServiceBase::addToPlaylist adding item: " << item->data(0) << endl;
@@ -207,11 +207,12 @@ void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
             addToPlaylist( childItems.at(i) );
         }
     }
-}
+    return;
+}*/
 
-void ServiceBase::setModel( ServiceModelBase * model ) {
+void ServiceBase::setModel( SingleCollectionTreeItemModel * model ) {
 
-    m_filterModel->setSourceModel( model );
+    //m_filterModel->setSourceModel( model );
     //m_contentView->setModel( m_filterModel );
     m_contentView->setModel( model );
     m_model  = model;
@@ -219,26 +220,26 @@ void ServiceBase::setModel( ServiceModelBase * model ) {
 }
 
 
-ServiceModelBase * ServiceBase::getModel() {
+SingleCollectionTreeItemModel * ServiceBase::getModel() {
     return m_model;
 }
 
 void ServiceBase::treeItemSelected( const QModelIndex & index ) {
 
-    m_model->requestHtmlInfo( index  );
+   /* m_model->requestHtmlInfo( index  );
     emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( index.internalPointer() ) ) );
-
+*/
 }
 
 void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
 
-    debug() << "ServiceBase::infoChanged: " << infoHtml << endl;
+  /*  debug() << "ServiceBase::infoChanged: " << infoHtml << endl;
 
     m_infoBox->begin( );
     m_infoBox->write( infoHtml ); 
     m_infoBox->end();
-
+*/
 }
 
 

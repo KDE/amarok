@@ -38,15 +38,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
         cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
 
     m_treeModel = new CollectionTreeItemModel( cats );
+    setModel( m_treeModel );
 
-    m_filterModel = new QSortFilterProxyModel( this );
-    m_filterModel->setSortRole( CustomRoles::SortRole );
-    m_filterModel->setFilterRole( CustomRoles::FilterRole );
-    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setSourceModel( m_treeModel );
-
-    setModel( m_filterModel );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -57,11 +50,27 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setAlternatingRowColors( true );
 }
 
+
+void CollectionTreeView::setModel(QAbstractItemModel * model)
+{
+    m_filterModel = new QSortFilterProxyModel( this );
+    m_filterModel->setSortRole( CustomRoles::SortRole );
+    m_filterModel->setFilterRole( CustomRoles::FilterRole );
+    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setSourceModel( model );
+
+    QTreeView::setModel( m_filterModel );
+
+}
+
+
+
 CollectionTreeView::~CollectionTreeView() {
     KConfigGroup config = Amarok::config( "Collection Browser" );
     config.writeEntry( "TreeCategory", m_treeModel->levels() );
-    //delete m_treeModel;
-    //delete m_filterModel;
+    delete m_treeModel;
+    delete m_filterModel;
 }
 
 void
@@ -83,4 +92,5 @@ CollectionTreeView::setLevel( int level, int type ) {
     }
     setLevels( levels );
 }
+
 

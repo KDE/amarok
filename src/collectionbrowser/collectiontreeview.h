@@ -36,6 +36,8 @@ class CollectionTreeView: public QTreeView {
     void setLevels( const QList<int> &levels );
     void setLevel( int level, int type );
 
+    void setModel ( QAbstractItemModel * model );
+
     private:
         QSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;

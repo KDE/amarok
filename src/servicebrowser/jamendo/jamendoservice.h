@@ -25,6 +25,7 @@
 #include "../servicebase.h"
 #include "databasedrivencontentmodel.h"
 #include "jamendodatabasehandler.h"
+#include "../servicecollection.h"
 
 #include "amarok.h"
 #include "statusbar.h"
@@ -59,7 +60,7 @@ private slots:
 
 private:
 
-    DatabaseDrivenContentModel * m_model;
+    //DatabaseDrivenContentModel * m_model;
     QPushButton *m_updateListButton;
     KIO::FileCopyJob * m_listDownloadJob;
     JamendoDatabaseHandler * m_dbHandler;

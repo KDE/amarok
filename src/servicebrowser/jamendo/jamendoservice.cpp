@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "jamendoservice.h"
+#include "servicecollection.h"
 
 
 
@@ -48,11 +49,14 @@ void JamendoService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
 
+     
+    //m_model = new DatabaseDrivenContentModel();
+    //m_dbHandler = new JamendoDatabaseHandler();
+    //m_model->setDbHandler( m_dbHandler );
 
-    m_model = new DatabaseDrivenContentModel();
-    m_dbHandler = new JamendoDatabaseHandler();
-    m_model->setDbHandler( m_dbHandler );
-    setModel( m_model );
+    QList<int> levels;
+    levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+    setModel( new SingleCollectionTreeItemModel( new ServiceCollection(), levels ) );
 
 
  
@@ -124,7 +128,7 @@ void JamendoService::doneParsing()
 
     debug() << "JamendoService: done parsing" << endl;
     m_updateListButton->setEnabled( true );
-    m_model->setGenre("All");
+   // getModel->setGenre("All");
 }
 
 #include "jamendoservice.moc"

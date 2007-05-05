@@ -288,7 +288,7 @@ void PlaylistWindow::init()
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
-        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
+       // internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
         //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );

@@ -22,8 +22,12 @@
 
 
 #include "amarok.h"
-#include "servicemodelitembase.h"
-#include "servicemodelbase.h"
+//#include "servicemodelitembase.h"
+//#include "servicemodelbase.h"
+
+#include "../collectionbrowser/singlecollectiontreeitemmodel.h"
+
+#include "../collectionbrowser/collectiontreeview.h"
 
 #include <khtml_part.h>
 //#include <klistwidget.h>
@@ -32,7 +36,7 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
-#include <QTreeView>
+//#include <QTreeView>
 
 
 
@@ -67,8 +71,8 @@ public:
     QString getLongDescription();
     void setIcon( const QIcon &icon );
     QIcon getIcon();
-    void setModel( ServiceModelBase * model );
-    ServiceModelBase * getModel();
+    void setModel( SingleCollectionTreeItemModel * model );
+    SingleCollectionTreeItemModel * getModel();
 
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
@@ -81,7 +85,7 @@ public slots:
 signals:
 
     void home();
-    void selectionChanged ( ServiceModelItemBase * );
+    void selectionChanged ( CollectionTreeItem * );
     
 
 protected slots:
@@ -106,7 +110,7 @@ protected:
     static ServiceBase *s_instance;
 
     QSplitter *m_mainSplitter;
-    QTreeView *m_contentView;
+    CollectionTreeView *m_contentView;
     KHTMLPart   *m_infoBox;
 
     QPushButton *m_homeButton;
@@ -123,12 +127,12 @@ protected:
 
     KUrl::List   m_urlsToInsert;
 
-    void addToPlaylist( ServiceModelItemBase * item );
+    //void addToPlaylist( CollectionTreeItem * item );
 
    
 
 private: // need to move stuff here
-     ServiceModelBase * m_model;
+     SingleCollectionTreeItemModel * m_model;
      QSortFilterProxyModel * m_filterModel;
 
 };
