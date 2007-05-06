@@ -45,7 +45,8 @@ struct SingleCollectionTreeItemModel::Private
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
     :QAbstractItemModel()
-    , d( new Private )
+    , m_rootItem( 0 )
+    , d( new Private ) 
 {
    /* CollectionManager* collMgr = CollectionManager::instance();
     connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ) );
@@ -54,7 +55,8 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * colle
     debug() << "Collection root has " << m_rootItem->childCount() << " childrens" << endl;*/
 
     m_collection = collection;
-    m_rootItem = new CollectionTreeItem( m_collection, 0 );
+    //m_rootItem = new CollectionTreeItem( m_collection, 0 );
+    //m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     setLevels( levelType );
 
 }
@@ -70,8 +72,8 @@ void
 SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
-   // m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
-
+    
+    //m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
 
     //populate root:
@@ -249,7 +251,10 @@ SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, Collecti
             }
         }
         CollectionTreeItem *tmpItem = parent;
-        while ( tmpItem->isDataItem() ) {
+        while ( tmpItem != 0  ) {
+            debug() << "add match" << endl;
+            debug() << "    tmpItem->data() = " <<  tmpItem->data() << endl;
+             
             qm->addMatch( tmpItem->data() );
             tmpItem = tmpItem->parent();
         }
