@@ -77,7 +77,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
 
     //populate root:
-    listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
+    //listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
     updateHeaderText();
     reset(); //resets the whole model, as the data changed
 }
@@ -321,14 +321,14 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
     //we added the collection level so we have to be careful with the item level
-    return !item->isDataItem() || item->level() <= m_levelType.count(); 
+    return !item->isDataItem() || item->level() < m_levelType.count(); 
 
 }
 
 void
 SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
     if ( !item->childrenLoaded() ) {
-        listForLevel( item->level() /* +1 -1 */, item->queryMaker(), item );
+        listForLevel( item->level() +1, item->queryMaker(), item );
     }
 }
 
@@ -336,18 +336,20 @@ bool
 SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
     DEBUG_BLOCK
     if ( !parent.isValid() )
-        return false;
+        return !m_rootItem->childrenLoaded();
+
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
-    return item->level() <= m_levelType.count() && !item->childrenLoaded();
+    return item->level() < m_levelType.count() && !item->childrenLoaded();
 }
 
 void
 SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
     DEBUG_BLOCK
-    if ( !parent.isValid() )
-        return;
-
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
+    CollectionTreeItem *item;
+    if ( parent.isValid() )
+        item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
+    else
+        item = m_rootItem;
     ensureChildrenLoaded( item );
 }
 
