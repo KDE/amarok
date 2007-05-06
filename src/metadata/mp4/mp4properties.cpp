@@ -24,7 +24,7 @@ email                : andrew.leadbetter@gmail.com
 
 #include <tstring.h>
 
-#include <config.h>
+#include "config-amarok.h"
 #ifdef HAVE_SYSTEMS_H
 #include <systems.h>
 #endif

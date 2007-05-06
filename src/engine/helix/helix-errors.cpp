@@ -8,7 +8,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <q3dict.h>
-#include <config.h>
+#include "config-amarok.h"
 #include <iostream>
 #include "debug.h"
 #include <klocale.h>

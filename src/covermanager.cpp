@@ -8,7 +8,7 @@
 #include "debug.h"
 #include "collectionbrowser.h" //manipulateThe()
 #include "querybuilder.h"
-#include "config.h"
+#include "config-amarok.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "pixmapviewer.h"

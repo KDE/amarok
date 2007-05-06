@@ -276,7 +276,7 @@
 
 #define DEBUG_PREFIX "Moodbar"
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"

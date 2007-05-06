@@ -19,7 +19,7 @@
 
 #define DEBUG_PREFIX "RioKarmaMediaDevice"
 
-#include <config.h>
+#include "config-amarok.h"
 #include "riokarmamediadevice.h"
 //Added by qt3to4:
 #include <QByteArray>

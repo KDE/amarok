@@ -5,7 +5,7 @@
 
 #define DEBUG_PREFIX "BlockAnalyzer"
 
-#include "config.h"           //HAVE_LIBVISUAL definition
+#include "config-amarok.h"           //HAVE_LIBVISUAL definition
 
 #include "actionclasses.h"   //mousePressEvent
 #include "amarok.h"

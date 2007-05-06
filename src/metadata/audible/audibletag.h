@@ -26,7 +26,7 @@
 #ifndef TAGLIB_AUDIBLETAG_H
 #define TAGLIB_AUDIBLETAG_H
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include <tag.h>
 #include "taglib_audiblefile.h"

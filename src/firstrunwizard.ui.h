@@ -11,7 +11,7 @@
 *****************************************************************************/
 
 #include "amarok.h"
-#include "config.h"
+#include "config-amarok.h"
 #include "directorylist.h"
 
 #include <kapplication.h>

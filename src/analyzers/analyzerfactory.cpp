@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h> //for HAVE_QGLWIDGET macro
+#include "config-amarok.h" //for HAVE_QGLWIDGET macro
 
 #include "amarokconfig.h"
 #include "analyzerbase.h" //declaration here

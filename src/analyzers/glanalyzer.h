@@ -18,7 +18,7 @@
 #ifndef GLOSCOPE_H
 #define GLOSCOPE_H
 
-#include <config.h>
+#include "config-amarok.h"
 #ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"

@@ -19,7 +19,7 @@
 
 #define DEBUG_PREFIX "PlaylistItem"
 
-#include <config.h>
+#include "config-amarok.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"

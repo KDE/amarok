@@ -14,7 +14,7 @@
 
 #define DEBUG_PREFIX "Playlist"
 
-#include <config.h>
+#include "config-amarok.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"

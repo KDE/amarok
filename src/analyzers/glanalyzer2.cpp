@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
+#include "config-amarok.h"
 
 #ifdef HAVE_QGLWIDGET
 

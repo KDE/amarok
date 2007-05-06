@@ -35,7 +35,7 @@
 #include "helix-engine.h"
 
 #include "helixconfig.h"
-#include <config.h>
+#include "config-amarok.h"
 
 #include <iostream>
 

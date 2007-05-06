@@ -31,7 +31,7 @@
 #include <QString>
 #include <fileref.h>
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "metabundle.h"
 

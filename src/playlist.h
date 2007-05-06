@@ -19,7 +19,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
-#include <config.h>
+#include "config-amarok.h"
 #include "amarok_export.h"
 #include "amarokconfig.h"
 #include "engineobserver.h"  //baseclass

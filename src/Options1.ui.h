@@ -11,7 +11,7 @@
 ** destructor.
 *****************************************************************************/
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "amarokconfig.h"
 #include "moodbar.h"

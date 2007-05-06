@@ -10,7 +10,7 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
-#include "config.h"
+#include "config-amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 

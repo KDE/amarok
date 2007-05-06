@@ -18,7 +18,7 @@
  *   Foundation, Inc., 51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301  *
  *   USA                                                                   *
  ***************************************************************************/
-#include "config.h"
+#include "config-amarok.h"
 #include "debug.h"
 #include "statusbar.h"
 #define DEBUG_PREFIX "KTRM"

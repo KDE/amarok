@@ -29,7 +29,7 @@
 #ifndef _RMFF_H_INCLUDED_
 #define _RMFF_H_INCLUDED_
 
-#include <config.h>
+#include "config-amarok.h"
 
 namespace TagLib
 {

@@ -52,7 +52,7 @@
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 
-#include <config.h>
+#include "config-amarok.h"
 #ifdef HAVE_MP4V2
 #include "metadata/mp4/mp4file.h"
 #include "metadata/mp4/mp4tag.h"

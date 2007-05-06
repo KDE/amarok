@@ -4,7 +4,7 @@
 #ifndef AMAROK_PLUGIN_H
 #define AMAROK_PLUGIN_H
 
-#include <config.h>
+#include "config-amarok.h"
 #include "amarok_export.h"
 
 #define AMAROK_EXPORT_PLUGIN( classname ) \

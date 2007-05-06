@@ -17,7 +17,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "app.h"
 #include "collectiondb.h"
-#include "config.h" // Has USE_MYSQL
+#include "config-amarok.h" // Has USE_MYSQL
 #include "configdialog.h"
 #include "contextbrowser.h"
 #include "dbsetup.h"

@@ -38,7 +38,7 @@
 
 #include "dllpath.h"
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "helix-sp.h"
 #include "hspvoladvise.h"

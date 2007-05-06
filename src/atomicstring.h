@@ -43,7 +43,7 @@
 #ifndef AMAROK_ATOMICSTRING_H
 #define AMAROK_ATOMICSTRING_H
 
-#include <config.h>
+#include "config-amarok.h"
 #if __GNUC__ >= 3
     #include <ext/hash_set>
 #else

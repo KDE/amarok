@@ -18,7 +18,7 @@
 #include "app.h"
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "config.h"
+#include "config-amarok.h"
 #include "debug.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"

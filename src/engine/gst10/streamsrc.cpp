@@ -5,7 +5,7 @@
 
 #include "streamsrc.h"
 
-#include "config.h"
+#include "config-amarok.h"
 #include <kdebug.h>
 
 #define DEBUG_PREFIX "[StreamSrc] "

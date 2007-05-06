@@ -41,7 +41,7 @@ macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)
 
-configure_file (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+configure_file (config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 add_subdirectory( src )
 

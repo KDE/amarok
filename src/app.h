@@ -18,7 +18,7 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "amarok_export.h"
 #include "engineobserver.h" //baseclass

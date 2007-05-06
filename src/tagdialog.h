@@ -6,7 +6,7 @@
 #ifndef AMAROK_TAGDIALOG_H
 #define AMAROK_TAGDIALOG_H
 
-#include "config.h"
+#include "config-amarok.h"
 
 #include "htmlview.h"
 #include "ktrm.h"

@@ -32,7 +32,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "hxcomm.h"
 #include "hxcore.h"

@@ -20,7 +20,7 @@
 #include <cmath>
 #include <stdarg.h>
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include <iostream>
 

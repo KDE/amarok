@@ -24,7 +24,7 @@ class HelixSimplePlayerAudioStreamInfoResponse;
 #include <sys/param.h>
 #include <pthread.h>
 #include <vector>
-#include <config.h>
+#include "config-amarok.h"
 #include <iostream>
 using std::vector;
 

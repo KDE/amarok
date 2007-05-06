@@ -24,7 +24,7 @@
 
 #define DEBUG_PREFIX "MtpMediaDevice"
 
-#include <config.h>
+#include "config-amarok.h"
 #include "mtpmediadevice.h"
 //Added by qt3to4:
 #include <QLabel>

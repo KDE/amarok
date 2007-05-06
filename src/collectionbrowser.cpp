@@ -6,7 +6,7 @@
 // (c) 2006 Joe Rabinoff <bobqwatson@yahoo.com>
 // See COPYING file for licensing information.
 
-#include <config.h>
+#include "config-amarok.h"
 
 #include "actionclasses.h"
 #include "amarok.h"
