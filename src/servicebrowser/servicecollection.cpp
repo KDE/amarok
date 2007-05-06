@@ -34,7 +34,7 @@
 
 using namespace Meta;
 
-AMAROK_EXPORT_PLUGIN( ServiceCollectionFactory )
+//AMAROK_EXPORT_PLUGIN( ServiceCollectionFactory )
 
 ServiceCollectionFactory::ServiceCollectionFactory()
     : CollectionFactory()
@@ -51,22 +51,24 @@ void
 ServiceCollectionFactory::init()
 {
     DEBUG_BLOCK
-    ServiceCollection *coll = new ServiceCollection( );
+    ServiceCollection *coll = new ServiceCollection( 0 );
     emit newCollection( coll );
 }
 
 
 //ServiceCollection
 
-ServiceCollection::ServiceCollection( )
+ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     : Collection()
     , MemoryCollection()
 {
+    m_dbHandler = dbHandler;
+  
+    if (m_dbHandler == 0) return;
 
-    //m_dbHandler = new JamendoDatabaseHandler();
+    //add all data from database hander
 
-
-    //add some dummy data for testing
+    //TODO Pretty please with sugar on top, implement lazy loading! 
 
 
     TrackMap trackMap;
@@ -81,10 +83,22 @@ ServiceCollection::ServiceCollection( )
     ServiceArtistPtr artistPtr;
 
 
+  /*  ArtistList atists = dbHandler->getArtistsByGenre( "All" );
+    foreach( ArtistPtr artistPtr, atists ) {
+        debug() << "Got artist: " << artistPtr->prettyName() << endl;
+        artistMap.insert( artistPtr->prettyName(), artistPtr );
+
+    }*/
+
+
+
     artistPtr = ServiceArtistPtr( new ServiceArtist( "Artist 1" ) );
     artistMap.insert( "Artist 1", ArtistPtr::staticCast( artistPtr ) );
 
-    albumPtr = ServiceAlbumPtr( new ServiceAlbum( "album 1" ) );
+    artistPtr = ServiceArtistPtr( new ServiceArtist( "Artist 2" ) );
+    artistMap.insert( "Artist 2", ArtistPtr::staticCast( artistPtr ) );
+
+  /*  albumPtr = ServiceAlbumPtr( new ServiceAlbum( "album 1" ) );
     albumMap.insert( "album 1", AlbumPtr::staticCast( albumPtr ) );
 
 
@@ -108,7 +122,7 @@ ServiceCollection::ServiceCollection( )
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
     trackMap.insert( "track3", TrackPtr::staticCast( trackPtr ) );
-
+*/
 
     acquireWriteLock();
     setTrackMap( trackMap );
@@ -149,7 +163,6 @@ ServiceCollection::prettyName() const
 {
     return "service collection";
 }
-
 
 
 #include "servicecollection.moc"
