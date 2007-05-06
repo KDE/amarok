@@ -55,6 +55,13 @@ CollectionTreeItem::appendChild(CollectionTreeItem *child) {
     m_childItems.append(child);
 }
 
+void
+CollectionTreeItem::removeChild( int index ) {
+    CollectionTreeItem *child = m_childItems[index];
+    m_childItems.removeAt( index );
+    delete child;
+}
+
 CollectionTreeItem*
 CollectionTreeItem::child( int row ) {
     if ( row >= 0 && row < m_childItems.count() )

@@ -23,7 +23,6 @@
 
 #include "meta.h"
 #include "../querybuilder.h"
-//#include "collection/collection.h"
 
 #include <QAbstractItemModel>
 #include <QMap>

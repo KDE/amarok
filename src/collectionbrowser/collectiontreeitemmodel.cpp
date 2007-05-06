@@ -49,8 +49,8 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     , d( new Private )
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ) );
-    connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
+    connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ), Qt::QueuedConnection );
     setLevels( levelType );
     debug() << "Collection root has " << m_rootItem->childCount() << " childrens" << endl;
 }
@@ -358,10 +358,12 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
     for ( int i = 0; i < count; i++ ) {
         CollectionTreeItem *item = m_rootItem->child( i );
         if ( !item->isDataItem() && item->parentCollection()->collectionId() == collectionId ) {
-            //TODO
+            beginRemoveRows( QModelIndex(), i, i );
+            m_rootItem->removeChild( i );
+            d->m_collections.remove( collectionId );
+            endRemoveRows();
         }
     }
-    d->m_collections.remove( collectionId );
 }
 
 void

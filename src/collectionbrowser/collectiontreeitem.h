@@ -46,6 +46,7 @@ class CollectionTreeItem {
         CollectionTreeItem* parent()  { return m_parent; }
 
         void appendChild(CollectionTreeItem *child);
+        void removeChild( int index );
 
         CollectionTreeItem *child(int row);
 
