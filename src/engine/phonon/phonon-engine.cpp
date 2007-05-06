@@ -66,7 +66,7 @@ PhononEngine::init()
     m_mediaObject->addAudioPath( m_audioPath );
     m_audioPath->addOutput( m_audioOutput );
 
-    //connect( m_mediaObject, SIGNAL( finished() ), SLOT( trackEnded() ) );
+    connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
     //connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
 
     return true;
@@ -77,67 +77,42 @@ PhononEngine::load( const KUrl &url, bool isStream )
 {
     DEBUG_BLOCK
 
-    if( Engine::Base::load( url, isStream ) )
-    {
-        m_mediaObject->setCurrentSource( url );
-        return true;
-    }
+    Engine::Base::load( url, isStream );
+    m_mediaObject->setCurrentSource( url );
 
-    debug() << "Could not load file " << url.prettyUrl() << endl;
-//     m_mediaObject->setUrl( KUrl() );
-    return false;
+    return true;
 }
-
 
 bool
 PhononEngine::play( uint offset )
 {
     DEBUG_BLOCK
 
-    if( m_mediaObject )
-    {
-        m_mediaObject->play();
+    m_mediaObject->play();
+    emit stateChanged( Engine::Playing );
 
-        connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
-
-        emit stateChanged( Engine::Playing );
-        return true;
-    }
-
-    debug() << "Could not play file " << m_mediaObject->currentSource().url() << endl;
-    emit stateChanged( Engine::Empty );
-
-    return false;
+    return true;
 }
 
 void
 PhononEngine::stop()
 {
-    if( m_mediaObject )
-    {
-        m_mediaObject->stop();
-        emit stateChanged( Engine::Empty );
-    }
+    m_mediaObject->stop();
+    emit stateChanged( Engine::Empty );
 }
 
 void
 PhononEngine::pause()
 {
-    if( m_mediaObject )
-    {
-        m_mediaObject->pause();
-        emit stateChanged( Engine::Paused );
-    }
+    m_mediaObject->pause();
+    emit stateChanged( Engine::Paused );
 }
 
 void
 PhononEngine::unpause()
 {
-    if( m_mediaObject )
-    {
-        m_mediaObject->play();
-        emit stateChanged( Engine::Playing );
-    }
+    m_mediaObject->play();
+    emit stateChanged( Engine::Playing );
 }
 
 Engine::State
@@ -183,7 +158,7 @@ PhononEngine::state() const
 uint
 PhononEngine::position() const
 {
-    if( state() != Engine::Empty && m_mediaObject )
+    if( state() != Engine::Empty )
         return m_mediaObject->currentTime();
 
     return 0;
@@ -203,18 +178,14 @@ PhononEngine::length() const
 void
 PhononEngine::seek( uint ms )
 {
-    if( m_mediaObject )
-        m_mediaObject->seek( ms );
+    m_mediaObject->seek( ms );
 }
 
 void
 PhononEngine::setVolumeSW( uint volume )
 {
-    if( m_audioOutput )
-    {
-        const float v = volume * 0.01;
-        m_audioOutput->setVolume( v );
-    }
+    const float v = volume * 0.01;
+    m_audioOutput->setVolume( v );
 }
 
 bool
