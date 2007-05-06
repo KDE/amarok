@@ -144,11 +144,11 @@ class AlbumMatcher : public Matcher
 
 //QueryJob
 
-class QueryJob : public ThreadWeaver::Job
+class QueryJob : public Job
 {
     public:
         QueryJob( MemoryQueryMaker *qm )
-            : ThreadWeaver::Job()
+            : Job()
             , m_queryMaker( qm )
         {
             //nothing to do
@@ -215,7 +215,7 @@ MemoryQueryMaker::run()
     else
     {
         d->job = new QueryJob( this );
-        connect( d->job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        connect( d->job, SIGNAL( done( Job * ) ), SLOT( done( Job * ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->job );
     }
 }
@@ -293,7 +293,6 @@ MemoryQueryMaker::handleResult()
             //nothing to do
             break;
     }
-    emit queryDone();
 }
 
 void
@@ -352,7 +351,6 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             //should never happen, but handle error anyway
             break;
     }
-    emit queryDone();
 }
 
 QueryMaker*
@@ -535,10 +533,11 @@ MemoryQueryMaker::limitMaxResultSize( int size )
 }
 
 void
-MemoryQueryMaker::done( ThreadWeaver::Job *job )
+MemoryQueryMaker::done( Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
-    delete d->job;
+    job->deleteLater();
+    d->job = 0;
     emit queryDone();
 }
 

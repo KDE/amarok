@@ -25,6 +25,7 @@
 #include <threadweaver/Job.h>
 
 using namespace Meta;
+using namespace ThreadWeaver;
 
 class MemoryQueryMaker : public QueryMaker
 {
@@ -70,8 +71,8 @@ class MemoryQueryMaker : public QueryMaker
         void handleResult();
         void handleResult( const TrackList &tracks );
 
-    protected slots:
-        void done( ThreadWeaver::Job *job );
+    private slots:
+        void done( Job * job );
 
     protected:
         MemoryCollection *m_memCollection;
