@@ -116,7 +116,7 @@ PhononEngine::unpause()
 }
 
 Engine::State
-PhononEngine::convertState( Phonon::State s )
+PhononEngine::convertState( Phonon::State s ) const
 {
     Engine::State state;
 
@@ -140,7 +140,7 @@ PhononEngine::convertState( Phonon::State s )
         // fallthrough
         
         case Phonon::LoadingState:
-            state = Engine::Empty;
+            state = m_url.isEmpty() ? Engine::Empty : Engine::Idle;
     }
 
     return state;

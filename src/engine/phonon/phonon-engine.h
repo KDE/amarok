@@ -44,7 +44,7 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
 //TODO: Add in audiocd stuff.
 //     virtual bool metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b);
 //     virtual bool getAudioCDContents(const QString &device, KUrl::List &urls);
-    static Engine::State convertState(Phonon::State s);
+    Engine::State convertState(Phonon::State s) const;
 
     virtual Engine::State state() const;
 
