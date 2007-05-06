@@ -41,7 +41,7 @@ class DaapCollectionFactory : public CollectionFactory
         QString resolve( const QString &hostname );
 };
 
-class DaapCollection : public QObject, public Collection, public MemoryCollection
+class DaapCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:

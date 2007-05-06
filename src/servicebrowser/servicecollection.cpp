@@ -59,8 +59,7 @@ ServiceCollectionFactory::init()
 //ServiceCollection
 
 ServiceCollection::ServiceCollection( )
-    : QObject()
-    , Collection()
+    : Collection()
     , MemoryCollection()
 {
 

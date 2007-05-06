@@ -39,7 +39,7 @@ class ServiceCollectionFactory : public CollectionFactory
 
 };
 
-class ServiceCollection : public QObject, public Collection, public MemoryCollection
+class ServiceCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:

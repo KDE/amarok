@@ -50,6 +50,7 @@ class CollectionManager : public QObject
 
     private slots:
         void slotNewCollection( Collection *newCollection );
+        void slotRemoveCollection();
 
     private:
         CollectionManager();

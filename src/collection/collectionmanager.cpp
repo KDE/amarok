@@ -27,6 +27,7 @@
 
 #include <QtGlobal>
 #include <QList>
+#include <QTimer>
 
 #include <kservice.h>
 
@@ -123,6 +124,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     }
     debug() << "New collection with collectionId: " << newCollection->collectionId() << endl;
     d->collections.append( newCollection );
+    connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
     if( newCollection->isSqlDatabase() )
     {
         if( d->sqlDatabase )
@@ -134,6 +136,36 @@ CollectionManager::slotNewCollection( Collection* newCollection )
             d->sqlDatabase = newCollection;
     }
     emit collectionAdded( newCollection );
+}
+
+void
+CollectionManager::slotRemoveCollection()
+{
+    Collection* collection = dynamic_cast<Collection*>( sender() );
+    if( collection )
+    {
+        d->collections.removeAll( collection );
+        if( collection->isSqlDatabase() && collection == d->sqlDatabase )
+        {
+            Collection *newSqlDatabase = 0;
+            foreach( Collection* tmp, d->collections )
+            {
+                if( tmp->isSqlDatabase() )
+                {
+                    if( newSqlDatabase )
+                    {
+                        if( newSqlDatabase->sqlDatabasePriority() < tmp->sqlDatabasePriority() )
+                            newSqlDatabase = tmp;
+                    }
+                    else
+                        newSqlDatabase = tmp;
+                }
+            }
+            d->sqlDatabase = newSqlDatabase;
+        }
+    }
+    emit collectionRemoved( collection->collectionId() );
+    QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
 }
 
 QList<Collection*>

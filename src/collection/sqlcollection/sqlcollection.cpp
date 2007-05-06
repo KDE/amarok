@@ -56,8 +56,18 @@ SqlCollectionFactory::init()
 void
 SqlCollectionFactory::testMultipleCollections()
 {
-    Collection* secondCollection = new SqlCollection( "anotherLocalCollection", "2nd local collection" );
+    SqlCollection* secondCollection = new SqlCollection( "anotherLocalCollection", "2nd local collection" );
+    m_secondCollection = secondCollection;
     emit newCollection( secondCollection );
+    QTimer::singleShot( 30000, this, SLOT( removeSecondCollection() ) );
+}
+
+void
+SqlCollectionFactory::removeSecondCollection()
+{
+    m_secondCollection->removeCollection();
+    m_secondCollection = 0;
+    QTimer::singleShot( 30000, this, SLOT( testMultipleCollections() ) );
 }
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
@@ -120,6 +130,12 @@ int
 SqlCollection::insert( const QString &statement, const QString &table )
 {
     return CollectionDB::instance()->insert( statement, table );
+}
+
+void
+SqlCollection::removeCollection()
+{
+    emit remove();
 }
 
 #include "sqlcollection.moc"

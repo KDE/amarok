@@ -96,8 +96,7 @@ DaapCollectionFactory::resolve( const QString &hostname )
 //DaapCollection
 
 DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 port )
-    : QObject()
-    , Collection()
+    : Collection()
     , MemoryCollection()
     , m_host( host )
     , m_port( port )

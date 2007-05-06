@@ -32,7 +32,11 @@ class SqlCollectionFactory : public CollectionFactory
         virtual void init();
 
     private slots:
-        void testMultipleCollections();
+        void testMultipleCollections();     //testing
+        void removeSecondCollection();      //testing
+
+    private:
+        SqlCollection *m_secondCollection; //testing
 };
 
 class CollectionDB;
@@ -55,6 +59,8 @@ class SqlCollection : public Collection
         virtual int insert( const QString &statement, const QString &table );
 
         SqlRegistry* registry() const;
+
+        void removeCollection();    //testing, remove later
 
     private:
         //reuse CollectionDB until we replace it completely

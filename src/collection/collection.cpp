@@ -27,6 +27,7 @@ CollectionFactory::~CollectionFactory()
 
 
 Collection::Collection()
+    : QObject()
 {
 }
 
