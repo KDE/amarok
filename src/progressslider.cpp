@@ -55,17 +55,21 @@ void
 ProgressSlider::paintEvent( QPaintEvent *e )
 {
     Amarok::PrettySlider::paintEvent( e );
-    QPainter p( this );
-    foreach( uint it, m_bookmarks )
+
+    if( isEnabled() )
     {
-        const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
-        Bookmark pa( 3, it );
-        pa.setPoint( 0, pos - 5, 1 );
-        pa.setPoint( 1, pos + 5, 1 );
-        pa.setPoint( 2, pos,     9 );
-        p.setBrush( Qt::red );
-        m_polygons << pa;
-        p.drawConvexPolygon( pa );
+        QPainter p( this );
+        foreach( uint it, m_bookmarks )
+        {
+            const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
+            Bookmark pa( 3, it );
+            pa.setPoint( 0, pos - 5, 1 );
+            pa.setPoint( 1, pos + 5, 1 );
+            pa.setPoint( 2, pos,     9 );
+            p.setBrush( Qt::red );
+            m_polygons << pa;
+            p.drawConvexPolygon( pa );
+        }
     }
 }
 
