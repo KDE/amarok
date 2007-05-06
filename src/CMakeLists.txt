@@ -86,14 +86,14 @@ set(libplugin_SRCS
 set(libservicebrowser_SRCS
         servicebrowser/servicebrowser.cpp
 	servicebrowser/servicebase.cpp
-	servicebrowser/servicemodelitembase.cpp
-        servicebrowser/servicemodelbase.cpp
-        servicebrowser/simpleservicetypes.cpp
+	#servicebrowser/servicemodelitembase.cpp
+        #servicebrowser/servicemodelbase.cpp
+        #servicebrowser/simpleservicetypes.cpp
         servicebrowser/servicemetabase.cpp
 	servicebrowser/servicecollection.cpp
-        servicebrowser/databasehandlerbase.cpp
-	servicebrowser/databasedrivencontentitem.cpp
-	servicebrowser/databasedrivencontentmodel.cpp)
+        servicebrowser/databasehandlerbase.cpp)
+	#servicebrowser/databasedrivencontentitem.cpp
+	#servicebrowser/databasedrivencontentmodel.cpp)
 
 set(libscriptableservice_SRCS
         servicebrowser/scriptableservice/scriptableservicemanager.cpp

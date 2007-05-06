@@ -19,19 +19,19 @@
 
 #include "servicemetabase.h"
 
-ServiceTrack::ServiceTrack( const QString &url, const QString &displayName  )
+ServiceTrack::ServiceTrack( const QString & name )
     : Meta::Track()
     , m_artist( 0 )
     , m_album( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
-    , m_name( displayName )
+    , m_name( name )
     , m_type()
     , m_length( 0 )
     , m_trackNumber( 0 )
-    , m_displayUrl( url )
-    , m_playableUrl( url )
+    , m_displayUrl( 0 )
+    , m_playableUrl( 0 )
 {
 }
 
@@ -39,6 +39,27 @@ ServiceTrack::~ServiceTrack()
 {
     //nothing to do
 }
+
+void ServiceTrack::setId(int id)
+{
+    m_id = id;
+}
+
+int ServiceTrack::id()
+{
+    return m_id;
+}
+
+void ServiceTrack::setAlbumId(int albumId)
+{
+    m_albumId = albumId;
+}
+
+int ServiceTrack::albumId()
+{
+    return m_albumId;
+}
+
 
 QString
 ServiceTrack::name() const
@@ -69,6 +90,12 @@ QString
 ServiceTrack::prettyUrl() const
 {
     return m_displayUrl;
+}
+
+void ServiceTrack::setUrl(const QString & url)
+{
+    m_playableUrl = url;
+    m_displayUrl = url;
 }
 
 bool
@@ -301,7 +328,7 @@ ServiceTrack::setLength( int length )
 
 //ServiceArtist
 
-ServiceArtist::ServiceArtist( const QString &name )
+ServiceArtist::ServiceArtist( const QString & name )
     : Meta::Artist()
     , m_name( name )
     , m_tracks()
@@ -314,6 +341,18 @@ ServiceArtist::~ServiceArtist()
     //nothing to do
 }
 
+void ServiceArtist::setId(int id)
+{
+    m_id = id;
+}
+
+int ServiceArtist::id()
+{
+    return m_id;
+}
+
+
+
 QString
 ServiceArtist::name() const
 {
@@ -324,6 +363,11 @@ QString
 ServiceArtist::prettyName() const
 {
     return m_name;
+}
+
+void ServiceArtist::setTitle(const QString & title)
+{
+    m_name = title;
 }
 
 TrackList
@@ -338,7 +382,19 @@ ServiceArtist::addTrack( ServiceTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-ServiceAlbum::ServiceAlbum( const QString &name )
+
+void ServiceArtist::setDescription(const QString &description)
+{
+    m_description = description;
+}
+
+QString ServiceArtist::description()
+{
+    return m_description;
+}
+
+
+ServiceAlbum::ServiceAlbum( const QString & name )
     : Meta::Album()
     , m_name( name )
     , m_tracks()
@@ -353,6 +409,26 @@ ServiceAlbum::~ServiceAlbum()
     //nothing to do
 }
 
+void ServiceAlbum::setId(int id)
+{
+    m_id = id;
+}
+
+int ServiceAlbum::id()
+{
+    return m_id;
+}
+
+void ServiceAlbum::setArtistId(int artistId)
+{
+    m_artistId = artistId;
+}
+
+int ServiceAlbum::artistId()
+{
+    return m_artistId;
+}
+
 QString
 ServiceAlbum::name() const
 {
@@ -363,6 +439,11 @@ QString
 ServiceAlbum::prettyName() const
 {
     return m_name;
+}
+
+void ServiceAlbum::setTitle(const QString & title)
+{
+    m_name = title;
 }
 
 bool
@@ -424,6 +505,18 @@ ServiceAlbum::setIsCompilation( bool compilation )
 {
     m_isCompilation = compilation;
 }
+
+void ServiceAlbum::setDescription(const QString &description)
+{
+    m_description = description;
+}
+
+QString ServiceAlbum::description()
+{
+    return m_description;
+}
+
+
 
 //ServiceGenre
 
@@ -541,3 +634,14 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -136,12 +136,14 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 
       //debug() << "Found artist: " << endl;
     m_nNumberOfArtists++;
-    JamendoArtist currentArtist;
+   
 
-    currentArtist.setId( e.attribute( "id", "0" ).toInt() );
-    currentArtist.setPhotoURL( e.attribute( "image", "UNDEFINED" ) );
-    currentArtist.setJamendoURL( e.attribute( "link", "UNDEFINED" ) );
-    currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
+    QString name;
+    //QString genre;
+    QString description;
+
+
+
 
 
     QDomNode n = e.firstChild();
@@ -152,16 +154,24 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
             QDomElement currentChildElement = n.toElement();
             
             if ( currentChildElement.tagName() == "dispname" )
-                currentArtist.setName( currentChildElement.text() );
+                name = currentChildElement.text();
             else if ( currentChildElement.tagName() == "genre" )
                 ;
             else if ( currentChildElement.tagName() == "description" )
-                 currentArtist.setDescription( currentChildElement.text() );
+                 description = currentChildElement.text();
 
             n = n.nextSibling();
         }
 
     }
+
+    JamendoArtist currentArtist( name );
+    currentArtist.setDescription( description );
+
+    currentArtist.setId( e.attribute( "id", "0" ).toInt() );
+    currentArtist.setPhotoURL( e.attribute( "image", "UNDEFINED" ) );
+    currentArtist.setJamendoURL( e.attribute( "link", "UNDEFINED" ) );
+    currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
 
 
     m_dbHandler->insertArtist( &currentArtist );
@@ -182,10 +192,11 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 {
     //debug() << "Found album: " << endl;
     m_nNumberOfAlbums++;
-    JamendoAlbum currentAlbum;
 
-    currentAlbum.setId( e.attribute( "id", "0" ).toInt() );
-    currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
+    QString name;
+    QString genre;
+    QString description;
+    
 
     QDomNode n = e.firstChild();
 
@@ -195,16 +206,24 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
             QDomElement currentChildElement = n.toElement();
             
             if ( currentChildElement.tagName() == "dispname" )
-                currentAlbum.setName( currentChildElement.text() );
+                name = currentChildElement.text();
             else if ( currentChildElement.tagName() == "genre" )
-                currentAlbum.setGenre( currentChildElement.text() );
+                genre = currentChildElement.text();
             else if ( currentChildElement.tagName() == "description" )
-                 currentAlbum.setDescription( currentChildElement.text() );
+                 description = currentChildElement.text();
 
             n = n.nextSibling();
         }
 
     }
+
+    JamendoAlbum currentAlbum( name );
+
+    currentAlbum.setGenre( genre );
+    currentAlbum.setDescription( description );
+
+    currentAlbum.setId( e.attribute( "id", "0" ).toInt() );
+    currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
 
 
      m_dbHandler->insertAlbum( &currentAlbum );
@@ -224,15 +243,8 @@ void JamendoXmlParser::parseTrack(QDomElement e)
 
     //debug() << "Found track: " << endl;
     m_nNumberOfTracks++;
-    JamendoTrack currentTrack;
 
-    currentTrack.setId( e.attribute( "id", "0" ).toInt() );
-
-    currentTrack.setURL( "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( currentTrack.getId() ) + "/?aue=ogg2" );
-
-    currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
-    currentTrack.setDuration(  e.attribute( "lengths", "0" ).toInt() );
-    currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
+    QString name;
 
     QDomNode n = e.firstChild();
 
@@ -242,21 +254,26 @@ void JamendoXmlParser::parseTrack(QDomElement e)
             QDomElement currentChildElement = n.toElement();
             
             if ( currentChildElement.tagName() == "dispname" )
-                currentTrack.setName( currentChildElement.text() );
+                name = currentChildElement.text();
             //skip lyrics, license and url for now
             n = n.nextSibling();
         }
 
     }
+
+
+    JamendoTrack currentTrack ( name );
+
+    currentTrack.setId( e.attribute( "id", "0" ).toInt() );
+
+    currentTrack.setUrl( "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( currentTrack.id() ) + "/?aue=ogg2" );
+
+    currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
+    currentTrack.setLength(  e.attribute( "lengths", "0" ).toInt() );
+    currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
+
     m_dbHandler->insertTrack( &currentTrack );
 
-    
-    /*debug() << "    Name:       " << currentTrack.getName() << endl;
-    debug() << "    Id:         " << currentTrack.getId() << endl;
-    debug() << "    Track No:   " << currentTrack.getTrackNumber() << endl;
-    debug() << "    Album_id:  " << currentTrack.getAlbumId() << endl;
-    debug() << "    length (s): " << currentTrack.getDuration() << endl;
-*/
 
 }
 

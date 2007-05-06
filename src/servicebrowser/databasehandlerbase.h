@@ -20,8 +20,9 @@
 #ifndef DATABASEHANDLERBASE_H
 #define DATABASEHANDLERBASE_H
 
-#include "simpleservicetypes.h"
 
+//#include "simpleservicetypes.h"
+#include "servicemetabase.h"
 #include <QStringList>
 
 
@@ -99,21 +100,21 @@ public:
      * @param genre the genre
      * @return  A list of artist in the genre
      */
-    virtual SimpleServiceArtistList getArtistsByGenre( const QString &genre ) = 0;
+    virtual ArtistList getArtistsByGenre( const QString &genre ) = 0;
 
     /**
      * Returns the artist with a given id
      * @param id The id of the artist to look for
      * @return The artist with the given id. Returns an empty artist if not found.
      */
-    virtual SimpleServiceArtist * getArtistById( int id ) = 0;
+    virtual ServiceArtist * getArtistById( int id ) = 0;
 
     /**
      * Returns the album with a given id
      * @param id The id of the album to look for
      * @return The album with the given id. Returns an empty album if not found.
      */
-    virtual SimpleServiceAlbum * getAlbumById( int id ) = 0;
+    virtual ServiceAlbum * getAlbumById( int id ) = 0;
 
 
      /**
@@ -121,7 +122,7 @@ public:
      * @param id The id of the track to look for
      * @return The track with the given id. Returns an empty album if not found.
      */
-    virtual SimpleServiceTrack * getTrackById( int id ) = 0;
+    virtual ServiceTrack * getTrackById( int id ) = 0;
 
      /**
      * Retrieves all albums by a single artist from the database
@@ -129,14 +130,14 @@ public:
      * @param genre Limits the albums to a specific genre. Use "All" to get all albums
      * @return List of albums. empty if none are found
      */
-    virtual SimpleServiceAlbumList getAlbumsByArtistId(int id, const QString &genre) = 0;
+    virtual AlbumList getAlbumsByArtistId(int id, const QString &genre) = 0;
 
      /**
      * Retrieves all tracks on a given album
      * @param id The id of the album
      * @return A list of tracks. Empty if album is not found or has no tracks
      */
-    virtual SimpleServiceTrackList getTracksByAlbumId(int id) = 0;
+    virtual TrackList getTracksByAlbumId(int id) = 0;
 
      /**
      * Retrieves a list of all genres present in the databse

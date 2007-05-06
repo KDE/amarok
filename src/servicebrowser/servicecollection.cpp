@@ -88,21 +88,21 @@ ServiceCollection::ServiceCollection( )
     albumMap.insert( "album 1", AlbumPtr::staticCast( albumPtr ) );
 
 
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track1" ) );
+    trackPtr = ServiceTrackPtr( new ServiceTrack( "track1" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
     trackMap.insert( "track1", TrackPtr::staticCast( trackPtr ) );
 
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track2" ) );
+    trackPtr = ServiceTrackPtr( new ServiceTrack( "track2" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
     trackMap.insert( "track2", TrackPtr::staticCast( trackPtr ) );
 
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "http://blah.sd/mp3.mp3", "track3" ) );
+    trackPtr = ServiceTrackPtr( new ServiceTrack( "track3" ) );
     albumPtr->addTrack( trackPtr );
     trackPtr->setAlbum( albumPtr );
     artistPtr->addTrack( trackPtr );

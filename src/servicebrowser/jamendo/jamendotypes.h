@@ -21,7 +21,7 @@
 #define JAMENDOTYPES_H
 
 
-#include "../simpleservicetypes.h"
+#include "../servicemetabase.h"
 
 #include <QDateTime>
 #include <QString>
@@ -29,7 +29,7 @@
 #include <QList>
 
 
-class JamendoArtist : public SimpleServiceArtist
+class JamendoArtist : public ServiceArtist
 {
 
 private:
@@ -40,20 +40,20 @@ private:
     QString m_homeURL;
 
 public:
-    JamendoArtist();
+    JamendoArtist( const QString &name );
 
     void setPhotoURL( const QString &photoURL );
     QString getPhotoURL() const;
   
     void setHomeURL( const QString &homeURL );
-    QString getHomeURL() const;
+    QString homeURL() const;
 
     void setJamendoURL( const QString &jamendoURL );
-    QString getJamendoURL() const;
+    QString jamendoURL() const;
 };
 
 
-class JamendoAlbum  : public SimpleServiceAlbum
+class JamendoAlbum  : public ServiceAlbum
 {
 private:
     float m_popularity;
@@ -64,7 +64,7 @@ private:
     QStringList m_tags;
 
 public:
-    JamendoAlbum();
+    JamendoAlbum( const QString &name );
 
     void setPopularity( float popularity );
     float getPopularity() const;
@@ -84,7 +84,7 @@ public:
 
 };
 
-class JamendoTrack  : public SimpleServiceTrack
+class JamendoTrack  : public ServiceTrack
 {
 private:
 
@@ -92,7 +92,7 @@ private:
 
 
 public:
-    JamendoTrack();
+    JamendoTrack( const QString &name );
 
     void setArtistId( int artistId );
     int getArtistId() const;

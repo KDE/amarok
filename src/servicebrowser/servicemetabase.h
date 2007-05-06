@@ -42,7 +42,7 @@ class ServiceTrack : public Meta::Track
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
-        ServiceTrack( const QString &url, const QString &displayName );
+        ServiceTrack( const QString & name );
         virtual ~ServiceTrack();
 
         virtual QString name() const;
@@ -110,6 +110,12 @@ class ServiceTrack : public Meta::Track
         void setTitle( const QString &newTitle );
         void setLength( int length );
 
+        void setId( int id );
+        int id( );
+        void setAlbumId( int albumId );
+        int albumId();
+        void setUrl( const QString &url );
+
     private:
         ServiceArtistPtr m_artist;
         ServiceAlbumPtr m_album;
@@ -123,12 +129,14 @@ class ServiceTrack : public Meta::Track
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;
+        int m_id;
+        int m_albumId;
 };
 
 class ServiceArtist : public Meta::Artist
 {
     public:
-        ServiceArtist( const QString &name );
+        ServiceArtist( const QString & name );
         virtual ~ServiceArtist();
 
         virtual QString name() const;
@@ -139,15 +147,23 @@ class ServiceArtist : public Meta::Artist
         //ServiceArtist specific methods
         void addTrack( ServiceTrackPtr track );
 
+        void setDescription( const QString &description );
+        QString description( );
+        void setId( int id );
+        int id( );
+        void setTitle( const QString &title ); 
+
     private:
         QString m_name;
         TrackList m_tracks;
+        QString m_description;
+        int m_id;
 };
 
 class ServiceAlbum : public Meta::Album
 {
     public:
-        ServiceAlbum( const QString &name );
+        ServiceAlbum( const QString & name  );
         virtual ~ServiceAlbum();
 
         virtual QString name() const;
@@ -162,16 +178,30 @@ class ServiceAlbum : public Meta::Album
         virtual bool canUpdateImage() const;
         virtual void updateImage();
 
+
+        
+
         //ServiceAlbum specific methods
         void addTrack( ServiceTrackPtr track );
         void setAlbumArtist( ServiceArtistPtr artist );
         void setIsCompilation( bool compilation );
+
+        void setDescription( const QString &description );
+        QString description( );
+        void setId( int id );
+        int id( );
+        void setArtistId( int artistId );
+        int artistId( );
+        void setTitle( const QString &title );
 
     private:
         QString m_name;
         TrackList m_tracks;
         bool m_isCompilation;
         ServiceArtistPtr m_albumArtist;
+        QString m_description;
+        int m_id;
+        int m_artistId;
 };
 
 class ServiceGenre : public Meta::Genre

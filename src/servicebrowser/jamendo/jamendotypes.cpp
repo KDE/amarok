@@ -24,10 +24,10 @@
 
 //// JamendoArtist ////
 
-JamendoArtist::JamendoArtist( )
-    : SimpleServiceArtist()
+JamendoArtist::JamendoArtist( const QString &name )
+    : ServiceArtist( name )
 {
-    m_description = QString();
+    setDescription( QString() );
 }
 
 
@@ -46,7 +46,7 @@ void JamendoArtist::setHomeURL( const QString &homeURL )
     m_homeURL = homeURL;
 }
 
-QString JamendoArtist::getHomeURL( ) const
+QString JamendoArtist::homeURL( ) const
 {
     return m_homeURL;
 }
@@ -56,7 +56,7 @@ void JamendoArtist::setJamendoURL( const QString & jamendoURL )
     m_jamendoURL = jamendoURL;
 }
 
-QString JamendoArtist::getJamendoURL() const
+QString JamendoArtist::jamendoURL() const
 {
     return m_jamendoURL;
 }
@@ -68,9 +68,10 @@ QString JamendoArtist::getJamendoURL() const
 
 //// JamendoAlbum ////
 
-JamendoAlbum::JamendoAlbum( )
-    : SimpleServiceAlbum()
+JamendoAlbum::JamendoAlbum( const QString &name )
+    : ServiceAlbum( name )
 {
+    setDescription( QString() );
 }
 
 void JamendoAlbum::setCoverURL( const QString &coverURL )
@@ -114,16 +115,10 @@ QString JamendoAlbum::getGenre( ) const
 }
 
 
-
-
-
-
-
-
 //// JamendoTrack ////
 
-JamendoTrack::JamendoTrack( )
-    : SimpleServiceTrack()
+JamendoTrack::JamendoTrack( const QString &name )
+    : ServiceTrack( name )
 {
 }
 
