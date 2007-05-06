@@ -61,6 +61,7 @@ GenericName[zh_CN]=音频播放器
 GenericName[zh_TW]=音樂播放程式
 Exec=amarok %U
 Comment=Amarok - Rediscover Your Music!
+Comment[et]=Amarok - naudi oma muusikat!
 Comment[ja]=Amarok - あなたの音楽を再発見
 Comment[nl]=Amarok - Herontdek uw muziek!
 Comment[pt]=Amarok - Descubra de Novo a sua Música!
