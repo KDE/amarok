@@ -159,7 +159,9 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     if ( item->isDataItem() )
     {
         if ( role == Qt::DecorationRole ) {
-            int level = item->level() -1;
+            //don't substract one here like in colelctintreeitemmodel because
+            //there is no collectin level here
+            int level = item->level();
             if ( level < m_levelType.count() )
                 return iconForLevel( level );
         }
@@ -251,10 +253,9 @@ SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, Collecti
             }
         }
         CollectionTreeItem *tmpItem = parent;
-        while ( tmpItem != 0  ) {
+        while ( tmpItem->isDataItem()  ) {
             debug() << "add match" << endl;
             debug() << "    tmpItem->data() = " <<  tmpItem->data() << endl;
-             
             qm->addMatch( tmpItem->data() );
             tmpItem = tmpItem->parent();
         }
