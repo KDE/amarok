@@ -57,7 +57,7 @@ void JamendoService::polish()
     QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
     levels << CategoryId::Artist << CategoryId::Album;
-    setModel( new SingleCollectionTreeItemModel( new ServiceCollection(), levels ) );
+    setModel( new SingleCollectionTreeItemModel( new ServiceCollection( new JamendoDatabaseHandler() ), levels ) );
 
 
  

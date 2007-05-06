@@ -87,9 +87,6 @@ CollectionManager::init()
         }
     }
 
-    //testing
-
-   slotNewCollection( new ServiceCollection() );
 }
 
 CollectionManager *

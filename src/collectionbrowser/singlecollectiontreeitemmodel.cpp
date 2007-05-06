@@ -75,9 +75,8 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     
     //m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
-
     //populate root:
-    //listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
+    listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
     updateHeaderText();
     reset(); //resets the whole model, as the data changed
 }
@@ -212,6 +211,7 @@ SingleCollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const 
 
 void
 SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, CollectionTreeItem *parent) const {
+    debug() << "SingleCollectionTreeItemModel::populateChildren"  << endl;
     foreach( Meta::DataPtr data, dataList ) {
         new CollectionTreeItem( data, parent );
     }
@@ -380,7 +380,7 @@ SingleCollectionTreeItemModel::newResultReady( const QString &collectionId, Meta
         //the row was never actually there, but we had to return 1 in rowCount to get the +
         endRemoveRows();
         beginInsertRows( parentIndex, 0, data.count() -1 );
-        populateChildren( data, parent );
+        populateChildren( data, parent ); 
         endInsertRows();
     }
 }
