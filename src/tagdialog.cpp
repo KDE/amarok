@@ -3,6 +3,10 @@
 // (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
+
+// FIXME Config check for this seems to be missing 
+#define HAVE_TUNEPIMP false
+
 #include "amarok.h"
 #include "debug.h"
 #include "contextbrowser.h"
@@ -34,7 +38,6 @@
 #include <ktabwidget.h>
 #include <ktextedit.h>
 #include <kvbox.h>
-
 
 #include <QCheckBox>
 #include <qdom.h>
@@ -95,6 +98,8 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
 
 TagDialog::~TagDialog()
 {
+    DEBUG_BLOCK
+
     Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
 }
 
@@ -378,6 +383,8 @@ void TagDialog::resetMusicbrainz() //SLOT
 
 void TagDialog::init()
 {
+    DEBUG_BLOCK
+
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
 
