@@ -20,6 +20,9 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Making a dynamic playlist with the number of previously played tracks to
+      show set to zero and attempting to play the first track would cause a
+      crash. (BR 145157)
     * If "Stop after current track" was used, the last track would not be
       counted or rated in the user's statistics. (BR 140980)
     * Generic media device wouldn't allow you to drop a folder on the
