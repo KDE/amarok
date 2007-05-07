@@ -6,7 +6,7 @@ Amarok ChangeLog
 VERSION 1.4.6
   CHANGES:
     * Generic media device can now handle any KIO-compatible URL, including
-      obex and smb.  Manage your bluetooth phone's music collection through
+      obex and smb. Manage your bluetooth phone's music collection through
       Amarok!
     * Upgraded SQLite to 3.3.17.
     * Append an album to the playlist by right-clicking on it from within
@@ -35,7 +35,7 @@ VERSION 1.4.6
       <lmacken@fedoraproject.org>. (BR 127804)
     * Make amarok_proxy.rb use HTTP/1.0 as we don't support chunked responses.
       Patch by solsTiCE <solstice.dhiver@laposte.net>. (BR 141819)
-    * Fix Quadratic loading in Playlists Patch by Ovy
+    * Fix Quadratic loading in Playlists. Patch by Ovy
       <ovy@alum.mit.edu>. (BR 142255)
     * Correctly set iPod model. Patch by İsmail Dönmez <ismail@kde.org>.
     * Fix detection of vfat devices on FreeBSD. (BR 141614)
