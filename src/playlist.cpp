@@ -1672,14 +1672,17 @@ Playlist::activate( Q3ListViewItem *item )
 
     if ( !checkFileStatus( item ) )
     {
-	Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
-	return;
+        Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
+        return;
     }
 
     if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
     {
         if( m_currentTrack && item->isDynamicEnabled() )
-            this->moveItem( item, 0, m_currentTrack );
+        {
+            if( item != m_currentTrack )
+                this->moveItem( item, 0, m_currentTrack );
+        }
         else
         {
             MyIt it( this, MyIt::Visible );
@@ -1707,8 +1710,10 @@ Playlist::activate( Q3ListViewItem *item )
 
         }
         if( m_currentTrack && m_currentTrack != item )
+        {
             m_currentTrack->setDynamicEnabled( false );
-        advanceDynamicTrack();
+            advanceDynamicTrack();
+        }
     }
 
     if( Amarok::entireAlbums() )
