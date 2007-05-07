@@ -3,7 +3,6 @@ Encoding=UTF-8
 ServiceTypes=audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 X-KDE-Submenu=Amarok
-X-KDE-Submenu[el]=AmaroK
 X-KDE-Submenu[es]=amaroK
 X-KDE-Submenu[pa]=ਅਮਰੋਕ
 X-KDE-Submenu[ru]=amaroK
