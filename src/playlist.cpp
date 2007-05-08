@@ -189,6 +189,7 @@ Playlist::Playlist( QWidget *parent )
         , m_dynamicDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
+        , m_insertFromADT( false )
         , m_itemToReallyCenter( 0 )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
@@ -1153,6 +1154,7 @@ void
 Playlist::advanceDynamicTrack()
 {
     int x = currentTrackIndex();
+    bool didDelete = false;
     if( dynamicMode()->cycleTracks() )
     {
         if( x >= dynamicMode()->previousCount() )
@@ -1160,6 +1162,7 @@ Playlist::advanceDynamicTrack()
             PlaylistItem *first = firstChild();
             removeItem( first );
             delete first;
+            didDelete = true;
         }
     }
 
@@ -1167,12 +1170,14 @@ Playlist::advanceDynamicTrack()
 
     // Just starting to play from stopped, don't append something needlessely
     // or, we have more than enough items in the queue.
-    bool dontAppend = ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
-                        upcomingTracks > dynamicMode()->upcomingCount();
+    bool dontAppend = !didDelete &&
+                        ( ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
+                        upcomingTracks > dynamicMode()->upcomingCount() );
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && stopAfterMode() != StopAfterCurrent )
     {
+        m_insertFromADT = true;
         addDynamicModeTracks( 1 );
     }
     m_dynamicDirt = true;
@@ -1395,7 +1400,6 @@ Playlist::sortQueuedItems() // used by dynamic mode
             item->moveItem( last );
         last = item;
     }
-
 }
 
 void Playlist::setStopAfterCurrent( bool on )
@@ -2174,7 +2178,16 @@ Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
 
-    KListView::setSorting( col, b );
+    //HACK dynamic mode can't deal with disabled items at the bottom...
+    //so only allow ascending sort in dynamic mode
+
+    if( dynamicMode() )
+    {
+        if( b )
+            KListView::setSorting( col, b );
+    }
+    else
+        KListView::setSorting( col, b );
 }
 
 void
@@ -2997,8 +3010,15 @@ Playlist::customEvent( QCustomEvent *e )
                 if( prev && dynamicMode() )
                     prev->setDynamicEnabled( false );
 
-                activate( after );
-                if ( dynamicMode() && dynamicMode()->cycleTracks() )
+                if( m_insertFromADT )
+                {
+                    if( EngineController::engine()->state() == Engine::Playing )
+                        activate( after );
+                    m_insertFromADT = false;
+                }
+                else
+                    activate( after );
+                if( dynamicMode() && dynamicMode()->cycleTracks() )
                     adjustDynamicPrevious( dynamicMode()->previousCount() );
             }
         }
