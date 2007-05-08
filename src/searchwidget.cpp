@@ -37,8 +37,8 @@ SearchWidget::SearchWidget( QWidget *parent, QWidget* caller )
 void
 SearchWidget::setup( QObject* caller )
 {
-    connect( m_filterButton, SIGNAL( clicked() ), caller,
-             SLOT(slotEditFilter() ) );
+//    connect( m_filterButton, SIGNAL( clicked() ), caller,
+//             SLOT(slotEditFilter() ) );
     connect( m_sw, SIGNAL( textChanged( const QString & ) ), caller,
              SLOT( slotSetFilterTimeout() ) );
 }
@@ -58,11 +58,11 @@ SearchWidget::init( QWidget *parent )
     m_sw->setToolTip( i18n(
                                 "Enter space-separated terms to search in the playlist." ) );
 
-    m_filterButton = new KPushButton( "...", searchBox );
-    m_filterButton->setFlat( true ); //TODO: maybe?
-    m_filterButton->setObjectName( "filter" );
-    m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+//    m_filterButton = new KPushButton( "...", searchBox );
+//    m_filterButton->setFlat( true ); //TODO: maybe?
+//    m_filterButton->setObjectName( "filter" );
+//    m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+//    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
 }
 
 #include "searchwidget.moc"
