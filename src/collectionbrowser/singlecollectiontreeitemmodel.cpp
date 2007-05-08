@@ -76,7 +76,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     //m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
     //populate root:
-    listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
+    //listForLevel( m_levelType[0], m_collection->queryBuilder(), m_rootItem );
     updateHeaderText();
     reset(); //resets the whole model, as the data changed
 }
@@ -122,18 +122,24 @@ int
 SingleCollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
     CollectionTreeItem *parentItem;
-    debug() << "SingleCollectionTreeItemModel::rowCount:" << endl;
+    DEBUG_BLOCK
     if (!parent.isValid()) {
-        debug() << "    m_rootItem" << endl;
+
         parentItem = m_rootItem;
+        
     }
     else {
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
-        debug() << "    something else" << endl;
+
     }
+    if (parentItem == m_rootItem ) 
+       debug() << "    m_rootItem with " << parentItem->childCount() <<  " children" << endl;
+    else 
+       debug() << "    something else with " << parentItem->childCount() <<  " children" << endl;
+
     //ensureChildrenLoaded( parentItem );
     //return parentItem->childCount();
-    if ( parentItem->childrenLoaded() )
+   if ( parentItem->childrenLoaded() )
         return parentItem->childCount();
     else
         return 1; //hack!
@@ -211,17 +217,20 @@ SingleCollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const 
 
 void
 SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, CollectionTreeItem *parent) const {
-    debug() << "SingleCollectionTreeItemModel::populateChildren"  << endl;
+    DEBUG_BLOCK
     foreach( Meta::DataPtr data, dataList ) {
         new CollectionTreeItem( data, parent );
     }
+    if (parent == m_rootItem )
+        debug() << "root item sucesfully popualted!!! " << endl;
     parent->setChildrenLoaded( true );
 }
 
 void
 SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const {
     
-    debug() << "SingleCollectionTreeItemModel::listForLevel. level: " << level << ", leveltype count: " << m_levelType.count() << endl;
+    DEBUG_BLOCK
+    debug() << "    level: " << level << ", leveltype count: " << m_levelType.count() << endl;
     if ( qm && parent ) {
         if ( level > m_levelType.count() )
             return;
