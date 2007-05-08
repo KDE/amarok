@@ -344,27 +344,27 @@
                                     <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="4">
                                         <property name="name">
                                             <cstring>layout4</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QLabel">
+                                                <property name="name">
                                                     <cstring>textLabel3</cstring>
-                                        </property>
-                                        <property name="text">
+                                                </property>
+                                                <property name="text">
                                                     <string>Username:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="KLineEdit">
-                                        <property name="name">
+                                                </property>
+                                            </widget>
+                                            <widget class="KLineEdit">
+                                                <property name="name">
                                                     <cstring>kcfg_PostgresqlUser</cstring>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
+                                                </property>
+                                                <property name="toolTip" stdset="0">
                                                     <string>Username with which to connect to.</string>
-                                        </property>
-                                        <property name="whatsThis" stdset="0">
+                                                </property>
+                                                <property name="whatsThis" stdset="0">
                                                     <string>Username with which to connect to.</string>
                                                 </property>
                                             </widget>
@@ -388,12 +388,12 @@
                                                 </property>
                                                 <property name="whatsThis" stdset="0">
                                                     <string>Password with which to connect to.</string>
-                                        </property>
+                                                </property>
+                                            </widget>
+                                        </hbox>
                                     </widget>
-                                </hbox>
+                                </grid>
                             </widget>
-                        </grid>
-                    </widget>
                         </grid>
                     </widget>
                 </hbox>
@@ -427,8 +427,6 @@
         </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>databaseEngine</sender>
@@ -445,19 +443,21 @@
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">amarokconfig.h</include>
-    <include location="local" impldecl="in implementation">config.h</include>
     <include location="local" impldecl="in implementation">debug.h</include>
+    <include location="local" impldecl="in implementation">config-amarok.h</include>
     <include location="local" impldecl="in implementation">dbsetup.ui.h</include>
 </includes>
 <slots>
-    <slot>databaseEngine_activated( int )</slot>
+    <slot>databaseEngine_activated( int item )</slot>
 </slots>
 <functions>
     <function access="private">init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>knuminput.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
