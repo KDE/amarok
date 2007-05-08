@@ -5,6 +5,7 @@ add_subdirectory( icons )
 
 install(
         FILES
+        amarok_icon.svg
         amarok_cut.png
         amarok_rocks.jpg
         b_next.png

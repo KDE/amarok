@@ -31,6 +31,10 @@
 #include <QGraphicsScene>
 #include <QWheelEvent>
 
+//just for testing
+#include <QGraphicsSvgItem>
+#include <QSvgRenderer>
+
 using namespace Context;
 
 ContextView *ContextView::s_instance = 0;
@@ -118,9 +122,9 @@ void ContextView::introAnimationComplete()
     clear();
     debug() << "introAnimationComplete!"  << endl;
 
-    ContextBox *welcomeBox = new ContextBox();
-    welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
-    addContextBox( welcomeBox, -1, true );
+   // ContextBox *welcomeBox = new ContextBox();
+   // welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
+   // addContextBox( welcomeBox, -1, true );
 
 
     AlbumBox *albumBox = new AlbumBox();
@@ -149,6 +153,13 @@ void ContextView::introAnimationComplete()
     }
 
     addContextBox( albumBox, -1, true );
+
+    //testing
+
+    debug() << KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) << endl;
+    QGraphicsSvgItem * svg = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
+    svg->scale(0.5, 0.5 );
+    addContextBox( svg , -1, true );
 }
 
 
