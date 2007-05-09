@@ -180,7 +180,8 @@ UrlLoader::~UrlLoader()
     if( Playlist::instance() )
     {
         Playlist::instance()->unlock();
-        delete m_markerListViewItem;
+        if( m_markerListViewItem )
+           delete m_markerListViewItem;
     }
 
     delete m_xmlSource;

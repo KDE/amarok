@@ -1612,7 +1612,7 @@ Playlist::activate( QListViewItem *item )
         return;
     }
 
-    if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
+    if( dynamicMode() && !Amarok::repeatTrack() )
     {
         if( m_currentTrack && item->isDynamicEnabled() )
         {
@@ -1645,7 +1645,7 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
-        if( m_currentTrack && m_currentTrack != item )
+        if( !m_dynamicDirt && m_currentTrack && m_currentTrack != item )
         {
             m_currentTrack->setDynamicEnabled( false );
             advanceDynamicTrack();
@@ -2178,15 +2178,11 @@ Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
 
-    //HACK dynamic mode can't deal with disabled items at the bottom...
-    //so only allow ascending sort in dynamic mode
+    //HACK There are reasons to allow sorting in dynamic mode, but
+    //it breaks other things that I don't have the time or patience
+    //to figure out...at least right now
 
-    if( dynamicMode() )
-    {
-        if( b )
-            KListView::setSorting( col, b );
-    }
-    else
+    if( !dynamicMode() )
         KListView::setSorting( col, b );
 }
 
