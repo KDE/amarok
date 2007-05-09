@@ -158,6 +158,7 @@ namespace Glow
 /// CLASS Playlist
 //////////////////////////////////////////////////////////////////////////////////////////
 
+QMutex* Playlist::s_dynamicADTMutex = new QMutex();
 Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent )
@@ -189,7 +190,7 @@ Playlist::Playlist( QWidget *parent )
         , m_dynamicDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
-        , m_insertFromADT( false )
+        , m_insertFromADT( 0 )
         , m_itemToReallyCenter( 0 )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
@@ -199,7 +200,7 @@ Playlist::Playlist( QWidget *parent )
         , m_playlistName( i18n( "Untitled" ) )
         , m_proposeOverwriting( false )
         , m_urlIndex( &PlaylistItem::url )
-         
+
 {
     s_instance = this;
 
@@ -1170,14 +1171,16 @@ Playlist::advanceDynamicTrack()
 
     // Just starting to play from stopped, don't append something needlessely
     // or, we have more than enough items in the queue.
-    bool dontAppend = !didDelete &&
-                        ( ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
-                        upcomingTracks > dynamicMode()->upcomingCount() );
+    bool dontAppend = ( !didDelete &&
+                        ( EngineController::instance()->engine()->state() == Engine::Empty ) ) ||
+                        upcomingTracks > dynamicMode()->upcomingCount();
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && stopAfterMode() != StopAfterCurrent )
     {
-        m_insertFromADT = true;
+        s_dynamicADTMutex->lock();
+        m_insertFromADT++;
+        s_dynamicADTMutex->unlock();
         addDynamicModeTracks( 1 );
     }
     m_dynamicDirt = true;
@@ -3006,14 +3009,16 @@ Playlist::customEvent( QCustomEvent *e )
                 if( prev && dynamicMode() )
                     prev->setDynamicEnabled( false );
 
-                if( m_insertFromADT )
+                s_dynamicADTMutex->lock();
+                if( m_insertFromADT > 0 )
                 {
                     if( EngineController::engine()->state() == Engine::Playing )
                         activate( after );
-                    m_insertFromADT = false;
+                    m_insertFromADT--;
                 }
                 else
                     activate( after );
+                s_dynamicADTMutex->unlock();
                 if( dynamicMode() && dynamicMode()->cycleTracks() )
                     adjustDynamicPrevious( dynamicMode()->previousCount() );
             }

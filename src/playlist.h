@@ -400,7 +400,8 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         bool          m_dynamicDirt;        //So we don't call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
         bool          m_undoDirt;           //Make sure we don't repopulate the playlist when dynamic mode and undo()
-        bool          m_insertFromADT;      //Don't automatically start playing if a user hits Next in dynamic mode when not already playing
+        int           m_insertFromADT;      //Don't automatically start playing if a user hits Next in dynamic mode when not already playing
+        static QMutex *s_dynamicADTMutex;
 
         QListViewItem *m_itemToReallyCenter;
         QListViewItem *m_renameItem;
