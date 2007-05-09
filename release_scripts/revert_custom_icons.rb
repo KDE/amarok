@@ -35,7 +35,8 @@ def fix_file(path)
   file = File.new(path, File::RDWR)
   str = file.read
 
-  str.each_line do |x|
+  array = str.split("\n")
+  array.each do |x|
     if x.include?("Amarok::icon(")
       match = /(Amarok::icon\(.*?)(".*?")/.match(x)
       if match == nil
@@ -51,7 +52,7 @@ def fix_file(path)
   end
   file.rewind
   file.truncate(0)
-  file << str 
+  file << array.join("\n")
 end
 
 # Make sure the current working directory is amarok
