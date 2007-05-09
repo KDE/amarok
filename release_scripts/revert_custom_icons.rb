@@ -17,11 +17,31 @@
  #   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          #
  ###########################################################################
  #
- # Small tool for reverting all instances of Amarok::icon("foo") back 
- # to the original oxygen icon names.
+ #   Small tool for reverting all instances of Amarok::icon("foo") back 
+ #   to the original oxygen icon names.
  #
  ###########################################################################
 
+
+def search_cpp(folder)
+  Dir.foreach(folder) do |x|
+    next if x[0, 1] == "."
+    search_cpp("#{folder}/#{x}") if FileTest.directory?("#{folder}/#{x}")
+    @cpp_files += Dir["#{folder}/#{x}/*.cpp"]
+  end
+end
+
+def fix_file(path)
+  file = File.new(path, File::RDWR)
+  str = file.read
+  
+end
+
+# Make sure the current working directory is amarok
+if not Dir::getwd().split( "/" ).last() == "amarok"
+    print "ERROR: This script must be started from the amarok/ folder. Aborting.\n\n"
+    exit(1)
+end
 
 file = File.new("src/iconloader.cpp", File::RDONLY)
 str = file.read 
@@ -32,7 +52,12 @@ str.each_line do |line|
     reg = /(".*?")(.*)(".*?")/
     a = reg.match(line)[1]
     b = reg.match(line)[3]
-    puts "#{a}  #{b}" 
+    name_table[a] = b
   end
 end
+
+@cpp_files = []
+search_cpp("src")
+
+puts @cpp_files
 
