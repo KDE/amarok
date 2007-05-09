@@ -91,16 +91,16 @@ SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &par
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-    if ( parentItem->childrenLoaded() )
-    {
+   // if ( parentItem->childrenLoaded() )
+   // {
         CollectionTreeItem *childItem = parentItem->child(row);
         if (childItem)
             return createIndex(row, column, childItem);
         else
             return QModelIndex();
-    }
-    else
-        return QModelIndex();
+    //}
+    //else
+    //    return QModelIndex();
 }
 
 QModelIndex
@@ -142,7 +142,7 @@ SingleCollectionTreeItemModel::rowCount(const QModelIndex &parent) const
    if ( parentItem->childrenLoaded() )
         return parentItem->childCount();
     else
-        return 1; //hack!
+        return 0; //hack!
 }
 
 int
@@ -222,7 +222,7 @@ SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, Collec
         new CollectionTreeItem( data, parent );
     }
     if (parent == m_rootItem )
-        debug() << "root item sucesfully popualted!!! " << endl;
+        debug() << "root item sucesfully popualted, now has " << parent->childCount() << " children" << endl;
     parent->setChildrenLoaded( true );
 }
 
@@ -330,7 +330,7 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
     //we added the collection level so we have to be careful with the item level
-    return !item->isDataItem() || item->level() < m_levelType.count(); 
+    return item->level() < m_levelType.count(); 
 
 }
 
@@ -383,12 +383,17 @@ SingleCollectionTreeItemModel::newResultReady( const QString &collectionId, Meta
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
     if ( d->m_childQueries.contains( qm ) ) {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
+        if (parent == m_rootItem ) 
+           debug() << "    m_rootItem with " << parent->childCount() <<  " children" << endl;
+        else 
+           debug() << "    something else with " << parent->childCount() <<  " children" << endl;
+   
         QModelIndex parentIndex = createIndex( parent->row(), 0, parent );
         //remove dummy row
-        beginRemoveRows( parentIndex, 0, 0 );
+       // beginRemoveRows( parentIndex, 0, 0 );
         //the row was never actually there, but we had to return 1 in rowCount to get the +
-        endRemoveRows();
-        beginInsertRows( parentIndex, 0, data.count() -1 );
+        //endRemoveRows();
+        beginInsertRows( parentIndex, 0, data.count()-1  );
         populateChildren( data, parent ); 
         endInsertRows();
     }
