@@ -22,6 +22,7 @@
  #
  ###########################################################################
 
+require 'strscan'
 
 def search_cpp(folder)
   Dir.foreach(folder) do |x|
@@ -34,25 +35,21 @@ end
 def fix_file(path)
   file = File.new(path, File::RDWR)
   str = file.read
+  str_output = str.dup
+  scanner = StringScanner.new(str)
 
-  array = str.split("\n")
-  array.each do |x|
-    if x.include?("Amarok::icon(")
-      match = /(Amarok::icon\(.*?)(".*?")/.match(x)
-      if match == nil
-        puts("Error: This line needs manual fixing:")
-        puts(x)
-        next
-      end
-      name = match[2]
-      new_name = @name_table[name]
-      new_name = name if new_name == nil
-      x.sub!("Amarok::icon( #{name} )", new_name)
-    end
+  loop do
+    scanner.scan(/(.*?)(Amarok::icon\( *?)(".*?")( *?\))/m)
+    break if scanner[3].nil? 
+    name = scanner[3]
+    whole_match = scanner[2] + scanner[3] + scanner[4]
+    new_name = @name_table[name]
+    new_name = name if new_name == nil
+    str_output.sub!(whole_match, new_name)
   end
   file.rewind
   file.truncate(0)
-  file << array.join("\n")
+  file << str_output
 end
 
 # Make sure the current working directory is amarok
