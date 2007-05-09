@@ -34,30 +34,53 @@ end
 def fix_file(path)
   file = File.new(path, File::RDWR)
   str = file.read
-  
+
+  str.each_line do |x|
+    if x.include?("Amarok::icon(")
+      match = /(Amarok::icon\(.*?)(".*?")/.match(x)
+      if match == nil
+        puts("Error: This line needs manual fixing:")
+        puts(x)
+        next
+      end
+      name = match[2]
+      new_name = @name_table[name]
+      new_name = name if new_name == nil
+      x.sub!("Amarok::icon( #{name} )", new_name)
+    end
+  end
+  file.rewind
+  file.truncate(0)
+  file << str 
 end
 
 # Make sure the current working directory is amarok
-if not Dir::getwd().split( "/" ).last() == "amarok"
+unless Dir::getwd().split( "/" ).last() == "amarok"
     print "ERROR: This script must be started from the amarok/ folder. Aborting.\n\n"
     exit(1)
 end
 
 file = File.new("src/iconloader.cpp", File::RDONLY)
 str = file.read 
-name_table = Hash.new
+@name_table = Hash.new
 
 str.each_line do |line|
   if line.include?('iconMap["')
     reg = /(".*?")(.*)(".*?")/
     a = reg.match(line)[1]
     b = reg.match(line)[3]
-    name_table[a] = b
+    @name_table[a] = b
   end
 end
 
 @cpp_files = []
 search_cpp("src")
 
-puts @cpp_files
+@cpp_files.each do |x|
+  puts("Processing " + x)
+  fix_file(x)
+end
+
+puts
+puts("Done.")
 
