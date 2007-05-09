@@ -25,10 +25,10 @@
 require 'strscan'
 
 def search_cpp(folder)
+  @cpp_files += Dir["#{folder}/*.cpp"]
   Dir.foreach(folder) do |x|
     next if x[0, 1] == "."
     search_cpp("#{folder}/#{x}") if FileTest.directory?("#{folder}/#{x}")
-    @cpp_files += Dir["#{folder}/#{x}/*.cpp"]
   end
 end
 
@@ -37,19 +37,22 @@ def fix_file(path)
   str = file.read
   str_output = str.dup
   scanner = StringScanner.new(str)
-
+  modified = false
   loop do
     scanner.scan(/(.*?)(Amarok::icon\( *?)(".*?")( *?\))/m)
     break if scanner[3].nil? 
+    modified = true
     name = scanner[3]
     whole_match = scanner[2] + scanner[3] + scanner[4]
     new_name = @name_table[name]
     new_name = name if new_name == nil
     str_output.sub!(whole_match, new_name)
   end
-  file.rewind
-  file.truncate(0)
-  file << str_output
+  if modified
+    file.rewind
+    file.truncate(0)
+    file << str_output
+  end
 end
 
 # Make sure the current working directory is amarok
@@ -74,9 +77,12 @@ end
 @cpp_files = []
 search_cpp("src")
 
+i = 0
 @cpp_files.each do |x|
   puts("Processing " + x)
+  puts("#{(100.0 / @cpp_files.length * i).to_i} %")
   fix_file(x)
+  i = i + 1
 end
 
 puts
