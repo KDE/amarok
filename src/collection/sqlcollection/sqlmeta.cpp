@@ -87,9 +87,6 @@ SqlTrack::fullPrettyName() const
 {
     QString s = m_artist->name();
 
-    //NOTE this gets regressed often, please be careful!
-    //     whatever you do, handle the stream case, streams have no artist but have an excellent title
-
     //FIXME doesn't work for resume playback
 
     if( s.isEmpty() )
