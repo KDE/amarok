@@ -700,7 +700,7 @@ App::continueInit()
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), m_pPlaylistWindow, SLOT( init() ) );
-    initGlobalShortcuts();
+    //initGlobalShortcuts();
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
     {
