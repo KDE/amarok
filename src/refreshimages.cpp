@@ -62,7 +62,7 @@ RefreshImages::RefreshImages()
         KIO::Scheduler::scheduleJob( job );
 
         //Amarok::StatusBar::instance()->newProgressOperation( job );
-        job->setName( md5sum.toAscii() );
+        job->setObjectName( md5sum.toAscii() );
         it++; //iterate to the next set
 
         m_jobInfo[md5sum] = JobInfo( asin, locale, it == end );
@@ -76,7 +76,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     if ( xmlJob->error() )
     {
         Amarok::StatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
-        if ( m_jobInfo[ xmlJob->name() ].m_last )
+        if ( m_jobInfo[ xmlJob->objectName() ].m_last )
             deleteLater();
 
         return;
@@ -110,16 +110,16 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
     {
         //Amazon sometimes takes down covers
-        CollectionDB::instance()->removeInvalidAmazonInfo(xmlJob->name());
+        CollectionDB::instance()->removeInvalidAmazonInfo(xmlJob->objectName());
         return;
     }
 
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
     //Amarok::StatusBar::instance()->newProgressOperation( imageJob );
-    imageJob->setName(xmlJob->name());
+    imageJob->setObjectName(xmlJob->objectName());
     //get the URL of the detail page
-    m_jobInfo[xmlJob->name()].m_detailUrl = doc.documentElement()
+    m_jobInfo[xmlJob->objectName()].m_detailUrl = doc.documentElement()
        .namedItem( "Items" )
        .namedItem( "Item" )
        .namedItem( "DetailPageURL" ).firstChild().toText().data();
@@ -130,21 +130,21 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
 {
    if( imageJob->error() ) {
         Amarok::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
-        if(m_jobInfo[imageJob->name()].m_last)
+        if(m_jobInfo[imageJob->objectName()].m_last)
             deleteLater();
 
         return;
     }
     QImage img;
     img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data());
-    img.setText( "amazon-url", 0, m_jobInfo[imageJob->name()].m_detailUrl);
-    img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->name(), "PNG");
+    img.setText( "amazon-url", 0, m_jobInfo[imageJob->objectName()].m_detailUrl);
+    img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->objectName(), "PNG");
 
-    CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->name()].m_asin
-        , m_jobInfo[imageJob->name()].m_locale
-        , imageJob->name());
+    CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->objectName()].m_asin
+        , m_jobInfo[imageJob->objectName()].m_locale
+        , imageJob->objectName());
 
-    if(m_jobInfo[imageJob->name()].m_last)
+    if(m_jobInfo[imageJob->objectName()].m_last)
         deleteLater();
 }
 
