@@ -65,7 +65,7 @@ DaapClient::DaapClient()
     , m_broadcastServer( false ) // to abide by "all ports closed" policy, we default to not broadcasting music
 {
 DEBUG_BLOCK
-    setName( "daapclient" );
+    setObjectName( "daapclient" );
     m_name = i18n( "Shared Music" );
     m_hasMountPoint      = false;
     m_autoDeletePodcasts = false;
@@ -132,7 +132,7 @@ DaapClient::openDevice(bool /* silent=false */)
     if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
-        m_browser->setName("daapServiceBrowser");
+        m_browser->setObjectName("daapServiceBrowser");
         connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
                       this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
         connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
