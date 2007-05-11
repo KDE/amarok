@@ -118,8 +118,8 @@ set(libconfigdialog_SRCS
     configdialog/configdialognew.cpp)
 
 kde4_add_ui_files(libconfigdialog_SRCS
-    configdialog/General.ui
-    configdialog/Appearance.ui)
+    configdialog/GeneralConfig.ui
+    configdialog/AppearanceConfig.ui)
 
 set(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
