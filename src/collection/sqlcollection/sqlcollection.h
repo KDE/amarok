@@ -58,6 +58,8 @@ class SqlCollection : public Collection
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table );
 
+        virtual QString escape( QString text ) const;
+
         SqlRegistry* registry() const;
 
         void removeCollection();    //testing, remove later

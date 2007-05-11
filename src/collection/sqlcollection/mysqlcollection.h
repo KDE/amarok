@@ -28,6 +28,8 @@ class MySqlCollection : public SqlCollection
         virtual ~MySqlCollection();
 
         virtual QueryMaker* queryBuilder();
+
+        virtual QString escape( QString text ) const;
 };
 
 #endif

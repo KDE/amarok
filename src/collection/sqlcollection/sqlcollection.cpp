@@ -138,5 +138,11 @@ SqlCollection::removeCollection()
     emit remove();
 }
 
+QString
+SqlCollection::escape( QString text ) const           //krazy:exclude=constref
+{
+    return text.replace( '\'', "''" );;
+}
+
 #include "sqlcollection.moc"
 

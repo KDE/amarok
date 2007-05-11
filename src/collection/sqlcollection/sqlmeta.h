@@ -82,6 +82,7 @@ class SqlTrack : public Track
         virtual void setDiscNumber( int newDiscNumber );
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual int playCount() const { return m_playCount; }
+        virtual uint firstPlayed() const { return m_firstPlayed; }
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();
@@ -89,6 +90,10 @@ class SqlTrack : public Track
 
     protected:
         void notifyObservers();
+        void commitMetaDataChanges();
+        void writeMetaDataToFile();
+        void writeMetaDataToDb();
+        void updateStatisticsInDb();
 
     private:
         SqlCollection* m_collection;
@@ -96,11 +101,15 @@ class SqlTrack : public Track
         QString m_title;
         KUrl m_url;
 
+        int m_deviceid;
+        QString m_rpath;
+
         int m_length;
         int m_filesize;
         int m_trackNumber;
         int m_discNumber;
         uint m_lastPlayed;
+        uint m_firstPlayed;
         int m_playCount;
         int m_bitrate;
         int m_sampleRate;
@@ -115,6 +124,10 @@ class SqlTrack : public Track
         YearPtr m_year;
 
         QList<TrackObserver*> m_observers;
+
+        bool m_batchUpdate;
+        class MetaCache;
+        MetaCache *m_cache;
 };
 
 class SqlArtist : public Artist
@@ -130,6 +143,9 @@ class SqlArtist : public Artist
         virtual void invalidateCache();
 
         virtual TrackList tracks();
+
+        //SQL specific methods
+        int id() const { return m_id; }
 
     private:
         SqlCollection* m_collection;
@@ -167,6 +183,9 @@ class SqlAlbum : public Album
         virtual void image() const { }  //TODO: fixme
         virtual void updateImage() { }
 
+        //SQL specific methods
+        int id() const { return m_id; }
+
     private:
         SqlCollection* m_collection;
         QString m_name;
@@ -193,6 +212,9 @@ class SqlComposer : public Composer
 
         virtual TrackList tracks();
 
+        //SQL specific methods
+        int id() const { return m_id; }
+
     private:
         SqlCollection* m_collection;
         QString m_name;
@@ -217,6 +239,9 @@ class SqlGenre : public Genre
 
         virtual TrackList tracks();
 
+        //SQL specific methods
+        int id() const { return m_id; }
+
     private:
         SqlCollection* m_collection;
         QString m_name;
@@ -240,6 +265,9 @@ class SqlYear : public Year
         virtual void invalidateCache();
 
         virtual TrackList tracks();
+
+        //SQL specific methods
+        int id() const { return m_id; }
 
     private:
         SqlCollection* m_collection;

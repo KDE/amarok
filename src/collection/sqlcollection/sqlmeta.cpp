@@ -30,13 +30,30 @@
 
 #include <klocale.h>
 
+struct SqlTrack::MetaCache
+{
+    QString title;
+    QString artist;
+    QString album;
+    QString composer;
+    QString genre;
+    QString year;
+    QString comment;
+    double score;
+    int rating;
+    int trackNumber;
+    int discNumber;
+};
+
 SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( collection )
+    , m_batchUpdate( false )
+    , m_cache( 0 )
 {
-    int deviceid = result[0].toInt();
-    QString rpath = result[1];
-    m_url = KUrl( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
+    m_deviceid = result[0].toInt();
+    m_rpath = result[1];
+    m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
     m_title = result[2];
     m_comment = result[3];
     m_trackNumber = result[4].toInt();
@@ -47,7 +64,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_length = result[9].toInt();
     m_filesize = result[10].toInt();
     m_sampleRate = result[11].toInt();
-    //create date
+    m_firstPlayed = result[12].toInt();
     m_lastPlayed = result[13].toUInt();
     m_playCount = result[14].toInt();
     //file type
@@ -127,48 +144,83 @@ SqlTrack::prettyName() const
 void
 SqlTrack::setArtist( const QString &newArtist )
 {
-    //invalidate cache of the old artist...
-    KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-    m_artist = m_collection->registry()->getArtist( newArtist );
-    //and the new one
-    KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->artist = newArtist;
+    else
+    {
+        //invalidate cache of the old artist...
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        m_artist = m_collection->registry()->getArtist( newArtist );
+        //and the new one
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setGenre( const QString &newGenre )
 {
-    KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-    m_genre = m_collection->registry()->getGenre( newGenre );
-    KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->genre = newGenre;
+    else
+    {
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        m_genre = m_collection->registry()->getGenre( newGenre );
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setComposer( const QString &newComposer )
 {
-    KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-    m_composer = m_collection->registry()->getComposer( newComposer );
-    KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->composer = newComposer;
+    else
+    {
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        m_composer = m_collection->registry()->getComposer( newComposer );
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setYear( const QString &newYear )
 {
-    KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-    m_year = m_collection->registry()->getYear( newYear );
-    KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->year = newYear;
+    else
+    {
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        m_year = m_collection->registry()->getYear( newYear );
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
-    KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-    m_album = m_collection->registry()->getAlbum( newAlbum );
-    KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->album = newAlbum;
+    else
+    {
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        m_album = m_collection->registry()->getAlbum( newAlbum );
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
@@ -194,54 +246,165 @@ SqlTrack::notifyObservers()
 void
 SqlTrack::setScore( double newScore )
 {
-    m_score = newScore;
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->score = newScore;
+    else
+    {
+        m_score = newScore;
+        updateStatisticsInDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setRating( int newRating )
 {
-    m_rating = newRating;
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->rating = newRating;
+    else
+    {
+        m_rating = newRating;
+        updateStatisticsInDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setTrackNumber( int newTrackNumber )
 {
-    m_trackNumber= newTrackNumber;
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->trackNumber = newTrackNumber;
+    else
+    {
+        m_trackNumber= newTrackNumber;
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setDiscNumber( int newDiscNumber )
 {
-    m_discNumber = newDiscNumber;
-    notifyObservers();
+    if( m_batchUpdate )
+        m_cache->discNumber = newDiscNumber;
+    else
+    {
+        m_discNumber = newDiscNumber;
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
 }
 
 void
 SqlTrack::setComment( const QString &newComment )
 {
-    m_comment = newComment;
-    notifyObservers();
+    if( !m_batchUpdate )
+    {
+        m_comment = newComment;
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
+    else
+        m_cache->comment = newComment;
 }
 
 void
 SqlTrack::beginMetaDataUpdate()
 {
-    //TODO method stub
+    m_batchUpdate = true;
+    m_cache = new MetaCache;
+    //init cache with current values
+    m_cache->title = m_title;
+    m_cache->artist = m_artist->name();
+    m_cache->album = m_album->name();
+    m_cache->composer = m_composer->name();
+    m_cache->genre = m_genre->name();
+    m_cache->year = m_year->name();
+    m_cache->comment = m_comment;
+    m_cache->score = m_score;
+    m_cache->rating = m_rating;
+    m_cache->trackNumber = m_trackNumber;
+    m_cache->discNumber = m_discNumber;
 }
 
 void
 SqlTrack::endMetaDataUpdate()
 {
-    //TODO method stub
+    commitMetaDataChanges();
+    m_batchUpdate = false;
+    delete m_cache;
+    notifyObservers();
 }
 
 void
 SqlTrack::abortMetaDataUpdate()
 {
     //TODO method stub
+    m_batchUpdate = false;
+    delete m_cache;
+}
+
+
+void
+SqlTrack::writeMetaDataToFile()
+{
+    //TODO method stub
+}
+
+void
+SqlTrack::commitMetaDataChanges()
+{
+    if( m_cache )
+    {
+        m_title = m_cache->title;
+        m_comment = m_cache->comment;
+        m_score = m_cache->score;
+        m_rating = m_cache->rating;
+        m_trackNumber = m_cache->trackNumber;
+        m_discNumber = m_cache->discNumber;
+        m_artist = m_collection->registry()->getArtist( m_cache->artist );
+        m_album = m_collection->registry()->getAlbum( m_cache->album );
+        m_composer = m_collection->registry()->getComposer( m_cache->composer );
+        m_genre = m_collection->registry()->getGenre( m_cache->genre );
+        m_year = m_collection->registry()->getYear( m_cache->year );
+        writeMetaDataToDb();
+        writeMetaDataToFile();
+        updateStatisticsInDb();
+    }
+}
+
+void
+SqlTrack::writeMetaDataToDb()
+{
+    QString update = "UPDATE tags SET %1 WHERE deviceid = %2 AND url ='%3';";
+    QString tags = "title='%1',comment='%2',tracknumber=%3,discnumber=%4, artist=%5,album=%6,genre=%7,composer=%8,year=%9";
+    QString artist = QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() );
+    QString album = QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() );
+    QString genre = QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() );
+    QString composer = QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() );
+    QString year = QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() );
+    tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
+              QString::number( m_trackNumber ), QString::number( m_discNumber ),
+              artist, album, genre, composer, year );
+    update.arg( tags, QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    m_collection->query( update );
+}
+
+void
+SqlTrack::updateStatisticsInDb()
+{
+    QString update = "UPDATE statistics SET %1 WHERE deviceid = %2 AND url ='%3';";
+    QString data = "rating=%1, percentage=%2, playcounter=%3, accessdate=%4, createdate=%5";
+    data.arg( m_rating );
+    data.arg( m_score );
+    data.arg( m_playCount );
+    data.arg( m_lastPlayed );
+    data.arg( m_firstPlayed );
+    update.arg( data, QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    m_collection->query( update );
 }
 
 

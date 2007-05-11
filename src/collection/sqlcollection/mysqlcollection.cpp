@@ -36,3 +36,9 @@ MySqlCollection::queryBuilder()
 {
     return new MySqlQueryMaker( this );
 }
+
+QString
+MySqlCollection::escape( QString text ) const               //krazy:exclude=constref
+{
+    return text.replace("\\", "\\\\").replace( '\'', "''" );
+}
