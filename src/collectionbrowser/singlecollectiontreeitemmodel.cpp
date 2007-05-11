@@ -84,6 +84,8 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
 QModelIndex
 SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &parent) const
 {
+    
+    DEBUG_BLOCK
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
@@ -106,14 +108,25 @@ SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &par
 QModelIndex
 SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
 {
-     if ( !index.isValid() )
-         return QModelIndex();
 
+     DEBUG_BLOCK
+     if ( !index.isValid() ) {
+         debug() << "Invalid index" << endl;
+         return QModelIndex();
+     }
      CollectionTreeItem *childItem = static_cast<CollectionTreeItem*>(index.internalPointer());
      CollectionTreeItem *parentItem = childItem->parent();
 
-     if ( parentItem == m_rootItem || parentItem == 0 )
+
+     if ( parentItem == 0 ) {
+         debug() << "No parent" << endl;
          return QModelIndex();
+     }
+
+     if ( parentItem == m_rootItem ) {
+         debug() << "parent is root item" << endl;
+         return QModelIndex();
+     }
 
      return createIndex( parentItem->row(), 0, parentItem );
 }
@@ -156,8 +169,10 @@ SingleCollectionTreeItemModel::columnCount(const QModelIndex &parent) const
 QVariant
 SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-     if (!index.isValid())
-         return QVariant();
+
+    DEBUG_BLOCK
+    if (!index.isValid())
+        return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
 
@@ -178,6 +193,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags
 SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 {
+    DEBUG_BLOCK
     if ( !index.isValid() || !index.parent().isValid() )
         return Qt::ItemIsEnabled;
 
@@ -222,7 +238,7 @@ SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, Collec
         new CollectionTreeItem( data, parent );
     }
     if (parent == m_rootItem )
-        debug() << "root item sucesfully popualted, now has " << parent->childCount() << " children" << endl;
+        debug() << "root item sucesfully populated, now has " << parent->childCount() << " children" << endl;
     parent->setChildrenLoaded( true );
 }
 
@@ -393,8 +409,8 @@ SingleCollectionTreeItemModel::newResultReady( const QString &collectionId, Meta
        // beginRemoveRows( parentIndex, 0, 0 );
         //the row was never actually there, but we had to return 1 in rowCount to get the +
         //endRemoveRows();
-        beginInsertRows( parentIndex, 0, data.count()-1  );
-        populateChildren( data, parent ); 
+        beginInsertRows( parentIndex, 0, data.count()-1 );
+        //populateChildren( data, parent ); 
         endInsertRows();
     }
 }
