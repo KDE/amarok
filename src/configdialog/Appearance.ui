@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>Options2</class>
- <widget class="QWidget" name="Options2" >
+ <class>AppearanceConfig</class>
+ <widget class="QWidget" name="AppearanceConfig" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -397,7 +397,7 @@
   <connection>
    <sender>installPushButton</sender>
    <signal>clicked()</signal>
-   <receiver>Options2</receiver>
+   <receiver>AppearanceConfig</receiver>
    <slot>installPushButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -413,7 +413,7 @@
   <connection>
    <sender>retrievePushButton</sender>
    <signal>clicked()</signal>
-   <receiver>Options2</receiver>
+   <receiver>AppearanceConfig</receiver>
    <slot>retrievePushButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -429,7 +429,7 @@
   <connection>
    <sender>uninstallPushButton</sender>
    <signal>clicked()</signal>
-   <receiver>Options2</receiver>
+   <receiver>AppearanceConfig</receiver>
    <slot>uninstallPushButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -445,7 +445,7 @@
   <connection>
    <sender>styleComboBox</sender>
    <signal>activated(QString)</signal>
-   <receiver>Options2</receiver>
+   <receiver>AppearanceConfig</receiver>
    <slot>styleComboBox_activated(QString)</slot>
    <hints>
     <hint type="sourcelabel" >

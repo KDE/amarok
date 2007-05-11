@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>General</class>
- <widget class="QWidget" name="General" >
+ <class>GeneralConfig</class>
+ <widget class="QWidget" name="GeneralConfig" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -654,7 +654,7 @@
   <connection>
    <sender>kcfg_ShowMoodbar</sender>
    <signal>toggled(bool)</signal>
-   <receiver>General</receiver>
+   <receiver>GeneralConfig</receiver>
    <slot>slotUpdateMoodFrame()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -670,7 +670,7 @@
   <connection>
    <sender>kcfg_MakeMoodier</sender>
    <signal>toggled(bool)</signal>
-   <receiver>General</receiver>
+   <receiver>GeneralConfig</receiver>
    <slot>slotUpdateMoodFrame()</slot>
    <hints>
     <hint type="sourcelabel" >
