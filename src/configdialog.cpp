@@ -62,7 +62,7 @@ email                : markey@web.de
 #include <kstandarddirs.h>
 
 
-#undef Q_WS_X11 //HACK: The OSD is broken anyway
+//#undef Q_WS_X11 //HACK: The OSD is broken anyway
 
 
 namespace Amarok {
@@ -263,10 +263,10 @@ void AmarokConfigDialog::updateButtons()
 void AmarokConfigDialog::updateSettings()
 {
 #ifdef Q_WS_X11
-    OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
-    AmarokConfig::setOsdAlignment( osd->alignment() );
-    AmarokConfig::setOsdYOffset( osd->y() );
-    Amarok::OSD::instance()->applySettings();
+    //OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
+    //AmarokConfig::setOsdAlignment( osd->alignment() );
+    //AmarokConfig::setOsdYOffset( osd->y() );
+    //Amarok::OSD::instance()->applySettings();
 #endif
 
     CollectionSetup* cs = findChild<CollectionSetup*>("CollectionSetup");
@@ -359,8 +359,8 @@ bool AmarokConfigDialog::hasChanged()
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
 #ifdef Q_WS_X11
-            osd->alignment() != AmarokConfig::osdAlignment() ||
-            osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
+            //osd->alignment() != AmarokConfig::osdAlignment() ||
+            //osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
 #endif
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             Amarok::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||

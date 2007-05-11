@@ -1,0 +1,61 @@
+/***************************************************************************
+begin                : 2004/02/07
+copyright            : (C) Mark Kretschmann
+email                : markey@web.de
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef AMAROK2CONFIGDIALOG_H
+#define AMAROK2CONFIGDIALOG_H
+
+#include <qmap.h>
+#include <q3valuelist.h>
+//Added by qt3to4:
+#include <QByteArray>
+
+#include <kconfigdialog.h>
+
+class QComboBox;
+class Q3GroupBox;
+class KVBox;
+
+
+class MediumPluginManager;
+
+class Amarok2ConfigDialog : public KConfigDialog
+{
+    Q_OBJECT
+
+    public:
+        Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
+        ~Amarok2ConfigDialog();
+
+        void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
+                      const QString &header = QString(), bool manage=true);
+        void showPageByName( const QByteArray& page );
+    protected slots:
+        void updateButtons();
+        void updateSettings();
+        void updateWidgets();
+        void updateWidgetsDefault();
+
+    private slots:
+
+    protected:
+        bool hasChanged();
+        bool isDefault();
+
+    private:
+        Q3ValueList<QWidget*> m_pageList;
+};
+
+
+#endif // AMAROK2CONFIGDIALOG_H

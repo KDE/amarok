@@ -49,6 +49,7 @@ endif (USE_SYSTEM_SQLITE)
 include_directories(
 	amarokcore
 	analyzers
+    configdialog
 	plugin
 	statusbar
 	mediadevice
@@ -112,6 +113,13 @@ set(libmp3tunesservice_SRCS
 	servicebrowser/mp3tunes/mp3tunesdatafetcher.cpp)
 
 #qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
+
+set(libconfigdialog_SRCS
+    configdialog/configdialog.cpp)
+
+kde4_add_ui_files(libconfigdialog_SRCS
+    configdialog/General.ui
+    configdialog/Appearance.ui)
 
 set(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
@@ -180,7 +188,7 @@ set(libstatusbar_SRCS
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS} #${libscriptableservice_SRCS}
         ${libanalyzers_SRCS} ${libcollectionbrowser_SRCS} ${libcontextview_SRCS}
-        ${libjamendoservice_SRCS} #${libmagnatunestore_SRCS} ${libmp3tunesservice_SRCS}
+        ${libjamendoservice_SRCS} ${libconfigdialog_SRCS} #${libmagnatunestore_SRCS} ${libmp3tunesservice_SRCS}
    collection/querymaker.cpp
    collection/collection.cpp
    collection/collectionmanager.cpp

@@ -1,0 +1,462 @@
+<ui version="4.0" >
+ <class>Options2</class>
+ <widget class="QWidget" name="Options2" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>447</width>
+    <height>422</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Options2</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="Q3GroupBox" name="groupBox6" >
+     <property name="title" >
+      <string>Icons</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_UseCustomIconTheme" >
+        <property name="toolTip" >
+         <string>Check to enable Amarok's custom icon theme.&lt;br></string>
+        </property>
+        <property name="whatsThis" >
+         <string>Check to enable Amarok's custom icon theme.</string>
+        </property>
+        <property name="text" >
+         <string>Use custom icon &amp;theme (requires restart)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3GroupBox" name="groupBox4" >
+     <property name="title" >
+      <string>Fonts</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_UseCustomFonts" >
+        <property name="toolTip" >
+         <string>Check to enable custom fonts.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Check to enable custom fonts.</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Use custom fonts</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Q3GroupBox" name="fontGroupBox" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title" >
+         <string/>
+        </property>
+        <property name="flat" >
+         <bool>true</bool>
+        </property>
+        <property name="frameShape" >
+         <enum>Q3GroupBox::NoFrame</enum>
+        </property>
+        <property name="lineWidth" >
+         <number>0</number>
+        </property>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="textLabel3" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>The font to use in the playlist window.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>The font to use in the playlist window.</string>
+           </property>
+           <property name="text" >
+            <string>Playlist Window:</string>
+           </property>
+           <property name="wordWrap" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="KFontRequester" name="kcfg_PlaylistWindowFont" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>The font to use in the playlist window.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>The font to use in the playlist window.</string>
+           </property>
+           <property name="sampleText" >
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="textLabel3_2" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>The font to use in the context browser.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>The font to use in the context browser.</string>
+           </property>
+           <property name="text" >
+            <string>Context Sidebar:</string>
+           </property>
+           <property name="wordWrap" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="KFontRequester" name="kcfg_ContextBrowserFont" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>The font to use in the context browser.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>The font to use in the context browser.</string>
+           </property>
+           <property name="sampleText" >
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3GroupBox" name="groupBox3" >
+     <property name="title" >
+      <string>Color Scheme</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="textLabel1_3" >
+          <property name="toolTip" >
+           <string>The color that is used when fresh items are being loaded in the playlist.</string>
+          </property>
+          <property name="text" >
+           <string>Color for new playlist items:</string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_NewPlaylistItemsColor</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KColorButton" name="kcfg_NewPlaylistItemsColor" >
+          <property name="toolTip" >
+           <string>The color that is used when fresh items are being loaded in the playlist.</string>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3GroupBox" name="contextGroupBox" >
+     <property name="title" >
+      <string>Context Browser Style</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="textLabel1_2" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string/>
+          </property>
+          <property name="text" >
+           <string>Select a style:</string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KComboBox" name="styleComboBox" >
+          <property name="toolTip" >
+           <string>Select the style of the Context Browser.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Select the style of the Context Browser.</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QPushButton" name="installPushButton" >
+          <property name="toolTip" >
+           <string>Click to install a new Context Browser style.&lt;br>Tip: More styles can be found on &lt;a href='http://kde-look.org'>http://kde-look.org&lt;/a></string>
+          </property>
+          <property name="whatsThis" >
+           <string>Select and install a new Context Browser style.</string>
+          </property>
+          <property name="text" >
+           <string>Install New Style...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="retrievePushButton" >
+          <property name="toolTip" >
+           <string>Click to download new Context Browser styles.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Select and download new Context Browser styles.</string>
+          </property>
+          <property name="text" >
+           <string>Download Styles...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="uninstallPushButton" >
+          <property name="toolTip" >
+           <string>Click to uninstall the selected Context Browser style.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Uninstall the selected Context Browser style.</string>
+          </property>
+          <property name="text" >
+           <string>Uninstall Style</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KColorButton</class>
+   <extends>QPushButton</extends>
+   <header>kcolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KFontRequester</class>
+   <extends>QWidget</extends>
+   <header>kfontrequester.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local" >kfontrequester.h</include>
+  <include location="local" >kfontrequester.h</include>
+  <include location="local" >kcolorbutton.h</include>
+  <include location="local" >kcombobox.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>kcfg_UseCustomFonts</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fontGroupBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>installPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Options2</receiver>
+   <slot>installPushButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>retrievePushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Options2</receiver>
+   <slot>retrievePushButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uninstallPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Options2</receiver>
+   <slot>uninstallPushButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>styleComboBox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>Options2</receiver>
+   <slot>styleComboBox_activated(QString)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

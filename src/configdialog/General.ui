@@ -1,0 +1,687 @@
+<ui version="4.0" >
+ <class>General</class>
+ <widget class="QWidget" name="General" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>425</width>
+    <height>686</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>General</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="Q3GroupBox" name="generalBox" >
+     <property name="title" >
+      <string>General Options</string>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_ShowSplashscreen" >
+        <property name="toolTip" >
+         <string>Check to enable the splashscreen during Amarok startup.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Check to enable the splashscreen during Amarok startup.</string>
+        </property>
+        <property name="text" >
+         <string>Sho&amp;w splash-screen on startup</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_ShowTrayIcon" >
+        <property name="toolTip" >
+         <string>Check to enable the Amarok system tray icon.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Check to enable the Amarok system tray icon.</string>
+        </property>
+        <property name="text" >
+         <string>Show tray &amp;icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>16</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="kcfg_AnimateTrayIcon" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="toolTip" >
+           <string>Check to animate the Amarok system tray icon.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Check to animate the Amarok system tray icon.</string>
+          </property>
+          <property name="text" >
+           <string>&amp;Flash tray icon when playing</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="textLabel1" >
+          <property name="toolTip" >
+           <string>Size of the cover image in the context viewer in pixels.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Size of the cover image in the context viewer in pixels.</string>
+          </property>
+          <property name="text" >
+           <string>Default si&amp;ze for cover previews:</string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_CoverPreviewSize</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="kcfg_CoverPreviewSize" >
+          <property name="toolTip" >
+           <string>Size of the cover images in the context viewer in pixels.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Size of the cover images in the context viewer in pixels.</string>
+          </property>
+          <property name="suffix" >
+           <string>px</string>
+          </property>
+          <property name="minimum" >
+           <number>50</number>
+          </property>
+          <property name="maximum" >
+           <number>300</number>
+          </property>
+          <property name="value" >
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="textLabel1_2" >
+          <property name="minimumSize" >
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>External web &amp;browser:</string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+          <property name="buddy" >
+           <cstring>kComboBox_browser</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KComboBox" name="kComboBox_browser" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip" >
+           <string>Choose the external web browser to be used by Amarok.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>50</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QCheckBox" name="checkBox_customBrowser" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Use &amp;another browser:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KLineEdit" name="kLineEdit_customBrowser" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip" >
+           <string>Enter filename of external web browser.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>50</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3GroupBox" name="componentsBox" >
+     <property name="title" >
+      <string>Components</string>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_UseScores" >
+        <property name="toolTip" >
+         <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
+        </property>
+        <property name="text" >
+         <string>Use &amp;scores</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_UseRatings" >
+        <property name="toolTip" >
+         <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
+        </property>
+        <property name="text" >
+         <string>Use ratings</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line1" >
+        <property name="frameShape" >
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="K3ActiveLabel" native="1" name="moodbarHelpLabel" >
+        <property name="text" stdset="0" >
+         <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'>moodbar package&lt;/a> installed to enable the moodbar feature.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Q3Frame" name="moodFrame" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth" >
+         <number>0</number>
+        </property>
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <layout class="QVBoxLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="leftMargin" >
+          <number>0</number>
+         </property>
+         <property name="topMargin" >
+          <number>0</number>
+         </property>
+         <property name="rightMargin" >
+          <number>0</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="kcfg_ShowMoodbar" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="toolTip" >
+            <string>Displays a visual representation of the current track in the column of the playlist window.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Displays a visual representation of the current track in the column of the playlist window.</string>
+           </property>
+           <property name="text" >
+            <string>Use &amp;moods</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType" >
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>16</width>
+               <height>21</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="kcfg_MakeMoodier" >
+             <property name="enabled" >
+              <bool>true</bool>
+             </property>
+             <property name="toolTip" >
+              <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+             </property>
+             <property name="whatsThis" >
+              <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+             </property>
+             <property name="text" >
+              <string>Make m&amp;oodier:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="kcfg_AlterMood" >
+             <property name="enabled" >
+              <bool>false</bool>
+             </property>
+             <item>
+              <property name="text" >
+               <string>Happy Like a Rainbow</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Angry as Hell</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Frozen in the Arctic</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType" >
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>130</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType" >
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>16</width>
+               <height>21</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="kcfg_MoodsWithMusic" >
+             <property name="enabled" >
+              <bool>true</bool>
+             </property>
+             <property name="toolTip" >
+              <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
+             </property>
+             <property name="whatsThis" >
+              <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
+             </property>
+             <property name="text" >
+              <string>Stor&amp;e mood data files with music</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3GroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Playlist-Window Options</string>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_SavePlaylist" >
+        <property name="toolTip" >
+         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br></string>
+        </property>
+        <property name="whatsThis" >
+         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Remember current playlist on exit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
+        <property name="toolTip" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="whatsThis" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="text" >
+         <string>Manually sa&amp;ved playlists use relative path</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_AutoShowContextBrowser" >
+        <property name="toolTip" >
+         <string>Switch to the context browser, when playing a track.&lt;br></string>
+        </property>
+        <property name="whatsThis" >
+         <string>Switch to the context browser, when playing a track.</string>
+        </property>
+        <property name="text" >
+         <string>Switch to Context &amp;Browser on track change</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>152</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>K3ActiveLabel</class>
+   <extends>QWidget</extends>
+   <header>k3activelabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local" >kcombobox.h</include>
+  <include location="local" >klineedit.h</include>
+  <include location="local" >k3activelabel.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>kcfg_ShowTrayIcon</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_AnimateTrayIcon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_customBrowser</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kComboBox_browser</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_customBrowser</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kLineEdit_customBrowser</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_ShowMoodbar</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>General</receiver>
+   <slot>slotUpdateMoodFrame()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_MakeMoodier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>General</receiver>
+   <slot>slotUpdateMoodFrame()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
