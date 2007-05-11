@@ -16,10 +16,7 @@ email                : markey@web.de
 #ifndef AMAROK2CONFIGDIALOG_H
 #define AMAROK2CONFIGDIALOG_H
 
-#include <qmap.h>
-#include <q3valuelist.h>
-//Added by qt3to4:
-#include <QByteArray>
+#include "ConfigDialogBase.h"
 
 #include <kconfigdialog.h>
 
@@ -38,9 +35,10 @@ class Amarok2ConfigDialog : public KConfigDialog
         Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
         ~Amarok2ConfigDialog();
 
-        void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
+        void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage=true);
         void showPageByName( const QByteArray& page );
+
     protected slots:
         void updateButtons();
         void updateSettings();
@@ -54,7 +52,7 @@ class Amarok2ConfigDialog : public KConfigDialog
         bool isDefault();
 
     private:
-        Q3ValueList<QWidget*> m_pageList;
+        QList<ConfigDialogBase*> m_pageList;
 };
 
 

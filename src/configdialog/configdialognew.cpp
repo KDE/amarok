@@ -19,14 +19,9 @@ email                : markey@web.de
 #include "collectiondb.h"
 #include "config-amarok.h" // Has USE_MYSQL
 #include "configdialognew.h"
-#include "contextbrowser.h"
 #include "debug.h"
-#include "directorylist.h"
-#include "enginecontroller.h"
-#include "osd.h"
-#include "playlistwindow.h"
-#include "plugin/pluginconfig.h"
-#include "pluginmanager.h"
+
+#include "AppearanceConfig.h"
 
 #include <q3groupbox.h>
 #include <QLabel>
@@ -40,8 +35,6 @@ email                : markey@web.de
 #include <QTextCodec>
 #include <QToolTip>
 #include <kvbox.h>
-//Added by qt3to4:
-#include <QByteArray>
 #include <QPixmap>
 
 #include <kapplication.h> //kapp
@@ -62,17 +55,16 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 {
     setAttribute( Qt::WA_DeleteOnClose );
 
-#if 0
-    // add pages
-    addPage( m_opt1, i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
-    addPage( m_opt2, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
-    addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
-    addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
-    addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
-    addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
-    addPage( opt8,   i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
-    addPage( opt9,   i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
-#endif
+    AppearanceConfig* appearance = new AppearanceConfig( this );
+
+    //addPage( m_opt1, i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
+    addPage( appearance, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
+    //addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
+    //addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
+    //addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
+    //addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
+    //addPage( opt8,   i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
+    //addPage( opt9,   i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)
     {
@@ -97,7 +89,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
 
 
 /** Reimplemented from KConfigDialog */
-void Amarok2ConfigDialog::addPage( QWidget *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
+void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
     // Add the widget pointer to our list, for later reference
     m_pageList << page;
@@ -137,6 +129,8 @@ void Amarok2ConfigDialog::updateButtons()
  */
 void Amarok2ConfigDialog::updateSettings()
 {
+    foreach( ConfigDialogBase* page, m_pageList )
+        page->updateSettings();
 }
 
 
@@ -172,18 +166,26 @@ void Amarok2ConfigDialog::updateWidgetsDefault()
  */
 bool Amarok2ConfigDialog::hasChanged()
 {
-    return false;
+    bool changed = false;
+
+    foreach( ConfigDialogBase* page, m_pageList )
+        if( page->hasChanged() )
+            changed = true;
+
+    return changed;
 }
 
 
 /** REIMPLEMENTED */
 bool Amarok2ConfigDialog::isDefault()
 {
-    AMAROK_NOTIMPLEMENTED
+    bool def = false;
 
-    //TODO hard to implement - what are default settings for OSD etc?
+    foreach( ConfigDialogBase* page, m_pageList )
+        if( page->hasChanged() )
+            def = true;
 
-    return false;
+    return def;
 }
 
 
