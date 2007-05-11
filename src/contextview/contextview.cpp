@@ -122,9 +122,9 @@ void ContextView::introAnimationComplete()
     clear();
     debug() << "introAnimationComplete!"  << endl;
 
-   // ContextBox *welcomeBox = new ContextBox();
-   // welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
-   // addContextBox( welcomeBox, -1, true );
+    ContextBox *welcomeBox = new ContextBox();
+    welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
+    addContextBox( welcomeBox, -1, true );
 
 
     AlbumBox *albumBox = new AlbumBox();
@@ -210,7 +210,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
     {
         // Since the items are returned in no particular order, we must sort the items first
         // based on the topmost edge of the box.
-        qSort( items.begin(), items.end(), higherThan );
+        qSort( items );
 
         if( after >= items.count() )
             after = -1;
