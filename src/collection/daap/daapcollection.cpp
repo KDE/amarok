@@ -1,4 +1,6 @@
 /* 
+   Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
+   Copyright (C) 2006 Seb Ruiz <me@sebruiz.net>
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -29,6 +31,9 @@
 #include <QStringList>
 #include <QTimer>
 
+#include <dnssd/remoteservice.h>
+#include <dnssd/servicebase.h>
+#include <dnssd/servicebrowser.h>
 #include <k3resolver.h>
 
 AMAROK_EXPORT_PLUGIN( DaapCollectionFactory )
@@ -41,14 +46,22 @@ DaapCollectionFactory::DaapCollectionFactory()
 
 DaapCollectionFactory::~DaapCollectionFactory()
 {
-    //nothing to do
+    delete m_browser;
 }
 
 void
 DaapCollectionFactory::init()
 {
     DEBUG_BLOCK
-    QTimer::singleShot( 20000, this, SLOT( connectToManualServers() ) );
+    //don't block Amarok's startup by connecting to DAAP servers
+    QTimer::singleShot( 1000, this, SLOT( connectToManualServers() ) );
+    m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
+    m_browser->setObjectName("daapServiceBrowser");
+    connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
+                  this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
+    connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
+                  this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
+    m_browser->startBrowse();
 }
 
 void
@@ -65,6 +78,7 @@ DaapCollectionFactory::connectToManualServers()
         QString ip = resolve( host );
         if( ip != "0" )
         {
+            //adding manual servers to the collectionMap doesn't make sense
             DaapCollection *coll = new DaapCollection( host, ip, port );
             emit newCollection( coll );
         }
@@ -91,6 +105,55 @@ DaapCollectionFactory::resolve( const QString &hostname )
         }
     }
     return "0"; //error condition
+}
+
+void
+DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
+{
+    DEBUG_BLOCK
+    QString key =  serverKey( service.data() );
+    if( m_collectionMap.contains( key ) )
+    {
+        DaapCollection* coll = m_collectionMap[ key ];
+        if( coll )
+            coll->serverOffline();  //collection will be deleted by collectionmanager
+        else
+            warning() << "collection already null" << endl;
+    }
+    else
+        warning() << "removing non-existant service" << endl;
+}
+
+void
+DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
+{
+    DEBUG_BLOCK
+
+    connect( service.data(), SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
+    service->resolveAsync();
+}
+
+void
+DaapCollectionFactory::resolvedDaap( bool success )
+{
+    DEBUG_BLOCK
+    const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
+    if( !success || !service ) return;
+    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
+
+    QString ip = resolve( service->hostName() );
+    if( ip == "0" || m_collectionMap.contains(serverKey( service )) ) //same server from multiple interfaces
+        return;
+
+    DaapCollection *coll = new DaapCollection( service->hostName(), ip, service->port() );
+    m_collectionMap.insert( serverKey( service ), coll );
+    emit newCollection( coll );
+}
+
+QString
+DaapCollectionFactory::serverKey( const DNSSD::RemoteService* service ) const
+{
+    return service->hostName() + ':' + QString::number( service->port() );
 }
 
 //DaapCollection
@@ -155,6 +218,12 @@ void
 DaapCollection::httpError( const QString &error )
 {
     debug() << "Http error in DaapReader: " << error << endl;
+}
+
+void
+DaapCollection::serverOffline()
+{
+    emit remove();
 }
 
 #include "daapcollection.moc"

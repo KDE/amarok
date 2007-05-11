@@ -1,4 +1,6 @@
 /* 
+   Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
+   Copyright (C) 2006 Seb Ruiz <me@sebruiz.net>
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -23,9 +25,18 @@
 #include "memorycollection.h"
 #include "reader.h"
 
+#include <QMap>
 #include <QtGlobal>
 
+#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
+
 using namespace Daap;
+
+namespace DNSSD {
+    class ServiceBrowser;
+}
+
+class DaapCollection;
 
 class DaapCollectionFactory : public CollectionFactory
 {
@@ -36,9 +47,20 @@ class DaapCollectionFactory : public CollectionFactory
 
         virtual void init();
 
+    private:
+        QString serverKey( const DNSSD::RemoteService *service ) const;
+
     private slots:
         void connectToManualServers();
         QString resolve( const QString &hostname );
+        void serverOffline( DNSSD::RemoteService::Ptr );
+        void foundDaap( DNSSD::RemoteService::Ptr );
+        void resolvedDaap( bool );
+
+    private:
+        DNSSD::ServiceBrowser* m_browser;
+
+        QMap<QString, DaapCollection*> m_collectionMap;
 };
 
 class DaapCollection : public Collection, public MemoryCollection
@@ -53,6 +75,8 @@ class DaapCollection : public Collection, public MemoryCollection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+
+        void serverOffline();
 
     private slots:
         void passwordRequired();

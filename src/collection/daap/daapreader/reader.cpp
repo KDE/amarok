@@ -298,18 +298,12 @@ Reader::songListFinished( int /*id*/, bool error )
     {
         debug() << "begin iteration..." << endl;
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
-        Debug::stamp();
         QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
-        Debug::stamp();
         DaapTrackPtr track( new DaapTrack( m_host, m_port, m_databaseId, itemId, format ) );
         track->setTitle( var.toMap()["minm"].toList().size() ? var.toMap()["minm"].toList()[0].toString() : QString() );
-        Debug::stamp();
         track->setLength( var.toMap()["astm"].toList().size() ? var.toMap()["astm"].toList()[0].toInt()/1000 : 0 );
-        Debug::stamp();
         track->setTrackNumber( var.toMap()["astn"].toList().size() ? var.toMap()["astn"].toList()[0].toInt() : 0);
-        Debug::stamp();
         QString album = var.toMap()["asal"].toList().size() ? var.toMap()["asal"].toList()[0].toString() : QString();
-        Debug::stamp();
         DaapAlbumPtr albumPtr;
         if ( albumMap.contains( album ) )
             albumPtr = DaapAlbumPtr::staticCast( albumMap.value( album ) );
@@ -322,7 +316,6 @@ Reader::songListFinished( int /*id*/, bool error )
         track->setAlbum( albumPtr );
 
         QString artist = var.toMap()["asar"].toList().size() ? var.toMap()["asar"].toList()[0].toString() : QString();
-        Debug::stamp();
         DaapArtistPtr artistPtr;
         if ( artistMap.contains( artist ) )
             artistPtr = DaapArtistPtr::staticCast( artistMap.value( artist ) );
@@ -335,7 +328,6 @@ Reader::songListFinished( int /*id*/, bool error )
         track->setArtist( artistPtr );
 
         QString year = var.toMap()["asyr"].toList().size() ? var.toMap()["asyr"].toList()[0].toString() : QString();
-        Debug::stamp();
         DaapYearPtr yearPtr;
         if ( yearMap.contains( year ) )
             yearPtr = DaapYearPtr::staticCast( yearMap.value( year ) );
@@ -348,7 +340,6 @@ Reader::songListFinished( int /*id*/, bool error )
         track->setYear( yearPtr );
 
         QString genre = var.toMap()["asgn"].toList().size() ? var.toMap()["asgn"].toList()[0].toString() : QString();
-        Debug::stamp();
         DaapGenrePtr genrePtr;
         if ( genreMap.contains( genre ) )
             genrePtr = DaapGenrePtr::staticCast( genreMap.value( genre ) );

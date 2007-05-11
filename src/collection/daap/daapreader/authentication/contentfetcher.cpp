@@ -47,11 +47,12 @@ ContentFetcher::~ContentFetcher()
 QDataStream&
 ContentFetcher::results()
 {
-    QByteArray read = readAll();
-    QBuffer* bytes = new QBuffer( &read );
-    QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
-    stream->open( QIODevice::ReadOnly );
-    QDataStream* ds = new QDataStream( stream );
+    //QByteArray read = readAll();
+    //QBuffer* bytes = new QBuffer( &read );
+    //QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
+    //stream->open( QIODevice::ReadOnly );
+    //QDataStream* ds = new QDataStream( stream );
+    QDataStream* ds = new QDataStream( readAll() );
     return *ds;
 }
 
@@ -75,7 +76,7 @@ ContentFetcher::getDaap( const QString & command, QIODevice* musicFile /*= 0*/ )
     header.setValue( "Client-DAAP-Version", "3.0" );
     header.setValue( "User-Agent", "iTunes/4.6 (Windows; N)" );
     header.setValue( "Accept", "*/*" );
-    header.setValue( "Accept-Encoding", "gzip" );
+    //header.setValue( "Accept-Encoding", "gzip" );
 
     request( header, 0, musicFile );
 }
