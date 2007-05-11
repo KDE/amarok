@@ -115,7 +115,8 @@ set(libmp3tunesservice_SRCS
 #qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 set(libconfigdialog_SRCS
-    configdialog/configdialognew.cpp)
+    configdialog/configdialognew.cpp
+    configdialog/AppearanceConfig.cpp)
 
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/GeneralConfig.ui

@@ -121,25 +121,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1" >
-          <widget class="KFontRequester" name="kcfg_PlaylistWindowFont" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip" >
-            <string>The font to use in the playlist window.</string>
-           </property>
-           <property name="whatsThis" >
-            <string>The font to use in the playlist window.</string>
-           </property>
-           <property name="sampleText" >
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0" >
           <widget class="QLabel" name="textLabel3_2" >
            <property name="sizePolicy" >
@@ -159,25 +140,6 @@
            </property>
            <property name="wordWrap" >
             <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="KFontRequester" name="kcfg_ContextBrowserFont" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip" >
-            <string>The font to use in the context browser.</string>
-           </property>
-           <property name="whatsThis" >
-            <string>The font to use in the context browser.</string>
-           </property>
-           <property name="sampleText" >
-            <string/>
            </property>
           </widget>
          </item>
@@ -363,11 +325,6 @@
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KFontRequester</class>
-   <extends>QWidget</extends>
-   <header>kfontrequester.h</header>
   </customwidget>
  </customwidgets>
  <includes>
