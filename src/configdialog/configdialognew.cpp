@@ -18,7 +18,7 @@ email                : markey@web.de
 #include "app.h"
 #include "collectiondb.h"
 #include "config-amarok.h" // Has USE_MYSQL
-#include "configdialog.h"
+#include "configdialognew.h"
 #include "contextbrowser.h"
 #include "debug.h"
 #include "directorylist.h"
@@ -197,4 +197,4 @@ bool Amarok2ConfigDialog::isDefault()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "configdialog.moc"
+#include "configdialognew.moc"
