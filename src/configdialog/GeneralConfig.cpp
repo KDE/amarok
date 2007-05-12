@@ -27,12 +27,11 @@
 
 GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
-    , m_gui( new Ui_GeneralConfig() )
 {
-    m_gui->setupUi( this ); 
+    setupUi( this ); 
 
-    connect( m_gui->kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
-    connect( m_gui->kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
+    connect( kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
+    connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
 
     slotUpdateMoodFrame();
 
@@ -56,11 +55,11 @@ GeneralConfig::GeneralConfig( QWidget* parent )
         browsers.prepend( i18n( "Default KDE Browser" ) );
 #endif
 
-    m_gui->kComboBox_browser->insertItems( -1, browsers );
-    m_gui->kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
+    kComboBox_browser->insertItems( -1, browsers );
+    kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
     int index = browsers.indexOf( AmarokConfig::externalBrowser() );
     if( index >= 0 )
-        m_gui->kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
+        kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
     else if( AmarokConfig::externalBrowser() ==
 #ifdef Q_WS_MAC
             "open"
@@ -69,17 +68,16 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 #endif
       )
     {
-        m_gui->kComboBox_browser->setCurrentItem( 0 );
+        kComboBox_browser->setCurrentItem( 0 );
     }
     else
     {
-        m_gui->checkBox_customBrowser->setChecked( true );
+        checkBox_customBrowser->setChecked( true );
     }
 }
 
 GeneralConfig::~GeneralConfig()
 {
-    delete m_gui;
 }
 
 bool
@@ -96,14 +94,14 @@ GeneralConfig::isDefault()
 
 void GeneralConfig::updateSettings()
 {
-    Amarok::setUseScores( m_gui->kcfg_UseScores->isChecked() );
-    Amarok::setUseRatings( m_gui->kcfg_UseRatings->isChecked() );
+    Amarok::setUseScores( kcfg_UseScores->isChecked() );
+    Amarok::setUseRatings( kcfg_UseRatings->isChecked() );
 
     // The following makes everything with a moodbar redraw itself.
-    Amarok::setMoodbarPrefs( m_gui->kcfg_ShowMoodbar->isChecked(),
-                             m_gui->kcfg_MakeMoodier->isChecked(),
-                             m_gui->kcfg_AlterMood->currentIndex(),
-                             m_gui->kcfg_MoodsWithMusic->isChecked() );
+    Amarok::setMoodbarPrefs( kcfg_ShowMoodbar->isChecked(),
+                             kcfg_MakeMoodier->isChecked(),
+                             kcfg_AlterMood->currentIndex(),
+                             kcfg_MoodsWithMusic->isChecked() );
 }
 
 void
@@ -111,19 +109,19 @@ GeneralConfig::slotUpdateMoodFrame()
 {
     if( Moodbar::executableExists() )
       {
-        m_gui->moodbarHelpLabel->hide();
-        m_gui->moodFrame->setEnabled(true);
+        moodbarHelpLabel->hide();
+        moodFrame->setEnabled(true);
 
-        m_gui->kcfg_MakeMoodier->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked());
-        m_gui->kcfg_AlterMood->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked() && m_gui->kcfg_MakeMoodier->isChecked());
-        m_gui->kcfg_MoodsWithMusic->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked());
+        kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
+        kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
+        kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
       }
 
     else
       {
-        m_gui->moodbarHelpLabel->show();
-        m_gui->kcfg_ShowMoodbar->setChecked(false);
-        m_gui->moodFrame->setEnabled(false);
+        moodbarHelpLabel->show();
+        kcfg_ShowMoodbar->setChecked(false);
+        moodFrame->setEnabled(false);
       }
 }
 

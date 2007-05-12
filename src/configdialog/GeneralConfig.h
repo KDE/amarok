@@ -24,7 +24,7 @@
 #include "ConfigDialogBase.h"
 
 
-class GeneralConfig : public ConfigDialogBase
+class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
 {
     Q_OBJECT
 
@@ -38,9 +38,6 @@ class GeneralConfig : public ConfigDialogBase
 
     private slots:
         void slotUpdateMoodFrame();
-
-    private:
-        Ui_GeneralConfig* m_gui;
 };
 
 

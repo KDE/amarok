@@ -24,7 +24,7 @@
 #include "ConfigDialogBase.h"
 
 
-class AppearanceConfig : public ConfigDialogBase
+class AppearanceConfig : public ConfigDialogBase, public Ui_AppearanceConfig
 {
     public:
         AppearanceConfig( QWidget* parent );
@@ -33,9 +33,6 @@ class AppearanceConfig : public ConfigDialogBase
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
-
-    private:
-        Ui_AppearanceConfig* m_gui;
 };
 
 

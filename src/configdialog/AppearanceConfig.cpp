@@ -22,14 +22,12 @@
 
 AppearanceConfig::AppearanceConfig( QWidget* parent )
     : ConfigDialogBase( parent )
-    , m_gui( new Ui_AppearanceConfig() )
 {
-    m_gui->setupUi( this ); 
+    setupUi( this ); 
 }
 
 AppearanceConfig::~AppearanceConfig()
 {
-    delete m_gui;
 }
 
 bool
