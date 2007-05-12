@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>447</width>
-            <height>556</height>
+            <height>564</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options2</string>
     </property>
     <vbox>
         <property name="name">
@@ -698,14 +701,12 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>

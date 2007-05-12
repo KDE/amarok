@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>425</width>
-            <height>540</height>
+            <width>431</width>
+            <height>556</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -608,6 +608,9 @@
                     <property name="text">
                         <string>Manually sa&amp;ved playlists use relative path</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+V</string>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
                     </property>
@@ -621,6 +624,9 @@
                     </property>
                     <property name="text">
                         <string>Switch to Context &amp;Browser on track change</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+B</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
@@ -644,14 +650,12 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>152</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>

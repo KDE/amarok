@@ -18,6 +18,9 @@
             <height>1</height>
         </size>
     </property>
+    <property name="caption">
+        <string>Options8</string>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -236,6 +239,9 @@
                     <property name="text">
                         <string>&amp;Retrieve similar artists</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
+                    </property>
                 </widget>
             </vbox>
         </widget>
@@ -268,7 +274,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
