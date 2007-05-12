@@ -20,6 +20,7 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * The config dialog is now less tall and fits on widescreen displays.
     * Making a dynamic playlist with the number of previously played tracks to
       show set to zero and attempting to play the first track would cause a
       crash. (BR 145157)
