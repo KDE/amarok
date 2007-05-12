@@ -93,7 +93,8 @@ GeneralConfig::isDefault()
     return false;
 }
 
-void GeneralConfig::updateSettings()
+void
+GeneralConfig::updateSettings()
 {
     Amarok::setUseScores( kcfg_UseScores->isChecked() );
     Amarok::setUseRatings( kcfg_UseRatings->isChecked() );
