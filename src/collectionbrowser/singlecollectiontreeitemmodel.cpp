@@ -119,7 +119,7 @@ SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
 
 
      if ( parentItem == 0 ) {
-         debug() << "No parent" << endl;
+         debug() << "No parent, index points at m_rootItem" << endl;
          return QModelIndex();
      }
 
@@ -399,18 +399,24 @@ SingleCollectionTreeItemModel::newResultReady( const QString &collectionId, Meta
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
     if ( d->m_childQueries.contains( qm ) ) {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
+        QModelIndex parentIndex;
         if (parent == m_rootItem ) 
+        {
            debug() << "    m_rootItem with " << parent->childCount() <<  " children" << endl;
+            //the root Item *must* have an invalid index
+            parentIndex = QModelIndex();
+        }
         else 
+        {
            debug() << "    something else with " << parent->childCount() <<  " children" << endl;
-   
-        QModelIndex parentIndex = createIndex( parent->row(), 0, parent );
+            parentIndex = createIndex( parent->row(), 0, parent );
+        }
         //remove dummy row
        // beginRemoveRows( parentIndex, 0, 0 );
         //the row was never actually there, but we had to return 1 in rowCount to get the +
         //endRemoveRows();
         beginInsertRows( parentIndex, 0, data.count()-1 );
-        //populateChildren( data, parent ); 
+        populateChildren( data, parent ); 
         endInsertRows();
     }
 }
