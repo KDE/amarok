@@ -78,8 +78,12 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 }
 
 GeneralConfig::~GeneralConfig()
-{
-}
+{}
+
+
+///////////////////////////////////////////////////////////////
+// REIMPLEMENTED METHODS from ConfigDialogBase
+///////////////////////////////////////////////////////////////
 
 bool
 GeneralConfig::hasChanged()
@@ -94,7 +98,7 @@ GeneralConfig::isDefault()
 }
 
 void
-GeneralConfig::updateSettings()
+GeneralConfig::updateSettings() //SLOT
 {
     Amarok::setUseScores( kcfg_UseScores->isChecked() );
     Amarok::setUseRatings( kcfg_UseRatings->isChecked() );
@@ -106,8 +110,13 @@ GeneralConfig::updateSettings()
                              kcfg_MoodsWithMusic->isChecked() );
 }
 
+
+///////////////////////////////////////////////////////////////
+// SLOTS 
+///////////////////////////////////////////////////////////////
+
 void
-GeneralConfig::slotUpdateMoodFrame()
+GeneralConfig::slotUpdateMoodFrame() //SLOT
 {
     if( Moodbar::executableExists() )
       {

@@ -44,6 +44,11 @@ AppearanceConfig::AppearanceConfig( QWidget* parent )
 AppearanceConfig::~AppearanceConfig()
 {}
 
+
+///////////////////////////////////////////////////////////////
+// REIMPLEMENTED METHODS from ConfigDialogBase
+///////////////////////////////////////////////////////////////
+
 bool
 AppearanceConfig::hasChanged()
 {
@@ -66,9 +71,14 @@ AppearanceConfig::updateSettings()
     }
 }
 
+
+///////////////////////////////////////////////////////////////
+// SLOTS 
+///////////////////////////////////////////////////////////////
+
 // This method is basically lifted from ScriptManager::slotInstallScript()
 void
-AppearanceConfig::installPushButton_clicked()
+AppearanceConfig::installPushButton_clicked() //SLOT
 {
     KFileDialog dia( KUrl(), "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0 );
     kapp->setTopWidget( &dia );
@@ -91,7 +101,8 @@ AppearanceConfig::installPushButton_clicked()
     updateStyleComboBox();
 }
 
-void AppearanceConfig::retrievePushButton_clicked()
+void
+AppearanceConfig::retrievePushButton_clicked() //SLOT
 {
 #if 0 //FIXME: KNS2
     // Delete KNewStuff's configuration entries. These entries reflect which styles
@@ -119,7 +130,7 @@ void AppearanceConfig::retrievePushButton_clicked()
 }
 
 void
-AppearanceConfig::uninstallPushButton_clicked()
+AppearanceConfig::uninstallPushButton_clicked() //SLOT
 {
     const QString name = styleComboBox->currentText();
 
@@ -150,7 +161,7 @@ AppearanceConfig::uninstallPushButton_clicked()
 }
 
 void
-AppearanceConfig::styleComboBox_activated(const QString& s)
+AppearanceConfig::styleComboBox_activated(const QString& s) //SLOT
 {
     bool disable = false;
     QDir dir( Amarok::saveLocation( "themes/" ) + s );
@@ -161,7 +172,7 @@ AppearanceConfig::styleComboBox_activated(const QString& s)
 }
 
 void
-AppearanceConfig::updateStyleComboBox()
+AppearanceConfig::updateStyleComboBox() //SLOT
 {
     DEBUG_BLOCK
 
