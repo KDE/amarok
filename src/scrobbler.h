@@ -9,9 +9,9 @@
 
 #include "engineobserver.h"
 #include <qdom.h>
+#include <QHash>
+#include <QList>
 #include <QObject>
-#include <q3ptrdict.h>
-#include <q3ptrlist.h>
 #include <QTimer>
 
 //some setups require this
@@ -105,10 +105,10 @@ class SubmitItem
 };
 
 
-class SubmitQueue : public Q3PtrList<SubmitItem>
+class SubmitQueue : public QList<SubmitItem*>
 {
-    protected:
-        int compareItems( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 );
+    public:
+        static bool compareItems( SubmitItem *sItem1, SubmitItem *sItem2 );
 };
 
 
@@ -173,7 +173,8 @@ class ScrobblerSubmitter : public QObject
         uint m_lastSubmissionFinishTime;
         uint m_fakeQueueLength;
 
-        Q3PtrDict<SubmitItem> m_ongoingSubmits;
+        //Q3PtrDict<SubmitItem> m_ongoingSubmits;
+        QHash<KIO::Job*, SubmitItem* > m_ongoingSubmits;
         SubmitQueue m_submitQueue; // songs played by Amarok
         SubmitQueue m_fakeQueue; // songs for which play times have to be faked (e.g. when submitting from media device)
 

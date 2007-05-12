@@ -19,7 +19,9 @@
 
 #include <unistd.h>
 
+#include <QtAlgorithms>
 #include <QDateTime>
+#include <QHashIterator>
 #include <QTextStream>
 
 #include <kapplication.h>
@@ -125,7 +127,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         .item( 0 ).childNodes();
 
     QStringList suggestions;
-    for ( uint i = 0; i < values.count() && i < 30; i++ ) // limit to top 30 artists
+    for ( int i = 0; i < values.count() && i < 30; i++ ) // limit to top 30 artists
         suggestions << values.item( i ).namedItem( "name" ).toElement().text();
 
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
@@ -168,7 +170,8 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
     //to work around xine bug, we have to explictly prevent submission the first few seconds of a track
     //http://sourceforge.net/tracker/index.php?func=detail&aid=1401026&group_id=9655&atid=109655
     m_timer.stop();
-    m_timer.start( 10000, true );
+    m_timer.setSingleShot( true );
+    m_timer.start( 10000 );
 
     m_startPos = 0;
 
@@ -269,7 +272,7 @@ SubmitItem::SubmitItem(
     m_album = album;
     m_title = title;
     m_length = length;
-    m_playStartTime = now ? QDateTime::currentDateTime( Qt::UTC ).toTime_t() : 0;
+    m_playStartTime = now ? QDateTime::currentDateTime().toUTC().toTime_t() : 0;
 }
 
 
@@ -344,26 +347,10 @@ QDomElement SubmitItem::toDomElement( QDomDocument& document ) const
 ////////////////////////////////////////////////////////////////////////////////
 
 
-int SubmitQueue::compareItems( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 )
+bool
+SubmitQueue::compareItems( SubmitItem *sItem1, SubmitItem *sItem2 )
 {
-    SubmitItem *sItem1 = static_cast<SubmitItem*>( item1 );
-    SubmitItem *sItem2 = static_cast<SubmitItem*>( item2 );
-    int result;
-
-    if ( sItem1 == sItem2 )
-    {
-        result = 0;
-    }
-    else if ( sItem1->playStartTime() > sItem2->playStartTime() )
-    {
-        result = 1;
-    }
-    else
-    {
-        result = -1;
-    }
-
-    return result;
+    return !( sItem1 == sItem2 ) && sItem1->playStartTime() < sItem2->playStartTime();
 }
 
 
@@ -402,15 +389,17 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
     // need to rescue current submit. This may meant it gets submitted twice,
     // but last.fm handles that, and it's better than losing it when you quit
     // while a submit is happening
-    for ( Q3PtrDictIterator<SubmitItem> it( m_ongoingSubmits ); it.current(); ++it )
-        m_submitQueue.inSort( it.current() );
+    //for ( Q3PtrDictIterator<SubmitItem> it( m_ongoingSubmits ); it.current(); ++it )
+    for( QHashIterator<KIO::Job*, SubmitItem*> iter( m_ongoingSubmits ); iter.hasNext(); )
+        m_submitQueue.append( iter.next().value() );
     m_ongoingSubmits.clear();
+    qStableSort( m_submitQueue.begin(), m_submitQueue.end(), SubmitQueue::compareItems );
 
     saveSubmitQueue();
 
-    m_submitQueue.setAutoDelete( true );
+    qDeleteAll( m_submitQueue );
     m_submitQueue.clear();
-    m_fakeQueue.setAutoDelete( true );
+    qDeleteAll( m_fakeQueue );
     m_fakeQueue.clear();
 }
 
@@ -421,7 +410,7 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
 void ScrobblerSubmitter::performHandshake()
 {
     QString handshakeUrl;
-    uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    uint currentTime = QDateTime::currentDateTime().toUTC().toTime_t();
 
     if ( PROTOCOL_VERSION == "1.1" )
     {
@@ -468,7 +457,7 @@ void ScrobblerSubmitter::performHandshake()
                 .arg( CLIENT_VERSION )
                 .arg( m_username )
                 .arg( currentTime )
-                .arg( QString::fromAscii( KMD5( KMD5( m_password.toUtf8() ).hexDigest() + QByteArray( currentTime ) ).hexDigest() ) );
+                .arg( QString::fromAscii( KMD5( KMD5( m_password.toUtf8() ).hexDigest() + QString::number( currentTime ).toAscii() ).hexDigest() ) );
     }
 
     else
@@ -533,12 +522,11 @@ void ScrobblerSubmitter::performSubmit()
 
 
         data =
-                "u=" + KUrl::encode_string_no_slash( m_username ) +
+                "u=" + KUrl::toPercentEncoding( m_username, "/" ) +
                 "&s=" +
-                KUrl::encode_string_no_slash( KMD5( KMD5( m_password.toUtf8() ).hexDigest() +
-                m_challenge.toUtf8() ).hexDigest() );
+                KUrl::toPercentEncoding( KMD5( KMD5( m_password.toUtf8() ).hexDigest() +
+                m_challenge.toUtf8() ).hexDigest(), "/" );
 
-        m_submitQueue.first();
         for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
         {
             SubmitItem* itemFromQueue = dequeueItem();
@@ -566,12 +554,12 @@ void ScrobblerSubmitter::performSubmit()
 
             // FIXME: we have to find something different for doing the encode_string_no_slash to utf-8
             data +=
-                    "a["  + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->artist() ) +
-                    "&t[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->title() ) +
-                    "&b[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->album() ) +
+                    "a["  + count + "]=" + KUrl::toPercentEncoding( itemFromQueue->artist(), "/" ) +
+                    "&t[" + count + "]=" + KUrl::toPercentEncoding( itemFromQueue->title(), "/" ) +
+                    "&b[" + count + "]=" + KUrl::toPercentEncoding( itemFromQueue->album(), "/" ) +
                     "&m[" + count + "]=" +
                     "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
-                    "&i[" + count + "]=" + KUrl::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+                    "&i[" + count + "]=" + KUrl::toPercentEncoding( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ), "/" );
         }
     }
 
@@ -622,15 +610,12 @@ void ScrobblerSubmitter::configure( const QString& username, const QString& pass
     else
     {
         // If submit is disabled, clear submitqueue.
-        m_ongoingSubmits.setAutoDelete( true );
+        qDeleteAll( m_ongoingSubmits );
         m_ongoingSubmits.clear();
-        m_ongoingSubmits.setAutoDelete( false );
-        m_submitQueue.setAutoDelete( true );
+        qDeleteAll( m_submitQueue );
         m_submitQueue.clear();
-        m_submitQueue.setAutoDelete( false );
-        m_fakeQueue.setAutoDelete( true );
+        qDeleteAll( m_fakeQueue );
         m_fakeQueue.clear();
-        m_fakeQueue.setAutoDelete( false );
         m_fakeQueueLength = 0;
         m_timer.stop();
     }
@@ -664,7 +649,7 @@ void ScrobblerSubmitter::scheduledTimeReached()
  */
 void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 {
-    m_prevSubmitTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_prevSubmitTime = QDateTime::currentDateTime().toUTC().toTime_t();
     m_inProgress = false;
 
     if ( job->error() ) {
@@ -711,7 +696,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "FAILED" ) )
     {
-        QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.find( "\n" ) );
+        QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.indexOf( "\n" ) );
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).trimmed();
 
@@ -744,7 +729,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
  */
 void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
 {
-    m_prevSubmitTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_prevSubmitTime = QDateTime::currentDateTime().toUTC().toTime_t();
     m_inProgress = false;
 
     if ( job->error() ) {
@@ -772,7 +757,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "FAILED" ) )
     {
-        QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.find( "\n" ) );
+        QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.indexOf( "\n" ) );
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).trimmed();
 
@@ -838,11 +823,14 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 {
     // Maintain max size of the queue, Audioscrobbler won't accept too old
     // submissions anyway.
-    m_fakeQueue.first();
     for ( uint size = m_fakeQueue.count() + m_submitQueue.count(); size >= 500; size-- )
     {
-        SubmitItem* itemFromQueue = m_fakeQueue.getFirst();
-        m_fakeQueue.removeFirst();
+        SubmitItem* itemFromQueue =  0;
+        if( !m_fakeQueue.isEmpty() )
+        {
+            itemFromQueue = m_fakeQueue.first();
+            m_fakeQueue.removeFirst();
+        }
 
         if ( itemFromQueue )
         {
@@ -853,25 +841,31 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 
         delete itemFromQueue;
     }
-    m_submitQueue.first();
+
     for ( uint size = m_submitQueue.count(); size >= 500; size-- )
     {
-        SubmitItem* itemFromQueue = m_submitQueue.getFirst();
-        m_submitQueue.removeFirst();
-        debug() << "Dropping " << itemFromQueue->artist()
-                  << " - " << itemFromQueue->title() << " from submit queue" << endl;
+        SubmitItem* itemFromQueue = 0;
+        if( !m_submitQueue.isEmpty() )
+        {
+            itemFromQueue = m_submitQueue.first();
+            m_submitQueue.removeFirst();
+            debug() << "Dropping " << itemFromQueue->artist()
+                     << " - " << itemFromQueue->title() << " from submit queue" << endl;
+        }
 
         delete itemFromQueue;
     }
 
     if( item->playStartTime() == 0 )
     {
-        m_fakeQueue.inSort( item );
+        m_fakeQueue.append( item );
+        qStableSort( m_fakeQueue.begin(), m_fakeQueue.end(), SubmitQueue::compareItems );
         m_fakeQueueLength += item->length();
     }
     else
     {
-        m_submitQueue.inSort( item );
+        m_submitQueue.append( item );
+        qStableSort( m_submitQueue.begin(), m_submitQueue.end(), SubmitQueue::compareItems );
     }
 
     if( !m_holdFakeQueue )
@@ -888,18 +882,18 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 SubmitItem* ScrobblerSubmitter::dequeueItem()
 {
     SubmitItem* item = 0;
-    if( m_lastSubmissionFinishTime > 0 && !m_holdFakeQueue && m_fakeQueue.getFirst() )
+    if( m_lastSubmissionFinishTime > 0 && !m_holdFakeQueue && !m_fakeQueue.isEmpty() )
     {
-        uint limit = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+        uint limit = QDateTime::currentDateTime().toUTC().toTime_t();
 
-        if ( m_submitQueue.getFirst() )
-            if ( m_submitQueue.getFirst()->playStartTime() <= limit )
-                limit = m_submitQueue.getFirst()->playStartTime();
+        if ( !m_submitQueue.isEmpty() )
+            if ( m_submitQueue.first()->playStartTime() <= limit )
+                limit = m_submitQueue.first()->playStartTime();
 
-        if( m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() <= limit )
+        if( m_lastSubmissionFinishTime + m_fakeQueue.first()->length() <= limit )
         {
-            m_fakeQueue.first();
-            item = m_fakeQueue.take();
+            item = m_fakeQueue.first();
+            m_fakeQueue.removeFirst();
             // don't backdate earlier than we have to
             if( m_lastSubmissionFinishTime + m_fakeQueueLength < limit )
                 item->m_playStartTime = limit - m_fakeQueueLength;
@@ -909,10 +903,10 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
         }
     }
 
-    if( !item )
+    if( !item && !m_submitQueue.isEmpty() )
     {
-        m_submitQueue.first();
-        item = m_submitQueue.take();
+        item = m_submitQueue.first();
+        m_submitQueue.removeFirst();
     }
 
     if( item )
@@ -950,7 +944,6 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
         lastItem = item;
         enqueueItem( item );
     }
-    m_submitQueue.first();
 
     if( lastItem )
         announceSubmit( lastItem, counter, false );
@@ -1046,7 +1039,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
     }
 
     if ( m_lastSubmissionFinishTime == 0 )
-        m_lastSubmissionFinishTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+        m_lastSubmissionFinishTime = QDateTime::currentDateTime().toUTC().toTime_t();
 
     QDomDocument newdoc;
     QDomElement submitQueue = newdoc.createElement( "submit" );
@@ -1054,15 +1047,14 @@ void ScrobblerSubmitter::saveSubmitQueue()
     submitQueue.setAttribute( "version", APP_VERSION );
     submitQueue.setAttribute( "lastSubmissionFinishTime", m_lastSubmissionFinishTime );
 
-    m_submitQueue.first();
-    for ( uint idx = 0; idx < m_submitQueue.count(); idx++ )
+    for ( int idx = 0; idx < m_submitQueue.count(); idx++ )
     {
         SubmitItem *item = m_submitQueue.at( idx );
         QDomElement i = item->toDomElement( newdoc );
         submitQueue.appendChild( i );
     }
-    m_fakeQueue.first();
-    for ( uint idx = 0; idx < m_fakeQueue.count(); idx++ )
+
+    for ( int idx = 0; idx < m_fakeQueue.count(); idx++ )
     {
         SubmitItem *item = m_fakeQueue.at( idx );
         QDomElement i = item->toDomElement( newdoc );
@@ -1095,7 +1087,7 @@ void ScrobblerSubmitter::readSubmitQueue()
     stream.setCodec( "UTF8" );
 
     QDomDocument d;
-    if( !d.setContent( stream.read() ) )
+    if( !d.setContent( stream.readAll() ) )
     {
         debug() << "Couldn't read file: " << m_savePath << endl;
         return;
@@ -1111,8 +1103,6 @@ void ScrobblerSubmitter::readSubmitQueue()
 
     for( QDomNode n = d.namedItem( "submit" ).firstChild(); !n.isNull() && n.nodeName() == ITEM; n = n.nextSibling() )
         enqueueItem( new SubmitItem( n.toElement() ) );
-
-    m_submitQueue.first();
 }
 
 
@@ -1126,7 +1116,7 @@ bool ScrobblerSubmitter::schedule( bool failure )
     if ( m_inProgress || !canSubmit() )
         return false;
 
-    uint when, currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    uint when, currentTime = QDateTime::currentDateTime().toUTC().toTime_t();
     if ( currentTime - m_prevSubmitTime > m_interval )
         when = 0;
     else
@@ -1153,14 +1143,15 @@ bool ScrobblerSubmitter::schedule( bool failure )
         else
         {
             debug() << "Performing handshake in " << when << " seconds" << endl;
-            m_timer.start( when * 1000, true );
+            m_timer.setSingleShot( true );
+            m_timer.start( when * 1000 );
         }
     }
     else if ( !m_submitQueue.isEmpty() || !m_holdFakeQueue && !m_fakeQueue.isEmpty() )
     {
         // if we only have stuff in the fake queue, we need to only schedule for when we can actually do something with it
-        if ( m_submitQueue.isEmpty() && m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() > currentTime + when )
-            when = m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() - currentTime;
+        if ( m_submitQueue.isEmpty() && m_lastSubmissionFinishTime + m_fakeQueue.first()->length() > currentTime + when )
+            when = m_lastSubmissionFinishTime + m_fakeQueue.first()->length() - currentTime;
 
         if ( when == 0 )
         {
@@ -1171,7 +1162,8 @@ bool ScrobblerSubmitter::schedule( bool failure )
         else
         {
             debug() << "Performing submit in " << when << " seconds" << endl;
-            m_timer.start( when * 1000, true );
+            m_timer.setSingleShot( true );
+            m_timer.start( when * 1000 );
         }
     } else {
         debug() << "Nothing to schedule" << endl;
