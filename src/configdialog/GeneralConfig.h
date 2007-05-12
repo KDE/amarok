@@ -26,6 +26,8 @@
 
 class GeneralConfig : public ConfigDialogBase
 {
+    Q_OBJECT
+
     public:
         GeneralConfig( QWidget* parent );
         virtual ~GeneralConfig();
@@ -33,6 +35,9 @@ class GeneralConfig : public ConfigDialogBase
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
+
+    private slots:
+        void slotUpdateMoodFrame();
 
     private:
         Ui_GeneralConfig* m_gui;

@@ -45,5 +45,6 @@ AppearanceConfig::isDefault()
 }
 
 void AppearanceConfig::updateSettings()
-{}
+{
+}
 

@@ -18,6 +18,11 @@
  ***************************************************************************/
 
 #include "GeneralConfig.h"
+#include "amarok.h"
+#include "amarokconfig.h"
+#include "moodbar.h"
+
+#include <KStandardDirs>
 
 
 GeneralConfig::GeneralConfig( QWidget* parent )
@@ -25,6 +30,51 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     , m_gui( new Ui_GeneralConfig() )
 {
     m_gui->setupUi( this ); 
+
+    connect( m_gui->kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
+    connect( m_gui->kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
+
+    slotUpdateMoodFrame();
+
+    QStringList browsers;
+    browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany" << "safari" << "mozilla";
+
+#if 0
+    // Remove browsers which are not actually installed
+    for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
+        if( KStandardDirs::findExe( *it ).isEmpty() )
+            it = browsers.erase( it );
+        else
+            ++it;
+    }
+#endif
+#ifdef Q_WS_MAC
+    if ( !KStandardDirs::findExe( "open" ).isEmpty() )
+        browsers.prepend( i18n( "Default Browser" ) );
+#else
+    if ( !KStandardDirs::findExe( "kfmclient" ).isEmpty() )
+        browsers.prepend( i18n( "Default KDE Browser" ) );
+#endif
+
+    m_gui->kComboBox_browser->insertStringList( browsers );
+    m_gui->kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
+    int index = browsers.findIndex( AmarokConfig::externalBrowser() );
+    if( index >= 0 )
+        m_gui->kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
+    else if( AmarokConfig::externalBrowser() ==
+#ifdef Q_WS_MAC
+            "open"
+#else
+            "kfmclient openUrl"
+#endif
+      )
+    {
+        m_gui->kComboBox_browser->setCurrentItem( 0 );
+    }
+    else
+    {
+        m_gui->checkBox_customBrowser->setChecked( true );
+    }
 }
 
 GeneralConfig::~GeneralConfig()
@@ -45,6 +95,37 @@ GeneralConfig::isDefault()
 }
 
 void GeneralConfig::updateSettings()
-{}
+{
+    Amarok::setUseScores( m_gui->kcfg_UseScores->isChecked() );
+    Amarok::setUseRatings( m_gui->kcfg_UseRatings->isChecked() );
 
+    // The following makes everything with a moodbar redraw itself.
+    Amarok::setMoodbarPrefs( m_gui->kcfg_ShowMoodbar->isChecked(),
+                             m_gui->kcfg_MakeMoodier->isChecked(),
+                             m_gui->kcfg_AlterMood->currentIndex(),
+                             m_gui->kcfg_MoodsWithMusic->isChecked() );
+}
+
+void
+GeneralConfig::slotUpdateMoodFrame()
+{
+    if( Moodbar::executableExists() )
+      {
+        m_gui->moodbarHelpLabel->hide();
+        m_gui->moodFrame->setEnabled(true);
+
+        m_gui->kcfg_MakeMoodier->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked());
+        m_gui->kcfg_AlterMood->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked() && m_gui->kcfg_MakeMoodier->isChecked());
+        m_gui->kcfg_MoodsWithMusic->setEnabled(m_gui->kcfg_ShowMoodbar->isChecked());
+      }
+
+    else
+      {
+        m_gui->moodbarHelpLabel->show();
+        m_gui->kcfg_ShowMoodbar->setChecked(false);
+        m_gui->moodFrame->setEnabled(false);
+      }
+}
+
+#include "GeneralConfig.moc"
 
