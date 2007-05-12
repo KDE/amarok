@@ -17,33 +17,34 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "AppearanceConfig.h"
+#include "GeneralConfig.h"
 
 
-AppearanceConfig::AppearanceConfig( QWidget* parent )
+GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
-    , m_gui( new Ui_AppearanceConfig() )
+    , m_gui( new Ui_GeneralConfig() )
 {
     m_gui->setupUi( this ); 
 }
 
-AppearanceConfig::~AppearanceConfig()
+GeneralConfig::~GeneralConfig()
 {
     delete m_gui;
 }
 
 bool
-AppearanceConfig::hasChanged()
+GeneralConfig::hasChanged()
 {
     return false;
 }
 
 bool
-AppearanceConfig::isDefault()
+GeneralConfig::isDefault()
 {
     return false;
 }
 
-void AppearanceConfig::updateSettings()
+void GeneralConfig::updateSettings()
 {}
+
 

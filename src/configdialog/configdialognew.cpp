@@ -1,49 +1,36 @@
 /***************************************************************************
-begin                : 2004/02/07
-copyright            : (C) Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
+ *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
-#include "collectiondb.h"
 #include "config-amarok.h" // Has USE_MYSQL
 #include "configdialognew.h"
 #include "debug.h"
 
 #include "AppearanceConfig.h"
+#include "GeneralConfig.h"
 
-#include <q3groupbox.h>
-#include <QLabel>
-#include <QLayout>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QObject>
-#include <QPushButton>
-#include <QRadioButton>
-#include <qspinbox.h>
-#include <QTextCodec>
-#include <QToolTip>
-#include <kvbox.h>
-#include <QPixmap>
-
-#include <kapplication.h> //kapp
-#include <kcombobox.h>
-#include <kiconloader.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kstandarddirs.h>
+#include <KApplication> //kapp
+#include <KIconLoader>
+#include <KLocale>
+#include <KStandardDirs>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +43,9 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     setAttribute( Qt::WA_DeleteOnClose );
 
     AppearanceConfig* appearance = new AppearanceConfig( this );
+    GeneralConfig* general = new GeneralConfig( this );
 
-    //addPage( m_opt1, i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
+    addPage( general,    i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
     addPage( appearance, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
     //addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
     //addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
@@ -100,8 +88,8 @@ void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemNa
 /** Show page by object name */
 void Amarok2ConfigDialog::showPageByName( const QByteArray& page )
 {
-    for( uint index = 0; index < m_pageList.count(); index++ ) {
-        if ( m_pageList[index]->name() == page ) {
+    for( int index = 0; index < m_pageList.count(); index++ ) {
+        if ( m_pageList[index]->objectName() == page ) {
             KConfigDialog::setCurrentPage( qobject_cast<KPageWidgetItem*>( m_pageList[index] ) );
             return;
         }
