@@ -1,0 +1,629 @@
+<ui version="4.0" >
+ <class>PlaybackConfig</class>
+ <widget class="QWidget" name="PlaybackConfig" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>455</width>
+    <height>447</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="Q3ButtonGroup" name="opt_crossfade" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>180</height>
+      </size>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;b>Transition Behavior&lt;/b>
+&lt;p>During playback, when Amarok transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p></string>
+     </property>
+     <property name="title" >
+      <string>&amp;Transition</string>
+     </property>
+     <property name="frameShape" >
+      <enum>Q3GroupBox::GroupBoxPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>Q3GroupBox::Sunken</enum>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QRadioButton" name="radioButtonNormalPlayback" >
+        <property name="toolTip" >
+         <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
+        </property>
+        <property name="text" >
+         <string>&amp;No crossfading</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="trackDelayLengthLabel" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Minimum" hsizetype="Maximum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Insert &amp;gap:</string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_TrackDelayLength</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="kcfg_TrackDelayLength" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>160</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip" >
+           <string>Silence between tracks, in milliseconds.</string>
+          </property>
+          <property name="suffix" >
+           <string> ms</string>
+          </property>
+          <property name="maximum" >
+           <number>10000</number>
+          </property>
+          <property name="singleStep" >
+           <number>100</number>
+          </property>
+          <property name="value" >
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QRadioButton" name="kcfg_Crossfade" >
+        <property name="toolTip" >
+         <string>Enable crossfading between tracks.</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Crossfading</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <layout class="QVBoxLayout" >
+          <item>
+           <widget class="QLabel" name="crossfadeLengthLabel" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Minimum" hsizetype="Maximum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Crosso&amp;ver duration:</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>false</bool>
+            </property>
+            <property name="buddy" >
+             <cstring>kcfg_CrossfadeLength</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="crossfadeDropdownText" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Minimum" hsizetype="Maximum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Crossfa&amp;de:</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>false</bool>
+            </property>
+            <property name="buddy" >
+             <cstring>kcfg_CrossfadeType</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <item>
+           <widget class="QSpinBox" name="kcfg_CrossfadeLength" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string>The length of the crossfade between tracks, in milliseconds.</string>
+            </property>
+            <property name="suffix" >
+             <string> ms</string>
+            </property>
+            <property name="minimum" >
+             <number>100</number>
+            </property>
+            <property name="maximum" >
+             <number>99999999</number>
+            </property>
+            <property name="singleStep" >
+             <number>100</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="kcfg_CrossfadeType" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string>Select when you want crossfading to occur</string>
+            </property>
+            <property name="whatsThis" >
+             <string>Select when you want crossfading to occur</string>
+            </property>
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text" >
+              <string>Always</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>On Automatic Track Change Only</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>On Manual Track Change Only</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>16</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QCheckBox" name="kcfg_FadeoutOnExit" >
+     <property name="toolTip" >
+      <string>If checked, Amarok will fade out the music on program exit.</string>
+     </property>
+     <property name="text" >
+      <string>Fade out on e&amp;xit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QCheckBox" name="kcfg_ResumePlayback" >
+     <property name="toolTip" >
+      <string>If checked, Amarok will&lt;br>resume playback from where you left it the previous session -- just like a tape-player.</string>
+     </property>
+     <property name="text" >
+      <string>&amp;Resume playback on start</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>31</width>
+       <height>70</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" >
+    <widget class="Q3ButtonGroup" name="opt_crossfade_2" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>120</height>
+      </size>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;b>Transition Behavior&lt;/b>
+&lt;p>During playback, when Amarok transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p></string>
+     </property>
+     <property name="title" >
+      <string>&amp;Fadeout</string>
+     </property>
+     <property name="frameShape" >
+      <enum>Q3GroupBox::GroupBoxPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>Q3GroupBox::Sunken</enum>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QRadioButton" name="radioButtonNormalPlayback_2" >
+        <property name="toolTip" >
+         <string>Disable fadeout. Music will stop immediately.</string>
+        </property>
+        <property name="text" >
+         <string>No &amp;fadeout</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>16</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <layout class="QVBoxLayout" >
+          <item>
+           <widget class="QLabel" name="fadeoutLengthLabel" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Minimum" hsizetype="Maximum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Fadeout &amp;duration:</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>false</bool>
+            </property>
+            <property name="buddy" >
+             <cstring>kcfg_FadeoutLength</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <item>
+           <widget class="QSpinBox" name="kcfg_FadeoutLength" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string>The length of the fadeout, in milliseconds.</string>
+            </property>
+            <property name="suffix" >
+             <string> ms</string>
+            </property>
+            <property name="minimum" >
+             <number>100</number>
+            </property>
+            <property name="maximum" >
+             <number>99999999</number>
+            </property>
+            <property name="singleStep" >
+             <number>100</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QRadioButton" name="kcfg_Fadeout" >
+        <property name="toolTip" >
+         <string>Fade the music out when the Stop button is pressed.</string>
+        </property>
+        <property name="text" >
+         <string>Fade&amp;out</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends>Q3GroupBox</extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>radioButtonNormalPlayback</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_TrackDelayLength</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Crossfade</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_CrossfadeLength</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonNormalPlayback</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>trackDelayLengthLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Crossfade</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>crossfadeLengthLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Crossfade</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>crossfadeDropdownText</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Crossfade</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_CrossfadeType</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Fadeout</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fadeoutLengthLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_Fadeout</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_FadeoutLength</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

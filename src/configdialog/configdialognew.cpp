@@ -26,6 +26,7 @@
 
 #include "AppearanceConfig.h"
 #include "GeneralConfig.h"
+#include "PlaybackConfig.h"
 
 #include <KApplication> //kapp
 #include <KIconLoader>
@@ -44,10 +45,11 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
     ConfigDialogBase* appearance = new AppearanceConfig( this );
     ConfigDialogBase* general    = new GeneralConfig( this );
+    ConfigDialogBase* playback   = new PlaybackConfig( this );
 
     addPage( general,    i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
     addPage( appearance, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
-    //addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
+    addPage( playback,   i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
     //addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
     //addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
     //addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );

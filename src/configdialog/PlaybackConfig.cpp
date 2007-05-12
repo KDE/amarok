@@ -17,26 +17,46 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#ifndef CONFIGDIALOGBASE_H
-#define CONFIGDIALOGBASE_H
-
-#include <QWidget>
+#include "PlaybackConfig.h"
 
 
-class ConfigDialogBase : public QWidget
+PlaybackConfig::PlaybackConfig( QWidget* parent )
+    : ConfigDialogBase( parent )
 {
-    public:
-        virtual void updateSettings() = 0;
-        virtual void updateWidgets() {}
-        virtual void updateWidgetsDefault() {}
+    setupUi( this ); 
+}
 
-        virtual bool hasChanged() = 0;
-        virtual bool isDefault() = 0;
-
-    protected:
-        ConfigDialogBase( QWidget* parent ) : QWidget( parent ) {}
-};
+PlaybackConfig::~PlaybackConfig()
+{}
 
 
-#endif
+///////////////////////////////////////////////////////////////
+// REIMPLEMENTED METHODS from ConfigDialogBase
+///////////////////////////////////////////////////////////////
+
+bool
+PlaybackConfig::hasChanged()
+{
+    return false;
+}
+
+bool
+PlaybackConfig::isDefault()
+{
+    return false;
+}
+
+void
+PlaybackConfig::updateSettings()
+{
+}
+
+
+///////////////////////////////////////////////////////////////
+// PRIVATE METHODS 
+///////////////////////////////////////////////////////////////
+
+
+#include "PlaybackConfig.moc"
+
 
