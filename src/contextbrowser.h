@@ -18,6 +18,8 @@
 #include <QByteArray>
 #include <QEvent>
 
+class KAction;
+class Q3ListView;
 class KLineEdit;
 class CollectionDB;
 class Color;
