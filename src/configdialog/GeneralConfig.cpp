@@ -56,9 +56,9 @@ GeneralConfig::GeneralConfig( QWidget* parent )
         browsers.prepend( i18n( "Default KDE Browser" ) );
 #endif
 
-    m_gui->kComboBox_browser->insertStringList( browsers );
+    m_gui->kComboBox_browser->insertItems( -1, browsers );
     m_gui->kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
-    int index = browsers.findIndex( AmarokConfig::externalBrowser() );
+    int index = browsers.indexOf( AmarokConfig::externalBrowser() );
     if( index >= 0 )
         m_gui->kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
     else if( AmarokConfig::externalBrowser() ==
