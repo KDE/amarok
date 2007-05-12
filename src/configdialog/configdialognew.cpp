@@ -42,8 +42,8 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 {
     setAttribute( Qt::WA_DeleteOnClose );
 
-    AppearanceConfig* appearance = new AppearanceConfig( this );
-    GeneralConfig* general = new GeneralConfig( this );
+    ConfigDialogBase* appearance = new AppearanceConfig( this );
+    ConfigDialogBase* general    = new GeneralConfig( this );
 
     addPage( general,    i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
     addPage( appearance, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
