@@ -529,10 +529,11 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 item = *It( pl, It::Visible );
                 //m_lineEdit->clear();
                 pl->m_filtertimer->stop(); //HACK HACK HACK
-                if( e->state() & Qt::ControlModifier )
+
+                if( e->modifiers() & Qt::ControlModifier )
                 {
                     QList<PlaylistItem*> in, out;
-                    if( e->state() & Qt::ShiftModifier )
+                    if( e->modifiers() & Qt::ShiftModifier )
                         for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
                         {
                             pl->queue( x, true );
@@ -552,12 +553,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                     if( !in.isEmpty() || !out.isEmpty() )
                         emit pl->queueChanged( in, out );
                     pl->setFilter( "" );
-                    pl->ensureItemCentered( ( e->state() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
+                    pl->ensureItemCentered( ( e->modifiers() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
                 }
                 else
                 {
                     pl->setFilter( "" );
-                    if( ( e->state() & Qt::ShiftModifier ) && item )
+                    if( ( e->modifiers() & Qt::ShiftModifier ) && item )
                     {
                         pl->queue( item );
                         pl->ensureItemCentered( item );
@@ -584,7 +585,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == pl )
         {
-            if( pl->currentItem() && ( e->key() == Qt::Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->state() & Qt::ShiftModifier) ) )
+            if( pl->currentItem() && ( e->key() == Qt::Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->modifiers() & Qt::ShiftModifier) ) )
             {
                 Q3ListViewItem *lastitem = *It( pl, It::Visible );
                 if ( !lastitem )
@@ -597,7 +598,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->ensureItemVisible( lastitem );
                 return true;
             }
-            if( pl->currentItem() && ( e->key() == Qt::Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->state() & Qt::ShiftModifier) ) )
+            if( pl->currentItem() && ( e->key() == Qt::Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->modifiers() & Qt::ShiftModifier) ) )
             {
                 pl->currentItem()->setSelected( false );
                 pl->setCurrentItem( *It( pl, It::Visible ) );
@@ -610,7 +611,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->removeSelectedItems();
                 return true;
             }
-            if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
+            if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->modifiers() || e->modifiers() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
                 m_searchWidget->lineEdit();
                 QApplication::sendEvent( m_searchWidget->lineEdit(), e );
