@@ -23,6 +23,7 @@
 #include "debug.h"
 
 #include "AppearanceConfig.h"
+#include "CollectionConfig.h"
 #include "GeneralConfig.h"
 #include "LastfmConfig.h"
 #include "PlaybackConfig.h"
@@ -42,6 +43,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     setAttribute( Qt::WA_DeleteOnClose );
 
     ConfigDialogBase* appearance = new AppearanceConfig( this );
+    ConfigDialogBase* collection = new CollectionConfig( this );
     ConfigDialogBase* general    = new GeneralConfig( this );
     ConfigDialogBase* lastfm     = new LastfmConfig( this );
     ConfigDialogBase* playback   = new PlaybackConfig( this );
@@ -50,9 +52,9 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( appearance, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
     addPage( playback,   i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
     addPage( lastfm,     i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
+    addPage( collection, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     //addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
     //addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
-    //addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     //addPage( opt9,   i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)

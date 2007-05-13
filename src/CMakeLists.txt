@@ -117,12 +117,14 @@ set(libmp3tunesservice_SRCS
 set(libconfigdialog_SRCS
     configdialog/configdialognew.cpp
     configdialog/AppearanceConfig.cpp
+    configdialog/CollectionConfig.cpp
     configdialog/GeneralConfig.cpp
     configdialog/LastfmConfig.cpp
     configdialog/PlaybackConfig.cpp)
 
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/AppearanceConfig.ui
+    configdialog/CollectionConfig.ui
     configdialog/GeneralConfig.ui
     configdialog/LastfmConfig.ui
     configdialog/PlaybackConfig.ui)
