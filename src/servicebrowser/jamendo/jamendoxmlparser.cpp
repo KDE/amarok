@@ -19,8 +19,6 @@
 
 #include "jamendoxmlparser.h"
 
-#include "jamendodatabasehandler.h"
-
 #include "amarok.h"
 #include "debug.h"
 #include "statusbar.h"
@@ -33,21 +31,23 @@
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
         : ThreadManager::Job( "JamendoXmlParser" )
 {
+    DEBUG_BLOCK
     m_sFileName = filename;
-    debug() << "Creating JamendoXmlParser" << endl;
     m_dbHandler = new JamendoDatabaseHandler();
+    debug() << "Adress of dbHandler" << m_dbHandler <<  endl;
 }
 
 
 JamendoXmlParser::~JamendoXmlParser()
 {
+    DEBUG_BLOCK
     delete m_dbHandler;
 }
 
 bool 
 JamendoXmlParser::doJob( )
 {
-    debug() << "JamendoXmlParser::doJob" << endl;
+    DEBUG_BLOCK
     readConfigFile( m_sFileName );
     return true;
 }
@@ -98,13 +98,13 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     delete file;
 
     QFile::remove( filename );
-    Debug::stamp();
+
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
-    Debug::stamp();
+
     //run through all the elements
     QDomElement docElem = doc.documentElement();
-    Debug::stamp();
+
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     debug() << "begin parsing content" << endl;
     parseElement( docElem );
@@ -291,11 +291,6 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     m_dbHandler->insertTrack( &currentTrack );
 
 
-}
-
-void JamendoXmlParser::setDbHandler(JamendoDatabaseHandler * dbHandler)
-{
-    m_dbHandler = dbHandler;
 }
 
 

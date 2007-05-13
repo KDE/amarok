@@ -54,12 +54,12 @@ public:
     /**
      * Creates the tables needed to store Jamendo info
      */
-    void createDatabase();
+    virtual void createDatabase();
 
     /**
      * Destroys Jamendo tables
      */
-    void destroyDatabase();
+    virtual void destroyDatabase();
 
     /**
      * Inserts a new track into the Jamendo database

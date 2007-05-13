@@ -21,7 +21,7 @@
 #define JAMENDOXMLPARSER_H
 
 #include "jamendodatabasehandler.h"
-#include "jamendotypes.h"
+//#include "jamendotypes.h"
 #include "threadmanager.h"
 
 #include <qdom.h>
@@ -71,7 +71,6 @@ public:
      */
     void readConfigFile( const QString &filename );
 
-    void setDbHandler ( JamendoDatabaseHandler * dbHandler );
 
 signals:
 

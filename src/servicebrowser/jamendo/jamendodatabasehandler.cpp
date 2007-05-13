@@ -115,6 +115,9 @@ JamendoDatabaseHandler::createDatabase( )
 void 
 JamendoDatabaseHandler::destroyDatabase( )
 {
+
+    debug() << "Destroy Jamendo database " << endl;
+
     CollectionDB *db = CollectionDB::instance();
     QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
     result = db->query( "DROP TABLE jamendo_albums;" );

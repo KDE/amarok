@@ -98,9 +98,9 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     artistPtr = ServiceArtistPtr( new ServiceArtist( "Artist 2" ) );
     artistMap.insert( "Artist 2", ArtistPtr::staticCast( artistPtr ) );
 
-  /*  albumPtr = ServiceAlbumPtr( new ServiceAlbum( "album 1" ) );
+    albumPtr = ServiceAlbumPtr( new ServiceAlbum( "album 1" ) );
     albumMap.insert( "album 1", AlbumPtr::staticCast( albumPtr ) );
-
+    albumPtr->setAlbumArtist( artistPtr );
 
     trackPtr = ServiceTrackPtr( new ServiceTrack( "track1" ) );
     albumPtr->addTrack( trackPtr );
@@ -122,7 +122,7 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     artistPtr->addTrack( trackPtr );
     trackPtr->setArtist( artistPtr );
     trackMap.insert( "track3", TrackPtr::staticCast( trackPtr ) );
-*/
+
 
     acquireWriteLock();
     setTrackMap( trackMap );

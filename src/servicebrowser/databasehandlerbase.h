@@ -53,12 +53,12 @@ public:
     virtual ~DatabaseHandlerBase() {}
 
     /**
-     * Creates the tables needed to store Jamendo info
+     * Creates the tables needed to store info
      */
     virtual void createDatabase() = 0;
 
     /**
-     * Destroys Jamendo tables
+     * Destroys all tables
      */
     virtual void destroyDatabase() = 0;
 

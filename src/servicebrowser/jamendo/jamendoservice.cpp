@@ -114,7 +114,6 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 
     debug() << "JamendoService: create xml parser" << endl;
     JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
-    parser->setDbHandler( m_dbHandler );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance()->queueJob( parser );

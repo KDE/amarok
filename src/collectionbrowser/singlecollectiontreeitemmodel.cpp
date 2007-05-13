@@ -86,6 +86,7 @@ SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &par
 {
     
     DEBUG_BLOCK
+    debug() << "row: " << row << endl;
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
@@ -93,23 +94,26 @@ SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &par
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-   // if ( parentItem->childrenLoaded() )
-   // {
+   //if ( parentItem->childrenLoaded() )
+   //{
         CollectionTreeItem *childItem = parentItem->child(row);
-        if (childItem)
+        if (childItem) {
+             debug() << "has row" << endl;
             return createIndex(row, column, childItem);
-        else
+        } else {
+             debug() << "does not have row" << endl;
             return QModelIndex();
+        }
     //}
     //else
-    //    return QModelIndex();
+      // return QModelIndex();
 }
 
 QModelIndex
 SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
 {
 
-     DEBUG_BLOCK
+    // DEBUG_BLOCK
      if ( !index.isValid() ) {
          debug() << "Invalid index" << endl;
          return QModelIndex();
@@ -135,7 +139,7 @@ int
 SingleCollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
     CollectionTreeItem *parentItem;
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if (!parent.isValid()) {
 
         parentItem = m_rootItem;
@@ -170,7 +174,7 @@ QVariant
 SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
 
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if (!index.isValid())
         return QVariant();
 
@@ -193,7 +197,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags
 SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( !index.isValid() || !index.parent().isValid() )
         return Qt::ItemIsEnabled;
 
@@ -347,7 +351,7 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
     //we added the collection level so we have to be careful with the item level
     return item->level() < m_levelType.count(); 
-
+    
 }
 
 void
@@ -361,7 +365,7 @@ bool
 SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
     DEBUG_BLOCK
     if ( !parent.isValid() )
-        return !m_rootItem->childrenLoaded();
+       return !m_rootItem->childrenLoaded();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     return item->level() < m_levelType.count() && !item->childrenLoaded();
