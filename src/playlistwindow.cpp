@@ -339,6 +339,7 @@ void PlaylistWindow::init()
 
 void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
 {
+    Q_UNUSED( filter );
 //    m_lineEdit->setText( filter );
 }
 
@@ -465,8 +466,8 @@ void PlaylistWindow::applySettings()
         ContextBrowser::instance()->setFont( AmarokConfig::contextBrowserFont() );
         break;
     case false:
-        Playlist::instance()->unsetFont();
-        ContextBrowser::instance()->unsetFont();
+        Playlist::instance()->setFont( QFont() );
+        ContextBrowser::instance()->setFont( QFont() );
         break;
     }
 }
@@ -481,8 +482,6 @@ void PlaylistWindow::applySettings()
  */
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
-
-
     Playlist* const pl = Playlist::instance();
     typedef Q3ListViewItemIterator It;
 
