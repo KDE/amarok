@@ -20,9 +20,9 @@
 #include "jamendoservice.h"
 #include "servicecollection.h"
 
-
-
 #include "jamendoxmlparser.h"
+
+#include <KTemporaryFile>
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
@@ -70,7 +70,16 @@ void JamendoService::updateButtonClicked()
 
     debug() << "JamendoService: start downloading xml file" << endl;
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), KUrl("/tmp/dbdump.en.xml.gz"), 0774 , true, false, true );
+    KTemporaryFile tempFile;
+    tempFile.setSuffix( ".gz" );
+    tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
+    if( !tempFile.open() )
+    {
+        return; //error
+    }
+
+    m_tempFileName = tempFile.fileName();
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), KUrl( m_tempFileName ), 0774 , true, false, true );
     Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Jamendo.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -101,14 +110,16 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
         return ;
     }
 
-    system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!! 
+    //system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!! 
 
     debug() << "JamendoService: create xml parser" << endl;
-    JamendoXmlParser * parser = new JamendoXmlParser( "/tmp/dbdump.en.xml" );
+    JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
     parser->setDbHandler( m_dbHandler );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance()->queueJob( parser );
+    downloadJob->deleteLater();
+    m_listDownloadJob = 0;
 
 }
 
@@ -126,10 +137,11 @@ void JamendoService::listDownloadCancelled()
 
 void JamendoService::doneParsing()
 {
-
     debug() << "JamendoService: done parsing" << endl;
     m_updateListButton->setEnabled( true );
-   // getModel->setGenre("All");
+    // getModel->setGenre("All");
+    //delete sender
+    sender()->deleteLater();
 }
 
 #include "jamendoservice.moc"

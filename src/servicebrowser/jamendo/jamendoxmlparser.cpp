@@ -25,6 +25,10 @@
 #include "debug.h"
 #include "statusbar.h"
 
+#include <QFile>
+
+#include <KFilterDev>
+
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
         : ThreadManager::Job( "JamendoXmlParser" )
@@ -36,7 +40,9 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
 
 
 JamendoXmlParser::~JamendoXmlParser()
-{}
+{
+    delete m_dbHandler;
+}
 
 bool 
 JamendoXmlParser::doJob( )
@@ -66,36 +72,46 @@ JamendoXmlParser::completeJob( )
 void 
 JamendoXmlParser::readConfigFile( const QString &filename )
 {
+    DEBUG_BLOCK
     m_nNumberOfTracks = 0;
     m_nNumberOfAlbums = 0;
     m_nNumberOfArtists = 0;
 
     QDomDocument doc( "config" );
 
-    QFile file( "/tmp/dbdump.en.xml" );
-    if ( !file.open( QIODevice::ReadOnly ) )
-        return ;
-    if ( !doc.setContent( &file ) )
+    if ( !QFile::exists( filename ) )
     {
-        file.close();
+        debug() << "jamendo xml file does not exist" << endl;
+        return;
+    }
+
+    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
+    if ( !file || !file->open( QIODevice::ReadOnly ) )
+        return ;
+
+    if ( !doc.setContent( file ) )
+    {
+        file->close();
         return ;
     }
-    file.close();
+    file->close();
+    delete file;
 
-
+    QFile::remove( filename );
+    Debug::stamp();
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
-
+    Debug::stamp();
     //run through all the elements
     QDomElement docElem = doc.documentElement();
-
+    Debug::stamp();
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
+    debug() << "begin parsing content" << endl;
     parseElement( docElem );
+    debug() << "finishing transaction" << endl;
     m_dbHandler->commit(); //complete transaction
 
-    completeJob( );
-
-    return ;
+    //completeJob is called by ThreadManager
 }
 
 

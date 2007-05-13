@@ -33,7 +33,6 @@
 #include <kio/jobclasses.h>
 
 
-
 /**
 A service for displaying, previewing and downloading music from Jamendo.com
 
@@ -64,6 +63,7 @@ private:
     QPushButton *m_updateListButton;
     KIO::FileCopyJob * m_listDownloadJob;
     JamendoDatabaseHandler * m_dbHandler;
+    QString m_tempFileName;
 };
 
 #endif
