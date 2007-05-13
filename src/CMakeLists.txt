@@ -154,6 +154,7 @@ set(libcollectionbrowser_SRCS
     collectionbrowser/collectiontreeview.cpp
     collectionbrowser/collectiontreeitemmodel.cpp
     collectionbrowser/singlecollectiontreeitemmodel.cpp
+    collectionbrowser/collectionsortfilterproxymodel.cpp
     collectionbrowser/collectiontreeitem.cpp
 )
 

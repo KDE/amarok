@@ -23,7 +23,7 @@
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "collectionbrowser/collectiontreeitem.h"
 
-#include <QSortFilterProxyModel>
+
 
 #include <kconfig.h>
 #include <KSharedPtr>
@@ -53,7 +53,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
 void CollectionTreeView::setModel(QAbstractItemModel * model)
 {
-    m_filterModel = new QSortFilterProxyModel( this );
+    m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
     m_filterModel->setFilterRole( CustomRoles::FilterRole );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -61,6 +61,7 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     m_filterModel->setSourceModel( model );
 
     QTreeView::setModel( m_filterModel );
+    //QTreeView::setModel( model );
 
 }
 

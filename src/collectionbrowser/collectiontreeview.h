@@ -20,6 +20,7 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
+#include "collectionsortfilterproxymodel.h"
 
 #include <QTreeView>
 
@@ -39,7 +40,7 @@ class CollectionTreeView: public QTreeView {
     void setModel ( QAbstractItemModel * model );
 
     private:
-        QSortFilterProxyModel *m_filterModel;
+        CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;
 };
 
