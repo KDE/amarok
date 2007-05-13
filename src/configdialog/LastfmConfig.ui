@@ -73,7 +73,7 @@
         <string>Amarok can send the name of every song you play to last.fm. The system automatically matches you to people with similar musical tastes, and creates personalized recommendations. To learn more about last.fm, &lt;A href='http://www.last.fm'>visit the homepage&lt;/A>.</string>
        </property>
        <property name="wordWrap" >
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -97,7 +97,7 @@
          <string>&lt;P>To use last.fm with Amarok, you need a &lt;A href='http://www.last.fm:80/signup.php'>last.fm profile&lt;/A>.</string>
         </property>
         <property name="wordWrap" >
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -184,7 +184,7 @@
          <enum>Qt::RichText</enum>
         </property>
         <property name="wordWrap" >
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -226,7 +226,7 @@
       <string>Why not join the &lt;A href='http://www.last.fm:80/group/Amarok+Users'>Amarok last.fm group&lt;/A> and share your musical tastes with other Amarok users?</string>
      </property>
      <property name="wordWrap" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
