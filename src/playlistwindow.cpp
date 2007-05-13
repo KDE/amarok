@@ -107,7 +107,7 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    Amarok::config( "PlaylistWindow" ).writeEntry( "showMenuBar", m_menubar->isShown() );
+    Amarok::config( "PlaylistWindow" ).writeEntry( "showMenuBar", !m_menubar->isHidden() );
 
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
@@ -881,12 +881,12 @@ void PlaylistWindow::slotToggleMenu() //SLOT
 {
     if( static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->isChecked() ) {
         AmarokConfig::setShowMenuBar( true );
-        m_menubar->setShown( true );
+        m_menubar->setVisible( true );
     }
     else
     {
         AmarokConfig::setShowMenuBar( false );
-        m_menubar->setShown( false );
+        m_menubar->setVisible( false );
     }
     recreateGUI();
 }
@@ -900,10 +900,10 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         Amarok::Menu::instance()->slotActivated( index );
         break;
     case ID_SHOW_TOOLBAR:
-        m_controlBar->setShown( !m_controlBar->isShown() );
+        m_controlBar->setVisible( !m_controlBar->isHidden() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_controlBar->isShown() );
-        m_settingsMenu->changeItem( index, m_controlBar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_controlBar->isHidden() );
+        m_settingsMenu->changeItem( index, !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case Amarok::Menu::ID_RESCAN_COLLECTION:
         CollectionDB::instance()->startScan();
@@ -932,7 +932,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
  * 4. shown & deiconified -> hide @n
  * 5. don't hide if there is no tray icon or playerWindow. todo (I can't be arsed) @n
  *
- * @note isMinimized() can only be true if the window isShown()
+ * @note isMinimized() can only be true if the window isVisible()
  * this has taken me hours to get right, change at your peril!
  * there are more contingencies than you can believe
  */
@@ -947,19 +947,19 @@ void PlaylistWindow::showHide() //SLOT
     if( isShaded )
     {
         KWindowSystem::clearState( winId(), NET::Shaded );
-        setShown( true );
+        setVisible( true );
     }
 
     if( !isOnThisDesktop )
     {
         KWindowSystem::setOnDesktop( winId(), desktop );
-        setShown( true );
+        setVisible( true );
     }
-    else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
+    else if( !info.isMinimized() && !isShaded ) setVisible( !isVisible() );
 
-    if( isShown() ) KWindowSystem::unminimizeWindow( winId() );
+    if( isVisible() ) KWindowSystem::unminimizeWindow( winId() );
 #else
-    setShown( !isShown() );
+    setVisible( !isVisible() );
 #endif
 }
 
@@ -969,13 +969,13 @@ void PlaylistWindow::activate()
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
 
     if( KWindowSystem::activeWindow() != winId())
-        setShown( true );
+        setVisible( true );
     else if( !info.isMinimized() )
-        setShown( true );
-    if( isShown() )
+        setVisible( true );
+    if( !isHidden() )
         KWindowSystem::activateWindow( winId() );
 #else
-    setShown( true );
+    setVisible( true );
 #endif
 }
 
@@ -983,9 +983,9 @@ bool PlaylistWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
-    return isShown() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
+    return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
 #else
-    return isShown();
+    return isHidden();
 #endif
 }
 
@@ -1123,16 +1123,16 @@ void PlaylistWindow::createActions()
 
     KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
     KMenu* playLastfmMenu = playLastfm->popupMenu();
-    playLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
-    playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
-    playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
+    playLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
+    playLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
+    playLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
     playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
 
     KActionMenu* addLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Add las&t.fm Stream" ), ac);
     KMenu* addLastfmMenu = addLastfm->popupMenu();
-    addLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
-    addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
-    addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
+    addLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
+    addLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
+    addLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
     addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
 
     KAction *previous = new KAction( this );
@@ -1193,7 +1193,7 @@ void PlaylistWindow::createMenus()
 {
     m_menubar = menuBar();//new MenuBar( this );
 #ifndef Q_WS_MAC
-    m_menubar->setShown( AmarokConfig::showMenuBar() );
+    m_menubar->setVisible( AmarokConfig::showMenuBar() );
 #endif
 
     //BEGIN Actions menu
@@ -1330,7 +1330,7 @@ void DynamicBar::init()
 
 void DynamicBar::slotNewDynamicMode(const DynamicMode* mode)
 {
-    setShown(mode);
+    setVisible(mode);
     if (mode)
         changeTitle(mode->title());
 }
