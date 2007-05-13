@@ -21,6 +21,7 @@
 #include "GeneralConfig.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "config-amarok.h"
 #include "moodbar.h"
 
 #include <KStandardDirs>
