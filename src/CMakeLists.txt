@@ -120,6 +120,7 @@ set(libconfigdialog_SRCS
     configdialog/CollectionConfig.cpp
     configdialog/GeneralConfig.cpp
     configdialog/LastfmConfig.cpp
+    configdialog/MediadeviceConfig.cpp
     configdialog/PlaybackConfig.cpp)
 
 kde4_add_ui_files(libconfigdialog_SRCS
