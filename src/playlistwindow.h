@@ -88,8 +88,8 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         void addLastfmNeighbor();
         void playLastfmCustom();
         void addLastfmCustom();
-        void playLastfmGlobaltag( int );
-        void addLastfmGlobaltag( int );
+        void playLastfmGlobaltag();
+        void addLastfmGlobaltag();
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();

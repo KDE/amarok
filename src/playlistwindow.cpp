@@ -812,22 +812,28 @@ void PlaylistWindow::addLastfmCustom() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
+void PlaylistWindow::playLastfmGlobaltag() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const QString tag = m_lastfmTags[id].toLower();
+    KAction *action = dynamic_cast<KAction*>( sender() );
+    if( !action ) return;
+
+    const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
-void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
+void PlaylistWindow::addLastfmGlobaltag() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const QString tag = m_lastfmTags[id].toLower();
+    KAction *action = dynamic_cast<KAction*>( sender() );
+    if( !action ) return;
+
+    const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
@@ -1108,17 +1114,20 @@ void PlaylistWindow::createActions()
                  << "Soundtrack" << "Techno" << "Trance";
 
     KMenu* playTagRadioMenu = new KMenu( this );
-    int id = 0;
-    oldForeach( m_lastfmTags ) {
-        playTagRadioMenu->insertItem( *it, this, SLOT( playLastfmGlobaltag( int ) ), 0, id );
-        ++id;
+    foreach( QString lastfmTag, m_lastfmTags )
+    {
+        KAction *lastfmAction = new KAction( lastfmTag, this );
+        connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( playLastfmGlobaltag() ) );
+        playTagRadioMenu->addAction( lastfmAction );
     }
 
     KMenu* addTagRadioMenu = new KMenu( this );
-    id = 0;
-    oldForeach( m_lastfmTags ) {
-        addTagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
-        ++id;
+
+    foreach( QString lastfmTag, m_lastfmTags )
+    {
+        KAction *lastfmAction = new KAction( lastfmTag, this );
+        connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( addLastfmGlobaltag() ) );
+        addTagRadioMenu->addAction( lastfmAction );
     }
 
     KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
