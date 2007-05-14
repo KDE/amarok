@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ * copyright            : (C) 2005-2007 Seb Ruiz <me@sebruiz.net>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -51,6 +51,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
     setButtons( Close );
     setDefaultButton( Close );
     showButtonSeparator( true );
+    setObjectName( name );
 
     s_instance = this;
 
@@ -101,7 +102,8 @@ Statistics::~Statistics()
 void
 Statistics::slotSetFilterTimeout() //SLOT
 {
-    m_timer->start( 280, true ); //stops the timer for us first
+    m_timer->setSingleShot( true );//stops the timer for us first
+    m_timer->start( 280 );
 }
 
 void
@@ -131,6 +133,7 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
     setResizeMode( Q3ListView::LastColumn );
     setSelectionMode( Q3ListView::Extended );
     setSorting( -1 );
+    setObjectName( name );
 
     setAcceptDrops( false );
     setDragEnabled( true );
