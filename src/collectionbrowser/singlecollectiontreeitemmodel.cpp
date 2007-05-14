@@ -349,8 +349,8 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
         item = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
     //we added the collection level so we have to be careful with the item level
-    //return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
-    return item->level() < m_levelType.count();
+    return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
+    //return item->level() < m_levelType.count();
     
 }
 
