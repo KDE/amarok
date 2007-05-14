@@ -243,9 +243,8 @@ SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, Collecti
     DEBUG_BLOCK
     debug() << "    level: " << level << ", leveltype count: " << m_levelType.count() << endl;
     if ( qm && parent ) {
-        //beware, here there be dragons, uh, possible concurreny issues.
         for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); ) {
-            if( iter.value() == parent )
+            if( iter.next().value() == parent )
                 return;             //we are already querying for children of parent
         }
         if ( level > m_levelType.count() )
