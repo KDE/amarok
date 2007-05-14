@@ -43,21 +43,21 @@ public:
     * @param openmode The mode of the album
     */
     // FIXME: implement me!
-    AMAROK_EXPORT void exportTracks( const KUrl::List &urls, int openmode=-1 ) {};
+    AMAROK_EXPORT void exportTracks( const KUrl::List &/*urls*/, int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports the current playlist to K3B. The mode @p openmode will be used
     * @param openmode The mode of the album
     */
     // FIXME: implement me!
-    void exportCurrentPlaylist( int openmode=-1 ) {};
+    void exportCurrentPlaylist( int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports the selected tracks to K3B. The mode @p openmode will be used
     * @param openmode The mode of the tracks
     */
     // FIXME: implement me!
-    void exportSelectedTracks( int openmode=-1 ) {};
+    void exportSelectedTracks( int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports the album @p album to K3B. The mode @p openmode will be used
@@ -65,7 +65,7 @@ public:
     * @param album The album to export
     */
     // FIXME: implement me!
-    void exportAlbum( const QString &album, int openmode=-1 ) {};
+    void exportAlbum( const QString &/*album*/, int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports the album @p album by artist @ artist to K3B. The mode @p openmode will be used
@@ -73,7 +73,7 @@ public:
     * @param album The album to export
     */
     // FIXME: implement me!
-    void exportAlbum( const QString &artist, const QString &album, int openmode=-1 ) {};
+    void exportAlbum( const QString &/*artist*/, const QString &/*album*/, int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports all tracks of the artist @p artist to K3B. The mode @p openmode will be used
@@ -81,7 +81,7 @@ public:
     * @param artist The artists which tracks to export
     */
     // FIXME: implement me!
-    void exportArtist( const QString &artist, int openmode=-1 ) {};
+    void exportArtist( const QString &/*artist*/, int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * Exports all tracks of the composer @p composer to K3B. The mode @p openmode will be used
@@ -89,7 +89,7 @@ public:
     * @param artist The artists which tracks to export
     */
     // FIXME: implement me!
-    void exportComposer( const QString &artist, int openmode=-1 ) {};
+    void exportComposer( const QString &/*artist*/, int openmode=-1 ) { Q_UNUSED(openmode) };
 
     /**
     * @return the static instance of K3bExporter
