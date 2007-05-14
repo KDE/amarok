@@ -33,6 +33,7 @@
 #include <KLocale>
 #include <KIcon>
 #include <KIconLoader>
+#include <QMapIterator>
 #include <QMimeData>
 #include <QPixmap>
 #include <QTimer>
@@ -84,9 +85,6 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
 QModelIndex
 SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &parent) const
 {
-    
-    DEBUG_BLOCK
-    debug() << "row: " << row << endl;
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
@@ -98,10 +96,8 @@ SingleCollectionTreeItemModel::index(int row, int column, const QModelIndex &par
    //{
         CollectionTreeItem *childItem = parentItem->child(row);
         if (childItem) {
-             debug() << "has row" << endl;
             return createIndex(row, column, childItem);
         } else {
-             debug() << "does not have row" << endl;
             return QModelIndex();
         }
     //}
@@ -128,7 +124,6 @@ SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
      }
 
      if ( parentItem == m_rootItem ) {
-         debug() << "parent is root item" << endl;
          return QModelIndex();
      }
 
@@ -138,16 +133,13 @@ SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
 int
 SingleCollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
+    DEBUG_BLOCK
     CollectionTreeItem *parentItem;
-    //DEBUG_BLOCK
     if (!parent.isValid()) {
-
         parentItem = m_rootItem;
-        
     }
     else {
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
-
     }
     if (parentItem == m_rootItem ) 
        debug() << "    m_rootItem with " << parentItem->childCount() <<  " children" << endl;
@@ -248,10 +240,14 @@ SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, Collec
 
 void
 SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const {
-    
     DEBUG_BLOCK
     debug() << "    level: " << level << ", leveltype count: " << m_levelType.count() << endl;
     if ( qm && parent ) {
+        //beware, here there be dragons, uh, possible concurreny issues.
+        for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); ) {
+            if( iter.value() == parent )
+                return;             //we are already querying for children of parent
+        }
         if ( level > m_levelType.count() )
             return;
         if ( level == m_levelType.count() ) {
@@ -345,12 +341,16 @@ SingleCollectionTreeItemModel::iconForLevel( int level ) const {
 
 bool
 SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
+    DEBUG_BLOCK
+    CollectionTreeItem *item;
      if (!parent.isValid())
-         return true; // must be root item!
+         //return true; // must be root item!
+        item = m_rootItem;
+    else
+        item = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
     //we added the collection level so we have to be careful with the item level
-    return item->level() < m_levelType.count(); 
+    return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
     
 }
 
