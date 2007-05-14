@@ -179,7 +179,7 @@ void PlaylistWindow::init()
         m_searchWidget = uicb.m_searchWidget;
         m_searchWidget->setup( this );
 
-        m_searchWidget->setStyleSheet( "KLineEdit { min-height: 32; min-width: 170; border-radius: 10px; border-width: 3px; border-style: solid; border-color:rgb(130, 150, 255) }" );
+        m_searchWidget->setStyleSheet( "KLineEdit { min-height: 28; min-width: 170; border-radius: 10px; border-width: 3px; border-style: solid; border-color:rgb(130, 150, 255) }" );
     }
 
     QPalette p;
