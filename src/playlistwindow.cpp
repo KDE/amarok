@@ -1364,13 +1364,13 @@ void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
 {
     QPainter p;
     p.begin( this );
-    QPen pen( colorGroup().highlightedText(), 0, Qt::NoPen );
+    QPen pen( palette().highlightedText(), 0, Qt::NoPen );
     p.setPen( pen );
-    p.setBrush( colorGroup().highlight() );
-    p.setFont(m_font);
+    p.setBrush( palette().highlight() );
+    p.setFont( m_font );
 
 
-    QFontMetrics fm(m_font);
+    QFontMetrics fm( m_font );
     int textHeight = fm.height();
     if (textHeight < s_imageSize)
         textHeight = s_imageSize;
@@ -1381,8 +1381,7 @@ void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
 
     p.drawEllipse( 0, yStart, s_curveWidth * 2, textHeight);
     p.drawEllipse( s_curveWidth + textWidth + s_imageSize, yStart, s_curveWidth*2, textHeight);
-    p.fillRect( s_curveWidth, yStart, textWidth + s_imageSize + s_curveWidth, textHeight
-                    , QBrush( colorGroup().highlight()) );
+    p.fillRect( s_curveWidth, yStart, textWidth + s_imageSize + s_curveWidth, textHeight, QBrush( palette().highlight()) );
     p.drawPixmap( s_curveWidth, yStart + ((textHeight - s_imageSize) /2), SmallIcon("dynamic") );
     //not sure why first arg of Rect shouldn't add @curveWidth
     p.drawText( QRect(s_imageSize, yStart, s_curveWidth + textWidth +s_imageSize, textHeight), Qt::AlignCenter, m_title);
