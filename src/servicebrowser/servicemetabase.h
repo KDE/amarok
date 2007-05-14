@@ -38,6 +38,14 @@ typedef KSharedPtr<ServiceGenre> ServiceGenrePtr;
 typedef KSharedPtr<ServiceComposer> ServiceComposerPtr;
 typedef KSharedPtr<ServiceYear> ServiceYearPtr;
 
+
+typedef QList<ServiceTrackPtr > ServiceTrackList;
+typedef QList<ServiceArtistPtr > ServiceArtistList;
+typedef QList<ServiceAlbumPtr > ServiceAlbumList;
+typedef QList<ServiceComposerPtr> ServiceComposerList;
+typedef QList<ServiceGenrePtr > ServiceGenreList;
+typedef QList<ServiceYearPtr > ServiceYearList;
+
 class ServiceTrack : public Meta::Track
 {
     public:
@@ -101,11 +109,11 @@ class ServiceTrack : public Meta::Track
         virtual void unsubscribe ( TrackObserver *observer );
 
         //ServiceTrack specific methods
-        void setAlbum( ServiceAlbumPtr album );
-        void setArtist( ServiceArtistPtr artist ); 
-        void setComposer( ServiceComposerPtr composer );
-        void setGenre( ServiceGenrePtr genre );
-        void setYear( ServiceYearPtr year );
+        void setAlbum( AlbumPtr album );
+        void setArtist( ArtistPtr artist ); 
+        void setComposer( ComposerPtr composer );
+        void setGenre( GenrePtr genre );
+        void setYear( YearPtr year );
 
         void setTitle( const QString &newTitle );
         void setLength( int length );
@@ -117,11 +125,11 @@ class ServiceTrack : public Meta::Track
         void setUrl( const QString &url );
 
     private:
-        ServiceArtistPtr m_artist;
-        ServiceAlbumPtr m_album;
-        ServiceGenrePtr m_genre;
-        ServiceComposerPtr m_composer;
-        ServiceYearPtr m_year;
+        ArtistPtr m_artist;
+        AlbumPtr m_album;
+        GenrePtr m_genre;
+        ComposerPtr m_composer;
+        YearPtr m_year;
 
         QString m_name;
         QString m_type;
@@ -145,7 +153,7 @@ class ServiceArtist : public Meta::Artist
         virtual TrackList tracks();
 
         //ServiceArtist specific methods
-        void addTrack( ServiceTrackPtr track );
+        void addTrack( TrackPtr track );
 
         void setDescription( const QString &description );
         QString description( );
@@ -182,8 +190,8 @@ class ServiceAlbum : public Meta::Album
         
 
         //ServiceAlbum specific methods
-        void addTrack( ServiceTrackPtr track );
-        void setAlbumArtist( ServiceArtistPtr artist );
+        void addTrack( TrackPtr track );
+        void setAlbumArtist( ArtistPtr artist );
         void setIsCompilation( bool compilation );
 
         void setDescription( const QString &description );
@@ -198,7 +206,7 @@ class ServiceAlbum : public Meta::Album
         QString m_name;
         TrackList m_tracks;
         bool m_isCompilation;
-        ServiceArtistPtr m_albumArtist;
+        ArtistPtr m_albumArtist;
         QString m_description;
         int m_id;
         int m_artistId;

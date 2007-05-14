@@ -285,31 +285,31 @@ ServiceTrack::unsubscribe( TrackObserver *observer )
 }
 
 void
-ServiceTrack::setAlbum( ServiceAlbumPtr album )
+ServiceTrack::setAlbum( AlbumPtr album )
 {
     m_album = album;
 }
 
 void
-ServiceTrack::setArtist( ServiceArtistPtr artist )
+ServiceTrack::setArtist( ArtistPtr artist )
 {
     m_artist = artist;
 }
 
 void
-ServiceTrack::setGenre( ServiceGenrePtr genre )
+ServiceTrack::setGenre( GenrePtr genre )
 {
     m_genre = genre;
 }
 
 void
-ServiceTrack::setComposer( ServiceComposerPtr composer )
+ServiceTrack::setComposer( ComposerPtr composer )
 {
     m_composer = composer;
 }
 
 void
-ServiceTrack::setYear( ServiceYearPtr year )
+ServiceTrack::setYear( YearPtr year )
 {
     m_year = year;
 }
@@ -377,9 +377,9 @@ ServiceArtist::tracks()
 }
 
 void
-ServiceArtist::addTrack( ServiceTrackPtr track )
+ServiceArtist::addTrack( TrackPtr track )
 {
-    m_tracks.append( TrackPtr::staticCast( track ) );
+    m_tracks.append( track );
 }
 
 
@@ -489,13 +489,13 @@ ServiceAlbum::updateImage()
 }
 
 void
-ServiceAlbum::addTrack( ServiceTrackPtr track )
+ServiceAlbum::addTrack( TrackPtr track )
 {
-    m_tracks.append( TrackPtr::staticCast( track ) );
+    m_tracks.append( track );
 }
 
 void
-ServiceAlbum::setAlbumArtist( ServiceArtistPtr artist )
+ServiceAlbum::setAlbumArtist( ArtistPtr artist )
 {
     m_albumArtist = artist;
 }

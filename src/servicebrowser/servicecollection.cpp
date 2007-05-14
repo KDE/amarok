@@ -78,51 +78,48 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     ComposerMap composerMap;
     YearMap yearMap;
 
-    ServiceTrackPtr trackPtr;
-    ServiceAlbumPtr albumPtr;
-    ServiceArtistPtr artistPtr;
+   ServiceTrack * currentTrack;
+    ServiceAlbum * currentAlbum;
+    ServiceArtist * currentArtist;
 
 
-  /*  ArtistList atists = dbHandler->getArtistsByGenre( "All" );
-    foreach( ArtistPtr artistPtr, atists ) {
-        debug() << "Got artist: " << artistPtr->prettyName() << endl;
+    ArtistList artists = dbHandler->getArtistsByGenre( "All" );
+    foreach( ArtistPtr artistPtr, artists ) {
+
+       currentArtist = dynamic_cast< ServiceArtist * > ( artistPtr.data() ); 
+       //debug() << "Got artist: " << currentArtist->prettyName() << " with id: " <<  currentArtist->id() << endl;
+       AlbumList albums = dbHandler->getAlbumsByArtistId( currentArtist->id(), "All" );
+
+       //debug() << "    artist has " << albums.count() << " albums" << endl;
+
+       foreach( AlbumPtr albumPtr, albums ) {
+
+           currentAlbum = dynamic_cast< ServiceAlbum * > ( albumPtr.data() ); 
+           albumMap.insert( albumPtr->prettyName(), albumPtr ); 
+
+
+           TrackList tracks = dbHandler->getTracksByAlbumId( currentAlbum->id() );
+
+           foreach( TrackPtr trackPtr, tracks ) {
+
+               currentTrack = dynamic_cast< ServiceTrack * > ( trackPtr.data() ); 
+            
+               currentTrack->setArtist( artistPtr );
+               currentTrack->setAlbum( albumPtr );
+
+               currentAlbum->addTrack( trackPtr );
+               currentArtist->addTrack( trackPtr );
+               trackMap.insert( trackPtr->prettyName(),  trackPtr );
+
+           }
+
+          // debug() << "    album " << albumPtr->prettyName() << endl;
+           currentAlbum->setAlbumArtist( artistPtr );
+       }
+
         artistMap.insert( artistPtr->prettyName(), artistPtr );
 
-    }*/
-
-
-
-    artistPtr = ServiceArtistPtr( new ServiceArtist( "Artist 1" ) );
-    artistMap.insert( "Artist 1", ArtistPtr::staticCast( artistPtr ) );
-
-    artistPtr = ServiceArtistPtr( new ServiceArtist( "Artist 2" ) );
-    artistMap.insert( "Artist 2", ArtistPtr::staticCast( artistPtr ) );
-
-    albumPtr = ServiceAlbumPtr( new ServiceAlbum( "album 1" ) );
-    albumMap.insert( "album 1", AlbumPtr::staticCast( albumPtr ) );
-    albumPtr->setAlbumArtist( artistPtr );
-
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "track1" ) );
-    albumPtr->addTrack( trackPtr );
-    trackPtr->setAlbum( albumPtr );
-    artistPtr->addTrack( trackPtr );
-    trackPtr->setArtist( artistPtr );
-    trackMap.insert( "track1", TrackPtr::staticCast( trackPtr ) );
-
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "track2" ) );
-    albumPtr->addTrack( trackPtr );
-    trackPtr->setAlbum( albumPtr );
-    artistPtr->addTrack( trackPtr );
-    trackPtr->setArtist( artistPtr );
-    trackMap.insert( "track2", TrackPtr::staticCast( trackPtr ) );
-
-    trackPtr = ServiceTrackPtr( new ServiceTrack( "track3" ) );
-    albumPtr->addTrack( trackPtr );
-    trackPtr->setAlbum( albumPtr );
-    artistPtr->addTrack( trackPtr );
-    trackPtr->setArtist( artistPtr );
-    trackMap.insert( "track3", TrackPtr::staticCast( trackPtr ) );
-
+    }
 
     acquireWriteLock();
     setTrackMap( trackMap );
