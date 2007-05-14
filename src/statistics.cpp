@@ -102,7 +102,7 @@ Statistics::~Statistics()
 void
 Statistics::slotSetFilterTimeout() //SLOT
 {
-    m_timer->setSingleShot( true );//stops the timer for us first
+    m_timer->setSingleShot( true ); //stops the timer for us first
     m_timer->start( 280 );
 }
 
@@ -346,7 +346,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        for( int i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i],
@@ -380,7 +380,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        for( int i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i],
@@ -415,7 +415,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        for( int i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name   = i18n("%1. %2", QString::number(c), fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
@@ -460,7 +460,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         QStringList fave = qb.run();
 
         const QString trueValue = CollectionDB::instance()->boolT();
-        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        for( int i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             const bool isSampler = (fave[i+6] == trueValue);
             QString name = i18n("%1. %2 - %3", QString::number(c),
@@ -500,7 +500,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        for( int i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i] );
@@ -541,7 +541,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setLimit( 0, 50 );
         QStringList newest = qb.run();
 
-        for( uint i=0; i < newest.count(); i += qb.countReturnValues() )
+        for( int i=0; i < newest.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3", QString::number(c),
                     newest[i].isEmpty() ? i18n( "Unknown" ) : newest[i],
@@ -625,9 +625,9 @@ StatisticsList::viewportPaintEvent( QPaintEvent *e )
         const uint x = (viewport()->width() - w - 30) / 2 ;
         const uint y = (viewport()->height() - h - 30) / 2 ;
 
-        p.setBrush( colorGroup().background() );
+        p.setBrush( palette().background() );
         p.drawRoundRect( x, y, w+30, h+30, (8*200)/w, (8*200)/h );
-        t.draw( &p, x+15, y+15, QRect(), colorGroup() );
+        t.draw( &p, x+15, y+15, QRect(), palette() );
     }
 }
 
@@ -755,7 +755,7 @@ StatisticsItem::slotAnimTimer()
 }
 
 void
-StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int )
 {
     QColor fillColor, textColor;
 
@@ -851,7 +851,7 @@ StatisticsDetailedItem::StatisticsDetailedItem( const QString &text, const QStri
 }
 
 void
-StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int )
 {
     bool showDetails = !m_subText.isEmpty();
 
