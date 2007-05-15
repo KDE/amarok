@@ -75,7 +75,6 @@ CollectionConfig::updateSettings()
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
         emit settingsChanged( parent()->objectName() );
     }
-
 }
 
 
