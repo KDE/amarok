@@ -117,6 +117,7 @@ set(libmp3tunesservice_SRCS
 set(libconfigdialog_SRCS
     configdialog/configdialognew.cpp
     configdialog/AppearanceConfig.cpp
+    configdialog/ConfigDialogBase.cpp
     configdialog/CollectionConfig.cpp
     configdialog/GeneralConfig.cpp
     configdialog/LastfmConfig.cpp

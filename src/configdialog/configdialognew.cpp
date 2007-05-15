@@ -84,6 +84,8 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
+    connect( page, SIGNAL( settingsChanged( const QString& ) ), this, SIGNAL( settingsChanged( const QString& ) ) );
+
     // Add the widget pointer to our list, for later reference
     m_pageList << page;
 

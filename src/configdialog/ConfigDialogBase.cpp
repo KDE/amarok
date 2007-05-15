@@ -17,31 +17,6 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#ifndef CONFIGDIALOGBASE_H
-#define CONFIGDIALOGBASE_H
-
-#include <QWidget>
-
-
-class ConfigDialogBase : public QWidget
-{
-    Q_OBJECT
-
-    signals:
-        void settingsChanged( const QString& );
-
-    public:
-        virtual void updateSettings() = 0;
-        virtual void updateWidgets() {}
-        virtual void updateWidgetsDefault() {}
-
-        virtual bool hasChanged() = 0;
-        virtual bool isDefault() = 0;
-
-    protected:
-        ConfigDialogBase( QWidget* parent ) : QWidget( parent ) {}
-};
-
-
-#endif
+#include "ConfigDialogBase.h"
+#include "ConfigDialogBase.moc"
 

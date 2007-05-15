@@ -73,7 +73,7 @@ CollectionConfig::updateSettings()
     const int dbType = Amarok::databaseTypeCode( dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
-        //emit settingsChanged( objectName() ); //FIXME
+        emit settingsChanged( parent()->objectName() );
     }
 
 }
