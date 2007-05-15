@@ -226,14 +226,18 @@ void PlaylistWindow::init()
     playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
 
     QWidget *centralWidget = new QWidget( this );
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
-//     QHBoxLayout *childSplitter = new QHBoxLayout;
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );
+
+    mainLayout->addWidget( m_controlBar );
+
     QSplitter *childSplitter = new QSplitter( Qt::Horizontal, centralWidget );
     childSplitter->addWidget( m_browsers );
     childSplitter->addWidget( contextWidget );
     childSplitter->addWidget( playlistwindow );
-    mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( childSplitter );
+
     centralWidget->setLayout( mainLayout );
 
     setCentralWidget( centralWidget );
@@ -295,16 +299,8 @@ void PlaylistWindow::init()
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
         //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );
 
-
-
-
-
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
-
-
-
-
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
