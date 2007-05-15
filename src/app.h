@@ -56,7 +56,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
 
         static int mainThreadId;
 
-        PlaylistWindow *playlistWindow() const { return m_pPlaylistWindow; }
+        PlaylistWindow *playlistWindow() const { return m_playlistWindow; }
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
@@ -107,11 +107,11 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
         void setRating( int n );
 
         // ATTRIBUTES ------
-        PlaylistWindow      *m_pPlaylistWindow;
+        PlaylistWindow      *m_playlistWindow;
 #ifndef Q_WS_MAC
-        Amarok::TrayIcon    *m_pTray;
+        Amarok::TrayIcon    *m_tray;
 #endif
-        MediaDeviceManager  *m_pMediaDeviceManager;
+        MediaDeviceManager  *m_mediaDeviceManager;
 };
 
 #define pApp static_cast<App*>(kapp)
