@@ -122,6 +122,7 @@ set(libconfigdialog_SRCS
     configdialog/GeneralConfig.cpp
     configdialog/LastfmConfig.cpp
     configdialog/MediadeviceConfig.cpp
+    configdialog/OsdConfig.cpp
     configdialog/PlaybackConfig.cpp)
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -129,6 +130,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/CollectionConfig.ui
     configdialog/GeneralConfig.ui
     configdialog/LastfmConfig.ui
+    configdialog/OsdConfig.ui
     configdialog/PlaybackConfig.ui)
 
 set(libmagnatunestore_SRCS
