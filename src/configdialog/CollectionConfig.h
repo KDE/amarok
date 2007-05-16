@@ -35,6 +35,9 @@ class CollectionConfig : public ConfigDialogBase, public Ui_CollectionConfig
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
+
+    private:
+        int databaseTypeCode( const QString& type );
 };
 
 

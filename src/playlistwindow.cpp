@@ -1279,7 +1279,6 @@ void PlaylistWindow::createMenus()
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->addSeparator();
 #endif
-    m_settingsMenu->insertItem( KIcon( Amarok::icon( "configure" ) ), i18n("Configure Amarok (NEW)"), kapp, SLOT( slotNewConfigAmarok() ) );
 
 #ifdef Q_WS_MAC
     // plug it first, as this item will be moved to the applications first menu

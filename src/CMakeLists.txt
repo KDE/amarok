@@ -252,7 +252,6 @@ set(amarok_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
-    Options1.ui.h
     actionclasses.cpp
     analyzerwidget.cpp
     app.cpp
@@ -266,7 +265,6 @@ set(amarok_LIB_SRCS
     collectionbrowser.cpp
     collectiondb.cpp
     columnlist.cpp
-    configdialog.cpp
     contextbrowser.cpp
     coverfetcher.cpp
     covermanager.cpp
@@ -348,12 +346,6 @@ kde4_add_kcfg_files(amarok_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 kde4_automoc(${amarok_LIB_SRCS})
 
 kde4_add_ui3_files(amarok_LIB_SRCS
-   Options1.ui
-   Options2.ui
-   Options4.ui
-   Options5.ui
-   Options7.ui
-   Options8.ui
    dbsetup.ui
 #   firstrunwizard.ui
    newdynamic.ui

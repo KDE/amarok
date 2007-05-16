@@ -20,6 +20,7 @@
 #include "CollectionConfig.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "collectiondb.h"
 #include "config-amarok.h"
 #include "directorylist.h"
 
@@ -58,7 +59,7 @@ CollectionConfig::~CollectionConfig()
 bool
 CollectionConfig::hasChanged()
 {
-    return Amarok::databaseTypeCode( dbSetupFrame->databaseEngine->currentText() ) != AmarokConfig::databaseEngine().toInt();
+    return databaseTypeCode( dbSetupFrame->databaseEngine->currentText() ) != AmarokConfig::databaseEngine().toInt();
 }
 
 bool
@@ -70,7 +71,7 @@ CollectionConfig::isDefault()
 void
 CollectionConfig::updateSettings()
 {
-    const int dbType = Amarok::databaseTypeCode( dbSetupFrame->databaseEngine->currentText() );
+    const int dbType = databaseTypeCode( dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
         emit settingsChanged( parent()->objectName() );
@@ -81,6 +82,18 @@ CollectionConfig::updateSettings()
 ///////////////////////////////////////////////////////////////
 // PRIVATE METHODS 
 ///////////////////////////////////////////////////////////////
+
+int 
+CollectionConfig::databaseTypeCode( const QString& type )
+{
+    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
+    int dbType = DbConnection::sqlite;
+    if ( type == "MySQL")
+        dbType = DbConnection::mysql;
+    else if ( type == "Postgresql" )
+        dbType = DbConnection::postgresql;
+    return dbType;
+}
 
 
 #include "CollectionConfig.moc"

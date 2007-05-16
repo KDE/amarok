@@ -20,7 +20,6 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "app.h"
 #include "atomicstring.h"
-#include "configdialog.h"
 #include "configdialognew.h"
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
@@ -935,12 +934,12 @@ void App::slotConfigAmarok( const QByteArray& page )
 {
     DEBUG_THREAD_FUNC_INFO
 
-    AmarokConfigDialog* dialog = static_cast<AmarokConfigDialog*>( KConfigDialog::exists( "settings" ) );
+    Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
 
     if( !dialog )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
-        dialog = new AmarokConfigDialog( m_playlistWindow, "settings", AmarokConfig::self() );
+        dialog = new Amarok2ConfigDialog( m_playlistWindow, "settings", AmarokConfig::self() );
 
         connect( dialog, SIGNAL(settingsChanged(const QString&)), SLOT(applySettings()) );
     }
@@ -953,27 +952,6 @@ void App::slotConfigAmarok( const QByteArray& page )
 //        dialog->showPage( AmarokConfigDialog::s_currentPage );
 //    else
         dialog->showPageByName( page );
-
-    dialog->show();
-    dialog->raise();
-    dialog->activateWindow();
-}
-
-void App::slotNewConfigAmarok( const QByteArray& page )
-{
-    DEBUG_THREAD_FUNC_INFO
-
-    Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settingsnew" ) );
-
-    if( !dialog )
-    {
-        //KConfigDialog didn't find an instance of this dialog, so lets create it :
-        dialog = new Amarok2ConfigDialog( m_playlistWindow, "settingsnew", AmarokConfig::self() );
-
-        connect( dialog, SIGNAL(settingsChanged(const QString&)), SLOT(applySettings()) );
-    }
-
-    dialog->showPageByName( page );
 
     dialog->show();
     dialog->raise();

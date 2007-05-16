@@ -84,7 +84,6 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
     public slots:
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const QByteArray& page = QByteArray() );
-        void slotNewConfigAmarok( const QByteArray& page = QByteArray() );
         void slotConfigShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();
