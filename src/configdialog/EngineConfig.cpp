@@ -101,7 +101,7 @@ EngineConfig::updateSettings()
 void
 EngineConfig::updateWidgets()
 {
-    int current = m_soundSystem->findText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
+    const int current = m_soundSystem->findText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
     m_soundSystem->setCurrentIndex( current );
     soundSystemChanged();
 }
