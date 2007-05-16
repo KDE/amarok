@@ -135,7 +135,7 @@ EngineConfig::soundSystemChanged()
     if( EngineController::hasEngineProperty( "HasConfigure" ) )
     {
         m_engineConfig = EngineController::engine()->configure();
-        m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
+        m_engineConfig->view()->setParent( m_engineConfigFrame );
         m_engineConfig->view()->show();
         m_engineConfigFrame->setTitle( i18nc( "to change settings", "Configure %1", m_soundSystem->currentText() ) );
         m_engineConfigFrame->show();
