@@ -31,17 +31,17 @@ FileNameScheme::FileNameScheme( const QString &s )
     , m_composerField( -1 )
     , m_genreField( -1 )
 {
-    int artist  = s.find( "%artist" );
-    int title   = s.find( "%title" );
-    int track   = s.find( "%track" );
-    int album   = s.find( "%album" );
-    int comment = s.find( "%comment" );
-    int year    = s.find( "%year" );
-    int composer = s.find( "%composer" );
-    int genre   = s.find( "%genre" );
+    int artist  = s.indexOf( "%artist" );
+    int title   = s.indexOf( "%title" );
+    int track   = s.indexOf( "%track" );
+    int album   = s.indexOf( "%album" );
+    int comment = s.indexOf( "%comment" );
+    int year    = s.indexOf( "%year" );
+    int composer = s.indexOf( "%composer" );
+    int genre   = s.indexOf( "%genre" );
 
     int fieldNumber = 1;
-    int i = s.find( '%' );
+    int i = s.indexOf( '%' );
     while ( i > -1 ) {
         if ( title == i )
             m_titleField = fieldNumber++;
@@ -60,7 +60,7 @@ FileNameScheme::FileNameScheme( const QString &s )
         if ( genre == i )
             m_genreField = fieldNumber++;
 
-        i = s.find('%', i + 1);
+        i = s.indexOf('%', i + 1);
     }
     m_regExp.setPattern( composeRegExp( s ) );
 }
@@ -253,10 +253,10 @@ QString TagGuesser::capitalizeWords( const QString &s )
     result[ 0 ] = result[ 0 ].toUpper();
 
     const QRegExp wordRegExp( "\\s\\w" );
-    int i = result.find( wordRegExp );
+    int i = result.indexOf( wordRegExp );
     while ( i > -1 ) {
         result[ i + 1 ] = result[ i + 1 ].toUpper();
-        i = result.find( wordRegExp, ++i );
+        i = result.indexOf( wordRegExp, ++i );
     }
 
     return result;
