@@ -142,6 +142,129 @@ class AlbumMatcher : public Matcher
         AlbumPtr m_album;
 };
 
+class GenreMatcher : public Matcher
+{
+    public:
+        GenreMatcher( GenrePtr genre )
+        : Matcher()
+        , m_genre( genre )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        GenreMap genreMap = memColl->genreMap();
+        if ( genreMap.contains( m_genre->name() ) )
+        {
+            GenrePtr genre = genreMap.value( m_genre->name() );
+            TrackList matchingTracks = genre->tracks();
+            if ( isLast() )
+                return matchingTracks;
+            else
+                return next()->match( matchingTracks );
+        }
+        else
+            return TrackList();
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList matchingTracks;
+        QString name = m_genre->name();
+        foreach( TrackPtr track, tracks )
+            if ( track->genre()->name() == name )
+                matchingTracks.append( track );
+        if ( isLast() || matchingTracks.count() == 0)
+            return matchingTracks;
+        else
+            return next()->match( matchingTracks );
+    }
+
+    private:
+        GenrePtr m_genre;
+};
+
+class ComposerMatcher : public Matcher
+{
+    public:
+        ComposerMatcher( ComposerPtr composer )
+        : Matcher()
+        , m_composer( composer )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        ComposerMap composerMap = memColl->composerMap();
+        if ( composerMap.contains( m_composer->name() ) )
+        {
+            ComposerPtr composer = composerMap.value( m_composer->name() );
+            TrackList matchingTracks = composer->tracks();
+            if ( isLast() )
+                return matchingTracks;
+            else
+                return next()->match( matchingTracks );
+        }
+        else
+            return TrackList();
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList matchingTracks;
+        QString name = m_composer->name();
+        foreach( TrackPtr track, tracks )
+            if ( track->composer()->name() == name )
+                matchingTracks.append( track );
+        if ( isLast() || matchingTracks.count() == 0)
+            return matchingTracks;
+        else
+            return next()->match( matchingTracks );
+    }
+
+    private:
+        ComposerPtr m_composer;
+};
+
+class YearMatcher : public Matcher
+{
+    public:
+        YearMatcher( YearPtr year )
+        : Matcher()
+        , m_year( year )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        YearMap yearMap = memColl->yearMap();
+        if ( yearMap.contains( m_year->name() ) )
+        {
+            YearPtr year = yearMap.value( m_year->name() );
+            TrackList matchingTracks = year->tracks();
+            if ( isLast() )
+                return matchingTracks;
+            else
+                return next()->match( matchingTracks );
+        }
+        else
+            return TrackList();
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList matchingTracks;
+        QString name = m_year->name();
+        foreach( TrackPtr track, tracks )
+            if ( track->year()->name() == name )
+                matchingTracks.append( track );
+        if ( isLast() || matchingTracks.count() == 0)
+            return matchingTracks;
+        else
+            return next()->match( matchingTracks );
+    }
+
+    private:
+        YearPtr m_year;
+};
+
 //QueryJob
 
 class QueryJob : public Job
@@ -486,21 +609,48 @@ MemoryQueryMaker::addMatch( const AlbumPtr &album )
 QueryMaker*
 MemoryQueryMaker::addMatch( const GenrePtr &genre )
 {
-    //TODO stub
+    Matcher *genreMatcher = new GenreMatcher( genre );
+    if ( d->matcher == 0 )
+        d->matcher = genreMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( genreMatcher );
+    }
     return this;
 }
 
 QueryMaker*
 MemoryQueryMaker::addMatch( const ComposerPtr &composer )
 {
-    //TODO stub
+    Matcher *composerMatcher = new ComposerMatcher( composer );
+    if ( d->matcher == 0 )
+        d->matcher = composerMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( composerMatcher );
+    }
     return this;
 }
 
 QueryMaker*
 MemoryQueryMaker::addMatch( const YearPtr &year )
 {
-    //TODO stub
+    Matcher *yearMatcher = new YearMatcher( year );
+    if ( d->matcher == 0 )
+        d->matcher = yearMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( yearMatcher );
+    }
     return this;
 }
 
