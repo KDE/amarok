@@ -325,8 +325,8 @@ JamendoDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
 
 
     AlbumList list;
-    debug() << "Looking for Albums..." << endl;
-    debug() << "Query string:" << queryString << endl;
+    //debug() << "Looking for Albums..." << endl;
+    //debug() << "Query string:" << queryString << endl;
 
 
     while ( result.size() > 0 )
@@ -379,8 +379,8 @@ JamendoDatabaseHandler::getTracksByAlbumId( int id )
 
    TrackList list;
 
-    debug() << "Looking for tracks..." << endl;
-    debug() << "Query string:" << queryString << endl;
+    //debug() << "Looking for tracks..." << endl;
+    //debug() << "Query string:" << queryString << endl;
 
 
     while ( result.size() > 0 )
