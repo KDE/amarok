@@ -150,11 +150,15 @@ void Amarok2ConfigDialog::updateWidgetsDefault()
  */
 bool Amarok2ConfigDialog::hasChanged()
 {
+    DEBUG_BLOCK
+
     bool changed = false;
 
     foreach( ConfigDialogBase* page, m_pageList )
-        if( page->hasChanged() )
+        if( page->hasChanged() ) {
             changed = true;
+            debug() << "Changed: " << page->metaObject()->className() << endl;
+        }
 
     return changed;
 }
