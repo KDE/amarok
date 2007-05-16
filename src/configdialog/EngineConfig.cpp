@@ -26,22 +26,24 @@
 #include <Q3GroupBox>
 #include <QComboBox>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 #include <KDialog>
 #include <KLocale>
-#include <KVBox>
 
 
 EngineConfig::EngineConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    KVBox* mainWidget = new KVBox( this );
-    mainWidget->setSpacing( KDialog::spacingHint() );
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+    mainLayout->setSpacing( KDialog::spacingHint() );
     QWidget *groupBox, *aboutEngineButton;
-    groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), mainWidget );
-    m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, mainWidget );
+    groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), this );
+    m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, this );
     m_soundSystem       = new QComboBox( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
+    mainLayout->addWidget( groupBox );
+    mainLayout->addWidget( m_engineConfigFrame );
 
     m_soundSystem->setToolTip( i18n("Click to select the sound system to use for playback.") );
     aboutEngineButton->setToolTip( i18n("Click to get the plugin information.") );
