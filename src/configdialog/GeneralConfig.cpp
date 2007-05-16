@@ -32,9 +32,6 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 {
     setupUi( this ); 
 
-    connect( kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
-    connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
-
     slotUpdateMoodFrame();
 
     QStringList browsers;
@@ -76,6 +73,9 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     {
         checkBox_customBrowser->setChecked( true );
     }
+
+    connect( kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
+    connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
 }
 
 GeneralConfig::~GeneralConfig()

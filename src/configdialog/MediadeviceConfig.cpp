@@ -53,6 +53,8 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
 
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    connect( m_deviceManager, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
 }
 
 MediadeviceConfig::~MediadeviceConfig()
