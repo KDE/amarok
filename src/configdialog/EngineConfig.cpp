@@ -40,8 +40,7 @@ EngineConfig::EngineConfig( QWidget* parent )
     QWidget *groupBox, *aboutEngineButton;
     groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), mainWidget );
     m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, mainWidget );
-    m_soundSystem       = new QComboBox;
-    m_soundSystem->setParent( groupBox );
+    m_soundSystem       = new QComboBox( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
 
     m_soundSystem->setToolTip( i18n("Click to select the sound system to use for playback.") );
