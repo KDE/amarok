@@ -126,6 +126,8 @@ void Amarok2ConfigDialog::updateSettings()
  */
 void Amarok2ConfigDialog::updateWidgets()
 {
+    foreach( ConfigDialogBase* page, m_pageList )
+        page->updateWidgets();
 }
 
 
@@ -136,6 +138,8 @@ void Amarok2ConfigDialog::updateWidgets()
  */
 void Amarok2ConfigDialog::updateWidgetsDefault()
 {
+    foreach( ConfigDialogBase* page, m_pageList )
+        page->updateWidgetsDefault();
 }
 
 
