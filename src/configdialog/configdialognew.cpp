@@ -62,21 +62,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( lastfm,      i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
     addPage( collection,  i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
-
-    // Show information labels (must be done after insertions)
-    {
-        QObjectList list = queryList( "QLabel", "infoPixmap" );
-        QPixmap const info = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
-        for( int labelI = 0; labelI < list.size(); labelI++ )
-            qobject_cast<QLabel*>( list.at(labelI) )->setPixmap( info );
-    }
-
-    //stop KFont Requesters getting stupidly large
-    {
-        QObjectList list = queryList( "QLabel", "m_sampleLabel" );
-        for( int labelI = 0; labelI < list.size(); labelI++ )
-            qobject_cast<QLabel*>( list.at( labelI ) )->setMaximumWidth( 250 );
-    }
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
