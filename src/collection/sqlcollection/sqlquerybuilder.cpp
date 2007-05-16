@@ -27,7 +27,7 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-class SqlWorkerThread : public Job
+class SqlWorkerThread : public ThreadWeaver::Job
 {
     public:
         SqlWorkerThread( SqlQueryBuilder *queryMaker )
@@ -144,15 +144,15 @@ SqlQueryBuilder::run()
     {
         debug() << "Query is " << query() << endl;
         d->worker = new SqlWorkerThread( this );
-        connect( d->worker, SIGNAL( done( Job* ) ), SLOT( done( Job* ) ) );
+        connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
 }
 
 void
-SqlQueryBuilder::done( Job *job )
+SqlQueryBuilder::done( ThreadWeaver::Job *job )
 {
-    Weaver::instance()->dequeue( job );
+    ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
     d->worker = 0;
     emit queryDone();

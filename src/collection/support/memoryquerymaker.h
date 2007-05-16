@@ -72,7 +72,7 @@ class MemoryQueryMaker : public QueryMaker
         void handleResult( const TrackList &tracks );
 
     private slots:
-        void done( Job * job );
+        void done( ThreadWeaver::Job * job );
 
     protected:
         MemoryCollection *m_memCollection;

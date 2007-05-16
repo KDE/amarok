@@ -24,8 +24,6 @@
 
 #include <threadweaver/Job.h>
 
-using namespace ThreadWeaver;
-
 class SqlCollection;
 
 class SqlQueryBuilder : public QueryMaker
@@ -78,7 +76,7 @@ class SqlQueryBuilder : public QueryMaker
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
     public slots:
-        void done( Job * job );
+        void done( ThreadWeaver::Job * job );
 
     private:
 

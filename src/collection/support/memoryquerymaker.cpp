@@ -215,7 +215,7 @@ MemoryQueryMaker::run()
     else
     {
         d->job = new QueryJob( this );
-        connect( d->job, SIGNAL( done( Job * ) ), SLOT( done( Job * ) ) );
+        connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->job );
     }
 }
@@ -533,7 +533,7 @@ MemoryQueryMaker::limitMaxResultSize( int size )
 }
 
 void
-MemoryQueryMaker::done( Job *job )
+MemoryQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
