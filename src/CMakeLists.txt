@@ -140,6 +140,7 @@ set(libconfigdialog_SRCS
     configdialog/AppearanceConfig.cpp
     configdialog/ConfigDialogBase.cpp
     configdialog/CollectionConfig.cpp
+    configdialog/EngineConfig.cpp
     configdialog/GeneralConfig.cpp
     configdialog/LastfmConfig.cpp
     configdialog/MediadeviceConfig.cpp
