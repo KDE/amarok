@@ -34,6 +34,7 @@
 
 EngineConfig::EngineConfig( QWidget* parent )
     : ConfigDialogBase( parent )
+    , m_engineConfig( 0 )
 {
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->setSpacing( KDialog::spacingHint() );
