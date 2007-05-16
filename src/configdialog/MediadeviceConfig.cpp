@@ -21,6 +21,7 @@
 #include "mediumpluginmanager.h"
 
 #include <Q3GroupBox>
+#include <QVBoxLayout>
 
 #include <KDialog>
 #include <KLocale>
@@ -31,9 +32,10 @@
 MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    KVBox* mainWidget = new KVBox( this );
-    mainWidget->setSpacing( KDialog::spacingHint() );
-    KVBox *topbox = new KVBox( mainWidget );
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+    mainLayout->setSpacing( KDialog::spacingHint() );
+    KVBox *topbox = new KVBox( this );
+    mainLayout->addWidget( topbox );
     topbox->setSpacing( KDialog::spacingHint() );
     Q3GroupBox *mediaBox  = new Q3GroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
     mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
