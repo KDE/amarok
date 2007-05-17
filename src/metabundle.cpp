@@ -1291,6 +1291,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( bpmTag ): id = "TBPM"; break;
             case ( compilationTag ): id = "TCMP"; break;
             case ( albumArtistTag ): id = "TPE2"; break; // non-standard: Apple, Microsoft
+            default: return; //don't write the tag if it is unknown
         }
         fprintf(stderr, "Setting extended tag %s to %s\n", id, value.toUtf8().data());
         TagLib::MPEG::File *mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
