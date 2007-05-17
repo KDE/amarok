@@ -49,6 +49,7 @@ include_directories(
 	amarokcore
 	analyzers
     configdialog
+    configdialog/dialogs
 	plugin
 	statusbar
 	mediadevice
@@ -137,24 +138,24 @@ set(libmp3tunesservice_SRCS
 #####################################################################
 set(libconfigdialog_SRCS
     configdialog/ConfigDialog.cpp
-    configdialog/AppearanceConfig.cpp
     configdialog/ConfigDialogBase.cpp
-    configdialog/CollectionConfig.cpp
-    configdialog/EngineConfig.cpp
-    configdialog/GeneralConfig.cpp
-    configdialog/LastfmConfig.cpp
-    configdialog/MediadeviceConfig.cpp
-    configdialog/OsdConfig.cpp
-    configdialog/PlaybackConfig.cpp
+    configdialog/dialogs/AppearanceConfig.cpp
+    configdialog/dialogs/CollectionConfig.cpp
+    configdialog/dialogs/EngineConfig.cpp
+    configdialog/dialogs/GeneralConfig.cpp
+    configdialog/dialogs/LastfmConfig.cpp
+    configdialog/dialogs/MediadeviceConfig.cpp
+    configdialog/dialogs/OsdConfig.cpp
+    configdialog/dialogs/PlaybackConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
-    configdialog/AppearanceConfig.ui
-    configdialog/CollectionConfig.ui
-    configdialog/GeneralConfig.ui
-    configdialog/LastfmConfig.ui
-    configdialog/OsdConfig.ui
-    configdialog/PlaybackConfig.ui
+    configdialog/dialogs/AppearanceConfig.ui
+    configdialog/dialogs/CollectionConfig.ui
+    configdialog/dialogs/GeneralConfig.ui
+    configdialog/dialogs/LastfmConfig.ui
+    configdialog/dialogs/OsdConfig.ui
+    configdialog/dialogs/PlaybackConfig.ui
 )
 
 #####################################################################
