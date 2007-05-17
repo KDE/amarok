@@ -2542,6 +2542,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
             t = new QSimpleRichText( minimumText, QApplication::font());
             if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
                 //still too big, giving up
+		delete t;
                 return;
             }
         }
