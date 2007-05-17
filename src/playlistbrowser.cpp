@@ -2370,10 +2370,10 @@ void PlaylistBrowser::saveM3U( PlaylistEntry *item, bool append )
 
 void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
 {
-    XSPFPlaylist* playlist = new XSPFPlaylist();
+    XSPFPlaylist playlist;
 
-    playlist->setCreator( "Amarok" );
-    playlist->setTitle( item->text(0) );
+    playlist.setCreator( "Amarok" );
+    playlist.setTitle( item->text(0) );
 
     XSPFtrackList list;
 
@@ -2388,14 +2388,14 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
         list.append( track );
     }
 
-    playlist->setTrackList( list, append );
+    playlist.setTrackList( list, append );
 
     QFile file( item->url().path() );
     file.open( QIODevice::WriteOnly );
 
     QTextStream stream ( &file );
 
-    playlist->save( stream, 2 );
+    playlist.save( stream, 2 );
 
     file.close();
 }
