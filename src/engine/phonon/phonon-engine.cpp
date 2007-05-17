@@ -56,13 +56,6 @@ PhononEngine::init()
 
     m_mediaObject->setTickInterval( 100 ); // Needed for position() to work
 
-    if( !m_mediaObject || !m_audioPath || !m_audioOutput )
-    {
-        Amarok::StatusBar::instance()->longMessage( "Amarok could not initialize Phonon.",
-                                                  KDE::StatusBar::Error );
-        return false;
-    }
-
     m_mediaObject->addAudioPath( m_audioPath );
     m_audioPath->addOutput( m_audioOutput );
 
