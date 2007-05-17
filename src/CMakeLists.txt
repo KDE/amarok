@@ -136,7 +136,7 @@ set(libmp3tunesservice_SRCS
 # CONFIGDIALOG
 #####################################################################
 set(libconfigdialog_SRCS
-    configdialog/configdialognew.cpp
+    configdialog/ConfigDialog.cpp
     configdialog/AppearanceConfig.cpp
     configdialog/ConfigDialogBase.cpp
     configdialog/CollectionConfig.cpp

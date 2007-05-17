@@ -19,7 +19,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "configdialognew.h"
+#include "ConfigDialog.h"
 #include "debug.h"
 
 #include "AppearanceConfig.h"
@@ -193,4 +193,4 @@ bool Amarok2ConfigDialog::isDefault()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "configdialognew.moc"
+#include "ConfigDialog.moc"

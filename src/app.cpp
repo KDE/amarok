@@ -20,9 +20,9 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "app.h"
 #include "atomicstring.h"
-#include "configdialognew.h"
-#include "contextbrowser.h"
 #include "collectionbrowser.h"
+#include "ConfigDialog.h"
+#include "contextbrowser.h"
 //#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
