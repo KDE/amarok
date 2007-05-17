@@ -33,6 +33,7 @@
 #include "mediabrowser.h"
 #include "mediadevicemanager.h"
 #include "playlistbrowser.h"
+#include "playlist/playlistmodel.h"
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "progressslider.h"
@@ -55,9 +56,11 @@
 
 #include <Q3PopupMenu>
 #include <QFont>
+#include <QHeaderView>
 #include <QLabel>           //search filter label
 #include <QPainter>         //dynamic title
 #include <QPen>
+#include <QTableView>
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
 
@@ -130,6 +133,15 @@ void PlaylistWindow::init()
     KVBox *playlistwindow = new KVBox;
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( playlistwindow ); //Playlist
+    { //TNG playlist
+        PlaylistNS::Model* playmodel = new PlaylistNS::Model( this );
+        playmodel->testData();
+        QTableView* playview = new QTableView( playlistwindow );
+        debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
+        playview->setModel( playmodel );
+        playview->setAlternatingRowColors(true);
+        playview->verticalHeader()->hide();
+    }
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );

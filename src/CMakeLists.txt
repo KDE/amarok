@@ -260,6 +260,7 @@ set(amarok_LIB_SRCS
     collection/blockingquery.cpp
     collection/collection.cpp
     collection/collectionmanager.cpp
+    collection/daap/daapmeta.cpp
     collection/metaquerybuilder.cpp
     collection/querymaker.cpp
     collection/support/memoryquerymaker.cpp
@@ -305,6 +306,7 @@ set(amarok_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
+    playlist/playlistmodel.cpp
     playlist.cpp
     playlistbrowser.cpp
     playlistbrowseritem.cpp
