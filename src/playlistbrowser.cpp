@@ -669,6 +669,8 @@ void PlaylistBrowser::addSmartPlaylist( Q3ListViewItem *parent ) //SLOT
     if( dialog.exec() == QDialog::Accepted ) {
 
         PlaylistCategory *category = dynamic_cast<PlaylistCategory*>(parent);
+        if( !category )
+            return; //this should never happen, but let's make sure amarok doesn't crash
         for( Q3ListViewItem *item = category->firstChild(); item; item = item->nextSibling() ) {
             SmartPlaylist *sp = dynamic_cast<SmartPlaylist*>(item);
             if ( sp && sp->title() == dialog.name() ) {
