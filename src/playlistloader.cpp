@@ -758,7 +758,7 @@ PlaylistFile::loadXSPF( QTextStream &stream )
     }
 
     m_title = doc->title();
-
+    delete doc;
     return true;
 }
 
