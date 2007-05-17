@@ -23,6 +23,7 @@
 #include "debug.h"
 #include "statusbar.h"
 
+#include <QDomDocument>
 #include <QFile>
 
 #include <KFilterDev>
@@ -34,9 +35,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     DEBUG_BLOCK
     m_sFileName = filename;
     m_dbHandler = new JamendoDatabaseHandler();
-    debug() << "Adress of dbHandler" << m_dbHandler <<  endl;
 }
-
 
 JamendoXmlParser::~JamendoXmlParser()
 {
@@ -47,11 +46,9 @@ JamendoXmlParser::~JamendoXmlParser()
 bool 
 JamendoXmlParser::doJob( )
 {
-    DEBUG_BLOCK
     readConfigFile( m_sFileName );
     return true;
 }
-
 
 void 
 JamendoXmlParser::completeJob( )
@@ -114,7 +111,6 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     //completeJob is called by ThreadManager
 }
 
-
 void 
 JamendoXmlParser::parseElement( QDomElement e )
 {
@@ -131,7 +127,6 @@ JamendoXmlParser::parseElement( QDomElement e )
     }
 }
 
-
 void 
 JamendoXmlParser::parseChildren( QDomElement e )
 {
@@ -146,21 +141,15 @@ JamendoXmlParser::parseChildren( QDomElement e )
     }
 }
 
-
 void JamendoXmlParser::parseArtist( QDomElement e ) {
 
 
       //debug() << "Found artist: " << endl;
     m_nNumberOfArtists++;
-   
 
     QString name;
     //QString genre;
     QString description;
-
-
-
-
 
     QDomNode n = e.firstChild();
 
@@ -168,7 +157,7 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
     {
         if ( n.isElement() ) {
             QDomElement currentChildElement = n.toElement();
-            
+
             if ( currentChildElement.tagName() == "dispname" )
                 name = currentChildElement.text();
             else if ( currentChildElement.tagName() == "genre" )
@@ -192,7 +181,6 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 
     m_dbHandler->insertArtist( &currentArtist );
 
-  
     /*debug() << "    Name:       " << currentArtist.getName() << endl;
     debug() << "    Id:         " << currentArtist.getId() << endl;
     //debug() << "    Photo:      " << currentArtist.getPhotoURL() << endl;
@@ -200,8 +188,6 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
     debug() << "    H_url:      " << currentArtist.getHomeURL() << endl;
     debug() << "    Decription: " << currentArtist.getDescription() << endl;
 */
-
-
 }
 
 void JamendoXmlParser::parseAlbum(QDomElement e)
@@ -212,7 +198,6 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     QString name;
     QString genre;
     QString description;
-    
 
     QDomNode n = e.firstChild();
 
@@ -220,7 +205,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     {
         if ( n.isElement() ) {
             QDomElement currentChildElement = n.toElement();
-            
+
             if ( currentChildElement.tagName() == "dispname" )
                 name = currentChildElement.text();
             else if ( currentChildElement.tagName() == "genre" )
@@ -244,19 +229,16 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 
      m_dbHandler->insertAlbum( &currentAlbum );
 
-    
    /* debug() << "    Name:       " << currentAlbum.getName() << endl;
     debug() << "    Id:         " << currentAlbum.getId() << endl;
     debug() << "    Artist_id:  " << currentAlbum.getArtistId() << endl;
     debug() << "    Genre:      " << currentAlbum.getGenre() << endl;
     debug() << "    Decription: " << currentAlbum.getDescription() << endl;
 */
-
 }
 
 void JamendoXmlParser::parseTrack(QDomElement e)
 {
-
     //debug() << "Found track: " << endl;
     m_nNumberOfTracks++;
 
@@ -268,7 +250,7 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     {
         if ( n.isElement() ) {
             QDomElement currentChildElement = n.toElement();
-            
+
             if ( currentChildElement.tagName() == "dispname" )
                 name = currentChildElement.text();
             //skip lyrics, license and url for now
@@ -289,13 +271,7 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
 
     m_dbHandler->insertTrack( &currentTrack );
-
-
 }
-
-
-
-
 
 #include "jamendoxmlparser.moc"
 

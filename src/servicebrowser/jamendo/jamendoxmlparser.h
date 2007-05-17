@@ -24,10 +24,8 @@
 //#include "jamendotypes.h"
 #include "threadmanager.h"
 
-#include <qdom.h>
+#include <QDomElement>
 #include <QString>
-#include <QtXml>
-
 
 /**
 * Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
