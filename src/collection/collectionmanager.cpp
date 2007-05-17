@@ -160,9 +160,9 @@ CollectionManager::slotRemoveCollection()
             }
             d->sqlDatabase = newSqlDatabase;
         }
+        emit collectionRemoved( collection->collectionId() );
+        QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
     }
-    emit collectionRemoved( collection->collectionId() );
-    QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
 }
 
 QList<Collection*>
