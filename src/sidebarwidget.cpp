@@ -203,7 +203,7 @@ QSize SideBarButton::sizeHint() const
 
 int SideBarButton::widthHint() const
 {
-    int width;
+    int width = 0;
     if( !icon().isNull() )
         width = iconSize().width();
     if( !width && text().isEmpty() )
