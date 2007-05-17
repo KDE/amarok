@@ -63,7 +63,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( collection,  i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
-    setButtons( KDialog::Help | KDialog::Ok | KDialog::Apply | KDialog::Cancel );
+    setButtons( Help | Ok | Apply | Cancel );
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
