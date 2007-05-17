@@ -221,7 +221,8 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings )
 //reset to default settings button
 void PodcastSettingsDialog::slotUser1()    //slot
 {
-    setSettings( new PodcastSettings(m_settings->m_title) );
+    PodcastSettings settings( m_settings->m_title );
+    setSettings( &settings );
     checkModified();
 }
 
