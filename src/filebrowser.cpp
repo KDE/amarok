@@ -79,25 +79,24 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     KActionCollection *actionCollection;
     SearchPane *searchPane;
 
-    KUrl *location;
+    KUrl location;
 
     // Try to keep filebrowser working even if not in a medium context
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
-        location = new KUrl( Amarok::config( "Filebrowser" ).readEntry( "Location", QDir::homePath() ) );
-        KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
+        location = KUrl( Amarok::config( "Filebrowser" ).readEntry( "Location", QDir::homePath() ) );
+        KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
         //so... setting the diroperator to ~ is the least sucky option
-        if ( !location->isLocalFile() || !currentFolder->isReadable() ) {
-            delete location;
-            location = new KUrl( QDir::homePath() ) ;
+        if ( !location.isLocalFile() || !currentFolder->isReadable() ) {
+            location = KUrl( QDir::homePath() ) ;
         }
     }
     else{
         m_medium = medium;
-        location = new KUrl( m_medium->mountPoint() );
+        location = KUrl( m_medium->mountPoint() );
     }
 
     KActionCollection* ac = new KActionCollection( this );
@@ -144,12 +143,12 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_combo->setUrls( Amarok::config( "Filebrowser" ).readEntry( "Dir History", QStringList() ) );
 
         if (!m_medium)
-            m_combo->lineEdit()->setText( location->path() );
+            m_combo->lineEdit()->setText( location.path() );
         else
             m_combo->lineEdit()->setText( "/" );
 
         //The main widget with file listings and that
-        m_dir = new MyDirOperator( *location, container, m_medium );
+        m_dir = new MyDirOperator( location, container, m_medium );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
