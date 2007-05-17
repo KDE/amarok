@@ -269,6 +269,7 @@ TagDialog::setFileNameSchemes() //SLOT
     Ui::TagGuesserConfigDialog* dialog = new Ui::TagGuesserConfigDialog();
     dialog->setupUi(kDialog);
     kDialog->exec();
+    delete dialog;
 }
 
 
