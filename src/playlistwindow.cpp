@@ -94,7 +94,7 @@ PlaylistWindow::PlaylistWindow()
 
     createActions();
 
-    new K3bExporter();
+    //new K3bExporter();
 
     if( AmarokConfig::playlistWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
