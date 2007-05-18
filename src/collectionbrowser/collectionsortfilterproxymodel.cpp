@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
 #include "collectionsortfilterproxymodel.h"
@@ -29,7 +29,8 @@ CollectionSortFilterProxyModel::~CollectionSortFilterProxyModel()
 {
 }
 
-bool CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
+bool
+CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
 {
     QModelIndex sourceParent = mapToSource(parent);
     return sourceModel()->hasChildren(sourceParent);
