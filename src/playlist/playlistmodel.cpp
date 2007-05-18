@@ -8,7 +8,11 @@
 
 #include "debug.h"
 #include "playlistmodel.h"
-#include "collection/daap/daapmeta.h"
+
+#include "collection/blockingquery.h"
+#include "collection/collection.h"
+#include "collection/collectionmanager.h"
+#include "collection/querymaker.h"
 
 
 using namespace PlaylistNS;
@@ -102,7 +106,7 @@ QVariant
 Model::headerData( int section, Qt::Orientation, int role ) const
 {
     DEBUG_BLOCK
-    if( role == Qt::DisplayRole )
+    if( role == Qt::DisplayRole && section < m_columns.size() )
     {
         debug() << "section: " << section << " enum: " << m_columns.at( section ) << " " << prettyColumnName( m_columns.at( section ) ) << endl;
         return prettyColumnName( m_columns.at( section ) );
@@ -115,7 +119,7 @@ void
 Model::testData()
 {
     DEBUG_BLOCK
-    TrackList sample;
+    /*TrackList sample;
     DaapTrackPtr one( new DaapTrack( "host", 6666, "1", "1", "mp3" ) );
     one->setTitle( "hello one");
     one->setTrackNumber( 1 );
@@ -125,6 +129,22 @@ Model::testData()
     sample.append( TrackPtr::staticCast( one ) );
     sample.append( TrackPtr::staticCast( two ) );
     insertTracks( 0, sample );
+    m_columns << TrackNumber << Title;
+    reset();*/
+    Collection *local = 0;
+    foreach( Collection *coll, CollectionManager::instance()->collections() )
+    {
+        if( coll->collectionId() == "localCollection" )
+            local = coll;
+    }
+    if( !local )
+        return;
+    QueryMaker *qm = local->queryBuilder();
+    qm->startTrackQuery();
+    qm->limitMaxResultSize( 10 );
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    insertTracks( 0, bq.tracks( "localCollection" ) );
     m_columns << TrackNumber << Title;
     reset();
 }
