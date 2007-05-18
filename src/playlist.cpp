@@ -168,6 +168,7 @@ namespace Glow
 /// CLASS Playlist
 //////////////////////////////////////////////////////////////////////////////////////////
 
+QMutex* Playlist::s_dynamicADTMutex = new QMutex();
 Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent )
@@ -199,6 +200,7 @@ Playlist::Playlist( QWidget *parent )
         , m_dynamicDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
+        , m_insertFromADT( 0 )
         , m_itemToReallyCenter( 0 )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
@@ -1221,6 +1223,7 @@ void
 Playlist::advanceDynamicTrack()
 {
     int x = currentTrackIndex();
+    bool didDelete = false;
     if( dynamicMode()->cycleTracks() )
     {
         if( x >= dynamicMode()->previousCount() )
@@ -1228,6 +1231,7 @@ Playlist::advanceDynamicTrack()
             PlaylistItem *first = firstChild();
             removeItem( first );
             delete first;
+            didDelete = true;
         }
     }
 
@@ -1235,12 +1239,16 @@ Playlist::advanceDynamicTrack()
 
     // Just starting to play from stopped, don't append something needlessely
     // or, we have more than enough items in the queue.
-    bool dontAppend = ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
+    bool dontAppend = ( !didDelete && 
+                        ( EngineController::instance()->engine()->state() == Engine::Empty ) ) ||
                         upcomingTracks > dynamicMode()->upcomingCount();
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && stopAfterMode() != StopAfterCurrent )
     {
+        s_dynamicADTMutex->lock();
+        m_insertFromADT++;
+        s_dynamicADTMutex->unlock();
         addDynamicModeTracks( 1 );
     }
     m_dynamicDirt = true;
@@ -1676,7 +1684,7 @@ Playlist::activate( Q3ListViewItem *item )
         return;
     }
 
-    if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
+    if( dynamicMode() && !Amarok::repeatTrack() )
     {
         if( m_currentTrack && item->isDynamicEnabled() )
         {
@@ -1709,7 +1717,7 @@ Playlist::activate( Q3ListViewItem *item )
             }
 
         }
-        if( m_currentTrack && m_currentTrack != item )
+        if( !m_dynamicDirt && m_currentTrack && m_currentTrack != item )
         {
             m_currentTrack->setDynamicEnabled( false );
             advanceDynamicTrack();
@@ -2215,7 +2223,12 @@ Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
 
-    K3ListView::setSorting( col, b );
+    //HACK There are reasons to allow sorting in dynamic mode, but
+    //it breaks other things that I don't have the time or petience
+    //to figure out...at least right now
+
+    if( !dynamicMode() )
+        K3ListView::setSorting( col, b );
 }
 
 void
@@ -2440,8 +2453,11 @@ Playlist::contentsDropEvent( QDropEvent *e )
     Q3ListViewItem *parent = 0;
     Q3ListViewItem *after  = m_marker;
 
+    //make sure to disable only if in dynamic mode and you're inserting
+    //at the beginning or in the middle of the disabled tracks
+    //Also, that the dynamic playlist has any tracks (suggested may not)
     if( dynamicMode() && Playlist::instance()->firstChild() &&
-    	( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() ) )
+        ( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() ) )
     {
         // If marker is disabled, and there is a current track, or marker is not the last enabled track
         // don't allow inserting
@@ -3030,8 +3046,17 @@ Playlist::customEvent( QEvent *e )
                 if( prev && dynamicMode() )
                     prev->setDynamicEnabled( false );
 
-                activate( after );
-                if ( dynamicMode() && dynamicMode()->cycleTracks() )
+                s_dynamicADTMutex->lock();
+                if( m_insertFromADT > 0 )
+                {
+                    if( EngineController::engine()->state() == Engine::Playing )
+                        activate( after );
+                    m_insertFromADT--;
+                }
+                else
+                    activate( after );
+                s_dynamicADTMutex->unlock();
+                if( dynamicMode() && dynamicMode()->cycleTracks() )
                     adjustDynamicPrevious( dynamicMode()->previousCount() );
             }
         }

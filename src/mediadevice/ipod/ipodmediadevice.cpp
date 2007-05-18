@@ -364,6 +364,8 @@ IpodMediaDevice::slotIpodAction( int id )
                                 itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
                                 table[index].model_number ) );
                 }
+                detectModel();
+                MediaBrowser::instance()->updateDevice();
             }
             break;
     }
@@ -1146,49 +1148,7 @@ IpodMediaDevice::openDevice( bool silent )
            return false;
     }
 
-    // needs recent libgpod-0.3.3 from cvs
-    if( m_itdb->device )
-    {
-        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
-        const gchar *modelString = 0;
-        if( ipodInfo )
-        {
-            modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
-
-            switch( ipodInfo->ipod_model )
-            {
-            case ITDB_IPOD_MODEL_VIDEO_WHITE:
-            case ITDB_IPOD_MODEL_VIDEO_BLACK:
-                m_supportsVideo = true;
-                debug() << "detected video-capable iPod" << endl;
-                break;
-            case ITDB_IPOD_MODEL_MOBILE_1:
-                m_isMobile = true;
-                debug() << "detected iTunes phone" << endl;
-                break;
-            case ITDB_IPOD_MODEL_INVALID:
-            case ITDB_IPOD_MODEL_UNKNOWN:
-                modelString = 0;
-                if( pathExists( ":iTunes:iTunes_Control" ) )
-                {
-                    debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
-                    m_isMobile = true;
-                }
-                break;
-            default:
-                break;
-            }
-        }
-
-        if( modelString )
-            m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
-    }
-    else
-    {
-        debug() << "iPod type detection failed, no video support" << endl;
-        Amarok::StatusBar::instance()->longMessage(
-                i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
-    }
+    detectModel();
 
     if( !createLockFile( silent ) )
     {
@@ -1251,6 +1211,55 @@ IpodMediaDevice::openDevice( bool silent )
     m_customAction->setEnabled( true );
 
     return true;
+}
+
+void
+IpodMediaDevice::detectModel()
+{
+    // needs recent libgpod-0.3.3 from cvs
+    if( m_itdb && m_itdb->device )
+    {
+        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
+        const gchar *modelString = 0;
+        if( ipodInfo )
+        {
+            modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
+
+            switch( ipodInfo->ipod_model )
+            {
+            case ITDB_IPOD_MODEL_VIDEO_WHITE:
+            case ITDB_IPOD_MODEL_VIDEO_BLACK:
+            case ITDB_IPOD_MODEL_VIDEO_U2:
+                m_supportsVideo = true;
+                debug() << "detected video-capable iPod" << endl;
+                break;
+            case ITDB_IPOD_MODEL_MOBILE_1:
+                m_isMobile = true;
+                debug() << "detected iTunes phone" << endl;
+                break;
+            case ITDB_IPOD_MODEL_INVALID:
+            case ITDB_IPOD_MODEL_UNKNOWN:
+                modelString = 0;
+                if( pathExists( ":iTunes:iTunes_Control" ) )
+                {
+                    debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
+                    m_isMobile = true;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        if( modelString )
+            m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
+    }
+    else
+    {
+        debug() << "iPod type detection failed, no video support" << endl;
+        Amarok::StatusBar::instance()->longMessage(
+                i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
+    }
 }
 
 void
