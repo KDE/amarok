@@ -343,8 +343,7 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
     DEBUG_BLOCK
     CollectionTreeItem *item;
      if (!parent.isValid())
-         //return true; // must be root item!
-        item = m_rootItem;
+        item = m_rootItem;  // must be root item!
     else
         item = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
