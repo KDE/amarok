@@ -84,7 +84,7 @@ CollectionConfig::updateSettings()
 ///////////////////////////////////////////////////////////////
 
 int 
-CollectionConfig::databaseTypeCode( const QString& type )
+CollectionConfig::databaseTypeCode( const QString& type ) const
 {
     // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
     int dbType = DbConnection::sqlite;
