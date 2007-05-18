@@ -20,11 +20,11 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
-#include "collectionsortfilterproxymodel.h"
-
+#include <QSortFilterProxyModel>
 #include <QTreeView>
 
 class QSortFilterProxyModel;
+class CollectionSortFilterProxyModel;
 class CollectionTreeItemModel;
 
 class CollectionTreeView: public QTreeView {
@@ -32,7 +32,7 @@ class CollectionTreeView: public QTreeView {
     CollectionTreeView( QWidget *parent = 0 );
     ~CollectionTreeView();
 
-    QSortFilterProxyModel* filterModel() { return m_filterModel; }
+    QSortFilterProxyModel* filterModel() const;
 
     void setLevels( const QList<int> &levels );
     void setLevel( int level, int type );

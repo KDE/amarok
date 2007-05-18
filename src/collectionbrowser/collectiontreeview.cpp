@@ -22,8 +22,7 @@
 #include "amarok.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "collectionbrowser/collectiontreeitem.h"
-
-
+#include "collectionsortfilterproxymodel.h"
 
 #include <kconfig.h>
 #include <KSharedPtr>
@@ -92,6 +91,12 @@ CollectionTreeView::setLevel( int level, int type ) {
         levels[level] = type;
     }
     setLevels( levels );
+}
+
+QSortFilterProxyModel*
+CollectionTreeView::filterModel() const
+{
+    return m_filterModel;
 }
 
 
