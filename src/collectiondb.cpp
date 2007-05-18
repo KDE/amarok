@@ -3782,7 +3782,7 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
             .arg( escapeString( rpath ) ) );
 
     //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
-    if ( values.isEmpty() )
+    if( values.isEmpty() )
     {
         QString rpath2 = '.' + url;
         values = query( QString(
@@ -3797,15 +3797,18 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
     }
 
     bool ok = true;
-    int prev = values[4].toInt( &ok );
-    if( ok && toggleHalf && ( prev == rating || ( prev == 1 && rating == 2 ) ) )
+    if( !values.isEmpty() )
     {
-        if( prev == 1 && rating == 2 )
-            rating = 0;
-        else if( rating % 2 ) //.5
-            rating++;
-        else
-            rating--;
+        int prev = values[4].toInt( &ok );
+        if( ok && toggleHalf && ( prev == rating || ( prev == 1 && rating == 2 ) ) )
+        {
+            if( prev == 1 && rating == 2 )
+                rating = 0;
+            else if( rating % 2 ) //.5
+                rating++;
+            else
+                rating--;
+        }
     }
 
     // check boundaries
