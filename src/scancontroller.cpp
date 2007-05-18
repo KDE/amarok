@@ -469,7 +469,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
 
 void
-ScanController::customEvent( QCustomEvent* e )
+ScanController::customEvent( QEvent* e )
 {
     if( e->type() == RestartEventType )
     {

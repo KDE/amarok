@@ -20,7 +20,7 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
-#include <QCustomEvent>
+#include <QEvent>
 #include <QMutex>
 #include <QtXml>         //baseclass
 
@@ -51,18 +51,20 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
     public:
         static const int RestartEventType = 8891;
 
-        class RestartEvent : public QCustomEvent {
+        class RestartEvent : public QEvent {
             public:
-                RestartEvent() : QCustomEvent( RestartEventType ) {}
+                RestartEvent() : QEvent( uniqueType() ) {}
+                static Type uniqueType() { return Type( RestartEventType ); }
         };
 
         static const int PlaylistFoundEventType = 8890;
 
-        class PlaylistFoundEvent : public QCustomEvent {
+        class PlaylistFoundEvent : public QEvent {
             public:
                 PlaylistFoundEvent( QString path )
-                    : QCustomEvent( PlaylistFoundEventType )
+                    : QEvent( uniqueType() )
                     , m_path( path ) {}
+                static Type uniqueType() { return Type( PlaylistFoundEventType ); }
                 QString path() { return m_path; }
             private:
                 QString m_path;
@@ -96,7 +98,7 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         static void setInstance( ScanController* instance );
 
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
-        void customEvent( QCustomEvent* );
+        void customEvent( QEvent* );
 
         // Member variables:
         static const int MAX_RESTARTS = 80;
