@@ -260,7 +260,6 @@ set(amarok_LIB_SRCS
     collection/blockingquery.cpp
     collection/collection.cpp
     collection/collectionmanager.cpp
-    collection/daap/daapmeta.cpp
     collection/metaquerybuilder.cpp
     collection/querymaker.cpp
     collection/support/memoryquerymaker.cpp
