@@ -131,7 +131,7 @@ CollectionTreeItemModel::rowCount(const QModelIndex &parent) const
     if ( parentItem->childrenLoaded() )
         return parentItem->childCount();
     else
-        return 1; //hack!
+        return 0;
 }
 
 int
@@ -321,7 +321,7 @@ bool
 CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
     DEBUG_BLOCK
     if ( !parent.isValid() )
-        return false;
+        return false;       //children of the root item are the collections, and they are alwas known
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     return item->level() <= m_levelType.count() && !item->childrenLoaded();
 }
@@ -387,10 +387,6 @@ CollectionTreeItemModel::newResultReady( const QString &collectionId, Meta::Data
     if ( d->m_childQueries.contains( qm ) ) {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
         QModelIndex parentIndex = createIndex( parent->row(), 0, parent );
-        //remove dummy row
-        beginRemoveRows( parentIndex, 0, 0 );
-        //the row was never actually there, but we had to return 1 in rowCount to get the +
-        endRemoveRows();
         beginInsertRows( parentIndex, 0, data.count() -1 );
         populateChildren( data, parent );
         endInsertRows();
