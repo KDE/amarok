@@ -57,13 +57,13 @@ class AMAROK_EXPORT BlockingQuery : private QObject
 
     private slots:
         void queryDone();
-        void result( const QString &collectionId, DataList data );
-        void result( const QString &collectionId, TrackList tracks );
-        void result( const QString &collectionId, AlbumList albums );
-        void result( const QString &collectionId, ArtistList artists );
-        void result( const QString &collectionId, GenreList genres );
-        void result( const QString &collectionId, ComposerList composers );
-        void result( const QString &collectionId, YearList years );
+        void result( const QString &collectionId, Meta::DataList data );
+        void result( const QString &collectionId, Meta::TrackList tracks );
+        void result( const QString &collectionId, Meta::AlbumList albums );
+        void result( const QString &collectionId, Meta::ArtistList artists );
+        void result( const QString &collectionId, Meta::GenreList genres );
+        void result( const QString &collectionId, Meta::ComposerList composers );
+        void result( const QString &collectionId, Meta::YearList years );
         void result( const QString &collectionId, const QStringList &list );
 
     private:

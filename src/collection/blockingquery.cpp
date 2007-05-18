@@ -18,16 +18,18 @@
 
 #include "blockingquery.h"
 
+#include "debug.h"
+
+#include <QCoreApplication>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QStringList>
-#include <QWaitCondition>
 
 struct BlockingQuery::Private
 {
     QueryMaker *qm;
     QMutex mutex;
-    QWaitCondition wait;
+//    QWaitCondition wait;
     QStringList collectionIds;
     QMutex dataMutex;
     QHash<QString, DataList> data;
@@ -38,6 +40,7 @@ struct BlockingQuery::Private
     QHash<QString, ComposerList> composer;
     QHash<QString, YearList> year;
     QHash<QString, QStringList> custom;
+    bool done;
 };
 
 BlockingQuery::BlockingQuery( QueryMaker *qm )
@@ -45,6 +48,7 @@ BlockingQuery::BlockingQuery( QueryMaker *qm )
     , d( new Private )
 {
     d->qm = qm;
+    d->done = false;
 }
 
 BlockingQuery::~BlockingQuery()
@@ -56,18 +60,24 @@ BlockingQuery::~BlockingQuery()
 void
 BlockingQuery::startQuery()
 {
-    connect( d->qm, SIGNAL( newResultReady( QString, DataList ) ), SLOT( result( QString, DataList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, TrackList ) ), SLOT( result( QString, TrackList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, AlbumList ) ), SLOT( result( QString, AlbumList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, ArtistList ) ), SLOT( result( QString, ArtistList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, ComposerList ) ), SLOT( result( QString, ComposerList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, YearList ) ), SLOT( result( QString, YearList ) ), Qt::DirectConnection );
+    DEBUG_BLOCK
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ), Qt::DirectConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::DirectConnection );
     connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::DirectConnection );
 
     d->mutex.lock();
     d->qm->run();
-    d->wait.wait( &d->mutex );
+    while( !d->done )
+    {
+        d->mutex.unlock();
+        QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
+        d->mutex.lock();
+    }
     d->mutex.unlock();
 }
 
@@ -193,14 +203,16 @@ BlockingQuery::customData()
 void
 BlockingQuery::queryDone()
 {
+    DEBUG_BLOCK
     //lock the mutex so we can be sure that we wait in run()
     d->mutex.lock();
+    d->done = true;
     d->mutex.unlock();
-    d->wait.wakeOne();
+    //d->wait.wakeAll();
 }
 
 void
-BlockingQuery::result( const QString &collectionId, DataList data )
+BlockingQuery::result( const QString &collectionId, Meta::DataList data )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -209,7 +221,7 @@ BlockingQuery::result( const QString &collectionId, DataList data )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, TrackList tracks )
+BlockingQuery::result( const QString &collectionId, Meta::TrackList tracks )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -218,7 +230,7 @@ BlockingQuery::result( const QString &collectionId, TrackList tracks )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, ArtistList artists )
+BlockingQuery::result( const QString &collectionId, Meta::ArtistList artists )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -227,7 +239,7 @@ BlockingQuery::result( const QString &collectionId, ArtistList artists )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, AlbumList albums )
+BlockingQuery::result( const QString &collectionId, Meta::AlbumList albums )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -236,7 +248,7 @@ BlockingQuery::result( const QString &collectionId, AlbumList albums )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, GenreList genres )
+BlockingQuery::result( const QString &collectionId, Meta::GenreList genres )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -245,7 +257,7 @@ BlockingQuery::result( const QString &collectionId, GenreList genres )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, ComposerList composers )
+BlockingQuery::result( const QString &collectionId, Meta::ComposerList composers )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
@@ -254,7 +266,7 @@ BlockingQuery::result( const QString &collectionId, ComposerList composers )
 }
 
 void
-BlockingQuery::result( const QString &collectionId, YearList years )
+BlockingQuery::result( const QString &collectionId, Meta::YearList years )
 {
     d->dataMutex.lock();
     d->collectionIds.append( collectionId );
