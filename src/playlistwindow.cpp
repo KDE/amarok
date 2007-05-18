@@ -131,12 +131,14 @@ void PlaylistWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
+    //make the playlist views resizable so the old one can be hidden! 
+    QSplitter * splitter = new QSplitter( Qt::Vertical, playlistwindow );
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
-    Playlist *playlist = new Playlist( playlistwindow ); //Playlist
+    Playlist *playlist = new Playlist( splitter ); //Playlist
     { //TNG playlist
         PlaylistNS::Model* playmodel = new PlaylistNS::Model( this );
         playmodel->testData();
-        QTableView* playview = new QTableView( playlistwindow );
+        QTableView* playview = new QTableView( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
         playview->setModel( playmodel );
         playview->setAlternatingRowColors(true);

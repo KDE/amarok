@@ -225,13 +225,14 @@ class CollectionView : public K3ListView
         friend class CollectionItem; // for access to m_cat2
         friend class ContextBrowser; // for setupDirs()
 
-        CollectionView( CollectionBrowser* parent );
+        CollectionView( QWidget* parent );
         ~CollectionView();
 
         AMAROK_EXPORT static CollectionView* instance() { return m_instance; }
 
         void setFilter( const QString &filter )     { m_filter = filter; }
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
+        void setCollectionBrowser( CollectionBrowser * collectionBrowser );
         QString filter()                            { return m_filter; }
         uint    timeFilter()                        { return m_timeFilter; }
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( K3ListView::currentItem() ); }
@@ -248,6 +249,7 @@ class CollectionView : public K3ListView
 
         //Useful helper function to avoid duplicating code
         static inline void yearAlbumCalc( QString &year, QString &text );
+        
 
     protected:
         // Reimplemented for iPod-style navigation, etc.
@@ -365,7 +367,7 @@ class CollectionView : public K3ListView
     //attributes:
         AMAROK_EXPORT static CollectionView* m_instance;
 
-        CollectionBrowser* m_parent;
+        CollectionBrowser* m_collectionBrowser;
 
         QString m_filter;
         uint m_timeFilter;

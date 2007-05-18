@@ -72,6 +72,7 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <Q3SimpleRichText>
+#include <QSplitter>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip>       //QToolTip::add()
@@ -136,9 +137,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     KActionCollection* ac = new KActionCollection( this );
 
-    m_view = new CollectionView( this );
 
-    m_treeView = new CollectionTreeView( this );
+    //make the collections resizable so the old one can be hidden! 
+    QSplitter * splitter = new QSplitter( Qt::Vertical, this );
+
+    m_view = new CollectionView( splitter );
+    m_view->setCollectionBrowser( this );
+
+    m_treeView = new CollectionTreeView( splitter );
 
     m_view->installEventFilter( this );
 
@@ -460,9 +466,8 @@ CollectionBrowser::ipodToolbar( bool activate )
 CollectionView* CollectionView::m_instance = 0;
 
 
-CollectionView::CollectionView( CollectionBrowser* parent )
+CollectionView::CollectionView( QWidget* parent )
         : K3ListView( parent )
-        , m_parent( parent )
         , m_timeFilter( 0 )
         , m_currentDepth( 0 )
         , m_ipodIncremented ( 1 )
@@ -572,6 +577,11 @@ CollectionView::~CollectionView() {
     config.writeEntry( "FlatColumnWidths", flatWidths );
 }
 
+void CollectionView::setCollectionBrowser(CollectionBrowser * collectionBrowser)
+{
+    m_collectionBrowser = collectionBrowser;
+}
+
 void
 CollectionView::setShowDivider( bool show )
 {
@@ -664,10 +674,10 @@ CollectionView::keyPressEvent( QKeyEvent *e )
            && m_viewMode == modeIpodView )
     {
         if( e->key() == Qt::Key_Right )
-            m_parent->m_ipodIncrement->trigger();
+            m_collectionBrowser->m_ipodIncrement->trigger();
 
         else if( e->key() == Qt::Key_Left )
-            m_parent->m_ipodDecrement->trigger();
+            m_collectionBrowser->m_ipodDecrement->trigger();
 
     }
 
@@ -687,7 +697,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     if(!force && !m_dirty )
         return;
 
-    if( PlaylistWindow::self()->sideBar()->currentWidget() != m_parent )
+    if( PlaylistWindow::self()->sideBar()->currentWidget() != m_collectionBrowser )
     {
         // the collectionbrowser is intensive for sql, so we only renderView() if the tab
         // is currently active.  else, wait until user focuses it.
@@ -1256,29 +1266,29 @@ CollectionView::presetMenu( int id )  //SLOT
 void
 CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat1Menu->setItemChecked( m_cat1, false ); //uncheck old item
-    m_parent->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old items
-    m_parent->m_cat3Menu->setItemEnabled( m_cat1, true );
+    m_collectionBrowser->m_cat1Menu->setItemChecked( m_cat1, false ); //uncheck old item
+    m_collectionBrowser->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old items
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( m_cat1, true );
     m_cat1 = id;
     updateColumnHeader();
     resetIpodDepth();
-    m_parent->m_cat1Menu->setItemChecked( m_cat1, true );
+    m_collectionBrowser->m_cat1Menu->setItemChecked( m_cat1, true );
 
     //prevent choosing the same category in both menus
-    m_parent->m_cat2Menu->setItemEnabled( id , false );
-    m_parent->m_cat3Menu->setItemEnabled( id , false );
+    m_collectionBrowser->m_cat2Menu->setItemEnabled( id , false );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( id , false );
 
     //if this item is checked in second menu, uncheck it
-    if ( m_parent->m_cat2Menu->isItemChecked( id ) ) {
-        m_parent->m_cat2Menu->setItemChecked( id, false );
-        m_parent->m_cat2Menu->setItemChecked( IdNone, true );
+    if ( m_collectionBrowser->m_cat2Menu->isItemChecked( id ) ) {
+        m_collectionBrowser->m_cat2Menu->setItemChecked( id, false );
+        m_collectionBrowser->m_cat2Menu->setItemChecked( IdNone, true );
         m_cat2 = IdNone;
         enableCat3Menu( false );
     }
     //if this item is checked in third menu, uncheck it
-    if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
-        m_parent->m_cat3Menu->setItemChecked( id, false );
-        m_parent->m_cat3Menu->setItemChecked( IdNone, true );
+    if ( m_collectionBrowser->m_cat3Menu->isItemChecked( id ) ) {
+        m_collectionBrowser->m_cat3Menu->setItemChecked( id, false );
+        m_collectionBrowser->m_cat3Menu->setItemChecked( IdNone, true );
         m_cat3 = IdNone;
     }
     updateTrackDepth();
@@ -1292,23 +1302,23 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat2Menu->setItemChecked( m_cat2, false ); //uncheck old item
-    m_parent->m_cat3Menu->setItemEnabled( m_cat3, true );  //enable old item
+    m_collectionBrowser->m_cat2Menu->setItemChecked( m_cat2, false ); //uncheck old item
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( m_cat3, true );  //enable old item
     m_cat2 = id;
-    m_parent->m_cat2Menu->setItemChecked( m_cat2, true );
+    m_collectionBrowser->m_cat2Menu->setItemChecked( m_cat2, true );
     updateColumnHeader();
     resetIpodDepth();
 
     enableCat3Menu( id != IdNone );
 
     //prevent choosing the same category in both menus
-    m_parent->m_cat3Menu->setItemEnabled( m_cat1 , false );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( m_cat1 , false );
     if( id != IdNone )
-        m_parent->m_cat3Menu->setItemEnabled( id , false );
+        m_collectionBrowser->m_cat3Menu->setItemEnabled( id , false );
 
     //if this item is checked in third menu, uncheck it
-    if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
-        m_parent->m_cat3Menu->setItemChecked( id, false );
+    if ( m_collectionBrowser->m_cat3Menu->isItemChecked( id ) ) {
+        m_collectionBrowser->m_cat3Menu->setItemChecked( id, false );
         enableCat3Menu( false );
     }
     updateTrackDepth();
@@ -1322,9 +1332,9 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::cat3Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat3Menu->setItemChecked( m_cat3, false ); //uncheck old item
+    m_collectionBrowser->m_cat3Menu->setItemChecked( m_cat3, false ); //uncheck old item
     m_cat3 = id;
-    m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
+    m_collectionBrowser->m_cat3Menu->setItemChecked( m_cat3, true );
     updateColumnHeader();
     resetIpodDepth();
     updateTrackDepth();
@@ -1338,17 +1348,17 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::enableCat3Menu( bool enable )
 {
-    m_parent->m_cat3Menu->setItemEnabled( IdAlbum, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdVisYearAlbum, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdArtist, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdComposer, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdGenre, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdYear, enable );
-    m_parent->m_cat3Menu->setItemEnabled( IdLabel, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdAlbum, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdVisYearAlbum, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdArtist, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdComposer, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdGenre, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdYear, enable );
+    m_collectionBrowser->m_cat3Menu->setItemEnabled( IdLabel, enable );
 
     if( !enable ) {
-        m_parent->m_cat3Menu->setItemChecked( m_cat3, false );
-        m_parent->m_cat3Menu->setItemChecked( IdNone, true );
+        m_collectionBrowser->m_cat3Menu->setItemChecked( m_cat3, false );
+        m_collectionBrowser->m_cat3Menu->setItemChecked( IdNone, true );
         m_cat3 = IdNone;
     }
     updateTrackDepth();
@@ -1395,7 +1405,7 @@ CollectionView::ipodItemClicked( Q3ListViewItem *item, const QPoint&, int c )
         return;
 
     // The Qt manual says NOT to delete items from within this slot
-    QTimer::singleShot( 0, m_parent->m_ipodIncrement, SLOT( activate() ) );
+    QTimer::singleShot( 0, m_collectionBrowser->m_ipodIncrement, SLOT( activate() ) );
 }
 
 
@@ -1603,13 +1613,13 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
     if( m_viewMode == modeIpodView )
     {
         setShadeSortColumn( false );
-        m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
-        m_parent->ipodToolbar( true );
+        m_collectionBrowser->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
+        m_collectionBrowser->ipodToolbar( true );
     }
     else
     {
         setShadeSortColumn( true );
-        m_parent->ipodToolbar( false );
+        m_collectionBrowser->ipodToolbar( false );
     }
 
     if ( rerender )
@@ -1794,7 +1804,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
         return;
     }
 
-    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
+    OrganizeCollectionDialogBase base( m_collectionBrowser, "OrganizeFiles", true, caption,
             KDialog::Ok|KDialog::Cancel|KDialog::Details );
     KVBox* page = new KVBox( &base );
     base.setMainWidget( page );
@@ -2163,12 +2173,12 @@ CollectionView::updateColumnHeader()
     QResizeEvent rev( size(), QSize() );
     viewportResizeEvent( &rev );
 
-    m_parent->m_categoryMenu->setItemChecked( IdArtist, m_cat1 == IdArtist && m_cat2 == IdNone );
-    m_parent->m_categoryMenu->setItemChecked( IdAlbum, m_cat1 == IdAlbum && m_cat2 == IdNone );
-    m_parent->m_categoryMenu->setItemChecked( IdArtistAlbum, m_cat1 == IdArtist && m_cat2 == IdAlbum && m_cat3 == IdNone );
-    m_parent->m_categoryMenu->setItemChecked( IdArtistVisYearAlbum, m_cat1 == IdArtist && m_cat2 == IdVisYearAlbum && m_cat3 == IdNone );
-    m_parent->m_categoryMenu->setItemChecked( IdGenreArtist, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdNone );
-    m_parent->m_categoryMenu->setItemChecked( IdGenreArtistAlbum, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdAlbum );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdArtist, m_cat1 == IdArtist && m_cat2 == IdNone );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdAlbum, m_cat1 == IdAlbum && m_cat2 == IdNone );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdArtistAlbum, m_cat1 == IdArtist && m_cat2 == IdAlbum && m_cat3 == IdNone );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdArtistVisYearAlbum, m_cat1 == IdArtist && m_cat2 == IdVisYearAlbum && m_cat3 == IdNone );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdGenreArtist, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdNone );
+    m_collectionBrowser->m_categoryMenu->setItemChecked( IdGenreArtistAlbum, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdAlbum );
 }
 
 
@@ -2983,7 +2993,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         return;
     }
 
-    m_parent->m_ipodDecrement->setEnabled( true );
+    m_collectionBrowser->m_ipodDecrement->setEnabled( true );
 
     // We're not in track mode
     int catArr[3] = {m_cat1, m_cat2, m_cat3};
@@ -3077,7 +3087,7 @@ CollectionView::decrementDepth ( bool rerender /*= true*/ )
         return;
 
     m_currentDepth--;
-    m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
+    m_collectionBrowser->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
     m_ipodFilters[m_currentDepth].clear();
     int catArr[3] = {m_cat1, m_cat2, m_cat3};
     int cat = catArr[m_currentDepth];
@@ -3112,7 +3122,7 @@ CollectionView::resetIpodDepth ( void )
     m_ipodFilters[1].clear();
     m_ipodFilters[2].clear();
     m_ipodIncremented = 1;
-    m_parent->m_ipodDecrement->setEnabled( false );
+    m_collectionBrowser->m_ipodDecrement->setEnabled( false );
 }
 
 
@@ -4722,5 +4732,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
 
 QPixmap *CollectionItem::s_star = 0;
 QPixmap *CollectionItem::s_smallStar = 0;
+
+
 
 #include "collectionbrowser.moc"
