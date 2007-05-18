@@ -90,9 +90,6 @@ class PlaylistItem : public MetaBundle, public K3ListViewItem
         Playlist *listView() const { return reinterpret_cast<Playlist*>( K3ListViewItem::listView() ); }
         PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( K3ListViewItem::nextSibling() ); }
 
-        static QPixmap *star();
-        static QPixmap *grayedStar();
-        static QPixmap *smallStar();
         static int ratingAtPoint( int x );
         static int ratingColumnWidth();
 
@@ -130,7 +127,7 @@ class PlaylistItem : public MetaBundle, public K3ListViewItem
 
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
-        void drawRating( QPainter *p, int stars, int graystars, bool half );
+        void drawRating( QPainter *p, int stars, int greystars, bool half );
         void drawMood( QPainter *p, int width, int height );
         virtual void moodbarJobEvent( int newState );
 
@@ -170,9 +167,6 @@ class PlaylistItem : public MetaBundle, public K3ListViewItem
 
         static bool s_pixmapChanged;
         static const QString &editingText();
-        static QPixmap *s_star;
-        static QPixmap *s_grayedStar;
-        static QPixmap *s_smallStar;
 };
 
 class PLItemList: public Q3PtrList<PlaylistItem>
@@ -185,9 +179,5 @@ class PLItemList: public Q3PtrList<PlaylistItem>
         inline PLItemList &operator<<( PlaylistItem *item ) { append( item ); return *this; }
 };
 
-
-inline QPixmap *PlaylistItem::star() { return s_star; }
-inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
-inline QPixmap *PlaylistItem::smallStar() { return s_smallStar; }
 
 #endif

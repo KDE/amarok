@@ -28,6 +28,7 @@
 #include "playlistbrowser.h"
 #include "searchwidget.h"
 #include "sidebar.h"
+#include "StarManager.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "threadmanager.h"
@@ -529,6 +530,8 @@ CollectionView::CollectionView( QWidget* parent )
              this,                      SLOT( scanDone( bool ) ) );
     connect( PlaylistWindow::self()->sideBar(),   SIGNAL( widgetActivated( int ) ),
              this,                      SLOT( renderView() ) ); // renderView() checks if current tab is this
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( ratingChanged( const QString&, int ) ) );
 
     connect( this,           SIGNAL( expanded( Q3ListViewItem* ) ),
              this,             SLOT( slotExpand( Q3ListViewItem* ) ) );
@@ -550,12 +553,6 @@ CollectionView::CollectionView( QWidget* parent )
     connect( MountPointManager::instance(), SIGNAL( mediumRemoved( int ) ),
              this,                            SLOT( databaseChanged() ) );
 
-    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).scaled( h, h, Qt::KeepAspectRatio );
-    CollectionItem::s_star = new QPixmap( img );
-
-    QImage small = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
-    CollectionItem::s_smallStar = new QPixmap( small.scaled( h, h, Qt::KeepAspectRatio ) );
 }
 
 
@@ -1221,6 +1218,12 @@ CollectionView::slotCollapse( Q3ListViewItem* item )  //SLOT
     }
 }
 
+void
+CollectionView::ratingChanged( const QString&, int )
+{
+    m_dirty = true;
+    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+}
 
 void
 CollectionView::presetMenu( int id )  //SLOT
@@ -4412,16 +4415,17 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
 
         int rating = text(column).toInt();
         int i = 1, x = 1;
-        const int y = height() / 2 - star()->height() / 2;
+        const int y = height() / 2 - StarManager::instance()->getGreyStar()->height() / 2;
+        bool half = rating%2;
         for(; i <= rating/2; ++i )
         {
-            bitBlt( p.device(), x, y, star() );
-            x += star()->width() + listView()->itemMargin();
+            bitBlt( p.device(), x, y, StarManager::instance()->getStar( half ? rating/2 + 1 : rating/2 ) );
+            x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
         }
-        if( rating%2 )
+        if( half )
         {
-            bitBlt( p.device(), x, y, smallStar() );
-            x += star()->width() + listView()->itemMargin();
+            bitBlt( p.device(), x, y, StarManager::instance()->getHalfStar( rating/2 + 1 ) );
+            x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
         }
 
         p.end();
@@ -4729,9 +4733,6 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
 
     return inGroup;
 }
-
-QPixmap *CollectionItem::s_star = 0;
-QPixmap *CollectionItem::s_smallStar = 0;
 
 
 

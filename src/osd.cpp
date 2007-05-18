@@ -22,6 +22,7 @@
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
+#include "StarManager.h"
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -61,6 +62,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( ratingChanged( const QString&, int ) ) );
 
     //or crashes, KWin bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -69,7 +72,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {
-    m_text = text;
     if ( !newImage.isNull() )
     {
         m_cover = newImage;
@@ -77,7 +79,16 @@ OSDWidget::show( const QString &text, QImage newImage )
         int h = m_scaledCover.height();
         m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
-    show();
+    if( isShown() )
+        show();
+}
+
+void
+OSDWidget::ratingChanged( const QString& path, int rating )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    if( currentTrack.isFile() && currentTrack.url().path() == path )
+        ratingChanged( rating );
 }
 
 void
@@ -168,11 +179,10 @@ OSDWidget::determineMetrics( const uint M )
 
     if( m_rating )
     {
-        QPixmap star;
-        star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
-        if( rect.width() < star.width() * 5 )
-            rect.setWidth( star.width() * 5 ); //changes right edge position
-        rect.setHeight( rect.height() + star.height() + M ); //changes bottom edge pos
+        QPixmap* star = StarManager::instance()->getStar( 1 );
+        if( rect.width() < star->width() * 5 )
+            rect.setWidth( star->width() * 5 ); //changes right edge position
+        rect.setHeight( rect.height() + star->height() + M ); //changes bottom edge pos
     }
 
     if( useMoodbar() )
@@ -319,8 +329,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         rect.rLeft() += m_scaledCover.width() + M;
     }
 
-    QPixmap star;
-    star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
+    QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
     int graphicsHeight = 0;
 
     if( useMoodbar() )
@@ -329,32 +338,34 @@ OSDWidget::paintEvent( QPaintEvent* )
           = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
         QRect r( rect );
         r.setTop( rect.bottom() - moodbar.height()
-                  - (m_rating ? star.height() + M : 0) );
+                  - (m_rating ? star->height() + M : 0) );
         graphicsHeight += moodbar.height() + M;
 
         p.drawPixmap( r.left(), r.top(), moodbar );
         m_moodbarBundle = MetaBundle();
     }
 
-    if( m_rating > 1 )
+    if( m_rating > 0 )
     {
         QRect r( rect );
 
         //Align to center...
-        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 );
-        r.setTop( rect.bottom() - star.height() );
-        graphicsHeight += star.height() + M;
+        r.setLeft(( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
+        r.setTop( rect.bottom() - star->height() );
+        graphicsHeight += star->height() + M;
 
-        if( m_rating % 2 )
+        bool half = m_rating%2;
+
+        if( half )
         {
-            QPixmap halfStar;
-            halfStar.load( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
-            p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
+            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating/2 + 1 );
+            p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
+            star = StarManager::instance()->getStar( m_rating/2 + 1 );
         }
 
         for( int i = 0; i < m_rating/2; i++ )
         {
-            p.drawPixmap( r.left() + i * star.width(), r.top(), star );
+            p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
         }
 
         m_rating = 0;

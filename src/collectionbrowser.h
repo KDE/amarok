@@ -190,9 +190,6 @@ class CollectionItem : public K3ListViewItem {
 
         virtual void setPixmap(int column, const QPixmap & pix);
 
-        static QPixmap *star();
-        static QPixmap *smallStar();
-
         /// convenience functions
         CollectionView *listView() const { return reinterpret_cast<CollectionView*>( K3ListViewItem::listView() ); }
 
@@ -208,9 +205,6 @@ class CollectionItem : public K3ListViewItem {
         int m_cat;
         bool m_isUnknown;
         bool m_isSampler;
-
-        static QPixmap *s_star;
-        static QPixmap *s_smallStar;
 };
 
 
@@ -306,6 +300,8 @@ class CollectionView : public K3ListView
         * Cancel Organizing files
         */
         void cancelOrganizingFiles();
+
+        void ratingChanged( const QString&, int );
 
     private:
         enum Tag { Title = 0, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
@@ -411,6 +407,7 @@ class OrganizeCollectionDialogBase : public KDialog
             QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel )
         : KDialog( parent )
     {
+        Q_UNUSED( name )
         setCaption( caption );
         setModal( modal );
         setButtons( buttonMask );
@@ -423,8 +420,6 @@ class OrganizeCollectionDialogBase : public KDialog
         void slotDetails() { KDialog::slotButtonClicked( Details ); emit detailsClicked(); adjustSize(); }
 };
 
-inline QPixmap *CollectionItem::star() { return s_star; }
-inline QPixmap *CollectionItem::smallStar() { return s_smallStar; }
 
 
 

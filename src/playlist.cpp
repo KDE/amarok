@@ -52,6 +52,7 @@
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "sliderwidget.h"
+#include "StarManager.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadmanager.h"
@@ -60,7 +61,7 @@
 #include <cmath> //for pow() in playNextTrack()
 
 #include <QClipboard>      //copyToClipboard(), slotMouseButtonPressed()
-#include <qcolor.h>
+#include <QColor>
 #include <QEvent>
 #include <QFile>           //undo system
 #include <q3header.h>         //eventFilter()
@@ -1804,7 +1805,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
-        globalRect.setRight( qMin( dright, qMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
+        globalRect.setRight( qMin( dright, qMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( StarManager::instance()->getGreyStar()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
     else
         globalRect.setRight( qMin( globalRect.left() + t.widthUsed(), dright ) );
     globalRect.setBottom( globalRect.top() + qMax( irect.height(), t.height() ) - 1 );
@@ -4151,9 +4152,6 @@ void
 Playlist::fontChange( const QFont &old )
 {
     K3ListView::fontChange( old );
-    delete PlaylistItem::s_star;
-    delete PlaylistItem::s_smallStar;
-    delete PlaylistItem::s_grayedStar;
     initStarPixmaps();
     triggerUpdate();
 }
@@ -4580,17 +4578,7 @@ Playlist::saveSelectedAsPlaylist()
 
 void Playlist::initStarPixmaps()
 {
-    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).scaled( h, h, Qt::KeepAspectRatio );
-    PlaylistItem::s_star = new QPixmap( img );
-
-    PlaylistItem::s_grayedStar = new QPixmap;
-    QImage imgGray (img);
-    KIconEffect::toGray( imgGray, 1.0 );
-    PlaylistItem::s_grayedStar->convertFromImage( img );
-
-    QImage small = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
-    PlaylistItem::s_smallStar = new QPixmap( small.scaled( h, h, Qt::KeepAspectRatio ) );
+    StarManager::instance()->reinitStars( fontMetrics().height(), itemMargin() );
 }
 
 void

@@ -37,17 +37,18 @@
 #include <QByteArray>
 #include <Q3PtrList>
 #include "scriptmanager.h"
+#include "StarManager.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "threadmanager.h"
 
+#include <QBuffer>
+#include <QByteArray>
 #include <QDateTime>
 #include <qdom.h>
 #include <QImage>
 #include <QRegExp>
 #include <q3textstream.h>  // External CSS reading
-#include <khbox.h>
-#include <kvbox.h> //wiki tab
 #include <QLayout>
 #include <QLineEdit>
 #include <Q3PopupMenu>
@@ -64,6 +65,7 @@
 #include <kdialog.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
+#include <KHBox>
 #include <kiconloader.h>
 #include <kio/deletejob.h>
 #include <kio/job.h>
@@ -73,7 +75,7 @@
 #include <kmenu.h>
 #include <kstandarddirs.h>
 #include <ktextedit.h>
-
+#include <KVBox> //wiki tab
 
 #include <unistd.h> //usleep()
 
@@ -429,6 +431,8 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const QString&, const QString& ) ),
              this, SLOT( tagsChanged( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( ratingsColorsChanged() ),
              this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
              this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
@@ -3041,12 +3045,27 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
                     "<td class='ratingBox' align='right' colspan='2'>\n";
         if( rating )
         {
+            bool half = rating%2;
             contents += "<nobr>\n";
+
+            QBuffer fullStarBuf;
+            fullStarBuf.open( QIODevice::WriteOnly );
+            StarManager::instance()->getStarImage( half ? rating/2 + 1 : rating/2 ).save( &fullStarBuf, "PNG" );
+            fullStarBuf.close();
+            QByteArray fullStar = KCodecs::base64Encode( fullStarBuf.buffer(), true );
+
             const QString img = "<img src='%1' height='13px' class='ratingStar'></img>\n";
             for( int i = 0, n = rating / 2; i < n; ++i )
-                contents += img.arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
+                contents += img.arg( QString( "data:image/png;base64," ).append( fullStar ) );
             if( rating % 2 )
-                contents += img.arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
+            {
+                QBuffer halfStarBuf;
+                halfStarBuf.open( QIODevice::WriteOnly );
+                StarManager::instance()->getHalfStarImage( half ? rating/2 + 1 : rating/2 ).save( &halfStarBuf, "PNG" );
+                halfStarBuf.close();
+                QByteArray halfStar = KCodecs::base64Encode( halfStarBuf.buffer(), true );
+                contents += img.arg( QString( "data:image/png;base64," ).append( halfStar ) );
+            }
             contents += "</nobr>\n";
         }
         else
@@ -4388,7 +4407,7 @@ void ContextBrowser::ratingOrScoreOrLabelsChanged( const QString &path ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if( (currentTrack.isFile() && currentTrack.url().path() == path) || m_browseLabels )
+    if( m_browseLabels || ( currentTrack.isFile() && ( currentTrack.url().path() == path || AmarokConfig::useRatings() ) ) )
         refreshCurrentTrackPage();
 }
 

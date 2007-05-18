@@ -329,6 +329,7 @@ set(amarok_LIB_SRCS
     sliderwidget.cpp
     smartplaylisteditor.cpp
     socketserver.cpp
+    StarManager.cpp
     statistics.cpp
     systray.cpp
     tagdialog.cpp
