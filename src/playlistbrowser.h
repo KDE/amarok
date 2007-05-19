@@ -26,7 +26,6 @@
 #include <QDragLeaveEvent>
 #include <QKeyEvent>
 #include <Q3ValueList>
-#include <QCustomEvent>
 #include <QPixmap>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -37,7 +36,6 @@
 class KTextBrowser;
 class KToolBar;
 
-class QCustomEvent;
 class QColorGroup;
 class Q3DragObject;
 class QPainter;

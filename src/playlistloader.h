@@ -11,7 +11,6 @@
 #include <q3ptrlist.h>
 #include <QtXml>         //baseclass
 //Added by qt3to4:
-#include <QCustomEvent>
 #include <Q3ValueList>
 #include <kurl.h>         //KUrl::List
 #include "metabundle.h"   //stack allocated

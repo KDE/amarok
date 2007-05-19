@@ -48,7 +48,6 @@
 #include <QKeyEvent>
 #include <QDropEvent>
 #include <QDragMoveEvent>
-#include <QCustomEvent>
 #include <QPaintEvent>
 #include <Q3PtrList>
 #include <QSplitter>

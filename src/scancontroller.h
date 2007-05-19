@@ -53,8 +53,7 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
 
         class RestartEvent : public QEvent {
             public:
-                RestartEvent() : QEvent( uniqueType() ) {}
-                static Type uniqueType() { return Type( RestartEventType ); }
+                RestartEvent() : QEvent( Type( RestartEventType ) ) {}
         };
 
         static const int PlaylistFoundEventType = 8890;
@@ -62,9 +61,8 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         class PlaylistFoundEvent : public QEvent {
             public:
                 PlaylistFoundEvent( QString path )
-                    : QEvent( uniqueType() )
+                    : QEvent( Type( PlaylistFoundEventType ) )
                     , m_path( path ) {}
-                static Type uniqueType() { return Type( PlaylistFoundEventType ); }
                 QString path() { return m_path; }
             private:
                 QString m_path;

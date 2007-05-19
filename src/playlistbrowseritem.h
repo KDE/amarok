@@ -28,7 +28,6 @@
 #include <q3url.h>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <QCustomEvent>
 #include <QPixmap>
 
 class MetaBundle;

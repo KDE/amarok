@@ -37,7 +37,6 @@
 #include <q3textstream.h> //::loadPlaylist()
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <QCustomEvent>
 
 #include <kapplication.h>
 #include <kurl.h>
@@ -57,10 +56,12 @@ struct XMLData
     XMLData(): queue(-1), stopafter(false), dynamicdisabled(false), filestatusdisabled(false) { }
 };
 
-class TagsEvent : public QCustomEvent {
+class TagsEvent : public QEvent {
 public:
-    TagsEvent( const Q3ValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( Q3ValueList<XMLData>( x ) ) { }
-    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
+    static const int TagsValueTypeEvent = 10001;
+    static const int TagsBundleTypeEvent = 10000;
+    TagsEvent( const Q3ValueList<XMLData> &x ) : QEvent( Type( TagsValueTypeEvent ) ), xml( Q3ValueList<XMLData>( x ) ) { }
+    TagsEvent( const BundleList &bees ) : QEvent( Type( TagsBundleTypeEvent ) ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
         {
             /// @see MetaBundle for explanation of audioproperties < 0
@@ -68,6 +69,8 @@ public:
                 (*it).readTags( TagLib::AudioProperties::Fast, 0 );
         }
     }
+
+
 
     Q3ValueList<XMLData> xml;
     BundleList bundles;
@@ -209,7 +212,8 @@ UrlLoader::customEvent( QEvent *e)
     //DEBUG_BLOCK
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
-    case 1000:
+    case TagsEvent::TagsBundleTypeEvent:
+    {
         oldForeachType( BundleList, e->bundles )
         {
             //passing by value is quick for QValueLists, though it is slow
@@ -245,8 +249,8 @@ UrlLoader::customEvent( QEvent *e)
             }
         }
         break;
-
-    case 1001:
+    }
+    case TagsEvent::TagsValueTypeEvent:
     {
         oldForeachType( Q3ValueList<XMLData>, e->xml )
         {

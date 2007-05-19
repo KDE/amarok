@@ -226,7 +226,7 @@ public:
     };
 
     KTRMEvent(int fileId, Status status) :
-        QEvent( uniqueType() ),
+        QEvent( Type( KTRMEventType ) ),
         m_fileId(fileId),
         m_status(status) {}
 
@@ -240,7 +240,6 @@ public:
         return m_status;
     }
 
-    static Type uniqueType() { return Type( KTRMEventType ); }
     static const int KTRMEventType = User + 1984; // random, unique, event id
 
 private:
