@@ -16,6 +16,7 @@
 #define AMAROK_CONTEXTVIEW_H
 
 #include "contextbox.h"
+#include "engineobserver.h"
 
 #include <QGraphicsView>
 
@@ -24,7 +25,7 @@ class QWheelEvent;
 
 using namespace Context;
 
-class ContextView : public QGraphicsView
+class ContextView : public QGraphicsView, public EngineObserver
 {
     Q_OBJECT
     static ContextView *s_instance;
@@ -47,6 +48,8 @@ class ContextView : public QGraphicsView
         void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/, bool fadeIn = false);
 
     protected:
+        void engineNewMetaData( const MetaBundle&, bool );
+        void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void wheelEvent( QWheelEvent *event );
 
     private:
@@ -63,17 +66,11 @@ class ContextView : public QGraphicsView
         static bool higherThan( const QGraphicsItem *i1, const QGraphicsItem *i2 );
 
         /// Page Views ////////////////////////////////////////
-        //
-
-        /*
-         * Shows the introductory home page with a small number of statistics,
-         * such as most recent and favourite albums
-         */
         void showHome();
+        void showCurrentTrack();
 
 
         /// Attributes ////////////////////////////////////////
-        //
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
 
     private slots:

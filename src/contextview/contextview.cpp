@@ -19,6 +19,7 @@
 #include "contextbox.h"
 #include "contextview.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "graphicsitemfader.h"
 #include "introanimation.h"
 
@@ -41,6 +42,7 @@ ContextView *ContextView::s_instance = 0;
 
 ContextView::ContextView()
     : QGraphicsView()
+    , EngineObserver( EngineController::instance() )
 {
     s_instance = this; // we are a singleton class
 
@@ -58,6 +60,30 @@ void ContextView::initiateScene()
     m_contextScene->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     m_contextScene->setBackgroundBrush( palette().highlight() );
     setScene( m_contextScene );
+}
+
+void ContextView::engineStateChanged( Engine::State state, Engine::State oldState )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( oldState );
+
+    switch( state )
+    {
+        case Engine::Playing:
+            showCurrentTrack();
+            break;
+
+        case Engine::Empty:
+            showHome();
+            break;
+
+        default:
+            ;
+    }
+}
+
+void ContextView::engineNewMetaData( const MetaBundle&, bool )
+{
 }
 
 void ContextView::showHome()
@@ -160,6 +186,48 @@ void ContextView::introAnimationComplete()
     QGraphicsSvgItem * svg = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
     svg->scale(0.5, 0.5 );
     addContextBox( svg , -1, true );
+}
+
+void ContextView::showCurrentTrack()
+{
+    clear();
+
+    MetaBundle bundle = EngineController::instance()->bundle();
+
+    ContextBox *infoBox = new ContextBox();
+    infoBox->setTitle( i18n("%1 - %2", bundle.title(), bundle.artist() ) );
+    addContextBox( infoBox, -1, true );
+
+    AlbumBox *albumBox = new AlbumBox();
+    albumBox->setTitle( i18n("Albums By ", bundle.artist() ) );
+
+    int artistId = CollectionDB::instance()->artistID( bundle.artist() );
+    // because i don't know how to use the new QueryMaker class...
+    QString query = QString("SELECT distinct(AL.name), AR.name, YR.name "
+            "FROM tags T "
+            "INNER JOIN album AL ON T.album = AL.id "
+            "INNER JOIN artist AR ON T.artist = AR.id "
+            "INNER JOIN year YR ON T.year = YR.id "
+            "WHERE AR.id = %1 "
+            "ORDER BY YR.name DESC").arg( artistId );
+
+    QStringList values = CollectionDB::instance()->query( query, false );
+    debug() << "Result count: " << values.count() << endl;
+
+    for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
+    {
+        QString album = *it;
+        if( album.isEmpty() )
+            album = i18n( "Unknown" );
+
+        const QString artist = *++it;
+        const QString year = *++it;
+        const QString &cover = CollectionDB::instance()->albumImage( artist, album, false, 50 );
+        debug() << "artist: " << artist << " album: " << album << " cover: " << cover << endl;
+        albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
+    }
+
+    addContextBox( albumBox, -1, true );
 }
 
 
