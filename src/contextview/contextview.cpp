@@ -199,7 +199,7 @@ void ContextView::showCurrentTrack()
     addContextBox( infoBox, -1, true );
 
     AlbumBox *albumBox = new AlbumBox();
-    albumBox->setTitle( i18n("Albums By ", bundle.artist() ) );
+    albumBox->setTitle( i18n("Albums By %1", bundle.artist() ) );
 
     int artistId = CollectionDB::instance()->artistID( bundle.artist() );
     // because i don't know how to use the new QueryMaker class...
