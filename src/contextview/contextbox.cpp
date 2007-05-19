@@ -108,15 +108,15 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-
-    
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
         if( m_titleBarRect->contains( pressPoint ) )
-           event->accept(); 
+        {
+           event->accept();
            toggleVisibility();
-            
+        }
+
     } else {
         event->ignore();
     }
@@ -133,7 +133,7 @@ void ContextBox::toggleVisibility()
         m_animationTimer->setUpdateInterval( 30 ); // ~33 fps
         m_animationTimer->setFrameRange( 0, range );
         m_animationTimer->setLoopCount( 0 ); // loop forever until we explicitly stop it
-     
+
         connect( m_animationTimer, SIGNAL( frameChanged(int) ), SLOT( visibilityTimerSlot() ) );
         connect( m_animationTimer, SIGNAL( stateChanged( QTimeLine::State ) ), SLOT( animationStateChanged( QTimeLine::State ) ) );
 
@@ -144,8 +144,8 @@ void ContextBox::toggleVisibility()
         m_goingUp = !m_goingUp; // change direction if the is already an animation
         debug() << "changing direction!" << endl;
         return;
-    } 
-   
+    }
+
     m_animationTimer->setStartFrame( 0 );
 
     m_animationIncrement = m_optimumHeight / range;
@@ -179,7 +179,7 @@ void ContextBox::visibilityTimerSlot()
 
 void ContextBox::animationStateChanged( QTimeLine::State newState )
 {
-    
+
     if( newState == QTimeLine::NotRunning )
         m_goingUp = !m_goingUp;
 }
