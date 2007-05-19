@@ -37,7 +37,6 @@
 #include "querybuilder.h"
 //Added by qt3to4:
 #include <QTimerEvent>
-#include <QCustomEvent>
 #include <QByteArray>
 #include <QLabel>
 #include <Q3ValueList>
@@ -50,9 +49,10 @@
 
 #include <QBuffer>
 #include <QCheckBox>
+#include <QEvent>
 #include <QEventLoop>
 #include <QFile>
-#include <qmap.h>
+#include <QMap>
 #include <QMutex>
 #include <QRegExp>              //setHTMLLyrics()
 #include <QTimer>

@@ -37,8 +37,6 @@
 #include <QObject>
 #include <QFile>
 #include <QRegExp>
-//Added by qt3to4:
-#include <QCustomEvent>
 
 //disabling for now
 #if HAVE_TUNEPIMP
@@ -216,7 +214,7 @@ private:
  * A custom event type used for signalling that a TRM lookup is finished.
  */
 
-class KTRMEvent : public QCustomEvent
+class KTRMEvent : public QEvent
 {
 public:
     enum Status {
@@ -228,7 +226,7 @@ public:
     };
 
     KTRMEvent(int fileId, Status status) :
-        QCustomEvent(id),
+        QEvent( uniqueType() ),
         m_fileId(fileId),
         m_status(status) {}
 
@@ -242,7 +240,8 @@ public:
         return m_status;
     }
 
-    static const int id = User + 1984; // random, unique, event id
+    static Type uniqueType() { return Type( KTRMEventType ); }
+    static const int KTRMEventType = User + 1984; // random, unique, event id
 
 private:
     int m_fileId;
@@ -274,9 +273,9 @@ protected:
         return &handler;
     }
 
-    virtual void customEvent(QCustomEvent *event)
+    virtual void customEvent(QEvent *event)
     {
-        if(!event->type() == KTRMEvent::id)
+        if(!event->type() == KTRMEvent::KTRMEventType)
             return;
 
         KTRMEvent *e = static_cast<KTRMEvent *>(event);

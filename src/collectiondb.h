@@ -33,7 +33,7 @@
 #include <QTimerEvent>
 #include <QPixmap>
 #include <Q3ValueList>
-#include <QCustomEvent>
+#include <QEvent>
 #include <QByteArray>
 
 namespace KIO { class Job; }
