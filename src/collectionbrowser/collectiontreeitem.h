@@ -71,6 +71,7 @@ class CollectionTreeItem {
         Collection* parentCollection() const { return m_parentCollection; }
 
         KUrl::List urls() const;
+        QList<Meta::TrackPtr> descendentTracks(); 
 
     private:
         Meta::DataPtr m_data;

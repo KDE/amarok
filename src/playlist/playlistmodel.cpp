@@ -17,6 +17,8 @@
 
 using namespace PlaylistNS;
 
+Model *Model::s_instance = 0;
+
 Model::Model( QObject* parent )
     : QAbstractTableModel( parent )
 { }
@@ -36,7 +38,6 @@ Model::columnCount( const QModelIndex& ) const
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
-    DEBUG_BLOCK
     TrackPtr track = m_tracks.at( index.row() );
     if( role == Qt::DisplayRole )
     {
@@ -105,7 +106,6 @@ Model::removeRows( int position, int rows )
 QVariant
 Model::headerData( int section, Qt::Orientation, int role ) const
 {
-    DEBUG_BLOCK
     if( role == Qt::DisplayRole && section < m_columns.size() )
     {
         debug() << "section: " << section << " enum: " << m_columns.at( section ) << " " << prettyColumnName( m_columns.at( section ) ) << endl;
@@ -147,6 +147,12 @@ Model::testData()
     insertTracks( 0, bq.tracks( "localCollection" ) );
     m_columns << TrackNumber << Title;
     reset();
+}
+
+Qt::DropActions
+Model::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
 }
 
 QString

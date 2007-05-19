@@ -37,7 +37,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
 }
 
 CollectionTreeItem::CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent )
-    : m_data( Meta::DataPtr( 0 ) )
+    : m_data( 0 )
     , m_parent( parent )
     , m_parentCollection( parentCollection )
     , m_childrenLoaded( false )
@@ -128,7 +128,8 @@ CollectionTreeItem::queryMaker() const {
     }
 }
 
-KUrl::List CollectionTreeItem::urls() const {
+KUrl::List
+CollectionTreeItem::urls() const {
     /*QueryBuilder qb = queryBuilder();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     QStringList values = qb.run();
@@ -144,4 +145,21 @@ KUrl::List CollectionTreeItem::urls() const {
 bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
     return m_data->sortableName() < other.m_data->sortableName();
+}
+
+QList<Meta::TrackPtr>
+CollectionTreeItem::descendentTracks()
+{
+    QList<Meta::TrackPtr> descendentTracks;
+    Meta::TrackPtr track;
+    track = Meta::TrackPtr::dynamicCast( m_data );
+    if( track )
+        descendentTracks << track;
+
+    CollectionTreeItem* child;
+    foreach( child, m_childItems )
+    {
+        descendentTracks << child->descendentTracks();
+    }
+    return descendentTracks;
 }

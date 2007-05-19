@@ -136,13 +136,17 @@ void PlaylistWindow::init()
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( splitter ); //Playlist
     { //TNG playlist
-        PlaylistNS::Model* playmodel = new PlaylistNS::Model( this );
+        PlaylistNS::Model* playmodel = PlaylistNS::Model::instance();
         playmodel->testData();
         QTableView* playview = new QTableView( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
         playview->setModel( playmodel );
         playview->setAlternatingRowColors(true);
         playview->verticalHeader()->hide();
+        playview->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        playview->setDragEnabled(true);
+        playview->setAcceptDrops(true);
+        playview->setDropIndicatorShown(true);
     }
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
