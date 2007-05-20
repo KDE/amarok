@@ -235,7 +235,7 @@ CoverFetcher::startFetch()
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query /*, mibenum */ ) // FIXME: we will have to find something else
+        + "&KeywordSearch=" + QUrl::toPercentEncoding( query, "/" ) // FIXME: we will have to find something else
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
