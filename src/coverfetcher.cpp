@@ -113,8 +113,8 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
 
 
 
-CoverLabel::CoverLabel ( QWidget * parent, const char * name, Qt::WFlags f )
-        : QLabel( parent, name, f)
+CoverLabel::CoverLabel ( QWidget * parent, Qt::WindowFlags f )
+        : QLabel( parent, f)
 {}
 
 
@@ -144,7 +144,7 @@ CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString albu
     const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
     oldForeach( extensions ) {
         QRegExp regexp( template1.arg( *it ) );
-        regexp.setCaseSensitive( false );
+        regexp.setCaseSensitivity( Qt::CaseInsensitive );
         album.remove( regexp );
     }
 
@@ -441,7 +441,8 @@ CoverFetcher::attemptAnotherFetch()
             else
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         fetcher, SLOT( changeLocale(int) ) );
-            QHBoxLayout *hbox1 = new QHBoxLayout( 8 );
+            QHBoxLayout *hbox1 = new QHBoxLayout();
+            hbox1->setSpacing( 8 );
             hbox1->addWidget( new QLabel( i18n( "Amazon Locale: " ), this ) );
             hbox1->addWidget( amazonLocale );
 
@@ -451,12 +452,15 @@ CoverFetcher::attemptAnotherFetch()
             KPushButton* cancelButton = new KPushButton( KStandardGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
-            QHBoxLayout *hbox2 = new QHBoxLayout( 8 );
+            QHBoxLayout *hbox2 = new QHBoxLayout();
+            hbox2->setSpacing( 8 );
             hbox2->addItem( new QSpacerItem( 160, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             hbox2->addWidget( searchButton );
             hbox2->addWidget( cancelButton );
 
-            QVBoxLayout *vbox = new QVBoxLayout( this, 8, 8 );
+            QVBoxLayout *vbox = new QVBoxLayout();
+            vbox->setMargin( 8 );
+            vbox->setSpacing( 8 );
             vbox->addLayout( hbox1 );
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
             vbox->addWidget( new KLineEdit( keyword, this ) );
@@ -562,12 +566,14 @@ CoverFetcher::getUserQuery( QString explanation )
             KHBox       *buttons   = new KHBox( box );
             KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons );
+            newsearch->setObjectName( "NewSearch" );
             KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons );
+            nextcover->setObjectName( "NextCover" );
             KPushButton *cancel    = new KPushButton( KStandardGuiItem::cancel(), buttons );
 
             labelPix ->setAlignment( Qt::AlignHCenter );
             labelName->setAlignment( Qt::AlignHCenter );
-            labelPix ->setPixmap( QPixmap( cover ) );
+            labelPix ->setPixmap( QPixmap::fromImage( cover ) );
             labelName->setText( productname );
 
             save->setDefault( true );
@@ -582,9 +588,9 @@ CoverFetcher::getUserQuery( QString explanation )
 
         virtual void accept()
         {
-            if( qstrcmp( sender()->name(), "NewSearch" ) == 0 )
+            if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
                 done( 1000 );
-            else if( qstrcmp( sender()->name(), "NextCover" ) == 0 )
+            else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
                 done( 1001 );
             else
                 KDialog::accept();
