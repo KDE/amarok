@@ -7,6 +7,8 @@ VERSION 2.0
   FEATURES:
 
   CHANGES:
+    * The "hide menubar" feature was removed. It's too dangerous and led to 
+      countless support requests.
     * The custom color theme options have been removed.
     * The player window (small XMMS like thingie) was removed.
     * DCOP interface replaced with D-Bus.
