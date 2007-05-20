@@ -15,7 +15,6 @@
 #include <QMutex>
 //Added by qt3to4:
 #include <QByteArray>
-#include <QCustomEvent>
 #include "debug.h"
 
 #define DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T ) \
@@ -157,7 +156,7 @@ private:
     ThreadManager();
    ~ThreadManager();
 
-    enum EventType { JobEvent = 20202, OverrideCursorEvent, RestoreOverrideCursorEvent };
+    enum EventType { JobEventType = 20202, OverrideCursorEventType, RestoreOverrideCursorEventType };
 
     virtual bool event( QEvent* );
 
@@ -221,7 +220,7 @@ public:
      * doesn't have to be called.
      */
 
-    class AMAROK_EXPORT Job : public JobBase, public QCustomEvent
+    class AMAROK_EXPORT Job : public JobBase, public QEvent
     {
         friend class ThreadManager;         //access to m_thread
         friend class ThreadManager::Thread; //access to m_aborted
@@ -238,7 +237,7 @@ public:
          * These are used by @class DependentJob, but are made available for
          * your use should you need them.
          */
-       enum EventType { JobFinishedEvent = ThreadManager::JobEvent, JobStartedEvent };
+       enum EventType { JobFinishedEventType = ThreadManager::JobEventType, JobStartedEventType };
 
         const char *name() const { return m_name; }
 
@@ -338,12 +337,12 @@ public:
      * This Job type is dependent on a QObject instance, if that instance is
      * deleted, this Job will be aborted and safely deleted.
      *
-     * ThreadManager::DependentJob (and Job, the baseclass) isa QCustomEvent,
+     * ThreadManager::DependentJob (and Job, the baseclass) isa QEvent,
      * and completeJob() is reimplemented to send the job to the dependent.
      * Of course you can still reimplement completeJob() yourself.
      *
      * The dependent will receive a JobStartedEvent just after the creation of
-     * the Job (not after it has started unfortunately), and a JobFinishedEvent
+     * the Job (not after it has started unfortunately), and a JobFinishedEventType
      * after the Job has finished.
      *
      * The dependent is a QPointer, so you can reference the pointer returned

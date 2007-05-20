@@ -53,7 +53,7 @@ Amarok::SocketServer::SocketServer( const QString &socketName, QObject *parent )
         return;
     }
 
-    m_path = KStandardDirs::locateLocal( "socket", socketName ).local8Bit();
+    m_path = KStandardDirs::locateLocal( "socket", socketName ).toLocal8Bit();
 
     union {
         sockaddr_un un;

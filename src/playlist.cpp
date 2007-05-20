@@ -35,7 +35,6 @@
 #include "playlistselection.h"
 #include "queuemanager.h"
 //Added by qt3to4:
-#include <QCustomEvent>
 #include <QByteArray>
 #include <QWheelEvent>
 #include <Q3PtrList>
@@ -3007,7 +3006,7 @@ Playlist::slotSingleClick()
 void
 Playlist::customEvent( QEvent *e )
 {
-    if( e->type() == (int)UrlLoader::JobFinishedEvent ) {
+    if( e->type() == (int)UrlLoader::JobFinishedEventType ) {
         refreshNextTracks( 0 );
         QList<PlaylistItem*> in, out;
 
@@ -4547,9 +4546,9 @@ Playlist::saveSelectedAsPlaylist()
     int suggestion = !album.trimmed().isEmpty() ? 1 : !artist.trimmed().isEmpty() ? 2 : 3;
     while( *it )
     {
-        if( suggestion == 1 && (*it)->album()->lower().trimmed() != album.toLower().trimmed() )
+        if( suggestion == 1 && (*it)->album()->toLower().trimmed() != album.toLower().trimmed() )
             suggestion = 2;
-        if( suggestion == 2 && (*it)->artist()->lower().trimmed() != artist.toLower().trimmed() )
+        if( suggestion == 2 && (*it)->artist()->toLower().trimmed() != artist.toLower().trimmed() )
             suggestion = 3;
         if( suggestion == 3 )
             break;
@@ -4855,12 +4854,11 @@ Playlist::addCustomColumn()
         const int index = addColumn( dialog.name(), 100 );
         QStringList args = QStringList::split( ' ', dialog.command() );
 
-        QStringList::Iterator pcf = args.find( "%f" );
-        if ( pcf == args.end() ) {
+        QStringList pcf = args.filter( "%f" );
+        if ( pcf.isEmpty() ) {
             //there is no %f, so add one on the end
             //TODO prolly this is confusing, instead ask the user if we should add one
-            args += "%f";
-            --pcf;
+            args.append("%f" );
         }
 
         debug() << args << endl;
@@ -4874,15 +4872,13 @@ Playlist::addCustomColumn()
             if( (*it)->url().protocol() != "file" )
                continue;
 
-            *pcf = (*it)->url().path();
-
             debug() << args << endl;
 
-            Q3Process p( args );
-            for( p.start(); p.isRunning(); /*kapp->processEvents()*/ )
+            QProcess p;
+            for( p.start( args.takeFirst(), args ); p.state() == QProcess::Running; /*kapp->processEvents()*/ )
                 ::usleep( 5000 );
 
-            (*it)->setExactText( index, p.readStdout() );
+            (*it)->setExactText( index, p.readAll() );
         }
     }
 }

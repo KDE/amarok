@@ -722,7 +722,7 @@ void PlaylistEntry::removeTrack( Q3ListViewItem *item, bool isLast )
 
 void PlaylistEntry::customEvent( QEvent *e )
 {
-    if( e->type() != (int)PlaylistReader::JobFinishedEvent )
+    if( e->type() != (int)PlaylistReader::JobFinishedEventType )
         return;
 
 #define playlist static_cast<PlaylistReader*>(e)

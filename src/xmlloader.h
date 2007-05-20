@@ -26,7 +26,6 @@
 #include <QtXml/QXmlInputSource>
 #include <QtXml/QXmlSimpleReader>
 //Added by qt3to4:
-#include <QCustomEvent>
 #include <Q3ValueList>
 #include "metabundle.h"
 
@@ -57,11 +56,11 @@ class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler
     Q_OBJECT
     public:
         /** Posted when a MetaBundle has been loaded. */
-        class BundleLoadedEvent: public QCustomEvent
+        class BundleLoadedEvent: public QEvent
         {
             public:
                 /** The type() of BundleLoadedEvents. */
-                static const int Type = QEvent::User + 127;
+                static const int BundleLoadedEventType = QEvent::User + 127;
 
                 /** Whether an error occurred. If yes, both bundle and extraAttributes are empty. */
                 bool error;
@@ -77,9 +76,9 @@ class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler
 
             public:
                 BundleLoadedEvent( const MetaBundle &b, const XmlAttributeList &a )
-                    : QCustomEvent( Type ), error( false ), bundle( b ), extraAttributes( a ) { }
+                    : QEvent( Type( BundleLoadedEventType ) ), error( false ), bundle( b ), extraAttributes( a ) { }
                 BundleLoadedEvent( const QString &error )
-                    : QCustomEvent( Type ), error( true ), errorMessage( error ) { }
+                    : QEvent( Type( BundleLoadedEventType ) ), error( true ), errorMessage( error ) { }
         };
 
     public:

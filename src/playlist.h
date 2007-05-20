@@ -40,7 +40,6 @@
 #include <QDragLeaveEvent>
 #include <Q3ValueList>
 #include <QLabel>
-#include <QCustomEvent>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>

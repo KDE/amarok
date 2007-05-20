@@ -10,7 +10,6 @@
 #include <kcursor.h>
 #include <QApplication>
 //Added by qt3to4:
-#include <QCustomEvent>
 #include <QByteArray>
 #include <QEvent>
 
@@ -23,11 +22,11 @@
 using Amarok::StatusBar;
 
 
-class ThreadManager::JobCompletedEvent: public QCustomEvent
+class ThreadManager::JobCompletedEvent: public QEvent
 {
 public:
-    static const int Type = 1321;
-    JobCompletedEvent( Job *j ): QCustomEvent( Type ), job( j ) { }
+    static const int JobCompletedEventType = 1321;
+    JobCompletedEvent( Job *j ): QEvent( Type( JobCompletedEventType ) ), job( j ) { }
     Job *job;
 };
 
@@ -103,7 +102,7 @@ ThreadManager::queueJobs( const JobList &jobs )
     m_jobs += jobs;
 
     const QByteArray name = jobs.front()->name();
-    const uint count = jobCount( name );
+    const int count = jobCount( name );
 
     if ( count == jobs.count() )
         gimmeThread()->runJob( jobs.front() );
@@ -165,7 +164,7 @@ ThreadManager::event( QEvent *e )
 {
     switch( e->type() )
     {
-    case JobCompletedEvent::Type: {
+    case JobCompletedEvent::JobCompletedEventType: {
         Job *job = static_cast<JobCompletedEvent*>( e )->job;
         DebugStream d = debug() << "Job ";
         const QByteArray name = job->name();
@@ -173,7 +172,7 @@ ThreadManager::event( QEvent *e )
 
         QApplication::postEvent(
                 ThreadManager::instance(),
-                new QCustomEvent( ThreadManager::RestoreOverrideCursorEvent ) );
+                new QEvent( QEvent::Type( ThreadManager::RestoreOverrideCursorEventType ) ) );
 
         if ( !job->isAborted() ) {
             d << "completed";
@@ -211,13 +210,13 @@ ThreadManager::event( QEvent *e )
 //             }
         break;
 
-    case OverrideCursorEvent:
+    case OverrideCursorEventType:
         // we have to do this for the PlaylistLoader case, as Qt uses the same
         // function for drag and drop operations.
         QApplication::setOverrideCursor( Qt::BusyCursor );
         break;
 
-    case RestoreOverrideCursorEvent:
+    case RestoreOverrideCursorEventType:
         // we have to do this for the PlaylistLoader case, as Qt uses the same
         // function for drag and drop operations.
         QApplication::restoreOverrideCursor();
@@ -258,7 +257,7 @@ ThreadManager::Thread::runJob( Job *job )
 
         QApplication::postEvent(
                 ThreadManager::instance(),
-                new QCustomEvent( ThreadManager::OverrideCursorEvent ) );
+                new QEvent( QEvent::Type( ThreadManager::OverrideCursorEventType ) ) );
     }
 }
 
@@ -288,10 +287,11 @@ ThreadManager::Thread::run()
 /// @class ProgressEvent
 /// @short Used by ThreadManager::Job internally
 
-class ProgressEvent : public QCustomEvent {
+class ProgressEvent : public QEvent {
 public:
+    static const int ProgressEventType = 30303;
     ProgressEvent( int progress )
-            : QCustomEvent( 30303 )
+            : QEvent( Type( ProgressEventType ) )
             , progress( progress ) {}
 
     const int progress;
@@ -302,7 +302,7 @@ public:
 /// @class ThreadManager::Job
 
 ThreadManager::Job::Job( const char *name )
-        : QCustomEvent( ThreadManager::JobEvent )
+        : QEvent( Type( ThreadManager::JobEventType ) )
         , m_name( name )
         , m_thread( 0 )
         , m_percentDone( 0 )
@@ -388,7 +388,7 @@ ThreadManager::DependentJob::DependentJob( QObject *dependent, const char *name 
     Q_ASSERT( dependent != this );
     connect( dependent, SIGNAL(destroyed()), SLOT(abort()) );
 
-    QApplication::postEvent( dependent, new QCustomEvent( JobStartedEvent ) );
+    QApplication::postEvent( dependent, new QEvent( Type( JobStartedEventType ) ) );
 }
 
 void

@@ -142,7 +142,7 @@ bool
 INotify::watchDir( const QString directory )
 {
 #ifdef HAVE_INOTIFY
-    int wd = inotify_add_watch( m_fd, directory.local8Bit(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVE |
+    int wd = inotify_add_watch( m_fd, directory.toLocal8Bit(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVE |
                                                              IN_MODIFY | IN_ATTRIB );
     if ( wd < 0 )
         debug() << "Could not add INotify watch for: " << directory << endl;
@@ -2313,7 +2313,7 @@ CollectionDB::findMetaBundleImage( const MetaBundle& trackInformation, uint widt
 QByteArray
 CollectionDB::makeWidthKey( uint width )
 {
-    return QString::number( width ).local8Bit() + '@';
+    return QString::number( width ).toLocal8Bit() + '@';
 }
 
 
@@ -4859,7 +4859,7 @@ CollectionDB::isConnected()
 QByteArray
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
-    KMD5 context( artist.toLower().local8Bit() + album.toLower().local8Bit() + file.local8Bit() );
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
 //     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
@@ -5809,14 +5809,14 @@ CollectionDB::scanModifiedDirs()
 void
 CollectionDB::customEvent( QEvent *e )
 {
-    if ( e->type() == (int)ScanController::JobFinishedEvent )
+    if ( e->type() == (int)ScanController::JobFinishedEventType )
     {
         ScanController* s = static_cast<ScanController*>( e );
         m_scanInProgress = false;
 
         if ( s->isIncremental() )
         {
-            debug() << "JobFinishedEvent from Incremental ScanController received.\n";
+            debug() << "JobFinishedEventType from Incremental ScanController received.\n";
             emit scanDone( s->hasChanged() );
 
             // check if something changed while we were scanning. in this case we should
@@ -5826,7 +5826,7 @@ CollectionDB::customEvent( QEvent *e )
         }
         else
         {
-            debug() << "JobFinishedEvent from ScanController received.\n";
+            debug() << "JobFinishedEventType from ScanController received.\n";
             emit scanDone( s->wasSuccessful() );
         }
     }

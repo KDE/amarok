@@ -2429,7 +2429,7 @@ int MediaDevice::sysCall( const QString &command )
     sysProc->clearArguments();
     (*sysProc) << command;
     if (!sysProc->start( K3Process::Block, K3Process::AllOutput ))
-        kFatal() << i18n("could not execute %1", command.local8Bit().data()) << endl;
+        kFatal() << i18n("could not execute %1", command.toLocal8Bit().data()) << endl;
 
     return (sysProc->exitStatus());
 }
