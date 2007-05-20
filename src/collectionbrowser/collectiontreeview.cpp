@@ -98,7 +98,12 @@ void
 CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
 
-    const QModelIndex index = indexAt( event->pos() );
+    QModelIndex index;
+    if( m_filterModel )
+        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
+    else
+        index = indexAt( event->pos() );
+
     if( index.isValid() && index.internalPointer()  )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
@@ -110,6 +115,11 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         if( result == appendAction )
         {
                 debug() << "row# " << item->row() << endl;
+                if( !item->allDescendentTracksLoaded() )
+                {
+                    debug() << "not all decendent tracks are loaded, query the collection with current filter and match instead"  << endl;
+                    return;
+                }
                 QList< Meta::TrackPtr > tracks = item->descendentTracks();
                 PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(),
                     tracks );

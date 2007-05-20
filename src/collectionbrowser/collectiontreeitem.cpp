@@ -141,14 +141,39 @@ CollectionTreeItem::descendentTracks()
 {
     QList<Meta::TrackPtr> descendentTracks;
     Meta::TrackPtr track;
-    track = Meta::TrackPtr::dynamicCast( m_data );
-    if( track )
-        descendentTracks << track;
+    if( isDataItem() )
+        track = Meta::TrackPtr::dynamicCast( m_data );
 
-    CollectionTreeItem* child;
-    foreach( child, m_childItems )
+    if( !track.isNull() )
+        descendentTracks << track;
+    else
     {
-        descendentTracks << child->descendentTracks();
+        foreach( CollectionTreeItem *child, m_childItems )
+        {
+            descendentTracks << child->descendentTracks();
+        }
     }
     return descendentTracks;
 }
+
+bool
+CollectionTreeItem::allDescendentTracksLoaded() const
+{
+    Meta::TrackPtr track;
+    if( isDataItem() && !( track = Meta::TrackPtr::dynamicCast( m_data ) ).isNull() )
+        return true;
+    else
+    {
+        if ( childrenLoaded() )
+        {
+            foreach( CollectionTreeItem *item, m_childItems )
+                if( !item->allDescendentTracksLoaded() )
+                    return false;
+
+            return true;
+        }
+        else
+            return false;
+    }
+}
+
