@@ -91,7 +91,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void slotMenuActivated( int );
         void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
-        void slotToggleMenu();
         void slotToggleFocus();
         void slotEditFilter();
         void slotSetFilter( const QString &filter );

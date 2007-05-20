@@ -678,13 +678,6 @@ void App::applySettings( bool firstTime )
             m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( EngineController::instance()->bundle().veryNiceTitle() ) );
         else
             m_pPlaylistWindow->setCaption( "Amarok" );
-
-
-        //m_pPlaylistWindow->show(); //must be shown //we do below now
-
-        //ensure that at least one Menu is plugged into an accessible UI element
-        if( !AmarokConfig::showMenuBar() && !Amarok::actionCollection()->action( "amarok_menu" )->isPlugged() )
-           playlistWindow()->createGUI();
     }
 
     playlistWindow()->applySettings();

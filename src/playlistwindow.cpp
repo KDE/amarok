@@ -139,9 +139,6 @@ PlaylistWindow::PlaylistWindow()
     ac->action( "stream_add" )->setIcon( Amarok::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     ac->action( "playlist_save" )->setIcon( Amarok::icon( "save" ) );
-#ifndef Q_WS_MAC
-    KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
-#endif
 
     //FIXME: after string freeze rename to "Burn Current Playlist"?
     new KAction( i18n("Burn to CD"), Amarok::icon( "burn" ), 0, this, SLOT(slotBurnPlaylist()), ac, "playlist_burn" );
@@ -236,8 +233,6 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    Amarok::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
-
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
 }
@@ -313,9 +308,6 @@ void PlaylistWindow::init()
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     m_menubar = new KMenuBar( this );
-#ifndef Q_WS_MAC
-    m_menubar->setShown( AmarokConfig::showMenuBar() );
-#endif
 
     //BEGIN Actions menu
     KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
@@ -389,8 +381,6 @@ void PlaylistWindow::init()
     m_settingsMenu = new KPopupMenu( m_menubar );
     //TODO use KStdAction or KMainWindow
 #ifndef Q_WS_MAC
-    static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
-    actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->plug( m_settingsMenu );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
@@ -579,13 +569,6 @@ void PlaylistWindow::createGUI()
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
         KToolBarButton* const button = static_cast<KToolBarButton*>( m_toolbar->child( (*it).latin1() ) );
-
-        if ( it == last ) {
-            //if the user has no PlayerWindow, he MUST have the menu action plugged
-            //NOTE this is not saved to the local XMLFile, which is what the user will want
-            if ( !AmarokConfig::showPlayerWindow() && !AmarokConfig::showMenuBar() && !button )
-                actionCollection()->action( "amarok_menu" )->plug( m_toolbar );
-        }
 
         if ( button ) {
             button->modeChange();
@@ -1048,20 +1031,6 @@ void PlaylistWindow::slotToggleFocus() //SLOT
         Playlist::instance()->setFocus();
 }
 
-void PlaylistWindow::slotToggleMenu() //SLOT
-{
-    if( static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->isChecked() ) {
-        AmarokConfig::setShowMenuBar( true );
-        m_menubar->setShown( true );
-    }
-    else
-    {
-        AmarokConfig::setShowMenuBar( false );
-        m_menubar->setShown( false );
-    }
-    recreateGUI();
-}
-
 void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
@@ -1073,7 +1042,6 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case ID_SHOW_PLAYERWINDOW:
