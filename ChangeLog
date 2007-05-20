@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * The "hide menubar" feature has been removed. It's too dangerous and led
+      to countless support requests.
     * Generic media device can now handle any KIO-compatible URL, including
       obex and smb. Manage your bluetooth phone's music collection through
       Amarok!
