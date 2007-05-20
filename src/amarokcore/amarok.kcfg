@@ -196,11 +196,6 @@
         <whatsthis>Set this to the style dir you want to use.</whatsthis>
         <default>Default</default>
     </entry>
-    <entry key="Show Menu Bar" type="Bool">
-        <label>Whether Menubar is shown</label>
-        <whatsthis>If set, Amarok displays a menubar on top of the application.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
         <whatsthis>If set, Amarok's manually saved playlists will contain a relative path to each track, not an absolute path.</whatsthis>

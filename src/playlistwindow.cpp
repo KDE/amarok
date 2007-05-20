@@ -110,8 +110,6 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    Amarok::config( "PlaylistWindow" ).writeEntry( "showMenuBar", !m_menubar->isHidden() );
-
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
 }
@@ -897,20 +895,6 @@ void PlaylistWindow::slotToggleFocus() //SLOT
         m_browsers->currentWidget()->setFocus();
 }
 
-void PlaylistWindow::slotToggleMenu() //SLOT
-{
-    if( static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->isChecked() ) {
-        AmarokConfig::setShowMenuBar( true );
-        m_menubar->setVisible( true );
-    }
-    else
-    {
-        AmarokConfig::setShowMenuBar( false );
-        m_menubar->setVisible( false );
-    }
-    recreateGUI();
-}
-
 void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
@@ -922,7 +906,6 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     case ID_SHOW_TOOLBAR:
         m_controlBar->setVisible( !m_controlBar->isHidden() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_controlBar->isHidden() );
         m_settingsMenu->changeItem( index, !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case Amarok::Menu::ID_RESCAN_COLLECTION:
@@ -1058,12 +1041,6 @@ void PlaylistWindow::createActions()
     action->setIcon( KIcon( Amarok::icon( "save" ) ) );
     action->setText( i18n("&Save Playlist As...") );
     ac->addAction( "playlist_save", action );
-
-#ifndef Q_WS_MAC
-    KAction *showMenu = KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), this );
-    ac->addAction( KStandardAction::name(KStandardAction::ShowMenubar), showMenu );
-#endif
-
 
     KAction *burn = new KAction( this );
     burn->setText( i18n( "Burn Current Playlist" ) );
@@ -1215,9 +1192,6 @@ void PlaylistWindow::createActions()
 void PlaylistWindow::createMenus()
 {
     m_menubar = menuBar();//new MenuBar( this );
-#ifndef Q_WS_MAC
-    m_menubar->setVisible( AmarokConfig::showMenuBar() );
-#endif
 
     //BEGIN Actions menu
     KMenu *actionsMenu = new KMenu( m_menubar );
@@ -1292,8 +1266,6 @@ void PlaylistWindow::createMenus()
     m_settingsMenu = new KMenu( m_menubar );
     //TODO use KStandardAction or KXmlGuiWindow
 #ifndef Q_WS_MAC
-    static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)) );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->addSeparator();
 #endif

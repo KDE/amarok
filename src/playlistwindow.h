@@ -97,7 +97,6 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         void slotMenuActivated( int );
         void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
-        void slotToggleMenu();
         void slotToggleFocus();
         void slotEditFilter();
         void slotSetFilter( const QString &filter );
@@ -140,7 +139,6 @@ class DynamicTitle : public QWidget
         DynamicTitle(QWidget* parent);
         void setTitle(const QString& newTitle);
 
-    protected:
         virtual void paintEvent(QPaintEvent* e);
 
     private:
