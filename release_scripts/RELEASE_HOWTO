@@ -20,18 +20,16 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
- * Ftp the tarball to upload.sf.net/incoming
- * Tag the sourcecode in SVN, using the "tag_amarok.rb" script
- * Use the admin system at sourceforge to register the release
+ * SFtp the tarball to ftpamarok@ktown.kde.org/stable/amarok/VERSION/src
+   (If you don't have access, mail sysadmin@kde.org)
  * Update the amarok.kde.org front-page before anything else!
  * Update kde-apps.org and freshmeat.net
  * Send a witty, intelligent and diligently crafted email to the following:
 
      To:  kde-announce@kde.org
-     CC:  amarok-devel@lists.sf.net
+     CC:  amarok@kde.org, amarok-promo@kde.org
      BCC: kde-extra-gear@kde.org, libvisual-devel@lists.sourceforge.net,
           kde-multimedia@kde.org, nmm-dev@graphics.cs.uni-sb.de,
-          gstreamer-devel@lists.sourceforge.net,
 --------------------------------------------------------------------------------
 
 SECTION 4: After the Release
@@ -48,14 +46,13 @@ This is what the release_amarok script does:
 
  1. Checkout a fresh copy of amarok, its docs and po; cd into the root
  2. Update APP_VERSION in amarok/src/amarok.h
- 3. Update the version in amarok/amarok.lsm
- 4. $ `find -name .svn -exec rm {} \;`
- 5. $ export WANT_AUTOMAKE=1.6
- 6. $ make -f Makefile.cvs
- 7. $ rm -rf autom4te.cache config.h config.log
- 8. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS COPYING amarok.lsm ..; popd
- 9. $ mv ../multimedia ../amarok-VERSION
-10. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
+ 3. $ `find -name .svn -exec rm {} \;`
+ 4. $ export WANT_AUTOMAKE=1.6
+ 5. $ make -f Makefile.cvs
+ 6. $ rm -rf autom4te.cache config.h config.log
+ 7. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS COPYING amarok.lsm ..; popd
+ 8. $ mv ../multimedia ../amarok-VERSION
+ 9. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
 
 APPENDIX B
 
