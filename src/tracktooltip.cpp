@@ -240,7 +240,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         // no title or no artist, so we add prettyTitle
             m_tooltip += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
                       .arg(tags.veryNiceTitle());
-        for( uint x = 0; x < left.count(); ++x )
+        for( int x = 0; x < left.count(); ++x )
             if ( !right[x].isEmpty() )
                 m_tooltip += tableRow.arg( left[x] ).arg( right[x] );
 

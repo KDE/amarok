@@ -75,6 +75,7 @@
 #include <kmenu.h>
 #include <kstandarddirs.h>
 #include <ktextedit.h>
+#include <KUrl>
 #include <KVBox> //wiki tab
 
 #include <unistd.h> //usleep()
@@ -569,9 +570,9 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
     else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        Amarok::invokeBrowser( url.arg( QUrl::toPercentEncoding( artist, "/" ),
-        QString( QUrl::toPercentEncoding( album, "/" ) ),
-        QString( QUrl::toPercentEncoding( track, "/" ) ) ) );
+        Amarok::invokeBrowser( url.arg( KUrl::toPercentEncoding( artist, "/" ),
+        QString( KUrl::toPercentEncoding( album, "/" ) ),
+        QString( KUrl::toPercentEncoding( track, "/" ) ) ) );
     }
 
     else if ( url.protocol() == "externalurl" )
@@ -619,7 +620,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
     else if( url.protocol() == "ggartist" )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
-            .arg( QString( QUrl::toPercentEncoding( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), "/" ) ) );
+            .arg( QString( KUrl::toPercentEncoding( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), "/" ) ) );
         Amarok::invokeBrowser( url2 );
     }
 
@@ -3330,8 +3331,8 @@ void ContextBrowser::showLyrics( const QString &url )
     }
 
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics+%1+%2" )
-        .arg( QString( QUrl::toPercentEncoding( '"' + artist + '"', "/" ) ),
-              QString( QUrl::toPercentEncoding( '"' + title  + '"', "/" ) ) );
+        .arg( QString( KUrl::toPercentEncoding( '"' + artist + '"', "/" ) ),
+              QString( KUrl::toPercentEncoding( '"' + title  + '"', "/" ) ) );
 
     //m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
     wikiExternalPageAction->setEnabled(false);
@@ -3448,10 +3449,10 @@ ContextBrowser::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     spec.setGroup( "Lyrics" );
 
     m_lyricAddUrl = spec.readPathEntry( "add_url" );
-    m_lyricAddUrl.replace( "MAGIC_ARTIST", QUrl::toPercentEncoding( EngineController::instance()->bundle().artist(), "/" ) );
-    m_lyricAddUrl.replace( "MAGIC_TITLE", QUrl::toPercentEncoding( EngineController::instance()->bundle().title(), "/" ) );
-    m_lyricAddUrl.replace( "MAGIC_ALBUM", QUrl::toPercentEncoding( EngineController::instance()->bundle().album(), "/" ) );
-    m_lyricAddUrl.replace( "MAGIC_YEAR", QUrl::toPercentEncoding( QString::number( EngineController::instance()->bundle().year() ), "/" ) );
+    m_lyricAddUrl.replace( "MAGIC_ARTIST", KUrl::toPercentEncoding( EngineController::instance()->bundle().artist(), "/" ) );
+    m_lyricAddUrl.replace( "MAGIC_TITLE", KUrl::toPercentEncoding( EngineController::instance()->bundle().title(), "/" ) );
+    m_lyricAddUrl.replace( "MAGIC_ALBUM", KUrl::toPercentEncoding( EngineController::instance()->bundle().album(), "/" ) );
+    m_lyricAddUrl.replace( "MAGIC_YEAR", KUrl::toPercentEncoding( QString::number( EngineController::instance()->bundle().year() ), "/" ) );
 
 
     if ( el.tagName() == "suggestions" )
@@ -3796,7 +3797,7 @@ QString
 ContextBrowser::wikiURL( const QString &item )
 {
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + QUrl::toPercentEncoding( item, "/" );
+        + KUrl::toPercentEncoding( item, "/" );
 }
 
 void

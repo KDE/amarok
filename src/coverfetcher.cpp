@@ -33,6 +33,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kpushbutton.h>
+#include <kurl.h>
 #include <kvbox.h>
 #include <kwindowsystem.h>
 
@@ -235,7 +236,7 @@ CoverFetcher::startFetch()
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + QUrl::toPercentEncoding( query, "/" ) // FIXME: we will have to find something else
+        + "&KeywordSearch=" + KUrl::toPercentEncoding( query, "/" ) // FIXME: we will have to find something else
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
