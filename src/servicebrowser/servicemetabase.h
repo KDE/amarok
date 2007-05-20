@@ -22,6 +22,8 @@
 
 #include "meta.h"
 
+#include <QStringList>
+
 using namespace Meta;
 
 class ServiceTrack;
@@ -51,6 +53,9 @@ class ServiceTrack : public Meta::Track
     public:
         //Give this a displayable name as some services has terrible names for their streams
         ServiceTrack( const QString & name );
+
+        //create track based on an sql query result
+        ServiceTrack( const QStringList & resultRow );
         virtual ~ServiceTrack();
 
         virtual QString name() const;
@@ -109,6 +114,11 @@ class ServiceTrack : public Meta::Track
         virtual void unsubscribe ( TrackObserver *observer );
 
         //ServiceTrack specific methods
+        static QString sqlRows();
+        static int sqlRowCount();
+
+        
+
         void setAlbum( AlbumPtr album );
         void setArtist( ArtistPtr artist ); 
         void setComposer( ComposerPtr composer );
@@ -122,6 +132,12 @@ class ServiceTrack : public Meta::Track
         int id( );
         void setAlbumId( int albumId );
         int albumId();
+        void setAlbumName( const QString &name );
+        QString albumName();
+        void setArtistId( int id );
+        int artistId();
+        void setArtistName( const QString &name );
+        QString artistName();
         void setUrl( const QString &url );
 
     private:
@@ -131,19 +147,25 @@ class ServiceTrack : public Meta::Track
         ComposerPtr m_composer;
         YearPtr m_year;
 
+        int m_id;
         QString m_name;
-        QString m_type;
-        int m_length;
         int m_trackNumber;
+        int m_length;
         QString m_displayUrl;
         QString m_playableUrl;
-        int m_id;
         int m_albumId;
+        QString m_albumName;
+        int m_artistId;
+        QString m_artistName;
+
+        QString m_type;
 };
 
 class ServiceArtist : public Meta::Artist
 {
     public:
+
+        ServiceArtist( const QStringList & resultRow );
         ServiceArtist( const QString & name );
         virtual ~ServiceArtist();
 
@@ -153,6 +175,9 @@ class ServiceArtist : public Meta::Artist
         virtual TrackList tracks();
 
         //ServiceArtist specific methods
+        static QString sqlRows();
+        static int sqlRowCount();
+
         void addTrack( TrackPtr track );
 
         void setDescription( const QString &description );
@@ -162,15 +187,17 @@ class ServiceArtist : public Meta::Artist
         void setTitle( const QString &title ); 
 
     private:
-        QString m_name;
-        TrackList m_tracks;
-        QString m_description;
         int m_id;
+        QString m_name;
+        QString m_description;
+        TrackList m_tracks;
+        
 };
 
 class ServiceAlbum : public Meta::Album
 {
     public:
+        ServiceAlbum( const QStringList & resultRow );
         ServiceAlbum( const QString & name  );
         virtual ~ServiceAlbum();
 
@@ -190,6 +217,10 @@ class ServiceAlbum : public Meta::Album
         
 
         //ServiceAlbum specific methods
+        static QString sqlRows();
+        static int sqlRowCount();
+
+
         void addTrack( TrackPtr track );
         void setAlbumArtist( ArtistPtr artist );
         void setIsCompilation( bool compilation );
@@ -200,16 +231,19 @@ class ServiceAlbum : public Meta::Album
         int id( );
         void setArtistId( int artistId );
         int artistId( );
+        void setArtistName( const QString &name );
+        QString artistName();
         void setTitle( const QString &title );
 
     private:
+        int m_id;
         QString m_name;
         TrackList m_tracks;
         bool m_isCompilation;
         ArtistPtr m_albumArtist;
         QString m_description;
-        int m_id;
         int m_artistId;
+        QString m_artistName;
 };
 
 class ServiceGenre : public Meta::Genre

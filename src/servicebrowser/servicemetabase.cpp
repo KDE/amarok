@@ -19,26 +19,79 @@
 
 #include "servicemetabase.h"
 
-ServiceTrack::ServiceTrack( const QString & name )
+
+ServiceTrack::ServiceTrack(const QString & name)
     : Meta::Track()
-    , m_artist( 0 )
-    , m_album( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
+    , m_id( 0 )
     , m_name( name )
-    , m_type()
-    , m_length( 0 )
     , m_trackNumber( 0 )
+    , m_length( 0 )
     , m_displayUrl( 0 )
     , m_playableUrl( 0 )
+    , m_albumId( 0 )
+    , m_albumName( 0 ) 
+    , m_artistId( 0 )
+    , m_artistName( 0 )
+    , m_type( 0 )
 {
+}
+
+
+ServiceTrack::ServiceTrack( const QStringList & resultRow )
+    : Meta::Track()
+    , m_genre( 0 )
+    , m_composer( 0 )
+    , m_year( 0 )
+    , m_type( 0 )
+
+{
+
+    m_id = resultRow[0].toInt();
+    m_name = resultRow[1];
+    m_trackNumber = resultRow[2].toInt();
+    m_length = resultRow[3].toInt();
+    m_displayUrl = resultRow[4];
+    m_playableUrl = resultRow[4];
+    m_albumId = resultRow[5].toInt();
+    //m_albumName = resultRow[6];
+    //m_artistId = resultRow[7].toInt();
+    //m_artistName = resultRow[8].toInt();
+
 }
 
 ServiceTrack::~ServiceTrack()
 {
     //nothing to do
 }
+
+
+
+
+QString ServiceTrack::sqlRows()
+{
+
+    //subclasses must not change the order of these items, but only append new ones
+
+    return "DISTINCT id, " 
+           "name, "
+           "track_number, "
+           "length, "
+           "preview, "
+           "album_id, "
+           "album_name, "
+           "artist_id, "
+           "album_id ";
+}
+
+
+int ServiceTrack::sqlRowCount()
+{
+    return 9;
+}
+
 
 void ServiceTrack::setId(int id)
 {
@@ -58,6 +111,36 @@ void ServiceTrack::setAlbumId(int albumId)
 int ServiceTrack::albumId()
 {
     return m_albumId;
+}
+
+void ServiceTrack::setAlbumName(const QString & name)
+{
+    m_albumName = name;
+}
+
+QString ServiceTrack::albumName()
+{
+    return m_albumName;
+}
+
+void ServiceTrack::setArtistId(int id)
+{
+    m_artistId = id;
+}
+
+int ServiceTrack::artistId()
+{
+    return m_artistId;
+}
+
+void ServiceTrack::setArtistName(const QString & name)
+{
+    m_artistName = name;
+}
+
+QString ServiceTrack::artistName()
+{
+    return m_artistName;
 }
 
 
@@ -328,18 +411,48 @@ ServiceTrack::setLength( int length )
 
 //ServiceArtist
 
+
+
 ServiceArtist::ServiceArtist( const QString & name )
     : Meta::Artist()
+    , m_id( 0 )
     , m_name( name )
+    , m_description( 0 )
     , m_tracks()
 {
     //nothing to do
+}
+
+ServiceArtist::ServiceArtist(const QStringList & resultRow)
+    : Meta::Artist()
+    , m_tracks()
+{
+
+    m_id = resultRow[0].toInt();
+    m_name = resultRow[1];
+    m_description = resultRow[2];
+
+
 }
 
 ServiceArtist::~ServiceArtist()
 {
     //nothing to do
 }
+
+QString ServiceArtist::sqlRows()
+{
+
+    return "DISTINCT id, "
+           "name, "
+           "description ";
+}
+
+int ServiceArtist::sqlRowCount()
+{
+    return 3;
+}
+
 
 void ServiceArtist::setId(int id)
 {
@@ -396,17 +509,47 @@ QString ServiceArtist::description()
 
 ServiceAlbum::ServiceAlbum( const QString & name )
     : Meta::Album()
+    , m_id( 0 )
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
     , m_albumArtist( 0 )
+    , m_artistId( 0 )
+    , m_artistName( 0 )
 {
     //nothing to do
 }
 
+ServiceAlbum::ServiceAlbum(const QStringList & resultRow)
+    : Meta::Album()
+{
+    m_id = resultRow[0].toInt();
+    m_name = resultRow[1];
+    m_description = resultRow[2];
+    m_artistId = resultRow[3].toInt();
+    m_artistName = resultRow[4];
+}
+
+
+
 ServiceAlbum::~ServiceAlbum()
 {
     //nothing to do
+}
+
+QString ServiceAlbum::sqlRows()
+{
+    return "DISTINCT id, "
+           "name, "
+           "description, "
+           "artist_id, "
+           "artist_name ";
+
+}
+
+int ServiceAlbum::sqlRowCount()
+{
+    return 5;
 }
 
 void ServiceAlbum::setId(int id)
@@ -427,6 +570,16 @@ void ServiceAlbum::setArtistId(int artistId)
 int ServiceAlbum::artistId()
 {
     return m_artistId;
+}
+
+void ServiceAlbum::setArtistName(const QString & name)
+{
+    m_artistName = name;
+}
+
+QString ServiceAlbum::artistName()
+{
+    return m_artistName;
 }
 
 QString
@@ -634,10 +787,6 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
-
-
-
-
 
 
 

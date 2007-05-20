@@ -66,8 +66,11 @@ JamendoDatabaseHandler::createDatabase( )
                           "name " + db->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"
+                          "preview_url " + db->exactTextColumnType() + ',' +
                           "album_id INTEGER,"
-                          "preview " + db->exactTextColumnType() + ");";
+                          "album_name " + db->textColumnType() + ',' +
+                          "artist_id INTEGER,"
+                          "artist_name " + db->textColumnType() + ");";
 
     debug() << "Creating jamendo_tracks: " << queryString << endl;
 
@@ -78,9 +81,10 @@ JamendoDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE jamendo_albums ("
                   "id INTEGER PRIMARY KEY, "
                   "name " + db->textColumnType() + ',' +
+                  "description " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER,"
-                  "genre " + db->textColumnType() + ',' +
-                  "description " + db->exactTextColumnType() + ");";
+                  "artist_name " + db->textColumnType() +  ");";
+
 
     debug() << "Creating jamendo_albums: " << queryString << endl;
 
@@ -90,8 +94,6 @@ JamendoDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE jamendo_artists ("
                   "id INTEGER PRIMARY KEY, "
                   "name " + db->textColumnType() + ',' +
-                  "jamendo_page " + db->exactTextColumnType() + ',' +
-                  "artist_page " + db->exactTextColumnType() + ',' +
                   "description " + db->textColumnType() + ");";
 
     debug() << "Creating jamendo_artists: " << queryString << endl;
@@ -143,12 +145,15 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 
     CollectionDB *db = CollectionDB::instance();
     QString queryString = "INSERT INTO jamendo_tracks ( id, name, track_number, length, "
-                          "album_id, preview ) VALUES ( "
+                          "album_id, album_name, artist_id, artist_name, preview_url ) VALUES ( "
                           + QString::number( jTrack->id() ) + ", '"
                           + db->escapeString( jTrack->name() ) + "', "
                           + QString::number( jTrack->trackNumber() ) + ", "
                           + QString::number( jTrack->length() ) + ", "
                           + QString::number( jTrack->albumId() ) + ", '"
+                          + db->escapeString( jTrack->albumName() ) + "', "
+                          + QString::number( jTrack->artistId() ) + ", '"
+                          + db->escapeString( jTrack->artistName() ) + "', '"
                           + db->escapeString( jTrack->url() ) + "' );";
 
 
@@ -180,13 +185,13 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
-    queryString = "INSERT INTO jamendo_albums ( id, name, artist_id, "
-                  "genre, description ) VALUES ( "
+    queryString = "INSERT INTO jamendo_albums ( id, name, description, "
+                  " artist_id, artist_name ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
-                  + db->escapeString( db->escapeString( jAlbum->name() ) ) + "', "
+                  + db->escapeString(  jAlbum->name() ) + "', '"
+                  + db->escapeString( jAlbum->description() )+ "', "
                   + QString::number( jAlbum->artistId() ) + ", '"
-                  + db->escapeString( jAlbum->getGenre() ) + "', '"
-                  + db->escapeString( jAlbum->description() )+ "' );";
+                  + db->escapeString( jAlbum->artistName() ) + "' );";
 
     //debug() << "Adding Jamendo album " << queryString << endl;
 
@@ -202,12 +207,10 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
-    queryString = "INSERT INTO jamendo_artists ( id, name, jamendo_page, artist_page, description "
+    queryString = "INSERT INTO jamendo_artists ( id, name, description "
                   ") VALUES ( "
                   + QString::number( jArtist->id() ) + ", '"
                   + db->escapeString( db->escapeString( jArtist->name() ) ) + "', '"
-                  + db->escapeString( jArtist->jamendoURL() ) + "', '"
-                  + db->escapeString( jArtist->homeURL() ) + "', '"
                   + db->escapeString( jArtist->description() ) + "' );";
 
     //debug() << "Adding Jamendo artist " << queryString << endl;
@@ -251,8 +254,8 @@ JamendoDatabaseHandler::getArtistsByGenre( const QString &genre )
 
     QString queryString;
     queryString = "SELECT DISTINCT jamendo_artists.id, "
-                  "jamendo_artists.name, jamendo_artists.jamendo_page , "
-                  "jamendo_artists.artist_page, jamendo_artists.description "
+                  "jamendo_artists.name,  "
+                  "jamendo_artists.description "
                   "FROM jamendo_albums, jamendo_artists "
                   "WHERE " + genreSql + "jamendo_albums.artist_id "
                   "= jamendo_artists.id;";
@@ -263,7 +266,15 @@ JamendoDatabaseHandler::getArtistsByGenre( const QString &genre )
 
     ArtistList list;
 
-    while ( result.size() > 0 )
+
+    int resultRows = result.size() / 3;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*3, 3);
+        list.append( ArtistPtr( new JamendoArtist( row ) ) );
+    }
+
+   /* while ( result.size() > 0 )
     {
         int id = result.front().toInt();
         result.pop_front();
@@ -284,7 +295,7 @@ JamendoDatabaseHandler::getArtistsByGenre( const QString &genre )
         result.pop_front();
 
         list.append( ArtistPtr( artist ) );
-    }
+    }*/
 
     return list;
 
@@ -312,8 +323,9 @@ JamendoDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
     QString queryString;
     queryString = "SELECT DISTINCT id, "
                   "name, "
-                  "artist_id, genre, "
                   "description "
+                  "artist_id, "
+                  "artist_name "
                   "FROM jamendo_albums "
                   "WHERE artist_id = '" + QString::number( id ) + '\'';
 
@@ -329,7 +341,14 @@ JamendoDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
     //debug() << "Query string:" << queryString << endl;
 
 
-    while ( result.size() > 0 )
+    int resultRows = result.size() / 5;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*5, 5 );
+        list.append( AlbumPtr( new JamendoAlbum( row ) ) );
+    }
+
+    /*while ( result.size() > 0 )
     {
        
 
@@ -352,7 +371,7 @@ JamendoDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
         result.pop_front();
 
         list.append( AlbumPtr( album ) );
-    }
+    }*/
 
     return list;
 
@@ -370,7 +389,7 @@ JamendoDatabaseHandler::getTracksByAlbumId( int id )
     queryString = "SELECT DISTINCT id, "
                   "name, track_number, "
                   "length, album_id, "
-                  "preview "
+                  "preview_url "
                   "FROM jamendo_tracks "
                   "WHERE album_id = '" + QString::number( id ) + "';";
 
@@ -383,7 +402,14 @@ JamendoDatabaseHandler::getTracksByAlbumId( int id )
     //debug() << "Query string:" << queryString << endl;
 
 
-    while ( result.size() > 0 )
+    int resultRows = result.size() / 6;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*6, 6 );
+        list.append( TrackPtr( new JamendoTrack( row ) ) );
+    }
+
+    /*while ( result.size() > 0 )
     {
 
         int id = result.front().toInt();
@@ -409,7 +435,7 @@ JamendoDatabaseHandler::getTracksByAlbumId( int id )
 
         list.append( TrackPtr( track ) );
         //debug() << "track end" << endl;
-    }
+    }*/
 
     return list;
 
@@ -438,8 +464,7 @@ JamendoDatabaseHandler::getArtistById( int id )
 
     QString queryString;
     queryString = "SELECT id, "
-                  "name, jamendo_page, "
-                  "artist_page, description, "
+                  "name, description "
                   "FROM jamendo_artists "
                   "WHERE id = '" + QString::number( id ) + "';";
 
@@ -447,26 +472,11 @@ JamendoDatabaseHandler::getArtistById( int id )
 
     JamendoArtist * artist;
 
-    if ( result.size() == 5 )
+
+    if ( result.size() == 3 )
     {
 
-        int id = result.front().toInt();
-        result.pop_front();
-
-        QString name = result.front();
-        result.pop_front();
-
-        artist = new JamendoArtist( name );
-        artist->setId( id );
-
-        artist->setJamendoURL( result.front() );
-        result.pop_front();
-
-        artist->setHomeURL( result.front() );
-        result.pop_front();
-
-        artist->setDescription( result.front() );
-        result.pop_front();
+        artist = new JamendoArtist( result );
 
     } else {
         artist = new JamendoArtist( QString() );
@@ -498,23 +508,8 @@ JamendoDatabaseHandler::getAlbumById( int id )
     if ( result.size() == 5 )
     {
 
-        int id = result.front().toInt();
-        result.pop_front();
+        album = new JamendoAlbum( result );
 
-        QString name = result.front();
-        result.pop_front();
-
-        album = new JamendoAlbum( name );
-        album->setId( id );
-
-        album->setArtistId( result.front().toInt() );
-        result.pop_front();
-
-        album->setGenre( result.front() );
-        result.pop_front();
-
-        album->setDescription( result.front() );
-        result.pop_front();
     } else {
         album = new JamendoAlbum( QString() );
     }
@@ -532,7 +527,7 @@ ServiceTrack * JamendoDatabaseHandler::getTrackById(int id) {
     queryString = "SELECT DISTINCT id, "
                   "name, track_number, "
                   "length, album_id, "
-                  "preview "
+                  "preview_url "
                   "FROM jamendo_tracks "
                   "WHERE id = '" + QString::number( id ) + "';";
 

@@ -41,6 +41,7 @@ private:
 
 public:
     JamendoArtist( const QString &name );
+    JamendoArtist( const QStringList &resultRow );
 
     void setPhotoURL( const QString &photoURL );
     QString getPhotoURL() const;
@@ -65,6 +66,7 @@ private:
 
 public:
     JamendoAlbum( const QString &name );
+    JamendoAlbum( const QStringList &resultRow );
 
     void setPopularity( float popularity );
     float getPopularity() const;
@@ -86,16 +88,11 @@ public:
 
 class JamendoTrack  : public ServiceTrack
 {
-private:
-
-    int m_artistId;
 
 
 public:
     JamendoTrack( const QString &name );
-
-    void setArtistId( int artistId );
-    int getArtistId() const;
+    JamendoTrack( const QStringList &resultRow );
 
 };
 
