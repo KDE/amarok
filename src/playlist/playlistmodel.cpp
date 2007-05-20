@@ -80,11 +80,10 @@ Model::data( const QModelIndex& index, int role ) const
 void
 Model::insertTracks( int row, TrackList list )
 {
-    beginInsertRows( QModelIndex(), row, row + list.size() );
+    beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
     //m_columns.insert( row, list )
     int i = 0;
-    TrackPtr track;
-    foreach( track , list )
+    foreach( TrackPtr track , list )
     {
         m_tracks.insert( row + i, track );
         i++;
