@@ -14,6 +14,7 @@
 #include "amarok_engines_export.h"
 #include "enginebase.h"
 
+#include <QEvent>
 #include <QList>
 #include <QThread>
 
@@ -99,6 +100,19 @@ private slots:
 
 public:
     XineEngine();
+
+public:
+    class XineEvent : public QEvent {
+        public:
+            XineEvent( QEvent::Type type, QString* data )
+                : QEvent( type )
+                , m_data( data )
+                {}
+            QString* getData() { return m_data; }
+            void setData( QString* data ) { m_data = data; }
+        private:
+            QString* m_data;
+    };
 
 signals:
     void resetConfig(xine_t *xine);

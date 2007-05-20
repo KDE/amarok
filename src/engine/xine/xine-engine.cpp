@@ -793,45 +793,44 @@ XineEngine::configure() const
 void
 XineEngine::customEvent( QEvent *event )
 {
-    if( QCustomEvent *e = dynamic_cast<QCustomEvent*>( event ) ) {
-        #define message static_cast<QString*>(e->data())
+    
+    #define message dynamic_cast<XineEvent*>(event)->getData()
 
-        switch( e->type() )
-        {
-        case 3000: //XINE_EVENT_UI_PLAYBACK_FINISHED
-            emit trackEnded();
-            break;
+    switch( event->type() )
+    {
+    case 3000: //XINE_EVENT_UI_PLAYBACK_FINISHED
+        emit trackEnded();
+        break;
 
-        case 3001:
-            emit infoMessage( (*message).arg( m_url.prettyUrl() ) );
-            delete message;
-            break;
+    case 3001:
+        emit infoMessage( (*message).arg( m_url.prettyUrl() ) );
+        delete message;
+        break;
 
-        case 3002:
-            emit statusText( *message );
-            delete message;
-            break;
+    case 3002:
+        emit statusText( *message );
+        delete message;
+        break;
 
-        case 3003: { //meta info has changed
-            debug() << "Metadata received." << endl;
-            const Engine::SimpleMetaBundle bundle = fetchMetaData();
-            m_currentBundle = bundle;
-            emit metaData( bundle );
-        }   break;
+    case 3003: { //meta info has changed
+        debug() << "Metadata received." << endl;
+        const Engine::SimpleMetaBundle bundle = fetchMetaData();
+        m_currentBundle = bundle;
+        emit metaData( bundle );
+    }   break;
 
-        case 3004:
-            emit statusText( i18n("Redirecting to: ", *message ) );
-            load( KUrl( *message ), false );
-            play();
-            delete message;
-            break;
+    case 3004:
+        emit statusText( i18n("Redirecting to: ", *message ) );
+        load( KUrl( *message ), false );
+        play();
+        delete message;
+        break;
 
-        default:
-            ;
-        }
-
-        #undef message
+    default:
+        ;
     }
+
+    #undef message
 }
 //SLOT
 void XineEngine::configChanged()
@@ -900,7 +899,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         debug() << "XINE_EVENT_UI_SET_TITLE\n";
 
-        QApplication::postEvent( xe, new QCustomEvent( 3003 ) );
+        QApplication::postEvent( xe, new QEvent( QEvent::Type( 3003 ) ) );
 
         break;
 
@@ -915,7 +914,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
         #endif
         //emit signal from GUI thread
-        QApplication::postEvent( xe, new QCustomEvent(3000) );
+        QApplication::postEvent( xe, new QEvent( QEvent::Type( 3000 ) ) );
         break;
 
     case XINE_EVENT_PROGRESS: {
@@ -926,8 +925,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         msg = msg.arg( QString::fromUtf8( pd->description ) )
                  .arg( KGlobal::locale()->formatNumber( pd->percent, 0 ) );
 
-        QCustomEvent *e = new QCustomEvent( 3002 );
-        e->setData( new QString( msg ) );
+        XineEvent *e = new XineEvent( QEvent::Type( 3002 ), new QString( msg ) );
 
         QApplication::postEvent( xe, e );
 
@@ -938,8 +936,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         /// so we need to play that instead
 
         QString message = QString::fromUtf8( static_cast<xine_mrl_reference_data_t*>(xineEvent->data)->mrl );
-        QCustomEvent *e = new QCustomEvent( 3004 );
-        e->setData( new QString( message ) );
+        XineEvent *e = new XineEvent( QEvent::Type( 3004 ), new QString( message ) );
 
         QApplication::postEvent( xe, e );
 
@@ -1043,7 +1040,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             }
             else message += i18n("Sorry, no additional information is available.");
 
-            QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3001), new QString(message)) );
+            QApplication::postEvent( xe, new XineEvent( QEvent::Type( 3001 ), new QString( message ) ) );
         }
 
     } //case
