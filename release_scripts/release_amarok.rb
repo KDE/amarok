@@ -11,14 +11,14 @@
 doc_redcards = ""
 po_redcards = ""
 
-tag = ""
+tag = nil
 useStableBranch=false
 
 # Ask whether using branch or trunk
-location = `kdialog --combobox "Select checkout's place:" "Tag" "Trunk" "Branch"`.chomp()
+location = `kdialog --combobox "Select checkout's place:" "Trunk" "Stable" "Tag"`.chomp()
 if location == "Tag"
     tag = `kdialog --inputbox "Enter tag name: "`.chomp()
-elsif location == "Branch"
+elsif location == "Stable"
     useStableBranch=true
 end
 
@@ -33,7 +33,7 @@ protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "sv
 
 name     = "amarok"
 folder   = "amarok-#{version}"
-do_l10n  = "yes"
+do_l10n  = true
 
 
 # Prevent using unsermake
@@ -53,7 +53,8 @@ if useStableBranch
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
     Dir.chdir( "multimedia" )
 elsif not tag.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+    do_l10n = false
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}/multimedia`
     Dir.chdir( "multimedia" )
 else
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
@@ -66,7 +67,7 @@ end
 `svn co #{protocol}://#{user}@svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
 
 
-if do_l10n == "yes"
+if do_l10n
     puts "\n"
     puts "**** l10n ****"
     puts "\n"
