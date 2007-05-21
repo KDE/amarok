@@ -44,7 +44,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     m_titleItem->setDefaultTextColor( QColor( 255, 255, 255 ) );
     // increase the font size for the title
     QFont font = m_titleItem->font();
-    font.setPointSize( 14 );
+    font.setPointSize( 12 );
     font.setBold( true );
     m_titleItem->setFont( font );
 
