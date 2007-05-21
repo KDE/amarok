@@ -82,6 +82,6 @@ void AlbumBox::addAlbumInfo( const QString &pixLocation, const QString &text )
     albumRow->setPos( 0, m_bottom );
     m_bottom += albumRow->bottom();
 
-    setContentRectSize( QSize( boundingRect().width(), m_bottom ) );
+    setContentRectSize( QSize( (int)boundingRect().width(), (int)m_bottom ) );
 }
 

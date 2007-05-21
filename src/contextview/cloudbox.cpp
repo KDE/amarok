@@ -55,7 +55,7 @@ void CloudTextItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 
 void CloudTextItem::colorFadeSlot( int step )
 {
-    int colorValue = 255 - step * 8.5;
+    int colorValue = (int)(255 - step * 8.5);
     if( step == 100 )
         colorValue = 0;
 
@@ -84,7 +84,6 @@ Context::CloudBox::CloudBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
 void CloudBox::addText( QString text, int weight, QObject *receiver, const char *slot )
 {
-    // create the new text item
     CloudTextItem * item = new CloudTextItem ( text, m_contentRect, 0 );
     //item->setParentItem( this );
     if( receiver && slot )
@@ -120,11 +119,11 @@ void CloudBox::adjustCurrentLinePos()
 {
     if ( m_currentLineItems.isEmpty() ) return;
 
-    int totalWidth = 0;
-    int maxHeight = 0;
-    int offsetX = 0;
-    int offsetY = 0;
-    int currentX = 0;
+    qreal totalWidth = 0;
+    qreal maxHeight = 0;
+    qreal offsetX = 0;
+    qreal offsetY = 0;
+    qreal currentX = 0;
 
     CloudTextItem * currentItem;
     QRectF currentItemRect;
@@ -135,15 +134,18 @@ void CloudBox::adjustCurrentLinePos()
     {
         currentItemRect = currentItem->boundingRect();
         totalWidth += currentItemRect.width();
-        if ( currentItemRect.height() > maxHeight ) maxHeight = currentItemRect.height();
+        if( currentItemRect.height() > maxHeight )
+            maxHeight = currentItemRect.height();
     }
 
     //do we have enough vertical space for this line? If not, create some!
     if ( ( m_runningY + maxHeight ) > m_contentRect->boundingRect().height() )
     {
-        int missingHeight = ( m_runningY + maxHeight ) -  m_contentRect->boundingRect().height();
-       // m_contentRect->setRect(0, 0, boundingRect().width(), boundingRect().height() + missingHeight );
-       setContentRectSize( QSize( boundingRect().width(), boundingRect().height() + missingHeight ) );
+        qreal missingHeight = ( m_runningY + maxHeight ) -  m_contentRect->boundingRect().height();
+        // m_contentRect->setRect(0, 0, boundingRect().width(), boundingRect().height() + missingHeight );
+        int w = (int)boundingRect().width();
+        int h = (int)(boundingRect().height() + missingHeight);
+        setContentRectSize( QSize( w, h ) );
     }
 
     //calc the X offset that makes the line centered horizontally

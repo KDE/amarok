@@ -150,7 +150,7 @@ void ContextView::introAnimationComplete()
 
     ContextBox *welcomeBox = new ContextBox();
     welcomeBox->setTitle( "Hooray, welcome to Amarok::ContextView!" );
-    addContextBox( welcomeBox, -1, true );
+    addContextBox( welcomeBox );
 
 
     AlbumBox *albumBox = new AlbumBox();
@@ -178,14 +178,14 @@ void ContextView::introAnimationComplete()
         albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
     }
 
-    addContextBox( albumBox, -1, true );
+    addContextBox( albumBox );
 
     //testing
 
     debug() << KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) << endl;
     QGraphicsSvgItem * svg = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
     svg->scale(0.5, 0.5 );
-    addContextBox( svg , -1, true );
+    addContextBox( svg );
 }
 
 void ContextView::showCurrentTrack()
@@ -196,16 +196,15 @@ void ContextView::showCurrentTrack()
 
     ContextBox *infoBox = new ContextBox();
     infoBox->setTitle( i18n("%1 - %2", bundle.title(), bundle.artist() ) );
-    addContextBox( infoBox, -1, true );
+    addContextBox( infoBox );
 
     CloudBox *relatedArtists = new CloudBox();
     relatedArtists->setTitle( i18n("Related Artists to %1", bundle.artist() ) );
     QStringList relations = CollectionDB::instance()->similarArtists( bundle.artist(), 10 );
     foreach( QString r, relations )
-    {
         relatedArtists->addText( r );
-    }
-    addContextBox( relatedArtists, -1, true );
+
+    addContextBox( relatedArtists );
 
     AlbumBox *albumBox = new AlbumBox();
     albumBox->setTitle( i18n("Albums By %1", bundle.artist() ) );
@@ -236,7 +235,7 @@ void ContextView::showCurrentTrack()
         albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
     }
 
-    addContextBox( albumBox, -1, true );
+    addContextBox( albumBox );
 }
 
 
