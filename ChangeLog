@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * The default cover image preview size has been increased to 130px.
     * The "hide menubar" option has been removed. It's too dangerous and led
       to countless support requests.
     * Generic media device can now handle any KIO-compatible URL, including
