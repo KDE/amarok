@@ -4081,17 +4081,14 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
 
          if( !config.hasKey("Icon") )
          {
-            //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
             config.writeEntry( "Icon", cover );
             config.sync();
-            debug() << "Using this cover as icon for: " << path << endl;
-            debug() << cover << endl;
          }
          //}         //Not amazon nice.
       }
    }
 
-   if( localFile && QDir().rmdir( src.directory() ) )
+   if( localFile && isDirInCollection( src.directory() ) && QDir().rmdir( src.directory() ) )
    {
       debug() << "removed: " << src.directory() << endl;
    }
@@ -4878,7 +4875,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     //had just played
     const KUrl url = EngineController::instance()->bundle().url().path().isEmpty() ?
                             EngineController::instance()->previousURL() :
-                            EngineController::instance()->bundle().url(); 
+                            EngineController::instance()->bundle().url();
 
     debug() << "track ended: " << url.url() << endl;
     PodcastEpisodeBundle peb;
