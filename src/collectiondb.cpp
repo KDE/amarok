@@ -4056,17 +4056,14 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
 
          if( !config.hasKey("Icon") )
          {
-            //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
             config.writeEntry( "Icon", cover );
             config.sync();
-            debug() << "Using this cover as icon for: " << path << endl;
-            debug() << cover << endl;
          }
          //}         //Not amazon nice.
       }
    }
 
-   if( localFile && QDir().rmdir( src.directory() ) )
+   if( localFile && isDirInCollection( src.directory() ) && QDir().rmdir( src.directory() ) )
    {
       debug() << "removed: " << src.directory() << endl;
    }
