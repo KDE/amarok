@@ -164,7 +164,7 @@
     <entry key="Cover Preview Size" type="Int">
         <label>Size of the cover previews in Contextbrowser and Covermanager</label>
         <whatsthis>Size of the cover previews in Contextbrowser and Covermanager</whatsthis>
-        <default>100</default>
+        <default>130</default>
     </entry>
     <entry key="Directories Recursively" type="Bool">
         <label>Whether to add directories to playlist recursively</label>
