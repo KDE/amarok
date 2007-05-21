@@ -198,6 +198,15 @@ void ContextView::showCurrentTrack()
     infoBox->setTitle( i18n("%1 - %2", bundle.title(), bundle.artist() ) );
     addContextBox( infoBox, -1, true );
 
+    CloudBox *relatedArtists = new CloudBox();
+    relatedArtists->setTitle( i18n("Related Artists to %1", bundle.artist() ) );
+    QStringList relations = CollectionDB::instance()->similarArtists( bundle.artist(), 10 );
+    foreach( QString r, relations )
+    {
+        relatedArtists->addText( r );
+    }
+    addContextBox( relatedArtists, -1, true );
+
     AlbumBox *albumBox = new AlbumBox();
     albumBox->setTitle( i18n("Albums By %1", bundle.artist() ) );
 

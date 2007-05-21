@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef CLOUDBOX_H
 #define CLOUDBOX_H
@@ -26,52 +26,43 @@
 
 namespace Context
 {
-
-
-/**
-A simple text item to go in a coud box
-
-	@author 
-*/
+    /**
+        A simple text item to go in a coud box
+        @author
+    */
     class CloudTextItem : public QGraphicsTextItem
     {
+        Q_OBJECT
+        public:
+            CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
-    Q_OBJECT
-    public:
-        CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+        protected:
+            virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * );
+            virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * );
+            virtual void mousePressEvent ( QGraphicsSceneMouseEvent * );
 
-    protected:
-        virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
-        virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
-        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+        public slots:
+            void colorFadeSlot( int step );
 
-    public slots:
-        void colorFadeSlot( int step );
+        private:
+            QTimeLine * m_timeLine;
 
-    private:
-        QTimeLine * m_timeLine;
-
-
-    signals:
-        void clicked( QString text );
+        signals:
+            void clicked( QString text );
     };
 
 
-
-
-/**
-A simple ContextBox that provides a cloud like view of a group of weighted items. Just for fun at this point! :-)
-
-	@author 
-*/
+    /**
+      A simple ContextBox that provides a cloud like view of a group of weighted items. Just for fun at this point! :-)
+      @author
+    */
     class CloudBox : public ContextBox
     {
 
     public:
-
         CloudBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
-        void addText(QString text, int weight, QObject * receiver, const char * slot);
+        void addText( QString text, int weight=10, QObject *receiver=0, const char *slot=0 );
 
         /**
          * Makes sure all elements are correctly positioned
@@ -93,10 +84,8 @@ A simple ContextBox that provides a cloud like view of a group of weighted items
 
         int m_maxFontSize;
         int m_minFontSize;
- 
+
         QList<CloudTextItem *> m_currentLineItems;
-
-
     };
 
 }
