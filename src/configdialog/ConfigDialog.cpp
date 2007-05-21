@@ -102,7 +102,6 @@ void Amarok2ConfigDialog::showPageByName( const QByteArray& page )
  * Update the buttons.
  * REIMPLEMENTED
  */
-
 void Amarok2ConfigDialog::updateButtons()
 {
     KConfigDialog::updateButtons();
