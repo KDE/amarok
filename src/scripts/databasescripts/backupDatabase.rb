@@ -2,7 +2,7 @@
 #
 #
 # Ruby database backup script
-# (c) 2005 Seb Ruiz <me@sebruiz.net>
+# (c) 2005-2007 Seb Ruiz <ruiz@kde.org>
 # Released under the GPL v2 license
 
 
@@ -28,9 +28,9 @@ def getFilename( input )
 end
 
 if $*.empty?() or $*[0] == "--help"
-    puts( "Usage: backupDatabase.rb saveLocation" )
+    puts( "Usage: backupDatabase.rb saveDirectory" )
     puts()
-    puts( "Backup your amaroK database!" )
+    puts( "Backup your Amarok database!" )
     exit( 1 )
 end
 
@@ -65,12 +65,22 @@ case database
         puts dest
         db   = `dcop amarok script readConfig MySqlDbName`.chomp!()
         user = `dcop amarok script readConfig MySqlUser`.chomp!()
-        pass = `dcop amarok script readConfig MySqlPassword`.chomp!()
-        system("mysqldump", "-u", user, "-p", pass, db, "-r", dest);
+        pass = `dcop amarok script readConfig MySqlPassword2`.chomp!()
+        host = `dcop amarok script readConfig MySqlHost`.chomp!()
+        port = `dcop amarok script readConfig MySqlPort`.chomp!()
+        system("mysqldump", "-u", user, "-p"+pass, "-h", host, "-P", port, db, "-r", dest);
 
     when "2" # postgres
-        system("dcop", "amarok", "playlist", "popupMessage", "Sorry, postgresql database backups have not been implemented.")
-        exit( 1 )
+        filename = "amarokdb.psql"
+        filename = getFilename( filename )
+        dest = destination + "/" + filename
+        puts dest
+        db   = `dcop amarok script readConfig PostgresqlDbName`.chomp!()
+        user = `dcop amarok script readConfig PostgresqlUser`.chomp!()
+        pass = `dcop amarok script readConfig PostgresqlPassword`.chomp!()
+        host = `dcop amarok script readConfig PostgresqlHost`.chomp!()
+        port = `dcop amarok script readConfig PostgresqlPort`.chomp!()
+        system("pg_dump", "-U", user, "-W", pass, "-h", host, "-p", port, db, "-f", dest);
 end
 
 system("dcop", "amarok", "playlist", "popupMessage", "Database backup saved to: #{destination}/#{filename}")
