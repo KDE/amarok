@@ -39,9 +39,9 @@ QString ServiceMetaFactory::getTrackSqlRows()
            "album_id ";
 }
 
-ServiceTrack * ServiceMetaFactory::createTrack(const QString & rows)
+TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
 {
-    return new ServiceTrack( rows );
+    return TrackPtr( new ServiceTrack( rows ) );
 }
 
 int ServiceMetaFactory::getAlbumSqlRowCount()
@@ -59,9 +59,9 @@ QString ServiceMetaFactory::getAlbumSqlRows()
            "artist_name ";
 }
 
-ServiceAlbum * ServiceMetaFactory::createAlbum(const QString & rows)
+AlbumPtr ServiceMetaFactory::createAlbum(const QStringList & rows)
 {
-    return new ServiceAlbum( rows );
+    return AlbumPtr( new ServiceAlbum( rows ) );
 }
 
 int ServiceMetaFactory::getArtistSqlRowCount()
@@ -77,9 +77,9 @@ QString ServiceMetaFactory::getArtistSqlRows()
            "description ";
 }
 
-ServiceArtist * ServiceMetaFactory::createArtist(const QString & rows)
+ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
 {
-    return new ServiceArtist ( rows );
+    return ArtistPtr( new ServiceArtist ( rows ) );
 
 }
 
@@ -138,7 +138,7 @@ void ServiceTrack::setId(int id)
     m_id = id;
 }
 
-int ServiceTrack::id()
+int ServiceTrack::id() const
 {
     return m_id;
 }
@@ -148,7 +148,7 @@ void ServiceTrack::setAlbumId(int albumId)
     m_albumId = albumId;
 }
 
-int ServiceTrack::albumId()
+int ServiceTrack::albumId() const
 {
     return m_albumId;
 }
@@ -158,7 +158,7 @@ void ServiceTrack::setAlbumName(const QString & name)
     m_albumName = name;
 }
 
-QString ServiceTrack::albumName()
+QString ServiceTrack::albumName() const
 {
     return m_albumName;
 }
@@ -168,7 +168,7 @@ void ServiceTrack::setArtistId(int id)
     m_artistId = id;
 }
 
-int ServiceTrack::artistId()
+int ServiceTrack::artistId() const
 {
     return m_artistId;
 }
@@ -178,7 +178,7 @@ void ServiceTrack::setArtistName(const QString & name)
     m_artistName = name;
 }
 
-QString ServiceTrack::artistName()
+QString ServiceTrack::artistName() const
 {
     return m_artistName;
 }
@@ -486,7 +486,7 @@ void ServiceArtist::setId(int id)
     m_id = id;
 }
 
-int ServiceArtist::id()
+int ServiceArtist::id() const
 {
     return m_id;
 }
@@ -528,7 +528,7 @@ void ServiceArtist::setDescription(const QString &description)
     m_description = description;
 }
 
-QString ServiceArtist::description()
+QString ServiceArtist::description() const
 {
     return m_description;
 }
@@ -570,7 +570,7 @@ void ServiceAlbum::setId(int id)
     m_id = id;
 }
 
-int ServiceAlbum::id()
+int ServiceAlbum::id() const
 {
     return m_id;
 }
@@ -580,7 +580,7 @@ void ServiceAlbum::setArtistId(int artistId)
     m_artistId = artistId;
 }
 
-int ServiceAlbum::artistId()
+int ServiceAlbum::artistId() const
 {
     return m_artistId;
 }
@@ -590,7 +590,7 @@ void ServiceAlbum::setArtistName(const QString & name)
     m_artistName = name;
 }
 
-QString ServiceAlbum::artistName()
+QString ServiceAlbum::artistName() const
 {
     return m_artistName;
 }
@@ -677,7 +677,7 @@ void ServiceAlbum::setDescription(const QString &description)
     m_description = description;
 }
 
-QString ServiceAlbum::description()
+QString ServiceAlbum::description() const
 {
     return m_description;
 }

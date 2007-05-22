@@ -1,0 +1,635 @@
+/*
+ *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+#include "servicesqlquerymaker.h"
+
+#define DEBUG_PREFIX "SqlQueryBuilder"
+
+#include "debug.h"
+
+#include "mountpointmanager.h"
+//#include "servicesqlcollection.h"
+
+#include <threadweaver/Job.h>
+#include <threadweaver/ThreadWeaver.h>
+
+class ServiceSqlWorkerThread : public ThreadWeaver::Job
+{
+    public:
+        ServiceSqlWorkerThread( ServiceSqlQueryMaker *queryMaker )
+            : ThreadWeaver::Job()
+            , m_queryMaker( queryMaker )
+            , m_aborted( false )
+        {
+            //nothing to do
+        }
+
+        virtual void requestAbort()
+        {
+            m_aborted = true;
+        }
+
+    protected:
+        virtual void run()
+        {
+            DEBUG_BLOCK
+            QString query = m_queryMaker->query();
+            QStringList result = m_queryMaker->runQuery( query );
+            if( !m_aborted )
+                m_queryMaker->handleResult( result );
+            setFinished( !m_aborted );
+        }
+    private:
+        ServiceSqlQueryMaker *m_queryMaker;
+
+        bool m_aborted;
+};
+
+struct ServiceSqlQueryMaker::Private
+{
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM/*, COMPOSER, YEAR, GENRE, CUSTOM*/ };
+    //enum { TRACK = 1, ALBUM = 2, ARTIST = 4};
+    //int linkedTables;
+    QueryType queryType;
+    QString query;
+    QString queryReturnValues;
+    QString queryFrom;
+    QString queryMatch;
+    QString queryFilter;
+    QString queryOrderBy;
+    //bool includedBuilder;
+    //bool collectionRestriction;
+    bool resultAsDataPtrs;
+    bool withoutDuplicates;
+    int maxResultSize;
+    ServiceSqlWorkerThread *worker;
+};
+
+ServiceSqlQueryMaker::ServiceSqlQueryMaker( SqlCollection* collection, ServiceMetaFactory * metaFactory  )
+    : QueryMaker()
+    //, m_collection( collection )
+    , m_metaFactory( metaFactory )
+    , d( new Private )
+{
+    //d->includedBuilder = true;
+    //d->collectionRestriction = false;
+    d->worker = 0;
+    reset();
+}
+
+ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
+{
+    delete d;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::reset()
+{
+    d->query.clear();
+    d->queryType = Private::NONE;
+    d->queryReturnValues.clear();
+    d->queryFrom.clear();
+    d->queryMatch.clear();
+    d->queryFilter.clear();
+    d->queryOrderBy.clear();
+   // d->linkedTables = 0;
+    if( d->worker && d->worker->isFinished() )
+        delete d->worker;   //TODO error handling
+    //d->resultAsDataPtrs = false;
+    d->withoutDuplicates = false;
+    d->maxResultSize = -1;
+    return this;
+}
+
+void
+ServiceSqlQueryMaker::abortQuery()
+{
+    if( d->worker )
+        d->worker->requestAbort();
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+{
+    d->resultAsDataPtrs = resultAsDataPtrs;
+    return this;
+}
+
+void
+ServiceSqlQueryMaker::run()
+{
+    DEBUG_BLOCK
+    if( d->queryType == Private::NONE )
+        return; //better error handling?
+    if( d->worker && !d->worker->isFinished() )
+    {
+        //the worker thread seems to be running
+        //TODO: wait or job to complete
+        
+    }
+    else
+    {
+        debug() << "Query is " << query() << endl;
+        d->worker = new ServiceSqlWorkerThread( this );
+        connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( d->worker );
+    }
+}
+
+void
+ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
+{
+    ThreadWeaver::Weaver::instance()->dequeue( job );
+    job->deleteLater();
+    d->worker = 0;
+    emit queryDone();
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startTrackQuery()
+{
+    DEBUG_BLOCK
+    //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
+    if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::TRACK;
+        d->queryReturnValues =  m_metaFactory->getTrackSqlRows();
+    }
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startArtistQuery()
+{
+    DEBUG_BLOCK
+    if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::ARTIST;
+        d->withoutDuplicates = true;
+        //reading the ids from the database means we don't have to query for them later
+        d->queryReturnValues = m_metaFactory->getArtistSqlRows();
+    }
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startAlbumQuery()
+{
+    DEBUG_BLOCK
+    if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::ALBUM;
+        d->withoutDuplicates = true;
+        //add whatever is necessary to identify compilations
+        d->queryReturnValues = m_metaFactory->getAlbumSqlRows();
+    }
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startComposerQuery()
+{
+    DEBUG_BLOCK
+   /* if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::COMPOSER;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::COMPOSER_TAB;
+        d->queryReturnValues = "composer.name, composer.id";
+    }*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startGenreQuery()
+{
+    DEBUG_BLOCK
+    /*if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::GENRE;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::GENRE_TAB;
+        d->queryReturnValues = "genre.name, genre.id";
+    }*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startYearQuery()
+{
+    DEBUG_BLOCK
+    /*if( d->queryType == Private::NONE )
+    {
+        d->queryType = Private::YEAR;
+        d->withoutDuplicates = true;
+        d->linkedTables |= Private::YEAR_TAB;
+        d->queryReturnValues = "year.name, year.id";
+    }*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::startCustomQuery()
+{
+    DEBUG_BLOCK
+   /* if( d->queryType == Private::NONE )
+        d->queryType = Private::CUSTOM;*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
+{
+  /*  if( !d->collectionRestriction )
+    {
+        d->includedBuilder = false;
+        d->collectionRestriction = true;
+    }
+    if( m_collection->collectionId() == collectionId )
+        d->includedBuilder = true;
+    return this;*/
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
+{
+    /*d->collectionRestriction = true;
+    if( m_collection->collectionId() == collectionId )
+        d->includedBuilder = false;
+    return this;*/
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
+{
+    //TODO still pondereing this one...
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
+{
+    const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
+    d->queryMatch += QString( " AND artist_id= '%1'" ).arg( serviceArtist->id() );
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
+{
+  
+    const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
+    d->queryMatch += QString( " AND album_id = '%1'" ).arg( serviceAlbum->id() );
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
+{
+   //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const ComposerPtr &composer )
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const YearPtr &year )
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const DataPtr &data )
+{
+    //TODO needed at all?
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addReturnValue( qint64 value )
+{
+    /*if( d->queryType == Private::CUSTOM )
+    {
+        if ( !d->queryReturnValues.isEmpty() )
+            d->queryReturnValues += ',';
+        d->queryReturnValues += nameForValue( value );
+    }*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
+{
+    if ( d->queryOrderBy.isEmpty() )
+    d->queryOrderBy = " ORDER BY name "; //TODO FIX!!
+    d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::limitMaxResultSize( int size )
+{
+    d->maxResultSize = size;
+    return this;
+}
+
+/*void
+SqlQueryBuilder::linkTables()
+{
+    d->linkedTables |= Private::TAGS_TAB; //HACK!!!
+    //assuming that tags is always included for now
+    if( !d->linkedTables )
+        return;
+
+    if( d->linkedTables & Private::TAGS_TAB )
+        d->queryFrom += " tags";
+    if( d->linkedTables & Private::ARTIST_TAB )
+        d->queryFrom += " LEFT JOIN artist ON tags.artist = artist.id";
+    if( d->linkedTables & Private::ALBUM_TAB )
+        d->queryFrom += " LEFT JOIN album ON tags.album = album.id";
+    if( d->linkedTables & Private::GENRE_TAB )
+        d->queryFrom += " LEFT JOIN genre ON tags.genre = genre.id";
+    if( d->linkedTables & Private::COMPOSER_TAB )
+        d->queryFrom += " LEFT JOIN composer ON tags.composer = composer.id";
+    if( d->linkedTables & Private::YEAR_TAB )
+        d->queryFrom += " LEFT JOIN year ON tags.year = year.id";
+    if( d->linkedTables & Private::STATISTICS_TAB )
+        d->queryFrom += " LEFT JOIN statistics ON tags.deviceid = statistics.deviceid AND tags.url = statistics.url";
+}*/
+
+void
+ServiceSqlQueryMaker::buildQuery()
+{
+    //linkTables();
+    QString query = "SELECT ";
+    if ( d->withoutDuplicates )
+        query += "DISTINCT ";
+    query += d->queryReturnValues;
+    query += " FROM ";
+    query += d->queryFrom;
+    query += " WHERE 1 "; // oh... to not have to bother with the leadig "AND"
+    query += d->queryMatch;
+    query += d->queryFilter;
+    query += d->queryOrderBy;
+    if ( d->maxResultSize > -1 )
+        query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
+    query += ';';
+    d->query = query;
+}
+
+QString
+ServiceSqlQueryMaker::query()
+{
+    if ( d->query.isEmpty() )
+        buildQuery();
+    return d->query;
+}
+
+QStringList
+ServiceSqlQueryMaker::runQuery( const QString &query )
+{
+    return m_collection->query( query );
+}
+
+void
+ServiceSqlQueryMaker::handleResult( const QStringList &result )
+{
+    DEBUG_BLOCK
+    debug() << "Result length: " << result.count() << endl;
+    if( !result.isEmpty() )
+    {
+        switch( d->queryType ) {
+        /*case Private::CUSTOM:
+            emit newResultReady( m_collection->collectionId(), result );
+            break;*/
+        case Private::TRACK:
+            handleTracks( result );
+            break;
+        case Private::ARTIST:
+            handleArtists( result );
+            break;
+        case Private::ALBUM:
+            handleAlbums( result );
+            break;
+       /* case Private::GENRE:
+            handleGenres( result );
+            break;
+        case Private::COMPOSER:
+            handleComposers( result );
+            break;
+        case Private::YEAR:
+            handleYears( result );
+            break;*/
+
+        case Private::NONE:
+            debug() << "Warning: queryResult with queryType == NONE" << endl;
+        }
+    }
+
+    //queryDone will be emitted in done(Job*)
+}
+
+/*QString
+ServiceSqlQueryMaker::nameForValue( qint64 value )
+{
+    switch( value )
+    {
+        case valUrl:
+
+            return "tags.url";  //TODO figure out how to handle deviceid
+        case valTitle:
+
+            return "tags.title";
+        case valArtist:
+
+            return "artist.name";
+        case valAlbum:
+
+            return "album.name";
+        case valGenre:
+   
+            return "genre.name";
+        case valComposer:
+
+
+            return "statistics.playcounter";
+        default:
+            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64): value=" + value;
+    }
+}*/
+
+// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
+// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
+// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// signal that takes the list of the specific class.
+
+#define emitProperResult( PointerType, list ) { \
+            if ( d->resultAsDataPtrs ) { \
+                DataList data; \
+                foreach( PointerType p, list ) { \
+                    data << DataPtr::staticCast( p ); \
+                } \
+                emit newResultReady( m_collection->collectionId(), data ); \
+            } \
+            else { \
+                emit newResultReady( m_collection->collectionId(), list ); \
+            } \
+        }
+
+void
+ServiceSqlQueryMaker::handleTracks( const QStringList &result )
+{
+    DEBUG_BLOCK
+    TrackList tracks;
+    //SqlRegistry* reg = m_collection->registry();
+    //there are 28 columns in the result set as generated by startTrackQuery()
+    int rowCount = m_metaFactory->getTrackSqlRowCount();
+    int resultRows = result.size() / rowCount;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*rowCount, rowCount );
+        tracks.append( m_metaFactory->createTrack( row ) );
+    }
+    emitProperResult( TrackPtr, tracks );
+}
+
+void
+ServiceSqlQueryMaker::handleArtists( const QStringList &result )
+{
+    DEBUG_BLOCK
+    ArtistList artists;
+   // SqlRegistry* reg = m_collection->registry();
+    int rowCount = m_metaFactory->getArtistSqlRowCount();
+    int resultRows = result.size() / rowCount;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*rowCount, rowCount );
+
+        artists.append( m_metaFactory->createArtist( row ) );
+    }
+    emitProperResult( ArtistPtr, artists );
+}
+
+void
+ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
+{
+    DEBUG_BLOCK
+    AlbumList albums;
+    // SqlRegistry* reg = m_collection->registry();
+    int rowCount = m_metaFactory->getAlbumSqlRowCount();
+    int resultRows = result.size() / rowCount;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*rowCount, rowCount );
+        albums.append( m_metaFactory->createAlbum( row ) );
+    }
+    emitProperResult( AlbumPtr, albums );
+}
+
+/*void
+ServiceSqlQueryMaker::handleGenres( const QStringList &result )
+{
+    GenreList genres;
+    SqlRegistry* reg = m_collection->registry();
+    for( QStringListIterator iter( result ); iter.hasNext(); )
+    {
+        QString name = iter.next();
+        QString id = iter.next();
+        genres.append( reg->getGenre( name, id.toInt() ) );
+    }
+    emitProperResult( GenrePtr, genres );
+}
+
+void
+ServiceSqlQueryMaker::handleComposers( const QStringList &result )
+{
+    ComposerList composers;
+    SqlRegistry* reg = m_collection->registry();
+    for( QStringListIterator iter( result ); iter.hasNext(); )
+    {
+        QString name = iter.next();
+        QString id = iter.next();
+        composers.append( reg->getComposer( name, id.toInt() ) );
+    }
+    emitProperResult( ComposerPtr, composers );
+}
+
+void
+ServiceSqlQueryMaker::handleYears( const QStringList &result )
+{
+    YearList years;
+    SqlRegistry* reg = m_collection->registry();
+    for( QStringListIterator iter( result ); iter.hasNext(); )
+    {
+        QString name = iter.next();
+        QString id = iter.next();
+        years.append( reg->getYear( name, id.toInt() ) );
+    }
+    emitProperResult( YearPtr, years );
+}*/
+
+QString
+ServiceSqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
+{
+    return text.replace( '\'', "''" );;
+}
+
+QString
+ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
+{
+    QString escaped = text;
+    escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
+    escaped = escape( escaped );
+
+    QString ret = " LIKE ";
+
+    ret += '\'';
+    if ( anyBegin )
+            ret += '%';
+    ret += escaped;
+    if ( anyEnd )
+            ret += '%';
+    ret += '\'';
+
+    //Use / as the escape character
+    ret += " ESCAPE '/' ";
+
+    return ret;
+}
+
+#include "servicesqlquerymaker.moc"
+

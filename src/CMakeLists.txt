@@ -92,15 +92,12 @@ set(libplugin_SRCS
 #####################################################################
 set(libservicebrowser_SRCS
     servicebrowser/servicebrowser.cpp
-	servicebrowser/servicebase.cpp
-	#servicebrowser/servicemodelitembase.cpp
-    #servicebrowser/servicemodelbase.cpp
-    #servicebrowser/simpleservicetypes.cpp
+    servicebrowser/servicebase.cpp
     servicebrowser/servicemetabase.cpp
-	servicebrowser/servicecollection.cpp
+    servicebrowser/servicecollection.cpp
     servicebrowser/databasehandlerbase.cpp
-	#servicebrowser/databasedrivencontentitem.cpp
-	#servicebrowser/databasedrivencontentmodel.cpp
+    servicebrowser/servicesqlquerymaker.cpp
+
 )
 
 #####################################################################
@@ -108,8 +105,8 @@ set(libservicebrowser_SRCS
 #####################################################################
 set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/scriptableservicemanager.cpp
-	servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
-	servicebrowser/scriptableservice/scriptableservice.cpp
+    servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
+    servicebrowser/scriptableservice/scriptableservice.cpp
     servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp
 )
 
@@ -118,9 +115,9 @@ set(libscriptableservice_SRCS
 #####################################################################
 set(libjamendoservice_SRCS
     servicebrowser/jamendo/jamendoservice.cpp
-	servicebrowser/jamendo/jamendotypes.cpp
-	servicebrowser/jamendo/jamendodatabasehandler.cpp
-	servicebrowser/jamendo/jamendoxmlparser.cpp
+    servicebrowser/jamendo/jamendotypes.cpp
+    servicebrowser/jamendo/jamendodatabasehandler.cpp
+    servicebrowser/jamendo/jamendoxmlparser.cpp
 )
 
 #####################################################################
@@ -128,7 +125,7 @@ set(libjamendoservice_SRCS
 #####################################################################
 set(libmp3tunesservice_SRCS
     servicebrowser/mp3tunes/mp3tunesservice.cpp
-	servicebrowser/mp3tunes/mp3tunesdatafetcher.cpp
+    servicebrowser/mp3tunes/mp3tunesdatafetcher.cpp
 )
 
 #qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)

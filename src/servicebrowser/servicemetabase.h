@@ -51,20 +51,21 @@ typedef QList<ServiceYearPtr > ServiceYearList;
 class ServiceMetaFactory
 {
 
+public:
     ServiceMetaFactory() {};
     virtual ~ServiceMetaFactory() {};
 
     virtual int getTrackSqlRowCount();
     virtual QString getTrackSqlRows();
-    virtual ServiceTrack * createTrack( const QString &rows );
+    virtual TrackPtr createTrack( const QStringList &rows );
 
     virtual int getAlbumSqlRowCount();
     virtual QString getAlbumSqlRows();
-    virtual ServiceAlbum * createAlbum( const QString &rows );
+    virtual AlbumPtr createAlbum( const QStringList &rows );
 
     virtual int getArtistSqlRowCount();
     virtual QString getArtistSqlRows();
-    virtual ServiceArtist * createArtist( const QString &rows );
+    virtual ArtistPtr createArtist( const QStringList &rows );
 
 
 };
@@ -146,15 +147,15 @@ class ServiceTrack : public Meta::Track
         void setLength( int length );
 
         void setId( int id );
-        int id( );
+        int id( ) const;
         void setAlbumId( int albumId );
-        int albumId();
+        int albumId() const;
         void setAlbumName( const QString &name );
-        QString albumName();
+        QString albumName() const;
         void setArtistId( int id );
-        int artistId();
+        int artistId() const;
         void setArtistName( const QString &name );
-        QString artistName();
+        QString artistName() const;
         void setUrl( const QString &url );
 
     private:
@@ -196,9 +197,9 @@ class ServiceArtist : public Meta::Artist
         void addTrack( TrackPtr track );
 
         void setDescription( const QString &description );
-        QString description( );
+        QString description( ) const;
         void setId( int id );
-        int id( );
+        int id( ) const;
         void setTitle( const QString &title ); 
 
     private:
@@ -238,13 +239,13 @@ class ServiceAlbum : public Meta::Album
         void setIsCompilation( bool compilation );
 
         void setDescription( const QString &description );
-        QString description( );
+        QString description( ) const;
         void setId( int id );
-        int id( );
+        int id( ) const;
         void setArtistId( int artistId );
-        int artistId( );
+        int artistId( ) const;
         void setArtistName( const QString &name );
-        QString artistName();
+        QString artistName() const;
         void setTitle( const QString &title );
 
     private:
