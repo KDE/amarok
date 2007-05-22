@@ -48,6 +48,27 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
+class ServiceMetaFactory
+{
+
+    ServiceMetaFactory() {};
+    virtual ~ServiceMetaFactory() {};
+
+    virtual int getTrackSqlRowCount();
+    virtual QString getTrackSqlRows();
+    virtual ServiceTrack * createTrack( const QString &rows );
+
+    virtual int getAlbumSqlRowCount();
+    virtual QString getAlbumSqlRows();
+    virtual ServiceAlbum * createAlbum( const QString &rows );
+
+    virtual int getArtistSqlRowCount();
+    virtual QString getArtistSqlRows();
+    virtual ServiceArtist * createArtist( const QString &rows );
+
+
+};
+
 class ServiceTrack : public Meta::Track
 {
     public:
@@ -114,10 +135,6 @@ class ServiceTrack : public Meta::Track
         virtual void unsubscribe ( TrackObserver *observer );
 
         //ServiceTrack specific methods
-        static QString sqlRows();
-        static int sqlRowCount();
-
-        
 
         void setAlbum( AlbumPtr album );
         void setArtist( ArtistPtr artist ); 
@@ -175,8 +192,6 @@ class ServiceArtist : public Meta::Artist
         virtual TrackList tracks();
 
         //ServiceArtist specific methods
-        static QString sqlRows();
-        static int sqlRowCount();
 
         void addTrack( TrackPtr track );
 
@@ -217,9 +232,6 @@ class ServiceAlbum : public Meta::Album
         
 
         //ServiceAlbum specific methods
-        static QString sqlRows();
-        static int sqlRowCount();
-
 
         void addTrack( TrackPtr track );
         void setAlbumArtist( ArtistPtr artist );

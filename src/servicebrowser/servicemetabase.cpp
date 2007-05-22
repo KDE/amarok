@@ -20,6 +20,71 @@
 #include "servicemetabase.h"
 
 
+int ServiceMetaFactory::getTrackSqlRowCount()
+{
+    return 9;
+}
+
+QString ServiceMetaFactory::getTrackSqlRows()
+{
+    //subclasses must not change the order of these items, but only append new ones
+    return "DISTINCT id, " 
+           "name, "
+           "track_number, "
+           "length, "
+           "preview, "
+           "album_id, "
+           "album_name, "
+           "artist_id, "
+           "album_id ";
+}
+
+ServiceTrack * ServiceMetaFactory::createTrack(const QString & rows)
+{
+    return new ServiceTrack( rows );
+}
+
+int ServiceMetaFactory::getAlbumSqlRowCount()
+{
+    return 5;
+}
+
+QString ServiceMetaFactory::getAlbumSqlRows()
+{
+    //subclasses must not change the order of these items, but only append new ones
+    return "DISTINCT id, "
+           "name, "
+           "description, "
+           "artist_id, "
+           "artist_name ";
+}
+
+ServiceAlbum * ServiceMetaFactory::createAlbum(const QString & rows)
+{
+    return new ServiceAlbum( rows );
+}
+
+int ServiceMetaFactory::getArtistSqlRowCount()
+{
+    return 3;
+}
+
+QString ServiceMetaFactory::getArtistSqlRows()
+{
+    //subclasses must not change the order of these items, but only append new ones
+    return "DISTINCT id, "
+           "name, "
+           "description ";
+}
+
+ServiceArtist * ServiceMetaFactory::createArtist(const QString & rows)
+{
+    return new ServiceArtist ( rows );
+
+}
+
+
+
 ServiceTrack::ServiceTrack(const QString & name)
     : Meta::Track()
     , m_genre( 0 )
@@ -65,31 +130,6 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
 ServiceTrack::~ServiceTrack()
 {
     //nothing to do
-}
-
-
-
-
-QString ServiceTrack::sqlRows()
-{
-
-    //subclasses must not change the order of these items, but only append new ones
-
-    return "DISTINCT id, " 
-           "name, "
-           "track_number, "
-           "length, "
-           "preview, "
-           "album_id, "
-           "album_name, "
-           "artist_id, "
-           "album_id ";
-}
-
-
-int ServiceTrack::sqlRowCount()
-{
-    return 9;
 }
 
 
@@ -440,19 +480,6 @@ ServiceArtist::~ServiceArtist()
     //nothing to do
 }
 
-QString ServiceArtist::sqlRows()
-{
-
-    return "DISTINCT id, "
-           "name, "
-           "description ";
-}
-
-int ServiceArtist::sqlRowCount()
-{
-    return 3;
-}
-
 
 void ServiceArtist::setId(int id)
 {
@@ -537,20 +564,6 @@ ServiceAlbum::~ServiceAlbum()
     //nothing to do
 }
 
-QString ServiceAlbum::sqlRows()
-{
-    return "DISTINCT id, "
-           "name, "
-           "description, "
-           "artist_id, "
-           "artist_name ";
-
-}
-
-int ServiceAlbum::sqlRowCount()
-{
-    return 5;
-}
 
 void ServiceAlbum::setId(int id)
 {
@@ -787,9 +800,6 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
-
-
-
 
 
 
