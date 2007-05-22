@@ -272,7 +272,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
         fader->setFPS( 30 );
         fader->setStartAlpha( 255 );
         fader->setTargetAlpha( 0 );
-        fader->setFadeColor( palette().highlight() );
+        fader->setFadeColor( palette().highlight().color() );
         fader->startFading();
         newBox = fader;
     }

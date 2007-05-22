@@ -148,7 +148,7 @@ OsdConfig::showEvent( QShowEvent* )
 
     //m_osdPreview->setFont( kcfg_OsdFont->font() );
     m_osdPreview->setScreen( kcfg_OsdScreen->currentIndex() );
-    m_osdPreview->setShown( kcfg_OsdEnabled->isChecked() );
+    m_osdPreview->setVisible( kcfg_OsdEnabled->isChecked() );
 }
 
 void
