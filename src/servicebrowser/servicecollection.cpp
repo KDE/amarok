@@ -51,8 +51,8 @@ void
 ServiceCollectionFactory::init()
 {
     DEBUG_BLOCK
-    ServiceCollection *coll = new ServiceCollection( 0 );
-    emit newCollection( coll );
+    //ServiceCollection *coll = new ServiceCollection( 0 );
+    //emit newCollection( coll );
 }
 
 
@@ -61,9 +61,8 @@ ServiceCollectionFactory::init()
 ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     : Collection()
     , MemoryCollection()
+    , m_dbHandler( dbHandler )
 {
-    m_dbHandler = dbHandler;
-  
     if (m_dbHandler == 0) return;
 
     //add all data from database hander
@@ -78,7 +77,7 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     ComposerMap composerMap;
     YearMap yearMap;
 
-   ServiceTrack * currentTrack;
+    ServiceTrack * currentTrack;
     ServiceAlbum * currentAlbum;
     ServiceArtist * currentArtist;
 
@@ -86,38 +85,39 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     ArtistList artists = dbHandler->getArtistsByGenre( "All" );
     foreach( ArtistPtr artistPtr, artists ) {
 
-       currentArtist = dynamic_cast< ServiceArtist * > ( artistPtr.data() ); 
+        currentArtist = dynamic_cast< ServiceArtist * > ( artistPtr.data() ); 
+        if( !currentArtist ) continue;
        //debug() << "Got artist: " << currentArtist->prettyName() << " with id: " <<  currentArtist->id() << endl;
-       AlbumList albums = dbHandler->getAlbumsByArtistId( currentArtist->id(), "All" );
+        AlbumList albums = dbHandler->getAlbumsByArtistId( currentArtist->id(), "All" );
 
        //debug() << "    artist has " << albums.count() << " albums" << endl;
 
-       foreach( AlbumPtr albumPtr, albums ) {
+        foreach( AlbumPtr albumPtr, albums ) {
 
-           currentAlbum = dynamic_cast< ServiceAlbum * > ( albumPtr.data() ); 
-           albumMap.insert( albumPtr->prettyName(), albumPtr ); 
+            currentAlbum = dynamic_cast< ServiceAlbum * > ( albumPtr.data() ); 
+            if( !currentAlbum ) continue;
+            albumMap.insert( albumPtr->name(), albumPtr ); 
 
+            TrackList tracks = dbHandler->getTracksByAlbumId( currentAlbum->id() );
 
-           TrackList tracks = dbHandler->getTracksByAlbumId( currentAlbum->id() );
+            foreach( TrackPtr trackPtr, tracks ) {
 
-           foreach( TrackPtr trackPtr, tracks ) {
+                currentTrack = dynamic_cast< ServiceTrack * > ( trackPtr.data() ); 
+                if( !currentTrack ) continue;
+                currentTrack->setArtist( artistPtr );
+                currentTrack->setAlbum( albumPtr );
 
-               currentTrack = dynamic_cast< ServiceTrack * > ( trackPtr.data() ); 
-            
-               currentTrack->setArtist( artistPtr );
-               currentTrack->setAlbum( albumPtr );
+                currentAlbum->addTrack( trackPtr );
+                currentArtist->addTrack( trackPtr );
+                trackMap.insert( trackPtr->url(),  trackPtr );
 
-               currentAlbum->addTrack( trackPtr );
-               currentArtist->addTrack( trackPtr );
-               trackMap.insert( trackPtr->prettyName(),  trackPtr );
+            }
 
-           }
+            // debug() << "    album " << albumPtr->name() << endl;
+            currentAlbum->setAlbumArtist( artistPtr );
+        }
 
-          // debug() << "    album " << albumPtr->prettyName() << endl;
-           currentAlbum->setAlbumArtist( artistPtr );
-       }
-
-        artistMap.insert( artistPtr->prettyName(), artistPtr );
+        artistMap.insert( artistPtr->name(), artistPtr );
 
     }
 
@@ -129,7 +129,6 @@ ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
     setComposerMap( composerMap );
     setYearMap( yearMap );
     releaseLock();
-
 }
 
 ServiceCollection::~ServiceCollection()
