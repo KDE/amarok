@@ -243,6 +243,10 @@ Reader::updateFinished( int /*id*/, bool error )
     }
 
     Map updateResults = parse( http->results(), 0, true );
+    if( updateResults["mupd"].toList().isEmpty() )
+        return; //error
+    if( updateResults["mupd"].toList()[0].toMap()["musr"].toList().isEmpty() )
+        return; //error
     m_loginString = m_loginString + "&revision-number="  +
             QString::number( updateResults["mupd"].toList()[0].toMap()["musr"].toList()[0].toInt() );
 
