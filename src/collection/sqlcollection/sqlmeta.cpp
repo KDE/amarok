@@ -19,6 +19,7 @@
 #include "sqlmeta.h"
 
 #include "amarok.h"
+#include "blockingquery.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
 
@@ -438,7 +439,12 @@ SqlArtist::tracks()
     }
     else
     {
-        //build query, create SqlTrack objects and add to tracklist
+        QueryMaker *qm = m_collection->queryBuilder();
+        qm->startTrackQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -497,7 +503,12 @@ SqlAlbum::tracks()
     }
     else
     {
-        //build query, create SqlTrack objects and add to tracklist
+        QueryMaker *qm = m_collection->queryBuilder();
+        qm->startTrackQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -533,8 +544,12 @@ SqlComposer::tracks()
     }
     else
     {
-        
-        //build query, create SqlTrack objects and add to tracklist
+        QueryMaker *qm = m_collection->queryBuilder();
+        qm->startTrackQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -570,8 +585,12 @@ SqlGenre::tracks()
     }
     else
     {
-        
-        //build query, create SqlTrack objects and add to tracklist
+        QueryMaker *qm = m_collection->queryBuilder();
+        qm->startTrackQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -607,8 +626,12 @@ SqlYear::tracks()
     }
     else
     {
-        
-        //build query, create SqlTrack objects and add to tracklist
+        QueryMaker *qm = m_collection->queryBuilder();
+        qm->startTrackQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
