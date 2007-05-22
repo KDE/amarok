@@ -56,6 +56,40 @@ Matcher::setNext( Matcher *next )
 
 //TODO check if it's possible to use templates here
 
+class TrackMatcher : public Matcher
+{
+    public:
+    TrackMatcher( TrackPtr track )
+        : Matcher()
+        , m_track( track )
+    {}
+
+    virtual TrackList match( MemoryCollection *memColl )
+    {
+        TrackMap trackMap = memColl->trackMap();
+        TrackList result;
+        if ( trackMap.contains( m_track->url()  ) )
+            result.append( trackMap.value( m_track->url() ) );
+        return result; //checking for another matcher is not necessary
+    }
+
+    virtual TrackList match( const TrackList &tracks )
+    {
+        TrackList result;
+        QString url = m_track->url();
+        foreach( TrackPtr track, tracks )
+            if ( track->url() == url )
+            {
+                result.append( track );
+                break;
+            }
+        return result; //checking for another matcher is not necessary
+    }
+
+    private:
+    TrackPtr m_track;
+};
+
 class ArtistMatcher : public Matcher
 {
     public:
@@ -295,6 +329,7 @@ struct MemoryQueryMaker::Private {
     bool returnDataPtrs;
     Matcher* matcher;
     QueryJob *job;
+    int maxsize;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -320,6 +355,7 @@ MemoryQueryMaker::reset()
     d->returnDataPtrs = false;
     delete d->matcher;
     delete d->job;
+    d->maxsize = -1;
     return this;
 }
 
@@ -392,23 +428,53 @@ MemoryQueryMaker::handleResult()
     switch( d->type )
     {
         case Private::TRACK :
-            emitProperResult( TrackPtr, m_memCollection->trackMap().values() );
+        {
+            TrackList tracks = m_memCollection->trackMap().values();
+            if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
+                tracks = tracks.mid( 0, d->maxsize );
+            emitProperResult( TrackPtr, tracks );
             break;
+        }
         case Private::ALBUM :
-            emitProperResult( AlbumPtr, m_memCollection->albumMap().values() );
+        {
+            AlbumList albums = m_memCollection->albumMap().values();
+            if ( d->maxsize >= 0 && albums.count() > d->maxsize )
+                albums = albums.mid( 0, d->maxsize );
+            emitProperResult( AlbumPtr, albums );
             break;
+        }
         case Private::ARTIST :
-            emitProperResult( ArtistPtr, m_memCollection->artistMap().values() );
+        {
+            ArtistList artists = m_memCollection->artistMap().values();
+            if ( d->maxsize >= 0 && artists.count() > d->maxsize )
+                artists = artists.mid( 0, d->maxsize );
+            emitProperResult( ArtistPtr, artists );
             break;
+        }
         case Private::COMPOSER :
+        {
+            ComposerList composers = m_memCollection->composerMap().values();
+            if ( d->maxsize >= 0 && composers.count() > d->maxsize )
+                composers = composers.mid( 0, d->maxsize );
             emitProperResult( ComposerPtr, m_memCollection->composerMap().values() );
             break;
+        }
         case Private::GENRE :
-            emitProperResult( GenrePtr, m_memCollection->genreMap().values() );
+        {
+            GenreList genres = m_memCollection->genreMap().values();
+            if ( d->maxsize >= 0 && genres.count() > d->maxsize )
+                genres = genres.mid( 0, d->maxsize );
+            emitProperResult( GenrePtr, genres );
             break;
+        }
         case Private::YEAR :
-            emitProperResult( YearPtr, m_memCollection->yearMap().values() );
+        {
+            YearList years = m_memCollection->yearMap().values();
+            if ( d->maxsize >= 0 && years.count() > d->maxsize )
+                years = years.mid( 0, d->maxsize );
+            emitProperResult( YearPtr, years );
             break;
+        }
         case Private::CUSTOM :
             //TODO stub, fix this
             break;
@@ -425,13 +491,25 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
     switch( d->type )
     {
         case Private::TRACK :
-            emitProperResult( TrackPtr, tracks );
+            if ( d->maxsize < 0 || tracks.count() <= d->maxsize )
+            {
+                emitProperResult( TrackPtr, tracks );
+            }
+            else
+            {
+                TrackList newResult = tracks.mid( 0, d->maxsize );
+                emitProperResult( TrackPtr, newResult );
+            }
             break;
         case Private::ALBUM :
         {
             QSet<AlbumPtr> albumSet;
             foreach( TrackPtr track, tracks )
+            {
+                if ( d->maxsize >= 0 && albumSet.count() == d->maxsize )
+                    break;
                 albumSet.insert( track->album() );
+            }
             emitProperResult( AlbumPtr, albumSet.toList() );
             break;
         }
@@ -439,7 +517,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
         {
             QSet<ArtistPtr> artistSet;
             foreach( TrackPtr track, tracks )
+            {
+                if ( d->maxsize >= 0 && artistSet.count() == d->maxsize )
+                    break;
                 artistSet.insert( track->artist() );
+            }
             emitProperResult( ArtistPtr, artistSet.toList() );
             break;
         }
@@ -447,7 +529,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
         {
             QSet<GenrePtr> genreSet;
             foreach( TrackPtr track, tracks )
+            {
+                if ( d->maxsize >= 0 && genreSet.count() == d->maxsize )
+                    break;
                 genreSet.insert( track->genre() );
+            }
             emitProperResult( GenrePtr, genreSet.toList() );
             break;
         }
@@ -455,7 +541,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
         {
             QSet<ComposerPtr> composerSet;
             foreach( TrackPtr track, tracks )
+            {
+                if ( d->maxsize >= 0 && composerSet.count() == d->maxsize )
+                    break;
                 composerSet.insert( track->composer() );
+            }
             emitProperResult( ComposerPtr, composerSet.toList() );
             break;
         }
@@ -463,7 +553,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
         {
             QSet<YearPtr> yearSet;
             foreach( TrackPtr track, tracks )
+            {
+                if ( d->maxsize >= 0 && yearSet.count() == d->maxsize )
+                    break;
                 yearSet.insert( track->year() );
+            }
             emitProperResult( YearPtr, yearSet.toList() );
             break;
         }
@@ -570,7 +664,16 @@ MemoryQueryMaker::excludeCollection( const QString &collectionId )
 QueryMaker*
 MemoryQueryMaker::addMatch( const TrackPtr &track )
 {
-    //TODO stub
+    Matcher *trackMatcher = new TrackMatcher( track );
+    if ( d->matcher == 0 )
+        d->matcher = trackMatcher;
+    else
+    {
+        Matcher *tmp = d->matcher;
+        while ( !tmp->isLast() )
+            tmp = tmp->next();
+        tmp->setNext( trackMatcher );
+    }
     return this;
 }
 
@@ -678,7 +781,7 @@ MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 MemoryQueryMaker::limitMaxResultSize( int size )
 {
-    //TODO stub
+    d->maxsize = size;
     return this;
 }
 
