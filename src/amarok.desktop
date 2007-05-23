@@ -93,7 +93,7 @@ Comment[uk]=Amarok - заново відчуйте свою музику!
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior
-MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;
+MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;video/x-ms-asf;
 DocPath=amarok/index.html
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Player;
