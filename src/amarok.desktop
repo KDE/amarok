@@ -76,7 +76,7 @@ Comment[tr]=Amarok - Müziğinizi yeniden keşfedin!
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior
-MimeType=audio/x-ms-asx;audio/aac;audio/ac3;audio/basic;audio/midi;audio/mp4;audio/mpeg;audio/x-mpegurl;audio/prs.sid;audio/vnd.rn-realaudio;audio/x-vorbis+ogg;audio/x-adpcm;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-matroska;audio/midi;audio/x-mod;audio/mpeg;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-flac+ogg;audio/vnd.rn-realaudio;audio/x-scpls;audio/x-speex+ogg;audio/x-vorbis+ogg;audio/x-wav;
+MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;video/x-ms-asf;
 DocPath=amarok/index.html
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Player;
