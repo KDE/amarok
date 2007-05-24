@@ -6,6 +6,7 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistModel.h"
 #include "TrackAdvancer.h"
@@ -15,6 +16,8 @@ using namespace PlaylistNS;
 void
 TrackAdvancer::setCurrentTrack( int position )
 {
+    DEBUG_BLOCK
     m_playlistModel->setActiveRow( position );
     EngineController::instance()->play( m_playlistModel->activeTrack() );
 }
+

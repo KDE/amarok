@@ -76,7 +76,7 @@ class TrackAdvancer;
             ///
             void insertTracks( int row, Meta::TrackList list ); //doesn't override
             int activeRow() const { return m_activeRow; }
-            void setActiveRow( int row ) { m_activeRow = row; }
+            void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
         //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();

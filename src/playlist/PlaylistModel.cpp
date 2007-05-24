@@ -49,7 +49,8 @@ Model::columnCount( const QModelIndex& ) const
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
-    TrackPtr track = m_tracks.at( index.row() );
+    int row = index.row();
+    TrackPtr track = m_tracks.at( row );
     if( role == Qt::DisplayRole )
     {
     //if you need this code like this elsewhere, don't copy & paste! transfer it into meta.cpp.
@@ -73,10 +74,14 @@ Model::data( const QModelIndex& index, int role ) const
             default: return "not implemented";
         }
     }
+    else if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
+    {
+        QFont original;
+        original.setBold( true );
+        return original;
+    }
     else 
         return QVariant();
-
-
 }
 
 // void
@@ -202,4 +207,21 @@ Model::prettyColumnName( Column index ) //static
     
 }
 
+
+void
+Model::setActiveRow( int row )
+{
+DEBUG_BLOCK
+    int max = qMax( row, m_activeRow );
+    int min = qMin( row, m_activeRow );
+    if( ( max - min ) == 1 )
+        emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() -1 ) );
+    else
+    {
+        emit dataChanged( createIndex( min, 0 ), createIndex( min, columnCount() - 1 ) );
+        emit dataChanged( createIndex( max, 0 ), createIndex( max, columnCount() - 1 ) );
+    }
+    debug() << "between " << min << " and " << max << endl;
+    m_activeRow = row;
+}
 #include "PlaylistModel.moc"
