@@ -280,7 +280,7 @@ void ToggleAction::setChecked( bool b )
 
     m_function( b );
     KToggleAction::setChecked( b );
-    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
 }
 
@@ -291,7 +291,7 @@ void ToggleAction::setEnabled( bool b )
     if( !b )
         setChecked( false );
     KToggleAction::setEnabled( b );
-    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 
@@ -313,7 +313,7 @@ void SelectAction::setCurrentItem( int n )
 
     m_function( n );
     KSelectAction::setCurrentItem( n );
-    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit triggered( n );
 }
 
@@ -324,7 +324,7 @@ void SelectAction::setEnabled( bool b )
     if( !b )
         setCurrentItem( 0 );
     KSelectAction::setEnabled( b );
-    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 

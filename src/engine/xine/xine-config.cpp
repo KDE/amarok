@@ -193,7 +193,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
 
 XineConfigDialog::~XineConfigDialog()
 {
-    XineCfg::writeConfig();
+    XineCfg::self()->writeConfig();
     delete m_view;
 }
 

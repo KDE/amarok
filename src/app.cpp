@@ -241,7 +241,7 @@ App::~App()
     delete Amarok::OSD::instance();
 
     AmarokConfig::setVersion( APP_VERSION );
-    AmarokConfig::writeConfig();
+    AmarokConfig::self()->writeConfig();
 
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
@@ -663,7 +663,7 @@ void App::applySettings( bool firstTime )
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
-        //AmarokConfig::writeConfig();
+        //AmarokConfig::self()->writeConfig();
 
 }
 

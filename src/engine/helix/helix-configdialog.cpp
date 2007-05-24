@@ -244,7 +244,7 @@ void HelixSoundDevice::setSoundSystem( int api )
          break;
    };
    HelixConfig::setOutputplugin(deviceComboBox->currentText());
-   HelixConfig::writeConfig();
+   HelixConfig::self()->writeConfig();
 }
 
 void HelixConfigDialogBase::setSoundSystem( int api )
@@ -450,7 +450,7 @@ HelixConfigDialogBase::save()
 
    if (writeIt)
    {
-      HelixConfig::writeConfig();
+      HelixConfig::self()->writeConfig();
 
       // reinit...
       m_engine->init();
@@ -480,7 +480,7 @@ int HelixConfigDialog::setSoundSystem( int api )
    else
    {
       HelixConfig::setOutputplugin(api ? "alsa" : "oss");
-      HelixConfig::writeConfig();
+      HelixConfig::self()->writeConfig();
       return 1;
    }
 }

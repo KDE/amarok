@@ -264,7 +264,7 @@ GstEngine::~GstEngine()
     g_queue_free(m_delayq);
 
     // Save configuration
-    GstConfig::writeConfig();
+    GstConfig::self()->writeConfig();
     gst_deinit();
 }
 
