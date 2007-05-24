@@ -7,7 +7,9 @@
  ***************************************************************************/
 
 #include "debug.h"
-#include "playlistmodel.h"
+#include "enginecontroller.h"
+#include "PlaylistModel.h"
+#include "StandardTrackAdvancer.h"
 
 #include "collection/blockingquery.h"
 #include "collection/collection.h"
@@ -21,7 +23,16 @@ Model *Model::s_instance = 0;
 
 Model::Model( QObject* parent )
     : QAbstractTableModel( parent )
-{ }
+    , m_activeRow( -1 )
+    , m_advancer( new StandardTrackAdvancer( this ) )
+{ 
+    connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
+}
+
+Model::~Model()
+{
+    delete m_advancer;
+}
 
 int
 Model::rowCount( const QModelIndex& ) const
@@ -121,18 +132,6 @@ void
 Model::testData()
 {
     DEBUG_BLOCK
-    /*TrackList sample;
-    DaapTrackPtr one( new DaapTrack( "host", 6666, "1", "1", "mp3" ) );
-    one->setTitle( "hello one");
-    one->setTrackNumber( 1 );
-    DaapTrackPtr two( new DaapTrack( "host", 6666, "1", "2", "mp3" ) );
-    two->setTitle( "hello two" );
-    two->setTrackNumber( 2 );
-    sample.append( TrackPtr::staticCast( one ) );
-    sample.append( TrackPtr::staticCast( two ) );
-    insertTracks( 0, sample );
-    m_columns << TrackNumber << Title;
-    reset();*/
     Collection *local = 0;
     foreach( Collection *coll, CollectionManager::instance()->collections() )
     {
@@ -147,7 +146,7 @@ Model::testData()
     BlockingQuery bq( qm );
     bq.startQuery();
     insertTracks( 0, bq.tracks( "localCollection" ) );
-    m_columns << TrackNumber << Title;
+    m_columns << TrackNumber << Title << Artist << Album;
     reset();
 }
 
@@ -155,6 +154,19 @@ Qt::DropActions
 Model::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
+}
+
+void
+Model::trackFinished()
+{
+    m_advancer->advanceTrack();
+}
+
+void
+Model::play( const QModelIndex& index )
+{
+    m_activeRow = index.row();
+    EngineController::instance()->play( m_tracks[ m_activeRow ] );
 }
 
 QString
@@ -189,3 +201,5 @@ Model::prettyColumnName( Column index ) //static
     }
     
 }
+
+#include "PlaylistModel.moc"

@@ -33,7 +33,8 @@
 #include "mediabrowser.h"
 #include "mediadevicemanager.h"
 #include "playlistbrowser.h"
-#include "playlist/playlistmodel.h"
+#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistView.h"
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "progressslider.h"
@@ -60,7 +61,6 @@
 #include <QLabel>           //search filter label
 #include <QPainter>         //dynamic title
 #include <QPen>
-#include <QTableView>
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
 
@@ -136,7 +136,7 @@ void PlaylistWindow::init()
     { //TNG playlist
         PlaylistNS::Model* playmodel = PlaylistNS::Model::instance();
         playmodel->testData();
-        QTableView* playview = new QTableView( splitter );
+        PlaylistNS::View* playview = new PlaylistNS::View( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
         playview->setModel( playmodel );
         playview->setAlternatingRowColors(true);

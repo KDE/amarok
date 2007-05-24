@@ -20,6 +20,7 @@
 #include "enginecontroller.h"
 #include "lastfm.h"
 #include "mediabrowser.h"
+#include "meta.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -333,6 +334,18 @@ void EngineController::play() //SLOT
     else emit orderCurrent();
 }
 
+void EngineController::play( const Meta::TrackPtr& track, uint offset )
+{
+    DEBUG_BLOCK
+    KUrl url = track->playableUrl();
+    if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
+    {
+        if( m_engine->play( offset ) )
+        {
+            
+        }
+    }
+}
 
 void EngineController::play( const MetaBundle &bundle, uint offset )
 {
@@ -512,6 +525,7 @@ void EngineController::stop() //SLOT
     //if ( m_engine->loaded() )
     m_engine->stop();
 }
+
 
 
 void EngineController::playPause() //SLOT

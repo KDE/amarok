@@ -23,6 +23,10 @@
 class QTimer;
 
 namespace KIO { class Job; }
+namespace Meta { 
+    class Track; 
+    typedef KSharedPtr<Track> TrackPtr;
+}
 
 
 /**
@@ -75,6 +79,7 @@ public slots:
     void next( const bool forceNext = true );
     void play();
     void play( const MetaBundle&, uint offset = 0 );
+    void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
     void stop();
     void playPause(); //pauses if playing, plays if paused or stopped

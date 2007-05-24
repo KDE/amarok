@@ -6,6 +6,9 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#ifndef AMAROK_PLAYLISTMODEL_H
+#define AMAROK_PLAYLISTMODEL_H
+
 #include "meta.h"
 
 #include <QAbstractTableModel>
@@ -13,9 +16,13 @@
 
 #include <klocale.h>
 
+class QModelIndex;
+
 
 //PORT rename to Playlist when the playlist class is removed
 namespace PlaylistNS {
+
+class TrackAdvancer;
 
     enum Column
     {
@@ -48,12 +55,14 @@ namespace PlaylistNS {
 
     class Model : public QAbstractTableModel
     {
+        Q_OBJECT
         public:
         //TODO remove singleton when playlist controller class is created
-        static Model *instance() {
-            if(!s_instance)  s_instance = new Model;
-            return s_instance;
-        }
+            static Model *instance() {
+                if(!s_instance)  s_instance = new Model;
+                return s_instance;
+            }
+            ~Model();
         //required by QAbstractTabelModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
             int columnCount(const QModelIndex &parent = QModelIndex() ) const;
@@ -64,15 +73,29 @@ namespace PlaylistNS {
             Qt::DropActions supportedDropActions() const;
         //other methods
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
+            ///
             void insertTracks( int row, Meta::TrackList list ); //doesn't override
+            int activeRow() const { return m_activeRow; }
+            void setActiveRow( int row ) { m_activeRow = row; }
+            Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
         //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();
-            
+        public slots:
+            void play( const QModelIndex& index );
+        private slots:
+            void trackFinished(); //! what to do when a track finishes
+
         private:
-            static QString prettyColumnName( Column index );
-            Model( QObject* parent = 0 ); //singleton
-            Meta::TrackList m_tracks;
+            static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
+            Model( QObject* parent = 0 ); //! Singleton
+
+            Meta::TrackList m_tracks; //! list of tracks in order currently in the playlist
             QVector< Column > m_columns;
-            static Model* s_instance;
+            int m_activeRow; //! the row being played
+            TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
+
+            static Model* s_instance; //! instance variable
     };
 }
+
+#endif

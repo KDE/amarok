@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef META_H
-#define META_H
+#ifndef AMAROK_META_H
+#define AMAROK_META_H
 
 #include "amarok_export.h"
 
@@ -249,4 +249,4 @@ Q_DECLARE_METATYPE( Meta::GenreList )
 Q_DECLARE_METATYPE( Meta::YearPtr )
 Q_DECLARE_METATYPE( Meta::YearList )
 
-#endif /* META_H */
+#endif /* AMAROK_META_H */

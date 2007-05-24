@@ -12,7 +12,7 @@
 #include "collectionbrowser/collectiontreeitem.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "collectiontreeview.h"
-#include "playlist/playlistmodel.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QContextMenuEvent>
 
