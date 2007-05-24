@@ -432,9 +432,12 @@ SqlQueryBuilder::buildQuery()
     query += d->queryFrom;
     query += " WHERE 1 ";
     query += d->queryMatch;
-    query += " AND ( 0 ";
-    query += d->queryFilter;
-    query += " ) ";
+    if ( !d->queryFilter.isEmpty() )
+    {
+        query += " AND ( 0 ";
+        query += d->queryFilter;
+        query += " ) ";
+    }
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
         query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
