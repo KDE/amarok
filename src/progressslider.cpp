@@ -200,8 +200,6 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
         s2.prepend( '-' );
     }
 
-    debug() << "s1 length " << s1.length() << " s2 lenth " << s2.length() << " timeLength " << m_timeLength << endl;
-
     if( m_timeLength > s1.length() )
         s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
 
