@@ -116,8 +116,9 @@ ProgressSlider::mousePressEvent( QMouseEvent *e )
 //Class ProgressWidget
 ProgressWidget *ProgressWidget::s_instance = 0;
 ProgressWidget::ProgressWidget( QWidget *parent )
-    : QWidget( parent ),
-      EngineObserver( EngineController::instance() )
+    : QWidget( parent )
+    , EngineObserver( EngineController::instance() )
+    , m_timeLength( 0 )
 {
     s_instance = this;
 
@@ -199,11 +200,13 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
         s2.prepend( '-' );
     }
 
-    while( (int)s1.length() < m_timeLength )
-        s1.prepend( ' ' );
+    debug() << "s1 length " << s1.length() << " s2 lenth " << s2.length() << " timeLength " << m_timeLength << endl;
 
-    while( (int)s2.length() < m_timeLength )
-        s2.prepend( ' ' );
+    if( m_timeLength > s1.length() )
+        s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
+
+    if( m_timeLength > s2.length() )
+        s2.prepend( QString( m_timeLength - s2.length(), ' ' ) );
 
     s1 += ' ';
     s2 += ' ';
