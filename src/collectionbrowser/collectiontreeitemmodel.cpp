@@ -386,8 +386,32 @@ CollectionTreeItemModel::newResultReady( const QString &collectionId, Meta::Data
 void
 CollectionTreeItemModel::addFilters( QueryMaker *qm ) const {
     DEBUG_BLOCK
-    //for testing purposes
-    //qm->addFilter( QueryMaker::valArtist, "Hero", false, false );
+    //filter string hardcoded for testing purposes
+    foreach( int level, m_levelType ) {
+        qint64 value;
+        switch( level ) {
+            case CategoryId::Album:
+                value = QueryMaker::valAlbum;
+                break;
+            case CategoryId::Artist:
+                value = QueryMaker::valArtist;
+                break;
+            case CategoryId::Composer:
+                value = QueryMaker::valComposer;
+                break;
+            case CategoryId::Genre:
+                value = QueryMaker::valGenre;
+                break;
+            case CategoryId::Year:
+                value = QueryMaker::valYear;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        qm->addFilter( value, "Hero", false, false );
+    }
+    qm->addFilter( QueryMaker::valTitle, "Hero", false, false ); //always filter for track title too
 }
 
 #include "collectiontreeitemmodel.moc"
