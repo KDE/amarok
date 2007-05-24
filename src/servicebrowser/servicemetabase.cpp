@@ -20,6 +20,17 @@
 #include "servicemetabase.h"
 
 
+ServiceMetaFactory::ServiceMetaFactory(const QString &dbPrefix)
+    : m_dbTablePrefix( dbPrefix )
+{
+}
+
+QString ServiceMetaFactory::tablePrefix()
+{
+    return m_dbTablePrefix;
+}
+
+
 int ServiceMetaFactory::getTrackSqlRowCount()
 {
     return 9;
@@ -28,11 +39,11 @@ int ServiceMetaFactory::getTrackSqlRowCount()
 QString ServiceMetaFactory::getTrackSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "DISTINCT id, " 
+    return "id, " 
            "name, "
            "track_number, "
            "length, "
-           "preview, "
+           "preview_url, "
            "album_id, "
            "album_name, "
            "artist_id, "
@@ -52,7 +63,7 @@ int ServiceMetaFactory::getAlbumSqlRowCount()
 QString ServiceMetaFactory::getAlbumSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "DISTINCT id, "
+    return "id, "
            "name, "
            "description, "
            "artist_id, "
@@ -72,7 +83,7 @@ int ServiceMetaFactory::getArtistSqlRowCount()
 QString ServiceMetaFactory::getArtistSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "DISTINCT id, "
+    return "id, "
            "name, "
            "description ";
 }
@@ -800,6 +811,11 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+
+
+
+
 
 
 

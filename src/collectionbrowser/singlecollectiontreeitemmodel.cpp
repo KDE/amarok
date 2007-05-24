@@ -122,7 +122,7 @@ SingleCollectionTreeItemModel::parent( const QModelIndex &index ) const
 int
 SingleCollectionTreeItemModel::rowCount(const QModelIndex &parent) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     CollectionTreeItem *parentItem;
     if (!parent.isValid()) {
         parentItem = m_rootItem;
@@ -218,7 +218,7 @@ SingleCollectionTreeItemModel::mimeData( const QModelIndexList &indices ) const 
 
 void
 SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, CollectionTreeItem *parent) const {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     foreach( Meta::DataPtr data, dataList ) {
         new CollectionTreeItem( data, parent );
     }
@@ -229,7 +229,7 @@ SingleCollectionTreeItemModel::populateChildren(const DataList &dataList, Collec
 
 void
 SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     debug() << "    level: " << level << ", leveltype count: " << m_levelType.count() << endl;
     if ( qm && parent ) {
         for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); ) {
@@ -268,7 +268,7 @@ SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, Collecti
         CollectionTreeItem *tmpItem = parent;
         while ( tmpItem->isDataItem()  ) {
             debug() << "add match" << endl;
-            debug() << "    tmpItem->data() = " <<  tmpItem->data() << endl;
+            debug() << "    tmpItem->data() = " <<  tmpItem->data()->name() << endl;
             qm->addMatch( tmpItem->data() );
             tmpItem = tmpItem->parent();
         }
@@ -330,7 +330,7 @@ SingleCollectionTreeItemModel::iconForLevel( int level ) const {
 
 bool
 SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     CollectionTreeItem *item;
      if (!parent.isValid())
         item = m_rootItem;  // must be root item!
@@ -353,7 +353,7 @@ SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) 
 
 bool
 SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( !parent.isValid() )
        return !m_rootItem->childrenLoaded();
 
@@ -363,7 +363,7 @@ SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
 
 void
 SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     CollectionTreeItem *item;
     if ( parent.isValid() )
         item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
@@ -375,7 +375,7 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
 
 void
 SingleCollectionTreeItemModel::queryDone() {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
     d->m_childQueries.remove( qm );
     QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );

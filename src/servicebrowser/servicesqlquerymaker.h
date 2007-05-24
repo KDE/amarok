@@ -20,7 +20,7 @@
 #ifndef AMAROK_SERVICESQLQUERYBUILDER_H
 #define AMAROK_SERVICESQLQUERYBUILDER_H
 
-#include "servicecollection.h"
+#include "servicesqlcollection.h"
 #include "servicemetabase.h"
 #include "querymaker.h"
 
@@ -35,7 +35,7 @@ class ServiceSqlQueryMaker : public QueryMaker
     Q_OBJECT
 
     public:
-        ServiceSqlQueryMaker( SqlCollection* collection, ServiceMetaFactory * metaFactory );
+        ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory );
         virtual ~ServiceSqlQueryMaker();
 
         virtual QueryMaker* reset();

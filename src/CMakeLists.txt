@@ -97,6 +97,7 @@ set(libservicebrowser_SRCS
     servicebrowser/servicecollection.cpp
     servicebrowser/databasehandlerbase.cpp
     servicebrowser/servicesqlquerymaker.cpp
+    servicebrowser/servicesqlcollection.cpp
 
 )
 

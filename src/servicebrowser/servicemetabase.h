@@ -52,8 +52,10 @@ class ServiceMetaFactory
 {
 
 public:
-    ServiceMetaFactory() {};
+    ServiceMetaFactory( const QString &dbPrefix );
     virtual ~ServiceMetaFactory() {};
+
+    QString tablePrefix();
 
     virtual int getTrackSqlRowCount();
     virtual QString getTrackSqlRows();
@@ -66,6 +68,10 @@ public:
     virtual int getArtistSqlRowCount();
     virtual QString getArtistSqlRows();
     virtual ArtistPtr createArtist( const QStringList &rows );
+
+private:
+
+    QString m_dbTablePrefix;
 
 
 };

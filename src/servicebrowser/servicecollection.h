@@ -28,16 +28,6 @@
 
 using namespace Meta;
 
-class ServiceCollectionFactory : public CollectionFactory
-{
-    Q_OBJECT
-    public:
-        ServiceCollectionFactory();
-        virtual ~ServiceCollectionFactory();
-
-        virtual void init();
-
-};
 
 class ServiceCollection : public Collection, public MemoryCollection
 {

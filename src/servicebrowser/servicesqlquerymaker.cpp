@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Nikolaj Hald Nielsenn <nhnFreespirit@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,9 +80,9 @@ struct ServiceSqlQueryMaker::Private
     ServiceSqlWorkerThread *worker;
 };
 
-ServiceSqlQueryMaker::ServiceSqlQueryMaker( SqlCollection* collection, ServiceMetaFactory * metaFactory  )
+ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory  )
     : QueryMaker()
-    //, m_collection( collection )
+    , m_collection( collection )
     , m_metaFactory( metaFactory )
     , d( new Private )
 {
@@ -167,6 +168,7 @@ ServiceSqlQueryMaker::startTrackQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::TRACK;
+        d->queryFrom = m_metaFactory->tablePrefix() + "_tracks";
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows();
     }
     return this;
@@ -180,7 +182,7 @@ ServiceSqlQueryMaker::startArtistQuery()
     {
         d->queryType = Private::ARTIST;
         d->withoutDuplicates = true;
-        //reading the ids from the database means we don't have to query for them later
+        d->queryFrom = m_metaFactory->tablePrefix() + "_artists";
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
     }
     return this;
@@ -194,7 +196,7 @@ ServiceSqlQueryMaker::startAlbumQuery()
     {
         d->queryType = Private::ALBUM;
         d->withoutDuplicates = true;
-        //add whatever is necessary to identify compilations
+        d->queryFrom = m_metaFactory->tablePrefix() + "_albums";
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows();
     }
     return this;
@@ -276,6 +278,7 @@ ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 {
+    DEBUG_BLOCK
     //TODO still pondereing this one...
     return this;
 }
@@ -283,6 +286,9 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
+    DEBUG_BLOCK
+    if (d->queryType == Private::TRACK ) // a service track does not generally know its artist
+        return this;
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
     d->queryMatch += QString( " AND artist_id= '%1'" ).arg( serviceArtist->id() );
     return this;
@@ -291,7 +297,7 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
-  
+    DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
     d->queryMatch += QString( " AND album_id = '%1'" ).arg( serviceAlbum->id() );
     return this;
@@ -321,6 +327,8 @@ ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 {
+    DEBUG_BLOCK
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     //TODO needed at all?
     return this;
 }
@@ -422,6 +430,8 @@ ServiceSqlQueryMaker::query()
 QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
+    DEBUG_BLOCK
+    debug() << "Query string: " << query << endl;
     return m_collection->query( query );
 }
 

@@ -34,27 +34,6 @@
 
 using namespace Meta;
 
-//AMAROK_EXPORT_PLUGIN( ServiceCollectionFactory )
-
-ServiceCollectionFactory::ServiceCollectionFactory()
-    : CollectionFactory()
-{
-    //nothing to do
-}
-
-ServiceCollectionFactory::~ServiceCollectionFactory()
-{
-    //nothing to do
-}
-
-void
-ServiceCollectionFactory::init()
-{
-    DEBUG_BLOCK
-    //ServiceCollection *coll = new ServiceCollection( 0 );
-    //emit newCollection( coll );
-}
-
 
 //ServiceCollection
 

@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "jamendoservice.h"
-#include "servicecollection.h"
+#include "servicesqlcollection.h"
 
 #include "jamendoxmlparser.h"
 
@@ -57,7 +57,12 @@ void JamendoService::polish()
     QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
     levels << CategoryId::Artist << CategoryId::Album;
-    setModel( new SingleCollectionTreeItemModel( new ServiceCollection( new JamendoDatabaseHandler() ), levels ) );
+
+
+    ServiceMetaFactory * metaFactory = new ServiceMetaFactory( "jamendo" );
+    ServiceSqlCollection * collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory );
+
+    setModel( new SingleCollectionTreeItemModel( collection, levels ) );
 
 
  
