@@ -703,7 +703,7 @@ void EngineController::slotMainTimer() //SLOT
     {
         debug() << "Crossfading to next track...\n";
         m_engine->setXFadeNextTrack( true );
-        trackFinished();
+        trackDone();
     }
     else if ( m_engine->state() == Engine::Playing &&
               AmarokConfig::fadeout() &&
@@ -722,12 +722,12 @@ void EngineController::slotTrackEnded() //SLOT
         //FIXME not perfect
         if ( !m_isTiming )
         {
-            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(trackFinished()) );
+            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(trackDone()) );
             m_isTiming = true;
         }
 
     }
-    else trackFinished();
+    else trackDone();
 }
 
 

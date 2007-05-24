@@ -73,7 +73,6 @@ public slots:
     // forceNext make we go to next track even if Repeat Track is on
     //NOTE If the track ended normally, call next(false) !
     void next( const bool forceNext = true );
-    void trackFinished() { next(false); };
     void play();
     void play( const MetaBundle&, uint offset = 0 );
     void pause();
@@ -101,13 +100,14 @@ signals:
     void orderCurrent();
     void orderNext( const bool );
     void statusText( const QString& );
+    void trackFinished();
 
 private slots:
     void slotEngineMetaData( const Engine::SimpleMetaBundle& );
     void slotMainTimer();
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
-
+    void trackDone() { emit trackFinished(); next(false); }
 protected:
     EngineController();
    ~EngineController();
