@@ -409,9 +409,9 @@ CollectionTreeItemModel::addFilters( QueryMaker *qm ) const {
                 value = -1;
                 break;
         }
-        qm->addFilter( value, "Hero", false, false );
+        //qm->addFilter( value, "Hero", false, false );
     }
-    qm->addFilter( QueryMaker::valTitle, "Hero", false, false ); //always filter for track title too
+    //qm->addFilter( QueryMaker::valTitle, "Hero", false, false ); //always filter for track title too
 }
 
 #include "collectiontreeitemmodel.moc"
