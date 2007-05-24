@@ -34,7 +34,7 @@ struct SingleCollectionTreeItemModel::Private
 
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
-    :QAbstractItemModel()
+    :CollectionTreeItemModel( levelType )
     , m_rootItem( 0 )
     , d( new Private ) 
 {
@@ -272,6 +272,7 @@ SingleCollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, Collecti
             qm->addMatch( tmpItem->data() );
             tmpItem = tmpItem->parent();
         }
+        addFilters( qm );
         qm->returnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );

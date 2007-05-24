@@ -60,20 +60,20 @@ Q_OBJECT
         virtual void fetchMore( const QModelIndex &parent );
 
 
-        QPixmap iconForLevel( int level ) const;
-        void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
+        virtual QPixmap iconForLevel( int level ) const;
+        virtual void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
 
 
-        void setLevels( const QList<int> &levelType );
-        QList<int> levels() const { return m_levelType; }
+        virtual void setLevels( const QList<int> &levelType );
+        virtual QList<int> levels() const { return m_levelType; }
 
     public slots:
-        void collectionAdded( Collection *newCollection );
-        void collectionRemoved( const QString &collectionId );
+        virtual void collectionAdded( Collection *newCollection );
+        virtual void collectionRemoved( const QString &collectionId );
 
-        void queryDone();
+        virtual void queryDone();
 
-        void newResultReady( const QString &collectionId, Meta::DataList data );
+        virtual void newResultReady( const QString &collectionId, Meta::DataList data );
 
     protected:
         void addFilters( QueryMaker *qm ) const;

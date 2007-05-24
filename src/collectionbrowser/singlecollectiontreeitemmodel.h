@@ -10,6 +10,7 @@
 #ifndef SINGLECOLLECTIONTREEITEMMODEL_H
 #define SINGLECOLLECTIONTREEITEMMODEL_H
 
+#include "collectiontreeitemmodel.h"
 #include "meta.h"
 #include "../querybuilder.h"
 //#include "collection/collection.h"
@@ -24,19 +25,7 @@ class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
-namespace CategoryId
-{
-    enum CatMenuId {
-    None = 0,
-    Album = QueryBuilder::tabAlbum,
-    Artist = QueryBuilder::tabArtist,
-    Composer = QueryBuilder::tabComposer,
-    Genre = QueryBuilder::tabGenre,
-    Year = QueryBuilder::tabYear
-    };
-}
-
-class SingleCollectionTreeItemModel: public QAbstractItemModel {
+class SingleCollectionTreeItemModel: public CollectionTreeItemModel {
 Q_OBJECT
 
     public:
@@ -61,12 +50,12 @@ Q_OBJECT
         virtual void fetchMore( const QModelIndex &parent );
 
 
-        QPixmap iconForLevel( int level ) const;
-        void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
+        virtual QPixmap iconForLevel( int level ) const;
+        virtual void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
 
 
-        void setLevels( const QList<int> &levelType );
-        QList<int> levels() const { return m_levelType; }
+        virtual void setLevels( const QList<int> &levelType );
+        virtual QList<int> levels() const { return m_levelType; }
 
     public slots:
 
