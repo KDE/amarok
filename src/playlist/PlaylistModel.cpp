@@ -170,7 +170,7 @@ Model::trackFinished()
 void
 Model::play( const QModelIndex& index )
 {
-    m_activeRow = index.row();
+    setActiveRow( index.row() );
     EngineController::instance()->play( m_tracks[ m_activeRow ] );
 }
 
