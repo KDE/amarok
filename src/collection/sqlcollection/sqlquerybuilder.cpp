@@ -355,7 +355,8 @@ SqlQueryBuilder::addMatch( const DataPtr &data )
 QueryMaker*
 SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    //TODO
+    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    d->queryFilter += QString( " OR %1 %2 " ).arg( nameForValue( value ), like );
     return this;
 }
 
@@ -431,7 +432,9 @@ SqlQueryBuilder::buildQuery()
     query += d->queryFrom;
     query += " WHERE 1 ";
     query += d->queryMatch;
+    query += " AND ( 0 ";
     query += d->queryFilter;
+    query += " ) ";
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
         query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );

@@ -20,6 +20,7 @@ using namespace Meta;
 
 class CollectionTreeItem;
 class Collection;
+class QueryMaker;
 typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
 namespace CategoryId
@@ -73,6 +74,9 @@ Q_OBJECT
         void queryDone();
 
         void newResultReady( const QString &collectionId, Meta::DataList data );
+
+    protected:
+        void addFilters( QueryMaker *qm ) const;
 
     private:
 

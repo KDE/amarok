@@ -233,6 +233,7 @@ CollectionTreeItemModel::listForLevel( int level, QueryMaker *qm, CollectionTree
             qm->addMatch( tmpItem->data() );
             tmpItem = tmpItem->parent();
         }
+        addFilters( qm );
         qm->returnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
@@ -380,6 +381,13 @@ CollectionTreeItemModel::newResultReady( const QString &collectionId, Meta::Data
         populateChildren( data, parent );
         endInsertRows();
     }
+}
+
+void
+CollectionTreeItemModel::addFilters( QueryMaker *qm ) const {
+    DEBUG_BLOCK
+    //for testing purposes
+    //qm->addFilter( QueryMaker::valArtist, "Hero", false, false );
 }
 
 #include "collectiontreeitemmodel.moc"
