@@ -23,7 +23,6 @@
 
 
 #include "../servicebase.h"
-#include "databasedrivencontentmodel.h"
 #include "jamendodatabasehandler.h"
 #include "../servicecollection.h"
 

@@ -21,7 +21,7 @@
 #define AMAROKSERVICEBROWSER_H
 
 
-#include "scriptableservice/scriptableservicemanager.h"
+//#include "scriptableservice/scriptableservicemanager.h"
 #include "servicebase.h"
 
 #include <klistwidget.h>
@@ -53,7 +53,7 @@ public:
 public slots:
 
     void addService( ServiceBase * service );
-    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
+   // void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
 
 private:
 
@@ -64,7 +64,7 @@ private:
     QMap<QString, ServiceBase *> m_services;
     ServiceBase * m_currentService;
 
-    ScriptableServiceManager * m_scriptableServiceManager;
+    //ScriptableServiceManager * m_scriptableServiceManager;
     bool m_usingContextView;
 
 

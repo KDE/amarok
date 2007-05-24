@@ -42,7 +42,7 @@
 #include "searchwidget.h"
 #include "selectLabel.h"
 //#include "servicebrowser/magnatunestore/magnatunebrowser.h"
-#include "servicebrowser/scriptableservice/scriptableservice.h"
+//#include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
 //#include "servicebrowser/mp3tunes/mp3tunesservice.h"

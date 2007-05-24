@@ -37,16 +37,16 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const char *name )
 
 
     m_currentService = 0;
-    m_scriptableServiceManager = 0;
+    //m_scriptableServiceManager = 0;
 
     m_usingContextView = false;
 }
 
-void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
+/*void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
     m_scriptableServiceManager = scriptableServiceManager;
     m_scriptableServiceManager->setParent( this );
     connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
-}
+}*/
 
 void ServiceBrowser::addService( ServiceBase * service ) {
 
