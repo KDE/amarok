@@ -70,7 +70,6 @@ SqlRegistry::getTrack( const QString &url )
 TrackPtr
 SqlRegistry::getTrack( const QStringList &rowData )
 {
-    DEBUG_BLOCK
     TrackId id( rowData[0].toInt(), rowData[1] );
     QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( id ) )
