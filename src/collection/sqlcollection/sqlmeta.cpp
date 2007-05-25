@@ -25,6 +25,7 @@
 
 #include "mountpointmanager.h"
 
+#include <QDateTime>
 #include <QFile>
 #include <QListIterator>
 #include <QMutexLocker>
@@ -405,6 +406,19 @@ SqlTrack::updateStatisticsInDb()
     data.arg( m_lastPlayed );
     data.arg( m_firstPlayed );
     update.arg( data, QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    m_collection->query( update );
+}
+
+void
+SqlTrack::finishedPlaying( double playedFraction )
+{
+    m_lastPlayed = QDateTime::currentDateTime().toTime_t();
+    m_playCount++;
+    //TODO get new rating
+    QString update = "UPDATE statistics SET playcounter = %1, accessdate = %2, rating = %3 "
+                     "WHERE deviceid = %4 AND url = '%5';";
+    update = update.arg( m_playCount ).arg( m_lastPlayed ).arg( m_rating ).arg( m_deviceid );
+    update = update.arg( m_collection->escape( m_rpath ) );
     m_collection->query( update );
 }
 

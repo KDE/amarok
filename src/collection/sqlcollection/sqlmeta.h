@@ -88,6 +88,8 @@ class SqlTrack : public Track
         virtual void endMetaDataUpdate();
         virtual void abortMetaDataUpdate();
 
+        virtual void finishedPlaying( double playedFraction );
+
     protected:
         void notifyObservers();
         void commitMetaDataChanges();
