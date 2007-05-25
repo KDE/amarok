@@ -27,6 +27,7 @@ Model::Model( QObject* parent )
     , m_advancer( new StandardTrackAdvancer( this ) )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
+    m_columns << TrackNumber << Title << Artist << Album;
 }
 
 Model::~Model()
@@ -151,7 +152,7 @@ Model::testData()
     BlockingQuery bq( qm );
     bq.startQuery();
     insertTracks( 0, bq.tracks( "localCollection" ) );
-    m_columns << TrackNumber << Title << Artist << Album;
+    //m_columns << TrackNumber << Title << Artist << Album;
     reset();
 }
 
@@ -164,6 +165,8 @@ Model::supportedDropActions() const
 void
 Model::trackFinished()
 {
+    Meta::TrackPtr track = m_tracks.at( m_activeRow );
+    track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
 }
 
