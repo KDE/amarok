@@ -278,8 +278,12 @@ class ServiceGenre : public Meta::Genre
 
         //ServiceGenre specific methods
         void addTrack( ServiceTrackPtr track );
+        void setName( const QString &name );
+        int trackId();
+        void setTrackId( int trackId ); 
 
     private:
+        int m_trackId;
         QString m_name;
         TrackList m_tracks;
 };

@@ -722,6 +722,23 @@ ServiceGenre::prettyName() const
     return m_name;
 }
 
+void ServiceGenre::setName(const QString & name)
+{
+    m_name = name;
+}
+
+
+int ServiceGenre::trackId()
+{
+    return m_trackId;
+}
+
+void ServiceGenre::setTrackId(int trackId)
+{
+    m_trackId = trackId;
+}
+
+
 TrackList
 ServiceGenre::tracks()
 {
@@ -811,12 +828,4 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
-
-
-
-
-
-
-
-
 
