@@ -25,7 +25,7 @@ class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
-class SingleCollectionTreeItemModel: public CollectionTreeItemModel {
+class SingleCollectionTreeItemModel: public QAbstractItemModel {
 Q_OBJECT
 
     public:
@@ -56,6 +56,8 @@ Q_OBJECT
 
         virtual void setLevels( const QList<int> &levelType );
         virtual QList<int> levels() const { return m_levelType; }
+
+        void addFilters( QueryMaker *qm ) const;
 
     public slots:
 
