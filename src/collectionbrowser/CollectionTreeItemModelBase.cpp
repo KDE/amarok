@@ -29,11 +29,7 @@
 #include <QTimer>
 
 
-struct CollectionTreeItemModelBase::Private
-{
-    QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
-    QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
-};
+
 
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )

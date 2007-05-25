@@ -92,4 +92,10 @@ Q_OBJECT
 
 };
 
+struct CollectionTreeItemModelBase::Private
+{
+    QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
+    QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
+};
+
 #endif
