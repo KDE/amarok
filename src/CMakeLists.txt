@@ -185,6 +185,7 @@ kde4_add_ui3_files(libmagnatunestore_SRCS
 #####################################################################
 set(libcollectionbrowser_SRCS
     collectionbrowser/collectiontreeview.cpp
+    collectionbrowser/CollectionTreeItemModelBase.cpp
     collectionbrowser/collectiontreeitemmodel.cpp
     collectionbrowser/singlecollectiontreeitemmodel.cpp
     collectionbrowser/collectionsortfilterproxymodel.cpp
