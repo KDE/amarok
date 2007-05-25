@@ -111,6 +111,16 @@ Model::insertTracks( int row, TrackList list )
     endInsertRows();
 }
 
+void
+Model::insertTracks( int row, QueryMaker *qm )
+{
+    qm->startTrackQuery();
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
+    m_queryMap.insert( qm, row );
+    qm->run();
+}
+
 bool
 Model::removeRows( int position, int rows )
 {
@@ -227,4 +237,27 @@ DEBUG_BLOCK
     debug() << "between " << min << " and " << max << endl;
     m_activeRow = row;
 }
+
+void
+Model::queryDone()
+{
+    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    if( qm )
+    {
+        m_queryMap.remove( qm );
+        qm->deleteLater();
+    }
+}
+
+void
+Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    if( qm )
+    {
+        //requires better handling of queries which return multiple results
+        insertTracks( m_queryMap.value( qm ), tracks );
+    }
+}
+
 #include "PlaylistModel.moc"

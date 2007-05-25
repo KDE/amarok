@@ -67,6 +67,8 @@ Q_OBJECT
         virtual void setLevels( const QList<int> &levelType );
         virtual QList<int> levels() const { return m_levelType; }
 
+        void addFilters( QueryMaker *qm ) const;
+
     public slots:
         virtual void collectionAdded( Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
@@ -74,9 +76,6 @@ Q_OBJECT
         virtual void queryDone();
 
         virtual void newResultReady( const QString &collectionId, Meta::DataList data );
-
-    protected:
-        void addFilters( QueryMaker *qm ) const;
 
     private:
 

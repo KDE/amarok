@@ -117,13 +117,22 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                 debug() << "row# " << item->row() << endl;
                 if( !item->allDescendentTracksLoaded() )
                 {
-                    debug() << "not all decendent tracks are loaded, query the collection with current filter and match instead"  << endl;
-                    return;
+                    QueryMaker *qm = item->queryMaker();
+                    CollectionTreeItem *tmp = item;
+                    while( tmp->isDataItem() )
+                    {
+                        qm->addMatch( tmp->data() );
+                        tmp = tmp->parent();
+                    }
+                    m_treeModel->addFilters( qm );
+                    PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(), qm );
                 }
-                QList< Meta::TrackPtr > tracks = item->descendentTracks();
-                PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(),
-                    tracks );
-                debug() << tracks.size() << endl;
+                else
+                {
+                    QList< Meta::TrackPtr > tracks = item->descendentTracks();
+                    PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(),
+                        tracks );
+                }
         }
     }
     else

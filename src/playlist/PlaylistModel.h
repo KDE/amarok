@@ -12,11 +12,13 @@
 #include "meta.h"
 
 #include <QAbstractTableModel>
+#include <QHash>
 #include <QVector>
 
 #include <klocale.h>
 
 class QModelIndex;
+class QueryMaker;
 
 
 //PORT rename to Playlist when the playlist class is removed
@@ -75,15 +77,19 @@ class TrackAdvancer;
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
             ///
             void insertTracks( int row, Meta::TrackList list ); //doesn't override
+            void insertTracks( int row, QueryMaker *qm );
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
         //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();
+
         public slots:
             void play( const QModelIndex& index );
         private slots:
             void trackFinished(); //! what to do when a track finishes
+            void queryDone();
+            void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
 
         private:
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
@@ -93,8 +99,10 @@ class TrackAdvancer;
             QVector< Column > m_columns;
             int m_activeRow; //! the row being played
             TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
+            QHash<QueryMaker*, int> m_queryMap; //!maps queries to the row where the results should be inserted
 
             static Model* s_instance; //! instance variable
+
     };
 }
 
