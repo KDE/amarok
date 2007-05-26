@@ -1759,7 +1759,7 @@ PodcastChannel::fetch()
         .setDescription( i18n( "Fetching Podcast" ) )
         .setAbortSlot( this, SLOT( abortFetch() ) );
 
-    connect( m_podcastJob, SIGNAL( result( KIO::Job* ) ), SLOT( fetchResult( KIO::Job* ) ) );
+    connect( m_podcastJob, SIGNAL( result( KJob* ) ), SLOT( fetchResult( KJob* ) ) );
 }
 
 void
@@ -1774,7 +1774,7 @@ PodcastChannel::abortFetch()
 }
 
 void
-PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
+PodcastChannel::fetchResult( KJob* job ) //SLOT
 {
     stopAnimation();
     if ( job->error() != 0 )

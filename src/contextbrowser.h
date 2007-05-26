@@ -119,7 +119,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void wikiAlbumPage();
         void wikiTitlePage();
         void wikiExternalPage();
-        void wikiResult( KIO::Job* job );
+        void wikiResult( KJob* job );
         void wikiConfigApply();
         void wikiConfig();
         void wikiConfigChanged( int activeItem );

@@ -4052,7 +4052,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     Amarok::StatusBar::instance()->newProgressOperation( m_wikiJob )
             .setDescription( i18n( "Fetching Wikipedia Information" ) );
 
-    connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ), SLOT( wikiResult( KIO::Job* ) ) );
+    connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
 }
 
 
@@ -4161,7 +4161,7 @@ ContextBrowser::wikiExternalPage() //SLOT
 
 
 void
-ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
+ContextBrowser::wikiResult( KJob* job ) //SLOT
 {
     DEBUG_BLOCK
 

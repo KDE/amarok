@@ -407,7 +407,7 @@ class PodcastChannel : public PlaylistBrowserEntry
     private slots:
         void abortFetch();
         void downloadChildQueue();
-        void fetchResult( KIO::Job* job );
+        void fetchResult( KJob* job );
         void slotAnimation();
 
     private:
@@ -438,7 +438,7 @@ class PodcastChannel : public PlaylistBrowserEntry
         bool                     m_new;
         bool                     m_hasProblem;
 
-        KIO::TransferJob        *m_podcastJob;
+        KJob                    *m_podcastJob;
         PlaylistCategory        *m_parent;        // category it belongs to
         QString                  m_podcastCurrentUrl;
         Q3PtrList<PodcastEpisode> m_podcastDownloadQueue;
