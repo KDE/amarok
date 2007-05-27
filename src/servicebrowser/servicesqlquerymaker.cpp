@@ -267,8 +267,8 @@ ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
         d->collectionRestriction = true;
     }
     if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = true;
-    return this;*/
+        d->includedBuilder = true;*/
+    return this;
 }
 
 QueryMaker*
@@ -276,8 +276,8 @@ ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
 {
     /*d->collectionRestriction = true;
     if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = false;
-    return this;*/
+        d->includedBuilder = false;*/
+    return this;
 }
 
 QueryMaker*
