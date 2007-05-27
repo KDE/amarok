@@ -26,5 +26,11 @@ QueryMaker::~QueryMaker()
 {
 }
 
+int
+QueryMaker::resultCount() const
+{
+    return 1;
+}
+
 #include "querymaker.moc"
 

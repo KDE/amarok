@@ -37,6 +37,7 @@ class MetaQueryBuilder : public QueryMaker
         virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
+        virtual int resultCount() const;
 
         virtual QueryMaker* startTrackQuery();
         virtual QueryMaker* startArtistQuery();

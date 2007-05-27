@@ -71,6 +71,12 @@ MetaQueryBuilder::abortQuery()
         b->abortQuery();
 }
 
+int
+MetaQueryBuilder::resultCount() const
+{
+    return builders.count();
+}
+
 QueryMaker*
 MetaQueryBuilder::startTrackQuery()
 {
