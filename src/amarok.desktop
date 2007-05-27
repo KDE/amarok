@@ -70,6 +70,7 @@ Comment=Amarok - Rediscover Your Music!
 Comment[bg]=Amarok - преоткрий музиката!
 Comment[bn]=আমারক - আপনার সঙ্গীতের এক নতুন দিগন্ত
 Comment[ca]=Amarok - Redescobreix la teva música!
+Comment[cs]=Amarok - objevte svou hudbu!
 Comment[da]=Amarok - Genopdag din musik!
 Comment[de]=Amarok - Musik neu erleben!
 Comment[el]=Amarok - Ξαναανακαλύψτε τη μουσική σας!
@@ -90,6 +91,7 @@ Comment[sr@Latn]=Amarok — otkrijte svoju muziku!
 Comment[sv]=Amarok - Återupptäck din musik!
 Comment[tr]=Amarok - Müziğinizi yeniden keşfedin!
 Comment[uk]=Amarok - заново відчуйте свою музику!
+Comment[wa]=Amarok - Ridiscovroz vosse muzike!
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior

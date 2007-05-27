@@ -48,6 +48,7 @@ Name[tg]=Муҳаррики aKode
 Name[tr]=aKode Motoru
 Name[uk]=Рушій aKode
 Name[uz]=aKode тизими
+Name[wa]=Éndjin aKode
 Name[zh_CN]=aKode 引擎
 Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=Amarok/Plugin
@@ -94,6 +95,7 @@ Comment[th]=โปรแกรมประมวลผลเสียง aKode �
 Comment[tr]=Amarok için aKode ses-motoru eklentisi
 Comment[uk]=Аудіо-рушій aKode для Amarok
 Comment[uz]=Amarok учун aKode аудио-тизими
+Comment[wa]=Éndjin d' son aKode po-z Amarok
 Comment[zh_CN]=Amarok 的 aKode 音频引擎
 Comment[zh_TW]=AmaroK 的 aKode 解碼引擎
 

@@ -39,6 +39,7 @@ Name[th]=เพิ่มเป็นพ็อดแคสต์ไปยัง A
 Name[tr]=Amarok'a Podcast olarak Ekle
 Name[uk]=Додати в Amarok як подкест
 Name[uz]=Amarok'ка подкаст сифатида қўшиш
+Name[wa]=Radjouter come Podcast a Amarok
 Name[zh_CN]=将播客添加到 Aamarok
 Icon=amarok
 Exec=dcop amarok playlistbrowser addPodcast %u
