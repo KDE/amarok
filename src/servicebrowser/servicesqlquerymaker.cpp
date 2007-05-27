@@ -62,9 +62,9 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
 
 struct ServiceSqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM/*, COMPOSER, YEAR, GENRE, CUSTOM*/ };
-    //enum { TRACK = 1, ALBUM = 2, ARTIST = 4};
-    //int linkedTables;
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM, GENRE/*, COMPOSER, YEAR, CUSTOM*/ };
+    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8};
+    int linkedTables;
     QueryType queryType;
     QString query;
     QString queryReturnValues;
@@ -168,7 +168,8 @@ ServiceSqlQueryMaker::startTrackQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::TRACK;
-        d->queryFrom = m_metaFactory->tablePrefix() + "_tracks";
+        d->linkedTables |= Private::TRACKS_TABLE;
+        //d->queryFrom = m_metaFactory->tablePrefix() + "_tracks";
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows();
     }
     return this;
@@ -181,8 +182,9 @@ ServiceSqlQueryMaker::startArtistQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ARTIST;
+        d->linkedTables |= Private::ARTISTS_TABLE;
         d->withoutDuplicates = true;
-        d->queryFrom = m_metaFactory->tablePrefix() + "_artists";
+        //d->queryFrom = m_metaFactory->tablePrefix() + "_artists";
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
     }
     return this;
@@ -195,8 +197,9 @@ ServiceSqlQueryMaker::startAlbumQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ALBUM;
+        d->linkedTables |= Private::ALBUMS_TABLE;
         d->withoutDuplicates = true;
-        d->queryFrom = m_metaFactory->tablePrefix() + "_albums";
+        //d->queryFrom = m_metaFactory->tablePrefix() + "_albums";
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows();
     }
     return this;
@@ -220,13 +223,15 @@ QueryMaker*
 ServiceSqlQueryMaker::startGenreQuery()
 {
     DEBUG_BLOCK
-    /*if( d->queryType == Private::NONE )
+    if( d->queryType == Private::NONE )
     {
         d->queryType = Private::GENRE;
         d->withoutDuplicates = true;
-        d->linkedTables |= Private::GENRE_TAB;
-        d->queryReturnValues = "genre.name, genre.id";
-    }*/
+        //d->linkedTables |= Private::ALBUM_TABLE;
+        d->linkedTables |= Private::GENRE_TABLE;
+        d->queryReturnValues = m_metaFactory->getGenreSqlRows();
+        d->queryFilter = " GROUP BY name HAVING COUNT ( name ) > 10 ";
+    }
     return this;
 }
 
@@ -287,10 +292,11 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     DEBUG_BLOCK
+    QString prefix = m_metaFactory->tablePrefix(); 
     if (d->queryType == Private::TRACK ) // a service track does not generally know its artist
         return this;
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
-    d->queryMatch += QString( " AND artist_id= '%1'" ).arg( serviceArtist->id() );
+    d->queryMatch += QString( " AND " + prefix + "_albums.artist_id= '%1'" ).arg( serviceArtist->id() );
     return this;
 }
 
@@ -298,15 +304,22 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     DEBUG_BLOCK
+    QString prefix = m_metaFactory->tablePrefix(); 
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
-    d->queryMatch += QString( " AND album_id = '%1'" ).arg( serviceAlbum->id() );
+    d->queryMatch += QString( " AND " + prefix + "_tracks.album_id = '%1'" ).arg( serviceAlbum->id() );
     return this;
 }
 
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
-   //TODO
+    DEBUG_BLOCK
+    QString prefix = m_metaFactory->tablePrefix(); 
+
+    const ServiceGenre* serviceGenre = dynamic_cast<const ServiceGenre *>( genre.data() );
+    d->linkedTables |= Private::GENRE_TABLE;
+    if ( d->queryType == Private::ARTIST ) //HACK!
+        d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
     return this;
 }
 
@@ -375,34 +388,43 @@ ServiceSqlQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
-/*void
-SqlQueryBuilder::linkTables()
+void
+ServiceSqlQueryMaker::linkTables()
 {
-    d->linkedTables |= Private::TAGS_TAB; //HACK!!!
+    //d->linkedTables |= Private::TAGS_TAB; //HACK!!!
     //assuming that tags is always included for now
     if( !d->linkedTables )
         return;
 
-    if( d->linkedTables & Private::TAGS_TAB )
-        d->queryFrom += " tags";
-    if( d->linkedTables & Private::ARTIST_TAB )
-        d->queryFrom += " LEFT JOIN artist ON tags.artist = artist.id";
-    if( d->linkedTables & Private::ALBUM_TAB )
-        d->queryFrom += " LEFT JOIN album ON tags.album = album.id";
-    if( d->linkedTables & Private::GENRE_TAB )
-        d->queryFrom += " LEFT JOIN genre ON tags.genre = genre.id";
-    if( d->linkedTables & Private::COMPOSER_TAB )
-        d->queryFrom += " LEFT JOIN composer ON tags.composer = composer.id";
-    if( d->linkedTables & Private::YEAR_TAB )
-        d->queryFrom += " LEFT JOIN year ON tags.year = year.id";
-    if( d->linkedTables & Private::STATISTICS_TAB )
-        d->queryFrom += " LEFT JOIN statistics ON tags.deviceid = statistics.deviceid AND tags.url = statistics.url";
-}*/
+    QString prefix = m_metaFactory->tablePrefix();
+
+    if( d->linkedTables & Private::TRACKS_TABLE )
+        d->queryFrom += " " + prefix + "_tracks";
+    if( d->linkedTables & Private::ALBUMS_TABLE )
+       d->queryFrom += " " + prefix + "_albums";
+    if( d->linkedTables & Private::ARTISTS_TABLE )
+       d->queryFrom += " " + prefix + "_artists";
+
+    //There must be a better way....
+    if( d->linkedTables & Private::GENRE_TABLE ) {
+        if ( d->queryType == Private::GENRE ) {
+            d->queryFrom += " " + prefix + "_genre";
+        } else if ( d->queryType == Private::ARTIST ) {
+
+             d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+             d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
+
+        } else {
+            //HACK! for now only allow genre matches on artists
+       }
+    }
+
+}
 
 void
 ServiceSqlQueryMaker::buildQuery()
 {
-    //linkTables();
+    linkTables();
     QString query = "SELECT ";
     if ( d->withoutDuplicates )
         query += "DISTINCT ";
@@ -455,10 +477,10 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
         case Private::ALBUM:
             handleAlbums( result );
             break;
-       /* case Private::GENRE:
+        case Private::GENRE:
             handleGenres( result );
             break;
-        case Private::COMPOSER:
+      /*  case Private::COMPOSER:
             handleComposers( result );
             break;
         case Private::YEAR:
@@ -570,21 +592,23 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
     emitProperResult( AlbumPtr, albums );
 }
 
-/*void
+void
 ServiceSqlQueryMaker::handleGenres( const QStringList &result )
 {
+    DEBUG_BLOCK
     GenreList genres;
-    SqlRegistry* reg = m_collection->registry();
-    for( QStringListIterator iter( result ); iter.hasNext(); )
+
+    int rowCount = m_metaFactory->getGenreSqlRowCount();
+    int resultRows = result.size() / rowCount;
+    for( int i = 0; i < resultRows; i++ )
     {
-        QString name = iter.next();
-        QString id = iter.next();
-        genres.append( reg->getGenre( name, id.toInt() ) );
+        QStringList row = result.mid( i*rowCount, rowCount );
+        genres.append( m_metaFactory->createGenre( row ) );
     }
     emitProperResult( GenrePtr, genres );
 }
 
-void
+/*void
 ServiceSqlQueryMaker::handleComposers( const QStringList &result )
 {
     ComposerList composers;

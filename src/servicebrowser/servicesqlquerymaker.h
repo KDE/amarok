@@ -84,7 +84,7 @@ class ServiceSqlQueryMaker : public QueryMaker
 
     private:
 
-        //void linkTables();
+        void linkTables();
         void buildQuery();
 
         //QString nameForValue( qint64 value );
@@ -92,7 +92,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         void handleTracks( const QStringList &result );
         void handleArtists( const QStringList &result );
         void handleAlbums( const QStringList &result );
-        //void handleGenres( const QStringList &result );
+        void handleGenres( const QStringList &result );
         //void handleComposers( const QStringList &result );
         //void handleYears( const QStringList &result );
 

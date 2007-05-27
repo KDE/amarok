@@ -19,21 +19,11 @@
 
 #include "jamendodatabasehandler.h"
 
+#include "collectionmanager.h"
 #include "debug.h"
 
 
-/*DatabaseHandlerBase* 
-JamendoDatabaseHandler::instance()
-{
-    if ( m_pInstance == 0 )
-    {
-        m_pInstance = new JamendoDatabaseHandler();
-    }
-    return m_pInstance;
-}*/
-
 JamendoDatabaseHandler::JamendoDatabaseHandler()
-    : DatabaseHandlerBase()
 {}
 
 
@@ -46,19 +36,19 @@ JamendoDatabaseHandler::createDatabase( )
     //Get database instance
     CollectionDB *db = CollectionDB::instance();
 
-    QString tagsAutoIncrement = "";
+    QString genreAutoIncrement = "";
 
-   /* if ( db->getDbConnectionType() == DbConnection::postgresql )
+    if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
-        db->query( QString( "CREATE SEQUENCE jamendo_tags_seq;" ) );
+        db->query( QString( "CREATE SEQUENCE jamendo_genre_seq;" ) );
 
-        tagsAutoIncrement  = QString( "DEFAULT nextval('jamendo_tags_seq')" );
+        genreAutoIncrement  = QString( "DEFAULT nextval('jamendo_genre_seq')" );
 
     }
     else if ( db->getDbConnectionType() == DbConnection::mysql )
     {
-        tagsAutoIncrement = "AUTO_INCREMENT";
-    }*/
+        genreAutoIncrement = "AUTO_INCREMENT";
+    }
 
     // create table containing tracks
     QString queryString = "CREATE TABLE jamendo_tracks ("
@@ -100,17 +90,34 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
-    //create moods table
-     /*queryString = "CREATE TABLE jamendo_tags ("
-                  "id INTEGER PRIMARY KEY " + moodsAutoIncrement + ',' +
-                  "track_id INTEGER," +
-                  "tag " + db->textColumnType() + ");";
+    //create genre table
+    queryString = "CREATE TABLE jamendo_genre ("
+                  "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
+                  "name " + db->textColumnType() + ',' +
+                  "album_id INTEGER" + ");";
 
-    debug() << "Creating mangnatune_moods: " << queryString << endl;
+    debug() << "Creating jamendo_genres: " << queryString << endl;
 
     result = db->query( queryString );
-*/
 
+    //create a few indexes ( its all about the SPEEED baby! )
+
+
+
+    queryString = "CREATE INDEX jamendo_album_album_id on jamendo_albums (id);";
+    result = db->query( queryString );
+
+    queryString = "CREATE INDEX jamendo_album_artist_id on jamendo_albums (artist_id);";
+    result = db->query( queryString );
+
+    queryString = "CREATE INDEX jamendo_artist_artist_id on jamendo_artists (id);";
+    result = db->query( queryString );
+
+    queryString = "CREATE INDEX jamendo_genre_album_id on jamendo_genre (album_id);";
+    result = db->query( queryString );
+
+    queryString = "CREATE INDEX jamendo_genre_name on jamendo_genre (name);";
+    result = db->query( queryString );
 
 }
 
@@ -124,7 +131,14 @@ JamendoDatabaseHandler::destroyDatabase( )
     QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
     result = db->query( "DROP TABLE jamendo_albums;" );
     result = db->query( "DROP TABLE jamendo_artists;" );
-    //result = db->query( "DROP TABLE jamendo_tags;" );
+    result = db->query( "DROP TABLE jamendo_genre;" );
+
+
+    result = db->query( "DROP INDEX jamendo_album_album_id;");
+    result = db->query( "DROP INDEX jamendo_album_artist_id;");
+    result = db->query( "DROP INDEX jamendo_artist_artist_id;");
+    result = db->query( "DROP INDEX jamendo_genre_album_id;");
+    result = db->query( "DROP INDEX jamenod_genre_name;");
 
     if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
@@ -139,7 +153,7 @@ int
 JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 {
 
-    JamendoTrack * jTrack = static_cast<JamendoTrack *> ( track );
+    JamendoTrack * jTrack = dynamic_cast<JamendoTrack *> ( track );
 
     QString numberString;
 
@@ -181,7 +195,7 @@ int
 JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
-    JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album );
+    JamendoAlbum * jAlbum = dynamic_cast<JamendoAlbum *> ( album );
 
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
@@ -203,14 +217,14 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 int 
 JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
-    JamendoArtist * jArtist = static_cast<JamendoArtist *> ( artist );
+    JamendoArtist * jArtist = dynamic_cast<JamendoArtist *> ( artist );
 
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
     queryString = "INSERT INTO jamendo_artists ( id, name, description "
                   ") VALUES ( "
                   + QString::number( jArtist->id() ) + ", '"
-                  + db->escapeString( db->escapeString( jArtist->name() ) ) + "', '"
+                  + db->escapeString( jArtist->name() ) + "', '"
                   + db->escapeString( jArtist->description() ) + "' );";
 
     //debug() << "Adding Jamendo artist " << queryString << endl;
@@ -218,353 +232,37 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
     return db->insert( queryString, 0 );
 }
 
-
-int 
-JamendoDatabaseHandler::getArtistIdByExactName( const QString &name )
+int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
 {
+    QString queryString;
     CollectionDB *db = CollectionDB::instance();
+    queryString = "INSERT INTO jamendo_genre ( album_id, name "
+                  ") VALUES ( "
+                  + QString::number ( genre->albumId() ) + ", '"
+                  + db->escapeString( genre->name() ) + "' );";
 
-    QString queryString = "SELECT id from jamendo_artists WHERE name='" + db->escapeString( name ) + "';";
-    QStringList result = db->query( queryString );
+    //debug() << "Adding Jamendo genre " << queryString << endl;
 
-    //debug() << "Looking for id of artist " << name << ":" << endl;
-
-    if ( result.size() < 1 ) return -1;
-    int artistId = result.first().toInt();
-    
-    //debug() << "    Found: " << QString::number( artistId ) << ":" << endl;
-    
-    return artistId;
-
+    return db->insert( queryString, 0 );
 }
 
 
-ArtistList 
-JamendoDatabaseHandler::getArtistsByGenre( const QString &genre )
+
+void 
+JamendoDatabaseHandler::begin( )
 {
-
-    QString genreSql = "";
-
-    if ( !( genre == "All" ||  genre.isEmpty() ) )
-    {
-        genreSql = "jamendo_albums.genre='" + genre + "' AND ";
-    }
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT DISTINCT jamendo_artists.id, "
-                  "jamendo_artists.name,  "
-                  "jamendo_artists.description "
-                  "FROM jamendo_albums, jamendo_artists "
-                  "WHERE " + genreSql + "jamendo_albums.artist_id "
-                  "= jamendo_artists.id;";
-
-    QStringList result = db->query( queryString );
-
-    debug() << "Looking for artist in genre: " <<  genre << endl;
-
-    ArtistList list;
-
-
-    int resultRows = result.size() / 3;
-    for( int i = 0; i < resultRows; i++ )
-    {
-        QStringList row = result.mid( i*3, 3);
-        list.append( ArtistPtr( new JamendoArtist( row ) ) );
-    }
-
-   /* while ( result.size() > 0 )
-    {
-        int id = result.front().toInt();
-        result.pop_front();
-
-        QString name = result.front();
-        result.pop_front();
-  
-        JamendoArtist * artist = new JamendoArtist( name );
-        artist->setId( id );
-
-        artist->setJamendoURL( result.front() );
-        result.pop_front();
-
-        artist->setHomeURL( result.front() );
-        result.pop_front();
-
-        artist->setDescription( result.front() );
-        result.pop_front();
-
-        list.append( ArtistPtr( artist ) );
-    }*/
-
-    return list;
-
-
+    CollectionManager *mgr = CollectionManager::instance();
+    QString queryString = "BEGIN;";
+    mgr->sqlQuery(  queryString );
 }
 
-AlbumList
-JamendoDatabaseHandler::getAlbumsByArtistId( int id, const QString &genre )
+void 
+JamendoDatabaseHandler::commit( )
 {
-
-    QString genreSqlString;
-
-    if ( genre.isEmpty() ||  genre == "All" )
-    {
-        genreSqlString = "";
-    }
-    else
-    {
-        genreSqlString = " AND jamendo_albums.genre='" + genre + '\'';
-    }
-
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT DISTINCT id, "
-                  "name, "
-                  "description "
-                  "artist_id, "
-                  "artist_name "
-                  "FROM jamendo_albums "
-                  "WHERE artist_id = '" + QString::number( id ) + '\'';
-
-    queryString += genreSqlString;
-    queryString += ';';
-
-
-    QStringList result = db->query( queryString );
-
-
-    AlbumList list;
-    //debug() << "Looking for Albums..." << endl;
-    //debug() << "Query string:" << queryString << endl;
-
-
-    int resultRows = result.size() / 5;
-    for( int i = 0; i < resultRows; i++ )
-    {
-        QStringList row = result.mid( i*5, 5 );
-        list.append( AlbumPtr( new JamendoAlbum( row ) ) );
-    }
-
-    /*while ( result.size() > 0 )
-    {
-       
-
-        int id = result.front().toInt();
-        result.pop_front();
-
-        QString name = result.front();
-        result.pop_front();
-
-        JamendoAlbum * album = new JamendoAlbum( name );
-        album->setId( id );
-  
-        album->setArtistId( result.front().toInt() );
-        result.pop_front();
-
-        album->setGenre( result.front() );
-        result.pop_front();
-
-        album->setDescription( result.front() );
-        result.pop_front();
-
-        list.append( AlbumPtr( album ) );
-    }*/
-
-    return list;
-
-
+    CollectionManager *mgr = CollectionManager::instance();
+    QString queryString = "COMMIT;";
+    mgr->sqlQuery( queryString );
 }
-
-
-TrackList 
-JamendoDatabaseHandler::getTracksByAlbumId( int id )
-{
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT DISTINCT id, "
-                  "name, track_number, "
-                  "length, album_id, "
-                  "preview_url "
-                  "FROM jamendo_tracks "
-                  "WHERE album_id = '" + QString::number( id ) + "';";
-
-    QStringList result = db->query( queryString );
-
-
-   TrackList list;
-
-    //debug() << "Looking for tracks..." << endl;
-    //debug() << "Query string:" << queryString << endl;
-
-
-    int resultRows = result.size() / 6;
-    for( int i = 0; i < resultRows; i++ )
-    {
-        QStringList row = result.mid( i*6, 6 );
-        list.append( TrackPtr( new JamendoTrack( row ) ) );
-    }
-
-    /*while ( result.size() > 0 )
-    {
-
-        int id = result.front().toInt();
-        result.pop_front();
-
-        QString name = result.front();
-        result.pop_front();
-
-        JamendoTrack * track = new JamendoTrack( name );
-        track->setId( id );
-
-        track->setTrackNumber( result.front().toInt() );
-        result.pop_front();
-
-        track->setLength( result.front().toInt() );
-        result.pop_front();
-
-        track->setAlbumId( result.front().toInt() );
-        result.pop_front();
-
-        track->setUrl( result.front() );
-        result.pop_front();
-
-        list.append( TrackPtr( track ) );
-        //debug() << "track end" << endl;
-    }*/
-
-    return list;
-
-}
-
-QStringList 
-JamendoDatabaseHandler::getAlbumGenres( )
-{
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT DISTINCT genre "
-                  "FROM jamendo_albums "
-                  "ORDER BY genre;";
-
-    return db->query( queryString );
-}
-
-
-ServiceArtist *
-JamendoDatabaseHandler::getArtistById( int id )
-{
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT id, "
-                  "name, description "
-                  "FROM jamendo_artists "
-                  "WHERE id = '" + QString::number( id ) + "';";
-
-    QStringList result = db->query( queryString );
-
-    JamendoArtist * artist;
-
-
-    if ( result.size() == 3 )
-    {
-
-        artist = new JamendoArtist( result );
-
-    } else {
-        artist = new JamendoArtist( QString() );
-    }
-
-
-    return artist;
-}
-
-ServiceAlbum *
-JamendoDatabaseHandler::getAlbumById( int id )
-{
-
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT id, "
-                  "name, "
-                  "artist_id, genre, "
-                  "description "
-                  "FROM jamendo_albums "
-                  "WHERE id = '" + QString::number( id ) + "';";
-
-    QStringList result = db->query( queryString );
-
-    JamendoAlbum * album;
-
-    if ( result.size() == 5 )
-    {
-
-        album = new JamendoAlbum( result );
-
-    } else {
-        album = new JamendoAlbum( QString() );
-    }
-
-    return album;
-
-}
-
-ServiceTrack * JamendoDatabaseHandler::getTrackById(int id) {
-
-
-    CollectionDB *db = CollectionDB::instance();
-
-    QString queryString;
-    queryString = "SELECT DISTINCT id, "
-                  "name, track_number, "
-                  "length, album_id, "
-                  "preview_url "
-                  "FROM jamendo_tracks "
-                  "WHERE id = '" + QString::number( id ) + "';";
-
-    QStringList result = db->query( queryString );
-
-    JamendoTrack * track;
-    if ( result.size() == 6 )
-    {
-
-        int id = result.front().toInt();
-        result.pop_front();
-
-        QString name = result.front();
-        result.pop_front();
-
-        track = new JamendoTrack( name );
-        track->setId( id );
-
-        track->setTrackNumber( result.front().toInt() );
-        result.pop_front();
-
-        track->setLength( result.front().toInt() );
-        result.pop_front();
-
-        track->setAlbumId( result.front().toInt() );
-        result.pop_front();
-
-        track->setUrl( result.front() );
-        result.pop_front();
-
-    } else {
-        track = new JamendoTrack( QString() );
-    }
-
-    return track;
-}
-
 
 
 

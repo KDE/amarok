@@ -39,15 +39,15 @@ int ServiceMetaFactory::getTrackSqlRowCount()
 QString ServiceMetaFactory::getTrackSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "id, " 
-           "name, "
-           "track_number, "
-           "length, "
-           "preview_url, "
-           "album_id, "
-           "album_name, "
-           "artist_id, "
-           "album_id ";
+    return m_dbTablePrefix + "_tracks.id, " +
+           m_dbTablePrefix + "_tracks.name, " +
+           m_dbTablePrefix + "_tracks.track_number, " +
+           m_dbTablePrefix + "_tracks.length, " +
+           m_dbTablePrefix + "_tracks.preview_url, " +
+           m_dbTablePrefix + "_tracks.album_id, " +
+           m_dbTablePrefix + "_tracks.album_name, " +
+           m_dbTablePrefix + "_tracks.artist_id, " +
+           m_dbTablePrefix + "_tracks.album_id "; 
 }
 
 TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
@@ -63,11 +63,11 @@ int ServiceMetaFactory::getAlbumSqlRowCount()
 QString ServiceMetaFactory::getAlbumSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "id, "
-           "name, "
-           "description, "
-           "artist_id, "
-           "artist_name ";
+    return m_dbTablePrefix + "_albums.id, " +
+           m_dbTablePrefix + "_albums.name, " +
+           m_dbTablePrefix + "_albums.description, " +
+           m_dbTablePrefix + "_albums.artist_id, " +
+           m_dbTablePrefix + "_albums.artist_name ";
 }
 
 AlbumPtr ServiceMetaFactory::createAlbum(const QStringList & rows)
@@ -83,9 +83,9 @@ int ServiceMetaFactory::getArtistSqlRowCount()
 QString ServiceMetaFactory::getArtistSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return "id, "
-           "name, "
-           "description ";
+    return m_dbTablePrefix + "_artists.id, " +
+           m_dbTablePrefix + "_artists.name, " +
+           m_dbTablePrefix + "_artists.description ";
 }
 
 ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
@@ -96,15 +96,14 @@ ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
 
 int ServiceMetaFactory::getGenreSqlRowCount()
 {
-    return 2;
+    return 1;
 }
 
-QString ServiceMetaFactory::getGenretSqlRows()
+QString ServiceMetaFactory::getGenreSqlRows()
 {
 
     //subclasses must not change the order of these items, but only append new ones
-    return "name, "
-           "track_id ";
+    return m_dbTablePrefix + "_genre.name " ;
 
 }
 
@@ -754,14 +753,14 @@ void ServiceGenre::setName(const QString & name)
 }
 
 
-int ServiceGenre::trackId()
+int ServiceGenre::albumId()
 {
-    return m_trackId;
+    return m_albumId;
 }
 
-void ServiceGenre::setTrackId(int trackId)
+void ServiceGenre::setAlbumId(int albumId)
 {
-    m_trackId = trackId;
+    m_albumId = albumId;
 }
 
 

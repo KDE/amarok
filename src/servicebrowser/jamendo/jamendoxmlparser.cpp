@@ -34,6 +34,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
 {
     DEBUG_BLOCK
     m_sFileName = filename;
+    albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
 }
 
@@ -179,6 +180,9 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
     currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
 
 
+
+
+
     m_dbHandler->insertArtist( &currentArtist );
 
     /*debug() << "    Name:       " << currentArtist.getName() << endl;
@@ -198,6 +202,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     QString name;
     QString genre;
     QString description;
+    QStringList tags;
 
     QDomNode n = e.firstChild();
 
@@ -212,6 +217,12 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
                 genre = currentChildElement.text();
             else if ( currentChildElement.tagName() == "description" )
                  description = currentChildElement.text();
+            //we use tags instad of genres for creating genres in the database, as the 
+            //Jamendo.com genres are messy at best
+            else if ( currentChildElement.tagName() == "tags" ) {
+                tags = currentChildElement.text().split(" ", QString::SkipEmptyParts);
+
+            }
 
             n = n.nextSibling();
         }
@@ -227,14 +238,19 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
 
 
-     m_dbHandler->insertAlbum( &currentAlbum );
+   int newId = m_dbHandler->insertAlbum( &currentAlbum );
 
-   /* debug() << "    Name:       " << currentAlbum.getName() << endl;
-    debug() << "    Id:         " << currentAlbum.getId() << endl;
-    debug() << "    Artist_id:  " << currentAlbum.getArtistId() << endl;
-    debug() << "    Genre:      " << currentAlbum.getGenre() << endl;
-    debug() << "    Decription: " << currentAlbum.getDescription() << endl;
-*/
+   foreach( QString genreName, tags ) {
+
+        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName << endl;
+
+        ServiceGenre currentGenre( genreName );
+        currentGenre.setAlbumId( newId );
+        m_dbHandler->insertGenre( &currentGenre );
+
+    }
+
+
 }
 
 void JamendoXmlParser::parseTrack(QDomElement e)
@@ -272,6 +288,9 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
 
     m_dbHandler->insertTrack( &currentTrack );
+
+
+
 }
 
 #include "jamendoxmlparser.moc"

@@ -36,12 +36,10 @@
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class JamendoDatabaseHandler : public DatabaseHandlerBase {
+class JamendoDatabaseHandler {
 public:
-    
-     //static DatabaseHandlerBase * instance();
- 
-    
+
+
     /**
      * Private constructor (singleton pattern)
      * @return Pointer to new object
@@ -54,12 +52,12 @@ public:
     /**
      * Creates the tables needed to store Jamendo info
      */
-    virtual void createDatabase();
+    void createDatabase();
 
     /**
      * Destroys Jamendo tables
      */
-    virtual void destroyDatabase();
+    void destroyDatabase();
 
     /**
      * Inserts a new track into the Jamendo database
@@ -85,64 +83,23 @@ public:
      */
     int insertArtist( ServiceArtist *artist );
 
-    //get id, or -1 if artist does not exist
     /**
-     * Retrieves the id of a named artist
-     * @param name artist name to retrieve
-     * @return id of artist. -1 if no artist is found
+     * inserts a new genre into the Jamendo database
+     * @param genre pointer to the genre to insert
+     * @return the database id of the newly inserted genre
      */
-    int getArtistIdByExactName(const QString &name);
+    int insertGenre( ServiceGenre *genre );
 
-    /**
-     * Returns all artist that has albums in a given genre. If an artist has both a Rock
-     * and a Techno album, he will be included when searching for either
-     * @param genre the genre
-     * @return  A list of artist in the genre
-     */
-    ArtistList getArtistsByGenre( const QString &genre );
 
     /**
-     * Returns the artist with a given id
-     * @param id The id of the artist to look for
-     * @return The artist with the given id. Returns an empty artist if not found.
+     * Begins a database transaction. Must be followed by a later call to commit()
      */
-    ServiceArtist * getArtistById( int id );
+    void begin();
 
     /**
-     * Returns the album with a given id
-     * @param id The id of the album to look for
-     * @return The album with the given id. Returns an empty album if not found.
+     * Completes (executes) a database transaction. Must be preceded by a call to begin()
      */
-    ServiceAlbum * getAlbumById( int id );
-
-
-     /**
-     * Returns the track with a given id
-     * @param id The id of the track to look for
-     * @return The track with the given id. Returns an empty album if not found.
-     */
-    ServiceTrack * getTrackById( int id );
-
-     /**
-     * Retrieves all albums by a single artist from the database
-     * @param id The id of the artist
-     * @param genre Limits the albums to a specific genre. Use "All" to get all albums
-     * @return List of albums. empty if none are found
-     */
-    AlbumList getAlbumsByArtistId(int id, const QString &genre);
-
-     /**
-     * Retrieves all tracks on a given album
-     * @param id The id of the album
-     * @return A list of tracks. Empty if album is not found or has no tracks
-     */
-    TrackList getTracksByAlbumId(int id);
-
-     /**
-     * Retrieves a list of all genres present in the databse
-     * @return A list of genres
-     */
-    QStringList getAlbumGenres();
+    void commit();
 
 
 

@@ -25,7 +25,9 @@
 #include "threadmanager.h"
 
 #include <QDomElement>
+#include <QMap>
 #include <QString>
+#include <QStringList>
 
 /**
 * Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
@@ -82,6 +84,8 @@ private:
     JamendoDatabaseHandler * m_dbHandler;
 
     QString m_sFileName;
+
+    QMap<int, QStringList> albumTags; //used for applying genres to individual tracks
 
     int m_nNumberOfTracks;
     int m_nNumberOfAlbums;

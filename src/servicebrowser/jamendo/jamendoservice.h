@@ -54,11 +54,13 @@ private slots:
     void listDownloadComplete( KJob* downLoadJob);
     void listDownloadCancelled();
     void doneParsing();
+    void debugSlot();
 
 
 private:
 
     //DatabaseDrivenContentModel * m_model;
+    QPushButton *m_debugButton;
     QPushButton *m_updateListButton;
     KIO::FileCopyJob * m_listDownloadJob;
     JamendoDatabaseHandler * m_dbHandler;

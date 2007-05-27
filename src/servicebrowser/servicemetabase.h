@@ -70,7 +70,7 @@ public:
     virtual ArtistPtr createArtist( const QStringList &rows );
 
     virtual int getGenreSqlRowCount();
-    virtual QString getGenretSqlRows();
+    virtual QString getGenreSqlRows();
     virtual GenrePtr createGenre( const QStringList &rows );
 
 private:
@@ -284,11 +284,11 @@ class ServiceGenre : public Meta::Genre
         //ServiceGenre specific methods
         void addTrack( ServiceTrackPtr track );
         void setName( const QString &name );
-        int trackId();
-        void setTrackId( int trackId ); 
+        int albumId();
+        void setAlbumId( int albumId ); 
 
     private:
-        int m_trackId;
+        int m_albumId;
         QString m_name;
         TrackList m_tracks;
 };

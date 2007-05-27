@@ -49,6 +49,14 @@ void JamendoService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
 
+    m_debugButton = new QPushButton;
+    m_debugButton->setParent( m_bottomPanel );
+    m_debugButton->setText( "Debug"  );
+    m_debugButton->setObjectName( "debugButton" );
+    m_debugButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
+
+    connect( m_debugButton, SIGNAL( clicked() ), this, SLOT( debugSlot() ) );
+
      
     //m_model = new DatabaseDrivenContentModel();
     //m_dbHandler = new JamendoDatabaseHandler();
@@ -56,7 +64,7 @@ void JamendoService::polish()
 
     QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-    levels << CategoryId::Artist << CategoryId::Album;
+    levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
     ServiceMetaFactory * metaFactory = new ServiceMetaFactory( "jamendo" );
@@ -102,7 +110,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 
     if ( downloadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
-    debug() << "MagnatuneBrowser: xml file download complete" << endl;
+    debug() << "JamendoService: xml file download complete" << endl;
    
 
     //testing
@@ -146,6 +154,18 @@ void JamendoService::doneParsing()
     // getModel->setGenre("All");
     //delete sender
     sender()->deleteLater();
+}
+
+void JamendoService::debugSlot()
+{
+
+    debug() << "JamendoService: create xml parser" << endl;
+    JamendoXmlParser * parser = new JamendoXmlParser( "/tmp/dbdump.en.xml" );
+    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+
+    ThreadManager::instance()->queueJob( parser );
+    //downloadJob->deleteLater();
+   // m_listDownloadJob = 0;
 }
 
 #include "jamendoservice.moc"
