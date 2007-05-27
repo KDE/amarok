@@ -69,6 +69,10 @@ public:
     virtual QString getArtistSqlRows();
     virtual ArtistPtr createArtist( const QStringList &rows );
 
+    virtual int getGenreSqlRowCount();
+    virtual QString getGenretSqlRows();
+    virtual GenrePtr createGenre( const QStringList &rows );
+
 private:
 
     QString m_dbTablePrefix;
@@ -269,6 +273,7 @@ class ServiceGenre : public Meta::Genre
 {
     public:
         ServiceGenre( const QString &name );
+        ServiceGenre( const QStringList &row );
         virtual ~ServiceGenre();
 
         virtual QString name() const;

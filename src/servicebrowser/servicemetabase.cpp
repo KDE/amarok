@@ -94,6 +94,25 @@ ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
 
 }
 
+int ServiceMetaFactory::getGenreSqlRowCount()
+{
+    return 2;
+}
+
+QString ServiceMetaFactory::getGenretSqlRows()
+{
+
+    //subclasses must not change the order of these items, but only append new ones
+    return "name, "
+           "track_id ";
+
+}
+
+GenrePtr ServiceMetaFactory::createGenre(const QStringList & rows)
+{
+    return GenrePtr( new ServiceGenre ( rows ) );
+}
+
 
 
 ServiceTrack::ServiceTrack(const QString & name)
@@ -705,6 +724,13 @@ ServiceGenre::ServiceGenre( const QString &name )
     //nothing to do
 }
 
+ServiceGenre::ServiceGenre(const QStringList & row)
+    : Meta::Genre()
+    , m_tracks()
+{
+    m_name = row[0];
+}
+
 ServiceGenre::~ServiceGenre()
 {
     //nothing to do
@@ -828,4 +854,8 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+
+
+
 
