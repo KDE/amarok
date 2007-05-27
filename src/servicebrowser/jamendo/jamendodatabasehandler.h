@@ -21,7 +21,6 @@
 #define JAMENDODATABASEHANDLER_H
 
 #include "collectiondb.h"
-#include "databasehandlerbase.h"
 #include "jamendotypes.h"
 
 

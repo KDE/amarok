@@ -33,7 +33,7 @@ class ServiceCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
-        ServiceCollection( DatabaseHandlerBase * dbHandler );
+        ServiceCollection( );
         virtual ~ServiceCollection();
 
         virtual void startFullScan();
@@ -41,12 +41,6 @@ class ServiceCollection : public Collection, public MemoryCollection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-
-
-
-    private:
-
-        DatabaseHandlerBase * m_dbHandler;
 
 };
 

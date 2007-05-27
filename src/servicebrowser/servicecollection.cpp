@@ -37,77 +37,13 @@ using namespace Meta;
 
 //ServiceCollection
 
-ServiceCollection::ServiceCollection(  DatabaseHandlerBase * dbHandler  )
+ServiceCollection::ServiceCollection( )
     : Collection()
     , MemoryCollection()
-    , m_dbHandler( dbHandler )
 {
-    if (m_dbHandler == 0) return;
-
-    //add all data from database hander
-
-    //TODO Pretty please with sugar on top, implement lazy loading! 
 
 
-    TrackMap trackMap;
-    ArtistMap artistMap;
-    AlbumMap albumMap;
-    GenreMap genreMap;
-    ComposerMap composerMap;
-    YearMap yearMap;
 
-    ServiceTrack * currentTrack;
-    ServiceAlbum * currentAlbum;
-    ServiceArtist * currentArtist;
-
-
-    ArtistList artists = dbHandler->getArtistsByGenre( "All" );
-    foreach( ArtistPtr artistPtr, artists ) {
-
-        currentArtist = dynamic_cast< ServiceArtist * > ( artistPtr.data() ); 
-        if( !currentArtist ) continue;
-       //debug() << "Got artist: " << currentArtist->prettyName() << " with id: " <<  currentArtist->id() << endl;
-        AlbumList albums = dbHandler->getAlbumsByArtistId( currentArtist->id(), "All" );
-
-       //debug() << "    artist has " << albums.count() << " albums" << endl;
-
-        foreach( AlbumPtr albumPtr, albums ) {
-
-            currentAlbum = dynamic_cast< ServiceAlbum * > ( albumPtr.data() ); 
-            if( !currentAlbum ) continue;
-            albumMap.insert( albumPtr->name(), albumPtr ); 
-
-            TrackList tracks = dbHandler->getTracksByAlbumId( currentAlbum->id() );
-
-            foreach( TrackPtr trackPtr, tracks ) {
-
-                currentTrack = dynamic_cast< ServiceTrack * > ( trackPtr.data() ); 
-                if( !currentTrack ) continue;
-                currentTrack->setArtist( artistPtr );
-                currentTrack->setAlbum( albumPtr );
-
-                currentAlbum->addTrack( trackPtr );
-                currentArtist->addTrack( trackPtr );
-                trackMap.insert( trackPtr->url(),  trackPtr );
-
-            }
-
-            // debug() << "    album " << albumPtr->name() << endl;
-            currentAlbum->setAlbumArtist( artistPtr );
-        }
-
-        artistMap.insert( artistPtr->name(), artistPtr );
-
-    }
-
-    acquireWriteLock();
-    setTrackMap( trackMap );
-    setArtistMap( artistMap );
-    setAlbumMap( albumMap );
-    setGenreMap( genreMap );
-    setComposerMap( composerMap );
-    setYearMap( yearMap );
-    releaseLock();
 }
 
 ServiceCollection::~ServiceCollection()
