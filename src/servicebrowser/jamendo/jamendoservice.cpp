@@ -17,6 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
+#include "JamendoInfoParser.h"
 #include "jamendoservice.h"
 #include "servicesqlcollection.h"
 
@@ -57,6 +58,11 @@ void JamendoService::polish()
 
     connect( m_debugButton, SIGNAL( clicked() ), this, SLOT( debugSlot() ) );
 
+
+    m_infoParser = new JamendoInfoParser();
+
+    //TODO: move this to base class?
+    connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
      
     //m_model = new DatabaseDrivenContentModel();
     //m_dbHandler = new JamendoDatabaseHandler();

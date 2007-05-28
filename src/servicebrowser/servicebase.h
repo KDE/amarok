@@ -25,6 +25,8 @@
 //#include "servicemodelitembase.h"
 //#include "servicemodelbase.h"
 
+#include "infoparserbase.h"
+
 #include "../collectionbrowser/singlecollectiontreeitemmodel.h"
 #include "../collectionbrowser/collectiontreeitem.h"
 #include "../collectionbrowser/collectiontreeview.h"
@@ -127,6 +129,8 @@ protected:
     QIcon        m_icon;
 
     KUrl::List   m_urlsToInsert;
+
+    InfoParserBase * m_infoParser;
 
     //void addToPlaylist( CollectionTreeItem * item );
 

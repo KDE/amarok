@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "servicebase.h"
+#include "servicemetabase.h"
 
 #include "amarok.h"
 
@@ -195,24 +196,30 @@ SingleCollectionTreeItemModel * ServiceBase::getModel() {
 void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
 
-  /*  debug() << "ServiceBase::infoChanged: " << infoHtml << endl;
+    DEBUG_BLOCK
 
     m_infoBox->begin( );
     m_infoBox->write( infoHtml ); 
     m_infoBox->end();
-*/
+
 }
 
 void ServiceBase::itemSelected( CollectionTreeItem * item )
 {
 
-    DEBUG_BLOCK
+    
 
     Meta::DataPtr ptr = item->data();
 
     if (ptr.data() == 0) return; 
 
     debug() << "selected item: " << ptr.data()->name() << endl;
+
+    ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
+
+    if (infoProvider == 0) return; 
+
+    infoProvider->processInfoOf( m_infoParser );
 
 
 }
