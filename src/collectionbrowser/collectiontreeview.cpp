@@ -11,7 +11,6 @@
 #include "amarok.h"
 #include "collectionbrowser/collectiontreeitem.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
-#include "collectiontreeview.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QContextMenuEvent>

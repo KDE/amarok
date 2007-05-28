@@ -18,10 +18,13 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
+#include "magnatunexmlparser.h"
+
 #include "amarok.h"
 #include "debug.h"
-#include "magnatunexmlparser.h"
 #include "statusbar.h"
+
+#include <QDomDocument>
 
 
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )

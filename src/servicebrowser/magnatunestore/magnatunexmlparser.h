@@ -27,7 +27,7 @@
 
 #include <qdom.h>
 #include <QString>
-#include <QtXml>
+#include <QDomElement>
 
 
 /**
