@@ -51,6 +51,7 @@ void Sonogram::resizeEvent(QResizeEvent *e)
 
 void Sonogram::analyze(const Scope &s)
 {
+    Q_UNUSED( s )
 //     Analyzer::interpolate( s, m_scope );
     update();
 }
@@ -68,7 +69,7 @@ Sonogram::paintEvent( QPaintEvent * )
     Scope::const_iterator it = s.begin(), end = s.end();
     for (int y = height() - 1; y;) {
         if (it >= end || *it < .005)
-            c = backgroundColor();
+            c = p.background().color();
         else if (*it < .05)
             c.setHsv(95, 255, 255 - int(*it * 4000.0));
         else if (*it < 1.0)
