@@ -17,9 +17,9 @@
 #include "reader.h"
 
 #include "authentication/contentfetcher.h"
+#include "daapcollection.h"
 #include "daapmeta.h"
 #include "debug.h"
-#include "memorycollection.h"
 
 #include <QByteArray>
 #include <QDateTime>
@@ -32,7 +32,7 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader( MemoryCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
+Reader::Reader( DaapCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
     : QObject( parent )
     , m_memColl( mc )
     , m_host( host )
@@ -303,7 +303,7 @@ Reader::songListFinished( int /*id*/, bool error )
         debug() << "begin iteration..." << endl;
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
         QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
-        DaapTrackPtr track( new DaapTrack( m_host, m_port, m_databaseId, itemId, format ) );
+        DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
         track->setTitle( var.toMap()["minm"].toList().size() ? var.toMap()["minm"].toList()[0].toString() : QString() );
         track->setLength( var.toMap()["astm"].toList().size() ? var.toMap()["astm"].toList()[0].toInt()/1000 : 0 );
         track->setTrackNumber( var.toMap()["astn"].toList().size() ? var.toMap()["astn"].toList()[0].toInt() : 0);

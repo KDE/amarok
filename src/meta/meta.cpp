@@ -18,7 +18,20 @@
 
 #include "meta.h"
 
+#include "collection.h"
 #include "querymaker.h"
+
+bool
+Meta::Track::inCollection() const
+{
+    return false;
+}
+
+Collection*
+Meta::Track::collection() const
+{
+    return 0;
+}
 
 void
 Meta::Track::addMatchTo( QueryMaker *qm )

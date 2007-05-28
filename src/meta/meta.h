@@ -29,6 +29,7 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
+class Collection;
 class QueryMaker;
 
 namespace Meta
@@ -159,6 +160,13 @@ namespace Meta
             virtual void finishedPlaying( double playedFraction );
 
             virtual void addMatchTo( QueryMaker* qm );
+
+            /** returns true if the track is part of a collection false otherwise */
+            virtual bool inCollection() const;
+            /**
+                returns the collection that the track is part of, or 0 iff
+                inCollection() returns false */
+            virtual Collection* collection() const;
 
             virtual void subscribe( TrackObserver *observer ) = 0;
             virtual void unsubscribe( TrackObserver *observer ) = 0;

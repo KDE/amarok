@@ -19,7 +19,7 @@
 
 class QString;
 
-class MemoryCollection;
+class DaapCollection;
 class QHttpResponseHeader;
 
 namespace Daap
@@ -48,7 +48,7 @@ namespace Daap
         Q_OBJECT
 
         public:
-            Reader( MemoryCollection *mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name );
+            Reader( DaapCollection *mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name );
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
@@ -85,7 +85,7 @@ namespace Daap
 
             static QMap<QString, Code> s_codes;
 
-            MemoryCollection *m_memColl;
+            DaapCollection *m_memColl;
             QString m_host;
             quint16 m_port;
             QString m_loginString;

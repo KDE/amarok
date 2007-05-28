@@ -90,6 +90,9 @@ class SqlTrack : public Track
 
         virtual void finishedPlaying( double playedFraction );
 
+        virtual bool inCollection() const;
+        virtual Collection* collection() const;
+
     protected:
         void notifyObservers();
         void commitMetaDataChanges();

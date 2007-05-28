@@ -18,8 +18,11 @@
 
 #include "daapmeta.h"
 
-DaapTrack::DaapTrack( const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
+#include "daapcollection.h"
+
+DaapTrack::DaapTrack( DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
     : Meta::Track()
+    , m_collection( collection )
     , m_artist( 0 )
     , m_album( 0 )
     , m_genre( 0 )
@@ -258,6 +261,18 @@ void
 DaapTrack::unsubscribe( TrackObserver *observer )
 {
     Q_UNUSED( observer )    //read only
+}
+
+bool
+DaapTrack::inCollection() const
+{
+    return true;
+}
+
+Collection*
+DaapTrack::collection() const
+{
+    return m_collection;
 }
 
 void

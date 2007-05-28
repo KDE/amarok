@@ -422,6 +422,18 @@ SqlTrack::finishedPlaying( double playedFraction )
     m_collection->query( update );
 }
 
+bool
+SqlTrack::inCollection() const
+{
+    return true;
+}
+
+Collection*
+SqlTrack::collection() const
+{
+    return m_collection;
+}
+
 
 //---------------------- class Artist --------------------------
 

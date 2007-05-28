@@ -23,6 +23,8 @@
 
 using namespace Meta;
 
+class DaapCollection;
+
 class DaapTrack;
 class DaapAlbum;
 class DaapArtist;
@@ -40,7 +42,7 @@ typedef KSharedPtr<DaapYear> DaapYearPtr;
 class DaapTrack : public Meta::Track
 {
     public:
-        DaapTrack( const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format);
+        DaapTrack( DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format);
         virtual ~DaapTrack();
 
         virtual QString name() const;
@@ -98,6 +100,9 @@ class DaapTrack : public Meta::Track
         virtual void subscribe ( TrackObserver *observer );
         virtual void unsubscribe ( TrackObserver *observer );
 
+        virtual bool inCollection() const;
+        virtual Collection* collection() const;
+
         //DaapTrack specific methods
         void setAlbum( DaapAlbumPtr album );
         void setArtist( DaapArtistPtr artist ); 
@@ -109,6 +114,8 @@ class DaapTrack : public Meta::Track
         void setLength( int length );
 
     private:
+        DaapCollection *m_collection;
+
         DaapArtistPtr m_artist;
         DaapAlbumPtr m_album;
         DaapGenrePtr m_genre;
