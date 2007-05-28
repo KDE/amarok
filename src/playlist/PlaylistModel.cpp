@@ -106,6 +106,7 @@ Model::insertTracks( int row, TrackList list )
     int i = 0;
     foreach( TrackPtr track , list )
     {
+        track->subscribe( this );
         m_tracks.insert( row + i, track );
         i++;
     }
@@ -260,6 +261,14 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
         //requires better handling of queries which return multiple results
         insertTracks( m_queryMap.value( qm ), tracks );
     }
+}
+
+void
+Model::metadataChanged( Meta::Track *track )
+{
+    int index = m_tracks.indexOf( Meta::TrackPtr( track ), 0 );
+    if( index != -1 )
+        emit dataChanged( createIndex( index, 0 ), createIndex( index, columnCount() -1 ) );
 }
 
 #include "PlaylistModel.moc"

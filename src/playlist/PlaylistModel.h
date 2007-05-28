@@ -55,7 +55,7 @@ class TrackAdvancer;
     };
 
 
-    class Model : public QAbstractTableModel
+    class Model : public QAbstractTableModel, Meta::TrackObserver
     {
         Q_OBJECT
         public:
@@ -83,6 +83,8 @@ class TrackAdvancer;
             Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
         //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();
+
+            virtual void metadataChanged( Meta::Track *track );
 
         public slots:
             void play( const QModelIndex& index );
