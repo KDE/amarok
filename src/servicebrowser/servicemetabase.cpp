@@ -136,6 +136,7 @@ ServiceTrack::ServiceTrack(const QString & name)
 
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
     : Meta::Track()
+    , ServiceDisplayInfoProvider()
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -478,12 +479,20 @@ ServiceTrack::setLength( int length )
     m_length = length;
 }
 
+
+void ServiceTrack::processInfoOf(InfoParserBase * infoParser)
+{
+    infoParser->getInfo( TrackPtr( this ) );
+}
+
+
 //ServiceArtist
 
 
 
 ServiceArtist::ServiceArtist( const QString & name )
     : Meta::Artist()
+    , ServiceDisplayInfoProvider()
     , m_id( 0 )
     , m_name( name )
     , m_description( 0 )
@@ -562,9 +571,18 @@ QString ServiceArtist::description() const
     return m_description;
 }
 
+void ServiceArtist::processInfoOf(InfoParserBase * infoParser)
+{
+    infoParser->getInfo( ArtistPtr ( this ) );
+}
+
+
+
+
 
 ServiceAlbum::ServiceAlbum( const QString & name )
     : Meta::Album()
+    , ServiceDisplayInfoProvider()
     , m_id( 0 )
     , m_name( name )
     , m_tracks()
@@ -711,12 +729,18 @@ QString ServiceAlbum::description() const
     return m_description;
 }
 
+void ServiceAlbum::processInfoOf(InfoParserBase * infoParser)
+{
+    infoParser->getInfo( AlbumPtr( this ) );
+}
+
 
 
 //ServiceGenre
 
 ServiceGenre::ServiceGenre( const QString &name )
     : Meta::Genre()
+    , ServiceDisplayInfoProvider()
     , m_name( name )
     , m_tracks()
 {
@@ -776,10 +800,16 @@ ServiceGenre::addTrack( ServiceTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
+void ServiceGenre::processInfoOf(InfoParserBase * infoParser)
+{
+    return; // do nothing
+}
+
 //ServiceComposer
 
 ServiceComposer::ServiceComposer( const QString &name )
     : Meta::Composer()
+    , ServiceDisplayInfoProvider()
     , m_name( name )
     , m_tracks()
 {
@@ -815,10 +845,16 @@ ServiceComposer::addTrack( ServiceTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
+void ServiceComposer::processInfoOf(InfoParserBase * infoParser)
+{
+    return; // do nothing
+}
+
 //ServiceYear
 
 ServiceYear::ServiceYear( const QString &name )
     : Meta::Year()
+    , ServiceDisplayInfoProvider()
     , m_name( name )
     , m_tracks()
 {
@@ -853,6 +889,20 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+
+void ServiceYear::processInfoOf(InfoParserBase * infoParser)
+{
+    return; // do nothing
+}
+
+
+
+
+
+
+
+
 
 
 

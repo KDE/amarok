@@ -20,14 +20,17 @@
 #ifndef INFOPARSERBASE_H
 #define INFOPARSERBASE_H
 
-#include "simpleservicetypes.h"
+#include "meta.h"
 
 #include <QObject>
+
+using namespace Meta;
+
 
 /**
 Abstract base class for info parsers
 
-	@author 
+	@author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class InfoParserBase  : public QObject{
 Q_OBJECT
@@ -38,7 +41,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
-    virtual void getInfo( SimpleServiceArtist *artist ) = 0;
+    virtual void getInfo( ArtistPtr artist ) = 0;
 
     /**
      * Overloaded function
@@ -46,7 +49,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param url The album to get info about
      */
-    virtual void getInfo( SimpleServiceAlbum *album ) = 0;
+    virtual void getInfo( AlbumPtr album ) = 0;
 
 
     /**
@@ -55,7 +58,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param url The track to get info about
      */
-    virtual void getInfo( SimpleServiceTrack *album ) = 0;
+    virtual void getInfo( TrackPtr track ) = 0;
 
 signals:
 

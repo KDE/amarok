@@ -20,6 +20,7 @@
 #ifndef SERVICEMETABASE_H
 #define SERVICEMETABASE_H
 
+#include "infoparserbase.h"
 #include "meta.h"
 
 #include <QStringList>
@@ -80,7 +81,20 @@ private:
 
 };
 
-class ServiceTrack : public Meta::Track
+class ServiceDisplayInfoProvider
+{
+
+    public:
+        //ServiceDisplayInfoProvider();
+        //virtual ~ServiceDisplayInfoProvider();
+
+
+        virtual void processInfoOf( InfoParserBase * infoParser ) = 0;
+
+};
+
+
+class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -145,6 +159,8 @@ class ServiceTrack : public Meta::Track
         virtual void subscribe ( TrackObserver *observer );
         virtual void unsubscribe ( TrackObserver *observer );
 
+        virtual void processInfoOf( InfoParserBase * infoParser );
+
         //ServiceTrack specific methods
 
         void setAlbum( AlbumPtr album );
@@ -189,7 +205,7 @@ class ServiceTrack : public Meta::Track
         QString m_type;
 };
 
-class ServiceArtist : public Meta::Artist
+class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider
 {
     public:
 
@@ -201,6 +217,8 @@ class ServiceArtist : public Meta::Artist
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
+
+        virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceArtist specific methods
 
@@ -220,7 +238,7 @@ class ServiceArtist : public Meta::Artist
         
 };
 
-class ServiceAlbum : public Meta::Album
+class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -238,6 +256,8 @@ class ServiceAlbum : public Meta::Album
         virtual void image() const;
         virtual bool canUpdateImage() const;
         virtual void updateImage();
+
+        virtual void processInfoOf( InfoParserBase * infoParser );
 
 
         
@@ -269,7 +289,7 @@ class ServiceAlbum : public Meta::Album
         QString m_artistName;
 };
 
-class ServiceGenre : public Meta::Genre
+class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -280,6 +300,8 @@ class ServiceGenre : public Meta::Genre
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
+
+        virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceGenre specific methods
         void addTrack( ServiceTrackPtr track );
@@ -293,7 +315,7 @@ class ServiceGenre : public Meta::Genre
         TrackList m_tracks;
 };
 
-class ServiceComposer : public Meta::Composer
+class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -304,6 +326,8 @@ class ServiceComposer : public Meta::Composer
 
         virtual TrackList tracks();
 
+        virtual void processInfoOf( InfoParserBase * infoParser );
+
         //ServiceComposer specific methods
         void addTrack( ServiceTrackPtr track );
 
@@ -312,7 +336,7 @@ class ServiceComposer : public Meta::Composer
         TrackList m_tracks;
 };
 
-class ServiceYear : public Meta::Year
+class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider
 {
     public:
         ServiceYear( const QString &name );
@@ -322,6 +346,8 @@ class ServiceYear : public Meta::Year
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
+
+        virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceYear specific methods
         void addTrack( ServiceTrackPtr track );
