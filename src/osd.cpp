@@ -728,6 +728,9 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             // hacky, but works...
             if( osd.contains( "%rating" ) )
                 OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
+            else
+                OSDWidget::setRating( 0 );
+
             osd.replace( "%rating", "" );
 
             if( osd.contains( "%moodbar" )  &&  AmarokConfig::showMoodbar() )
