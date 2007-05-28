@@ -107,12 +107,12 @@ CollectionTreeItem::isDataItem() const
 QueryMaker*
 CollectionTreeItem::queryMaker() const {
     if ( m_data.isNull() )
-        return m_parentCollection->queryBuilder();
+        return m_parentCollection->queryMaker();
     else {
         CollectionTreeItem *tmp = m_parent;
         while( tmp->isDataItem() )
             tmp = tmp->parent();
-        QueryMaker *qm = tmp->parentCollection()->queryBuilder();
+        QueryMaker *qm = tmp->parentCollection()->queryMaker();
         return qm;
     }
 }

@@ -157,7 +157,7 @@ Model::testData()
     }
     if( !local )
         return;
-    QueryMaker *qm = local->queryBuilder();
+    QueryMaker *qm = local->queryMaker();
     qm->startTrackQuery();
     qm->limitMaxResultSize( 10 );
     BlockingQuery bq( qm );

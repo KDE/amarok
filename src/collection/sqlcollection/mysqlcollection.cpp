@@ -32,7 +32,7 @@ MySqlCollection::~MySqlCollection()
 }
 
 QueryMaker*
-MySqlCollection::queryBuilder()
+MySqlCollection::queryMaker()
 {
     return new MySqlQueryMaker( this );
 }

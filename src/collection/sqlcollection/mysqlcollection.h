@@ -27,7 +27,7 @@ class MySqlCollection : public SqlCollection
         MySqlCollection( const QString &id, const QString &prettyName );
         virtual ~MySqlCollection();
 
-        virtual QueryMaker* queryBuilder();
+        virtual QueryMaker* queryMaker();
 
         virtual QString escape( QString text ) const;
 };

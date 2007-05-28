@@ -97,7 +97,7 @@ SqlCollection::prettyName() const
 }
 
 QueryMaker*
-SqlCollection::queryBuilder()
+SqlCollection::queryMaker()
 {
     return new SqlQueryBuilder( this );
 }

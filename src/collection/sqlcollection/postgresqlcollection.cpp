@@ -32,7 +32,7 @@ PostgreSqlCollection::~PostgreSqlCollection()
 }
 
 QueryMaker*
-PostgreSqlCollection::queryBuilder()
+PostgreSqlCollection::queryMaker()
 {
     return new PostgreSqlQueryMaker( this );
 }

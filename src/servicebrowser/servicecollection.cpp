@@ -58,7 +58,7 @@ ServiceCollection::startFullScan()
 }
 
 QueryMaker*
-ServiceCollection::queryBuilder()
+ServiceCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }

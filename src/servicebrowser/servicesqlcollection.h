@@ -32,7 +32,7 @@ class ServiceSqlCollection : public Collection
         virtual ~ServiceSqlCollection();
 
         virtual void startFullScan() {} //TODO
-        virtual QueryMaker* queryBuilder();
+        virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;

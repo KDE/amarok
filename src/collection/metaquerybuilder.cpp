@@ -27,7 +27,7 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
 {
     foreach( Collection *c, collections )
     {
-        QueryMaker *b = c->queryBuilder();
+        QueryMaker *b = c->queryMaker();
         builders.append( b );
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
         //relay signals directly

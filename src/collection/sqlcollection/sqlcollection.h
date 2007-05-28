@@ -48,7 +48,7 @@ class SqlCollection : public Collection
         virtual ~SqlCollection();
 
         virtual void startFullScan() {} //TODO
-        virtual QueryMaker* queryBuilder();
+        virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;

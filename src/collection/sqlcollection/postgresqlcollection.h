@@ -27,7 +27,7 @@ class PostgreSqlCollection : public SqlCollection
         PostgreSqlCollection( const QString &id, const QString &prettyName );
         virtual ~PostgreSqlCollection();
 
-        virtual QueryMaker* queryBuilder();
+        virtual QueryMaker* queryMaker();
 };
 
 #endif

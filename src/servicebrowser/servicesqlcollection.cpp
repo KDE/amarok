@@ -53,7 +53,7 @@ ServiceSqlCollection::prettyName() const
 }
 
 QueryMaker*
-ServiceSqlCollection::queryBuilder()
+ServiceSqlCollection::queryMaker()
 {
     return new ServiceSqlQueryMaker( this, m_metaFactory );
 }

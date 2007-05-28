@@ -37,7 +37,7 @@ class ServiceCollection : public Collection, public MemoryCollection
         virtual ~ServiceCollection();
 
         virtual void startFullScan();
-        virtual QueryMaker* queryBuilder();
+        virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;

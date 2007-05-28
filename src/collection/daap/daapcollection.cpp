@@ -185,7 +185,7 @@ DaapCollection::startFullScan()
 }
 
 QueryMaker*
-DaapCollection::queryBuilder()
+DaapCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }
