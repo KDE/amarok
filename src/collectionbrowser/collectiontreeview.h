@@ -10,6 +10,7 @@
 #define COLLECTIONTREEVIEW_H
 
 #include "collectionsortfilterproxymodel.h"
+#include "collectionbrowser/collectiontreeitem.h"
 
 #include <QSortFilterProxyModel>
 #include <QTreeView>
@@ -34,6 +35,16 @@ class CollectionTreeView: public QTreeView {
     private:
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;
+
+    protected slots:
+
+        virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
+
+    signals:
+
+        void itemSelected( CollectionTreeItem * item );
+
+        
 };
 
 #endif

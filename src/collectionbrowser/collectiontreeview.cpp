@@ -9,7 +9,6 @@
 #include "collectiontreeview.h"
 
 #include "amarok.h"
-#include "collectionbrowser/collectiontreeitem.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "playlist/PlaylistModel.h"
 
@@ -136,6 +135,21 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     }
     else
         debug() << "invalid index or null internalPointer" << endl;
+}
+
+void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
+{
+
+    QModelIndexList indexes = selected.indexes();
+    if ( indexes.count() < 1 )
+        return;
+
+    QModelIndex index = m_filterModel->mapToSource( indexes[0] );
+
+    CollectionTreeItem * item = static_cast<CollectionTreeItem *>( index.internalPointer() );
+
+    emit( itemSelected ( item ) );
+
 }
 
 #include "collectiontreeview.moc"
