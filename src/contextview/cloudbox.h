@@ -34,7 +34,7 @@ namespace Context
     {
         Q_OBJECT
         public:
-            CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+            explicit CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
         protected:
             virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * );
@@ -60,7 +60,7 @@ namespace Context
     {
 
     public:
-        CloudBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+        explicit CloudBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
         void addText( QString text, int weight=10, QObject *receiver=0, const char *slot=0 );
 

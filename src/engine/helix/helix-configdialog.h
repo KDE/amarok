@@ -104,7 +104,7 @@ private:
 class HelixConfigDialog : public Amarok::PluginConfig
 {
 public:
-   HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
+   explicit HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
    ~HelixConfigDialog();
 
    virtual QWidget *view() { return instance->view(); }

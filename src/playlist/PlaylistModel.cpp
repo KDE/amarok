@@ -6,9 +6,10 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "PlaylistModel.h"
+
 #include "debug.h"
 #include "enginecontroller.h"
-#include "PlaylistModel.h"
 #include "StandardTrackAdvancer.h"
 
 #include "collection/blockingquery.h"
@@ -252,6 +253,7 @@ Model::queryDone()
 void
 Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
+    Q_UNUSED( collectionId )
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
     {

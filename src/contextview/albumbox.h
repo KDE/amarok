@@ -32,7 +32,7 @@ namespace Context
     class AlbumItem : public QGraphicsItemGroup
     {
         public:
-            AlbumItem( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+            explicit AlbumItem( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
             ~AlbumItem() { }
 
             void setCover( const QString &location );
@@ -54,7 +54,7 @@ namespace Context
     class AlbumBox : public ContextBox
     {
         public:
-            AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+            explicit AlbumBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
             ~AlbumBox() { /* delete, disconnect and disembark */ }
 
             void addAlbumInfo( const QString &pixLocation, const QString &text );

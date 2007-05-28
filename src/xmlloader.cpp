@@ -17,12 +17,11 @@
   Boston, MA 02110-1301, USA.
 */
 
-
-#include <QApplication>
-
 #include "xmlloader.h"
 #include "xmlloader_p.h"
 #include "xmlloader_p.moc"
+
+#include <QApplication>
 
 MetaBundle::XmlLoader::XmlLoader(): m_aborted( false ), m_target( 0 )
 {

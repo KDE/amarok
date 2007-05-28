@@ -33,7 +33,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
     Q_OBJECT
 
     public:
-        ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+        explicit ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
         ~ContextBox() { /* delete, disconnect and disembark */ }
 
         virtual void setTitle( const QString &title );

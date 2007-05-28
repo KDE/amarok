@@ -15,7 +15,7 @@ class HintLineEdit : public KLineEdit
 
 public:
     HintLineEdit( const QString &hint, const QString &text, QWidget *parent = 0 );
-    HintLineEdit( const QString &text, QWidget *parent = 0 );
+    explicit HintLineEdit( const QString &text, QWidget *parent = 0 );
     HintLineEdit( QWidget *parent = 0 );
     virtual ~HintLineEdit();
     virtual QObject *parent();

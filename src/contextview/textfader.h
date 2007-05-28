@@ -36,7 +36,7 @@ of the backgorund
     class TextFader : public QGraphicsTextItem{
     Q_OBJECT
     public:
-        TextFader(const QString & text, QGraphicsItem * parent = 0);
+        explicit TextFader(const QString & text, QGraphicsItem * parent = 0);
 
         ~TextFader();
 

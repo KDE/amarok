@@ -41,7 +41,7 @@ namespace Context
 
     Q_OBJECT
     public:
-        GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
+        explicit GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
 
         virtual QRectF boundingRect () const;
         void paint(QPainter *painter,

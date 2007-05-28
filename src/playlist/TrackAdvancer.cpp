@@ -6,10 +6,11 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "TrackAdvancer.h"
+
 #include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistModel.h"
-#include "TrackAdvancer.h"
 
 using namespace PlaylistNS;
 
