@@ -20,6 +20,7 @@
 #include "servicebase.h"
 
 #include "amarok.h"
+
 #include "debug.h"
 #include "playlist.h"
 
@@ -71,8 +72,10 @@ ServiceBase::ServiceBase( const QString &name )
     m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
 
     
-    connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
-    connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
+    //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
+    //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
+
+     connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
     m_infoBox = new KHTMLPart( m_mainSplitter );
     //m_infoBox->view()->widget()->setFrameStyle(QFrame::StyledPanel | QFrame::Plain); //kdelibs error?
@@ -172,43 +175,8 @@ void ServiceBase::homeButtonClicked( )
 void ServiceBase::itemActivated ( const QModelIndex & index ) {
 
 
-  /*  debug() << "ServiceBase::itemActivated item double clicked: " << endl;
-    if (!index.isValid())
-        return;
-    else {
-      // ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(m_filterModel->mapToSource( index ).internalPointer() );
-      ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>( index.internalPointer() );
-      addToPlaylist( item );
-    }
-
-    Playlist::instance()->proposePlaylistName( "test" );
-    Playlist::instance()->insertMedia( m_urlsToInsert , Playlist::Append);
-    m_urlsToInsert.clear();
-*/
  }
 
-/*void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
-    
-
-    debug() << "ServiceBase::addToPlaylist adding item: " << item->data(0) << endl;
-    if (! item->hasChildren() ) {
-        QString url = item->getUrl();
-        debug() << "ServiceBase::addToPlaylist url to add: " << url << endl;
-        if ( !url.isEmpty() ) {
-            m_urlsToInsert += KUrl( url );
-        }
-    } else {
-
-       item->prePopulate();
-       item->populate();
-
-        QList<ServiceModelItemBase*> childItems = item->getChildItems();
-        for (int i = 0; i < childItems.size(); ++i) {
-            addToPlaylist( childItems.at(i) );
-        }
-    }
-    return;
-}*/
 
 void ServiceBase::setModel( SingleCollectionTreeItemModel * model ) {
 
@@ -216,7 +184,6 @@ void ServiceBase::setModel( SingleCollectionTreeItemModel * model ) {
     //m_contentView->setModel( m_filterModel );
     m_contentView->setModel( model );
     m_model  = model;
-    connect ( m_model, SIGNAL( infoChanged ( const QString &) ), this, SLOT( infoChanged ( const QString &) ) );
 }
 
 
@@ -224,12 +191,6 @@ SingleCollectionTreeItemModel * ServiceBase::getModel() {
     return m_model;
 }
 
-void ServiceBase::treeItemSelected( const QModelIndex & index ) {
-
-   /* m_model->requestHtmlInfo( index  );
-    emit ( selectionChanged ( static_cast<ServiceModelItemBase*>( index.internalPointer() ) ) );
-*/
-}
 
 void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
@@ -240,6 +201,20 @@ void ServiceBase::infoChanged ( const QString &infoHtml ) {
     m_infoBox->write( infoHtml ); 
     m_infoBox->end();
 */
+}
+
+void ServiceBase::itemSelected( CollectionTreeItem * item )
+{
+
+    DEBUG_BLOCK
+
+    Meta::DataPtr ptr = item->data();
+
+    if (ptr.data() == 0) return; 
+
+    debug() << "selected item: " << ptr.data()->name() << endl;
+
+
 }
 
 

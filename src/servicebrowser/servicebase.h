@@ -26,7 +26,7 @@
 //#include "servicemodelbase.h"
 
 #include "../collectionbrowser/singlecollectiontreeitemmodel.h"
-
+#include "../collectionbrowser/collectiontreeitem.h"
 #include "../collectionbrowser/collectiontreeview.h"
 
 #include <khtml_part.h>
@@ -79,7 +79,8 @@ public:
 
 public slots:
 
-     void infoChanged ( const QString &infoHtml );
+    //void treeViewSelectionChanged( const QItemSelection & selected );
+    void infoChanged ( const QString &infoHtml );
 
 
 signals:
@@ -100,7 +101,7 @@ protected slots:
 
     void itemActivated ( const QModelIndex & index );
 
-    void treeItemSelected( const QModelIndex & index );
+    void itemSelected( CollectionTreeItem * item  );
 
 
 protected:
