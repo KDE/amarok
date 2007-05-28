@@ -636,7 +636,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             if( osd.contains( "%rating" ) )
                 OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
             else
-                OSDWudget::setRating( 0 );
+                OSDWidget::setRating( 0 );
 
             osd.replace( "%rating", "" );
 
