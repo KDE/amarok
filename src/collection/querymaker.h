@@ -66,7 +66,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         */
         virtual QueryMaker* reset() = 0;
         /**
-            starts the query. This method returns immediatly. All processing is done in one or more
+            starts the query. This method returns immediately. All processing is done in one or more
             separate worker thread(s). One of the newResultReady signals will be emitted at least once,
             followed by the queryDone() signal exactly once. See BlockingQuery for a way to run a query
             synchronously.
