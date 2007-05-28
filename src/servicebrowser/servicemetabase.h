@@ -85,9 +85,8 @@ class ServiceDisplayInfoProvider
 {
 
     public:
-        //ServiceDisplayInfoProvider();
-        //virtual ~ServiceDisplayInfoProvider();
-
+        ServiceDisplayInfoProvider() {}
+        virtual ~ServiceDisplayInfoProvider() {}
 
         virtual void processInfoOf( InfoParserBase * infoParser ) = 0;
 
