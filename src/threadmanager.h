@@ -87,6 +87,7 @@ protected:    bool m_aborted;
 
 class ThreadManager : public QObject
 {
+Q_OBJECT
 public:
     class Thread;
     friend class Thread;

@@ -27,9 +27,10 @@
 #include <kstandarddirs.h>
 
 KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KMenu* rootmenu )
-        : QObject( parent, "KBookmarkHandler" )
+        : QObject( parent )
         , KBookmarkOwner()
 {
+    setObjectName( "KBookmarkHandler" );
     const QString file = Amarok::saveLocation() + "fileBrowserBookmarks.xml";
 
     // FIXME: which dbus object?
@@ -50,3 +51,5 @@ KBookmarkHandler::openBookmarkURL( const QString &url )
 {
     static_cast<KDirOperator*>(parent())->setUrl( KUrl(url), true );
 }
+
+#include "kbookmarkhandler.moc"

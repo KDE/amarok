@@ -28,6 +28,7 @@ class KMenu;
 
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {
+Q_OBJECT
 public:
     KBookmarkHandler( KDirOperator *parent, KMenu* );
 
