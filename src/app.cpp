@@ -1102,6 +1102,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
+    Amarok::OSD::instance()->setRating( bundle.rating() );
     Amarok::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
         m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
