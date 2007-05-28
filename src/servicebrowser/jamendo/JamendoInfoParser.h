@@ -14,61 +14,36 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#ifndef INFOPARSERBASE_H
-#define INFOPARSERBASE_H
+#ifndef JAMENDOINFOPARSER_H
+#define JAMENDOINFOPARSER_H
 
-#include "meta.h"
-
-#include <QObject>
-
-using namespace Meta;
-
+#include <infoparserbase.h>
 
 /**
-Abstract base class for info parsers
+Handles the fetching and processing of Jamendo specific information for meta items
 
-	@author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author 
 */
-class InfoParserBase  : public QObject{
+class JamendoInfoParser : public InfoParserBase
+{
 Q_OBJECT
 
 public:
+    JamendoInfoParser();
 
-    InfoParserBase();
-
-     /**
-     * Fetches info about artist and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param artist The artist to get info about
-     */
-    virtual void getInfo( ArtistPtr artist ) = 0;
-
-    /**
-     * Overloaded function
-     * Fetches info about album and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The album to get info about
-     */
-    virtual void getInfo( AlbumPtr album ) = 0;
+    ~JamendoInfoParser();
 
 
-    /**
-     * Overloaded function
-     * Fetches info about track and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The track to get info about
-     */
-    virtual void getInfo( TrackPtr track ) = 0;
+    virtual void getInfo( ArtistPtr artist );
+    virtual void getInfo( AlbumPtr album );
+    virtual void getInfo( TrackPtr track );
 
 signals:
 
     void info( QString );
-
-
 };
-
 
 #endif

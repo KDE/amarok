@@ -17,58 +17,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef INFOPARSERBASE_H
-#define INFOPARSERBASE_H
+#include "infoparserbase.h"
 
-#include "meta.h"
+InfoParserBase::InfoParserBase()
+  : QObject() 
+{
 
-#include <QObject>
+}
 
-using namespace Meta;
-
-
-/**
-Abstract base class for info parsers
-
-	@author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class InfoParserBase  : public QObject{
-Q_OBJECT
-
-public:
-
-    InfoParserBase();
-
-     /**
-     * Fetches info about artist and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param artist The artist to get info about
-     */
-    virtual void getInfo( ArtistPtr artist ) = 0;
-
-    /**
-     * Overloaded function
-     * Fetches info about album and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The album to get info about
-     */
-    virtual void getInfo( AlbumPtr album ) = 0;
-
-
-    /**
-     * Overloaded function
-     * Fetches info about track and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The track to get info about
-     */
-    virtual void getInfo( TrackPtr track ) = 0;
-
-signals:
-
-    void info( QString );
-
-
-};
-
-
-#endif
+#include "infoparserbase.moc"

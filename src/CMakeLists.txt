@@ -97,6 +97,7 @@ set(libservicebrowser_SRCS
     servicebrowser/servicecollection.cpp
     servicebrowser/servicesqlquerymaker.cpp
     servicebrowser/servicesqlcollection.cpp
+    servicebrowser/infoparserbase.cpp
 
 )
 
@@ -118,6 +119,7 @@ set(libjamendoservice_SRCS
     servicebrowser/jamendo/jamendotypes.cpp
     servicebrowser/jamendo/jamendodatabasehandler.cpp
     servicebrowser/jamendo/jamendoxmlparser.cpp
+    servicebrowser/jamendo/JamendoInfoParser.cpp
 )
 
 #####################################################################
