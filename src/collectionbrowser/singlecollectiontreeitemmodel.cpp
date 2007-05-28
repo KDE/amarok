@@ -22,6 +22,7 @@
 #include <KLocale>
 #include <KIcon>
 #include <KIconLoader>
+#include <KStandardDirs>
 #include <QMapIterator>
 #include <QMimeData>
 #include <QPixmap>
@@ -29,11 +30,22 @@
 
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
-    :CollectionTreeItemModelBase( )
+    :CollectionTreeItemModelBase( ) 
+    , m_animFrame( 0 )
+    , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
+    , m_currentAnimPixmap( m_loading1 )
 
 {
     m_collection = collection;
     setLevels( levelType );
+
+    m_timeLine = new QTimeLine( 10000, this );
+
+    //m_timeLine->setDuration( 500 );
+    m_timeLine->setFrameRange( 0, 20 );
+    m_timeLine->setLoopCount ( 0 );
+    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
 }
 
 
@@ -61,9 +73,19 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     if ( item->isDataItem() )
     {
         if ( role == Qt::DecorationRole ) {
-            //don't substract one here like in colelctintreeitemmodel because
-            //there is no collectin level here
+            //don't substract one here like in collectiontreeitemmodel because
+            //there is no collection level here
+
+            //check if the item being queried is currently being populated
+
             int level = item->level();
+
+            if ( d->m_childQueries.values().contains( item ) ) {
+                if ( level < m_levelType.count() )
+                    return m_currentAnimPixmap;
+            }
+
+
             if ( level < m_levelType.count() )
                 return iconForLevel( level );
         }
@@ -93,6 +115,8 @@ void
 SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
     if ( !item->childrenLoaded() ) {
         listForLevel( item->level() +1, item->queryMaker(), item );
+        //if (m_timeLine->state() != QTimeLine::Running) 
+            m_timeLine->start();
     }
 }
 
@@ -115,6 +139,30 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
     else
         item = m_rootItem;
     ensureChildrenLoaded( item );
+}
+
+void SingleCollectionTreeItemModel::loadingAnimationTick()
+{
+
+    DEBUG_BLOCK
+    if ( m_animFrame == 0 ) 
+        m_currentAnimPixmap = m_loading2;
+    else
+        m_currentAnimPixmap = m_loading1;
+
+    m_animFrame = 1 - m_animFrame;
+
+
+    //trigger an update of all items being populated at the moment;
+    QList<CollectionTreeItem* > items = d->m_childQueries.values();
+
+    foreach (CollectionTreeItem* item, items) {
+
+        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+    }
+
+    
+
 }
 
 

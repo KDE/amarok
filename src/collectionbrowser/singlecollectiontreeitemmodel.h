@@ -18,6 +18,8 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPair>
+#include <QPixmap>
+#include <QTimeLine>
 
 using namespace Meta;
 
@@ -43,6 +45,17 @@ Q_OBJECT
 
         Collection* m_collection;
         QueryMaker* m_queryMaker;
+
+
+        QTimeLine *m_timeLine;
+        int m_animFrame;
+        
+        QPixmap m_loading1, m_loading2, m_currentAnimPixmap;    //icons for loading animation
+
+    protected slots:
+
+        void loadingAnimationTick();
+
 };
 
 #endif
