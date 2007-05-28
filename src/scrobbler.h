@@ -1,8 +1,23 @@
-// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
-// (c) 2006 Shane King <kde@dontletsstart.com>
-// (c) 2006 Iain Benson <iain@arctos.me.uk>
-// See COPYING file for licensing information
+/* 
+   Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+   Copyright (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+   Copyright (c) 2006 Shane King <kde@dontletsstart.com>
+   Copyright (c) 2006 Iain Benson <iain@arctos.me.uk>
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+*/
 
 #ifndef AMAROK_SCROBBLER_H
 #define AMAROK_SCROBBLER_H
