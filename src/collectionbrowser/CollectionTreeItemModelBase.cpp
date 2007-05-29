@@ -14,29 +14,39 @@
 
 #include "CollectionTreeItemModelBase.h"
 
-#include "collectiontreeitem.h"
-#include "debug.h"
 #include "amarok.h"
 #include "collection.h"
 #include "collectionmanager.h"
+#include "collectiontreeitem.h"
+#include "debug.h"
 #include "querymaker.h"
 
-#include <KLocale>
 #include <KIcon>
 #include <KIconLoader>
+#include <KLocale>
+#include <KStandardDirs>
 #include <QMimeData>
 #include <QPixmap>
 #include <QTimer>
-
-
-
 
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     :QAbstractItemModel()
     , m_rootItem( 0 )
     , d( new Private )
+    , m_animFrame( 0 )
+    , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
+    , m_currentAnimPixmap( m_loading1 )
 {
+
+
+    m_timeLine = new QTimeLine( 10000, this );
+    m_timeLine->setFrameRange( 0, 20 );
+    m_timeLine->setLoopCount ( 0 );
+    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
+
+
 }
 
 
@@ -221,7 +231,15 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->m_childQueries.insert( qm, parent );
         qm->run();
+
+       //start animation
+       if ( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) ) 
+           m_timeLine->start();
+
+
     }
+
+
 }
 
 
@@ -262,7 +280,16 @@ CollectionTreeItemModelBase::queryDone()
 {
     //DEBUG_BLOCK
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
-    d->m_childQueries.remove( qm );
+    CollectionTreeItem* item = d->m_childQueries.take( qm );
+
+    //reset icon for this item
+    if ( item != m_rootItem )
+        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+
+    //stop timer if there are no more animations active
+    if (d->m_childQueries.count() == 0 )
+        m_timeLine->stop();
+
     QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );
 }
 
@@ -325,6 +352,30 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
         case CategoryId::Year : return i18n( "Year" );
         default: return QString();
     }
+}
+
+void CollectionTreeItemModelBase::loadingAnimationTick()
+{
+
+    DEBUG_BLOCK
+    if ( m_animFrame == 0 ) 
+        m_currentAnimPixmap = m_loading2;
+    else
+        m_currentAnimPixmap = m_loading1;
+
+    m_animFrame = 1 - m_animFrame;
+
+
+    //trigger an update of all items being populated at the moment;
+    QList<CollectionTreeItem* > items = d->m_childQueries.values();
+
+    foreach (CollectionTreeItem* item, items) {
+
+        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+    }
+
+    
+
 }
 
 

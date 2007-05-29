@@ -22,7 +22,6 @@
 #include <KLocale>
 #include <KIcon>
 #include <KIconLoader>
-#include <KStandardDirs>
 #include <QMapIterator>
 #include <QMimeData>
 #include <QPixmap>
@@ -31,21 +30,10 @@
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( ) 
-    , m_animFrame( 0 )
-    , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
-    , m_currentAnimPixmap( m_loading1 )
-
 {
     m_collection = collection;
     setLevels( levelType );
 
-    m_timeLine = new QTimeLine( 10000, this );
-
-    //m_timeLine->setDuration( 500 );
-    m_timeLine->setFrameRange( 0, 20 );
-    m_timeLine->setLoopCount ( 0 );
-    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
 }
 
 
@@ -115,8 +103,6 @@ void
 SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
     if ( !item->childrenLoaded() ) {
         listForLevel( item->level() +1, item->queryMaker(), item );
-        //if (m_timeLine->state() != QTimeLine::Running) 
-            m_timeLine->start();
     }
 }
 
@@ -141,29 +127,7 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
     ensureChildrenLoaded( item );
 }
 
-void SingleCollectionTreeItemModel::loadingAnimationTick()
-{
 
-    DEBUG_BLOCK
-    if ( m_animFrame == 0 ) 
-        m_currentAnimPixmap = m_loading2;
-    else
-        m_currentAnimPixmap = m_loading1;
-
-    m_animFrame = 1 - m_animFrame;
-
-
-    //trigger an update of all items being populated at the moment;
-    QList<CollectionTreeItem* > items = d->m_childQueries.values();
-
-    foreach (CollectionTreeItem* item, items) {
-
-        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
-    }
-
-    
-
-}
 
 
 #include "singlecollectiontreeitemmodel.moc"

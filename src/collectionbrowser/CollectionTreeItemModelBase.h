@@ -18,6 +18,7 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPair>
+#include <QTimeLine>
 
 using namespace Meta;
 
@@ -88,6 +89,15 @@ Q_OBJECT
 
         class Private;
         Private * const d;
+
+        QTimeLine *m_timeLine;
+        int m_animFrame;
+        QPixmap m_loading1, m_loading2, m_currentAnimPixmap;    //icons for loading animation
+
+    
+    protected slots:
+
+        void loadingAnimationTick();
 
 
 };

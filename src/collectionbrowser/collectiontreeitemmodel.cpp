@@ -70,6 +70,12 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
     {
         if ( role == Qt::DecorationRole ) {
             int level = item->level() -1;
+
+            if ( d->m_childQueries.values().contains( item ) ) {
+                if ( level < m_levelType.count() )
+                    return m_currentAnimPixmap;
+            }
+
             if ( level < m_levelType.count() )
                 return iconForLevel( level );
         }
