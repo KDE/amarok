@@ -7,8 +7,7 @@ KDE_CFLAGS = \
 libsqlite_la_CFLAGS = \
     $(all_includes) \
     -DTHREADSAFE=1 \
-    -DHAVE_USLEEP=1 \
-    -fno-strict-aliasing
+    -DHAVE_USLEEP=1
 
 libsqlite_la_LDFLAGS = \
     $(LIBPTHREAD)
