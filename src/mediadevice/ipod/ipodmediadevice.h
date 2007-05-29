@@ -144,6 +144,7 @@ class IpodMediaDevice : public MediaDevice
         bool              m_isMobile;
         bool              m_supportsArtwork;
         bool              m_supportsVideo;
+        bool              m_rockboxFirmware;
 
         IpodMediaItem    *getArtist( const QString &artist );
         IpodMediaItem    *getAlbum( const QString &artist, const QString &album );

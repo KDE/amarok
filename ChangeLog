@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * iPod device plugin now handles RockBox devices.  Thanks to Michael
+      Buesch <mb@bu3sch.de> for the patch.
     * Organising files will only delete empty parent folders if the folder
       is within the collection hierarchy. (BR 136757)
     * The default cover image preview size has been increased to 130px.

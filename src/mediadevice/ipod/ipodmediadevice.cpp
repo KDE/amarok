@@ -266,6 +266,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_playlistItem = 0;
     m_supportsArtwork = true;
     m_supportsVideo = false;
+    m_rockboxFirmware = false;
     m_isShuffle = true;
     m_isMobile = false;
 
@@ -1044,6 +1045,7 @@ IpodMediaDevice::openDevice( bool silent )
     m_isMobile = false;
     m_supportsArtwork = false;
     m_supportsVideo = false;
+    m_rockboxFirmware = false;
     m_dbChanged = false;
     m_files.clear();
 
@@ -1252,6 +1254,12 @@ IpodMediaDevice::detectModel()
 
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
+
+        if( pathExists( ":.rockbox" ) )
+        {
+            debug() << "RockBox firmware detected" << endl;
+            m_rockboxFirmware = true;
+        }
     }
     else
     {
@@ -2405,6 +2413,22 @@ IpodMediaDevice::supportedFiletypes()
         list << "mpg";
     }
 
+    if( m_rockboxFirmware )
+    {
+        list << "ogg";
+        list << "mpc";
+        list << "ac3";
+        list << "adx";
+        list << "aiff";
+        list << "flac";
+        list << "mid";
+        list << "midi";
+        list << "shn";
+        list << "wv";
+        list << "ape";
+        list << "tta";
+    }
+
     return list;
 }
 
@@ -2456,6 +2480,7 @@ bool
 IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
 {
     QDir curDir( mountPoint() );
+    curDir.setFilter(curDir.filter() | QDir::Hidden);
     QString curPath = mountPoint();
     QStringList components = QStringList::split( ":", ipodPath );
 
