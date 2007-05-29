@@ -319,6 +319,13 @@ void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filet
 
 
 void
+ScriptManager::notifyPlaylistChange( const QString& change)
+{
+   notifyScripts( "playlistChange: " + change );
+}
+
+
+void
 ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason )
 {
     const QString script = ensureScoreScriptRunning();
@@ -926,6 +933,5 @@ ScriptManager::engineVolumeChanged( int newVolume )
 {
     notifyScripts( "volumeChange: " + QString::number( newVolume ) );
 }
-
 
 #include "scriptmanager.moc"

@@ -100,6 +100,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
        void notifyFetchLyricsByUrl( const QString& url );
 
+       /** Sends a playlistChange notification to all scripts */
+       void notifyPlaylistChange( const QString& change );
+
        /** Return name of the transcode script currently running, or QString::null if none */
        QString transcodeScriptRunning() const;
 

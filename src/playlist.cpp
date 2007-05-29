@@ -523,6 +523,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, int 
             after = static_cast<PlaylistItem*>( after->itemAbove() );
 
         ThreadManager::instance()->queueJob( new UrlLoader( list, after, options ) );
+        ScriptManager::instance()->notifyPlaylistChange("changed");
     }
 }
 
@@ -543,6 +544,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
 
     setSorting( NO_SORT );
     ThreadManager::instance()->queueJob( new SqlLoader( sql, after, options ) );
+    ScriptManager::instance()->notifyPlaylistChange("changed");
 }
 
 void
@@ -606,6 +608,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo )
     if ( x < dynamicMode()->upcomingCount() )
     {
         addDynamicModeTracks( dynamicMode()->upcomingCount() - x );
+        ScriptManager::instance()->notifyPlaylistChange("changed");
     }
 
     if( saveUndo )
@@ -636,6 +639,7 @@ Playlist::adjustDynamicPrevious( uint songCount, bool saveUndo )
         removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
     }
+    ScriptManager::instance()->notifyPlaylistChange("changed");
 }
 
 void
@@ -2141,6 +2145,7 @@ Playlist::clear() //SLOT
     m_albums.clear();
 
     setPlaylistName( i18n( "Untitled" ) );
+    ScriptManager::instance()->notifyPlaylistChange("cleared");
 }
 
 /**
@@ -2448,6 +2453,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
             for( item = items.first(); item; item = items.next() )
                     static_cast<PlaylistItem *>(item)->setDynamicEnabled( enabled );
         }
+        ScriptManager::instance()->notifyPlaylistChange("reordered");
     }
 
     else {
@@ -2461,6 +2467,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
             setSorting( NO_SORT );
             QString query = data.section( "\n", 1 );
             ThreadManager::instance()->queueJob( new SqlLoader( query, after ) );
+            ScriptManager::instance()->notifyPlaylistChange("changed");
         }
 
         else if( subtype == "dynamic" ) {
@@ -3362,6 +3369,7 @@ Playlist::shuffle() //SLOT
         insertItem( item );
 
     updateNextPrev();
+    ScriptManager::instance()->notifyPlaylistChange("reordered");
 }
 
 void
@@ -3429,6 +3437,8 @@ Playlist::removeSelectedItems() //SLOT
     }
 
     updateNextPrev();
+
+    ScriptManager::instance()->notifyPlaylistChange("changed");
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 
     //select next item in list
@@ -4067,6 +4077,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                     removeItem( it );
                     delete it;
                 }
+                ScriptManager::instance()->notifyPlaylistChange("cleared");
             }
         }
         break;

@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * Playlist now sends notifications to scripts if items are added, removed,
+      reordered, or if the playlist is cleared.  Useful for script authors.
+      Thanks to Miguel Angel Alvarez <maacruz@gmail.com> for the patch.
     * iPod device plugin now handles RockBox devices.  Thanks to Michael
       Buesch <mb@bu3sch.de> for the patch.
     * Organising files will only delete empty parent folders if the folder
