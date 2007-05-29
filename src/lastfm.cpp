@@ -139,9 +139,10 @@ AmarokHttp::slotResult(KIO::Job* job)
 Controller *Controller::s_instance = 0;
 
 Controller::Controller()
-    : QObject( EngineController::instance(), "lastfmController" )
+    : QObject( EngineController::instance() )
     , m_service( 0 )
 {
+    setObjectName( "lastfmController" );
     KActionCollection* ac = Amarok::actionCollection();
     KAction *action = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n( "Ban" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( ban() ) );
@@ -235,8 +236,8 @@ Controller::createCustomStation() //static
     CustomStationDialog dialog( 0 );
 
     if( dialog.exec() == QDialog::Accepted ) {
-        const QStringList artists = QStringList::split( ",", dialog.text() );
-        for( uint i = 0; i < artists.count(); i++ )
+        const QStringList artists = dialog.text().split( ',' );
+        for( int i = 0; i < artists.count(); i++ )
             token += ( i > 0 ? "," : "" ) + artists[i].simplified();
     }
 
@@ -288,7 +289,7 @@ Controller::stationDescription( QString url )
 
     if( url.isEmpty() ) return QString();
 
-    QStringList elements = QStringList::split( "/", url );
+    QStringList elements = url.split( '/' );
 
     /// TAG RADIOS
     // eg: lastfm://globaltag/rock
@@ -314,7 +315,7 @@ Controller::stationDescription( QString url )
         // turn "genesis,pink floyd,queen" into "Genesis, Pink Floyd, Queen"
         QString artists = elements[2];
         artists.replace( ",", ", " );
-        const QStringList words = QStringList::split( " ", QString( artists ).remove( "," ) );
+        const QStringList words = QString( artists ).remove( "," ).split( " " );
         oldForeach( words ) {
             QString capitalized = *it;
             capitalized.replace( 0, 1, (*it)[0].toUpper() );
@@ -368,9 +369,10 @@ Controller::stationDescription( QString url )
 ////////////////////////////////////////////////////////////////////////////////
 
 WebService::WebService( QObject* parent )
-    : QObject( parent, "lastfmParent" )
+    : QObject( parent )
     , m_server( 0 )
 {
+    setObjectName( "lastfmParent" );
     debug() << "Initialising Web Service" << endl;
 }
 
@@ -596,8 +598,8 @@ WebService::fetchImageFinished( KIO::Job* job ) //SLOT
         const QString path = Amarok::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
-        QImage img( static_cast<KIO::StoredTransferJob*>( job )->data() );
-        img.smoothScale( size, size ).save( path, "PNG" );
+        QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
+        img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
 
         m_metaBundle.lastFmBundle()->setImageUrl( CollectionDB::makeShadowedImage( path, false ) );
     }
@@ -748,7 +750,7 @@ WebService::friendsFinished( int /*id*/, bool error ) //SLOT
     QStringList friends;
     QString user = document.elementsByTagName( "friends" ).item( 0 ).attributes().namedItem( "user" ).nodeValue();
     QDomNodeList values = document.elementsByTagName( "user" );
-    for ( uint i = 0; i < values.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
         friends << values.item( i ).attributes().namedItem( "username" ).nodeValue();
     }
@@ -790,7 +792,7 @@ WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
     QStringList neighbours;
     QString user = document.elementsByTagName( "neighbours" ).item( 0 ).attributes().namedItem( "user" ).nodeValue();
     QDomNodeList values = document.elementsByTagName( "user" );
-    for ( uint i = 0; i < values.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
         neighbours << values.item( i ).attributes().namedItem( "username" ).nodeValue();
     }
@@ -832,7 +834,7 @@ WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
     QStringList tags;
     QDomNodeList values = document.elementsByTagName( "tag" );
     QString user = document.elementsByTagName( "toptags" ).item( 0 ).attributes().namedItem( "user" ).nodeValue();
-    for ( uint i = 0; i < values.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
         QDomNode item = values.item( i ).namedItem( "name" );
         tags << item.toElement().text();
@@ -874,7 +876,7 @@ WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 
     QDomNodeList values = document.elementsByTagName( "track" );
     QString user = document.elementsByTagName( "recenttracks" ).item( 0 ).attributes().namedItem( "user" ).nodeValue();
-    for ( uint i = 0; i < values.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
         QPair<QString, QString> song;
         song.first = values.item( i ).namedItem( "artist" ).toElement().text();
@@ -912,7 +914,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
     Q3Http *http = new Q3Http( "wsdev.audioscrobbler.com", 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recommendFinished( bool ) ) );
 
-    uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    uint currentTime = QDateTime::currentDateTime().toUTC().toTime_t();
     QString challenge = QString::number( currentTime );
 
     QByteArray md5pass = KMD5( KMD5( m_password.toUtf8() ).hexDigest().append( QString::number( currentTime ).toLocal8Bit() ) ).hexDigest();
@@ -943,14 +945,14 @@ WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 QString
 WebService::parameter( const QString keyName, const QString data ) const
 {
-    QStringList list = QStringList::split( '\n', data );
+    QStringList list = data.split( '\n' );
 
-    for ( uint i = 0; i < list.size(); i++ )
+    for ( int i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( '=', list[i] );
+        QStringList values = list[i].split( '=' );
         if ( values[0] == keyName )
         {
-            values.remove( values.at(0) );
+            values.removeAt( 0 );
             return QString::fromUtf8( values.join( "=" ).toAscii() );
         }
     }
@@ -963,14 +965,14 @@ QStringList
 WebService::parameterArray( const QString keyName, const QString data ) const
 {
     QStringList result;
-    QStringList list = QStringList::split( '\n', data );
+    QStringList list = data.split( '\n' );
 
-    for ( uint i = 0; i < list.size(); i++ )
+    for ( int i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( '=', list[i] );
+        QStringList values = list[i].split( '=' );
         if ( values[0].startsWith( keyName ) )
         {
-            values.remove( values.at(0) );
+            values.removeAt( 0 );
             result.append( QString::fromUtf8( values.join( "=" ).toAscii() ) );
         }
     }
@@ -983,15 +985,15 @@ QStringList
 WebService::parameterKeys( const QString keyName, const QString data ) const
 {
     QStringList result;
-    QStringList list = QStringList::split( '\n', data );
+    QStringList list = data.split( '\n' );
 
-    for ( uint i = 0; i < list.size(); i++ )
+    for ( int i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( '=', list[i] );
+        QStringList values = list[i].split( '=' );
         if ( values[0].startsWith( keyName ) )
         {
-            values = QStringList::split( '[', values[0] );
-            values = QStringList::split( ']', values[1] );
+            values = values[0].split( '[' );
+            values = values[1].split( ']' );
             result.append( values[0] );
         }
     }
