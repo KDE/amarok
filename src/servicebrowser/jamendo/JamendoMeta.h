@@ -29,17 +29,15 @@
 #include <QList>
 
 
-class JamendoMetaFactory
+class JamendoMetaFactory : public ServiceMetaFactory
 {
 
 public:
-    ServiceMetaFactory( const QString &dbPrefix );
-    virtual ~ServiceMetaFactory() {};
+    JamendoMetaFactory( const QString &dbPrefix );
+    virtual ~JamendoMetaFactory() {};
 
-    QString tablePrefix();
-
-    virtual int getTrackSqlRowCount();
-    virtual QString getTrackSqlRows();
+    //virtual int getTrackSqlRowCount();
+    //virtual QString getTrackSqlRows();
     virtual TrackPtr createTrack( const QStringList &rows );
 
     virtual int getAlbumSqlRowCount();
@@ -50,12 +48,24 @@ public:
     virtual QString getArtistSqlRows();
     virtual ArtistPtr createArtist( const QStringList &rows );
 
-    virtual int getGenreSqlRowCount();
-    virtual QString getGenreSqlRows();
+    //virtual int getGenreSqlRowCount();
+    //virtual QString getGenreSqlRows();
     virtual GenrePtr createGenre( const QStringList &rows );
 
 };
 
+
+
+
+class JamendoTrack  : public ServiceTrack
+{
+
+
+public:
+    JamendoTrack( const QString &name );
+    JamendoTrack( const QStringList &resultRow );
+
+};
 
 
 class JamendoArtist : public ServiceArtist
@@ -73,7 +83,10 @@ public:
     JamendoArtist( const QStringList &resultRow );
 
     void setPhotoURL( const QString &photoURL );
-    QString getPhotoURL() const;
+    QString photoURL() const;
+
+    void setCountry( const QString &photoURL );
+    QString country() const;
   
     void setHomeURL( const QString &homeURL );
     QString homeURL() const;
@@ -90,8 +103,7 @@ private:
     QString m_coverURL;
     QDate m_launchDate;
     QString m_genre;
-    QString m_jamendoTags;
-    QStringList m_tags;
+
 
 public:
     JamendoAlbum( const QString &name );
@@ -106,27 +118,21 @@ public:
     void setLaunchDate( const QDate &launchDate );
     QDate getLaunchDate() const;
 
-    void setJamendoTags( const QStringList &tags  );
-    QStringList getJamendoTags() const;
-
     void setGenre( const QString &genre );
     QString getGenre() const;
 
 
 };
 
-class JamendoTrack  : public ServiceTrack
+class JamendoGenre  : public ServiceGenre
 {
 
-
 public:
-    JamendoTrack( const QString &name );
-    JamendoTrack( const QStringList &resultRow );
+    JamendoGenre( const QString &name );
+    JamendoGenre( const QStringList &resultRow );
 
 };
 
-//typedef QList<JamendoArtist> JamendoArtistList;
-//typedef QList<JamendoAlbum> JamendoAlbumList;
-//typedef QList<JamendoTrack> JamendoTrackList;
+
 
 #endif

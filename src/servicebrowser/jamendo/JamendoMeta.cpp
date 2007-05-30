@@ -22,6 +22,83 @@
 #include "JamendoMeta.h"
 
 
+JamendoMetaFactory::JamendoMetaFactory(const QString & dbPrefix)
+    : ServiceMetaFactory( dbPrefix )
+{
+}
+
+TrackPtr JamendoMetaFactory::createTrack(const QStringList & rows)
+{
+    return TrackPtr( new JamendoTrack( rows ) );
+}
+
+int JamendoMetaFactory::getAlbumSqlRowCount()
+{
+    return ServiceMetaFactory::getAlbumSqlRowCount() + 4;
+}
+
+QString JamendoMetaFactory::getAlbumSqlRows()
+{
+    QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
+
+    sqlRows += ", ";
+    sqlRows += tablePrefix() + "_albums.popularity, ";
+    sqlRows += tablePrefix() + "_albums.cover_url, ";
+    sqlRows += tablePrefix() + "_albums.launch_date, ";
+    sqlRows += tablePrefix() + "_albums.genre ";
+
+    return sqlRows;
+}
+
+AlbumPtr JamendoMetaFactory::createAlbum(const QStringList & rows)
+{
+    return AlbumPtr( new JamendoAlbum( rows ) );
+}
+
+int JamendoMetaFactory::getArtistSqlRowCount()
+{
+    return ServiceMetaFactory::getArtistSqlRowCount() + 4;
+}
+
+QString JamendoMetaFactory::getArtistSqlRows()
+{
+    QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
+
+    sqlRows += ", ";
+    sqlRows += tablePrefix() + "_artists.country, ";
+    sqlRows += tablePrefix() + "_artists.photo_url, ";
+    sqlRows += tablePrefix() + "_artists.jamendo_url, ";
+    sqlRows += tablePrefix() + "_artists.home_url ";
+
+    return sqlRows;
+}
+
+ArtistPtr JamendoMetaFactory::createArtist(const QStringList & rows)
+{
+    return ArtistPtr( new JamendoArtist( rows ) );
+}
+
+
+GenrePtr JamendoMetaFactory::createGenre(const QStringList & rows)
+{
+    return GenrePtr( new JamendoGenre( rows ) );
+}
+
+
+//// JamendoTrack ////
+
+JamendoTrack::JamendoTrack( const QString &name )
+    : ServiceTrack( name )
+{
+}
+
+JamendoTrack::JamendoTrack(const QStringList & resultRow)
+    : ServiceTrack( resultRow )
+{
+}
+
+
+
 //// JamendoArtist ////
 
 JamendoArtist::JamendoArtist( const QString &name )
@@ -40,7 +117,7 @@ void JamendoArtist::setPhotoURL( const QString &photoURL )
     m_photoURL = photoURL;
 }
 
-QString JamendoArtist::getPhotoURL( ) const
+QString JamendoArtist::photoURL( ) const
 {
     return m_photoURL;
 }
@@ -102,16 +179,6 @@ QDate JamendoAlbum::getLaunchDate( ) const
     return m_launchDate;
 }
 
-void JamendoAlbum::setJamendoTags(const QStringList & tags)
-{
-    m_tags = tags;
-}
-
-QStringList JamendoAlbum::getJamendoTags() const
-{
-    return m_tags;
-}
-
 void JamendoAlbum::setGenre( const QString&genre )
 {
     m_genre = genre;
@@ -122,18 +189,19 @@ QString JamendoAlbum::getGenre( ) const
     return m_genre;
 }
 
-
-//// JamendoTrack ////
-
-JamendoTrack::JamendoTrack( const QString &name )
-    : ServiceTrack( name )
+JamendoGenre::JamendoGenre(const QString & name)
+    : ServiceGenre( name )
 {
 }
 
-JamendoTrack::JamendoTrack(const QStringList & resultRow)
-    : ServiceTrack( resultRow )
+JamendoGenre::JamendoGenre(const QStringList & resultRow)
+    : ServiceGenre( resultRow )
 {
 }
+
+
+
+
 
 
 
