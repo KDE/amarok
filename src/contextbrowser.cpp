@@ -264,7 +264,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
 
-    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* No JScript */ );
+    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
     m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
@@ -440,7 +440,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
         m_wikiCurrentEntry = QString::null;
         showWikipedia( url.url() );
     }
-
     else if ( url.protocol() == "show" )
     {
         if ( url.path().contains( "suggestLyric-" ) )
@@ -3277,9 +3276,9 @@ void ContextBrowser::showLyrics( const QString &url )
         lyrics += "<br />\n" + i18n( "Click on one of the scripts to run it, or use the Script Manager, to be able"
                         " to see all the scripts, and download new ones from the Web." );
         lyrics += "<br /><div align='center'>\n"
-                  "<input type='button' onClick='window.location.href=\"show:scriptmanager\";' value='" +
+                  "<form><input type='button' onClick=\"window.location='show:scriptmanager'\" value='" +
                     i18n( "Run Script Manager..." ) +
-                  "'></div><br /></div>\n";
+                  "'></form></div><br /></div>\n";
 
         m_HTMLSource = QString (
             "<html><body>\n"

@@ -30,6 +30,9 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Fix regression where the "Show Script Manager" button displayed on the
+      Lyrics tab of the Context Browser wouldn't actually show the Script
+      Manager.
     * Don't show ratings from the previous track's rating change in the OSD on
       playing the next track.
     * The config dialog is now less tall and fits on widescreen displays.
