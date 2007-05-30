@@ -17,32 +17,14 @@
 */
 
 #include "LastFmMeta.h"
+#include "LastFmMeta_p.h"
+#include "LastFmMeta_p.moc"
 
 #include "debug.h"
 
 #include "lastfm.h"
 
-#include <QList>
-#include <QStringList>
-
 using namespace LastFm;
-
-class Track::Private
-{
-
-    public:
-        KUrl proxyUrl;
-        QString lastFmUri;
-
-        QList<Meta::TrackObserver*> observers;
-
-    public:
-        void notifyObservers( Track *track )
-        {
-            foreach( Meta::TrackObserver *observer, observers )
-                observer->metadataChanged( track );
-        }
-};
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -50,6 +32,7 @@ Track::Track( const QString &lastFmUri )
     , d( new Private() )
 {
     d->lastFmUri = lastFmUri;
+    d->t = this;
 }
 
 Track::~Track()
@@ -101,6 +84,7 @@ Track::playableUrl() const
     if( !d->proxyUrl.isValid() )
     {
         d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
+        d->service = LastFm::Controller::instance()->getService();
     }
     return d->proxyUrl;
 }
