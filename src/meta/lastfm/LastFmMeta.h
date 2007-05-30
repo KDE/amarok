@@ -16,17 +16,20 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#ifndef AMAROK_LASTFMMETA_H
+#define AMAROK_LASTFMMETA_H
+
 #include "meta.h"
 
 #include <QObject>
 
 namespace LastFm
 {
-    class Track : public Meta::Track, QObject
+    class Track : public QObject, Meta::Track
     {
         Q_OBJECT
         public:
-            Track();
+            Track( const QString &lastFmUri );
             virtual ~Track();
 
         //methods inherited from Meta::MetaBase
@@ -88,8 +91,8 @@ namespace LastFm
             virtual bool inCollection() const;
             virtual Collection *collection() const;
 
-            virtual void subscribe( TrackObserver *observer );
-            virtual void unsubscribe( TrackObserver *observer );
+            virtual void subscribe( Meta::TrackObserver *observer );
+            virtual void unsubscribe( Meta::TrackObserver *observer );
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
@@ -104,4 +107,6 @@ namespace LastFm
             Private * const d;
     };
 
-};
+}
+
+#endif

@@ -20,23 +20,36 @@
 
 #include "debug.h"
 
+#include "lastfm.h"
+
 #include <QList>
+#include <QStringList>
+
+using namespace LastFm;
 
 class Track::Private
 {
+
     public:
         KUrl proxyUrl;
         QString lastFmUri;
 
-        QList<TrackObserver*> observers;
+        QList<Meta::TrackObserver*> observers;
+
+    public:
+        void notifyObservers( Track *track )
+        {
+            foreach( Meta::TrackObserver *observer, observers )
+                observer->metadataChanged( track );
+        }
 };
 
-Track::Track()
-    : Meta::Track()
-    , QObject()
+Track::Track( const QString &lastFmUri )
+    : QObject()
+    , Meta::Track()
     , d( new Private() )
 {
-    //do nothing for now
+    d->lastFmUri = lastFmUri;
 }
 
 Track::~Track()
@@ -53,7 +66,21 @@ Track::name() const
 QString
 Track::prettyName() const
 {
-    return QString(); //TODO
+    //return QString(); //TODO
+    QString name = "%1 from %2";
+    QStringList tokens = d->lastFmUri.split( '/', QString::SkipEmptyParts );
+    if( tokens[1] == "user" )
+    {
+        name.arg( tokens[3] );
+    }
+    else if( tokens[1] == "globaltags" )
+    {
+    }
+    else
+    {
+        //what else??
+    }
+    return name;
 }
 
 QString
@@ -71,7 +98,10 @@ Track::sortableName() const
 KUrl
 Track::playableUrl() const
 {
-    //TODO create proxy if it doesn't exist yet
+    if( !d->proxyUrl.isValid() )
+    {
+        d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
+    }
     return d->proxyUrl;
 }
 
@@ -84,7 +114,7 @@ Track::prettyUrl() const
 QString
 Track::url() const
 {
-    d->lastFmUri;
+    return d->lastFmUri;
 }
 
 bool
@@ -244,7 +274,7 @@ Track::bitrate() const
     return 0; //does the engine deliver this??
 }
 
-int
+uint
 Track::lastPlayed() const
 {
     return 0; //TODO do we need this?
@@ -299,14 +329,14 @@ Track::collection() const
 }
 
 void
-Track::subscribe( TrackObserver *observer )
+Track::subscribe( Meta::TrackObserver *observer )
 {
     if( observer && !d->observers.contains( observer ) )
         d->observers.append( observer );
 }
 
 void
-Track::unsubscribe( TrackObserver *observer )
+Track::unsubscribe( Meta::TrackObserver *observer )
 {
     if( observer )
         d->observers.removeAll( observer );
