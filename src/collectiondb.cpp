@@ -27,7 +27,6 @@
 #include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
 #include "mountpointmanager.h"    //buildQuery()
-#include "organizecollectiondialog.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "playlistbrowser.h"
@@ -3980,8 +3979,10 @@ void CollectionDB::cancelMovingFileJob()
 }
 
 bool
-CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dialog, bool copy )
+CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &dialog,*/ bool copy )
 {
+   return false;
+/*
    if( !MetaBundle::isKioUrl( src ) )
        return false;
 
@@ -4095,6 +4096,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
    m_moveFileJobCancelled = false;
 
    return true;
+*/
 }
 
 bool

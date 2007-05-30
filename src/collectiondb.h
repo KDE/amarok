@@ -41,7 +41,7 @@ namespace KIO { class Job; }
 class DbConnection;
 class CoverFetcher;
 class MetaBundle;
-class OrganizeCollectionDialog;
+//class OrganizeCollectionDialog;
 class PodcastChannelBundle;
 class PodcastEpisodeBundle;
 class Q3ListViewItem;
@@ -394,7 +394,7 @@ class CollectionDB : public QObject, public EngineObserver
         QDateTime getLastPlay( const QString &url );
         void migrateFile( const QString &oldURL, const QString &newURL );
         bool moveFile( const QString &src, const QString &dest, bool overwrite, bool copy = false );
-        bool organizeFile( const KUrl &src, const OrganizeCollectionDialog &dialog, bool copy );
+        bool organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &dialog,*/ bool copy );
 
         //artist methods
         QStringList similarArtists( const QString &artist, uint count );
