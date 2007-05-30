@@ -139,12 +139,17 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
-
+    Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
     if ( indexes.count() < 1 )
         return;
 
-    QModelIndex index = m_filterModel->mapToSource( indexes[0] );
+    QModelIndex index;
+    if ( m_filterModel )
+        index = m_filterModel->mapToSource( indexes[0] );
+    else
+        index = indexes[0];
+
 
     CollectionTreeItem * item = static_cast<CollectionTreeItem *>( index.internalPointer() );
 
