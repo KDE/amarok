@@ -261,6 +261,8 @@ ServiceSqlQueryMaker::startCustomQuery()
 QueryMaker*
 ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
 {
+
+    Q_UNUSED( collectionId );
   /*  if( !d->collectionRestriction )
     {
         d->includedBuilder = false;
@@ -274,6 +276,7 @@ ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
 QueryMaker*
 ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
 {
+     Q_UNUSED( collectionId );
     /*d->collectionRestriction = true;
     if( m_collection->collectionId() == collectionId )
         d->includedBuilder = false;*/
@@ -284,6 +287,8 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 {
     DEBUG_BLOCK
+
+    Q_UNUSED( track );
     //TODO still pondereing this one...
     return this;
 }
@@ -326,6 +331,7 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ComposerPtr &composer )
 {
+    Q_UNUSED( composer );
     //TODO
     return this;
 }
@@ -333,6 +339,7 @@ ServiceSqlQueryMaker::addMatch( const ComposerPtr &composer )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 {
+    Q_UNUSED( year );
     //TODO
     return this;
 }
@@ -349,6 +356,10 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
+    Q_UNUSED( value );
+    Q_UNUSED( filter );
+    Q_UNUSED( matchBegin );
+    Q_UNUSED( matchEnd );
     //TODO
     return this;
 }
@@ -356,6 +367,10 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
+    Q_UNUSED( value );
+    Q_UNUSED( filter );
+    Q_UNUSED( matchBegin );
+    Q_UNUSED( matchEnd );
     //TODO
     return this;
 }
@@ -363,6 +378,8 @@ ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool m
 QueryMaker*
 ServiceSqlQueryMaker::addReturnValue( qint64 value )
 {
+
+    Q_UNUSED( value );
     /*if( d->queryType == Private::CUSTOM )
     {
         if ( !d->queryReturnValues.isEmpty() )
@@ -375,6 +392,7 @@ ServiceSqlQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
 {
+    Q_UNUSED( value );
     if ( d->queryOrderBy.isEmpty() )
     d->queryOrderBy = " ORDER BY name "; //TODO FIX!!
     d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
