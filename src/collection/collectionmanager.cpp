@@ -25,20 +25,20 @@
 #include "metaquerybuilder.h"
 #include "pluginmanager.h"
 
+#include <QtAlgorithms>
 #include <QtGlobal>
 #include <QList>
 #include <QTimer>
 
 #include <kservice.h>
 
-//testing
-#include "servicecollection.h"
-
 struct CollectionManager::Private
 {
     QList<Collection*> collections;
     QList<CollectionFactory*> factories;
     Collection *sqlDatabase;
+    QList<Collection*> unmanagedCollections;
+    QList<Collection*> managedCollections;
 };
 
 CollectionManager::CollectionManager()
@@ -50,8 +50,9 @@ CollectionManager::CollectionManager()
 
 CollectionManager::~CollectionManager()
 {
-    foreach( Collection *coll, d->collections )
-        delete coll;
+    d->collections.clear();
+    d->unmanagedCollections.clear();
+    qDeleteAll( d->managedCollections );
 
     foreach( CollectionFactory *fac, d->factories )
         PluginManager::unload( fac );
@@ -121,6 +122,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     }
     debug() << "New collection with collectionId: " << newCollection->collectionId() << endl;
     d->collections.append( newCollection );
+    d->managedCollections.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
     if( newCollection->isSqlDatabase() )
     {
@@ -142,6 +144,7 @@ CollectionManager::slotRemoveCollection()
     if( collection )
     {
         d->collections.removeAll( collection );
+        d->managedCollections.removeAll( collection );
         if( collection->isSqlDatabase() && collection == d->sqlDatabase )
         {
             Collection *newSqlDatabase = 0;
@@ -192,6 +195,28 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a lastfm track, another stream
     //or a file which is not in any collection
     return Meta::TrackPtr( 0 );
+}
+
+void
+CollectionManager::addUnmanagedCollection( Collection *newCollection )
+{
+    if( newCollection && d->collections.indexOf( newCollection ) == -1 )
+    {
+        d->unmanagedCollections.append( newCollection );
+        d->collections.append( newCollection );
+        emit collectionAdded( newCollection );
+    }
+}
+
+void
+CollectionManager::removeUnmanagedCollection( Collection *collection )
+{
+    //do not remove it from collection if it is not in unmanagedCollections
+    if( collection && d->unmanagedCollections.removeAll( collection ) )
+    {
+        d->collections.removeAll( collection );
+        emit collectionRemoved( collection->collectionId() );
+    }
 }
 
 #include "collectionmanager.moc"

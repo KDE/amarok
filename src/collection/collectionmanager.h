@@ -32,7 +32,7 @@ class CollectionManager : public QObject
     public:
         static CollectionManager * instance();
 
-        virtual ~CollectionManager();
+        ~CollectionManager();
 
         QueryMaker * queryMaker();
         void startFullScan();
@@ -42,7 +42,10 @@ class CollectionManager : public QObject
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
         QStringList sqlQuery( const QString &query );
-        int sqlInsert( const QString &statement, const QString &table );
+        int sqlInsert( const QString &statement, const QString &table ); //TODO move to interface
+
+        void addUnmanagedCollection( Collection *newCollection );
+        void removeUnmanagedCollection( Collection *collection );
 
     signals:
         void collectionAdded( Collection *newCollection );
