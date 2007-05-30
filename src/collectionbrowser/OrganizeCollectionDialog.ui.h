@@ -1,5 +1,5 @@
 #include "amarok.h"
-#include "collectionbrowser.h"
+#include "collectiontreeitemmodel.h"
 #include "collectiondb.h"
 #include "qstringx.h"
 
@@ -21,10 +21,10 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if( ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( artist, true );
+        Amarok::manipulateThe( artist, true );
     artist = cleanPath( artist );
     if( ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( albumartist, true );
+        Amarok::manipulateThe( albumartist, true );
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
