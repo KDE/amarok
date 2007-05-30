@@ -21,7 +21,7 @@
 #define JAMENDODATABASEHANDLER_H
 
 #include "collectiondb.h"
-#include "jamendotypes.h"
+#include "JamendoMeta.h"
 
 
 #include <QStringList>

@@ -116,7 +116,7 @@ set(libscriptableservice_SRCS
 #####################################################################
 set(libjamendoservice_SRCS
     servicebrowser/jamendo/jamendoservice.cpp
-    servicebrowser/jamendo/jamendotypes.cpp
+    servicebrowser/jamendo/JamendoMeta.cpp
     servicebrowser/jamendo/jamendodatabasehandler.cpp
     servicebrowser/jamendo/jamendoxmlparser.cpp
     servicebrowser/jamendo/JamendoInfoParser.cpp

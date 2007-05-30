@@ -29,6 +29,35 @@
 #include <QList>
 
 
+class JamendoMetaFactory
+{
+
+public:
+    ServiceMetaFactory( const QString &dbPrefix );
+    virtual ~ServiceMetaFactory() {};
+
+    QString tablePrefix();
+
+    virtual int getTrackSqlRowCount();
+    virtual QString getTrackSqlRows();
+    virtual TrackPtr createTrack( const QStringList &rows );
+
+    virtual int getAlbumSqlRowCount();
+    virtual QString getAlbumSqlRows();
+    virtual AlbumPtr createAlbum( const QStringList &rows );
+
+    virtual int getArtistSqlRowCount();
+    virtual QString getArtistSqlRows();
+    virtual ArtistPtr createArtist( const QStringList &rows );
+
+    virtual int getGenreSqlRowCount();
+    virtual QString getGenreSqlRows();
+    virtual GenrePtr createGenre( const QStringList &rows );
+
+};
+
+
+
 class JamendoArtist : public ServiceArtist
 {
 

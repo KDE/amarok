@@ -19,7 +19,7 @@
 
 
 
-#include "jamendotypes.h"
+#include "JamendoMeta.h"
 
 
 //// JamendoArtist ////
