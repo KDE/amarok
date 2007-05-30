@@ -29,6 +29,12 @@ namespace LastFm
             Track();
             virtual ~Track();
 
+        //methods inherited from Meta::MetaBase
+            virtual QString name() const;
+            virtual QString prettyName() const;
+            virtual QString fullPrettyName() const;
+            virtual QString sortableName() const;
+
         //methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;

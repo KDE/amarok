@@ -44,6 +44,30 @@ Track::~Track()
     delete d;
 }
 
+QString
+Track::name()
+{
+    return QString(); //TODO
+}
+
+QString
+Track::prettyName()
+{
+    return QString(); //TODO
+}
+
+QString
+Track::fullPrettyName() const
+{
+    return QString(); //TODO
+}
+
+QString
+Track::sortableName() const
+{
+    return QString(); //TODO
+}
+
 KUrl
 Track::playableUrl() const
 {
