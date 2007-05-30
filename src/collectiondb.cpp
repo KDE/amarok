@@ -20,7 +20,6 @@
 #include "amarokconfig.h"
 #include "config-amarok.h"
 #include "debug.h"
-#include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
@@ -4421,8 +4420,11 @@ CollectionDB::setCompilation( const KUrl::List &urls, bool enabled, bool updateV
 
     // Update the Collection-Browser view,
     // using QTimer to make sure we don't manipulate the GUI from a thread
-    if ( updateView )
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+
+//<PORT> 2.0
+//    if ( updateView )
+//        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+//</PORT>
 }
 
 
@@ -4591,8 +4593,10 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
         // Update the Collection-Browser view,
         // using QTimer to make sure we don't manipulate the GUI from a thread
-        if ( updateView )
-            QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
+        //<PORT> 2.0
+        //if ( updateView )
+        //    QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
+        //</PORT>
 
         if( art || alb )
             emit tagsChanged( values[12], values[14] );
@@ -4778,7 +4782,7 @@ CollectionDB::applySettings()
         // If Database engine was changed, recreate DbConnections.
         destroy();
         initialize();
-        CollectionView::instance()->renderView();
+//PORT 2.0   CollectionView::instance()->renderView(); 
         PlaylistBrowser::instance()->loadPodcastsFromDatabase();
 
         emit databaseEngineChanged();
@@ -5001,7 +5005,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 
     //check the validity of the CollectionItem as it may have been deleted e.g. by a
     //collection scan while fetching the cover
-    itemCoverMapMutex->lock();
+/* PORT 2.0    itemCoverMapMutex->lock();
     QMap<Q3ListViewItem*, CoverFetcher*>::Iterator it;
     for( it = itemCoverMap->begin(); it != itemCoverMap->end(); ++it )
     {
@@ -5011,7 +5015,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
                 static_cast<CollectionItem*>(it.key())->setPixmap( 0, QPixmap() );
             itemCoverMap->erase( it );
         }
-    }
+    } */
     itemCoverMapMutex->unlock();
 }
 
@@ -5370,9 +5374,6 @@ CollectionDB::checkDatabase()
 
             updatePodcastTables();
 
-            //This is really a one-off call that fixes a Collection Browser glitch
-            updateGroupBy();
-
             //remove database file if version is incompatible
             if ( Amarok::config( "Collection Browser" ).readEntry( "Database Version", 0 ) != DATABASE_VERSION
                  || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
@@ -5400,30 +5401,6 @@ CollectionDB::checkDatabase()
     setAdminValue( "Database AFT Version", QString::number( DATABASE_AFT_VERSION ) );
 
     initDirOperations();
-}
-
-void
-CollectionDB::updateGroupBy()
-{
-    //This ugly bit of code makes sure the Group BY setting is preserved, after the
-    //meanings of the values were changed due to the addition of the Composer table.
-    int version = adminValue( "Database Version" ).toInt();
-    if (!version) // an even older update
-       version = Amarok::config( "Collection Browser" ).readEntry( "Database Version", 0 );
-
-    if ( version && version < 32 )
-    {
-        KConfigGroup config = Amarok::config( "Collection Browser" );
-        int m_cat1 = config.readEntry( "Category1", int(0) );
-        int m_cat2 = config.readEntry( "Category2", int(0) );
-        int m_cat3 = config.readEntry( "Category3", int(0) );
-        m_cat1 = m_cat1 ? ( m_cat1 > 2 ? m_cat1 << 1 : m_cat1 ) : CollectionBrowserIds::IdArtist;
-        m_cat2 = m_cat2 ? ( m_cat2 > 2 ? m_cat2 << 1 : m_cat2 ) : CollectionBrowserIds::IdAlbum;
-        m_cat3 = m_cat3 ? ( m_cat3 > 2 ? m_cat3 << 1 : m_cat3 ) : CollectionBrowserIds::IdNone;
-        config.writeEntry( "Category1", m_cat1 );
-        config.writeEntry( "Category2", m_cat2 );
-        config.writeEntry( "Category3", m_cat3 );
-    }
 }
 
 void
@@ -5785,7 +5762,7 @@ void
 CollectionDB::scanModifiedDirs()
 {
     if ( !m_scanInProgress
-            && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
+//PORT 2.0  && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
             && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings

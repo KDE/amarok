@@ -22,16 +22,16 @@ class CollectionTreeItemModel;
 class CollectionTreeView: public QTreeView {
     Q_OBJECT
     public:
-    CollectionTreeView( QWidget *parent = 0 );
-    ~CollectionTreeView();
-
-    QSortFilterProxyModel* filterModel() const;
-
-    void setLevels( const QList<int> &levels );
-    void setLevel( int level, int type );
-
-    void setModel ( QAbstractItemModel * model );
-	void contextMenuEvent(QContextMenuEvent* event);
+        CollectionTreeView( QWidget *parent = 0 );
+        ~CollectionTreeView();
+    
+        QSortFilterProxyModel* filterModel() const;
+    
+        void setLevels( const QList<int> &levels );
+        void setLevel( int level, int type );
+    
+        void setModel ( QAbstractItemModel * model );
+	    void contextMenuEvent(QContextMenuEvent* event);
     private:
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;

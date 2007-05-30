@@ -23,6 +23,7 @@
 
 #include "amarok.h"
 #include "browserToolBar.h"
+#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -52,7 +53,6 @@
 #include "playlistbrowser.h"
 #include "playlistloader.h"
 #include "playlistwindow.h"
-#include "collectionbrowser.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 
@@ -492,15 +492,15 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case CopyToCollection:
-        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Copy Files To Collection" ), true );
+//PORT 2.0        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Copy Files To Collection" ), true );
         break;
 
     case MoveToCollection:
-        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Move Files To Collection" ), false );
+//PORT 2.0         CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Move Files To Collection" ), false );
         break;
 
     case OrganizeFiles:
-        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Organize Collection Files" ), false );
+//PORT 2.0         CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Organize Collection Files" ), false );
         break;
 
     case MediaDevice:

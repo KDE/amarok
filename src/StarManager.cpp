@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "config-amarok.h"
-#include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "debug.h"
 #include "metabundle.h"
@@ -99,9 +98,10 @@ StarManager::reinitStars( int height, int margin )
         temphalfstar = QImage();
     }
     if( Playlist::instance() ) Playlist::instance()->qscrollview()->viewport()->update();
+/*PORT 2.0
     if( CollectionView::instance() &&
             CollectionView::instance()->viewMode() == CollectionView::modeFlatView )
-        CollectionView::instance()->triggerUpdate();
+        CollectionView::instance()->triggerUpdate(); */
     emit ratingsColorsChanged();
 }
 

@@ -6,7 +6,6 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "debug.h"
-#include "collectionbrowser.h" //manipulateThe()
 #include "querybuilder.h"
 #include "config-amarok.h"
 #include "coverfetcher.h"
@@ -78,9 +77,9 @@ class ArtistItem : public K3ListViewItem
         QString b = i->text(0);
 
         if ( a.startsWith( "the ", Qt::CaseInsensitive ) )
-            CollectionView::manipulateThe( a, true );
+            Amarok::manipulateThe( a, true );
         if ( b.startsWith( "the ", Qt::CaseInsensitive ) )
-            CollectionView::manipulateThe( b, true );
+            Amarok::manipulateThe( b, true );
 
         return QString::localeAwareCompare( a.toLower(), b.toLower() );
     }
@@ -385,7 +384,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     QString artist = item->text(0);
 
     if( artist.endsWith( ", The" ) )
-        CollectionView::instance()->manipulateThe( artist, false );
+       Amarok::manipulateThe( artist, false );
 
     m_coverView->clear();
     m_coverItems.clear();
@@ -862,7 +861,7 @@ void CoverManager::updateStatusBar()
             {
                 QString artist = m_artistView->selectedItem()->text(0);
                 if( artist.endsWith( ", The" ) )
-                    CollectionView::instance()->manipulateThe( artist, false );
+                    Amarok::manipulateThe( artist, false );
                 text += i18n( " by " ) + artist;
             }
         }

@@ -37,7 +37,6 @@ Q_OBJECT
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
 
-
     public slots:
         virtual void collectionAdded( Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );

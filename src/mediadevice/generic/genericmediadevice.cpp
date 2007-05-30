@@ -30,7 +30,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "medium.h"
 #include "metabundle.h"
 #include "collectiondb.h"
-#include "collectionbrowser.h"
+#include "collectiontreeitemmodel.h"
 #include "k3bexporter.h"
 #include "playlist.h"
 #include "podcastbundle.h"
@@ -568,10 +568,10 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if( m_ignoreThePrefix && artist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( artist, true );
+        ( artist, true );
     artist = cleanPath( artist );
     if( m_ignoreThePrefix && albumartist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( albumartist, true );
+        Amarok::manipulateThe( albumartist, true );
 
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
@@ -739,7 +739,7 @@ GenericMediaDevice::downloadSelectedItems()
 {
     KUrl::List urls = getSelectedItems();
 
-    CollectionView::instance()->organizeFiles( urls, i18n("Copy Files to Collection"), true );
+//PORT 2.0    CollectionView::instance()->organizeFiles( urls, i18n("Copy Files to Collection"), true );
 
     hideProgress();
 }

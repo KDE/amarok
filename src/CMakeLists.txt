@@ -191,6 +191,7 @@ set(libcollectionbrowser_SRCS
     collectionbrowser/singlecollectiontreeitemmodel.cpp
     collectionbrowser/collectionsortfilterproxymodel.cpp
     collectionbrowser/collectiontreeitem.cpp
+    collectionbrowser/CollectionWidget.cpp
 )
 
 #####################################################################
@@ -263,7 +264,6 @@ set(amarok_LIB_SRCS
     collection/metaquerybuilder.cpp
     collection/querymaker.cpp
     collection/support/memoryquerymaker.cpp
-    collectionbrowser.cpp
     collectiondb.cpp
     columnlist.cpp
     contextbrowser.cpp
@@ -355,7 +355,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    dbsetup.ui
 #   firstrunwizard.ui
    newdynamic.ui
-   organizecollectiondialog.ui
+   collectionbrowser/OrganizeCollectionDialog.ui
    podcastsettingsbase.ui
    tagdialogbase.ui
 #   tagguesserconfigdialog.ui

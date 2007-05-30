@@ -166,10 +166,10 @@ GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const M
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if( m_ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( artist, true );
+        Amarok::manipulateThe(( artist, true );
     artist = cleanPath( artist );
     if( m_ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
-        CollectionView::instance()->manipulateThe( albumartist, true );
+        Amarok::manipulateThe(( albumartist, true );
 
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )

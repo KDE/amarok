@@ -15,7 +15,6 @@
 #include "browserToolBar.h"
 #include "debug.h"
 #include "collectiondb.h"
-#include "collectionbrowser.h"
 #include "colorgenerator.h"
 #include "contextbrowser.h"
 #include "coverfetcher.h"
@@ -30,6 +29,7 @@
 #include "playlist.h"      //appendMedia()
 #include "podcastbundle.h"
 #include "qstringx.h"
+#include "querybuilder.h"
 //Added by qt3to4:
 #include <QLabel>
 #include <Q3ValueList>
@@ -525,7 +525,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
         }
         else if ( url.path() == "collectionSetup" )
         {
-            CollectionView::instance()->setupDirs();
+//PORT 2.0            CollectionView::instance()->setupDirs();
         }
         else if ( url.path() == "scriptmanager" )
         {

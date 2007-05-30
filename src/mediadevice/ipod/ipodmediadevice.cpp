@@ -37,7 +37,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <statusbar/statusbar.h>
 #include <k3bexporter.h>
 #include <playlist.h>
-#include <collectionbrowser.h>
 #include <playlistbrowser.h>
 #include <tagdialog.h>
 #include <threadmanager.h>
@@ -2225,7 +2224,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                         urls << it->url();
                 }
 
-                CollectionView::instance()->organizeFiles( urls, i18n("Copy Files To Collection"), true );
+//PORT 2.0        CollectionView::instance()->organizeFiles( urls, i18n("Copy Files To Collection"), true );
             }
             break;
         case BURN_ARTIST:

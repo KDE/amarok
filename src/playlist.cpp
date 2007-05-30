@@ -19,7 +19,7 @@
 #include "amarokconfig.h"
 #include "app.h"
 #include "debug.h"
-#include "collectionbrowser.h"
+#include "collectiondb.h"
 #include "columnlist.h"
 #include "deletedialog.h"
 #include "enginecontroller.h"
@@ -3479,7 +3479,7 @@ Playlist::deleteSelectedFiles() //SLOT
         removeSelectedItems();
         oldForeachType( KUrl::List, urls )
           CollectionDB::instance()->emitFileDeleted( (*it).path() );
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+// PORT 2.0        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }
 
@@ -4127,9 +4127,9 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             }
             bool organize = CollectionDB::instance()->isDirInCollection( item->url().directory() );
             bool move = menuItemId==MOVE_TO_COLLECTION;
-            CollectionView::instance()->organizeFiles( list,
+/* PORT 2.0            CollectionView::instance()->organizeFiles( list,
                     organize ? i18n( "Organize Files" ) : move ? i18n( "Move Tracks to Collection" ) : i18n( "Copy Tracks to Collection"),
-                    !organize && !move );
+                    !organize && !move ); */
         }
         break;
 

@@ -18,7 +18,6 @@
 
 #include "addhostbase.h"
 #include "collectiondb.h"
-#include "collectionbrowser.h"
 #include "daapreader/reader.h"
 #include "daapreader/authentication/contentfetcher.h"
 #include "daapclient.h"
@@ -850,7 +849,7 @@ DaapDownloader::completeJob()
         path.setPath( (*itTemps)->name() );
         tempUrlList << path;
     }
-    CollectionView::instance()->organizeFiles( tempUrlList, i18n( "Copy Files To Collection" ), false );
+//PORT 2.0    CollectionView::instance()->organizeFiles( tempUrlList, i18n( "Copy Files To Collection" ), false );
     for( Q3ValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
         delete (*itTemps); //autodelete is true, so file is unlinked now
     m_tempFileList.clear();

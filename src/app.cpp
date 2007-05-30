@@ -20,7 +20,7 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "app.h"
 #include "atomicstring.h"
-#include "collectionbrowser.h"
+#include "collectiondb.h"
 #include "ConfigDialog.h"
 #include "contextbrowser.h"
 //#include "dbsetup.h"             //firstRunWizard()
@@ -645,7 +645,7 @@ void App::applySettings( bool firstTime )
     } //</Engine>
 
     { //<Collection>
-        CollectionView::instance()->renderView(true);
+//PORT 2.0        CollectionView::instance()->renderView(true);
     } //</Collection>
     { //<Context>
         ContextBrowser::instance()->renderView();

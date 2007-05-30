@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 #include "analyzerwidget.h"
-#include "collectionbrowser.h"
+#include "collectionbrowser/CollectionWidget.h"
 #include "contextbrowser.h"
 #include "contextview/contextview.h"
 #include "debug.h"
@@ -289,7 +289,7 @@ void PlaylistWindow::init()
              m_browserNames.append( name ); }
 
 //         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
-        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
+        addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )

@@ -10,7 +10,6 @@
 #include "amarok.h"
 #include "debug.h"
 #include "contextbrowser.h"
-#include "collectionbrowser.h"
 #include "querybuilder.h"
 #include "coverfetcher.h"
 #include "metabundle.h"
@@ -1497,8 +1496,8 @@ TagDialogWriter::completeJob()
         }
      }
      QApplication::restoreOverrideCursor();
-     if ( m_successCount )
-        CollectionView::instance()->databaseChanged();
+//PORT 2.0     if ( m_successCount )
+//PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
         Amarok::StatusBar::instance()->longMessage( i18n(
                         "Sorry, the tag for the following files could not be changed:\n", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );

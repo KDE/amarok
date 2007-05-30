@@ -37,7 +37,6 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 #include <metabundle.h>
 #include <statusbar/statusbar.h>
 #include <statusbar/popupMessage.h>
-#include <collectionbrowser.h>
 
 // KDE
 #include <kapplication.h>
@@ -725,7 +724,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
         }
     }
     hideProgress();
-    CollectionView::instance()->organizeFiles( urls, i18n( "Move Files To Collection" ), false );
+//PORT 2.0    CollectionView::instance()->organizeFiles( urls, i18n( "Move Files To Collection" ), false );
     return 0;
 }
 

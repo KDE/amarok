@@ -31,7 +31,6 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
 // Amarok
 #include <collectiondb.h>
-#include <collectionbrowser.h>
 #include <debug.h>
 #include <metabundle.h>
 #include <statusbar/statusbar.h>
@@ -411,7 +410,7 @@ NjbMediaDevice::downloadToCollection()
         }
     }
     // Now, call the collection organizer.
-    CollectionView::instance()->organizeFiles( urls, i18n( "Move Files To Collection" ), false );
+//PORT 2.0    CollectionView::instance()->organizeFiles( urls, i18n( "Move Files To Collection" ), false );
     return 0;
 }
 

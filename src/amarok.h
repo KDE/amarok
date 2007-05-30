@@ -255,6 +255,14 @@ namespace Amarok
      */
     QString proxyForProtocol(const QString& protocol);
 
+    /*defined in collectionbrowser/collectiontreeitemmodel.cpp */
+    /**
+     * Small function aimed to convert Eagles, The -> The Eagles (and back again).
+     * @param str the string to manipulate
+     * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
+     */
+    void manipulateThe( QString &str, bool reverse );
+
     ////////////////////////////////////////////////////////////////////////////////
     // class Amarok::ProcIO
     ////////////////////////////////////////////////////////////////////////////////

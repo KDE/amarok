@@ -24,7 +24,6 @@
 #include <kxmlguiwindow.h>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-class CollectionBrowser;
 class ContextBrowser;
 class KLineEdit;
 class KMenu;
