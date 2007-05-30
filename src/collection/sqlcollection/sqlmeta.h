@@ -185,7 +185,7 @@ class SqlAlbum : public Album
 
         //updating album images is possible or local tracks, but let's ignore it for now
         virtual bool canUpdateImage() const { return false; }
-        virtual void image() const { }  //TODO: fixme
+        virtual QPixmap image( int size = 1, bool withShadow = false ) const;
         virtual void updateImage() { }
 
         //SQL specific methods

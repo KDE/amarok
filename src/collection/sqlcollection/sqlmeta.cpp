@@ -540,6 +540,13 @@ SqlAlbum::tracks()
     }
 }
 
+QPixmap
+SqlAlbum::image( int size, bool withShadow ) const
+{
+    //TODO implement this
+    return Meta::Album::image( size, withShadow );
+}
+
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()

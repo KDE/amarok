@@ -28,6 +28,7 @@
 
 #include <QImage>
 #include <QList>
+#include <QPixmap>
 #include <QStringList>
 
 #include <kio/job.h>
@@ -48,7 +49,7 @@ class Track::Private : public QObject
         QList<Meta::TrackObserver*> observers;
         WebService *service;
 
-        QImage albumArt;
+        QPixmap albumArt;
         QString artist;
         QString album;
         QString track;
@@ -97,7 +98,7 @@ class Track::Private : public QObject
                 imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
             {
                 //no image available, get default image.
-                //TODO: implement retrieval of default image in Meta::Track
+                albumArt = QPixmap();
                 notifyObservers();
                 return;
             }
@@ -115,11 +116,12 @@ class Track::Private : public QObject
                 QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
                 img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
 
-                albumArt = img;
+                albumArt = QPixmap::fromImage( img );
             }
             else
             {
-                //TODO use default image
+                //use default image
+                albumArt = QPixmap();
             }
             notifyObservers();
         }

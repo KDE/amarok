@@ -23,6 +23,7 @@
 
 #include <QList>
 #include <QMetaType>
+#include <QPixmap>
 #include <QSharedData>
 #include <QString>
 
@@ -198,7 +199,7 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             /** returns the cover of the album */
-            virtual void image() const = 0; //TODO: choose return value
+            virtual QPixmap image( int size = 1, bool withShadow = false ) const; 
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */

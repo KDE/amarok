@@ -18,8 +18,15 @@
 
 #include "meta.h"
 
+#include "amarok.h"
+#include "amarokconfig.h"
 #include "collection.h"
 #include "querymaker.h"
+
+#include <QDir>
+#include <QImage>
+
+#include <KStandardDirs>
 
 bool
 Meta::Track::inCollection() const
@@ -55,6 +62,30 @@ void
 Meta::Album::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( AlbumPtr( this ) );
+}
+
+QPixmap
+Meta::Album::image( int size, bool withShadow ) const
+{
+    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    if ( size <= 1 )
+        size = AmarokConfig::coverPreviewSize();
+    QString sizeKey = QString::number( size ) + '@';
+
+    QImage img;
+    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
+         img = QImage( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    else
+    {
+        img = QImage( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
+        img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        img.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+    }
+
+    //if ( withShadow )
+        //s = makeShadowedImage( s );
+
+    return QPixmap::fromImage( img );
 }
 
 void
