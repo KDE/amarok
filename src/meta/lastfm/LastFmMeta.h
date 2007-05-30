@@ -70,8 +70,6 @@ namespace LastFm
             virtual int discNumber() const;
             virtual void setDiscNumber( int newDiscNumber );
 
-
-
             virtual int length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
@@ -92,7 +90,6 @@ namespace LastFm
 
             virtual void subscribe( TrackObserver *observer );
             virtual void unsubscribe( TrackObserver *observer );
-
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)

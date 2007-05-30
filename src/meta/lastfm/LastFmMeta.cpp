@@ -45,13 +45,13 @@ Track::~Track()
 }
 
 QString
-Track::name()
+Track::name() const
 {
     return QString(); //TODO
 }
 
 QString
-Track::prettyName()
+Track::prettyName() const
 {
     return QString(); //TODO
 }
