@@ -33,6 +33,7 @@ Model::Model( QObject* parent )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     m_columns << TrackNumber << Title << Artist << Album;
+    s_instance = this;
 }
 
 Model::~Model()
