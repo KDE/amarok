@@ -30,6 +30,7 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Last.fm "Custom Station" stream works again. (BR 146020)
     * Fix regression where the "Show Script Manager" button displayed on the
       Lyrics tab of the Context Browser wouldn't actually show the Script
       Manager.
