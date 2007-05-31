@@ -235,10 +235,9 @@ Controller::createCustomStation() //static
     QString token;
     CustomStationDialog dialog( 0 );
 
-    if( dialog.exec() == QDialog::Accepted ) {
-        const QStringList artists = dialog.text().split( ',' );
-        for( int i = 0; i < artists.count(); i++ )
-            token += ( i > 0 ? "," : "" ) + artists[i].simplified();
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        token = dialog.text();
     }
 
     return token;
@@ -1102,7 +1101,7 @@ CustomStationDialog::CustomStationDialog( QWidget *parent )
     setMainWidget( vbox );
 
 
-    new QLabel( i18n( "Enter the name of a band or artist you like:\n(You can enter multiple artists separated by commas)" ), mainWidget() );
+    new QLabel( i18n( "Enter the name of a band or artist you like:" ), mainWidget() );
 
     m_edit = new KLineEdit( mainWidget() );
     m_edit->setFocus();
