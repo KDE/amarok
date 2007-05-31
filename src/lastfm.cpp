@@ -76,8 +76,8 @@ AmarokHttp::get ( const QString & path )
     KIO::TransferJob *job = KIO::get(uri, true, false);
     connect(job,  SIGNAL(data(KIO::Job*, const QByteArray&)),
             this, SLOT(slotData(KIO::Job*, const QByteArray&)));
-    connect(job,  SIGNAL(result(KIO::Job*)),
-            this, SLOT(slotResult(KIO::Job*)));
+    connect(job,  SIGNAL(result(KJob*)),
+            this, SLOT(slotResult(KJob*)));
 
     return 0;
 }
@@ -116,7 +116,7 @@ AmarokHttp::slotData(KIO::Job*, const QByteArray& data)
 }
 
 void
-AmarokHttp::slotResult(KIO::Job* job)
+AmarokHttp::slotResult(KJob* job)
 {
     bool err = job->error();
     if( err || m_error != Q3Http::NoError ) {
@@ -528,7 +528,8 @@ void
 WebService::requestMetaData() //SLOT
 {
     AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
+    foreach( QObject *observer, m_metaDataObservers )
+        connect( http, SIGNAL( requestFinished( int, bool ) ), observer, SLOT( metaDataFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
                   .arg( m_session )

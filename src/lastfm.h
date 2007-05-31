@@ -56,7 +56,7 @@ class AmarokHttp : public QObject
 
     protected slots:
     void slotData(KIO::Job*, const QByteArray& );
-    void slotResult(KIO::Job*);
+    void slotResult(KJob*);
 
     protected:
     QString m_hostname;
@@ -152,6 +152,11 @@ namespace LastFm
             K3ProcIO* getServer() { return m_server; }
             QString proxyUrl() { return m_proxyUrl; }
 
+            void showError( int code, QString message = QString() );
+            QString parameter( const QString keyName, const QString data )      const;
+
+            void addObserver( QObject * observer ) { m_metaDataObservers.append( observer ); }
+
         public slots:
             void requestMetaData();
             void enableScrobbling( bool enabled );
@@ -184,9 +189,8 @@ namespace LastFm
             enum errorCode { E_NOCONTENT    = 1, E_NOMEMBERS = 2, E_NOFANS = 3, E_NOAVAIL = 4, E_NOSUBSCRIBER = 5,
                              E_NONEIGHBOURS = 6, E_NOSTOPPED = 7, E_OTHER  = 0 };
 
-            void        showError( int code, QString message = QString() );
 
-            QString     parameter( const QString keyName, const QString data )      const;
+
             QStringList parameterArray( const QString keyName, const QString data ) const;
             QStringList parameterKeys( const QString keyName, const QString data )  const;
 
@@ -202,6 +206,8 @@ namespace LastFm
             QString    m_proxyUrl;
             K3ProcIO   *m_server;
             MetaBundle m_metaBundle;
+
+            QList<QObject*> m_metaDataObservers; //temporary hack
 
         private slots:
             void readProxy();
