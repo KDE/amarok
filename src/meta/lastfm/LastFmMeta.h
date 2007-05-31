@@ -25,10 +25,12 @@
 
 namespace LastFm
 {
-    class Track : public QObject, Meta::Track
+    class Track : public QObject, public Meta::Track
     {
         Q_OBJECT
         public:
+            class Private;
+
             Track( const QString &lastFmUri );
             virtual ~Track();
 
@@ -103,7 +105,6 @@ namespace LastFm
 
         private:
             //use a d-pointer because some code is going to work directly with LastFm::Track
-            class Private;
             Private * const d;
     };
 

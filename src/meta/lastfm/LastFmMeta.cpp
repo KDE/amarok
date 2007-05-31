@@ -24,7 +24,17 @@
 
 #include "lastfm.h"
 
+#include <QPointer>
+
+#include <KSharedPtr>
+
 using namespace LastFm;
+
+class LastFmArtist;
+class LastFmAlbum;
+class LastFmGenre;
+class LastFmComposer;
+class LastFmYear;
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -33,6 +43,13 @@ Track::Track( const QString &lastFmUri )
 {
     d->lastFmUri = lastFmUri;
     d->t = this;
+    d->length = 0;
+
+    d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QPointer<Track::Private>( d ) ) );
+    d->artistPtr = Meta::ArtistPtr( new LastFmArtist( QPointer<Track::Private>( d ) ) );
+    d->genrePtr = Meta::GenrePtr( new LastFmGenre( QPointer<Track::Private>( d ) ) );
+    d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
+    d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
 }
 
 Track::~Track()
@@ -43,7 +60,11 @@ Track::~Track()
 QString
 Track::name() const
 {
-    return QString(); //TODO
+    //TODO
+    if( d->track.isEmpty() )
+        return d->lastFmUri;
+    else
+        return d->track;
 }
 
 QString
@@ -85,6 +106,7 @@ Track::playableUrl() const
     {
         d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
         d->service = LastFm::Controller::instance()->getService();
+        d->service->addObserver( d );
     }
     return d->proxyUrl;
 }
@@ -117,31 +139,31 @@ Track::isEditable() const
 Meta::AlbumPtr
 Track::album() const
 {
-    //TODO
+    return d->albumPtr;
 }
 
 Meta::ArtistPtr
 Track::artist() const
 {
-    //TODO
+    return d->artistPtr;
 }
 
 Meta::GenrePtr
 Track::genre() const
 {
-    //TODO
+    return d->genrePtr;
 }
 
 Meta::ComposerPtr
 Track::composer() const
 {
-    //TODO
+    return d->composerPtr;
 }
 
 Meta::YearPtr
 Track::year() const
 {
-    //TODO
+    return d->yearPtr;
 }
 
 void
@@ -237,7 +259,7 @@ Track::setDiscNumber( int newDiscNumber )
 int
 Track::length() const
 {
-    //TODO
+    return d->length;
 }
 
 int

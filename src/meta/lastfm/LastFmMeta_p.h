@@ -60,6 +60,12 @@ class Track::Private : public QObject
         QString artistUrl;
         QString trackUrl;
 
+        Meta::ArtistPtr artistPtr;
+        Meta::AlbumPtr albumPtr;
+        Meta::GenrePtr genrePtr;
+        Meta::ComposerPtr composerPtr;
+        Meta::YearPtr yearPtr;
+
     public:
         void notifyObservers()
         {
@@ -103,10 +109,10 @@ class Track::Private : public QObject
                 return;
             }
             KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), true, false );
-            connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( fetchImageFinished( KIO::Job* ) ) );
+            connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
         }
 
-        void fetchImageFinished( KIO::Job* job )
+        void fetchImageFinished( KJob* job )
         {
             if( job->error() == 0 ) {
                 //do we still need to save the image to disk??
@@ -114,9 +120,14 @@ class Track::Private : public QObject
                 const int size = AmarokConfig::coverPreviewSize();
 
                 QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
-                img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
+                if( !img.isNull() )
+                {
+                    img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
 
-                albumArt = QPixmap::fromImage( img );
+                    albumArt = QPixmap::fromImage( img );
+                }
+                else
+                    albumArt = QPixmap();
             }
             else
             {
@@ -125,6 +136,166 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
+};
+
+// internal helper classes
+
+class LastFmArtist : public Meta::Artist
+{
+public:
+    LastFmArtist( Track::Private *dptr )
+        : Meta::Artist()
+        , d( dptr )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( d )
+            return d->artist;
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        if( d )
+            return d->artist;
+        else
+            return QString();
+    }
+
+    Track::Private * const d;
+};
+
+class LastFmAlbum : public Meta::Album
+{
+public:
+    LastFmAlbum( Track::Private *dptr )
+        : Meta::Album()
+        , d( dptr )
+    {}
+
+    bool isCompilation() const { return false; }
+    bool hasAlbumArtist() const { return false; }
+    Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( d )
+            return d->album;
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        if( d )
+            return d->album;
+        else
+            return QString();
+    }
+
+    QPixmap image( int size, bool withShadow )
+    {
+        if( !d || d->albumArt.isNull() )
+            return Meta::Album::image( size, withShadow );
+        //TODO implement shadow
+        //TODO improve this
+        if( d->albumArt.width() != size )
+            return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+        else
+            return d->albumArt;
+    }
+
+    Track::Private * const d;
+};
+
+class LastFmGenre : public Meta::Genre
+{
+public:
+    LastFmGenre( Track::Private *dptr )
+        : Meta::Genre()
+        , d( dptr )
+    {}
+
+    QString name() const
+    {
+        return QString();
+    }
+
+    QString prettyName() const
+    {
+        return QString();
+    }
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    Track::Private * const d;
+};
+
+class LastFmComposer : public Meta::Composer
+{
+public:
+    LastFmComposer( Track::Private *dptr )
+        : Meta::Composer()
+        , d( dptr )
+    {}
+
+    QString name() const
+    {
+        return QString();
+    }
+
+    QString prettyName() const
+    {
+        return QString();
+    }
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    Track::Private * const d;
+};
+
+class LastFmYear : public Meta::Year
+{
+public:
+    LastFmYear( Track::Private *dptr )
+        : Meta::Year()
+        , d( dptr )
+    {}
+
+    QString name() const
+    {
+        return QString();
+    }
+
+    QString prettyName() const
+    {
+        return QString();
+    }
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    Track::Private * const d;
 };
 
 #endif
