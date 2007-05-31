@@ -39,6 +39,10 @@ class CollectionManager : public QObject
 
         QList<Collection*> collections();
 
+        /**
+            This method will try to get a Track object for the given url. This method will return 0 if no Track object
+            could be created for the url.
+        */
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
         QStringList sqlQuery( const QString &query );

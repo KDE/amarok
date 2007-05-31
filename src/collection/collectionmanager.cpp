@@ -23,6 +23,7 @@
 
 #include "collection.h"
 #include "metaquerybuilder.h"
+#include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
 
 #include <QtAlgorithms>
@@ -194,6 +195,10 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a podcast, in that case we'll have additional meta information
     //might be a lastfm track, another stream
     //or a file which is not in any collection
+    debug() << "track for url: " << url.url() << endl;
+
+    if( url.protocol() == "lastfm" )
+        return Meta::TrackPtr( new LastFm::Track( url.url() ) );
     return Meta::TrackPtr( 0 );
 }
 
