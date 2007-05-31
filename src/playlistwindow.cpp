@@ -949,7 +949,7 @@ void PlaylistWindow::playLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artistnames/" + token );
+    const KURL url( "lastfm://artist/" + token + "/similarartists" );
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
@@ -959,7 +959,7 @@ void PlaylistWindow::addLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artistnames/" + token );
+    const KURL url( "lastfm://artist/" + token + "/similarartists" );
     Playlist::instance()->insertMedia( url );
 }
 
