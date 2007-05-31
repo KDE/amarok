@@ -91,7 +91,9 @@ class TrackAdvancer;
 * @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
 **/
             void insertOptioned( Meta::TrackList list, int options );
+            void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
             void insertTracks( int row, Meta::TrackList list ); //doesn't override
+            void insertTrack( int row, Meta::TrackPtr track ); //convenience method
             void insertTracks( int row, QueryMaker *qm );
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );

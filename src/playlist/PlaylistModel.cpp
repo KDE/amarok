@@ -122,6 +122,14 @@ Model::insertTracks( int row, TrackList list )
 }
 
 void
+Model::insertTrack( int row, TrackPtr track )
+{
+    TrackList list;
+    list.append( track );
+    insertTracks( row, list );
+}
+
+void
 Model::insertTracks( int row, QueryMaker *qm )
 {
     qm->startTrackQuery();
@@ -317,13 +325,26 @@ Model::insertOptioned( Meta::TrackList list, int options )
         play( firstItemAdded );
     }
 }
+
+void
+Model::insertOptioned( Meta::TrackPtr track, int options )
+{
+    Meta::TrackList list;
+    list.append( track );
+    insertOptioned( list, options );
+}
+
 void
 Model::insertMedia( KUrl::List list, int options )
 {
     KUrl url;
     Meta::TrackList trackList;
     foreach( url, list )
-        trackList.push_back( CollectionManager::instance()->trackForUrl( url ) );
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        if( track )
+            trackList.push_back( track );
+    }
     insertOptioned( trackList, options );
 }
 ////////////
