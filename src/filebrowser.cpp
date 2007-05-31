@@ -27,6 +27,8 @@
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -433,7 +435,7 @@ FileBrowser::slotViewChanged( KFileView *view )
 inline void
 FileBrowser::activate( const KFileItem *item )
 {
-    Playlist::instance()->insertMedia( item->url(), Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( item->url(), PlaylistNS::AppendAndPlay );
 }
 
 inline void
@@ -459,7 +461,7 @@ FileBrowser::contextMenuActivated( int id )
     switch( id )
     {
     case MakePlaylist:
-        Playlist::instance()->insertMedia( selectedItems(), Playlist::Replace );
+        The::playlistModel()->insertMedia( selectedItems(), Playlist::Replace );
         break;
 
     case SavePlaylist:
@@ -467,12 +469,12 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case AppendToPlaylist:
-        Playlist::instance()->insertMedia( selectedItems() );
+        The::playlistModel()->insertMedia( selectedItems() );
         break;
 
     case QueueTrack:
     case QueueTracks:
-        Playlist::instance()->insertMedia( selectedItems(), Playlist::Queue );
+        The::playlistModel()->insertMedia( selectedItems(), Playlist::Queue );
         break;
 
     case EditTags:
@@ -721,7 +723,7 @@ SearchPane::_searchComplete()
 void
 SearchPane::activate( Q3ListViewItem *item )
 {
-    Playlist::instance()->insertMedia( static_cast<KURLView::Item*>(item)->m_url, Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( static_cast<KURLView::Item*>(item)->m_url, Playlist::DirectPlay );
 }
 
 #include "filebrowser.moc"

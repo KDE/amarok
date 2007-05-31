@@ -50,6 +50,7 @@
 #include "sidebar.moc"
 #include "statistics.h"
 #include "statusbar.h"
+#include "TheInstances.h"
 #include "threadmanager.h"
 #include "toolbar.h"
 #include "ui_controlbar.h"
@@ -134,7 +135,7 @@ void PlaylistWindow::init()
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( splitter ); //Playlist
     { //TNG playlist
-        PlaylistNS::Model* playmodel = PlaylistNS::Model::instance();
+        PlaylistNS::Model* playmodel = new PlaylistNS::Model;
         playmodel->testData();
         PlaylistNS::View* playview = new PlaylistNS::View( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
@@ -742,9 +743,9 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 
     for(  KUrl::List::ConstIterator it = files.constBegin(); it != end; ++it )
         if( it == files.constBegin() )
-            Playlist::instance()->insertMedia( *it, options );
+            The::playlistModel()->insertMedia( *it, options );
         else
-            Playlist::instance()->insertMedia( *it, Playlist::Append );
+            The::playlistModel()->insertMedia( *it, Playlist::Append );
 }
 
 void PlaylistWindow::slotAddStream() //SLOT
@@ -756,7 +757,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 
     KUrl::List media;
     media << KUrl( url );
-    Playlist::instance()->insertMedia( media, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( media, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -767,7 +768,7 @@ void PlaylistWindow::playLastfmPersonal() //SLOT
     const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -778,7 +779,7 @@ void PlaylistWindow::addLastfmPersonal() //SLOT
     const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -789,7 +790,7 @@ void PlaylistWindow::playLastfmNeighbor() //SLOT
     const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -800,7 +801,7 @@ void PlaylistWindow::addLastfmNeighbor() //SLOT
     const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -809,8 +810,8 @@ void PlaylistWindow::playLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artist/" + token + "/similarartists" );
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    const KUrl url( "lastfm://artist/" + token + "/similarartists" );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -819,8 +820,8 @@ void PlaylistWindow::addLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artist/" + token + "/similarartists" );
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
+    const KUrl url( "lastfm://artist/" + token + "/similarartists" );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
 }
 
 
@@ -834,7 +835,7 @@ void PlaylistWindow::playLastfmGlobaltag() //SLOT
     const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -848,7 +849,7 @@ void PlaylistWindow::addLastfmGlobaltag() //SLOT
     const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
 
-    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
+    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
 }
 
 
@@ -858,7 +859,7 @@ void PlaylistWindow::playAudioCD() //SLOT
     if( EngineController::engine()->getAudioCDContents(QString(), urls) )
     {
         if (!urls.isEmpty())
-            Playlist::instance()->insertMedia(urls, Playlist::Replace);
+            The::playlistModel()->insertMedia(urls, Playlist::Replace);
     }
     else
     { // Default behaviour

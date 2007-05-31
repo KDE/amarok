@@ -11,6 +11,7 @@
 #include "amarok.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 
 #include <QContextMenuEvent>
 
@@ -123,12 +124,12 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                         tmp = tmp->parent();
                     }
                     m_treeModel->addFilters( qm );
-                    PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(), qm );
+                    The::playlistModel()->insertTracks( The::playlistModel()->rowCount(), qm );
                 }
                 else
                 {
                     QList< Meta::TrackPtr > tracks = item->descendentTracks();
-                    PlaylistNS::Model::instance()->insertTracks( PlaylistNS::Model::instance()->rowCount(),
+                    The::playlistModel()->insertTracks( The::playlistModel()->rowCount(),
                         tracks );
                 }
         }

@@ -11,14 +11,16 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "StandardTrackAdvancer.h"
+#include "statusbar.h"
+#include "TheInstances.h"
 
 #include "collection/blockingquery.h"
 #include "collection/collection.h"
 #include "collection/collectionmanager.h"
 #include "collection/querymaker.h"
-
 #include "meta/lastfm/LastFmMeta.h"
 
+#include <kurl.h>
 
 using namespace PlaylistNS;
 
@@ -108,9 +110,12 @@ Model::insertTracks( int row, TrackList list )
     int i = 0;
     foreach( TrackPtr track , list )
     {
-        track->subscribe( this );
-        m_tracks.insert( row + i, track );
-        i++;
+        if( track )
+        {
+            track->subscribe( this );
+            m_tracks.insert( row + i, track );
+            i++;
+        }
     }
     endInsertRows();
 }
@@ -152,7 +157,7 @@ void
 Model::testData()
 {
     DEBUG_BLOCK
-    /*Collection *local = 0;
+    Collection *local = 0;
     foreach( Collection *coll, CollectionManager::instance()->collections() )
     {
         if( coll->collectionId() == "localCollection" )
@@ -165,12 +170,8 @@ Model::testData()
     qm->limitMaxResultSize( 10 );
     BlockingQuery bq( qm );
     bq.startQuery();
-    insertTracks( 0, bq.tracks( "localCollection" ) );*/
+    insertTracks( 0, bq.tracks( "localCollection" ) );
     //m_columns << TrackNumber << Title << Artist << Album;
-    Meta::TrackPtr track( new LastFm::Track( "lastfm://globaltags/Electronica" ) );
-    Meta::TrackList tracks;
-    tracks.append( track );
-    insertTracks( 0, tracks );
     reset();
 }
 
@@ -191,7 +192,13 @@ Model::trackFinished()
 void
 Model::play( const QModelIndex& index )
 {
-    setActiveRow( index.row() );
+    play( index.row() );
+}
+
+void
+Model::play( int row )
+{
+    setActiveRow( row );
     EngineController::instance()->play( m_tracks[ m_activeRow ] );
 }
 
@@ -247,6 +254,81 @@ DEBUG_BLOCK
 }
 
 void
+Model::metadataChanged( Meta::Track *track )
+{
+    int index = m_tracks.indexOf( Meta::TrackPtr( track ), 0 );
+    if( index != -1 )
+        emit dataChanged( createIndex( index, 0 ), createIndex( index, columnCount() -1 ) );
+}
+
+void
+Model::clear()
+{
+    m_tracks.clear();
+    reset();
+}
+
+void
+Model::insertOptioned( Meta::TrackList list, int options )
+{
+
+    if( list.isEmpty() ) {
+        Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+        return; // don't add empty items
+    }
+
+    if( Unique )
+    {
+        int alreadyOnPlaylist = 0;
+        for( int i = 0; i < list.size(); ++i )
+        {
+            if( m_tracks.contains( list.at( i ) ) )
+            {
+                list.removeAt( i );
+                alreadyOnPlaylist++;
+            }
+        }
+        if ( alreadyOnPlaylist )
+            Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+    }
+    int firstItemAdded = -1;
+    if( options & Replace )
+    {
+        clear();
+        firstItemAdded = 0;
+        insertTracks( 0, list );
+    }
+    else if( options & Append )
+    {
+        firstItemAdded = rowCount();
+        insertTracks( firstItemAdded, list );
+    }
+    else if( options & Queue )
+    {
+        //TODO implement queue
+    }
+    if( options & DirectPlay )
+    {
+        play( firstItemAdded );
+    }
+    else if( ( options & StartPlay ) && ( EngineController::engine()->state() != Engine::Playing ) )
+    {
+        play( firstItemAdded );
+    }
+}
+void
+Model::insertMedia( KUrl::List list, int options )
+{
+    KUrl url;
+    Meta::TrackList trackList;
+    foreach( url, list )
+        trackList.push_back( CollectionManager::instance()->trackForUrl( url ) );
+    insertOptioned( trackList, options );
+}
+////////////
+//Private Slots
+///////////
+void
 Model::queryDone()
 {
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
@@ -269,12 +351,8 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
     }
 }
 
-void
-Model::metadataChanged( Meta::Track *track )
-{
-    int index = m_tracks.indexOf( Meta::TrackPtr( track ), 0 );
-    if( index != -1 )
-        emit dataChanged( createIndex( index, 0 ), createIndex( index, columnCount() -1 ) );
+namespace The {
+    PlaylistNS::Model* playlistModel() { return PlaylistNS::Model::s_instance; } 
 }
 
 #include "PlaylistModel.moc"

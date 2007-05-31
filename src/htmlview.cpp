@@ -8,7 +8,9 @@
 #include "app.h"
 #include "contextbrowser.h"
 #include "htmlview.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"      //appendMedia()
+#include "TheInstances.h"
 
 #include <QClipboard>
 #include <QFile> // External CSS opening
@@ -323,7 +325,7 @@ void HTMLView::openUrlRequest( const KUrl &url )
     // here, http urls are streams. For webpages we use externalurl
     // NOTE there have been no links to streams! http now used for wiki tab.
     if ( url.protocol() == "file" )
-        Playlist::instance()->insertMedia( url, Playlist::DefaultOptions );
+        The::playlistModel()->insertMedia( url, PlaylistNS::AppendAndPlay );
 }
 
 #include "htmlview.moc"

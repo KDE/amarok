@@ -27,6 +27,7 @@
 #include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
@@ -38,6 +39,7 @@
 #include "searchwidget.h"
 #include "statusbar.h"
 #include "transferdialog.h"
+#include "TheInstances.h"
 
 #include <QCheckBox>
 #include <QDateTime>
@@ -1239,7 +1241,7 @@ MediaView::invokeItem( Q3ListViewItem *i )
         return;
 
     KUrl::List urls = nodeBuildDragList( item );
-    Playlist::instance()->insertMedia( urls, Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( urls, PlaylistNS::AppendAndPlay );
 }
 
 void

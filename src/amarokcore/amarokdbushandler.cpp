@@ -31,9 +31,11 @@
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "htmlview.h"
+#include "lastfm.h"
 #include "mediabrowser.h"
 #include "mountpointmanager.h"
 #include "osd.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistitem.h"
@@ -42,7 +44,7 @@
 #include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
-#include "lastfm.h"
+#include "TheInstances.h"
 
 #include <QFile>
 //Added by qt3to4:
@@ -70,8 +72,8 @@ namespace Amarok
     DbusPlayerHandler::DbusPlayerHandler()
         : QObject( kapp )
     {
-	 (void)new PlayerAdaptor(this);
-	 QDBusConnection::sessionBus().registerObject("/Player", this);
+     (void)new PlayerAdaptor(this);
+     QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
     QString DbusPlayerHandler::version()
@@ -602,12 +604,12 @@ namespace Amarok
 
     void DbusPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
-        Playlist::instance()->insertMedia(urls);
+        The::playlistModel()->insertMedia(urls);
     }
 
     void DbusPlaylistHandler::clearPlaylist()
     {
-        Playlist::instance()->clear();
+        The::playlistModel()->clear();
     }
 
     void DbusPlaylistHandler::playByIndex(int index)
@@ -617,7 +619,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::playMedia( const KUrl &url )
     {
-        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
+        The::playlistModel()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
     }
 
     void DbusPlaylistHandler::popupMessage( const QString& msg )
@@ -644,7 +646,7 @@ namespace Amarok
     void DbusPlaylistHandler::removeByIndex( int /*index*/ )
     {
 #if 0
-    	    PlaylistItem* const item =
+            PlaylistItem* const item =
             static_cast<PlaylistItem*>( Playlist::instance()->itemAtIndex( index ) );
 
         if ( item ) {

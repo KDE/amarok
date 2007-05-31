@@ -36,6 +36,7 @@ email                : markey@web.de
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
@@ -48,6 +49,7 @@ email                : markey@web.de
 #include "systray.h"
 #include "threadmanager.h"
 #include "tracktooltip.h"        //engineNewMetaData()
+#include "TheInstances.h"
 
 #include <iostream>
 
@@ -305,7 +307,7 @@ void App::handleCliArgs() //static
                 list << url;
         }
 
-        int options = Playlist::DefaultOptions;
+        int options = PlaylistNS::AppendAndPlay;
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
         else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )
@@ -316,7 +318,7 @@ void App::handleCliArgs() //static
         if( args->isSet( "play" ) )
             options |= Playlist::DirectPlay;
 
-        Playlist::instance()->insertMedia( list, options );
+        The::playlistModel()->insertMedia( list, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -361,7 +363,7 @@ void App::handleCliArgs() //static
         device = DeviceManager::instance()->convertMediaUrlToDevice( device );
         KUrl::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
-            Playlist::instance()->insertMedia(
+            The::playlistModel()->insertMedia(
                 urls, Playlist::Replace|Playlist::DirectPlay);
         } else { // Default behaviour
             debug() <<
@@ -803,7 +805,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
 
             if ( id > 0 )
-                Playlist::instance()->insertMedia( list, id );
+                The::playlistModel()->insertMedia( list, id );
         }
         else return false;
         #undef e

@@ -15,9 +15,11 @@
 #include "browserToolBar.h"     //search toolbar
 #include "querybuilder.h"
 #include "debug.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "statistics.h"
 #include "tagdialog.h"         //showContextMenu()
+#include "TheInstances.h"
 
 #include <k3multipledrag.h>
 #include <k3urldrag.h>          //startDrag()
@@ -655,13 +657,13 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
         case APPEND:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL() ):
-                Playlist::instance()->insertMedia( KUrl( item->url() ) );
+                The::playlistModel()->insertMedia( KUrl( item->url() ) );
             break;
 
         case QUEUE:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
-                Playlist::instance()->insertMedia( KUrl( item->url() ), Playlist::Queue );
+                The::playlistModel()->insertMedia( KUrl( item->url() ), Playlist::Queue );
             break;
 
         case INFO:

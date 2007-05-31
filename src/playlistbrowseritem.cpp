@@ -16,6 +16,9 @@
 #include "debug.h"
 #include "dynamicmode.h"
 #include "k3bexporter.h"
+#include "mediabrowser.h"
+#include "metabundle.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
@@ -24,11 +27,11 @@
 #include "podcastbundle.h"
 #include "podcastsettings.h"
 #include "progressBar.h"
-#include "metabundle.h"
 #include "statusbar.h"
 #include "tagdialog.h"
+#include "TheInstances.h"
 #include "threadmanager.h"
-#include "mediabrowser.h"
+
 
 #include <QDateTime>
 #include <QFileInfo>
@@ -842,7 +845,7 @@ void PlaylistEntry::updateInfo()
 void PlaylistEntry::slotDoubleClicked()
 {
     Playlist::instance()->proposePlaylistName( text(0), true );
-    Playlist::instance()->insertMedia( url(), Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( url(), PlaylistNS::AppendAndPlay );
 }
 
 
@@ -858,7 +861,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
         public slots:
             void load()
             {
-                Playlist::instance()->clear();
+                The::playlistModel()->clear();
                 Playlist::instance()->setPlaylistName( m_parent->text(0), true );
                 append();
             }
@@ -1035,7 +1038,7 @@ const KUrl &PlaylistTrackItem::url()
 
 void PlaylistTrackItem::slotDoubleClicked()
 {
-    Playlist::instance()->insertMedia( url(), Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( url(), PlaylistNS::AppendAndPlay );
 }
 
 
@@ -1061,7 +1064,7 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
 
     switch( menu.exec( position ) ) {
         case LOAD:
-            Playlist::instance()->clear(); //FALL THROUGH
+            The::playlistModel()->clear(); //FALL THROUGH
         case APPEND:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
@@ -1178,7 +1181,7 @@ void StreamEntry::updateInfo()
 void StreamEntry::slotDoubleClicked()
 {
     Playlist::instance()->proposePlaylistName( text(0) );
-    Playlist::instance()->insertMedia( url(), Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( url(), PlaylistNS::AppendAndPlay );
 }
 
 void StreamEntry::setup()
@@ -1261,7 +1264,7 @@ StreamEntry::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case LOAD:
-            Playlist::instance()->clear();
+            The::playlistModel()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
         case APPEND:
@@ -2125,7 +2128,7 @@ PodcastChannel::slotDoubleClicked()
     }
 
     Playlist::instance()->proposePlaylistName( text(0) );
-    Playlist::instance()->insertMedia( list, Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( list, PlaylistNS::AppendAndPlay );
     setNew( false );
 }
 
@@ -2271,7 +2274,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case ACTIONS_LOAD:
-            Playlist::instance()->clear();
+            The::playlistModel()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
         case ACTIONS_APPEND:
@@ -2760,7 +2763,7 @@ PodcastEpisode::slotDoubleClicked()
         list.append( localUrl() ):
         list.append( url()      );
 
-    Playlist::instance()->insertMedia( list, Playlist::DefaultOptions );
+    The::playlistModel()->insertMedia( list, PlaylistNS::AppendAndPlay );
     setListened();
 }
 
@@ -2830,7 +2833,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     switch( id )
     {
         case ACTIONS_LOAD:
-            Playlist::instance()->clear();
+            The::playlistModel()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
         case ACTIONS_APPEND:
@@ -3340,7 +3343,7 @@ void SmartPlaylist::slotDoubleClicked()
     if( !query().isEmpty() )
     {
         Playlist::instance()->proposePlaylistName( text(0) );
-        Playlist::instance()->insertMediaSql( query(), Playlist::DefaultOptions );
+        Playlist::instance()->insertMediaSql( query(), PlaylistNS::AppendAndPlay );
     }
 }
 
@@ -3374,7 +3377,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case LOAD:
-            Playlist::instance()->clear();
+            The::playlistModel()->clear();
             Playlist::instance()->setPlaylistName( text(0) );
             //FALL THROUGH
         case ADD:

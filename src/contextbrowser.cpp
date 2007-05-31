@@ -26,10 +26,13 @@
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"      //appendMedia()
 #include "podcastbundle.h"
 #include "qstringx.h"
 #include "querybuilder.h"
+#include "TheInstances.h"
+
 //Added by qt3to4:
 #include <QLabel>
 #include <Q3ValueList>
@@ -626,17 +629,17 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
 
     else if( url.protocol() == "file" )
     {
-        Playlist::instance()->insertMedia( url, Playlist::DefaultOptions );
+        The::playlistModel()->insertMedia( url, PlaylistNS::AppendAndPlay );
     }
 
     else if( url.protocol() == "stream" )
     {
-        Playlist::instance()->insertMedia( KUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
+        The::playlistModel()->insertMedia( KUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), PlaylistNS::AppendAndPlay );
     }
 
     else if( url.protocol() == "compilationdisc" || url.protocol() == "albumdisc" )
     {
-        Playlist::instance()->insertMedia( expandURL( url ) , Playlist::DefaultOptions );
+        The::playlistModel()->insertMedia( expandURL( url ) , PlaylistNS::AppendAndPlay );
     }
 
     else
@@ -1130,7 +1133,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         break;
 
     case ASNEXT:
-        Playlist::instance()->insertMedia( urls, Playlist::Queue );
+        The::playlistModel()->insertMedia( urls, Playlist::Queue );
         break;
 
     case INFO:
@@ -1149,11 +1152,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
 
     case MAKE:
-        Playlist::instance()->clear();
+        The::playlistModel()->clear();
         //FALL_THROUGH
 
     case APPEND:
-        Playlist::instance()->insertMedia( urls, Playlist::Append );
+        The::playlistModel()->insertMedia( urls, Playlist::Append );
         break;
 
     case MEDIA_DEVICE:

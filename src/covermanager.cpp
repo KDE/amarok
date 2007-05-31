@@ -11,7 +11,9 @@
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "pixmapviewer.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
+#include "TheInstances.h"
 
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <QFile>
@@ -775,7 +777,7 @@ void CoverManager::playSelectedAlbums()
     {
         artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
         album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
-        Playlist::instance()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
+        The::playlistModel()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
     }
 }
 

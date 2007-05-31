@@ -20,6 +20,7 @@
 #include "mediabrowser.h"
 #include "dynamicmode.h"
 #include "lastfm.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
@@ -29,6 +30,7 @@
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
+#include "TheInstances.h"
 #include "threadmanager.h"
 #include "statusbar.h"
 #include "contextbrowser.h"
@@ -2042,7 +2044,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
     }
 
     if( !list.isEmpty() )
-        Playlist::instance()->insertMedia( list, options );
+        The::playlistModel()->insertMedia( list, options );
 }
 
 void
@@ -2120,10 +2122,10 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( parent && parent->isSelected() ) //parent will remove children
             continue;
 
-	if (parent) {
+    if (parent) {
             while( parent->parent() && static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
                 parent = parent->parent();
-	}
+    }
 
         if( parent && !static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
             continue;
