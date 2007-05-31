@@ -17,6 +17,8 @@
 #include "collection/collectionmanager.h"
 #include "collection/querymaker.h"
 
+#include "meta/lastfm/LastFmMeta.h"
+
 
 using namespace PlaylistNS;
 
@@ -150,7 +152,7 @@ void
 Model::testData()
 {
     DEBUG_BLOCK
-    Collection *local = 0;
+    /*Collection *local = 0;
     foreach( Collection *coll, CollectionManager::instance()->collections() )
     {
         if( coll->collectionId() == "localCollection" )
@@ -163,8 +165,12 @@ Model::testData()
     qm->limitMaxResultSize( 10 );
     BlockingQuery bq( qm );
     bq.startQuery();
-    insertTracks( 0, bq.tracks( "localCollection" ) );
+    insertTracks( 0, bq.tracks( "localCollection" ) );*/
     //m_columns << TrackNumber << Title << Artist << Album;
+    Meta::TrackPtr track( new LastFm::Track( "lastfm://globaltags/Electronica" ) );
+    Meta::TrackList tracks;
+    tracks.append( track );
+    insertTracks( 0, tracks );
     reset();
 }
 

@@ -238,6 +238,32 @@ set(libstatusbar_SRCS
 )
 
 #####################################################################
+# LAST.FM
+#####################################################################
+set(lastfm_SRCS
+    meta/lastfm/LastFmMeta.cpp
+)
+
+#####################################################################
+# META
+#####################################################################
+set(meta_SRCS
+    meta/meta.cpp
+)
+
+#####################################################################
+# COLLECTION
+#####################################################################
+set(collection_SRCS
+    collection/blockingquery.cpp
+    collection/collection.cpp
+    collection/collectionmanager.cpp
+    collection/metaquerybuilder.cpp
+    collection/querymaker.cpp
+    collection/support/memoryquerymaker.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amarok_LIB_SRCS
@@ -254,16 +280,13 @@ set(amarok_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
+    ${lastfm_SRCS}
+    ${meta_SRCS}
+    ${collection_SRCS}
     actionclasses.cpp
     analyzerwidget.cpp
     app.cpp
     atomicstring.cpp
-    collection/blockingquery.cpp
-    collection/collection.cpp
-    collection/collectionmanager.cpp
-    collection/metaquerybuilder.cpp
-    collection/querymaker.cpp
-    collection/support/memoryquerymaker.cpp
     collectiondb.cpp
     columnlist.cpp
     contextbrowser.cpp
@@ -297,7 +320,6 @@ set(amarok_LIB_SRCS
     mediadevicemanager.cpp
     medium.cpp
     mediumpluginmanager.cpp
-    meta/meta.cpp
     metabundle.cpp
     metabundlesaver.cpp
     moodbar.cpp
