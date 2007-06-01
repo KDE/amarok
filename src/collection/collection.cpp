@@ -17,6 +17,8 @@
  */
 #include "collection.h"
 
+#include "meta/meta.h"
+
 CollectionFactory::CollectionFactory() : Amarok::Plugin()
 {
 }
@@ -60,6 +62,20 @@ Collection::insert( const QString &statement, const QString &table )
     Q_UNUSED( statement )
     Q_UNUSED( table )
     return 0;
+}
+
+bool
+Collection::possiblyContainsTrack( const KUrl &url ) const
+{
+    Q_UNUSED( url )
+    return false;
+}
+
+Meta::TrackPtr
+Collection::trackForUrl( const KUrl &url )
+{
+    Q_UNUSED( url )
+    return Meta::TrackPtr();
 }
 
 #include "collection.moc"

@@ -196,9 +196,20 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a lastfm track, another stream
     //or a file which is not in any collection
     debug() << "track for url: " << url.url() << endl;
-
+    //check lastfm track
     if( url.protocol() == "lastfm" )
         return Meta::TrackPtr( new LastFm::Track( url.url() ) );
+
+    foreach( Collection *coll, d->collections )
+    {
+        if( coll->possiblyContainsTrack( url ) )
+        {
+            Meta::TrackPtr track = coll->trackForUrl( url );
+            if( track )
+                return track;
+        }
+    }
+
     return Meta::TrackPtr( 0 );
 }
 
