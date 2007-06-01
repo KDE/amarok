@@ -144,5 +144,17 @@ SqlCollection::escape( QString text ) const           //krazy:exclude=constref
     return text.replace( '\'', "''" );;
 }
 
+bool
+SqlCollection::possiblyContainsTrack( const KUrl &url ) const
+{
+    return url.protocol() == "file";
+}
+
+Meta::TrackPtr
+SqlCollection::trackForUrl( const KUrl &url )
+{
+    return m_registry->getTrack( url.path() );
+}
+
 #include "sqlcollection.moc"
 

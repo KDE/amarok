@@ -58,11 +58,9 @@ SqlRegistry::getTrack( const QString &url )
         return m_trackMap.value( id );
     else
     {
-        //TODO
-
-        QStringList result;
-        TrackPtr track( new SqlTrack( m_collection, result ) );
-        m_trackMap.insert( id, track );
+        TrackPtr track = SqlTrack::getTrack( deviceid, rpath, m_collection );
+        if( track )
+            m_trackMap.insert( id, track );
         return track;
     }
 }

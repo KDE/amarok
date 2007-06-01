@@ -64,6 +64,9 @@ class SqlCollection : public Collection
 
         void removeCollection();    //testing, remove later
 
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
     private:
         //reuse CollectionDB until we replace it completely
         CollectionDB *m_collectionDb;

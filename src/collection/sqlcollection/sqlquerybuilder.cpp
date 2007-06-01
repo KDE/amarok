@@ -173,19 +173,7 @@ SqlQueryBuilder::startTrackQuery()
         d->linkedTables |= Private::COMPOSER_TAB;
         d->linkedTables |= Private::YEAR_TAB;
         d->linkedTables |= Private::STATISTICS_TAB;
-        d->queryReturnValues =  "tags.deviceid, tags.url, "
-                                "tags.title, tags.comment, "
-                                "tags.track, tags.discnumber, "
-                                "statistics.percentage, statistics.rating, "
-                                "tags.bitrate, tags.length, "
-                                "tags.filesize, tags.samplerate, "
-                                "statistics.createdate, statistics.accessdate, "
-                                "statistics.playcounter, tags.filetype, tags.bpm, "
-                                "artist.name, artist.id, "
-                                "album.name, album.id, tags.sampler, "
-                                "genre.name, genre.id, "
-                                "composer.name, composer.id, "
-                                "year.name, year.id";
+        d->queryReturnValues = SqlTrack::getTrackReturnValues();
     }
     return this;
 }

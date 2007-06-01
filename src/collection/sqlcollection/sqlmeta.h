@@ -34,6 +34,9 @@ class SqlCollection;
 class SqlTrack : public Track
 {
     public:
+        static QString getTrackReturnValues();
+        static TrackPtr getTrack( int deviceid, const QString &rpath, SqlCollection *collection );
+
         SqlTrack( SqlCollection *collection, const QStringList &queryResult );
 
         virtual QString name() const { return m_title; }
