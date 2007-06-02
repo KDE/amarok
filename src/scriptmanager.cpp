@@ -518,21 +518,36 @@ ScriptManager::slotUninstallScript()
     if( m_scripts.find( name ) == m_scripts.end() )
         return;
 
-    const QString directory = m_scripts[name].url.directory();
+    KURL scriptDirURL( m_scripts[name].url.upURL() );
 
-    // Delete directory recursively
-    const KURL url = KURL::fromPathOrURL( directory );
-    if( !KIO::NetAccess::del( url, 0 ) ) {
-        KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
+    // find if the script is installed in the global or local scripts directory
+    KURL scriptsDirURL;
+    QStringList dirs = KGlobal::dirs()->findDirs( "data", "amarok/scripts/" );
+    for ( QStringList::Iterator it = dirs.begin(); it != dirs.end(); ++it ) {
+        scriptsDirURL = KURL::fromPathOrURL( *it );
+        if ( scriptsDirURL.isParentOf( scriptDirURL ) )
+            break;
+    }
+
+    // find the begining of this script directory tree
+    KURL scriptDirUpURL = scriptDirURL.upURL();
+    while ( ! scriptsDirURL.equals( scriptDirUpURL, true ) && scriptsDirURL.isParentOf( scriptDirUpURL ) ) {
+        scriptDirURL = scriptDirUpURL;
+        scriptDirUpURL = scriptDirURL.upURL();
+    }
+
+    // Delete script directory recursively
+    if( !KIO::NetAccess::del( scriptDirURL, 0 ) ) {
+        KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) ); // only true when not running as root (which is reasonable)
         return;
     }
 
     QStringList keys;
 
-    // Find all scripts that were in the uninstalled folder
+    // Find all scripts that were in the uninstalled directory
     {
         foreachType( ScriptMap, m_scripts )
-            if( it.data().url.directory() == directory )
+            if( scriptDirURL.isParentOf( it.data().url ) )
                 keys << it.key();
     }
 
