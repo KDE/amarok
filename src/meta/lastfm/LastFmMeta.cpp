@@ -106,6 +106,8 @@ Track::playableUrl() const
     {
         d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
         d->service = LastFm::Controller::instance()->getService();
+        if( !d->service )
+            return KUrl();
         d->service->addObserver( d );
     }
     return d->proxyUrl;
