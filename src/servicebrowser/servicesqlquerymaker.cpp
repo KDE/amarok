@@ -417,16 +417,16 @@ ServiceSqlQueryMaker::linkTables()
     QString prefix = m_metaFactory->tablePrefix();
 
     if( d->linkedTables & Private::TRACKS_TABLE )
-        d->queryFrom += " " + prefix + "_tracks";
+        d->queryFrom += ' ' + prefix + "_tracks";
     if( d->linkedTables & Private::ALBUMS_TABLE )
-       d->queryFrom += " " + prefix + "_albums";
+       d->queryFrom += ' ' + prefix + "_albums";
     if( d->linkedTables & Private::ARTISTS_TABLE )
-       d->queryFrom += " " + prefix + "_artists";
+       d->queryFrom += ' ' + prefix + "_artists";
 
     //There must be a better way....
     if( d->linkedTables & Private::GENRE_TABLE ) {
         if ( d->queryType == Private::GENRE ) {
-            d->queryFrom += " " + prefix + "_genre";
+            d->queryFrom += ' ' + prefix + "_genre";
         } else if ( d->queryType == Private::ARTIST ) {
 
              d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";

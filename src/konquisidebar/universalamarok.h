@@ -46,7 +46,7 @@ class amarokWidget : public KVBox
 {
 Q_OBJECT
 public:
-    amarokWidget( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
+    explicit amarokWidget( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
 protected:
     virtual void dragEnterEvent ( QDragEnterEvent * );
