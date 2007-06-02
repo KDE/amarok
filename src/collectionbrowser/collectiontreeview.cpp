@@ -113,7 +113,6 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         QAction* result =  menu.exec( mapToGlobal( event->pos() ) );
         if( result == appendAction )
         {
-                debug() << "row# " << item->row() << endl;
                 if( !item->allDescendentTracksLoaded() )
                 {
                     QueryMaker *qm = item->queryMaker();
@@ -124,13 +123,12 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                         tmp = tmp->parent();
                     }
                     m_treeModel->addFilters( qm );
-                    The::playlistModel()->insertTracks( The::playlistModel()->rowCount(), qm );
+                    The::playlistModel()->insertOptioned( qm, PlaylistNS::Append );
                 }
                 else
                 {
                     QList< Meta::TrackPtr > tracks = item->descendentTracks();
-                    The::playlistModel()->insertTracks( The::playlistModel()->rowCount(),
-                        tracks );
+                    The::playlistModel()->insertOptioned( tracks, PlaylistNS::Append );
                 }
         }
     }

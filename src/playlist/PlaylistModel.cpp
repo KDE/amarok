@@ -335,6 +335,16 @@ Model::insertOptioned( Meta::TrackPtr track, int options )
 }
 
 void
+Model::insertOptioned( QueryMaker *qm, int options )
+{
+    qm->startTrackQuery();
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
+    m_optionedQueryMap.insert( qm, options );
+    qm->run();
+}
+
+void
 Model::insertMedia( KUrl::List list, int options )
 {
     KUrl url;
@@ -369,7 +379,10 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
     if( qm )
     {
         //requires better handling of queries which return multiple results
-        insertTracks( m_queryMap.value( qm ), tracks );
+        if( m_queryMap.contains( qm ) )
+            insertTracks( m_queryMap.value( qm ), tracks );
+        else if( m_optionedQueryMap.contains( qm ) )
+            insertOptioned( tracks, m_optionedQueryMap.value( qm ) );
     }
 }
 

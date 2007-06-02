@@ -92,6 +92,7 @@ class TrackAdvancer;
 **/
             void insertOptioned( Meta::TrackList list, int options );
             void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
+            void insertOptioned( QueryMaker *qm, int options );
             void insertTracks( int row, Meta::TrackList list ); //doesn't override
             void insertTrack( int row, Meta::TrackPtr track ); //convenience method
             void insertTracks( int row, QueryMaker *qm );
@@ -120,6 +121,7 @@ class TrackAdvancer;
             int m_activeRow; //! the row being played
             TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
             QHash<QueryMaker*, int> m_queryMap; //!maps queries to the row where the results should be inserted
+            QHash<QueryMaker*, int> m_optionedQueryMap; //!maps queries to the options to be used when inserting the result
 
     };
 }
