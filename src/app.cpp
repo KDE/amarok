@@ -41,6 +41,7 @@ email                : markey@web.de
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
+#include "portabledevices/SolidHandler.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
@@ -694,6 +695,7 @@ App::continueInit()
 
     CollectionDB::instance()->checkDatabase();
 
+    The::SolidHandler()->Initialize();
     m_mediaDeviceManager = MediaDeviceManager::instance();
     m_playlistWindow = new PlaylistWindow();
 #ifndef Q_WS_MAC

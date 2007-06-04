@@ -32,6 +32,7 @@ add_subdirectory( engine )
 add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
+add_subdirectory( portabledevices )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -53,6 +54,7 @@ include_directories(
 	plugin
 	statusbar
 	mediadevice
+    portabledevices
     servicebrowser
     #servicebrowser/magnatunestore
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -340,6 +342,7 @@ set(amarok_LIB_SRCS
     playlistwindow.cpp
     pluginmanager.cpp
     podcastsettings.cpp
+    portabledevices/SolidHandler.cpp
     prettypopupmenu.cpp
     progressslider.cpp
     querybuilder.cpp
