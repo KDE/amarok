@@ -25,7 +25,14 @@
 
 using namespace PortableDevices;
 
-SolidHandler *SolidHandler::s_instance = 0;
+SolidHandler* SolidHandler::s_instance = 0;
+
+SolidHandler*
+SolidHandler::instance()
+{
+    static SolidHandler sh;
+    return &sh;
+}
 
 SolidHandler::SolidHandler() : QObject()
 {
@@ -41,19 +48,18 @@ void
 SolidHandler::Initialize()
 {
     DEBUG_BLOCK
-    //why the hell does this freeze Amarok..
-    //m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
+    m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
     
-    //Solid::Device blah;
-    /*for  (int i = 0; i < m_portableList.size(); ++i) {
+    Solid::Device blah;
+    for  (int i = 0; i < m_portableList.size(); ++i) {
         blah = m_portableList.at( i );
         debug() << "Found device with udi = " << blah.udi() << endl;
         debug() << "Device name is = " << blah.product() << " and was made by " << blah.vendor() << endl;
-    }*/
+    }
 }
 
 namespace The {
-    PortableDevices::SolidHandler* SolidHandler() { return PortableDevices::SolidHandler::s_instance; }
+    PortableDevices::SolidHandler* SolidHandler() { return PortableDevices::SolidHandler::instance(); }
 }
 
 #include "SolidHandler.moc"

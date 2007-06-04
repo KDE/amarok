@@ -43,6 +43,8 @@ namespace PortableDevices {
         public:
     
             static SolidHandler* s_instance;
+
+            static SolidHandler* instance();
             
             /**
             * Creates a new SolidHandler.
