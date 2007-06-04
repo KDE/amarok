@@ -20,7 +20,6 @@
 class Q3ListViewItem;
 class QTextStream;
 class PlaylistItem;
-class PLItemList;
 class XMLData;
 class KJob;
 

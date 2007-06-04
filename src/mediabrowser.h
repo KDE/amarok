@@ -41,13 +41,11 @@ class SearchWidget;
 
 class KAction;
 class KComboBox;
-class KDialog;
 class KPushButton;
 class K3ShellProcess;
 
 class Q3DragObject;
 class QLabel;
-class QPalette;
 class QProgressBar;
 
 class AMAROK_EXPORT MediaItem : public K3ListViewItem

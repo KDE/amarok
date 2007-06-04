@@ -42,7 +42,6 @@ extern "C" {
 
 class QCheckBox;
 class QLabel;
-class QLineEdit;
 class QFile;
 
 class KAction;

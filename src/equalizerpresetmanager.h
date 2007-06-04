@@ -25,7 +25,6 @@
 #include <kdialog.h>      //baseclass
 
 class QPushButton;
-class QStringList;
 class K3ListView;
 
 class EqualizerPresetManager : public KDialog

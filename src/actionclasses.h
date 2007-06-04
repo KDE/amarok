@@ -20,8 +20,6 @@
 
 class KActionCollection;
 class KHelpMenu;
-class KLineEdit;
-class QLabel;
 
 
 namespace Amarok

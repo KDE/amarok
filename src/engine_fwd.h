@@ -6,8 +6,7 @@
 
 namespace Engine
 {
-    class SimpleMetaBundle;
-    class Base;
+        class Base;
 
     /**
      * You should return:

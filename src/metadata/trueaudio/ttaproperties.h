@@ -32,8 +32,7 @@ namespace TagLib {
 
   namespace TTA {
 
-    class File;
-
+    
     static const uint HeaderSize = 18;
 
     //! An implementation of audio property reading for TTA

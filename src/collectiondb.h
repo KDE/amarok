@@ -45,7 +45,6 @@ class MetaBundle;
 class PodcastChannelBundle;
 class PodcastEpisodeBundle;
 class Q3ListViewItem;
-class Scrobbler;
 
 class DbConfig
 {};

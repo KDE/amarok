@@ -10,11 +10,8 @@
 
 #include <q3ptrlist.h>
 
-class PodcastChannel;
-class PodcastEpisode;
 class PodcastSettingsDialogBase;
 class QDomNode;
-class QDomElement;
 
 enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 

@@ -56,9 +56,11 @@
 
 #include "engine_fwd.h"
 
+
 namespace Engine
 {
     typedef std::vector<int16_t> Scope;
+    class SimpleMetaBundle;
 
     class AMAROK_EXPORT Base : public QObject, public Amarok::Plugin
     {

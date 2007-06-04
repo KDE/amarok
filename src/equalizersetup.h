@@ -23,10 +23,8 @@
 #include <kdialog.h>
 
 class EqualizerGraph;
-class QCheckBox;
 class QGroupBox;
 class KComboBox;
-class KMenu;
 
 namespace Amarok { class Slider; }
 

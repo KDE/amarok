@@ -16,12 +16,10 @@ class QWidget;
 class QVBoxLayout;
 class QComboBox;
 class QCheckBox;
-class QLineEdit;
 class QRadioButton;
 class Q3GroupBox;
 class QSpinBox;
 class QStringList;
-class KComboBox;
 
 class EditFilterDialog : public KDialog
 {

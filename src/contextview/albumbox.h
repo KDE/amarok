@@ -19,9 +19,7 @@
 
 class QGraphicsItem;
 class QGraphicsPixmapItem;
-class QGraphicsRectItem;
 class QGraphicsScene;
-class QSize;
 
 namespace Context
 {

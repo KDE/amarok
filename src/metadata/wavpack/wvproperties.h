@@ -32,8 +32,7 @@ namespace TagLib {
 
   namespace WavPack {
 
-    class File;
-
+    
     static const uint HeaderSize = 32;
 
     //! An implementation of audio property reading for WavPack

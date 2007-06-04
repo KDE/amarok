@@ -25,7 +25,6 @@
 #include <Q3PtrList>
 
 class QColorGroup;
-class QDomNode;
 class QImage;
 class Q3ListViewItem;
 class QPainter;

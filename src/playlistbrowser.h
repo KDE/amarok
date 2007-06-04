@@ -33,12 +33,8 @@
 #include <QResizeEvent>
 #include <QPaintEvent>
 
-class KTextBrowser;
 class KToolBar;
 
-class QColorGroup;
-class Q3DragObject;
-class QPainter;
 class QPixmap;
 class QPoint;
 class QSplitter;

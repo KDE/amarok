@@ -17,7 +17,6 @@
 #include <QByteArray>
 
 class QDataStream;
-class QFile;
 
 namespace Daap {
 

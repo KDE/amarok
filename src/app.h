@@ -35,8 +35,6 @@ namespace Amarok {
 namespace KIO { class Job; }
 
 class KJob;
-class KActionCollection;
-class KConfig;
 class MetaBundle;
 class Playlist;
 class PlaylistWindow;

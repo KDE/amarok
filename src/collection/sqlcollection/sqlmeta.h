@@ -28,7 +28,6 @@
 using namespace Meta;
 
 
-class QueryMaker;
 class SqlCollection;
 
 class SqlTrack : public Track

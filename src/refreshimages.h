@@ -6,10 +6,8 @@
 
 #include <QObject>
 namespace KIO {
-    class StoredTransferJob;
     class Job;
 }
-class QStringList;
 
 class JobInfo
 {

@@ -18,7 +18,6 @@ struct IHXPreferences;
 struct IHXVolume;
 class IHXCommonClassFactory;
 class HSPClientAdviceSink;
-class HSPErrorMessages;
 class HSPAuthenticationManager;
 class HelixSimplePlayer;
 

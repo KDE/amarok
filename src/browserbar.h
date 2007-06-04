@@ -25,9 +25,7 @@ typedef Q3ValueVector<QWidget*> BrowserList;
 typedef QMap<QString,int> BrowserIdMap;
 
 class MultiTabBar;
-class MultiTabBarTab;
 class DropProxyTarget;
-class KUrl;
 class QSignalMapper;
 class KVBox;
 

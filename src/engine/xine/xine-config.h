@@ -23,7 +23,6 @@
 #include <Q3PtrList>
 
 class XineConfigDialog;
-class KLineEdit;
 
 class XineGeneralEntry : public QObject
 {

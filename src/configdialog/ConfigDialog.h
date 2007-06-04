@@ -20,12 +20,8 @@ email                : markey@web.de
 
 #include <kconfigdialog.h>
 
-class QComboBox;
-class Q3GroupBox;
-class KVBox;
 
 
-class MediumPluginManager;
 
 class Amarok2ConfigDialog : public KConfigDialog
 {

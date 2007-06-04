@@ -33,8 +33,6 @@ class KLineEdit;
 class KAction;
 class K3ProcIO;
 class KUrl;
-class Q3Socket;
-class QTimer;
 
 namespace KIO { class Job; }
 

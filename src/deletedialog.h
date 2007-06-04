@@ -23,8 +23,6 @@
 #include <kurl.h>
 #include "ui_deletedialogbase.h"
 
-class QStringList;
-class K3ListBox;
 class KGuiItem;
 class QLabel;
 

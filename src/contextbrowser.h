@@ -21,8 +21,6 @@
 class KAction;
 class Q3ListView;
 class KLineEdit;
-class CollectionDB;
-class Color;
 class HTMLView;
 class KMenu;
 class MetaBundle;
@@ -31,7 +29,6 @@ class KVBox;
 class QLineEdit;
 class QComboBox;
 class KDialog;
-class KTabBar;
 class KTextEdit;
 
 class CueFile;

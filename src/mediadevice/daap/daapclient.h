@@ -29,7 +29,6 @@ namespace DNSSD {
     class ServiceBrowser;
 }
 
-class AddHostBase;
 class MediaItem;
 class ServerItem;
 class DaapServer;

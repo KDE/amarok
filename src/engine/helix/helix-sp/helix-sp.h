@@ -34,7 +34,6 @@ using std::vector;
 #define MAX_SCOPE_SAMPLES 5120
 
 class HelixSimplePlayer;
-class CHXURL;
 class IHXVolumeAdviseSink;
 class IHXAudioPlayer;
 class IHXAudioStream;
@@ -45,7 +44,6 @@ class IHXErrorSink;
 class IHXErrorSinkControl;
 class IHXAudioPlayer;
 class IHXVolume;
-class IHXPlayerNavigator;
 class IHXClientEngineSelector;
 class IHXClientEngine;
 class IHXAudioHook;

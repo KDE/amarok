@@ -20,7 +20,6 @@
 
 #include <kdialog.h>
 
-class MediaBrowser;
 class Medium;
 
 /**

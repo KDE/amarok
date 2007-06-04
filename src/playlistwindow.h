@@ -25,11 +25,8 @@
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 class ContextBrowser;
-class KLineEdit;
 class KMenu;
-class KToolBar;
 class MediaBrowser;
-class QLabel;
 class QMenuBar;
 class QTimer;
 class SearchWidget;

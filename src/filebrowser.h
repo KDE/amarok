@@ -32,8 +32,6 @@
 #include <kurl.h>         //stack allocated
 
 class KLineEdit;
-class QTimer;
-class KActionCollection;
 class KFileItem;
 class KFileView;
 class KUrlComboBox;
@@ -94,7 +92,6 @@ private:
 
 class KDirLister;
 class KURLView;
-class QLineEdit;
 class Q3ListViewItem;
 
 ///@author Max Howell

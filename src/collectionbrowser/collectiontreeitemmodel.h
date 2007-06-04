@@ -22,7 +22,6 @@ using namespace Meta;
 
 class CollectionTreeItem;
 class Collection;
-class QueryMaker;
 
 
 class CollectionTreeItemModel: public CollectionTreeItemModelBase {

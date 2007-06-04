@@ -27,7 +27,6 @@
 #include <QMap>        //stack allocated
 #include <QStatusBar>
 class QLabel;
-class QTimer;
 class QProgressBar;
 class KJob;
 
@@ -186,8 +185,7 @@ namespace KDE
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
-        class ShortMessageEvent;
-
+        
         QLabel *m_mainTextLabel;
 
     private:

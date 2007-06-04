@@ -51,18 +51,13 @@
 #include <vector>            //stack allocated
 
 class KAction;
-class KActionCollection;
 class MyAtomicString;
 class PlaylistItem;
-class PlaylistEntry;
-class PlaylistLoader;
 class PlaylistAlbum;
 class TagWriter;
-class Q3BoxLayout;
 class QLabel;
 class QTimer;
 
-class Medium;
 
 /**
  * @authors Mark Kretschmann && Max Howell

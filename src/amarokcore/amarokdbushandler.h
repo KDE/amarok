@@ -26,7 +26,6 @@
 //Added by qt3to4:
 #include <QByteArray>
 #include <kurl.h>
-class AmarokConfig;
 
 namespace Amarok
 {

@@ -37,7 +37,6 @@
 @author Marco Gulino
 */
 
-class universalamarokwidget;
 class DCOPClient;
 class QFileInfo;
 class QDateTime;

@@ -30,10 +30,8 @@
 class QAbstractButton;
 class Q3GroupBox;
 class QLabel;
-class QSignalMapper;
 class KVBox;
 class KComboBox;
-class KLineEdit;
 class Medium;
 class MediumPluginManager;
 
