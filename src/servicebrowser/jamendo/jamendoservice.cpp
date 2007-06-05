@@ -73,7 +73,7 @@ void JamendoService::polish()
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-    ServiceMetaFactory * metaFactory = new ServiceMetaFactory( "jamendo" );
+    ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo" );
     ServiceSqlCollection * collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory );
 
     setModel( new SingleCollectionTreeItemModel( collection, levels ) );

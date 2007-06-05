@@ -44,7 +44,7 @@ QString JamendoMetaFactory::getAlbumSqlRows()
     sqlRows += ", ";
     sqlRows += tablePrefix() + "_albums.popularity, ";
     sqlRows += tablePrefix() + "_albums.cover_url, ";
-    sqlRows += tablePrefix() + "_albums.launch_date, ";
+    sqlRows += tablePrefix() + "_albums.launch_year, ";
     sqlRows += tablePrefix() + "_albums.genre ";
 
     return sqlRows;
@@ -109,6 +109,11 @@ JamendoArtist::JamendoArtist( const QString &name )
 JamendoArtist::JamendoArtist(const QStringList & resultRow)
     : ServiceArtist( resultRow )
 {
+    m_country = resultRow[3];
+    m_photoURL = resultRow[4];
+    m_jamendoURL = resultRow[5];
+    m_homeURL = resultRow[6];
+
 }
 
 void JamendoArtist::setCountry(const QString & country)
@@ -167,6 +172,12 @@ JamendoAlbum::JamendoAlbum( const QString &name )
 JamendoAlbum::JamendoAlbum(const QStringList & resultRow)
     : ServiceAlbum( resultRow )
 {
+
+    m_popularity = resultRow[4].toFloat();
+    m_coverURL = resultRow[5];
+    m_launchYear = resultRow[6].toInt();
+    m_genre = resultRow[7];
+
 }
 
 void JamendoAlbum::setCoverURL( const QString &coverURL )
