@@ -101,7 +101,7 @@ class JamendoAlbum  : public ServiceAlbum
 private:
     float m_popularity;
     QString m_coverURL;
-    QDate m_launchDate;
+    int m_launchYear;
     QString m_genre;
 
 
@@ -110,16 +110,16 @@ public:
     JamendoAlbum( const QStringList &resultRow );
 
     void setPopularity( float popularity );
-    float getPopularity() const;
+    float popularity() const;
 
     void setCoverURL( const QString &coverURL );
-    QString getCoverURL() const;
+    QString coverURL() const;
 
-    void setLaunchDate( const QDate &launchDate );
-    QDate getLaunchDate() const;
+    void setLaunchYear( int launchYear );
+    int launchYear() const;
 
     void setGenre( const QString &genre );
-    QString getGenre() const;
+    QString genre() const;
 
 
 };

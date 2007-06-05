@@ -72,9 +72,12 @@ JamendoDatabaseHandler::createDatabase( )
                   "id INTEGER PRIMARY KEY, "
                   "name " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ',' +
+                  "popularity FLOAT, " + 
+                  "cover_url " + db->exactTextColumnType() + ',' +
+                  "launch_year Integer, " 
+                  "genre " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER,"
                   "artist_name " + db->textColumnType() +  ");";
-
 
     debug() << "Creating jamendo_albums: " << queryString << endl;
 
@@ -84,7 +87,14 @@ JamendoDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE jamendo_artists ("
                   "id INTEGER PRIMARY KEY, "
                   "name " + db->textColumnType() + ',' +
-                  "description " + db->textColumnType() + ");";
+                  "description " + db->textColumnType() + ',' +
+                  "country " + db->textColumnType() + ',' +
+                  "photo_url " + db->textColumnType() + ',' +
+                  "jamendo_url " + db->textColumnType() + ',' +
+                  "home_url " + db->textColumnType() + ");";
+
+
+
 
     debug() << "Creating jamendo_artists: " << queryString << endl;
 
@@ -200,10 +210,15 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
-                  " artist_id, artist_name ) VALUES ( "
+                  "popularity, cover_url, launch_year, genre, "
+                  "artist_id, artist_name ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
                   + db->escapeString(  jAlbum->name() ) + "', '"
                   + db->escapeString( jAlbum->description() )+ "', "
+                  + QString::number( jAlbum->popularity() ) + ", '"
+                  + db->escapeString( jAlbum->coverURL() )+ "', "
+                  + QString::number( jAlbum->launchYear() ) + ", '"
+                  + db->escapeString( jAlbum->genre() )+ "', "
                   + QString::number( jAlbum->artistId() ) + ", '"
                   + db->escapeString( jAlbum->artistName() ) + "' );";
 
@@ -211,7 +226,6 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
     return db->insert( queryString, 0 );
 }
-
 
 
 int 

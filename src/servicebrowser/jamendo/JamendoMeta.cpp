@@ -164,19 +164,19 @@ void JamendoAlbum::setCoverURL( const QString &coverURL )
     m_coverURL = coverURL;
 }
 
-QString JamendoAlbum::getCoverURL( ) const
+QString JamendoAlbum::coverURL( ) const
 {
     return m_coverURL;
 }
 
-void JamendoAlbum::setLaunchDate( const QDate &launchDate )
+void JamendoAlbum::setLaunchYear( int launchYear )
 {
-    m_launchDate = launchDate;
+    m_launchYear = launchYear;
 }
 
-QDate JamendoAlbum::getLaunchDate( ) const
+int JamendoAlbum::launchYear( ) const
 {
-    return m_launchDate;
+    return m_launchYear;
 }
 
 void JamendoAlbum::setGenre( const QString&genre )
@@ -184,10 +184,27 @@ void JamendoAlbum::setGenre( const QString&genre )
     m_genre = genre;
 }
 
-QString JamendoAlbum::getGenre( ) const
+QString JamendoAlbum::genre( ) const
 {
     return m_genre;
 }
+
+
+void JamendoAlbum::setPopularity(float popularity)
+{
+    m_popularity = popularity;
+}
+
+float JamendoAlbum::popularity() const
+{
+    return m_popularity;
+}
+
+
+
+
+
+
 
 JamendoGenre::JamendoGenre(const QString & name)
     : ServiceGenre( name )
@@ -198,6 +215,8 @@ JamendoGenre::JamendoGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 

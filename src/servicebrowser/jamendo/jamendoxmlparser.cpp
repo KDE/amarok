@@ -237,6 +237,8 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     currentAlbum.setId( e.attribute( "id", "0" ).toInt() );
     currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
 
+    currentAlbum.setLaunchYear( 1000 );
+
 
    int newId = m_dbHandler->insertAlbum( &currentAlbum );
 
