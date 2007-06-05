@@ -111,6 +111,16 @@ JamendoArtist::JamendoArtist(const QStringList & resultRow)
 {
 }
 
+void JamendoArtist::setCountry(const QString & country)
+{
+    m_country = country;
+}
+
+QString JamendoArtist::country() const
+{
+    return m_country;
+}
+
 
 void JamendoArtist::setPhotoURL( const QString &photoURL )
 {
@@ -215,6 +225,7 @@ JamendoGenre::JamendoGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
+
 
 
 

@@ -85,7 +85,7 @@ public:
     void setPhotoURL( const QString &photoURL );
     QString photoURL() const;
 
-    void setCountry( const QString &photoURL );
+    void setCountry( const QString &country );
     QString country() const;
   
     void setHomeURL( const QString &homeURL );

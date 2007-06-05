@@ -235,15 +235,25 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 
     QString queryString;
     CollectionDB *db = CollectionDB::instance();
-    queryString = "INSERT INTO jamendo_artists ( id, name, description "
+    queryString = "INSERT INTO jamendo_artists ( id, name, description, "
+                  "country, photo_url, jamendo_url, home_url " 
                   ") VALUES ( "
                   + QString::number( jArtist->id() ) + ", '"
                   + db->escapeString( jArtist->name() ) + "', '"
-                  + db->escapeString( jArtist->description() ) + "' );";
+                  + db->escapeString( jArtist->description() ) + "', '"
+                  + db->escapeString( jArtist->country() ) + "', '"
+                  + db->escapeString( jArtist->photoURL() ) + "', '"
+                  + db->escapeString( jArtist->jamendoURL() ) + "', '"
+                  + db->escapeString( jArtist->homeURL() ) + "' );";
 
     //debug() << "Adding Jamendo artist " << queryString << endl;
 
     return db->insert( queryString, 0 );
+
+    QString m_country;
+    QString m_photoURL;
+    QString m_jamendoURL;
+    QString m_homeURL;
 }
 
 int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
