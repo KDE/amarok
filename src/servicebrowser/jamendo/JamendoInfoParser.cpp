@@ -67,6 +67,12 @@ void JamendoInfoParser::getInfo(AlbumPtr album)
     JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( album.data() );
     if ( jamendoAlbum == 0) return;
 
+    QString description = jamendoAlbum->description();
+
+    if ( description.isEmpty() )
+        description = "No description available...";  //FIXME: needs i18n
+
+
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
     infoHtml +=        "<div align=\"center\">";
@@ -74,6 +80,12 @@ void JamendoInfoParser::getInfo(AlbumPtr album)
     infoHtml +=        "<strong>";
     infoHtml +=        jamendoAlbum->fullPrettyName();
     infoHtml +=        "</strong><br><br><em>";
+
+    if ( !jamendoAlbum->coverURL().isEmpty() )
+        infoHtml +=    "<img src=\"" + jamendoAlbum->coverURL() +
+                       "\" align=\"middle\" border=\"1\"><br><br>";
+
+    infoHtml +=        description;
     infoHtml +=        "<br><br>From Jamendo.com</div>";
     infoHtml +=        "</BODY></HTML>";
 
