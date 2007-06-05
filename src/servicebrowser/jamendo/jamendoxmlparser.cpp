@@ -203,6 +203,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     QString genre;
     QString description;
     QStringList tags;
+    QString coverUrl;
 
     QDomNode n = e.firstChild();
 
@@ -223,6 +224,10 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
                 tags = currentChildElement.text().split(" ", QString::SkipEmptyParts);
 
             }
+            else if ( currentChildElement.tagName() == "Covers" ) {
+                coverUrl = getCoverUrl( currentChildElement, 100 );
+
+            }
 
             n = n.nextSibling();
         }
@@ -238,6 +243,8 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
 
     currentAlbum.setLaunchYear( 1000 );
+
+    currentAlbum.setCoverURL( coverUrl );
 
 
    int newId = m_dbHandler->insertAlbum( &currentAlbum );
@@ -291,6 +298,31 @@ void JamendoXmlParser::parseTrack(QDomElement e)
 
     m_dbHandler->insertTrack( &currentTrack );
 
+
+
+}
+
+QString JamendoXmlParser::getCoverUrl(QDomElement e, int size)
+{
+
+    QDomNode n = e.firstChild();
+
+    while ( !n.isNull() )
+    {
+        if ( n.isElement() ) {
+            QDomElement currentChildElement = n.toElement();
+
+            if ( currentChildElement.tagName() == "cover" ) {
+                if ( currentChildElement.attribute( "res", "0" ).toInt() == size)
+                    return currentChildElement.text();
+            }
+
+            n = n.nextSibling();
+        }
+
+    }
+
+    return QString();
 
 
 }

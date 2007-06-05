@@ -121,6 +121,15 @@ private:
      */
     void parseTrack( QDomElement e );
 
+
+    
+    /**
+     * Parse a jamendo <Covers> tag and get the cover of a specific size
+     * if possible, otherwise return an empty string
+     * @param e the node to parse
+     * @param size the desired size of the cover
+     */
+    QString getCoverUrl( QDomElement e, int size );
 };
 
 #endif
