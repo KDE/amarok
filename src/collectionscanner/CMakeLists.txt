@@ -1,8 +1,8 @@
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. 
-                    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
-                    ${TAGLIB_INCLUDE_DIR}  )
+                    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
+add_definitions(${TAGLIB_CFLAGS})
 
 ########### next target ###############
 

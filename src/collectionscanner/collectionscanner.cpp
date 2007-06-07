@@ -30,10 +30,10 @@
 #include <limits.h>    //PATH_MAX
 #include <stdlib.h>    //realpath
 
-#include <taglib/audioproperties.h>
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-#include <taglib/tstring.h>
+#include <audioproperties.h>
+#include <fileref.h>
+#include <tag.h>
+#include <tstring.h>
 
 #include <QByteArray>
 #include <QDBusReply>
