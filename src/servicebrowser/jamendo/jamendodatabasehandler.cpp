@@ -249,11 +249,11 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
     //debug() << "Adding Jamendo artist " << queryString << endl;
 
     return db->insert( queryString, 0 );
-
+/*
     QString m_country;
     QString m_photoURL;
     QString m_jamendoURL;
-    QString m_homeURL;
+    QString m_homeURL;*/
 }
 
 int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
