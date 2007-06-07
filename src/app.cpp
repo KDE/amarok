@@ -83,36 +83,14 @@ email                : markey@web.de
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
 
-
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
 
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
-#include <Carbon/Carbon.h>
-
-static AEEventHandlerUPP appleEventProcessorUPP = 0;
-
-OSStatus
-appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
-{
-    OSType aeID = typeWildCard;
-    OSType aeClass = typeWildCard;
-    AEGetAttributePtr(ae, keyEventClassAttr, typeType, 0, &aeClass, sizeof(aeClass), 0);
-    AEGetAttributePtr(ae, keyEventIDAttr, typeType, 0, &aeID, sizeof(aeID), 0);
-
-    if(aeClass == kCoreEventClass)
-    {
-        if(aeID == kAEReopenApplication)
-        {
-            if( PlaylistWindow::self() )
-                PlaylistWindow::self()->show();
-        }
-        return noErr;
-    }
-    return eventNotHandledErr;
-}
+#include <CoreFoundation/CoreFoundation.h>
+extern void setupEventHandler_mac(long);
 #endif
 
 AMAROK_EXPORT KAboutData aboutData( "amarok",
@@ -205,8 +183,7 @@ App::App()
                  "thread. This could lead to memory leaks.");
 
 #ifdef Q_WS_MAC
-    appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
-    AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, (long)this, true);
+    setupEventHandler_mac((long)this);
 #endif
     QDBusConnection::sessionBus().registerService("org.kde.amarok");
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );

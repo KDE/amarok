@@ -20,6 +20,10 @@ if(MP4V2_FOUND)
     include_directories( ${MP4V2_INCLUDE_DIR} )
 endif(MP4V2_FOUND)
 
+if(APPLE)
+    set(mac_SRCS app_mac.cpp)
+endif(APPLE)
+
 add_subdirectory( amarokcore )
 add_subdirectory( data )
 add_subdirectory( images )
@@ -287,6 +291,7 @@ set(amarok_LIB_SRCS
     ${lastfm_SRCS}
     ${meta_SRCS}
     ${collection_SRCS}
+    ${mac_SRCS}
     actionclasses.cpp
     analyzerwidget.cpp
     app.cpp
