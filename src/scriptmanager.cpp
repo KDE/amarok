@@ -3,6 +3,7 @@
  *                 2005-2007 by Seb Ruiz <me@sebruiz.net>                  *
  *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
  *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
+ *                      2007 by Leonardo Franchi <lfranchi@gmail.com>      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -165,28 +166,33 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_lyricsCategory     = new QTreeWidgetItem( m_gui->treeWidget );
     m_scoreCategory      = new QTreeWidgetItem( m_gui->treeWidget );
     m_transcodeCategory  = new QTreeWidgetItem( m_gui->treeWidget );
+    m_contextCategory    = new QTreeWidgetItem( m_gui->treeWidget );
 
     m_generalCategory  ->setText( 0, i18n( "General" ) );
     m_lyricsCategory   ->setText( 0, i18n( "Lyrics" ) );
     m_scoreCategory    ->setText( 0, i18n( "Score" ) );
     m_transcodeCategory->setText( 0, i18n( "Transcoding" ) );
+    m_contextCategory  ->setText( 0, i18n( "Context Browser" ) );
 
     m_generalCategory  ->setFlags( Qt::ItemIsEnabled );
     m_lyricsCategory   ->setFlags( Qt::ItemIsEnabled );
     m_scoreCategory    ->setFlags( Qt::ItemIsEnabled );
     m_transcodeCategory->setFlags( Qt::ItemIsEnabled );
+    m_contextCategory  ->setFlags( Qt::ItemIsEnabled );
 
     m_generalCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
     m_lyricsCategory   ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
     m_scoreCategory    ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
     m_transcodeCategory->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
-
+    m_contextCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    
     // Restore the open/closed state of the category items
     KConfigGroup config = Amarok::config( "ScriptManager" );
     m_generalCategory  ->setExpanded( config.readEntry( "General category open", false ) );
     m_lyricsCategory   ->setExpanded( config.readEntry( "Lyrics category open", false ) );
     m_scoreCategory    ->setExpanded( config.readEntry( "Score category State", false ) );
     m_transcodeCategory->setExpanded( config.readEntry( "Transcode category open", false ) );
+    m_contextCategory  ->setExpanded( config.readEntry( "Context category open", false ) );
 
     connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
     connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
@@ -241,7 +247,7 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
     config.writeEntry( "Score category open", m_scoreCategory->isExpanded() );
     config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
-
+    config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
     s_instance = 0;
 }
 
@@ -670,7 +676,8 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
-                            item == m_transcodeCategory;
+                            item == m_transcodeCategory ||
+			    item == m_contextCategory;
 
     if( !item || isCategory ) return;
 
@@ -874,6 +881,10 @@ ScriptManager::loadScript( const QString& path )
                     li = new QTreeWidgetItem( m_scoreCategory );
                     li->setText( 0, name );
                 }
+		if( type == "context" ) {
+    		  li = new QTreeWidgetItem( m_contextCategory );
+                  li->setText( 0, name );
+		}
             }
         }
 

@@ -14,6 +14,7 @@
 
 #include "albumbox.h"
 #include "cloudbox.h"
+#include "GenericInfoBox.h"
 #include "textfader.h"
 #include "collectiondb.h"
 #include "contextbox.h"

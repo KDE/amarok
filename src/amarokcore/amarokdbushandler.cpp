@@ -7,6 +7,7 @@
                           (C) 2005 Ian Monroe
                           (C) 2005 Seb Ruiz
                           (C) 2006 Alexandre Oliveira
+                          (C) 2007 Leonardo Franchi
    email                : berkus@users.sf.net
 ***************************************************************************/
 
@@ -26,6 +27,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
+#include "contextview/ContextScriptManager.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -56,6 +58,7 @@
 
 #include <collectionadaptor.h>
 #include <contextbrowseradaptor.h>
+#include <contextadaptor.h>
 #include <mediabrowseradaptor.h>
 #include <playeradaptor.h>
 #include <playlistadaptor.h>
@@ -774,6 +777,42 @@ namespace Amarok
         ContextBrowser::instance()->lyricsResult( lyrics );
     }
 
+/////////////////////////////////////////////////////////////////////////////////////
+//  class DbusContextHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+DbusContextHandler::DbusContextHandler()
+    : QObject( kapp )
+{
+    (void)new ContextAdaptor(this);
+    QDBusConnection::sessionBus().registerObject("/Context", this);
+}
+
+
+int DbusContextHandler::addContextBox( const QString& title, const QString& contents, const QString& stylesheet )
+{
+    return Context::ContextScriptManager::instance()->addContextBox( title, contents, stylesheet );
+}
+
+void DbusContextHandler::changeBoxTitle( const int boxNum, const QString& title )
+{
+    Context::ContextScriptManager::instance()->changeBoxTitle( boxNum, title );
+}
+
+void DbusContextHandler::changeBoxContents( const int boxNum, const QString& content )
+{
+    Context::ContextScriptManager::instance()->changeBoxContents( boxNum, content );
+}
+
+void DbusContextHandler::changeBoxStylesheet( const int boxNum, const QString& stylesheet )
+{
+    Context::ContextScriptManager::instance()->changeBoxStylesheet( boxNum, stylesheet );
+}
+
+void DbusContextHandler::removeContextBox( const int boxNum )
+{
+    Context::ContextScriptManager::instance()->removeContextBox( boxNum );
+}
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusCollectionHandler
 /////////////////////////////////////////////////////////////////////////////////////

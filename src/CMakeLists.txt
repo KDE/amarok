@@ -79,7 +79,7 @@ qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml am
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
-
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.context.xml amarokcore/amarokdbushandler.h Amarok::DbusContextHandler)
 
 #####################################################################
 # PLUGIN
@@ -204,9 +204,11 @@ set(libcontextview_SRCS
     contextview/contextbox.cpp
     contextview/albumbox.cpp
     contextview/cloudbox.cpp
+    contextview/GenericInfoBox.cpp
     contextview/graphicsitemfader.cpp
     contextview/textfader.cpp
     contextview/introanimation.cpp
+    contextview/ContextScriptManager.cpp
 )
 
 #####################################################################

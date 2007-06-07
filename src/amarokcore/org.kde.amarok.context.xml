@@ -1,0 +1,27 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.Context">
+    <method name="addContextBox">
+        <arg name="title" type="s" direction="in"/>
+        <arg name="contents" type="s" direction="in"/>
+        <arg name="stylesheet" type="s" direction="in"/>
+        <arg  type="i" direction="out"/>
+    </method>
+    <method name="changeBoxTitle">
+        <arg name="boxId" type="i" direction="in"/>
+        <arg name="title" type="s" direction="in"/>
+    </method>
+    <method name="changeBoxContents">
+        <arg name="boxId" type="i" direction="in"/>
+        <arg name="contents" type="s" direction="in"/>
+    </method>
+    <method name="changeBoxStylesheet" >
+        <arg name="boxId" type="i" direction="in"/>
+        <arg name="stylesheet" type="s" direction="in"/>
+    </method>
+    <method name="removeContextBox" >
+        <arg name="boxId" type="i" direction="in" />
+    </method>
+  </interface>
+</node>

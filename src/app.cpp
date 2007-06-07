@@ -193,6 +193,7 @@ App::App()
      new Amarok::DbusPlaylistHandler();
      new Amarok::DbusPlaylistBrowserHandler();
      new Amarok::DbusContextBrowserHandler();
+     new Amarok::DbusContextHandler();
      new Amarok::DbusCollectionHandler();
      new Amarok::DbusMediaBrowserHandler();
      new Amarok::DbusScriptHandler();
