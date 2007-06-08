@@ -23,7 +23,7 @@ elsif location == "Stable"
 end
 
 # Ask user for targeted application version
-if not tag.empty?()
+if tag and not tag.empty?()
     version = tag
 else
     version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
