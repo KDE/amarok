@@ -58,11 +58,6 @@ class AMAROK_EXPORT Collection : public QObject
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
 
-        virtual bool isSqlDatabase() const;
-        virtual int sqlDatabasePriority() const;
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
-
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 

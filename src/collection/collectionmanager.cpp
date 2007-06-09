@@ -25,6 +25,7 @@
 #include "metaquerybuilder.h"
 #include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
+#include "SqlStorage.h"
 
 #include <QtAlgorithms>
 #include <QtGlobal>
@@ -37,7 +38,7 @@ struct CollectionManager::Private
 {
     QList<Collection*> collections;
     QList<CollectionFactory*> factories;
-    Collection *sqlDatabase;
+    SqlStorage *sqlDatabase;
     QList<Collection*> unmanagedCollections;
     QList<Collection*> managedCollections;
 };
@@ -125,15 +126,16 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     d->collections.append( newCollection );
     d->managedCollections.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
-    if( newCollection->isSqlDatabase() )
+    SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
+    if( sqlCollection )
     {
         if( d->sqlDatabase )
         {
-            if( d->sqlDatabase->sqlDatabasePriority() < newCollection->sqlDatabasePriority() )
-                d->sqlDatabase = newCollection;
+            if( d->sqlDatabase->sqlDatabasePriority() < sqlCollection->sqlDatabasePriority() )
+                d->sqlDatabase = sqlCollection;
         }
         else
-            d->sqlDatabase = newCollection;
+            d->sqlDatabase = sqlCollection;
     }
     emit collectionAdded( newCollection );
 }
@@ -146,20 +148,22 @@ CollectionManager::slotRemoveCollection()
     {
         d->collections.removeAll( collection );
         d->managedCollections.removeAll( collection );
-        if( collection->isSqlDatabase() && collection == d->sqlDatabase )
+        SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
+        if( sqlDb && sqlDb == d->sqlDatabase )
         {
-            Collection *newSqlDatabase = 0;
+            SqlStorage *newSqlDatabase = 0;
             foreach( Collection* tmp, d->collections )
             {
-                if( tmp->isSqlDatabase() )
+                SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( tmp );
+                if( sqlDb )
                 {
                     if( newSqlDatabase )
                     {
-                        if( newSqlDatabase->sqlDatabasePriority() < tmp->sqlDatabasePriority() )
-                            newSqlDatabase = tmp;
+                        if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                            newSqlDatabase = sqlDb;
                     }
                     else
-                        newSqlDatabase = tmp;
+                        newSqlDatabase = sqlDb;
                 }
             }
             d->sqlDatabase = newSqlDatabase;
@@ -175,16 +179,10 @@ CollectionManager::collections()
     return d->collections;
 }
 
-QStringList
-CollectionManager::sqlQuery( const QString &query )
+SqlStorage*
+CollectionManager::sqlStorage() const
 {
-    return d->sqlDatabase->query( query );
-}
-
-int
-CollectionManager::sqlInsert( const QString &statement, const QString &table )
-{
-    return d->sqlDatabase->insert( statement, table );
+    return d->sqlDatabase;
 }
 
 Meta::TrackPtr

@@ -20,6 +20,7 @@
 
 #include "collection.h"
 #include "sqlregistry.h"
+#include "SqlStorage.h"
 
 class SqlCollectionFactory : public CollectionFactory
 {
@@ -41,7 +42,7 @@ class SqlCollectionFactory : public CollectionFactory
 
 class CollectionDB;
 
-class SqlCollection : public Collection
+class SqlCollection : public Collection, public SqlStorage
 {
     public:
         SqlCollection( const QString &id, const QString &prettyName );
@@ -53,19 +54,28 @@ class SqlCollection : public Collection
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
-        virtual bool isSqlDatabase() const;
-        virtual int sqlDatabasePriority() const;
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
-
-        virtual QString escape( QString text ) const;
-
         SqlRegistry* registry() const;
 
         void removeCollection();    //testing, remove later
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+        //methods defined in SqlStorage
+        virtual int sqlDatabasePriority() const;
+
+        virtual QStringList query( const QString &query );
+        virtual int insert( const QString &statement, const QString &table );
+
+        virtual QString escape( QString text ) const;
+
+        virtual QString boolTrue() const;
+        virtual QString boolFalse() const;
+
+        virtual QString textColumnType( int length = 255 ) const;
+        virtual QString exactTextColumnType( int length = 1024 ) const;
+        virtual QString longTextColumnType() const;
+        virtual QString randomFunc() const;
 
     private:
         //reuse CollectionDB until we replace it completely

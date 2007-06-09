@@ -25,6 +25,8 @@
 #include <QList>
 #include <QObject>
 
+class SqlStorage;
+
 class CollectionManager : public QObject
 {
     Q_OBJECT
@@ -45,8 +47,7 @@ class CollectionManager : public QObject
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        QStringList sqlQuery( const QString &query );
-        int sqlInsert( const QString &statement, const QString &table ); //TODO move to interface
+        SqlStorage* sqlStorage() const;
 
         void addUnmanagedCollection( Collection *newCollection );
         void removeUnmanagedCollection( Collection *collection );

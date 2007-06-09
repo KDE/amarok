@@ -23,10 +23,9 @@
 #include "servicemetabase.h"
 
 
-class CollectionDB;
-
 class ServiceSqlCollection : public Collection
 {
+    Q_OBJECT
     public:
         ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory );
         virtual ~ServiceSqlCollection();
@@ -37,8 +36,6 @@ class ServiceSqlCollection : public Collection
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
-        virtual bool isSqlDatabase() const;
-        virtual int sqlDatabasePriority() const;
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table );
 
@@ -46,9 +43,6 @@ class ServiceSqlCollection : public Collection
 
 
     private:
-        //reuse CollectionDB until we replace it completely
-        CollectionDB *m_collectionDb;
-
         ServiceMetaFactory * m_metaFactory;
 
         QString m_collectionId;

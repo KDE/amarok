@@ -20,7 +20,6 @@
 #ifndef AMAROK_SERVICESQLQUERYBUILDER_H
 #define AMAROK_SERVICESQLQUERYBUILDER_H
 
-#include "servicesqlcollection.h"
 #include "servicemetabase.h"
 #include "querymaker.h"
 
@@ -28,7 +27,7 @@
 
 #include <threadweaver/Job.h>
 
-class SqlCollection;
+class ServiceSqlCollection;
 
 class ServiceSqlQueryMaker : public QueryMaker
 {
@@ -96,7 +95,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         //void handleComposers( const QStringList &result );
         //void handleYears( const QStringList &result );
 
-        Collection *m_collection;
+        ServiceSqlCollection *m_collection;
         
         ServiceMetaFactory * m_metaFactory;
 

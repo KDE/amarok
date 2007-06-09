@@ -18,12 +18,11 @@
  */
 #include "servicesqlquerymaker.h"
 
-#define DEBUG_PREFIX "SqlQueryBuilder"
+#define DEBUG_PREFIX "ServiceSqlQueryMaker"
 
 #include "debug.h"
 
-#include "mountpointmanager.h"
-//#include "servicesqlcollection.h"
+#include "servicesqlcollection.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

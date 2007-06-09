@@ -29,6 +29,7 @@
 #include <QFile>
 #include <QListIterator>
 #include <QMutexLocker>
+#include <QPointer>
 
 #include <klocale.h>
 
@@ -86,7 +87,7 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
 
 SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     : Track()
-    , m_collection( collection )
+    , m_collection( QPointer<SqlCollection>( collection ) )
     , m_batchUpdate( false )
     , m_cache( 0 )
 {
@@ -121,13 +122,14 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
 bool
 SqlTrack::isPlayable() const
 {
-    return QFile::exists( m_url.path() );
+    //a song is not playable anymore if the collection was removed
+    return m_collection && QFile::exists( m_url.path() );
 }
 
 bool
 SqlTrack::isEditable() const
 {
-    return QFile::exists( m_url.path() ) && QFile::permissions( m_url.path() ) & QFile::WriteUser;
+    return m_collection && QFile::exists( m_url.path() ) && QFile::permissions( m_url.path() ) & QFile::WriteUser;
 }
 
 QString
@@ -475,7 +477,7 @@ SqlTrack::collection() const
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()
-    ,m_collection( collection )
+    ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -500,7 +502,7 @@ SqlArtist::tracks()
     {
         return m_tracks;
     }
-    else
+    else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
         qm->startTrackQuery();
@@ -511,6 +513,8 @@ SqlArtist::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+    else
+        return TrackList();
 }
 
 
@@ -539,7 +543,7 @@ SqlArtist::addToQueryResult( QueryBuilder &qb ) {
 //---------------SqlAlbum---------------------------------
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name ) : Album()
-    ,m_collection( collection )
+    ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -564,7 +568,7 @@ SqlAlbum::tracks()
     {
         return m_tracks;
     }
-    else
+    else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
         qm->startTrackQuery();
@@ -575,6 +579,8 @@ SqlAlbum::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+    else
+        return TrackList();
 }
 
 QPixmap
@@ -587,7 +593,7 @@ SqlAlbum::image( int size, bool withShadow ) const
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()
-    ,m_collection( collection )
+    ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -612,7 +618,7 @@ SqlComposer::tracks()
     {
         return m_tracks;
     }
-    else
+    else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
         qm->startTrackQuery();
@@ -623,12 +629,14 @@ SqlComposer::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+    else
+        return TrackList();
 }
 
 //---------------SqlGenre---------------------------------
 
 SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : Genre()
-    ,m_collection( collection )
+    ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -653,7 +661,7 @@ SqlGenre::tracks()
     {
         return m_tracks;
     }
-    else
+    else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
         qm->startTrackQuery();
@@ -664,12 +672,14 @@ SqlGenre::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+    else
+        return TrackList();
 }
 
 //---------------SqlYear---------------------------------
 
 SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Year()
-    ,m_collection( collection )
+    ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -694,7 +704,7 @@ SqlYear::tracks()
     {
         return m_tracks;
     }
-    else
+    else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
         qm->startTrackQuery();
@@ -705,5 +715,7 @@ SqlYear::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
+    else
+        return TrackList();
 }
 

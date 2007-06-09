@@ -102,23 +102,43 @@ SqlCollection::queryMaker()
     return new SqlQueryBuilder( this );
 }
 
-QStringList
-SqlCollection::query( const QString &statement )
-{
-    return m_collectionDb->query( statement );
-}
-
 SqlRegistry*
 SqlCollection::registry() const
 {
     return m_registry;
 }
 
-bool
-SqlCollection::isSqlDatabase() const
+void
+SqlCollection::removeCollection()
 {
-    return true;
+    emit remove();
 }
+
+bool
+SqlCollection::possiblyContainsTrack( const KUrl &url ) const
+{
+    return url.protocol() == "file";
+}
+
+Meta::TrackPtr
+SqlCollection::trackForUrl( const KUrl &url )
+{
+    return m_registry->getTrack( url.path() );
+}
+
+QStringList
+SqlCollection::query( const QString &statement )
+{
+    return m_collectionDb->query( statement );
+}
+
+
+QString
+SqlCollection::escape( QString text ) const           //krazy:exclude=constref
+{
+    return text.replace( '\'', "''" );;
+}
+
 
 int
 SqlCollection::sqlDatabasePriority() const
@@ -132,28 +152,40 @@ SqlCollection::insert( const QString &statement, const QString &table )
     return CollectionDB::instance()->insert( statement, table );
 }
 
-void
-SqlCollection::removeCollection()
+QString
+SqlCollection::boolTrue() const
 {
-    emit remove();
+    return "1";
 }
 
 QString
-SqlCollection::escape( QString text ) const           //krazy:exclude=constref
+SqlCollection::boolFalse() const
 {
-    return text.replace( '\'', "''" );;
+    return "0";
 }
 
-bool
-SqlCollection::possiblyContainsTrack( const KUrl &url ) const
+QString
+SqlCollection::textColumnType( int length ) const
 {
-    return url.protocol() == "file";
+    return QString( "VARCHAR(%1)" ).arg( length );
 }
 
-Meta::TrackPtr
-SqlCollection::trackForUrl( const KUrl &url )
+QString
+SqlCollection::exactTextColumnType( int length ) const
 {
-    return m_registry->getTrack( url.path() );
+    return textColumnType( length );
+}
+
+QString
+SqlCollection::longTextColumnType() const
+{
+    return "TEXT";
+}
+
+QString
+SqlCollection::randomFunc() const
+{
+    return "RAND()";
 }
 
 #include "sqlcollection.moc"

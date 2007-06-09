@@ -21,6 +21,7 @@
 
 #include "collectionmanager.h"
 #include "debug.h"
+#include "SqlStorage.h"
 
 
 JamendoDatabaseHandler::JamendoDatabaseHandler()
@@ -208,23 +209,23 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
     JamendoAlbum * jAlbum = dynamic_cast<JamendoAlbum *> ( album );
 
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
                   "popularity, cover_url, launch_year, genre, "
                   "artist_id, artist_name ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
-                  + db->escapeString(  jAlbum->name() ) + "', '"
-                  + db->escapeString( jAlbum->description() )+ "', "
+                  + sqlDb->escape(  jAlbum->name() ) + "', '"
+                  + sqlDb->escape( jAlbum->description() )+ "', "
                   + QString::number( jAlbum->popularity() ) + ", '"
-                  + db->escapeString( jAlbum->coverURL() )+ "', "
+                  + sqlDb->escape( jAlbum->coverURL() )+ "', "
                   + QString::number( jAlbum->launchYear() ) + ", '"
-                  + db->escapeString( jAlbum->genre() )+ "', "
+                  + sqlDb->escape( jAlbum->genre() )+ "', "
                   + QString::number( jAlbum->artistId() ) + ", '"
-                  + db->escapeString( jAlbum->artistName() ) + "' );";
+                  + sqlDb->escape( jAlbum->artistName() ) + "' );";
 
     //debug() << "Adding Jamendo album " << queryString << endl;
 
-    return db->insert( queryString, 0 );
+    return sqlDb->insert( queryString, QString() );
 }
 
 
@@ -234,21 +235,21 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
     JamendoArtist * jArtist = dynamic_cast<JamendoArtist *> ( artist );
 
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_artists ( id, name, description, "
                   "country, photo_url, jamendo_url, home_url " 
                   ") VALUES ( "
                   + QString::number( jArtist->id() ) + ", '"
-                  + db->escapeString( jArtist->name() ) + "', '"
-                  + db->escapeString( jArtist->description() ) + "', '"
-                  + db->escapeString( jArtist->country() ) + "', '"
-                  + db->escapeString( jArtist->photoURL() ) + "', '"
-                  + db->escapeString( jArtist->jamendoURL() ) + "', '"
-                  + db->escapeString( jArtist->homeURL() ) + "' );";
+                  + sqlDb->escape( jArtist->name() ) + "', '"
+                  + sqlDb->escape( jArtist->description() ) + "', '"
+                  + sqlDb->escape( jArtist->country() ) + "', '"
+                  + sqlDb->escape( jArtist->photoURL() ) + "', '"
+                  + sqlDb->escape( jArtist->jamendoURL() ) + "', '"
+                  + sqlDb->escape( jArtist->homeURL() ) + "' );";
 
     //debug() << "Adding Jamendo artist " << queryString << endl;
 
-    return db->insert( queryString, 0 );
+    return sqlDb->insert( queryString, QString() );
 /*
     QString m_country;
     QString m_photoURL;
@@ -259,15 +260,15 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
 {
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_genre ( album_id, name "
                   ") VALUES ( "
                   + QString::number ( genre->albumId() ) + ", '"
-                  + db->escapeString( genre->name() ) + "' );";
+                  + sqlDb->escape( genre->name() ) + "' );";
 
     //debug() << "Adding Jamendo genre " << queryString << endl;
 
-    return db->insert( queryString, 0 );
+    return sqlDb->insert( queryString, 0 );
 }
 
 
@@ -277,7 +278,7 @@ JamendoDatabaseHandler::begin( )
 {
     CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "BEGIN;";
-    mgr->sqlQuery(  queryString );
+    mgr->sqlStorage()->query( queryString );
 }
 
 void 
@@ -285,7 +286,7 @@ JamendoDatabaseHandler::commit( )
 {
     CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "COMMIT;";
-    mgr->sqlQuery( queryString );
+    mgr->sqlStorage()->query( queryString );
 }
 
 

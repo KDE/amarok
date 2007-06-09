@@ -19,8 +19,9 @@
 
 #include "servicesqlcollection.h"
 
-#include "collectiondb.h"
+#include "collectionmanager.h"
 #include "servicesqlquerymaker.h"
+#include "SqlStorage.h"
 
 #include <klocale.h>
 
@@ -29,7 +30,6 @@
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory )
     : Collection()
-    , m_collectionDb( CollectionDB::instance() )
     , m_metaFactory( metaFactory )
     , m_collectionId( id )
     , m_prettyName( prettyName )
@@ -61,34 +61,20 @@ ServiceSqlCollection::queryMaker()
 QStringList
 ServiceSqlCollection::query( const QString &statement )
 {
-    DEBUG_BLOCK
-    return m_collectionDb->query( statement );
-}
-
-
-bool
-ServiceSqlCollection::isSqlDatabase() const
-{
-    return true;
-}
-
-int
-ServiceSqlCollection::sqlDatabasePriority() const
-{
-    return 1;
+    return CollectionManager::instance()->sqlStorage()->query( statement );
 }
 
 int
 ServiceSqlCollection::insert( const QString &statement, const QString &table )
 {
-    return CollectionDB::instance()->insert( statement, table );
+    return CollectionManager::instance()->sqlStorage()->insert( statement, table );
 }
 
 
 QString
 ServiceSqlCollection::escape( QString text ) const           //krazy:exclude=constref
 {
-    return text.replace( '\'', "''" );;
+    return CollectionManager::instance()->sqlStorage()->escape( text );
 }
 
 #include "servicesqlcollection.moc"
