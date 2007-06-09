@@ -337,9 +337,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
             {
                 debug() << "Item in m_expandedItems, querying for children" << endl;
-                //item can't be a track because tracks can't be expanded,and are therefore
-                //not in m_expandedItems...adding 1 to the level is ok
-                listForLevel( item->level() + 1, item->queryMaker(), item );
+                listForLevel( item->level(), item->queryMaker(), item );
             }
         }
 
