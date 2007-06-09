@@ -146,6 +146,12 @@ SqlCollection::sqlDatabasePriority() const
     return 1;
 }
 
+QString
+SqlCollection::type() const
+{
+    return "sql";
+}
+
 int
 SqlCollection::insert( const QString &statement, const QString &table )
 {

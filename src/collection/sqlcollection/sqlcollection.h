@@ -63,6 +63,7 @@ class SqlCollection : public Collection, public SqlStorage
 
         //methods defined in SqlStorage
         virtual int sqlDatabasePriority() const;
+        virtual QString type() const;
 
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table );
