@@ -13,6 +13,7 @@
 #include "collectionbrowser/collectiontreeitem.h"
 
 #include <QSortFilterProxyModel>
+#include <QTimer>
 #include <QTreeView>
 
 class QSortFilterProxyModel;
@@ -32,9 +33,14 @@ class CollectionTreeView: public QTreeView {
     
         void setModel ( QAbstractItemModel * model );
 	    void contextMenuEvent(QContextMenuEvent* event);
+
+    public slots:
+        void slotSetFilterTimeout();
+
     private:
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;
+        QTimer m_filterTimer;
 
     protected slots:
 

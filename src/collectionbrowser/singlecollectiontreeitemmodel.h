@@ -38,6 +38,9 @@ Q_OBJECT
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
 
+    protected:
+        virtual void filterChildren();
+
     private:
 
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;

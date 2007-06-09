@@ -19,6 +19,7 @@
 #include "collectionmanager.h"
 #include "collectiontreeitem.h"
 #include "debug.h"
+#include "expression.h"
 #include "querymaker.h"
 
 #include <KIcon>
@@ -236,10 +237,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
        if ( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) ) 
            m_timeLine->start();
 
-
     }
-
-
 }
 
 
@@ -247,32 +245,44 @@ void
 CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
 {
     DEBUG_BLOCK
-    //filter string hardcoded for testing purposes
-    foreach( int level, m_levelType ) {
-        qint64 value;
-        switch( level ) {
-            case CategoryId::Album:
-                value = QueryMaker::valAlbum;
-                break;
-            case CategoryId::Artist:
-                value = QueryMaker::valArtist;
-                break;
-            case CategoryId::Composer:
-                value = QueryMaker::valComposer;
-                break;
-            case CategoryId::Genre:
-                value = QueryMaker::valGenre;
-                break;
-            case CategoryId::Year:
-                value = QueryMaker::valYear;
-                break;
-            default:
-                value = -1;
-                break;
+
+    ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
+    if ( parsed.count() == 1 )
+    {
+        foreach ( expression_element elem, parsed[0] )
+        {
+            if ( elem.field.isEmpty() )
+            {
+                foreach ( int level, m_levelType )
+                {
+                    qint64 value;
+                    switch ( level )
+                    {
+                        case CategoryId::Album:
+                            value = QueryMaker::valAlbum;
+                            break;
+                        case CategoryId::Artist:
+                            value = QueryMaker::valArtist;
+                            break;
+                        case CategoryId::Composer:
+                            value = QueryMaker::valComposer;
+                            break;
+                        case CategoryId::Genre:
+                            value = QueryMaker::valGenre;
+                            break;
+                        case CategoryId::Year:
+                            value = QueryMaker::valYear;
+                            break;
+                        default:
+                            value = -1;
+                            break;
+                    }
+                    qm->addFilter ( value, elem.text, false, false );
+                }
+                qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
+            }
         }
-        //qm->addFilter( value, "Hero", false, false );
     }
-    //qm->addFilter( QueryMaker::valTitle, "Hero", false, false ); //always filter for track title too
 }
 
 void 
@@ -374,8 +384,19 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
     }
 
-    
+}
 
+void
+CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
+{
+    m_currentFilter = filter;
+}
+
+void
+CollectionTreeItemModelBase::slotFilter()
+{
+    filterChildren();
+    reset();
 }
 
 

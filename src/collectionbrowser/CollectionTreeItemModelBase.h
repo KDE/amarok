@@ -71,10 +71,14 @@ Q_OBJECT
 
         virtual void addFilters( QueryMaker *qm ) const;
 
+        void setCurrentFilter( const QString &filter );
+
     public slots:
 
         virtual void queryDone();
         virtual void newResultReady( const QString &collectionId, Meta::DataList data );
+
+        void slotFilter();
 
     protected:
 
@@ -82,6 +86,8 @@ Q_OBJECT
         virtual void ensureChildrenLoaded( CollectionTreeItem *item ) const = 0;
         virtual void updateHeaderText();
         virtual QString nameForLevel( int level ) const;
+
+        virtual void filterChildren() = 0;
 
         QString m_headerText;
         CollectionTreeItem *m_rootItem;
@@ -94,7 +100,7 @@ Q_OBJECT
         int m_animFrame;
         QPixmap m_loading1, m_loading2, m_currentAnimPixmap;    //icons for loading animation
 
-    
+        QString m_currentFilter;
     protected slots:
 
         void loadingAnimationTick();

@@ -177,3 +177,14 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     }
 }
 
+void
+CollectionTreeItem::setChildrenLoaded( bool loaded )
+{
+    m_childrenLoaded = loaded;
+    if ( !loaded )
+    {
+        qDeleteAll( m_childItems );
+        m_childItems.clear();
+    }
+}
+

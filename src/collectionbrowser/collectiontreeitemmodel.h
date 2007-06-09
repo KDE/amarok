@@ -40,6 +40,8 @@ Q_OBJECT
         virtual void collectionAdded( Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
 
+    protected:
+        virtual void filterChildren();
 
     private:
 

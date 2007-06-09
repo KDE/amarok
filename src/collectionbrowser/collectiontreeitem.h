@@ -53,7 +53,7 @@ class CollectionTreeItem {
 
         bool operator<( const CollectionTreeItem& other ) const;
         bool childrenLoaded() const { return  m_childrenLoaded; }
-        void setChildrenLoaded( bool childrenLoaded ) { m_childrenLoaded = childrenLoaded; }
+        void setChildrenLoaded( bool childrenLoaded );
 
         const Meta::DataPtr data() const { return m_data; }
         Collection* parentCollection() const { return m_parentCollection; }

@@ -17,6 +17,7 @@
 
 #include <kconfig.h>
 #include <KIcon>
+#include <KLineEdit>
 #include <KMenu>
 #include <KSharedPtr>
 
@@ -40,6 +41,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     //setAnimated( true );
     setAlternatingRowColors( true );
+
+    m_filterTimer.setSingleShot( true );
+    connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
 }
 
 
@@ -154,6 +158,18 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
 
     emit( itemSelected ( item ) );
 
+}
+
+void
+CollectionTreeView::slotSetFilterTimeout()
+{
+    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
+    if( lineEdit )
+    {
+        m_treeModel->setCurrentFilter( lineEdit->text() );
+        m_filterTimer.stop();
+        m_filterTimer.start( 500 );
+    }
 }
 
 #include "collectiontreeview.moc"

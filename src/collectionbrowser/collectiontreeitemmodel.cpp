@@ -152,6 +152,17 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
     }
 }
 
+void
+CollectionTreeItemModel::filterChildren()
+{
+    int count = m_rootItem->childCount();
+    for ( int i = 0; i < count; i++ )
+    {
+        CollectionTreeItem *item = m_rootItem->child( i );
+        item->setChildrenLoaded( false );
+    }
+}
+
 
 namespace Amarok {
     // TODO Internationlise

@@ -127,7 +127,10 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
     ensureChildrenLoaded( item );
 }
 
-
-
+void
+SingleCollectionTreeItemModel::filterChildren()
+{
+    m_rootItem->setChildrenLoaded( false );
+}
 
 #include "singlecollectiontreeitemmodel.moc"

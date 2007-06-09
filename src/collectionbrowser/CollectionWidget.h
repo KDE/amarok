@@ -8,7 +8,9 @@
 #ifndef AMAROK_COLLECTION_WIDGET
 #define AMAROK_COLLECTION_WIDGET
 
-//class SearchWidget;
+#include <QWidget>
+
+class SearchWidget;
 class CollectionTreeView;
 
 class CollectionWidget : public QWidget
@@ -19,7 +21,7 @@ class CollectionWidget : public QWidget
     public slots:
         //void slotSetFilter();
     private:
-        //SearchWidget           *m_searchWidget;
+        SearchWidget           *m_searchWidget;
         CollectionTreeView* m_treeView;
 };
 

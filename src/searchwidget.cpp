@@ -12,6 +12,8 @@
  ***************************************************************************/
 #include "searchwidget.h"
 
+#include <QVBoxLayout>
+
 #include <klineedit.h>
 #include <klocale.h>
 #include <khbox.h>
@@ -47,8 +49,9 @@ SearchWidget::setup( QObject* caller )
 void
 SearchWidget::init( QWidget *parent )
 {
+    Q_UNUSED( parent )
     KHBox *searchBox = new KHBox( this );
-    searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+    searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
     m_sw = new KLineEdit( searchBox );
     m_sw->setClickMessage( i18n( "Enter search terms here" ) );
@@ -57,6 +60,9 @@ SearchWidget::init( QWidget *parent )
     m_sw->setFrame( QFrame::Sunken );
     m_sw->setToolTip( i18n(
                                 "Enter space-separated terms to search in the playlist." ) );
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget( searchBox );
+    setLayout( layout );
 
 //    m_filterButton = new KPushButton( "...", searchBox );
 //    m_filterButton->setFlat( true ); //TODO: maybe?
