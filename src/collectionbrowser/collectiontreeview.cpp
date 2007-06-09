@@ -44,6 +44,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
+    connect( this, SIGNAL( collapsed( const QModelIndex ) ), m_treeModel, SLOT( slotCollapsed( const QModelIndex ) ) );
+
+    connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex ) ), SLOT( slotExpand( const QModelIndex ) ) );
 }
 
 
@@ -170,6 +173,16 @@ CollectionTreeView::slotSetFilterTimeout()
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
+}
+
+void
+CollectionTreeView::slotExpand( const QModelIndex &index )
+{
+    DEBUG_BLOCK
+    if( m_filterModel )
+        expand( m_filterModel->mapFromSource( index ) );
+    else
+        expand( index );
 }
 
 #include "collectiontreeview.moc"

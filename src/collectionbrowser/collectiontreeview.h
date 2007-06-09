@@ -46,6 +46,8 @@ class CollectionTreeView: public QTreeView {
 
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
+        void slotExpand( const QModelIndex &index );
+
     signals:
 
         void itemSelected( CollectionTreeItem * item );

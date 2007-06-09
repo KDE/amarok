@@ -18,6 +18,7 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPair>
+#include <QSet>
 #include <QTimeLine>
 
 using namespace Meta;
@@ -73,12 +74,17 @@ Q_OBJECT
 
         void setCurrentFilter( const QString &filter );
 
+    signals:
+        void expandIndex( const QModelIndex &index );
+
     public slots:
 
         virtual void queryDone();
         virtual void newResultReady( const QString &collectionId, Meta::DataList data );
 
         void slotFilter();
+
+        void slotCollapsed( const QModelIndex &index );
 
     protected:
 
@@ -101,6 +107,7 @@ Q_OBJECT
         QPixmap m_loading1, m_loading2, m_currentAnimPixmap;    //icons for loading animation
 
         QString m_currentFilter;
+        QSet<Meta::DataPtr> m_expandedItems;
     protected slots:
 
         void loadingAnimationTick();

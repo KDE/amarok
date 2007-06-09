@@ -105,7 +105,6 @@ CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const 
 
 bool
 CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
-    DEBUG_BLOCK
     if ( !parent.isValid() )
         return false;       //children of the root item are the collections, and they are alwas known
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
@@ -114,7 +113,6 @@ CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
 
 void
 CollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
-    DEBUG_BLOCK
     if ( !parent.isValid() )
         return;
 
@@ -124,11 +122,9 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
 
 void
 CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
-    DEBUG_BLOCK
     if ( !newCollection )
         return;
 
-    debug() << "Added new collection in collectionAdded with id " << newCollection->collectionId() << endl;
     QString collectionId = newCollection->collectionId();
     if ( d->m_collections.contains( collectionId ) )
         return;

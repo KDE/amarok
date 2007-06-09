@@ -30,6 +30,11 @@
 #include <QPixmap>
 #include <QTimer>
 
+inline uint qHash( const Meta::DataPtr &data )
+{
+    return qHash( data.data() );
+}
+
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     :QAbstractItemModel()
@@ -244,12 +249,10 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
 void 
 CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
 {
-    DEBUG_BLOCK
-
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
-    if ( parsed.count() == 1 )
+    foreach( or_list orList, parsed )
     {
-        foreach ( expression_element elem, parsed[0] )
+        foreach ( expression_element elem, orList )
         {
             if ( elem.field.isEmpty() )
             {
@@ -306,9 +309,7 @@ CollectionTreeItemModelBase::queryDone()
 void 
 CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId )
-    debug() << "Received " << data.count() << " new data values" << endl;
     if ( data.count() == 0 )
         return;
     //if we are expanding an item, we'll find the sender in m_childQueries
@@ -329,6 +330,30 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         beginInsertRows( parentIndex, 0, data.count()-1 );
         populateChildren( data, parent ); 
         endInsertRows();
+
+        for( int count = parent->childCount(), i = 0; i < count; i++ )
+        {
+            CollectionTreeItem *item = parent->child( i );
+            if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
+            {
+                debug() << "Item in m_expandedItems, querying for children" << endl;
+                //item can't be a track because tracks can't be expanded,and are therefore
+                //not in m_expandedItems...adding 1 to the level is ok
+                listForLevel( item->level() + 1, item->queryMaker(), item );
+            }
+        }
+
+        if ( parent->isDataItem() )
+        {
+            if ( m_expandedItems.contains( parent->data() ) )
+            {
+                debug() << "Requesting expansion of parent item" << endl;
+                emit expandIndex( parentIndex );
+            }
+            else
+                //simply insert the item, nothing will change if it is already in the set
+                m_expandedItems.insert( parent->data() );
+        }
     }
 }
 
@@ -397,6 +422,18 @@ CollectionTreeItemModelBase::slotFilter()
 {
     filterChildren();
     reset();
+}
+
+void
+CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
+{
+    DEBUG_BLOCK
+    if ( index.isValid() )      //probably unnecessary, but let's be safe
+    {
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        if ( item->isDataItem() )
+            m_expandedItems.remove( item->data() );
+    }
 }
 
 
