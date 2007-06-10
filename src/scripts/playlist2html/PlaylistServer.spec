@@ -1,0 +1,2 @@
+name = PlaylistServer
+type = generic
