@@ -158,7 +158,7 @@ Controller::instance()
 
 
 KURL
-Controller::getNewProxy( QString genreUrl )
+Controller::getNewProxy( QString genreUrl, bool useProxy )
 {
     DEBUG_BLOCK
 
@@ -166,7 +166,7 @@ Controller::getNewProxy( QString genreUrl )
 
     if ( m_service ) playbackStopped();
 
-    m_service = new WebService( this );
+    m_service = new WebService( this, useProxy );
 
     if( checkCredentials() )
     {
@@ -354,9 +354,9 @@ Controller::stationDescription( QString url )
 // CLASS WebService
 ////////////////////////////////////////////////////////////////////////////////
 
-WebService::WebService( QObject* parent )
+WebService::WebService( QObject* parent, bool useProxy )
     : QObject( parent, "lastfmParent" )
-    , m_server( 0 )
+    , m_useProxy( useProxy )
 {
     debug() << "Initialising Web Service" << endl;
 }
@@ -365,8 +365,6 @@ WebService::WebService( QObject* parent )
 WebService::~WebService()
 {
     DEBUG_BLOCK
-
-    delete m_server;
 }
 
 
@@ -431,38 +429,42 @@ WebService::handshake( const QString& username, const QString& password )
     }
 
     Amarok::config( "Scrobbler" )->writeEntry( "Subscriber", m_subscriber );
-
-    // Find free port
-    MyServerSocket* socket = new MyServerSocket();
-    const int port = socket->port();
-    debug() << "Proxy server using port: " << port << endl;
-    delete socket;
-
-    m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
-
-    m_server = new Amarok::ProcIO();
-    m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
-    *m_server << "amarok_proxy.rb";
-    *m_server << "--lastfm";
-    *m_server << QString::number( port );
-    *m_server << m_streamUrl.toString();
-    *m_server << AmarokConfig::soundSystem();
-    *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
-
-    if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
-        error() << "Failed to start amarok_proxy.rb" << endl;
-        return false;
+    if( m_useProxy )
+    {
+        // Find free port
+        MyServerSocket* socket = new MyServerSocket();
+        const int port = socket->port();
+        debug() << "Proxy server using port: " << port << endl;
+        delete socket;
+    
+        m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
+    
+        m_server = new Amarok::ProcIO();
+        m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
+        *m_server << "amarok_proxy.rb";
+        *m_server << "--lastfm";
+        *m_server << QString::number( port );
+        *m_server << m_streamUrl.toString();
+        *m_server << AmarokConfig::soundSystem();
+        *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
+    
+        if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
+            error() << "Failed to start amarok_proxy.rb" << endl;
+            return false;
+        }
+    
+        QString line;
+        while( true ) {
+            kapp->processEvents();
+            m_server->readln( line );
+            if( line == "AMAROK_PROXY: startup" ) break;
+        }
+    
+        connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
+        connect( m_server, SIGNAL( processExited( KProcess* ) ), Controller::instance(), SLOT( playbackStopped() ) );
     }
-
-    QString line;
-    while( true ) {
-        kapp->processEvents();
-        m_server->readln( line );
-        if( line == "AMAROK_PROXY: startup" ) break;
-    }
-
-    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
-    connect( m_server, SIGNAL( processExited( KProcess* ) ), Controller::instance(), SLOT( playbackStopped() ) );
+    else
+        m_proxyUrl = m_streamUrl.toString();
 
     return true;
 }

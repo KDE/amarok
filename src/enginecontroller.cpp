@@ -396,16 +396,19 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         if( LastFm::Controller::instance()->isPlaying() )
         {
             LastFm::Controller::instance()->getService()->changeStation( url.url() );
+            connect( m_engine, SIGNAL( lastFmTrackChange() ), LastFm::Controller::instance()->getService()
+            , SLOT( requestMetaData() ) );
             connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
                      this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
             return;
         }
         else
         {
-            url = LastFm::Controller::instance()->getNewProxy( url.url() );
+            url = LastFm::Controller::instance()->getNewProxy( url.url(), m_engine->lastFmProxyRequired() );
             if( url.isEmpty() ) goto some_kind_of_failure;
             m_lastFm = true;
-
+            connect( m_engine, SIGNAL( lastFmTrackChange() ), LastFm::Controller::instance()->getService()
+                    , SLOT( requestMetaData() ) );
             connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
                     this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
         }

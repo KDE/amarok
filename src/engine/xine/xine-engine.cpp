@@ -822,7 +822,9 @@ XineEngine::customEvent( QCustomEvent *e )
         play();
         delete message;
         break;
-
+    case 3005:
+        emit lastFmTrackChange();
+        break;
     default:
         ;
     }
@@ -1043,6 +1045,9 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         }
 
     } //case
+    case XINE_EVENT_UI_CHANNELS_CHANGED: //Flameeyes used this for last.fm track changes
+        QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3005) ) );
+    break;
     } //switch
 
     #undef xe
@@ -1157,6 +1162,11 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 bool XineEngine::flushBuffer()
 {
     return false;
+}
+
+bool XineEngine::lastFmProxyRequired()
+{
+    return !( xine_check_version(1,1,8) );
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -79,6 +79,9 @@ namespace Engine
         /** Transmits metadata package. */
         void metaData( const Engine::SimpleMetaBundle& );
 
+        /** Signals that a SYNC has been recieved, and new last.fm data needs to be downloaded */
+        void lastFmTrackChange();
+
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );
 
@@ -221,6 +224,13 @@ namespace Engine
          * */
         virtual bool getAudioCDContents(const QString &, KURL::List &)
         { return false; }
+
+        /** 
+         * Whether amarok_proxy.rb is needed for last.fm files.
+         * @return true if engine doesn't handle 'SYNC' messages in the stream from last.fm.
+                   False if (like >=libxine-1.1.8) it does.
+         */
+        virtual bool lastFmProxyRequired() { return true; }
 
         /** flush the current stream buffer */
         virtual bool flushBuffer() { return false; }

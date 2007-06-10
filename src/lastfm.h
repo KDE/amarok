@@ -78,7 +78,7 @@ namespace LastFm
         public:
             static Controller* instance();
 
-            KURL        getNewProxy( QString genreUrl );
+            KURL        getNewProxy( QString genreUrl, bool useProxy );
 
             bool        isPlaying() const { return m_service != 0; }
             WebService* getService() const { return m_service; }
@@ -112,7 +112,7 @@ namespace LastFm
         public:
             enum DataType { Artist, Album, Track };
 
-            WebService( QObject* parent );
+            WebService( QObject* parent, bool useProxy );
             ~WebService();
 
             bool handshake( const QString& username, const QString& password );
@@ -147,7 +147,6 @@ namespace LastFm
             **/
             void verifyUser( const QString& user, const QString& pass );
 
-            KProcIO* getServer() { return m_server; }
             QString proxyUrl() { return m_proxyUrl; }
 
         public slots:
@@ -184,6 +183,8 @@ namespace LastFm
 
             void        showError( int code, QString message = QString::null );
 
+            bool m_useProxy;
+
             QString     parameter( const QString keyName, const QString data )      const;
             QStringList parameterArray( const QString keyName, const QString data ) const;
             QStringList parameterKeys( const QString keyName, const QString data )  const;
@@ -197,8 +198,9 @@ namespace LastFm
             QUrl    m_streamUrl;    // last.fm webserver for direct connection (proxy connects to this)
             bool    m_subscriber;   // self explanatory
 
+            KProcIO* m_server;
+
             QString    m_proxyUrl;
-            KProcIO   *m_server;
             MetaBundle m_metaBundle;
 
         private slots:
