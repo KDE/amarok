@@ -29,6 +29,6 @@ class WebPublisher(Publisher):
     port = None
 
     def services(self):
-        return [{ "name" : "amaroK WebControl for "+getpass.getuser(), "port": self.port, "type": "_http._tcp", "properties": {}}]
+        return [{ "name" : "Amarok WebControl for "+getpass.getuser(), "port": self.port, "type": "_http._tcp", "properties": {}}]
     
 publisher = WebPublisher()

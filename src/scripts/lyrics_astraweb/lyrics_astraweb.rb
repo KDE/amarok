@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# amaroK Script for fetching song lyrics from http://lyrics.astraweb.com.
+# Amarok Script for fetching song lyrics from http://lyrics.astraweb.com.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 #

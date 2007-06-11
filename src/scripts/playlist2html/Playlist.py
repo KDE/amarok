@@ -148,6 +148,6 @@ class Playlist:
         return retval 
     
     def sync(self):
-        """Saves the current amaroK-Playlist to the current.xml file. Calls
+        """Saves the current Amarok-Playlist to the current.xml file. Calls
         amarok via dcop"""
         os.system("dcop amarok playlist saveCurrentPlaylist")

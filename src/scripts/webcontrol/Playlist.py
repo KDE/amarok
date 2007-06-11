@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: Latin-1 -*-
 #
-# Author: André Kelpe fs111 at web dot de
+# Author: Andrï¿½ Kelpe fs111 at web dot de
 #       : Jonas Drewsen kde at xspect dot dk
 #       : Peter Ndikuwera pndiku at gmail dot com
 #
@@ -304,6 +304,6 @@ class Playlist:
         return retval
     
     def sync(self):
-        """Saves the current amaroK-Playlist to the current.xml file. Calls
+        """Saves the current Amarok-Playlist to the current.xml file. Calls
         amarok via dcop"""
         os.system("dcop amarok playlist saveCurrentPlaylist")

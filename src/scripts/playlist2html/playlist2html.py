@@ -15,7 +15,7 @@ def main():
         f = open(dest, "w")
         f.write(plist.toHtml())
         f.close()
-        os.system("kdialog --msgbox 'amaroK-playlist saved to %s'"%(dest))
+        os.system("kdialog --msgbox 'Amarok-playlist saved to %s'"%(dest))
     except IOError:
         os.system('kdialog --error "Sorry, could not save the playlist to %s"'%(dest))
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ############################################################################
-# WebControl script for amaroK
+# WebControl script for Amarok
 # (c) 2005 Jonas Drewsen <kde@xspect.dk>
 # (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 #
@@ -8,7 +8,7 @@
 #
 ############################################################################
 # Based on
-# Python-Qt template script for amaroK
+# Python-Qt template script for Amarok
 # (c) 2005 Mark Kretschmann <markey@web.de>
 #
 ############################################################################
@@ -56,7 +56,7 @@ class ConfigDialog( QDialog ):
     def __init__( self ):
         QDialog.__init__( self )
         self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption( "WebControl - amaroK" )
+        self.setCaption( "WebControl - Amarok" )
 
         self.config = ConfigParser.ConfigParser()
 
@@ -223,7 +223,7 @@ class WebControl( QApplication ):
             debug( "Unknown notification: " + str(string) + " -> ignoring")
 
 # Notification callbacks. Implement these functions to react to specific notification
-# events from amaroK:
+# events from Amarok:
 
     def configure( self ):
         debug( "configuration" )

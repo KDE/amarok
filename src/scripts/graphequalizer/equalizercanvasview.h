@@ -37,7 +37,7 @@ private:
 };
 
 /**
- * @short An equalizer widget for amaroK, using a line graph
+ * @short An equalizer widget for Amarok, using a line graph
  * @author Ian Monroe <ian@monroe.nu>
  */
 class EqualizerCanvasView : public QCanvasView

@@ -33,7 +33,7 @@ class ConfigDialog( QDialog ):
     def __init__( self ):
         QDialog.__init__( self )
         self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption( "Alarm Script - amaroK" )
+        self.setCaption( "Alarm Script - Amarok" )
 
         self.lay = QHBoxLayout( self )
 

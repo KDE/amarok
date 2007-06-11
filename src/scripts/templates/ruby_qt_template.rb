@@ -61,5 +61,5 @@ class ExampleActions < AmaroKSlots
 end
 a = Qt::Application.new(ARGV)
 e = ExampleActions.new(a)
-amaroKCommunication = AmaroKLib.new(a, e)
+AmarokCommunication = AmaroKLib.new(a, e)
 a.exec()

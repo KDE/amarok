@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# amaroK Script for embedding album cover images in MP3 files.
+# Amarok Script for embedding album cover images in MP3 files.
 #
 # (c) 2005-2006 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2

@@ -118,7 +118,7 @@ when ".gif" then "image/gif"
 when ".jpg" then "image/jpeg"
 when ".jpeg" then "image/jpeg"
 when ".png" then "image/png"
-when "" then "image/png"  # amaroK's cover images are always PNG
+when "" then "image/png"  # Amarok's cover images are always PNG
 
 else
   puts( "Error: Image type invalid." )

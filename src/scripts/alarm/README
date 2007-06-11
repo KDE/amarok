@@ -1,6 +1,6 @@
 <div align="center"><b>Alarm Script</b></div>
 <b>About:</b><br>
-Makes amaroK play music at a given time. Can be used as an alarm clock for waking up.<br>
+Makes Amarok play music at a given time. Can be used as an alarm clock for waking up.<br>
 <br>
 <b>Dependencies:</b><br>
 Python 2.2<br>

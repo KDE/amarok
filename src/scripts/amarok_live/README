@@ -1,7 +1,7 @@
-<div align="center"><b>amaroK Live</b></div>
+<div align="center"><b>Amarok Live</b></div>
 
 <b>About:</b><br>
-This script lets you create your own amaroK live! cd with music on it. It is very simple to use: click configure, and choose the iso as well as a temporary work directory. Clicking ok will start the unpacking, and when it is done, you can add music to the cd by selecting tracks and using the right click menu.<br>
+This script lets you create your own Amarok live! cd with music on it. It is very simple to use: click configure, and choose the iso as well as a temporary work directory. Clicking ok will start the unpacking, and when it is done, you can add music to the cd by selecting tracks and using the right click menu.<br>
 <br>
 When you are done selecting tracks, click Create Remastered CD. the iso will be created in the work dir that you selected during configure.<br>
 <br>
@@ -12,7 +12,7 @@ cdrtools (for mkisofs)<br>
 Python 2.2<br>
 PyQt<pr>
 1.5 gb of free space<br>
-Original amaroK live! iso<br>
+Original Amarok live! iso<br>
 K3b (optional) for automatic burning<br>
 <br>
 <b>License:</b><br>

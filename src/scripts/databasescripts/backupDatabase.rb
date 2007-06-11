@@ -30,7 +30,7 @@ end
 if $*.empty?() or $*[0] == "--help"
     puts( "Usage: backupDatabase.rb saveLocation" )
     puts()
-    puts( "Backup your amaroK database!" )
+    puts( "Backup your Amarok database!" )
     exit( 1 )
 end
 
