@@ -3131,8 +3131,6 @@ Playlist::saveXML( const QString &path )
         else if ( item == currentTrack() )
             attributes << "queue_index" << QString::number( 0 );
 
-        if( !item->isFilestatusEnabled() )
-            attributes << "filestatusdisabled" << "true";
         if( !item->isDynamicEnabled() )
             attributes << "dynamicdisabled" << "true";
 
