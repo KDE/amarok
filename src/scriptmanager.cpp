@@ -703,7 +703,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     switch( id )
     {
         case EDIT:
-            KRun::runCommand( "kwrite " + m_scripts[key].url.path() );
+            KRun::runCommand( "kwrite " + m_scripts[key].url.path(), 0 );
             break;
 
         case SHOW_LOG:

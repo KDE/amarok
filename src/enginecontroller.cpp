@@ -185,7 +185,7 @@ EngineController::loadEngine( const QString &engineName )
         }
     }
 
-    KRun::runCommand( "kbuildsycoca4" );
+    KRun::runCommand( "kbuildsycoca4", 0 );
 
     KMessageBox::error( 0, i18n(
             "<p>Amarok could not find any sound-engine plugins. "
@@ -273,7 +273,7 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
             , KStandardGuiItem::no()
             , "codecInstallWarning" ) == KMessageBox::Yes )
             {
-                    KRun::runCommand(installScript);
+                    KRun::runCommand(installScript, 0);
                     return true;
             }
         }
