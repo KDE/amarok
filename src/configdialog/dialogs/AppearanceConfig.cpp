@@ -20,7 +20,6 @@
 #include "AppearanceConfig.h"
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "contextbrowser.h"
 #include "debug.h"
 
 #include <KApplication>
@@ -35,10 +34,6 @@ AppearanceConfig::AppearanceConfig( QWidget* parent )
 {
     setupUi( this ); 
 
-    updateStyleComboBox();
-    uninstallPushButton->setEnabled ( styleComboBox->currentText() != "Default" );
-
-    connect( styleComboBox, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
 }
 
 AppearanceConfig::~AppearanceConfig()
@@ -52,7 +47,7 @@ AppearanceConfig::~AppearanceConfig()
 bool
 AppearanceConfig::hasChanged()
 {
-    return styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet();
+    return false;
 }
 
 bool
@@ -61,45 +56,6 @@ AppearanceConfig::isDefault()
     return false;
 }
 
-void
-AppearanceConfig::updateSettings()
-{
-    if ( styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ) {
-        //can't use kconfigxt for the style comboxbox's since we need the string, not the index
-        AmarokConfig::setContextBrowserStyleSheet( styleComboBox->currentText() );
-        ContextBrowser::instance()->reloadStyleSheet();
-    }
-}
-
-
-///////////////////////////////////////////////////////////////
-// SLOTS 
-///////////////////////////////////////////////////////////////
-
-// This method is basically lifted from ScriptManager::slotInstallScript()
-void
-AppearanceConfig::installPushButton_clicked() //SLOT
-{
-    KFileDialog dia( KUrl(), "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0 );
-    kapp->setTopWidget( &dia );
-    dia.setCaption( KDialog::makeStandardCaption( i18n( "Select Style Package" ) ) );
-    dia.setMode( KFile::File | KFile::ExistingOnly );
-    if ( !dia.exec() ) return;
-
-    KTar archive( dia.selectedUrl().path() );
-
-    if ( !archive.open( QIODevice::ReadOnly ) ) {
-        KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
-        return;
-    }
-
-    const QString destination = Amarok::saveLocation( "themes/" );
-    debug() << "copying to " << destination << endl;
-    const KArchiveDirectory* archiveDir = archive.directory();
-    archiveDir->copyTo( destination, true );
-
-    updateStyleComboBox();
-}
 
 void
 AppearanceConfig::retrievePushButton_clicked() //SLOT
@@ -129,64 +85,8 @@ AppearanceConfig::retrievePushButton_clicked() //SLOT
 #endif
 }
 
-void
-AppearanceConfig::uninstallPushButton_clicked() //SLOT
-{
-    const QString name = styleComboBox->currentText();
 
-    if ( name == "Default" )
-        return;
 
-    if( KMessageBox::warningContinueCancel( 0,
-        i18n( "<p>Are you sure you want to uninstall the theme <strong>%1</strong>?</p>", name ),
-        i18n( "Uninstall Theme" ) ) == KMessageBox::Cancel )
-        return;
-
-    if ( name == AmarokConfig::contextBrowserStyleSheet() ) {
-        AmarokConfig::setContextBrowserStyleSheet( "Default" );
-        ContextBrowser::instance()->reloadStyleSheet();
-    }
-
-    KUrl themeDir( KUrl( Amarok::saveLocation( "themes/" ) ) );
-    themeDir.addPath( name );
-
-    if( !KIO::NetAccess::del( themeDir, 0 ) ) {
-        KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this theme.</p>"
-            "<p>You may not have sufficient permissions to delete the folder <strong>%1<strong></p>."
-            ).arg( themeDir.isLocalFile() ? themeDir.path() : themeDir.url() ) );
-        return;
-    }
-
-    updateStyleComboBox();
-}
-
-void
-AppearanceConfig::styleComboBox_activated(const QString& s) //SLOT
-{
-    bool disable = false;
-    QDir dir( Amarok::saveLocation( "themes/" ) + s );
-    if( !dir.exists() )
-        disable = true;
-
-    uninstallPushButton->setEnabled ( !disable );
-}
-
-void
-AppearanceConfig::updateStyleComboBox() //SLOT
-{
-    DEBUG_BLOCK
-
-    styleComboBox->clear();
-
-    const QStringList styleList = KGlobal::dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
-    QStringList sortedList;
-    oldForeach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
-    sortedList.append( "Default" );
-    sortedList.sort();
-    oldForeach(sortedList) styleComboBox->addItem(*it);
-
-    styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
-}
 
 #include "AppearanceConfig.moc"
 

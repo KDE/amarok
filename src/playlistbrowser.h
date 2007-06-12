@@ -40,11 +40,10 @@ class QPoint;
 class QSplitter;
 class QTimer;
 
-class HTMLView;
 class InfoPane;
 class PlaylistBrowserView;
 class PlaylistTrackItem;
-
+class KHTMLPart;
 
 class PlaylistBrowser : public KVBox
 {
@@ -410,7 +409,7 @@ private slots:
     void toggle( bool );
 
 private:
-    HTMLView *m_infoBrowser;
+    KHTMLPart *m_infoBrowser;
     KPushButton *m_pushButton;
     bool m_enable;
     int m_storedHeight;

@@ -21,7 +21,6 @@
 #include "amarok.h"
 #include "analyzerwidget.h"
 #include "collectionbrowser/CollectionWidget.h"
-#include "contextbrowser.h"
 #include "contextview/contextview.h"
 #include "debug.h"
 #include "dynamicmode.h"
@@ -64,6 +63,7 @@
 #include <QPen>
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
+#include <QVBoxLayout>
 
 #include <kaction.h>          //m_actionCollection
 #include <kapplication.h>     //kapp
@@ -227,15 +227,12 @@ void PlaylistWindow::init()
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     createMenus();
-
-    cb = new ContextBrowser( "contextBrowser" );
-    ContextView *cv = ContextView::instance();
-
-    KVBox *contextWidget = new KVBox( this );
+    QWidget *contextWidget = new QWidget( this );
+    {
+        QVBoxLayout* layout = new QVBoxLayout( contextWidget );
+        layout->addWidget( ContextView::instance() );
+    }
     contextWidget->setMinimumSize( QSize(500,100) );
-    QSplitter *contextSplitter = new QSplitter( Qt::Vertical, contextWidget );
-    contextSplitter->addWidget( cb );
-    contextSplitter->addWidget( cv );
 
     m_browsers->setMaximumSize( QSize(300,7000) );
     m_browsers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
@@ -476,11 +473,11 @@ void PlaylistWindow::applySettings()
     {
     case true:
         Playlist::instance()->setFont( AmarokConfig::playlistWindowFont() );
-        ContextBrowser::instance()->setFont( AmarokConfig::contextBrowserFont() );
+//        ContextBrowser::instance()->setFont( AmarokConfig::contextBrowserFont() );
         break;
     case false:
         Playlist::instance()->setFont( QFont() );
-        ContextBrowser::instance()->setFont( QFont() );
+//        ContextBrowser::instance()->setFont( QFont() );
         break;
     }
 }

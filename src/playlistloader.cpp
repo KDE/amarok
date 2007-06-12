@@ -25,7 +25,6 @@
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "statusbar.h"
-#include "contextbrowser.h"
 #include "xspfplaylist.h"
 
 #include <QDateTime>   //::recurse()
@@ -110,14 +109,6 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
 
         if( protocol == "seek" )
             continue;
-
-        else if( ContextBrowser::hasContextProtocol( url ) )
-        {
-            DEBUG_BLOCK
-            debug() << "context expandurl" << endl;
-
-            m_URLs += ContextBrowser::expandURL( url );
-        }
 
         else if( !MetaBundle::isKioUrl( url ) )
         {

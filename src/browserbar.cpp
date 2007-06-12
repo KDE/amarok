@@ -394,29 +394,4 @@ BrowserBar::showBrowserSelectionMenu()
       m_tabBar->showTabSelectionMenu(mapToGlobal(QPoint(m_tabManagementButton->pos().x(), m_tabManagementButton->pos().y() +m_tabManagementButton->height() )));
 }
 
-void
-BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
-{
-    if( !AmarokConfig::autoShowContextBrowser() || m_currentIndex == -1 )
-        return;
-
-    switch( state ) {
-    case Engine::Playing:
-
-        if( oldState != Engine::Paused && m_currentIndex != -1 ) {
-            m_lastIndex = m_currentIndex;
-            showBrowser( "ContextBrowser" );
-        }
-        break;
-
-    case Engine::Empty:
-
-        if( m_lastIndex >= 0 )
-            showBrowser( m_lastIndex );
-
-    default:
-        ;
-    }
-}
-
 #include "browserbar.moc"

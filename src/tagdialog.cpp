@@ -9,7 +9,6 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "contextbrowser.h"
 #include "querybuilder.h"
 #include "coverfetcher.h"
 #include "metabundle.h"
@@ -426,8 +425,8 @@ void TagDialog::init()
     const QStringList labels = CollectionDB::instance()->labelList();
     //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
 
-    //m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
-    m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
+    m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
+    //m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
     m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
     //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
     //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
@@ -436,7 +435,7 @@ void TagDialog::init()
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
-    m_labelCloud->set( html );
+    m_labelCloud->write( html );
     connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
              this,                             SLOT( openUrlRequest( const KUrl & ) ) );
 
@@ -499,7 +498,7 @@ void TagDialog::init()
     pushButton_open->setIconSet( KIcon( Amarok::icon( "files" ) ) );
 
     //Update lyrics on Context Browser
-    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
+//    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
 
     //Update cover
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),

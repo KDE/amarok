@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "config-amarok.h"
-#include "contextbrowser.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "playlist.h"

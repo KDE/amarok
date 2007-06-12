@@ -70,7 +70,6 @@ class DbusPlayerHandler : public QObject
       virtual QString lastfmStation();
       virtual QString nowPlaying();
       virtual QString path();
-      virtual QString setContextStyle(const QString&);
       virtual QString title();
       virtual QString totalTime();
       virtual QString track();
@@ -156,20 +155,6 @@ class DbusPlaylistBrowserHandler : public QObject
       virtual void scanPodcasts();
       virtual void addPlaylist( const QString &url );
       virtual int loadPlaylist( const QString &playlist );
-};
-
-class DbusContextBrowserHandler : public QObject
-{
-        Q_OBJECT
-
-   public:
-      DbusContextBrowserHandler();
-
-   public:
-      virtual void showCurrentTrack();
-      virtual void showLyrics();
-      virtual void showWiki();
-      virtual void showLyrics( const QByteArray& lyrics );
 };
 
 class DbusContextHandler: public QObject

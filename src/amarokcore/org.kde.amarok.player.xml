@@ -62,10 +62,6 @@
    <method name="path" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="setContextStyle" >
-      <arg type="s" direction="out"/>
-      <arg name="name" type="s" direction="in"/>
-    </method>
    <method name="title" >
       <arg type="s" direction="out"/>
     </method>

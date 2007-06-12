@@ -24,7 +24,6 @@
 #include <kxmlguiwindow.h>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-class ContextBrowser;
 class KMenu;
 class MediaBrowser;
 class QMenuBar;
@@ -122,8 +121,6 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         void    createMenus();
         int m_lastBrowser;
         int m_searchField;
-        ContextBrowser *cb;
-
         static PlaylistWindow *s_instance;
 };
 

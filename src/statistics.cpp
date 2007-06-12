@@ -39,6 +39,32 @@
 #include <q3header.h>
 #include <q3simplerichtext.h>
 
+namespace Amarok {
+
+    /**
+    * Function that must be used when separating contextBrowser escaped urls
+    * detail can contain track/discnumber
+    */
+    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail )
+    {
+        if ( !url.contains("@@@") ) return;
+        //KHTML removes the trailing space!
+        if ( url.endsWith( " @@@" ) )
+            url += ' ';
+
+        const QStringList list = url.split( " @@@ ", QString::KeepEmptyParts );
+
+        int size = list.count();
+
+        Q_ASSERT( size>0 );
+
+        artist = size > 0 ? unescapeHTMLAttr( list[0] ) : "";
+        album  = size > 1 ? unescapeHTMLAttr( list[1] ) : "";
+        detail = size > 2 ? unescapeHTMLAttr( list[2] ) : "";
+    }
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
 //////////////////////////////////////////////////////////////////////////////////////////

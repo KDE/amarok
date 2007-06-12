@@ -15,7 +15,6 @@
 #include "browserToolBar.h"
 #include "collectiondb.h"
 #include "colorgenerator.h"
-#include "contextbrowser.h"
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
@@ -2241,18 +2240,6 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
                 ++it )
         {
             addUrl( (*it).url(), 0, name );
-        }
-        return;
-    }
-    else if( ContextBrowser::hasContextProtocol( url ) )
-    {
-        KUrl::List urls = ContextBrowser::expandURL( url );
-
-        for( KUrl::List::iterator it = urls.begin();
-                it != urls.end();
-                ++it )
-        {
-            addUrl( *it );
         }
         return;
     }

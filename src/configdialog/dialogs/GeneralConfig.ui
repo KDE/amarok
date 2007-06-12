@@ -10,7 +10,9 @@
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+   <sizepolicy>
+    <hsizetype>0</hsizetype>
+    <vsizetype>0</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -19,27 +21,27 @@
    <string>General</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
+   <property name="margin" >
+    <number>11</number>
    </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
+   <property name="spacing" >
+    <number>6</number>
    </property>
    <item>
     <widget class="Q3GroupBox" name="generalBox" >
      <property name="title" >
       <string>General Options</string>
      </property>
-     <property name="margin" >
-      <number>0</number>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
       <item>
        <widget class="QCheckBox" name="kcfg_ShowSplashscreen" >
         <property name="toolTip" >
@@ -68,6 +70,12 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
         <item>
          <spacer>
           <property name="orientation" >
@@ -104,6 +112,12 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
         <item>
          <widget class="QLabel" name="textLabel1" >
           <property name="toolTip" >
@@ -134,11 +148,11 @@
           <property name="suffix" >
            <string>px</string>
           </property>
-          <property name="minimum" >
-           <number>50</number>
-          </property>
           <property name="maximum" >
            <number>300</number>
+          </property>
+          <property name="minimum" >
+           <number>50</number>
           </property>
           <property name="value" >
            <number>100</number>
@@ -165,6 +179,12 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
         <item>
          <widget class="QLabel" name="textLabel1_2" >
           <property name="minimumSize" >
@@ -187,7 +207,9 @@
         <item>
          <widget class="KComboBox" name="kComboBox_browser" >
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -223,6 +245,12 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
         <item>
          <widget class="QCheckBox" name="checkBox_customBrowser" >
           <property name="enabled" >
@@ -245,7 +273,9 @@
            <bool>false</bool>
           </property>
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -287,10 +317,16 @@
      <property name="title" >
       <string>Components</string>
      </property>
-     <property name="margin" >
-      <number>0</number>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
       <item>
        <widget class="QCheckBox" name="kcfg_UseScores" >
         <property name="toolTip" >
@@ -322,14 +358,13 @@
         <property name="frameShadow" >
          <enum>QFrame::Sunken</enum>
         </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="K3ActiveLabel" native="1" name="moodbarHelpLabel" >
-        <property name="text" stdset="0" >
-         <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'>moodbar package&lt;/a> installed to enable the moodbar feature.</string>
-        </property>
-       </widget>
+       <widget class="K3ActiveLabel" native="1" name="moodbarHelpLabel" />
       </item>
       <item>
        <widget class="Q3Frame" name="moodFrame" >
@@ -346,19 +381,10 @@
          <number>0</number>
         </property>
         <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>11</number>
+         </property>
          <property name="spacing" >
-          <number>0</number>
-         </property>
-         <property name="leftMargin" >
-          <number>0</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>0</number>
-         </property>
-         <property name="bottomMargin" >
           <number>0</number>
          </property>
          <item>
@@ -382,6 +408,12 @@
          </item>
          <item>
           <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>11</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
            <item>
             <spacer>
              <property name="orientation" >
@@ -456,6 +488,12 @@
          </item>
          <item>
           <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>11</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
            <item>
             <spacer>
              <property name="orientation" >
@@ -501,10 +539,16 @@
      <property name="title" >
       <string>Playlist-Window Options</string>
      </property>
-     <property name="margin" >
-      <number>0</number>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
       <item>
        <widget class="QCheckBox" name="kcfg_SavePlaylist" >
         <property name="toolTip" >
@@ -528,19 +572,6 @@
         </property>
         <property name="text" >
          <string>Manually sa&amp;ved playlists use relative path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_AutoShowContextBrowser" >
-        <property name="toolTip" >
-         <string>Switch to the context browser, when playing a track.&lt;br></string>
-        </property>
-        <property name="whatsThis" >
-         <string>Switch to the context browser, when playing a track.</string>
-        </property>
-        <property name="text" >
-         <string>Switch to Context &amp;Browser on track change</string>
         </property>
        </widget>
       </item>
@@ -569,18 +600,6 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
@@ -594,6 +613,18 @@
    <class>K3ActiveLabel</class>
    <extends>QWidget</extends>
    <header>k3activelabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>

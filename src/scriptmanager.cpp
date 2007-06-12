@@ -25,7 +25,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "contextbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"

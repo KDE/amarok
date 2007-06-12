@@ -26,13 +26,11 @@
 #include "app.h" //transferCliArgs
 #include "debug.h"
 #include "collectiondb.h"
-#include "contextbrowser.h"
 #include "contextview/ContextScriptManager.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
-#include "htmlview.h"
 #include "lastfm.h"
 #include "mediabrowser.h"
 #include "mountpointmanager.h"
@@ -57,7 +55,6 @@
 #include <kstartupinfo.h>
 
 #include <collectionadaptor.h>
-#include <contextbrowseradaptor.h>
 #include <contextadaptor.h>
 #include <mediabrowseradaptor.h>
 #include <playeradaptor.h>
@@ -260,17 +257,6 @@ namespace Amarok
     QString DbusPlayerHandler::path()
     {
         return EngineController::instance()->bundle().url().path();
-    }
-
-    QString DbusPlayerHandler::setContextStyle(const QString& msg)
-    {
-        AmarokConfig::setContextBrowserStyleSheet( msg );
-        ContextBrowser::instance()->reloadStyleSheet();
-
-        if ( QFile::exists( Amarok::saveLocation( "themes/" + msg + '/' ) + "stylesheet.css" ) )
-            return "Context browser theme '"+msg+"' applied.";
-        else
-            return "No such theme '"+msg+"' exists, default theme applied.";
     }
 
     QString DbusPlayerHandler::title()
@@ -497,8 +483,6 @@ namespace Amarok
 
     void DbusPlayerHandler::showBrowser( QString browser )
     {
-        if ( browser == "context" )
-            PlaylistWindow::self()->showBrowser( "ContextBrowser" );
         if ( browser == "collection" )
             PlaylistWindow::self()->showBrowser( "CollectionBrowser" );
         if ( browser == "playlist" )
@@ -744,37 +728,6 @@ namespace Amarok
     int DbusPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
     {
         return PlaylistBrowser::instance()->loadPlaylist( playlist );
-    }
-
-/////////////////////////////////////////////////////////////////////////////////////
-// class DbusContextBrowserHandler
-/////////////////////////////////////////////////////////////////////////////////////
-
-    DbusContextBrowserHandler::DbusContextBrowserHandler()
-        : QObject( kapp )
-    {
-         (void)new ContextBrowserAdaptor(this);
-         QDBusConnection::sessionBus().registerObject("/ContextBrowser", this);
-    }
-
-    void DbusContextBrowserHandler::showCurrentTrack()
-    {
-        ContextBrowser::instance()->showCurrentTrack();
-    }
-
-    void DbusContextBrowserHandler::showLyrics()
-    {
-        ContextBrowser::instance()->showLyrics();
-    }
-
-    void DbusContextBrowserHandler::showWiki()
-    {
-        ContextBrowser::instance()->showWikipedia();
-    }
-
-    void DbusContextBrowserHandler::showLyrics( const QByteArray& lyrics )
-    {
-        ContextBrowser::instance()->lyricsResult( lyrics );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

@@ -44,6 +44,19 @@ using Amarok::escapeHTMLAttr;
 
 typedef QMap<QString, Medium*> MediumMap;
 
+namespace Amarok
+{
+    QString escapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" );
+    }
+
+    QString unescapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).replace( "%27", "'" ).replace( "%25", "%" );
+    }
+}
+
 MediumPluginManagerDialog::MediumPluginManagerDialog()
         : KPageDialog( Amarok::mainWindow() )
 {

@@ -21,6 +21,8 @@ class Q3GroupBox;
 class QSpinBox;
 class QStringList;
 
+class KLineEdit;
+
 class EditFilterDialog : public KDialog
 {
     Q_OBJECT

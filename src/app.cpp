@@ -22,7 +22,6 @@ email                : markey@web.de
 #include "atomicstring.h"
 #include "collectiondb.h"
 #include "ConfigDialog.h"
-#include "contextbrowser.h"
 //#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
@@ -170,7 +169,6 @@ App::App()
      new Amarok::DbusPlayerHandler(); // Must be created first
      new Amarok::DbusPlaylistHandler();
      new Amarok::DbusPlaylistBrowserHandler();
-     new Amarok::DbusContextBrowserHandler();
      new Amarok::DbusContextHandler();
      new Amarok::DbusCollectionHandler();
      new Amarok::DbusMediaBrowserHandler();
@@ -629,7 +627,7 @@ void App::applySettings( bool firstTime )
 //PORT 2.0        CollectionView::instance()->renderView(true);
     } //</Collection>
     { //<Context>
-        ContextBrowser::instance()->renderView();
+ //PORT 2.0       ContextBrowser::instance()->renderView();
     } //</Context>
 
     {   // delete unneeded cover images from cache

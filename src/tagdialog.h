@@ -8,7 +8,6 @@
 
 #include "config-amarok.h"
 
-#include "htmlview.h"
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
@@ -128,8 +127,8 @@ class TagDialog : public TagDialogBase
         QStringList m_removedLabels;
         KUrl m_mbTrack;
         QString m_commaSeparatedLabels;
-        //KHTMLPart *m_labelCloud;
-        HTMLView *m_labelCloud;
+        KHTMLPart *m_labelCloud;
+        //HTMLView *m_labelCloud;
 };
 
 

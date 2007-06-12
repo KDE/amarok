@@ -34,14 +34,10 @@ class AppearanceConfig : public ConfigDialogBase, public Ui_AppearanceConfig
 
         virtual bool hasChanged();
         virtual bool isDefault();
-        virtual void updateSettings();
+        virtual void updateSettings() { }
 
     private slots:
-        void installPushButton_clicked();
         void retrievePushButton_clicked();
-        void uninstallPushButton_clicked();
-        void styleComboBox_activated( const QString& );
-        void updateStyleComboBox();
 };
 
 

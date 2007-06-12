@@ -15,7 +15,6 @@
 #include "browserToolBar.h"
 #include "querybuilder.h"      //smart playlists
 #include "debug.h"
-#include "htmlview.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "dynamicmode.h"
@@ -33,7 +32,6 @@
 #include "TheInstances.h"
 #include "threadmanager.h"
 #include "statusbar.h"
-#include "contextbrowser.h"
 #include "xspfplaylist.h"
 
 #include <QEvent>            //customEvent()
@@ -2678,17 +2676,6 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
-                else if( ContextBrowser::hasContextProtocol( *it ) )
-                {
-                    KUrl::List urls = ContextBrowser::expandURL( *it );
-                    for( KUrl::List::iterator i = urls.begin();
-                            i != urls.end();
-                            i++ )
-                    {
-                        MetaBundle mb(*i);
-                        bundles.append( mb );
-                    }
-                }
                 else //TODO: check canDecode ?
                 {
                     MetaBundle mb(*it);
@@ -3145,7 +3132,7 @@ InfoPane::InfoPane( QWidget *parent )
         //box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
-        m_infoBrowser = new HTMLView( box, "extended_info" );
+        m_infoBrowser = new KHTMLPart( box );
 
         container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 3 );
@@ -3232,7 +3219,7 @@ InfoPane::setInfo( const QString &title, const QString &info )
     if( m_pushButton->isOn() )
         toggle( !(info.isEmpty() && title.isEmpty()) );
 
-    m_infoBrowser->set(
+    m_infoBrowser->write(
         m_enable ?
         QString( "<div id='extended_box' class='box'>"
                   "<div id='extended_box-header-title' class='box-header'>"

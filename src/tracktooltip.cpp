@@ -28,11 +28,64 @@
 #include <QApplication>
 //Added by qt3to4:
 #include <QPixmap>
+
+#include <kcalendarsystem.h>
 #include <kstandarddirs.h>
 
 
 #include "tracktooltip.h"
 
+namespace Amarok 
+{
+    QString verboseTimeSince( const QDateTime &datetime )
+    {
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
+
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
+            const KCalendarSystem *cal = KGlobal::locale()->calendar();
+            const QDate date = datetime.date();
+            return i18nc( "monthname year", "%1 %2", cal->monthName(date), cal->yearString(date, false) );
+        }
+
+        //TODO "last week" = maybe within 7 days, but prolly before last sunday
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18n( "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return datediff == 1 ?
+                    i18n( "Yesterday" ) :
+                    i18np( "One day ago", "%1 days ago", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18np( "One hour ago", "%1 hours ago", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 0 )  // return difference in minutes
+            return timediff/60 ?
+                    i18np( "One minute ago", "%1 minutes ago", (timediff+30)/60 ) :
+                    i18n( "Within the last minute" );
+
+        return i18n( "The future" );
+    }
+
+    QString verboseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18n( "Never" );
+
+        QDateTime dt;
+        dt.setTime_t( time_t );
+        return verboseTimeSince( dt );
+    }
+}
 
 TrackToolTip *TrackToolTip::instance()
 {

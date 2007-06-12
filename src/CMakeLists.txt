@@ -77,7 +77,6 @@ set(libamarokcore_SRCS
 )
 
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.contextbrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusContextBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
@@ -299,7 +298,6 @@ set(amarok_LIB_SRCS
     atomicstring.cpp
     collectiondb.cpp
     columnlist.cpp
-    contextbrowser.cpp
     coverfetcher.cpp
     covermanager.cpp
     cuefile.cpp
@@ -320,7 +318,6 @@ set(amarok_LIB_SRCS
     fht.cpp
     filebrowser.cpp
     hintlineedit.cpp
-    htmlview.cpp
     iconloader.cpp
     k3bexporter.cpp
     kbookmarkhandler.cpp
