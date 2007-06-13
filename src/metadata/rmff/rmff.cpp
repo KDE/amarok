@@ -38,6 +38,8 @@
 #include <fileref.h>
 #include <iostream>
 
+#include <string.h>
+
 #include "rmff.h"
 
 #define UNPACK4(a, buf, i) memcpy((void *)&a, (void *) &buf[i], 4),i+=4,a=ntohl(a)

@@ -24,6 +24,8 @@
 #include <wmatag.h>
 #include <wmaproperties.h>
 
+#include <string.h>
+
 using namespace TagLib;
 
 class WMA::File::FilePrivate

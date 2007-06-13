@@ -25,6 +25,8 @@
 #include "taglib_wmafiletyperesolver.h"
 #include "wmafile.h"
 
+#include <string.h>
+
 TagLib::File *WMAFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

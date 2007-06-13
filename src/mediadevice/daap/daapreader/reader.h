@@ -25,10 +25,6 @@ class MetaBundle;
 class ServerItem;
 class QHttpResponseHeader;
 
-namespace QHttp {
-    class Error;
-}
-
 namespace Daap
 {
     typedef QMap<QString, QVariant>    Map;

@@ -30,6 +30,8 @@
 #include "taglib_realmediafile.h"
 #include "rmff.h"
 
+#include <string.h>
+
 TagLib::File *RealMediaFileTypeResolver::createFile(const char *fileName,
                                                     bool readProperties,
                                                     TagLib::AudioProperties::ReadStyle propertiesStyle) const

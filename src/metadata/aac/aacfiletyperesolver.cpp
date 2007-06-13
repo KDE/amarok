@@ -22,6 +22,8 @@
 #include "aacfiletyperesolver.h"
 #include <taglib/mpegfile.h>
 
+#include <string.h>
+
 TagLib::File *AACFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

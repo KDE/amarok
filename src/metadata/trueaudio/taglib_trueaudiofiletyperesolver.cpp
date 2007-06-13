@@ -22,6 +22,8 @@
 #include "taglib_trueaudiofiletyperesolver.h"
 #include "ttafile.h"
 
+#include <string.h>
+
 TagLib::File *TTAFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

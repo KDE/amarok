@@ -29,7 +29,7 @@ Q_OBJECT
     friend class CriteriaEditor;
 
     public:
-        SmartPlaylistEditor( QString name, QWidget *parent, const char *name=0 );
+        SmartPlaylistEditor( QString playlist_name, QWidget *parent, const char *name=0 );
         SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name=0 );
 
         QDomElement result();

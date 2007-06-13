@@ -22,6 +22,8 @@
 #include "taglib_audiblefiletyperesolver.h"
 #include "taglib_audiblefile.h"
 
+#include <string.h>
+
 TagLib::File *AudibleFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
