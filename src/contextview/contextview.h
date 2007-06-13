@@ -31,9 +31,8 @@ class ContextView : public QGraphicsView, public EngineObserver
     static ContextView *s_instance;
 
     public:
-        /*
-         * Destroys the context view
-         */
+        static const int BOX_PADDING = 20;
+
         ~ContextView() { /* delete, disconnect and disembark */ }
 
         static ContextView *instance()
@@ -53,7 +52,6 @@ class ContextView : public QGraphicsView, public EngineObserver
         void wheelEvent( QWheelEvent *event );
 
     private:
-        static const int BOX_PADDING = 20;
         /*
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class

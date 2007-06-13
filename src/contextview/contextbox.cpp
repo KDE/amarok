@@ -1,6 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Seb Ruiz <ruiz@kde.org>                 *
- *                :(C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
+ *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
  **************************************************************************/
 
 /***************************************************************************
@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "contextbox.h"
+#include "contextview.h"
 #include "debug.h"
 
 #include <QGraphicsItemAnimation>
@@ -33,7 +34,14 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 {
     //setHandlesChildEvents( true ); // events from the sub items are passed onto this object. messes up child items badly though...
 
-    const QRectF boundingRect = QRectF( 0, 0, 400, 200 );
+    //this prohibits the use of multiple views for the items, but something we can resolve if we ever need this functionality
+    ContextView *cv = ContextView::instance();
+    const qreal viewWidth = cv->width();
+
+    static const qreal padding = ContextView::BOX_PADDING;
+    const qreal boxWidth = viewWidth - padding*2; // twice the padding for left and right sides
+
+    const QRectF boundingRect = QRectF( 0, 0, viewWidth, 200 );
     setRect( boundingRect );
 
     setPen( QPen( Qt::black, 1, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin ) );

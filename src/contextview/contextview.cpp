@@ -1,6 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Seb Ruiz <ruiz@kde.org>                 *
- *                :(C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
+ *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
  **************************************************************************/
 
 /***************************************************************************
