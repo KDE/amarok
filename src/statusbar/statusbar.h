@@ -32,8 +32,7 @@ class QTimer;
 
 namespace Amarok
 {
-    class Slider;
-    
+        
     class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
     {
         Q_OBJECT
