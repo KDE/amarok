@@ -251,7 +251,10 @@ void ContextView::scaleView( qreal factor )
 
 void ContextView::wheelEvent( QWheelEvent *event )
 {
-     scaleView( pow( (double)2, -event->delta() / 240.0) );
+    if( event->modifiers() & Qt::ControlModifier )
+        scaleView( pow( (double)2, -event->delta() / 240.0) );
+    else
+        QGraphicsView::wheelEvent( event );
 }
 
 void ContextView::resizeEvent( QResizeEvent *event )
