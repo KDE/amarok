@@ -254,6 +254,19 @@ void ContextView::wheelEvent( QWheelEvent *event )
      scaleView( pow( (double)2, -event->delta() / 240.0) );
 }
 
+void ContextView::resizeEvent( QResizeEvent *event )
+{
+    QSize newSize = event->size();
+    QList<QGraphicsItem*> items = m_contextScene->items();
+
+    foreach( QGraphicsItem *item, items )
+    {
+        ContextBox *box = dynamic_cast<ContextBox*>( item );
+        if( box )
+            box->ensureWidthFits( newSize.width() );
+    }
+}
+
 void ContextView::clear()
 {
     delete m_contextScene;

@@ -1,6 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Seb Ruiz <ruiz@kde.org>                 *
- *                :(C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
+ *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
  **************************************************************************/
 
 /***************************************************************************
@@ -21,6 +21,7 @@
 #include <QGraphicsView>
 
 class QGraphicsScene;
+class QResizeEvent;
 class QWheelEvent;
 
 using namespace Context;
@@ -49,6 +50,7 @@ class ContextView : public QGraphicsView, public EngineObserver
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
+        void resizeEvent( QResizeEvent *event );
         void wheelEvent( QWheelEvent *event );
 
     private:

@@ -41,7 +41,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     static const qreal padding = ContextView::BOX_PADDING;
     const qreal boxWidth = viewWidth - padding*2; // twice the padding for left and right sides
 
-    const QRectF boundingRect = QRectF( 0, 0, viewWidth, 200 );
+    const QRectF boundingRect = QRectF( 0, 0, boxWidth, 200 );
     setRect( boundingRect );
 
     setPen( QPen( Qt::black, 1, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin ) );
@@ -112,6 +112,14 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
 
     if( synchroniseHeight )
         m_optimumHeight = sz.height();
+}
+
+void ContextBox::ensureWidthFits( const int width )
+{
+    const qreal padding = ContextView::BOX_PADDING * 2;
+//     QRectF rect = boundingRect();
+    QSize newSize = QSize( width - padding, 200 /*rect.height()*/ );
+    setContentRectSize( newSize, false );
 }
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )

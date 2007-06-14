@@ -1,6 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Seb Ruiz <ruiz@kde.org>                 *
- *                :(C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
+ *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
  **************************************************************************/
 
 /***************************************************************************
@@ -38,6 +38,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
 
         virtual void setTitle( const QString &title );
         virtual void toggleVisibility();
+        virtual void ensureWidthFits( const int width );
 
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
