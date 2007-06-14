@@ -40,6 +40,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         virtual void toggleVisibility();
         virtual void ensureWidthFits( const int width );
 
+        virtual const QString getTitle() { return m_titleItem->toPlainText(); }
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
         virtual void setBoundingRectSize( const QSize &sz );
@@ -57,6 +58,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
     protected slots:
         void visibilityTimerSlot();
         void animationStateChanged( QTimeLine::State newState );
+    
 };
 
 }

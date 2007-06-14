@@ -19,13 +19,21 @@
 namespace Context
 {
 
-	class GenericInfoBox : public ContextBox
-	{
-		public:
-			GenericInfoBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
-		
-			void setContents( const QString& );
-	}; 
+    class GenericInfoBox : public ContextBox
+    {
+        Q_OBJECT
+     public:
+        GenericInfoBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+                
+        void setContents( const QString& );
+        void clearContents();
+    private slots:
+        void externalUrl( const QString& );
+    private:
+        void init();
+        
+        QGraphicsTextItem* m_content;
+    }; 
 }
 			
 

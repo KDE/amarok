@@ -24,7 +24,7 @@ class String
 end
 
 def showLyrics( lyrics )
-    system("qdbus", "org.kde.amarok", "/ContextBrowser", "showLyrics", lyrics)
+    system("qdbus", "org.kde.amarok", "/Context", "showLyrics", lyrics)
 end
 
 
@@ -125,7 +125,7 @@ def fetchLyrics( artist, title, url )
 
     unless response.code == "200"
 #         error "HTTP Error: #{response.message}"
-        `qdbus org.kde.amarok /ContextBrowser showLyrics ""`
+        `qdbus org.kde.amarok /Context showLyrics ""`
         return
     end
 

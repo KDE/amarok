@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
  *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ *                :(C) 2007 Leonardo Franchi  <lfranchi@gmail.com>         *
  **************************************************************************/
 
 /***************************************************************************
@@ -17,6 +18,7 @@
 
 #include "contextbox.h"
 #include "engineobserver.h"
+#include "GenericInfoBox.h"
 
 #include <QGraphicsView>
 
@@ -32,6 +34,7 @@ class ContextView : public QGraphicsView, public EngineObserver
     static ContextView *s_instance;
 
     public:
+
         static const int BOX_PADDING = 20;
 
         ~ContextView() { /* delete, disconnect and disembark */ }
@@ -47,14 +50,20 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/, bool fadeIn = false);
 
+        void showLyrics( const QString& url );
+
+    public slots:
+        void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false ) ;
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void resizeEvent( QResizeEvent *event );
         void wheelEvent( QWheelEvent *event );
 
+    private slots:
+
     private:
-        /*
+        /**
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class
          */
@@ -69,9 +78,16 @@ class ContextView : public QGraphicsView, public EngineObserver
         void showHome();
         void showCurrentTrack();
 
-
         /// Attributes ////////////////////////////////////////
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
+
+        /// Lyrics box attributes /////////////////////////////
+        GenericInfoBox *m_lyricsBox; ///< Pointer to the lyrics info box
+
+        bool            m_dirtyLyricsPage;
+        bool            m_lyricsVisible;
+        QString         m_HTMLSource;
+
 
     private slots:
 

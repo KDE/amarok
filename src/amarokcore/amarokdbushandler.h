@@ -171,6 +171,8 @@ public:
     virtual void changeBoxContents( const int boxId, const QString& contents );
     virtual void changeBoxStylesheet( const int boxId, const QString& stylesheet );
     virtual void removeContextBox( const int boxId );
+    virtual void showLyrics();
+    virtual void showLyrics( const QByteArray& in );
 };
 
 

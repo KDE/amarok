@@ -29,7 +29,6 @@
       <arg name="name" type="s" direction="in"/>
       <arg type="as" direction="out"/>
     </method>
-    </method>
     <method name="proxyForUrl" >
       <arg name="url" type="s" direction="in"/>
       <arg type="s" direction="out"/>

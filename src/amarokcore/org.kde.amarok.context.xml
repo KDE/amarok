@@ -23,5 +23,9 @@
     <method name="removeContextBox" >
         <arg name="boxId" type="i" direction="in" />
     </method>
+    <method name="showLyrics" />
+    <method name="showLyrics" >
+        <arg name="lyrics" type="ay" direction="in" />
+    </method>
   </interface>
 </node>
