@@ -1288,7 +1288,7 @@ MetaBundle::genreList() //static
 void
 MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
 {
-    char *id = 0;
+    const char *id = 0;
 
     if ( m_type == mp3 )
     {
