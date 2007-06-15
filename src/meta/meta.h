@@ -169,6 +169,14 @@ namespace Meta
                 inCollection() returns false */
             virtual Collection* collection() const;
 
+            /** get the cached lyrics for the track. returns an empty string if
+                no cached lyrics are available */
+            virtual QString cachedLyrics() const;
+            /**
+                set the cached lyrics for the track
+            */
+            virtual void setCachedLyrics( const QString &lyrics );
+
             virtual void subscribe( TrackObserver *observer ) = 0;
             virtual void unsubscribe( TrackObserver *observer ) = 0;
     };

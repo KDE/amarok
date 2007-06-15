@@ -40,6 +40,18 @@ Meta::Track::collection() const
     return 0;
 }
 
+QString
+Meta::Track::cachedLyrics() const
+{
+    return QString();
+}
+
+void
+Meta::Track::setCachedLyrics( const QString &lyrics )
+{
+    Q_UNUSED( lyrics )
+}
+
 void
 Meta::Track::addMatchTo( QueryMaker *qm )
 {

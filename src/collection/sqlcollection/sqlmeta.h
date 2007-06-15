@@ -95,6 +95,9 @@ class SqlTrack : public Track
         virtual bool inCollection() const;
         virtual Collection* collection() const;
 
+        virtual QString cachedLyrics() const;
+        virtual void setCachedLyrics( const QString &lyrics );
+
     protected:
         void notifyObservers();
         void commitMetaDataChanges();
