@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.6
   CHANGES:
+    * Improved icon theme, kindly provided by Landy DeField
+      <lando@revelinux.com>. Big thanks!
     * Playlist now sends notifications to scripts if items are added, removed,
       reordered, or if the playlist is cleared.  Useful for script authors.
       Thanks to Miguel Angel Alvarez <maacruz@gmail.com> for the patch.
