@@ -25,7 +25,7 @@
 #include "magnatunedatabasehandler.h"
 #include "magnatunetypes.h"
 #include "statusbar.h"
-
+#include <kshell.h>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
 {
@@ -95,7 +95,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip " + K3Process::quote( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + K3Process::quote( m_currentAlbumUnpackLocation ) + " &";
+    QString unzipString = "unzip " + KShell::quoteArg( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + KShell::quoteArg( m_currentAlbumUnpackLocation ) + " &";
 
     debug() << "unpacking: " << unzipString << endl;
 

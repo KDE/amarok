@@ -20,7 +20,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "scriptableservicecontentmodel.h"
-
+#include <kshell.h>
 
 ScriptableServiceContentModel::ScriptableServiceContentModel( QObject *parent, const QString &header )
      : ServiceModelBase( parent )
@@ -256,7 +256,7 @@ void ScriptableServiceContentModel::triggerUpdateScript(const QString &script, c
     //This will cause "unsafe" warnings all over the place...
     // but if the script that inserted the callback script value cannot be trusted, it has already had plenty
     // of opportunity to wreck havoc!
-    QString scriptString = script + ' ' + K3Process::quote( QString().setNum(nodeId) ) + ' ' + K3Process::quote( argument ) + " &";
+    QString scriptString = script + ' ' + KShell::quoteArg( QString().setNum(nodeId) ) + ' ' + KShell::quoteArg( argument ) + " &";
 
     debug() << "ScriptableServiceContentModel::triggerUpdateScript String: " << scriptString << endl;
     system( scriptString.toAscii() );
