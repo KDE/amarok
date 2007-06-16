@@ -23,7 +23,7 @@ namespace Context
     {
         Q_OBJECT
      public:
-        GenericInfoBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+        explicit GenericInfoBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
                 
         void setContents( const QString& );
         void clearContents();
