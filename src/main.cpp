@@ -41,7 +41,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Jeff '"I18N_NOOP("IROCKSOHARD") "' Mitchell",
             I18N_NOOP( "Developer (jefferai)" ), "kde-dev@emailgoeshere.com" );
     aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",
-            I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
+            I18N_NOOP( "Project founder (markey)" ), "kretschmann@kde.org" );
     aboutData.addAuthor( "Martin '"I18N_NOOP("Easily the most compile-breaks ever!") "' Aumueller",
             I18N_NOOP( "Developer (aumuell)" ), "aumuell@reserv.at" );
     aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power") "' Howell",
