@@ -62,7 +62,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
         /**
             resets all internal data to the default values. Calling this method is the same
-            as creating a new QueryMaker. Returns <code>this</code>
+            as creating a new QueryMaker.
+            @return this
         */
         virtual QueryMaker* reset() = 0;
         /**
@@ -89,7 +90,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Track objects, so you have to connect your client to the
             newResultReady( QString, Meta::TrackList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startTrackQuery() = 0;
         /**
@@ -97,7 +98,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Artist objects, so you have to connect your client to the
             newResultReady( QString, Meta::ArtistList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startArtistQuery() = 0;
         /**
@@ -105,7 +106,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Album objects, so you have to connect your client to the
             newResultReady( QString, Meta::AlbumList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startAlbumQuery() = 0;
         /**
@@ -113,7 +114,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Genre objects, so you have to connect your client to the
             newResultReady( QString, Meta::GenreList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startGenreQuery() = 0;
         /**
@@ -121,7 +122,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Composer objects, so you have to connect your client to the
             newResultReady( QString, Meta::ComposerList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startComposerQuery() = 0;
         /**
@@ -129,7 +130,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             Meta::Year objects, so you have to connect your client to the
             newResultReady( QString, Meta::YearList ) signal (unless you want the results as
             Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startYearQuery() = 0;
         /**
@@ -138,7 +139,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             be returned as a QStringList. Threfore you have to connect to the
             newResultReady( QString, QStringList ) signal to receive the results. Calling
             returnResultsAsDataPtrs( bool ) has no effect when using a custom query.
-            Returns <code>this</code>
+            @return this
         */
         virtual QueryMaker* startCustomQuery() = 0;
         /**
@@ -147,12 +148,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
             the method provided by Meta::Data. Calling this method with resultAsDataPtrs = true causes
             the QueryMaker instance to emit the newResultReady( QString, Meta::DataList ) signal
             for all query types (except a custom query). Calling the method with resultAsDataPtrs = false
-            switches back to the normal behaviour. Returns <code>this</code>
+            switches back to the normal behaviour.
+
+            @return this
         */
         virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()
+            @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
@@ -171,6 +175,10 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
 
+        /**
+            limit the maximum number of items in a result. the result will have [0..@p size ] items. When this function
+            is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if the newResultReady signal is emitted multiple times, each result may have up to @p size items.
+        */
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
 
     signals:
