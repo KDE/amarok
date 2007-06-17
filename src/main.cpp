@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Jeff 'IROCKSOHARD' Mitchell",
             ( "Developer (jefferai)" ), "kde-dev@emailgoeshere.com" );
     aboutData.addAuthor( "Mark 'It's good, but it's not irssi' Kretschmann",
-            ( "Project founder (markey)" ), "markey@web.de" );
+            ( "Project founder (markey)" ), "kretschmann@kde.org" );
     aboutData.addAuthor( "Martin 'Easily the most compile-breaks ever!' Aumueller",
             ( "Developer (aumuell)" ), "aumuell@reserv.at" );
     aboutData.addAuthor( "Max 'Turtle-Power' Howell",
@@ -58,7 +58,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker",
             ( "Amarok logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Seb 'Surfin' down under' Ruiz",
-            ( "Developer (sebr)" ), "me@sebruiz.net", "http://www.sebruiz.net" );
+            ( "Developer (sebr)" ), "ruiz@kde.org", "http://www.sebruiz.net" );
     aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny",
             ( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
 
