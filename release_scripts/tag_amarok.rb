@@ -9,19 +9,20 @@
 
 
 useStableBranch = false
-unless $*.empty?()
-    case $*[0]
-        when "--branch"
-            useStableBranch = true
-        else
-            puts("Unknown option #{$1}. Known options: --branch.\n")
-    end
+# Ask whether using branch or trunk
+location = `kdialog --combobox "Select checkout's place:" "Trunk" "Stable"`.chomp()
+if location == "Stable"
+    useStableBranch = true
+    puts "using stable branch"
 end
 
 # Ask user for tag name
-tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
+tagname  = `kdialog --inputbox "Enter tag name (e.g. "2.0-beta3"): "`.chomp()
+puts "tag = #{tagname}"
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
+puts "user = #{user}"
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
+puts "protocol = #{protocol}"
 
 # Show safety check dialog
 `kdialog --warningcontinuecancel "Really create the tag '#{tagname}' NOW in the svn repository?"`
@@ -33,8 +34,11 @@ end
 # Create destination folder
 target = "#{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tagname}/"
 `svn mkdir -m "Create tag #{tagname} root directory" #{target}`
+puts "root directory created"
 `svn mkdir -m "Create tag #{tagname} multimedia directory" #{target}/multimedia`
+puts "multimedia directory created"
 `svn mkdir -m "Create tag #{tagname} doc directory" #{target}/multimedia/doc`
+puts "doc directory created"
 
 if useStableBranch
     source = "#{protocol}://#{user}@svn.kde.org/home/kde/branches/stable/extragear/multimedia/amarok"
