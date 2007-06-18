@@ -14,7 +14,7 @@ interface that really makes playlist handling easy.
 
     * Quick and simple drag and drop playlist creation
     * Music library (built-in SQLite, MySQL, or PostgreSQL)
-    * Multiple backends supported (xine, GStreamer, Helix, and NMM)
+    * Multiple backends supported (Phonon, xine, GStreamer, Helix, and NMM)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
@@ -65,7 +65,7 @@ Optional
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
 
-    * KDE-Base 3.3 (or newer)
+    * KDE-Base 4.0 (or newer)
       (needed for Konqueror Sidebar)
       http://www.kde.org
 
@@ -130,17 +130,7 @@ of these packages.
  IMPORTANT INSTALL INSTRUCTIONS
 ================================
 
-In order to compile and install Amarok on your system, type the following in the
-base directory of the Amarok distribution:
-
-
-                % ./configure --prefix=`kde-config --prefix`
-                % make
-                % make install
-
-
-Note: --enable-final is not guaranteed to work
-
+To compile from source, please refer to the INSTALL file.
 
 Packages for popular distributions are available at http://amarok.kde.org
 --------------------------------------------------------------------------------
@@ -223,7 +213,7 @@ homepage (as long as you don't object).
 ==============
 
 If you wish to contribute to Amarok, you should build it from SVN and subscribe
-to the amarok-devel mailing list. The IRC channel is  also  a  place  where
+to the amarok AT kde.org mailing list. The IRC channel is  also  a  place  where
 it's  nice  to  be, since you can talk to other developers much easier, and
 get instant notification of commits to the SVN. For instant email notification
 of commits, visit http://commitfilter.kde.org/.

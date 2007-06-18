@@ -25,6 +25,7 @@ Formatting
 * A function implementation's return type is on its own line.
 * amarok.h contains some helpful macros, foreach and foreachType.  Use them,
   they improve coding style and readability.
+* CamelCase.{cpp,h} style file names.
 
 Example:
 
@@ -67,8 +68,8 @@ Example:
  | #include "kdialogbase.h"    //baseclass
  | #include "kpushbutton.h"    //see function...
  |
- | #include "qlistviewitem.h"
- | #include "qwidget.h"
+ | #include <QGraphicsView>
+ | #include <QWidget>
 
 
 Comments
