@@ -178,8 +178,7 @@ Dir.chdir( "amarok" )
 `rm -rf release_scripts`
 `rm -rf src/engine/gst10` #Removed for now
 `rm -rf autopackage`
-`rm -rf src/scripts/amarok_live`
-`rm -rf src/scripts/amarok-svn`
+`rm -rf supplementary_scripts`
 
 Dir.chdir( "src" )
 
