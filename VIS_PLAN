@@ -1,10 +1,10 @@
-amaroK VIS_PLAN  - Created: 22-11-2003
+Amarok VIS_PLAN  - Created: 22-11-2003
 
 
 Abstract
 ========
 In order to create a visualisation framework that is superior to anything
-popular available for Linux today we should plan amaroK's thoroughly
+popular available for Linux today we should plan Amarok's thoroughly
 before implementation. This document exists to map out our ideas and is
 available for anyone to edit, please, if you have some good suggestion, or
 experience with this kind of work, add some comments! Thanks, Max Howell
@@ -20,12 +20,12 @@ unmanageable.
 Plan
 ====
 My initial thoughts were to make visualisations a separate process rather than
-separate thread. The reasoning being, a crash in the vis won't crash amaroK,
+separate thread. The reasoning being, a crash in the vis won't crash Amarok,
 threads can be unmanageable, *nix is good for new processes, we can use DCOP to
 control the vis and presumable we just need to pass a handle to the relevant
 arts server to the vis and leave it. Since the music playing bit is already a
 separate process it makes sense to make the visualisation separate too! Also
-this may mean that these visuals could be separate from amaroK and just depend
+this may mean that these visuals could be separate from Amarok and just depend
 on KDE.
 
 I was also thinking that this means it may be possible to not use Qt to
@@ -35,13 +35,13 @@ write something. It would be sorted if we could make something that can react to
 arts sound output in general.
 <markey> we could use SDL for 2d and OpenGL for 3d rendering.
 
-I was also thinking it would be neat to embed the visuals somehow into amaroK,
+I was also thinking it would be neat to embed the visuals somehow into Amarok,
 so as the background in the playlist perhaps (I know, this would probably not
 work well due to the need to re-render all the AA text all the time, but still
 the idea is neat) This is similar to Sonique on Windows if anyone has ever used
 it.
 
-If we make the visualisations not amaroK specific it may be possible to embed
+If we make the visualisations not Amarok specific it may be possible to embed
 visualisations into the Kicker, onto the desktop, etc.
 
 Do we want more than an FFT of the audio data? Would other data
@@ -54,10 +54,10 @@ Vis Process Architecture
 ========================
 I suggest having a separate process for each visualization. Each vis process would
 only load one visualization plugin. This way we have good crash safety and it's also
-possible to develop and ship plugins separately from amaroK. So we have one "vis loader
-skeleton" in amaroK, which will be instanciated whenever we need a vis. This loader could
+possible to develop and ship plugins separately from Amarok. So we have one "vis loader
+skeleton" in Amarok, which will be instanciated whenever we need a vis. This loader could
 get started with the vis plugin as cli argument. It would also contain all the socket and
-interface needed to communicate with amaroK.
+interface needed to communicate with Amarok.
 
 We should take care to keep the design as simple as possible.
 
@@ -70,12 +70,12 @@ one plugin anyway?
 Merging Analyzer and Vis
 ========================
 If we decide on unifying vis and analyzer, the question arises how to get the rendered
-bitmap graphic back into amaroK's playerwidget. It seems we have the following options:
+bitmap graphic back into Amarok's playerwidget. It seems we have the following options:
 
-* Writing it into a shared memory buffer. amaroK must then read the buffer and bitBlt()
+* Writing it into a shared memory buffer. Amarok must then read the buffer and bitBlt()
   the pixmap into the framebuffer
 * Transferring the pixmap over a Unix socket (or UDP network socket). This can amount to
-  several megabytes per second. After the transfer amaroK must bitBlt() it to the
+  several megabytes per second. After the transfer Amarok must bitBlt() it to the
   framebuffer.
 * Writing it directly into the framebuffer at the desired position, like a video overlay.
   There might be technical problems doing so, and it will be difficult when the user

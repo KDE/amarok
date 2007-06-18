@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ############################################################################
-# Second part of the amaroK LiveCD remastering scripts
+# Second part of the Amarok LiveCD remastering scripts
 # Reassemble the iso after adding media files
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
@@ -25,7 +25,7 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 	WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
 
-	kdialog --title "amaroK livecd remaster" --msgbox "The music that you added is now being squashed and added to the livecd. Please be VERY patient as this step can take a LONG time."
+	kdialog --title "Amarok livecd remaster" --msgbox "The music that you added is now being squashed and added to the livecd. Please be VERY patient as this step can take a LONG time."
 	
 	mksquashfs $WORK/amarok.live/ $WORK/mklivecd/livecd/livecd.sqfs -noappend
 
@@ -43,11 +43,11 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 	cd ..
 	ll
 	rm -f livecd.iso
-	mkisofs -J -R -V "Livecd Test" -o $WORK/amaroK.live.custom.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table .
+	mkisofs -J -R -V "Livecd Test" -o $WORK/Amarok.live.custom.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table .
 	cd $olddir
-	mv $WORK/amaroK.live.custom.iso .
+	mv $WORK/Amarok.live.custom.iso .
 	
-	kdialog --title "amaroK livecd remaster" --yesno "Livecd creation is done. The new amaroK live image is in `pwd`, called amaroK.live.custom.iso. You can burn that with any standard burner and enjoy.
+	kdialog --title "Amarok livecd remaster" --yesno "Livecd creation is done. The new Amarok live image is in `pwd`, called Amarok.live.custom.iso. You can burn that with any standard burner and enjoy.
 	
 	Do you want to make more cds later? If so, please click yes, and you can simply re-run part2 of this script. If you are done, click no and the temporary files will be erased. You will need to rerun part1 to make another cd."
 	
@@ -58,6 +58,6 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 	
 else
-	kdialog --title "amaroK livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
+	kdialog --title "Amarok livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
 
 fi

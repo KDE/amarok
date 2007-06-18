@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# amaroK Script for custom scoring
+# Amarok Script for custom scoring
 #
 # (c) 2006 Gábor Lehel <illissius@gmail.com>
 #

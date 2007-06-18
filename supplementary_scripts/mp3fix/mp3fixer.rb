@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# amaroK-Script for fixing VBR encoded mp3 files without XING header. Calculates the real
+# Amarok-Script for fixing VBR encoded mp3 files without XING header. Calculates the real
 # track length and adds the XING header to the file. This script is a frontend for the
 # mp3fix.rb tool.
 #

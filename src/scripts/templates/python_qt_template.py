@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ############################################################################
-# Python-Qt template script for amaroK
+# Python-Qt template script for Amarok
 # (c) 2005 Mark Kretschmann <markey@web.de>
 #
 # Depends on: Python 2.2, PyQt
@@ -38,7 +38,7 @@ class ConfigDialog( QDialog ):
     def __init__( self ):
         QDialog.__init__( self )
         self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption( "Test Script - amaroK" )
+        self.setCaption( "Test Script - Amarok" )
 
         foo = None
         try:
@@ -139,7 +139,7 @@ class Test( QApplication ):
             self.trackChange()
 
 # Notification callbacks. Implement these functions to react to specific notification
-# events from amaroK:
+# events from Amarok:
 
     def configure( self ):
         debug( "configuration" )

@@ -2,7 +2,7 @@
 #set -x 
 
 ############################################################################
-# Disassemble an amaroK LiveCD iso file into a specified directory
+# Disassemble an Amarok LiveCD iso file into a specified directory
 # for the purpose of adding a users own music and putting it back together
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
@@ -142,10 +142,10 @@ chmod -R 777 $WORK/amarok.live/music/
 chmod -R 777 $WORK/amarok.live/home/amarok/.kde/share/apps/amarok
 #chmod -R 777 $WORK/mklivecd/
 
-dcop --all-users amarok playlist popupMessage "Copying done. To add music to the amaroK livecd, select the tracks you wish to add in the playlist, and select \"Add to livecd\" from the right click menu. Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, select Create Remastered CD. Enjoy!"
+dcop --all-users amarok playlist popupMessage "Copying done. To add music to the Amarok livecd, select the tracks you wish to add in the playlist, and select \"Add to livecd\" from the right click menu. Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, select Create Remastered CD. Enjoy!"
 
 else 
 
-kdialog --title "amaroK livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
+kdialog --title "Amarok livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
 
 fi

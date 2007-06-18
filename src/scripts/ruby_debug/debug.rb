@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Debug functions, emulating the ones we have in amaroK
+# Debug functions, emulating the ones we have in Amarok
 #
 # (c) 2006   Ian Monroe <ian@monroe.nu>
 # (c) 2006   Mark Kretschmann <markey@web.de>

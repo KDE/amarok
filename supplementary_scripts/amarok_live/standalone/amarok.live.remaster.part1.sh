@@ -2,7 +2,7 @@
 #set -x 
 
 ############################################################################
-# Disassemble an amaroK LiveCD iso file into a specified directory
+# Disassemble an Amarok LiveCD iso file into a specified directory
 # for the purpose of adding a users own music and putting it back together
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
@@ -24,7 +24,7 @@
 
 if [ `/usr/bin/whoami` = 'root' ]; then
 
-kdialog --title "amaroK livecd remaster" --yesno "Welcome to the amaroK live cd remaster utility. The first step is to select the iso image, would you like to continue."
+kdialog --title "Amarok livecd remaster" --yesno "Welcome to the Amarok live cd remaster utility. The first step is to select the iso image, would you like to continue."
 
 if [ $? = 0 ] ; then
 
@@ -108,7 +108,7 @@ if [[  `cat /proc/filesystems | grep squash | wc -l` = 0 ]]; then
 	modprobe squashfs
 	if [[  `cat /proc/filesystems | grep squash | wc -l` = 0 ]]; then
 
-    	kdialog --title "amaroK livecd remaster" --error "You do not have squashfs support enabled. You need to have a patched kernel with squashfs. You can find more info about squashfs, and how to patch your kernel, here: http://tldp.org/HOWTO/SquashFS-HOWTO/"
+    	kdialog --title "Amarok livecd remaster" --error "You do not have squashfs support enabled. You need to have a patched kernel with squashfs. You can find more info about squashfs, and how to patch your kernel, here: http://tldp.org/HOWTO/SquashFS-HOWTO/"
 	
 		rm -rf $WORK/mklivecd
 	fi
@@ -120,7 +120,7 @@ mount -o loop -t squashfs $WORK/mklivecd/livecd/livecd.sqfs $WORK/amarok.livecd/
 # gotta copy it locally so the user can add files to it
 
 mkdir $WORK/amarok.live/
-kdialog --title "amaroK livecd remaster" --msgbox "Copying files now. Please be patient, this step takes a long time."
+kdialog --title "Amarok livecd remaster" --msgbox "Copying files now. Please be patient, this step takes a long time."
 echo
 echo "Please wait, copying in progress."
 echo
@@ -128,12 +128,12 @@ cp -a $WORK/amarok.livecd/* $WORK/amarok.live/
 umount $WORK/amarok.livecd/
 rmdir $WORK/amarok.livecd
 
-kdialog --title "amaroK livecd remaster" --msgbox "Copying done. To add music to the amaroK livecd, place additional music in /tmp/amarok.live/music/ Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, run the amarok.live.remaster.part2.sh script and you are finished!."
+kdialog --title "Amarok livecd remaster" --msgbox "Copying done. To add music to the Amarok livecd, place additional music in /tmp/amarok.live/music/ Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, run the amarok.live.remaster.part2.sh script and you are finished!."
 
 fi
 
 else 
 
-kdialog --title "amaroK livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
+kdialog --title "Amarok livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
 
 fi

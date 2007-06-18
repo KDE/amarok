@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 ############################################################################
-# Python wrapper script for running the amaroK LiveCD remastering scripts
-# from within amaroK.  Based on the Python-Qt template script for amaroK
+# Python wrapper script for running the Amarok LiveCD remastering scripts
+# from within Amarok.  Based on the Python-Qt template script for Amarok
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # 
 # (c) 2005 Leo Franchi <lfranchi@gmail.com>
@@ -41,14 +41,14 @@ class ConfigDialog ( QDialog ):
     def __init__( self ):
         QDialog.__init__( self )
         self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption("amaroK Live! Configuration")
+        self.setCaption("Amarok Live! Configuration")
 
         self.lay = QGridLayout( self, 3, 2)
 
         self.lay.addColSpacing( 0, 300 )
 
         self.isopath = QLineEdit( self )
-        self.isopath.setText( "Path to amaroK Live! iso" )
+        self.isopath.setText( "Path to Amarok Live! iso" )
         self.tmppath = QLineEdit( self )
         self.tmppath.setText( "Temporary directory used, 2.5gb free needed" )
 
@@ -189,15 +189,15 @@ class Remasterer( QApplication ):
 
 
         # ugly hack, thanks mp8 anyway
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add playlist to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add selected to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Create Remastered CD\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Clear Music on livecd\"")
         
-        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
-        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
-        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
-        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+        os.system("dcop amarok script addCustomMenuItem \"Amarok live\" \"Add playlist to livecd\"")
+        os.system("dcop amarok script addCustomMenuItem \"Amarok live\" \"Add selected to livecd\"")
+        os.system("dcop amarok script addCustomMenuItem \"Amarok live\" \"Create Remastered CD\"")
+        os.system("dcop amarok script addCustomMenuItem \"Amarok live\" \"Clear Music on livecd\"")
 
 
     def readSettings( self ):
@@ -254,7 +254,7 @@ class Remasterer( QApplication ):
 
 
 # Notification callbacks. Implement these functions to react to specific notification
-# events from amaroK:
+# events from Amarok:
 
     def configure( self ):
         debug( "configuration" )
@@ -279,10 +279,10 @@ class Remasterer( QApplication ):
         fd.write( "stopping")
         fd.close()
 
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add playlist to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add selected to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Create Remastered CD\"")
+        os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Clear Music on livecd\"")
 
 
     def copyPlaylist( self ):
@@ -348,15 +348,15 @@ class Remasterer( QApplication ):
 
         path,iso = self.dia.readConfig()
         if path == "":
-            os.system("kdialog --sorry 'You have not specified where the amaroK live iso is. Please click configure and do so first.'")
+            os.system("kdialog --sorry 'You have not specified where the Amarok live iso is. Please click configure and do so first.'")
         else:
             # get the list of files. yes, its ugly. it works though.
             #files =  event.split(":")[-1][2:-1].split()[2:]
             #trying out a new one 
-         #files = event.split(":")[-1][3:-2].replace("\"amaroK live!\" \"add to livecd\" ", "").split("\" \"")
+         #files = event.split(":")[-1][3:-2].replace("\"Amarok live!\" \"add to livecd\" ", "").split("\" \"")
             #and another
           
-            files = event.replace("customMenuClicked: amaroK live Add selected to livecd", "").split()
+            files = event.replace("customMenuClicked: Amarok live Add selected to livecd", "").split()
 
             allfiles = ""
             for file in files:
@@ -369,7 +369,7 @@ class Remasterer( QApplication ):
         self.dia = ConfigDialog()
         path,iso = self.dia.readConfig()
         if path == "":
-            os.system("kdialog --sorry 'You have not configured amaroK live! Please run configure.")
+            os.system("kdialog --sorry 'You have not configured Amarok live! Please run configure.")
 
         fd = os.popen("kde-config --prefix", "r")
         kdedir = fd.readline()
@@ -396,10 +396,10 @@ def onSignal( signum, stackframe ):
 
     print 'STOPPING'
 
-    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
-    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
-    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
-    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+    os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add playlist to livecd\"")
+    os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Add selected to livecd\"")
+    os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Create Remastered CD\"")
+    os.system("dcop amarok script removeCustomMenuItem \"Amarok live\" \"Clear Music on livecd\"")
 
 
 def debug( message ):

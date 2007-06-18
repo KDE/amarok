@@ -50,7 +50,7 @@ class AmaroKLib
 			when 'engineStateChange: idle' then commandSlots.stateChange_idle
 			when 'engineStateChange: paused' then commandSlots.stateChange_paused
 			when 'engineStateChange: playing' then commandSlots.stateChange_playing
-			#not a command given by amaroK, helpful when debugging
+			#not a command given by Amarok, helpful when debugging
 			when 'exit' then commandSlots.exit
 			else $stderr.print "Illegal command: #{line}"
 		end	
@@ -78,7 +78,7 @@ class AmaroKSlots
 	def trackChange
 		nil
 	end
-	#not a command given by amaroK, used when debugging
+	#not a command given by Amarok, used when debugging
 	def exit
 		nil
 	end
