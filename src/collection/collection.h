@@ -29,6 +29,7 @@
 #include <KUrl>
 
 class Collection;
+class CollectionLocation;
 
 class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
 {
@@ -60,6 +61,8 @@ class AMAROK_EXPORT Collection : public QObject
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+        virtual CollectionLocation* location() const;
 
     signals:
         void remove();

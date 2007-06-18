@@ -17,6 +17,7 @@
  */
 #include "collection.h"
 
+#include "CollectionLocation.h"
 #include "meta/meta.h"
 
 CollectionFactory::CollectionFactory() : Amarok::Plugin()
@@ -49,6 +50,12 @@ Collection::trackForUrl( const KUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
+}
+
+CollectionLocation*
+Collection::location() const
+{
+    return new CollectionLocation();
 }
 
 #include "collection.moc"
