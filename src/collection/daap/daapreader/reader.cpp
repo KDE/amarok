@@ -220,6 +220,8 @@ Reader::loginFinished( int /* id */, bool error )
     }
     Map loginResults = parse( http->results() , 0 ,true );
     debug() << "list size is " << loginResults["mlog"].toList().size() << endl;
+    if( loginResults["mlog"].toList().size() == 0 )
+        return;
     QVariant tmp = loginResults["mlog"].toList()[0];
     Debug::stamp();
     m_sessionId = tmp.toMap()["mlid"].toList()[0].toInt();
