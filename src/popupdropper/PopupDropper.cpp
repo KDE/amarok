@@ -50,22 +50,23 @@ PopupDropper::~PopupDropper()
 }
 
 void
-PopupDropper::Initialize(QWidget* window)
+PopupDropper::Initialize( QWidget* window )
 {
     DEBUG_BLOCK
     if( !window )
         return;
     m_scene.setSceneRect( QRectF( window->rect() ) );
     m_view = new PopupDropperView( &m_scene, window );
-    m_view->show();
+    m_scene.setPDV( m_view );
+    m_scene.startPDV();
     m_initialized = true;
 }
 
 void
-PopupDropper::destroyView()
+PopupDropper::Destroy()
 {
     DEBUG_BLOCK
-    delete m_view;
+    m_scene.stopPDV();
     m_view = 0;
     m_initialized = false;
 }

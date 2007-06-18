@@ -48,8 +48,8 @@ void
 SolidHandler::Initialize()
 {
     DEBUG_BLOCK
-    m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
-    
+    //m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDrive );
+    m_portableList = Solid::Device::listFromQuery( "is OpticalDrive" );  
     Solid::Device temp;
     for  (int i = 0; i < m_portableList.size(); ++i) {
         temp = m_portableList.at( i );

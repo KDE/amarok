@@ -50,8 +50,8 @@ namespace PopupDropperNS {
             ~PopupDropper();
     
             void Initialize(QWidget* window);
+            void Destroy();
             inline bool isInitialized() { return m_initialized; }
-            void destroyView();
 
             PopupDropperScene      m_scene;
             PopupDropperView*      m_view;

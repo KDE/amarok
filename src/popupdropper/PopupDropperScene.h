@@ -23,6 +23,7 @@
 #include <QGraphicsScene>
 #include <QObject>
 #include <QtGlobal>
+#include <QTimeLine>
 
 /**
   * This class contructs the PopupDropperScene
@@ -31,18 +32,31 @@
 
 namespace PopupDropperNS {
 
+    class PopupDropperView;
+
     class PopupDropperScene : public QGraphicsScene
     {
         Q_OBJECT
     
         public:
-    
             /**
             * Creates a new PopupDropperScene.
             * 
             */
             PopupDropperScene( QObject* parent );
             ~PopupDropperScene();
+
+            void setPDV( PopupDropperView* pdv );
+            void startPDV();
+            void stopPDV();
+
+        public slots:
+            void pdvDestroying();
+
+        private:
+            PopupDropperView* m_pdv;
+            QTimeLine m_fadeinTL;
+            QTimeLine m_fadeoutTL;
     
     };
 }

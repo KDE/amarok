@@ -47,7 +47,14 @@ namespace PopupDropperNS {
             */
             PopupDropperView( QGraphicsScene *scene, QWidget *parent  );
             ~PopupDropperView();
-    
+
+        signals:
+            void destroying();
+
+        public slots:
+            void setTransInValue( int value );
+            void setTransOutValue( int value );
+
     };
 }
 #endif /* AMAROK_POPUPDROPPER_VIEW_H */

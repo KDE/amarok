@@ -31,20 +31,46 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
                                     : QGraphicsView( scene, parent  )
 {
     DEBUG_BLOCK
-    debug() << "Size of rectangle: " << parent->size() << endl;
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     resize( parent->size() + QSize(2, 2) );
-    setBackgroundRole(QPalette::Base);
+    setBackgroundRole( QPalette::Base );
     QPalette p = palette();
-    p.setColor(QPalette::Base, QColor(0, 0, 0, 140));
-    setPalette(p);
-    setAutoFillBackground(true);
+    p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
+    setPalette( p );
+    setAutoFillBackground( true );
 }
 
 PopupDropperView::~PopupDropperView()
 {
 }
+
+//SLOT
+void PopupDropperView::setTransInValue( int value )
+{
+    DEBUG_BLOCK
+    debug() << "value: " << value << endl;
+    QPalette p = palette();
+    p.setColor( QPalette::Base, QColor(0, 0, 0, value*4) );
+    setPalette( p );
+}
+
+//SLOT
+void PopupDropperView::setTransOutValue( int value )
+{
+    DEBUG_BLOCK
+    debug() << "value: " << value << endl;
+    QPalette p = palette();
+    p.setColor( QPalette::Base, QColor(0, 0, 0, 120 - value*4) );
+    setPalette( p );
+    if( 120 - value*4 == 0 )
+    {
+        emit destroying();
+        delete this;
+    }
+}
+
+
 
 #include "PopupDropperView.moc"
 
