@@ -266,6 +266,7 @@ set(collection_SRCS
     collection/blockingquery.cpp
     collection/collection.cpp
     collection/collectionmanager.cpp
+    collection/CollectionLocation.cpp
     collection/metaquerybuilder.cpp
     collection/querymaker.cpp
     collection/support/memoryquerymaker.cpp
