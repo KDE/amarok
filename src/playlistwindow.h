@@ -95,6 +95,7 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         void slotToggleFocus();
         void slotEditFilter();
         void slotSetFilter( const QString &filter );
+        void triggerTestingFunction();
 
     protected:
         virtual void closeEvent( QCloseEvent* );

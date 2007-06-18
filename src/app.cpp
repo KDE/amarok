@@ -40,7 +40,6 @@ email                : markey@web.de
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
-#include "popupdropper/PopupDropper.h"
 #include "portabledevices/SolidHandler.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
@@ -740,18 +739,6 @@ App::continueInit()
 
 
     handleCliArgs();
-    //QTimer::singleShot( 5000, this, SLOT( triggerTestingFunction() ) );
-}
-
-void
-App::triggerTestingFunction()
-{
-    if( The::PopupDropper()->isInitialized() )
-        The::PopupDropper()->destroyView();
-    else
-        The::PopupDropper()->Initialize();
-    m_playlistWindow->repaint();
-    QTimer::singleShot( 5000, this, SLOT( triggerTestingFunction() ) );
 }
 
 bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )

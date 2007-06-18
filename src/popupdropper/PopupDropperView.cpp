@@ -32,23 +32,18 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
 {
     DEBUG_BLOCK
     debug() << "Size of rectangle: " << parent->size() << endl;
-    setCacheMode( QGraphicsView::CacheBackground );
-    setAutoFillBackground( false );
-    QBrush brush( QColor( 0, 0, 0, 140 ), Qt::SolidPattern );
-    setBackgroundBrush( brush );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    resize( parent->size() );
+    resize( parent->size() + QSize(2, 2) );
+    setBackgroundRole(QPalette::Base);
+    QPalette p = palette();
+    p.setColor(QPalette::Base, QColor(0, 0, 0, 140));
+    setPalette(p);
+    setAutoFillBackground(true);
 }
 
 PopupDropperView::~PopupDropperView()
 {
-}
-
-void
-PopupDropperView::drawBackground( QPainter *painter, const QRectF &rect )
-{
-    QGraphicsView::drawBackground( painter, rect );
 }
 
 #include "PopupDropperView.moc"

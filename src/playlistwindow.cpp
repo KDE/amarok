@@ -36,6 +36,7 @@
 #include "playlist/PlaylistView.h"
 #include "playlist.h"
 #include "playlistwindow.h"
+#include "popupdropper/PopupDropper.h"
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
@@ -345,6 +346,7 @@ void PlaylistWindow::init()
 //    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 
     Amarok::MessageQueue::instance()->sendMessages();
+//    QTimer::singleShot( 2000, this, SLOT( triggerTestingFunction() ) );
 }
 
 void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
@@ -1287,6 +1289,17 @@ void PlaylistWindow::createMenus()
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
     m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 }
+
+void PlaylistWindow::triggerTestingFunction()
+{
+    if( The::PopupDropper()->isInitialized() )
+        The::PopupDropper()->destroyView();
+    else
+        The::PopupDropper()->Initialize(this);
+
+    QTimer::singleShot( 2000, this, SLOT( triggerTestingFunction() ) );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DynamicBar

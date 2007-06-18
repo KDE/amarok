@@ -36,24 +36,23 @@ PopupDropper::instance()
     return &pd;
 }
 
-PopupDropper::PopupDropper() : QObject()
-              , m_scene( App::instance()->activeWindow() )
+PopupDropper::PopupDropper() : QObject(),
+    m_scene(0)
 {
     DEBUG_BLOCK
+    m_view = 0;
     s_instance = this;
 }
 
 PopupDropper::~PopupDropper()
 {
-    if( m_view )
-        delete m_view;
+    delete m_view;
 }
 
 void
-PopupDropper::Initialize()
+PopupDropper::Initialize(QWidget* window)
 {
     DEBUG_BLOCK
-    QWidget *window = App::instance()->activeWindow();
     if( !window )
         return;
     m_scene.setSceneRect( QRectF( window->rect() ) );
@@ -66,11 +65,8 @@ void
 PopupDropper::destroyView()
 {
     DEBUG_BLOCK
-    if( m_view )
-    {
-        delete m_view;
-        m_view = 0;
-    }
+    delete m_view;
+    m_view = 0;
     m_initialized = false;
 }
 

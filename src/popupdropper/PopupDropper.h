@@ -49,7 +49,7 @@ namespace PopupDropperNS {
             PopupDropper();
             ~PopupDropper();
     
-            void Initialize();
+            void Initialize(QWidget* window);
             inline bool isInitialized() { return m_initialized; }
             void destroyView();
 

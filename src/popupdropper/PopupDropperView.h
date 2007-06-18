@@ -48,7 +48,6 @@ namespace PopupDropperNS {
             PopupDropperView( QGraphicsScene *scene, QWidget *parent  );
             ~PopupDropperView();
     
-            void drawBackground( QPainter *painter, const QRectF &rect );
     };
 }
 #endif /* AMAROK_POPUPDROPPER_VIEW_H */
