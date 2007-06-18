@@ -65,8 +65,8 @@ Example:
  | #include "debug.h"
  | #include "playlist.h"
  |
- | #include "kdialogbase.h"    //baseclass
- | #include "kpushbutton.h"    //see function...
+ | #include <KDialogBase>    //baseclass
+ | #include <KPushButton>    //see function...
  |
  | #include <QGraphicsView>
  | #include <QWidget>
