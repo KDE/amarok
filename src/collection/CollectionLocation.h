@@ -25,10 +25,8 @@
 
 #include <KUrl>
 
-class Collection;
-
 /**
-    This abstract base class defines the the methods necessary to allow the copying and moving of tracks between
+    This base class defines the the methods necessary to allow the copying and moving of tracks between
     different collections in a generic way.
 
     This class should be used as follows in client code:
