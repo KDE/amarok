@@ -42,7 +42,8 @@ void GenericInfoBox::init()
     connect( m_content, SIGNAL( linkActivated ( QString ) ), this, SLOT( externalUrl( QString ) ) ); // make urls work
     int width =  (int) m_content->boundingRect().width();
     int height = (int) m_content->boundingRect().height();
-    //setContentRectSize( QSize( width, height ) );
+    setBoundingRectSize( QSize( width, height ) );
+    setContentRectSize( QSize( width, height ) );
 }
 
 void GenericInfoBox::clearContents() {
