@@ -347,6 +347,9 @@ set(amarok_LIB_SRCS
     playlistwindow.cpp
     pluginmanager.cpp
     podcastsettings.cpp
+    popupdropper/PopupDropper.cpp
+    popupdropper/PopupDropperScene.cpp
+    popupdropper/PopupDropperView.cpp
     portabledevices/SolidHandler.cpp
     prettypopupmenu.cpp
     progressslider.cpp

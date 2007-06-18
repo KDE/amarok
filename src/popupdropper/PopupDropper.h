@@ -15,47 +15,49 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_SOLID_HANDLER_H
-#define AMAROK_SOLID_HANDLER_H
+#ifndef AMAROK_POPUPDROPPER_H
+#define AMAROK_POPUPDROPPER_H
 
 #include "amarok_export.h"
+#include "PopupDropperScene.h"
+#include "PopupDropperView.h"
 
 #include <QObject>
-#include <QStringList>
 #include <QtGlobal>
 
-namespace Solid {
-    class Device;
-}
-
 /**
-  * This class interfaces Amarok to Solid, getting portable media player device
-  * information and watching for changes.
+  * This class contructs the PopupDropper
   * @author Jeff Mitchell <kde-dev@emailgoeshere.com>
   */
 
-namespace PortableDevicesNS {
+namespace PopupDropperNS {
 
-    class SolidHandler : public QObject
+    class PopupDropper : public QObject
     {
         Q_OBJECT
     
         public:
     
-            static SolidHandler* s_instance;
+            static PopupDropper* s_instance;
 
-            static SolidHandler* instance();
+            static PopupDropper* instance();
             
             /**
-            * Creates a new SolidHandler.
+            * Creates a new PopupDropper.
             * 
             */
-            SolidHandler();
-            ~SolidHandler();
+            PopupDropper();
+            ~PopupDropper();
     
             void Initialize();
-            QList<Solid::Device>   m_portableList;
+            inline bool isInitialized() { return m_initialized; }
+            void destroyView();
+
+            PopupDropperScene      m_scene;
+            PopupDropperView*      m_view;
+            bool                   m_initialized;
+
     };
 }
-#endif /* AMAROK_SOLID_HANDLER_H */
+#endif /* AMAROK_POPUPDROPPER_H */
 

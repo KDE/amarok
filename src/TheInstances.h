@@ -12,13 +12,18 @@ namespace PlaylistNS {
     class Model;
 }
 
-namespace PortableDevices {
+namespace PopupDropperNS {
+    class PopupDropper;
+}
+
+namespace PortableDevicesNS {
     class SolidHandler;
 }
 
 namespace The {
     PlaylistNS::Model* playlistModel(); //defined in playlist/PlaylistModel.h
-    PortableDevices::SolidHandler* SolidHandler();
+    PopupDropperNS::PopupDropper* PopupDropper();
+    PortableDevicesNS::SolidHandler* SolidHandler();
 }
 
 #endif

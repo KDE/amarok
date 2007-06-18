@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "SolidHandler.h"
 
-using namespace PortableDevices;
+using namespace PortableDevicesNS;
 
 SolidHandler* SolidHandler::s_instance = 0;
 
@@ -50,16 +50,16 @@ SolidHandler::Initialize()
     DEBUG_BLOCK
     m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
     
-    Solid::Device blah;
+    Solid::Device temp;
     for  (int i = 0; i < m_portableList.size(); ++i) {
-        blah = m_portableList.at( i );
-        debug() << "Found device with udi = " << blah.udi() << endl;
-        debug() << "Device name is = " << blah.product() << " and was made by " << blah.vendor() << endl;
+        temp = m_portableList.at( i );
+        debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << temp.udi() << endl;
+        debug() << "Device name is = " << temp.product() << " and was made by " << temp.vendor() << endl;
     }
 }
 
 namespace The {
-    PortableDevices::SolidHandler* SolidHandler() { return PortableDevices::SolidHandler::instance(); }
+    PortableDevicesNS::SolidHandler* SolidHandler() { return PortableDevicesNS::SolidHandler::instance(); }
 }
 
 #include "SolidHandler.moc"

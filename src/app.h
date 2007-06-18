@@ -77,7 +77,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
         void setRating4() { setRating( 4 ); }
         void setRating5() { setRating( 5 ); }
         void continueInit();
-
+        void triggerTestingFunction();
 
     public slots:
         void applySettings( bool firstTime = false );
