@@ -18,6 +18,7 @@
 #ifndef AMAROK_COLLECTIONLOCATION_H
 #define AMAROK_COLLECTIONLOCATION_H
 
+#include "amarok_export.h"
 #include "meta.h"
 
 #include <QList>
@@ -44,7 +45,7 @@
     Implementations which are only readable can reimplment getKIOCopyableUrls( Meta::TrackList )
     if it is necessary, but can use the default implementations if possible
 */
-class CollectionLocation : public QObject
+class AMAROK_EXPORT CollectionLocation : public QObject
 {
     Q_OBJECT
     public:

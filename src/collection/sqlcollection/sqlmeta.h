@@ -98,6 +98,10 @@ class SqlTrack : public Track
         virtual QString cachedLyrics() const;
         virtual void setCachedLyrics( const QString &lyrics );
 
+        //SqlTrack specific methods
+        int deviceid() const { return m_deviceid; }
+        QString rpath() const { return m_rpath; }
+
     protected:
         void notifyObservers();
         void commitMetaDataChanges();
