@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +23,8 @@
 #include "amarokconfig.h"
 #include "collection.h"
 #include "querymaker.h"
+#include "statusbar.h"
+#include "xspfplaylist.h"
 
 #include <QDir>
 #include <QImage>
@@ -116,4 +119,84 @@ void
 Meta::Year::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( YearPtr( this ) );
+}
+
+
+namespace Meta {
+
+bool
+saveM3u( TrackList tracks, KUrl path, bool relative )
+{
+    if( path.isEmpty() )
+        return false;
+
+    QFile file( path.url() );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "Cannot write playlist (%1).").arg( path.url() ) );
+        return false;
+    }
+
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+//     KUrl::List urls;
+//     for( int i = 0, n = in_urls.count(); i < n; ++i )
+//     {
+//         const KUrl &url = in_urls[i];
+//         if( url.isLocalFile() && QFileInfo( url.path() ).isDir() )
+//             urls += recurse( url );
+//         else
+//             urls += url;
+//     }
+
+    TrackPtr track;
+    foreach( track, tracks )
+    {
+        const KUrl &url = track->playableUrl();
+
+        stream << "#EXTINF:";
+        stream << QString::number( track->length() );
+        stream << ',';
+        stream << track->fullPrettyName();
+        stream << '\n';
+        
+        if (url.protocol() == "file" ) {
+            if ( relative ) {
+                const QFileInfo fi(file);
+                stream << KUrl::relativePath(fi.path(), url.path());
+            } else
+                stream << url.path();
+        } else {
+            stream << url.url();
+        }
+        stream << "\n";
+    }
+
+    file.close(); // Flushes the file, before we read it
+    //PlaylistBrowser::instance()->addPlaylist( path, 0, true );
+
+    return true;
+}
+
+bool
+saveXSPF( TrackList tracks, KUrl path, bool relative )
+{
+    XSPFPlaylist playlist;
+
+    playlist.setCreator( "Amarok" );
+    //playlist.setTitle( item->text(0) );
+
+    playlist.setTrackList( tracks, false );
+    QFile file( path.url() );
+    file.open( QIODevice::WriteOnly );
+
+    QTextStream stream ( &file );
+
+    playlist.save( stream, 2 );
+
+    file.close();
+}
+
 }

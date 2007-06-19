@@ -357,6 +357,22 @@ Model::insertMedia( KUrl::List list, int options )
     }
     insertOptioned( trackList, options );
 }
+
+bool
+Model::saveM3U( const QString &path, bool relative ) const
+{
+//     Q3ValueList<KUrl> urls;
+//     Q3ValueList<QString> titles;
+//     Q3ValueList<int> lengths;
+//     for( MyIt it( firstChild(), MyIt::Visible ); *it; ++it )
+//     {
+//         urls << (*it)->url();
+//         titles << (*it)->title();
+//         lengths << (*it)->length();
+//     }
+//     return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
+}
+
 ////////////
 //Private Slots
 ///////////

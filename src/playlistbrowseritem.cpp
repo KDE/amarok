@@ -844,7 +844,7 @@ void PlaylistEntry::updateInfo()
 
 void PlaylistEntry::slotDoubleClicked()
 {
-    Playlist::instance()->proposePlaylistName( text(0), true );
+    The::playlistModel()->proposePlaylistName( text(0), true );
     The::playlistModel()->insertMedia( url(), PlaylistNS::AppendAndPlay );
 }
 

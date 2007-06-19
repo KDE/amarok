@@ -85,6 +85,11 @@ class TrackAdvancer;
         //other methods
             void clear(); ///clear the playlist of all items
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
+///Restore playlist from previous session of Amarok
+            void restoreSession() { }
+///Save M3U of current playlist to a given location
+            bool saveM3U( const QString &path, bool relative ) const;
+
 /**
 * Insert tracks into the playlist with some handy options.
 * @param list tracks to add
@@ -106,6 +111,15 @@ class TrackAdvancer;
             virtual void metadataChanged( Meta::Track *track );
             void play( int row );
             static Model* s_instance; //! instance variable
+
+            //various methods for playlist name
+            //I believe this is used for when you open a playlist file, it can keep the same name when it is 
+            //later saved
+            void setPlaylistName( const QString &name, bool proposeOverwriting = false ) { m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
+            void proposePlaylistName( const QString &name, bool proposeOverwriting = false ) { if( ( rowCount() == 0 ) || m_playlistName==i18n("Untitled") ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
+            const QString &playlistName() const { return m_playlistName; }
+            bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
+        
         public slots:
             void play( const QModelIndex& index );
         private slots:
@@ -114,6 +128,9 @@ class TrackAdvancer;
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
            
         private:
+            QString m_playlistName;
+            bool m_proposeOverwriting;
+        
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
             Meta::TrackList m_tracks; //! list of tracks in order currently in the playlist

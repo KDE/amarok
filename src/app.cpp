@@ -684,9 +684,7 @@ App::continueInit()
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
     {
-        Playlist::instance()->restoreSession();
-        //Debug::stamp();
-        //p->restoreSession();
+        The::playlistModel()->restoreSession();
     }
     if( args->isSet( "engine" ) ) {
         // we correct some common errors (case issues, missing -engine off the end)

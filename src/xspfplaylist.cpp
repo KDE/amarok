@@ -1,17 +1,26 @@
-// Author: Mattias Fliesberg (C) Copyright 2006
-// Copyright: See COPYING file that comes with this distribution
-//
+/***************************************************************************
+ * copyright            : (C) 2006 Mattias Fliesberg                       *
+ *                        (C) 2007 Ian Monroe <ian@monroe.nu>              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License version 2        *
+ *   as published by the Free Software Foundation.                         *
+ ***************************************************************************/
+
 
 #include "atomicstring.h"
-#include "xspfplaylist.h"
 #include "debug.h"
+#include "meta.h"
+#include "xspfplaylist.h"
+
+#include <QDateTime>
 
 XSPFPlaylist::XSPFPlaylist( )
 {
     QDomElement root = createElement( "playlist" );
 
     root.setAttribute( "version", 1 );
-    root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
+    root.setAttribute( "xmlns", "http://xspf.org/ns/1/" );
 
     root.appendChild( createElement( "trackList" ) );
 
@@ -284,8 +293,6 @@ XSPFPlaylist::setLink( KUrl link )
     else
         documentElement().namedItem( "link" ).replaceChild( createTextNode( link.url() ), documentElement().namedItem( "link" ).firstChild() );
 }
-
-
 XSPFtrackList
 XSPFPlaylist::trackList()
 {
@@ -336,8 +343,10 @@ XSPFPlaylist::trackList()
     return list;
 }
 
+
+//documentation of attributes from http://www.xspf.org/xspf-v1.html
 void
-XSPFPlaylist::setTrackList( XSPFtrackList trackList, bool append )
+XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 {
     if ( documentElement().namedItem( "trackList" ).isNull() )
         documentElement().appendChild( createElement( "trackList" ) );
@@ -346,73 +355,59 @@ XSPFPlaylist::setTrackList( XSPFtrackList trackList, bool append )
 
     XSPFtrackList::iterator it;
 
-    for ( it = trackList.begin(); it != trackList.end(); ++it )
+    Meta::TrackPtr track;
+    foreach( track, trackList )
     {
-        XSPFtrack track = (*it);
-
         QDomNode subNode = createElement( "track" );
 
+//URI of resource to be rendered. 
         QDomNode location = createElement( "location" );
-        QDomNode identifier = createElement( "identifier" );
+//Human-readable name of the track that authored the resource
         QDomNode title = createElement( "title" );
+//Human-readable name of the entity that authored the resource.
         QDomNode creator = createElement( "creator" );
+//A human-readable comment on the track. 
         QDomNode annotation = createElement( "annotation" );
-        QDomNode info = createElement( "info" );
-        QDomNode image = createElement( "image" );
+//Human-readable name of the collection from which the resource comes
         QDomNode album = createElement( "album" );
+//Integer > 0 giving the ordinal position of the media in the album.
         QDomNode trackNum = createElement( "trackNum" );
+//The time to render a resource, in milliseconds. It MUST be a nonNegativeInteger.
         QDomNode duration = createElement( "duration" );
-        QDomNode link = createElement( "link" );
+
+//identifier - Canonical ID for this resource. Likely to be a hash or other
+// location-independent name, such as a MusicBrainz identifier.  MUST be a legal URI.
+//        QDomNode identifier = createElement( "identifier" );
+//info - URI of a place where this resource can be bought or more info can be found.
+//     QDomNode info = createElement( "info" );
+//image - URI of an image to display for the duration of the track.
+//        QDomNode image = createElement( "image" );
+// link - element allows XSPF to be extended without the use of XML namespaces.
+//        QDomNode link = createElement( "link" );
         // QDomNode meta
         // QDomNode extension
 
-        if ( !track.location.url().isNull() )
-            location.appendChild( createTextNode( track.location.url() ) );
-        if ( !track.identifier.isNull() )
-            identifier.appendChild( createTextNode( track.identifier ) );
-        if ( !track.title.isNull() )
-            title.appendChild( createTextNode( track.title ) );
-        if ( !track.creator.isNull() )
-            creator.appendChild( createTextNode( track.creator ) );
-        if ( !track.annotation.isNull() )
-            annotation.appendChild( createTextNode( track.annotation ) );
-        if ( !track.info.url().isNull() )
-            info.appendChild( createTextNode( track.info.url() ) );
-        if ( !track.image.url().isNull() )
-            image.appendChild( createTextNode( track.image.url() ) );
-        if ( !track.album.isNull() )
-            album.appendChild( createTextNode( track.album ) );
-        if ( track.trackNum > 0 )
-            trackNum.appendChild( createTextNode( QString::number( track.trackNum ) ) );
-        if ( track.duration > 0 )
-            duration.appendChild( createTextNode( QString::number( track.duration ) ) );
-        if ( !track.link.url().isNull() )
-            link.appendChild( createTextNode( track.link.url() ) );
+#define APPENDNODE( X, Y ) \
+    { \
+        X.appendChild( createTextNode( Y ) );    \
+        subNode.appendChild( X ); \
+    }
 
-
-        if ( !location.firstChild().isNull() )
-            subNode.appendChild( location );
-        if ( !identifier.firstChild().isNull() )
-            subNode.appendChild( identifier );
-        if ( !title.firstChild().isNull() )
-            subNode.appendChild( title );
-        if ( !creator.firstChild().isNull() )
-            subNode.appendChild( creator );
-        if ( !annotation.firstChild().isNull() )
-            subNode.appendChild( annotation );
-        if ( !info.firstChild().isNull() )
-            subNode.appendChild( info );
-        if ( !image.firstChild().isNull() )
-            subNode.appendChild( image );
-        if ( !album.firstChild().isNull() )
-            subNode.appendChild( album );
-        if ( !trackNum.firstChild().isNull() )
-            subNode.appendChild( trackNum );
-        if ( !duration.firstChild().isNull() )
-            subNode.appendChild( duration );
-        if ( !link.firstChild().isNull() )
-            subNode.appendChild( link );
-
+        if ( !track->playableUrl().isEmpty() )
+            APPENDNODE(location, track->playableUrl().url() )
+        if ( !track->name().isEmpty() )
+            APPENDNODE(title, track->name() )
+        if ( track->artist() && track->artist()->name().isEmpty() )
+            APPENDNODE(creator, track->artist()->name() );
+        if ( !track->comment().isEmpty() )
+            APPENDNODE(annotation, track->comment() );
+        if ( track->album() && !track->album()->name().isEmpty() )
+            APPENDNODE( album, track->album()->name() );
+        if ( track->trackNumber() > 0 )
+            APPENDNODE( trackNum, QString::number( track->trackNumber() ) );
+        if ( track->length() > 0 )
+            APPENDNODE( duration, QString::number( track->length() * 1000 ) );
+#undef APPENDNODE
         node.appendChild( subNode );
     }
 
@@ -426,9 +421,5 @@ XSPFPlaylist::setTrackList( XSPFtrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
+    
 }
-
-
-
-
-

@@ -2377,7 +2377,9 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     playlist.setTitle( item->text(0) );
 
     XSPFtrackList list;
-
+//PORT 2.0
+//XSPFPlaylist has been ported to Meta::, PlaylistBrowser needs to be
+#if 0
     Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
     for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
     {
@@ -2390,7 +2392,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     }
 
     playlist.setTrackList( list, append );
-
+#endif
     QFile file( item->url().path() );
     file.open( QIODevice::WriteOnly );
 

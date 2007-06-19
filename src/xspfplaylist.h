@@ -6,20 +6,14 @@
 #define XSPFPlaylist_H
 
 class AtomicString;
+class QString;
+class QDateTime;
+class KUrl;
 
-#include <QString>
-#include <q3textstream.h>
-#include <qdom.h>
-#include <QDateTime>
-#include <QFile>
-#include <q3valuelist.h>
+#include <QDomDocument>
+using namespace Qt;
 
-#include <kurl.h>
-
-/**
- * @class XSPFPlaylist
- * @author Mattias Fliesberg
- */
+#include "meta.h"
 
 typedef struct {
     KUrl location;
@@ -33,12 +27,15 @@ typedef struct {
     uint trackNum;
     uint duration;
     KUrl link;
-//     meta,
-//     extension
 } XSPFtrack;
 
-typedef Q3ValueList < XSPFtrack > XSPFtrackList;
+typedef QList<XSPFtrack> XSPFtrackList;
 
+/**
+ * @class XSPFPlaylist
+ * @author Mattias Fliesberg
+ * @author Ian Monroe 
+ */
 class XSPFPlaylist : public QDomDocument
 {
 public:
@@ -72,7 +69,7 @@ public:
     void setLicense( KUrl license );
     void setAttribution( KUrl attribution, bool append = true );
     void setLink( KUrl link );
-    void setTrackList( XSPFtrackList trackList, bool append = false );
+    void setTrackList( Meta::TrackList trackList, bool append = false );
 //    meta();
 //    extension();
 

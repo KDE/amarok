@@ -714,6 +714,7 @@ PlaylistFile::loadXSPF( QTextStream &stream )
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
     XSPFtrackList trackList = doc->trackList();
+//PORT 2.0
 
     oldForeachType( XSPFtrackList, trackList )
     {
