@@ -116,9 +116,11 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
 
 void ContextBox::ensureWidthFits( const int width )
 {
-    const qreal padding = ContextView::BOX_PADDING * 2;
-//     QRectF rect = boundingRect();
-    QSize newSize = QSize( width - padding, 200 /*rect.height()*/ );
+    const int padding = (int)ContextView::BOX_PADDING * 2;
+
+    const int height = (int)m_contentRect->boundingRect().height();
+
+    QSize newSize = QSize( width - padding, height );
     setContentRectSize( newSize, false );
 }
 
