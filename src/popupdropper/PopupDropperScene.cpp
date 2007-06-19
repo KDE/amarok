@@ -21,9 +21,13 @@
 #include "PopupDropperScene.h"
 #include "PopupDropperView.h"
 
+#include <QGraphicsItem>
 #include <QGraphicsScene>
+#include <QList>
 
 using namespace PopupDropperNS;
+
+static int SPIN_IN_FRAMES = 10;
 
 PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
@@ -34,7 +38,7 @@ PopupDropperScene::PopupDropperScene( QObject* parent )
     DEBUG_BLOCK
     m_fadeInTL.setFrameRange( 0, 10 );
     m_fadeOutTL.setFrameRange( 0, 10 );
-    m_spinInTL.setFrameRange( 0, 10 );
+    m_spinInTL.setFrameRange( 0, SPIN_IN_FRAMES );
 }
 
 PopupDropperScene::~PopupDropperScene()
@@ -51,6 +55,7 @@ PopupDropperScene::setPDV( PopupDropperView *pdv  )
     connect( &m_fadeInTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransInValue(int) ) );
     connect( &m_fadeOutTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransOutValue(int) ) );
     connect( &m_fadeOutTL, SIGNAL( finished() ), this, SLOT( pdvHidden() ) );
+    connect( &m_spinInTL, SIGNAL( frameChanged(int) ), this, SLOT( updateIconSpinIn(int) ) );
 }
 
 void
@@ -76,6 +81,24 @@ PopupDropperScene::pdvHidden()
     DEBUG_BLOCK
     m_pdv->hide();
     //delete all items we've added -- not children()!
+}
+
+//SLOT
+void
+PopupDropperScene::updateIconSpinIn( int frame )
+{
+    DEBUG_BLOCK
+    QGraphicsItem * currItem;
+    qreal percentage = frame * 100.0 / SPIN_IN_FRAMES;
+    QList<QGraphicsItem *> itemlist = items();
+    for( int i = 0; i < itemlist.size(); ++i )
+    {
+        currItem = itemlist.at(i);
+        currItem->scale( percentage, percentage );
+        if( frame == 1 )
+            currItem->show();
+    }
+    m_pdv->update();
 }
 
 #include "PopupDropperScene.moc"

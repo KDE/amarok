@@ -52,6 +52,7 @@ namespace PopupDropperNS {
 
         public slots:
             void pdvHidden();
+            void updateIconSpinIn( int frame );
 
         private:
             PopupDropperView* m_pdv;

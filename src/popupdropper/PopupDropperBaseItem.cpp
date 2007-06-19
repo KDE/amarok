@@ -39,5 +39,11 @@ PopupDropperBaseItem::~PopupDropperBaseItem()
     DEBUG_BLOCK
 }
 
+QRectF
+boundingRect() const
+{
+
+}
+
 #include "PopupDropperBaseItem.moc"
 

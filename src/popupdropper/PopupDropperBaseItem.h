@@ -48,7 +48,11 @@ namespace PopupDropperNS {
             PopupDropperBaseItem( QGraphicsItem* parent = 0 );
             ~PopupDropperBaseItem();
 
-            float m_scalingPercent;
+            //Reimplementations
+            QRectF boundingRect() const;
+            void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+            qreal m_scalingPercent;
     };
 }
 #endif /* AMAROK_POPUPDROPPER_BASEITEM_H */
