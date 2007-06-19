@@ -155,7 +155,7 @@ Model::headerData( int section, Qt::Orientation, int role ) const
 {
     if( role == Qt::DisplayRole && section < m_columns.size() )
     {
-        debug() << "section: " << section << " enum: " << m_columns.at( section ) << " " << prettyColumnName( m_columns.at( section ) ) << endl;
+        //debug() << "section: " << section << " enum: " << m_columns.at( section ) << " " << prettyColumnName( m_columns.at( section ) ) << endl;
         return prettyColumnName( m_columns.at( section ) );
     }
     else
