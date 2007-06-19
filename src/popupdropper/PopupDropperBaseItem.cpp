@@ -20,16 +20,19 @@
 #include "debug.h"
 #include "PopupDropperBaseItem.h"
 
+#include <QFont>
 #include <QGraphicsScene>
-#include <QGraphicsBaseItem>
+#include <QGraphicsItem>
 #include <QPainter>
 #include <QRectF>
 
 using namespace PopupDropperNS;
 
-PopupDropperBaseItem::PopupDropperBaseItem( QGraphicsItem* parent )
-                                    : QGraphicsItem( parent )
+PopupDropperBaseItem::PopupDropperBaseItem( int whichami, QGraphicsItem* parent )
+                                    : QObject( 0 )
+                                    , QGraphicsItem( parent )
                                     , m_scalingPercent( 0.0 )
+                                    , m_whichami( whichami )
 {
     DEBUG_BLOCK
 }
@@ -40,10 +43,19 @@ PopupDropperBaseItem::~PopupDropperBaseItem()
 }
 
 QRectF
-boundingRect() const
+PopupDropperBaseItem::boundingRect() const
 {
+    return QRectF( 30*m_whichami, 30*m_whichami, 20, 20 );
+}
 
+void
+PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->setFont( QFont("Times", 48, QFont::Bold) );
+    painter->setPen( Qt::white );
+    painter->drawText( 0, 0, QChar( m_whichami ) );
 }
 
 #include "PopupDropperBaseItem.moc"
-

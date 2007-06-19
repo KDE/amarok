@@ -20,11 +20,10 @@
 
 #include "amarok_export.h"
 
-#include <QGraphicsBaseItem>
+#include <QGraphicsItem>
 #include <QObject>
 #include <QtGlobal>
 
-class QGraphicsScene;
 class QPainter;
 class QRectF;
 
@@ -35,24 +34,26 @@ class QRectF;
 
 namespace PopupDropperNS {
 
-    class PopupDropperBaseItem : public QGraphicsItem
+    class PopupDropperBaseItem : public QObject, public QGraphicsItem
     {
+        
         Q_OBJECT
-    
+
         public:
     
             /**
             * Creates a new PopupDropperBaseItem.
             * 
             */
-            PopupDropperBaseItem( QGraphicsItem* parent = 0 );
+            PopupDropperBaseItem( int whichami, QGraphicsItem* parent = 0 );
             ~PopupDropperBaseItem();
 
             //Reimplementations
             QRectF boundingRect() const;
-            void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+            void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
-            qreal m_scalingPercent;
+            float       m_scalingPercent;
+            int         m_whichami;
     };
 }
 #endif /* AMAROK_POPUPDROPPER_BASEITEM_H */
