@@ -3,6 +3,13 @@ Amarok ChangeLog
 (C) 2002-2007 the Amarok authors.
 
 
+VERSION 1.4.7
+  CHANGES:
+    * Upgraded SQLite to 3.4.0
+
+  BUGFIXES:
+
+
 VERSION 1.4.6
   CHANGES:
     * Improved icon theme, kindly provided by Landy DeField
