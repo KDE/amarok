@@ -43,13 +43,14 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
 
 PopupDropperView::~PopupDropperView()
 {
+    DEBUG_BLOCK
 }
 
 //SLOT
 void PopupDropperView::setTransInValue( int value )
 {
-    DEBUG_BLOCK
-    debug() << "value: " << value << endl;
+    //DEBUG_BLOCK
+    //debug() << "value: " << value << endl;
     QPalette p = palette();
     p.setColor( QPalette::Base, QColor(0, 0, 0, value*4) );
     setPalette( p );
@@ -58,19 +59,12 @@ void PopupDropperView::setTransInValue( int value )
 //SLOT
 void PopupDropperView::setTransOutValue( int value )
 {
-    DEBUG_BLOCK
-    debug() << "value: " << value << endl;
+    //DEBUG_BLOCK
+    //debug() << "value: " << value << endl;
     QPalette p = palette();
     p.setColor( QPalette::Base, QColor(0, 0, 0, 120 - value*4) );
     setPalette( p );
-    if( 120 - value*4 == 0 )
-    {
-        emit destroying();
-        delete this;
-    }
 }
-
-
 
 #include "PopupDropperView.moc"
 

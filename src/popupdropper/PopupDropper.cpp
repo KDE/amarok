@@ -36,8 +36,9 @@ PopupDropper::instance()
     return &pd;
 }
 
-PopupDropper::PopupDropper() : QObject(),
-    m_scene(0)
+PopupDropper::PopupDropper() : QObject()
+                , m_scene( 0 )
+                , m_initialized( false )
 {
     DEBUG_BLOCK
     m_view = 0;
@@ -46,7 +47,9 @@ PopupDropper::PopupDropper() : QObject(),
 
 PopupDropper::~PopupDropper()
 {
+    DEBUG_BLOCK
     delete m_view;
+    m_view = 0;
 }
 
 void
@@ -55,11 +58,18 @@ PopupDropper::Initialize( QWidget* window )
     DEBUG_BLOCK
     if( !window )
         return;
+    m_scene.setParent( window );
     m_scene.setSceneRect( QRectF( window->rect() ) );
     m_view = new PopupDropperView( &m_scene, window );
     m_scene.setPDV( m_view );
-    m_scene.startPDV();
     m_initialized = true;
+}
+
+void
+PopupDropper::Create()
+{
+    DEBUG_BLOCK
+    m_scene.startPDV();
 }
 
 void
@@ -67,8 +77,6 @@ PopupDropper::Destroy()
 {
     DEBUG_BLOCK
     m_scene.stopPDV();
-    m_view = 0;
-    m_initialized = false;
 }
 
 namespace The {

@@ -51,7 +51,7 @@ namespace PopupDropperNS {
             void stopPDV();
 
         public slots:
-            void pdvDestroying();
+            void pdvHidden();
 
         private:
             PopupDropperView* m_pdv;

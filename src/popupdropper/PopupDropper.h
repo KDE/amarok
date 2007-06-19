@@ -50,8 +50,10 @@ namespace PopupDropperNS {
             ~PopupDropper();
     
             void Initialize(QWidget* window);
+            void Create();
             void Destroy();
             inline bool isInitialized() { return m_initialized; }
+            inline bool isHidden() { return !m_view || m_view->isHidden(); }
 
             PopupDropperScene      m_scene;
             PopupDropperView*      m_view;

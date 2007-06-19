@@ -1292,10 +1292,12 @@ void PlaylistWindow::createMenus()
 
 void PlaylistWindow::triggerTestingFunction()
 {
-    if( The::PopupDropper()->isInitialized() )
-        The::PopupDropper()->Destroy();
+    if( !The::PopupDropper()->isInitialized() )
+        The::PopupDropper()->Initialize( this );
+    if( The::PopupDropper()->isHidden() ) 
+        The::PopupDropper()->Create();
     else
-        The::PopupDropper()->Initialize(this);
+        The::PopupDropper()->Destroy();
 
     QTimer::singleShot( 5000, this, SLOT( triggerTestingFunction() ) );
 }
