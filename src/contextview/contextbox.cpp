@@ -83,18 +83,17 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 void ContextBox::setTitle( const QString &title )
 {
     m_titleItem->setPlainText( title );
+    ensureTitleCentered();
+}
 
-    qreal titleWidth = m_titleItem->boundingRect().width();
-    // If the title is too big for the box, make the box bigger
-    if( titleWidth > m_titleBarRect->boundingRect().width() )
-    {
-        // this function takes care of setting everything to the correct size!
-        setContentRectSize( QSize( (int)titleWidth, (int)m_contentRect->boundingRect().height() ) );
-    }
+void ContextBox::ensureTitleCentered()
+{
+    //FIXME: we need to break the title into multiple lines if the width is now too long
+    const qreal titleWidth = m_titleItem->boundingRect().width();
 
     // Center the title
-    int xOffset = (int)( m_titleBarRect->boundingRect().width() - titleWidth ) / 2;
-    m_titleItem->setPos( xOffset, 0 );
+    const qreal xOffset = ( m_titleBarRect->boundingRect().width() - titleWidth ) / 2.0;
+    m_titleItem->setPos( xOffset, 0.0 );
 }
 
 void ContextBox::setBoundingRectSize( const QSize &sz )
@@ -109,6 +108,7 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
     //set correct size of this as well
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
     m_titleBarRect->setRect( 0, 0, sz.width(), m_titleBarRect->boundingRect().height() );
+    ensureTitleCentered();
 
     if( synchroniseHeight )
         m_optimumHeight = sz.height();

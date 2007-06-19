@@ -45,6 +45,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
         virtual void setBoundingRectSize( const QSize &sz );
         void setContentRectSize( const QSize &sz, const bool synchroniseHeight = true );
+        void ensureTitleCentered();
 
         QGraphicsTextItem *m_titleItem;
         QGraphicsRectItem *m_titleBarRect;
@@ -58,7 +59,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
     protected slots:
         void visibilityTimerSlot();
         void animationStateChanged( QTimeLine::State newState );
-    
+
 };
 
 }
