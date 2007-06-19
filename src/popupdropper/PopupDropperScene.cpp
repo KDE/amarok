@@ -27,12 +27,14 @@ using namespace PopupDropperNS;
 
 PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
-                    , m_fadeinTL( 300, this )
-                    , m_fadeoutTL( 300, this )
+                    , m_fadeInTL( 300, this )
+                    , m_fadeOutTL( 300, this )
+                    , m_spinInTL( 300, this )
 {
     DEBUG_BLOCK
-    m_fadeinTL.setFrameRange( 0, 30 );
-    m_fadeoutTL.setFrameRange( 0, 30 );
+    m_fadeInTL.setFrameRange( 0, 10 );
+    m_fadeOutTL.setFrameRange( 0, 10 );
+    m_spinInTL.setFrameRange( 0, 10 );
 }
 
 PopupDropperScene::~PopupDropperScene()
@@ -46,9 +48,9 @@ PopupDropperScene::setPDV( PopupDropperView *pdv  )
     DEBUG_BLOCK
     if( !pdv ) return;
     m_pdv = pdv;
-    connect( &m_fadeinTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransInValue(int) ) );
-    connect( &m_fadeoutTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransOutValue(int) ) );
-    connect( &m_fadeoutTL, SIGNAL( finished() ), this, SLOT( pdvHidden() ) );
+    connect( &m_fadeInTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransInValue(int) ) );
+    connect( &m_fadeOutTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransOutValue(int) ) );
+    connect( &m_fadeOutTL, SIGNAL( finished() ), this, SLOT( pdvHidden() ) );
 }
 
 void
@@ -56,14 +58,15 @@ PopupDropperScene::startPDV()
 {
     DEBUG_BLOCK
     m_pdv->show();
-    m_fadeinTL.start();
+    m_fadeInTL.start();
+    m_spinInTL.start();
 }
 
 void
 PopupDropperScene::stopPDV()
 {
     DEBUG_BLOCK
-    m_fadeoutTL.start();
+    m_fadeOutTL.start();
 }
 
 //SLOT

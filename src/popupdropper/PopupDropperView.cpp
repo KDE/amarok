@@ -52,7 +52,7 @@ void PopupDropperView::setTransInValue( int value )
     //DEBUG_BLOCK
     //debug() << "value: " << value << endl;
     QPalette p = palette();
-    p.setColor( QPalette::Base, QColor(0, 0, 0, value*4) );
+    p.setColor( QPalette::Base, QColor(0, 0, 0, value*12 ) );
     setPalette( p );
 }
 
@@ -62,7 +62,7 @@ void PopupDropperView::setTransOutValue( int value )
     //DEBUG_BLOCK
     //debug() << "value: " << value << endl;
     QPalette p = palette();
-    p.setColor( QPalette::Base, QColor(0, 0, 0, 120 - value*4) );
+    p.setColor( QPalette::Base, QColor(0, 0, 0, 120 - value*12) );
     setPalette( p );
 }
 

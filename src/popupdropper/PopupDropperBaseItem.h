@@ -15,51 +15,41 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_POPUPDROPPER_SCENE_H
-#define AMAROK_POPUPDROPPER_SCENE_H
+#ifndef AMAROK_POPUPDROPPER_BASEITEM_H
+#define AMAROK_POPUPDROPPER_BASEITEM_H
 
 #include "amarok_export.h"
 
-#include <QGraphicsScene>
+#include <QGraphicsBaseItem>
 #include <QObject>
 #include <QtGlobal>
-#include <QTimeLine>
+
+class QGraphicsScene;
+class QPainter;
+class QRectF;
 
 /**
-  * This class contructs the PopupDropperScene
+  * This class contructs the PopupDropperBaseItem
   * @author Jeff Mitchell <kde-dev@emailgoeshere.com>
   */
 
 namespace PopupDropperNS {
 
-    class PopupDropperView;
-
-    class PopupDropperScene : public QGraphicsScene
+    class PopupDropperBaseItem : public QGraphicsItem
     {
         Q_OBJECT
     
         public:
+    
             /**
-            * Creates a new PopupDropperScene.
+            * Creates a new PopupDropperBaseItem.
             * 
             */
-            PopupDropperScene( QObject* parent );
-            ~PopupDropperScene();
+            PopupDropperBaseItem( QGraphicsItem* parent = 0 );
+            ~PopupDropperBaseItem();
 
-            void setPDV( PopupDropperView* pdv );
-            void startPDV();
-            void stopPDV();
-
-        public slots:
-            void pdvHidden();
-
-        private:
-            PopupDropperView* m_pdv;
-            QTimeLine m_fadeInTL;
-            QTimeLine m_fadeOutTL;
-            QTimeLine m_spinInTL;
-    
+            float m_scalingPercent;
     };
 }
-#endif /* AMAROK_POPUPDROPPER_SCENE_H */
+#endif /* AMAROK_POPUPDROPPER_BASEITEM_H */
 
