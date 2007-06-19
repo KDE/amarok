@@ -70,13 +70,13 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool isWriteable() const;
 
         /**
-            convienence method for copying a single track, @see prepareCopy( Meta::TrackList, CollectionLocation* )
+            convenience method for copying a single track, @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
 
         /**
-            convienence method for moving a single track, @see prepareMove( Meta::TrackList, CollectionLocation* )
+            convenience method for moving a single track, @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );

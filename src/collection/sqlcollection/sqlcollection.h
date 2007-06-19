@@ -41,6 +41,7 @@ class SqlCollectionFactory : public CollectionFactory
 };
 
 class CollectionDB;
+class CollectionLocation;
 
 class SqlCollection : public Collection, public SqlStorage
 {
@@ -60,6 +61,8 @@ class SqlCollection : public Collection, public SqlStorage
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+        virtual CollectionLocation* location() const;
 
         //methods defined in SqlStorage
         virtual int sqlDatabasePriority() const;

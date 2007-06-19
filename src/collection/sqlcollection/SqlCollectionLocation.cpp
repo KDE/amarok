@@ -18,16 +18,17 @@
 
 #include "SqlCollectionLocation.h"
 
+#include "sqlcollection.h"
 #include "sqlmeta.h"
 
 #include <QFile>
 
-#include <KLocale.h>
-#include <KSharedPtr.h>
+#include <KLocale>
+#include <KSharedPtr>
 
-SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
+SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation()
-    , m_collection( collection )
+    , m_collection( const_cast<SqlCollection*>( collection ) )
 {
     //nothing to do
 }
@@ -50,7 +51,7 @@ SqlCollectionLocation::isWriteable() const
 }
 
 bool
-SqlCollectionLocation::remove( Meta::Track track )
+SqlCollectionLocation::remove( Meta::TrackPtr track )
 {
     KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
@@ -71,8 +72,10 @@ SqlCollectionLocation::remove( Meta::Track track )
 }
 
 void
-SqlCollectionLocation::copyUrlsToLocation( const KUrl::List &sources )
+SqlCollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
 {
     //TODO
     slotCopyOperationFinished();
 }
+
+#include "SqlCollectionLocation.moc"

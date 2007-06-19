@@ -21,6 +21,7 @@
 #include "collection.h"
 
 CollectionLocation::CollectionLocation()
+    :QObject()
 {
     //nothing to do
 }

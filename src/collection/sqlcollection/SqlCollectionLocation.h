@@ -21,16 +21,18 @@
 
 #include "CollectionLocation.h"
 
+class SqlCollection;
+
 class SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
-        SqlCollectionLocation( SqlCollection *collecton );
-        virtual ~SqlCollection();
+        SqlCollectionLocation( SqlCollection const *collecton );
+        virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
-        virtual bool remove( Meta::Track track );
+        virtual bool remove( Meta::TrackPtr track );
         virtual void copyUrlsToCollection( const KUrl::List &sources );
 
     private:

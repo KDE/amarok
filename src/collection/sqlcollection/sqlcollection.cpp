@@ -23,6 +23,7 @@
 #include "sqlitecollection.h"
 #include "mysqlcollection.h"
 #include "postgresqlcollection.h"
+#include "SqlCollectionLocation.h"
 
 #include <klocale.h>
 
@@ -124,6 +125,12 @@ Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
     return m_registry->getTrack( url.path() );
+}
+
+CollectionLocation*
+SqlCollection::location() const
+{
+    return new SqlCollectionLocation( this );
 }
 
 QStringList
