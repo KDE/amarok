@@ -1104,36 +1104,30 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
     // with a constant padding between the elements. Does this need to be more robust?
     QList<QGraphicsItem*> items = m_contextScene->items();
     qreal yposition = BOX_PADDING;
-
-    foreach( QGraphicsItem* i, items )
-        debug() << "bottom of a box: " << i->sceneBoundingRect().bottom() << endl;
     
         if( !items.isEmpty() )
     {
         // Since the items are returned in no particular order, we must sort the items first
-        // based on the topmost edge of the box.
-        // NOTE this is not what we want! we want to sort by bottom edge of box,
-        // or else boxes that are higher than others but longer end up overlapping.
-        // NOTE i haven't figured out how to do that yet :)
-        qSort( items );
+        // based on the bottom edge of the box.
 
-        /*foreach( QGraphicsItem* i, items )
-            debug() << "bottom of a box: " << i->sceneBoundingRect().bottom() << endl;
-        */
+        
+        QList< qreal > bottoms;
+        foreach( QGraphicsItem* i, items )
+            bottoms << i->sceneBoundingRect().bottom();
+        
+        qSort( bottoms );
+        
+        debug() << bottoms << endl;
         
         if( after >= items.count() )
             after = -1;
 
-        QGraphicsItem *afterItem = 0;
-
         // special case 'add-to-end' index, -1.
         if( after < 0 )
-            afterItem = items.last();
+            yposition = bottoms.last() + BOX_PADDING;
         else
-            afterItem = items.at( after );
+            yposition = bottoms.at( after ) + BOX_PADDING;
 
-        if( afterItem )
-            yposition = afterItem->sceneBoundingRect().bottom() + BOX_PADDING;
     }
 
     debug() << "placing box at position: " << after << ", y position of box: " << yposition << endl;

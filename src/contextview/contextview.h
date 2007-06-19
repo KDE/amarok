@@ -31,7 +31,6 @@ class QWheelEvent;
 
 using namespace Context;
 
-#define WIKI_MAX_HISTORY 10
 
 class ContextView : public QGraphicsView, public EngineObserver
 {
@@ -40,8 +39,8 @@ class ContextView : public QGraphicsView, public EngineObserver
 
     public:
 
-        static const int BOX_PADDING = 20;
-
+        static const int BOX_PADDING = 30;
+        static const int WIKI_MAX_HISTORY = 10;
         ~ContextView() { /* delete, disconnect and disembark */ }
 
         static ContextView *instance()
