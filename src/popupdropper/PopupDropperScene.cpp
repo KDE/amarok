@@ -55,10 +55,7 @@ void
 PopupDropperScene::startPDV()
 {
     DEBUG_BLOCK
-    debug() << "m_pdv = " << m_pdv << endl;
     m_pdv->show();
-    debug() << "got past the show" << endl;
-    debug() << "shown: " << (m_pdv->isShown() ? "true" : "false") << endl;
     m_fadeinTL.start();
 }
 
