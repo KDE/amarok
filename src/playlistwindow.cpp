@@ -1105,6 +1105,7 @@ void PlaylistWindow::createActions()
                  << "Soundtrack" << "Techno" << "Trance";
 
     KMenu* playTagRadioMenu = new KMenu( this );
+    playTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
     foreach( QString lastfmTag, m_lastfmTags )
     {
         KAction *lastfmAction = new KAction( lastfmTag, this );
@@ -1113,7 +1114,7 @@ void PlaylistWindow::createActions()
     }
 
     KMenu* addTagRadioMenu = new KMenu( this );
-
+    addTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
     foreach( QString lastfmTag, m_lastfmTags )
     {
         KAction *lastfmAction = new KAction( lastfmTag, this );
@@ -1122,18 +1123,20 @@ void PlaylistWindow::createActions()
     }
 
     KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
-    KMenu* playLastfmMenu = playLastfm->popupMenu();
+    KMenu* playLastfmMenu = playLastfm->menu();
     playLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
     playLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
     playLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
-    playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
+    playLastfmMenu->addMenu( playTagRadioMenu );
+    ac->addAction( "lastfm_play", playLastfm );
 
     KActionMenu* addLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Add las&t.fm Stream" ), ac);
-    KMenu* addLastfmMenu = addLastfm->popupMenu();
+    KMenu* addLastfmMenu = addLastfm->menu();
     addLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
     addLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
     addLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
-    addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
+    addLastfmMenu->addMenu( addTagRadioMenu );
+    ac->addAction( "lastfm_add", addLastfm );
 
     KAction *previous = new KAction( this );
     previous->setIcon( KIcon(Amarok::icon( "back" )) );
