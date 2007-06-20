@@ -49,10 +49,10 @@ QRectF
 PopupDropperBaseItem::boundingRect() const
 {
     QRectF sceneRect = The::PopupDropper()->sceneRect();
-    qreal scenePct = m_whichami * 1.0 / m_totalEntries;
+    //qreal scenePct = m_whichami * 1.0 / m_totalEntries;
     qreal height = sceneRect.height() / m_totalEntries;
     qreal width = sceneRect.width() / m_totalEntries;
-    return QRectF( -width/2, -height/2, width, height );
+    return QRectF( 0, 0, width, height );
 }
 
 void
@@ -61,12 +61,14 @@ PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(option);
     Q_UNUSED(widget);
     QRectF sceneRect = The::PopupDropper()->sceneRect();
-    qreal scenePct = m_whichami * 1.0 / m_totalEntries;
+    //qreal scenePct = m_whichami * 1.0 / m_totalEntries;
     qreal height = sceneRect.height() / m_totalEntries;
     qreal width = sceneRect.width() / m_totalEntries;
-    painter->setFont( QFont("Times", 144, QFont::Bold) );
-    painter->setPen( Qt::white );
-    painter->drawText( sceneRect.width()/4, sceneRect.height()/2 * scenePct, width, height, Qt::AlignHCenter | Qt::AlignVCenter, QChar( m_whichami + 48 ) );
+    QPen pen;
+    pen.setWidth( 10 );
+    pen.setColor( Qt::GlobalColor( Qt::lightGray + m_whichami ));
+    painter->setPen( pen );
+    painter->drawRoundRect( 0, 0, (int)width, (int)height );
 }
 
 #include "PopupDropperBaseItem.moc"

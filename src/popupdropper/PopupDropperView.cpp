@@ -34,11 +34,11 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     resize( parent->size() + QSize(2, 2) );
-    setBackgroundRole( QPalette::Base );
-    QPalette p = palette();
-    p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
-    setPalette( p );
-    setAutoFillBackground( true );
+    //setBackgroundRole( QPalette::Base );
+    //QPalette p = palette();
+    //p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
+    //setPalette( p );
+    //setAutoFillBackground( true );
 }
 
 PopupDropperView::~PopupDropperView()

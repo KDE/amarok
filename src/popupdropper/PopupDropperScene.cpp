@@ -34,7 +34,7 @@ PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
                     , m_fadeInTL( 2000, this )
                     , m_fadeOutTL( 2000, this )
-                    , m_spinInTL( 2000, this )
+                    , m_spinInTL( 1000, this )
 {
     DEBUG_BLOCK
     m_fadeInTL.setFrameRange( 0, 10 );
@@ -66,14 +66,16 @@ PopupDropperScene::startPDV()
 {
     DEBUG_BLOCK
     m_pdv->show();
-    m_fadeInTL.start();
+    pdvShown();
+//    m_fadeInTL.start();
 }
 
 void
 PopupDropperScene::stopPDV()
 {
     DEBUG_BLOCK
-    m_fadeOutTL.start();
+    pdvHidden();
+//    m_fadeOutTL.start();
 }
 
 //SLOT
@@ -86,6 +88,7 @@ PopupDropperScene::pdvShown()
     for( int i = 1; i <= totalItems; ++i )
     {
         temp = new PopupDropperBaseItem( i, totalItems );
+        temp->setPos( width()/2, ( i - 1 ) * 1.0 / totalItems * height() );
         temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
         temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );
         addItem( temp );
