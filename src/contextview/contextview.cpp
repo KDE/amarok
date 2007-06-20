@@ -41,7 +41,6 @@
 #include <QWheelEvent>
 
 //just for testing
-#include <QGraphicsSvgItem>
 #include <QSvgRenderer>
 
 using namespace Context;
@@ -66,7 +65,6 @@ ContextView::ContextView()
     , m_wikiHTMLSource( QString() )
     , m_wikiLanguages( QString() )
     , m_wiki( QString() )
-    , m_testItem( 0 )
 //, m_wikiBackHistory( new QStringList() )
 //, m_wikiForwardHistory( new QStringList() );
 {
@@ -219,7 +217,7 @@ void ContextView::testBoxLayout()
     if( !m_testItem )
     {
         m_testItem = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
-        dynamic_cast<QGraphicsSvgItem*>(m_testItem)->scale(0.5, 0.5 );
+        m_testItem->scale( 0.5, 0.5 );
     }
 
     if( s_add )

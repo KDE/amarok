@@ -23,7 +23,9 @@
 
 #include <kio/job.h>
 
+#include <QGraphicsSvgItem>
 #include <QGraphicsView>
+#include <QPointer>
 
 class QGraphicsScene;
 class QResizeEvent;
@@ -124,7 +126,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         static QString s_wikiLocale;
 
-        QGraphicsItem *m_testItem;
+        QPointer<QGraphicsSvgItem> m_testItem;
 
     private slots:
         void introAnimationComplete();
