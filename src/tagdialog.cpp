@@ -98,13 +98,13 @@ TagDialog::~TagDialog()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
+    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", kTabWidget->currentIndex() );
 }
 
 void
 TagDialog::setTab( int id )
 {
-    kTabWidget->setCurrentPage( id );
+    kTabWidget->setCurrentIndex( id );
 }
 
 
@@ -274,23 +274,42 @@ TagDialog::setFileNameSchemes() //SLOT
 void
 TagDialog::guessFromFilename() //SLOT
 {
+     int cur = 0;
+     
     TagGuesser guesser( m_bundle.url().path() );
     if( !guesser.title().isNull() )
         kLineEdit_title->setText( guesser.title() );
+    
     if( !guesser.artist().isNull() )
-        kComboBox_artist->setCurrentText( guesser.artist() );
+    {
+        cur = kComboBox_artist->currentIndex();
+        kComboBox_artist->setItemText( cur, guesser.artist() );
+    }
+    
     if( !guesser.album().isNull() )
-        kComboBox_album->setCurrentText( guesser.album() );
+    {
+        cur = kComboBox_album->currentIndex();
+        kComboBox_album->setItemText( cur, guesser.album() );
+    }
+    
     if( !guesser.track().isNull() )
         qSpinBox_track->setValue( guesser.track().toInt() );
     if( !guesser.comment().isNull() )
         kTextEdit_comment->setText( guesser.comment() );
     if( !guesser.year().isNull() )
         qSpinBox_year->setValue( guesser.year().toInt() );
+    
     if( !guesser.composer().isNull() )
-        kComboBox_composer->setCurrentText( guesser.composer() );
+    {
+        cur = kComboBox_composer->currentIndex();
+        kComboBox_composer->setItemText( cur, guesser.composer() );
+    }
+    
     if( !guesser.genre().isNull() )
-        kComboBox_genre->setCurrentText( guesser.genre() );
+    {
+        cur = kComboBox_genre->currentIndex();
+        kComboBox_genre->setItemText( cur, guesser.genre() );
+    }
 }
 
 void
@@ -383,7 +402,8 @@ void TagDialog::resetMusicbrainz() //SLOT
 void TagDialog::init()
 {
     DEBUG_BLOCK
-
+     
+    
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
 
@@ -394,31 +414,36 @@ void TagDialog::init()
     kTabWidget->addTab( lyricsTab, i18n( "Lyrics" ) );
     kTabWidget->addTab( statisticsTab, i18n( "Statistics" ) );
     kTabWidget->addTab( labelsTab, i18n( "Labels" ) );
-    kTabWidget->setCurrentPage( config.readEntry( "CurrentTab", 0 ) );
+    kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
+    int items = kComboBox_artist->count();
     const QStringList artists = CollectionDB::instance()->artistList();
-    kComboBox_artist->insertStringList( artists );
+    kComboBox_artist->insertItems( items, artists );
     kComboBox_artist->completionObject()->insertItems( artists );
     kComboBox_artist->completionObject()->setIgnoreCase( true );
     kComboBox_artist->setCompletionMode( KGlobalSettings::CompletionPopup );
 
+    items = kComboBox_album->count();
     const QStringList albums = CollectionDB::instance()->albumList();
-    kComboBox_album->insertStringList( albums );
+    kComboBox_album->insertItems( items, albums );
     kComboBox_album->completionObject()->insertItems( albums );
     kComboBox_album->completionObject()->setIgnoreCase( true );
     kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
+    items = kComboBox_artist->count();
     const QStringList composers = CollectionDB::instance()->composerList();
-    kComboBox_composer->insertStringList( composers );
+    kComboBox_composer->insertItems( items, composers );
     kComboBox_composer->completionObject()->insertItems( composers );
     kComboBox_composer->completionObject()->setIgnoreCase( true );
     kComboBox_composer->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    kComboBox_rating->insertStringList( MetaBundle::ratingList() );
+    items = kComboBox_artist->count();
+    kComboBox_rating->insertItems( items, MetaBundle::ratingList() );
 
 //    const QStringList genres = MetaBundle::genreList();
+    items = kComboBox_artist->count();
     const QStringList genres = CollectionDB::instance()->genreList();
-    kComboBox_genre->insertStringList( genres );
+    kComboBox_genre->insertItems( items, genres );
     kComboBox_genre->completionObject()->insertItems( genres );
     kComboBox_genre->completionObject()->setIgnoreCase( true );
 
@@ -427,12 +452,15 @@ void TagDialog::init()
 
     m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
     //m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
-    m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
+    //m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
+    QSizePolicy policy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_labelCloud->view()->setSizePolicy(policy);
+    
     //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
     //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
     new QVBoxLayout( labels_favouriteLabelsFrame );
-    labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
+    labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
     m_labelCloud->write( html );
@@ -495,7 +523,7 @@ void TagDialog::init()
     connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
     // set an icon for the open-in-konqui button
-    pushButton_open->setIconSet( KIcon( Amarok::icon( "files" ) ) );
+    pushButton_open->setIcon( KIcon( Amarok::icon( "files" ) ) );
 
     //Update lyrics on Context Browser
 //    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
@@ -638,7 +666,8 @@ void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
 
-    setCaption( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2", m_bundle.title(),  m_bundle.artist() ) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2",
+                    m_bundle.title(),  m_bundle.artist() ) ) );
 
     QString niceTitle;
     if ( m_bundle.album().isEmpty() ) {
@@ -657,17 +686,17 @@ void TagDialog::readTags()
     trackArtistAlbumLabel->setText( niceTitle );
     trackArtistAlbumLabel2->setText( niceTitle );
 
-    kLineEdit_title        ->setText( m_bundle.title() );
-    kComboBox_artist       ->setCurrentText( m_bundle.artist() );
-    kComboBox_album        ->setCurrentText( m_bundle.album() );
-    kComboBox_genre        ->setCurrentText( m_bundle.genre() );
-    kComboBox_rating       ->setCurrentIndex( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
-    qSpinBox_track      ->setValue( m_bundle.track() );
-    kComboBox_composer     ->setCurrentText( m_bundle.composer() );
-    qSpinBox_year       ->setValue( m_bundle.year() );
-    qSpinBox_score      ->setValue( static_cast<int>(m_bundle.score()) );
-    qSpinBox_discNumber ->setValue( m_bundle.discNumber() );
-    kTextEdit_comment      ->setText( m_bundle.comment() );
+    kLineEdit_title->setText( m_bundle.title() );
+    kComboBox_artist->setItemText( kComboBox_artist->currentIndex(), m_bundle.artist() );
+    kComboBox_album->setItemText( kComboBox_album->currentIndex(), m_bundle.album() );
+    kComboBox_genre->setItemText( kComboBox_genre->currentIndex(), m_bundle.genre() );
+    kComboBox_rating->setCurrentIndex( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
+    qSpinBox_track->setValue( m_bundle.track() );
+    kComboBox_composer->setItemText( kComboBox_composer->currentIndex(), m_bundle.composer() );
+    qSpinBox_year->setValue( m_bundle.year() );
+    qSpinBox_score->setValue( static_cast<int>(m_bundle.score()) );
+    qSpinBox_discNumber->setValue( m_bundle.discNumber() );
+    kTextEdit_comment->setText( m_bundle.comment() );
 
     bool extended = m_bundle.hasExtendedMetaInformation();
     qSpinBox_discNumber->setEnabled( extended );
@@ -704,7 +733,7 @@ void TagDialog::readTags()
     statisticsText = "<table>";
 
     QStringList sData = statisticsData();
-    for ( uint i = 0; i<sData.count(); i+=2 ) {
+    for ( int i = 0; i < sData.count(); i+=2 ) {
         statisticsText += body2cols.arg( sData[i], sData[i+1] );
     }
 
@@ -774,13 +803,13 @@ void
 TagDialog::setMultipleTracksMode()
 {
 
-    kTabWidget->setTabEnabled( summaryTab, false );
-    kTabWidget->setTabEnabled( lyricsTab, false );
+    kTabWidget->setTabEnabled( kTabWidget->indexOf(summaryTab), false );
+    kTabWidget->setTabEnabled( kTabWidget->indexOf(lyricsTab), false );
 
-    kComboBox_artist->setCurrentText( "" );
-    kComboBox_album->setCurrentText( "" );
-    kComboBox_genre->setCurrentText( "" );
-    kComboBox_composer->setCurrentText( "" );
+    kComboBox_artist->setItemText( kComboBox_artist->currentIndex(), "" );
+    kComboBox_album->setItemText( kComboBox_album->currentIndex(), "" );
+    kComboBox_genre->setItemText( kComboBox_genre->currentIndex(), "" );
+    kComboBox_composer->setItemText( kComboBox_composer->currentIndex(), "" );
     kLineEdit_title->setText( "" );
     kTextEdit_comment->setText( "" );
     qSpinBox_track->setValue( qSpinBox_track->minimum() );
@@ -807,8 +836,8 @@ void
 TagDialog::setSingleTrackMode()
 {
 
-    kTabWidget->setTabEnabled( summaryTab, true );
-    kTabWidget->setTabEnabled( lyricsTab, true );
+    kTabWidget->setTabEnabled( kTabWidget->indexOf(summaryTab), true );
+    kTabWidget->setTabEnabled( kTabWidget->indexOf(lyricsTab), true );
 
     kLineEdit_title->setEnabled( true );
     qSpinBox_track->setEnabled( true );
@@ -828,7 +857,7 @@ void
 TagDialog::readMultipleTracks()
 {
 
-    setCaption( KDialog::makeStandardCaption( i18np("1 Track", "Information for %1 Tracks", m_urlList.count()) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18np("1 Track", "Information for %1 Tracks", m_urlList.count()) ) );
 
     //Check which fields are the same for all selected tracks
     const KUrl::List::ConstIterator end = m_urlList.end();
@@ -880,25 +909,30 @@ TagDialog::readMultipleTracks()
             rating = false;
     }
     // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
+    int cur_item;
     if (artist) {
+        cur_item = kComboBox_artist->currentIndex();
         m_bundle.setArtist( first.artist() );
-        kComboBox_artist->setCurrentText( first.artist() );
+        kComboBox_artist->setItemText( cur_item, first.artist() );
     }
     if (album) {
+        cur_item = kComboBox_album->currentIndex();
         m_bundle.setAlbum( first.album() );
-        kComboBox_album->setCurrentText( first.album() );
+        kComboBox_album->setItemText( cur_item, first.album() );
     }
     if (genre) {
+        cur_item = kComboBox_genre->currentIndex();
         m_bundle.setGenre( first.genre() );
-        kComboBox_genre->setCurrentText( first.genre() );
+        kComboBox_genre->setItemText( cur_item, first.genre() );
     }
     if (comment) {
         m_bundle.setComment( first.comment() );
         kTextEdit_comment->setText( first.comment() );
     }
     if (composer) {
+        cur_item = kComboBox_composer->currentIndex();
         m_bundle.setComposer( first.composer() );
-        kComboBox_composer->setCurrentText( first.composer() );
+        kComboBox_composer->setItemText( cur_item, first.composer() );
     }
     if (year) {
         m_bundle.setYear( first.year() );
@@ -979,7 +1013,7 @@ TagDialog::getCommonLabels()
     QMap<QString, int>::ConstIterator counterEnd( counterMap.end() );
     for(QMap<QString, int>::ConstIterator it = counterMap.begin(); it != counterEnd; ++it )
     {
-        if ( it.data() == n )
+        if ( it.value() == n )
             result.append( it.key() );
     }
     return result;
@@ -1009,7 +1043,7 @@ TagDialog::changes()
     modified |= qSpinBox_discNumber->value()  != m_bundle.discNumber();
     modified |= !equalString( kComboBox_composer->lineEdit()->text(), m_bundle.composer() );
 
-    modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
+    modified |= !equalString( kTextEdit_comment->toPlainText(), m_bundle.comment() );
 
     if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
@@ -1024,11 +1058,11 @@ TagDialog::changes()
         result |= TagDialog::RATINGCHANGED;
 
     if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
-        if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
+        if ( !equalString( kTextEdit_lyrics->toPlainText(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
 
-    if ( !equalString( kTextEdit_selectedLabels->text(), m_commaSeparatedLabels ) )
+    if ( !equalString( kTextEdit_selectedLabels->toPlainText(), m_commaSeparatedLabels ) )
         result |= TagDialog::LABELSCHANGED;
 
     return result;
@@ -1052,7 +1086,7 @@ TagDialog::storeTags( const KUrl &kurl )
         mb.setComposer( kComboBox_composer->currentText() );
         mb.setArtist( kComboBox_artist->currentText() );
         mb.setAlbum( kComboBox_album->currentText() );
-        mb.setComment( kTextEdit_comment->text() );
+        mb.setComment( kTextEdit_comment->toPlainText() );
         mb.setGenre( kComboBox_genre->currentText() );
         mb.setTrack( qSpinBox_track->value() );
         mb.setYear( qSpinBox_year->value() );
@@ -1060,28 +1094,38 @@ TagDialog::storeTags( const KUrl &kurl )
         mb.setLength( m_bundle.length() );
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
-        storedTags.replace( url, mb );
+        storedTags.remove( url );
+        storedTags.insert( url, mb );
     }
-    if( result & TagDialog::SCORECHANGED )
-        storedScores.replace( url, qSpinBox_score->value() );
-    if( result & TagDialog::RATINGCHANGED )
-        storedRatings.replace( url, kComboBox_rating->currentIndex() ? kComboBox_rating->currentIndex() + 1 : 0 );
+    if( result & TagDialog::SCORECHANGED ) {
+        storedScores.remove( url );
+        storedScores.insert( url, qSpinBox_score->value() );
+    }
+    
+    if( result & TagDialog::RATINGCHANGED ) {
+        storedRatings.remove( url );
+        storedRatings.insert( url, kComboBox_rating->currentIndex() ? kComboBox_rating->currentIndex() + 1 : 0 );
+    }
+    
     if( result & TagDialog::LYRICSCHANGED ) {
-        if ( kTextEdit_lyrics->text().isEmpty() )
-            storedLyrics.replace( url, QString() );
+        if ( kTextEdit_lyrics->toPlainText().isEmpty() ) {
+            storedLyrics.remove( url );
+            storedLyrics.insert( url, QString() );
+        }
         else {
             QDomDocument doc;
             QDomElement e = doc.createElement( "lyrics" );
             e.setAttribute( "artist", kComboBox_artist->currentText() );
             e.setAttribute( "title", kLineEdit_title->text() );
-            QDomText t = doc.createTextNode( kTextEdit_lyrics->text() );
+            QDomText t = doc.createTextNode( kTextEdit_lyrics->toPlainText() );
             e.appendChild( t );
             doc.appendChild( e );
-            storedLyrics.replace( url, doc.toString() );
+            storedLyrics.remove( url );
+            storedLyrics.insert( url, doc.toString() );
         }
     }
     if( result & TagDialog::LABELSCHANGED ) {
-        generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->text() ) );
+        generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->toPlainText() ) );
         QStringList tmpLabels;
         if ( newLabels.find( url ) != newLabels.end() )
             tmpLabels = newLabels[ url ];
@@ -1090,32 +1134,41 @@ TagDialog::storeTags( const KUrl &kurl )
         //apply delta
         oldForeach( m_removedLabels )
         {
-            tmpLabels.remove( *it );
+            tmpLabels.removeAt( tmpLabels.indexOf(*it) );
         }
         oldForeach( m_addedLabels )
         {
-            if( tmpLabels.find( *it ) == tmpLabels.end() )
+            // this just feels dirty...
+            if( tmpLabels.indexOf( *it ) == tmpLabels.indexOf( *tmpLabels.end() ) )
                 tmpLabels.append( *it );
         }
-        newLabels.replace( url, tmpLabels );
+        newLabels.remove( url );
+        newLabels.insert( url, tmpLabels );
     }
 }
 
 void
 TagDialog::storeTags( const KUrl &url, int changes, const MetaBundle &mb )
 {
-    if ( changes & TagDialog::TAGSCHANGED )
-        storedTags.replace( url.path(), mb );
-    if ( changes & TagDialog::SCORECHANGED )
-        storedScores.replace( url.path(), mb.score() );
-    if ( changes & TagDialog::RATINGCHANGED )
-        storedRatings.replace( url.path(), mb.rating() );
+    if ( changes & TagDialog::TAGSCHANGED ) {
+        storedTags.remove( url.path() );
+        storedTags.insert( url.path(), mb );
+    }
+    if ( changes & TagDialog::SCORECHANGED ) {
+        storedScores.remove( url.path() );
+        storedScores.insert( url.path(), mb.score() );
+    }
+    if ( changes & TagDialog::RATINGCHANGED ) {
+        storedRatings.remove( url.path() );
+        storedRatings.insert( url.path(), mb.rating() );
+    }
 }
 
 void
 TagDialog::storeLabels( const KUrl &url, const QStringList &labels )
 {
-    newLabels.replace( url.path(), labels );
+    newLabels.remove( url.path() );
+    newLabels.insert( url.path(), labels );
 }
 
 
@@ -1218,21 +1271,21 @@ TagDialog::saveTags()
 
     QMap<QString, float>::ConstIterator endScore( storedScores.end() );
     for(QMap<QString, float>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
-        CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
+        CollectionDB::instance()->setSongPercentage( it.key(), it.value() );
     }
     QMap<QString, int>::ConstIterator endRating( storedRatings.end() );
     for(QMap<QString, int>::ConstIterator it = storedRatings.begin(); it != endRating; ++it ) {
-        CollectionDB::instance()->setSongRating( it.key(), it.data() );
+        CollectionDB::instance()->setSongRating( it.key(), it.value() );
     }
     QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
     for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
-        CollectionDB::instance()->setLyrics( it.key(), it.data(),
+        CollectionDB::instance()->setLyrics( it.key(), it.value(),
                CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ) );
         emit lyricsChanged( it.key() );
     }
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
     for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
-        CollectionDB::instance()->setLabels( it.key(), it.data(),
+        CollectionDB::instance()->setLabels( it.key(), it.value(),
                 CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ), CollectionDB::typeUser );
     }
     CollectionDB::instance()->cleanLabels();
@@ -1244,7 +1297,7 @@ TagDialog::saveTags()
 void
 TagDialog::applyToAllTracks()
 {
-    generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->text() ) );
+    generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->toPlainText() ) );
 
     const KUrl::List::ConstIterator end = m_urlList.end();
     for ( KUrl::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
@@ -1279,9 +1332,9 @@ TagDialog::applyToAllTracks()
             mb.setGenre( kComboBox_genre->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
-                kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
-            mb.setComment( kTextEdit_comment->text() );
+        if( !kTextEdit_comment->toPlainText().isEmpty() && kTextEdit_comment->toPlainText() != mb.comment() ||
+                kTextEdit_comment->toPlainText().isEmpty() && !m_bundle.comment().isEmpty() ) {
+            mb.setComment( kTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
         if( !kComboBox_composer->currentText().isEmpty() && kComboBox_composer->currentText() != mb.composer() ||
@@ -1320,11 +1373,11 @@ TagDialog::applyToAllTracks()
         //apply delta
         for( QStringList::Iterator iter = m_removedLabels.begin(); iter != m_removedLabels.end(); ++iter )
         {
-            tmpLabels.remove( *iter );
+            tmpLabels.erase( iter );
         }
         for( QStringList::Iterator iter = m_addedLabels.begin(); iter != m_addedLabels.end(); ++iter )
         {
-            if( tmpLabels.find( *iter ) == tmpLabels.end() )
+            if( tmpLabels.indexOf( *iter ) == tmpLabels.indexOf( *tmpLabels.end() ) )
                 tmpLabels.append( *iter );
         }
         storeLabels( *it, tmpLabels );
@@ -1334,14 +1387,16 @@ TagDialog::applyToAllTracks()
 QStringList
 TagDialog::labelListFromText( const QString &text )
 {
-    QStringList tmp = QStringList::split( ',', text );
+    QStringList tmp = text.split(',', QString::SkipEmptyParts);
     //insert each string into a map to remove duplicates
     QMap<QString, int> map;
     oldForeach( tmp )
     {
         QString tmpString = (*it).trimmed();
-        if ( !tmpString.isEmpty() )
-            map.replace( tmpString, 0 );
+        if ( !tmpString.isEmpty() ) {
+            map.remove( tmpString );
+            map.insert( tmpString, 0 );
+        }
     }
     QStringList result;
     QMap<QString, int>::ConstIterator endMap( map.end() );
@@ -1410,7 +1465,7 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
     DEBUG_BLOCK
     if ( url.protocol() == "label" )
     {
-        QString text = kTextEdit_selectedLabels->text();
+        QString text = kTextEdit_selectedLabels->toPlainText();
         QStringList currentLabels = labelListFromText( text );
         if ( currentLabels.contains( url.path() ) )
             return;
@@ -1454,7 +1509,7 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
     QApplication::setOverrideCursor( Qt::WaitCursor );
     QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.end();
     for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.begin(); it != end; ++it ) {
-        MetaBundle mb = it.data();
+        MetaBundle mb = it.value();
         m_tags += mb;
     }
 }
