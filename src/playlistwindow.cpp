@@ -139,6 +139,7 @@ void PlaylistWindow::init()
     Playlist *playlist = new Playlist( splitter ); //Playlist
     { //TNG playlist
         PlaylistNS::Model* playmodel = The::playlistModel();
+        playmodel->init();
         playmodel->testData();
         PlaylistNS::View* playview = new PlaylistNS::View( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;

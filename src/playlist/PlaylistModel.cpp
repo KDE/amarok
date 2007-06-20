@@ -14,6 +14,7 @@
 #include "StandardTrackAdvancer.h"
 #include "statusbar.h"
 #include "TheInstances.h"
+#include "UndoCommands.h"
 
 #include "collection/blockingquery.h"
 #include "collection/collection.h"
@@ -21,9 +22,11 @@
 #include "collection/querymaker.h"
 #include "meta/lastfm/LastFmMeta.h"
 
-#include <kurl.h>
-
 #include <QAction>
+#include <QUndoStack>
+
+#include <KIcon>
+#include <KUrl>
 
 using namespace PlaylistNS;
 
@@ -33,10 +36,23 @@ Model::Model( QObject* parent )
     : QAbstractTableModel( parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackAdvancer( this ) )
+    , m_undoStack( new QUndoStack( this ) )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     m_columns << TrackNumber << Title << Artist << Album;
     s_instance = this;
+}
+
+void
+Model::init()
+{
+    KActionCollection* ac = Amarok::actionCollection();
+    QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
+    undoButton->setIcon( KIcon( Amarok::icon( "undo" ) ) );
+    ac->addAction("playlist_undo", undoButton);
+    QAction* redoButton  = m_undoStack->createRedoAction( this, i18n("Redo") );
+    ac->addAction("playlist_redo", redoButton);
+    redoButton->setIcon( KIcon( Amarok::icon( "redo" ) ) );
 }
 
 Model::~Model()
@@ -104,33 +120,24 @@ Model::data( const QModelIndex& index, int role ) const
 // }
 
 void
-Model::insertTracks( int row, TrackList list )
-{
-    if( !list.size() )
-        return;
-
-    beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
-    //m_columns.insert( row, list )
-    int i = 0;
-    foreach( TrackPtr track , list )
-    {
-        if( track )
-        {
-            track->subscribe( this );
-            m_tracks.insert( row + i, track );
-            i++;
-        }
-    }
-    endInsertRows();
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
-}
-
-void
 Model::insertTrack( int row, TrackPtr track )
 {
     TrackList list;
     list.append( track );
     insertTracks( row, list );
+}
+
+void
+Model::insertTracks( int row, TrackList tracks )
+{
+    m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
+}
+
+bool
+Model::removeRows( int position, int rows )
+{
+    m_undoStack->push( new RemoveTracksCmd( 0, position, rows ) );
+    return true;
 }
 
 void
@@ -141,17 +148,6 @@ Model::insertTracks( int row, QueryMaker *qm )
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
     m_queryMap.insert( qm, row );
     qm->run();
-}
-
-bool
-Model::removeRows( int position, int rows )
-{
-    beginRemoveRows( QModelIndex(), position, position + rows );
-    TrackList::iterator start = m_tracks.begin() + position;
-    TrackList::iterator end = start + rows;
-    m_tracks.erase( start, end );
-    endRemoveRows();
-    return true;
 }
 
 QVariant
@@ -277,10 +273,8 @@ Model::metadataChanged( Meta::Track *track )
 void
 Model::clear()
 {
-    m_tracks.clear();
+    removeRows( 0, m_tracks.size() );
     m_activeRow = -1;
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
-    reset();
 }
 
 void
@@ -381,10 +375,79 @@ Model::saveM3U( const QString &path, bool relative ) const
 }
 
 ////////////
-//Private Slots
+//Private Methods
 ///////////
+
+
 void
-Model::queryDone()
+Model::insertTracksCommand( int row, TrackList list )
+{
+    if( !list.size() )
+        return;
+
+    beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
+    //m_columns.insert( row, list )
+    int i = 0;
+    foreach( TrackPtr track , list )
+    {
+        if( track )
+        {
+            track->subscribe( this );
+            m_tracks.insert( row + i, track );
+            i++;
+        }
+    }
+    endInsertRows();
+    //push up the active row if needed
+    if( m_activeRow > row )
+    {
+        int oldActiveRow = m_activeRow;
+        m_activeRow += list.size();
+        dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
+        dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
+    }
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
+}
+
+
+TrackList
+Model::removeRowsCommand( int position, int rows )
+{
+    beginRemoveRows( QModelIndex(), position, position + rows );
+//     TrackList::iterator start = m_tracks.begin() + position;
+//     TrackList::iterator end = start + rows;
+//     m_tracks.erase( start, end );
+    TrackList ret;
+    for( int i = position; i < position + rows; i++ )
+    {
+        TrackPtr track = m_tracks.takeAt( position ); //take at position, row times
+        track->unsubscribe( this );
+        ret.push_back( track );
+    }
+    endRemoveRows();
+
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
+
+    //update m_activeRow
+    bool activeRowChanged = true;
+    bool oldActiveRow = m_activeRow;
+    if( m_activeRow >= position && m_activeRow < ( position + rows ) )
+        m_activeRow = -1;
+    else if( m_activeRow >= position )
+        m_activeRow = m_activeRow - position;
+    else
+        activeRowChanged = false;
+    if( activeRowChanged )
+    {
+        dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
+        dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
+    }
+
+    return ret;
+}
+
+void
+Model::queryDone() //Slot
 {
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
@@ -395,7 +458,7 @@ Model::queryDone()
 }
 
 void
-Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks ) //Slot
 {
     Q_UNUSED( collectionId )
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );

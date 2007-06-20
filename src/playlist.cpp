@@ -333,13 +333,6 @@ Playlist::Playlist( QWidget *parent )
 
     m_clearButton = ac->action( "playlist_clear" );
 
-    m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), this );
-    ac->addAction("playlist_undo", m_undoButton);
-    m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), this );
-    ac->addAction("playlist_redo", m_redoButton);
-    m_undoButton ->setIcon( KIcon( Amarok::icon( "undo" ) ) );
-    m_redoButton ->setIcon( KIcon( Amarok::icon( "redo" ) ) );
-
     KAction *a = new KAction( this );
     a->setText(i18n( "&Repopulate" ));
     a->setIcon( KIcon( Amarok::icon( "playlist_refresh" ) ) );

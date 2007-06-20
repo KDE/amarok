@@ -340,6 +340,7 @@ set(amarok_LIB_SRCS
     playlist/PlaylistView.cpp
     playlist/StandardTrackAdvancer.cpp
     playlist/TrackAdvancer.cpp
+    playlist/UndoCommands.cpp
     playlist.cpp
     playlistbrowser.cpp
     playlistbrowseritem.cpp
