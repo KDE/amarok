@@ -64,15 +64,15 @@ void
 PopupDropperScene::startPDV()
 {
     DEBUG_BLOCK
-    PopupDropperBaseItem *temp;
-    for( int i = 1; i <= 5; ++i )
-    {
-        temp = new PopupDropperBaseItem( i );
-        temp->scale( 100, 100 );
-        addItem( temp );
-        temp->show();
-    }
-    m_pdv->show();
+//     PopupDropperBaseItem *temp;
+//     for( int i = 1; i <= 5; ++i )
+//     {
+//         temp = new PopupDropperBaseItem( i );
+//         temp->scale( 100, 100 );
+//         addItem( temp );
+//         temp->show();
+//     }
+//     m_pdv->show();
     m_fadeInTL.start();
     m_spinInTL.start();
 }
@@ -99,7 +99,7 @@ PopupDropperScene::pdvHidden()
         removeItem( temp );
         delete temp;
     }
- 
+
 }
 
 //SLOT
