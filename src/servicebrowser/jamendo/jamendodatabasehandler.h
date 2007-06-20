@@ -31,7 +31,6 @@
 
 /**
 * This class wraps the database operations needed by the JamendoBrowser
-* Uses the singleton pattern
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */

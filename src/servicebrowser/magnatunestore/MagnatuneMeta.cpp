@@ -57,7 +57,8 @@ QString MagnatuneMetaFactory::getAlbumSqlRows()
 
     sqlRows += ", ";
     sqlRows += tablePrefix() + "_albums.cover_url, ";
-    sqlRows += tablePrefix() + "_albums.launch_year ";
+    sqlRows += tablePrefix() + "_albums.launch_year, ";
+    sqlRows += tablePrefix() + "_albums.album_code, ";
 
 
     return sqlRows;
@@ -165,6 +166,9 @@ QString MagnatuneArtist::magnatuneUrl() const
 
 MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     : ServiceAlbum( name )
+    , m_coverUrl()
+    , m_launchYear( 0 )
+    , m_albumCode()
 {
 }
 
@@ -174,6 +178,7 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
 
     m_coverUrl = resultRow[5];
     m_launchYear = resultRow[6].toInt();
+    m_albumCode = resultRow[7];
 
 }
 
@@ -197,6 +202,16 @@ int MagnatuneAlbum::launchYear( ) const
     return m_launchYear;
 }
 
+void MagnatuneAlbum::setAlbumCode(const QString & albumCode)
+{
+    m_albumCode = albumCode;
+}
+
+QString MagnatuneAlbum::albumCode()
+{
+    return m_albumCode;
+}
+
 
 
 MagnatuneGenre::MagnatuneGenre(const QString & name)
@@ -208,6 +223,8 @@ MagnatuneGenre::MagnatuneGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 

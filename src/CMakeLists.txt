@@ -174,18 +174,18 @@ set(libmagnatunestore_SRCS
 	#servicebrowser/magnatunestore/magnatunetypes.cpp
         servicebrowser/magnatunestore/MagnatuneMeta.cpp
 	#servicebrowser/magnatunestore/magnatunexmlparser.cpp
-	#servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
+	servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
 	#servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
 	#servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
 )
 
-kde4_add_ui3_files(libmagnatunestore_SRCS
-	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
-	servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
-	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
-)
+#kde4_add_ui3_files(libmagnatunestore_SRCS
+#	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
+#	servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
+#	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
+#)
 
 #####################################################################
 # COLLECTIONBROWSER

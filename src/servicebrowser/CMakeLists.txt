@@ -11,7 +11,7 @@ include(ConvenienceLibs.cmake)
 
 include_directories( ../../src/ ../../src/amarokcore ../../src/analyzers ../../src/plugin ../../src/statusbar ../ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
-add_subdirectory(magnatunestore)
+#add_subdirectory(magnatunestore)
 
 set(libservicebrowser_SRCS
                                 servicebrowser.cpp

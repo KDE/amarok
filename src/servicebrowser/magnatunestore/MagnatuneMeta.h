@@ -99,6 +99,7 @@ class MagnatuneAlbum  : public ServiceAlbum
 private:
     QString m_coverUrl;
     int m_launchYear;
+    QString m_albumCode;
 
 public:
     MagnatuneAlbum( const QString &name );
@@ -109,6 +110,9 @@ public:
 
     void setLaunchYear( int launchYear );
     int launchYear() const;
+
+    void setAlbumCode(  const QString &albumCode );
+    QString albumCode();
 
 };
 
