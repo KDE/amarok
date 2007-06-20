@@ -8,6 +8,7 @@
 
 #include "PlaylistModel.h"
 
+#include "amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "StandardTrackAdvancer.h"
@@ -21,6 +22,8 @@
 #include "meta/lastfm/LastFmMeta.h"
 
 #include <kurl.h>
+
+#include <QAction>
 
 using namespace PlaylistNS;
 
@@ -119,6 +122,7 @@ Model::insertTracks( int row, TrackList list )
         }
     }
     endInsertRows();
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
 }
 
 void
@@ -274,6 +278,8 @@ void
 Model::clear()
 {
     m_tracks.clear();
+    m_activeRow = -1;
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
     reset();
 }
 
@@ -324,6 +330,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
     {
         play( firstItemAdded );
     }
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
 }
 
 void

@@ -94,6 +94,8 @@ PlaylistWindow::PlaylistWindow()
     setObjectName("PlaylistWindow");
     s_instance = this;
 
+    new PlaylistNS::Model( this );
+
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
 
@@ -136,7 +138,7 @@ void PlaylistWindow::init()
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( splitter ); //Playlist
     { //TNG playlist
-        PlaylistNS::Model* playmodel = new PlaylistNS::Model;
+        PlaylistNS::Model* playmodel = The::playlistModel();
         playmodel->testData();
         PlaylistNS::View* playview = new PlaylistNS::View( splitter );
         debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
@@ -1029,6 +1031,12 @@ void PlaylistWindow::createActions()
     action->setIcon( KIcon( Amarok::icon( "files" ) ) );
     action->setText( i18n("&Add Media...") );
     ac->addAction( "playlist_add", action );
+
+    action = new KAction( this );
+    connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
+    action->setIcon( KIcon( Amarok::icon( "playlist_clear" ) ) );
+    action->setText( i18nc( "clear playlist", "&Clear" ) );
+    ac->addAction( "playlist_clear", action );
 
     action = new KAction( this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );

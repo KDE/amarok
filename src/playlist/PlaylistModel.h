@@ -83,7 +83,6 @@ class TrackAdvancer;
             QVariant headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::DropActions supportedDropActions() const;
         //other methods
-            void clear(); ///clear the playlist of all items
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
 ///Restore playlist from previous session of Amarok
             void restoreSession() { }
@@ -122,6 +121,8 @@ class TrackAdvancer;
         
         public slots:
             void play( const QModelIndex& index );
+
+            void clear(); ///clear the playlist of all items
         private slots:
             void trackFinished(); //! what to do when a track finishes
             void queryDone();

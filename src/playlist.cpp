@@ -331,11 +331,7 @@ Playlist::Playlist( QWidget *parent )
     ac->addAction( "playlist_select_all", selectAll );
 
 
-    m_clearButton = new KAction( this );
-    m_clearButton->setText( i18nc( "clear playlist", "&Clear" ) );
-    m_clearButton->setIcon( KIcon( Amarok::icon( "playlist_clear" ) ) );
-    ac->addAction("playlist_clear", m_clearButton);
-    connect( m_clearButton, SIGNAL( triggered() ), this, SLOT( clear() ) );
+    m_clearButton = ac->action( "playlist_clear" );
 
     m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), this );
     ac->addAction("playlist_undo", m_undoButton);
@@ -2060,7 +2056,7 @@ Playlist::updateNextPrev()
     Amarok::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
     Amarok::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     Amarok::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
+    //Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
     Amarok::actionCollection()->action( "playlist_show" )->setEnabled( m_currentTrack );
 
     if( m_currentTrack )
@@ -2204,7 +2200,7 @@ Playlist::clear() //SLOT
     Amarok::actionCollection()->action( "play" )->setEnabled( false );
     Amarok::actionCollection()->action( "prev" )->setEnabled( false );
     Amarok::actionCollection()->action( "next" )->setEnabled( false );
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
+    //Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
 
     ThreadManager::instance()->abortAllJobsNamed( "TagWriter" );
 

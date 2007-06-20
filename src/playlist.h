@@ -384,7 +384,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
 
         KAction      *m_undoButton;
         KAction      *m_redoButton;
-        KAction      *m_clearButton;
+        QAction      *m_clearButton;
 
         QDir          m_undoDir;
         QStringList   m_undoList;
