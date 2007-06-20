@@ -158,20 +158,6 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 
     return trackId; 
 
-    // Process moods:
-
- /*   QStringList moods = track->getMoods();
-
-    foreach( QString mood, moods ) {
-        queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
-                      + QString::number( trackId ) + ", '"
-                      + db->escapeString( mood ) +  "' );";
-
-
-        //debug() << "Adding Magnatune mood: " << queryString << endl;
-        db->insert( queryString, NULL ); 
-    }
-  */
     
 }
 
@@ -238,6 +224,23 @@ MagnatuneDatabaseHandler::commit( )
 
     db->query( queryString );
 
+}
+
+void MagnatuneDatabaseHandler::insertMoods(int trackId, QStringList moods)
+{
+ 
+    QString queryString;
+    CollectionDB *db = CollectionDB::instance();
+
+    foreach( QString mood, moods ) {
+        queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
+                      + QString::number( trackId ) + ", '"
+                      + db->escapeString( mood ) +  "' );";
+
+
+        //debug() << "Adding Magnatune mood: " << queryString << endl;
+        db->insert( queryString, NULL ); 
+    }
 }
 
 

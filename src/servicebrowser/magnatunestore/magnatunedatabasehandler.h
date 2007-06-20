@@ -85,6 +85,9 @@ public:
     int insertGenre( ServiceGenre *genre );
 
 
+    void insertMoods( int trackId, QStringList moods );
+
+
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
      */
