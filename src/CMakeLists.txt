@@ -349,6 +349,7 @@ set(amarok_LIB_SRCS
     pluginmanager.cpp
     podcastsettings.cpp
     popupdropper/PopupDropper.cpp
+    popupdropper/PopupDropperBaseItem.cpp
     popupdropper/PopupDropperScene.cpp
     popupdropper/PopupDropperView.cpp
     portabledevices/SolidHandler.cpp
