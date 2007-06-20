@@ -349,7 +349,7 @@ void PlaylistWindow::init()
 //    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 
     Amarok::MessageQueue::instance()->sendMessages();
-    //QTimer::singleShot( 5000, this, SLOT( triggerTestingFunction() ) );
+    //QTimer::singleShot( 8000, this, SLOT( triggerTestingFunction() ) );
 }
 
 void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
@@ -1311,7 +1311,7 @@ void PlaylistWindow::triggerTestingFunction()
     else
         The::PopupDropper()->Destroy();
 
-    QTimer::singleShot( 5000, this, SLOT( triggerTestingFunction() ) );
+    QTimer::singleShot( 8000, this, SLOT( triggerTestingFunction() ) );
 }
 
 

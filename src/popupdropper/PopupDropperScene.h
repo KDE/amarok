@@ -51,6 +51,7 @@ namespace PopupDropperNS {
             void stopPDV();
 
         public slots:
+            void pdvShown();
             void pdvHidden();
             void updateIconSpinIn( int frame );
 

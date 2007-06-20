@@ -48,11 +48,14 @@ namespace PopupDropperNS {
             PopupDropperBaseItem( int whichami, int total, QGraphicsItem* parent = 0 );
             ~PopupDropperBaseItem();
 
+            qreal scaledPercent() const { return m_scaledPercent; }
+            void setScaledPercent( qreal pct ) { m_scaledPercent = pct; }
+
             //Reimplementations
             QRectF boundingRect() const;
             void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
-            float       m_scalingPercent;
+            qreal       m_scaledPercent;
             int         m_whichami;
             int         m_totalEntries;
     };

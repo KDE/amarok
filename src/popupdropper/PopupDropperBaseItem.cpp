@@ -33,7 +33,7 @@ using namespace PopupDropperNS;
 PopupDropperBaseItem::PopupDropperBaseItem( int whichami, int total, QGraphicsItem* parent )
                                     : QObject( 0 )
                                     , QGraphicsItem( parent )
-                                    , m_scalingPercent( 0.0 )
+                                    , m_scaledPercent( 0.0 )
                                     , m_whichami( whichami )
                                     , m_totalEntries( total )
 {
@@ -48,15 +48,11 @@ PopupDropperBaseItem::~PopupDropperBaseItem()
 QRectF
 PopupDropperBaseItem::boundingRect() const
 {
-    DEBUG_BLOCK
     QRectF sceneRect = The::PopupDropper()->sceneRect();
     qreal scenePct = m_whichami * 1.0 / m_totalEntries;
-    debug() << "scenePct of this item: " << scenePct << endl;
     qreal height = sceneRect.height() / m_totalEntries;
-    debug() << "height of this item: " << height << endl;
     qreal width = sceneRect.width() / m_totalEntries;
-    debug() << "width of this item: " << width << endl;
-    return QRectF( width * (m_whichami - 1), height * (m_whichami - 1), width, height );
+    return QRectF( -width/2, -height/2, width, height );
 }
 
 void
@@ -68,9 +64,9 @@ PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *
     qreal scenePct = m_whichami * 1.0 / m_totalEntries;
     qreal height = sceneRect.height() / m_totalEntries;
     qreal width = sceneRect.width() / m_totalEntries;
-    painter->setFont( QFont("Times", 96, QFont::Bold) );
+    painter->setFont( QFont("Times", 144, QFont::Bold) );
     painter->setPen( Qt::white );
-    painter->drawText( width * (m_whichami - 1), height * (m_whichami - 1), width, height, Qt::AlignHCenter | Qt::AlignVCenter, QChar( m_whichami + 48 ) );
+    painter->drawText( sceneRect.width()/4, sceneRect.height()/2 * scenePct, width, height, Qt::AlignHCenter | Qt::AlignVCenter, QChar( m_whichami + 48 ) );
 }
 
 #include "PopupDropperBaseItem.moc"
