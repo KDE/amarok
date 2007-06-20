@@ -65,16 +65,16 @@ PopupDropperScene::startPDV()
 {
     DEBUG_BLOCK
     PopupDropperBaseItem *temp;
-    for( int i = 1; i <= 5; ++i )
+    int totalItems = 5;
+    for( int i = 1; i <= totalItems; ++i )
     {
-        temp = new PopupDropperBaseItem( i );
-        temp->scale( 100, 100 );
+        temp = new PopupDropperBaseItem( i, totalItems );
         addItem( temp );
         temp->show();
     }
     m_pdv->show();
     m_fadeInTL.start();
-    m_spinInTL.start();
+    //m_spinInTL.start();
 }
 
 void

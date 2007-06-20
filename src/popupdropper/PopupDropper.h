@@ -23,6 +23,7 @@
 #include "PopupDropperView.h"
 
 #include <QObject>
+#include <QRectF>
 #include <QtGlobal>
 
 /**
@@ -54,6 +55,7 @@ namespace PopupDropperNS {
             void Destroy();
             inline bool isInitialized() { return m_initialized; }
             inline bool isHidden() { return !m_view || m_view->isHidden(); }
+            QRectF sceneRect() const { return m_scene.sceneRect(); }
 
             PopupDropperScene      m_scene;
             PopupDropperView*      m_view;

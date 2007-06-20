@@ -45,7 +45,7 @@ namespace PopupDropperNS {
             * Creates a new PopupDropperBaseItem.
             * 
             */
-            PopupDropperBaseItem( int whichami, QGraphicsItem* parent = 0 );
+            PopupDropperBaseItem( int whichami, int total, QGraphicsItem* parent = 0 );
             ~PopupDropperBaseItem();
 
             //Reimplementations
@@ -54,6 +54,7 @@ namespace PopupDropperNS {
 
             float       m_scalingPercent;
             int         m_whichami;
+            int         m_totalEntries;
     };
 }
 #endif /* AMAROK_POPUPDROPPER_BASEITEM_H */
