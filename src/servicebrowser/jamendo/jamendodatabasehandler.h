@@ -61,8 +61,6 @@ public:
     /**
      * Inserts a new track into the Jamendo database
      * @param track pointer to the track to insert 
-     * @param albumId id of the album containing the track
-     * @param artistId id of the artist performing the track
      * @return the database id of the newly inserted track
      */
     int insertTrack( ServiceTrack *track );
@@ -70,7 +68,6 @@ public:
     /**
      * inserts a new album into the Jamendo database
      * @param album pointer to the album to insert
-     * @param artistId id of the artist performing the album
      * @return the database id of the newly inserted album
      */
     int insertAlbum( ServiceAlbum *album );
