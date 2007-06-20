@@ -66,6 +66,7 @@ ContextView::ContextView()
     , m_wikiHTMLSource( QString() )
     , m_wikiLanguages( QString() )
     , m_wiki( QString() )
+    , m_testItem( 0 )
 //, m_wikiBackHistory( new QStringList() )
 //, m_wikiForwardHistory( new QStringList() );
 {
@@ -213,12 +214,22 @@ void ContextView::introAnimationComplete()
 
 void ContextView::testBoxLayout()
 {
-    QGraphicsSvgItem * svg = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
-    svg->scale(0.5, 0.5 );
+    static bool s_add = true;
 
-    addContextBox( svg, 1, true );
+    if( !m_testItem )
+    {
+        m_testItem = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
+        dynamic_cast<QGraphicsSvgItem*>(m_testItem)->scale(0.5, 0.5 );
+    }
 
-    //QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
+    if( s_add )
+        addContextBox( m_testItem, 1, true );
+    else
+        removeContextBox( m_testItem, true );
+
+    s_add = !s_add;
+
+    QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
 }
 
 
@@ -267,6 +278,62 @@ void ContextView::clear()
     delete m_contextScene;
     initiateScene();
     update();
+}
+
+void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut )
+{
+    DEBUG_BLOCK
+
+    if( !oldBox || !m_contextScene )
+        return;
+
+    if( fadeOut )
+    {
+        GraphicsItemFader *fader = new GraphicsItemFader( oldBox, 0 );
+        fader->setDuration( 2500 );
+        fader->setFPS( 30 );
+        fader->setStartAlpha( 0 );
+        fader->setTargetAlpha( 255 );
+        fader->setFadeColor( palette().highlight().color() );
+        fader->startFading();
+        oldBox = fader;
+    }
+
+    QList<QGraphicsItem*> items = m_contextScene->items();
+
+    QMap<qreal, QGraphicsItem*> boxesAndBorders;
+
+    if( !items.isEmpty() )
+    {
+        bool calculate = false;
+        foreach( QGraphicsItem* i, items )
+        {
+            if( dynamic_cast<ContextBox*>(i) )
+            {
+                boxesAndBorders.insertMulti( i->sceneBoundingRect().top(), i );
+            }
+        }
+
+        // bottoms and boxes are guaranteed to be in the same order
+        const QList<qreal>          bottoms = boxesAndBorders.keys();
+        const QList<QGraphicsItem*> boxes   = boxesAndBorders.values();
+
+        QList<QGraphicsItem*> shuffleUp;
+
+        // need to shuffle up all the boxes below
+        for( int i = 0; i < boxes.size(); ++i )
+        {
+            QGraphicsItem *box = boxes.at(i);
+            shuffleUp << box;
+        }
+
+        qreal distance = oldBox->boundingRect().height() + BOX_PADDING;
+        debug() << "shuffling " << shuffleUp.size() << " items down, a total of " << distance << endl;
+
+        shuffleItems( shuffleUp, distance, ShuffleUp );
+    }
+
+    m_contextScene->removeItem( oldBox );
 }
 
 void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
@@ -331,7 +398,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
             QList<QGraphicsItem*> shuffleDown;
 
             // need to shuffle down all the boxes below
-            for( int i = 0; i < boxes.size(); ++i )
+            for( int i = after; i < boxes.size(); ++i )
                 shuffleDown << boxes.at(i);
 
             qreal distance = newBox->boundingRect().height() + BOX_PADDING;

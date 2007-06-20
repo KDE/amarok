@@ -52,6 +52,7 @@ class ContextView : public QGraphicsView, public EngineObserver
         void clear();
 
         void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/, bool fadeIn = false);
+        void removeContextBox( QGraphicsItem *oldBox, bool fadeOut = false);
 
         void showLyrics( const QString& url );
 
@@ -122,15 +123,19 @@ class ContextView : public QGraphicsView, public EngineObserver
         QStringList m_wikiForwardHistory;
 
         static QString s_wikiLocale;
-    private slots:
 
+        QGraphicsItem *m_testItem;
+
+    private slots:
         void introAnimationComplete();
         void testBoxLayout();
 
         /// Wikipedia slots
-    /*void wikiConfigChanged( int );
+        /*
+        void wikiConfigChanged( int );
         void wikiConfigApply();
-        void wikiConfig(); */
+        void wikiConfig();
+        */
         void wikiArtistPage();
         void wikiAlbumPage();
         void wikiTitlePage();
