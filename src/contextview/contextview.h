@@ -31,7 +31,6 @@ class QWheelEvent;
 
 using namespace Context;
 
-
 class ContextView : public QGraphicsView, public EngineObserver
 {
     Q_OBJECT
@@ -58,6 +57,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
     public slots:
         void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false ) ;
+
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
@@ -66,6 +66,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
 
     private:
+        enum ShuffleDirection { ShuffleUp, ShuffleDown };
         /**
          * Creates a new context view widget with parent \p parent
          * Constructor is private since the view is a singleton class
@@ -75,7 +76,8 @@ class ContextView : public QGraphicsView, public EngineObserver
         void initiateScene();
 
         void scaleView( qreal factor );
-        static bool higherThan( const QGraphicsItem *i1, const QGraphicsItem *i2 );
+
+        void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction );
 
         /// Page Views ////////////////////////////////////////
         void showHome();
@@ -89,9 +91,9 @@ class ContextView : public QGraphicsView, public EngineObserver
         void setWikiLocale( const QString& );
         QString wikiURL( const QString& item );
         void reloadWikipedia();
-    void showWikipediaEntry( const QString& entry, bool replaceHistory = false );
+        void showWikipediaEntry( const QString& entry, bool replaceHistory = false );
         void showWikipedia( const QString& url = QString(), bool fromHistory = false, bool replaceHistory = false );
-    
+
         /// Attributes ////////////////////////////////////////
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
 
@@ -104,7 +106,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         /// Wikipedia box attributes ///////////////////////////
         GenericInfoBox *m_wikiBox;
-        
+
         KJob* m_wikiJob;
         QString m_wikiCurrentEntry;
         QString m_wikiCurrentUrl;
@@ -113,17 +115,18 @@ class ContextView : public QGraphicsView, public EngineObserver
         bool m_wikiVisible;
         QString m_wikiHTMLSource;
         QString m_wikiLanguages;
-    
+
         QString m_wiki; // wiki source
-    
+
         QStringList m_wikiBackHistory;
         QStringList m_wikiForwardHistory;
-        
+
         static QString s_wikiLocale;
     private slots:
 
         void introAnimationComplete();
-            
+        void testBoxLayout();
+
         /// Wikipedia slots
     /*void wikiConfigChanged( int );
         void wikiConfigApply();
@@ -132,9 +135,9 @@ class ContextView : public QGraphicsView, public EngineObserver
         void wikiAlbumPage();
         void wikiTitlePage();
         void wikiExternalPage();
-        
+
         void wikiResult( KJob* job );
-    
+
 };
 
 #endif
