@@ -715,7 +715,6 @@ CollectionDB::createTables( const bool temporary )
                         "artist " + textColumnType() + ","
                         "suggestion " + textColumnType() + ","
                         "changedate INTEGER );" ) );
-        query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
         createIndices();
     }
@@ -734,7 +733,7 @@ CollectionDB::createIndices()
     //tables which are not created in that function.
     debug() << "Creating indices, ignore errors about already existing indices" << endl;
 
-    query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
+    query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );", true );
     query( "CREATE INDEX album_tag ON tags( album );" );
     query( "CREATE INDEX artist_tag ON tags( artist );" );
     query( "CREATE INDEX composer_tag ON tags( composer );" );
@@ -759,6 +758,14 @@ CollectionDB::createIndices()
     query( "CREATE INDEX composer_idx ON composer( name );" );
     query( "CREATE INDEX genre_idx ON genre( name );" );
     query( "CREATE INDEX year_idx ON year( name );" );
+
+    query( "CREATE INDEX tags_artist_index ON tags( artist );" );
+    query( "CREATE INDEX tags_album_index ON tags( album );" );
+    query( "CREATE INDEX tags_deviceid_index ON tags( deviceid );" );
+    query( "CREATE INDEX tags_url_index ON tags( url(20) );" );
+
+    query( "CREATE INDEX embed_deviceid_index ON embed( deviceid );" );
+    query( "CREATE INDEX embed_url_index ON embed( url(20) );" );
 
     query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
@@ -4784,7 +4791,7 @@ CollectionDB::applySettings()
         // If Database engine was changed, recreate DbConnections.
         destroy();
         initialize();
-//PORT 2.0   CollectionView::instance()->renderView(); 
+//PORT 2.0   CollectionView::instance()->renderView();
         PlaylistBrowser::instance()->loadPodcastsFromDatabase();
 
         emit databaseEngineChanged();
