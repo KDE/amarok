@@ -6,6 +6,8 @@ Amarok ChangeLog
 VERSION 1.4.7
   CHANGES:
     * Upgraded SQLite to 3.4.0
+    * SQL improvements providing optimisations on intensive queries. Patch by
+      Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
 
