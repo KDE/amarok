@@ -53,7 +53,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void clear();
 
-        void addContextBox( QGraphicsItem *newBox, int after = -1 /*which position to place the new box*/, bool fadeIn = false);
+        void addContextBox( QGraphicsItem *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false);
         void removeContextBox( QGraphicsItem *oldBox, bool fadeOut = false);
 
         void showLyrics( const QString& url );
@@ -126,7 +126,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         static QString s_wikiLocale;
 
-        QPointer<QGraphicsSvgItem> m_testItem;
+        QPointer<ContextBox> m_testItem;
 
     private slots:
         void introAnimationComplete();

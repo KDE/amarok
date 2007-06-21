@@ -216,8 +216,11 @@ void ContextView::testBoxLayout()
 
     if( !m_testItem )
     {
-        m_testItem = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ) );
-        m_testItem->scale( 0.5, 0.5 );
+        m_testItem = new ContextBox();
+        m_testItem->setTitle( "Test Item" );
+//         QGraphicsSvgItem *svg = new QGraphicsSvgItem( KStandardDirs::locate("data", "amarok/images/amarok_icon.svg" ), m_testItem );
+//         svg->scale(0.5, 0.5 );
+//         svg->moveBy( 0, 30 );
     }
 
     if( s_add )
@@ -226,7 +229,6 @@ void ContextView::testBoxLayout()
         removeContextBox( m_testItem, true );
 
     s_add = !s_add;
-
     QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
 }
 
@@ -263,17 +265,27 @@ void ContextView::resizeEvent( QResizeEvent *event )
 
 void ContextView::clear()
 {
+    if( m_lyricsVisible )
+    {
+        m_contextScene->removeItem( m_lyricsBox );
+        delete m_lyricsBox;
+    }
 
-    if( m_lyricsVisible ) m_contextScene->removeItem( m_lyricsBox );
-    if( m_lyricsVisible && m_lyricsBox != 0 ) delete m_lyricsBox;
     m_lyricsVisible = false;
     m_dirtyLyricsPage = true;
-    if( m_wikiVisible ) m_contextScene->removeItem( m_wikiBox );
-    if( m_wikiVisible && m_wikiBox != 0 ) delete m_wikiBox;
+
+    if( m_wikiVisible )
+    {
+        m_contextScene->removeItem( m_wikiBox );
+        delete m_wikiBox;
+    }
+
     m_wikiJob = 0;
     m_wikiVisible = false;
     m_dirtyWikiPage = true;
+
     delete m_contextScene;
+
     initiateScene();
     update();
 }
@@ -299,34 +311,37 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut )
 
     QList<QGraphicsItem*> items = m_contextScene->items();
 
-    QMap<qreal, QGraphicsItem*> boxesAndBorders;
+    QMap<qreal, ContextBox*> boxesAndBorders;
 
     if( !items.isEmpty() )
     {
-        bool calculate = false;
+        int index = 1;
         foreach( QGraphicsItem* i, items )
         {
-            if( dynamic_cast<ContextBox*>(i) )
+            ContextBox *box = dynamic_cast<ContextBox*>(i);
+            if( box )
             {
-                boxesAndBorders.insertMulti( i->sceneBoundingRect().top(), i );
+                boxesAndBorders.insertMulti( box->sceneBoundingRect().top(), box );
             }
         }
 
         // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>          bottoms = boxesAndBorders.keys();
-        const QList<QGraphicsItem*> boxes   = boxesAndBorders.values();
+        const QList<qreal>       tops  = boxesAndBorders.keys();
+        const QList<ContextBox*> boxes = boxesAndBorders.values();
 
         QList<QGraphicsItem*> shuffleUp;
 
         // need to shuffle up all the boxes below
-        for( int i = 0; i < boxes.size(); ++i )
+        for( ; index < boxes.size(); ++index )
         {
-            QGraphicsItem *box = boxes.at(i);
+            ContextBox *box = boxes.at(index);
+
+            debug() << "shuffling up: " << box->title() << endl;
             shuffleUp << box;
         }
 
         qreal distance = oldBox->boundingRect().height() + BOX_PADDING;
-        debug() << "shuffling " << shuffleUp.size() << " items down, a total of " << distance << endl;
+        debug() << "shuffling " << shuffleUp.size() << " items up, a total of " << distance << endl;
 
         shuffleItems( shuffleUp, distance, ShuffleUp );
     }
@@ -334,7 +349,8 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut )
     m_contextScene->removeItem( oldBox );
 }
 
-void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
+// Places a context box at the location specified by @param index. -1 -> at the bottom
+void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn )
 {
     DEBUG_BLOCK
 
@@ -358,7 +374,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
     QList<QGraphicsItem*> items = m_contextScene->items();
     qreal yposition = BOX_PADDING;
 
-    QMap<qreal, QGraphicsItem*> boxesAndBorders;
+    QMap<qreal, ContextBox*> boxesAndBorders;
 
     if( !items.isEmpty() )
     {
@@ -368,36 +384,35 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
         {
             // insertMulti allows for many values with the same key. important if we decide to change
             // the layout later (eg, multiple columns, with boxes with the same bottom border y position)
-
-            if( dynamic_cast<ContextBox*>(i) )
-                boxesAndBorders.insertMulti( i->sceneBoundingRect().bottom(), i );
+            ContextBox *box = dynamic_cast<ContextBox*>(i);
+            if( box )
+                boxesAndBorders.insertMulti( box->sceneBoundingRect().bottom(), box );
         }
 
-        if( after >= items.count() )
-            after = -1;
+        if( index >= items.count() )
+            index = -1;
 
         // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>          bottoms = boxesAndBorders.keys();
-        const QList<QGraphicsItem*> boxes   = boxesAndBorders.values();
+        const QList<qreal>       bottoms = boxesAndBorders.keys();
+        const QList<ContextBox*> boxes   = boxesAndBorders.values();
 
         debug() << "box count: " << boxes.size() << endl;
 
         // special case 'add-to-end' index, -1.
-        if( after < 0 )
+        if( index < 0 )
             yposition = bottoms.last() + BOX_PADDING;
         else
         {
-            --after;
-            if( after > 0 )
-                yposition = bottoms.at( after ) + BOX_PADDING;
+            if( index > 0 ) // we need the bottom value for the box above it.
+                yposition = bottoms.at( index - 1 ) + BOX_PADDING;
 
             debug() << "y-position: " << yposition << endl;
 
             QList<QGraphicsItem*> shuffleDown;
 
             // need to shuffle down all the boxes below
-            for( int i = after; i < boxes.size(); ++i )
-                shuffleDown << boxes.at(i);
+            for( int i = index; i < boxes.size(); ++i )
+                shuffleDown << boxes.at( i );
 
             qreal distance = newBox->boundingRect().height() + BOX_PADDING;
             debug() << "shuffling " << shuffleDown.size() << " items down, a total of " << distance << endl;
@@ -406,7 +421,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int after, bool fadeIn )
         }
     }
 
-    debug() << "placing box at position: " << after << ", y position of box: " << yposition << endl;
+    debug() << "placing box at position: " << index << ", y position of box: " << yposition << endl;
 
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
