@@ -32,7 +32,7 @@ AddTracksCmd::undo()
 }
 
 RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, int position, int numOfRows )
-    : QUndoCommand( i18n("Tracks Added"), parent )
+    : QUndoCommand( i18n("Tracks Removed"), parent )
     , m_numOfRows( numOfRows )
     , m_position( position )
 {  }
