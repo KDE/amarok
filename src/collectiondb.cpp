@@ -691,7 +691,6 @@ CollectionDB::createTables( const bool temporary )
                         "artist " + textColumnType() + ","
                         "suggestion " + textColumnType() + ","
                         "changedate INTEGER );" ) );
-        query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
         createIndices();
     }
