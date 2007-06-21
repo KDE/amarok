@@ -735,6 +735,14 @@ CollectionDB::createIndices()
     query( "CREATE INDEX genre_idx ON genre( name );" );
     query( "CREATE INDEX year_idx ON year( name );" );
 
+    query( "CREATE INDEX tags_artist_index ON tags( artist );" );
+    query( "CREATE INDEX tags_album_index ON tags( album );" );
+    query( "CREATE INDEX tags_deviceid_index ON tags( deviceid ); ");
+    query( "CREATE INDEX tags_url_index ON tags( url(20) ); ");
+
+    query( "CREATE INDEX embed_deviceid_index ON embed( deviceid ); ");
+    query( "CREATE INDEX embed_url_index ON embed( url(20) ); "); 
+
     query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
     debug() << "Finished creating indices, stop ignoring errors" << endl;
