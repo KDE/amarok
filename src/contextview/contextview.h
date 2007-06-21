@@ -18,10 +18,10 @@
 #define AMAROK_CONTEXTVIEW_H
 
 #include "contextbox.h"
+#include "ContextItem.h"
 #include "engineobserver.h"
 #include "GenericInfoBox.h"
 
-#include <kio/job.h>
 
 #include <QGraphicsSvgItem>
 #include <QGraphicsView>
@@ -40,8 +40,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
     public:
 
-        static const int BOX_PADDING = 30;
-        static const int WIKI_MAX_HISTORY = 10;
+        static const int BOX_PADDING = 20;
         ~ContextView() { /* delete, disconnect and disembark */ }
 
         static ContextView *instance()
@@ -53,13 +52,13 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void clear();
 
+        // this registers the item as populating the ContextView, so it gets messages etc. the item should then call {add/remove}ContextBox to actually populate the CV
+        void addContextItem( ContextItem* i );
+        void removeContextItem( ContextItem* i );
+    
         void addContextBox( QGraphicsItem *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false);
+        
         void removeContextBox( QGraphicsItem *oldBox, bool fadeOut = false);
-
-        void showLyrics( const QString& url );
-
-    public slots:
-        void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false ) ;
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -82,68 +81,23 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction );
 
+        void notifyItems( const QString& message );
+    
         /// Page Views ////////////////////////////////////////
         void showHome();
         void showCurrentTrack();
 
-        /// Wikipedia box /////////////////////////////////////
-        QString wikiArtistPostfix();
-        QString wikiAlbumPostfix();
-        QString wikiTrackPostfix();
-        QString wikiLocale();
-        void setWikiLocale( const QString& );
-        QString wikiURL( const QString& item );
-        void reloadWikipedia();
-        void showWikipediaEntry( const QString& entry, bool replaceHistory = false );
-        void showWikipedia( const QString& url = QString(), bool fromHistory = false, bool replaceHistory = false );
 
         /// Attributes ////////////////////////////////////////
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
-
-        /// Lyrics box attributes /////////////////////////////
-        GenericInfoBox *m_lyricsBox;
-
-        bool            m_dirtyLyricsPage;
-        bool            m_lyricsVisible;
-        QString         m_HTMLSource;
-
-        /// Wikipedia box attributes ///////////////////////////
-        GenericInfoBox *m_wikiBox;
-
-        KJob* m_wikiJob;
-        QString m_wikiCurrentEntry;
-        QString m_wikiCurrentUrl;
-        QString m_wikiBaseUrl;
-        bool m_dirtyWikiPage;
-        bool m_wikiVisible;
-        QString m_wikiHTMLSource;
-        QString m_wikiLanguages;
-
-        QString m_wiki; // wiki source
-
-        QStringList m_wikiBackHistory;
-        QStringList m_wikiForwardHistory;
-
-        static QString s_wikiLocale;
+        
+        QList< ContextItem* > m_contextItems;
 
         QPointer<ContextBox> m_testItem;
 
     private slots:
         void introAnimationComplete();
         void testBoxLayout();
-
-        /// Wikipedia slots
-        /*
-        void wikiConfigChanged( int );
-        void wikiConfigApply();
-        void wikiConfig();
-        */
-        void wikiArtistPage();
-        void wikiAlbumPage();
-        void wikiTitlePage();
-        void wikiExternalPage();
-
-        void wikiResult( KJob* job );
 
 };
 

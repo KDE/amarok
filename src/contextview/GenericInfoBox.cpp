@@ -11,8 +11,10 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "GenericInfoBox.h"
 #include "amarok.h"
+#include "contextview.h"
 #include "debug.h"
 #include "scriptmanager.h"
 
@@ -26,8 +28,8 @@ GenericInfoBox::GenericInfoBox( QGraphicsItem* parent, QGraphicsScene *scene ) :
 
 void GenericInfoBox::setContents( const QString& html )
 {
-    m_content = new QGraphicsTextItem( m_contentRect );
-    m_content->setHtml( html);
+    m_content = new QGraphicsTextItem( "", m_contentRect );
+    m_content->setHtml( html );
     init();
 	
 }
@@ -35,27 +37,38 @@ void GenericInfoBox::setContents( const QString& html )
 void GenericInfoBox::init()
 {
     m_content->setTextWidth( m_contentRect->rect().width() );// respect the boundaries given to us by the parent!
-    m_content->setTextInteractionFlags( Qt::TextSelectableByKeyboard |
-                                        Qt::TextSelectableByMouse    |
-                                        Qt::LinksAccessibleByMouse   |
-                                        Qt::LinksAccessibleByKeyboard);
-    connect( m_content, SIGNAL( linkActivated ( QString ) ), this, SLOT( externalUrl( QString ) ) ); // make urls work
+    m_content->setTextInteractionFlags( Qt::TextSelectableByMouse |
+                                        Qt::LinksAccessibleByMouse );
+    connect( m_content, SIGNAL( linkActivated ( QString ) ), this, SLOT( externalUrl( QString ) ) );
     int width =  (int) m_content->boundingRect().width();
     int height = (int) m_content->boundingRect().height();
-    setBoundingRectSize( QSize( width, height ) );
+    
     setContentRectSize( QSize( width, height ) );
 }
 
 void GenericInfoBox::clearContents() {
-    if( m_content != 0 ) {
-        debug() << "got wiki box contents: " << m_content->toPlainText() << endl;
+    if( m_content != 0 )
         delete m_content;
-    }
     /*m_content = new QGraphicsTextItem( m_contentRect );
     init();*/
 }
 
-void GenericInfoBox::externalUrl( const QString& urlS )
+// we want to make sure the text wraps to fit inside the new box size
+void GenericInfoBox::ensureWidthFits( const int width )
+{    
+    const int newWidth = width - (int)ContextView::BOX_PADDING * 2;
+    
+    m_content->setTextWidth( newWidth );
+    const int height = (int) m_content->boundingRect().height();
+    
+    QSize newSize = QSize( newWidth, height );
+    setContentRectSize( newSize, false );
+}
+
+
+// NOTE: i can't make this work... m_content (QGraphicsTextItem) never emits the linkActivated signal...
+
+void GenericInfoBox::externalUrl( const QString& urlS ) // SLOT
 {
     DEBUG_BLOCK
         

@@ -17,6 +17,7 @@
 #define AMAROK_PLAYLISTWINDOW_H
 
 #include "amarok_export.h"
+#include "dynamicmode.h"
 
 #include <QtGui/QWidget>    //baseclass
 

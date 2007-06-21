@@ -213,6 +213,9 @@ set(libcontextview_SRCS
     contextview/textfader.cpp
     contextview/introanimation.cpp
     contextview/ContextScriptManager.cpp
+    contextview/LyricsItem.cpp
+    contextview/WikipediaItem.cpp
+    contextview/ContextItem.cpp
 )
 
 #####################################################################

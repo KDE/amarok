@@ -1,0 +1,97 @@
+/***************************************************************************
+ * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ **************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef WIKIPEDIA_ITEM_H
+#define WIKIPEDIA_ITEM_H
+
+#include "ContextItem.h"
+#include "enginecontroller.h"
+#include "GenericInfoBox.h"
+
+#include <kio/job.h>
+
+using namespace Context;
+
+class WikipediaItem : public ContextItem, public EngineObserver
+{
+    Q_OBJECT
+    static WikipediaItem* s_instance;
+
+    static const int WIKI_MAX_HISTORY = 10;
+    
+public:
+    
+    static WikipediaItem *instance()
+    {
+        if( !s_instance )
+            return new WikipediaItem();
+        return s_instance;
+    }
+    
+    
+    void notify( const QString& message );
+    
+    void showWikipedia( const QString& url = QString(), bool fromHistory = false, bool replaceHistory = false );
+    
+protected:
+    void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
+    
+private:
+    WikipediaItem();
+    
+    QString wikiArtistPostfix();
+    QString wikiAlbumPostfix();
+    QString wikiTrackPostfix();
+    QString wikiLocale();
+    void setWikiLocale( const QString& );
+    QString wikiURL( const QString& item );
+    void reloadWikipedia();
+    void showWikipediaEntry( const QString& entry, bool replaceHistory = false );
+    
+    
+    GenericInfoBox *m_wikiBox;
+    
+    KJob* m_wikiJob;
+    QString m_wikiCurrentEntry;
+    QString m_wikiCurrentUrl;
+    QString m_wikiBaseUrl;
+    bool m_dirtyWikiPage;
+    bool m_wikiVisible;
+    QString m_wikiHTMLSource;
+    QString m_wikiLanguages;
+    
+    QString m_wiki; // wiki source
+    
+    QStringList m_wikiBackHistory;
+    QStringList m_wikiForwardHistory;
+    
+    static QString s_wikiLocale;
+    
+private slots:
+    
+        /* these need resolution of the menu problem first
+        void wikiConfigChanged( int );
+        void wikiConfigApply();
+        void wikiConfig();
+        */
+    void wikiArtistPage();
+    void wikiAlbumPage();
+    void wikiTitlePage();
+    void wikiExternalPage();
+    
+    void wikiResult( KJob* job );
+    
+    
+};
+
+#endif

@@ -27,8 +27,11 @@ namespace Context
                 
         void setContents( const QString& );
         void clearContents();
+        
+        void ensureWidthFits( const int width );
+        
     private slots:
-        void externalUrl( const QString& );
+        void externalUrl( const QString& urlS);
     private:
         void init();
         

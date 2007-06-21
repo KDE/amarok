@@ -126,9 +126,9 @@ void ContextBox::ensureWidthFits( const int width )
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    event->ignore();
+    //event->ignore();
 
-    /*
+    
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
@@ -140,10 +140,10 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
     } else {
         event->ignore();
-    }
-    //QGraphicsRectItem::mousePressEvent( event );
-    */
+    } 
+    QGraphicsItem::mousePressEvent( event );
 }
+
 
 void ContextBox::toggleVisibility()
 {

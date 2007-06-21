@@ -26,8 +26,8 @@
 #include "app.h" //transferCliArgs
 #include "debug.h"
 #include "collectiondb.h"
-#include "contextview/contextview.h"
 #include "contextview/ContextScriptManager.h"
+#include "contextview/LyricsItem.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -770,11 +770,11 @@ void DbusContextHandler::removeContextBox( const int boxNum )
 
 void DbusContextHandler::showLyrics()
 {
-    ContextView::instance()->showLyrics( QString() );
+    LyricsItem::instance()->showLyrics( QString() );
 }
 void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 {
-    ContextView::instance()->lyricsResult( lyrics );
+    LyricsItem::instance()->lyricsResult( lyrics );
 }
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusCollectionHandler
