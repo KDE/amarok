@@ -18,6 +18,8 @@
 
 #include "AmarokMimeData.h"
 
+#include "debug.h"
+
 #include <QCoreApplication>
 #include <QList>
 #include <QUrl>
@@ -39,8 +41,9 @@ AmarokMimeData::~AmarokMimeData()
 QStringList
 AmarokMimeData::formats() const
 {
+    DEBUG_BLOCK
     QStringList formats( QMimeData::formats() );
-    if( !m_tracks.isEmpty() )
+    if( !m_tracks.isEmpty() || !m_queryMakers.isEmpty())
     {
         formats.append( "application/x-amarok-tracks" );
         if( !formats.contains( "text/uri-list" ) )
@@ -48,21 +51,17 @@ AmarokMimeData::formats() const
         if( !formats.contains( "text/plain" ) )
             formats.append( "text/plain" );
     }
-    if( !m_queryMakers.isEmpty() )
-        formats.append( "application/x-amarok-querymaker" );
     return formats;
 }
 
 bool
 AmarokMimeData::hasFormat( const QString &mimeType ) const
 {
+    DEBUG_BLOCK
+    debug() << "mimeType is " << mimeType << endl;
     if( mimeType == "application/x-amarok-tracks" )
     {
-        return !m_tracks.isEmpty();
-    }
-    else if( mimeType == "application/x-amarok-querymaker" )
-    {
-        return !m_queryMakers.isEmpty();
+        return !m_tracks.isEmpty() || !m_queryMakers.isEmpty();
     }
     else
         return QMimeData::hasFormat( mimeType );
@@ -137,6 +136,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type )
 void
 AmarokMimeData::startQueries()
 {
+    DEBUG_BLOCK
     foreach( QueryMaker *qm, m_queryMakers )
     {
         qm->startTrackQuery();
