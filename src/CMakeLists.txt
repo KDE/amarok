@@ -335,7 +335,6 @@ set(amarok_LIB_SRCS
     mediumpluginmanager.cpp
     metabundle.cpp
     metabundlesaver.cpp
-    MimeData.cpp
     moodbar.cpp
     mountpointmanager.cpp
     mydiroperator.cpp
