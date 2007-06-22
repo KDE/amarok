@@ -19,12 +19,15 @@
 #include <klocale.h>
 #include <kdemacros.h>
 
+class QMimeData;
 class QModelIndex;
 class QueryMaker;
 class QUndoStack;
 
 //PORT rename to Playlist when the playlist class is removed
 namespace PlaylistNS {
+
+    static const QString TRACKLIST_MIME = "application/x-amarok-meta-tracklist";
 
 class TrackAdvancer;
 
@@ -85,7 +88,12 @@ class TrackAdvancer;
             bool removeRows( int position, int rows );
             QVariant headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::DropActions supportedDropActions() const;
+            
+        //Drag and Drop methods
             Qt::ItemFlags flags(const QModelIndex &index) const;
+            void mimeTypes() const;
+            QMimeData* mimeData(const QModelIndexList &indexes) const;
+            bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
         //other methods
             void init();
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
@@ -105,7 +113,7 @@ class TrackAdvancer;
             void insertTrack( int row, Meta::TrackPtr track ); //convenience method
             void insertTracks( int row, Meta::TrackList list );
             void insertTracks( int row, QueryMaker *qm );
-            
+
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
@@ -156,6 +164,7 @@ class TrackAdvancer;
             int m_activeRow; //! the row being played
             TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
             QUndoStack* m_undoStack; //! for pushing on undo commands
+            QItemSelectionModel* m_selectionModel; //! keeps track of what is selected in this model
             QHash<QueryMaker*, int> m_queryMap; //!maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //!maps queries to the options to be used when inserting the result
 

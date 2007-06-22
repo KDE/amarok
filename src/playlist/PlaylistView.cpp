@@ -13,9 +13,13 @@ using namespace PlaylistNS;
 void
 View::setModel( QAbstractItemModel * model )
 {
-     QTableView::setModel( model );
-     setDragDropMode( QAbstractItemView::DragDrop );
-     setDragDropOverwriteMode( false );
-     connect( this, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( play( const QModelIndex& ) ) );
+    QTableView::setModel( model );
+    setDragDropMode( QAbstractItemView::DragDrop );
+    setDragDropOverwriteMode( false );
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setDragEnabled(true);
+    setAcceptDrops(true);
+    setDropIndicatorShown(true)
+    connect( this, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( play( const QModelIndex& ) ) );
 }
 #include "PlaylistView.moc"

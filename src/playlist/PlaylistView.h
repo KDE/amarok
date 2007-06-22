@@ -16,8 +16,6 @@ class QAbstractItemModel;
  */
 namespace PlaylistNS {
 
-    static const QString TRACKLIST_MIME = "application/x-amarok-meta-tracklist";
-
     class View : public QTableView
     {
         Q_OBJECT

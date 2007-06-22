@@ -21,9 +21,13 @@
 #include "collection/collectionmanager.h"
 #include "collection/querymaker.h"
 #include "meta/lastfm/LastFmMeta.h"
+#include "MimeData.h"
 
 #include <QAction>
+#include <QItemSelectionModel>
+#include <QStringList>
 #include <QUndoStack>
+
 
 #include <KIcon>
 #include <KUrl>
@@ -37,6 +41,7 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackAdvancer( this ) )
     , m_undoStack( new QUndoStack( this ) )
+    , m_selectionModel( new QItemSelectionModel( this ) )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     m_columns << TrackNumber << Title << Artist << Album;
@@ -383,6 +388,43 @@ Model::flags(const QModelIndex &index) const
         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
     else
         return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
+QStringList
+Model::mimeTypes() const
+{
+    QStringList ret = QAbstractTableModel::mimeTypes();
+    ret << TRACKLIST_MIME;
+    return ret;
+}
+
+QMimeData*
+Model::mimeData( const QModelIndexList &indexes )
+{
+    QModelIndexList selection = m_selectionModel->selectedIndexes();
+    QModelIndex it;
+    Meta::TrackList selectedTracks;
+    foreach( it, selection )
+        selectedTracks.push_back( m_tracks( it.row() ) );
+
+    TrackListMimeData* mime = new TrackListMimeData();
+    mime->setTracks( selectedTracks );
+    return mime;
+}
+
+bool
+Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
+{
+    if( data.hasFormat( TRACKLIST_MIME ) )
+    {
+        TrackListMimeData* trackListDrag = dynamic_cast<TrackListMimeData*>( data );
+        if( trackListDrag )
+        {
+            insertTracks( row, trackListDrag->tracks() );
+            return true;
+        }
+    }
+    return false;
 }
 
 ////////////
