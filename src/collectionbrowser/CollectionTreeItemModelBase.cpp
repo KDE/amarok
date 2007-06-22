@@ -15,6 +15,7 @@
 #include "CollectionTreeItemModelBase.h"
 
 #include "amarok.h"
+#include "AmarokMimeData.h"
 #include "collection.h"
 #include "collectionmanager.h"
 #include "collectiontreeitem.h"
@@ -26,7 +27,6 @@
 #include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
-#include <QMimeData>
 #include <QPixmap>
 #include <QTimer>
 
