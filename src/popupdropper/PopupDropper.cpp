@@ -18,12 +18,15 @@
 
 #include "app.h"
 #include "debug.h"
+#include "contextview/contextview.h"
 #include "PopupDropper.h"
 #include "PopupDropperScene.h"
 #include "PopupDropperView.h"
 
 #include <QBrush>
 #include <QColor>
+
+static bool ENABLED = false;
 
 using namespace PopupDropperNS;
 
@@ -38,6 +41,7 @@ PopupDropper::instance()
 
 PopupDropper::PopupDropper() : QObject()
                 , m_scene( 0 )
+                , m_enabled( ENABLED )
                 , m_initialized( false )
 {
     DEBUG_BLOCK
@@ -69,7 +73,10 @@ void
 PopupDropper::Create()
 {
     DEBUG_BLOCK
-    m_scene.startPDV();
+    if( !m_initialized )
+        Initialize( ContextView::instance() );
+    if( !m_scene.isShown() )
+        m_scene.startPDV();
 }
 
 void

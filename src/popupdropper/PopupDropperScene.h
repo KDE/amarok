@@ -50,16 +50,19 @@ namespace PopupDropperNS {
             void startPDV();
             void stopPDV();
 
+            inline bool isShown() { return m_shown; }
+
         public slots:
             void pdvShown();
             void pdvHidden();
             void updateIconSpinIn( int frame );
 
         private:
-            PopupDropperView* m_pdv;
-            QTimeLine m_fadeInTL;
-            QTimeLine m_fadeOutTL;
-            QTimeLine m_spinInTL;
+            PopupDropperView*   m_pdv;
+            QTimeLine           m_fadeInTL;
+            QTimeLine           m_fadeOutTL;
+            QTimeLine           m_spinInTL;
+            bool                m_shown;
     
     };
 }

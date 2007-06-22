@@ -11,6 +11,7 @@
 #include "amarok.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "playlist/PlaylistModel.h"
+#include "popupdropper/PopupDropper.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
@@ -21,9 +22,10 @@
 #include <KMenu>
 #include <KSharedPtr>
 
-
+class PopupDropperNS::PopupDropper;
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
+    , m_dragStartPosition()
 {
     KConfigGroup config = Amarok::config( "Collection Browser" );
     QList<int> cats = config.readEntry( "TreeCategory", QList<int>() );
@@ -141,6 +143,27 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     }
     else
         debug() << "invalid index or null internalPointer" << endl;
+}
+
+void CollectionTreeView::mousePressEvent( QMouseEvent *e )
+{
+    if( e->button() == Qt::LeftButton )
+        m_dragStartPosition = e->pos();
+
+    QTreeView::mousePressEvent( e );
+}
+
+void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
+{
+    if( !( e->buttons() & Qt::LeftButton ) )
+        return;
+    if( ( e->pos() - m_dragStartPosition).manhattanLength() < QApplication::startDragDistance() )
+        return;
+
+    if( The::PopupDropper()->isEnabled() )
+        The::PopupDropper()->Create();
+
+    QTreeView::mouseMoveEvent( e );
 }
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)

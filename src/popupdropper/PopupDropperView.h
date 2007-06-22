@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QtGlobal>
 
+class QMouseEvent;
 class QGraphicsScene;
 class QPainter;
 class QRectF;
@@ -48,9 +49,14 @@ namespace PopupDropperNS {
             PopupDropperView( QGraphicsScene *scene, QWidget *parent  );
             ~PopupDropperView();
 
+            void mouseMoveEvent( QMouseEvent *e );
+
         public slots:
             void setTransInValue( int value );
             void setTransOutValue( int value );
+
+        signals:
+            void destroyMe();
 
     };
 }

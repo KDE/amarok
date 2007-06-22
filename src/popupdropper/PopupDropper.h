@@ -53,12 +53,14 @@ namespace PopupDropperNS {
             void Initialize(QWidget* window);
             void Create();
             void Destroy();
-            inline bool isInitialized() const { return m_initialized; }
+            inline bool isEnabled() const { return m_enabled; }
             inline bool isHidden() const { return !m_view || m_view->isHidden(); }
+            inline bool isInitialized() const { return m_initialized; }
             QRectF sceneRect() const { return m_scene.sceneRect(); }
 
             PopupDropperScene      m_scene;
             PopupDropperView*      m_view;
+            bool                   m_enabled;
             bool                   m_initialized;
 
     };

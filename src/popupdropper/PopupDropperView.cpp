@@ -22,6 +22,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QRectF>
 
@@ -64,6 +65,12 @@ void PopupDropperView::setTransOutValue( int value )
     QPalette p = palette();
     p.setColor( QPalette::Base, QColor(0, 0, 0, 120 - value*12) );
     setPalette( p );
+}
+
+void PopupDropperView::mouseMoveEvent( QMouseEvent *e )
+{
+    if( !( e->buttons() & Qt::LeftButton) )
+        emit destroyMe();
 }
 
 #include "PopupDropperView.moc"

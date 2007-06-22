@@ -349,7 +349,6 @@ void PlaylistWindow::init()
 //    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 
     Amarok::MessageQueue::instance()->sendMessages();
-    //QTimer::singleShot( 8000, this, SLOT( triggerTestingFunction() ) );
 }
 
 void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
@@ -1301,19 +1300,6 @@ void PlaylistWindow::createMenus()
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
     m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 }
-
-void PlaylistWindow::triggerTestingFunction()
-{
-    if( !The::PopupDropper()->isInitialized() )
-        The::PopupDropper()->Initialize( this );
-    if( The::PopupDropper()->isHidden() ) 
-        The::PopupDropper()->Create();
-    else
-        The::PopupDropper()->Destroy();
-
-    QTimer::singleShot( 8000, this, SLOT( triggerTestingFunction() ) );
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DynamicBar

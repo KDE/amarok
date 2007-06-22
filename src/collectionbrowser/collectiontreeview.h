@@ -37,16 +37,20 @@ class CollectionTreeView: public QTreeView {
     public slots:
         void slotSetFilterTimeout();
 
-    private:
-        CollectionSortFilterProxyModel *m_filterModel;
-        CollectionTreeItemModel *m_treeModel;
-        QTimer m_filterTimer;
+    protected:
+        void mousePressEvent( QMouseEvent *event );
+        void mouseMoveEvent( QMouseEvent *event );
 
     protected slots:
 
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
-
         void slotExpand( const QModelIndex &index );
+
+    private:
+        CollectionSortFilterProxyModel *m_filterModel;
+        CollectionTreeItemModel *m_treeModel;
+        QTimer m_filterTimer;
+        QPoint m_dragStartPosition;
 
     signals:
 

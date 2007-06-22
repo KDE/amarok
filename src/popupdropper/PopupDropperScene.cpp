@@ -34,7 +34,8 @@ PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
                     , m_fadeInTL( 2000, this )
                     , m_fadeOutTL( 2000, this )
-                    , m_spinInTL( 1000, this )
+                    , m_spinInTL( 300, this )
+                    , m_shown( false )
 {
     DEBUG_BLOCK
     m_fadeInTL.setFrameRange( 0, 10 );
@@ -58,6 +59,7 @@ PopupDropperScene::setPDV( PopupDropperView *pdv  )
     connect( &m_fadeInTL, SIGNAL( finished() ), this, SLOT( pdvShown() ) );
     connect( &m_fadeOutTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransOutValue(int) ) );
     connect( &m_fadeOutTL, SIGNAL( finished() ), this, SLOT( pdvHidden() ) );
+    connect( m_pdv, SIGNAL( destroyMe() ), this, SLOT( pdvHidden() ) );
     connect( &m_spinInTL, SIGNAL( frameChanged(int) ), this, SLOT( updateIconSpinIn(int) ) );
 }
 
@@ -67,7 +69,6 @@ PopupDropperScene::startPDV()
     DEBUG_BLOCK
     m_pdv->show();
     pdvShown();
-//    m_fadeInTL.start();
 }
 
 void
@@ -75,7 +76,6 @@ PopupDropperScene::stopPDV()
 {
     DEBUG_BLOCK
     pdvHidden();
-//    m_fadeOutTL.start();
 }
 
 //SLOT
@@ -95,6 +95,7 @@ PopupDropperScene::pdvShown()
         temp->show();
     }
     m_spinInTL.start();
+    m_shown = true;
 }
 
 //SLOT
@@ -112,7 +113,7 @@ PopupDropperScene::pdvHidden()
         removeItem( temp );
         delete temp;
     }
-
+    m_shown = false;
 }
 
 //SLOT
@@ -121,6 +122,8 @@ PopupDropperScene::updateIconSpinIn( int frame )
 {
     DEBUG_BLOCK
     debug() << "frame number = " << frame << endl;
+    if( frame == 0 )
+        return;
     PopupDropperBaseItem * currItem;
     qreal percentage = frame * 1.0 / SPIN_IN_FRAMES;
     QList<QGraphicsItem *> itemlist = items();
