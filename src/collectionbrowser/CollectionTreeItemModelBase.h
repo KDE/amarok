@@ -61,6 +61,7 @@ Q_OBJECT
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+        virtual QStringList mimeTypes() const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         virtual QPixmap iconForLevel( int level ) const;

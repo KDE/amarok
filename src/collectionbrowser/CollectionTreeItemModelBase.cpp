@@ -142,24 +142,45 @@ int CollectionTreeItemModelBase::columnCount(const QModelIndex & parent) const
     return 1;
 }
 
+QStringList
+CollectionTreeItemModelBase::mimeTypes() const
+{
+    QStringList types;
+    types << "application/x-amarok-tracks";
+    return types;
+}
+
 QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
 {
     if ( indices.isEmpty() )
         return 0;
 
-    KUrl::List urls;
+    Meta::TrackList tracks;
+    QList<QueryMaker*> queries;
 
     foreach( QModelIndex index, indices ) {
         if (index.isValid()) {
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
-            ensureChildrenLoaded( item );
-            urls += item->urls();
+            if( item->allDescendentTracksLoaded() )
+                tracks << item->descendentTracks();
+            else
+            {
+                QueryMaker *qm = item->queryMaker();
+                CollectionTreeItem *tmpItem = item;
+                while ( tmpItem->isDataItem()  ) {
+                    qm->addMatch( tmpItem->data() );
+                    tmpItem = tmpItem->parent();
+                }
+                addFilters( qm );
+                queries.append( qm );
+            }
         }
     }
 
-    QMimeData *mimeData = new QMimeData();
-    urls.populateMimeData(mimeData);
-
+    AmarokMimeData *mimeData = new AmarokMimeData();
+    mimeData->setTracks( tracks );
+    mimeData->setQueryMakers( queries );
+    mimeData->startQueries();
     return mimeData;
 }
 
