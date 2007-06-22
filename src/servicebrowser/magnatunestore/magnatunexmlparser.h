@@ -22,7 +22,7 @@
 #define MAGNATUNEXMLPARSER_H
 
 #include "magnatunedatabasehandler.h"
-#include "magnatunetypes.h"
+#include "MagnatuneMeta.h"
 #include "threadmanager.h"
 
 #include <qdom.h>
@@ -119,7 +119,7 @@ private:
 
     MagnatuneAlbum *m_pCurrentAlbum;
     MagnatuneArtist *m_pCurrentArtist;
-    MagnatuneTrackList m_currentAlbumTracksList;
+    QList<MagnatuneTrack *> m_currentAlbumTracksList;
     QStringList m_currentTrackMoodList;
 
     QString m_sFileName;

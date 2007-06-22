@@ -243,6 +243,42 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, QStringList moods)
     }
 }
 
+int MagnatuneDatabaseHandler::getArtistIdByExactName(const QString & name)
+{
+
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString = "SELECT id from magnatune_artists WHERE name='" + db->escapeString( name ) + "';";
+    QStringList result = db->query( queryString );
+
+    //debug() << "Looking for id of artist " << name << ":" << endl;
+
+    if ( result.size() < 1 ) return -1;
+    int artistId = result.first().toInt();
+    
+    //debug() << "    Found: " << QString::number( artistId ) << ":" << endl;
+    
+    return artistId;
+
+}
+
+int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode(const QString & albumcode)
+{
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString = "SELECT id from magnatune_albums WHERE album_code='" + db->escapeString( albumcode ) + "';";
+    QStringList result = db->query( queryString );
+
+    //debug() << "Looking for id of album " << albumcode << ":" << endl;
+
+    if ( result.size() < 1 ) return -1;
+    int albumId = result.first().toInt();
+    
+    //debug() << "  Found: " << QString::number( albumId ) << ":" << endl;
+    
+    return albumId;
+}
+
 
 
 

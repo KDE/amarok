@@ -123,10 +123,22 @@ MagnatuneXmlParser::parseChildren( QDomElement e )
 void 
 MagnatuneXmlParser::parseAlbum( QDomElement e )
 {
-    m_pCurrentAlbum = new MagnatuneAlbum();
-    m_pCurrentArtist = new MagnatuneArtist();
 
     QString sElementName;
+
+
+    QString name;
+    QString albumCode;
+    QStringList magnatuneGenres;
+    int launchYear;
+    QString coverUrl;
+    QString description;
+    QString artistName;
+    QString artistDescription;
+    QString artistPhotoUrl;
+    QString mp3Genre;
+    QString artistPageUrl;
+  
 
     QDomNode n = e.firstChild();
     QDomElement childElement;
@@ -143,50 +155,58 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
             if ( sElementName == "albumname" )
                 //printf(("|--+" + childElement.text() + "\n").toAscii());
                 //m_currentAlbumItem = new MagnatuneListViewAlbumItem( m_currentArtistItem);
-                m_pCurrentAlbum->setName( childElement.text() );
+                name = childElement.text();
+
 
             else if ( sElementName == "albumsku" )
-                m_pCurrentAlbum->setAlbumCode( childElement.text() );
+                albumCode = childElement.text();
 
             else if ( sElementName == "magnatunegenres" )
-                m_pCurrentAlbum->setMagnatuneGenres( childElement.text() );
+                magnatuneGenres = childElement.text().split(",", QString::SkipEmptyParts);
 
             else if ( sElementName == "launchdate" )
             {
                 QString dateString = childElement.text();
                 QDate date = QDate::fromString( dateString, Qt::ISODate );
-                m_pCurrentAlbum->setLaunchDate( date );
+                launchYear = date.year();
             }
 
             else if ( sElementName == "cover_small" )
-                m_pCurrentAlbum->setCoverURL( childElement.text() );
+                coverUrl =  childElement.text();
 
             else if ( sElementName == "artist" )
-                m_pCurrentArtist->setName( childElement.text() );
+                artistName = childElement.text();
 
             else if ( sElementName == "artistdesc" )
-                m_pCurrentArtist->setDescription( childElement.text() );
+                artistDescription =  childElement.text();
 
             else if ( sElementName == "artistphoto" )
-                m_pCurrentArtist->setPhotoURL( childElement.text() );
+                artistPhotoUrl =  childElement.text() ;
 
             else if ( sElementName == "mp3genre" )
-                m_pCurrentAlbum->setMp3Genre( childElement.text() );
+                mp3Genre = childElement.text();
 
             else if ( sElementName == "home" )
-                m_pCurrentArtist->setHomeURL( childElement.text() );
+                artistPageUrl =  childElement.text();
 
             else if ( sElementName == "Track" )
                 parseTrack( childElement );
 
             else if ( sElementName == "album_notes" )
-                m_pCurrentAlbum->setDescription( childElement.text() );
-
+                description = childElement.text();
 
         }
 
         n = n.nextSibling();
     }
+
+
+    m_pCurrentAlbum = new MagnatuneAlbum( name );
+    m_pCurrentAlbum->setAlbumCode( albumCode);
+    m_pCurrentAlbum->setLaunchYear( launchYear );
+    m_pCurrentAlbum->setCoverUrl( coverUrl );
+    m_pCurrentAlbum->setDescription( description );
+
 
     // now we should have gathered all info about current album (and artist)...
     //Time to add stuff to the database
@@ -194,11 +214,16 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
     //check if artist already exists, if not, create him/her/them/it
 
 
-    int artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->getName() );
+    int artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->name() );
 
     if ( artistId == -1 )
     {
         //does not exist, lets create it...
+
+        m_pCurrentArtist = new MagnatuneArtist( artistName );
+        m_pCurrentArtist->setDescription( artistDescription );
+        m_pCurrentArtist->setPhotoUrl( artistPhotoUrl );
+        m_pCurrentArtist->setMagnatuneUrl( artistPageUrl );
 
         //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
         artistId = m_dbHandler->insertArtist( m_pCurrentArtist );
@@ -206,25 +231,29 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
         if ( artistId == 0 )
         {
-            artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->getName() );
+            artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->name() );
         }
+
+        delete m_pCurrentArtist;
     }
 
-
-    int albumId = m_dbHandler->insertAlbum( m_pCurrentAlbum, artistId );
+    m_pCurrentAlbum->setArtistId( artistId );
+    int albumId = m_dbHandler->insertAlbum( m_pCurrentAlbum );
     if ( albumId == 0 ) // again, postgres can play tricks on us...
     {
-            albumId = m_dbHandler->getAlbumIdByAlbumCode( m_pCurrentAlbum->getAlbumCode() );
+            albumId = m_dbHandler->getAlbumIdByAlbumCode( m_pCurrentAlbum->albumCode() );
     }
 
     m_nNumberOfAlbums++;
 
-    MagnatuneTrackList::iterator it;
+    QList<MagnatuneTrack *>::iterator it;
     for ( it = m_currentAlbumTracksList.begin(); it != m_currentAlbumTracksList.end(); ++it )
     {
-        m_dbHandler->insertTrack( &( *it ), albumId, artistId );
+        m_dbHandler->insertTrack( ( *it ) );
         m_nNumberOfTracks++;
     }
+
+    delete m_pCurrentAlbum;
 
     m_currentAlbumTracksList.clear();
 }

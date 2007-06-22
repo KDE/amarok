@@ -87,6 +87,21 @@ public:
 
     void insertMoods( int trackId, QStringList moods );
 
+     /**
+     * Retrieves the id of a named artist
+     * @param name artist name to retrieve
+     * @return id of artist. -1 if no artist is found
+     */
+    int getArtistIdByExactName(const QString &name);
+
+    /**
+     * Retrieves the id of an album based on its unique album code.
+     * @param albumcode The album code.
+     * @return The id of the album, -1 if not foud.
+     */
+    int getAlbumIdByAlbumCode( const QString &albumcode );
+
+
 
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
