@@ -83,7 +83,8 @@ void
 PopupDropper::Destroy()
 {
     DEBUG_BLOCK
-    m_scene.stopPDV();
+    if( m_scene.isShown() )
+        m_scene.stopPDV();
 }
 
 namespace The {
