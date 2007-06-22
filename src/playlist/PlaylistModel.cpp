@@ -21,7 +21,7 @@
 #include "collection/collectionmanager.h"
 #include "collection/querymaker.h"
 #include "meta/lastfm/LastFmMeta.h"
-#include "MimeData.h"
+#include "AmarokMimeData.h"
 
 #include <QAction>
 #include <QItemSelectionModel>
@@ -399,15 +399,15 @@ Model::mimeTypes() const
 }
 
 QMimeData*
-Model::mimeData( const QModelIndexList &indexes )
+Model::mimeData( const QModelIndexList &indexes ) const
 {
     QModelIndexList selection = m_selectionModel->selectedIndexes();
     QModelIndex it;
     Meta::TrackList selectedTracks;
     foreach( it, selection )
-        selectedTracks.push_back( m_tracks( it.row() ) );
+        selectedTracks << m_tracks.at( it.row() );
 
-    TrackListMimeData* mime = new TrackListMimeData();
+    AmarokMimeData* mime = new AmarokMimeData();
     mime->setTracks( selectedTracks );
     return mime;
 }
@@ -415,9 +415,9 @@ Model::mimeData( const QModelIndexList &indexes )
 bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
 {
-    if( data.hasFormat( TRACKLIST_MIME ) )
+    if( data->hasFormat( TRACKLIST_MIME ) )
     {
-        TrackListMimeData* trackListDrag = dynamic_cast<TrackListMimeData*>( data );
+        const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
             insertTracks( row, trackListDrag->tracks() );

@@ -19,6 +19,7 @@
 #include <klocale.h>
 #include <kdemacros.h>
 
+class QItemSelectionModel;
 class QMimeData;
 class QModelIndex;
 class QueryMaker;
@@ -91,7 +92,7 @@ class TrackAdvancer;
             
         //Drag and Drop methods
             Qt::ItemFlags flags(const QModelIndex &index) const;
-            void mimeTypes() const;
+            QStringList mimeTypes() const;
             QMimeData* mimeData(const QModelIndexList &indexes) const;
             bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
         //other methods
