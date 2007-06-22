@@ -298,6 +298,7 @@ set(amarok_LIB_SRCS
     ${collection_SRCS}
     ${mac_SRCS}
     actionclasses.cpp
+    AmarokMimeData.cpp
     analyzerwidget.cpp
     app.cpp
     atomicstring.cpp
