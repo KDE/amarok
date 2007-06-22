@@ -15,6 +15,9 @@ class QAbstractItemModel;
  * The view of the playlist, used to send user interaction signals back to the model.
  */
 namespace PlaylistNS {
+
+    static const QString TRACKLIST_MIME = "application/x-amarok-meta-tracklist";
+
     class View : public QTableView
     {
         Q_OBJECT

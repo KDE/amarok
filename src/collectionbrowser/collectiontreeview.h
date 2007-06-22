@@ -51,8 +51,6 @@ class CollectionTreeView: public QTreeView {
     signals:
 
         void itemSelected( CollectionTreeItem * item );
-
-        
 };
 
 #endif

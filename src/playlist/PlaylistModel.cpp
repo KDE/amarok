@@ -374,6 +374,17 @@ Model::saveM3U( const QString &path, bool relative ) const
 //     return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
 }
 
+Qt::ItemFlags
+Model::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
+
+    if (index.isValid())
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    else
+        return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
 ////////////
 //Private Methods
 ///////////

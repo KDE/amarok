@@ -85,6 +85,7 @@ class TrackAdvancer;
             bool removeRows( int position, int rows );
             QVariant headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::DropActions supportedDropActions() const;
+            Qt::ItemFlags flags(const QModelIndex &index) const;
         //other methods
             void init();
             void setColumns( QVector< Column > columns ) { m_columns = columns; }
