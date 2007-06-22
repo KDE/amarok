@@ -420,9 +420,9 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
-            if( row == -1 )
+            if( row < 0 )
             {
-                insertOptioned( trackListDrag->tracks(), PlaylistNS::AppendAndPlay );
+                insertOptioned( trackListDrag->tracks(), PlaylistNS::Append );
             }
             else
             {

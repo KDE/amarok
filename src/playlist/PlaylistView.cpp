@@ -14,6 +14,7 @@ void
 View::setModel( QAbstractItemModel * model )
 {
     QTableView::setModel( model );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
     setDragDropOverwriteMode( false );
     //setSelectionMode(QAbstractItemView::ExtendedSelection);
