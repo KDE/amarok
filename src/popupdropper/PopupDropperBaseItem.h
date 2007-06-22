@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QtGlobal>
 
+class QGraphicsSceneDropDropEvent;
 class QPainter;
 class QRectF;
 
@@ -54,6 +55,7 @@ namespace PopupDropperNS {
             //Reimplementations
             QRectF boundingRect() const;
             void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+            void dropEvent( QGraphicsSceneDragDropEvent *e );
 
             qreal       m_scaledPercent;
             int         m_whichami;

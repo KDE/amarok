@@ -35,11 +35,12 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     resize( parent->size() + QSize(2, 2) );
-    //setBackgroundRole( QPalette::Base );
-    //QPalette p = palette();
-    //p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
-    //setPalette( p );
-    //setAutoFillBackground( true );
+    setAcceptDrops( true );
+    setBackgroundRole( QPalette::Base );
+    QPalette p = palette();
+    p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
+    setPalette( p );
+    setAutoFillBackground( true );
 }
 
 PopupDropperView::~PopupDropperView()
@@ -69,8 +70,16 @@ void PopupDropperView::setTransOutValue( int value )
 
 void PopupDropperView::mouseMoveEvent( QMouseEvent *e )
 {
+    DEBUG_BLOCK
     if( !( e->buttons() & Qt::LeftButton) )
         emit destroyMe();
+    QGraphicsView::mouseMoveEvent( e );
+}
+
+void PopupDropperView::mouseReleaseEvent( QMouseEvent *e )
+{
+    DEBUG_BLOCK
+    QGraphicsView::mouseReleaseEvent( e );
 }
 
 #include "PopupDropperView.moc"

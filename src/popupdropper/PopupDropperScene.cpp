@@ -17,6 +17,8 @@
  */
 
 
+#include "math.h"
+
 #include "debug.h"
 #include "PopupDropperScene.h"
 #include "PopupDropperView.h"
@@ -25,16 +27,17 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QList>
+#include <QRectF>
 
 using namespace PopupDropperNS;
 
-static int SPIN_IN_FRAMES = 30;
+static int SPIN_IN_FRAMES = 20;
 
 PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
                     , m_fadeInTL( 2000, this )
                     , m_fadeOutTL( 2000, this )
-                    , m_spinInTL( 300, this )
+                    , m_spinInTL( 500, this )
                     , m_shown( false )
 {
     DEBUG_BLOCK
@@ -88,7 +91,16 @@ PopupDropperScene::pdvShown()
     for( int i = 1; i <= totalItems; ++i )
     {
         temp = new PopupDropperBaseItem( i, totalItems );
-        temp->setPos( width()/2, ( i - 1 ) * 1.0 / totalItems * height() );
+        //temp->setPos( width()/2, i * 1.0 / totalItems * height() );
+        qreal center = totalItems / 2.0 + 0.5;
+        qreal mywidth = i - center;
+        mywidth = sqrt( pow( mywidth, 2 ) );
+        mywidth = 1 - ( mywidth / center );
+        qreal heighttemp = ( ( i - 1.0 ) / totalItems ) * height();
+        debug() << "heighttemp = " << heighttemp << endl;
+        qreal offset = ( ( height() / totalItems ) - ( 0.8 * ( height() / totalItems ) ) ) / 2;
+        debug() << "offset = " << offset << endl;
+        temp->setPos( mywidth * temp->boundingRect().width() , heighttemp + offset );
         temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
         temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );
         addItem( temp );

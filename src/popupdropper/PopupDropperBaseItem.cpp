@@ -22,10 +22,13 @@
 #include "PopupDropperBaseItem.h"
 #include "TheInstances.h"
 
+#include <QBrush>
 #include <QFont>
-#include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsSceneDragDropEvent>
 #include <QPainter>
+#include <QRect>
 #include <QRectF>
 
 using namespace PopupDropperNS;
@@ -38,6 +41,7 @@ PopupDropperBaseItem::PopupDropperBaseItem( int whichami, int total, QGraphicsIt
                                     , m_totalEntries( total )
 {
     DEBUG_BLOCK
+    setAcceptDrops( true );
 }
 
 PopupDropperBaseItem::~PopupDropperBaseItem()
@@ -49,9 +53,8 @@ QRectF
 PopupDropperBaseItem::boundingRect() const
 {
     QRectF sceneRect = The::PopupDropper()->sceneRect();
-    //qreal scenePct = m_whichami * 1.0 / m_totalEntries;
-    qreal height = sceneRect.height() / m_totalEntries;
-    qreal width = sceneRect.width() / m_totalEntries;
+    qreal height = ( sceneRect.height() / m_totalEntries ) * 0.8;
+    qreal width = ( sceneRect.width() / m_totalEntries ) * 0.8;
     return QRectF( 0, 0, width, height );
 }
 
@@ -61,14 +64,21 @@ PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(option);
     Q_UNUSED(widget);
     QRectF sceneRect = The::PopupDropper()->sceneRect();
-    //qreal scenePct = m_whichami * 1.0 / m_totalEntries;
-    qreal height = sceneRect.height() / m_totalEntries;
-    qreal width = sceneRect.width() / m_totalEntries;
+    qreal height = ( sceneRect.height() / m_totalEntries ) * 0.8;
+    qreal width = ( sceneRect.width() / m_totalEntries ) * 0.8;
     QPen pen;
     pen.setWidth( 10 );
     pen.setColor( Qt::GlobalColor( Qt::lightGray + m_whichami ));
     painter->setPen( pen );
-    painter->drawRoundRect( 0, 0, (int)width, (int)height );
+    painter->fillRect( QRect( 0, 0, (int)width, (int)height ), QBrush( Qt::white ) );
+    painter->drawRect( QRect( 0, 0, (int)width, (int)height ) );
+}
+
+void
+PopupDropperBaseItem::dropEvent( QGraphicsSceneDragDropEvent *e )
+{
+    DEBUG_BLOCK
+    QGraphicsItem::dropEvent( e );
 }
 
 #include "PopupDropperBaseItem.moc"

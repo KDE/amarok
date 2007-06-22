@@ -50,6 +50,7 @@ namespace PopupDropperNS {
             ~PopupDropperView();
 
             void mouseMoveEvent( QMouseEvent *e );
+            void mouseReleaseEvent( QMouseEvent *e );
 
         public slots:
             void setTransInValue( int value );
