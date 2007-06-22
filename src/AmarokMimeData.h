@@ -30,6 +30,8 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
 {
     Q_OBJECT
     public:
+        static const QString TRACK_MIME;
+
         AmarokMimeData();
         virtual ~AmarokMimeData();
 

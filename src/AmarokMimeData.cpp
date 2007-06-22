@@ -24,6 +24,8 @@
 #include <QList>
 #include <QUrl>
 
+const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
+
 AmarokMimeData::AmarokMimeData()
     : QMimeData()
     , m_deleteQueryMakers( true )

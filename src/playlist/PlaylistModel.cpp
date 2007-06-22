@@ -394,7 +394,7 @@ QStringList
 Model::mimeTypes() const
 {
     QStringList ret = QAbstractTableModel::mimeTypes();
-    ret << TRACKLIST_MIME;
+    ret << AmarokMimeData::TRACK_MIME;
     return ret;
 }
 
@@ -415,12 +415,19 @@ Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
 {
-    if( data->hasFormat( TRACKLIST_MIME ) )
+    if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
-            insertTracks( row, trackListDrag->tracks() );
+            if( row == -1 )
+            {
+                insertOptioned( trackListDrag->tracks(), PlaylistNS::AppendAndPlay );
+            }
+            else
+            {
+                insertTracks( row, trackListDrag->tracks() );
+            }
             return true;
         }
     }

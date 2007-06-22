@@ -28,8 +28,6 @@ class QUndoStack;
 //PORT rename to Playlist when the playlist class is removed
 namespace PlaylistNS {
 
-    static const QString TRACKLIST_MIME = "application/x-amarok-meta-tracklist";
-
 class TrackAdvancer;
 
     enum Column
