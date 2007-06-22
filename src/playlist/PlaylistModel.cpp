@@ -253,7 +253,8 @@ Model::prettyColumnName( Column index ) //static
 void
 Model::setActiveRow( int row )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK
+
     int max = qMax( row, m_activeRow );
     int min = qMin( row, m_activeRow );
     if( ( max - min ) == 1 )
@@ -383,17 +384,14 @@ Qt::ItemFlags
 Model::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
-
-    if (index.isValid())
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
-    else
-        return Qt::ItemIsDropEnabled | defaultFlags;
+    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 QStringList
 Model::mimeTypes() const
 {
-    QStringList ret = QAbstractTableModel::mimeTypes();
+    //QStringList ret = QAbstractTableModel::mimeTypes();
+    QStringList ret;
     ret << AmarokMimeData::TRACK_MIME;
     return ret;
 }
@@ -401,6 +399,7 @@ Model::mimeTypes() const
 QMimeData*
 Model::mimeData( const QModelIndexList &indexes ) const
 {
+    DEBUG_BLOCK
     QModelIndexList selection = m_selectionModel->selectedIndexes();
     QModelIndex it;
     Meta::TrackList selectedTracks;
@@ -415,6 +414,8 @@ Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
 {
+    DEBUG_BLOCK
+    debug() << "Inserted at row: " << row << endl;
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
