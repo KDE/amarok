@@ -56,9 +56,10 @@ class ContextView : public QGraphicsView, public EngineObserver
         void addContextItem( ContextItem* i );
         void removeContextItem( ContextItem* i );
     
-        void addContextBox( QGraphicsItem *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false);
-        
-        void removeContextBox( QGraphicsItem *oldBox, bool fadeOut = false);
+        void addContextBox( QGraphicsItem *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false, ContextItem* parent = 0);
+        // add and remove take a ContextItem parent which dictates the ownership
+        // of the box (if they are owned by an item)
+        void removeContextBox( QGraphicsItem *oldBox, bool fadeOut = false, ContextItem* parent = 0);
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -92,7 +93,10 @@ class ContextView : public QGraphicsView, public EngineObserver
         QGraphicsScene *m_contextScene; ///< Pointer to the scene which holds all our items
         
         QList< ContextItem* > m_contextItems;
-
+    
+        // this keeps track of all items that are owned by each context item
+        QMap< ContextItem*, QList< QGraphicsItem* >* > m_contextItemMap;
+    
         QPointer<ContextBox> m_testItem;
 
     private slots:

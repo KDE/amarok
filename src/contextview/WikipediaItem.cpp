@@ -288,7 +288,7 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox );
+        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
         m_wikiVisible = true;
     }
     
@@ -416,7 +416,7 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
             m_wikiBox->setContents( m_wikiHTMLSource );
             if( !m_wikiVisible )
             {
-                ContextView::instance()->addContextBox( m_wikiBox );
+                ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
                 m_wikiVisible = true;
             }
             m_dirtyWikiPage = false;
@@ -557,7 +557,7 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox );
+        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
         m_wikiVisible = true;
     }
     

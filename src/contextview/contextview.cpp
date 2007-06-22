@@ -53,6 +53,7 @@ ContextView::ContextView()
 {
     s_instance = this; // we are a singleton class
 
+    // temporary, until i find a better place for this
     LyricsItem::instance();
     WikipediaItem::instance();
     
@@ -259,7 +260,7 @@ void ContextView::clear()
     update();
 }
 
-void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut )
+void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, ContextItem* parent )
 {
     DEBUG_BLOCK
 
@@ -316,10 +317,22 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut )
     }
 
     m_contextScene->removeItem( oldBox );
+    
+    if( parent != 0 ) // this belongs to a ContextItem
+    {
+        QList< QGraphicsItem* >* boxes = m_contextItemMap.value( parent );
+        QList< QGraphicsItem* >::iterator i; // find the box in the QList and remove it
+        for( i = boxes->begin(); i != boxes->end(); ++i )
+        {
+            if( (*i) == oldBox )
+                boxes->erase( i );
+        }
+        parent->notify( "boxRemoved" ); // do we need this to support multiple boxes, e.g. unique box IDs and the like?
+    } // we could also scan through all boxes registered with ContextItems to see if the caller forgot to pass himself as parent
 }
 
 // Places a context box at the location specified by @param index. -1 -> at the bottom
-void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn )
+void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, ContextItem* parent )
 {
     DEBUG_BLOCK
 
@@ -394,11 +407,15 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn )
 
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
+    
+    if( parent != 0 ) // register with parent item
+        m_contextItemMap.value( parent )->append( newBox );
 }
 
 void ContextView::addContextItem( ContextItem* item )
 {
     m_contextItems << item;
+    m_contextItemMap.insert( item, new QList< QGraphicsItem* > );
 }
 
 void ContextView::removeContextItem( ContextItem* item )
@@ -407,7 +424,13 @@ void ContextView::removeContextItem( ContextItem* item )
     for( i = m_contextItems.begin(); i != m_contextItems.end(); ++i )
     {
         if( (*i) == item )
+        { // also remove any boxes owned by the item
+            QList< QGraphicsItem* >* items = m_contextItemMap.value( *i );
+            foreach( QGraphicsItem* box, *items )
+                removeContextBox( box );
             m_contextItems.erase( i );
+            m_contextItemMap.remove( *i );
+        }
     }
 }
 
