@@ -18,21 +18,22 @@
 
 #include "AmarokMimeData.h"
 
+#include <QCoreApplication>
 #include <QList>
 #include <QUrl>
 
 AmarokMimeData::AmarokMimeData()
     : QMimeData()
-    , m_queryMaker( 0 )
-    , m_deleteQueryMaker( true )
+    , m_deleteQueryMakers( true )
+    , m_completedQueries( 0 )
 {
     //nothing to do
 }
 
 AmarokMimeData::~AmarokMimeData()
 {
-    if( m_deleteQueryMaker )
-        delete m_queryMaker;
+    if( m_deleteQueryMakers )
+        qDeleteAll( m_queryMakers );
 }
 
 QStringList
@@ -47,7 +48,7 @@ AmarokMimeData::formats() const
         if( !formats.contains( "text/plain" ) )
             formats.append( "text/plain" );
     }
-    if( m_queryMaker )
+    if( !m_queryMakers.isEmpty() )
         formats.append( "application/x-amarok-querymaker" );
     return formats;
 }
@@ -61,7 +62,7 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
     }
     else if( mimeType == "application/x-amarok-querymaker" )
     {
-        return m_queryMaker;
+        return !m_queryMakers.isEmpty();
     }
     else
         return QMimeData::hasFormat( mimeType );
@@ -70,6 +71,10 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
 Meta::TrackList
 AmarokMimeData::tracks() const
 {
+    while( m_completedQueries < m_queryMakers.count() )
+    {
+        QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
+    }
     return m_tracks;
 }
 
@@ -79,17 +84,23 @@ AmarokMimeData::setTracks( const Meta::TrackList &tracks )
     m_tracks = tracks;
 }
 
-QueryMaker*
-AmarokMimeData::queryMaker()
+QList<QueryMaker*>
+AmarokMimeData::queryMakers()
 {
-    m_deleteQueryMaker = false;
-    return m_queryMaker;
+    m_deleteQueryMakers = false;
+    return m_queryMakers;
 }
 
 void
-AmarokMimeData::setQueryMaker( QueryMaker *queryMaker )
+AmarokMimeData::addQueryMaker( QueryMaker *queryMaker )
 {
-    m_queryMaker = queryMaker;
+    m_queryMakers.append( queryMaker );
+}
+
+void
+AmarokMimeData::setQueryMakers( const QList<QueryMaker*> &queryMakers )
+{
+    m_queryMakers << queryMakers;
 }
 
 QVariant
@@ -121,6 +132,32 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type )
         }
     }
     return QMimeData::retrieveData( mimeType, type );
+}
+
+void
+AmarokMimeData::startQueries()
+{
+    foreach( QueryMaker *qm, m_queryMakers )
+    {
+        qm->startTrackQuery();
+        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
+        qm->run();
+    }
+}
+
+void
+AmarokMimeData::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    Q_UNUSED( collectionId )
+    //TODO: sort results
+    m_tracks << tracks;
+}
+
+void
+AmarokMimeData::queryDone()
+{
+    m_completedQueries++;
 }
 
 #include "AmarokMimeData.moc"

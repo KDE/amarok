@@ -23,6 +23,7 @@
 #include "meta/meta.h"
 #include "collection/querymaker.h"
 
+#include <QList>
 #include <QMimeData>
 
 class AMAROK_EXPORT AmarokMimeData : public QMimeData
@@ -38,16 +39,29 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         Meta::TrackList tracks() const;
         void setTracks( const Meta::TrackList &tracks );
 
-        QueryMaker* queryMaker();
-        void setQueryMaker( QueryMaker *queryMaker );
+        QList<QueryMaker*> queryMakers();
+        void addQueryMaker( QueryMaker *queryMaker );
+        void setQueryMakers( const QList<QueryMaker*> &queryMakers );
+
+        /**
+            There is a lot of time to run the queries while the user is dragging.
+            This method runs all queries passed to this object. It will do nothing if there
+            are no queries.
+         */
+        void startQueries();
 
     protected:
         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type );
 
+    private slots:
+        void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void queryDone();
+
     private:
         Meta::TrackList m_tracks;
-        QueryMaker *m_queryMaker;
-        bool m_deleteQueryMaker;
+        QList<QueryMaker*> m_queryMakers;
+        bool m_deleteQueryMakers;
+        int m_completedQueries;
 
 };
 
