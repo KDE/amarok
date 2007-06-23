@@ -49,7 +49,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         static const qint64 valSamplerate   = 1LL << 12;
         static const qint64 valFilesize     = 1LL << 13;
         static const qint64 valFormat       = 1LL << 14;
-        //static const qint64 valCreateDate   = 1LL << 15;
+        static const qint64 valCreateDate   = 1LL << 15;
         //statistics
         static const qint64 valScore        = 1LL << 16;
         static const qint64 valRating       = 1LL << 17;
