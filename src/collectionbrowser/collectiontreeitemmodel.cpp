@@ -148,6 +148,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
             d->m_collections.remove( collectionId );
+            m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }
     }

@@ -464,21 +464,11 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
         if ( item->isDataItem() )
         {
-            debug() << "collapsing data item" << endl;
-            if ( !item->data() ) debug() << " but has no data" << endl;
             m_expandedItems.remove( item->data() );
         }
         else
         {
-            debug() << "collapsed collection is " << item->parentCollection()->collectionId() << endl;
-            debug() << "expanded collections are:" << endl;
-            foreach( Collection *coll, m_expandedCollections )
-            {
-                debug() << coll->collectionId() << endl;
-            }
-            debug() << "finished" << endl;
             m_expandedCollections.remove( item->parentCollection() );
-            debug() << " expanded collections count now " << m_expandedCollections.count() << endl;
         }
     }
 }
