@@ -42,6 +42,9 @@ public:
     virtual QString boolTrue() const = 0;
     virtual QString boolFalse() const = 0;
 
+    /**
+        use this type for auto incrementing integer primary keys.
+    */
     virtual QString idType() const = 0;
 
     virtual QString textColumnType( int length = 255 ) const = 0;
