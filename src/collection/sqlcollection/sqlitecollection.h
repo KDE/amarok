@@ -26,6 +26,8 @@ class SqliteCollection : public SqlCollection
     public:
         SqliteCollection( const QString &id, const QString &prettyName );
         virtual ~SqliteCollection();
+
+        virtual QString type() const;
 };
 
 #endif

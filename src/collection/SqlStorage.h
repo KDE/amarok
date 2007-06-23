@@ -42,6 +42,8 @@ public:
     virtual QString boolTrue() const = 0;
     virtual QString boolFalse() const = 0;
 
+    virtual QString idType() const = 0;
+
     virtual QString textColumnType( int length = 255 ) const = 0;
     virtual QString exactTextColumnType( int length = 1024 ) const = 0;
     virtual QString longTextColumnType() const = 0;

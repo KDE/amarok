@@ -27,3 +27,9 @@ SqliteCollection::SqliteCollection( const QString &id, const QString &prettyName
 SqliteCollection::~SqliteCollection()
 {
 }
+
+QString
+SqliteCollection::type() const
+{
+    return "SQLite";
+}

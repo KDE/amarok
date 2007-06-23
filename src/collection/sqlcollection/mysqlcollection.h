@@ -29,6 +29,8 @@ class MySqlCollection : public SqlCollection
 
         virtual QueryMaker* queryMaker();
 
+        virtual QString type() const;
+
         virtual QString escape( QString text ) const;
 };
 

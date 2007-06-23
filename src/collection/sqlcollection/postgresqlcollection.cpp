@@ -36,3 +36,15 @@ PostgreSqlCollection::queryMaker()
 {
     return new PostgreSqlQueryMaker( this );
 }
+
+QString
+PostgreSqlCollection::type() const
+{
+    return "PostgreSQL";
+}
+
+QString
+PostgreSqlCollection::idType() const
+{
+    return " SERIAL PRIMARY KEY";
+}

@@ -38,6 +38,12 @@ MySqlCollection::queryMaker()
 }
 
 QString
+MySqlCollection::type() const
+{
+    return "MySQL";
+}
+
+QString
 MySqlCollection::escape( QString text ) const               //krazy:exclude=constref
 {
     return text.replace("\\", "\\\\").replace( '\'', "''" );

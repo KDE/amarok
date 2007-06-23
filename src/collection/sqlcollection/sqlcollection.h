@@ -76,6 +76,7 @@ class SqlCollection : public Collection, public SqlStorage
         virtual QString boolTrue() const;
         virtual QString boolFalse() const;
 
+        virtual QString idType() const;
         virtual QString textColumnType( int length = 255 ) const;
         virtual QString exactTextColumnType( int length = 1024 ) const;
         virtual QString longTextColumnType() const;

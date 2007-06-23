@@ -178,6 +178,12 @@ SqlCollection::boolFalse() const
 }
 
 QString
+SqlCollection::idType() const
+{
+    return " INTEGER PRIMARY KEY AUTO_INCREMENT";
+}
+
+QString
 SqlCollection::textColumnType( int length ) const
 {
     return QString( "VARCHAR(%1)" ).arg( length );
