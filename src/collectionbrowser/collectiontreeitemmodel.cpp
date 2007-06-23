@@ -51,10 +51,13 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     {
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
     }
-    m_rootItem->setChildrenLoaded( true ); //childrens of the root item are the collection items
+    m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
+    m_expandedItems.clear();
 
     reset(); //resets the whole model, as the data changed
+    if ( d->m_collections.count() == 1 )
+        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 
@@ -132,6 +135,8 @@ CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem ) ) );
     endInsertRows();
+    if ( d->m_collections.count() == 1 )
+        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 void
@@ -156,6 +161,15 @@ CollectionTreeItemModel::filterChildren()
     {
         CollectionTreeItem *item = m_rootItem->child( i );
         item->setChildrenLoaded( false );
+    }
+}
+
+void
+CollectionTreeItemModel::requestCollectionsExpansion() {
+    DEBUG_BLOCK
+    for( int i = 0, count = m_rootItem->childCount(); i < count; i++ )
+    {
+        emit expandIndex( createIndex( i, 0, m_rootItem->child( i ) ) );
     }
 }
 

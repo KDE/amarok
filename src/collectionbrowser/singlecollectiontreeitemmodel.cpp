@@ -43,6 +43,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
     updateHeaderText();
+    m_expandedItems.clear();
     reset(); //resets the whole model, as the data changed
 }
 

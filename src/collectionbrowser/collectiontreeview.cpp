@@ -22,7 +22,6 @@
 #include <KMenu>
 #include <KSharedPtr>
 
-class PopupDropperNS::PopupDropper;
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
     , m_dragStartPosition()
@@ -37,7 +36,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setSelectionMode( QAbstractItemView::MultiSelection );
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
@@ -46,7 +45,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
-    connect( this, SIGNAL( collapsed( const QModelIndex ) ), m_treeModel, SLOT( slotCollapsed( const QModelIndex ) ) );
+    connect( this, SIGNAL( collapsed( const QModelIndex ) ), SLOT( slotCollapsed( const QModelIndex ) ) );
 
     connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex ) ), SLOT( slotExpand( const QModelIndex ) ) );
 }
@@ -201,11 +200,19 @@ CollectionTreeView::slotSetFilterTimeout()
 void
 CollectionTreeView::slotExpand( const QModelIndex &index )
 {
-    DEBUG_BLOCK
     if( m_filterModel )
         expand( m_filterModel->mapFromSource( index ) );
     else
         expand( index );
+}
+
+void
+CollectionTreeView::slotCollapsed( const QModelIndex &index )
+{
+    if( m_filterModel )
+        m_treeModel->slotCollapsed( m_filterModel->mapToSource( index ) );
+    else
+        m_treeModel->slotCollapsed( index );
 }
 
 #include "collectiontreeview.moc"

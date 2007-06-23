@@ -101,7 +101,8 @@ CollectionTreeItem::level() const {
 bool
 CollectionTreeItem::isDataItem() const
 {
-    return !m_data.isNull();
+    //return !m_data.isNull();
+    return !m_parentCollection;
 }
 
 QueryMaker*

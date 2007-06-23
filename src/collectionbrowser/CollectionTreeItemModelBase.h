@@ -109,6 +109,7 @@ Q_OBJECT
 
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
+        QSet<Collection*> m_expandedCollections;
     protected slots:
 
         void loadingAnimationTick();

@@ -45,6 +45,7 @@ class CollectionTreeView: public QTreeView {
 
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
+        void slotCollapsed( const QModelIndex &index );
 
     private:
         CollectionSortFilterProxyModel *m_filterModel;

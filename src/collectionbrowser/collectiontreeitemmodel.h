@@ -43,6 +43,9 @@ Q_OBJECT
     protected:
         virtual void filterChildren();
 
+    private slots:
+        virtual void requestCollectionsExpansion();
+
     private:
 
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;
