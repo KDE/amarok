@@ -239,6 +239,11 @@ private:
     FactoryList m_remoteFactories;
     bool m_noDeviceManager;
 
+//Solid specific
+private slots:
+    void deviceAdded( const QString &udi );
+    void deviceRemoved( const QString &udi );
+
 };
 
 class UrlUpdateJob : public ThreadManager::DependentJob

@@ -28,9 +28,17 @@
 #include "statusbar.h"
 
 #include <QFile>
+#include <QList>
 #include <QStringList>
 #include <QTimer>
 #include <q3valuelist.h>
+
+//solid stuff
+#include <solid/predicate.h>
+#include <solid/device.h>
+#include <solid/deviceinterface.h>
+#include <solid/devicenotifier.h>
+#include <solid/storagevolume.h>
 
 typedef Medium::List MediumList;
 
@@ -57,6 +65,9 @@ MountPointManager::MountPointManager()
     {
         handleMissingMediaManager();
     }
+
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
 
     m_mediumFactories.setAutoDelete( true );
     m_remoteFactories.setAutoDelete( true );
@@ -498,6 +509,26 @@ MountPointManager::checkDeviceAvailability()
     //code to actively scan for devices which are not supported by KDE mediamanager should go here
     //method is not actually called yet
 }
+
+void
+MountPointManager::deviceAdded( const QString &udi )
+{
+    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume, "udi", udi );
+    QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
+    //there'll be maximum one device because we are using the udi in the predicate
+    if( !devices.isEmpty() )
+    {
+        Solid::StorageVolume *volume = devices[0].as<Solid::StorageVolume>();
+        
+    }
+}
+
+void
+MountPointManager::deviceRemoved( const QString &udi )
+{
+}
+
+//UrlUpdateJob
 
 bool UrlUpdateJob::doJob( )
 {
