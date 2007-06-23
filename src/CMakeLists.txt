@@ -354,6 +354,7 @@ set(amarok_LIB_SRCS
     playlistwindow.cpp
     pluginmanager.cpp
     podcastsettings.cpp
+    popupdropper/AppendTracksItem.cpp
     popupdropper/PopupDropper.cpp
     popupdropper/PopupDropperBaseItem.cpp
     popupdropper/PopupDropperScene.cpp

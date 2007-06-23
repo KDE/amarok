@@ -20,6 +20,7 @@
 
 #include "math.h"
 
+#include "AppendTracksItem.h"
 #include "debug.h"
 #include "PopupDropperView.h"
 #include "PopupDropperBaseItem.h"
@@ -90,7 +91,8 @@ PopupDropperScene::pdvShown()
     int totalItems = 5;
     for( int i = 1; i <= totalItems; ++i )
     {
-        temp = new PopupDropperBaseItem( i, totalItems );
+        //temp = new PopupDropperBaseItem( i, totalItems );
+        temp = new AppendTracksItem( i, totalItems );
         //temp->setPos( width()/2, i * 1.0 / totalItems * height() );
         qreal center = totalItems / 2.0 + 0.5;
         qreal mywidth = i - center;
