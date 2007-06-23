@@ -16,17 +16,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "PopupDropper.h"
+
 #include "app.h"
 #include "debug.h"
 #include "contextview/contextview.h"
-#include "PopupDropper.h"
 #include "PopupDropperScene.h"
 #include "PopupDropperView.h"
 
 #include <QBrush>
 #include <QColor>
 
-static bool ENABLED = false;
+static bool ENABLED = true;
 
 using namespace PopupDropperNS;
 

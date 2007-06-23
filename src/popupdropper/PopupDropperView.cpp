@@ -16,9 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "PopupDropperView.h"
 
 #include "debug.h"
-#include "PopupDropperView.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>

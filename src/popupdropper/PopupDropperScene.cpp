@@ -16,11 +16,11 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "PopupDropperScene.h"
 
 #include "math.h"
 
 #include "debug.h"
-#include "PopupDropperScene.h"
 #include "PopupDropperView.h"
 #include "PopupDropperBaseItem.h"
 
