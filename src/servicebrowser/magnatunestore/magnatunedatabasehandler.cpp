@@ -20,7 +20,9 @@
 
 #include "magnatunedatabasehandler.h"
 
+#include "collectionmanager.h"
 #include "debug.h"
+#include "SqlStorage.h"
 
 
 MagnatuneDatabaseHandler::MagnatuneDatabaseHandler()
@@ -34,19 +36,19 @@ void
 MagnatuneDatabaseHandler::createDatabase( )
 {
     //Get database instance
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
     QString tracksAutoIncrement = "";
     QString albumsAutoIncrement = "";
     QString artistAutoIncrement = "";
     QString moodsAutoIncrement = "";
 
-    if ( db->getDbConnectionType() == DbConnection::postgresql )
+   /* if ( sqlDb->type() == DbConnection::postgresql )
     {
-        db->query( QString( "CREATE SEQUENCE magnatune_track_seq;" ) );
-        db->query( QString( "CREATE SEQUENCE magnatune_album_seq;" ) );
-        db->query( QString( "CREATE SEQUENCE magnatune_artist_seq;" ) );
-        db->query( QString( "CREATE SEQUENCE magnatune_moods_seq;" ) );
+        sqlDb->query( QString( "CREATE SEQUENCE magnatune_track_seq;" ) );
+        sqlDb->query( QString( "CREATE SEQUENCE magnatune_album_seq;" ) );
+        sqlDb->query( QString( "CREATE SEQUENCE magnatune_artist_seq;" ) );
+        sqlDb->query( QString( "CREATE SEQUENCE magnatune_moods_seq;" ) );
 
         tracksAutoIncrement = QString( "DEFAULT nextval('magnatune_track_seq')" );
         albumsAutoIncrement = QString( "DEFAULT nextval('magnatune_album_seq')" );
@@ -54,65 +56,65 @@ MagnatuneDatabaseHandler::createDatabase( )
         moodsAutoIncrement  = QString( "DEFAULT nextval('magnatune_moods_seq')" );
 
     }
-    else if ( db->getDbConnectionType() == DbConnection::mysql )
+    else if ( sqlDb->type() == DbConnection::mysql )
     {
         tracksAutoIncrement = "AUTO_INCREMENT";
         albumsAutoIncrement = "AUTO_INCREMENT";
         artistAutoIncrement = "AUTO_INCREMENT";
         moodsAutoIncrement = "AUTO_INCREMENT";
-    }
+    }*/
 
     // create table containing tracks
     QString queryString = "CREATE TABLE magnatune_tracks ("
                           "id INTEGER PRIMARY KEY " + tracksAutoIncrement + ',' +
-                          "name " + db->textColumnType() + ',' +
+                          "name " + sqlDb->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"
                           "album_id INTEGER,"
                           "artist_id INTEGER,"
-                          "preview_lofi " + db->exactTextColumnType() + ',' +
-                          "preview_hifi " + db->exactTextColumnType() + ");";
+                          "preview_lofi " + sqlDb->exactTextColumnType() + ',' +
+                          "preview_hifi " + sqlDb->exactTextColumnType() + ");";
 
     debug() << "Creating mangnatune_tracks: " << queryString << endl;
 
 
-    QStringList result = db->query( queryString );
+    QStringList result = sqlDb->query( queryString );
 
     //Create album table
     queryString = "CREATE TABLE magnatune_albums ("
                   "id INTEGER PRIMARY KEY " + albumsAutoIncrement + ',' +
-                  "name " + db->textColumnType() + ',' +
+                  "name " + sqlDb->textColumnType() + ',' +
                   "year INTEGER,"
                   "artist_id INTEGER,"
-                  "album_code " + db->textColumnType() + ',' +
-                  "cover_url " + db->exactTextColumnType() + ',' +
-                  "description " + db->exactTextColumnType() + ");";
+                  "album_code " + sqlDb->textColumnType() + ',' +
+                  "cover_url " + sqlDb->exactTextColumnType() + ',' +
+                  "description " + sqlDb->exactTextColumnType() + ");";
 
     debug() << "Creating Mangnatune_albums: " << queryString << endl;
 
-    result = db->query( queryString );
+    result = sqlDb->query( queryString );
 
     //Create artist table
     queryString = "CREATE TABLE magnatune_artists ("
                   "id INTEGER PRIMARY KEY " + artistAutoIncrement + ',' +
-                  "name " + db->textColumnType() + ',' +
-                  "artist_page " + db->exactTextColumnType() + ',' +
-                  "description " + db->textColumnType() + ',' +
-                  "photo_url " + db->exactTextColumnType() + ");";
+                  "name " + sqlDb->textColumnType() + ',' +
+                  "artist_page " + sqlDb->exactTextColumnType() + ',' +
+                  "description " + sqlDb->textColumnType() + ',' +
+                  "photo_url " + sqlDb->exactTextColumnType() + ");";
 
     debug() << "Creating mangnatune_artist: " << queryString << endl;
 
-    result = db->query( queryString );
+    result = sqlDb->query( queryString );
 
     //create moods table
      queryString = "CREATE TABLE magnatune_moods ("
                   "id INTEGER PRIMARY KEY " + moodsAutoIncrement + ',' +
                   "track_id INTEGER," +
-                  "mood " + db->textColumnType() + ");";
+                  "mood " + sqlDb->textColumnType() + ");";
 
     debug() << "Creating mangnatune_moods: " << queryString << endl;
 
-    result = db->query( queryString );
+    result = sqlDb->query( queryString );
 
 
 
@@ -121,19 +123,19 @@ MagnatuneDatabaseHandler::createDatabase( )
 void 
 MagnatuneDatabaseHandler::destroyDatabase( )
 {
-    CollectionDB *db = CollectionDB::instance();
-    QStringList result = db->query( "DROP TABLE magnatune_tracks;" );
-    result = db->query( "DROP TABLE magnatune_albums;" );
-    result = db->query( "DROP TABLE magnatune_artists;" );
-    result = db->query( "DROP TABLE magnatune_moods;" );
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    QStringList result = sqlDb->query( "DROP TABLE magnatune_tracks;" );
+    result = sqlDb->query( "DROP TABLE magnatune_albums;" );
+    result = sqlDb->query( "DROP TABLE magnatune_artists;" );
+    result = sqlDb->query( "DROP TABLE magnatune_moods;" );
 
-    if ( db->getDbConnectionType() == DbConnection::postgresql )
+   /* if ( sqlDb->type() == DbConnection::postgresql )
     {
-        db->query( QString( "DROP SEQUENCE magnatune_track_seq;" ) );
-        db->query( QString( "DROP SEQUENCE magnatune_album_seq;" ) );
-        db->query( QString( "DROP SEQUENCE magnatune_artist_seq;" ) );
-        db->query( QString( "DROP SEQUENCE magnatune_moods_seq;" ) );
-    }
+        sqlDb->query( QString( "DROP SEQUENCE magnatune_track_seq;" ) );
+        sqlDb->query( QString( "DROP SEQUENCE magnatune_album_seq;" ) );
+        sqlDb->query( QString( "DROP SEQUENCE magnatune_artist_seq;" ) );
+        sqlDb->query( QString( "DROP SEQUENCE magnatune_moods_seq;" ) );
+    }*/
 }
 
 int 
@@ -141,20 +143,20 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 {
     MagnatuneTrack * mTrack = dynamic_cast<MagnatuneTrack *> ( track );
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO magnatune_tracks ( name, track_number, length, "
                           "album_id, artist_id, preview_lofi, preview_hifi ) VALUES ( '"
-                          + db->escapeString( mTrack->name()) + "', "
+                          + sqlDb->escape( mTrack->name()) + "', "
                           + QString::number( mTrack->trackNumber() ) + ", "
                           + QString::number( mTrack->length() ) + ", "
                           + QString::number( mTrack->albumId() ) + ", "
                           + QString::number( mTrack->artistId() ) + ", '"
-                          + db->escapeString( mTrack->lofiUrl() ) + "', '"
-                          + db->escapeString( mTrack->url() ) + "' );";
+                          + sqlDb->escape( mTrack->lofiUrl() ) + "', '"
+                          + sqlDb->escape( mTrack->url() ) + "' );";
 
 
     // debug() << "Adding Magnatune track " << queryString << endl;
-    int trackId = db->insert( queryString, NULL );
+    int trackId = sqlDb->insert( queryString, NULL );
 
     return trackId; 
 
@@ -168,19 +170,19 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
     MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album );
 
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO magnatune_albums ( name, year, artist_id, "
                   "album_code, cover_url, description ) VALUES ( '"
-                  + db->escapeString( db->escapeString( mAlbum->name() ) ) + "', "
+                  + sqlDb->escape( sqlDb->escape( mAlbum->name() ) ) + "', "
                   + QString::number( mAlbum->launchYear() ) + ", "
                   + QString::number( mAlbum->artistId() ) + ", '"
-                  + db->escapeString( mAlbum->albumCode() ) + "', '"
-                  + db->escapeString( mAlbum->coverUrl() ) + "', '"
-                  + db->escapeString( mAlbum->description() )+ "' );";
+                  + sqlDb->escape( mAlbum->albumCode() ) + "', '"
+                  + sqlDb->escape( mAlbum->coverUrl() ) + "', '"
+                  + sqlDb->escape( mAlbum->description() )+ "' );";
 
     //debug() << "Adding Magnatune album " << queryString << endl;
 
-    return db->insert( queryString, 0 );
+    return sqlDb->insert( queryString, 0 );
 }
 
 
@@ -191,17 +193,17 @@ MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
     MagnatuneArtist * mArtist = dynamic_cast<MagnatuneArtist *> ( artist );
 
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO magnatune_artists ( name, artist_page, description, "
                   "photo_url ) VALUES ( '"
-                  + db->escapeString( db->escapeString( mArtist->name() ) ) + "', '"
-                  + db->escapeString( mArtist->magnatuneUrl()) + "', '"
-                  + db->escapeString( mArtist->description() ) + "', '"
-                  + db->escapeString( mArtist->photoUrl() ) + "' );";
+                  + sqlDb->escape( sqlDb->escape( mArtist->name() ) ) + "', '"
+                  + sqlDb->escape( mArtist->magnatuneUrl()) + "', '"
+                  + sqlDb->escape( mArtist->description() ) + "', '"
+                  + sqlDb->escape( mArtist->photoUrl() ) + "' );";
 
     //debug() << "Adding Magnatune artist " << queryString << endl;
 
-    return db->insert( queryString, 0 );
+    return sqlDb->insert( queryString, 0 );
 }
 
 
@@ -209,20 +211,20 @@ void
 MagnatuneDatabaseHandler::begin( )
 {
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
     QString queryString = "BEGIN;";
 
-    db->query( queryString );
+    sqlDb->query( queryString );
 }
 
 void 
 MagnatuneDatabaseHandler::commit( )
 {
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "COMMIT;";
 
-    db->query( queryString );
+    sqlDb->query( queryString );
 
 }
 
@@ -230,26 +232,26 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, QStringList moods)
 {
  
     QString queryString;
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
     foreach( QString mood, moods ) {
         queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
                       + QString::number( trackId ) + ", '"
-                      + db->escapeString( mood ) +  "' );";
+                      + sqlDb->escape( mood ) +  "' );";
 
 
         //debug() << "Adding Magnatune mood: " << queryString << endl;
-        db->insert( queryString, NULL ); 
+        sqlDb->insert( queryString, NULL ); 
     }
 }
 
 int MagnatuneDatabaseHandler::getArtistIdByExactName(const QString & name)
 {
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    QString queryString = "SELECT id from magnatune_artists WHERE name='" + db->escapeString( name ) + "';";
-    QStringList result = db->query( queryString );
+    QString queryString = "SELECT id from magnatune_artists WHERE name='" + sqlDb->escape( name ) + "';";
+    QStringList result = sqlDb->query( queryString );
 
     //debug() << "Looking for id of artist " << name << ":" << endl;
 
@@ -264,10 +266,10 @@ int MagnatuneDatabaseHandler::getArtistIdByExactName(const QString & name)
 
 int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode(const QString & albumcode)
 {
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    QString queryString = "SELECT id from magnatune_albums WHERE album_code='" + db->escapeString( albumcode ) + "';";
-    QStringList result = db->query( queryString );
+    QString queryString = "SELECT id from magnatune_albums WHERE album_code='" + sqlDb->escape( albumcode ) + "';";
+    QStringList result = sqlDb->query( queryString );
 
     //debug() << "Looking for id of album " << albumcode << ":" << endl;
 
@@ -277,6 +279,20 @@ int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode(const QString & albumcode)
     //debug() << "  Found: " << QString::number( albumId ) << ":" << endl;
     
     return albumId;
+}
+
+int MagnatuneDatabaseHandler::insertGenre(ServiceGenre * genre)
+{
+    QString queryString;
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    queryString = "INSERT INTO jamendo_genre ( album_id, name "
+                  ") VALUES ( "
+                  + QString::number ( genre->albumId() ) + ", '"
+                  + sqlDb->escape( genre->name() ) + "' );";
+
+    //debug() << "Adding Jamendo genre " << queryString << endl;
+
+    return sqlDb->insert( queryString, 0 );
 }
 
 

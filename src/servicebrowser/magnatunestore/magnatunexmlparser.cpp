@@ -253,6 +253,18 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
         m_nNumberOfTracks++;
     }
 
+
+    // handle genres
+
+    foreach( QString genreName, magnatuneGenres ) {
+
+        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName << endl;
+        ServiceGenre currentGenre( genreName );
+        currentGenre.setAlbumId( m_pCurrentAlbum->id() );
+        m_dbHandler->insertGenre( &currentGenre );
+
+    }
+
     delete m_pCurrentAlbum;
 
     m_currentAlbumTracksList.clear();
@@ -273,7 +285,7 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
     QString sElementName;
     QDomElement childElement;
 
-    MagnatuneTrack currentTrack;
+    MagnatuneTrack * pCurrentTrack = new MagnatuneTrack( QString() );
 
 
     QDomNode n = e.firstChild();
@@ -291,23 +303,23 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
 
             if ( sElementName == "trackname" )
             {
-                currentTrack.setName( childElement.text() );
+                pCurrentTrack->setTitle( childElement.text() );
             }
             else if ( sElementName == "url" )
             {
-                currentTrack.setURL( childElement.text() );
+                pCurrentTrack->setUrl( childElement.text() );
             }
             else if ( sElementName == "mp3lofi" )
             {
-                currentTrack.setLofiURL( childElement.text() );
+                pCurrentTrack->setLofiUrl( childElement.text() );
             }
             else if ( sElementName == "tracknum" )
             {
-                currentTrack.setTrackNumber( childElement.text().toInt() );
+                pCurrentTrack->setTrackNumber( childElement.text().toInt() );
             }
             else if ( sElementName == "seconds" )
             {
-                currentTrack.setDuration( childElement.text().toInt() );
+                pCurrentTrack->setLength( childElement.text().toInt() );
             }
             else if ( sElementName == "moods" )
             {
@@ -317,8 +329,8 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
         n = n.nextSibling();
     }
 
-    currentTrack.setMoods( m_currentTrackMoodList );
-    m_currentAlbumTracksList.append( currentTrack );
+    //pCurrentTrack->setMoods( m_currentTrackMoodList );
+    m_currentAlbumTracksList.append( pCurrentTrack );
 
 }
 

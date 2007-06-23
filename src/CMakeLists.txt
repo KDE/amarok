@@ -173,7 +173,7 @@ set(libmagnatunestore_SRCS
 	#servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
 	#servicebrowser/magnatunestore/magnatunetypes.cpp
         servicebrowser/magnatunestore/MagnatuneMeta.cpp
-	#servicebrowser/magnatunestore/magnatunexmlparser.cpp
+	servicebrowser/magnatunestore/magnatunexmlparser.cpp
 	servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
