@@ -98,12 +98,16 @@ void ContextBox::ensureTitleCentered()
 
 void ContextBox::setBoundingRectSize( const QSize &sz )
 {
+    prepareGeometryChange();
+
     QRectF newRect = QRectF( 0, 0, sz.width(), sz.height() );
     setRect( newRect );
 }
 
 void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeight )
 {
+    prepareGeometryChange();
+
     m_contentRect->setRect( QRectF( 0, 0, sz.width(), sz.height() ) );
     //set correct size of this as well
     setRect( QRectF( 0, 0, sz.width(), sz.height() +  m_titleBarRect->boundingRect().height()) );
@@ -128,7 +132,7 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     //event->ignore();
 
-    
+
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
@@ -140,7 +144,7 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
     } else {
         event->ignore();
-    } 
+    }
     QGraphicsItem::mousePressEvent( event );
 }
 
@@ -151,7 +155,7 @@ void ContextBox::toggleVisibility()
 
     if( !m_animationTimer )
     {
-        m_animationTimer = new QTimeLine( 1000 );
+        m_animationTimer = new QTimeLine( 500 );
         m_animationTimer->setUpdateInterval( 30 ); // ~33 fps
         m_animationTimer->setFrameRange( 0, range );
         m_animationTimer->setLoopCount( 0 ); // loop forever until we explicitly stop it
@@ -164,17 +168,12 @@ void ContextBox::toggleVisibility()
     if( m_animationTimer->state() == QTimeLine::Running )
     {
         m_goingUp = !m_goingUp; // change direction if the is already an animation
-        debug() << "changing direction!" << endl;
         return;
     }
 
     m_animationTimer->setStartFrame( 0 );
 
     m_animationIncrement = m_optimumHeight / range;
-    debug() << "m_goingUp: " << m_goingUp << endl;
-    debug() << "m_optimumHeight: " << m_optimumHeight << endl;
-    debug() << "m_animationIncrement: " << m_animationIncrement << endl;
-
     m_animationTimer->start();
 }
 
@@ -186,14 +185,11 @@ void ContextBox::visibilityTimerSlot()
             m_contentRect->rect().height() + m_animationIncrement: //get bigger if hidden
             m_contentRect->rect().height() - m_animationIncrement; //get smaller if visible
 
-    debug() << "        : " << newHeight << " -> " << desiredHeight << endl;
-
     if( ( !m_goingUp && newHeight <= desiredHeight ) ||
         (  m_goingUp && newHeight >= desiredHeight ) )
     {
         newHeight = desiredHeight;
         m_animationTimer->stop(); //stop the timeline _before_ changing the direction
-        debug() << "animation timer stopped" << endl;
     }
 
     setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ), false );
