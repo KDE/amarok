@@ -51,18 +51,19 @@ ContextView::ContextView()
     : QGraphicsView()
     , EngineObserver( EngineController::instance() )
 {
+    m_testItem = 0;
     s_instance = this; // we are a singleton class
 
     // temporary, until i find a better place for this
     LyricsItem::instance();
     WikipediaItem::instance();
-    
+
     initiateScene();
     setAlignment( Qt::AlignTop );
     setRenderHints( QPainter::Antialiasing );
     setCacheMode( QGraphicsView::CacheBackground ); // this won't be changing regularly
 
-    
+
     showHome();
 }
 
@@ -193,7 +194,7 @@ void ContextView::introAnimationComplete()
     addContextBox( albumBox );
 
     // testing
-    //QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
+    QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
 }
 
 void ContextView::testBoxLayout()
@@ -209,10 +210,13 @@ void ContextView::testBoxLayout()
 //         svg->moveBy( 0, 30 );
     }
 
-    if( s_add )
-        addContextBox( m_testItem, 1, true );
-    else
-        removeContextBox( m_testItem, true );
+    if( m_testItem )
+    {
+        if( s_add )
+            addContextBox( m_testItem, 1 );
+        else
+            removeContextBox( m_testItem );
+    }
 
     s_add = !s_add;
     QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
@@ -253,7 +257,7 @@ void ContextView::clear()
 {
     // tell member items that their boxes are being removed
     notifyItems( QString( "boxesRemoved" ) );
-    
+
     delete m_contextScene;
 
     initiateScene();
@@ -269,14 +273,12 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
 
     if( fadeOut )
     {
-        GraphicsItemFader *fader = new GraphicsItemFader( oldBox, 0 );
-        fader->setDuration( 2500 );
-        fader->setFPS( 30 );
-        fader->setStartAlpha( 0 );
-        fader->setTargetAlpha( 255 );
-        fader->setFadeColor( palette().highlight().color() );
-        fader->startFading();
-        oldBox = fader;
+//         GraphicsItemFader *fader = new GraphicsItemFader( oldBox );
+//         fader->setDuration( 2500 );
+//         fader->setStartAlpha( 0 );
+//         fader->setTargetAlpha( 255 );
+//         fader->setFadeColor( palette().highlight().color() );
+//         fader->startFading();
     }
 
     QList<QGraphicsItem*> items = m_contextScene->items();
@@ -285,29 +287,36 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
 
     if( !items.isEmpty() )
     {
-        int index = 1;
         foreach( QGraphicsItem* i, items )
         {
+            // If the item is faded, then we need to grab the actual ContextBox.
             ContextBox *box = dynamic_cast<ContextBox*>(i);
+
             if( box )
-            {
                 boxesAndBorders.insertMulti( box->sceneBoundingRect().top(), box );
-            }
         }
 
         // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>       tops  = boxesAndBorders.keys();
+        const QList<qreal>      tops   = boxesAndBorders.keys();
         const QList<ContextBox*> boxes = boxesAndBorders.values();
 
         QList<QGraphicsItem*> shuffleUp;
 
         // need to shuffle up all the boxes below
-        for( ; index < boxes.size(); ++index )
+        bool foundCurrent = false;
+        for( int index = 0; index < boxes.size(); ++index )
         {
-            ContextBox *box = boxes.at(index);
-
-            debug() << "shuffling up: " << box->title() << endl;
-            shuffleUp << box;
+            ContextBox *box  = boxes.at(index);
+            if( box )
+            {
+                if( foundCurrent )
+                {
+                    debug() << "shuffling up: " << box->title() << endl;
+                    shuffleUp << box;
+                }
+                else if( box == oldBox )
+                    foundCurrent = true;
+            }
         }
 
         qreal distance = oldBox->boundingRect().height() + BOX_PADDING;
@@ -317,7 +326,7 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
     }
 
     m_contextScene->removeItem( oldBox );
-    
+
     if( parent != 0 ) // this belongs to a ContextItem
     {
         QList< QGraphicsItem* >* boxes = m_contextItemMap.value( parent );
@@ -341,14 +350,14 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, 
 
     if( fadeIn )
     {
-        GraphicsItemFader *fader = new GraphicsItemFader( newBox, 0 );
-        fader->setDuration( 2500 );
-        fader->setFPS( 30 );
-        fader->setStartAlpha( 255 );
-        fader->setTargetAlpha( 0 );
-        fader->setFadeColor( palette().highlight().color() );
-        fader->startFading();
-        newBox = fader;
+//         GraphicsItemFader *fader = new GraphicsItemFader( newBox );
+//         connect( fader, SIGNAL( animationComplete() ), this, SLOT( faderItemFinished() ) );
+//         fader->setDuration( 2500 );
+//         fader->setStartAlpha( 255 );
+//         fader->setTargetAlpha( 0 );
+//         fader->setFadeColor( palette().highlight().color() );
+//         fader->startFading();
+//         newBox = fader;
     }
 
     // For now, let's assume that all the items are listed in a vertical alignment
@@ -407,7 +416,7 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, 
 
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
-    
+
     if( parent != 0 ) // register with parent item
         m_contextItemMap.value( parent )->append( newBox );
 }
