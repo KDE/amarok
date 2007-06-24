@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "graphicsitemfader.h"
 
@@ -27,8 +27,8 @@ using namespace Context;
 
 
 GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent )
-    : QGraphicsItem ( parent )
-    , QObject()
+    : QObject()
+    , QGraphicsItem( parent )
     , m_startAlpha( 0 )
     , m_targetAlpha( 255 )
     , m_fps ( 30 )
@@ -36,15 +36,13 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
 {
     m_contentItem = item;
     m_contentItem->setParentItem( this );
-    m_contentItem->setZValue ( 1 );
+    m_contentItem->setZValue( 1 );
     m_contentItem->setPos( 1, 1 );
 
     m_shadeRectItem = new QGraphicsRectItem( this );
 
     m_width = m_contentItem->boundingRect().width() + 2;
     m_height = m_contentItem->boundingRect().height() + 2;
-
-
 
     m_shadeRectItem->setRect( 0, 0, m_width, m_height );
     m_shadeRectItem->setPos( 0, 0 ); // needs a slight offset to cover frames on m_contentItem
@@ -54,7 +52,7 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
     m_fadeColor = QColor ( 255, 255, 255, 0 );
     m_shadeRectItem->setBrush( QBrush ( m_fadeColor ) );
 
-    m_timeLine = new QTimeLine( 0, this );
+    m_timeLine = new QTimeLine( m_duration, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
 }
 
@@ -79,7 +77,6 @@ void GraphicsItemFader::setFPS(int fps)
 {
     m_fps = fps;
 }
-
 
 QRectF Context::GraphicsItemFader::boundingRect() const
 {
@@ -108,8 +105,6 @@ void GraphicsItemFader::fadeSlot(int step)
 
 void GraphicsItemFader::startFading()
 {
-
-
     //total number of animation steps;
     m_animationSteps = m_fps * ( ( float ) m_duration / 1000.0 );
 

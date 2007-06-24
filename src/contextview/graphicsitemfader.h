@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef GRAPHICSITEMFADER_H
 #define GRAPHICSITEMFADER_H
@@ -44,9 +44,7 @@ namespace Context
         explicit GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
 
         virtual QRectF boundingRect () const;
-        void paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget);
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
         void setFadeColor( const QColor &color );
         void setStartAlpha( int alpha );
@@ -54,6 +52,7 @@ namespace Context
         void setDuration( int ms );
         void setFPS( int fps );
         void startFading();
+        QGraphicsItem* contentItem() { return m_contentItem; }
 
     signals:
         void animationComplete();
@@ -75,7 +74,7 @@ namespace Context
         int m_animationSteps;
         int m_width;
         int m_height;
-        
+
 
     };
 
