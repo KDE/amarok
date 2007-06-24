@@ -38,13 +38,14 @@ class ContextBox : public QObject, public QGraphicsRectItem
 
         virtual void setTitle( const QString &title );
         virtual void toggleVisibility();
-        virtual void ensureWidthFits( const int width );
+        virtual void ensureWidthFits( const qreal width );
 
         virtual const QString title() { return m_titleItem->toPlainText(); }
+
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
-        virtual void setBoundingRectSize( const QSize &sz );
-        void setContentRectSize( const QSize &sz, const bool synchroniseHeight = true );
+        virtual void setBoundingRectSize( const QSizeF &sz );
+        void setContentRectSize( const QSizeF &sz, const bool synchroniseHeight = true );
         void ensureTitleCentered();
 
         QGraphicsTextItem *m_titleItem;
@@ -59,7 +60,6 @@ class ContextBox : public QObject, public QGraphicsRectItem
     protected slots:
         void visibilityTimerSlot();
         void animationStateChanged( QTimeLine::State newState );
-
 };
 
 }

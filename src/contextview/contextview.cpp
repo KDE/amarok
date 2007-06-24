@@ -247,7 +247,7 @@ void ContextView::resizeEvent( QResizeEvent *event )
     {
         ContextBox *box = dynamic_cast<ContextBox*>( item );
         if( box )
-            box->ensureWidthFits( newSize.width() );
+            box->ensureWidthFits( (qreal)newSize.width() );
     }
 }
 

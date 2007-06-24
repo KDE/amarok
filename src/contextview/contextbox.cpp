@@ -96,7 +96,7 @@ void ContextBox::ensureTitleCentered()
     m_titleItem->setPos( xOffset, 0.0 );
 }
 
-void ContextBox::setBoundingRectSize( const QSize &sz )
+void ContextBox::setBoundingRectSize( const QSizeF &sz )
 {
     prepareGeometryChange();
 
@@ -104,7 +104,7 @@ void ContextBox::setBoundingRectSize( const QSize &sz )
     setRect( newRect );
 }
 
-void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeight )
+void ContextBox::setContentRectSize( const QSizeF &sz, const bool synchroniseHeight )
 {
     prepareGeometryChange();
 
@@ -118,21 +118,17 @@ void ContextBox::setContentRectSize( const QSize &sz, const bool synchroniseHeig
         m_optimumHeight = sz.height();
 }
 
-void ContextBox::ensureWidthFits( const int width )
+void ContextBox::ensureWidthFits( const qreal width )
 {
-    const int padding = (int)ContextView::BOX_PADDING * 2;
+    const qreal padding = ContextView::BOX_PADDING * 2;
+    const qreal height  = m_contentRect->boundingRect().height();
 
-    const int height = (int)m_contentRect->boundingRect().height();
-
-    QSize newSize = QSize( width - padding, height );
+    QSizeF newSize = QSizeF( width - padding, height );
     setContentRectSize( newSize, false );
 }
 
 void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    //event->ignore();
-
-
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
         QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
@@ -192,12 +188,11 @@ void ContextBox::visibilityTimerSlot()
         m_animationTimer->stop(); //stop the timeline _before_ changing the direction
     }
 
-    setContentRectSize( QSize( m_contentRect->rect().width(), newHeight ), false );
+    setContentRectSize( QSizeF( m_contentRect->rect().width(), newHeight ), false );
 }
 
 void ContextBox::animationStateChanged( QTimeLine::State newState )
 {
-
     if( newState == QTimeLine::NotRunning )
         m_goingUp = !m_goingUp;
 }
