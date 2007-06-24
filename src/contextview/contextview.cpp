@@ -179,7 +179,6 @@ void ContextView::introAnimationComplete()
                     "ORDER BY T.createdate DESC "
                      "LIMIT 5 OFFSET 0";
     QStringList values = CollectionDB::instance()->query( query, false );
-    debug() << "Result count: " << values.count() << endl;
 
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
     {
@@ -187,7 +186,6 @@ void ContextView::introAnimationComplete()
         const QString artist = *++it;
         const QString year = *++it;
         const QString &cover = CollectionDB::instance()->albumImage( artist, album, false, 50 );
-        debug() << "artist: " << artist << " album: " << album << " cover: " << cover << endl;
         albumBox->addAlbumInfo( cover, QString( "%1 - %2\n%3" ).arg( artist, album, year ) );
     }
 
@@ -264,7 +262,7 @@ void ContextView::clear()
     update();
 }
 
-void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, ContextItem* parent )
+void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextItem* parent )
 {
     DEBUG_BLOCK
 
@@ -281,42 +279,18 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
 //         fader->startFading();
     }
 
-    QList<QGraphicsItem*> items = m_contextScene->items();
-
-    QMap<qreal, ContextBox*> boxesAndBorders;
-
-    if( !items.isEmpty() )
+    if( !m_contextBoxes.isEmpty() )
     {
-        foreach( QGraphicsItem* i, items )
-        {
-            // If the item is faded, then we need to grab the actual ContextBox.
-            ContextBox *box = dynamic_cast<ContextBox*>(i);
-
-            if( box )
-                boxesAndBorders.insertMulti( box->sceneBoundingRect().top(), box );
-        }
-
-        // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>      tops   = boxesAndBorders.keys();
-        const QList<ContextBox*> boxes = boxesAndBorders.values();
-
         QList<QGraphicsItem*> shuffleUp;
+        QList<ContextBox*> boxes = m_contextBoxes.values();
 
         // need to shuffle up all the boxes below
-        bool foundCurrent = false;
-        for( int index = 0; index < boxes.size(); ++index )
+        int index = boxes.indexOf( oldBox );
+        for( ++index; index < m_contextBoxes.size(); ++index )
         {
-            ContextBox *box  = boxes.at(index);
-            if( box )
-            {
-                if( foundCurrent )
-                {
-                    debug() << "shuffling up: " << box->title() << endl;
-                    shuffleUp << box;
-                }
-                else if( box == oldBox )
-                    foundCurrent = true;
-            }
+            ContextBox *box = boxes.at(index);
+            debug() << "shuffling up: " << box->title() << endl;
+            shuffleUp << box;
         }
 
         qreal distance = oldBox->boundingRect().height() + BOX_PADDING;
@@ -325,9 +299,18 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
         shuffleItems( shuffleUp, distance, ShuffleUp );
     }
 
+    QMap<qreal, ContextBox*>::iterator it;
+    for( it = m_contextBoxes.begin(); it != m_contextBoxes.end(); ++it )
+    {
+        if( it.value() == oldBox )
+        {
+            m_contextBoxes.erase( it );
+            break;
+        }
+    }
     m_contextScene->removeItem( oldBox );
 
-    if( parent != 0 ) // this belongs to a ContextItem
+    if( parent ) // this belongs to a ContextItem
     {
         QList< QGraphicsItem* >* boxes = m_contextItemMap.value( parent );
         QList< QGraphicsItem* >::iterator i; // find the box in the QList and remove it
@@ -341,12 +324,14 @@ void ContextView::removeContextBox( QGraphicsItem *oldBox, bool fadeOut, Context
 }
 
 // Places a context box at the location specified by @param index. -1 -> at the bottom
-void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, ContextItem* parent )
+void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn, ContextItem* parent )
 {
     DEBUG_BLOCK
 
     if( !newBox || !m_contextScene )
         return;
+
+    debug() << "Adding box: " << newBox->title() << endl;
 
     if( fadeIn )
     {
@@ -360,32 +345,16 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, 
 //         newBox = fader;
     }
 
-    // For now, let's assume that all the items are listed in a vertical alignment
-    // with a constant padding between the elements. Does this need to be more robust?
-    QList<QGraphicsItem*> items = m_contextScene->items();
     qreal yposition = BOX_PADDING;
 
-    QMap<qreal, ContextBox*> boxesAndBorders;
-
-    if( !items.isEmpty() )
+    if( !m_contextBoxes.isEmpty() )
     {
-        // Since the items are returned in no particular order, we must sort the items first
-        // based on the bottom edge of the box. A QMap is always sorted by key
-        foreach( QGraphicsItem* i, items )
-        {
-            // insertMulti allows for many values with the same key. important if we decide to change
-            // the layout later (eg, multiple columns, with boxes with the same bottom border y position)
-            ContextBox *box = dynamic_cast<ContextBox*>(i);
-            if( box )
-                boxesAndBorders.insertMulti( box->sceneBoundingRect().bottom(), box );
-        }
-
-        if( index >= items.count() )
+        if( index >= m_contextBoxes.count() )
             index = -1;
 
         // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>       bottoms = boxesAndBorders.keys();
-        const QList<ContextBox*> boxes   = boxesAndBorders.values();
+        const QList<qreal>       bottoms = m_contextBoxes.keys();
+        const QList<ContextBox*> boxes   = m_contextBoxes.values();
 
         debug() << "box count: " << boxes.size() << endl;
 
@@ -416,8 +385,9 @@ void ContextView::addContextBox( QGraphicsItem *newBox, int index, bool fadeIn, 
 
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
+    m_contextBoxes.insertMulti( newBox->sceneBoundingRect().bottom(), newBox );
 
-    if( parent != 0 ) // register with parent item
+    if( parent ) // register with parent item
         m_contextItemMap.value( parent )->append( newBox );
 }
 
@@ -436,7 +406,7 @@ void ContextView::removeContextItem( ContextItem* item )
         { // also remove any boxes owned by the item
             QList< QGraphicsItem* >* items = m_contextItemMap.value( *i );
             foreach( QGraphicsItem* box, *items )
-                removeContextBox( box );
+                removeContextBox( dynamic_cast<ContextBox*>(box) );
             m_contextItems.erase( i );
             m_contextItemMap.remove( *i );
         }
