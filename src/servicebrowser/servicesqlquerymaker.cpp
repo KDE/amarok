@@ -405,6 +405,27 @@ ServiceSqlQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
+QueryMaker*
+ServiceSqlQueryMaker::beginAnd()
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::beginOr()
+{
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::endAndOr()
+{
+    //TODO
+    return this;
+}
+
 void
 ServiceSqlQueryMaker::linkTables()
 {

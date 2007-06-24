@@ -24,6 +24,8 @@
 #include "mountpointmanager.h"
 #include "sqlcollection.h"
 
+#include <QStack>
+
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -77,6 +79,8 @@ struct SqlQueryBuilder::Private
     bool withoutDuplicates;
     int maxResultSize;
     SqlWorkerThread *worker;
+
+    QStack<bool> andStack;
 };
 
 SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
@@ -111,6 +115,8 @@ SqlQueryBuilder::reset()
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
+    d->andStack.clear();
+    d->andStack.push( true );   //and is default
     return this;
 }
 
@@ -337,7 +343,7 @@ QueryMaker*
 SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
-    d->queryFilter += QString( " OR %1 %2 " ).arg( nameForValue( value ), like );
+    d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
 
@@ -374,6 +380,32 @@ QueryMaker*
 SqlQueryBuilder::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;
+    return this;
+}
+
+QueryMaker*
+SqlQueryBuilder::beginAnd()
+{
+    d->queryFilter += andOr();
+    d->queryFilter += " ( 1 ";
+    d->andStack.push( true );
+    return this;
+}
+
+QueryMaker*
+SqlQueryBuilder::beginOr()
+{
+    d->queryFilter += andOr();
+    d->queryFilter += " ( 0 ";
+    d->andStack.push( false );
+    return this;
+}
+
+QueryMaker*
+SqlQueryBuilder::endAndOr()
+{
+    d->queryFilter += ")";
+    d->andStack.pop();
     return this;
 }
 
@@ -415,7 +447,7 @@ SqlQueryBuilder::buildQuery()
     query += d->queryMatch;
     if ( !d->queryFilter.isEmpty() )
     {
-        query += " AND ( 0 ";
+        query += " AND ( 1 ";
         query += d->queryFilter;
         query += " ) ";
     }
@@ -544,6 +576,12 @@ SqlQueryBuilder::nameForValue( qint64 value )
         default:
             return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64): value=" + value;
     }
+}
+
+QString
+SqlQueryBuilder::andOr() const
+{
+    return d->andStack.top() ? " AND " : " OR ";
 }
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)

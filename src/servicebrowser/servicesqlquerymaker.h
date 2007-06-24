@@ -70,6 +70,10 @@ class ServiceSqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* limitMaxResultSize( int size );
 
+        virtual QueryMaker* beginAnd();
+        virtual QueryMaker* beginOr();
+        virtual QueryMaker* endAndOr();
+
         QString query();
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );

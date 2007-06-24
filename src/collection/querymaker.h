@@ -181,6 +181,10 @@ class AMAROK_EXPORT QueryMaker : public QObject
         */
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
 
+        virtual QueryMaker* beginAnd() = 0;
+        virtual QueryMaker* beginOr() = 0;
+        virtual QueryMaker* endAndOr() = 0;
+
     signals:
         void newResultReady( QString collectionId, Meta::TrackList );
         void newResultReady( QString collectionId, Meta::ArtistList );

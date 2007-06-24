@@ -254,6 +254,30 @@ MetaQueryBuilder::limitMaxResultSize( int size )
     return this;
 }
 
+QueryMaker*
+MetaQueryBuilder::beginAnd()
+{
+    foreach( QueryMaker *b, builders )
+        b->beginAnd();
+    return this;
+}
+
+QueryMaker*
+MetaQueryBuilder::beginOr()
+{
+    foreach( QueryMaker *b, builders )
+        b->beginOr();
+    return this;
+}
+
+QueryMaker*
+MetaQueryBuilder::endAndOr()
+{
+    foreach( QueryMaker *b, builders )
+        b->endAndOr();
+    return this;
+}
+
 void
 MetaQueryBuilder::slotQueryDone()
 {

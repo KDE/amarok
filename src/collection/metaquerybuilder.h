@@ -68,6 +68,10 @@ class MetaQueryBuilder : public QueryMaker
 
         virtual QueryMaker* limitMaxResultSize( int size );
 
+        virtual QueryMaker* beginAnd();
+        virtual QueryMaker* beginOr();
+        virtual QueryMaker* endAndOr();
+
     private slots:
         void slotQueryDone();
 
