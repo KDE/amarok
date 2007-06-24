@@ -277,6 +277,7 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
         {
             if ( elem.field.isEmpty() )
             {
+                qm->beginOr();
                 foreach ( int level, m_levelType )
                 {
                     qint64 value;
@@ -304,6 +305,7 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                     qm->addFilter ( value, elem.text, false, false );
                 }
                 qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
+                qm->endAndOr();
             }
         }
     }
