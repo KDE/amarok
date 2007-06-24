@@ -79,7 +79,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void scaleView( qreal factor );
 
-        void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction );
+        void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction = ShuffleDown );
 
         void notifyItems( const QString& message );
 
@@ -101,6 +101,7 @@ class ContextView : public QGraphicsView, public EngineObserver
 
     private slots:
         void introAnimationComplete();
+        void boxHeightChanged(qreal change);
         void testBoxLayout();
 };
 

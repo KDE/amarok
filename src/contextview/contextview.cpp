@@ -262,6 +262,23 @@ void ContextView::clear()
     update();
 }
 
+void ContextView::boxHeightChanged( qreal change )
+{
+    ContextBox *box = dynamic_cast<ContextBox*>( sender() );
+    if( !box )
+        return;
+
+    QList<QGraphicsItem*> shuffle;
+    QList<ContextBox*> boxes = m_contextBoxes.values();
+
+    int index = boxes.indexOf( box );
+    for( ++index; index < m_contextBoxes.size(); ++index )
+        shuffle << boxes.at(index);
+
+    // 'change' will be negative if it got smaller
+    shuffleItems( shuffle, change );
+}
+
 void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextItem* parent )
 {
     DEBUG_BLOCK
@@ -309,6 +326,7 @@ void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextIte
         }
     }
     m_contextScene->removeItem( oldBox );
+    disconnect( oldBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
     if( parent ) // this belongs to a ContextItem
     {
@@ -386,6 +404,7 @@ void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn, Con
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
     m_contextBoxes.insertMulti( newBox->sceneBoundingRect().bottom(), newBox );
+    connect( newBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
     if( parent ) // register with parent item
         m_contextItemMap.value( parent )->append( newBox );

@@ -177,9 +177,9 @@ void ContextBox::visibilityTimerSlot()
 {
     const qreal desiredHeight = m_goingUp ? m_optimumHeight : 0;
 
-    qreal newHeight = m_goingUp ?
-            m_contentRect->rect().height() + m_animationIncrement: //get bigger if hidden
-            m_contentRect->rect().height() - m_animationIncrement; //get smaller if visible
+    qreal change = m_goingUp ? m_animationIncrement : -m_animationIncrement;
+
+    qreal newHeight = m_contentRect->rect().height() + change;
 
     if( ( !m_goingUp && newHeight <= desiredHeight ) ||
         (  m_goingUp && newHeight >= desiredHeight ) )
@@ -189,6 +189,7 @@ void ContextBox::visibilityTimerSlot()
     }
 
     setContentRectSize( QSizeF( m_contentRect->rect().width(), newHeight ), false );
+    emit heightChanged( change );
 }
 
 void ContextBox::animationStateChanged( QTimeLine::State newState )

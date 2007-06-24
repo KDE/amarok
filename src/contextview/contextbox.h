@@ -60,6 +60,9 @@ class ContextBox : public QObject, public QGraphicsRectItem
     protected slots:
         void visibilityTimerSlot();
         void animationStateChanged( QTimeLine::State newState );
+
+    signals:
+        void heightChanged(qreal change);
 };
 
 }
