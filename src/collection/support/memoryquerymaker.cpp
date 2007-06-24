@@ -17,12 +17,14 @@
 */
 
 #include "memoryquerymaker.h"
+#include "memoryquerymakerfilters_p.h"
 
 #include "debug.h"
 
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QSet>
+#include <QStack>
 
 Matcher::Matcher()
     : m_next( 0 )
@@ -100,7 +102,6 @@ class ArtistMatcher : public Matcher
 
     virtual TrackList match( MemoryCollection *memColl )
     {
-        DEBUG_BLOCK
         ArtistMap artistMap = memColl->artistMap();
         if ( artistMap.contains( m_artist->name() ) )
         {
@@ -117,7 +118,6 @@ class ArtistMatcher : public Matcher
 
     virtual TrackList match( const TrackList &tracks )
     {
-        DEBUG_BLOCK
         TrackList matchingTracks;
         QString name = m_artist->name();
         foreach( TrackPtr track, tracks )
@@ -143,7 +143,6 @@ class AlbumMatcher : public Matcher
 
     virtual TrackList match( MemoryCollection *memColl )
     {
-        DEBUG_BLOCK
         AlbumMap albumMap = memColl->albumMap();
         if ( albumMap.contains( m_album->name() ) )
         {
@@ -160,7 +159,6 @@ class AlbumMatcher : public Matcher
 
     virtual TrackList match( const TrackList &tracks )
     {
-        DEBUG_BLOCK
         TrackList matchingTracks;
         QString name = m_album->name();
         foreach( TrackPtr track, tracks )
@@ -330,6 +328,7 @@ struct MemoryQueryMaker::Private {
     Matcher* matcher;
     QueryJob *job;
     int maxsize;
+    QStack<ContainerFilter*> containerFilters;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -345,6 +344,8 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collect
 
 MemoryQueryMaker::~MemoryQueryMaker()
 {
+    if( !d->containerFilters.isEmpty() )
+        delete d->containerFilters.first();
     delete d;
 }
 
@@ -356,6 +357,10 @@ MemoryQueryMaker::reset()
     delete d->matcher;
     delete d->job;
     d->maxsize = -1;
+    if( !d->containerFilters.isEmpty() )
+        delete d->containerFilters.first();
+    d->containerFilters.clear();
+    d->containerFilters.push( new AndFilter() );
     return this;
 }
 
@@ -767,14 +772,15 @@ MemoryQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 MemoryQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    //TODO stub
+    d->containerFilters.top()->addFilter( FilterFactory::filter( value, filter, matchBegin, matchEnd ) );
     return this;
 }
 
 QueryMaker*
 MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    //TODO stub
+    Filter *tmp = FilterFactory::filter( value, filter, matchBegin, matchEnd );
+    d->containerFilters.top()->addFilter( new NegateFilter( tmp ) );
     return this;
 }
 
@@ -782,6 +788,31 @@ QueryMaker*
 MemoryQueryMaker::limitMaxResultSize( int size )
 {
     d->maxsize = size;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::beginAnd()
+{
+    ContainerFilter *filter = new AndFilter();
+    d->containerFilters.top()->addFilter( filter );
+    d->containerFilters.push( filter );
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::beginOr()
+{
+    ContainerFilter *filter = new OrFilter();
+    d->containerFilters.top()->addFilter( filter );
+    d->containerFilters.push( filter );
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::endAndOr()
+{
+    d->containerFilters.pop();
     return this;
 }
 

@@ -66,6 +66,11 @@ class MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 
         virtual QueryMaker* limitMaxResultSize( int size );
+
+        virtual QueryMaker* beginAnd();
+        virtual QueryMaker* beginOr();
+        virtual QueryMaker* endAndOr();
+
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();
