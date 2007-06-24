@@ -13,15 +13,15 @@ if (LIBVISUAL_INCLUDE_DIR AND LIBVISUAL_LIBRARIES)
   SET(LIBVISUAL_FOUND TRUE)
 
 else (LIBVISUAL_INCLUDE_DIR AND LIBVISUAL_LIBRARIES)
-
-  # use pkg-config to get the directories and then use these values
-  # in the FIND_PATH() and FIND_LIBRARY() calls
-  INCLUDE(UsePkgConfig)
+  if(NOT WIN32)
+    # use pkg-config to get the directories and then use these values
+    # in the FIND_PATH() and FIND_LIBRARY() calls
+    INCLUDE(UsePkgConfig)
   
-  PKGCONFIG(libvisual _LIBVISUALIncDir _LIBVISUALLinkDir _LIBVISUALLinkFlags _LIBVISUALCflags)
+    PKGCONFIG(libvisual _LIBVISUALIncDir _LIBVISUALLinkDir _LIBVISUALLinkFlags _LIBVISUALCflags)
   
-  set(LIBVISUAL_DEFINITIONS ${_LIBVISUALCflags})
- 
+    set(LIBVISUAL_DEFINITIONS ${_LIBVISUALCflags})
+  endif(NOT WIN32)
   FIND_PATH(NJB_INCLUDE_DIR libvisual.h
     ${_LIBVISUALIncDir}
     /usr/include

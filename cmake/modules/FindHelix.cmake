@@ -9,7 +9,7 @@
 
 if (HELIX_LIBRARY)
   # Already in cache, be silent
-  set(HELIX_FIND_QUIETLY TRUE)
+  set(Helix_FIND_QUIETLY TRUE)
 endif (HELIX_LIBRARY)
 
 EXEC_PROGRAM( dirname ARGS "${CMAKE_CURRENT_LIST_FILE}" OUTPUT_VARIABLE cmakeModulesPath )

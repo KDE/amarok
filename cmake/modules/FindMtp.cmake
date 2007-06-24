@@ -13,15 +13,15 @@ if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
   SET(MTP_FOUND TRUE)
 
 else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
-
-  # use pkg-config to get the directories and then use these values
-  # in the FIND_PATH() and FIND_LIBRARY() calls
-  INCLUDE(UsePkgConfig)
+  if(NOT WIN32)
+    # use pkg-config to get the directories and then use these values
+    # in the FIND_PATH() and FIND_LIBRARY() calls
+    INCLUDE(UsePkgConfig)
   
-  PKGCONFIG(libmtp _MTPIncDir _MTPLinkDir _MTPLinkFlags _MTPCflags)
+    PKGCONFIG(libmtp _MTPIncDir _MTPLinkDir _MTPLinkFlags _MTPCflags)
   
-  set(MTP_DEFINITIONS ${_MTPCflags})
- 
+    set(MTP_DEFINITIONS ${_MTPCflags})
+  endif(NOT WIN32)
   FIND_PATH(MTP_INCLUDE_DIR libmtp.h
     ${_MTPIncDir}
     /usr/include

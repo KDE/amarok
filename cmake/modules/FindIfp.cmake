@@ -9,7 +9,7 @@
 
 if (IFP_INCLUDE_DIR)
   # Already in cache, be silent
-  set(IFP_FIND_QUIETLY TRUE)
+  set(Ifp_FIND_QUIETLY TRUE)
 endif (IFP_INCLUDE_DIR)
 
 FIND_PATH(IFP_INCLUDE_DIR ifp.h

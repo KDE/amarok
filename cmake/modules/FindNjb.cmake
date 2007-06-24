@@ -13,15 +13,16 @@ if (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
   SET(NJB_FOUND TRUE)
 
 else (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
+  if(NOT WIN32)
+    # use pkg-config to get the directories and then use these values
+    # in the FIND_PATH() and FIND_LIBRARY() calls
+    INCLUDE(UsePkgConfig)
+  
+    PKGCONFIG(libnjb _NJBIncDir _NJBLinkDir _NJBLinkFlags _NJBCflags)
+  
+    set(NJB_DEFINITIONS ${_NJBCflags})
+  endif(NOT WIN32)
 
-  # use pkg-config to get the directories and then use these values
-  # in the FIND_PATH() and FIND_LIBRARY() calls
-  INCLUDE(UsePkgConfig)
-  
-  PKGCONFIG(libnjb _NJBIncDir _NJBLinkDir _NJBLinkFlags _NJBCflags)
-  
-  set(NJB_DEFINITIONS ${_NJBCflags})
- 
   FIND_PATH(NJB_INCLUDE_DIR libnjb.h
     ${_NJBIncDir}
     /usr/include
