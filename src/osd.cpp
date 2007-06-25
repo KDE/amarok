@@ -203,7 +203,7 @@ OSDWidget::determineMetrics( const uint M )
 
     if( m_rating )
     {
-        QPixmap* star = StarManager::instance()->getStar( 1 );
+        QPixmap* star = StarManager::instance()->getStar( 1, true );
         if( rect.width() < star->width() * 5 )
             rect.setWidth( star->width() * 5 ); //changes right edge position
         rect.setHeight( rect.height() + star->height() + M ); //changes bottom edge pos
@@ -419,7 +419,7 @@ OSDWidget::render( const uint M, const QSize &size )
         m_volume = false;
     }
 
-    QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
+    QPixmap* star = StarManager::instance()->getStar( m_rating/2, true );
     int graphicsHeight = 0;
 
     if( useMoodbar() )
@@ -448,9 +448,9 @@ OSDWidget::render( const uint M, const QSize &size )
 
         if( half )
         {
-            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating/2 + 1 );
+            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating/2 + 1, true );
             p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
-            star = StarManager::instance()->getStar( m_rating/2 + 1 );
+            star = StarManager::instance()->getStar( m_rating/2 + 1, true );
         }
 
         for( int i = 0; i < m_rating/2; i++ )

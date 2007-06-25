@@ -27,12 +27,12 @@ class StarManager : public QObject
         ~StarManager();
         static StarManager *instance();
 
-        QPixmap* getStar( int num );
+        QPixmap* getStar( int num, bool full = false );
         QPixmap* getGreyStar() { return &m_greyedStarPix; }
-        QPixmap* getHalfStar( int num = -1 );
-        QImage& getStarImage( int num );
+        QPixmap* getHalfStar( int num = -1, bool full = false  );
+        QImage& getStarImage( int num, bool full = false  );
         QImage& getGreyStarImage() { return m_greyedStar; }
-        QImage& getHalfStarImage( int num = -1 );
+        QImage& getHalfStarImage( int num = -1, bool full = false  );
 
         bool setColor( int starNum, const QColor &color );
         bool setHalfColor( const QColor &color );
@@ -50,10 +50,14 @@ class StarManager : public QObject
         //cached stars...why both?  For faster conversion when drawing context browser
         QPixmap m_starPix;
         QImage m_star;
+        QPixmap m_fullStarPix;
+        QImage m_fullStar;
         QPixmap m_greyedStarPix;
         QImage m_greyedStar;
         QPixmap m_halfStarPix;
+        QPixmap m_fullHalfStarPix;
         QImage m_halfStar;
+        QImage m_fullHalfStar;
 
         QImage m_images[5];
         QImage m_halfimages[5];

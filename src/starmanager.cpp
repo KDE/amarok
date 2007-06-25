@@ -61,16 +61,22 @@ StarManager::reinitStars( int height, int margin )
 
     int hval = m_height + m_margin * 2 - 4 + ( ( m_height % 2 ) ? 1 : 0 );
     QImage star = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( hval, hval, QImage::ScaleMin );
+    QImage fullStar = QImage( locate( "data", "amarok/images/star.png" ) );
     m_star = star.copy();
+    m_fullStar = fullStar.copy();
     m_starPix.convertFromImage( star );
+    m_fullStarPix.convertFromImage( fullStar );
     m_greyedStar = star.copy();
     KIconEffect::toGray( m_greyedStar, 1.0 );
     m_greyedStarPix.convertFromImage( m_greyedStar );
     QImage half = QImage( locate( "data", "amarok/images/smallstar.png" ) ).smoothScale( hval, hval, QImage::ScaleMin );
+    QImage fullHalf = QImage( locate( "data", "amarok/images/smallstar.png" ) );
     m_halfStar = half.copy();
+    m_fullHalfStar = fullHalf.copy();
     if( AmarokConfig::customRatingsColors() )
         KIconEffect::colorize( m_halfStar, m_halfStarColor, 1.0 );
     m_halfStarPix.convertFromImage( m_halfStar );
+    m_fullHalfStarPix.convertFromImage( m_fullHalfStar );
 
     QImage tempstar;
     QImage temphalfstar;
@@ -99,36 +105,44 @@ StarManager::reinitStars( int height, int margin )
 }
 
 QPixmap*
-StarManager::getStar( int num )
+StarManager::getStar( int num, bool full )
 {
-    if( num < 1 || num > 5 )
+    if(full)
+	return &m_fullStarPix;
+    else if( num < 1 || num > 5 )
         return &m_starPix;
     else
         return &m_pixmaps[num - 1];
 }
 
 QImage&
-StarManager::getStarImage( int num )
+StarManager::getStarImage( int num, bool full )
 {
-    if( num < 1 || num > 5 )
+    if(full)
+        return m_fullStar;
+    else if( num < 1 || num > 5 )
         return m_star;
     else
         return m_images[num - 1];
 }
 
 QPixmap*
-StarManager::getHalfStar( int num )
+StarManager::getHalfStar( int num, bool full )
 {
-    if( AmarokConfig::fixedHalfStarColor() || num == -1 )
+    if( full )
+        return &m_fullHalfStarPix;
+    else if( AmarokConfig::fixedHalfStarColor() || num == -1 )
         return &m_halfStarPix;
     else
         return &m_halfpixmaps[num - 1];
 }
 
 QImage&
-StarManager::getHalfStarImage( int num  )
+StarManager::getHalfStarImage( int num, bool full )
 {
-    if( AmarokConfig::fixedHalfStarColor() || num == -1 )
+    if( full )
+        return m_fullHalfStar;
+    else if( AmarokConfig::fixedHalfStarColor() || num == -1 )
         return m_halfStar;
     else
         return m_halfimages[num - 1];
