@@ -151,31 +151,14 @@ void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
     if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable))
     {
-        // Determine the list of selected items
-        QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
-        if( !isSelected() )
-            selectedItems << this;
-
-        // Move all selected items
-        foreach( QGraphicsItem *item, selectedItems )
+        if( (flags() & ItemIsMovable) && (!parentItem() || !parentItem()->isSelected()) )
         {
-            if( (item->flags() & ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected()) )
-            {
-                QPointF diff;
-                if( item == this )
-                {
-                    diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
-                }
-                else
-                {
-                    diff = item->mapToParent(item->mapFromScene(event->scenePos()))
-                            - item->mapToParent(item->mapFromScene(event->lastScenePos()));
-                }
+            QPointF diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
 
-                item->moveBy( 0, diff.y() );
-                if( item->flags() & ItemIsSelectable )
-                    item->setSelected( true );
-            }
+            moveBy( 0, diff.y() );
+
+            if( flags() & ItemIsSelectable )
+                setSelected( true );
         }
     }
     else
@@ -183,7 +166,6 @@ void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
         QGraphicsItem::mouseMoveEvent( event );
     }
 }
-
 
 void ContextBox::toggleVisibility()
 {
