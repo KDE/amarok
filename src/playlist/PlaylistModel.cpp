@@ -474,7 +474,7 @@ Model::insertTracksCommand( int row, TrackList list )
 TrackList
 Model::removeRowsCommand( int position, int rows )
 {
-    beginRemoveRows( QModelIndex(), position, position + rows );
+    beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
 //     TrackList::iterator end = start + rows;
 //     m_tracks.erase( start, end );
