@@ -340,6 +340,7 @@ set(amarok_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
+    playlist/PlaylistDelegate.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistView.cpp
     playlist/StandardTrackAdvancer.cpp

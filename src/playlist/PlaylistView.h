@@ -9,18 +9,18 @@
 #ifndef AMAROK_PLAYLISTVIEW_H
 #define AMAROK_PLAYLISTVIEW_H
 
-#include <QTableView>
+#include <QListView>
 class QAbstractItemModel;
 /**
  * The view of the playlist, used to send user interaction signals back to the model.
  */
 namespace PlaylistNS {
 
-    class View : public QTableView
+    class View : public QListView
     {
         Q_OBJECT
         public:
-            View( QWidget* parent ) : QTableView( parent ) { }
+            View( QWidget* parent ) : QListView( parent ) { }
             virtual void setModel( QAbstractItemModel * model );
     };
 }

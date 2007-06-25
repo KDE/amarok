@@ -142,10 +142,8 @@ void PlaylistWindow::init()
         playmodel->init();
         playmodel->testData();
         PlaylistNS::View* playview = new PlaylistNS::View( splitter );
-        debug() << playview->horizontalHeader() << " " << playmodel->rowCount( QModelIndex() ) << endl;
         playview->setModel( playmodel );
         playview->setAlternatingRowColors(true);
-        playview->verticalHeader()->hide();
         playview->setSelectionMode(QAbstractItemView::ExtendedSelection);
         playview->setDragEnabled(true);
         playview->setAcceptDrops(true);
