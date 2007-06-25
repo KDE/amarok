@@ -64,6 +64,8 @@ qreal AlbumItem::bottom()
         b = m_textItem->boundingRect().bottom();
     if( m_coverItem && m_coverItem->boundingRect().bottom() > b )
         b = m_coverItem->boundingRect().bottom();
+    if( b < 50 )
+        b = 50;
     return b;
 }
 
@@ -82,6 +84,6 @@ void AlbumBox::addAlbumInfo( const QString &pixLocation, const QString &text )
     albumRow->setPos( 0, m_bottom );
     m_bottom += albumRow->bottom();
 
-    setContentRectSize( QSize( (int)boundingRect().width(), (int)m_bottom ) );
+    setContentRectSize( QSizeF( boundingRect().width(), m_bottom ) );
 }
 
