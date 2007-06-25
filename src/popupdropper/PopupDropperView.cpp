@@ -40,7 +40,6 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
     QPalette p = palette();
     p.setColor( QPalette::Base, QColor(0, 0, 0, 0) );
     setPalette( p );
-    setAutoFillBackground( true );
     setFrameShape( QFrame::NoFrame );
 }
 
