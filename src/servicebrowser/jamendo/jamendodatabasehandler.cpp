@@ -165,6 +165,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 {
 
     JamendoTrack * jTrack = dynamic_cast<JamendoTrack *> ( track );
+    Q_ASSERT(jTrack);
 
     QString numberString;
 
@@ -207,6 +208,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
     JamendoAlbum * jAlbum = dynamic_cast<JamendoAlbum *> ( album );
+    Q_ASSERT(jAlbum);
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -233,6 +235,7 @@ int
 JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
     JamendoArtist * jArtist = dynamic_cast<JamendoArtist *> ( artist );
+    Q_ASSERT(jArtist);
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
