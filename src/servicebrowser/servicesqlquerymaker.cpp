@@ -297,9 +297,11 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix(); 
-    if (d->queryType == Private::TRACK ) // a service track does not generally know its artist
+    if( d && d->queryType == Private::TRACK ) // a service track does not generally know its artist
         return this;
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
+    if( !d || !serviceArtist )
+        return this;
     d->queryMatch += QString( " AND " + prefix + "_albums.artist_id= '%1'" ).arg( serviceArtist->id() );
     return this;
 }
@@ -310,6 +312,8 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
     DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix(); 
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
+    if( !d || !serviceAlbum )
+        return this;
     d->queryMatch += QString( " AND " + prefix + "_tracks.album_id = '%1'" ).arg( serviceAlbum->id() );
     return this;
 }
@@ -321,6 +325,8 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
     QString prefix = m_metaFactory->tablePrefix(); 
 
     const ServiceGenre* serviceGenre = dynamic_cast<const ServiceGenre *>( genre.data() );
+    if( !d || !serviceGenre )
+        return this;
     d->linkedTables |= Private::GENRE_TABLE;
     if ( d->queryType == Private::ARTIST ) //HACK!
         d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
@@ -377,7 +383,6 @@ ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool m
 QueryMaker*
 ServiceSqlQueryMaker::addReturnValue( qint64 value )
 {
-
     Q_UNUSED( value );
     /*if( d->queryType == Private::CUSTOM )
     {
