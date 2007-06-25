@@ -88,24 +88,24 @@ namespace TagLib {
                 /*!
                  * Returns the year; if there is no year set, this will return 0.
                  */
-                virtual uint year() const { return m_year; }
+                virtual TagLib::uint year() const { return m_year; }
 
                 /*!
                  * Returns the track number; if there is no track number set, this will
                  * return 0.
                  */
-                virtual uint track() const { return m_track; }
+                virtual TagLib::uint track() const { return m_track; }
 
                 /*!
                  * Returns the disc number; if there is no disc number set, this will
                  * return 0.
                  */
-                virtual uint disk() const { return m_disk; }
+                virtual TagLib::uint disk() const { return m_disk; }
 
                 /*!
                  * Returns the BPM (tempo);  if there is no BPM, this will return 0.
                  */
-                virtual uint bpm() const { return m_bpm; }
+                virtual TagLib::uint bpm() const { return m_bpm; }
 
                 /*!
                 * Returns the embedded cover image; if there is no cover set, this will
@@ -216,10 +216,10 @@ namespace TagLib {
                 String m_comment;
                 String m_genre;
                 String m_composer;
-                uint m_year;
-                uint m_track;
-                uint m_disk;
-                uint m_bpm;
+                TagLib::uint m_year;
+                TagLib::uint m_track;
+                TagLib::uint m_disk;
+                TagLib::uint m_bpm;
                 int m_compilation;
                 ByteVector m_image;
         };

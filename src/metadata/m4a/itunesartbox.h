@@ -32,7 +32,7 @@ namespace TagLib
     class ITunesArtBox: public Mp4IsoBox
     {
     public:
-      ITunesArtBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
+      ITunesArtBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
       ~ITunesArtBox();
 
     private:

@@ -32,7 +32,7 @@ public:
 }; // Mp4IsoFullBoxPrivate
 
 
-MP4::Mp4IsoFullBox::Mp4IsoFullBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::Mp4IsoFullBox::Mp4IsoFullBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 : Mp4IsoBox( file, fourcc, size, offset )
 {
   d = new MP4::Mp4IsoFullBox::Mp4IsoFullBoxPrivate();

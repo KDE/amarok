@@ -53,30 +53,30 @@ namespace TagLib
       virtual String album() const;
       virtual String comment() const;
       virtual String genre() const;
-      virtual uint year() const;
-      virtual uint track() const;
+      virtual TagLib::uint year() const;
+      virtual TagLib::uint track() const;
   
       virtual void setTitle(const String &s);
       virtual void setArtist(const String &s);
       virtual void setAlbum(const String &s);
       virtual void setComment(const String &s);
       virtual void setGenre(const String &s);
-      virtual void setYear(const uint i);
-      virtual void setTrack(const uint i);
+      virtual void setYear(const TagLib::uint i);
+      virtual void setTrack(const TagLib::uint i);
 
       // MP4 specific fields
 
       String     grouping() const;
       String     composer() const;
-      uint       disk() const;
-      uint       bpm() const;
+      TagLib::uint       disk() const;
+      TagLib::uint       bpm() const;
       ByteVector cover() const;
       int        compilation() const { return -1; }
       
       void setGrouping(const String &s);
       void setComposer(const String &s);
-      void setDisk(const uint i);
-      void setBpm(const uint i);
+      void setDisk(const TagLib::uint i);
+      void setBpm(const TagLib::uint i);
       void setCover( const ByteVector& cover );
       void setCompilation( bool /*isCompilation*/ ) {}
   

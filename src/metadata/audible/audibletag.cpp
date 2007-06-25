@@ -26,6 +26,7 @@
 #include "audibletag.h"
 
 #include <tag.h>
+#include <stdint.h>
 
 #include <netinet/in.h> // ntohl
 

@@ -30,7 +30,7 @@ class MP4::Mp4SkipBox::Mp4SkipBoxPrivate
 public:
 };
 
-MP4::Mp4SkipBox::Mp4SkipBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::Mp4SkipBox::Mp4SkipBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 	:Mp4IsoBox(file, fourcc, size, offset)
 {
   d = new MP4::Mp4SkipBox::Mp4SkipBoxPrivate();

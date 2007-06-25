@@ -92,7 +92,7 @@ namespace TagLib {
       return String::null;
     }
 
-    virtual uint year() const {
+    virtual TagLib::uint year() const {
       if(tag1 && tag1->year() > 0)
           return tag1->year();
 
@@ -102,7 +102,7 @@ namespace TagLib {
       return 0;
     }
 
-    virtual uint track() const {
+    virtual TagLib::uint track() const {
       if(tag1 && tag1->track() > 0)
           return tag1->track();
 

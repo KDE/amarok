@@ -31,7 +31,7 @@ public:
   TagLib::uint data_reference_index;
 };
 
-MP4::Mp4SampleEntry::Mp4SampleEntry( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::Mp4SampleEntry::Mp4SampleEntry( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 	:Mp4IsoBox(file, fourcc, size, offset)
 {
   d = new MP4::Mp4SampleEntry::Mp4SampleEntryPrivate();

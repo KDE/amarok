@@ -85,18 +85,18 @@ namespace TagLib {
                 /*!
                  * Returns the year; if there is no year set, this will return 0.
                  */
-                virtual uint year() const { return m_year; }
+                virtual TagLib::uint year() const { return m_year; }
 
                 /*!
                  * Returns the track number; if there is no track number set, this will
                  * return 0.
                  */
-                virtual uint track() const { return m_track; }
+                virtual TagLib::uint track() const { return m_track; }
 
                 /*!
                  * Returns the user id for this file.
                  */
-                virtual uint userID() const { return m_userID; }
+                virtual TagLib::uint userID() const { return m_userID; }
 
                 /*!
                  * Sets the title to \a s.  If \a s is String::null then this value will be
@@ -173,9 +173,9 @@ namespace TagLib {
                 String m_album;
                 String m_comment;
                 String m_genre;
-                uint m_year;
-                uint m_track;
-                uint m_userID;
+                TagLib::uint m_year;
+                TagLib::uint m_track;
+                TagLib::uint m_userID;
                 bool readTag( FILE *fp, char **name, char **value);
                 int m_tagsEndOffset;
         };

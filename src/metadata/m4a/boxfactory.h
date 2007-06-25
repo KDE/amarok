@@ -36,7 +36,7 @@ namespace TagLib
       ~BoxFactory();
 
       //! factory function
-      Mp4IsoBox* createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset ) const;
+      Mp4IsoBox* createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, TagLib::uint size, long offset ) const;
     }; // class BoxFactory
 
   } // namepace MP4

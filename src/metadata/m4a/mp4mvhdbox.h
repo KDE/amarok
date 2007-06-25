@@ -41,15 +41,15 @@ namespace TagLib
       //! function to get the modification time of the mp4 file
       ulonglong modificationTime() const;
       //! function to get the timescale referenced by the above timestamps
-      uint timescale() const;
+      TagLib::uint timescale() const;
       //! function to get the presentation duration in the mp4 file
       ulonglong duration() const;
       //! function to get the rate (playout speed) - typically 1.0;
-      uint rate() const;
+      TagLib::uint rate() const;
       //! function to get volume level for presentation - typically 1.0;
-      uint volume() const;
+      TagLib::uint volume() const;
       //! function to get the track ID for adding new tracks - useless for this lib
-      uint nextTrackID() const;
+      TagLib::uint nextTrackID() const;
 
       //! parse mvhd contents
       void parse();

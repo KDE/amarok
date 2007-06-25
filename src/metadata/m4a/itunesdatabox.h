@@ -32,7 +32,7 @@ namespace TagLib
     class ITunesDataBox: public Mp4IsoFullBox
     {
     public:
-      ITunesDataBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
+      ITunesDataBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
       ~ITunesDataBox();
 
       //! get the internal data, which can be txt or binary data as well

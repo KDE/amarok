@@ -59,7 +59,7 @@ MP4::BoxFactory::~BoxFactory()
 }
 
 //! factory function
-MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset ) const
+MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, TagLib::uint size, long offset ) const
 {
   MP4::File * file = dynamic_cast<MP4::File *>(anyfile);
   if(!file)

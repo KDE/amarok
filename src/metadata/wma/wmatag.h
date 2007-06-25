@@ -84,13 +84,13 @@ namespace TagLib {
       /*!
        * Returns the year; if there is no year set, this will return 0.
        */
-      virtual uint year() const;
+      virtual TagLib::uint year() const;
 
       /*!
        * Returns the track number; if there is no track number set, this will
        * return 0.
        */
-      virtual uint track() const;
+      virtual TagLib::uint track() const;
 
       /*!
        * Sets the title to \a s.

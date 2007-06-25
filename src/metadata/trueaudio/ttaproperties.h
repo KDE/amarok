@@ -33,7 +33,7 @@ namespace TagLib {
   namespace TTA {
 
     
-    static const uint HeaderSize = 18;
+    static const TagLib::uint HeaderSize = 18;
 
     //! An implementation of audio property reading for TTA
 

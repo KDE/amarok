@@ -63,7 +63,7 @@ public:
 
   APE::Tag *APETag;
   long APELocation;
-  uint APESize;
+  TagLib::uint APESize;
 
   ID3v1::Tag *ID3v1Tag;
   long ID3v1Location; 

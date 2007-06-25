@@ -35,14 +35,14 @@ namespace TagLib
     {
     public:
       //! constructor for base class
-      Mp4IsoBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
+      Mp4IsoBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
       //! destructor - simply freeing private ptr
       virtual ~Mp4IsoBox();
 
       //! function to get the fourcc code
       MP4::Fourcc fourcc() const;
       //! function to get the size of tha atom/box
-      uint size() const;
+      TagLib::uint size() const;
       //! function to get the offset of the atom in the mp4 file
       long offset() const;
 

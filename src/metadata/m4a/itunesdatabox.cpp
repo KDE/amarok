@@ -33,7 +33,7 @@ public:
   ByteVector data;
 };
 
-MP4::ITunesDataBox::ITunesDataBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::ITunesDataBox::ITunesDataBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 	:Mp4IsoFullBox(file, fourcc, size, offset)
 {
   d = new MP4::ITunesDataBox::ITunesDataBoxPrivate();

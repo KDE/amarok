@@ -64,7 +64,7 @@ public:
   const ID3v2::FrameFactory *ID3v2FrameFactory;
   ID3v2::Tag *ID3v2Tag;
   long ID3v2Location;
-  uint ID3v2OriginalSize; 
+  TagLib::uint ID3v2OriginalSize; 
 
   ID3v1::Tag *ID3v1Tag;
   long ID3v1Location;

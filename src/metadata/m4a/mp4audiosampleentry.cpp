@@ -35,7 +35,7 @@ public:
   TagLib::uint bitrate;
 };
 
-MP4::Mp4AudioSampleEntry::Mp4AudioSampleEntry( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::Mp4AudioSampleEntry::Mp4AudioSampleEntry( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 	:Mp4SampleEntry(file, fourcc, size, offset)
 {
   d = new MP4::Mp4AudioSampleEntry::Mp4AudioSampleEntryPrivate();

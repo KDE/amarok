@@ -54,7 +54,7 @@ namespace TagLib
       Fourcc& operator = (char fourcc[4]);
 
     private:
-      uint m_fourcc;     /*!< integer code of the fourcc */
+      TagLib::uint m_fourcc;     /*!< integer code of the fourcc */
     };
 
   } // namespace MP4

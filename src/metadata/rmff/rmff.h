@@ -81,8 +81,8 @@ namespace TagLib
 
       struct File_Header_Start
       {
-         UINT32    object_id;
-         UINT32    size;
+         RealMedia::UINT32    object_id;
+         RealMedia::UINT32    size;
       };
 
       struct File_Header_v0_v1 : public Collectable
@@ -90,8 +90,8 @@ namespace TagLib
          File_Header_Start s;
          UINT16   object_version;
 
-         UINT32   file_version;
-         UINT32   num_headers;
+         RealMedia::UINT32   file_version;
+         RealMedia::UINT32   num_headers;
       };
 
       struct RMProperties : public Collectable
@@ -99,15 +99,15 @@ namespace TagLib
          File_Header_Start s;
          UINT16   object_version;
 
-         UINT32   max_bit_rate;
-         UINT32   avg_bit_rate;
-         UINT32   max_packet_size;
-         UINT32   avg_packet_size;
-         UINT32   num_packets;
-         UINT32   duration;
-         UINT32   preroll;
-         UINT32   index_offset;
-         UINT32   data_offset;
+         RealMedia::UINT32   max_bit_rate;
+         RealMedia::UINT32   avg_bit_rate;
+         RealMedia::UINT32   max_packet_size;
+         RealMedia::UINT32   avg_packet_size;
+         RealMedia::UINT32   num_packets;
+         RealMedia::UINT32   duration;
+         RealMedia::UINT32   preroll;
+         RealMedia::UINT32   index_offset;
+         RealMedia::UINT32   data_offset;
          UINT16   num_streams;
          UINT16   flags;
       };
@@ -118,12 +118,12 @@ namespace TagLib
          NameValueProperty() : name(0), value_data(0) {}
          virtual ~NameValueProperty() { delete [] name; delete [] value_data; }
 
-         UINT32   size;
+         RealMedia::UINT32   size;
          UINT16   object_version;
 
          UINT8    name_length;
          UINT8   *name;
-         UINT32   type;
+         RealMedia::UINT32   type;
          UINT16   value_length;
          UINT8   *value_data;
       };
@@ -136,12 +136,12 @@ namespace TagLib
             { delete [] physical_stream_numbers; delete [] data_offsets;
             delete [] rule_to_physical_stream_number_map; delete [] properties; }
 
-         UINT32  size;
+         RealMedia::UINT32  size;
          UINT16  object_version;
 
          UINT16              num_physical_streams;
          UINT16             *physical_stream_numbers;
-         UINT32             *data_offsets;
+         RealMedia::UINT32             *data_offsets;
          UINT16              num_rules;
          UINT16             *rule_to_physical_stream_number_map;
          UINT16              num_properties;
@@ -157,18 +157,18 @@ namespace TagLib
          UINT16   object_version;
 
          UINT16   stream_number;
-         UINT32   max_bit_rate;
-         UINT32   avg_bit_rate;
-         UINT32   max_packet_size;
-         UINT32   avg_packet_size;
-         UINT32   start_time;
-         UINT32   preroll;
-         UINT32   duration;
+         RealMedia::UINT32   max_bit_rate;
+         RealMedia::UINT32   avg_bit_rate;
+         RealMedia::UINT32   max_packet_size;
+         RealMedia::UINT32   avg_packet_size;
+         RealMedia::UINT32   start_time;
+         RealMedia::UINT32   preroll;
+         RealMedia::UINT32   duration;
          UINT8    stream_name_size;
          UINT8    stream_name[256];
          UINT8    mime_type_size;
          UINT8    mime_type[256];
-         UINT32   type_specific_len;
+         RealMedia::UINT32   type_specific_len;
          UINT8   *type_specific_data;
 
          LogicalStream *lstr; // only one of these
@@ -196,8 +196,8 @@ namespace TagLib
 
       struct PropListEntry
       {
-         UINT32 offset;
-         UINT32 num_props_for_name;
+         RealMedia::UINT32 offset;
+         RealMedia::UINT32 num_props_for_name;
       };
 
       struct MDProperties
@@ -206,15 +206,15 @@ namespace TagLib
          virtual ~MDProperties()
             { delete [] name; delete [] value; delete [] subproperties_list; delete [] subproperties; }
 
-         UINT32            size;
-         UINT32            type;
-         UINT32            flags;
-         UINT32            value_offset;
-         UINT32            subproperties_offset;
-         UINT32            num_subproperties;
-         UINT32            name_length;
+         RealMedia::UINT32            size;
+         RealMedia::UINT32            type;
+         RealMedia::UINT32            flags;
+         RealMedia::UINT32            value_offset;
+         RealMedia::UINT32            subproperties_offset;
+         RealMedia::UINT32            num_subproperties;
+         RealMedia::UINT32            name_length;
          UINT8            *name;
-         UINT32            value_length;
+         RealMedia::UINT32            value_length;
          UINT8            *value;
          PropListEntry    *subproperties_list; // num_subproperties
          MDProperties     *subproperties;      // num_subproperties
@@ -224,8 +224,8 @@ namespace TagLib
       {
          File_Header_Start s;
 
-         UINT32  object_id;
-         UINT32  object_version;
+         RealMedia::UINT32  object_id;
+         RealMedia::UINT32  object_version;
 
          // this is the 1 "unnamed root property"
          MDProperties properties;
@@ -317,14 +317,14 @@ namespace TagLib
          int init();
          int initMetadataSection();
          void saveHeader(Collectable *hdr);
-         int seekChunk(UINT32 object_id);
+         int seekChunk(RealMedia::UINT32 object_id);
 
-         int getHdr(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz);
-         int getChunk(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz, UINT32 &consumed);
-         int getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *buf, UINT32 object_id, int sz);
-         int getRealPropertyHeader(RMProperties *props, const unsigned char *buf, UINT32 object_id, int sz);
-         int getMediaPropHeader(MediaProperties *mh, const unsigned char *buf, UINT32 object_id, int sz);
-         int getContentDescription(ContentDescription *cont, const unsigned char *buf, UINT32 object_id, int sz);
+         int getHdr(unsigned char *buf, size_t sz, RealMedia::UINT32 &fourcc, RealMedia::UINT32 &csz);
+         int getChunk(unsigned char *buf, size_t sz, RealMedia::UINT32 &fourcc, RealMedia::UINT32 &csz, RealMedia::UINT32 &consumed);
+         int getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *buf, RealMedia::UINT32 object_id, int sz);
+         int getRealPropertyHeader(RMProperties *props, const unsigned char *buf, RealMedia::UINT32 object_id, int sz);
+         int getMediaPropHeader(MediaProperties *mh, const unsigned char *buf, RealMedia::UINT32 object_id, int sz);
+         int getContentDescription(ContentDescription *cont, const unsigned char *buf, RealMedia::UINT32 object_id, int sz);
          int getMDProperties(MDProperties *md, const unsigned char *buf);
 
 #ifdef TESTING

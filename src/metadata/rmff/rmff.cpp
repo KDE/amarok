@@ -245,9 +245,9 @@ int RealMediaFF::init()
 {
    int nbytes;
    unsigned char buf[65536];
-   UINT32 object_id;
-   UINT32 sz;
-   UINT32 consumed = 0;
+   RealMedia::UINT32 object_id;
+   RealMedia::UINT32 sz;
+   RealMedia::UINT32 consumed = 0;
 
    off_t s;
    if ( (s = lseek(m_fd, 0, SEEK_SET)) )
@@ -312,7 +312,7 @@ int RealMediaFF::init()
    return 0;
 }
 
-int RealMediaFF::getHdr(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz)
+int RealMediaFF::getHdr(unsigned char *buf, size_t sz, RealMedia::UINT32 &fourcc, RealMedia::UINT32 &csz)
 {
    int nbytes = 0, i = 0;
 
@@ -332,7 +332,7 @@ int RealMediaFF::getHdr(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &c
    return nbytes;
 }
 
-int RealMediaFF::getChunk(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &csz, UINT32 &alreadyconsumed)
+int RealMediaFF::getChunk(unsigned char *buf, size_t sz, RealMedia::UINT32 &fourcc, RealMedia::UINT32 &csz, RealMedia::UINT32 &alreadyconsumed)
 {
    int nbytes = 0, i = 0, readamount;
    csz = 0;
@@ -368,7 +368,7 @@ int RealMediaFF::getChunk(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 
    return (csz);
 }
 
-int RealMediaFF::getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *buf, UINT32 object_id, int sz)
+int RealMediaFF::getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *buf, RealMedia::UINT32 object_id, int sz)
 {
    int i = 0;
 
@@ -388,7 +388,7 @@ int RealMediaFF::getRealFileHeader(File_Header_v0_v1 *hdr, const unsigned char *
    return 0;
 }
 
-int RealMediaFF::getRealPropertyHeader(RMProperties *props, const unsigned char *buf, UINT32 object_id, int sz)
+int RealMediaFF::getRealPropertyHeader(RMProperties *props, const unsigned char *buf, RealMedia::UINT32 object_id, int sz)
 {
    int i = 0;
 
@@ -417,7 +417,7 @@ int RealMediaFF::getRealPropertyHeader(RMProperties *props, const unsigned char 
 }
 
 
-int RealMediaFF::getMediaPropHeader(MediaProperties *media_hdr, const unsigned char *buf, UINT32 object_id, int sz)
+int RealMediaFF::getMediaPropHeader(MediaProperties *media_hdr, const unsigned char *buf, RealMedia::UINT32 object_id, int sz)
 {
    int i = 0;
 
@@ -462,7 +462,7 @@ int RealMediaFF::getMediaPropHeader(MediaProperties *media_hdr, const unsigned c
                if (media_hdr->lstr->num_physical_streams > 0)
                {
                   media_hdr->lstr->physical_stream_numbers = new UINT16[ media_hdr->lstr->num_physical_streams ];
-                  media_hdr->lstr->data_offsets = new UINT32[ media_hdr->lstr->num_physical_streams ];
+                  media_hdr->lstr->data_offsets = new RealMedia::UINT32[ media_hdr->lstr->num_physical_streams ];
                   for (int j=0; j<media_hdr->lstr->num_physical_streams; j++)
                   {
                      UNPACK2(media_hdr->lstr->physical_stream_numbers[j], buf, i);
@@ -533,7 +533,7 @@ int RealMediaFF::getMediaPropHeader(MediaProperties *media_hdr, const unsigned c
 }
 
 
-int RealMediaFF::getContentDescription(ContentDescription *cont, const unsigned char *buf, UINT32 object_id, int sz)
+int RealMediaFF::getContentDescription(ContentDescription *cont, const unsigned char *buf, RealMedia::UINT32 object_id, int sz)
 {
    int i = 0;
 
@@ -580,12 +580,12 @@ int RealMediaFF::getContentDescription(ContentDescription *cont, const unsigned 
 }
 
 
-int RealMediaFF::seekChunk(UINT32 object_id)
+int RealMediaFF::seekChunk(RealMedia::UINT32 object_id)
 {
    if (!m_err)
    {
       off_t s, tot;
-      UINT32 oid = 0, sz = 0;
+      RealMedia::UINT32 oid = 0, sz = 0;
       unsigned char buf[255];
       int nbytes = 0;
 
@@ -676,11 +676,11 @@ int RealMediaFF::getMDProperties(MDProperties *props, const unsigned char *buf)
 
 int RealMediaFF::initMetadataSection()
 {
-   UINT32 object_id;
+   RealMedia::UINT32 object_id;
    off_t s;
    int nbytes;
    unsigned char buf[65536];
-   UINT32 consumed;
+   RealMedia::UINT32 consumed;
 
    memcpy((void *)&object_id, "RMMD", 4);
    if ( (s = seekChunk(object_id)) < 0 )
@@ -979,7 +979,7 @@ int main(int argc, char *argv[])
       std::cout << rmff;
 
    /*
-   UINT32 oid = 0;
+   RealMedia::UINT32 oid = 0;
    memcpy( (void *)&oid, (void *) ".RMF", 4);
    off_t pos = rmff.seekChunk(oid);
    std::cout << "POS=" << pos << std::endl;

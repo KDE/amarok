@@ -35,7 +35,7 @@ public:
   ITunesDataBox* dataBox;
 };
 
-MP4::ITunesNamBox::ITunesNamBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
+MP4::ITunesNamBox::ITunesNamBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
 	:Mp4IsoBox(file, fourcc, size, offset)
 {
   d = new MP4::ITunesNamBox::ITunesNamBoxPrivate();
