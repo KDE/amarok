@@ -1255,6 +1255,8 @@ void App::setRating( int n )
         const int rating = CollectionDB::instance()->getSongRating( path );
         EngineController::instance()->updateBundleRating( rating );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
+        if( !Amarok::OSD::instance()->isShown() && !PlaylistWindow::self()->isReallyShown() )
+            Amarok::OSD::instance()->forceToggleOSD();
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );

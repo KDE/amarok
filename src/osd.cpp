@@ -432,7 +432,6 @@ OSDWidget::render( const uint M, const QSize &size )
         graphicsHeight += moodbar.height() + M;
 
         p.drawPixmap( r.left(), r.top(), moodbar );
-        m_moodbarBundle = MetaBundle();
     }
 
     if( m_rating > 0 )
