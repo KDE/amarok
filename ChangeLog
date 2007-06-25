@@ -10,8 +10,8 @@ VERSION 1.4.7
       Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
-   * The stars indicating the track rating would be shown too small in the
-     OSD. Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 147059)
+   * Show the stars indicating rating with the correct size in the OSD. Patch 
+     Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 147059)
 
 
 VERSION 1.4.6
