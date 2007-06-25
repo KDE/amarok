@@ -262,6 +262,12 @@ void ContextView::clear()
     update();
 }
 
+bool ContextView::boxHigherThan( const ContextBox *c1, const ContextBox *c2 )
+{
+    // "Higher" means closer towards the top of the screen, but it means closer to position 0 (so really it's lower)
+    return c1->sceneBoundingRect().bottom() < c2->sceneBoundingRect().bottom();
+}
+
 void ContextView::boxHeightChanged( qreal change )
 {
     ContextBox *box = dynamic_cast<ContextBox*>( sender() );
@@ -269,11 +275,10 @@ void ContextView::boxHeightChanged( qreal change )
         return;
 
     QList<QGraphicsItem*> shuffle;
-    QList<ContextBox*> boxes = m_contextBoxes.values();
 
-    int index = boxes.indexOf( box );
+    int index = m_contextBoxes.indexOf( box );
     for( ++index; index < m_contextBoxes.size(); ++index )
-        shuffle << boxes.at(index);
+        shuffle << m_contextBoxes.at(index);
 
     // 'change' will be negative if it got smaller
     shuffleItems( shuffle, change );
@@ -299,13 +304,12 @@ void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextIte
     if( !m_contextBoxes.isEmpty() )
     {
         QList<QGraphicsItem*> shuffleUp;
-        QList<ContextBox*> boxes = m_contextBoxes.values();
 
         // need to shuffle up all the boxes below
-        int index = boxes.indexOf( oldBox );
+        int index = m_contextBoxes.indexOf( oldBox );
         for( ++index; index < m_contextBoxes.size(); ++index )
         {
-            ContextBox *box = boxes.at(index);
+            ContextBox *box = m_contextBoxes.at(index);
             debug() << "shuffling up: " << box->title() << endl;
             shuffleUp << box;
         }
@@ -316,15 +320,8 @@ void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextIte
         shuffleItems( shuffleUp, distance, ShuffleUp );
     }
 
-    QMap<qreal, ContextBox*>::iterator it;
-    for( it = m_contextBoxes.begin(); it != m_contextBoxes.end(); ++it )
-    {
-        if( it.value() == oldBox )
-        {
-            m_contextBoxes.erase( it );
-            break;
-        }
-    }
+    // no need to resort when removing
+    m_contextBoxes.removeAll( oldBox );
     m_contextScene->removeItem( oldBox );
     disconnect( oldBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
@@ -370,27 +367,23 @@ void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn, Con
         if( index >= m_contextBoxes.count() )
             index = -1;
 
-        // bottoms and boxes are guaranteed to be in the same order
-        const QList<qreal>       bottoms = m_contextBoxes.keys();
-        const QList<ContextBox*> boxes   = m_contextBoxes.values();
-
-        debug() << "box count: " << boxes.size() << endl;
+        debug() << "box count: " << m_contextBoxes.size() << endl;
 
         // special case 'add-to-end' index, -1.
         if( index < 0 )
-            yposition = bottoms.last() + BOX_PADDING;
+            yposition = m_contextBoxes.last()->sceneBoundingRect().bottom() + BOX_PADDING;
         else
         {
             if( index > 0 ) // we need the bottom value for the box above it.
-                yposition = bottoms.at( index - 1 ) + BOX_PADDING;
+                yposition = m_contextBoxes.at( index - 1 )->sceneBoundingRect().bottom() + BOX_PADDING;
 
             debug() << "y-position: " << yposition << endl;
 
             QList<QGraphicsItem*> shuffleDown;
 
             // need to shuffle down all the boxes below
-            for( int i = index; i < boxes.size(); ++i )
-                shuffleDown << boxes.at( i );
+            for( int i = index; i < m_contextBoxes.size(); ++i )
+                shuffleDown << m_contextBoxes.at( i );
 
             qreal distance = newBox->boundingRect().height() + BOX_PADDING;
             debug() << "shuffling " << shuffleDown.size() << " items down, a total of " << distance << endl;
@@ -403,7 +396,11 @@ void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn, Con
 
     m_contextScene->addItem( newBox );
     newBox->setPos( BOX_PADDING, yposition );
-    m_contextBoxes.insertMulti( newBox->sceneBoundingRect().bottom(), newBox );
+    m_contextBoxes.append( newBox );
+
+    // sort them based on bottom position
+    qSort( m_contextBoxes.begin(), m_contextBoxes.end(), boxHigherThan );
+
     connect( newBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
     if( parent ) // register with parent item

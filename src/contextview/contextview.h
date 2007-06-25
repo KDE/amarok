@@ -78,6 +78,7 @@ class ContextView : public QGraphicsView, public EngineObserver
         void initiateScene();
 
         void scaleView( qreal factor );
+        static bool boxHigherThan( const ContextBox *c1, const ContextBox *c2 );
 
         void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction = ShuffleDown );
 
@@ -92,7 +93,7 @@ class ContextView : public QGraphicsView, public EngineObserver
         QGraphicsScene *m_contextScene;
 
         QList<ContextItem*> m_contextItems;
-        QMap<qreal, ContextBox*> m_contextBoxes; // holds an ordered list of the items, from top to bottom
+        QList<ContextBox*>  m_contextBoxes; // holds an ordered list of the items, from top to bottom
 
         // this keeps track of all items that are owned by each context item
         QMap< ContextItem*, QList< QGraphicsItem* >* > m_contextItemMap;
