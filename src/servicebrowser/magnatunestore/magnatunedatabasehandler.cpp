@@ -142,6 +142,7 @@ int
 MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 {
     MagnatuneTrack * mTrack = dynamic_cast<MagnatuneTrack *> ( track );
+    Q_ASSERT( mTrack );
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO magnatune_tracks ( name, track_number, length, "
@@ -168,6 +169,7 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
     MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album );
+    Q_ASSERT( mAlbum );
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -191,6 +193,7 @@ int
 MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
     MagnatuneArtist * mArtist = dynamic_cast<MagnatuneArtist *> ( artist );
+    Q_ASSERT( mArtist );
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
