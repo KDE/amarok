@@ -105,7 +105,7 @@ AmarokMimeData::setQueryMakers( const QList<QueryMaker*> &queryMakers )
 }
 
 QVariant
-AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type )
+AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
 {
     if( !m_tracks.isEmpty() )
     {

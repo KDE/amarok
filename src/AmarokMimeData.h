@@ -53,7 +53,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void startQueries();
 
     protected:
-        virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type );
+        virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const;
 
     private slots:
         void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
