@@ -113,16 +113,18 @@ public:
     {
         if( d && d->realTrack )
             return d->realTrack->artist()->name();
-        else
+        else if( d )
             return d->cachedArtist;
+        return QString();
     }
 
     QString prettyName() const
     {
         if( d && d->realTrack )
             return d->realTrack->artist()->prettyName();
-        else
+        else if( d )
             return d->cachedArtist;
+        return QString();
     }
 
     MetaProxy::Track::Private * const d;
