@@ -32,8 +32,6 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     , m_optimumHeight( 0 )
     , m_animationTimer( 0 )
 {
-    //setHandlesChildEvents( true ); // events from the sub items are passed onto this object. messes up child items badly though...
-
     //this prohibits the use of multiple views for the items, but something we can resolve if we ever need this functionality
     ContextView *cv = ContextView::instance();
     const qreal viewWidth = cv->width();
@@ -131,8 +129,9 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( event->buttons() & Qt::LeftButton ) // only handle left button clicks for now
     {
-        QPointF pressPoint = event->buttonDownPos( Qt::LeftButton );
-        if( m_titleBarRect->contains( pressPoint ) )
+        QPointF pressPoint = event->buttonDownScenePos( Qt::LeftButton );
+        QPointF pressPointLocal = m_titleBarRect->mapFromScene( pressPoint );
+        if( m_titleBarRect->contains( pressPointLocal ) )
         {
            event->accept();
            toggleVisibility();
