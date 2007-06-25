@@ -147,6 +147,13 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void ContextBox::toggleVisibility()
 {
+    const qreal desiredHeight = m_goingUp ? m_optimumHeight : 0;
+    const qreal change = desiredHeight - m_contentRect->rect().height();
+    setContentRectSize( QSizeF( m_contentRect->rect().width(), desiredHeight ), false );
+    m_goingUp = !m_goingUp;
+
+    emit heightChanged( change );
+    /*
     static const int range = 100;
 
     if( !m_animationTimer )
@@ -171,6 +178,7 @@ void ContextBox::toggleVisibility()
 
     m_animationIncrement = m_optimumHeight / range;
     m_animationTimer->start();
+    */
 }
 
 void ContextBox::visibilityTimerSlot()
