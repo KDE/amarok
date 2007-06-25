@@ -192,7 +192,7 @@ void ContextView::introAnimationComplete()
     addContextBox( albumBox );
 
     // testing
-    QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
+//     QTimer::singleShot( 5000, this, SLOT( testBoxLayout() ) );
 }
 
 void ContextView::testBoxLayout()

@@ -44,6 +44,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
 
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+        virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
         virtual void setBoundingRectSize( const QSizeF &sz );
         void setContentRectSize( const QSizeF &sz, const bool synchroniseHeight = true );
         void ensureTitleCentered();

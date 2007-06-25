@@ -32,6 +32,9 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
     , m_optimumHeight( 0 )
     , m_animationTimer( 0 )
 {
+    setFlag( QGraphicsItem::ItemClipsChildrenToShape, true );
+    setFlag( QGraphicsItem::ItemIsMovable, true );
+
     //this prohibits the use of multiple views for the items, but something we can resolve if we ever need this functionality
     ContextView *cv = ContextView::instance();
     const qreal viewWidth = cv->width();
@@ -141,6 +144,44 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
         event->ignore();
     }
     QGraphicsItem::mousePressEvent( event );
+}
+
+// With help from QGraphicsView::mouseMoveEvent()
+void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
+{
+    if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable))
+    {
+        // Determine the list of selected items
+        QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
+        if( !isSelected() )
+            selectedItems << this;
+
+        // Move all selected items
+        foreach( QGraphicsItem *item, selectedItems )
+        {
+            if( (item->flags() & ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected()) )
+            {
+                QPointF diff;
+                if( item == this )
+                {
+                    diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
+                }
+                else
+                {
+                    diff = item->mapToParent(item->mapFromScene(event->scenePos()))
+                            - item->mapToParent(item->mapFromScene(event->lastScenePos()));
+                }
+
+                item->moveBy( 0, diff.y() );
+                if( item->flags() & ItemIsSelectable )
+                    item->setSelected( true );
+            }
+        }
+    }
+    else
+    {
+        QGraphicsItem::mouseMoveEvent( event );
+    }
 }
 
 
