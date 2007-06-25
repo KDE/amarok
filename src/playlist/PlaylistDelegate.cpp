@@ -13,6 +13,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 #include <QModelIndex>
+#include <QPainter>
 
 using namespace PlaylistNS;
 
@@ -26,17 +27,22 @@ Delegate::Delegate( View* parent )
 void
 Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    painter->save();
+    if (option.state & QStyle::State_Selected)
+         painter->fillRect(option.rect, option.palette.highlight());
     QGraphicsScene scene;
     QGraphicsTextItem* text = new QGraphicsTextItem();
-    #define GETDATA( X ) index.model()->data( index, X ).toString()
+    text->setFont( QFont() );
+    #define GETDATA( X ) index.data( X ).toString()
     QString album = GETDATA( Album );
     QString title = GETDATA( Title );
     QString trackn = GETDATA( TrackNumber );
     QString artist = GETDATA( Artist );
     #undef GETDATA
-    text->setHtml( i18n("%1 - <b>%2</b> by <b>%3</b> on <b>%4</b>").arg( trackn, title, artist, album ) );
+    text->setHtml( i18n("%1 - <b>%2</b> by <b>%3</b> on <b>%4</b>", trackn, title, artist, album ) );
     scene.addItem( text );
-    scene.render( painter );
+    scene.render( painter, option.rect );
+    painter->restore();
 }
 
 QSize
