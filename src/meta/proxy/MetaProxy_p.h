@@ -184,7 +184,7 @@ public:
             return QString();
     }
 
-    QPixmap image( int size, bool withShadow )
+    QPixmap image( int size, bool withShadow ) const
     {
         if( d && d->realTrack )
             return d->realTrack->album()->image( size, withShadow );
