@@ -202,6 +202,7 @@ NjbMediaDevice::openDevice(bool)
         return true;
 
     QString genericError = i18n( "Could not connect to Nomad device" );
+    NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
 
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0 )
@@ -883,7 +884,6 @@ NjbMediaDevice::customClicked()
 
     if( m_connected )
     {
-        NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
         tracksFound = i18np( "1 track found on device",
                             "%n tracks found on device ", trackList.size() );
         powerStatus = ( (NJB_Get_Auxpower( m_njb ) == 1) ? i18n("On auxiliary power") : i18n("On main power") );
