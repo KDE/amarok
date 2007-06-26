@@ -201,9 +201,9 @@ NjbMediaDevice::openDevice(bool)
         return true;
 
     QString genericError = i18n( "Could not connect to Nomad device" );
+    NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
 
     int n;
-    NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0 )
     {
         Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );

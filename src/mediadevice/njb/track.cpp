@@ -32,7 +32,6 @@ static const char* rcsid __attribute__((unused)) =
 /* ------------------------------------------------------------------------ */
 NjbTrack::NjbTrack( njb_songid_t* song)
 {
-
     njb_songid_frame_t* frame;
 
     m_id = song->trid;
@@ -65,7 +64,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     frame = NJB_Songid_Findframe( song, FR_ARTIST );
     if( frame )
     {
-        QString artist = frame->data.strval;
+        QString artist = QString::fromUtf8( frame->data.strval );
         artist.replace( QRegExp( "/" ), "-" );
         bundle->setArtist( artist );
     }
@@ -75,7 +74,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     frame = NJB_Songid_Findframe( song, FR_ALBUM );
     if( frame)
     {
-        QString album = frame->data.strval;
+        QString album = QString::fromUtf8( frame->data.strval );
         album.replace( QRegExp( "/" ), "-" );
         bundle->setAlbum( album );
     }
@@ -85,7 +84,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     frame = NJB_Songid_Findframe( song, FR_TITLE);
     if( frame )
     {
-        QString title = frame->data.strval;
+        QString title = QString::fromUtf8( frame->data.strval );
         title.replace( QRegExp( "/"), "-");
         bundle->setTitle( title );
     }
@@ -104,7 +103,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
             bundle->setTrack( frame->data.u_int32_val );
             break;
         case NJB_TYPE_STRING:
-            bundle->setTrack( QString(frame->data.strval).toUInt() );
+            bundle->setTrack( QString::fromUtf8(frame->data.strval).toUInt() );
             break;
         default:
             bundle->setTrack( 0 );
@@ -134,7 +133,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     if( frame )
     {
         //bundle->setUrl( KURL( frame->data.strval ) );
-        filename = frame->data.strval;
+        filename = QString::fromUtf8( frame->data.strval );
 
     }
     if( filename.isEmpty() )
@@ -157,7 +156,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
             bundle->setYear( frame->data.u_int32_val );
             break;
         case NJB_TYPE_STRING:
-            bundle->setYear( QString( frame->data.strval ).toInt() );
+            bundle->setYear( QString::fromUtf8( frame->data.strval ).toInt() );
             break;
         default:
             bundle->setYear( 0 );

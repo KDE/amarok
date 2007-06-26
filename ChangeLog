@@ -10,8 +10,8 @@ VERSION 1.4.7
       Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
-   * ID3 tags with Unicode data could become corrupted when using the NJB
-     plugin.
+   * NJB devices could have tags corrupted that contained Unicode characters.
+     Patch by Kun Xi <quinnxi@gmail.com>. (BR 147223)
    * Show OSD when changing song rating via shortcut. Patch by Tuomas Nurmi
      <tnurmi@edu.kauhajoki.fi>. (BR 146918)
    * Show the stars indicating rating with the correct size in the OSD. Patch 
