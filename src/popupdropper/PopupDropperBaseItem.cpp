@@ -29,19 +29,23 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QPainter>
 #include <QRect>
-#include <QRectF>
+#include <QRectF> 
+#include <QString>
+#include <QSvgRenderer>
 
 using namespace PopupDropperNS;
 
-PopupDropperBaseItem::PopupDropperBaseItem( int whichami, int total, QGraphicsItem* parent )
-                                    : QObject( 0 )
-                                    , QGraphicsItem( parent )
+PopupDropperBaseItem::PopupDropperBaseItem( int whichami, int total, QString element_id, QSvgRenderer *renderer, QGraphicsItem* parent )
+                                    : QGraphicsSvgItem( parent )
                                     , m_scaledPercent( 0.0 )
                                     , m_whichami( whichami )
                                     , m_totalEntries( total )
 {
     DEBUG_BLOCK
     setAcceptDrops( true );
+    if( renderer )
+        setSharedRenderer( renderer );
+    setElementId( element_id );
 }
 
 PopupDropperBaseItem::~PopupDropperBaseItem()
@@ -57,7 +61,7 @@ PopupDropperBaseItem::boundingRect() const
     qreal width = ( sceneRect.width() / m_totalEntries ) * 0.8;
     return QRectF( 0, 0, width, height );
 }
-
+/*
 void
 PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
@@ -73,7 +77,7 @@ PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *
     painter->fillRect( QRect( 0, 0, (int)width, (int)height ), QBrush( Qt::white ) );
     painter->drawRect( QRect( 0, 0, (int)width, (int)height ) );
 }
-
+*/
 void
 PopupDropperBaseItem::dropEvent( QGraphicsSceneDragDropEvent *e )
 {

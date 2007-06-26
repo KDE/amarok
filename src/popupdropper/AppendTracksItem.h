@@ -21,7 +21,10 @@
 
 #include "PopupDropperBaseItem.h"
 
+#include <QString>
 #include <QGraphicsSceneDragDropEvent>
+
+class QSvgRenderer;
 
 namespace PopupDropperNS
 {
@@ -29,7 +32,7 @@ namespace PopupDropperNS
     {
         Q_OBJECT
         public:
-            AppendTracksItem( int whichami, int total, QGraphicsItem *parent = 0 );
+            AppendTracksItem( int whichami, int total, QString element_id, QSvgRenderer *renderer = 0, QGraphicsItem *parent = 0 );
             virtual ~AppendTracksItem();
 
         protected:

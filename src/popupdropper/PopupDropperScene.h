@@ -22,6 +22,7 @@
 
 #include <QGraphicsScene>
 #include <QObject>
+#include <QSvgRenderer>
 #include <QtGlobal>
 #include <QTimeLine>
 
@@ -63,7 +64,7 @@ namespace PopupDropperNS {
             QTimeLine           m_fadeOutTL;
             QTimeLine           m_spinInTL;
             bool                m_shown;
-    
+            QSvgRenderer        m_renderer; 
     };
 }
 #endif /* AMAROK_POPUPDROPPER_SCENE_H */

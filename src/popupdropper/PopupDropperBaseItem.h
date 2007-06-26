@@ -20,13 +20,15 @@
 
 #include "amarok_export.h"
 
-#include <QGraphicsItem>
+#include <QGraphicsSvgItem>
 #include <QObject>
+#include <QString>
 #include <QtGlobal>
 
 class QGraphicsSceneDropDropEvent;
 class QPainter;
 class QRectF;
+class QSvgRenderer;
 
 /**
   * This class contructs the PopupDropperBaseItem
@@ -35,7 +37,7 @@ class QRectF;
 
 namespace PopupDropperNS {
 
-    class PopupDropperBaseItem : public QObject, public QGraphicsItem
+    class PopupDropperBaseItem : public QGraphicsSvgItem
     {
         
         Q_OBJECT
@@ -46,15 +48,16 @@ namespace PopupDropperNS {
             * Creates a new PopupDropperBaseItem.
             * 
             */
-            PopupDropperBaseItem( int whichami, int total, QGraphicsItem* parent = 0 );
+            PopupDropperBaseItem( int whichami, int total, QString element_id, QSvgRenderer *renderer = 0, QGraphicsItem *parent = 0 );
             virtual ~PopupDropperBaseItem();
+
 
             qreal scaledPercent() const { return m_scaledPercent; }
             void setScaledPercent( qreal pct ) { m_scaledPercent = pct; }
 
             //Reimplementations
             QRectF boundingRect() const;
-            void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+            //void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
             void dropEvent( QGraphicsSceneDragDropEvent *e );
 
             qreal       m_scaledPercent;

@@ -25,6 +25,7 @@ install(
         shadow_albumcover.png
         sbinner_stars.png
         smallstar.png
+        icons/svg/sources.svg
         splash_screen.jpg
         star.png
         volumeslider-gradient.png

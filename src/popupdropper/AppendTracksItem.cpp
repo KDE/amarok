@@ -24,12 +24,15 @@
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
 
+#include <QString>
+#include <QSvgRenderer>
+
 using namespace PopupDropperNS;
 
-AppendTracksItem::AppendTracksItem( int whoami, int total, QGraphicsItem *parent )
-    : PopupDropperBaseItem( whoami, total, parent )
+AppendTracksItem::AppendTracksItem( int whoami, int total, QString element_id, QSvgRenderer *renderer, QGraphicsItem *parent )
+    : PopupDropperBaseItem( whoami, total, element_id, renderer, parent )
 {
-    setAcceptDrops( true );
+    //nothing to do
 }
 
 AppendTracksItem::~AppendTracksItem()
