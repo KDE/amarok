@@ -36,6 +36,7 @@
 using namespace PopupDropperNS;
 
 static int SPIN_IN_FRAMES = 20;
+static char APPEND_TO_PLAYLIST[] = "g12706";
 
 PopupDropperScene::PopupDropperScene( QObject* parent )
                     : QGraphicsScene( parent )
@@ -96,7 +97,7 @@ PopupDropperScene::pdvShown()
     for( int i = 1; i <= totalItems; ++i )
     {
         //temp = new PopupDropperBaseItem( i, totalItems );
-        temp = new AppendTracksItem( i, totalItems, "g12706", &m_renderer );
+        temp = new AppendTracksItem( i, totalItems, APPEND_TO_PLAYLIST, &m_renderer );
         //temp->setPos( width()/2, i * 1.0 / totalItems * height() );
         qreal center = totalItems / 2.0 + 0.5;
         qreal mywidth = i - center;
@@ -105,12 +106,12 @@ PopupDropperScene::pdvShown()
         qreal heighttemp = ( ( i - 1.0 ) / totalItems ) * height();
         qreal offset = ( ( height() / totalItems ) - ( 0.8 * ( height() / totalItems ) ) ) / 2;
         temp->setPos( mywidth * temp->boundingRect().width() , heighttemp + offset );
-        //temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
-        //temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );
+        temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
+        temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );
         addItem( temp );
         temp->show();
     }
-    //m_spinInTL.start();
+    m_spinInTL.start();
     m_shown = true;
 }
 
