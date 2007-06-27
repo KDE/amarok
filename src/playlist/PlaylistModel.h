@@ -39,6 +39,7 @@ class TrackAdvancer;
         Bpm,
         Comment,
         Composer,
+        CoverImage,
         Directory,
         DiscNumber,
         Filename,
