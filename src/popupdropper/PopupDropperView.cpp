@@ -70,7 +70,7 @@ void PopupDropperView::setTransOutValue( int value )
 
 void PopupDropperView::mouseMoveEvent( QMouseEvent *e )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( !( e->buttons() & Qt::LeftButton) )
         emit destroyMe();
     QGraphicsView::mouseMoveEvent( e );
@@ -78,7 +78,7 @@ void PopupDropperView::mouseMoveEvent( QMouseEvent *e )
 
 void PopupDropperView::mouseReleaseEvent( QMouseEvent *e )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QGraphicsView::mouseReleaseEvent( e );
 }
 

@@ -62,8 +62,9 @@ void
 PopupDropperScene::setPDV( PopupDropperView *pdv  )
 {
     DEBUG_BLOCK
-    if( !pdv ) return;
     m_pdv = pdv;
+    if( !m_pdv )
+        return; //allow the pointer to be set to 0
     connect( &m_fadeInTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransInValue(int) ) );
     connect( &m_fadeInTL, SIGNAL( finished() ), this, SLOT( pdvShown() ) );
     connect( &m_fadeOutTL, SIGNAL( frameChanged(int) ), m_pdv, SLOT( setTransOutValue(int) ) );
@@ -127,6 +128,7 @@ PopupDropperScene::pdvHidden()
         delete item;
     }
 
+    m_pdv->hide();
     m_shown = false;
 }
 

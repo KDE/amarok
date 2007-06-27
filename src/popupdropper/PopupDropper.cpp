@@ -53,8 +53,9 @@ PopupDropper::PopupDropper() : QObject()
 PopupDropper::~PopupDropper()
 {
     DEBUG_BLOCK
-    delete m_view;
-    m_view = 0;
+    //m_scene.setPDV( 0 );
+    //delete m_view;
+    //m_view = 0;
 }
 
 void
@@ -77,7 +78,12 @@ PopupDropper::create()
     if( !m_initialized )
         initialize( ContextView::instance() );
     if( !m_scene.isShown() )
+    {
+        const QWidget *parent = static_cast<QWidget *>( m_scene.parent() );
+        m_scene.setSceneRect( QRectF( parent->rect() ) );
+        m_view->resize( parent->size() + QSize( 2, 2 ) );
         m_scene.startPDV();
+    }
 }
 
 void
