@@ -255,6 +255,7 @@ void ContextView::clear()
 {
     // tell member items that their boxes are being removed
     notifyItems( QString( "boxesRemoved" ) );
+    m_contextBoxes.clear();
 
     delete m_contextScene;
 
