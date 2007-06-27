@@ -120,7 +120,7 @@ void
 PopupDropperScene::pdvHidden()
 {
     DEBUG_BLOCK
-    m_pdv->hide();
+
     //delete all items we've added -- not children()!
     QGraphicsItem *temp;
     QList<QGraphicsItem *> itemlist = items();
