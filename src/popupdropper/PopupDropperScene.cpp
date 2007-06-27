@@ -135,22 +135,22 @@ void
 PopupDropperScene::updateIconSpinIn( int frame )
 {
     DEBUG_BLOCK
+
     debug() << "frame number = " << frame << endl;
     if( frame == 0 )
         return;
-    PopupDropperBaseItem * currItem;
-    qreal percentage = frame * 1.0 / SPIN_IN_FRAMES;
-    QList<QGraphicsItem *> itemlist = items();
+    const qreal percentage = frame * 1.0 / SPIN_IN_FRAMES;
     debug() << "percentage being used: " << percentage << endl;
-    for( int i = 0; i < itemlist.size(); ++i )
-    {
-        currItem = static_cast<PopupDropperBaseItem *>( itemlist.at(i) );
-        debug() << "currItems's scaledPercent() = " << currItem->scaledPercent() << endl;
-        qreal scalefactor = ( 1.0 / ( currItem->scaledPercent() * ( 1.0 / percentage ) ) );
+
+    foreach( QGraphicsItem* i, items() ) {
+        PopupDropperBaseItem* item = static_cast<PopupDropperBaseItem *>( i );
+        debug() << "currItems's scaledPercent() = " << item->scaledPercent() << endl;
+        const qreal scalefactor = ( 1.0 / ( item->scaledPercent() * ( 1.0 / percentage ) ) );
         debug() << "Scaling by " << scalefactor << endl;
-        currItem->scale( scalefactor, scalefactor );
-        currItem->setScaledPercent( percentage );
+        item->scale( scalefactor, scalefactor );
+        item->setScaledPercent( percentage );
     }
+
     m_pdv->repaint();
 }
 
