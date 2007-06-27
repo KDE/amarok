@@ -12,11 +12,18 @@
  *                                                                         *
  ***************************************************************************/
 //
+#include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "analyzerwidget.h"
 #include "analyzerbase.h"
+#include "socketserver.h"
 
+#include <KIcon>
 #include <klocale.h>
+#include <kmenu.h>
+
+#include <stdio.h>
 
 AnalyzerWidget::AnalyzerWidget( QWidget *parent )
     : QWidget( parent )
@@ -56,10 +63,10 @@ AnalyzerWidget::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
     KMenu menu;
-    menu.addItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+    menu.addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
+                           Vis::Selector::instance(), SLOT(show()) );
 
-    if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
-        Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
+    menu.exec( mapToGlobal( e->pos() ) );
 #else
     Q_UNUSED(e);
 #endif

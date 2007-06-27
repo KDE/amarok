@@ -48,6 +48,7 @@
 //#include "servicebrowser/mp3tunes/mp3tunesservice.h"
 #include "sidebar.h"
 #include "sidebar.moc"
+#include "socketserver.h"
 #include "statistics.h"
 #include "statusbar.h"
 #include "TheInstances.h"
@@ -179,6 +180,8 @@ void PlaylistWindow::init()
         Ui::ControlBar uicb;
         uicb.setupUi( m_controlBar );
 
+        debug() << "testing" << endl;
+        
         #define center( A, O ) uicb.A##boxLayout->setAlignment( uicb.O, Qt::AlignCenter );
         center( h, m_playerControlsToolbar );
         center( h, m_searchWidget );
@@ -1204,6 +1207,7 @@ void PlaylistWindow::createMenus()
 
     //BEGIN Actions menu
     KMenu *actionsMenu = new KMenu( m_menubar );
+    actionsMenu->setTitle( i18n("&Amarok") );
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
     actionsMenu->addAction( actionCollection()->action("lastfm_play") );
     actionsMenu->addAction( actionCollection()->action("play_audiocd") );
@@ -1221,6 +1225,7 @@ void PlaylistWindow::createMenus()
 
     //BEGIN Playlist menu
     KMenu *playlistMenu = new KMenu( m_menubar );
+    playlistMenu->setTitle( i18n("&Playlist") );
     playlistMenu->addAction( actionCollection()->action("playlist_add") );
     playlistMenu->addAction( actionCollection()->action("stream_add") );
     playlistMenu->addAction( actionCollection()->action("lastfm_add") );
@@ -1242,6 +1247,7 @@ void PlaylistWindow::createMenus()
 
     //BEGIN Mode menu
     KMenu *modeMenu = new KMenu( m_menubar );
+    modeMenu->setTitle( i18n("&Mode") );
     modeMenu->addAction( actionCollection()->action("repeat") );
     KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
     modeMenu->addAction( random );
@@ -1250,21 +1256,24 @@ void PlaylistWindow::createMenus()
     //END Mode menu
 
     //BEGIN Tools menu
+    QAction *vis; // Used locally to enable/disable visualizations menu based on presense of libvisual
     m_toolsMenu = new KMenu( m_menubar );
+    m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
+    
+    vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
+                                  Vis::Selector::instance(), SLOT(show()) );
+    m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
+    m_toolsMenu->addAction( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"),
+                            CollectionDB::instance(), SLOT(startScan()) );
 
-    #if defined HAVE_LIBVISUAL
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, true );
-    #else
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, false );
+    #ifndef HAVE_LIBVISUAL
+    vis->setEnabled( false );
     #endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
@@ -1273,6 +1282,7 @@ void PlaylistWindow::createMenus()
 
     //BEGIN Settings menu
     m_settingsMenu = new KMenu( m_menubar );
+    m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
 #ifndef Q_WS_MAC
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
@@ -1291,12 +1301,12 @@ void PlaylistWindow::createMenus()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Amarok" ), actionsMenu );
-    m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
-    m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
-    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
-    m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
-    m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
+    m_menubar->addMenu( actionsMenu );
+    m_menubar->addMenu( playlistMenu );
+    m_menubar->addMenu( modeMenu );
+    m_menubar->addMenu( m_toolsMenu );
+    m_menubar->addMenu( m_settingsMenu );
+    m_menubar->addMenu( Amarok::Menu::helpMenu() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

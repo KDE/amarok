@@ -18,17 +18,19 @@ else (LIBVISUAL_INCLUDE_DIR AND LIBVISUAL_LIBRARIES)
     # in the FIND_PATH() and FIND_LIBRARY() calls
     INCLUDE(UsePkgConfig)
   
-    PKGCONFIG(libvisual _LIBVISUALIncDir _LIBVISUALLinkDir _LIBVISUALLinkFlags _LIBVISUALCflags)
-  
+    # libvisual installs as libvisual-0.4
+    # PKGCONFIG(libvisual _LIBVISUALIncDir _LIBVISUALLinkDir _LIBVISUALLinkFlags _LIBVISUALCflags)
+    PKGCONFIG(libvisual-0.4 _LIBVISUALIncDir _LIBVISUALLinkDir _LIBVISUALLinkFlags _LIBVISUALCflags)
+
     set(LIBVISUAL_DEFINITIONS ${_LIBVISUALCflags})
   endif(NOT WIN32)
-  FIND_PATH(NJB_INCLUDE_DIR libvisual.h
+  FIND_PATH(LIBVISUAL_INCLUDE_DIR libvisual/libvisual.h
     ${_LIBVISUALIncDir}
     /usr/include
     /usr/local/include
   )
-  
-  FIND_LIBRARY(LIBVISUAL_LIBRARIES NAMES visual
+
+  FIND_LIBRARY(LIBVISUAL_LIBRARIES NAMES visual-0.4
     PATHS
     ${_LIBVISUALLinkDir}
     /usr/lib
