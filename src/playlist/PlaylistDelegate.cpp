@@ -6,6 +6,7 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "PlaylistDelegate.h"
 #include "PlaylistModel.h"
 #include "PlaylistView.h"
@@ -33,12 +34,10 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     QGraphicsScene scene;
     QGraphicsTextItem* text = new QGraphicsTextItem();
     text->setFont( QFont() );
-    #define GETDATA( X ) index.data( X ).toString()
-    QString album = GETDATA( Album );
-    QString title = GETDATA( Title );
-    QString trackn = GETDATA( TrackNumber );
-    QString artist = GETDATA( Artist );
-    #undef GETDATA
+    QString album = index.data( PlaylistNS::Album ).toString();
+    QString title = index.data( Title ).toString();
+    QString artist = index.data( Artist ).toString();
+    QString trackn = QString::number( index.data( TrackNumber ).toInt() );
     text->setHtml( i18n("%1 - <b>%2</b> by <b>%3</b> on <b>%4</b>", trackn, title, artist, album ) );
     scene.addItem( text );
     scene.render( painter, option.rect );

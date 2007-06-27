@@ -32,7 +32,7 @@ class TrackAdvancer;
 
     enum Column
     {
-        Album  = 0,
+        Album  = 1,
         AlbumArtist,
         Artist,
         Bitrate,
