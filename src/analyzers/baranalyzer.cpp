@@ -20,7 +20,7 @@
 
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent, 12, 8 )
+    : Analyzer::Base2D( parent, 30, 8 )
 //     , m_bands( BAND_COUNT )
 //     , barVector( BAND_COUNT, 0 )
 //     , roofVector( BAND_COUNT, 50 )
@@ -157,7 +157,7 @@ void BarAnalyzer::paintEvent( QPaintEvent* )
                roofVector[i] = 0; //not strictly necessary
                roofVelocityVector[i] = 0;
             }
-            else ++roofVelocityVector[i];
+            else roofVelocityVector[i] += 2;
         }
     }
 }
