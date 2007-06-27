@@ -41,12 +41,12 @@ PopupDropper::instance()
 }
 
 PopupDropper::PopupDropper() : QObject()
-                , m_scene( 0 )
-                , m_enabled( ENABLED )
-                , m_initialized( false )
+    , m_scene( 0 )
+    , m_view( 0 )
+    , m_enabled( ENABLED )
+    , m_initialized( false )
 {
     DEBUG_BLOCK
-    m_view = 0;
     s_instance = this;
 }
 
