@@ -160,7 +160,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
         return;
 
     if( The::PopupDropper()->isEnabled() )
-        The::PopupDropper()->Create();
+        The::PopupDropper()->create();
 
     QTreeView::mouseMoveEvent( e );
 }

@@ -58,7 +58,7 @@ PopupDropper::~PopupDropper()
 }
 
 void
-PopupDropper::Initialize( QWidget* window )
+PopupDropper::initialize( QWidget* window )
 {
     DEBUG_BLOCK
     if( !window )
@@ -71,17 +71,17 @@ PopupDropper::Initialize( QWidget* window )
 }
 
 void
-PopupDropper::Create()
+PopupDropper::create()
 {
     DEBUG_BLOCK
     if( !m_initialized )
-        Initialize( ContextView::instance() );
+        initialize( ContextView::instance() );
     if( !m_scene.isShown() )
         m_scene.startPDV();
 }
 
 void
-PopupDropper::Destroy()
+PopupDropper::destroy()
 {
     DEBUG_BLOCK
     if( m_scene.isShown() )
