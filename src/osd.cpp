@@ -94,6 +94,7 @@ OSDWidget::ratingChanged( const short rating )
     //m_text = '\n' + i18n( "Rating changed" );
     setRating( rating ); //Checks isEnabled() before doing anything
 
+    OSDWidget::setMoodbar( EngineController::instance()->bundle() );
     if( isShown() )
         show();
 }
