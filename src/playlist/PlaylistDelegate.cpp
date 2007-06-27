@@ -15,6 +15,7 @@
 #include <QGraphicsTextItem>
 #include <QModelIndex>
 #include <QPainter>
+#include <QPixmap>
 
 using namespace PlaylistNS;
 
@@ -47,7 +48,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
 QSize
 Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-    return QSize( m_view->width(), 25 );
+    return QSize( m_view->width(), 55 );
 }
 
 #include "PlaylistDelegate.moc"

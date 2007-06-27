@@ -119,6 +119,7 @@ Model::data( const QModelIndex& index, int role ) const
             case Artist: return track->artist()->name();
             case Bitrate: return track->bitrate();
             case Composer: return track->composer()->name();
+            case CoverImage: return track->album()->image( 50 );
             case Comment: return track->comment();
             case DiscNumber: return track->discNumber();
             case Filesize: return track->filesize();
