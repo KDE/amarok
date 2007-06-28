@@ -35,6 +35,7 @@ PopupDropperView::PopupDropperView( QGraphicsScene* scene, QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     resize( parent->size() + QSize(2, 2) );
+    setInteractive( true );
     setAcceptDrops( true );
     setBackgroundRole( QPalette::Base );
     QPalette p = palette();

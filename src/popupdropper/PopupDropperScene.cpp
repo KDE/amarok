@@ -97,15 +97,16 @@ PopupDropperScene::pdvShown()
     int totalItems = 5;
     for( int i = 1; i <= totalItems; ++i )
     {
-        //temp = new PopupDropperBaseItem( i, totalItems );
         temp = new AppendTracksItem( i, totalItems, APPEND_TO_PLAYLIST, &m_renderer );
-        //temp->setPos( width()/2, i * 1.0 / totalItems * height() );
+        //attempt to set initial size properly
+        temp->scale( width() / temp->boundingRect().width() / totalItems, height() / temp->boundingRect().height() / totalItems);
         qreal center = totalItems / 2.0 + 0.5;
         qreal mywidth = i - center;
         mywidth = sqrt( pow( mywidth, 2 ) );
         mywidth = 1 - ( mywidth / center );
         qreal heighttemp = ( ( i - 1.0 ) / totalItems ) * height();
-        qreal offset = ( ( height() / totalItems ) - ( 0.8 * ( height() / totalItems ) ) ) / 2;
+        //qreal offset = ( ( height() / totalItems ) - ( 0.8 * ( height() / totalItems ) ) ) / 2;
+        qreal offset = 0;
         temp->setPos( mywidth * temp->boundingRect().width() , heighttemp + offset );
         temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
         temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );

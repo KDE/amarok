@@ -56,7 +56,7 @@ namespace PopupDropperNS {
             void setScaledPercent( qreal pct ) { m_scaledPercent = pct; }
 
             //Reimplementations
-            QRectF boundingRect() const;
+            //QRectF boundingRect() const;
             //void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
             void dropEvent( QGraphicsSceneDragDropEvent *e );
 

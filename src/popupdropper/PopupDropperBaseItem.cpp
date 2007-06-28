@@ -53,15 +53,16 @@ PopupDropperBaseItem::~PopupDropperBaseItem()
     DEBUG_BLOCK
 }
 
+/*
 QRectF
 PopupDropperBaseItem::boundingRect() const
 {
     QRectF sceneRect = The::PopupDropper()->sceneRect();
-    qreal height = ( sceneRect.height() / m_totalEntries ) * 0.8;
-    qreal width = ( sceneRect.width() / m_totalEntries ) * 0.8;
+    qreal height = ( sceneRect.height() / m_totalEntries );// * 0.8;
+    qreal width = ( sceneRect.width() / m_totalEntries );// * 0.8;
     return QRectF( 0, 0, width, height );
 }
-/*
+
 void
 PopupDropperBaseItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
