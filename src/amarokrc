@@ -4,6 +4,12 @@ XMLFile=amarokui.rc
 [BrowserBar]
 CurrentPane=ContextBrowser
 
+[ContextItemManager]
+Items=lastfm,lyrics,wikipedia
+lastfm=true
+wikipedia-true
+lyrics=true
+
 [PlaylistColumnsLayout]
 #see PlaylistWidget::setColumnWidth() for explanation for below
 ColumnWidths=0,200,100,100,0,0,0,0,0,80,0
