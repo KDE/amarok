@@ -216,7 +216,7 @@ set(libcontextview_SRCS
     contextview/items/LyricsItem.cpp
     contextview/items/WikipediaItem.cpp
     contextview/items/ContextItem.cpp
-    contextview/items/LastFmItem.cpp
+    #contextview/items/LastFmItem.cpp
     contextview/items/CloudBox.cpp
     contextview/items/ContextItemManagerWidget.cpp
     contextview/items/ContextItemManager.cpp
