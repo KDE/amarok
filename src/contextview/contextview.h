@@ -2,7 +2,6 @@
  * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
  *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
  *                :(C) 2007 Leonardo Franchi  <lfranchi@gmail.com>         *
- *                :(C) 2007 Leonardo Franchi  <lfranchi@gmail.com>         *
  **************************************************************************/
 
 /***************************************************************************
@@ -18,7 +17,7 @@
 #define AMAROK_CONTEXTVIEW_H
 
 #include "contextbox.h"
-#include "ContextItem.h"
+#include "ContextObserver.h"
 #include "engineobserver.h"
 #include "GenericInfoBox.h"
 
@@ -32,7 +31,7 @@ class QWheelEvent;
 
 using namespace Context;
 
-class ContextView : public QGraphicsView, public EngineObserver
+class ContextView : public QGraphicsView, public EngineObserver, public ContextSubject 
 {
     Q_OBJECT
     static ContextView *s_instance;
@@ -51,14 +50,9 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void clear();
 
-        // this registers the item as populating the ContextView, so it gets messages etc. the item should then call {add/remove}ContextBox to actually populate the CV
-        void addContextItem( ContextItem* i );
-        void removeContextItem( ContextItem* i );
-
-        void addContextBox( ContextBox *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false, ContextItem* parent = 0);
-        // add and remove take a ContextItem parent which dictates the ownership
-        // of the box (if they are owned by an item)
-        void removeContextBox( ContextBox *oldBox, bool fadeOut = false, ContextItem* parent = 0);
+        void addContextBox( ContextBox *newBox, int index = -1 /*which position to place the new box*/, bool fadeIn = false );
+        
+        void removeContextBox( ContextBox *oldBox, bool fadeOut = false );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -82,8 +76,6 @@ class ContextView : public QGraphicsView, public EngineObserver
 
         void shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction = ShuffleDown );
 
-        void notifyItems( const QString& message );
-
         /// Page Views ////////////////////////////////////////
         void showHome();
         void showCurrentTrack();
@@ -92,11 +84,7 @@ class ContextView : public QGraphicsView, public EngineObserver
         /// Attributes ////////////////////////////////////////
         QGraphicsScene *m_contextScene;
 
-        QList<ContextItem*> m_contextItems;
         QList<ContextBox*>  m_contextBoxes; // holds an ordered list of the items, from top to bottom
-
-        // this keeps track of all items that are owned by each context item
-        QMap< ContextItem*, QList< QGraphicsItem* >* > m_contextItemMap;
 
         ContextBox *m_testItem;
 

@@ -15,19 +15,19 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "contextview.h"
+#include "../contextview.h"
+#include "enginecontroller.h"
 #include "debug.h"
-#include "GenericInfoBox.h"
+#include "../GenericInfoBox.h"
 #include "statusbar.h"
 
 using namespace Context;
 
-WikipediaItem *WikipediaItem::s_instance = 0;
-
 QString WikipediaItem::s_wikiLocale = "en";
 
 WikipediaItem::WikipediaItem()
-    : m_wikiBox( 0 )
+    : ContextObserver( ContextView::instance() )
+    , m_wikiBox( 0 )
     , m_wikiJob( 0 )
     , m_wikiCurrentEntry( QString() )
     , m_wikiCurrentUrl( QString() )
@@ -37,37 +37,21 @@ WikipediaItem::WikipediaItem()
     , m_wikiHTMLSource( QString() )
     , m_wikiLanguages( QString() )
     , m_wiki( QString() )
-    , EngineObserver( EngineController::instance() )
+    , m_enabled( false )
     //, m_wikiBackHistory( new QStringList() )
     //, m_wikiForwardHistory( new QStringList() );
 {
-    s_instance = this;
-    ContextView::instance()->addContextItem( this ); // register ourselves
 }
 
-void WikipediaItem::engineStateChanged( Engine::State state, Engine::State oldState )
+void WikipediaItem::message( const QString& message )
 {
-    DEBUG_BLOCK
-        Q_UNUSED( oldState );
-    
-    switch( state )
+    if( message == QString( "boxRemoved" ) || message == QString( "boxesRemoved" ) )
+        m_wikiVisible = false;
+    else if( message == QString( "showCurrentTrack" ) )
     {
-    case Engine::Playing:
-        showWikipedia();
-        break;
-        
-    case Engine::Empty:
-        break;
-        
-    default:
-        ;
+        if( m_enabled ) 
+            showWikipedia();
     }
-}
-
-
-void WikipediaItem::notify( const QString& message )
-{
-    m_wikiVisible = false;
 }
 
 QString
@@ -98,120 +82,7 @@ WikipediaItem::wikiTrackPostfix()
     else
         return "";
 }
-/*
-void
-WikipediaItem::wikiConfigChanged( int activeItem ) // SLOT
-{
-    // keep in sync with localeList in wikiConfig
-    QString text = m_wikiLocaleCombo->currentText();
 
-    // NOTE what is this? need to check in .h
-    m_wikiLocaleEdit->setEnabled( text == i18n("Other...") );
-
-    if( text == i18n("English") )
-        m_wikiLocaleEdit->setText( "en" );
-
-    else if( text == i18n("German") )
-        m_wikiLocaleEdit->setText( "de" );
-
-    else if( text == i18n("French") )
-        m_wikiLocaleEdit->setText( "fr" );
-
-    else if( text == i18n("Polish") )
-        m_wikiLocaleEdit->setText( "pl" );
-
-    else if( text == i18n("Japanese") )
-        m_wikiLocaleEdit->setText( "ja" );
-
-    else if( text == i18n("Spanish") )
-        m_wikiLocaleEdit->setText( "es" );
-}
-
-void
-WikipediaItem::wikiConfigApply() // SLOT
-{
-    const bool changed = m_wikiLocaleEdit->text() != wikiLocale();
-    setWikiLocale( m_wikiLocaleEdit->text() );
-
-    if ( changed && currentWidget() == m_wikiTab && !m_wikiCurrentEntry.isNull() )
-    {
-        m_dirtyWikiPage = true;
-        showWikipediaEntry( m_wikiCurrentEntry );
-    }
-
-    showWikipedia();
-}
-
-
-void
-WikipediaItem::wikiConfig() // SLOT
-{
-    QStringList localeList;
-    localeList
-        << i18n( "English" )
-        << i18n( "German" )
-        << i18n( "French" )
-        << i18n( "Polish" )
-        << i18n( "Japanese" )
-        << i18n( "Spanish" )
-        << i18n( "Other..." );
-
-    int index;
-
-    if( wikiLocale() == "en" )
-        index = 0;
-    else if( wikiLocale() == "de" )
-        index = 1;
-    else if( wikiLocale() == "fr" )
-        index = 2;
-    else if( wikiLocale() == "pl" )
-        index = 3;
-    else if( wikiLocale() == "ja" )
-        index = 4;
-    else if( wikiLocale() == "es" )
-        index = 5;
-    else // other
-        index = 6;
-
-    m_wikiConfigDialog = new KDialog( this );
-
-    m_wikiConfigDialog->setModal( true );
-    m_wikiConfigDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-    m_wikiConfigDialog->showButtonSeparator( true );
-
-
-    kapp->setTopWidget( m_wikiConfigDialog );
-    m_wikiConfigDialog->setCaption( KDialog::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
-    KVBox *box = new KVBox( this );
-    m_wikiConfigDialog->setMainWidget( box );
-
-    m_wikiLocaleCombo = new QComboBox( box );
-    m_wikiLocaleCombo->insertStringList( localeList );
-
-    KHBox  *hbox       = new KHBox( box );
-    QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
-    m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
-
-    otherLabel->setBuddy( m_wikiLocaleEdit );
-    m_wikiLocaleEdit->setToolTip( i18n( "2-letter language code for your Wikipedia locale" ) );
-
-    connect( m_wikiLocaleCombo,  SIGNAL( activated(int) ), SLOT( wikiConfigChanged(int) ) );
-    connect( m_wikiConfigDialog, SIGNAL( applyClicked() ), SLOT( wikiConfigApply() ) );
-
-    m_wikiLocaleEdit->setText( wikiLocale() );
-    m_wikiLocaleCombo->setCurrentItem( index );
-    wikiConfigChanged( index ); // a little redundant, but saves ugly code, and ensures the lineedit enabled status is correct
-
-    m_wikiConfigDialog->setInitialSize( QSize( 240, 100 ) );
-    const int result = m_wikiConfigDialog->exec();
-
-
-    if( result == QDialog::Accepted )
-        wikiConfigApply();
-
-    delete m_wikiConfigDialog;
-}
-*/
 QString
 WikipediaItem::wikiLocale()
 {
@@ -252,6 +123,7 @@ WikipediaItem::showWikipediaEntry( const QString &entry, bool replaceHistory )
 
 void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool replaceHistory )
 {
+    DEBUG_BLOCK
 #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
@@ -264,10 +136,6 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
     
     m_wikiBox = new GenericInfoBox();
-    // Disable the Open in a Browser button, because while loading it would open wikipedia main page.
-    //m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
-    //wikiExternalPageAction->setEnabled( false );
-    
     m_wikiBox->setTitle( QString( "Artist Info for %1" ).arg(  EngineController::instance()->bundle().artist() ) );
     m_wikiHTMLSource="";
     m_wikiHTMLSource.append(
@@ -288,7 +156,8 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
+        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
+        m_wikiBox->ensureVisible();
         m_wikiVisible = true;
     }
     
@@ -396,35 +265,35 @@ void
 WikipediaItem::wikiResult( KJob* job ) //SLOT
 {
     DEBUG_BLOCK
-        
-        if ( !job->error() == 0 && job == m_wikiJob )
-        { // make sure its not the wrong job (e.g. wiki request for now changed song
-            m_wikiHTMLSource="";
-            m_wikiHTMLSource.append(
-                                     "<div id='wiki_box' class='box'>\n"
-                                     "<div id='wiki_box-header' class='box-header'>\n"
-                                     "<span id='wiki_box-header-title' class='box-header-title'>\n"
-                                     + i18n( "Error" ) +
-                                     "</span>\n"
-                                     "</div>\n"
-                                     "<div id='wiki_box-body' class='box-body'><p>\n"
-                                     + i18n( "Artist information could not be retrieved because the server was not reachable." ) +
-                                     "</p></div>\n"
-                                     "</div>\n"
-                                   );
-            m_wikiBox->clearContents();
-            m_wikiBox->setContents( m_wikiHTMLSource );
-            if( !m_wikiVisible )
-            {
-                ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
-                m_wikiVisible = true;
-            }
-            m_dirtyWikiPage = false;
-        //m_wikiPage = NULL; // FIXME: what for? leads to crashes
-            
-            warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
-            return;
+    
+    if ( !job->error() == 0 && job == m_wikiJob )
+    { // make sure its not the wrong job (e.g. wiki request for now changed song
+        m_wikiHTMLSource="";
+        m_wikiHTMLSource.append(
+                                    "<div id='wiki_box' class='box'>\n"
+                                    "<div id='wiki_box-header' class='box-header'>\n"
+                                    "<span id='wiki_box-header-title' class='box-header-title'>\n"
+                                    + i18n( "Error" ) +
+                                    "</span>\n"
+                                    "</div>\n"
+                                    "<div id='wiki_box-body' class='box-body'><p>\n"
+                                    + i18n( "Artist information could not be retrieved because the server was not reachable." ) +
+                                    "</p></div>\n"
+                                    "</div>\n"
+                                );
+        m_wikiBox->clearContents();
+        m_wikiBox->setContents( m_wikiHTMLSource );
+        if( !m_wikiVisible )
+        {
+            ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
+            m_wikiVisible = true;
         }
+        m_dirtyWikiPage = false;
+    //m_wikiPage = NULL; // FIXME: what for? leads to crashes
+        
+        warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
+        return;
+    }
     if ( job != m_wikiJob )
         return; //not the right job, so let's ignore it
     
@@ -557,7 +426,7 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
+        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
         m_wikiVisible = true;
     }
     

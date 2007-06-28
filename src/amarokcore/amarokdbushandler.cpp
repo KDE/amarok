@@ -27,7 +27,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "contextview/ContextScriptManager.h"
-#include "contextview/LyricsItem.h"
+#include "contextview/items/LyricsItem.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"

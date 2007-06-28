@@ -22,6 +22,7 @@
 #include "analyzerwidget.h"
 #include "collectionbrowser/CollectionWidget.h"
 #include "contextview/contextview.h"
+#include "contextview/items/ContextItemManager.h"
 #include "debug.h"
 #include "dynamicmode.h"
 #include "editfilterdialog.h"
@@ -1082,6 +1083,12 @@ void PlaylistWindow::createActions()
     ac->addAction( "queue_manager", queue );
     connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
 
+    KAction *context = new KAction( this );
+    context->setText( i18n( "Context Manager" ) );
+    context->setIcon( KIcon( Amarok::icon( "context" )) );
+    ac->addAction( "context_manager", context );
+    connect(context, SIGNAL(triggered(bool)), ContextItemManager::instance(), SLOT( showDialog() ));
+    
     KAction *seekForward = new KAction( this );
     seekForward->setText( i18n("&Seek Forward") );
     seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
@@ -1261,10 +1268,9 @@ void PlaylistWindow::createMenus()
     m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    
-    vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
-                                  Vis::Selector::instance(), SLOT(show()) );
-    m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );
+    m_toolsMenu->addAction( actionCollection()->action( "context_manager" ) );
+    vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"), Vis::Selector::instance(), SLOT(show()) );
+    m_toolsMenu->insertItem( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
