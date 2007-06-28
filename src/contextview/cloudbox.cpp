@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include "CloudBox.h"
+#include "cloudbox.h"
 
 #include "debug.h"
 
@@ -170,4 +170,4 @@ void Context::CloudBox::done()
 }
 
 
-#include "CloudBox.moc"
+#include "cloudbox.moc"

@@ -15,9 +15,9 @@
 
 #include "amarok.h" //oldForeach
 #include "collectiondb.h"
-#include "../contextview.h"
-#include "enginecontroller.h"
+#include "contextview.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "scriptmanager.h"
 
 #include <qdom.h>
@@ -27,25 +27,41 @@ using namespace Context;
 LyricsItem *LyricsItem::s_instance = 0;
 
 LyricsItem::LyricsItem()
-    : ContextObserver( ContextView::instance() )
+    : EngineObserver( EngineController::instance() )
     , m_lyricsBox( 0 )
     , m_lyricsVisible( false )
-    , m_HTMLSource( QString() )
-    , m_enabled( false )
+    , m_HTMLSource( QString() ) 
 {
     s_instance = this;
+    ContextView::instance()->addContextItem( this );
 }
 
 
-void LyricsItem::message( const QString& message )
+
+void LyricsItem::engineStateChanged( Engine::State state, Engine::State oldState )
 {
-    if( message == QString( "boxRemoved" ) || message == QString( "boxesRemoved" ) )
-        m_lyricsVisible = false;
-    else if( message == QString( "showCurrentTrack" ) )
+    DEBUG_BLOCK
+    Q_UNUSED( oldState );
+    
+    switch( state )
     {
-        if( m_enabled )
-            showLyrics( QString() );
+    case Engine::Playing:
+        showLyrics( QString() );
+        break;
+        
+    case Engine::Empty:
+        //showHome();
+        break;
+        
+    default:
+        ;
     }
+}
+
+
+void LyricsItem::notify( const QString& message )
+{
+    m_lyricsVisible = false;
 }
 
 void LyricsItem::showLyrics( const QString& url )
@@ -58,7 +74,7 @@ void LyricsItem::showLyrics( const QString& url )
     m_lyricsBox = new GenericInfoBox();
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }
@@ -133,7 +149,7 @@ void LyricsItem::showLyrics( const QString& url )
         
         if( !m_lyricsVisible )
         {
-            ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+            ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
             m_lyricsBox->ensureVisible();
             m_lyricsVisible = true;
         }
@@ -182,7 +198,7 @@ void LyricsItem::showLyrics( const QString& url )
     
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }
@@ -294,7 +310,7 @@ LyricsItem::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */, this /*parent ContextItem */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }

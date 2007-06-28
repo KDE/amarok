@@ -20,7 +20,7 @@
 #ifndef CLOUDBOX_H
 #define CLOUDBOX_H
 
-#include "../contextbox.h"
+#include "contextbox.h"
 
 #include <QTimeLine>
 

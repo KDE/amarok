@@ -47,7 +47,6 @@ void GenericInfoBox::init()
 }
 
 void GenericInfoBox::clearContents() {
-    debug() << "m_contentRect: " << m_contentRect << endl;
     if( m_content != 0 )
         delete m_content;
     /*m_content = new QGraphicsTextItem( m_contentRect );

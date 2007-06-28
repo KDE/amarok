@@ -11,17 +11,27 @@
  *                                                                         *
  ***************************************************************************/
 
-/*
-NOTE i need this empty skeleton file so cmake generates the ContextItem.moc file. if anyone knows how to make the MOC thing work with just a .h, please fix it/let me know!
-*/
+#ifndef CONTEXT_ITEM_H
+#define CONTEXT_ITEM_H
 
-#include "ContextItem.h"
+// why do we need this?
+#include <QObject>
 
-using namespace Context;
-
-const QString ContextItem::name() 
+namespace Context
 {
-    return "";
-}
+
+// Base class for all context view items
+
+class ContextItem : public QObject
+{
     
-#include "ContextItem.moc"
+    Q_OBJECT
+        
+public:
+    ContextItem() {}
+    virtual void notify( const QString& message );
+};
+
+}
+
+#endif

@@ -11,45 +11,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFM_ITEM_H
-#define LASTFM_ITEM_H  
+/*
+NOTE i need this empty skeleton file so cmake generates the ContextItem.moc file. if anyone knows how to make the MOC thing work with just a .h, please fix it/let me know!
+*/
 
-#include "CloudBox.h"
 #include "ContextItem.h"
-#include "../ContextObserver.h"
-#include "../GenericInfoBox.h"
 
 using namespace Context;
 
-class LastFmItem : public ContextItem, public ContextObserver
-{
-    Q_OBJECT
-        
-public:
-    LastFmItem();
-    
-    void message( const QString& msg );
-    const QString name() { return "lastfm"; }
-    void enable() { m_enabled = true; }
-    void disable() { m_enabled = false; }
-    
-    void showRelatedArtists();
-    void showSuggestedSongs();
+void ContextItem::notify( const QString&  message )
+{}
 
-private:
-    
-    QString statsHTML(  int score, int rating, bool statsbox = false );
-    QString escapeHTMLAttr( const QString &s );
-    
-    CloudBox* m_relatedArtistsBox;
-    GenericInfoBox* m_suggestedSongsBox;
-    
-    QString m_relHTMLSource;
-    QString m_sugHTMLSource;
-    bool m_sugBoxVisible;
-    bool m_relBoxVisible;
-    
-    bool m_enabled;
-};
-
-#endif
+#include "ContextItem.moc"

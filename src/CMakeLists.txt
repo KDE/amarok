@@ -207,19 +207,15 @@ set(libcontextview_SRCS
     contextview/contextview.cpp
     contextview/contextbox.cpp
     contextview/albumbox.cpp
+    contextview/cloudbox.cpp
     contextview/GenericInfoBox.cpp
     contextview/graphicsitemfader.cpp
     contextview/textfader.cpp
     contextview/introanimation.cpp
     contextview/ContextScriptManager.cpp
-    contextview/ContextObserver.cpp
-    contextview/items/LyricsItem.cpp
-    contextview/items/WikipediaItem.cpp
-    contextview/items/ContextItem.cpp
-    #contextview/items/LastFmItem.cpp
-    contextview/items/CloudBox.cpp
-    contextview/items/ContextItemManagerWidget.cpp
-    contextview/items/ContextItemManager.cpp
+    contextview/LyricsItem.cpp
+    contextview/WikipediaItem.cpp
+    contextview/ContextItem.cpp
 )
 
 #####################################################################

@@ -16,6 +16,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "albumbox.h"
+#include "cloudbox.h"
 #include "GenericInfoBox.h"
 #include "textfader.h"
 #include "collectiondb.h"
@@ -27,7 +28,8 @@
 #include "introanimation.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
-#include "items/ContextItemManager.h"
+#include "LyricsItem.h"
+#include "WikipediaItem.h"
 
 #include <kstandarddirs.h>
 
@@ -52,9 +54,10 @@ ContextView::ContextView()
     m_testItem = 0;
     s_instance = this; // we are a singleton class
 
-    // start context item manager
-    ContextItemManager::instance();
-    
+    // temporary, until i find a better place for this
+    LyricsItem::instance();
+    WikipediaItem::instance();
+
     initiateScene();
     setAlignment( Qt::AlignTop );
     setRenderHints( QPainter::Antialiasing );
@@ -149,7 +152,6 @@ void ContextView::showHome()
     introAnim->startAnimation();
     */
     introAnimationComplete();
-    messageNotify( QString( "showHome" ) );
 }
 
 
@@ -251,11 +253,10 @@ void ContextView::resizeEvent( QResizeEvent *event )
 
 void ContextView::clear()
 {
-    DEBUG_BLOCK
     // tell member items that their boxes are being removed
-    messageNotify( QString( "boxesRemoved" ) );
-
+    notifyItems( QString( "boxesRemoved" ) );
     m_contextBoxes.clear();
+
     delete m_contextScene;
 
     initiateScene();
@@ -284,7 +285,7 @@ void ContextView::boxHeightChanged( qreal change )
     shuffleItems( shuffle, change );
 }
 
-void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut )
+void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut, ContextItem* parent )
 {
     DEBUG_BLOCK
 
@@ -325,10 +326,21 @@ void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut )
     m_contextScene->removeItem( oldBox );
     disconnect( oldBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
+    if( parent ) // this belongs to a ContextItem
+    {
+        QList< QGraphicsItem* >* boxes = m_contextItemMap.value( parent );
+        QList< QGraphicsItem* >::iterator i; // find the box in the QList and remove it
+        for( i = boxes->begin(); i != boxes->end(); ++i )
+        {
+            if( (*i) == oldBox )
+                boxes->erase( i );
+        }
+        parent->notify( "boxRemoved" ); // do we need this to support multiple boxes, e.g. unique box IDs and the like?
+    } // we could also scan through all boxes registered with ContextItems to see if the caller forgot to pass himself as parent
 }
 
 // Places a context box at the location specified by @param index. -1 -> at the bottom
-void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn )
+void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn, ContextItem* parent )
 {
     DEBUG_BLOCK
 
@@ -392,6 +404,37 @@ void ContextView::addContextBox( ContextBox *newBox, int index, bool fadeIn )
 
     connect( newBox, SIGNAL( heightChanged(qreal) ), this, SLOT( boxHeightChanged(qreal) ) );
 
+    if( parent ) // register with parent item
+        m_contextItemMap.value( parent )->append( newBox );
+}
+
+void ContextView::addContextItem( ContextItem* item )
+{
+    m_contextItems << item;
+    m_contextItemMap.insert( item, new QList< QGraphicsItem* > );
+}
+
+void ContextView::removeContextItem( ContextItem* item )
+{
+    QList< ContextItem* >::iterator i;
+    for( i = m_contextItems.begin(); i != m_contextItems.end(); ++i )
+    {
+        if( (*i) == item )
+        { // also remove any boxes owned by the item
+            QList< QGraphicsItem* >* items = m_contextItemMap.value( *i );
+            foreach( QGraphicsItem* box, *items )
+                removeContextBox( dynamic_cast<ContextBox*>(box) );
+            m_contextItems.erase( i );
+            m_contextItemMap.remove( *i );
+        }
+    }
+}
+
+/** Sends the desired message to all items that are registered on the ContextView */
+void ContextView::notifyItems( const QString& message )
+{
+    foreach( ContextItem* item, m_contextItems )
+        item->notify( message );
 }
 
 void ContextView::shuffleItems( QList<QGraphicsItem*> items, qreal distance, int direction )
@@ -415,6 +458,14 @@ void ContextView::showCurrentTrack()
     ContextBox *infoBox = new ContextBox();
     infoBox->setTitle( i18n("%1 - %2", bundle.title(), bundle.artist() ) );
     addContextBox( infoBox );
+
+    CloudBox *relatedArtists = new CloudBox();
+    relatedArtists->setTitle( i18n("Related Artists to %1", bundle.artist() ) );
+    QStringList relations = CollectionDB::instance()->similarArtists( bundle.artist(), 10 );
+    foreach( QString r, relations )
+        relatedArtists->addText( r );
+
+    addContextBox( relatedArtists );
 
     AlbumBox *albumBox = new AlbumBox();
     albumBox->setTitle( i18n("Albums By %1", bundle.artist() ) );
@@ -446,8 +497,6 @@ void ContextView::showCurrentTrack()
     }
 
     addContextBox( albumBox );
-    
-    messageNotify( QString(  "showCurrentTrack" ) );
 }
 
 #include "contextview.moc"

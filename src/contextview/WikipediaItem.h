@@ -15,31 +15,39 @@
 #define WIKIPEDIA_ITEM_H
 
 #include "ContextItem.h"
-#include "../ContextObserver.h"
-#include "../GenericInfoBox.h"
+#include "enginecontroller.h"
+#include "GenericInfoBox.h"
 
 #include <kio/job.h>
 
 using namespace Context;
 
-class WikipediaItem : public ContextItem, public ContextObserver
+class WikipediaItem : public ContextItem, public EngineObserver
 {
     Q_OBJECT
+    static WikipediaItem* s_instance;
 
     static const int WIKI_MAX_HISTORY = 10;
     
 public:
     
-    WikipediaItem();
+    static WikipediaItem *instance()
+    {
+        if( !s_instance )
+            return new WikipediaItem();
+        return s_instance;
+    }
     
-    void message( const QString& message );
-    const QString name() { return "wikipedia"; }
-    void enable() { m_enabled = true; }
-    void disable() { m_enabled = false; }
+    
+    void notify( const QString& message );
     
     void showWikipedia( const QString& url = QString(), bool fromHistory = false, bool replaceHistory = false );
     
+protected:
+    void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
+    
 private:
+    WikipediaItem();
     
     QString wikiArtistPostfix();
     QString wikiAlbumPostfix();
@@ -69,7 +77,6 @@ private:
     
     static QString s_wikiLocale;
     
-    bool    m_enabled;
 private slots:
     
         /* these need resolution of the menu problem first

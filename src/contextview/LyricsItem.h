@@ -11,33 +11,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CONTEXT_ITEM_H
-#define CONTEXT_ITEM_H
+#ifndef LYRICS_ITEM_H
+#define LYRICS_ITEM_H
 
-// why do we need this?
+#include "ContextItem.h"
+#include "GenericInfoBox.h"
+#include "engineobserver.h"
+
 #include <QObject>
 
-namespace Context
-{
+using namespace Context;
 
-// Base class for all context view items
-
-class ContextItem : public QObject
+class LyricsItem : public ContextItem, public EngineObserver
 {
     
     Q_OBJECT
-        
+    static LyricsItem *s_instance;
+    
 public:
-    ContextItem() {}
     
-    virtual const QString name();
+    static LyricsItem *instance()
+    {
+        if( !s_instance )
+            return new LyricsItem();
+        return s_instance;
+    }
     
-    virtual void enable() {}
-    virtual void disable() {}
     
-    ~ContextItem() {}
-};
+    void showLyrics( const QString& url );
+    
+    void notify( const QString& message );
+public slots:
+    void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false );
+    
+protected:
+    void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
 
-}
+private:
+    
+    LyricsItem();
+    
+    GenericInfoBox *m_lyricsBox;
+    
+    bool            m_lyricsVisible;
+    QString         m_HTMLSource;
+};
 
 #endif
