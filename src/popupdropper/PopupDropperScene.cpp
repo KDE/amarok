@@ -105,9 +105,7 @@ PopupDropperScene::pdvShown()
         mywidth = sqrt( pow( mywidth, 2 ) );
         mywidth = 1 - ( mywidth / center );
         qreal heighttemp = ( ( i - 1.0 ) / totalItems ) * height();
-        //qreal offset = ( ( height() / totalItems ) - ( 0.8 * ( height() / totalItems ) ) ) / 2;
-        qreal offset = 0;
-        temp->setPos( mywidth * temp->boundingRect().width() , heighttemp + offset );
+        temp->setPos( mywidth * temp->boundingRect().width() , heighttemp );
         temp->scale( 1.0 / SPIN_IN_FRAMES, 1.0 / SPIN_IN_FRAMES );
         temp->setScaledPercent( 1.0 / SPIN_IN_FRAMES );
         addItem( temp );
