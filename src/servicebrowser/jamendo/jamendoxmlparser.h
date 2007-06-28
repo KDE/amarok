@@ -130,6 +130,11 @@ private:
      * @param size the desired size of the cover
      */
     QString getCoverUrl( QDomElement e, int size );
+
+    void countTransaction();
+
+    int n_numberOfTransactions;
+    int n_maxNumberOfTransactions;
 };
 
 #endif

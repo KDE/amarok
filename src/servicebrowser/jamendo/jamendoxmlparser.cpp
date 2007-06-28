@@ -31,6 +31,8 @@
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
         : ThreadManager::Job( "JamendoXmlParser" )
+        , n_numberOfTransactions ( 0 )
+        , n_maxNumberOfTransactions ( 5000 )
 {
     DEBUG_BLOCK
     m_sFileName = filename;
@@ -184,6 +186,7 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 
 
     m_dbHandler->insertArtist( &currentArtist );
+    countTransaction();
 
     /*debug() << "    Name:       " << currentArtist.getName() << endl;
     debug() << "    Id:         " << currentArtist.getId() << endl;
@@ -248,6 +251,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 
 
    int newId = m_dbHandler->insertAlbum( &currentAlbum );
+   countTransaction();
 
    foreach( QString genreName, tags ) {
 
@@ -256,6 +260,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
         ServiceGenre currentGenre( genreName );
         currentGenre.setAlbumId( newId );
         m_dbHandler->insertGenre( &currentGenre );
+        countTransaction();
 
     }
 
@@ -297,6 +302,8 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
 
     m_dbHandler->insertTrack( &currentTrack );
+    countTransaction();
+
 
 
 
@@ -324,6 +331,18 @@ QString JamendoXmlParser::getCoverUrl(QDomElement e, int size)
 
     return QString();
 
+
+}
+
+void JamendoXmlParser::countTransaction()
+{
+
+    n_numberOfTransactions++;
+    if ( n_numberOfTransactions >= n_maxNumberOfTransactions ) {
+        m_dbHandler->commit();
+        m_dbHandler->begin();
+        n_numberOfTransactions = 0;
+    }
 
 }
 
