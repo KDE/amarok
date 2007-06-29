@@ -58,7 +58,7 @@ void LyricsItem::showLyrics( const QString& url )
     m_lyricsBox = new GenericInfoBox();
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, m_order /* index */, false /* fadein */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }
@@ -133,7 +133,7 @@ void LyricsItem::showLyrics( const QString& url )
         
         if( !m_lyricsVisible )
         {
-            ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+            ContextView::instance()->addContextBox( m_lyricsBox, m_order /* index */, false /* fadein */ );
             m_lyricsBox->ensureVisible();
             m_lyricsVisible = true;
         }
@@ -182,7 +182,7 @@ void LyricsItem::showLyrics( const QString& url )
     
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, m_order /* index */, false /* fadein */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }
@@ -294,7 +294,7 @@ LyricsItem::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     
     if( !m_lyricsVisible )
     {
-        ContextView::instance()->addContextBox( m_lyricsBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_lyricsBox, m_order /* index */, false /* fadein */ );
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }

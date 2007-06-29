@@ -62,6 +62,8 @@ void ContextItemManager::applyConfig()
     DEBUG_BLOCK
     //read in the config data, and start the enabled items
     m_itemsOrder = Amarok::config( "ContextItemManager" ).readEntry( "Items", QStringList() );
+    int i = m_startBox; // start the counting from the last context box owned 
+    // by the contextview itself
     foreach( QString str, m_itemsOrder )
     {
         bool enabled = Amarok::config( "ContextItemManager" ).readEntry( str, false );
@@ -69,6 +71,8 @@ void ContextItemManager::applyConfig()
         m_itemsEnabled.insert( m_itemsMap.value( str ) , enabled );
         if( enabled ) m_itemsMap.value( str )->enable();
         else m_itemsMap.value( str )->disable();
+        m_itemsMap.value( str )->setPosition( i ); // tell it where to put
+        i++;  // itself in the contextview
     }
 }
 

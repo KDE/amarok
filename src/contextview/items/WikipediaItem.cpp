@@ -32,7 +32,6 @@ WikipediaItem::WikipediaItem()
     , m_wikiCurrentEntry( QString() )
     , m_wikiCurrentUrl( QString() )
     , m_wikiBaseUrl( QString() )
-    , m_dirtyWikiPage( true )
     , m_wikiVisible( false )
     , m_wikiHTMLSource( QString() )
     , m_wikiLanguages( QString() )
@@ -128,12 +127,11 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showWikipedia()" << endl;
-        m_dirtyWikiPage = true;
         return;
     }
 #endif
     
-    if ( !m_dirtyWikiPage || m_wikiJob ) return;
+    if ( m_wikiJob ) return;
     
     m_wikiBox = new GenericInfoBox();
     m_wikiBox->setTitle( QString( "Artist Info for %1" ).arg(  EngineController::instance()->bundle().artist() ) );
@@ -156,7 +154,7 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_wikiBox, m_order /* index */, false /* fadein */ );
         m_wikiBox->ensureVisible();
         m_wikiVisible = true;
     }
@@ -233,7 +231,6 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
 void
 WikipediaItem::wikiArtistPage() //SLOT
 {
-    m_dirtyWikiPage = true;
     showWikipedia(); // Will fall back to title, if artist is empty(streams!).
 }
 
@@ -241,7 +238,6 @@ WikipediaItem::wikiArtistPage() //SLOT
 void
 WikipediaItem::wikiAlbumPage() //SLOT
 {
-    m_dirtyWikiPage = true;
     showWikipediaEntry( EngineController::instance()->bundle().album() + wikiAlbumPostfix() );
 }
 
@@ -249,7 +245,6 @@ WikipediaItem::wikiAlbumPage() //SLOT
 void
 WikipediaItem::wikiTitlePage() //SLOT
 {
-    m_dirtyWikiPage = true;
     showWikipediaEntry( EngineController::instance()->bundle().title() + wikiTrackPostfix() );
 }
 
@@ -285,13 +280,13 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
         m_wikiBox->setContents( m_wikiHTMLSource );
         if( !m_wikiVisible )
         {
-            ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
+            ContextView::instance()->addContextBox( m_wikiBox, m_order /* index */, false /* fadein */ );
             m_wikiVisible = true;
         }
-        m_dirtyWikiPage = false;
     //m_wikiPage = NULL; // FIXME: what for? leads to crashes
         
         warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
+        m_wikiJob = 0; // clear job
         return;
     }
     if ( job != m_wikiJob )
@@ -426,12 +421,11 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
     m_wikiBox->setContents( m_wikiHTMLSource );
     if( !m_wikiVisible )
     {
-        ContextView::instance()->addContextBox( m_wikiBox, -1 /* index */, false /* fadein */ );
+        ContextView::instance()->addContextBox( m_wikiBox, m_order /* index */, false /* fadein */ );
         m_wikiVisible = true;
     }
     
-    m_dirtyWikiPage = false;
-    m_wikiJob = NULL;
+    m_wikiJob = 0;
 }
 
 #include "WikipediaItem.moc"

@@ -35,7 +35,13 @@ public:
     virtual void enable() {}
     virtual void disable() {}
     
+    // controls where the boxes owned by this item get inserted in the contextview. use m_order when calling ContextView::addContextBox
+    virtual void setPosition( int order ) { m_order = order; }
+    virtual int getPosition() { return m_order; }
+    
     ~ContextItem() {}
+protected:
+    int m_order; // location of insertion of context boxes in CV
 };
 
 }

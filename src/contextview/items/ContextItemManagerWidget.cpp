@@ -141,6 +141,8 @@ ContextItemManagerWidget::ContextItemManagerWidget( QWidget *parent, const char 
     
     insertItems();
     
+    m_disabled = QBrush( QColor( 255, 0, 0, 127 ), Qt::SolidPattern );
+    m_enabled =  QBrush( Qt::white, Qt::SolidPattern  );
 }
     
 
@@ -153,16 +155,16 @@ void ContextItemManagerWidget::insertItems()
     {
         debug() << "inserting context item into widget: " << item << "with value: " << findInContextMap( item ) << endl;
         QListWidgetItem* qitem = new QListWidgetItem( item, m_listview, QListWidgetItem::Type );
-        findInContextMap( item ) ? qitem->setBackground( QBrush( Qt::white, Qt::SolidPattern  ) )
-                                     : qitem->setBackground( QBrush( Qt::darkRed, Qt::SolidPattern  ) );
+        findInContextMap( item ) ? qitem->setBackground( m_enabled )
+                                     : qitem->setBackground( m_disabled );
     }
 }
 
 void ContextItemManagerWidget::insertItem( const QString& name, bool enabled )
 {
     QListWidgetItem* item = new QListWidgetItem( name, m_listview, QListWidgetItem::Type );
-    enabled ? item->setBackground( QBrush( Qt::darkRed, Qt::SolidPattern  ) )
-            : item->setBackground( QBrush( Qt::white, Qt::SolidPattern  ) );
+    enabled ? item->setBackground( m_enabled )
+            : item->setBackground( m_disabled );
 }
     
 void ContextItemManagerWidget::toggleState()

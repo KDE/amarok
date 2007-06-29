@@ -53,7 +53,8 @@ ContextView::ContextView()
     s_instance = this; // we are a singleton class
 
     // start context item manager
-    ContextItemManager::instance();
+    ContextItemManager::instance()->setStartBox( 2 ); // HACK, for now we are telling it
+    // that the contextview itself puts two boxes on the CV (true)
     
     initiateScene();
     setAlignment( Qt::AlignTop );

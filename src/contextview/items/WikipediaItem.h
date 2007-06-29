@@ -57,7 +57,6 @@ private:
     QString m_wikiCurrentEntry;
     QString m_wikiCurrentUrl;
     QString m_wikiBaseUrl;
-    bool m_dirtyWikiPage;
     bool m_wikiVisible;
     QString m_wikiHTMLSource;
     QString m_wikiLanguages;

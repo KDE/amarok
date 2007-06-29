@@ -35,6 +35,8 @@ public:
     
     void applyConfig();
     
+    void setStartBox( int num ) { m_startBox = num; }
+    
 public slots:
     
     void showDialog();
@@ -50,6 +52,7 @@ private:
     QMap< QString, ContextItem* > m_itemsMap;
     QStringList m_itemsOrder;
     
+    int m_startBox;
     bool m_visible;
 };
 

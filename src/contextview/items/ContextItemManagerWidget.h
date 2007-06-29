@@ -19,6 +19,7 @@
 #include "kdialog.h"
 #include "klistwidget.h"
 
+#include <QBrush>
 #include <QListWidgetItem>
 #include <QMap>
 #include <QWidget>
@@ -77,6 +78,9 @@ private:
 
     QMap< ContextItem*, bool >* m_contextItems; // holds the real data :)
     QStringList m_itemsOrder; // order of listview items
+    
+    QBrush m_disabled;
+    QBrush m_enabled;
     
     ContextItemList *m_listview;
     

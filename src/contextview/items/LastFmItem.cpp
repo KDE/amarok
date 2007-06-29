@@ -72,7 +72,7 @@ void LastFmItem::showRelatedArtists()
         relatedArtists->addText( r );
     
     if( !m_relBoxVisible )
-        ContextView::instance()->addContextBox( relatedArtists, -1, false );
+        ContextView::instance()->addContextBox( relatedArtists, m_order, false );
     
     
 }
@@ -137,7 +137,7 @@ void LastFmItem::showSuggestedSongs()
         
         if( !m_sugBoxVisible )
         {
-            ContextView::instance()->addContextBox( m_suggestedSongsBox, -1, false );
+            ContextView::instance()->addContextBox( m_suggestedSongsBox, m_order, false );
             m_sugBoxVisible = true;
         }
     }

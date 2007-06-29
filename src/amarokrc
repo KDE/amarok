@@ -7,7 +7,7 @@ CurrentPane=ContextBrowser
 [ContextItemManager]
 Items=lastfm,lyrics,wikipedia
 lastfm=true
-wikipedia-true
+wikipedia=true
 lyrics=true
 
 [PlaylistColumnsLayout]
