@@ -37,7 +37,6 @@
 #include "playlist/PlaylistView.h"
 #include "playlist.h"
 #include "playlistwindow.h"
-#include "popupdropper/PopupDropper.h"
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
