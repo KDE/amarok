@@ -20,12 +20,14 @@
 #include "ContextObserver.h"
 #include "engineobserver.h"
 #include "GenericInfoBox.h"
+#include "graphicsitemfader.h"
 
 #include <QGraphicsSvgItem>
 #include <QGraphicsView>
 #include <QPointer>
 
 class QGraphicsScene;
+class QMouseEvent;
 class QResizeEvent;
 class QWheelEvent;
 
@@ -54,9 +56,14 @@ class ContextView : public QGraphicsView, public EngineObserver, public ContextS
         
         void removeContextBox( ContextBox *oldBox, bool fadeOut = false );
 
+        void showPopupDropper();
+        void hidePopupDropper();
+
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
+        void mouseMoveEvent( QMouseEvent *event );
+        void mouseReleaseEvent( QMouseEvent *event);
         void resizeEvent( QResizeEvent *event );
         void wheelEvent( QWheelEvent *event );
 
@@ -87,6 +94,9 @@ class ContextView : public QGraphicsView, public EngineObserver, public ContextS
         QList<ContextBox*>  m_contextBoxes; // holds an ordered list of the items, from top to bottom
 
         ContextBox *m_testItem;
+
+        QList<GraphicsItemFader*> m_pudFaders;
+        bool m_pudShown;
 
     private slots:
         void introAnimationComplete();

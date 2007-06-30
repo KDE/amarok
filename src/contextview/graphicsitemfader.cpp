@@ -35,6 +35,7 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
     , m_duration( 5000 )
 {
     m_contentItem = item;
+    m_itemPreviousParent = m_contentItem->parentItem();
     m_contentItem->setParentItem( this );
     m_contentItem->setZValue( 1 );
     m_contentItem->setPos( 1, 1 );
@@ -54,6 +55,14 @@ GraphicsItemFader::GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * pare
 
     m_timeLine = new QTimeLine( m_duration, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
+    connect( m_timeLine, SIGNAL( finished() ), this, SLOT( fadeFinished() ) );
+}
+
+GraphicsItemFader::~GraphicsItemFader()
+{
+    m_timeLine->stop();
+    fadeSlot( m_animationSteps );
+    m_contentItem->setParentItem( m_itemPreviousParent );
 }
 
 void GraphicsItemFader::setStartAlpha(int alpha)
@@ -100,18 +109,26 @@ void GraphicsItemFader::fadeSlot(int step)
     if ( newAlpha == m_targetAlpha )
         emit( animationComplete() );
 
-    //debug() << "fading, new alpha = " << newAlpha <<  endl;
+    debug() << "fading, new alpha = " << newAlpha <<  endl;
+}
+
+void GraphicsItemFader::fadeFinished()
+{
+    DEBUG_BLOCK
+    emit( animationComplete() );
 }
 
 void GraphicsItemFader::startFading()
 {
+    if( m_timeLine->state() != QTimeLine::NotRunning )
+        m_timeLine->stop();
     //total number of animation steps;
     m_animationSteps = m_fps * ( ( float ) m_duration / 1000.0 );
 
     //how much should alpha change each step
     m_alphaStep = ( ( float ) ( m_targetAlpha - m_startAlpha ) ) / ( float ) m_animationSteps;
 
-    //debug() << "Start fading, animationSteps = " << m_animationSteps << ", alphaStep = " <<  m_alphaStep << endl;
+    debug() << "Start fading, animationSteps = " << m_animationSteps << " over " << m_duration << " mseconds, alphaStep = " <<  m_alphaStep << endl;
 
     m_timeLine->setDuration( m_duration );
     m_timeLine->setFrameRange( 0, m_animationSteps );

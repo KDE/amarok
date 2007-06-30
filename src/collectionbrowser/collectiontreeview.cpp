@@ -10,8 +10,8 @@
 
 #include "amarok.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
+#include "contextview/contextview.h"
 #include "playlist/PlaylistModel.h"
-//#include "popupdropper/PopupDropper.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
@@ -159,8 +159,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
     if( ( e->pos() - m_dragStartPosition).manhattanLength() < QApplication::startDragDistance() )
         return;
 
-    //if( The::PopupDropper()->isEnabled() )
-    //    The::PopupDropper()->create();
+    ContextView::instance()->showPopupDropper();
 
     QTreeView::mouseMoveEvent( e );
 }

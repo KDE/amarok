@@ -42,6 +42,7 @@ namespace Context
     Q_OBJECT
     public:
         explicit GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
+        ~GraphicsItemFader();
 
         virtual QRectF boundingRect () const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
@@ -59,11 +60,13 @@ namespace Context
 
     public slots:
         void fadeSlot( int step );
+        void fadeFinished();
 
     private:
         QTimeLine * m_timeLine;
         QGraphicsItem * m_contentItem;
         QGraphicsRectItem * m_shadeRectItem;
+        QGraphicsItem * m_itemPreviousParent;
 
         QColor m_fadeColor;
         int m_startAlpha;

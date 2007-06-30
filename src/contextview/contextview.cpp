@@ -36,12 +36,15 @@
 #include <QColor>
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
+#include <QMouseEvent>
 #include <QWheelEvent>
 
 //just for testing
 #include <QSvgRenderer>
 
 using namespace Context;
+
+static bool enablePUD = false;
 
 ContextView *ContextView::s_instance = 0;
 
@@ -50,6 +53,7 @@ ContextView::ContextView()
     , EngineObserver( EngineController::instance() )
 {
     m_testItem = 0;
+    m_pudShown = false;
     s_instance = this; // we are a singleton class
 
     // start context item manager
@@ -61,6 +65,7 @@ ContextView::ContextView()
     setRenderHints( QPainter::Antialiasing );
     setCacheMode( QGraphicsView::CacheBackground ); // this won't be changing regularly
 
+    setMouseTracking( true );
 
     showHome();
 }
@@ -283,6 +288,69 @@ void ContextView::boxHeightChanged( qreal change )
 
     // 'change' will be negative if it got smaller
     shuffleItems( shuffle, change );
+}
+
+void ContextView::showPopupDropper()
+{
+    if( !enablePUD )
+        return;
+    DEBUG_BLOCK
+    if( m_pudShown )
+        return;
+
+    while( !m_pudFaders.isEmpty() )
+        delete m_pudFaders.takeFirst();
+
+    foreach( ContextBox* box, m_contextBoxes )
+    {
+        GraphicsItemFader *fader = new GraphicsItemFader( box );
+        fader->setFadeColor( palette().highlight().color() );
+        fader->setDuration( 3000 );
+        fader->setStartAlpha( 0 );
+        fader->setTargetAlpha( 120 );
+        m_pudFaders.append( fader );
+    }
+
+    foreach( GraphicsItemFader* fader, m_pudFaders )
+        fader->startFading();
+
+    m_pudShown = true;
+}
+
+void ContextView::hidePopupDropper()
+{
+    if( !enablePUD ) 
+        return;
+    DEBUG_BLOCK
+    if( !m_pudShown )
+        return;
+
+    foreach( GraphicsItemFader* fader, m_pudFaders )
+    {
+        fader->setStartAlpha( 120 );
+        fader->setTargetAlpha( 0 );
+    }
+
+    foreach( GraphicsItemFader* fader, m_pudFaders )
+        fader->startFading();
+
+    m_pudShown = false;
+}
+
+void ContextView::mouseMoveEvent( QMouseEvent *e )
+{
+    DEBUG_BLOCK
+    if( m_pudShown )
+        hidePopupDropper();
+    QGraphicsView::mouseMoveEvent( e );
+}
+
+void ContextView::mouseReleaseEvent( QMouseEvent *e )
+{
+    DEBUG_BLOCK
+    if( m_pudShown )
+        hidePopupDropper();
+    QGraphicsView::mouseReleaseEvent( e );
 }
 
 void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut )
