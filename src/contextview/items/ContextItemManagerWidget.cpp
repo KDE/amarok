@@ -108,7 +108,7 @@ ContextItemManagerWidget::ContextItemManagerWidget( QWidget *parent, const char 
 #endif
     
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n("ContextItemManager") ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Context Item Manager") ) );
     setInitialSize( QSize( 400, 260 ) );
     
     KVBox *mainBox = new KVBox( this );
@@ -125,7 +125,7 @@ ContextItemManagerWidget::ContextItemManagerWidget( QWidget *parent, const char 
     
     m_up->setToolTip(     i18n( "Move Context Item up" ) );
     m_down->setToolTip(   i18n( "Move Context Item down" ) );
-    m_toggle->setToolTip( i18n( "Enable Context Item" ) );
+    m_toggle->setToolTip( i18n( "Toggle Context Item" ) );
     
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
@@ -139,10 +139,10 @@ ContextItemManagerWidget::ContextItemManagerWidget( QWidget *parent, const char 
     
     enableButtonApply(false);
     
-    insertItems();
-    
     m_disabled = QBrush( QColor( 255, 0, 0, 127 ), Qt::SolidPattern );
     m_enabled =  QBrush( Qt::white, Qt::SolidPattern  );
+    
+    insertItems();
 }
     
 
@@ -153,20 +153,13 @@ void ContextItemManagerWidget::insertItems()
     QList< ContextItem* > keys = m_contextItems->keys();
     foreach( QString item, m_itemsOrder )
     {
-        debug() << "inserting context item into widget: " << item << "with value: " << findInContextMap( item ) << endl;
+        debug() << "inserting context item into widget: " << item << " with value: " << findInContextMap( item ) << endl;
         QListWidgetItem* qitem = new QListWidgetItem( item, m_listview, QListWidgetItem::Type );
         findInContextMap( item ) ? qitem->setBackground( m_enabled )
                                      : qitem->setBackground( m_disabled );
     }
 }
 
-void ContextItemManagerWidget::insertItem( const QString& name, bool enabled )
-{
-    QListWidgetItem* item = new QListWidgetItem( name, m_listview, QListWidgetItem::Type );
-    enabled ? item->setBackground( m_enabled )
-            : item->setBackground( m_disabled );
-}
-    
 void ContextItemManagerWidget::toggleState()
 {
     DEBUG_BLOCK
@@ -177,11 +170,11 @@ void ContextItemManagerWidget::toggleState()
         if( findInContextMap( item->text() ) == true ) // item is currently enabled, so we disable it
         {
             insertInContextMap( item->text(), false );
-            item->setBackground( QBrush( Qt::darkRed, Qt::SolidPattern  ) );
+            item->setBackground( m_disabled );
         } else
         {
             insertInContextMap( item->text(), true );
-            item->setBackground( QBrush( Qt::white, Qt::SolidPattern  ) );
+            item->setBackground( m_enabled );
         }
     }
     

@@ -42,7 +42,6 @@ ContextItemManager::ContextItemManager()
 : m_visible( false )
 {
     
-    DEBUG_BLOCK
         
     s_instance = this;
     // NOTE if you want to add a context item, you MUST add it to this map, or
@@ -59,7 +58,6 @@ ContextItemManager::ContextItemManager()
 
 void ContextItemManager::applyConfig()
 {
-    DEBUG_BLOCK
     //read in the config data, and start the enabled items
     m_itemsOrder = Amarok::config( "ContextItemManager" ).readEntry( "Items", QStringList() );
     int i = m_startBox; // start the counting from the last context box owned 
@@ -80,7 +78,6 @@ void ContextItemManager::applyConfig()
 //workhorse method: shows the ContextItemManagerWidget, updates the ContextView with changes
 void ContextItemManager::showDialog()
 {
-    DEBUG_BLOCK
         
     if( ContextItemManagerWidget::instance() )
     {

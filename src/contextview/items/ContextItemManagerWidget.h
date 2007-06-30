@@ -71,7 +71,6 @@ private slots:
 private:
     
     void insertItems();
-    void insertItem( const QString& name, bool enabled );
     
     bool findInContextMap( const QString name );
     void insertInContextMap( const QString name, bool val );
