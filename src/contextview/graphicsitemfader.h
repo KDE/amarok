@@ -20,6 +20,8 @@
 #ifndef GRAPHICSITEMFADER_H
 #define GRAPHICSITEMFADER_H
 
+#include "contextbox.h"
+
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsRectItem>
@@ -28,7 +30,6 @@
 namespace Context
 {
 
-
     /**
     A simple "widget" for the context view that provides a fading image
     Will be ported to use QGraphicsSvgItem once that successfully renders
@@ -36,16 +37,13 @@ namespace Context
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
     */
-    class GraphicsItemFader : public QObject, public QGraphicsItem
+    class GraphicsItemFader : public QObject
     {
 
     Q_OBJECT
     public:
-        explicit GraphicsItemFader( QGraphicsItem * item, QGraphicsItem * parent = 0 );
+        explicit GraphicsItemFader( ContextBox *item );
         ~GraphicsItemFader();
-
-        virtual QRectF boundingRect () const;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
         void setFadeColor( const QColor &color );
         void setStartAlpha( int alpha );
@@ -53,7 +51,7 @@ namespace Context
         void setDuration( int ms );
         void setFPS( int fps );
         void startFading();
-        QGraphicsItem* contentItem() { return m_contentItem; }
+        ContextBox* contentItem() { return m_contentItem; }
 
     signals:
         void animationComplete();
@@ -63,21 +61,18 @@ namespace Context
         void fadeFinished();
 
     private:
-        QTimeLine * m_timeLine;
-        QGraphicsItem * m_contentItem;
-        QGraphicsRectItem * m_shadeRectItem;
-        QGraphicsItem * m_itemPreviousParent;
+        QTimeLine*  m_timeLine;
+        ContextBox* m_contentItem;
 
         QColor m_fadeColor;
         int m_startAlpha;
         int m_targetAlpha;
-        float m_alphaStep;
+        qreal m_alphaStep;
         int m_fps;
         int m_duration;
         int m_animationSteps;
         int m_width;
         int m_height;
-
 
     };
 

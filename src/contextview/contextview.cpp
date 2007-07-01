@@ -44,7 +44,7 @@
 
 using namespace Context;
 
-static bool enablePUD = false;
+static bool enablePUD = true;
 
 ContextView *ContextView::s_instance = 0;
 
@@ -304,9 +304,8 @@ void ContextView::showPopupDropper()
     foreach( ContextBox* box, m_contextBoxes )
     {
         GraphicsItemFader *fader = new GraphicsItemFader( box );
-        fader->setFadeColor( palette().highlight().color() );
-        fader->setDuration( 3000 );
-        fader->setStartAlpha( 0 );
+        fader->setDuration( 1000 );
+        fader->setStartAlpha( 255 );
         fader->setTargetAlpha( 120 );
         m_pudFaders.append( fader );
     }
@@ -328,7 +327,7 @@ void ContextView::hidePopupDropper()
     foreach( GraphicsItemFader* fader, m_pudFaders )
     {
         fader->setStartAlpha( 120 );
-        fader->setTargetAlpha( 0 );
+        fader->setTargetAlpha( 255 );
     }
 
     foreach( GraphicsItemFader* fader, m_pudFaders )

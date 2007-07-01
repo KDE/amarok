@@ -17,7 +17,7 @@
 #include "debug.h"
 
 #include <QGraphicsItemAnimation>
-#include <QGraphicsTextItem>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QRectF>
@@ -49,8 +49,8 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
     m_titleBarRect = new QGraphicsRectItem( this, scene );
 
-    m_titleItem = new QGraphicsTextItem( "", m_titleBarRect, scene );
-    m_titleItem->setDefaultTextColor( QColor( 255, 255, 255 ) );
+    m_titleItem = new QGraphicsSimpleTextItem( "", m_titleBarRect );
+    m_titleItem->setBrush( QColor( 255, 255, 255 ) );
     // increase the font size for the title
     QFont font = m_titleItem->font();
     font.setPointSize( 12 );
@@ -83,7 +83,7 @@ ContextBox::ContextBox( QGraphicsItem *parent, QGraphicsScene *scene )
 
 void ContextBox::setTitle( const QString &title )
 {
-    m_titleItem->setPlainText( title );
+    m_titleItem->setText( title );
     ensureTitleCentered();
 }
 

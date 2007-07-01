@@ -210,7 +210,7 @@ set(libcontextview_SRCS
     contextview/GenericInfoBox.cpp
     contextview/graphicsitemfader.cpp
     contextview/textfader.cpp
-    contextview/introanimation.cpp
+    #    contextview/introanimation.cpp
     contextview/ContextScriptManager.cpp
     contextview/ContextObserver.cpp
     contextview/items/LyricsItem.cpp

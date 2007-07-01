@@ -15,6 +15,7 @@
 #ifndef AMAROK_CONTEXTBOX_H
 #define AMAROK_CONTEXTBOX_H
 
+#include <QBrush>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsRectItem>
 #include <QTimeLine>
@@ -23,7 +24,10 @@ class QGraphicsItem;
 class QGraphicsRectItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
+class QGraphicsSimpleTextItem;
+class QPainter;
 class QSize;
+class QStyleOptionGraphicsItem;
 
 namespace Context
 {
@@ -40,7 +44,10 @@ class ContextBox : public QObject, public QGraphicsRectItem
         virtual void toggleVisibility();
         virtual void ensureWidthFits( const qreal width );
 
-        virtual const QString title() { return m_titleItem->toPlainText(); }
+        virtual const QString title() { return m_titleItem->text(); }
+
+        QGraphicsRectItem* titleBarRect() { return m_titleBarRect; }
+        QGraphicsRectItem* contentRect() { return m_contentRect; }
 
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
@@ -49,7 +56,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         void setContentRectSize( const QSizeF &sz, const bool synchroniseHeight = true );
         void ensureTitleCentered();
 
-        QGraphicsTextItem *m_titleItem;
+        QGraphicsSimpleTextItem *m_titleItem;
         QGraphicsRectItem *m_titleBarRect;
         QGraphicsRectItem *m_contentRect;
 
@@ -57,6 +64,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         qreal m_optimumHeight;
         qreal m_animationIncrement;
         QTimeLine *m_animationTimer;
+        QBrush m_brush;
 
     protected slots:
         void visibilityTimerSlot();
