@@ -24,8 +24,6 @@
 
 #include <QHash>
 
-using namespace Meta;
-
 class AMAROK_EXPORT BlockingQuery : private QObject
 {
     Q_OBJECT
@@ -37,22 +35,22 @@ class AMAROK_EXPORT BlockingQuery : private QObject
 
         QStringList collectionIds();
 
-        DataList data( const QString &id );
-        TrackList tracks( const QString &id );
-        AlbumList albums( const QString &id );
-        ArtistList artists( const QString &id );
-        GenreList genres( const QString &id );
-        ComposerList composers( const QString &id );
-        YearList years( const QString &id );
+        Meta::DataList data( const QString &id );
+        Meta::TrackList tracks( const QString &id );
+        Meta::AlbumList albums( const QString &id );
+        Meta::ArtistList artists( const QString &id );
+        Meta::GenreList genres( const QString &id );
+        Meta::ComposerList composers( const QString &id );
+        Meta::YearList years( const QString &id );
         QStringList customData( const QString &id );
 
-        QHash<QString, DataList> data();
-        QHash<QString, TrackList> tracks();
-        QHash<QString, AlbumList> albums();
-        QHash<QString, ArtistList> artists();
-        QHash<QString, GenreList> genres();
-        QHash<QString, ComposerList> composers();
-        QHash<QString, YearList> years();
+        QHash<QString, Meta::DataList> data();
+        QHash<QString, Meta::TrackList> tracks();
+        QHash<QString, Meta::AlbumList> albums();
+        QHash<QString, Meta::ArtistList> artists();
+        QHash<QString, Meta::GenreList> genres();
+        QHash<QString, Meta::ComposerList> composers();
+        QHash<QString, Meta::YearList> years();
         QHash<QString, QStringList> customData();
 
     private slots:
