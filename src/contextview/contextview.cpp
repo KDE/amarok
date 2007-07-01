@@ -304,7 +304,7 @@ void ContextView::showPopupDropper()
     foreach( ContextBox* box, m_contextBoxes )
     {
         GraphicsItemFader *fader = new GraphicsItemFader( box );
-        fader->setDuration( 1000 );
+        fader->setDuration( 300 );
         fader->setStartAlpha( 255 );
         fader->setTargetAlpha( 120 );
         m_pudFaders.append( fader );

@@ -24,8 +24,6 @@ class QGraphicsItem;
 class QGraphicsRectItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
-class QGraphicsSimpleTextItem;
-class QPainter;
 class QSize;
 class QStyleOptionGraphicsItem;
 
@@ -36,6 +34,8 @@ class ContextBox : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 
+    friend class GraphicsItemFader;
+
     public:
         explicit ContextBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
         ~ContextBox() { /* delete, disconnect and disembark */ }
@@ -44,10 +44,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         virtual void toggleVisibility();
         virtual void ensureWidthFits( const qreal width );
 
-        virtual const QString title() { return m_titleItem->text(); }
-
-        QGraphicsRectItem* titleBarRect() { return m_titleBarRect; }
-        QGraphicsRectItem* contentRect() { return m_contentRect; }
+        virtual const QString title() { return m_titleItem->toPlainText(); }
 
     protected:
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
@@ -56,7 +53,7 @@ class ContextBox : public QObject, public QGraphicsRectItem
         void setContentRectSize( const QSizeF &sz, const bool synchroniseHeight = true );
         void ensureTitleCentered();
 
-        QGraphicsSimpleTextItem *m_titleItem;
+        QGraphicsTextItem *m_titleItem;
         QGraphicsRectItem *m_titleBarRect;
         QGraphicsRectItem *m_contentRect;
 
@@ -64,7 +61,6 @@ class ContextBox : public QObject, public QGraphicsRectItem
         qreal m_optimumHeight;
         qreal m_animationIncrement;
         QTimeLine *m_animationTimer;
-        QBrush m_brush;
 
     protected slots:
         void visibilityTimerSlot();
@@ -72,6 +68,12 @@ class ContextBox : public QObject, public QGraphicsRectItem
 
     signals:
         void heightChanged(qreal change);
+
+    private:
+        QGraphicsRectItem* titleBarRect() { return m_titleBarRect; }
+        QGraphicsRectItem* contentRect() { return m_contentRect; }
+        QGraphicsTextItem* titleItem() { return m_titleItem; }
+
 };
 
 }

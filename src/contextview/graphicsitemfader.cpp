@@ -82,7 +82,9 @@ void GraphicsItemFader::fadeSlot(int step)
     fadePen.setColor( penColor );
     m_contentItem->setPen( fadePen );
 
-    QLinearGradient titleBarRectGradient(QPointF( 0, 0 ), QPointF( 0, m_contentItem->titleBarRect()->boundingRect().height() ) );
+    m_contentItem->titleItem()->setDefaultTextColor( QColor( 255, 255, 255, (int)newAlpha ) );
+
+    QLinearGradient titleBarRectGradient( QPointF( 0, 0 ), QPointF( 0, m_contentItem->titleBarRect()->boundingRect().height() ) );
     titleBarRectGradient.setColorAt( 0, QColor( 200, 200, 255, (int)newAlpha ) );
     titleBarRectGradient.setColorAt( 1, QColor( 50, 50, 255, (int)newAlpha ) );
     m_contentItem->titleBarRect()->setBrush( QBrush( titleBarRectGradient ) );
