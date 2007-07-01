@@ -21,10 +21,12 @@
 
 #include "debug.h"
 
+#include "blockingquery.h"
 #include "collection.h"
 #include "metaquerybuilder.h"
 #include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
+#include "scrobbler.h"
 #include "SqlStorage.h"
 
 #include <QtAlgorithms>
@@ -209,6 +211,51 @@ CollectionManager::trackForUrl( const KUrl &url )
     }
 
     return Meta::TrackPtr( 0 );
+}
+
+Meta::ArtistList
+CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
+{
+    SqlStorage *sql = sqlStorage();
+    QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
+               .arg( sql->escape( artist->name() ), sql->randomFunc(), QString::number( maxArtists ) );
+
+    QStringList artistNames = sql->query( query );
+    //TODO: figure out a way to retrieve similar artists from last.fm here
+    /*if( artistNames.isEmpty() )
+    {
+        artistNames = Scrobbler::instance()->similarArtists( artist->name() );
+    }*/
+    QueryMaker *qm = queryMaker();
+    foreach( QString artist, artistNames )
+    {
+        qm->addFilter( QueryMaker::valArtist, artist, true, true );
+    }
+    qm->startArtistQuery();
+    qm->limitMaxResultSize( maxArtists );
+    BlockingQuery bq( qm );
+    bq.startQuery();
+
+    QStringList ids = bq.collectionIds();
+    Meta::ArtistList result;
+    QSet<QString> artistNameSet;
+    foreach( QString collectionId, ids )
+    {
+        Meta::ArtistList artists = bq.artists( collectionId );
+        foreach( Meta::ArtistPtr artist, artists )
+        {
+            if( !artistNameSet.contains( artist->name() ) )
+            {
+                result.append( artist );
+                artistNameSet.insert( artist->name() );
+                if( result.size() == maxArtists )
+                    break;
+            }
+        }
+        if( result.size() == maxArtists )
+                    break;
+    }
+    return result;
 }
 
 void

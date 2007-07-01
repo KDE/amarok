@@ -46,7 +46,12 @@ class CollectionManager : public QObject
             could be created for the url.
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
+        Meta::ArtistList relatedArtists( Meta::ArtistPtr artist, int maxArtists );
 
+        /**
+            retrieve an interface which allows client-code to store/load data in a relational database.
+            Note: code using this method does NOT take ownership of the pointer.
+        */
         SqlStorage* sqlStorage() const;
 
         void addUnmanagedCollection( Collection *newCollection );
