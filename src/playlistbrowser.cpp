@@ -318,6 +318,12 @@ PlaylistBrowser::~PlaylistBrowser()
 
     if( m_polished )
     {
+        savePlaylists();
+        saveSmartPlaylists();
+        saveDynamics();
+        saveStreams();
+        saveLastFm();
+
         savePodcastFolderStates( m_podcastCategory );
 
         QStringList list;
