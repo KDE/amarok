@@ -2844,8 +2844,18 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
             base == PlaylistBrowser::instance()->m_smartCategory && isSmartPlaylist( item ) ||
             base == PlaylistBrowser::instance()->m_dynamicCategory && isDynamic( item )      )
         {
-            itemParent->takeItem( item );
-            newParent->insertItem( item );
+            // if the item is from the cool streams dir, copy it.
+            if( item->parent() == PlaylistBrowser::instance()->m_coolStreams )
+            {
+                #define item static_cast<StreamEntry*>(item)
+                StreamEntry *copiedStream = new StreamEntry( newParent, after, item->url(), item->title() );
+                #undef  item
+            }
+            else // otherwise, we move it
+            {
+                itemParent->takeItem( item );
+                newParent->insertItem( item );
+            }
             newParent->sortChildItems( 0, true );
         }
         else if( base == PlaylistBrowser::instance()->m_podcastCategory && isPodcastChannel( item ) )
