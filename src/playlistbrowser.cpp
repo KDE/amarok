@@ -2782,9 +2782,16 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
 
 void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
 {
-    if( !newParent || isDynamic( newParent ) || isPodcastChannel( newParent ) ||
-         isSmartPlaylist( newParent ) || isPodcastEpisode( newParent ) )
+    if( !newParent )
         return;
+
+    QListViewItem *after=0;
+    if( isDynamic( newParent ) || isPodcastChannel( newParent ) ||
+        isSmartPlaylist( newParent ) || isPodcastEpisode( newParent ) || isStream( newParent ) )
+    {
+        after = newParent;
+        newParent = newParent->parent();
+    }
 
     #define newParent static_cast<PlaylistBrowserEntry*>(newParent)
     if( !newParent->isKept() )
@@ -2801,7 +2808,6 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         selected.append( *it );
     }
 
-    QListViewItem *after=0;
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
         QListViewItem *itemParent = item->parent();
@@ -2889,8 +2895,6 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 
 void PlaylistBrowserView::startDrag()
 {
-    DEBUG_BLOCK
-
     KURL::List urls;
     KURL::List itemList; // this is for CollectionDB::createDragPixmap()
     KURL::List podList;  // used to add podcast episodes of the same channel in reverse order (usability)
