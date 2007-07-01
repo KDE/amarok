@@ -1246,7 +1246,8 @@ MetaBundle::ratingDescription( int r )
 {
     switch( r )
     {
-        case 2: return i18n( "Awful" );
+        case 1: return i18n( "Awful" );
+        case 2: return i18n( "Bad" );
         case 3: return i18n( "Barely tolerable" );
         case 4: return i18n( "Tolerable" );
         case 5: return i18n( "Okay" );
@@ -1266,7 +1267,7 @@ MetaBundle::ratingList()
     QString s = i18n( "rating - description", "%1 - %2" );
     QStringList list;
     list += ratingDescription( 0 );
-    for ( int i = 2; i<=10; i++ )
+    for ( int i = 1; i<=10; i++ )
         list += s.arg( prettyRating( i, true ) ).arg( ratingDescription( i ) );
     return list;
 }

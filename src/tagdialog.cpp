@@ -652,7 +652,7 @@ void TagDialog::readTags()
     kComboBox_artist       ->setCurrentText( m_bundle.artist() );
     kComboBox_album        ->setCurrentText( m_bundle.album() );
     kComboBox_genre        ->setCurrentText( m_bundle.genre() );
-    kComboBox_rating       ->setCurrentItem( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
+    kComboBox_rating       ->setCurrentItem( m_bundle.rating() );
     kIntSpinBox_track      ->setValue( m_bundle.track() );
     kComboBox_composer     ->setCurrentText( m_bundle.composer() );
     kIntSpinBox_year       ->setValue( m_bundle.year() );
@@ -905,7 +905,7 @@ TagDialog::readMultipleTracks()
     }
     if (rating) {
         m_bundle.setRating( first.rating() );
-        kComboBox_rating->setCurrentItem( first.rating() ? first.rating() - 1 : 0 );
+        kComboBox_rating->setCurrentItem( first.rating() );
     }
 
     m_currentURL = m_urlList.begin();
@@ -1011,7 +1011,7 @@ TagDialog::changes()
 
     if (kIntSpinBox_score->value() != m_bundle.score())
         result |= TagDialog::SCORECHANGED;
-    if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
+    if (kComboBox_rating->currentItem() != ( m_bundle.rating() ) )
         result |= TagDialog::RATINGCHANGED;
 
     if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
@@ -1056,7 +1056,7 @@ TagDialog::storeTags( const KURL &kurl )
     if( result & TagDialog::SCORECHANGED )
         storedScores.replace( url, kIntSpinBox_score->value() );
     if( result & TagDialog::RATINGCHANGED )
-        storedRatings.replace( url, kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
+        storedRatings.replace( url, kComboBox_rating->currentItem() );
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( kTextEdit_lyrics->text().isEmpty() )
             storedLyrics.replace( url, QString::null );
@@ -1299,10 +1299,10 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::SCORECHANGED;
         }
 
-        if( kComboBox_rating->currentItem() && kComboBox_rating->currentItem() != m_bundle.rating() - 1 ||
+        if( kComboBox_rating->currentItem() && kComboBox_rating->currentItem() != m_bundle.rating() ||
                 !kComboBox_rating->currentItem() && m_bundle.rating() )
         {
-            mb.setRating( kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
+            mb.setRating( kComboBox_rating->currentItem() );
             changed |= TagDialog::RATINGCHANGED;
         }
         storeTags( *it, changed, mb );

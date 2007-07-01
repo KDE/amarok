@@ -718,6 +718,9 @@
                         <property name="name">
                             <cstring>kComboBox_rating</cstring>
                         </property>
+                        <property name="sizeLimit">
+                            <number>11</number>
+                        </property>
                     </widget>
                 </grid>
             </widget>
