@@ -34,6 +34,7 @@
 #include <math.h> // scaleView()
 #include <QBrush>
 #include <QColor>
+#include <QGLWidget>
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QMouseEvent>
@@ -60,6 +61,7 @@ ContextView::ContextView()
     ContextItemManager::instance()->setStartBox( 2 ); // HACK, for now we are telling it
     // that the contextview itself puts two boxes on the CV (true)
     
+    setViewport( new QGLWidget() ); //Enable OpenGL rendering
     initiateScene();
     setAlignment( Qt::AlignTop );
     setRenderHints( QPainter::Antialiasing );

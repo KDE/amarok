@@ -419,6 +419,7 @@ target_link_libraries(amarok
 	${KDE4_KFILE_LIBS}
     ${KDE4_KDE3SUPPORT_LIBS} 
 	${KDE4_THREADWEAVER_LIBRARIES}
+    QtOpenGL
     amarok_taglib
 )
 if(NOT WIN32)
