@@ -63,7 +63,6 @@ class ContextView : public QGraphicsView, public EngineObserver, public ContextS
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void mouseMoveEvent( QMouseEvent *event );
-        void mouseReleaseEvent( QMouseEvent *event);
         void resizeEvent( QResizeEvent *event );
         void wheelEvent( QWheelEvent *event );
 

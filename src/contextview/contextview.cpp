@@ -338,18 +338,9 @@ void ContextView::hidePopupDropper()
 
 void ContextView::mouseMoveEvent( QMouseEvent *e )
 {
-    DEBUG_BLOCK
     if( m_pudShown )
         hidePopupDropper();
     QGraphicsView::mouseMoveEvent( e );
-}
-
-void ContextView::mouseReleaseEvent( QMouseEvent *e )
-{
-    DEBUG_BLOCK
-    if( m_pudShown )
-        hidePopupDropper();
-    QGraphicsView::mouseReleaseEvent( e );
 }
 
 void ContextView::removeContextBox( ContextBox *oldBox, bool fadeOut )
