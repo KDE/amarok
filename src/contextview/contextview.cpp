@@ -63,14 +63,12 @@ ContextView::ContextView()
     ContextItemManager::instance()->setStartBox( 2 ); // HACK, for now we are telling it
     // that the contextview itself puts two boxes on the CV (true)
     
-#ifdef QT_OPENGL_SUPPORT
     if( QGLFormat::hasOpenGL() )
     {
         debug() << "Enabling OpenGL rendering." << endl;
         setViewport( new QGLWidget() ); //Enable OpenGL rendering
         setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
     }
-#endif
 
     initiateScene();
     setAlignment( Qt::AlignTop );
