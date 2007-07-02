@@ -52,11 +52,11 @@ ContextView *ContextView::s_instance = 0;
 ContextView::ContextView()
     : QGraphicsView()
     , EngineObserver( EngineController::instance() )
+    , m_testItem( 0 )
+    , m_pudShown( false )
 {
     DEBUG_BLOCK
 
-    m_testItem = 0;
-    m_pudShown = false;
     s_instance = this; // we are a singleton class
 
     // start context item manager
