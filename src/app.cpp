@@ -548,7 +548,7 @@ class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 
 public:
     ID3v1StringHandler( int codecIndex )
-            : m_codec( QTextCodec::codecForIndex( codecIndex ) )
+            : m_codec( QTextCodec::codecForName( QTextCodec::availableCodecs().at( codecIndex ) ) )
     {
         debug() << "codec: " << m_codec << endl;
         debug() << "codec-name: " << m_codec->name() << endl;
@@ -560,6 +560,9 @@ public:
         debug() << "codec: " << m_codec << endl;
         debug() << "codec-name: " << m_codec->name() << endl;
     }
+
+    virtual ~ID3v1StringHandler()
+    {}
 };
 
 //SLOT
