@@ -28,15 +28,32 @@
 #include <kcomponentdata.h>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <KAboutData>
+#include "../amarok.h"
 
 extern "C"
 {
     #include <unistd.h> //::usleep
 }
 
+
+KAboutData aboutData( "amarok loader", 0,
+      ki18n( "Amarok Loader" ), APP_VERSION,
+      ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+      ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2007, The Amarok Development Squad" ),
+      ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
+      ( "http://amarok.kde.org" ) );
+
+QString amarokApp( "amarokapp" );
+
 int
 main( int argc, char *argv[] )
 {
+#ifdef Q_WS_MAC
+    new KComponentData(&aboutData);
+    amarokApp = KStandardDirs().findExe( amarokApp );
+#endif
+
     //NOTE this list doesn't include argv[0] ("amarok")
     QStringList args;
     for( int i = 1; i < argc; i++ )
@@ -70,7 +87,7 @@ main( int argc, char *argv[] )
                     // this argument cannot be passed to the running amarokapp
                     // or KCmdLineArgs would exit the application
 
-                    Q3Process proc( QString("amarokapp") );
+                    Q3Process proc( amarokApp );
                     proc.setCommunication( 0 ); //show everything
 		    proc.addArgument( arg );
                     proc.start();
@@ -120,7 +137,7 @@ bool
 amarokIsRunning()
 {
     //TODO verify service name
-    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("amarok.kde.org"))
+    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.amarok"))
 	    return true;
     return false;
 }
@@ -144,7 +161,7 @@ Loader::Loader( QStringList args )
         m_splash->show();
      }
 
-    args.prepend( "amarokapp" );
+    args.prepend( amarokApp );
 
     m_proc = new Q3Process( args, this );
     m_proc->setCommunication( Q3Process::Stdout );
