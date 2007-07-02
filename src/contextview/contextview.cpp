@@ -46,7 +46,7 @@
 using namespace Context;
 
 static bool enablePUD = true;
-static bool eyeCandyFlag = false;
+static bool eyeCandyFlag = true;
 
 ContextView *ContextView::s_instance = 0;
 
