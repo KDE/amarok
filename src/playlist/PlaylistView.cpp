@@ -15,6 +15,7 @@ void
 View::setModel( QAbstractItemModel * model )
 {
     QListView::setModel( model );
+    setDropIndicatorShown(true);
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
     setDragDropOverwriteMode( false );

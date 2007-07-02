@@ -82,30 +82,7 @@ Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
     TrackPtr track = m_tracks.at( row );
-    if( role == Qt::DisplayRole )
-    {
-    //if you need this code like this elsewhere, don't copy & paste! transfer it into meta.cpp.
-        switch( m_columns.at( index.column() ) )
-        {
-            case AlbumArtist: return track->album()->albumArtist()->name();
-            case Album: return track->album()->name();
-            case Artist: return track->artist()->name();
-            case Bitrate: return track->bitrate();
-            case Composer: return track->composer()->name();
-            case Comment: return track->comment();
-            case DiscNumber: return track->discNumber();
-            case Filesize: return track->filesize();
-            case Genre: return track->genre()->name();
-            case Length: return track->length();
-            case Rating: return track->rating();
-            case Score: return track->score();
-            case Title: return track->name();
-            case TrackNumber: return track->trackNumber();
-            case Year: return track->year()->name().toInt();
-            default: return "not implemented";
-        }
-    }
-    else if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
+    if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
     {
         QFont original;
         original.setBold( true );
@@ -409,9 +386,11 @@ Model::flags(const QModelIndex &index) const
 QStringList
 Model::mimeTypes() const
 {
+    DEBUG_BLOCK
     //QStringList ret = QAbstractTableModel::mimeTypes();
     QStringList ret;
     ret << AmarokMimeData::TRACK_MIME;
+    debug() << ret << endl;
     return ret;
 }
 

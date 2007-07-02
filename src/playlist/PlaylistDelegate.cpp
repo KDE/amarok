@@ -7,10 +7,12 @@
  ***************************************************************************/
 
 #include "debug.h"
+#include "metabundle.h"
 #include "PlaylistDelegate.h"
 #include "PlaylistModel.h"
 #include "PlaylistView.h"
 
+#include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 #include <QModelIndex>
@@ -33,14 +35,29 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());
     QGraphicsScene scene;
-    QGraphicsTextItem* text = new QGraphicsTextItem();
-    text->setFont( QFont() );
+
     QString album = index.data( PlaylistNS::Album ).toString();
     QString title = index.data( Title ).toString();
     QString artist = index.data( Artist ).toString();
     QString trackn = QString::number( index.data( TrackNumber ).toInt() );
-    text->setHtml( i18n("%1 - <b>%2</b> by <b>%3</b> on <b>%4</b>", trackn, title, artist, album ) );
-    scene.addItem( text );
+    QPixmap cover = index.data( CoverImage ).value<QPixmap>();
+    QString prettyLength = MetaBundle::prettyTime( index.data( Length ).toInt(), false );
+    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( cover, 0, &scene );
+    QGraphicsTextItem* leftText = new QGraphicsTextItem();
+    QGraphicsTextItem* rightText = new QGraphicsTextItem();
+    leftText->setFont( QFont() );
+    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( artist, trackn, title ) );
+    leftText->setPos( 52.0, 0.0 );
+    rightText->setFont( QFont() );
+    rightText->setHtml( QString("<b>%1</b><br>%1").arg( album, prettyLength ) );
+    {
+        QFontMetrics* fm = new QFontMetrics( QFont() );
+        rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
+        delete fm;
+    }
+    scene.addItem( pixmap );
+    scene.addItem( leftText );
+    scene.addItem( rightText );
     scene.render( painter, option.rect );
     painter->restore();
 }
@@ -48,7 +65,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
 QSize
 Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-    return QSize( m_view->width(), 55 );
+    return QSize( m_view->width(), 52 );
 }
 
 #include "PlaylistDelegate.moc"

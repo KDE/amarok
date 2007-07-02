@@ -88,7 +88,7 @@ class TrackAdvancer;
             bool removeRows( int position, int rows );
             QVariant headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::DropActions supportedDropActions() const;
-            
+
         //Drag and Drop methods
             Qt::ItemFlags flags(const QModelIndex &index) const;
             QStringList mimeTypes() const;
