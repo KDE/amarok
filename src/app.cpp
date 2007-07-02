@@ -92,11 +92,11 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
-AMAROK_EXPORT KAboutData aboutData( "amarok",
-    I18N_NOOP( "Amarok" ), APP_VERSION,
-    I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2007, The Amarok Development Squad" ),
-    I18N_NOOP( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
+AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
+    ki18n( "Amarok" ), APP_VERSION,
+    ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2007, The Amarok Development Squad" ),
+    ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
              ( "http://amarok.kde.org" ) );
 
 App::App()
@@ -370,39 +370,36 @@ void App::handleCliArgs() //static
 
 void App::initCliArgs( int argc, char *argv[] ) //static
 {
-    static KCmdLineOptions options[] =
-        {
-            { "+[URL(s)]", I18N_NOOP( "Files/URLs to open" ), 0 },
-            { "r", 0, 0 },
-            { "previous", I18N_NOOP( "Skip backwards in playlist" ), 0 },
-            { "p", 0, 0 },
-            { "play", I18N_NOOP( "Start playing current playlist" ), 0 },
-            { "t", 0, 0 },
-            { "play-pause", I18N_NOOP( "Play if stopped, pause if playing" ), 0 },
-            { "pause", I18N_NOOP( "Pause playback" ), 0 },
-            { "s", 0, 0 },
-            { "stop", I18N_NOOP( "Stop playback" ), 0 },
-            { "f", 0, 0 },
-            { "next", I18N_NOOP( "Skip forwards in playlist" ), 0 },
-            { ":", I18N_NOOP("Additional options:"), 0 },
-            { "a", 0, 0 },
-            { "append", I18N_NOOP( "Append files/URLs to playlist" ), 0 },
-            { "e", 0, 0 },
-            { "enqueue", I18N_NOOP("See append, available for backwards compatability"), 0 },
-            { "queue", I18N_NOOP("Queue URLs after the currently playing track"), 0 },
-            { "l", 0, 0 },
-            { "load", I18N_NOOP("Load URLs, replacing current playlist"), 0 },
-            { "m", 0, 0 },
-            { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
-            { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
-            { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
-            { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
-            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device> or system:/media/<device>"), 0 },
-            { 0, 0, 0 }
-        };
-
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+
+    KCmdLineOptions options;
+    options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
+    options.add("r");
+    options.add("previous", ki18n( "Skip backwards in playlist" ));
+    options.add("p");
+    options.add("play", ki18n( "Start playing current playlist" ));
+    options.add("t");
+    options.add("play-pause", ki18n( "Play if stopped, pause if playing" ));
+    options.add("pause", ki18n( "Pause playback" ));
+    options.add("s");
+    options.add("stop", ki18n( "Stop playback" ));
+    options.add("f");
+    options.add("next", ki18n( "Skip forwards in playlist" ));
+    options.add(":", ki18n("Additional options:"));
+    options.add("a");
+    options.add("append", ki18n( "Append files/URLs to playlist" ));
+    options.add("e");
+    options.add("enqueue", ki18n("See append, available for backwards compatability"));
+    options.add("queue", ki18n("Queue URLs after the currently playing track"));
+    options.add("l");
+    options.add("load", ki18n("Load URLs, replacing current playlist"));
+    options.add("m");
+    options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
+    options.add("wizard", ki18n( "Run first-run wizard" ));
+    options.add("engine <name>", ki18n( "Use the <name> engine" ));
+    options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
+    options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
 

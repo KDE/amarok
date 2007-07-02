@@ -29,31 +29,28 @@
 
 int main( int argc, char *argv[] )
 {
-    const KAboutData about( "amarokcollectionscanner",
-    I18N_NOOP( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
-    I18N_NOOP( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2003-2006, The Amarok Developers" ),
-    I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de #amarok.es\n\nFeedback:\namarok@kde.org" ),
+    const KAboutData about( "amarokcollectionscanner", 0,
+    ki18n( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
+    ki18n( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
+    ki18n( "(C) 2003-2006, The Amarok Developers" ),
+    ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de #amarok.es\n\nFeedback:\namarok@kde.org" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
-
-    static KCmdLineOptions options[] =
-    {
-        { "+Folder(s)", I18N_NOOP( "Folders to scan" ), 0 },
-        { "r", 0, 0 },
-        { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
-        { "i", 0, 0 },
-        { "incremental", I18N_NOOP( "Incremental Scan (modified folders only)" ), 0 },
-        { "p", 0, 0 },
-        { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
-        { "s", 0, 0 },
-        { "restart", I18N_NOOP( "Restart the scanner at last position, after a crash" ), "" },
-        { 0, 0, 0 }
-    };
 
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &about ); //calls KCmdLineArgs::addStdCmdLineOptions()
+
+    KCmdLineOptions options;
+    options.add("+Folder(s)", ki18n( "Folders to scan" ));
+    options.add("r");
+    options.add("recursive", ki18n( "Scan folders recursively" ));
+    options.add("i");
+    options.add("incremental", ki18n( "Incremental Scan (modified folders only)" ));
+    options.add("p");
+    options.add("importplaylists", ki18n( "Import playlist" ));
+    options.add("s");
+    options.add("restart", ki18n( "Restart the scanner at last position, after a crash" ));
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
@@ -61,7 +58,7 @@ int main( int argc, char *argv[] )
     // Parse list of folder arguments
     QStringList folders;
     for( int i = 0; i < args->count(); i++ )
-        folders << QFile::decodeName( args->arg( i ) );
+        folders << args->arg( i );
 
     const bool recursive        = args->isSet( "recursive" );
     const bool incremental      = args->isSet( "incremental" );
