@@ -31,7 +31,7 @@ GraphicsItemFader::GraphicsItemFader( ContextBox *item )
     : QObject()
     , m_startAlpha( 0 )
     , m_targetAlpha( 255 )
-    , m_fps ( 30 )
+    , m_fps( 0 )
     , m_duration( 5000 )
 {
     m_contentItem = item;
@@ -110,7 +110,7 @@ void GraphicsItemFader::startFading()
     if( m_timeLine->state() != QTimeLine::NotRunning )
         m_timeLine->stop();
     //total number of animation steps;
-    m_animationSteps = (int) ( m_fps * ( ( qreal ) m_duration / 1000.0 ) );
+    m_animationSteps = (int) ( ( m_fps ? m_fps : 25 ) * ( ( qreal ) m_duration / 1000.0 ) );
 
     //how much should alpha change each step
     m_alphaStep = ( ( qreal ) ( m_targetAlpha - m_startAlpha ) ) / ( qreal ) m_animationSteps;
