@@ -260,6 +260,9 @@ void SideBarButton::slotAnimTimer()
 
 void SideBarButton::paintEvent( QPaintEvent* )
 {
+    const int gap = 10;
+    const int h = height() - gap;
+
     QPainter p( this );
     p.initFrom( this );
 
@@ -275,11 +278,11 @@ void SideBarButton::paintEvent( QPaintEvent* )
     else
         c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
     p.setBrush( c );
-    p.drawRect( rect().adjusted( 0, 0, -1, -1 ) );
+    p.drawRect( rect().adjusted( 0, 0, -1, -gap -1 ) );
 
     const QString txt = text().replace( "&", "" );
 
-    const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+    const int pos = qMin( h, h / 2 + heightHint() / 2 ) - iconSize().height();
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
