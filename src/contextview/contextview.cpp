@@ -53,6 +53,8 @@ ContextView::ContextView()
     : QGraphicsView()
     , EngineObserver( EngineController::instance() )
 {
+    DEBUG_BLOCK
+
     m_testItem = 0;
     m_pudShown = false;
     s_instance = this; // we are a singleton class
@@ -64,6 +66,7 @@ ContextView::ContextView()
 #ifdef QT_OPENGL_SUPPORT
     if( QGLFormat::hasOpenGL() )
     {
+        debug() << "Enabling OpenGL rendering." << endl;
         setViewport( new QGLWidget() ); //Enable OpenGL rendering
         setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
     }
