@@ -155,8 +155,8 @@ EngineController::loadEngine( const QString &engineName )
     query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
-    oldForeachType( KService::List, offers ) {
-        Amarok::Plugin *plugin = PluginManager::createFromService( *it );
+    foreach( KService::Ptr service, offers ) {
+        Amarok::Plugin *plugin = PluginManager::createFromService( service );
 
         if( plugin ) {
             QObject *bar = Amarok::StatusBar::instance();
