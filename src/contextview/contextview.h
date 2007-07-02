@@ -21,6 +21,7 @@
 #include "engineobserver.h"
 #include "GenericInfoBox.h"
 #include "graphicsitemfader.h"
+#include "graphicsitemscaler.h"
 
 #include <QGraphicsSvgItem>
 #include <QGraphicsView>
@@ -95,6 +96,7 @@ class ContextView : public QGraphicsView, public EngineObserver, public ContextS
         ContextBox *m_testItem;
 
         QList<GraphicsItemFader*> m_pudFaders;
+        QList<GraphicsItemScaler*> m_pudScalers;
         bool m_pudShown;
 
     private slots:

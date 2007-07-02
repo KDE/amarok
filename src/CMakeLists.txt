@@ -209,6 +209,7 @@ set(libcontextview_SRCS
     contextview/albumbox.cpp
     contextview/GenericInfoBox.cpp
     contextview/graphicsitemfader.cpp
+    contextview/graphicsitemscaler.cpp
     contextview/textfader.cpp
     #    contextview/introanimation.cpp
     contextview/ContextScriptManager.cpp

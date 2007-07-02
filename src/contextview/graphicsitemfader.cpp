@@ -111,6 +111,8 @@ void GraphicsItemFader::startFading()
         m_timeLine->stop();
     //total number of animation steps;
     m_animationSteps = (int) ( ( m_fps ? m_fps : 25 ) * ( ( qreal ) m_duration / 1000.0 ) );
+    if( m_animationSteps == 0 )
+        m_animationSteps = 1;
 
     //how much should alpha change each step
     m_alphaStep = ( ( qreal ) ( m_targetAlpha - m_startAlpha ) ) / ( qreal ) m_animationSteps;

@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "graphicsitemfader.h"
+#include "graphicsitemscaler.h"
 #include "introanimation.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
@@ -303,22 +304,33 @@ void ContextView::showPopupDropper()
     if( m_pudShown )
         return;
 
-    while( !m_pudFaders.isEmpty() )
-        delete m_pudFaders.takeFirst();
+//    while( !m_pudFaders.isEmpty() )
+//        delete m_pudFaders.takeFirst();
+
+    while( !m_pudScalers.isEmpty() )
+        delete m_pudScalers.takeFirst();
 
     foreach( ContextBox* box, m_contextBoxes )
     {
+        /*
         GraphicsItemFader *fader = new GraphicsItemFader( box );
         fader->setDuration( 300 );
         fader->setStartAlpha( 255 );
         fader->setTargetAlpha( 120 );
         if( !eyeCandyFlag )
-            fader->setFPS( 4 );
+            fader->setDuration( 1 );
         m_pudFaders.append( fader );
+        */
+        GraphicsItemScaler *scaler = new GraphicsItemScaler( box );
+        scaler->setDuration( 1000 );
+        scaler->setTargetSize( 1, 1);
+        m_pudScalers.append( scaler );
     }
 
-    foreach( GraphicsItemFader* fader, m_pudFaders )
-        fader->startFading();
+//    foreach( GraphicsItemFader* fader, m_pudFaders )
+//        fader->startFading();
+    foreach( GraphicsItemScaler* scaler, m_pudScalers )
+        scaler->startScaling();
 
     m_pudShown = true;
 }
@@ -330,15 +342,21 @@ void ContextView::hidePopupDropper()
     DEBUG_BLOCK
     if( !m_pudShown )
         return;
-
+/*
     foreach( GraphicsItemFader* fader, m_pudFaders )
     {
         fader->setStartAlpha( 120 );
         fader->setTargetAlpha( 255 );
     }
+*/
+    foreach( GraphicsItemScaler* scaler, m_pudScalers )
+        scaler->setTargetSize( scaler->originalWidth(), scaler->originalHeight() );
 
-    foreach( GraphicsItemFader* fader, m_pudFaders )
-        fader->startFading();
+//    foreach( GraphicsItemFader* fader, m_pudFaders )
+//        fader->startFading();
+
+    foreach( GraphicsItemScaler* scaler, m_pudScalers )
+        scaler->startScaling();
 
     m_pudShown = false;
 }
