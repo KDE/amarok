@@ -73,6 +73,8 @@ void GraphicsItemScaler::setFPS(int fps)
 void GraphicsItemScaler::scaleSlot(int step)
 {
     debug() << "step # " << step << " of " << m_animationSteps << endl;
+    if( step == 0 || ( m_currWidth == m_tgtWidth && m_currHeight == m_tgtHeight ) )
+        return;
     qreal percent = ( qreal ) step / m_animationSteps;
 
     qreal desiredWidth, desiredHeight;
@@ -98,6 +100,7 @@ void GraphicsItemScaler::scaleSlot(int step)
 void GraphicsItemScaler::scaleFinished()
 {
     DEBUG_BLOCK
+    scaleSlot( m_animationSteps );
     emit( animationComplete() );
 }
 
@@ -106,8 +109,14 @@ void GraphicsItemScaler::startScaling()
     DEBUG_BLOCK
     if( m_timeLine->state() != QTimeLine::NotRunning )
         m_timeLine->stop();
+
+    int fps = ( m_fps ? m_fps : 25 );
+
     //total number of animation steps;
-    m_animationSteps = (int) round( ( ( m_fps ? m_fps : 25 ) * ( ( qreal ) m_duration / 1000.0 ) ) );
+    m_animationSteps = (int) round( ( fps * ( ( qreal ) m_duration / 1000.0 ) ) );
+
+    if( m_animationSteps == 0 )
+        m_animationSteps = 1;
 
     m_originalWidth = (int) m_currWidth;
     m_originalHeight = (int) m_currHeight;
@@ -120,7 +129,7 @@ void GraphicsItemScaler::startScaling()
     debug() << "Start scaling, animationSteps = " << m_animationSteps << " over " << m_duration << " mseconds" << endl;
 
     m_timeLine->setDuration( m_duration );
-    m_timeLine->setFrameRange( 1, m_animationSteps );
+    m_timeLine->setFrameRange( 0, m_animationSteps );
     m_timeLine->start();
 }
 

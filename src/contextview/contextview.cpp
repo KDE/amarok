@@ -350,7 +350,11 @@ void ContextView::hidePopupDropper()
     }
 */
     foreach( GraphicsItemScaler* scaler, m_pudScalers )
+    {
+        if( !eyeCandyFlag )
+            scaler->setDuration( 1 );
         scaler->setTargetSize( scaler->originalWidth(), scaler->originalHeight() );
+    }
 
 //    foreach( GraphicsItemFader* fader, m_pudFaders )
 //        fader->startFading();
