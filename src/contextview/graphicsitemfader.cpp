@@ -73,6 +73,7 @@ void GraphicsItemFader::setFPS(int fps)
 
 void GraphicsItemFader::fadeSlot(int step)
 {
+    debug() << "step # " << step << " of " << m_animationSteps << endl;
     qreal newAlpha = m_startAlpha + ( step * m_alphaStep );
     m_fadeColor.setAlpha( (int)newAlpha );
 
