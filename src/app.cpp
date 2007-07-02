@@ -259,14 +259,11 @@ namespace
 
 void App::handleCliArgs() //static
 {
-    static char cwd[PATH_MAX];
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     if ( args->isSet( "cwd" ) )
     {
-        strncpy(cwd, args->getOption( "cwd" ), sizeof(cwd) );
-        cwd[sizeof(cwd)-1] = '\0';
-        KCmdLineArgs::setCwd( cwd );
+        KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
     }
 
     bool haveArgs = false;
