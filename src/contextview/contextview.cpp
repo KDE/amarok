@@ -46,6 +46,7 @@
 using namespace Context;
 
 static bool enablePUD = true;
+static bool eyeCandyFlag = false;
 
 ContextView *ContextView::s_instance = 0;
 
@@ -311,6 +312,8 @@ void ContextView::showPopupDropper()
         fader->setDuration( 300 );
         fader->setStartAlpha( 255 );
         fader->setTargetAlpha( 120 );
+        if( !eyeCandyFlag )
+            fader->setFPS( 4 );
         m_pudFaders.append( fader );
     }
 
