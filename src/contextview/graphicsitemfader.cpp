@@ -40,6 +40,7 @@ GraphicsItemFader::GraphicsItemFader( ContextBox *item )
     m_fadeColor = m_contentItem->brush().color();
 
     m_timeLine = new QTimeLine( m_duration, this );
+    m_timeLine->setCurveShape( QTimeLine::LinearCurve );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( fadeSlot( int ) ) );
     connect( m_timeLine, SIGNAL( finished() ), this, SLOT( fadeFinished() ) );
 }
