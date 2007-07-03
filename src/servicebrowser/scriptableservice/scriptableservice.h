@@ -23,6 +23,7 @@
 
 #include "amarok.h"
 #include "../servicebase.h"
+#include "ScriptableServiceCollection.h"
 
 
 
@@ -43,13 +44,19 @@ public:
 
     void polish() {}
 
-private slots:
+    ScriptableServiceCollection * collection();
+    void setCollection( ScriptableServiceCollection * collection );
 
+private slots:
 
 
     //void treeItemSelected( const QModelIndex & index );
     //void infoChanged ( QString infoHtml );
 
+
+private:
+
+    ScriptableServiceCollection * m_collection;
 };
 
 

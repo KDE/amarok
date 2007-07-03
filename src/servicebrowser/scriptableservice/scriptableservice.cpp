@@ -31,6 +31,17 @@ ScriptableService::ScriptableService( const QString &name )
 
 }
 
+ScriptableServiceCollection * ScriptableService::collection()
+{
+    return m_collection;
+}
+
+void ScriptableService::setCollection(ScriptableServiceCollection * collection)
+{
+    m_collection = collection;
+
+}
+
 
 
 

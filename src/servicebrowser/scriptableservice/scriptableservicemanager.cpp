@@ -22,6 +22,7 @@
 #include <scriptableservicemanageradaptor.h>
 #include "collection/support/memorycollection.h"
 #include "ScriptableServiceCollection.h"
+#include "servicemetabase.h"
 
 #include <kiconloader.h> 
  
@@ -58,10 +59,11 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
 
     ScriptableServiceCollection * collection = new ScriptableServiceCollection( name + "_collection" );
+    service->setCollection( collection );
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-    levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+    //levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel * model = new SingleCollectionTreeItemModel( collection, levels );
 
@@ -72,7 +74,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 }
 
 
-/*int ScriptableServiceManager::insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName) {
+int ScriptableServiceManager::insertTrack(const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int parentId) {
 
      debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
@@ -83,11 +85,19 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
         return -1;
     }
 
-    ScriptableServiceContentModel * model = static_cast< ScriptableServiceContentModel *> ( m_serviceMap[serviceName]->getModel() );
+    ScriptableServiceCollection * collection =  m_serviceMap[serviceName]->collection();
     
-    return model->insertItem( name, url, infoHtml, parentId );
+    collection->acquireWriteLock();
+    collection->addTrack( name, TrackPtr( new ServiceTrack( name ) ) );
 
-}*/
+     QList<int> levels;
+    //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+   // levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+
+    m_serviceMap[serviceName]->getModel()->setLevels( levels );
+    
+
+}
 
 
 /*int ScriptableServiceManager::insertDynamicElement( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId, const QString &serviceName){
