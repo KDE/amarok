@@ -14,7 +14,7 @@ QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} am
 
 kde4_automoc(${amarokcollectionscanner_SRCS})
 
-kde4_add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS})
+kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
 target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} amarok_taglib amarok ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
 
