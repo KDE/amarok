@@ -20,12 +20,14 @@
 #include "crashhandler.h"
 #include <kaboutdata.h>
 #include <kcrash.h>
+#include <KCmdLineArgs>
 
 #include "metadata/tplugins.h"
 
 //#define AMAROK_USE_DRKONQI
 
 extern class KAboutData aboutData; //defined in amarokcore/app.cpp
+
 
 int main( int argc, char *argv[] )
 {
@@ -99,9 +101,14 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Vadim Petrunin"), ki18n(( "Graphics, splash-screen (vnizzz)" )), "vnizzz@list.ru" );
     aboutData.addCredit( ki18n("Whitehawk Stormchaser"), ki18n(( "Tester, patches" )), "zerokode@gmx.net" );
 
-    registerTaglibPlugins();
-
     App::initCliArgs( argc, argv );
+    KUniqueApplication::addCmdLineOptions();
+
+    if (!KUniqueApplication::start()) {
+        fprintf(stderr, "myAppName is already running!\n");
+        return 0;
+    }
+
     App app;
 
 #ifdef Q_WS_X11
@@ -109,7 +116,6 @@ int main( int argc, char *argv[] )
     KCrash::setCrashHandler( Amarok::Crash::crashHandler );
     #endif
 #endif
-
 
     return app.exec();
 }

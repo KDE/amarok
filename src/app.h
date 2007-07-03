@@ -22,7 +22,7 @@
 
 #include "amarok_export.h"
 #include "engineobserver.h" //baseclass
-#include <kapplication.h>   //baseclass
+#include <kuniqueapplication.h>   //baseclass
 #include <kurl.h>
 
 #include <QByteArray>
@@ -39,8 +39,9 @@ class MetaBundle;
 class Playlist;
 class PlaylistWindow;
 class MediaDeviceManager;
+class KSplashScreen;
 
-class AMAROK_EXPORT App : public KApplication, public EngineObserver
+class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 {
     Q_OBJECT
     public:
@@ -108,6 +109,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
         Amarok::TrayIcon    *m_tray;
 #endif
         MediaDeviceManager  *m_mediaDeviceManager;
+        KSplashScreen       *m_splash;
 };
 
 #define pApp static_cast<App*>(kapp)

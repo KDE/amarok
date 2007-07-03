@@ -50,6 +50,7 @@ email                : markey@web.de
 #include "threadmanager.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
+#include "metadata/tplugins.h"
 
 #include <iostream>
 
@@ -70,6 +71,7 @@ email                : markey@web.de
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <krun.h>                //Amarok::invokeBrowser()
+#include <ksplashscreen.h>
 #include <kstandarddirs.h>
 
 #include <QCloseEvent>
@@ -99,10 +101,21 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
              ( "http://amarok.kde.org" ) );
 
+
 App::App()
-        : KApplication()
+        : KUniqueApplication()
 {
     DEBUG_BLOCK
+
+    KSplashScreen *splash = 0;
+    if( AmarokConfig::showSplashscreen() )
+    {
+        QPixmap splashpix( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg") );
+        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
+        m_splash->show();
+    }
+
+    registerTaglibPlugins();
 
     qRegisterMetaType<MetaBundle>();
 
@@ -190,6 +203,9 @@ App::App()
 App::~App()
 {
     DEBUG_BLOCK
+
+    delete m_splash;
+    m_splash = 0;
 
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
@@ -734,6 +750,9 @@ App::continueInit()
 
 
     handleCliArgs();
+
+    delete m_splash;
+    m_splash = 0;
 }
 
 bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
