@@ -21,6 +21,7 @@
 #include "debug.h"
 #include "servicebrowser.h"
 #include "../contextview/contextview.h"
+//#include "scriptableservicemanager.h"
 
 #include <KIconLoader>
 
@@ -37,14 +38,15 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
 
-    //m_scriptableServiceManager = 0;
+    m_scriptableServiceManager = 0;
 }
 
-/*void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
+//TODO: Thsi should be moved to the ScriptableServiceManager instead
+void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
     m_scriptableServiceManager = scriptableServiceManager;
     m_scriptableServiceManager->setParent( this );
     connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
-}*/
+}
 
 void ServiceBrowser::addService( ServiceBase * service ) {
 

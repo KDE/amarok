@@ -25,7 +25,6 @@
 
 #include "../servicebase.h"
 #include "scriptableservice.h"
-#include "scriptableservicecontentmodel.h"
  
 class ScriptableServiceManager : public QObject
 {
@@ -41,11 +40,11 @@ class ScriptableServiceManager : public QObject
     public Q_SLOTS:
 
         Q_SCRIPTABLE bool createService( const QString &name, const QString &listHeader, const QString &rootHtml);
-        Q_SCRIPTABLE int insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName);
-        Q_SCRIPTABLE int insertDynamicElement( const QString &name, const QString &callbackScript, 
+       /* Q_SCRIPTABLE int insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName);*/
+        /*Q_SCRIPTABLE int insertDynamicElement( const QString &name, const QString &callbackScript, 
                                                const QString &callbackArgument, const QString &infoHtml, 
-                                               int parentId, const QString &serviceName);
-        Q_SCRIPTABLE bool updateComplete( const QString &serviceName );
+                                               int parentId, const QString &serviceName); */
+        //Q_SCRIPTABLE bool updateComplete( const QString &serviceName );
 
     private:
 

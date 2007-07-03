@@ -20,6 +20,8 @@
 #include "debug.h"
 #include "scriptableservicemanager.h"
 #include <scriptableservicemanageradaptor.h>
+#include "collection/support/memorycollection.h"
+#include "ScriptableServiceCollection.h"
 
 #include <kiconloader.h> 
  
@@ -27,8 +29,8 @@
 ScriptableServiceManager::ScriptableServiceManager(QObject* parent)  
 : QObject(parent){
 
-    
 
+    DEBUG_BLOCK
 
     new ScriptableServiceManagerAdaptor( this );
     QDBusConnection dbus = QDBusConnection::sessionBus();
@@ -53,14 +55,24 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
     service->infoChanged( m_rootHtml );
     
     m_serviceMap[name] = service;
-    service->setModel( new ScriptableServiceContentModel( this, listHeader ) ); 
+
+
+    ScriptableServiceCollection * collection = new ScriptableServiceCollection( name + "_collection" );
+
+     QList<int> levels;
+    //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+    levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+
+    SingleCollectionTreeItemModel * model = new SingleCollectionTreeItemModel( collection, levels );
+
+    service->setModel( model ); 
     emit( addService ( service ) );
     
     return true;
 }
 
 
-int ScriptableServiceManager::insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName) {
+/*int ScriptableServiceManager::insertElement( const QString &name, const QString &url, const QString &infoHtml, int parentId, const QString &serviceName) {
 
      debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
@@ -75,10 +87,10 @@ int ScriptableServiceManager::insertElement( const QString &name, const QString 
     
     return model->insertItem( name, url, infoHtml, parentId );
 
-}
+}*/
 
 
-int ScriptableServiceManager::insertDynamicElement( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId, const QString &serviceName){
+/*int ScriptableServiceManager::insertDynamicElement( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId, const QString &serviceName){
 
      debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
@@ -93,10 +105,10 @@ int ScriptableServiceManager::insertDynamicElement( const QString &name, const Q
     
     return model->insertDynamicItem( name, callbackScript, callbackArgument, infoHtml, parentId );
 
-}
+}*/
 
 
-bool ScriptableServiceManager::updateComplete( const QString &serviceName ) {
+/*bool ScriptableServiceManager::updateComplete( const QString &serviceName ) {
 
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
@@ -108,7 +120,7 @@ bool ScriptableServiceManager::updateComplete( const QString &serviceName ) {
 
     return true;
 
-}
+}*/
 
 #include "scriptableservicemanager.moc"
 

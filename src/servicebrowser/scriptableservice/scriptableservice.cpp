@@ -17,9 +17,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
+#include "scriptableservice.h"
+
 #include "servicebrowser.h"
 #include "amarok.h"
 #include "debug.h"
+
 
 
 ScriptableService::ScriptableService( const QString &name )

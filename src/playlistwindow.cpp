@@ -42,7 +42,7 @@
 #include "searchwidget.h"
 #include "selectLabel.h"
 //#include "servicebrowser/magnatunestore/magnatunebrowser.h"
-//#include "servicebrowser/scriptableservice/scriptableservice.h"
+#include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
 //#include "servicebrowser/mp3tunes/mp3tunesservice.h"
@@ -313,7 +313,9 @@ void PlaylistWindow::init()
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
-       // internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
+
+        debug() << "Add me dammit!!!!!" << endl;
+        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
         //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );

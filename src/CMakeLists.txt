@@ -111,9 +111,9 @@ set(libservicebrowser_SRCS
 #####################################################################
 set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/scriptableservicemanager.cpp
-    servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
+    #servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
     servicebrowser/scriptableservice/scriptableservice.cpp
-    servicebrowser/scriptableservice/scriptableservicecontentmodel.cpp
+    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
 )
 
 #####################################################################
@@ -135,7 +135,7 @@ set(libmp3tunesservice_SRCS
     servicebrowser/mp3tunes/mp3tunesdatafetcher.cpp
 )
 
-#qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
+qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 #####################################################################
 # CONFIGDIALOG
@@ -287,7 +287,7 @@ set(collection_SRCS
 set(amarok_LIB_SRCS
     ${libmagnatunestore_SRCS}
     #${libmp3tunesservice_SRCS}
-    #${libscriptableservice_SRCS}
+    ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}
     ${libcollectionbrowser_SRCS}
