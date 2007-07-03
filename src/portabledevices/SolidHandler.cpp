@@ -17,11 +17,13 @@
  */
 
 #include "solid/device.h"
+#include "solid/devicenotifier.h"
 
 #include <QList>
 
 #include "debug.h"
 #include "SolidHandler.h"
+
 
 using namespace PortableDevicesNS;
 
