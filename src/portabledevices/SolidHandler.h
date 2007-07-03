@@ -54,7 +54,17 @@ namespace PortableDevicesNS {
             ~SolidHandler();
     
             void Initialize();
-            QList<Solid::Device>   m_portableList;
+
+        signals:
+            void addDevice( const QString &udi );
+            void removeDevice( const QString &udi );
+
+        public slots:
+            void deviceAdded( const QString &udi );
+            void deviceRemoved( const QString &udi );
+
+        public:
+            QStringList   m_portableList;
     };
 }
 #endif /* AMAROK_SOLID_HANDLER_H */

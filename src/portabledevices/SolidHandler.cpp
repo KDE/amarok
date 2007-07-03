@@ -35,6 +35,7 @@ SolidHandler::instance()
 }
 
 SolidHandler::SolidHandler() : QObject()
+                             , m_portableList()
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -48,13 +49,36 @@ void
 SolidHandler::Initialize()
 {
     DEBUG_BLOCK
-    //m_portableList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDrive );
-    m_portableList = Solid::Device::listFromQuery( "is OpticalDrive" );  
+    QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
     Solid::Device temp;
-    for  (int i = 0; i < m_portableList.size(); ++i) {
-        temp = m_portableList.at( i );
-        debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << temp.udi() << endl;
-        debug() << "Device name is = " << temp.product() << " and was made by " << temp.vendor() << endl;
+    foreach( Solid::Device device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi() << endl;
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor() << endl;
+        m_portableList << device.udi();
+    }
+}
+
+void
+SolidHandler::deviceAdded( const QString &udi )
+{
+    if( m_portableList.contains( udi ) )
+    {
+        debug() << "Error: duplicate UDI trying to be added from Solid." << endl;
+        return;
+    }
+    m_portableList << udi;
+    emit addDevice( udi );
+}
+
+void
+SolidHandler::deviceRemoved( const QString &udi )
+{
+    if( m_portableList.contains( udi ) )
+    {
+        m_portableList.removeAll( udi );
+        emit removeDevice( udi );
+        return;
     }
 }
 
