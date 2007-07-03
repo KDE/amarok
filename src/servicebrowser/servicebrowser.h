@@ -72,7 +72,6 @@ private slots:
 
     void serviceSelected( QListWidgetItem * item );
     void home();
-
 };
 
 

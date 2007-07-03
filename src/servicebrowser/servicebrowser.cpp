@@ -22,10 +22,12 @@
 #include "servicebrowser.h"
 #include "../contextview/contextview.h"
 
-#include <kiconloader.h>
+#include <KIconLoader>
 
 ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
-        : KVBox( parent)
+    : KVBox( parent )
+    , m_currentService( 0 )
+    , m_usingContextView( false )
 {
     setObjectName( name );
 
@@ -35,11 +37,7 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
 
-
-    m_currentService = 0;
     //m_scriptableServiceManager = 0;
-
-    m_usingContextView = false;
 }
 
 /*void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
@@ -58,24 +56,19 @@ void ServiceBrowser::addService( ServiceBase * service ) {
     //serviceListItem->setTextAlignment( Qt::AlignHCenter );
     serviceListItem->setIcon( service->getIcon() );
 
-
-
-
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
-
-
 }
 
 
-void ServiceBrowser::serviceSelected( QListWidgetItem * item ) {
-
+void ServiceBrowser::serviceSelected( QListWidgetItem * item )
+{
     debug() << "Show service: " <<  item->text() << endl;
     showService(  item->text() );
 }
 
-void ServiceBrowser::showService( const QString &name ) {
 
-
+void ServiceBrowser::showService( const QString &name )
+{
     ServiceBase * service = 0;
     if ( m_services.contains( name ) )
        service = m_services.value( name );
@@ -90,15 +83,12 @@ void ServiceBrowser::showService( const QString &name ) {
         service->polish();
         m_usingContextView = service->updateContextView();
         m_currentService = service;
-
     }
-
-
 }
+
 
 void ServiceBrowser::home()
 {
-
     if ( m_currentService != 0 ) {
         m_currentService->setParent( 0 );
         m_serviceSelectionList->setParent( this );
@@ -110,10 +100,8 @@ void ServiceBrowser::home()
         if ( m_usingContextView )
             ContextView::instance()->clear();
     }
-
 }
 
 
-
-
 #include "servicebrowser.moc"
+
