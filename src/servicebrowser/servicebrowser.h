@@ -43,7 +43,7 @@ class ServiceBrowser : public KVBox
 
 public:
 
-     ServiceBrowser(QWidget * parent, const char *name );
+     ServiceBrowser(QWidget * parent, const QString& name );
     /**
      * Destructor
      */

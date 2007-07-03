@@ -367,7 +367,7 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
     m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString() );
     
     // Remove hidden table rows as well
-    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", false );
+    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", Qt::CaseInsensitive );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
     m_wiki.replace( hidden, QString() );
     
@@ -429,3 +429,4 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
 }
 
 #include "WikipediaItem.moc"
+

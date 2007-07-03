@@ -36,8 +36,8 @@ LastFmItem::LastFmItem()
     , m_suggestedSongsBox( 0 )
     , m_relHTMLSource( QString() )
     , m_sugHTMLSource( QString() )
-    , m_relBoxVisible( false )
     , m_sugBoxVisible( false )
+    , m_relBoxVisible( false )
     , m_enabled( false )
 {
 }
@@ -112,7 +112,7 @@ void LastFmItem::showSuggestedSongs()
                              "</div>\n"
                              "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
         
-        for ( uint i = 0; i < values.count(); i += 5 )
+        for ( int i = 0; i < values.count(); i += 5 )
             m_sugHTMLSource.append(
                                  "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>\n"
                                  "<td class='song'>\n"

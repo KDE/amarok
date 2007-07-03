@@ -24,10 +24,10 @@
 
 #include <kiconloader.h>
 
-ServiceBrowser::ServiceBrowser(QWidget * parent, const char *name )
+ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
         : KVBox( parent)
 {
-
+    setObjectName( name );
 
     debug() << "ServiceBrowser starting..." << endl;
     m_serviceSelectionList = new QListWidget( this );
@@ -100,8 +100,10 @@ void ServiceBrowser::home()
 {
 
     if ( m_currentService != 0 ) {
-        m_currentService->reparent( 0,  QPoint( 0, 0 ) );
-        m_serviceSelectionList->reparent( this,  QPoint( 0,0 ), true );
+        m_currentService->setParent( 0 );
+        m_serviceSelectionList->setParent( this );
+        m_serviceSelectionList->move( 0, 0 );
+        m_serviceSelectionList->show();
         m_currentService = 0;
         // remove any context stuff we might have added
 
