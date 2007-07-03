@@ -49,6 +49,10 @@ void
 SolidHandler::Initialize()
 {
     DEBUG_BLOCK
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
+             this, SLOT( deviceAdded( const QString & ) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
+             this, SLOT( deviceRemoved( const QString & ) ) );
     QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
     Solid::Device temp;
     foreach( Solid::Device device, deviceList )
