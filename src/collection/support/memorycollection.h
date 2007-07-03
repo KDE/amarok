@@ -50,11 +50,17 @@ class MemoryCollection
         YearMap yearMap() { return m_yearMap; }
 
         void setTrackMap( TrackMap map ) { m_trackMap = map; }
+        void addTrack( QString key, TrackPtr trackPtr ) { m_trackMap.insert( key, trackPtr ); }
         void setArtistMap( ArtistMap map ) { m_artistMap = map; }
+        void addArtist( QString key, ArtistPtr artistPtr) { m_artistMap.insert( key, artistPtr ); }
         void setAlbumMap( AlbumMap map ) { m_albumMap = map; }
+        void addAlbum ( QString key, AlbumPtr albumPtr ) { m_albumMap.insert( key, albumPtr ); }
         void setGenreMap( GenreMap map ) { m_genreMap = map; }
+        void addGenre( QString key, GenrePtr genrePtr) { m_genreMap.insert( key, genrePtr ); }
         void setComposerMap( ComposerMap map ) { m_composerMap = map; }
+        void addComposer( QString key, ComposerPtr composerPtr ) { m_composerMap.insert( key, composerPtr ); }
         void setYearMap( YearMap map ) { m_yearMap = map; }
+        void addYear( QString key, YearPtr yearPtr ) { m_yearMap.insert( key, yearPtr ); }
 
     protected:
         QReadWriteLock m_readWriteLock;
