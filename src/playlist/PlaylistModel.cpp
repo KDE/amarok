@@ -379,8 +379,8 @@ Model::saveM3U( const QString &path, bool relative ) const
 Qt::ItemFlags
 Model::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
-    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    //Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
+    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
 QStringList

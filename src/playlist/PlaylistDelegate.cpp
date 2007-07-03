@@ -49,7 +49,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( artist, trackn, title ) );
     leftText->setPos( 52.0, 0.0 );
     rightText->setFont( QFont() );
-    rightText->setHtml( QString("<b>%1</b><br>%1").arg( album, prettyLength ) );
+    rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength ) );
     {
         QFontMetrics* fm = new QFontMetrics( QFont() );
         rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
