@@ -1,7 +1,8 @@
 /***************************************************************************
  * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
  *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
- *                :(C) 2007 Leonardo Franchi  <lfranchi@gmail.com>         *
+ *                 (C) 2007 Leonardo Franchi  <lfranchi@gmail.com>         *
+ *                 (C) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>      *
  **************************************************************************/
 
 /***************************************************************************

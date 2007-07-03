@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                 2007  Jeff Mitchell <kde-dev@emailgoeshere.com>         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -48,6 +49,7 @@ namespace Context
         void setTargetSize( int width, int height );
         void setDuration( int ms );
         void setFPS( int fps );
+        void setDelay( int ms ) { m_delay = ms; }
         void startScaling();
         ContextBox* contentItem() { return m_contentItem; }
         int originalWidth() { return m_originalWidth; }
@@ -59,6 +61,7 @@ namespace Context
     public slots:
         void scaleSlot( int step );
         void scaleFinished();
+        void begin();
 
     private:
         QTimeLine*  m_timeLine;
@@ -75,7 +78,8 @@ namespace Context
         int m_fps;
         int m_duration;
         int m_animationSteps;
-        
+        int m_delay;
+
     };
 
 }

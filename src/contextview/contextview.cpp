@@ -1,7 +1,8 @@
 /***************************************************************************
  * copyright     : (C) 2007 Seb Ruiz <ruiz@kde.org>                        *
  *                 (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
-*                  (C) 2007 Leonardo Franchi <lfranchi@gmail.com>          *
+ *                 (C) 2007 Leonardo Franchi <lfranchi@gmail.com>          *
+ *                 (C) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>      *
  **************************************************************************/
 
 /***************************************************************************
@@ -47,7 +48,7 @@
 using namespace Context;
 
 static bool enablePUD = true;
-static bool eyeCandyFlag = true;
+static bool eyeCandyFlag = false;
 
 ContextView *ContextView::s_instance = 0;
 
@@ -304,33 +305,35 @@ void ContextView::showPopupDropper()
     if( m_pudShown )
         return;
 
-//    while( !m_pudFaders.isEmpty() )
-//        delete m_pudFaders.takeFirst();
-
     while( !m_pudScalers.isEmpty() )
         delete m_pudScalers.takeFirst();
 
+    while( !m_pudFaders.isEmpty() )
+        delete m_pudFaders.takeFirst();
+
     foreach( ContextBox* box, m_contextBoxes )
     {
-        /*
-        GraphicsItemFader *fader = new GraphicsItemFader( box );
-        fader->setDuration( 300 );
-        fader->setStartAlpha( 255 );
-        fader->setTargetAlpha( 120 );
-        if( !eyeCandyFlag )
+        
+        if( eyeCandyFlag )
+        {
+            GraphicsItemFader *fader = new GraphicsItemFader( box );
             fader->setDuration( 1 );
-        m_pudFaders.append( fader );
-        */
+            fader->setDelay( 1000 );
+            fader->setStartAlpha( 255 );
+            fader->setTargetAlpha( 0 );
+            m_pudFaders.append( fader );
+        }
+        
         GraphicsItemScaler *scaler = new GraphicsItemScaler( box );
         scaler->setDuration( 1000 );
         scaler->setTargetSize( 1, 1);
         m_pudScalers.append( scaler );
     }
 
-//    foreach( GraphicsItemFader* fader, m_pudFaders )
-//        fader->startFading();
     foreach( GraphicsItemScaler* scaler, m_pudScalers )
         scaler->startScaling();
+    foreach( GraphicsItemFader* fader, m_pudFaders )
+        fader->startFading();
 
     m_pudShown = true;
 }
@@ -342,22 +345,23 @@ void ContextView::hidePopupDropper()
     DEBUG_BLOCK
     if( !m_pudShown )
         return;
-/*
+
     foreach( GraphicsItemFader* fader, m_pudFaders )
     {
-        fader->setStartAlpha( 120 );
+        fader->setStartAlpha( 0 );
         fader->setTargetAlpha( 255 );
+        fader->setDuration( 1000 );
+        fader->setDelay( 100 );
     }
-*/
+
     foreach( GraphicsItemScaler* scaler, m_pudScalers )
     {
-        if( !eyeCandyFlag )
-            scaler->setDuration( 1 );
+        scaler->setDuration( 1 );
         scaler->setTargetSize( scaler->originalWidth(), scaler->originalHeight() );
     }
 
-//    foreach( GraphicsItemFader* fader, m_pudFaders )
-//        fader->startFading();
+    foreach( GraphicsItemFader* fader, m_pudFaders )
+        fader->startFading();
 
     foreach( GraphicsItemScaler* scaler, m_pudScalers )
         scaler->startScaling();

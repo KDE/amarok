@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                 2007  Jeff Mitchell <kde-dev@emailgoeshere.com>         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,6 +24,7 @@
 #include "debug.h"
 
 #include <QPen>
+#include <QTimer>
 
 using namespace Context;
 
@@ -33,6 +35,7 @@ GraphicsItemFader::GraphicsItemFader( ContextBox *item )
     , m_targetAlpha( 255 )
     , m_fps( 0 )
     , m_duration( 5000 )
+    , m_delay( 0 )
 {
     m_contentItem = item;
 
@@ -107,10 +110,19 @@ void GraphicsItemFader::fadeFinished()
 
 void GraphicsItemFader::startFading()
 {
+    QTimer::singleShot( m_delay, this, SLOT(begin()) );
+}
+
+void GraphicsItemFader::begin()
+{
     if( m_timeLine->state() != QTimeLine::NotRunning )
         m_timeLine->stop();
+
+    int fps = ( m_fps ? m_fps : 25 );
+
     //total number of animation steps;
-    m_animationSteps = (int) ( ( m_fps ? m_fps : 25 ) * ( ( qreal ) m_duration / 1000.0 ) );
+    m_animationSteps = (int) ( fps * ( ( qreal ) m_duration / 1000.0 ) );
+
     if( m_animationSteps == 0 )
         m_animationSteps = 1;
 

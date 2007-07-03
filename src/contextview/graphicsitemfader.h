@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                 2007  Jeff Mitchell <kde-dev@emailgoeshere.com>         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -50,6 +51,7 @@ namespace Context
         void setTargetAlpha( int alpha );
         void setDuration( int ms );
         void setFPS( int fps );
+        void setDelay( int ms ) { m_delay = ms; }
         void startFading();
         ContextBox* contentItem() { return m_contentItem; }
 
@@ -59,6 +61,7 @@ namespace Context
     public slots:
         void fadeSlot( int step );
         void fadeFinished();
+        void begin();
 
     private:
         QTimeLine*  m_timeLine;
@@ -73,6 +76,7 @@ namespace Context
         int m_animationSteps;
         int m_width;
         int m_height;
+        int m_delay;
 
     };
 

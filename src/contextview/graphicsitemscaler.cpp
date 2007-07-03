@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                 2007  Jeff Mitchell <kde-dev@emailgoeshere.com>         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,6 +25,7 @@
 #include "debug.h"
 
 #include <QPen>
+#include <QTimer>
 
 using namespace Context;
 
@@ -39,6 +41,7 @@ GraphicsItemScaler::GraphicsItemScaler( ContextBox *item )
     , m_negativeHeight( false )
     , m_fps( 0 )
     , m_duration( 5000 )
+    , m_delay( 0 )
 {
     DEBUG_BLOCK
     m_contentItem = item;
@@ -105,6 +108,11 @@ void GraphicsItemScaler::scaleFinished()
 }
 
 void GraphicsItemScaler::startScaling()
+{
+    QTimer::singleShot( m_delay, this, SLOT(begin()) );
+}
+
+void GraphicsItemScaler::begin()
 {
     DEBUG_BLOCK
     if( m_timeLine->state() != QTimeLine::NotRunning )
