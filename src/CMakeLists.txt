@@ -27,7 +27,6 @@ endif(APPLE)
 add_subdirectory( amarokcore )
 add_subdirectory( data )
 add_subdirectory( images )
-add_subdirectory( loader )
 add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( vis )
@@ -436,17 +435,26 @@ install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
 
 
 #####################################################################
-# AMAROKAPP
+# AMAROK
 #####################################################################
-set(amarokapp_SRCS main.cpp )
 
-kde4_automoc(${amarokapp_SRCS})
+set(amarok_SRCS main.cpp )
 
-kde4_add_executable(amarokapp ${amarokapp_SRCS})
+kde4_automoc(${amarok_SRCS})
 
-target_link_libraries(amarokapp  ${KDE4_KDECORE_LIBS} amarok )
+if(Q_WS_MAC)
+kde4_add_executable(Amarok ${amarok_SRCS})
 
-install(TARGETS amarokapp DESTINATION ${BIN_INSTALL_DIR})
+target_link_libraries(Amarok  ${KDE4_KDECORE_LIBS} amarok )
+
+install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
+else(Q_WS_MAC)
+kde4_add_executable(amarok ${amarok_SRCS})
+
+target_link_libraries(amarok  ${KDE4_KDECORE_LIBS} amarok )
+
+install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
+endif(Q_WS_MAC)
 
 
 ########### install files ###############
