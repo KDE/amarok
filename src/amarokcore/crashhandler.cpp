@@ -151,7 +151,7 @@ namespace Amarok
             const int handle = temp.handle();
 
 //             QCString gdb_command_string =
-//                     "file amarokapp\n"
+//                     "file amarok\n"
 //                     "attach " + QCString().setNum( ::getppid() ) + "\n"
 //                     "bt\n" "echo \\n\n"
 //                     "thread apply all bt\n";
@@ -173,7 +173,7 @@ namespace Amarok
             QByteArray gdb;
             gdb  = "gdb --nw -n --batch -x ";
             gdb += temp.name().toLatin1();
-            gdb += " amarokapp ";
+            gdb += " amarok ";
             gdb += QByteArray().setNum( ::getppid() );
 
             QString bt = runCommand( gdb );
@@ -186,7 +186,7 @@ namespace Amarok
 
             /// analyze usefulness
             bool useful = true;
-            const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
+            const QString fileCommandOutput = runCommand( "file `which amarok`" );
 
             if( fileCommandOutput.indexOf( "not stripped", false ) == -1 )
                 subject += "[___stripped]"; //same length as below
@@ -221,7 +221,7 @@ namespace Amarok
             //TODO pass the CXXFLAGS used with the email
 
             if( useful ) {
-                body += "==== file `which amarokapp` =======\n";
+                body += "==== file `which amarok` =======\n";
                 body += fileCommandOutput + "\n\n";
                 body += "==== (gdb) bt =====================\n";
                 body += bt + "\n\n";

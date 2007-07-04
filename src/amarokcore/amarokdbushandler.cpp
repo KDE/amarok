@@ -545,7 +545,7 @@ namespace Amarok
         }
 
         // required, loader doesn't add it
-        argv[0] = qstrdup( "amarokapp" );
+        argv[0] = qstrdup( "amarok" );
 
         // re-initialize KCmdLineArgs with the new arguments
         App::initCliArgs( argc, argv );
