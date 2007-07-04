@@ -86,7 +86,7 @@ Model::data( const QModelIndex& index, int role ) const
         return QVariant::fromValue( track );
     }
     else
-    }
+    {
         switch( role )
         {
             case AlbumArtist: return track->album()->albumArtist()->name();
@@ -107,6 +107,7 @@ Model::data( const QModelIndex& index, int role ) const
             case Year: return track->year()->name().toInt();
             default: return QVariant();
         }
+    }
 }
 
 // void

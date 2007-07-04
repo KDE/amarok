@@ -42,7 +42,6 @@ LastFmEventItem::LastFmEventItem()
 
 void LastFmEventItem::message( const QString& msg )
 {
-    DEBUG_BLOCK
     // if enabled, show the event info boxes when no track
     // is playing (not context-sensitive)
     
@@ -66,7 +65,6 @@ void LastFmEventItem::message( const QString& msg )
 
 void LastFmEventItem::showFriendEvents()
 {
-    DEBUG_BLOCK
         
     m_friendBox = new GenericInfoBox();
     m_friendBox->setTitle( "Friend Events" );
@@ -116,7 +114,6 @@ void LastFmEventItem::showFriendEvents()
 
 void LastFmEventItem::friendResult( KJob* job )
 {
-    DEBUG_BLOCK
        
     if( !m_friendJob ) return; // track started, or something else cancelled
     if( !job->error() == 0 && job == m_friendJob )
@@ -162,7 +159,7 @@ void LastFmEventItem::friendResult( KJob* job )
 
 void LastFmEventItem::showSysEvents()
 {
-    DEBUG_BLOCK
+    
     m_sysBox = new GenericInfoBox();
     m_sysBox->setTitle( "Recommended Events" );
     QString user = AmarokConfig::scrobblerUsername();
@@ -210,7 +207,6 @@ void LastFmEventItem::showSysEvents()
 
 void LastFmEventItem::sysResult( KJob* job )
 {
-    DEBUG_BLOCK       
     if( !m_sysJob ) return; // track started
     
     if( !job->error() == 0 && job == m_sysJob )
@@ -258,7 +254,6 @@ void LastFmEventItem::sysResult( KJob* job )
 
 void LastFmEventItem::showUserEvents()
 {
-    DEBUG_BLOCK
     m_userBox = new GenericInfoBox();
     m_userBox->setTitle( "Your Events" );
     QString user = AmarokConfig::scrobblerUsername();
@@ -306,7 +301,6 @@ void LastFmEventItem::showUserEvents()
 
 void LastFmEventItem::userResult( KJob* job )
 {
-    DEBUG_BLOCK
     if( !m_userJob ) return; // track started
     
     if( !job->error() == 0 && job == m_userJob )
@@ -352,7 +346,6 @@ void LastFmEventItem::userResult( KJob* job )
 
 QList< LastFmEvent > LastFmEventItem::parseFeed( QString content )
 {
-    DEBUG_BLOCK
     QDomDocument doc;
     doc.setContent( content );
     // parse the xml rss feed
@@ -375,11 +368,9 @@ QList< LastFmEvent > LastFmEventItem::parseFeed( QString content )
     return events;
 }
 
-// TODO actually make pretty, usable, and informant! :)
+// TODO actually make pretty, usable, and informative! :)
 QString LastFmEventItem::generateHtml( QList< LastFmEvent > events )
 {
-    DEBUG_BLOCK
-        //now construct the info box
     QString content( "<html><body>" );
     if( events.size() == 0 )
         content.append( i18n( "You are not attending any events in the future!" ) );
@@ -400,7 +391,6 @@ QString LastFmEventItem::generateHtml( QList< LastFmEvent > events )
 
 QString LastFmEventItem::getCached( QString path )
 {
-    DEBUG_BLOCK
     QFile cache( path );
     QString contents;
     if( cache.open( QFile::ReadOnly ) )

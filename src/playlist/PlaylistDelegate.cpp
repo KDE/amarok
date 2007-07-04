@@ -54,7 +54,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
         delete fm;
     }
     //leftText->setFont( QFont() );
-    rghtText->setFont( QFont() );
+    rightText->setFont( QFont() );
     scene.addItem( pixmap );
     scene.addItem( leftText );
     scene.addItem( rightText );
