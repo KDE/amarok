@@ -16,7 +16,7 @@ kde4_automoc(${amarokcollectionscanner_SRCS})
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} amarok_taglib amarok ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
+target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} amarok_taglib amaroklib ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
 
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 
