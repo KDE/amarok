@@ -37,7 +37,7 @@ ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name )
         : KVBox( 0)
-        , m_polished ( 0 )
+        , m_polished( false )
 {
 
     DEBUG_BLOCK
