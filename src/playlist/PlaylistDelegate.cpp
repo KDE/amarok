@@ -7,6 +7,7 @@
  ***************************************************************************/
 
 #include "debug.h"
+#include "meta.h"
 #include "metabundle.h"
 #include "PlaylistDelegate.h"
 #include "PlaylistModel.h"
@@ -36,25 +37,24 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
          painter->fillRect(option.rect, option.palette.highlight());
     QGraphicsScene scene;
 
-    QString album = index.data( PlaylistNS::Album ).toString();
-    QString title = index.data( Title ).toString();
-    QString artist = index.data( Artist ).toString();
-    QString trackn = QString::number( index.data( TrackNumber ).toInt() );
-    QPixmap cover = index.data( CoverImage ).value<QPixmap>();
-    QString prettyLength = MetaBundle::prettyTime( index.data( Length ).toInt(), false );
-    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( cover, 0, &scene );
+    Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
+    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( track->album()->image(), 0, &scene );
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
     QGraphicsTextItem* rightText = new QGraphicsTextItem();
-    leftText->setFont( QFont() );
-    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( artist, trackn, title ) );
+    
+    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( track->artist()->name(), QString::number( track->trackNumber() ), track->name() ) );
     leftText->setPos( 52.0, 0.0 );
-    rightText->setFont( QFont() );
-    rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength ) );
+ 
+    const QString album = track->album()->name();
+    const QString prettyLength =  MetaBundle::prettyTime( track->length(), false );
+    rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength) );
     {
         QFontMetrics* fm = new QFontMetrics( QFont() );
         rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
         delete fm;
     }
+    //leftText->setFont( QFont() );
+    rghtText->setFont( QFont() );
     scene.addItem( pixmap );
     scene.addItem( leftText );
     scene.addItem( rightText );
