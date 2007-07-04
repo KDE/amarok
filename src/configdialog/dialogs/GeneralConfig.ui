@@ -5,14 +5,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>503</height>
+    <width>496</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>0</hsizetype>
-    <vsizetype>0</vsizetype>
+   <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -21,11 +19,20 @@
    <string>General</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>11</number>
-   </property>
    <property name="spacing" >
     <number>6</number>
+   </property>
+   <property name="leftMargin" >
+    <number>11</number>
+   </property>
+   <property name="topMargin" >
+    <number>11</number>
+   </property>
+   <property name="rightMargin" >
+    <number>11</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>11</number>
    </property>
    <item>
     <widget class="Q3GroupBox" name="generalBox" >
@@ -36,11 +43,20 @@
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>11</number>
+      </property>
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
       </property>
       <item>
        <widget class="QCheckBox" name="kcfg_ShowSplashscreen" >
@@ -70,11 +86,20 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>11</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>11</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>11</number>
         </property>
         <item>
          <spacer>
@@ -112,11 +137,20 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>11</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>11</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>11</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1" >
@@ -148,11 +182,11 @@
           <property name="suffix" >
            <string>px</string>
           </property>
-          <property name="maximum" >
-           <number>300</number>
-          </property>
           <property name="minimum" >
            <number>50</number>
+          </property>
+          <property name="maximum" >
+           <number>300</number>
           </property>
           <property name="value" >
            <number>100</number>
@@ -179,11 +213,20 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>11</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>11</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>11</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1_2" >
@@ -207,9 +250,7 @@
         <item>
          <widget class="KComboBox" name="kComboBox_browser" >
           <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>0</hsizetype>
-            <vsizetype>0</vsizetype>
+           <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -245,11 +286,20 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>11</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>11</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>11</number>
         </property>
         <item>
          <widget class="QCheckBox" name="checkBox_customBrowser" >
@@ -273,9 +323,7 @@
            <bool>false</bool>
           </property>
           <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>0</hsizetype>
-            <vsizetype>0</vsizetype>
+           <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -321,11 +369,20 @@
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>11</number>
+      </property>
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
       </property>
       <item>
        <widget class="QCheckBox" name="kcfg_UseScores" >
@@ -381,10 +438,19 @@
          <number>0</number>
         </property>
         <layout class="QVBoxLayout" >
-         <property name="margin" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="leftMargin" >
           <number>11</number>
          </property>
-         <property name="spacing" >
+         <property name="topMargin" >
+          <number>0</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>0</number>
          </property>
          <item>
@@ -408,11 +474,20 @@
          </item>
          <item>
           <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>11</number>
-           </property>
            <property name="spacing" >
             <number>6</number>
+           </property>
+           <property name="leftMargin" >
+            <number>11</number>
+           </property>
+           <property name="topMargin" >
+            <number>11</number>
+           </property>
+           <property name="rightMargin" >
+            <number>11</number>
+           </property>
+           <property name="bottomMargin" >
+            <number>11</number>
            </property>
            <item>
             <spacer>
@@ -488,11 +563,20 @@
          </item>
          <item>
           <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>11</number>
-           </property>
            <property name="spacing" >
             <number>6</number>
+           </property>
+           <property name="leftMargin" >
+            <number>11</number>
+           </property>
+           <property name="topMargin" >
+            <number>11</number>
+           </property>
+           <property name="rightMargin" >
+            <number>11</number>
+           </property>
+           <property name="bottomMargin" >
+            <number>11</number>
            </property>
            <item>
             <spacer>
@@ -543,11 +627,20 @@
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>11</number>
+      </property>
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
       </property>
       <item>
        <widget class="QCheckBox" name="kcfg_SavePlaylist" >
@@ -600,6 +693,18 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
@@ -613,18 +718,6 @@
    <class>K3ActiveLabel</class>
    <extends>QWidget</extends>
    <header>k3activelabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>
