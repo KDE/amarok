@@ -60,7 +60,8 @@ kde4_automoc(${amarok_helixengine_plugin_PART_SRCS})
 kde4_add_plugin(amarok_helixengine_plugin WITH_PREFIX ${amarok_helixengine_plugin_PART_SRCS})
 
 
-target_link_libraries(amarok_helixengine_plugin ${KDE4_KDE3SUPPORT_LIBS} ${KDE4_KDEUI_LIBS} amarok ${ALSA_LIBS} dl )
+target_link_libraries(amarok_helixengine_plugin ${KDE4_KDE3SUPPORT_LIBS}
+    ${KDE4_KDEUI_LIBS} amaroklib ${ALSA_LIBS} dl )
 
 install(TARGETS amarok_helixengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
