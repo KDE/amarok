@@ -104,10 +104,10 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
 
 App::App()
         : KUniqueApplication()
+        , m_splash( 0 )
 {
     DEBUG_BLOCK
 
-    KSplashScreen *splash = 0;
     if( AmarokConfig::showSplashscreen() )
     {
         QPixmap splashpix( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg") );
