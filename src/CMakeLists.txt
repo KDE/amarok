@@ -283,7 +283,7 @@ set(collection_SRCS
 #####################################################################
 # LIBAMAROK
 #####################################################################
-set(amarok_LIB_SRCS
+set(amaroklib_LIB_SRCS
     ${libmagnatunestore_SRCS}
     #${libmp3tunesservice_SRCS}
     ${libscriptableservice_SRCS}
@@ -389,11 +389,11 @@ set(amarok_LIB_SRCS
     xspfplaylist.cpp
 )
 
-kde4_add_kcfg_files(amarok_LIB_SRCS amarokcore/amarokconfig.kcfgc)
+kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 
-kde4_automoc(${amarok_LIB_SRCS})
+kde4_automoc(${amaroklib_LIB_SRCS})
 
-kde4_add_ui3_files(amarok_LIB_SRCS
+kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   firstrunwizard.ui
    newdynamic.ui
@@ -404,16 +404,16 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    trackpickerdialogbase.ui
 )
 
-kde4_add_ui_files(amarok_LIB_SRCS
+kde4_add_ui_files(amaroklib_LIB_SRCS
     controlbar.ui
     deletedialogbase.ui
     scriptmanagerbase.ui
     tagguesserconfigdialog.ui
 )
 
-kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
+kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
-target_link_libraries(amarok
+target_link_libraries(amaroklib
     ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
     ${TAGLIB_LIBRARIES}
 	${KDE4_KFILE_LIBS}
@@ -423,15 +423,15 @@ target_link_libraries(amarok
     amarok_taglib
 )
 if(NOT WIN32)
-    target_link_libraries(amarok dl)
+    target_link_libraries(amaroklib dl)
 endif(NOT WIN32)
 
 if(USE_SYSTEM_SQLITE)
-    target_link_libraries(amarok ${SQLITE_LIBRARIES})
+    target_link_libraries(amaroklib ${SQLITE_LIBRARIES})
 endif(USE_SYSTEM_SQLITE)
 
-set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
+set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
+install(TARGETS amaroklib DESTINATION ${LIB_INSTALL_DIR} )
 
 
 #####################################################################
@@ -444,13 +444,13 @@ kde4_automoc(${amarok_SRCS})
 
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
-    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarok )
+    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
 
 else(Q_WS_MAC)
 
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amarok )
+    target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amaroklib )
     install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
 endif(Q_WS_MAC)
 
