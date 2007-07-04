@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>540</height>
+    <width>527</width>
+    <height>545</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -19,21 +19,6 @@
    <string>General</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <property name="leftMargin" >
-    <number>11</number>
-   </property>
-   <property name="topMargin" >
-    <number>11</number>
-   </property>
-   <property name="rightMargin" >
-    <number>11</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>11</number>
-   </property>
    <item>
     <widget class="Q3GroupBox" name="generalBox" >
      <property name="title" >
@@ -421,9 +406,6 @@
        </widget>
       </item>
       <item>
-       <widget class="K3ActiveLabel" native="1" name="moodbarHelpLabel" />
-      </item>
-      <item>
        <widget class="Q3Frame" name="moodFrame" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
@@ -438,21 +420,13 @@
          <number>0</number>
         </property>
         <layout class="QVBoxLayout" >
-         <property name="spacing" >
-          <number>0</number>
-         </property>
-         <property name="leftMargin" >
-          <number>11</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>11</number>
-         </property>
-         <property name="bottomMargin" >
-          <number>0</number>
-         </property>
+         <item>
+          <widget class="QLabel" name="moodbarHelpLabel" >
+           <property name="text" >
+            <string>You need the moodbar package installed to enable the moodbar feature.</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QCheckBox" name="kcfg_ShowMoodbar" >
            <property name="enabled" >
@@ -713,11 +687,6 @@
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>K3ActiveLabel</class>
-   <extends>QWidget</extends>
-   <header>k3activelabel.h</header>
   </customwidget>
  </customwidgets>
  <includes>
