@@ -37,14 +37,13 @@ using namespace PlaylistNS;
 Model *Model::s_instance = 0;
 
 Model::Model( QObject* parent )
-    : QAbstractTableModel( parent )
+    : QAbstractListModel( parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackAdvancer( this ) )
     , m_undoStack( new QUndoStack( this ) )
     , m_selectionModel( new QItemSelectionModel( this ) )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
-    m_columns << TrackNumber << Title << Artist << Album;
     s_instance = this;
 }
 
@@ -71,12 +70,6 @@ Model::rowCount( const QModelIndex& ) const
     return m_tracks.size();
 }
 
-int
-Model::columnCount( const QModelIndex& ) const
-{
-    return m_columns.size();
-}
-
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
@@ -88,27 +81,10 @@ Model::data( const QModelIndex& index, int role ) const
         original.setBold( true );
         return original;
     }
-    else 
-        switch( role )
-        {
-            case AlbumArtist: return track->album()->albumArtist()->name();
-            case Album: return track->album()->name();
-            case Artist: return track->artist()->name();
-            case Bitrate: return track->bitrate();
-            case Composer: return track->composer()->name();
-            case CoverImage: return track->album()->image( 50 );
-            case Comment: return track->comment();
-            case DiscNumber: return track->discNumber();
-            case Filesize: return track->filesize();
-            case Genre: return track->genre()->name();
-            case Length: return track->length();
-            case Rating: return track->rating();
-            case Score: return track->score();
-            case Title: return track->name();
-            case TrackNumber: return track->trackNumber();
-            case Year: return track->year()->name().toInt();
-            default: return QVariant();
-        }
+    else if ( role == TrackRole )
+    {
+        return QVariant::fromValue( track );
+    }
 }
 
 // void
@@ -151,18 +127,6 @@ Model::insertTracks( int row, QueryMaker *qm )
     qm->run();
 }
 
-QVariant
-Model::headerData( int section, Qt::Orientation, int role ) const
-{
-    if( role == Qt::DisplayRole && section < m_columns.size() )
-    {
-        //debug() << "section: " << section << " enum: " << m_columns.at( section ) << " " << prettyColumnName( m_columns.at( section ) ) << endl;
-        return prettyColumnName( m_columns.at( section ) );
-    }
-    else
-        return QVariant();
-}
-
 void
 Model::testData()
 {
@@ -181,7 +145,6 @@ Model::testData()
     BlockingQuery bq( qm );
     bq.startQuery();
     insertTracks( 0, bq.tracks( "localCollection" ) );
-    //m_columns << TrackNumber << Title << Artist << Album;
     reset();
 }
 
@@ -254,11 +217,11 @@ Model::setActiveRow( int row )
     int max = qMax( row, m_activeRow );
     int min = qMin( row, m_activeRow );
     if( ( max - min ) == 1 )
-        emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() -1 ) );
+        emit dataChanged( createIndex( min, 0 ), createIndex( max, 0 ) );
     else
     {
-        emit dataChanged( createIndex( min, 0 ), createIndex( min, columnCount() - 1 ) );
-        emit dataChanged( createIndex( max, 0 ), createIndex( max, columnCount() - 1 ) );
+        emit dataChanged( createIndex( min, 0 ), createIndex( min, 0 ) );
+        emit dataChanged( createIndex( max, 0 ), createIndex( max, 0 ) );
     }
     debug() << "between " << min << " and " << max << endl;
     m_activeRow = row;
@@ -269,7 +232,7 @@ Model::metadataChanged( Meta::Track *track )
 {
     int index = m_tracks.indexOf( Meta::TrackPtr( track ), 0 );
     if( index != -1 )
-        emit dataChanged( createIndex( index, 0 ), createIndex( index, columnCount() -1 ) );
+        emit dataChanged( createIndex( index, 0 ), createIndex( index, 0 ) );
 }
 
 void
@@ -413,7 +376,7 @@ bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
 {
     DEBUG_BLOCK
-    debug() << "Inserted at row: " << row << endl;
+
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
@@ -421,10 +384,12 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         {
             if( row < 0 )
             {
+                debug() << "Inserting at row: " << row << " so we're appending to the list." << endl;
                 insertOptioned( trackListDrag->tracks(), PlaylistNS::Append );
             }
             else
             {
+                debug() << "Inserting at row: " << row <<" so its inserted correctly." << endl;
                 insertTracks( row, trackListDrag->tracks() );
             }
             return true;
@@ -441,11 +406,12 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 void
 Model::insertTracksCommand( int row, TrackList list )
 {
+    DEBUG_BLOCK 
+    debug() << "inserting... " << row << ' ' << list.count() << endl;
     if( !list.size() )
         return;
 
     beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
-    //m_columns.insert( row, list )
     int i = 0;
     foreach( TrackPtr track , list )
     {
@@ -462,9 +428,10 @@ Model::insertTracksCommand( int row, TrackList list )
     {
         int oldActiveRow = m_activeRow;
         m_activeRow += list.size();
-        dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
-        dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
+        //dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
+        //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
+    dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
 }
 
@@ -501,7 +468,7 @@ Model::removeRowsCommand( int position, int rows )
         dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
-
+    dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
     return ret;
 }
 

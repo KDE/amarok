@@ -12,11 +12,11 @@
 #include "meta.h"
 #include "UndoCommands.h"
 
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 #include <QHash>
 #include <QVector>
 
-#include <klocale.h>
+#include <KLocale>
 #include <kdemacros.h>
 
 class QItemSelectionModel;
@@ -58,7 +58,7 @@ class TrackAdvancer;
         Year,
         NUM_COLUMNS
     };
-
+    static int TrackRole = 0xc0ffee;
     ///Options for insertTracks
     enum AddOptions 
     { 
@@ -72,7 +72,7 @@ class TrackAdvancer;
         AppendAndPlay = Append | Unique | StartPlay
     };
 
-    class Model : public QAbstractTableModel, Meta::TrackObserver
+    class Model : public QAbstractListModel, Meta::TrackObserver
     {
         friend class AddTracksCmd;
         friend class RemoveTracksCmd;
@@ -80,13 +80,13 @@ class TrackAdvancer;
         public:
             Model( QObject* parent = 0 ); 
             ~Model();
-        //required by QAbstractTabelModel
+        //required by QAbstractListModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
-            int columnCount(const QModelIndex &parent = QModelIndex() ) const;
+            int columnCount(const QModelIndex &parent = QModelIndex() ) const { return 1; }
             QVariant data(const QModelIndex &index, int role) const;
         //overriding QAbstractItemModel
             bool removeRows( int position, int rows );
-            QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+            QVariant headerData(int section, Qt::Orientation orientation, int role) const { return QVariant(); }
             Qt::DropActions supportedDropActions() const;
 
         //Drag and Drop methods
@@ -96,7 +96,6 @@ class TrackAdvancer;
             bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
         //other methods
             void init();
-            void setColumns( QVector< Column > columns ) { m_columns = columns; }
 ///Restore playlist from previous session of Amarok
             void restoreSession() { }
 ///Save M3U of current playlist to a given location
@@ -160,7 +159,6 @@ class TrackAdvancer;
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
             Meta::TrackList m_tracks; //! list of tracks in order currently in the playlist
-            QVector< Column > m_columns;
             int m_activeRow; //! the row being played
             TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
             QUndoStack* m_undoStack; //! for pushing on undo commands
