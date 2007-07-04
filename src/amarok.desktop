@@ -63,6 +63,7 @@ GenericName[th]=โปรแกรมเล่นเสียง
 GenericName[tr]=Müzik Çalar
 GenericName[uk]=Аудіопрогравач
 GenericName[uz]=Аудио-плейер
+GenericName[wa]=Djouweu d' muzike
 GenericName[zh_CN]=音频播放器
 GenericName[zh_TW]=音樂播放程式
 Exec=amarok %U
