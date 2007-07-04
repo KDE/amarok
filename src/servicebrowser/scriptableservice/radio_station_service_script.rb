@@ -41,10 +41,10 @@ stations = [ [ 'Bassdrive [Drum \'n Bass]',                   'http://www.bassdr
 # create new browser
 `qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams" "Streams" "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"`
 
-parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertElement "The Amarok crews top picks" "" "Just a parent item to show how nesting works" 0 "Cool Streams"`.chomp
+parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertAlbum "Cool Streams" "The Amarok crews top picks" "Just a parent item to show how nesting works"`.chomp
 
 stations.each() do |station|
-    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertElement", station[0], station[1], "Dummy html info", parentId, "Cool Streams")
+    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertTrack",  "Cool Streams", station[0], station[1], "Dummy html info", parentId)
 end
 
 `qdbus org.kde.amarok /ScriptableServiceManager updateComplete "Cool Streams"`
