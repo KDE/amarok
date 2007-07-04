@@ -32,9 +32,9 @@
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "mediabrowser.h"
 #include "mediadevicemanager.h"
-#include "playlistbrowser.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistView.h"
+#include "playlist/PlaylistWidget.h"
+#include "playlistbrowser.h"
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "progressslider.h"
@@ -138,18 +138,7 @@ void PlaylistWindow::init()
     QSplitter * splitter = new QSplitter( Qt::Vertical, playlistwindow );
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( splitter ); //Playlist
-    { //TNG playlist
-        PlaylistNS::Model* playmodel = The::playlistModel();
-        playmodel->init();
-        playmodel->testData();
-        PlaylistNS::View* playview = new PlaylistNS::View( splitter );
-        playview->setModel( playmodel );
-        playview->setAlternatingRowColors(true);
-        playview->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        playview->setDragEnabled(true);
-        playview->setAcceptDrops(true);
-        playview->setDropIndicatorShown(true);
-    }
+    new PlaylistNS::Widget( splitter );
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );

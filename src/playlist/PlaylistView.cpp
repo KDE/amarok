@@ -23,6 +23,7 @@ View::setModel( QAbstractItemModel * model )
     setDragEnabled(true);
     setAcceptDrops(true);
     setDropIndicatorShown(true);
+    setAlternatingRowColors(true);
     delete itemDelegate();
     setItemDelegate( new Delegate( this ) );
     connect( this, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( play( const QModelIndex& ) ) );
