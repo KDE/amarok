@@ -25,7 +25,7 @@ kde4_automoc(${amarok_collection-sqlcollection_PART_SRCS})
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-sqlcollection amarok ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 install(TARGETS amarok_collection-sqlcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 

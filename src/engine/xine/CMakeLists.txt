@@ -22,7 +22,7 @@ kde4_add_plugin(amarok_xine-engine WITH_PREFIX ${amarok_xine-engine_PART_SRCS})
 
 
 target_link_libraries(amarok_xine-engine  ${KDE4_KDEUI_LIBS}
-        ${KDE4_KDE3SUPPORT_LIBS} amarok ${XINE_LIBRARY} )
+        ${KDE4_KDE3SUPPORT_LIBS} amaroklib ${XINE_LIBRARY} )
 
 install(TARGETS amarok_xine-engine DESTINATION ${PLUGIN_INSTALL_DIR} )
 

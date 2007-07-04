@@ -11,7 +11,7 @@ kde4_automoc(${amarok_void-engine_plugin_PART_SRCS})
 
 kde4_add_plugin(amarok_void-engine_plugin WITH_PREFIX ${amarok_void-engine_plugin_PART_SRCS})
 
-target_link_libraries(amarok_void-engine_plugin amarok  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(amarok_void-engine_plugin amaroklib  ${KDE4_KDECORE_LIBS} )
 
 install(TARGETS amarok_void-engine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
