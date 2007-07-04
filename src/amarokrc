@@ -5,10 +5,11 @@ XMLFile=amarokui.rc
 CurrentPane=ContextBrowser
 
 [ContextItemManager]
-Items=lastfm,lyrics,wikipedia
+Items=lastfm,lyrics,wikipedia,lastfm events
 lastfm=true
 wikipedia=true
 lyrics=true
+lastfm events=true
 
 [PlaylistColumnsLayout]
 #see PlaylistWidget::setColumnWidth() for explanation for below

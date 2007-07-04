@@ -50,6 +50,9 @@ void WikipediaItem::message( const QString& message )
     {
         if( m_enabled ) 
             showWikipedia();
+    } else if( message == QString( "showHome" ) )
+    {
+        m_wikiJob = 0; // cancel job if track ends
     }
 }
 
@@ -261,6 +264,8 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
 {
     DEBUG_BLOCK
     
+    if( !m_wikiJob ) return; //track changed while we were fetching
+    
     if ( !job->error() == 0 && job == m_wikiJob )
     { // make sure its not the wrong job (e.g. wiki request for now changed song
         m_wikiHTMLSource="";
@@ -283,7 +288,6 @@ WikipediaItem::wikiResult( KJob* job ) //SLOT
             ContextView::instance()->addContextBox( m_wikiBox, m_order /* index */, false /* fadein */ );
             m_wikiVisible = true;
         }
-    //m_wikiPage = NULL; // FIXME: what for? leads to crashes
         
         warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
         m_wikiJob = 0; // clear job

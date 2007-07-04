@@ -31,7 +31,7 @@ public:
     ContextItem() {}
     
     virtual const QString name();
-    
+    virtual const QString shownDuring() { return QString(); } // e.g. "home", "context"
     virtual void enable() {}
     virtual void disable() {}
     

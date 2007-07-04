@@ -30,6 +30,7 @@ public:
     
     void message( const QString& msg );
     const QString name() { return "lastfm"; }
+    const QString shownDuring() { return "context"; }
     void enable() { m_enabled = true; }
     void disable() { m_enabled = false; }
     

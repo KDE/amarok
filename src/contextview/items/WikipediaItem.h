@@ -34,6 +34,7 @@ public:
     
     void message( const QString& message );
     const QString name() { return "wikipedia"; }
+    const QString shownDuring() { return "context"; }
     void enable() { m_enabled = true; }
     void disable() { m_enabled = false; }
     

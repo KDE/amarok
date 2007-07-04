@@ -20,6 +20,7 @@
 #include "ContextItem.h"
 #include "ContextItemManagerWidget.h"
 #include "LastFmItem.h"
+#include "LastFmEventItem.h"
 #include "LyricsItem.h"
 #include "WikipediaItem.h"
 
@@ -51,7 +52,7 @@ ContextItemManager::ContextItemManager()
     m_itemsMap[ "lastfm" ] = new LastFmItem();
     m_itemsMap[ "lyrics" ] = LyricsItem::instance(); // i know, you shouldn't ever 
     // save a copy of a singleton...
-    
+    m_itemsMap[ "lastfm events" ] = new LastFmEventItem;
     applyConfig();
 
 }

@@ -42,6 +42,7 @@ public:
     
     void message( const QString& message );
     const QString name() { return "lyrics"; }
+    const QString shownDuring() { return "context"; }
     void enable() { m_enabled = true; }
     void disable() { m_enabled = false; }
 public slots:

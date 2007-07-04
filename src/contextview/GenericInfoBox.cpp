@@ -29,7 +29,7 @@ GenericInfoBox::GenericInfoBox( QGraphicsItem* parent, QGraphicsScene *scene ) :
 void GenericInfoBox::setContents( const QString& html )
 {
     m_content = new QGraphicsTextItem( "", m_contentRect );
-    m_content->setTextWidth( m_contentRect->rect().width() );// respect the boundaries given to us by the parent!
+    m_content->setTextWidth( rect().width() );// respect the boundaries given to us by the parent!
     m_content->setHtml( html );
     init();
 	
@@ -37,8 +37,8 @@ void GenericInfoBox::setContents( const QString& html )
 
 void GenericInfoBox::init()
 {
-    m_content->setTextInteractionFlags( Qt::TextSelectableByMouse |
-                                        Qt::LinksAccessibleByMouse );
+    // m_content->setTextInteractionFlags( Qt::TextSelectableByMouse |
+    //                                    Qt::LinksAccessibleByMouse );
     connect( m_content, SIGNAL( linkActivated ( QString ) ), this, SLOT( externalUrl( QString ) ) );
     int width =  (int) m_content->boundingRect().width();
     int height = (int) m_content->boundingRect().height();

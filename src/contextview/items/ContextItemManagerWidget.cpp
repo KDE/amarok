@@ -20,7 +20,6 @@
 #include "ContextItemManager.h"
 
 #include <QList>
-//#include <QTextToolTip>
 #include <QWidget>
 
 #include <kapplication.h>

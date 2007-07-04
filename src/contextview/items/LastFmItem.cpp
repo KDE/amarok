@@ -72,8 +72,10 @@ void LastFmItem::showRelatedArtists()
         relatedArtists->addText( r );
     
     if( !m_relBoxVisible )
+    {
         ContextView::instance()->addContextBox( relatedArtists, m_order, false );
-    
+        m_relBoxVisible = true;
+    }
     
 }
 

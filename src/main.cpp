@@ -83,6 +83,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Jarkko Lehti"), ki18n(( "Tester, IRC channel operator, whipping" )), "grue@iki.fi" );
     aboutData.addCredit( ki18n("Jocke Andersson"), ki18n(( "roKymoter, bug fixer and Swedish Bitch (Firetech)" )), "ajocke@gmail.com" );
     aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n(( "Icons" )), "kwwii@bootsplash.org" );
+    aboutData.addCredit( ki18n( "Leo Franchi" ), ki18n( ( "Context View work" )  ), "lfranchi@gmail.com" );
     aboutData.addCredit( ki18n("Marco Gulino"), ki18n(( "Konqueror Sidebar, some DCOP methods" )), "marco@kmobiletools.org" );
     aboutData.addCredit( ki18n("Melchior Franz"), ki18n(( "FHT routine, bugfixes" )), "mfranz@kde.org" );
     aboutData.addCredit( ki18n("Michael Pyne"), ki18n(( "K3B export code" )), "michael.pyne@kdemail.net" );

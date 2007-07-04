@@ -220,6 +220,7 @@ set(libcontextview_SRCS
     contextview/items/CloudBox.cpp
     contextview/items/ContextItemManagerWidget.cpp
     contextview/items/ContextItemManager.cpp 
+    contextview/items/LastFmEventItem.cpp
 )
 
 #####################################################################
