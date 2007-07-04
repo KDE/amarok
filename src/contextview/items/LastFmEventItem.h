@@ -41,7 +41,7 @@ public:
     
     void message( const QString& msg );
     const QString name() { return "lastfm events"; }
-    const QString shownDuring() { return "home" }
+    const QString shownDuring() { return "home"; }
     void enable() { m_enabled = true; }
     void disable() { m_enabled = false; }
     
