@@ -13,6 +13,7 @@
 #include <KLocale>
 
 #include <QDrag>
+#include <QDropEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMimeData>
@@ -27,6 +28,7 @@ const QString HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-head
 HeaderWidget::HeaderWidget( QWidget* parent )
     : QWidget( parent )
 {
+    DEBUG_BLOCK
     m_test << i18n("Artist") << i18n("Track Number - Title") << i18n("Album") << i18n("Length");
     QHBoxLayout* topLayout = new QHBoxLayout( this );
     for( int i = 0; i < 2; i++ )
@@ -37,12 +39,46 @@ HeaderWidget::HeaderWidget( QWidget* parent )
     for( int i = 0; i < 4; i++ )
     {
         m_labels.push_back( new QLabel( this ) );
-        m_labelToIndex[ m_labels[i] ] = i;
+        m_labels.at( i )->setFrameStyle( QFrame::StyledPanel );
         int column = (i < 2) ? 0 : 1;
         m_verticalLayouts[column]->addWidget( m_labels.at(i) );
         m_labels.at(i)->setText( m_test.at( i ) );
+        m_textToLabel[ m_test.at( i ) ] = m_labels.at(i);
     }
     setAcceptDrops( true );
+    setStyleSheet("QLabel { border: 1px solid black; border-radius: 5px; } QLabel:hover { border-width: 3px }");
+}
+
+void HeaderWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if ( event->mimeData()->hasFormat( HeaderMimeType )  && event->source() == this )
+    {
+        event->accept();
+    }
+    else
+        event->ignore();
+}
+
+void
+HeaderWidget::dropEvent( QDropEvent *event)
+{
+    if( event->mimeData()->hasFormat( HeaderMimeType ) )
+    {
+        QByteArray itemData = event->mimeData()->data( HeaderMimeType );
+        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+        QString name;
+        dataStream >> name;
+        QLabel* sourceLabel = m_textToLabel[ name ];
+        QLabel* droppedOnLabel = dynamic_cast<QLabel*>( childAt( event->pos() ) );
+        QString origSource = sourceLabel->text();
+        sourceLabel->setText( droppedOnLabel->text() );
+        droppedOnLabel->setText( origSource );
+        m_textToLabel[ sourceLabel->text() ] = sourceLabel;
+        m_textToLabel[ droppedOnLabel->text() ] = droppedOnLabel;
+        event->accept();
+    }
+    else
+        event->ignore();
 }
 
 void
@@ -61,6 +97,8 @@ HeaderWidget::mousePressEvent(QMouseEvent *event)
     labelPixmap.grabWidget( child );
     drag->setPixmap( labelPixmap );
     drag->setMimeData( mimeData );
+    drag->setHotSpot( QPoint( labelPixmap.width()/2,
+                             labelPixmap.height() ) );
     drag->exec();
 }
 

@@ -26,10 +26,12 @@ namespace PlaylistNS
             HeaderWidget( QWidget* parent );
         protected:
             void mousePressEvent(QMouseEvent *event);
+            void dragEnterEvent(QDragEnterEvent *event);
+            void dropEvent( QDropEvent *event);
         private:
             QList<QVBoxLayout*> m_verticalLayouts;
             QList<QLabel*> m_labels;
-            QMap<QLabel*, int> m_labelToIndex;
+            QMap<QString, QLabel*> m_textToLabel;
             QStringList m_test;
     };
 }
