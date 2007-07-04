@@ -7,7 +7,6 @@
  ***************************************************************************/
 
 #include "debug.h"
-#include "meta.h"
 #include "metabundle.h"
 #include "PlaylistDelegate.h"
 #include "PlaylistModel.h"
@@ -38,23 +37,22 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     QGraphicsScene scene;
 
     Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
-    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( track->album()->image(), 0, &scene );
+    QString album = track->album()->name();
+    QString prettyLength = MetaBundle::prettyTime( track->length(), false );
+    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( track->album()->image( 50 ), 0, &scene );
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
     QGraphicsTextItem* rightText = new QGraphicsTextItem();
-    
-    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( track->artist()->name(), QString::number( track->trackNumber() ), track->name() ) );
+    leftText->setFont( QFont() );
+    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( track->artist()->name(),
+         QString::number( track->trackNumber() ), track->name() ) );
     leftText->setPos( 52.0, 0.0 );
- 
-    const QString album = track->album()->name();
-    const QString prettyLength =  MetaBundle::prettyTime( track->length(), false );
-    rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength) );
+    rightText->setFont( QFont() );
+    rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength ) );
     {
         QFontMetrics* fm = new QFontMetrics( QFont() );
         rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
         delete fm;
     }
-    //leftText->setFont( QFont() );
-    rightText->setFont( QFont() );
     scene.addItem( pixmap );
     scene.addItem( leftText );
     scene.addItem( rightText );
