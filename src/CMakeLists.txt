@@ -443,17 +443,15 @@ set(amarok_SRCS main.cpp )
 kde4_automoc(${amarok_SRCS})
 
 if(Q_WS_MAC)
-kde4_add_executable(Amarok ${amarok_SRCS})
+    kde4_add_executable(Amarok ${amarok_SRCS})
+    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarok )
+    install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
 
-target_link_libraries(Amarok  ${KDE4_KDECORE_LIBS} amarok )
-
-install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
 else(Q_WS_MAC)
-kde4_add_executable(amarok ${amarok_SRCS})
 
-target_link_libraries(amarok  ${KDE4_KDECORE_LIBS} amarok )
-
-install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
+    kde4_add_executable(amarok ${amarok_SRCS})
+    target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amarok )
+    install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
 endif(Q_WS_MAC)
 
 
