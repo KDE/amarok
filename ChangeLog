@@ -10,16 +10,16 @@ VERSION 1.4.7
       Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
-   * Don't show "Not Rated" for items rated with half a star. Patch by Tuomas
-   Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 144675)
-   * Copy, don't move items from Cool Streams to folders. (BR 147404)
-   * Sometimes folders in the playlistbrowser could be lost. (BR 147404)
-   * NJB devices could have tags corrupted that contained Unicode characters.
-     Patch by Kun Xi <quinnxi@gmail.com>. (BR 147223)
-   * Show OSD when changing song rating via shortcut. Patch by Tuomas Nurmi
-     <tnurmi@edu.kauhajoki.fi>. (BR 146918)
-   * Show the stars indicating rating with the correct size in the OSD. Patch 
-     Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 147059)
+    * Don't show "Not Rated" for items rated with half a star. Patch by Tuomas
+      Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 144675)
+    * Copy, don't move items from Cool Streams to folders. (BR 147404)
+    * Sometimes folders in the playlistbrowser could be lost. (BR 147404)
+    * NJB devices could have tags corrupted that contained Unicode characters.
+      Patch by Kun Xi <quinnxi@gmail.com>. (BR 147223)
+    * Show OSD when changing song rating via shortcut. Patch by Tuomas Nurmi
+      <tnurmi@edu.kauhajoki.fi>. (BR 146918)
+    * Show the stars indicating rating with the correct size in the OSD. Patch 
+      Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 147059)
 
 
 VERSION 1.4.6
