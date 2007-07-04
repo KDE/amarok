@@ -110,7 +110,7 @@ set(libservicebrowser_SRCS
 #####################################################################
 set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/scriptableservicemanager.cpp
-    #servicebrowser/scriptableservice/scriptableservicecontentitem.cpp
+    servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
     servicebrowser/scriptableservice/scriptableservice.cpp
     servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
 )

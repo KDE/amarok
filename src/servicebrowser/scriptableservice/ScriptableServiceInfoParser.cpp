@@ -15,69 +15,40 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
- ***************************************************************************/ 
+ ***************************************************************************/
 
-#ifndef AMAROKSCRIPTABLESERVICE_H
-#define AMAROKSCRIPTABLESERVICE_H
-
-
-#include "amarok.h"
-#include "../servicebase.h"
+//
+#include "ScriptableServiceInfoParser.h"
 #include "servicemetabase.h"
-#include "ScriptableServiceCollection.h"
 
-
-typedef QMap<int, TrackPtr> TrackIdMap;
-typedef QMap<int, ArtistPtr> ArtistIdMap;
-typedef QMap<int, AlbumPtr> AlbumIdMap;
-typedef QMap<int, GenrePtr> GenreIdMap;
-typedef QMap<int, ComposerPtr> ComposerIdMap;
-typedef QMap<int, YearPtr> YearIdMap;
-
-
-class ScriptableService : public ServiceBase
+ScriptableServiceInfoParser::ScriptableServiceInfoParser()
+ : InfoParserBase()
 {
-    Q_OBJECT
-
-public:
-    
-     /**
-     * Constructor
-     */
-    ScriptableService( const QString &name );
-    /**
-     * Destructor
-     */
-    ~ScriptableService() { }
-
-    void polish() {}
-
-    ScriptableServiceCollection * collection();
-    void setCollection( ScriptableServiceCollection * collection );
+}
 
 
-    int addTrack( ServiceTrack * track, int albumId );
-    int addAlbum( ServiceAlbum * album );
-    int addArtist( ServiceArtist * artist );
+ScriptableServiceInfoParser::~ScriptableServiceInfoParser()
+{
+}
 
-private slots:
+void ScriptableServiceInfoParser::getInfo(ArtistPtr artist)
+{
+    ServiceArtist * serviceArtist = dynamic_cast< ServiceArtist * >( artist.data() );
+    if (serviceArtist == 0) return;
+    emit( info( serviceArtist->description() ) );
+}
 
+void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
+{
+    ServiceAlbum * serviceAlbum = dynamic_cast< ServiceAlbum * >( album.data() );
+    if (serviceAlbum == 0) return;
+    emit( info( serviceAlbum->description() ) );
+}
 
-    //void treeItemSelected( const QModelIndex & index );
-    //void infoChanged ( QString infoHtml );
+void ScriptableServiceInfoParser::getInfo(TrackPtr track)
+{
+    emit( info( track->name() ) );
+}
 
+#include "ScriptableServiceInfoParser.moc"
 
-private:
-
-    ScriptableServiceCollection * m_collection;
-    int m_trackIdCounter;
-    int m_albumIdCounter;
-    int m_artistIdCounter;
-
-    TrackIdMap trackIdMap;
-    AlbumIdMap albumIdMap;
-    ArtistIdMap artistIdMap;
-};
-
-
-#endif

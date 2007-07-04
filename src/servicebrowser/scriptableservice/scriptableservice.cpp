@@ -14,12 +14,13 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/ 
 
 #include "scriptableservice.h"
 
 #include "servicebrowser.h"
+#include "ScriptableServiceInfoParser.h"
 #include "amarok.h"
 #include "debug.h"
 
@@ -27,7 +28,11 @@
 
 ScriptableService::ScriptableService( const QString &name )
         : ServiceBase( name )
+        , m_trackIdCounter( 0 )
+        , m_albumIdCounter( 0 )
+        , m_artistIdCounter( 0 )
 {
+    m_infoParser = new ScriptableServiceInfoParser();
 
 }
 
@@ -40,6 +45,47 @@ void ScriptableService::setCollection(ScriptableServiceCollection * collection)
 {
     m_collection = collection;
 
+}
+
+int ScriptableService::addTrack( ServiceTrack * track, int albumId )
+{
+
+    TrackPtr trackPtr = TrackPtr( track );
+    m_collection->addTrack( track->name(), trackPtr );
+    
+    if ( albumIdMap.contains( albumId ) ) {
+        
+        AlbumPtr albumPtr = albumIdMap.value( albumId );
+        ServiceAlbum * album = dynamic_cast< ServiceAlbum * >( albumPtr.data() );
+        track->setAlbum( albumPtr->name() );
+        album->addTrack( trackPtr );
+
+        m_trackIdCounter++;
+        trackIdMap.insert( m_trackIdCounter, trackPtr );
+        m_collection->acquireWriteLock();
+        m_collection->addTrack( trackPtr->name(), trackPtr );
+        m_collection->releaseLock();
+
+        return m_trackIdCounter;
+        
+    }
+    
+    return -1;
+}
+
+int ScriptableService::addAlbum(ServiceAlbum * album)
+{
+    AlbumPtr albumPtr = AlbumPtr( album );
+    m_albumIdCounter++;
+    albumIdMap.insert( m_albumIdCounter, albumPtr );
+    m_collection->acquireWriteLock();
+    m_collection->addAlbum( album->name(), albumPtr );
+    m_collection->releaseLock();
+    return m_albumIdCounter;
+}
+
+int ScriptableService::addArtist(ServiceArtist * artist)
+{
 }
 
 

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/ 
 
 #include "debug.h"
@@ -63,7 +63,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-    //levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+    levels << CategoryId::Album;
 
     SingleCollectionTreeItemModel * model = new SingleCollectionTreeItemModel( collection, levels );
 
@@ -74,9 +74,9 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 }
 
 
-int ScriptableServiceManager::insertTrack(const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int parentId) {
+int ScriptableServiceManager::insertTrack(const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int albumId) {
 
-     debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
+     debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", albumId: " << albumId << ", Service name: " << serviceName << endl;
 
     //get the service
     
@@ -85,17 +85,41 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
         return -1;
     }
 
-    ScriptableServiceCollection * collection =  m_serviceMap[serviceName]->collection();
-    
-    collection->acquireWriteLock();
-    collection->addTrack( name, TrackPtr( new ServiceTrack( name ) ) );
+    int newId = m_serviceMap[serviceName]->addTrack( new ServiceTrack( name ), albumId );  
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-   // levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+    levels << CategoryId::Album;
 
     m_serviceMap[serviceName]->getModel()->setLevels( levels );
     
+
+}
+
+
+int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QString & name, const QString & infoHtml/*, int parentId*/)
+{
+
+     debug() << "ScriptableServiceManager::insertElement, name: " << name  << ", info: " << infoHtml << /*", parentId: " << parentId <<*/ ", Service name: " << serviceName << endl;
+
+    //get the service
+    
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return -1;
+    }
+    ServiceAlbum * album = new ServiceAlbum( name );
+    album->setDescription( infoHtml );
+    
+    int newId = m_serviceMap[serviceName]->addAlbum( album);
+
+     QList<int> levels;
+    //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+    levels << CategoryId::Album;
+
+    m_serviceMap[serviceName]->getModel()->setLevels( levels );
+
+    return newId;
 
 }
 
@@ -131,6 +155,8 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
     return true;
 
 }*/
+
+
 
 #include "scriptableservicemanager.moc"
 

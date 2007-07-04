@@ -13,7 +13,13 @@
       <arg name="name" type="s" direction="in"/>
       <arg name="url" type="s" direction="in"/>
       <arg name="infoHtml" type="s" direction="in"/>
-      <arg name="parentId" type="i" direction="in"/>
+      <arg name="albumId" type="i" direction="in"/>
+    </method>
+    <method name="insertAlbum">
+      <arg type="i" direction="out"/>
+      <arg name="serviceName" type="s" direction="in"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="infoHtml" type="s" direction="in"/>
     </method>
   </interface>
 </node>

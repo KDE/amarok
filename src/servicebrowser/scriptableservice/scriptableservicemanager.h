@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/ 
 
 #ifndef AMAROKSCRIPTABLESERVICEMANAGER_H
@@ -40,7 +40,10 @@ class ScriptableServiceManager : public QObject
     public Q_SLOTS:
 
         Q_SCRIPTABLE bool createService( const QString &name, const QString &listHeader, const QString &rootHtml);
-        Q_SCRIPTABLE int insertTrack( const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int parentId );
+        Q_SCRIPTABLE int insertTrack( const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int albumId );
+        Q_SCRIPTABLE int insertAlbum( const QString &serviceName, const QString &name, const QString &infoHtml/*, int parentId */);
+
+
         /*Q_SCRIPTABLE int insertDynamicElement( const QString &name, const QString &callbackScript, 
                                                const QString &callbackArgument, const QString &infoHtml, 
                                                int parentId, const QString &serviceName); */
