@@ -5,14 +5,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>424</height>
+    <width>392</width>
+    <height>345</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>0</hsizetype>
-    <vsizetype>0</vsizetype>
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -21,27 +19,24 @@
    <string>Options2</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>11</number>
+   <property name="leftMargin" >
+    <number>0</number>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
    </property>
    <item>
     <widget class="Q3GroupBox" name="groupBox6" >
      <property name="title" >
       <string>Icons</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QCheckBox" name="kcfg_UseCustomIconTheme" >
         <property name="toolTip" >
@@ -63,16 +58,7 @@
      <property name="title" >
       <string>Fonts</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QCheckBox" name="kcfg_UseCustomFonts" >
         <property name="toolTip" >
@@ -95,9 +81,7 @@
          <bool>false</bool>
         </property>
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>0</hsizetype>
-          <vsizetype>0</vsizetype>
+         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -108,22 +92,17 @@
         <property name="flat" >
          <bool>true</bool>
         </property>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
+        <property name="frameShape" >
+         <enum>Q3GroupBox::NoFrame</enum>
+        </property>
+        <property name="lineWidth" >
+         <number>0</number>
         </property>
         <layout class="QGridLayout" >
-         <property name="margin" >
-          <number>11</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
          <item row="0" column="0" >
           <widget class="QLabel" name="textLabel3" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>0</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -145,9 +124,7 @@
          <item row="1" column="0" >
           <widget class="QLabel" name="textLabel3_2" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>0</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -177,24 +154,9 @@
      <property name="title" >
       <string>Color Scheme</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>11</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
         <item>
          <widget class="QLabel" name="textLabel1_3" >
           <property name="toolTip" >
@@ -248,15 +210,15 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KColorButton</class>
+   <extends>QPushButton</extends>
+   <header>kcolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <includes>
