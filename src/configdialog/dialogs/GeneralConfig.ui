@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>527</width>
-    <height>545</height>
+    <width>604</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -78,13 +78,13 @@
          <number>11</number>
         </property>
         <property name="topMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <property name="rightMargin" >
          <number>11</number>
         </property>
         <property name="bottomMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <item>
          <spacer>
@@ -129,13 +129,13 @@
          <number>11</number>
         </property>
         <property name="topMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <property name="rightMargin" >
          <number>11</number>
         </property>
         <property name="bottomMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1" >
@@ -205,13 +205,13 @@
          <number>11</number>
         </property>
         <property name="topMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <property name="rightMargin" >
          <number>11</number>
         </property>
         <property name="bottomMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1_2" >
@@ -278,13 +278,13 @@
          <number>11</number>
         </property>
         <property name="topMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <property name="rightMargin" >
          <number>11</number>
         </property>
         <property name="bottomMargin" >
-         <number>11</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QCheckBox" name="checkBox_customBrowser" >
@@ -354,43 +354,32 @@
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>11</number>
-      </property>
-      <property name="topMargin" >
-       <number>11</number>
-      </property>
-      <property name="rightMargin" >
-       <number>11</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>11</number>
-      </property>
       <item>
-       <widget class="QCheckBox" name="kcfg_UseScores" >
-        <property name="toolTip" >
-         <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
-        </property>
-        <property name="text" >
-         <string>Use &amp;scores</string>
-        </property>
-        <property name="checked" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_UseRatings" >
-        <property name="toolTip" >
-         <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
-        </property>
-        <property name="text" >
-         <string>Use ratings</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QCheckBox" name="kcfg_UseScores" >
+          <property name="toolTip" >
+           <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
+          </property>
+          <property name="text" >
+           <string>Use &amp;scores</string>
+          </property>
+          <property name="checked" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="kcfg_UseRatings" >
+          <property name="toolTip" >
+           <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
+          </property>
+          <property name="text" >
+           <string>Use ratings</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="Line" name="line1" >
@@ -455,13 +444,13 @@
             <number>11</number>
            </property>
            <property name="topMargin" >
-            <number>11</number>
+            <number>0</number>
            </property>
            <property name="rightMargin" >
             <number>11</number>
            </property>
            <property name="bottomMargin" >
-            <number>11</number>
+            <number>0</number>
            </property>
            <item>
             <spacer>
@@ -544,13 +533,13 @@
             <number>11</number>
            </property>
            <property name="topMargin" >
-            <number>11</number>
+            <number>0</number>
            </property>
            <property name="rightMargin" >
             <number>11</number>
            </property>
            <property name="bottomMargin" >
-            <number>11</number>
+            <number>0</number>
            </property>
            <item>
             <spacer>
@@ -655,8 +644,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>20</height>
+       <width>586</width>
+       <height>111</height>
       </size>
      </property>
     </spacer>
