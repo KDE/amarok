@@ -36,6 +36,7 @@ add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( portabledevices )
+add_subdirectory( strigi )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
