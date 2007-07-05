@@ -34,6 +34,8 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * colle
     m_collection = collection;
     setLevels( levelType );
 
+    connect( collection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+
 }
 
 

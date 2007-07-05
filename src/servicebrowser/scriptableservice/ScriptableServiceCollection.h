@@ -38,6 +38,10 @@ public:
 
     virtual CollectionLocation* location() const;
 
+    void emitUpdated(); 
+
+    
+
 private:
 
     QString m_name;

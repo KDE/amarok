@@ -89,9 +89,9 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-    levels << CategoryId::Album;
+   // levels << CategoryId::Album;
 
-    m_serviceMap[serviceName]->getModel()->setLevels( levels );
+    //m_serviceMap[serviceName]->getModel()->setLevels( levels );
     
 
 }
@@ -115,9 +115,9 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
-    levels << CategoryId::Album;
+    //levels << CategoryId::Album;
 
-    m_serviceMap[serviceName]->getModel()->setLevels( levels );
+    //m_serviceMap[serviceName]->getModel()->setLevels( levels );
 
     return newId;
 

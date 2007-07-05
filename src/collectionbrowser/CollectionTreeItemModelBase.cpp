@@ -483,3 +483,9 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
 
 
 
+
+
+void CollectionTreeItemModelBase::update()
+{
+   reset();
+}

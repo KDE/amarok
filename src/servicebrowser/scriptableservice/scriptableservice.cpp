@@ -66,6 +66,8 @@ int ScriptableService::addTrack( ServiceTrack * track, int albumId )
         m_collection->addTrack( trackPtr->name(), trackPtr );
         m_collection->releaseLock();
 
+        m_collection->emitUpdated();
+
         return m_trackIdCounter;
         
     }
@@ -81,6 +83,7 @@ int ScriptableService::addAlbum(ServiceAlbum * album)
     m_collection->acquireWriteLock();
     m_collection->addAlbum( album->name(), albumPtr );
     m_collection->releaseLock();
+     m_collection->emitUpdated();
     return m_albumIdCounter;
 }
 

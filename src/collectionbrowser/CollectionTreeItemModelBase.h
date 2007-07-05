@@ -113,6 +113,7 @@ Q_OBJECT
     protected slots:
 
         void loadingAnimationTick();
+        void update();
 
 
 };

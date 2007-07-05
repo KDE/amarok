@@ -56,3 +56,9 @@ CollectionLocation * ScriptableServiceCollection::ScriptableServiceCollection::l
 {
     return 0;
 }
+
+void ScriptableServiceCollection::emitUpdated()
+{
+    emit( updated() );
+
+}

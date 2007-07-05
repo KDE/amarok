@@ -128,6 +128,8 @@ CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
     if ( !newCollection )
         return;
 
+     connect( newCollection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+
     QString collectionId = newCollection->collectionId();
     if ( d->m_collections.contains( collectionId ) )
         return;
