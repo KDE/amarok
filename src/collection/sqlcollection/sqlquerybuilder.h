@@ -20,13 +20,14 @@
 
 #include "querymaker.h"
 
+#include "amarok_export.h"
 #include "threadmanager.h"
 
 #include <threadweaver/Job.h>
 
 class SqlCollection;
 
-class SqlQueryBuilder : public QueryMaker
+class AMAROK_EXPORT SqlQueryBuilder : public QueryMaker
 {
     Q_OBJECT
 

@@ -18,6 +18,7 @@
 #ifndef AMAROK_COLLECTION_SQLCOLLECTION_H
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
+#include "amarok_export.h"
 #include "collection.h"
 #include "sqlregistry.h"
 #include "SqlStorage.h"
@@ -31,19 +32,13 @@ class SqlCollectionFactory : public CollectionFactory
         virtual ~SqlCollectionFactory() {}
 
         virtual void init();
-
-    private slots:
-        void testMultipleCollections();     //testing
-        void removeSecondCollection();      //testing
-
-    private:
-        SqlCollection *m_secondCollection; //testing
 };
 
 class CollectionDB;
 class CollectionLocation;
+class XesamCollectionBuilder;
 
-class SqlCollection : public Collection, public SqlStorage
+class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 {
     public:
         SqlCollection( const QString &id, const QString &prettyName );
@@ -68,8 +63,8 @@ class SqlCollection : public Collection, public SqlStorage
         virtual int sqlDatabasePriority() const;
         virtual QString type() const;
 
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
+        virtual QStringList query( const QString &query ) = 0;
+        virtual int insert( const QString &statement, const QString &table ) = 0;
 
         virtual QString escape( QString text ) const;
 
@@ -83,13 +78,13 @@ class SqlCollection : public Collection, public SqlStorage
         virtual QString randomFunc() const;
 
     private:
-        //reuse CollectionDB until we replace it completely
-        CollectionDB *m_collectionDb;
 
         SqlRegistry* const m_registry;
 
         QString m_collectionId;
         QString m_prettyName;
+
+        XesamCollectionBuilder *m_xesamBuilder;
 };
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */

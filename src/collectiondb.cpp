@@ -45,6 +45,10 @@
 #include "statusbar.h"
 #include "threadmanager.h"
 
+//queries moved to sqlcollection, CollectionDB is still being used by legacy stuff
+#include "collection/collectionmanager.h"
+#include "SqlStorage.h"
+
 #include <QBuffer>
 #include <QCheckBox>
 #include <QEvent>
@@ -387,31 +391,8 @@ CollectionDB::initDirOperations()
 QStringList
 CollectionDB::query( const QString& statement, bool suppressDebug )
 {
-    m_mutex.lock();
-    clock_t start;
-    if ( DEBUG )
-    {
-        debug() << "Query-start: " << statement << endl;
-        start = clock();
-    }
-    if ( statement.trimmed().isEmpty() )
-    {
-        m_mutex.unlock();
-        return QStringList();
-    }
-
-    DbConnection *dbConn;
-    dbConn = getMyConnection();
-
-    QStringList values = dbConn->query( statement, suppressDebug );
-    if ( DEBUG )
-    {
-        clock_t finish = clock();
-        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-        debug() << "SQL-query (" << duration << "s): " << statement << endl;
-    }
-    m_mutex.unlock();
-    return values;
+    Q_UNUSED( suppressDebug )
+    return CollectionManager::instance()->sqlStorage()->query( statement );
 }
 
 
@@ -423,27 +404,7 @@ CollectionDB::query( const QString& statement, bool suppressDebug )
 int
 CollectionDB::insert( const QString& statement, const QString& table )
 {
-    m_mutex.lock();
-    clock_t start;
-    if ( DEBUG )
-    {
-        debug() << "insert-start: " << statement << endl;
-        start = clock();
-    }
-
-    DbConnection *dbConn;
-    dbConn = getMyConnection();
-
-    int id = dbConn->insert( statement, table );
-
-    if ( DEBUG )
-    {
-        clock_t finish = clock();
-        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-        debug() << "SQL-insert (" << duration << "s): " << statement << endl;
-    }
-    m_mutex.unlock();
-    return id;
+    return CollectionManager::instance()->sqlStorage()->insert( statement, table );
 }
 
 QString

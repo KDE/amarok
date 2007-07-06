@@ -21,6 +21,8 @@
 
 #include "sqlcollection.h"
 
+typedef struct pg_conn PGconn;
+
 class PostgreSqlCollection : public SqlCollection
 {
     public:
@@ -29,8 +31,18 @@ class PostgreSqlCollection : public SqlCollection
 
         virtual QueryMaker* queryMaker();
 
+        virtual QStringList query( const QString &query );
+        virtual int insert( const QString &statement, const QString &table );
+
         virtual QString type() const;
         virtual QString idType() const;
+
+    private:
+        void setPostgresqlError();
+        PGconn* m_db;
+        bool m_connected;
+        QString m_error;
+
 };
 
 #endif

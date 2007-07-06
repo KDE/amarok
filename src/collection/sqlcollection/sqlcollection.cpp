@@ -18,12 +18,12 @@
 
 #include "sqlcollection.h"
 
-#include "collectiondb.h"
 #include "sqlquerybuilder.h"
 #include "sqlitecollection.h"
-#include "mysqlcollection.h"
-#include "postgresqlcollection.h"
+//#include "mysqlcollection.h"
+//#include "postgresqlcollection.h"
 #include "SqlCollectionLocation.h"
+#include "XesamCollectionBuilder.h"
 
 #include <klocale.h>
 
@@ -35,11 +35,12 @@ void
 SqlCollectionFactory::init()
 {
     Collection* collection;
-    switch( CollectionDB::instance()->getDbConnectionType() )
+/*    switch( CollectionDB::instance()->getDbConnectionType() )
     {
         case DbConnection::sqlite :
             collection = new SqliteCollection( "localCollection", i18n( "Local collection" ) );
             break;
+//fix this later
         case DbConnection::mysql :
             collection = new MySqlCollection( "localCollection", i18n( "Local collection" ) );
             break;
@@ -49,34 +50,17 @@ SqlCollectionFactory::init()
         default :
             collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );
             break;
-    }
+    }*/
+    collection = new SqliteCollection( "localCollection", i18n( "Local collection" ) );
     emit newCollection( collection );
-    QTimer::singleShot( 30000, this, SLOT( testMultipleCollections() ) );
-}
-
-void
-SqlCollectionFactory::testMultipleCollections()
-{
-    SqlCollection* secondCollection = new SqlCollection( "anotherLocalCollection", "2nd local collection" );
-    m_secondCollection = secondCollection;
-    emit newCollection( secondCollection );
-    QTimer::singleShot( 30000, this, SLOT( removeSecondCollection() ) );
-}
-
-void
-SqlCollectionFactory::removeSecondCollection()
-{
-    m_secondCollection->removeCollection();
-    m_secondCollection = 0;
-    QTimer::singleShot( 30000, this, SLOT( testMultipleCollections() ) );
 }
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
-    , m_collectionDb( CollectionDB::instance() )
     , m_registry( new SqlRegistry( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
+    , m_xesamBuilder( new XesamCollectionBuilder( this ) )
 {
 }
 
@@ -133,13 +117,6 @@ SqlCollection::location() const
     return new SqlCollectionLocation( this );
 }
 
-QStringList
-SqlCollection::query( const QString &statement )
-{
-    return m_collectionDb->query( statement );
-}
-
-
 QString
 SqlCollection::escape( QString text ) const           //krazy:exclude=constref
 {
@@ -157,12 +134,6 @@ QString
 SqlCollection::type() const
 {
     return "sql";
-}
-
-int
-SqlCollection::insert( const QString &statement, const QString &table )
-{
-    return CollectionDB::instance()->insert( statement, table );
 }
 
 QString
