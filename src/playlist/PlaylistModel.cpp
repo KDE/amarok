@@ -418,6 +418,21 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             return true;
         }
     }
+    else if( data->hasUrls() )
+    {
+        //probably a drop from an external source
+        QList<QUrl> urls = data->urls();
+        Meta::TrackList tracks;
+        foreach( QUrl url, urls )
+        {
+            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+            if( track )
+                tracks.append( track );
+        }
+        if( !tracks.isEmpty() )
+            insertOptioned( tracks, PlaylistNS::Append );
+        return true;
+    }
     return false;
 }
 
