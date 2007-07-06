@@ -47,7 +47,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     leftText->setFont( QFont() );
     QString artist;
     if( track->artist() )
-        artist = track->artist()->name()
+        artist = track->artist()->name();
     leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( artist, QString::number( track->trackNumber() ), track->name() ) );
     leftText->setPos( 52.0, 0.0 );
     rightText->setFont( QFont() );
