@@ -16,13 +16,16 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "debug.h"
 #include "PodcastCollection.h"
+
+#include "debug.h"
 #include "PodcastReader.h"
 #include "support/memoryquerymaker.h"
 #include "TheInstances.h"
 
 #include <QFile>
+
+#include <klocale.h>
 
 PodcastCollection * PodcastCollection::s_instance = 0;
 
@@ -51,13 +54,13 @@ PodcastCollection::queryMaker()
 QString
 PodcastCollection::prettyName() const
 {
-    return QString("Podcasts");
+    return i18n("Podcasts");
 }
 
 QString
 PodcastCollection::collectionId() const
 {
-    return QString("Podcasts");
+    return "Podcasts";
 }
 
 
