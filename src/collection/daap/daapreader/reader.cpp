@@ -302,7 +302,7 @@ Reader::songListFinished( int /*id*/, bool error )
     debug() << "songList.count() = " << songList.count() << endl;
     foreach( QVariant var, songList )
     {
-        debug() << "begin iteration..." << endl;
+        //debug() << "begin iteration..." << endl;
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
         QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
         DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
@@ -367,6 +367,7 @@ Reader::songListFinished( int /*id*/, bool error )
     m_memColl->setComposerMap( composerMap );
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
+    m_memColl->loadedDataFromServer();
 }
 
 quint32

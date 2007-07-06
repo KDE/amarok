@@ -146,14 +146,25 @@ DaapCollectionFactory::resolvedDaap( bool success )
         return;
 
     DaapCollection *coll = new DaapCollection( service->hostName(), ip, service->port() );
+    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
     m_collectionMap.insert( serverKey( service ), coll );
-    emit newCollection( coll );
 }
 
 QString
 DaapCollectionFactory::serverKey( const DNSSD::RemoteService* service ) const
 {
     return service->hostName() + ':' + QString::number( service->port() );
+}
+
+void
+DaapCollectionFactory::slotCollectionReady()
+{
+    DEBUG_BLOCK
+    DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
+    if( collection )
+    {
+        emit newCollection( collection );
+    }
 }
 
 //DaapCollection
@@ -217,13 +228,22 @@ DaapCollection::passwordRequired()
 void
 DaapCollection::httpError( const QString &error )
 {
+    DEBUG_BLOCK
     debug() << "Http error in DaapReader: " << error << endl;
+    deleteLater();
 }
 
 void
 DaapCollection::serverOffline()
 {
     emit remove();
+}
+
+void
+DaapCollection::loadedDataFromServer()
+{
+    DEBUG_BLOCK
+    emit collectionReady();
 }
 
 #include "daapcollection.moc"
