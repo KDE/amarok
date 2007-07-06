@@ -146,7 +146,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
     int count = m_rootItem->childCount();
     for ( int i = 0; i < count; i++ ) {
         CollectionTreeItem *item = m_rootItem->child( i );
-        if ( !item->isDataItem() && item->parentCollection()->collectionId() == collectionId ) {
+        if ( item && !item->isDataItem() && item->parentCollection()->collectionId() == collectionId ) {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
             d->m_collections.remove( collectionId );
