@@ -60,8 +60,9 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_registry( new SqlRegistry( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
-    , m_xesamBuilder( new XesamCollectionBuilder( this ) )
+    , m_xesamBuilder( 0 )
 {
+    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
 }
 
 SqlCollection::~SqlCollection()
@@ -176,6 +177,12 @@ QString
 SqlCollection::randomFunc() const
 {
     return "RAND()";
+}
+
+void
+SqlCollection::initXesam()
+{
+    m_xesamBuilder = new XesamCollectionBuilder( this );
 }
 
 #include "sqlcollection.moc"

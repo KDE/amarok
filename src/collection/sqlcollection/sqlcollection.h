@@ -77,6 +77,9 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
         virtual QString longTextColumnType() const;
         virtual QString randomFunc() const;
 
+    private slots:
+        void initXesam();
+
     private:
 
         SqlRegistry* const m_registry;
