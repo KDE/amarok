@@ -16,6 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "debug.h"
 #include "meta/meta.h"
 #include "collection/querymaker.h"
 
@@ -119,6 +120,7 @@ public:
 
     virtual bool filterMatches( Meta::TrackPtr track ) const
     {
+        DEBUG_BLOCK
         if( m_matchBegin && m_matchEnd )
             return track->name().compare( m_name, Qt::CaseInsensitive ) == 0;
         else if( m_matchBegin )

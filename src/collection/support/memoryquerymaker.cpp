@@ -329,6 +329,7 @@ struct MemoryQueryMaker::Private {
     QueryJob *job;
     int maxsize;
     QStack<ContainerFilter*> containerFilters;
+    bool usingFilters;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -361,6 +362,7 @@ MemoryQueryMaker::reset()
         delete d->containerFilters.first();
     d->containerFilters.clear();
     d->containerFilters.push( new AndFilter() );
+    d->usingFilters = false;
     return this;
 }
 
@@ -399,7 +401,25 @@ MemoryQueryMaker::runQuery()
     if ( d->matcher )
     {
         TrackList result = d->matcher->match( m_memCollection );
-        handleResult( result );
+        if ( d->usingFilters )
+        {
+            TrackList filtered;
+            foreach( TrackPtr track, result )
+                if( d->containerFilters.first()->filterMatches( track ) )
+                    filtered.append( track );
+            handleResult( filtered );
+        }
+        else
+            handleResult( result );
+    }
+    else if ( d->usingFilters )
+    {
+        TrackList tracks = m_memCollection->trackMap().values();
+        TrackList filtered;
+        foreach( TrackPtr track, tracks )
+            if ( d->containerFilters.first()->filterMatches( track ) )
+                filtered.append( track );
+        handleResult( filtered );
     }
     else
         handleResult();
@@ -773,6 +793,7 @@ QueryMaker*
 MemoryQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     d->containerFilters.top()->addFilter( FilterFactory::filter( value, filter, matchBegin, matchEnd ) );
+    d->usingFilters = true;
     return this;
 }
 
@@ -781,6 +802,7 @@ MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter, bool match
 {
     Filter *tmp = FilterFactory::filter( value, filter, matchBegin, matchEnd );
     d->containerFilters.top()->addFilter( new NegateFilter( tmp ) );
+    d->usingFilters = true;
     return this;
 }
 
