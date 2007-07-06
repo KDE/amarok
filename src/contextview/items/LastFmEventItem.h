@@ -16,21 +16,16 @@
 
 #include "ContextItem.h"
 #include "../ContextObserver.h"
-#include "../GenericInfoBox.h"
+#include "LastFmEventBox.h"
 
 #include "kio/job.h"
 
 #include <QDomDocument>
 
+class QGraphicsRectItem;
+class LastFmEventBox;
+
 using namespace Context; 
-
-typedef struct {
-    QString title;
-    QString description;
-    KUrl link;
-    QString date;
-} LastFmEvent;
-
 
 class LastFmEventItem : public ContextItem, public ContextObserver
 {
@@ -51,15 +46,17 @@ public:
     
 private:
     
-    QList< LastFmEvent > parseFeed( QString content );
-    QString generateHtml( QList< LastFmEvent > items );
+    QList< LastFmEvent >* parseFeed( QString content );
+    qreal generateContents( QList< LastFmEvent > items, QGraphicsRectItem* parent );
         
     QString getCached( QString path ); // returns the contents of the cached RSS feed. if
                                        //it is not cached an empty string is returned
+    LastFmEvent parseTitle( QString title );
     
-    GenericInfoBox* m_friendBox;
-    GenericInfoBox* m_sysBox;
-    GenericInfoBox* m_userBox;
+        
+    LastFmEventBox* m_friendBox;
+    LastFmEventBox* m_sysBox;
+    LastFmEventBox* m_userBox;
     
     KJob* m_friendJob;
     KJob* m_sysJob;

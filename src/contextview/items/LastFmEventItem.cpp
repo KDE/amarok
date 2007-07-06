@@ -19,10 +19,11 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "../contextview.h"
-#include "../GenericInfoBox.h"
+#include "LastFmEventBox.h"
 #include "statusbar.h"
 
 #include <klocale.h> //i18n
+
 
 using namespace Context;
 
@@ -66,14 +67,15 @@ void LastFmEventItem::message( const QString& msg )
 void LastFmEventItem::showFriendEvents()
 {
         
-    m_friendBox = new GenericInfoBox();
+    m_friendBox = new LastFmEventBox();
     m_friendBox->setTitle( "Friend Events" );
     QString user = AmarokConfig::scrobblerUsername();
     
     // just tell the user we can't get it (instead of failing silently)
     if( user == QString() )
     {
-        m_friendBox->setContents( "<html><body>" + i18n( "You have enabled "
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_friendBox->getContentBox() );
+        item->setHtml("<html><body>" + i18n( "You have enabled "
                                  "Last.Fm Events in the Context View, but have " 
                                  "not entered your Last.Fm username in the "
                                 "Amarok config.</body></html>" ) );
@@ -89,7 +91,9 @@ void LastFmEventItem::showFriendEvents()
     // TODO take care of refreshing cache after its too old... say a week? 
     if( cached == QString() ) // not cached, lets fetch it
     {
-        m_friendBox->setContents( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_friendBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        m_friendBox->setContentHeight( item->boundingRect().height() );
         if( !m_friendVisible )
         {
             ContextView::instance()->addContextBox( m_friendBox, m_order, false );
@@ -102,8 +106,8 @@ void LastFmEventItem::showFriendEvents()
         connect( m_friendJob, SIGNAL( result( KJob* ) ), this, SLOT( friendResult( KJob* ) ) );
     } else // load quickly from cache
     {
-        QList< LastFmEvent > events = parseFeed( cached );
-        m_friendBox->setContents( generateHtml( events ) );
+        QList< LastFmEvent >* events = parseFeed( cached );
+        m_friendBox->setEvents( events );
         if( !m_friendVisible )
         {
             ContextView::instance()->addContextBox( m_friendBox, m_order, false );
@@ -119,9 +123,11 @@ void LastFmEventItem::friendResult( KJob* job )
     if( !job->error() == 0 && job == m_friendJob )
     { // right job, but error
         m_friendBox->clearContents();
-        m_friendBox->setContents( "<html><body>" + i18n( "Event information " 
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_friendBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Event information " 
                                   "could not be retrieved because the server "
                                     "was not reachable." ) + "</body></html>" );
+        m_friendBox->setContentHeight( item->boundingRect().height() );
         if( !m_friendVisible )
         {
             ContextView::instance()->addContextBox( m_friendBox, m_order, false );
@@ -146,10 +152,8 @@ void LastFmEventItem::friendResult( KJob* job )
         QTextStream out( &cache );
         out << data;
     }
-    QList< LastFmEvent > events = parseFeed( data ); 
-    
-    m_friendBox->clearContents();
-    m_friendBox->setContents( generateHtml( events ) );
+    QList< LastFmEvent >* events = parseFeed( data ); 
+    m_friendBox->setEvents( events );
     if( !m_friendVisible )
     {
         ContextView::instance()->addContextBox( m_friendBox, m_order, false );
@@ -160,17 +164,20 @@ void LastFmEventItem::friendResult( KJob* job )
 void LastFmEventItem::showSysEvents()
 {
     
-    m_sysBox = new GenericInfoBox();
+    m_sysBox = new LastFmEventBox();
     m_sysBox->setTitle( "Recommended Events" );
     QString user = AmarokConfig::scrobblerUsername();
     
     // just tell the user we can't get it (instead of failing silently)
     if( user == QString() )
     {
-        m_sysBox->setContents( "<html><body>" + i18n( "You have enabled "
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_sysBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "You have enabled "
             "Last.Fm Events in the Context View, but have " 
             "not entered your Last.Fm username in the "
             "Amarok config.</body></html>" ) );
+        
+        m_sysBox->setContentHeight( item->boundingRect().height() );
         if( !m_sysVisible )
         {
             ContextView::instance()->addContextBox( m_sysBox, m_order, false );
@@ -182,7 +189,9 @@ void LastFmEventItem::showSysEvents()
     // TODO take care of refreshing cache after its too old... say a week? 
     if( cached == QString() ) // not cached, lets fetch it
     {
-        m_sysBox->setContents( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_sysBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        m_sysBox->setContentHeight( item->boundingRect().height() );
         if( !m_sysVisible )
         {
             ContextView::instance()->addContextBox( m_sysBox, m_order, false );
@@ -195,8 +204,8 @@ void LastFmEventItem::showSysEvents()
         connect( m_sysJob, SIGNAL( result( KJob* ) ), this, SLOT( sysResult( KJob* ) ) );
     } else // load quickly from cache
     {
-        QList< LastFmEvent > events = parseFeed( cached );
-        m_sysBox->setContents( generateHtml( events ) );
+        QList< LastFmEvent >* events = parseFeed( cached );
+        m_sysBox->setEvents( events );
         if( !m_sysVisible )
         {
             ContextView::instance()->addContextBox( m_sysBox, m_order, false );
@@ -212,9 +221,12 @@ void LastFmEventItem::sysResult( KJob* job )
     if( !job->error() == 0 && job == m_sysJob )
     { // right job, but error
         m_sysBox->clearContents();
-        m_sysBox->setContents( "<html><body>" + i18n( "Event information " 
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_sysBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Event information " 
                                   "could not be retrieved because the server "
                                     "was not reachable." ) + "</body></html>" );
+        
+        m_sysBox->setContentHeight( item->boundingRect().height() );
         if( !m_sysVisible )
         {
             ContextView::instance()->addContextBox( m_sysBox, m_order, false );
@@ -239,11 +251,8 @@ void LastFmEventItem::sysResult( KJob* job )
         QTextStream out( &cache );
         out << data;
     }
-    QList< LastFmEvent > events = parseFeed( data ); 
-    
-    m_sysBox->clearContents();
-    
-    m_sysBox->setContents( generateHtml( events ) );
+    QList< LastFmEvent >* events = parseFeed( data ); 
+    m_sysBox->setEvents( events );
     if( !m_sysVisible )
     {
         ContextView::instance()->addContextBox( m_sysBox, m_order, false );
@@ -254,14 +263,15 @@ void LastFmEventItem::sysResult( KJob* job )
 
 void LastFmEventItem::showUserEvents()
 {
-    m_userBox = new GenericInfoBox();
+    m_userBox = new LastFmEventBox();
     m_userBox->setTitle( "Your Events" );
     QString user = AmarokConfig::scrobblerUsername();
     
     // just tell the user we can't get it (instead of failing silently)
     if( user == QString() )
     {
-        m_userBox->setContents( "<html><body>" + i18n( "You have enabled "
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_userBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "You have enabled "
             "Last.Fm Events in the Context View, but have " 
             "not entered your Last.Fm username in the "
             "Amarok config.</body></html>" ) );
@@ -276,7 +286,9 @@ void LastFmEventItem::showUserEvents()
     // TODO take care of refreshing cache after its too old... say a week? 
     if( cached == QString() ) // not cached, lets fetch it
     {
-        m_userBox->setContents( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_userBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Fetching Last.Fm Event information..." ) + "</body></html>" );
+        m_userBox->setContentHeight( item->boundingRect().height() );
         if( !m_userVisible )
         {
             ContextView::instance()->addContextBox( m_userBox, m_order, false );
@@ -289,8 +301,8 @@ void LastFmEventItem::showUserEvents()
         connect( m_userJob, SIGNAL( result( KJob* ) ), this, SLOT( userResult( KJob* ) ) );
     } else // load quickly from cache
     {
-        QList< LastFmEvent > events = parseFeed( cached );
-        m_userBox->setContents( generateHtml( events ) );
+        QList< LastFmEvent >* events = parseFeed( cached );
+        m_userBox->setEvents( events );
         if( !m_userVisible )
         {
             ContextView::instance()->addContextBox( m_userBox, m_order, false );
@@ -306,7 +318,8 @@ void LastFmEventItem::userResult( KJob* job )
     if( !job->error() == 0 && job == m_userJob )
     { // right job, but error
         m_userBox->clearContents();
-        m_userBox->setContents( "<html><body>" + i18n( "Event information " 
+        QGraphicsTextItem* item = new QGraphicsTextItem( "", m_userBox->getContentBox() );
+        item->setHtml( "<html><body>" + i18n( "Event information " 
                                   "could not be retrieved because the server "
                                     "was not reachable." ) + "</body></html>" );
         if( !m_userVisible )
@@ -333,10 +346,8 @@ void LastFmEventItem::userResult( KJob* job )
         QTextStream out( &cache );
         out << data;
     }
-    QList< LastFmEvent > events = parseFeed( data ); 
-    
-    m_userBox->clearContents();
-    m_userBox->setContents( generateHtml( events ) );
+    QList< LastFmEvent >* events = parseFeed( data ); 
+    m_userBox->setEvents( events );
     if( !m_userVisible )
     {
         ContextView::instance()->addContextBox( m_userBox, m_order, false );
@@ -344,7 +355,7 @@ void LastFmEventItem::userResult( KJob* job )
     }
 }
 
-QList< LastFmEvent > LastFmEventItem::parseFeed( QString content )
+QList< LastFmEvent >* LastFmEventItem::parseFeed( QString content )
 {
     QDomDocument doc;
     doc.setContent( content );
@@ -353,40 +364,50 @@ QList< LastFmEvent > LastFmEventItem::parseFeed( QString content )
     QDomElement item = root.firstChildElement("item");
     
     // iterate through the event items
-    QList< LastFmEvent > events;
+    QList< LastFmEvent >* events = new QList< LastFmEvent >();
     for(; !item.isNull(); item = item.nextSiblingElement( "item" ) )
     {
         // get all the info for each event
-        LastFmEvent event;
-        event.title = item.firstChildElement( "title" ).text();
+        LastFmEvent event = parseTitle( item.firstChildElement( "title" ).text() );
         event.description = item.firstChildElement( "description" ).text();
         event.link = KUrl( item.firstChildElement( "link" ).text() );
-        event.date = item.firstChildElement( "pubDate" ).text();
-        events << event;
+        events->append( event );
     }
     
     return events;
 }
 
-// TODO actually make pretty, usable, and informative! :)
-QString LastFmEventItem::generateHtml( QList< LastFmEvent > events )
+// parses the date out of the title (at the end "[...] on Day Month Year")
+LastFmEvent LastFmEventItem::parseTitle( QString title )
 {
-    QString content( "<html><body>" );
-    if( events.size() == 0 )
-        content.append( i18n( "You are not attending any events in the future!" ) );
-    int count = 0;
-    foreach( LastFmEvent event, events )
+    // format is "DESCRIPTION at LOCATION, CITY on DATE"
+    QRegExp rx( "(.*) at (.+),? (.+) on (\\d+ \\w+ \\d\\d\\d\\d)" );
+    if( rx.indexIn( title ) == -1 )
     {
-        content.append( "<br>" + event.title );
-        count++;
-        if( count >= 10 ) 
+        // try a simpler fallthrough regexp, format DESCRIPTION on DATE
+        QRegExp rx2( "(.*) on (\\d+ \\w+ \\d\\d\\d\\d)" );
+        if( rx2.indexIn( title ) == -1 )
         {
-            content.append( "more..." ); // TODO make this a link that expands the box
-            break; // only show 20 to keep it neat and small.
+            warning() << "couldn't match last.fm event title: " << title << endl;
+            LastFmEvent empty; // couldn't match... BAD!
+            return empty;
+        } else
+        {
+            LastFmEvent event;
+            event.title = rx2.cap( 1 );
+            event.date = rx2.cap( 2 );
+            event.location = event.city = QString();
+            return event;
         }
+    }else
+    {
+        LastFmEvent event;
+        event.title = rx.cap(1);
+        event.location = rx.cap(2);
+        event.city = rx.cap(3);
+        event.date = rx.cap(4);
+        return event;
     }
-    content.append( "</body></html>" );
-    return content;
 }
 
 QString LastFmEventItem::getCached( QString path )
