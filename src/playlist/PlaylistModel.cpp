@@ -85,7 +85,7 @@ Model::data( const QModelIndex& index, int role ) const
     {
         return QVariant::fromValue( track );
     }
-    else
+   /* else
     {
         switch( role )
         {
@@ -107,7 +107,7 @@ Model::data( const QModelIndex& index, int role ) const
             case Year: return track->year()->name().toInt();
             default: return QVariant();
         }
-    }
+    } */
 }
 
 // void

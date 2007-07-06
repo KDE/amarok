@@ -37,7 +37,9 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     QGraphicsScene scene;
 
     Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
-    QString album = track->album()->name();
+    QString album;
+    if( track->album() )
+        album = track->album()->name();
     QString prettyLength = MetaBundle::prettyTime( track->length(), false );
     QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( track->album()->image( 50 ), 0, &scene );
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
