@@ -40,6 +40,7 @@ class XesamCollectionBuilder;
 
 class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 {
+    Q_OBJECT
     public:
         SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();

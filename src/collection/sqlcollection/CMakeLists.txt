@@ -13,6 +13,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 ########### next target ###############
 
 set(amarok_collection-sqlcollection_PART_SRCS
+	DatabaseUpdater.cpp
 	sqlcollection.cpp
 	SqlCollectionLocation.cpp
 	sqlquerybuilder.cpp

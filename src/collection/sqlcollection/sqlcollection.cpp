@@ -18,6 +18,7 @@
 
 #include "sqlcollection.h"
 
+#include "DatabaseUpdater.h"
 #include "sqlquerybuilder.h"
 #include "sqlitecollection.h"
 //#include "mysqlcollection.h"
@@ -63,6 +64,9 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_xesamBuilder( 0 )
 {
     QTimer::singleShot( 0, this, SLOT( initXesam() ) );
+    DatabaseUpdater updater( this );
+    if( updater.needsUpdate() )
+        updater.update();
 }
 
 SqlCollection::~SqlCollection()
