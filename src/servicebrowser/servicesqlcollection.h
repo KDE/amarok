@@ -21,13 +21,14 @@
 
 #include "collection.h"
 #include "servicemetabase.h"
+#include "ServiceSqlRegistry.h"
 
 
 class ServiceSqlCollection : public Collection
 {
     Q_OBJECT
     public:
-        ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory );
+        ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
         virtual ~ServiceSqlCollection();
 
         virtual void startFullScan() {} //TODO
@@ -44,6 +45,7 @@ class ServiceSqlCollection : public Collection
 
     private:
         ServiceMetaFactory * m_metaFactory;
+        ServiceSqlRegistry * m_registry;
 
         QString m_collectionId;
         QString m_prettyName;

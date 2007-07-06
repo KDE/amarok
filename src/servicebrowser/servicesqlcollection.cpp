@@ -28,9 +28,10 @@
 #include <QTimer>
 
 
-ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory )
+ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
     : Collection()
     , m_metaFactory( metaFactory )
+    , m_registry( registry )
     , m_collectionId( id )
     , m_prettyName( prettyName )
 {
@@ -55,7 +56,7 @@ ServiceSqlCollection::prettyName() const
 QueryMaker*
 ServiceSqlCollection::queryMaker()
 {
-    return new ServiceSqlQueryMaker( this, m_metaFactory );
+    return new ServiceSqlQueryMaker( this, m_metaFactory, m_registry );
 }
 
 QStringList
