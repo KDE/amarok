@@ -196,7 +196,7 @@ public:
      */
     IdList getMountedDeviceIds() const;
 
-    QStringList collectionFolders();
+    AMAROK_EXPORT QStringList collectionFolders();
     void setCollectionFolders( const QStringList &folders );
 
 public slots:
