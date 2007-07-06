@@ -104,6 +104,7 @@ HeaderWidget::enterEvent( QEvent* event )
 void
 HeaderWidget::leaveEvent( QEvent* event )
 {
+    setStyleSheet(" ");
     m_topLayout->setSpacing( 0 );
     QVBoxLayout* layout;
     QFont smallFont;
@@ -113,7 +114,6 @@ HeaderWidget::leaveEvent( QEvent* event )
     {
         layout->setSpacing( 0 );
     }
-    setStyleSheet(" ");
 }
 
 void
