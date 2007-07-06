@@ -134,11 +134,12 @@ void PlaylistWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
+    playlistwindow->setSpacing( 0 );
+    playlistwindow->setMargin( 0 );
     //make the playlist views resizable so the old one can be hidden! 
-    QSplitter * splitter = new QSplitter( Qt::Vertical, playlistwindow );
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
-    Playlist *playlist = new Playlist( splitter ); //Playlist
-    new PlaylistNS::Widget( splitter );
+    Playlist *playlist = new Playlist( 0 ); //Playlist
+    new PlaylistNS::Widget( playlistwindow );
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );

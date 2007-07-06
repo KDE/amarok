@@ -27,14 +27,19 @@ const QString HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-head
 
 HeaderWidget::HeaderWidget( QWidget* parent )
     : QWidget( parent )
+    , m_topLayout( new QHBoxLayout( this ) )
 {
     DEBUG_BLOCK
     m_test << i18n("Artist") << i18n("Track Number - Title") << i18n("Album") << i18n("Length");
-    QHBoxLayout* topLayout = new QHBoxLayout( this );
+    m_topLayout->setSpacing( 0 );
+    QFont smallFont;
+    smallFont.setPointSize( 8 );
+    setFont( smallFont );
     for( int i = 0; i < 2; i++ )
     {
         m_verticalLayouts.push_back( new QVBoxLayout( this ) );
-        topLayout->addLayout( m_verticalLayouts.at(i) );
+        m_verticalLayouts.at( i )->setSpacing( 0 );
+        m_topLayout->addLayout( m_verticalLayouts.at(i) );
     }
     for( int i = 0; i < 4; i++ )
     {
@@ -46,7 +51,6 @@ HeaderWidget::HeaderWidget( QWidget* parent )
         m_textToLabel[ m_test.at( i ) ] = m_labels.at(i);
     }
     setAcceptDrops( true );
-    setStyleSheet("QLabel { border: 1px solid black; border-radius: 5px; } QLabel:hover { border-width: 3px }");
 }
 
 void HeaderWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -70,6 +74,8 @@ HeaderWidget::dropEvent( QDropEvent *event)
         dataStream >> name;
         QLabel* sourceLabel = m_textToLabel[ name ];
         QLabel* droppedOnLabel = dynamic_cast<QLabel*>( childAt( event->pos() ) );
+        if( !droppedOnLabel )
+            return;
         QString origSource = sourceLabel->text();
         sourceLabel->setText( droppedOnLabel->text() );
         droppedOnLabel->setText( origSource );
@@ -79,6 +85,35 @@ HeaderWidget::dropEvent( QDropEvent *event)
     }
     else
         event->ignore();
+}
+
+void
+HeaderWidget::enterEvent( QEvent* event )
+{
+    m_topLayout->setSpacing( 3 );
+    QVBoxLayout* layout;
+    QFont defaultFont;
+    setFont( defaultFont );
+    foreach( layout, m_verticalLayouts )
+    {
+        layout->setSpacing( 3 );
+    }
+    setStyleSheet("QLabel { border: 1px solid black; border-radius: 5px; } QLabel:hover { border-width: 3px }");
+}
+
+void
+HeaderWidget::leaveEvent( QEvent* event )
+{
+    m_topLayout->setSpacing( 0 );
+    QVBoxLayout* layout;
+    QFont smallFont;
+    smallFont.setPointSize( 8 );
+    setFont( smallFont );
+    foreach( layout, m_verticalLayouts )
+    {
+        layout->setSpacing( 0 );
+    }
+    setStyleSheet(" ");
 }
 
 void
@@ -93,12 +128,10 @@ HeaderWidget::mousePressEvent(QMouseEvent *event)
     QMimeData* mimeData = new QMimeData;
     mimeData->setData( HeaderMimeType, itemData );
     QDrag* drag = new QDrag( this );
-    QPixmap labelPixmap;
-    labelPixmap.grabWidget( child );
+    QPixmap labelPixmap = QPixmap::grabWidget( child );
     drag->setPixmap( labelPixmap );
     drag->setMimeData( mimeData );
-    drag->setHotSpot( QPoint( labelPixmap.width()/2,
-                             labelPixmap.height() ) );
+    //drag->setHotSpot( QPoint( labelPixmap.width()/2, labelPixmap.height() ) );
     drag->exec();
 }
 

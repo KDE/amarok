@@ -13,6 +13,7 @@
 #include <QStringList>
 #include <QWidget>
 
+class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
 
@@ -25,10 +26,15 @@ namespace PlaylistNS
         public:
             HeaderWidget( QWidget* parent );
         protected:
-            void mousePressEvent(QMouseEvent *event);
+            void enterEvent( QEvent* event );
+            void leaveEvent( QEvent* event );
             void dragEnterEvent(QDragEnterEvent *event);
             void dropEvent( QDropEvent *event);
+            void mousePressEvent(QMouseEvent *event);
+
         private:
+            QHBoxLayout* m_topLayout;
+        
             QList<QVBoxLayout*> m_verticalLayouts;
             QList<QLabel*> m_labels;
             QMap<QString, QLabel*> m_textToLabel;

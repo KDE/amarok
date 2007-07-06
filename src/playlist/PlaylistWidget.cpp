@@ -28,7 +28,7 @@ Widget::Widget( QWidget* parent )
     playmodel->testData();
     PlaylistNS::View* playView = new PlaylistNS::View( this );
     playView->setModel( playmodel );
-
+    layout->setSpacing( 0 );
     layout->addWidget( header );
     layout->addWidget( playView );
 }
