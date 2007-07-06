@@ -29,6 +29,7 @@ typedef struct Mem sqlite3_value;
 
 class SqliteCollection : public SqlCollection
 {
+    Q_OBJECT
     public:
         SqliteCollection( const QString &id, const QString &prettyName );
         virtual ~SqliteCollection();
