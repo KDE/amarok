@@ -119,6 +119,7 @@ void PodcastReader::readChannel()
         }
     }
     m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
+    m_collection->addArtist( artist->name(), ArtistPtr::staticCast( artist) );
     m_collection->releaseLock();
 }
 

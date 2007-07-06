@@ -20,10 +20,15 @@ namespace PortableDevicesNS {
     class SolidHandler;
 }
 
+// namespace Podcasts {
+    class PodcastCollection;
+// }
+
 namespace The {
     PlaylistNS::Model* playlistModel(); //defined in playlist/PlaylistModel.h
     PopupDropperNS::PopupDropper* PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
+    /*Podcast::*/PodcastCollection* podcastCollection();
 }
 
 #endif

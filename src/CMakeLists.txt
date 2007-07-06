@@ -36,6 +36,7 @@ add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( portabledevices )
+add_subdirectory( podcasts )
 add_subdirectory( strigi )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
@@ -64,6 +65,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	meta
 	collection
+    podcasts
 	${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${TAGLIB_INCLUDE_DIR}
@@ -284,6 +286,15 @@ set(collection_SRCS
 )
 
 #####################################################################
+# PODCASTS
+#####################################################################
+set(libpodcasts_SRCS
+    podcasts/PodcastCollection.cpp
+    podcasts/PodcastMetaBase.cpp
+    podcasts/PodcastReader.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -297,6 +308,7 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libjamendoservice_SRCS}
     ${libplugin_SRCS}
+    ${libpodcasts_SRCS}
     ${libservicebrowser_SRCS}
     ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
@@ -422,7 +434,7 @@ target_link_libraries(amaroklib
     ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
     ${TAGLIB_LIBRARIES}
 	${KDE4_KFILE_LIBS}
-    ${KDE4_KDE3SUPPORT_LIBS} 
+    ${KDE4_KDE3SUPPORT_LIBS}
 	${KDE4_THREADWEAVER_LIBRARIES}
     QtOpenGL
     amarok_taglib

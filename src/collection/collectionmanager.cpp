@@ -28,6 +28,8 @@
 #include "pluginmanager.h"
 #include "scrobbler.h"
 #include "SqlStorage.h"
+#include "PodcastCollection.h"
+#include "TheInstances.h"
 
 #include <QtAlgorithms>
 #include <QtGlobal>
@@ -91,6 +93,8 @@ CollectionManager::init()
             }
         }
     }
+    //TODO: this is a hack to test it out, PodcastCollection belongs in the Playlistwindow
+    addUnmanagedCollection( The::podcastCollection() );
 
 }
 
