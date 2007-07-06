@@ -45,8 +45,10 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
     QGraphicsTextItem* rightText = new QGraphicsTextItem();
     leftText->setFont( QFont() );
-    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( track->artist()->name(),
-         QString::number( track->trackNumber() ), track->name() ) );
+    QString artist;
+    if( track->artist() )
+        artist = track->artist()->name()
+    leftText->setHtml( QString("<b>%1</b><br>%2 - %3").arg( artist, QString::number( track->trackNumber() ), track->name() ) );
     leftText->setPos( 52.0, 0.0 );
     rightText->setFont( QFont() );
     rightText->setHtml( QString("<b>%1</b><br>%2").arg( album, prettyLength ) );
