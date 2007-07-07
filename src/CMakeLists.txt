@@ -105,7 +105,6 @@ set(libservicebrowser_SRCS
     servicebrowser/servicesqlquerymaker.cpp
     servicebrowser/servicesqlcollection.cpp
     servicebrowser/infoparserbase.cpp
-    servicebrowser/ServiceSqlRegistry.cpp
 
 )
 

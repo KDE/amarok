@@ -20,7 +20,6 @@
 #include "JamendoInfoParser.h"
 #include "jamendoservice.h"
 #include "servicesqlcollection.h"
-#include "ServiceSqlRegistry.h"
 
 #include "jamendoxmlparser.h"
 
@@ -76,8 +75,7 @@ void JamendoService::polish()
 
 
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo" );
-    ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    ServiceSqlCollection * collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
+    ServiceSqlCollection * collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory );
 
     setModel( new SingleCollectionTreeItemModel( collection, levels ) );
 

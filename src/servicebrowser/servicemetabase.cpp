@@ -795,9 +795,9 @@ ServiceGenre::tracks()
 }
 
 void
-ServiceGenre::addTrack( TrackPtr track )
+ServiceGenre::addTrack( ServiceTrackPtr track )
 {
-    m_tracks.append( track );
+    m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void ServiceGenre::processInfoOf(InfoParserBase * infoParser)
