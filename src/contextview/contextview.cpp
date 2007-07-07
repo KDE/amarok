@@ -36,7 +36,6 @@
 #include <math.h> // scaleView()
 #include <QBrush>
 #include <QColor>
-#include <QGLWidget>
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QMouseEvent>
