@@ -96,14 +96,15 @@ ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
 
 int ServiceMetaFactory::getGenreSqlRowCount()
 {
-    return 1;
+    return 2;
 }
 
 QString ServiceMetaFactory::getGenreSqlRows()
 {
 
     //subclasses must not change the order of these items, but only append new ones
-    return m_dbTablePrefix + "_genre.name " ;
+    return m_dbTablePrefix + "_genre.id, " +
+           m_dbTablePrefix + "_genre.name " ;
 
 }
 
@@ -751,7 +752,7 @@ ServiceGenre::ServiceGenre(const QStringList & row)
     : Meta::Genre()
     , m_tracks()
 {
-    m_name = row[0];
+    m_name = row[1];
 }
 
 ServiceGenre::~ServiceGenre()
@@ -795,9 +796,9 @@ ServiceGenre::tracks()
 }
 
 void
-ServiceGenre::addTrack( ServiceTrackPtr track )
+ServiceGenre::addTrack( TrackPtr track )
 {
-    m_tracks.append( TrackPtr::staticCast( track ) );
+    m_tracks.append( track );
 }
 
 void ServiceGenre::processInfoOf(InfoParserBase * infoParser)
