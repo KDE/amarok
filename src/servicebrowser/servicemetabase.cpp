@@ -33,7 +33,7 @@ QString ServiceMetaFactory::tablePrefix()
 
 int ServiceMetaFactory::getTrackSqlRowCount()
 {
-    return 9;
+    return 7;
 }
 
 QString ServiceMetaFactory::getTrackSqlRows()
@@ -45,9 +45,9 @@ QString ServiceMetaFactory::getTrackSqlRows()
            m_dbTablePrefix + "_tracks.length, " +
            m_dbTablePrefix + "_tracks.preview_url, " +
            m_dbTablePrefix + "_tracks.album_id, " +
-           m_dbTablePrefix + "_tracks.album_name, " +
-           m_dbTablePrefix + "_tracks.artist_id, " +
-           m_dbTablePrefix + "_tracks.album_id "; 
+           //m_dbTablePrefix + "_tracks.album_name, " +
+           m_dbTablePrefix + "_tracks.artist_id ";
+           //m_dbTablePrefix + "_tracks.artist_name "; 
 }
 
 TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
@@ -57,7 +57,7 @@ TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
 
 int ServiceMetaFactory::getAlbumSqlRowCount()
 {
-    return 5;
+    return 4;
 }
 
 QString ServiceMetaFactory::getAlbumSqlRows()
@@ -66,8 +66,7 @@ QString ServiceMetaFactory::getAlbumSqlRows()
     return m_dbTablePrefix + "_albums.id, " +
            m_dbTablePrefix + "_albums.name, " +
            m_dbTablePrefix + "_albums.description, " +
-           m_dbTablePrefix + "_albums.artist_id, " +
-           m_dbTablePrefix + "_albums.artist_name ";
+           m_dbTablePrefix + "_albums.artist_id ";
 }
 
 AlbumPtr ServiceMetaFactory::createAlbum(const QStringList & rows)
@@ -153,7 +152,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     m_playableUrl = resultRow[4];
     m_albumId = resultRow[5].toInt();
     //m_albumName = resultRow[6];
-    //m_artistId = resultRow[7].toInt();
+    m_artistId = resultRow[6].toInt();
     //m_artistName = resultRow[8].toInt();
 
 }
@@ -184,16 +183,6 @@ int ServiceTrack::albumId() const
     return m_albumId;
 }
 
-void ServiceTrack::setAlbumName(const QString & name)
-{
-    m_albumName = name;
-}
-
-QString ServiceTrack::albumName() const
-{
-    return m_albumName;
-}
-
 void ServiceTrack::setArtistId(int id)
 {
     m_artistId = id;
@@ -202,16 +191,6 @@ void ServiceTrack::setArtistId(int id)
 int ServiceTrack::artistId() const
 {
     return m_artistId;
-}
-
-void ServiceTrack::setArtistName(const QString & name)
-{
-    m_artistName = name;
-}
-
-QString ServiceTrack::artistName() const
-{
-    return m_artistName;
 }
 
 

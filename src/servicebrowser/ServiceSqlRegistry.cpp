@@ -92,14 +92,14 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
 
         ArtistPtr artistPtr;
-
+        debug() << "get artist with id " << track->artistId() << endl;
 
         if ( m_artistMap.contains( track->artistId() ) )
             artistPtr = m_artistMap.value( track->artistId() );
         else {
-
-            debug() << "Create artist!" << endl;
-
+            
+           
+            debug() << "not in registry, lets create it" << endl;
             debug() << "Row length: " << rowData.count() << endl;
             //debug() << "Track row: " << rowData << endl;
 

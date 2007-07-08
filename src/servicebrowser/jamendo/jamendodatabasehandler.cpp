@@ -59,9 +59,7 @@ JamendoDatabaseHandler::createDatabase( )
                           "length INTEGER,"
                           "preview_url " + db->exactTextColumnType() + ',' +
                           "album_id INTEGER,"
-                          "album_name " + db->textColumnType() + ',' +
-                          "artist_id INTEGER,"
-                          "artist_name " + db->textColumnType() + ");";
+                          "artist_id INTEGER );";
 
     debug() << "Creating jamendo_tracks: " << queryString << endl;
 
@@ -77,8 +75,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "cover_url " + db->exactTextColumnType() + ',' +
                   "launch_year Integer, " 
                   "genre " + db->exactTextColumnType() + ',' +
-                  "artist_id INTEGER,"
-                  "artist_name " + db->textColumnType() +  ");";
+                  "artist_id INTEGER );";
 
     debug() << "Creating jamendo_albums: " << queryString << endl;
 
@@ -171,17 +168,14 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 
     CollectionDB *db = CollectionDB::instance();
     QString queryString = "INSERT INTO jamendo_tracks ( id, name, track_number, length, "
-                          "album_id, album_name, artist_id, artist_name, preview_url ) VALUES ( "
+                          "album_id, artist_id, preview_url ) VALUES ( "
                           + QString::number( jTrack->id() ) + ", '"
                           + db->escapeString( jTrack->name() ) + "', "
                           + QString::number( jTrack->trackNumber() ) + ", "
                           + QString::number( jTrack->length() ) + ", "
-                          + QString::number( jTrack->albumId() ) + ", '"
-                          + db->escapeString( jTrack->albumName() ) + "', "
+                          + QString::number( jTrack->albumId() ) + ", "
                           + QString::number( jTrack->artistId() ) + ", '"
-                          + db->escapeString( jTrack->artistName() ) + "', '"
                           + db->escapeString( jTrack->url() ) + "' );";
-
 
     // debug() << "Adding Jamendo track " << queryString << endl;
     int trackId = db->insert( queryString, NULL );
@@ -214,7 +208,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
                   "popularity, cover_url, launch_year, genre, "
-                  "artist_id, artist_name ) VALUES ( "
+                  "artist_id ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
                   + sqlDb->escape(  jAlbum->name() ) + "', '"
                   + sqlDb->escape( jAlbum->description() )+ "', "
@@ -222,8 +216,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + sqlDb->escape( jAlbum->coverURL() )+ "', "
                   + QString::number( jAlbum->launchYear() ) + ", '"
                   + sqlDb->escape( jAlbum->genre() )+ "', "
-                  + QString::number( jAlbum->artistId() ) + ", '"
-                  + sqlDb->escape( jAlbum->artistName() ) + "' );";
+                  + QString::number( jAlbum->artistId() ) + " );";
 
     //debug() << "Adding Jamendo album " << queryString << endl;
 

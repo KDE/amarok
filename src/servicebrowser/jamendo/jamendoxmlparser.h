@@ -135,6 +135,7 @@ private:
 
     int n_numberOfTransactions;
     int n_maxNumberOfTransactions;
+    QMap<int, int> m_albumArtistMap;
 };
 
 #endif

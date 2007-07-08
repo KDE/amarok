@@ -248,7 +248,8 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
     currentAlbum.setLaunchYear( 1000 );
 
     currentAlbum.setCoverURL( coverUrl );
-
+    
+    m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
    int newId = m_dbHandler->insertAlbum( &currentAlbum );
    countTransaction();
@@ -297,9 +298,14 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     currentTrack.setUrl( "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( currentTrack.id() ) + "/?aue=ogg2" );
 
     currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
-    currentTrack.setArtistId( e.attribute( "artistID", "0" ).toInt() );
+    //currentTrack.setArtistId( e.attribute( "artistID", "0" ).toInt() );
     currentTrack.setLength(  e.attribute( "lengths", "0" ).toInt() );
     currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
+
+    if ( m_albumArtistMap.contains( currentTrack.albumId() ) )
+        currentTrack.setArtistId( m_albumArtistMap.value( currentTrack.albumId() ) );
+
+    debug() << "inserting track with artist id: " << currentTrack.artistId() << endl;
 
     m_dbHandler->insertTrack( &currentTrack );
     countTransaction();

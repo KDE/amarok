@@ -175,12 +175,8 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
         int id( ) const;
         void setAlbumId( int albumId );
         int albumId() const;
-        void setAlbumName( const QString &name );
-        QString albumName() const;
         void setArtistId( int id );
         int artistId() const;
-        void setArtistName( const QString &name );
-        QString artistName() const;
         void setUrl( const QString &url );
 
     private:
