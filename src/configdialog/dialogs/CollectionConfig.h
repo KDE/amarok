@@ -23,6 +23,8 @@
 #include "ui_CollectionConfig.h"
 #include "ConfigDialogBase.h"
 
+class CollectionSetup;
+
 
 class CollectionConfig : public ConfigDialogBase, public Ui_CollectionConfig
 {
@@ -38,6 +40,7 @@ class CollectionConfig : public ConfigDialogBase, public Ui_CollectionConfig
 
     private:
         int databaseTypeCode( const QString& type ) const;
+        CollectionSetup* m_collectionSetup;
 };
 
 

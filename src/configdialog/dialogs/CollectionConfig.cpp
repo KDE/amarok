@@ -43,7 +43,7 @@ CollectionConfig::CollectionConfig( QWidget* parent )
     delete dbSetupFrame->kcfg_MySqlPassword2;
 #endif
     collectionFoldersBox->setColumns( 1 );
-    new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
+    m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
     connect( dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
 }
@@ -71,6 +71,8 @@ CollectionConfig::isDefault()
 void
 CollectionConfig::updateSettings()
 {
+    m_collectionSetup->writeConfig();
+
     const int dbType = databaseTypeCode( dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
