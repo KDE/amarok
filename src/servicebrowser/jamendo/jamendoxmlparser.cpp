@@ -305,7 +305,7 @@ void JamendoXmlParser::parseTrack(QDomElement e)
     if ( m_albumArtistMap.contains( currentTrack.albumId() ) )
         currentTrack.setArtistId( m_albumArtistMap.value( currentTrack.albumId() ) );
 
-    debug() << "inserting track with artist id: " << currentTrack.artistId() << endl;
+   // debug() << "inserting track with artist id: " << currentTrack.artistId() << endl;
 
     m_dbHandler->insertTrack( &currentTrack );
     countTransaction();
