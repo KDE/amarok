@@ -51,10 +51,7 @@ TrackPtr
 ServiceSqlRegistry::getTrack( const QStringList &rowData )
 {
     
-    DEBUG_BLOCK
-
-    debug() << "Row length: " << rowData.count() << endl;
-    debug() << "Track row: " << rowData << endl;
+   // DEBUG_BLOCK
 
     int id = rowData[0].toInt();
 
@@ -79,17 +76,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
             albumPtr = m_albumMap.value( track->albumId() );
         else {
 
-            debug() << "Create Album!" << endl;
-
-            debug() << "Row length: " << rowData.count() << endl;
-            //debug() << "Track row: " << rowData << endl;
-
-            debug() << "index: " << index << endl;
-            debug() << "length: " <<  m_metaFactory->getAlbumSqlRowCount() << endl;
-
             QStringList subRows = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
-
-             debug() << "subrows length: " <<  subRows.count() << endl;
 
             albumPtr = m_metaFactory->createAlbum( subRows );
         }
@@ -121,6 +108,8 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
             QStringList subRows = rowData.mid(index, m_metaFactory->getArtistSqlRowCount() );
 
+            debug() << "Artist sub row: " << subRows << endl;
+
             artistPtr = m_metaFactory->createArtist( subRows );
         }
 
@@ -143,13 +132,6 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         if ( m_genreMap.contains( genreId ) )
             genrePtr = m_genreMap.value( genreId );
         else {
-
-            debug() << "Create genre!" << endl;
-            debug() << "Row length: " << rowData.count() << endl;
-            debug() << "Track row: " << rowData << endl;
-
-            debug() << "index: " << index << endl;
-            debug() << "length: " <<  m_metaFactory->getGenreSqlRowCount() << endl;
 
             genrePtr = m_metaFactory->createGenre( rowData.mid(index, m_metaFactory->getGenreSqlRowCount() ) );
         }
