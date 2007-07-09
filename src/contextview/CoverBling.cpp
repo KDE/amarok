@@ -71,7 +71,7 @@ CoverBling::paintGL() //reimplemented
 
     glLoadIdentity();
 
-    //glRotatef( xoffset * 100, 0.0, 1.0, 0.0 );
+    glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
     //glScalef( 1.0, 1.0, zoffset );
     glTranslatef( xoffset, 0.0, zoffset );
 
