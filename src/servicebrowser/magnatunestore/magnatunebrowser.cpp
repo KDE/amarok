@@ -20,12 +20,17 @@
 #include "magnatunebrowser.h"
 
 #include "amarok.h"
-#include "magnatuneinfoparser.h"
+#include "statusbar.h"
+
+#include "ServiceSqlRegistry.h"
+#include "servicesqlcollection.h"
+
+//#include "magnatuneinfoparser.h"
 #include "playlist.h"
 #include "debug.h"
-#include "../../contextview/contextview.h"
-#include "../../contextview/cloudbox.h"
-#include "../../contextview/graphicsitemfader.h"
+//#include "../../contextview/contextview.h"
+//#include "../../contextview/cloudbox.h"
+//#include "../../contextview/graphicsitemfader.h"
 
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
@@ -65,12 +70,12 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     m_currentInfoUrl = "";
 
-    m_purchaseHandler = 0;
-    m_redownloadHandler = 0;
+//    m_purchaseHandler = 0;
+  //  m_redownloadHandler = 0;
 
     m_purchaseInProgress = 0;
 
-    m_currentlySelectedItem = 0;
+//    m_currentlySelectedItem = 0;
 
     m_polished = false;
     //polish( );  //FIXME not happening when shown for some reason
@@ -82,7 +87,7 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
     if ( !item ) return ; // sanity check
 
     debug() << "Magnatune browser: adding single track" << endl;
-    QString url = item->getURL();
+    QString url = item->url();
     Playlist * playlist = Playlist::instance();
     playlist->insertMedia( KUrl( url ) );
 }
@@ -119,10 +124,10 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
 
     m_popupMenu->exec( pos );
 }*/
-
+/*
 void MagnatuneBrowser::addSelectionToPlaylist( )
 {
-    /*QListWidgetItem * selectedItem = m_contentList->selectedItems ()[0]; //FIXME!!!
+    QListWidgetItem * selectedItem = m_contentList->selectedItems ()[0]; //FIXME!!!
 
     switch ( selectedItem->type() )
     {
@@ -134,8 +139,8 @@ void MagnatuneBrowser::addSelectionToPlaylist( )
         break;
     case 1002:
         addTrackToPlaylist( dynamic_cast<MagnatuneListViewTrackItem *>( selectedItem ) );
-    }*/
-}
+    }
+}*/
 
 void MagnatuneBrowser::menuAboutToShow( )
 {
@@ -160,7 +165,7 @@ void MagnatuneBrowser::menuAboutToShow( )
     }*/
 }
 
-void MagnatuneBrowser::purchaseButtonClicked( )
+/*void MagnatuneBrowser::purchaseButtonClicked( )
 {
 
     if ( !m_purchaseInProgress && m_currentlySelectedItem != 0)
@@ -171,9 +176,9 @@ void MagnatuneBrowser::purchaseButtonClicked( )
         else if ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )
             purchaseAlbumContainingSelectedTrack( );
     }
-}
+}*/
 
-void MagnatuneBrowser::purchaseSelectedAlbum( )
+/*void MagnatuneBrowser::purchaseSelectedAlbum( )
 {
 
    m_purchaseInProgress = true;
@@ -190,9 +195,9 @@ void MagnatuneBrowser::purchaseSelectedAlbum( )
 
     if (selectedAlbum)
         m_purchaseHandler->purchaseAlbum( *selectedAlbum );
-}
+}*/
 
-void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
+/*void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 {
 
    m_purchaseInProgress = true;
@@ -218,29 +223,30 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
     MagnatuneAlbum * selectedAlbum = dynamic_cast<MagnatuneAlbum *> ( albumContentItem->getContentUnion().albumValue );
 
     m_purchaseHandler->purchaseAlbum( *selectedAlbum );
-}
+}*/
+
 
 void MagnatuneBrowser::initTopPanel( )
 {
 
     KHBox *hBox = new KHBox( m_topPanel);
     //m_topPanel->setMaximumHeight( 24 );
-    QLabel *label = new QLabel ( i18n( "Genre: " ), hBox );
-    label->setObjectName( "genreLabel" );
+    //QLabel *label = new QLabel ( i18n( "Genre: " ), hBox );
+    //label->setObjectName( "genreLabel" );
 
-    m_genreComboBox = new QComboBox;
-    m_genreComboBox->setParent( hBox );
-    m_genreComboBox->setObjectName( "genreComboBox" );
+   // m_genreComboBox = new QComboBox;
+   // m_genreComboBox->setParent( hBox );
+   // m_genreComboBox->setObjectName( "genreComboBox" );
 
-    updateGenreBox();
+//    updateGenreBox();
 
     m_advancedFeaturesButton = new QPushButton;
     m_advancedFeaturesButton->setParent( hBox );
     m_advancedFeaturesButton->setText( i18n( "Advanced" ) );
     m_advancedFeaturesButton->setObjectName( "advancedButton" );
-    connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
+    //connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
 
-    connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
+    //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
 }
 
 void MagnatuneBrowser::initBottomPanel()
@@ -324,7 +330,7 @@ void MagnatuneBrowser::listDownloadComplete( KJob * downLoadJob )
 
     debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
-    parser->setDbHandler( m_dbHandler );
+    parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance() ->queueJob( parser );
@@ -343,7 +349,7 @@ void MagnatuneBrowser::listDownloadCancelled( )
     m_updateListButton->setEnabled( true );
 }
 
-void MagnatuneBrowser::showInfo( bool show )
+/*void MagnatuneBrowser::showInfo( bool show )
 {
     if ( show )
     {
@@ -355,23 +361,23 @@ void MagnatuneBrowser::showInfo( bool show )
         m_infoBox->widget() ->setMaximumHeight( 0 );
         m_isInfoShown = false;
     }
-}
+}*/
 
-void MagnatuneBrowser::genreChanged( QString genre )
+/*void MagnatuneBrowser::genreChanged( QString genre )
 {
-    debug() << "Genre changed to: " << genre << endl;
-    static_cast< DatabaseDrivenContentModel *>( getModel() )->setGenre( genre );
-}
+  //  debug() << "Genre changed to: " << genre << endl;
+  //  static_cast< DatabaseDrivenContentModel *>( getModel() )->setGenre( genre );
+}*/
 
 
 void MagnatuneBrowser::doneParsing()
 {
 
     debug() << "MagnatuneBrowser: done parsing" << endl;
-    updateGenreBox( );
+//    updateGenreBox( );
 }
 
-void MagnatuneBrowser::updateGenreBox()
+/*void MagnatuneBrowser::updateGenreBox()
 {
     const QStringList genres = m_dbHandler->getAlbumGenres();
 
@@ -381,9 +387,9 @@ void MagnatuneBrowser::updateGenreBox()
 
     oldForeach( genres )
     m_genreComboBox->addItem( ( *it ), -1 );
-}
+}*/
 
-void MagnatuneBrowser::processRedownload( )
+/*void MagnatuneBrowser::processRedownload( )
 {
     debug() << "Process redownload" << endl;
 
@@ -392,9 +398,9 @@ void MagnatuneBrowser::processRedownload( )
         m_redownloadHandler = new MagnatuneRedownloadHandler( this );
     }
     m_redownloadHandler->showRedownloadDialog();
-}
+}*/
 
-void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
+/*void MagnatuneBrowser::purchaseCompleted( bool )
 {
 
     if ( m_purchaseHandler != 0 )
@@ -411,9 +417,9 @@ void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
     //TODO: display some kind of success dialog here?
 
 
-}
+}*/
 
-void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
+/*void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
 
    m_currentlySelectedItem = static_cast<DatabaseDrivenContentItem*>( selectedItem );
    if ( ( m_currentlySelectedItem->getType() == SERVICE_ITEM_ALBUM ) ||  ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )  ) {
@@ -424,9 +430,9 @@ void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem
    }
 
 
-}
+}*/
 
-void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
+/*void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 {
    debug() << "addMoody: " << mood << endl;
    SimpleServiceTrackList tracks = m_dbHandler->getTracksByMood( mood );
@@ -451,10 +457,10 @@ void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 
     qDeleteAll( tracks );
 
-}
+}*/
 
 
-using namespace Context;
+//using namespace Context;
 
 void MagnatuneBrowser::polish( )
 {
@@ -468,34 +474,35 @@ void MagnatuneBrowser::polish( )
 
 
 
-        m_dbHandler = new MagnatuneDatabaseHandler();
+       // m_dbHandler = new MagnatuneDatabaseHandler();
 
 
         initTopPanel( );
         initBottomPanel();
 
-        DatabaseDrivenContentModel * model = new DatabaseDrivenContentModel ( this );
-        MagnatuneInfoParser * infoParser = new MagnatuneInfoParser();
+        QList<int> levels;
+        //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+        levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
-        connect( infoParser, SIGNAL( info( QString ) ), this, SLOT ( infoChanged( QString ) ) );
 
+        ServiceMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
+        ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
+        ServiceSqlCollection * collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
 
-        infoParser->setDbHandler( m_dbHandler );
-
-        model->setDbHandler( m_dbHandler );
-        model->setInfoParser( infoParser );
+        setModel( new SingleCollectionTreeItemModel( collection, levels ) );
+        //model->setInfoParser( infoParser );
 
         //setModel(new MagnatuneContentModel ( this ) );
-        setModel( model );
+        //setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
 
         connect ( this, SIGNAL( selectionChanged ( ServiceModelItemBase * ) ) , this, SLOT( slotSelectionChanged( ServiceModelItemBase * ) ) );
 
-        m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
+       /* m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
-
+    */
 
         m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
         m_infoBox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
@@ -510,7 +517,6 @@ void MagnatuneBrowser::polish( )
 
 
 
-
     }
 
 
@@ -518,7 +524,7 @@ void MagnatuneBrowser::polish( )
 
 }
 
-bool MagnatuneBrowser::updateContextView()
+/*bool MagnatuneBrowser::updateContextView()
 {
 
     MagnatuneMoodMap moodMap = m_dbHandler->getMoodMap( 20 );
@@ -564,7 +570,7 @@ bool MagnatuneBrowser::updateContextView()
     //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
 
     return true;
-}
+}*/
 
 
 

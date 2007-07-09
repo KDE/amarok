@@ -21,8 +21,8 @@
 #ifndef MAGNATUNEPURCHASEDIALOG_H
 #define MAGNATUNEPURCHASEDIALOG_H
 
-#include "magnatunepurchasedialogbase.h"
-#include "magnatunetypes.h"
+//#include "magnatunepurchasedialogbase.h"
+//#include "magnatunetypes.h"
 
 class MagnatunePurchaseDialog : public magnatunePurchaseDialogBase
 {

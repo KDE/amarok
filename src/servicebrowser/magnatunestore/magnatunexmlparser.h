@@ -28,6 +28,7 @@
 #include <qdom.h>
 #include <QString>
 #include <QDomElement>
+#include <QMap>
 
 
 /**
@@ -83,6 +84,8 @@ signals:
     void doneParsing();
 
 private:
+
+    QMap<QString, int> artistNameIdMap;
 
     QString m_currentArtist;
     QString m_currentArtistGenre;

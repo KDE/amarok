@@ -41,7 +41,9 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 
 bool 
 MagnatuneXmlParser::doJob( )
-{
+{   
+    m_pCurrentArtist = 0;
+    m_pCurrentAlbum = 0;
     debug() << "MagnatuneXmlParser::doJob" << endl;
     readConfigFile( m_sFileName );
     return true;
@@ -123,7 +125,7 @@ MagnatuneXmlParser::parseChildren( QDomElement e )
 void 
 MagnatuneXmlParser::parseAlbum( QDomElement e )
 {
-
+    //DEBUG_BLOCK
     QString sElementName;
 
 
@@ -214,12 +216,15 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
     //check if artist already exists, if not, create him/her/them/it
 
 
-    int artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->name() );
+    int artistId;
+    
 
-    if ( artistId == -1 )
+
+    if ( artistNameIdMap.contains( artistName ) )
     {
+        artistId = artistNameIdMap.value( artistName );
+    } else  {
         //does not exist, lets create it...
-
         m_pCurrentArtist = new MagnatuneArtist( artistName );
         m_pCurrentArtist->setDescription( artistDescription );
         m_pCurrentArtist->setPhotoUrl( artistPhotoUrl );
@@ -227,12 +232,15 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
         //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
         artistId = m_dbHandler->insertArtist( m_pCurrentArtist );
+        
         m_nNumberOfArtists++;
 
         if ( artistId == 0 )
         {
             artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->name() );
         }
+
+        artistNameIdMap.insert( m_pCurrentArtist->name() , artistId );
 
         delete m_pCurrentArtist;
     }
@@ -258,12 +266,14 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
     foreach( QString genreName, magnatuneGenres ) {
 
-        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName << endl;
+        debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName << endl;
         ServiceGenre currentGenre( genreName );
-        currentGenre.setAlbumId( m_pCurrentAlbum->id() );
+        currentGenre.setAlbumId( albumId );
         m_dbHandler->insertGenre( &currentGenre );
 
     }
+
+    magnatuneGenres.clear();
 
     delete m_pCurrentAlbum;
 
@@ -275,6 +285,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 void 
 MagnatuneXmlParser::parseTrack( QDomElement e )
 {
+    //DEBUG_BLOCK
     m_currentTrackMoodList.clear();
 
     QString trackName;
@@ -336,6 +347,7 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
 
 void MagnatuneXmlParser::parseMoods(QDomElement e)
 {
+    DEBUG_BLOCK
     QDomNode n = e.firstChild();
 
     QDomElement childElement;

@@ -174,6 +174,7 @@ ServiceSqlQueryMaker::startTrackQuery()
         d->queryType = Private::TRACK;
         d->linkedTables |= Private::TRACKS_TABLE;
         //d->queryFrom = m_metaFactory->tablePrefix() + "_tracks";
+
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
         m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows() + ',' +

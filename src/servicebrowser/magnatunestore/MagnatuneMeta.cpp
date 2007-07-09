@@ -21,6 +21,8 @@
 
 #include "MagnatuneMeta.h"
 
+#include "debug.h"
+
 
 MagnatuneMetaFactory::MagnatuneMetaFactory(const QString & dbPrefix)
     : ServiceMetaFactory( dbPrefix )
@@ -34,6 +36,7 @@ int MagnatuneMetaFactory::getTrackSqlRowCount()
 
 QString MagnatuneMetaFactory::getTrackSqlRows()
 {
+    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
     
     sqlRows += ", ";
@@ -48,17 +51,18 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
 
 int MagnatuneMetaFactory::getAlbumSqlRowCount()
 {
-    return ServiceMetaFactory::getAlbumSqlRowCount() + 2;
+    return ServiceMetaFactory::getAlbumSqlRowCount() + 3;
 }
 
 QString MagnatuneMetaFactory::getAlbumSqlRows()
 {
+    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
 
     sqlRows += ", ";
     sqlRows += tablePrefix() + "_albums.cover_url, ";
-    sqlRows += tablePrefix() + "_albums.launch_year, ";
-    sqlRows += tablePrefix() + "_albums.album_code, ";
+    sqlRows += tablePrefix() + "_albums.year, ";
+    sqlRows += tablePrefix() + "_albums.album_code ";
 
 
     return sqlRows;
@@ -76,11 +80,12 @@ int MagnatuneMetaFactory::getArtistSqlRowCount()
 
 QString MagnatuneMetaFactory::getArtistSqlRows()
 {
+    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
 
     sqlRows += ", ";
     sqlRows += tablePrefix() + "_artists.photo_url, ";
-    sqlRows += tablePrefix() + "_artists.magnatune_url ";
+    sqlRows += tablePrefix() + "_artists.artist_page ";
 
     return sqlRows;
 }
@@ -107,7 +112,8 @@ MagnatuneTrack::MagnatuneTrack( const QString &name )
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
 {
-    m_lofiUrl = resultRow[9];
+    DEBUG_BLOCK
+    m_lofiUrl = resultRow[7];
 }
 
 QString MagnatuneTrack::lofiUrl()
@@ -175,10 +181,12 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbum( resultRow )
 {
+    debug() << "create album from result row: " << resultRow << endl;
+    
 
-    m_coverUrl = resultRow[5];
-    m_launchYear = resultRow[6].toInt();
-    m_albumCode = resultRow[7];
+    m_coverUrl = resultRow[4];
+    m_launchYear = resultRow[5].toInt();
+    m_albumCode = resultRow[6]; 
 
 }
 

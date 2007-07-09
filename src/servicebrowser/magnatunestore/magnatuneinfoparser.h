@@ -23,7 +23,7 @@
 #include "amarok.h"
 #include "../infoparserbase.h"
 #include "magnatunedatabasehandler.h"
-#include "magnatunetypes.h"
+//#include "magnatunetypes.h"
 #include "statusbar.h"
 
 #include <kio/jobclasses.h>
@@ -55,7 +55,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
-    void getInfo( SimpleServiceArtist *artist );
+   // void getInfo( SimpleServiceArtist *artist );
 
     /**
      * Overloaded function
@@ -63,7 +63,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param url The album to get info about
      */
-    void getInfo( SimpleServiceAlbum *album );
+//    void getInfo( SimpleServiceAlbum *album );
 
 
      /**
@@ -72,7 +72,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param url The track to get info about
      */
-    void getInfo( SimpleServiceTrack *album ) {}
+    //void getInfo( SimpleServiceTrack *album ) {}
 
     void setDbHandler( MagnatuneDatabaseHandler * dbHandler );
 

@@ -41,6 +41,7 @@ MagnatuneDatabaseHandler::createDatabase( )
     QString tracksAutoIncrement = "";
     QString albumsAutoIncrement = "";
     QString artistAutoIncrement = "";
+    QString genreAutoIncrement = "";
     QString moodsAutoIncrement = "";
 
    /* if ( sqlDb->type() == DbConnection::postgresql )
@@ -106,6 +107,15 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     result = sqlDb->query( queryString );
 
+    //create genre table
+    queryString = "CREATE TABLE magnatune_genre ("
+                  "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
+                  "name " + sqlDb->textColumnType() + ',' +
+                  "album_id INTEGER" + ");";
+
+    result = sqlDb->query( queryString );
+ 
+
     //create moods table
      queryString = "CREATE TABLE magnatune_moods ("
                   "id INTEGER PRIMARY KEY " + moodsAutoIncrement + ',' +
@@ -127,6 +137,7 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     QStringList result = sqlDb->query( "DROP TABLE magnatune_tracks;" );
     result = sqlDb->query( "DROP TABLE magnatune_albums;" );
     result = sqlDb->query( "DROP TABLE magnatune_artists;" );
+    result = sqlDb->query( "DROP TABLE magnatune_genre;" );
     result = sqlDb->query( "DROP TABLE magnatune_moods;" );
 
    /* if ( sqlDb->type() == DbConnection::postgresql )
@@ -288,7 +299,7 @@ int MagnatuneDatabaseHandler::insertGenre(ServiceGenre * genre)
 {
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
-    queryString = "INSERT INTO jamendo_genre ( album_id, name "
+    queryString = "INSERT INTO magnatune_genre ( album_id, name "
                   ") VALUES ( "
                   + QString::number ( genre->albumId() ) + ", '"
                   + sqlDb->escape( genre->name() ) + "' );";

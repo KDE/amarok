@@ -23,12 +23,12 @@
 
 
 #include "amarok.h"
-#include "magnatunepurchasedialog.h"
-#include "magnatunepurchasehandler.h"
-#include "magnatuneredownloadhandler.h"
+//#include "magnatunepurchasedialog.h"
+//#include "magnatunepurchasehandler.h"
+//#include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"
 #include "magnatunedatabasehandler.h"
-#include "../databasedrivencontentmodel.h"
+//#include "../databasedrivencontentmodel.h"
 #include "../servicebase.h"
 
 #include <kio/job.h>
@@ -68,7 +68,7 @@ public:
      * Do not do expensive initializations before we are actually shown
      */
     void polish();
-    bool updateContextView();
+   // bool updateContextView();
 
 private slots:
 
@@ -81,26 +81,26 @@ private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
-    void purchaseButtonClicked();
+   // void purchaseButtonClicked();
 
     /**
      * Slot for recieving notification from the right click menu that the user
      * has chosen to purchase an album. Starts a purchase
      */
-    void purchaseSelectedAlbum();
+   // void purchaseSelectedAlbum();
 
     /**
      * Slot for recieving notification from the right click menu that the user 
      * has chosen to purchase the album contining the selected track.
      * Starts a purchase
      */
-    void purchaseAlbumContainingSelectedTrack();
+    //void purchaseAlbumContainingSelectedTrack();
 
      /**
      * Slot for recieving notification from the right click menu that the user 
      * has selected "add to playlist" for the currently selected item,
      */
-    void addSelectionToPlaylist();
+    //void addSelectionToPlaylist();
 
     /**
      * Slot for recieving notification that the user has double clicked an 
@@ -134,7 +134,7 @@ private slots:
      * Toggles the info area on and off
      * @param show If true the info box is shown, if false it is hidden
      */
-    void showInfo(bool show);
+    //void showInfo(bool show);
 
     /**
      * Slot for recieving notification when the Magnatune xml file has been downloaded. 
@@ -151,7 +151,7 @@ private slots:
     /**
      * Slot called when the genre combo box selection changes. Triggers an update of the list view.
      */
-    void genreChanged( QString genre);
+   // void genreChanged( QString genre);
 
     /**
      * Slot called when the parsing of the Magnatuin xml file is completed.
@@ -162,27 +162,20 @@ private slots:
     /**
      * Starts the process of redownloading a previously bought album
      */
-    void processRedownload();
+    //void processRedownload();
 
     /**
      * Slot for recieving notifications of completed purchase operations
      * @param success Was the operation a success?
      */
-    void purchaseCompleted( bool success );
-
-
-    /**
-     * Slot for recieving notifications from base class that the selected item has chaged
-     * @param selectedItem The selected item
-     */
-    void slotSelectionChanged( ServiceModelItemBase * selectedItem );
+    //void purchaseCompleted( bool success );
 
   
     /**
      * Adds all tracks with a common mood to the playlist
      * @param mood The mood of the tracks to add
      */
-    void addMoodyTracksToPlaylist( QString mood );
+    //void addMoodyTracksToPlaylist( QString mood );
 
 private:
     /**
@@ -223,7 +216,7 @@ private:
     /**
      * Clears the genre combo box and inserts all genres from the database
      */
-    void updateGenreBox();
+    //void updateGenreBox();
 
 
     static MagnatuneBrowser *s_instance;
@@ -232,9 +225,9 @@ private:
     //MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
-    MagnatunePurchaseHandler  *m_purchaseHandler;
-    MagnatuneRedownloadHandler *m_redownloadHandler;
-    MagnatuneDatabaseHandler * m_dbHandler;
+    //MagnatunePurchaseHandler  *m_purchaseHandler;
+    //MagnatuneRedownloadHandler *m_redownloadHandler;
+    //MagnatuneDatabaseHandler * m_dbHandler;
 
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
@@ -249,7 +242,7 @@ private:
 
     KIO::FileCopyJob * m_listDownloadJob;
 
-    DatabaseDrivenContentItem * m_currentlySelectedItem;
+   // DatabaseDrivenContentItem * m_currentlySelectedItem;
 };
 
 
