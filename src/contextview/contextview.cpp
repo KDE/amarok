@@ -106,6 +106,7 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
 {
+    clear();
 }
 
 void ContextView::showHome()
