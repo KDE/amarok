@@ -35,6 +35,7 @@ macro_optional_find_package(Helix)
 macro_optional_find_package(Mtp)
 macro_optional_find_package(GObject)
 macro_optional_find_package(GStreamer)
+macro_optional_find_package(OpenGL)
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 

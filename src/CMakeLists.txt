@@ -439,8 +439,8 @@ target_link_libraries(amaroklib
     ${KDE4_KDE3SUPPORT_LIBS}
 	${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTOPENGL_LIBRARY}
-    GL
-    GLU
+    ${OPENGL_gl_LIBRARY}
+    ${OPENGL_glu_LIBRARY}
     amarok_taglib
 )
 if(NOT WIN32)
