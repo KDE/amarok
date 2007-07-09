@@ -158,6 +158,25 @@ void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 
             moveBy( 0, diff.y() );
 
+            QList<QGraphicsItem *> collisions = collidingItems();
+            foreach( QGraphicsItem *item, collisions )
+            {
+                // this is moved below half way down the item
+                qreal itemTop     = item->sceneBoundingRect().top();
+                qreal itemBottom  = item->sceneBoundingRect().bottom();
+
+                qreal top    = sceneBoundingRect().top();
+                qreal bottom = sceneBoundingRect().bottom();
+
+                if( top == itemTop )
+                {
+                    if( top > itemTop )
+                        item->moveBy( 0, -sceneBoundingRect().height() + ContextView::BOX_PADDING );
+                    else if( top < itemTop )
+                        item->moveBy( 0, sceneBoundingRect().height() + ContextView::BOX_PADDING );
+                }
+            }
+
             if( flags() & ItemIsSelectable )
                 setSelected( true );
         }
@@ -172,8 +191,14 @@ void ContextBox::toggleVisibility()
 {
     const qreal desiredHeight = m_goingUp ? m_optimumHeight : 0;
     const qreal change = desiredHeight - m_contentRect->rect().height();
-    setContentRectSize( QSizeF( m_contentRect->rect().width(), desiredHeight ), false );
+
     m_goingUp = !m_goingUp;
+
+    foreach( QGraphicsItem *child, m_contentRect->children() )
+    {
+        m_goingUp ? child->hide() : child->show();
+    }
+    setContentRectSize( QSizeF( m_contentRect->rect().width(), desiredHeight ), false );
 
     emit heightChanged( change );
     /*
