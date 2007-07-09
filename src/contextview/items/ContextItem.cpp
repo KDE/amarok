@@ -25,3 +25,4 @@ const QString ContextItem::name()
 }
     
 #include "ContextItem.moc"
+
