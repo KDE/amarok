@@ -59,10 +59,10 @@ CoverBling::initializeGL() //reimplemented
 void
 CoverBling::paintGL() //reimplemented
 {
-    const int mousex = QCursor::pos().x();
+    //const int mousex = QCursor::pos().x();
 
-    float xoffset = ( sin( m_xOffset ) + 1.0 ) / 2;
-    float zoffset = ( sin( m_zOffset ) + 1.0 ) / 4 + 0.2;
+    float xoffset = sin( m_xOffset ) / 2;
+    float zoffset = sin( m_zOffset ) / 3;
     //debug() << xoffset << endl;
     m_xOffset += 0.03;
     m_zOffset += 0.03;
@@ -70,24 +70,22 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 
     //glRotatef( xoffset * 100, 0.0, 1.0, 0.0 );
-    //glRotatef( -(xoffset * 90), 0.0, 0.0, 1.0 );
-    glScalef( zoffset, zoffset, 0.0 );
-    glTranslatef( xoffset, 1.5, 0.0 );
+    //glScalef( 1.0, 1.0, zoffset );
+    glTranslatef( xoffset, 0.0, zoffset );
 
     glBegin (GL_QUADS);
-
-    glTexCoord2f (0.0, 0.0);
-    glVertex3f (-1.0, -1.0, -1.0);
-    glTexCoord2f (1.0, 0.0);
-    glVertex3f (1.0, -1.0, -1.0);
-    glTexCoord2f (1.0, 1.0);
-    glVertex3f (1.0, 1.0, -1.0);
-    glTexCoord2f (0.0, 1.0);
-    glVertex3f (-1.0, 1.0, -1.0);
-
+    {
+        glTexCoord2f (0.0, 0.0);
+        glVertex3f (-1.0, -1.0, -1.0);
+        glTexCoord2f (1.0, 0.0);
+        glVertex3f (1.0, -1.0, -1.0);
+        glTexCoord2f (1.0, 1.0);
+        glVertex3f (1.0, 1.0, -1.0);
+        glTexCoord2f (0.0, 1.0);
+        glVertex3f (-1.0, 1.0, -1.0);
+    }
     glEnd ();
 }
 
@@ -99,8 +97,7 @@ CoverBling::resizeGL( int width, int height )
     glViewport( 0, 0, (GLint)width, (GLint)height );
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 100.0);
-    //glFrustum( 0, width / 2, 0, height, -0.2, 5.3 );
+    glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
     glMatrixMode(GL_MODELVIEW);
 }
 
