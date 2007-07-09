@@ -217,6 +217,7 @@ set(libcontextview_SRCS
     #    contextview/introanimation.cpp
     contextview/ContextScriptManager.cpp
     contextview/ContextObserver.cpp
+    contextview/CoverBling.cpp
     contextview/items/LyricsItem.cpp
     contextview/items/WikipediaItem.cpp
     contextview/items/ContextItem.cpp
@@ -438,6 +439,8 @@ target_link_libraries(amaroklib
     ${KDE4_KDE3SUPPORT_LIBS}
 	${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTOPENGL_LIBRARY}
+    GL
+    GLU
     amarok_taglib
 )
 if(NOT WIN32)

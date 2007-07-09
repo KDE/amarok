@@ -21,6 +21,7 @@
 #include "amarok.h"
 #include "analyzerwidget.h"
 #include "collectionbrowser/CollectionWidget.h"
+#include "contextview/CoverBling.h"
 #include "contextview/contextview.h"
 #include "contextview/items/ContextItemManager.h"
 #include "debug.h"
@@ -226,6 +227,7 @@ void PlaylistWindow::init()
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->addWidget( ContextView::instance() );
+        layout->addWidget( new CoverBling( this ) );
     }
     contextWidget->setMinimumSize( QSize(500,100) );
 
