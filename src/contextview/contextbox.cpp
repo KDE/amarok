@@ -158,25 +158,6 @@ void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 
             moveBy( 0, diff.y() );
 
-            QList<QGraphicsItem *> collisions = collidingItems();
-            foreach( QGraphicsItem *item, collisions )
-            {
-                // this is moved below half way down the item
-                qreal itemTop     = item->sceneBoundingRect().top();
-                qreal itemBottom  = item->sceneBoundingRect().bottom();
-
-                qreal top    = sceneBoundingRect().top();
-                qreal bottom = sceneBoundingRect().bottom();
-
-                if( top == itemTop )
-                {
-                    if( top > itemTop )
-                        item->moveBy( 0, -sceneBoundingRect().height() + ContextView::BOX_PADDING );
-                    else if( top < itemTop )
-                        item->moveBy( 0, sceneBoundingRect().height() + ContextView::BOX_PADDING );
-                }
-            }
-
             if( flags() & ItemIsSelectable )
                 setSelected( true );
         }
