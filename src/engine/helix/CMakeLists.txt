@@ -51,14 +51,11 @@ set(amarok_helixengine_plugin_PART_SRCS
    helix-errors.cpp
    helix-configdialog.cpp
    hxplayercontrol.cpp
-   helixconfig.cpp )
+   )
 
-kde4_add_kcfg_files( amarok_helixengine_PART_SRCS helixconfig.kcfgc )
-
-kde4_automoc(${amarok_helixengine_plugin_PART_SRCS})
+kde4_add_kcfg_files(amarok_helixengine_plugin_PART_SRCS helixconfig.kcfgc)
 
 kde4_add_plugin(amarok_helixengine_plugin WITH_PREFIX ${amarok_helixengine_plugin_PART_SRCS})
-
 
 target_link_libraries(amarok_helixengine_plugin ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_KDEUI_LIBS} amaroklib ${ALSA_LIBS} dl )
