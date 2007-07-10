@@ -227,7 +227,8 @@ void PlaylistWindow::init()
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->addWidget( ContextView::instance() );
-        layout->addWidget( new CoverBling( this ) );
+        if( QGLFormat::hasOpenGL() )
+            layout->addWidget( new CoverBling( this ) );
     }
     contextWidget->setMinimumSize( QSize(500,100) );
 
