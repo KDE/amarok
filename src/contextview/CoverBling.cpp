@@ -52,8 +52,8 @@ CoverBling::initializeGL() //reimplemented
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glShadeModel(GL_SMOOTH); 
-    glEnable( GL_TEXTURE_2D);
-    qglClearColor( Qt::darkBlue );
+    //glEnable( GL_DEPTH_TEST );
+    qglClearColor( Qt::black );
 
     //Display list for drawing a textured rectangle
     m_texturedRectList = glGenLists( 1 );
@@ -107,19 +107,32 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glLoadIdentity();
+    glRotatef( 10, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
     glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
+
+    //draw the ground
+    glBegin( GL_POLYGON );
+        glColor3f( 0.0, 0.0, 0.5 );
+
+        glVertex3f (-1.5, -1.0, -1.5);
+        glVertex3f (1.5, -1.0, -1.5);
+        glVertex3f (1.5, -1.0, 1.5);
+        glVertex3f (-1.5, -1.0, 1.5);
+    glEnd();
+
+    glColor3f( 1.0, 1.0, 1.0 ); //reset color
+    glEnable( GL_TEXTURE_2D);
 
     glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
     glTranslatef( xoffset, 0.0, zoffset );
     
-    glPushMatrix();
-        glCallList( m_texturedRectList );
-    glPopMatrix();
+    //draw the cover
+    glCallList( m_texturedRectList );
 
-    //draw a reflection on the ground
+    //draw reflection on the ground
     glPushMatrix();
-        glScalef( 1.0, -0.3, 1.0 );
-        glTranslatef( 0.0, 4.5, 0.0 );
+        glScalef( 1.0, -0.5, 1.0 );
+        glTranslatef( 0.0, 3.1, 0.0 );
 
         glEnable( GL_BLEND );
         glDepthMask( GL_FALSE );
@@ -131,6 +144,8 @@ CoverBling::paintGL() //reimplemented
         glDepthMask( GL_TRUE );
         glDisable( GL_BLEND );
     glPopMatrix();
+
+    glDisable( GL_TEXTURE_2D);
 }
 
 
