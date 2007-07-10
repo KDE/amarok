@@ -26,7 +26,6 @@
 #include <cerrno>
 #include <iostream>
 
-#include <dirent.h>    //stat
 #include <limits.h>    //PATH_MAX
 #include <stdlib.h>    //realpath
 
@@ -36,6 +35,7 @@
 #include <tstring.h>
 
 #include <QByteArray>
+#include <QDir>
 #include <QDBusReply>
 #include <QFile>
 #include <QTimer>
@@ -122,7 +122,6 @@ CollectionScanner::doJob() //SLOT
 
             if( !dir.endsWith( "/" ) )
                 dir += '/';
-
             readDir( dir, entries );
         }
 
@@ -150,110 +149,42 @@ CollectionScanner::doJob() //SLOT
 }
 
 
+/**
+ * 
+ * @param dir 
+ * @param entries 
+ */
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
-
     // linux specific, but this fits the 90% rule
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
+    QDir d( dir );
+    m_scannedFolders << d.canonicalPath();
 
-    const QByteArray dir8Bit = QFile::encodeName( dir );
-    DIR *d = opendir( dir8Bit );
-    if( d == NULL ) {
-        warning() << "Skipping, " << strerror(errno) << ": " << dir << endl;
-        return;
-    }
-    int dfd = -1;
-#ifdef USE_SOLARIS
-    dfd = d->d_fd;
-#else //USE_SOLARIS
-#ifndef Q_WS_WIN
-    dfd = dirfd(d);
-#else //Q_WS_WIN
-    dfd = -1;
-#endif //Q_WS_WIN
-#endif //USE_SOLARIS
-    if (dfd == -1) {
-	warning() << "Skipping, unable to obtain file descriptor: " << dir << endl;
-	closedir(d);
-	return;
-    }
-
-    struct stat statBuf;
-    struct stat statBuf_symlink;
-    fstat( dfd, &statBuf );
-
-    struct direntry de;
-    memset(&de, 0, sizeof(struct direntry));
-    de.dev = statBuf.st_dev;
-    de.ino = statBuf.st_ino;
-
-    int f = -1;
-    for( int i = 0; i < m_processedDirs.size(); ++i )
-        if( memcmp( &m_processedDirs[i], &de, sizeof( direntry ) ) == 0 ) {
-            f = i; break;
-        }
-
-    if ( ! S_ISDIR( statBuf.st_mode ) || f != -1 ) {
-        debug() << "Skipping, already scanned: " << dir << endl;
-        closedir(d);
-        return;
-    }
+    if( !d.exists() )
+       return;
 
     AttributeMap attributes;
     attributes["path"] = dir;
     writeElement( "folder", attributes );
+    d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
+    foreach( QFileInfo f, d.entryInfoList() )
+    {
+        if( !f.exists() )
+            break;
 
-    m_processedDirs.resize( m_processedDirs.size() + 1 );
-    m_processedDirs[m_processedDirs.size() - 1] = de;
+        if( f.isSymLink() )
+            f = QFileInfo(f.symLinkTarget() );
 
-    for( dirent *ent; ( ent = readdir( d ) ); ) {
-        QByteArray entry (ent->d_name);
-        QByteArray entryname (ent->d_name);
-
-        if ( entry == "." || entry == ".." )
-            continue;
-
-        entry.prepend( dir8Bit );
-
-        if ( stat( entry, &statBuf ) != 0 )
-            continue;
-        if ( lstat( entry, &statBuf_symlink ) != 0 )
-            continue;
-
-        // loop protection
-        if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
-            continue;
-
-        if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entryname[0] != '.' )
+        if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
-            if ( S_ISLNK( statBuf_symlink.st_mode ) ) {
-                char nosymlink[PATH_MAX];
-                if ( realpath( entry, nosymlink ) ) {
-                    debug() << entry << " is a symlink. Using: " << nosymlink << endl;
-                    entry = nosymlink;
-                }
-            }
-            const QString file = QFile::decodeName( entry );
-
-            bool isInCollection = false;
-            if( m_incremental )
-	    {
-            QDBusReply<bool> reply = amarokCollectionInterface->isDirInCollection(file); 
-	    if(reply.isValid())
-		 isInCollection=reply;
-	    }
-            if( !m_incremental || !isInCollection )
-                // we MUST add a '/' after the dirname
-                readDir( file + '/', entries );
+            readDir( f.absoluteFilePath() + '/', entries );
         }
-
-        else if( S_ISREG( statBuf.st_mode ) )
-            entries.append( QFile::decodeName( entry ) );
+        else if( f.isFile() )
+            entries.append( f.absoluteFilePath() );
     }
-
-    closedir( d );
 }
 
 

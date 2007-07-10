@@ -100,13 +100,8 @@ private:
     const bool    m_incremental;
     const bool    m_restart;
     const QString m_logfile;
+    QStringList   m_scannedFolders;
 
-    struct direntry {
-      dev_t dev;
-      ino_t ino;
-    } KDE_PACKED;
-
-    QVector<direntry> m_processedDirs;
     OrgKdeAmarokCollectionInterface *amarokCollectionInterface;
 };
 
