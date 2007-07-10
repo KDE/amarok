@@ -107,17 +107,17 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glLoadIdentity();
-    glRotatef( 10, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
+    glRotatef( 5, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
     glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
 
     //draw the ground
     glBegin( GL_POLYGON );
         glColor3f( 0.0, 0.0, 0.5 );
 
-        glVertex3f (-1.5, -1.0, -1.5);
-        glVertex3f (1.5, -1.0, -1.5);
-        glVertex3f (1.5, -1.0, 1.5);
-        glVertex3f (-1.5, -1.0, 1.5);
+        glVertex3f (-2.0, -1.0, -2.0);
+        glVertex3f (2.0, -1.0, -2.0);
+        glVertex3f (2.0, -1.0, 2.0);
+        glVertex3f (-2.0, -1.0, 2.0);
     glEnd();
 
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
@@ -131,10 +131,10 @@ CoverBling::paintGL() //reimplemented
 
     //draw reflection on the ground
     glPushMatrix();
-        glScalef( 1.0, -0.5, 1.0 );
-        glTranslatef( 0.0, 3.1, 0.0 );
+        glTranslatef( 0.0, -2.0, 0.0 );
+        glScalef( 1.0, -1.0, 1.0 );
 
-        glColor3f( 0.5, 0.5, 0.5 );
+        glColor3f( 0.4, 0.4, 0.4 );
         glEnable( GL_BLEND );
         glDepthMask( GL_FALSE );
         glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
