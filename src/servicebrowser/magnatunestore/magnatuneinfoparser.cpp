@@ -20,25 +20,16 @@
 #include "magnatuneinfoparser.h"
 
 #include "debug.h"
-#include "magnatunedatabasehandler.h"
 #include "statusbar.h"
 
 #include <QFile>
 
-MagnatuneInfoParser::MagnatuneInfoParser(  )
-  : m_dbHandler ( 0 )
 
+void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 {
-}
-
-
-MagnatuneInfoParser::~MagnatuneInfoParser()
-{}
-
-
-void MagnatuneInfoParser::getInfo( SimpleServiceArtist *artist ) {
- 
-    MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist );
+    
+    MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist.data() );
+    if ( magnatuneArtist == 0) return;
 
     debug() << "MagnatuneInfoParser: getInfo about artist" << endl;
 
@@ -46,22 +37,22 @@ void MagnatuneInfoParser::getInfo( SimpleServiceArtist *artist ) {
    /* QString tempFile;
     QString orgHtml;*/
 
-    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->getHomeURL(), false, true );
-    //Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
+    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), false, true );
+    Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob )
     .setDescription( i18n( "Fetching artist info..." ) );
-
 }
 
 
-void MagnatuneInfoParser::getInfo( SimpleServiceAlbum *album )
+void MagnatuneInfoParser::getInfo(AlbumPtr album)
 {
-    MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album );
+
+
+    MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album.data() );
    
-    SimpleServiceArtist * artist = m_dbHandler->getArtistById( album->getArtistId() );
-    const QString artistName = artist->getName();
+    const QString artistName = "Artist";
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
@@ -69,18 +60,18 @@ void MagnatuneInfoParser::getInfo( SimpleServiceAlbum *album )
     infoHtml += "<div align=\"center\"><strong>";
     infoHtml += artistName;
     infoHtml += "</strong><br><em>";
-    infoHtml += magnatuneAlbum->getName();
+    infoHtml += magnatuneAlbum->name();
     infoHtml += "</em><br><br>";
-    infoHtml += "<img src=\"" + magnatuneAlbum->getCoverURL() +
+    infoHtml += "<img src=\"" + magnatuneAlbum->coverUrl() +
                 "\" align=\"middle\" border=\"1\">";
 
-    infoHtml += "<br><br>Genre: " + magnatuneAlbum->getMp3Genre();
-    infoHtml += "<br>Release Year: " + QString::number( magnatuneAlbum->getLaunchDate().year() );
+    infoHtml += "<br><br>Genre: ";// + magnatuneAlbum->
+    infoHtml += "<br>Release Year: " + QString::number( magnatuneAlbum->launchYear() );
 
-    if ( !magnatuneAlbum->getDescription().isEmpty() ) {
+    if ( !magnatuneAlbum->description().isEmpty() ) {
  
         //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'" << endl;
-       infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->getDescription();
+        infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->description();
 
     }
 
@@ -89,6 +80,14 @@ void MagnatuneInfoParser::getInfo( SimpleServiceAlbum *album )
 
     emit ( info( infoHtml ) );
 }
+
+void MagnatuneInfoParser::getInfo(TrackPtr track)
+{
+    return;
+}
+
+
+
 
 void
 MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
@@ -146,18 +145,6 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
 
     return infoHtml;
-}
-
-/*void MagnatuneInfoParser::resetScrollBars( )
-{
-    //note: the scrollbar methods never return 0
-    view()->horizontalScrollBar()->setValue(0);
-    view()->verticalScrollBar()->setValue(0);
-}*/
-
-void MagnatuneInfoParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
-{
-    m_dbHandler = dbHandler;
 }
 
 

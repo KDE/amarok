@@ -17,84 +17,49 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#ifndef MAGNATUNEAINFOPARSER_H
-#define MAGNATUNEAINFOPARSER_H
+#ifndef MAGNATUNEINFOPARSER_H
+#define MAGNATUNEINFOPARSER_H
 
-#include "amarok.h"
-#include "../infoparserbase.h"
-#include "magnatunedatabasehandler.h"
-//#include "magnatunetypes.h"
-#include "statusbar.h"
+#include "infoparserbase.h"
 
-#include <kio/jobclasses.h>
+#include "MagnatuneMeta.h"
+
 #include <kio/job.h>
+#include <kio/jobclasses.h>
+
+
 
 /**
-A helper class to extract info about magnatune artists and albums
- 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+Handles the fetching and processing of Jamendo specific information for meta items
+
+	@author 
 */
 class MagnatuneInfoParser : public InfoParserBase
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    /**
-     * Constructor
-     */
-    MagnatuneInfoParser(  );
+    MagnatuneInfoParser() {};
 
-    /**
-     * Destructor
-     * @return Nothing
-     */
-    ~MagnatuneInfoParser();
-
-    /**
-     * Fetches info about artist and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param artist The artist to get info about
-     */
-   // void getInfo( SimpleServiceArtist *artist );
-
-    /**
-     * Overloaded function
-     * Fetches info about album and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The album to get info about
-     */
-//    void getInfo( SimpleServiceAlbum *album );
+    ~MagnatuneInfoParser() {};
 
 
-     /**
-     * Overloaded function
-     * Fetches info about track and emits infoReady( Qstring ) 
-     * with a ready to show html page when the info is ready
-     * @param url The track to get info about
-     */
-    //void getInfo( SimpleServiceTrack *album ) {}
+    virtual void getInfo( ArtistPtr artist );
+    virtual void getInfo( AlbumPtr album );
+    virtual void getInfo( TrackPtr track );
 
-    void setDbHandler( MagnatuneDatabaseHandler * dbHandler );
+private:
+
+    KJob * m_infoDownloadJob;
+    QString extractArtistInfo( const QString &artistPage );
+private slots:
+
+    void artistInfoDownloadComplete( KJob *downLoadJob );
 
 signals:
 
     void info( QString );
-
-private:
-      
-    KIO::StoredTransferJob *m_infoDownloadJob;
-    MagnatuneDatabaseHandler * m_dbHandler;
-
-    QString extractArtistInfo( const QString &artistPage );
-
-protected slots:
-
-    /**
-     * Slot for recieving notifications from the download KIO::Job
-     * @param downLoadJob The job that has completed
-     */
-    void artistInfoDownloadComplete( KJob *downLoadJob);
-
 };
 
 #endif
+

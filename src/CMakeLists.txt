@@ -169,7 +169,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
 # MAGNATUNESTORE
 #####################################################################
 set(libmagnatunestore_SRCS
-	#servicebrowser/magnatunestore/magnatuneinfoparser.cpp
+	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
 	servicebrowser/magnatunestore/magnatunebrowser.cpp
 	#servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
 	#servicebrowser/magnatunestore/magnatunepurchasedialog.cpp

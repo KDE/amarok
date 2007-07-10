@@ -25,7 +25,7 @@
 #include "ServiceSqlRegistry.h"
 #include "servicesqlcollection.h"
 
-//#include "magnatuneinfoparser.h"
+#include "magnatuneinfoparser.h"
 #include "playlist.h"
 #include "debug.h"
 //#include "../../contextview/contextview.h"
@@ -488,6 +488,11 @@ void MagnatuneBrowser::polish( )
         ServiceMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
         ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
         ServiceSqlCollection * collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
+
+        m_infoParser = new MagnatuneInfoParser();
+
+        connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
+
 
         setModel( new SingleCollectionTreeItemModel( collection, levels ) );
         //model->setInfoParser( infoParser );
