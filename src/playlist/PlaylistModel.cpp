@@ -75,16 +75,19 @@ Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
     TrackPtr track = m_tracks.at( row );
-    if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
+    /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
     {
         QFont original;
         original.setBold( true );
         return original;
     }
-    else if ( role == TrackRole )
+    else*/ 
+    if( role == TrackRole && ( row != -1 ) && track )
     {
         return QVariant::fromValue( track );
     }
+    else
+        return QVariant();
    /* else
     {
         switch( role )
@@ -360,6 +363,7 @@ Model::saveM3U( const QString &path, bool relative ) const
 //         lengths << (*it)->length();
 //     }
 //     return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
+    return false;
 }
 
 Qt::ItemFlags

@@ -18,6 +18,7 @@
 #include <QModelIndex>
 #include <QPainter>
 #include <QPixmap>
+#include <QRectF>
 
 using namespace PlaylistNS;
 
@@ -34,14 +35,22 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     painter->save();
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());
+
     QGraphicsScene scene;
 
     Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
+    if( !track )
+        return;
     QString album;
+    QPixmap albumPixmap;
     if( track->album() )
+    {
         album = track->album()->name();
+        albumPixmap =  track->album()->image( 50 );
+    }
     QString prettyLength = MetaBundle::prettyTime( track->length(), false );
-    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem( track->album()->image( 50 ), 0, &scene );
+    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem(albumPixmap, 0 );
+    pixmap->setPos( 0.0, 1.0 );
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
     QGraphicsTextItem* rightText = new QGraphicsTextItem();
     leftText->setFont( QFont() );
@@ -57,6 +66,8 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
         rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
         delete fm;
     }
+    if (option.state & QStyle::State_Selected)
+        scene.addRect( 0.0, 0.0, option.rect.width(), option.rect.height(), QPen( option.palette.highlight() ) );
     scene.addItem( pixmap );
     scene.addItem( leftText );
     scene.addItem( rightText );
