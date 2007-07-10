@@ -16,8 +16,6 @@ kde4_add_ui3_files(amarok_xine-engine_PART_SRCS
 
 kde4_add_kcfg_files(amarok_xine-engine_PART_SRCS xinecfg.kcfgc)
 
-kde4_automoc(${amarok_xine-engine_PART_SRCS})
-
 kde4_add_plugin(amarok_xine-engine WITH_PREFIX ${amarok_xine-engine_PART_SRCS})
 
 

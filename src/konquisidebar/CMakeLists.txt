@@ -6,8 +6,6 @@ include_directories( ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore ${KDE4_INCLUDE_DI
 
 set(konqsidebar_universalamarok_PART_SRCS universalamarok.cpp )
 
-kde4_automoc(${konqsidebar_universalamarok_PART_SRCS})
-
 #kde4_add_dcop_stubs(konqsidebar_universalamarok_PART_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcopiface.h )
 
 

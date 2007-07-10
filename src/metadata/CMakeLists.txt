@@ -120,8 +120,6 @@ SET(amarok_taglib_SRCS
         ${libtagtrueaudio_SRCS}
 )
 
-kde4_automoc(${amarok_taglib_SRCS})
-
 kde4_add_library(amarok_taglib SHARED ${amarok_taglib_SRCS})
 
 set_target_properties(amarok_taglib PROPERTIES VERSION 1.0.0 SOVERSION 1 )

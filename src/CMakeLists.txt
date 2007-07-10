@@ -410,8 +410,6 @@ set(amaroklib_LIB_SRCS
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 
-kde4_automoc(${amaroklib_LIB_SRCS})
-
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   firstrunwizard.ui
@@ -460,8 +458,6 @@ install(TARGETS amaroklib DESTINATION ${LIB_INSTALL_DIR} )
 #####################################################################
 
 set(amarok_SRCS main.cpp )
-
-kde4_automoc(${amarok_SRCS})
 
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})

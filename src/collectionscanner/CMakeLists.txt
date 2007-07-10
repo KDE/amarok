@@ -12,11 +12,9 @@ set(amarok_collection_xml  ${CMAKE_CURRENT_SOURCE_DIR}/../amarokcore/org.kde.ama
 QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} amarok_collection_interface )
 
 
-kde4_automoc(${amarokcollectionscanner_SRCS})
-
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} amarok_taglib amaroklib ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
+target_link_libraries(amarokcollectionscanner   amarok_taglib amaroklib ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
 
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 

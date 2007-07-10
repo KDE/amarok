@@ -2,8 +2,6 @@
 
 set(amarok_libvisual_SRCS libvisual.cpp )
 
-kde4_automoc(${amarok_libvisual_SRCS})
-
 kde4_add_executable(amarok_libvisual ${amarok_libvisual_SRCS})
 
 target_link_libraries(amarok_libvisual  ${KDE4_KDECORE_LIBS} )

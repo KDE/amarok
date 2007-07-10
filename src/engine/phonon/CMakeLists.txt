@@ -10,8 +10,6 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 set(amarok_phonon-engine_SRCS phonon-engine.cpp )
 
-kde4_automoc(${amarok_phonon-engine_SRCS})
-
 kde4_add_plugin(amarok_phonon-engine WITH_PREFIX ${amarok_phonon-engine_SRCS})
 
 target_link_libraries(amarok_phonon-engine  ${KDE4_KDECORE_LIBS} 
