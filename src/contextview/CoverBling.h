@@ -34,10 +34,10 @@ class CoverBling : public QGLWidget
         void initializeGL();
         void resizeGL( int width, int height );
         void paintGL();
-        void drawTexturedRect();
 
     private:
         GLuint m_textureId;
+        GLuint m_texturedRectList;
         float m_xOffset;
         float m_zOffset;
         int m_textureWidth;

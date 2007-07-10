@@ -54,6 +54,21 @@ CoverBling::initializeGL() //reimplemented
     glShadeModel(GL_SMOOTH); 
     glEnable( GL_TEXTURE_2D);
     qglClearColor( Qt::darkBlue );
+
+    //Display list for drawing a textured rectangle
+    m_texturedRectList = glGenLists( 1 );
+    glNewList( m_texturedRectList, GL_COMPILE );
+        glBegin (GL_QUADS);
+            glTexCoord2f (0.0, 0.0);
+            glVertex3f (-1.0, -1.0, -1.0);
+            glTexCoord2f (1.0, 0.0);
+            glVertex3f (1.0, -1.0, -1.0);
+            glTexCoord2f (1.0, 1.0);
+            glVertex3f (1.0, 1.0, -1.0);
+            glTexCoord2f (0.0, 1.0);
+            glVertex3f (-1.0, 1.0, -1.0);
+        glEnd ();
+    glEndList();
 }
 
 void
@@ -98,7 +113,7 @@ CoverBling::paintGL() //reimplemented
     glTranslatef( xoffset, 0.0, zoffset );
     
     glPushMatrix();
-        drawTexturedRect();
+        glCallList( m_texturedRectList );
     glPopMatrix();
 
     //draw a reflection on the ground
@@ -111,26 +126,11 @@ CoverBling::paintGL() //reimplemented
         glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
         //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         
-        drawTexturedRect();
+        glCallList( m_texturedRectList );
 
         glDepthMask( GL_TRUE );
         glDisable( GL_BLEND );
     glPopMatrix();
-}
-
-void
-CoverBling::drawTexturedRect()
-{
-    glBegin (GL_QUADS);
-        glTexCoord2f (0.0, 0.0);
-        glVertex3f (-1.0, -1.0, -1.0);
-        glTexCoord2f (1.0, 0.0);
-        glVertex3f (1.0, -1.0, -1.0);
-        glTexCoord2f (1.0, 1.0);
-        glVertex3f (1.0, 1.0, -1.0);
-        glTexCoord2f (0.0, 1.0);
-        glVertex3f (-1.0, 1.0, -1.0);
-    glEnd ();
 }
 
 
