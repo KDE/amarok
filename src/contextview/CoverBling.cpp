@@ -57,39 +57,6 @@ CoverBling::initializeGL() //reimplemented
 }
 
 void
-CoverBling::paintGL() //reimplemented
-{
-    //const int mousex = QCursor::pos().x();
-
-    float xoffset = sin( m_xOffset ) / 2;
-    float zoffset = sin( m_zOffset ) / 3;
-    //debug() << xoffset << endl;
-    m_xOffset += 0.03;
-    m_zOffset += 0.03;
-
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    glLoadIdentity();
-    glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
-
-    glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
-    glTranslatef( xoffset, 0.0, zoffset );
-
-    glBegin (GL_QUADS);
-    {
-        glTexCoord2f (0.0, 0.0);
-        glVertex3f (-1.0, -1.0, -1.0);
-        glTexCoord2f (1.0, 0.0);
-        glVertex3f (1.0, -1.0, -1.0);
-        glTexCoord2f (1.0, 1.0);
-        glVertex3f (1.0, 1.0, -1.0);
-        glTexCoord2f (0.0, 1.0);
-        glVertex3f (-1.0, 1.0, -1.0);
-    }
-    glEnd ();
-}
-
-void
 CoverBling::resizeGL( int width, int height ) //reimplemented
 {
     DEBUG_BLOCK
@@ -109,6 +76,52 @@ CoverBling::resizeGL( int width, int height ) //reimplemented
         m_aspectX = 1.0;
         m_aspectY = 1.0 * ratio;
     }
+}
+
+void
+CoverBling::paintGL() //reimplemented
+{
+    //const int mousex = QCursor::pos().x();
+
+    float xoffset = sin( m_xOffset ) / 2;
+    float zoffset = sin( m_zOffset ) / 3;
+    //debug() << xoffset << endl;
+    m_xOffset += 0.03;
+    m_zOffset += 0.03;
+
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    glLoadIdentity();
+    glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
+
+    glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
+    glTranslatef( xoffset, 0.0, zoffset );
+    
+    glPushMatrix();
+        drawTexturedRect();
+    glPopMatrix();
+
+    //draw a reflection on the ground
+    glPushMatrix();
+        glScalef( 1.0, -0.3, 1.0 );
+        glTranslatef( 0.0, 4.5, 0.0 );
+        drawTexturedRect();
+    glPopMatrix();
+}
+
+void
+CoverBling::drawTexturedRect()
+{
+    glBegin (GL_QUADS);
+        glTexCoord2f (0.0, 0.0);
+        glVertex3f (-1.0, -1.0, -1.0);
+        glTexCoord2f (1.0, 0.0);
+        glVertex3f (1.0, -1.0, -1.0);
+        glTexCoord2f (1.0, 1.0);
+        glVertex3f (1.0, 1.0, -1.0);
+        glTexCoord2f (0.0, 1.0);
+        glVertex3f (-1.0, 1.0, -1.0);
+    glEnd ();
 }
 
 
