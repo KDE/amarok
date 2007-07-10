@@ -27,7 +27,6 @@ kde4_add_ui3_files(amarok_gst10engine_plugin_PART_SRCS gstconfigdialogbase.ui )
 
 kde4_add_kcfg_files( amarok_gst10engine_PART_SRCS gstconfig.kcfgc )
 
-kde4_automoc(${amarok_gst10engine_plugin_PART_SRCS})
 
 kde4_add_plugin(amarok_gst10engine_plugin WITH_PREFIX
 ${amarok_gst10engine_plugin_PART_SRCS})

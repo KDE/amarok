@@ -23,7 +23,6 @@ set(amarok_collection-sqlcollection_PART_SRCS
     XesamDbus.cpp
 	XesamCollectionBuilder.cpp )
 
-kde4_automoc(${amarok_collection-sqlcollection_PART_SRCS})
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 
