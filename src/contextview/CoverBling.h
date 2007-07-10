@@ -41,6 +41,8 @@ class CoverBling : public QGLWidget
         float m_zOffset;
         int m_textureWidth;
         int m_textureHeight;
+        float m_aspectX;
+        float m_aspectY;
 };
 
 

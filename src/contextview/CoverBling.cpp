@@ -70,9 +70,9 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glLoadIdentity();
+    glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
 
     glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
-    //glScalef( 1.0, 1.0, zoffset );
     glTranslatef( xoffset, 0.0, zoffset );
 
     glBegin (GL_QUADS);
@@ -90,7 +90,7 @@ CoverBling::paintGL() //reimplemented
 }
 
 void
-CoverBling::resizeGL( int width, int height )
+CoverBling::resizeGL( int width, int height ) //reimplemented
 {
     DEBUG_BLOCK
 
@@ -99,6 +99,16 @@ CoverBling::resizeGL( int width, int height )
     glLoadIdentity();
     glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
     glMatrixMode(GL_MODELVIEW);
+        
+    // Get the aspect ratio of the screen
+    const float ratio = (float)width / (float)height;
+    if ( ratio >= 1.0 ) {
+        m_aspectX = 1.0 / ratio;
+        m_aspectY = 1.0;
+    } else {
+        m_aspectX = 1.0;
+        m_aspectY = 1.0 * ratio;
+    }
 }
 
 
