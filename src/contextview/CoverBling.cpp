@@ -53,7 +53,7 @@ CoverBling::initializeGL() //reimplemented
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glShadeModel(GL_SMOOTH); 
     glEnable( GL_TEXTURE_2D);
-    qglClearColor( Qt::blue );
+    qglClearColor( Qt::darkBlue );
 }
 
 void
@@ -105,7 +105,16 @@ CoverBling::paintGL() //reimplemented
     glPushMatrix();
         glScalef( 1.0, -0.3, 1.0 );
         glTranslatef( 0.0, 4.5, 0.0 );
+
+        glEnable( GL_BLEND );
+        glDepthMask( GL_FALSE );
+        glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
+        //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        
         drawTexturedRect();
+
+        glDepthMask( GL_TRUE );
+        glDisable( GL_BLEND );
     glPopMatrix();
 }
 
