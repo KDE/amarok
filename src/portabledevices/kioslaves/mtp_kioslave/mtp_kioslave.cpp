@@ -17,36 +17,74 @@
  */
 
 #include "mtp_kioslave.h"
+
+#include <QCoreApplication>
+#include <QString>
+
+#include <kcomponentdata.h>
 #include <kdebug.h>
+#include <kio/ioslave_defaults.h>
+
+using namespace KIO;
+
+extern "C" int KDE_EXPORT kdemain( int argc, char **argv )
+{
+    QCoreApplication app( argc, argv );
+    KComponentData( "kio_mtp", "kdelibs4" );
+    (void) KGlobal::locale();
+
+    if( argc != 4 )
+    {
+        fprintf(stderr, "Usage: kio_mtp protocol domain-socket1 domain-socket2\n" );
+        exit( -1 );
+    }
+
+    MTPProtocol slave( argv[1], argv[2], argv[3] );
+    slave.dispatchLoop();
+    return 0;
+}
 
 MTPProtocol::MTPProtocol( const QByteArray &protocol, const QByteArray &pool,
                           const QByteArray &app )
                         : SlaveBase( protocol, pool, app )
+                        , m_device( 0 )
                         , m_deviceCount( 0 )
 {
+    kDebug() << "Creating MTPProtocol kioslave" << endl;
 
     LIBMTP_Init();
 
-    if( LIBMTP_Get_Connected_Devices( &m_deviceList )  != LIBMTP_ERROR_NONE )
-        error( KIO::INTERNAL, "Could not get a connected device list from libmtp." );
-    if( m_deviceCount = !LIBMTP_Number_Devices_In_List( m_deviceList ) == 0 )
-        error( KIO::INTERNAL, "libmtp found no devices." );
+    if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
+        error( KIO::ERR_INTERNAL, "Could not get a connected device list from libmtp." );
+    m_deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );
+    if( m_deviceCount == 0 )
+        error( KIO::ERR_INTERNAL, "libmtp found no devices." );
 }
 
 MTPProtocol::~MTPProtocol()
 {
-    if( m_deviceCount )
-        LIBMTP_Release_Device_List( m_deviceList );
 }
 
+void
 MTPProtocol::setHost( const QString &host, quint16 port,
                       const QString &user, const QString &pass )
 {
-    foreach( LIBMTP_mtpdevice_t *currdevice, m_deviceList )
+    Q_UNUSED(port);
+    Q_UNUSED(user);
+    Q_UNUSED(pass);
+    kDebug() << "host = " << host << endl;
+    LIBMTP_mtpdevice_t *currdevice;
+    for( currdevice = m_deviceList; currdevice != NULL; currdevice = currdevice->next )
     {
-        if( LIBMTP_Get_Serialnumber( currdevice ) == host )
-            m_device = currdevice;    
+        kDebug() << "currdevice serial number = " << LIBMTP_Get_Serialnumber( currdevice ) << endl;
+        if( QString( LIBMTP_Get_Serialnumber( currdevice ) ).compare( host, Qt::CaseInsensitive ) == 0 )
+            m_device = currdevice;
+        else
+            LIBMTP_Release_Device( currdevice );
     }
+
+    if( m_device )
+        kDebug() << "FOUND THE MTP DEVICE WE WERE LOOKING FOR!" << endl;
 }
 
 #include "mtp_kioslave.moc"

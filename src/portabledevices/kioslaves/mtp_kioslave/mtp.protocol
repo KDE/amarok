@@ -1,0 +1,8 @@
+[Protocol]
+exec=kio_mtp
+protocol=mtp
+input=none
+output=filesystem
+reading=true
+determineMimetypeFromExtension=true
+

@@ -18,10 +18,12 @@
 #ifndef MTP_KIOSLAVE_H
 #define MTP_KIOSLAVE_H
 
+#include <QtCore/QByteRef>
+
 #include <kurl.h>
 #include <kio/slavebase.h>
 
-#include <libmtp.h>
+#include "libmtp.h"
 
 class MTPProtocol : public QObject, public KIO::SlaveBase
 {
@@ -41,7 +43,7 @@ class MTPProtocol : public QObject, public KIO::SlaveBase
         LIBMTP_mtpdevice_t *m_device;
         quint32 m_deviceCount;
 
-}
+};
 
 #endif /* MTP_KIOSLAVE_H */
 
