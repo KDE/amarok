@@ -134,6 +134,7 @@ CoverBling::paintGL() //reimplemented
         glScalef( 1.0, -0.5, 1.0 );
         glTranslatef( 0.0, 3.1, 0.0 );
 
+        glColor3f( 0.5, 0.5, 0.5 );
         glEnable( GL_BLEND );
         glDepthMask( GL_FALSE );
         glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
