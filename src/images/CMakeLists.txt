@@ -5,6 +5,11 @@ add_subdirectory( icons )
 
 install(
         FILES
+        album_cover_1.jpg
+        album_cover_2.jpg
+        album_cover_3.jpg
+        album_cover_4.jpg
+        album_cover_5.jpg
         amarok_icon.svg
         back_stars_grey.png
         currenttrack_bar_left.png
