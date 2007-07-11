@@ -11,7 +11,7 @@ set(konqsidebar_universalamarok_PART_SRCS universalamarok.cpp )
 
 kde4_add_plugin(konqsidebar_universalamarok ${konqsidebar_universalamarok_PART_SRCS})
 
-target_link_libraries(konqsidebar_universalamarok  konqsidebarplugin ${KDE4_KHTML_LIBS} ${KDE4_KPARTS_LIBS} )
+target_link_libraries(konqsidebar_universalamarok  konqsidebarplugin ${KDE4_KHTML_LIBS} )
 
 install(TARGETS konqsidebar_universalamarok DESTINATION ${PLUGIN_INSTALL_DIR} )
 
