@@ -889,17 +889,24 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
     m_critical_mutex.lock();
     LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
     metadata->name = qstrdup( item->text( 0 ).utf8() );
-    uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * item->childCount() );
-    uint32_t i = 0;
-    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
-            it;
-            it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
-    {
-        tracks[i] = it->track()->id();
-        i++;
+    const int trackCount = item->childCount();
+    if (trackCount > 0) {
+        uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * trackCount );
+        uint32_t i = 0;
+        for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
+                it;
+                it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
+        {
+            tracks[i] = it->track()->id();
+            i++;
+        }
+        metadata->tracks = tracks;
+        metadata->no_tracks = i;
+    } else {
+        debug() << "no tracks available for playlist " << metadata->name
+	    << endl;
+	metadata->no_tracks = 0;
     }
-    metadata->tracks = tracks;
-    metadata->no_tracks = i;
 
     QString genericError = i18n( "Could not save playlist." );
 
