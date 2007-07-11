@@ -45,7 +45,9 @@ CoverBling::initializeGL() //reimplemented
 {
     DEBUG_BLOCK
 
-    const QImage image( KStandardDirs().findResource("data", "amarok/images/album_cover_1.jpg") );
+    QImage image( KStandardDirs().findResource("data", "amarok/images/album_cover_1.jpg") );
+    image = image.scaled( 256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
     m_textureWidth = image.width();
     m_textureHeight = image.height();
     m_textureId = bindTexture( image );
