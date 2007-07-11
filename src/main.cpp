@@ -106,7 +106,7 @@ int main( int argc, char *argv[] )
     KUniqueApplication::addCmdLineOptions();
 
     if (!KUniqueApplication::start()) {
-        fprintf(stderr, "myAppName is already running!\n");
+        fprintf(stderr, "Amarok is already running!\n");
         return 0;
     }
 
