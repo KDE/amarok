@@ -38,6 +38,7 @@ class CoverBling : public QGLWidget
     private:
         GLuint m_textureId;
         GLuint m_texturedRectList;
+        GLuint m_texturedRectReflectedList;
         float m_xOffset;
         float m_zOffset;
         int m_textureWidth;

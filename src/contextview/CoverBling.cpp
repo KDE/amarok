@@ -69,6 +69,36 @@ CoverBling::initializeGL() //reimplemented
             glVertex3f (-1.0, 1.0, -1.0);
         glEnd ();
     glEndList();
+
+    //Display list for drawing reflection of the textured rectangle
+    m_texturedRectReflectedList = glGenLists( 1 );
+    glNewList( m_texturedRectReflectedList, GL_COMPILE );
+        glTranslatef( 0.0, -2.0, 0.0 );
+        glScalef( 1.0, -1.0, 1.0 );
+
+        glEnable( GL_BLEND );
+        glDepthMask( GL_FALSE );
+        //glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        
+        glBegin (GL_QUADS);
+            glTexCoord2f (0.0, 0.0);
+            glColor4f( 1.0, 1.0, 1.0, 0.3 );
+            glVertex3f (-1.0, -1.0, -1.0);
+            glColor4f( 1.0, 1.0, 1.0, 0.3 );
+            glTexCoord2f (1.0, 0.0);
+            glVertex3f (1.0, -1.0, -1.0);
+            glColor4f( 1.0, 1.0, 1.0, 0.02 );
+            glTexCoord2f (1.0, 1.0);
+            glVertex3f (1.0, 1.0, -1.0);
+            glColor4f( 1.0, 1.0, 1.0, 0.02 );
+            glTexCoord2f (0.0, 1.0);
+            glVertex3f (-1.0, 1.0, -1.0);
+        glEnd ();
+
+        glDepthMask( GL_TRUE );
+        glDisable( GL_BLEND );
+    glEndList();
 }
 
 void
@@ -112,8 +142,6 @@ CoverBling::paintGL() //reimplemented
 
     //draw the ground
     glBegin( GL_POLYGON );
-        //glColor3f( 0.0, 0.0, 0.5 );
-
         glColor3f( 0.0, 0.0, 0.5 );
         glVertex3f (-2.0, -1.0, -2.0);
         glColor3f( 1.0, 0.0, 0.5 );
@@ -135,31 +163,7 @@ CoverBling::paintGL() //reimplemented
 
     //draw reflection on the ground
     glPushMatrix();
-        glTranslatef( 0.0, -2.0, 0.0 );
-        glScalef( 1.0, -1.0, 1.0 );
-
-        glEnable( GL_BLEND );
-        glDepthMask( GL_FALSE );
-        //glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        
-        glBegin (GL_QUADS);
-            glTexCoord2f (0.0, 0.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.3 );
-            glVertex3f (-1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.3 );
-            glTexCoord2f (1.0, 0.0);
-            glVertex3f (1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.02 );
-            glTexCoord2f (1.0, 1.0);
-            glVertex3f (1.0, 1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.02 );
-            glTexCoord2f (0.0, 1.0);
-            glVertex3f (-1.0, 1.0, -1.0);
-        glEnd ();
-
-        glDepthMask( GL_TRUE );
-        glDisable( GL_BLEND );
+        glCallList( m_texturedRectReflectedList );
     glPopMatrix();
 
     glColor4f( 1.0, 1.0, 1.0, 1.0 );
