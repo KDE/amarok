@@ -980,7 +980,7 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
             if( item )
             {
                 MtpMediaItem *parent = dynamic_cast<MtpMediaItem *> ( item->parent() );
-                if( parent->type() == MediaItem::PLAYLIST ) {
+                if( parent && parent->type() == MediaItem::PLAYLIST ) {
                     delete( item );
                     playlistFromItem( parent );
                 }

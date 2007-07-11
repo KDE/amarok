@@ -389,6 +389,10 @@ NjbMediaDevice::downloadToCollection()
         if( (it->type() == MediaItem::TRACK) )
         {
             NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
+	    if (!auxItem) {
+		debug() << "Dynamic cast to NJB media item failed. " << endl;
+		return -1;
+	    }
             QString track_id;
             track_id.setNum( auxItem->track()->id() );
             filepath = path + auxItem->bundle()->url().path();
@@ -805,6 +809,11 @@ NjbMediaDevice::expandItem( QListViewItem *item )
         delete item->firstChild();
 
     NjbMediaItem *it = dynamic_cast<NjbMediaItem *>( item );
+
+    if (!it) {
+	debug() << "Dynamic cast to NJB media item failed" << endl;
+	return;
+    }
 
     switch( it->type() )
     {
