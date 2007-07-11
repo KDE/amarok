@@ -27,7 +27,7 @@
 
 
 CoverBling::CoverBling( QWidget* parent )
-        : QGLWidget( parent )
+        : QGLWidget( QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel), parent )
         , m_xOffset( 0.0 )
         , m_zOffset( M_PI / 2 )
 {
@@ -54,6 +54,7 @@ CoverBling::initializeGL() //reimplemented
     glShadeModel(GL_SMOOTH); 
     //glEnable( GL_DEPTH_TEST );
     qglClearColor( Qt::black );
+    glEnable( GL_MULTISAMPLE ); //enable anti aliasing
 
     //Display list for drawing a textured rectangle
     m_texturedRectList = glGenLists( 1 );
