@@ -45,7 +45,7 @@ CoverBling::initializeGL() //reimplemented
 {
     DEBUG_BLOCK
 
-    const QImage image( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg") );
+    const QImage image( KStandardDirs().findResource("data", "amarok/images/album_cover_1.jpg") );
     m_textureWidth = image.width();
     m_textureHeight = image.height();
     m_textureId = bindTexture( image );
@@ -138,18 +138,18 @@ CoverBling::paintGL() //reimplemented
 
     glLoadIdentity();
     glRotatef( 5, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
-    glScalef( m_aspectX + 0.3, m_aspectY, 1.0 ); //aspect correction (plus a bit wider, looks nicer)
+    glScalef( m_aspectX, m_aspectY, 1.0 ); //aspect correction
 
     //draw the ground
     glBegin( GL_POLYGON );
         glColor3f( 0.0, 0.0, 0.5 );
-        glVertex3f (-2.0, -1.0, -2.0);
+        glVertex3f (-3.0, -1.0, -2.0);
         glColor3f( 1.0, 0.0, 0.5 );
-        glVertex3f (2.0, -1.0, -2.0);
+        glVertex3f (3.0, -1.0, -2.0);
         glColor3f( 0.0, 1.0, 0.5 );
-        glVertex3f (2.0, -1.0, 2.0);
+        glVertex3f (3.0, -1.0, 2.0);
         glColor3f( 0.0, 0.0, 1.5 );
-        glVertex3f (-2.0, -1.0, 2.0);
+        glVertex3f (-3.0, -1.0, 2.0);
     glEnd();
 
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
