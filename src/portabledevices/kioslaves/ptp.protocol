@@ -1,6 +1,6 @@
 [Protocol]
-exec=kio_mtp
-protocol=mtp
+exec=kio_pmp
+protocol=pmp
 input=none
 output=filesystem
 reading=true
