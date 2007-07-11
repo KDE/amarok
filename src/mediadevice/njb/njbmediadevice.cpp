@@ -264,7 +264,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
     DEBUG_BLOCK
     int result = 0;
-    if ( isCanceled() )
+    if ( isCanceled() || !item )
     {
         return -1;
     }

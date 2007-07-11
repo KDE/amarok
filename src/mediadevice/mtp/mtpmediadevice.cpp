@@ -953,7 +953,7 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
 
     int result = 0;
-    if( isCanceled() )
+    if( isCanceled() || !item )
     {
         return -1;
     }
