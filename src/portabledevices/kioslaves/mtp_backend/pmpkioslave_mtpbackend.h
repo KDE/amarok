@@ -15,24 +15,22 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef MTP_KIOSLAVE_H
-#define MTP_KIOSLAVE_H
+#ifndef MTP_BACKEND_H
+#define MTP_BACKEND_H
 
 #include <QtCore/QByteRef>
 
-#include <kurl.h>
-#include <kio/slavebase.h>
+#include "pmpbackend.h"
 
 #include "libmtp.h"
 
-class MTPProtocol : public QObject, public KIO::SlaveBase
+class MTPBackend : public PMPBackend
 {
     Q_OBJECT
 
     public:
-        MTPProtocol( const QByteArray &protocol, const QByteArray &pool,
-                     const QByteArray &app );
-        virtual ~MTPProtocol();
+        MTPBackend();
+        virtual ~MTPBackend();
 
     protected:
         void setHost( const QString &host, quint16 port,
@@ -41,9 +39,8 @@ class MTPProtocol : public QObject, public KIO::SlaveBase
     private:
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
-        quint32 m_deviceCount;
 
 };
 
-#endif /* MTP_KIOSLAVE_H */
+#endif /* MTP_BACKEND_H */
 

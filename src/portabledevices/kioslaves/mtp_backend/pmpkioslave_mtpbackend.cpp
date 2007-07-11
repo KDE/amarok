@@ -16,58 +16,37 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "mtp_kioslave.h"
+#include "pmpkioslave_mtpbackend.h"
 
 #include <QCoreApplication>
 #include <QString>
 
 #include <kcomponentdata.h>
 #include <kdebug.h>
-#include <kio/ioslave_defaults.h>
+#include <kio/slavebase.h>
 
-using namespace KIO;
-
-extern "C" int KDE_EXPORT kdemain( int argc, char **argv )
+MTPBackend::MTPBackend()
+            : PMPBackend()
+            , m_device( 0 )
 {
-    QCoreApplication app( argc, argv );
-    KComponentData( "kio_mtp", "kdelibs4" );
-    (void) KGlobal::locale();
-
-    if( argc != 4 )
-    {
-        fprintf(stderr, "Usage: kio_mtp protocol domain-socket1 domain-socket2\n" );
-        exit( -1 );
-    }
-
-    MTPProtocol slave( argv[1], argv[2], argv[3] );
-    slave.dispatchLoop();
-    return 0;
-}
-
-MTPProtocol::MTPProtocol( const QByteArray &protocol, const QByteArray &pool,
-                          const QByteArray &app )
-                        : SlaveBase( protocol, pool, app )
-                        , m_device( 0 )
-                        , m_deviceCount( 0 )
-{
-    kDebug() << "Creating MTPProtocol kioslave" << endl;
+    kDebug() << "Creating MTPBackend" << endl;
 
     LIBMTP_Init();
 
     if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
-        error( KIO::ERR_INTERNAL, "Could not get a connected device list from libmtp." );
-    m_deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );
-    if( m_deviceCount == 0 )
-        error( KIO::ERR_INTERNAL, "libmtp found no devices." );
+        m_slave->error( KIO::ERR_INTERNAL, "Could not get a connected device list from libmtp." );
+    quint32 deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );
+    if( deviceCount == 0 )
+        m_slave->error( KIO::ERR_INTERNAL, "libmtp found no devices." );
 }
 
-MTPProtocol::~MTPProtocol()
+MTPBackend::~MTPBackend()
 {
 }
 
 void
-MTPProtocol::setHost( const QString &host, quint16 port,
-                      const QString &user, const QString &pass )
+MTPBackend::setHost( const QString &host, quint16 port,
+                     const QString &user, const QString &pass )
 {
     Q_UNUSED(port);
     Q_UNUSED(user);
@@ -87,5 +66,5 @@ MTPProtocol::setHost( const QString &host, quint16 port,
         kDebug() << "FOUND THE MTP DEVICE WE WERE LOOKING FOR!" << endl;
 }
 
-#include "mtp_kioslave.moc"
+#include "pmpkioslave_mtpbackend.moc"
 
