@@ -30,6 +30,7 @@ public:
     void update();
 
 private:
+    void createTables() const;
 
     SqlCollection *m_collection;
 };
