@@ -22,10 +22,11 @@
 #include "memorycollection.h"
 #include "querymaker.h"
 
-#include <threadweaver/Job.h>
-
 using namespace Meta;
-using namespace ThreadWeaver;
+namespace ThreadWeaver
+{
+    class Job;
+}
 
 class MemoryQueryMaker : public QueryMaker
 {

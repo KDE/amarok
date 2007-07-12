@@ -21,6 +21,7 @@
 
 #include "debug.h"
 
+#include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QSet>
@@ -299,11 +300,11 @@ class YearMatcher : public Matcher
 
 //QueryJob
 
-class QueryJob : public Job
+class QueryJob : public ThreadWeaver::Job
 {
     public:
         QueryJob( MemoryQueryMaker *qm )
-            : Job()
+            : ThreadWeaver::Job()
             , m_queryMaker( qm )
         {
             //nothing to do
