@@ -301,7 +301,7 @@ void SqliteCollection::sqlite_like_new( sqlite3_context *context, int argc, sqli
     QString pattern = QString::fromUtf8( (const char*)zA );
     QString text = QString::fromUtf8( (const char*)zB );
 
-    int begin = pattern.startsWith( "%" ), end = pattern.endsWith( "%" );
+    int begin = pattern.startsWith( '%' ), end = pattern.endsWith( '%' );
     if (begin)
         pattern = pattern.right( pattern.length() - 1 );
     if (end)
