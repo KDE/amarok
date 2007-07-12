@@ -23,22 +23,27 @@ Formatting
   although brackets are not needed for single statements.
 * Function and class definitions have their brackets on separate lines
 * A function implementation's return type is on its own line.
-* amarok.h contains some helpful macros, foreach and foreachType.  Use them,
-  they improve coding style and readability.
 * CamelCase.{cpp,h} style file names.
+* Qt 4 includes a foreach keyword which makes it very easy to iterate over all
+  elements of a container.
 
 Example:
 
  | bool 
- | MyClass::myMethod( QPtrList<QListViewItem> items, const QString &name )
+ | MyClass::myMethod( QStringList list, const QString &name )
  | {
- |     if( items.isEmpty() )
+ |     if( list.isEmpty() )
  |         return false;
  |
- |     foreachType( QPtrList<QListViewItem>, items )
+ |     /*
+ |       Define the temporary variable like this to restrict its scope
+ |       when you do not need it outside the loop. Let the compiler
+ |       optimise it.
+ |      */
+ |     foreach( QString string, list )
  |     {
- |         (*it)->setText( 0, name );
- |         debug() << "Setting item name: " << name << endl;
+ |
+ |         debug() << "Current string is " << string << endl;
  |     }
  | }
 
