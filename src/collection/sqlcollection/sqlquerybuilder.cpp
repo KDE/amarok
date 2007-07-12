@@ -404,7 +404,7 @@ SqlQueryBuilder::beginOr()
 QueryMaker*
 SqlQueryBuilder::endAndOr()
 {
-    d->queryFilter += ")";
+    d->queryFilter += ')';
     d->andStack.pop();
     return this;
 }
