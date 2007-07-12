@@ -475,17 +475,11 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
     }
 }
 
-
-#include "CollectionTreeItemModelBase.moc"
-
-
-
-
-
-
-
-
 void CollectionTreeItemModelBase::update()
 {
    reset();
 }
+
+
+#include "CollectionTreeItemModelBase.moc"
+
