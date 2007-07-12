@@ -53,7 +53,7 @@ class LastFmEventBox : public ContextBox
     Q_OBJECT
     
 public:
-    LastFmEventBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+    explicit LastFmEventBox( QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
     
     void ensureWidthFits( const qreal width );
     

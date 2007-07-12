@@ -43,7 +43,7 @@ int main( int argc, char *argv[] )
             ki18n(( "Developer (eean)" )), "ian@monroe.nu", "http://www.monroe.nu/" );
     aboutData.addAuthor( ki18n("Jeff 'IROCKSOHARD' Mitchell"),
             ki18n(( "Developer (jefferai)" )), "kde-dev@emailgoeshere.com" );
-    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann"),
+    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann"), //krazy:exclude=contractions
             ki18n(( "Project founder (markey)" )), "kretschmann@kde.org" );
     aboutData.addAuthor( ki18n("Martin 'Easily the most compile-breaks ever!' Aumueller"),
             ki18n(( "Developer (aumuell)" )), "aumuell@reserv.at" );

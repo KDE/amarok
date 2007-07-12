@@ -1261,7 +1261,7 @@ void PlaylistWindow::createMenus()
     //END Mode menu
 
     //BEGIN Tools menu
-    QAction *vis; // Used locally to enable/disable visualizations menu based on presense of libvisual
+    QAction *vis; // Used locally to enable/disable visualizations menu based on presense of libvisual //krazy:exclude=spelling
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
