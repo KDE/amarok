@@ -171,8 +171,6 @@ void PlaylistWindow::init()
         Ui::ControlBar uicb;
         uicb.setupUi( m_controlBar );
 
-        debug() << "testing" << endl;
-        
         #define center( A, O ) uicb.A##boxLayout->setAlignment( uicb.O, Qt::AlignCenter );
         center( h, m_playerControlsToolbar );
         center( h, m_searchWidget );
@@ -191,22 +189,22 @@ void PlaylistWindow::init()
 
         m_searchWidget = uicb.m_searchWidget;
         m_searchWidget->setup( this );
-
-        m_searchWidget->setStyleSheet( "KLineEdit { min-height: 28; min-width: 170; border-radius: 10px; border-width: 3px; border-style: solid; border-color:rgb(130, 150, 255) }" );
+        m_searchWidget->setStyleSheet( "KLineEdit { min-height: 28; min-width: 170; }" );
     }
 
     QPalette p;
-    QColor startColor = palette().highlight();
-    startColor.setAlpha( 200 );
-    QColor endColor = palette().base();
-    endColor.setAlpha( 0 );
-    QColor middleColor( static_cast<int>( startColor.red() * .7 ),
-                        static_cast<int>( startColor.green() * .7 ),
-                        static_cast<int>( startColor.blue() * .7 ),
+    QColor endColor = palette().highlight();
+    endColor.setAlpha( 200 );
+    if( endColor.darker().isValid() )
+        endColor = endColor.darker();
+    QColor middleColor( static_cast<int>( endColor.red() * .7 ),
+                        static_cast<int>( endColor.green() * .7 ),
+                        static_cast<int>( endColor.blue() * .7 ),
                         100 /*alpha*/ );
+    middleColor = middleColor.lighter();
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
-    toolbarGradiant.setColorAt( 0, startColor );
+    toolbarGradiant.setColorAt( 0, endColor );
     toolbarGradiant.setColorAt( .7, middleColor );
     toolbarGradiant.setColorAt( 1, endColor );
     QBrush b( toolbarGradiant );
