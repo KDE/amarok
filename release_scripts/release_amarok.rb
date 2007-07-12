@@ -169,6 +169,7 @@ Dir.chdir( "amarok" )
 `mv AUTHORS ..`
 `mv ChangeLog ..`
 `mv COPYING ..`
+`mv COPYING.LGPL ..`
 `mv INSTALL ..`
 `mv README ..`
 `mv TODO ..`
