@@ -31,7 +31,7 @@ class ContextItemList : public KListWidget
     Q_OBJECT
     
 public:
-    ContextItemList( QWidget *parent, const char *name = 0 );
+    explicit ContextItemList( QWidget *parent, const char *name = 0 );
     ~ContextItemList() {}
     
     bool hasSelection();
@@ -59,7 +59,7 @@ class ContextItemManagerWidget : public KDialog
 public: 
     static ContextItemManagerWidget *instance() { return s_instance; }
     
-    ContextItemManagerWidget( QWidget *parent = 0, const char *name = 0, QMap< ContextItem*, bool >* enabled = 0, QStringList order = QStringList() );
+    explicit ContextItemManagerWidget( QWidget *parent = 0, const char *name = 0, QMap< ContextItem*, bool >* enabled = 0, QStringList order = QStringList() );
     
 private slots:
     
