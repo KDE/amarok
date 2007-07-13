@@ -164,7 +164,7 @@ ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 ServiceSqlQueryMaker::startTrackQuery()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
     if( d->queryType == Private::NONE )
     {
@@ -187,7 +187,7 @@ ServiceSqlQueryMaker::startTrackQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startArtistQuery()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ARTIST;
@@ -202,7 +202,7 @@ ServiceSqlQueryMaker::startArtistQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startAlbumQuery()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::ALBUM;
@@ -231,7 +231,7 @@ ServiceSqlQueryMaker::startComposerQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startGenreQuery()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::GENRE;
@@ -247,7 +247,7 @@ ServiceSqlQueryMaker::startGenreQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startYearQuery()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     /*if( d->queryType == Private::NONE )
     {
         d->queryType = Private::YEAR;
@@ -261,8 +261,8 @@ ServiceSqlQueryMaker::startYearQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startCustomQuery()
 {
-    DEBUG_BLOCK
-   /* if( d->queryType == Private::NONE )
+   DEBUG_BLOCK
+    /* if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;*/
     return this;
 }
@@ -295,7 +295,7 @@ ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     Q_UNUSED( track );
     //TODO still pondereing this one...
@@ -305,7 +305,7 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix(); 
     if( d && d->queryType == Private::TRACK ) // a service track does not generally know its artist
         return this;
@@ -319,7 +319,7 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix(); 
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
     if( !d || !serviceAlbum )
@@ -331,7 +331,7 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix(); 
 
     const ServiceGenre* serviceGenre = dynamic_cast<const ServiceGenre *>( genre.data() );
@@ -362,7 +362,7 @@ ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     //TODO needed at all?
     return this;

@@ -92,23 +92,12 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
 
         ArtistPtr artistPtr;
-        debug() << "get artist with id " << track->artistId() << endl;
 
         if ( m_artistMap.contains( track->artistId() ) )
             artistPtr = m_artistMap.value( track->artistId() );
         else {
-            
-           
-            debug() << "not in registry, lets create it" << endl;
-            debug() << "Row length: " << rowData.count() << endl;
-            //debug() << "Track row: " << rowData << endl;
-
-            debug() << "index: " << index << endl;
-            debug() << "length: " <<  m_metaFactory->getArtistSqlRowCount() << endl; 
 
             QStringList subRows = rowData.mid(index, m_metaFactory->getArtistSqlRowCount() );
-
-            debug() << "Artist sub row: " << subRows << endl;
 
             artistPtr = m_metaFactory->createArtist( subRows );
         }
@@ -173,8 +162,6 @@ GenrePtr
 ServiceSqlRegistry::getGenre( const QStringList &rowData ) 
 {
     int id = rowData[0].toInt();
-    debug() << "Genre row: " << rowData << endl;
-    debug() << "Create genre with id: " << id << endl;
     QMutexLocker locker( &m_genreMutex );
     if( m_genreMap.contains( id ) )
         return m_genreMap.value( id );

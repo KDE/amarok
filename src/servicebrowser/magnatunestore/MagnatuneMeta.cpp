@@ -41,6 +41,8 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
     
     sqlRows += ", ";
     sqlRows += tablePrefix() + "_tracks.preview_url_lofi ";
+
+    return sqlRows;
 }
 
 

@@ -47,9 +47,8 @@ QString ServiceMetaFactory::getTrackSqlRows()
            m_dbTablePrefix + "_tracks.length, " +
            m_dbTablePrefix + "_tracks.preview_url, " +
            m_dbTablePrefix + "_tracks.album_id, " +
-           //m_dbTablePrefix + "_tracks.album_name, " +
            m_dbTablePrefix + "_tracks.artist_id ";
-           //m_dbTablePrefix + "_tracks.artist_name "; 
+
 }
 
 TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
