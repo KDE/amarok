@@ -40,7 +40,7 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
     
     sqlRows += ", ";
-    sqlRows += tablePrefix() + "_tracks.preview_url_lofi ";
+    sqlRows += tablePrefix() + "_tracks.preview_lofi ";
 
     return sqlRows;
 }

@@ -93,6 +93,9 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     parseElement( docElem );
     m_dbHandler->commit(); //complete transaction
 
+    delete m_pCurrentArtist;
+    delete m_pCurrentAlbum;
+
     return ;
 }
 
@@ -202,7 +205,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
         n = n.nextSibling();
     }
 
-
+    delete m_pCurrentAlbum;
     m_pCurrentAlbum = new MagnatuneAlbum( name );
     m_pCurrentAlbum->setAlbumCode( albumCode);
     m_pCurrentAlbum->setLaunchYear( launchYear );
@@ -225,6 +228,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
         artistId = artistNameIdMap.value( artistName );
     } else  {
         //does not exist, lets create it...
+        delete m_pCurrentArtist;
         m_pCurrentArtist = new MagnatuneArtist( artistName );
         m_pCurrentArtist->setDescription( artistDescription );
         m_pCurrentArtist->setPhotoUrl( artistPhotoUrl );
@@ -240,9 +244,11 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
             artistId = m_dbHandler->getArtistIdByExactName( m_pCurrentArtist->name() );
         }
 
+        m_pCurrentArtist->setId( artistId );
+
         artistNameIdMap.insert( m_pCurrentArtist->name() , artistId );
 
-        delete m_pCurrentArtist;
+        
     }
 
     m_pCurrentAlbum->setArtistId( artistId );
@@ -252,11 +258,16 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
             albumId = m_dbHandler->getAlbumIdByAlbumCode( m_pCurrentAlbum->albumCode() );
     }
 
+    m_pCurrentAlbum->setId( albumId );
+
     m_nNumberOfAlbums++;
 
     QList<MagnatuneTrack *>::iterator it;
     for ( it = m_currentAlbumTracksList.begin(); it != m_currentAlbumTracksList.end(); ++it )
     {
+
+        ( *it )->setAlbumId( m_pCurrentAlbum->id() );
+        ( *it )->setArtistId( m_pCurrentArtist->id() );
         m_dbHandler->insertTrack( ( *it ) );
         m_nNumberOfTracks++;
     }
@@ -274,8 +285,6 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
     }
 
     magnatuneGenres.clear();
-
-    delete m_pCurrentAlbum;
 
     m_currentAlbumTracksList.clear();
 }
@@ -297,7 +306,6 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
     QDomElement childElement;
 
     MagnatuneTrack * pCurrentTrack = new MagnatuneTrack( QString() );
-
 
     QDomNode n = e.firstChild();
 
