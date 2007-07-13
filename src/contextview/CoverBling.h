@@ -21,6 +21,7 @@
 #define AMAROK_COVERBLING_H
 
 #include <QGLWidget>
+#include <QThread>
 
 
 class CoverBling : public QGLWidget
@@ -45,6 +46,18 @@ class CoverBling : public QGLWidget
         int m_textureHeight;
         float m_aspectX;
         float m_aspectY;
+};
+
+
+class UpdateThread : public QThread
+{
+    Q_OBJECT
+
+    public:
+        UpdateThread( QObject* parent );
+
+    protected:
+        void run();
 };
 
 
