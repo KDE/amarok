@@ -30,6 +30,7 @@
 #include "magnatunedatabasehandler.h"
 //#include "../databasedrivencontentmodel.h"
 #include "../servicebase.h"
+#include "servicesqlcollection.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -241,6 +242,8 @@ private:
    
 
     KIO::FileCopyJob * m_listDownloadJob;
+
+    ServiceSqlCollection * m_collection;
 
    // DatabaseDrivenContentItem * m_currentlySelectedItem;
 };

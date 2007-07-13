@@ -23,7 +23,7 @@
 #include "statusbar.h"
 
 #include "ServiceSqlRegistry.h"
-#include "servicesqlcollection.h"
+
 
 #include "magnatuneinfoparser.h"
 #include "playlist.h"
@@ -374,7 +374,7 @@ void MagnatuneBrowser::doneParsing()
 {
 
     debug() << "MagnatuneBrowser: done parsing" << endl;
-//    updateGenreBox( );
+    m_collection->emitUpdated();
 }
 
 /*void MagnatuneBrowser::updateGenreBox()
@@ -487,14 +487,14 @@ void MagnatuneBrowser::polish( )
 
         ServiceMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
         ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-        ServiceSqlCollection * collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
+        m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
 
         m_infoParser = new MagnatuneInfoParser();
 
         connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
 
 
-        setModel( new SingleCollectionTreeItemModel( collection, levels ) );
+        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
         //model->setInfoParser( infoParser );
 
         //setModel(new MagnatuneContentModel ( this ) );

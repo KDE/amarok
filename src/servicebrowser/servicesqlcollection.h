@@ -42,6 +42,8 @@ class ServiceSqlCollection : public Collection
 
         virtual QString escape( QString text ) const;
 
+        void emitUpdated() { emit( updated() ); }
+
 
     private:
         ServiceMetaFactory * m_metaFactory;
