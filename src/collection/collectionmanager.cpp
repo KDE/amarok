@@ -24,6 +24,7 @@
 #include "blockingquery.h"
 #include "collection.h"
 #include "metaquerybuilder.h"
+#include "meta/file/File.h"
 #include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
 #include "scrobbler.h"
@@ -213,6 +214,9 @@ CollectionManager::trackForUrl( const KUrl &url )
                 return track;
         }
     }
+
+    if( url.protocol() == "file" )
+        return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );
 }

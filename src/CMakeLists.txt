@@ -272,6 +272,7 @@ set(lastfm_SRCS
 set(meta_SRCS
     meta/meta.cpp
     meta/proxy/MetaProxy.cpp
+    meta/file/File.cpp
 )
 
 #####################################################################
