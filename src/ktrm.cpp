@@ -521,7 +521,7 @@ class KTRMLookup::KTRMLookupPrivate
 {
 public:
     KTRMLookupPrivate() :
-        fileId(-1) {}
+        fileId(-1), autoDelete(false) {}
     QString file;
     QString errorString;
     KTRMResultList results;

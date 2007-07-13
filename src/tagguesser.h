@@ -12,7 +12,18 @@ class FileNameScheme
     public:
         typedef QValueList<FileNameScheme> List;
 
-        FileNameScheme() { }
+        FileNameScheme()
+            : m_cod()
+            , m_titleField( -1 )
+            , m_artistField( -1 )
+            , m_albumField( -1 )
+            , m_trackField( -1 )
+            , m_commentField( -1 )
+            , m_yearField( -1 )
+            , m_composerField( -1 )
+            , m_genreField( -1 )
+        { }
+
         FileNameScheme( const QString &s );
 
         bool matches( const QString &s ) const;

@@ -29,7 +29,9 @@ AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 
 #include <qvaluelist.h>
 
-MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
+MassStorageDeviceHandler::MassStorageDeviceHandler()
+    : DeviceHandler()
+    , m_deviceID( -1 )
 {
 }
 

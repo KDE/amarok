@@ -1605,6 +1605,7 @@ MtpMediaDevice::clearItems()
 MtpTrack::MtpTrack( LIBMTP_track_t *track )
 {
     m_id = track->item_id;
+    m_folder_id = 0;
 }
 
 /**

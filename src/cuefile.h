@@ -19,12 +19,18 @@ class CueFileItem {
             , m_trackNumber( trackNumber )
             , m_index( index )
             , m_length( -1 )
-
         {}
 
-        CueFileItem () {};
+        CueFileItem()
+            : m_title( )
+            , m_artist( )
+            , m_album( )
+            , m_trackNumber( -1 )
+            , m_index( -1 )
+            , m_length( -1 )
+        {}
 
-		void setLength(const long length) { m_length = length; }
+        void setLength(const long length) { m_length = length; }
 
         const QString getTitle () const { return m_title; }
         const QString getArtist () const { return m_artist; }

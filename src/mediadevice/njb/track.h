@@ -33,7 +33,10 @@ class NjbMediaItem;
 class NjbTrack {
     friend class NjbMediaItem;
     public:
-        NjbTrack( void ) {}
+        NjbTrack()
+            : m_id( 0 )
+            , m_bundle()
+        { }
         NjbTrack( njb_songid_t* song );
         ~NjbTrack();
 

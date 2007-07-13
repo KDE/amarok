@@ -90,6 +90,7 @@ QString MagnatuneArtist::getHomeURL( ) const
 
 MagnatuneAlbum::MagnatuneAlbum( )
     : m_id (0)
+    , m_artistId(-1)
 {
 }
 

@@ -197,7 +197,7 @@ namespace KDE
     private:
         struct Message
         {
-            Message() {}
+            Message() : type( KDE::StatusBar::None ), offset( 0 ) {}
             Message( const QString &_text, const MessageType _type ) : text( _text ), type( _type ), offset( 0 ) {}
 
             QString text;

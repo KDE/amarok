@@ -21,7 +21,9 @@ class PodcastChannelBundle
             m_link = link;
             m_description = desc;
             m_copyright = copy;
-            setSettings( settings );   }
+            m_parentId = -1;
+            setSettings( settings );
+        }
 
         void setSettings( PodcastSettings *settings )
         {
@@ -136,6 +138,7 @@ class PodcastEpisodeBundle
         PodcastEpisodeBundle()
             : m_id( 0 )
             , m_duration( 0 )
+            , m_size( 0 )
             , m_isNew( false )
         {
         }
@@ -144,6 +147,7 @@ class PodcastEpisodeBundle
                               const QString &type,   const int duration,  const QString &guid,
                               const bool isNew  )
             : m_id( 0 )
+            , m_size( 0 )
         {
             m_url = url;
             m_parent = parent;

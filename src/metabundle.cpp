@@ -188,6 +188,7 @@ MetaBundle::MetaBundle()
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
         , m_isSearchDirty(true)
+        , m_searchColumns( Undetermined )
 {
     init();
 }
@@ -222,6 +223,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
     , m_isSearchDirty(true)
+    , m_searchColumns( Undetermined )
 {
     if ( exists() )
     {

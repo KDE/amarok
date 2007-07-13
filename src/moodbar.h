@@ -148,7 +148,7 @@ private:
       : m_url( url ), m_infile( infile ), m_outfile( outfile )
       , m_refcount( 1 )
     {}
-    ProcData( void ) {}
+    ProcData( void ) : m_refcount( 0 ) {}
 
     KURL    m_url;
     QString m_infile;
