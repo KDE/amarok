@@ -24,7 +24,8 @@
 
 #include "../servicebase.h"
 #include "jamendodatabasehandler.h"
-#include "../servicecollection.h"
+//#include "../servicecollection.h"
+#include "servicesqlcollection.h"
 
 #include "amarok.h"
 #include "statusbar.h"
@@ -65,6 +66,7 @@ private:
     KIO::FileCopyJob * m_listDownloadJob;
     JamendoDatabaseHandler * m_dbHandler;
     QString m_tempFileName;
+    ServiceSqlCollection * m_collection;
 };
 
 #endif

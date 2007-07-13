@@ -19,7 +19,6 @@
 
 #include "JamendoInfoParser.h"
 #include "jamendoservice.h"
-#include "servicesqlcollection.h"
 #include "ServiceSqlRegistry.h"
 
 #include "jamendoxmlparser.h"
@@ -77,9 +76,9 @@ void JamendoService::polish()
 
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo" );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    ServiceSqlCollection * collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
+    m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
 
-    setModel( new SingleCollectionTreeItemModel( collection, levels ) );
+    setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
     m_polished = true;
 
@@ -163,6 +162,7 @@ void JamendoService::doneParsing()
     // getModel->setGenre("All");
     //delete sender
     sender()->deleteLater();
+    m_collection->emitUpdated();
 }
 
 void JamendoService::debugSlot()
