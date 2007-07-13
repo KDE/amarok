@@ -65,6 +65,7 @@ MetaBundleSaver::prepareToSave()
     KMD5 md5sum( 0, 0 );
     const KURL origPath = m_bundle->url();
     char hostbuf[32];
+    hostbuf[0] = '\0';
     int hostname = gethostname( hostbuf, 32 );
     hostbuf[31] = '\0';
     if( hostname != 0 )
