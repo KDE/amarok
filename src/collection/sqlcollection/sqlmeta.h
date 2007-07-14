@@ -68,6 +68,8 @@ class SqlTrack : public Track
         virtual void subscribe( TrackObserver *observer );
         virtual void unsubscribe( TrackObserver *observer );
 
+        virtual void setTitle( const QString &newTitle );
+
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );
         virtual double score() const { return m_score; }

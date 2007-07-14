@@ -353,6 +353,20 @@ SqlTrack::setComment( const QString &newComment )
 }
 
 void
+SqlTrack::setTitle( const QString &newTitle )
+{
+    if( !m_batchUpdate )
+    {
+        m_title = newTitle;
+        writeMetaDataToFile();
+        writeMetaDataToDb();
+        notifyObservers();
+    }
+    else
+        m_cache->title = newTitle;
+}
+
+void
 SqlTrack::beginMetaDataUpdate()
 {
     m_batchUpdate = true;

@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "meta.h"
 
+#include <QFile>
 #include <QSet>
 #include <QString>
 
@@ -35,6 +36,10 @@ class Track::Private
 public:
     Private( Track *t )
         : track( t )
+        , metaInfo()
+        , observers()
+        , url()
+        , batchUpdate( false )
     {}
     void notify() const
     {
@@ -46,13 +51,7 @@ public:
     KFileMetaInfo metaInfo;
     QSet<Meta::TrackObserver*> observers;
     KUrl url;
-    QString title;
-    QString artist;
-    QString album;
-    QString genre;
-    QString composer;
-    QString year;
-    QString comment;
+    bool batchUpdate;
 
 private:
     Track *track;
@@ -128,7 +127,8 @@ Track::isPlayable() const
 bool
 Track::isEditable() const
 {
-    return false;
+    //not this probably needs more work on *nix
+    return QFile::permissions( d->url.path() ) & QFile::WriteUser;
 }
 
 Meta::AlbumPtr
@@ -169,13 +169,23 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    Q_UNUSED( newAlbum )
+    d->metaInfo.item( ALBUM ).setValue( newAlbum );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        d->notify();
+    }
 }
 
 void
 Track::setArtist( const QString& newArtist )
 {
-    Q_UNUSED( newArtist )
+    d->metaInfo.item( ARTIST ).setValue( newArtist );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        d->notify();
+    }
 }
 
 void
@@ -194,6 +204,17 @@ void
 Track::setYear( const QString& newYear )
 {
     Q_UNUSED( newYear )
+}
+
+void
+Track::setTitle( const QString &newTitle )
+{
+    d->metaInfo.item( TITLE ).setValue( newTitle );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        d->notify();
+    }
 }
 
 QString

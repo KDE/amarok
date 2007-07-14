@@ -60,6 +60,8 @@ namespace LastFm
             virtual void setComposer( const QString &newComposer );
             virtual void setYear( const QString &newYear );
 
+            virtual void setTitle( const QString &newTitle );
+
             virtual QString comment() const;
             virtual void setComment( const QString &newComment );
 

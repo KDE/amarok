@@ -205,6 +205,13 @@ MetaProxy::Track::setYear( const QString &newYear )
         d->realTrack->setYear( newYear );
 }
 
+void
+MetaProxy::Track::setTitle( const QString &newTitle )
+{
+    if( d->realTrack )
+        d->realTrack->setTitle( newTitle );
+}
+
 QString
 MetaProxy::Track::comment() const
 {

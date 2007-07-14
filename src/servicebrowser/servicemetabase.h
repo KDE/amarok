@@ -125,6 +125,8 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
         virtual void setComposer ( const QString &newComposer );
         virtual void setYear ( const QString &newYear );
 
+        virtual void setTitle( const QString &newTitle );
+
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
 
@@ -168,7 +170,6 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
         void setGenre( GenrePtr genre );
         void setYear( YearPtr year );
 
-        void setTitle( const QString &newTitle );
         void setLength( int length );
 
         void setId( int id );

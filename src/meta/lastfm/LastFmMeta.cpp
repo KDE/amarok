@@ -198,6 +198,12 @@ Track::setYear( const QString &newYear )
     Q_UNUSED( newYear ); //stream
 }
 
+void
+Track::setTitle( const QString &newTitle )
+{
+    Q_UNUSED( newTitle ); //stream
+}
+
 QString
 Track::comment() const
 {

@@ -101,6 +101,8 @@ class PodcastTrack : public Meta::Track
         virtual void setComposer ( const QString &newComposer );
         virtual void setYear ( const QString &newYear );
 
+        virtual void setTitle( const QString &newTitle );
+
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
 
@@ -144,7 +146,6 @@ class PodcastTrack : public Meta::Track
         void setGenre( GenrePtr genre );
         void setYear( YearPtr year );
 
-        void setTitle( const QString &newTitle );
         void setLength( int length );
 
         void setId( int id );
