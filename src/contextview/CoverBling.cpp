@@ -29,7 +29,7 @@
 
 
 CoverBling::CoverBling( QWidget* parent )
-        : QGLWidget( QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel), parent )
+        : QGLWidget( QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
         , m_xOffset( 0.0 )
         , m_zOffset( M_PI / 2 )
 {
