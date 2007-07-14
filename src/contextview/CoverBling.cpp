@@ -17,8 +17,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "CoverBling"
-
 #include "debug.h"
 #include "CoverBling.h"
 
@@ -37,8 +35,9 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
-    UpdateThread* thread = new UpdateThread( this );
-    thread->start( QThread::TimeCriticalPriority );
+    QTimer* timer = new QTimer( this );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+    timer->start( 20 ); //50fps
 }
 
 void
@@ -172,36 +171,6 @@ CoverBling::paintGL() //reimplemented
 
     glColor4f( 1.0, 1.0, 1.0, 1.0 );
     glDisable( GL_TEXTURE_2D);
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// CLASS UpdateThread
-//////////////////////////////////////////////////////////////////////////////
-
-UpdateThread::UpdateThread( QObject* parent )
-        : QThread( parent )
-{
-    DEBUG_BLOCK
-}
-
-void
-UpdateThread::run()
-{
-    DEBUG_BLOCK
-
-    CoverBling* cb = static_cast<CoverBling*>( parent() );
-
-//    while( true ) {
-//        cb->updateGL();
-//        msleep( 20 );
-//    }
-
-    QTimer* timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), cb, SLOT( updateGL() ) );
-    timer->start( 20 ); //50fps
-
-    exec();
 }
 
 
