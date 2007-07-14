@@ -51,6 +51,8 @@ XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
         QDBusReply<QString> sessionId = m_xesam->NewSession();
         if( !sessionId.isValid() )
         {
+            debug() << "Could not acquire Xesam session, aborting" << endl;
+            return;
             //TODO error handling
         }
         m_session = sessionId.value();
@@ -63,6 +65,10 @@ XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
         {
             m_search = search.value();
             m_xesam->StartSearch( m_search );
+        }
+        else
+        {
+            debug() << "Invalid response for NewSearch" << endl;
         }
     }
     else
