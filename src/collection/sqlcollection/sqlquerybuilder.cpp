@@ -148,7 +148,7 @@ SqlQueryBuilder::run()
     }
     else
     {
-        debug() << "Query is " << query() << endl;
+        //debug() << "Query is " << query() << endl;
         d->worker = new SqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
