@@ -27,9 +27,11 @@
 #include <QtOpenGL>
 #include <KStandardDirs>
 
+#define TEXTURE_SIZE QSize( 256, 256 )
+
 
 CoverBling::CoverBling( QWidget* parent )
-        : QGLWidget( QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
+        : QGLWidget( QGLFormat(QGL::DepthBuffer|QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
         , m_xOffset( 0.0 )
         , m_zOffset( M_PI / 2 )
 {
@@ -37,6 +39,12 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
+    m_coverPaths << "amarok/images/album_cover_1.jpg";
+    m_coverPaths << "amarok/images/album_cover_2.jpg";
+    m_coverPaths << "amarok/images/album_cover_3.jpg";
+    m_coverPaths << "amarok/images/album_cover_4.jpg";
+    m_coverPaths << "amarok/images/album_cover_5.jpg";
+   
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
     timer->start( 20 ); //50fps
@@ -47,19 +55,20 @@ CoverBling::initializeGL() //reimplemented
 {
     DEBUG_BLOCK
 
-    QImage image( KStandardDirs().findResource("data", "amarok/images/album_cover_1.jpg") );
-    image = image.scaled( 256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-    m_textureWidth = image.width();
-    m_textureHeight = image.height();
-    m_textureId = bindTexture( image );
+    //generate all textures
+    foreach( QString path, m_coverPaths ) {
+        QImage image( KStandardDirs().findResource( "data", path ) );
+        image = image.scaled( TEXTURE_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        m_textureIds << bindTexture( image );
+    }
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glShadeModel(GL_SMOOTH); 
-    //glEnable( GL_DEPTH_TEST );
     qglClearColor( Qt::black );
     glEnable( GL_MULTISAMPLE ); //enable anti aliasing
-
+    glEnable( GL_DEPTH_TEST );
+    glDepthMask( TRUE );
+ 
     //Display list for drawing a textured rectangle
     m_texturedRectList = glGenLists( 1 );
     glNewList( m_texturedRectList, GL_COMPILE );
@@ -73,6 +82,7 @@ CoverBling::initializeGL() //reimplemented
             glTexCoord2f (0.0, 1.0);
             glVertex3f (-1.0, 1.0, -1.0);
         glEnd ();
+        //glDisable( GL_DEPTH_TEST );
     glEndList();
 
     //Display list for drawing reflection of the textured rectangle
@@ -82,7 +92,6 @@ CoverBling::initializeGL() //reimplemented
         glScalef( 1.0, -1.0, 1.0 );
 
         glEnable( GL_BLEND );
-        glDepthMask( GL_FALSE );
         //glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         
@@ -101,7 +110,6 @@ CoverBling::initializeGL() //reimplemented
             glVertex3f (-1.0, 1.0, -1.0);
         glEnd ();
 
-        glDepthMask( GL_TRUE );
         glDisable( GL_BLEND );
     glEndList();
 }
@@ -133,11 +141,8 @@ CoverBling::paintGL() //reimplemented
 {
     //const int mousex = QCursor::pos().x();
 
-    float xoffset = sin( m_xOffset ) / 2;
-    float zoffset = sin( m_zOffset ) / 3;
-    //debug() << xoffset << endl;
-    m_xOffset += 0.03;
-    m_zOffset += 0.03;
+    m_xOffset += 0.02;
+    m_zOffset += 0.01;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -146,32 +151,44 @@ CoverBling::paintGL() //reimplemented
     glScalef( m_aspectX, m_aspectY, 1.0 ); //aspect correction
 
     //draw the ground
-    glBegin( GL_POLYGON );
-        glColor3f( 0.0, 0.0, 0.5 );
-        glVertex3f (-3.0, -1.0, -2.0);
-        glColor3f( 1.0, 0.0, 0.5 );
-        glVertex3f (3.0, -1.0, -2.0);
-        glColor3f( 0.0, 1.0, 0.5 );
-        glVertex3f (3.0, -1.0, 2.0);
-        glColor3f( 0.0, 0.0, 1.5 );
-        glVertex3f (-3.0, -1.0, 2.0);
-    glEnd();
+    //glBegin( GL_POLYGON );
+    //    glColor3f( 0.0, 0.0, 0.5 );
+    //    glVertex3f (-3.0, -1.0, -2.0);
+    //    glColor3f( 1.0, 0.0, 0.5 );
+    //    glVertex3f (3.0, -1.0, -2.0);
+    //    glColor3f( 0.0, 1.0, 0.5 );
+    //    glVertex3f (3.0, -1.0, 2.0);
+    //    glColor3f( 0.0, 0.0, 1.5 );
+    //    glVertex3f (-3.0, -1.0, 2.0);
+    //glEnd();
 
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
     glEnable( GL_TEXTURE_2D);
 
-    glRotatef( xoffset * 50, 0.0, 1.0, 0.0 );
-    glTranslatef( xoffset, 0.0, zoffset );
-    
-    //draw the cover
-    glCallList( m_texturedRectList );
+    float xoffset = m_xOffset;
+    float zoffset = m_zOffset;
 
-    //draw reflection on the ground
-    glPushMatrix();
-        glCallList( m_texturedRectReflectedList );
-    glPopMatrix();
+    foreach( GLuint id, m_textureIds ) {
+        glBindTexture( GL_TEXTURE_2D, id );
+        glPushMatrix();
+            const float xsin = sin( xoffset );
+            const float zsin = sin( zoffset );
+            xoffset += 5.5;
+            zoffset += 8.0;
+            glRotatef( xsin * 5, 0.0, 1.0, 0.0 );
+            glTranslatef( xsin * 2.4, 0.0, zsin / 3 );
+            
+            //draw the cover
+            glCallList( m_texturedRectList );
 
-    glColor4f( 1.0, 1.0, 1.0, 1.0 );
+            //draw reflection on the ground
+            glPushMatrix();
+                glCallList( m_texturedRectReflectedList );
+            glPopMatrix();
+        glPopMatrix();
+        glColor4f( 1.0, 1.0, 1.0, 1.0 );
+    }
+
     glDisable( GL_TEXTURE_2D);
 }
 

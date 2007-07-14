@@ -36,13 +36,12 @@ class CoverBling : public QGLWidget
         void paintGL();
 
     private:
-        GLuint m_textureId;
+        QStringList m_coverPaths;
+        QList<GLuint> m_textureIds;
         GLuint m_texturedRectList;
         GLuint m_texturedRectReflectedList;
         float m_xOffset;
         float m_zOffset;
-        int m_textureWidth;
-        int m_textureHeight;
         float m_aspectX;
         float m_aspectY;
 };
