@@ -33,8 +33,10 @@ class CoverBling : public QGLWidget
     protected:
         void initializeGL();
         void resizeGL( int width, int height );
+        void setPerspective();
         void paintGL();
-        void draw();
+        void draw( GLuint selected = 0 );
+        GLuint objectAtPosition( const QPoint& pos );
 
     private:
         QStringList m_coverPaths;

@@ -123,27 +123,34 @@ CoverBling::resizeGL( int width, int height ) //reimplemented
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
-    gluPerspective( 30, (double)width / height, 1.0, 20.0 );
+    setPerspective();
     glMatrixMode(GL_MODELVIEW);
+}
+
+void
+CoverBling::setPerspective()
+{
+    gluPerspective( 30, (double)width() / height(), 1.0, 20.0 );
 }
 
 void
 CoverBling::paintGL() //reimplemented
 {
-    //const int mousex = QCursor::pos().x();
-
     m_xOffset += 0.02;
     m_zOffset += 0.01;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    draw();
+
+    const QPoint mousePos = mapFromGlobal( QCursor::pos() );
+    draw( objectAtPosition( mousePos ) );
 }
 
 void
-CoverBling::draw()
+CoverBling::draw( GLuint selected )
 {
     GLuint objectName = 1;
 
+    glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
     glRotatef( 4, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
     glScalef( 1.0, 1.0, 6.0 );
@@ -177,8 +184,11 @@ CoverBling::draw()
             glTranslatef( xsin * 2.4, 0.0, zsin / 3 );
             
             //draw the cover
+            if( objectName == selected )
+                glColor3f( 1.0, 0.0, 0.0 );
             glLoadName( objectName++ );
             glCallList( m_texturedRectList );
+            glColor4f( 1.0, 1.0, 1.0, 1.0 );
 
             //draw reflection on the ground
             glPushMatrix();
@@ -189,6 +199,39 @@ CoverBling::draw()
     }
 
     glDisable( GL_TEXTURE_2D);
+}
+
+GLuint
+CoverBling::objectAtPosition( const QPoint& pos )
+{
+    // this is the same as in every OpenGL picking example
+    const int MaxSize = 512; // see below for an explanation on the buffer content
+    GLuint buffer[MaxSize];
+    GLint viewport[4];
+
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glSelectBuffer(MaxSize, buffer);
+    // enter select mode
+    glRenderMode(GL_SELECT);
+
+    glInitNames();
+    glPushName(0);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+        glLoadIdentity();
+        gluPickMatrix((GLdouble)pos.x(), (GLdouble)(viewport[3] - pos.y()), 5.0, 5.0, viewport);
+        setPerspective();
+        draw();
+        glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    if (!glRenderMode(GL_RENDER)) {
+        return 0;
+    }
+
+    // return the name of the clicked surface
+    return buffer[3];
 }
 
 
