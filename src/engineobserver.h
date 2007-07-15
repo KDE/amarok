@@ -18,7 +18,10 @@ email                : fh@ez.no
 #ifndef AMAROK_ENGINEOBSERVER_H
 #define AMAROK_ENGINEOBSERVER_H
 
+#include "amarok_export.h"
 #include "engine_fwd.h"
+
+#include <QSet>
 
 class EngineSubject;
 class MetaBundle;
@@ -29,24 +32,24 @@ class QString;
  * the engine with attach
  * Note that all positional information and times are in milliseconds
  */
-class EngineObserver
+class AMAROK_EXPORT EngineObserver
 {
 public:
     EngineObserver();
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
-    virtual void engineStateChanged( Engine::State /*state*/, Engine::State /*oldState*/ = Engine::Empty ) {}
-    virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
-    virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &/*reason*/ ) {}
-    virtual void engineVolumeChanged( int /*percent*/ ) {}
-    virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ ) {}
-    virtual void engineTrackLengthChanged( long /*length*/ ) {}
+    virtual void engineStateChanged( Engine::State currentState, Engine::State oldState = Engine::Empty );
+    virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+    virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+    virtual void engineVolumeChanged( int percent );
+    virtual void engineTrackPositionChanged( long position , bool userSeek );
+    virtual void engineTrackLengthChanged( long length );
 
 private:
     EngineSubject *m_subject;
 };
 
-#include <q3ptrlist.h>
 /**
  * Inherited by EngineController.
  * Notify observer functionality is captured in this class.
@@ -54,8 +57,8 @@ private:
 class EngineSubject
 {
 public:
-    void attach( EngineObserver *observer );
-    void detach( EngineObserver *observer );
+    void AMAROK_EXPORT attach( EngineObserver *observer );
+    void AMAROK_EXPORT detach( EngineObserver *observer );
 
 protected:
     EngineSubject();
@@ -63,13 +66,14 @@ protected:
     void stateChangedNotify( Engine::State /*state*/ );
     void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
     void trackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
+    void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
     void trackLengthChangedNotify( long /*length*/ );
 
 private:
-    Q3PtrList<EngineObserver> Observers;
+    QSet<EngineObserver*> Observers;
     Engine::State m_oldEngineState;
 };
 
