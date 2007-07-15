@@ -136,8 +136,8 @@ CoverBling::setPerspective()
 void
 CoverBling::paintGL() //reimplemented
 {
-    m_xOffset += 0.02;
-    m_zOffset += 0.01;
+    m_xOffset += 0.01;
+    m_zOffset += 0.005;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -191,6 +191,7 @@ CoverBling::draw( GLuint selected )
             glColor4f( 1.0, 1.0, 1.0, 1.0 );
 
             //draw reflection on the ground
+            glLoadName( 0 );
             glPushMatrix();
                 glCallList( m_texturedRectReflectedList );
             glPopMatrix();
