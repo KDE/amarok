@@ -57,6 +57,7 @@ int ScriptableService::addTrack( ServiceTrack * track, int albumId )
         
         AlbumPtr albumPtr = albumIdMap.value( albumId );
         ServiceAlbum * album = dynamic_cast< ServiceAlbum * >( albumPtr.data() );
+        Q_ASSERT( album );
         track->setAlbum( albumPtr->name() );
         album->addTrack( trackPtr );
 
