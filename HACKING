@@ -250,7 +250,7 @@ working. So do not store a value of Amarok::config, make it a habit to just
 always call writeEntry or readEntry directly.
 
 Correct:
-| amarok::config( "Group 1" )->writeEntry( "Group 1 Variable", true );
+ | amarok::config( "Group 1" )->writeEntry( "Group 1 Variable", true );
 
 
 Errors & Asserts
@@ -261,6 +261,20 @@ application (its not uncommon for end-users to have debugging enabled).
 *KMessageBox is fine to use to prompt the user, but do not use it to display errors
 or informational messages. Instead, KDE::StatusBar has a few handy methods. Refer to
 amarok/src/statusbar/statusBarBase.h
+
+
+Commenting Out Code
+-------------------
+Don't keep commented out code. It just causes confusion and makes the source
+harder to read. Remember, the last revision before your change is always
+availabe in SVN. Hence no need for leaving cruft in the source.
+
+Wrong:
+ | myWidget->show();
+ | //myWidget->rise(); //what is this good for?
+
+Correct:
+ | myWidget->show();
 
 
 Copyright
