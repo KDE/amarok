@@ -1254,7 +1254,6 @@ void App::setRating( int n )
         CollectionDB::instance()->setSongRating( path, n, true );
         const int rating = CollectionDB::instance()->getSongRating( path );
         EngineController::instance()->updateBundleRating( rating );
-        Amarok::OSD::instance()->OSDWidget::setMoodbar( EngineController::instance()->bundle() );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
         if( !Amarok::OSD::instance()->isShown() && !PlaylistWindow::self()->isReallyShown() )
             Amarok::OSD::instance()->forceToggleOSD();
