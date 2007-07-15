@@ -227,12 +227,22 @@ CoverBling::objectAtPosition( const QPoint& pos )
         glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-    if (!glRenderMode(GL_RENDER)) {
+    const int hits = glRenderMode( GL_RENDER );
+    if ( !hits )
         return 0;
-    }
 
+    //determine object with the lowest Z value
+    uint hitZValue = UINT_MAX;
+    uint hit       = UINT_MAX;
+    for( int i = 0; i < hits; i++ ) { 
+        if( buffer[(i*4)+1] < hitZValue ) { 
+            hit       = buffer[(i*4)+3];
+            hitZValue = buffer[(i*4)+1];
+        }
+    }
+    
     // return the name of the clicked surface
-    return buffer[3];
+    return hit;
 }
 
 
