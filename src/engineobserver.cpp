@@ -20,7 +20,6 @@ email                : fh@ez.no
 #include "engineobserver.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
-#include <q3ptrlist.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +42,53 @@ EngineObserver::~EngineObserver()
         m_subject->detach( this );
 }
 
+void
+EngineObserver::engineStateChanged( Engine::State currentState, Engine::State oldState )
+{
+    Q_UNUSED( oldState );
+    Q_UNUSED( currentState );
+}
+
+void
+EngineObserver::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+{
+    Q_UNUSED( bundle );
+    Q_UNUSED( trackChanged );
+}
+
+void
+EngineObserver::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
+{
+    Q_UNUSED( finalPosition );
+    Q_UNUSED( trackLength );
+    Q_UNUSED( reason );
+}
+
+void
+EngineObserver::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Q_UNUSED( newMetaData );
+    Q_UNUSED( trackChanged );
+}
+
+void
+EngineObserver::engineVolumeChanged( int percent )
+{
+    Q_UNUSED( percent );
+}
+
+void
+EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
+{
+    Q_UNUSED( position );
+    Q_UNUSED( userSeek );
+}
+
+void
+EngineObserver::engineTrackLengthChanged( long length )
+{
+    Q_UNUSED( length );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS EngineSubject
@@ -53,18 +99,15 @@ EngineSubject::EngineSubject()
 {}
 
 EngineSubject::~EngineSubject()
-{}
+{
+    //do not delete the observers, we don't ahve ownership of them!
+}
 
 
 void EngineSubject::stateChangedNotify( Engine::State state )
 {
-    DEBUG_BLOCK
-
-    Q3PtrListIterator<EngineObserver> it( Observers );
-    EngineObserver *observer;
-    while( ( observer = it.current() ) != 0 )
+    foreach( EngineObserver *observer, Observers )
     {
-        ++it;
         observer->engineStateChanged( state, m_oldEngineState );
     }
 
@@ -74,11 +117,6 @@ void EngineSubject::stateChangedNotify( Engine::State state )
 
 void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChanged )
 {
-    DEBUG_BLOCK
-
-    Q3PtrListIterator<EngineObserver> it( Observers );
-    EngineObserver *observer;
-
     PodcastEpisodeBundle peb;
     MetaBundle b( bundle );
     if( CollectionDB::instance()->getPodcastEpisodeBundle( bundle.url(), &peb ) )
@@ -86,9 +124,8 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
         b.setPodcastBundle( peb );
     }
 
-    while( ( observer = it.current() ) != 0 )
+    foreach( EngineObserver *observer, Observers )
     {
-        ++it;
         observer->engineNewMetaData( b, trackChanged );
     }
 }
@@ -96,18 +133,21 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
 
 void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )
 {
-    for( Q3PtrListIterator<EngineObserver> it( Observers ); *it; ++it )
-        (*it)->engineTrackEnded( finalPosition, trackLength, reason );
+    foreach( EngineObserver *observer, Observers )
+        observer->engineTrackEnded( finalPosition, trackLength, reason );
 }
 
+void
+EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const
+{
+    foreach( EngineObserver *observer, Observers )
+        observer->engineNewMetaData( newMetaData, trackChanged );
+}
 
 void EngineSubject::volumeChangedNotify( int percent )
 {
-    Q3PtrListIterator<EngineObserver> it( Observers );
-    EngineObserver *observer;
-    while( ( observer = it.current() ) != 0 )
+    foreach( EngineObserver *observer, Observers )
     {
-        ++it;
         observer->engineVolumeChanged( percent );
     }
 }
@@ -115,11 +155,8 @@ void EngineSubject::volumeChangedNotify( int percent )
 
 void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 {
-    Q3PtrListIterator<EngineObserver> it( Observers );
-    EngineObserver *observer;
-    while( ( observer = it.current() ) != 0 )
+    foreach( EngineObserver *observer, Observers )
     {
-        ++it;
         observer->engineTrackPositionChanged( position, userSeek );
     }
 }
@@ -127,11 +164,8 @@ void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 
 void EngineSubject::trackLengthChangedNotify( long length )
 {
-    Q3PtrListIterator<EngineObserver> it( Observers );
-    EngineObserver *observer;
-    while( ( observer = it.current() ) != 0 )
+    foreach( EngineObserver *observer, Observers )
     {
-        ++it;
         observer->engineTrackLengthChanged( length );
     }
 }
@@ -139,13 +173,13 @@ void EngineSubject::trackLengthChangedNotify( long length )
 
 void EngineSubject::attach( EngineObserver *observer )
 {
-    if( !observer || Observers.find( observer ) != -1 )
+    if( !observer )
         return;
-    Observers.append( observer );
+    Observers.insert( observer );
 }
 
 
 void EngineSubject::detach( EngineObserver *observer )
 {
-    if( Observers.find( observer ) != -1 ) Observers.remove();
+    Observers.remove( observer );
 }
