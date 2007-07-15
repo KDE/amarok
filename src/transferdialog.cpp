@@ -55,10 +55,9 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
                     .arg( transferDir ), location );
 
     KVBox *vbox2 = new KVBox( vbox );
-    QSpacerItem *spacer = new QSpacerItem( 0, 25 );
     QLayout *vlayout = vbox2->layout();
     if( vlayout )
-        vlayout->addItem( spacer );
+        vlayout->addItem( new QSpacerItem( 0, 25 ) );
 
     new QLabel( i18n( "You can have your music automatically grouped in\n"
                       "a variety of ways. Each grouping will create\n"
@@ -100,10 +99,9 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );
 
     KVBox *vbox3 = new KVBox( vbox );
-    QSpacerItem *spacer2 = new QSpacerItem( 0, 25 );
     QLayout *vlayout2 = vbox3->layout();
     if( vlayout2 )
-        vlayout2->addItem( spacer2 );
+        vlayout2->addItem( new QSpacerItem( 0, 25 ) );
 
     Q3GroupBox *options = new Q3GroupBox( 6, Qt::Vertical, i18n( "Options" ), vbox );
 
