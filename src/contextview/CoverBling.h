@@ -42,8 +42,6 @@ class CoverBling : public QGLWidget
         GLuint m_texturedRectReflectedList;
         float m_xOffset;
         float m_zOffset;
-        float m_aspectX;
-        float m_aspectY;
 };
 
 

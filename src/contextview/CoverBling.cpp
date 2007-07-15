@@ -122,18 +122,9 @@ CoverBling::resizeGL( int width, int height ) //reimplemented
     glViewport( 0, 0, (GLint)width, (GLint)height );
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
+    //glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
+    gluPerspective( 30, (double)width / height, 1.0, 20.0 );
     glMatrixMode(GL_MODELVIEW);
-        
-    // Get the aspect ratio of the screen
-    const float ratio = (float)width / (float)height;
-    if ( ratio >= 1.0 ) {
-        m_aspectX = 1.0 / ratio;
-        m_aspectY = 1.0;
-    } else {
-        m_aspectX = 1.0;
-        m_aspectY = 1.0 * ratio;
-    }
 }
 
 void
@@ -147,8 +138,8 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glLoadIdentity();
-    glRotatef( 5, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
-    glScalef( m_aspectX, m_aspectY, 1.0 ); //aspect correction
+    glRotatef( 4, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
+    glScalef( 1.0, 1.0, 6.0 );
 
     //draw the ground
     //glBegin( GL_POLYGON );
