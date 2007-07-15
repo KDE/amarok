@@ -136,6 +136,13 @@ CoverBling::paintGL() //reimplemented
     m_zOffset += 0.01;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    draw();
+}
+
+void
+CoverBling::draw()
+{
+    GLuint objectName = 1;
 
     glLoadIdentity();
     glRotatef( 4, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
@@ -170,6 +177,7 @@ CoverBling::paintGL() //reimplemented
             glTranslatef( xsin * 2.4, 0.0, zsin / 3 );
             
             //draw the cover
+            glLoadName( objectName++ );
             glCallList( m_texturedRectList );
 
             //draw reflection on the ground

@@ -34,6 +34,7 @@ class CoverBling : public QGLWidget
         void initializeGL();
         void resizeGL( int width, int height );
         void paintGL();
+        void draw();
 
     private:
         QStringList m_coverPaths;
