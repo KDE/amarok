@@ -1321,6 +1321,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
             case ( albumArtistTag ): id = "ALBUMARTIST"; break; // non-standard: Amarok
+            default: return; //don't write the tag if it is unknown
         }
         TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
         if ( oggFile && oggFile->tag() )
@@ -1339,6 +1340,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
             case ( albumArtistTag ): id = "ALBUMARTIST"; break; // non-standard: Amarok
+            default: return; //don't write the tag if it is unknown
         }
         TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File *>( file );
         if ( flacFile && flacFile->xiphComment() )
