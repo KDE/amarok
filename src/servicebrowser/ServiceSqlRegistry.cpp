@@ -67,6 +67,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         index += m_metaFactory->getTrackSqlRowCount();
 
         ServiceTrack * track = dynamic_cast<ServiceTrack *> ( trackPtr.data() );
+        Q_ASSERT(track);
 
         AlbumPtr albumPtr;
 
