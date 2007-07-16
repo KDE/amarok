@@ -25,6 +25,7 @@
 #include "collection.h"
 #include "metaquerybuilder.h"
 #include "meta/file/File.h"
+#include "meta/stream/Stream.h"
 #include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
 #include "scrobbler.h"
@@ -47,6 +48,21 @@ struct CollectionManager::Private
     QList<Collection*> unmanagedCollections;
     QList<Collection*> managedCollections;
 };
+
+class CollectionManagerSingleton
+{
+    public:
+        CollectionManager instance;
+};
+
+K_GLOBAL_STATIC( CollectionManagerSingleton, privateInstance )
+
+
+CollectionManager *
+CollectionManager::instance( )
+{
+    return &privateInstance->instance;
+}
 
 CollectionManager::CollectionManager()
     : QObject()
@@ -97,13 +113,6 @@ CollectionManager::init()
     //TODO: this is a hack to test it out, PodcastCollection belongs in the Playlistwindow
     addUnmanagedCollection( The::podcastCollection() );
 
-}
-
-CollectionManager *
-CollectionManager::instance( )
-{
-    static CollectionManager instance;
-    return &instance;
 }
 
 void
@@ -214,6 +223,9 @@ CollectionManager::trackForUrl( const KUrl &url )
                 return track;
         }
     }
+
+    if( url.protocol() == "http" || url.protocol() == "mms" )
+        return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     if( url.protocol() == "file" )
         return Meta::TrackPtr( new MetaFile::Track( url ) );

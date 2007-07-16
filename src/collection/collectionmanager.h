@@ -26,6 +26,7 @@
 #include <QObject>
 
 class SqlStorage;
+class CollectionManagerSingleton;
 
 class CollectionManager : public QObject
 {
@@ -66,6 +67,7 @@ class CollectionManager : public QObject
         void slotRemoveCollection();
 
     private:
+        friend class CollectionManagerSingleton;
         CollectionManager();
 
         void init();
