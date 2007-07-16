@@ -297,7 +297,11 @@ Reader::songListFinished( int /*id*/, bool error )
     ComposerMap composerMap;
     YearMap yearMap;
 
-    if( songResults["adbs"].toList()[0].toMap()["mlcl"].toList().count() < 1 ) {
+    if( songResults["adbs"].toList().size() < 1 || 
+        songResults["adbs"].toList()[0].toMap()["mlcl"].toList().count() < 1 ) {
+        emit httpError( "Invalid response" ); //it's not a real http error, but the effect is the same
+        http->deleteLater();
+        deleteLater();
         return;
     }
 
