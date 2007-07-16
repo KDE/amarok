@@ -73,7 +73,6 @@ Model::rowCount( const QModelIndex& ) const
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
-DEBUG_BLOCK
     int row = index.row();
     TrackPtr track = m_tracks.at( row );
     /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
@@ -143,11 +142,12 @@ Model::insertTracks( int row, TrackList tracks )
 }
 
 bool
-Model::removeRows( int position, int rows )
+Model::removeRows( int position, int rows, const QModelIndex& /*parent*/  )
 {
     m_undoStack->push( new RemoveTracksCmd( 0, position, rows ) );
     return true;
 }
+
 
 void
 Model::insertTracks( int row, QueryMaker *qm )
@@ -183,7 +183,9 @@ Model::testData()
 Qt::DropActions
 Model::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction;
+    DEBUG_BLOCK
+    return Qt::ActionMask;
+   // return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
 }
 
 void

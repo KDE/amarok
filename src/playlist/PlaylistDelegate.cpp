@@ -33,9 +33,6 @@ void
 Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     painter->save();
-    DEBUG_BLOCK
-    debug() << option.state << endl;
-    //
     //if (option.state & QStyle::State_HasFocus)
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());

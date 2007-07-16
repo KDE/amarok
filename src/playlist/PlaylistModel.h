@@ -85,11 +85,12 @@ class TrackAdvancer;
             int columnCount(const QModelIndex &parent = QModelIndex() ) const { return 1; }
             QVariant data(const QModelIndex &index, int role) const;
         //overriding QAbstractItemModel
-            bool removeRows( int position, int rows );
+            bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
             QVariant headerData(int section, Qt::Orientation orientation, int role) const { return QVariant(); }
             Qt::DropActions supportedDropActions() const;
 
         //Drag and Drop methods
+            virtual bool insertRows(  int row, int count, const QModelIndex & parent = QModelIndex() ) { return true; }
             Qt::ItemFlags flags(const QModelIndex &index) const;
             QStringList mimeTypes() const;
             QMimeData* mimeData(const QModelIndexList &indexes) const;

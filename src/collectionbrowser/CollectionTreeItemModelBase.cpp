@@ -146,7 +146,7 @@ QStringList
 CollectionTreeItemModelBase::mimeTypes() const
 {
     QStringList types;
-    types << "application/x-amarok-tracks";
+    types << AmarokMimeData::TRACK_MIME;
     return types;
 }
 

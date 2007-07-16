@@ -47,7 +47,7 @@ AmarokMimeData::formats() const
     QStringList formats( QMimeData::formats() );
     if( !m_tracks.isEmpty() || !m_queryMakers.isEmpty())
     {
-        formats.append( "application/x-amarok-tracks" );
+        formats.append( TRACK_MIME );
         if( !formats.contains( "text/uri-list" ) )
             formats.append( "text/uri-list" );
         if( !formats.contains( "text/plain" ) )
@@ -60,13 +60,17 @@ bool
 AmarokMimeData::hasFormat( const QString &mimeType ) const
 {
     DEBUG_BLOCK
-    debug() << "mimeType is " << mimeType << endl;
-    if( mimeType == "application/x-amarok-tracks" )
+   
+    if( mimeType == TRACK_MIME )
     {
+        debug() << "yep it has " << TRACK_MIME << endl;
         return !m_tracks.isEmpty() || !m_queryMakers.isEmpty();
     }
     else
+    {
+         debug() << "not x-amarok" << " mimeType is " << mimeType << endl;
         return QMimeData::hasFormat( mimeType );
+    }
 }
 
 Meta::TrackList
