@@ -9,21 +9,23 @@
 #include "PlaylistDelegate.h"
 #include "PlaylistView.h"
 
+#include <QItemDelegate>
+
 using namespace PlaylistNS;
 
 void
 View::setModel( QAbstractItemModel * model )
 {
     QListView::setModel( model );
-    setDropIndicatorShown(true);
+    setDropIndicatorShown( true );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
-    setDragDropOverwriteMode( false );
-    //setSelectionMode(QAbstractItemView::ExtendedSelection);
-    setDragEnabled(true);
-    setAcceptDrops(true);
-    setDropIndicatorShown(true);
-    setAlternatingRowColors(true);
+    setDragDropOverwriteMode( true );
+    setDragEnabled( true );
+    setAcceptDrops( true );
+    setDropIndicatorShown( true );
+    setAlternatingRowColors( true );
     delete itemDelegate();
     setItemDelegate( new Delegate( this ) );
     connect( this, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( play( const QModelIndex& ) ) );

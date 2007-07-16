@@ -33,11 +33,13 @@ void
 Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     painter->save();
+    DEBUG_BLOCK
+    debug() << option.state << endl;
+    //
+    //if (option.state & QStyle::State_HasFocus)
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());
-
     QGraphicsScene scene;
-
     Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
     if( !track )
         return;
@@ -50,7 +52,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     }
     QString prettyLength = MetaBundle::prettyTime( track->length(), false );
     QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem(albumPixmap, 0 );
-    pixmap->setPos( 0.0, 1.0 );
+    pixmap->setPos( 0.0, 2.5 );
     QGraphicsTextItem* leftText = new QGraphicsTextItem();
     QGraphicsTextItem* rightText = new QGraphicsTextItem();
     leftText->setFont( QFont() );
@@ -66,12 +68,14 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
         rightText->setPos( option.rect.width() - qMax( fm->width( album ), fm->width( prettyLength ) ), 0.0 );
         delete fm;
     }
-    if (option.state & QStyle::State_Selected)
-        scene.addRect( 0.0, 0.0, option.rect.width(), option.rect.height(), QPen( option.palette.highlight() ) );
     scene.addItem( pixmap );
     scene.addItem( leftText );
     scene.addItem( rightText );
-    scene.render( painter, option.rect );
+    //QRectF sourceShifted = scene.sceneRect().moveTopLeft( QPointF( 0.0, 0.0 ) );
+    QRectF targetShifted = option.rect;
+    targetShifted.moveTopLeft( QPointF( 0.0, 0.0 ) );
+    QRectF croppedSource = scene.sceneRect().intersect( targetShifted );
+    scene.render( painter, option.rect, croppedSource );
     painter->restore();
 }
 

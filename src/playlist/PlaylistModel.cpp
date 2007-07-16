@@ -73,6 +73,7 @@ Model::rowCount( const QModelIndex& ) const
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
+DEBUG_BLOCK
     int row = index.row();
     TrackPtr track = m_tracks.at( row );
     /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
@@ -86,11 +87,17 @@ Model::data( const QModelIndex& index, int role ) const
     {
         return QVariant::fromValue( track );
     }
-    else
-        return QVariant();
-   /* else
+    else if( role == Qt::DisplayRole && row != -1 )
     {
-        switch( role )
+        debug() << "returning its name" << endl;
+        return track->name();
+    }
+    else
+    {
+        debug() << "null variant" << role << endl;
+        return QVariant();
+    }
+/*        switch( role )
         {
             case AlbumArtist: return track->album()->albumArtist()->name();
             case Album: return track->album()->name();
@@ -109,8 +116,7 @@ Model::data( const QModelIndex& index, int role ) const
             case TrackNumber: return track->trackNumber();
             case Year: return track->year()->name().toInt();
             default: return QVariant();
-        }
-    } */
+        } */
 }
 
 // void
@@ -369,8 +375,8 @@ Model::saveM3U( const QString &path, bool relative ) const
 Qt::ItemFlags
 Model::flags(const QModelIndex &index) const
 {
-    //Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
-    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled | defaultFlags;
 }
 
 QStringList
