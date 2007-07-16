@@ -297,6 +297,10 @@ Reader::songListFinished( int /*id*/, bool error )
     ComposerMap composerMap;
     YearMap yearMap;
 
+    if( songResults["adbs"].toList()[0].toMap()["mlcl"].toList().count() < 1 ) {
+        return;
+    }
+
     QList<QVariant> songList;
     songList = songResults["adbs"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList();
     debug() << "songList.count() = " << songList.count() << endl;
