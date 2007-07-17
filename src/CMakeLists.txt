@@ -273,6 +273,8 @@ set(meta_SRCS
     meta/meta.cpp
     meta/proxy/MetaProxy.cpp
     meta/file/File.cpp
+    meta/stream/Stream.cpp
+    meta/PlaylistFileSupport.cpp
 )
 
 #####################################################################
