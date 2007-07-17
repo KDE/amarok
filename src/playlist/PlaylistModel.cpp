@@ -88,12 +88,10 @@ Model::data( const QModelIndex& index, int role ) const
     }
     else if( role == Qt::DisplayRole && row != -1 )
     {
-        debug() << "returning its name" << endl;
         return track->name();
     }
     else
     {
-        debug() << "null variant" << role << endl;
         return QVariant();
     }
 /*        switch( role )
