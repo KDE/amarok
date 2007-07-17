@@ -20,6 +20,8 @@
 
 #include "sqlcollection.h"
 
+static const int DB_VERSION = 1;
+
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
 {
@@ -46,6 +48,10 @@ DatabaseUpdater::update()
 void
 DatabaseUpdater::createTables() const
 {
+    {
+        QString c = "CREATE TABLE admin (key " + m_collection->textColumnType() + ", version INTEGER);";
+        m_collection->query( c );
+    }
     {
         QString create = "CREATE TABLE devices "
                          "(id " + m_collection->idType() +
@@ -113,10 +119,10 @@ DatabaseUpdater::createTables() const
                     "(id " + m_collection->idType() +
                     ",url INTEGER"
                     ",artist INTEGER"
-                    ",albums INTEGER"
-                    ",genres INTEGER"
-                    ",composers INTEGER"
-                    ",years INTEGER"
+                    ",album INTEGER"
+                    ",genre INTEGER"
+                    ",composer INTEGER"
+                    ",year INTEGER"
                     ",title " + m_collection->textColumnType() +
                     ",comment " + m_collection->longTextColumnType() +
                     ",track INTEGER"
@@ -128,11 +134,55 @@ DatabaseUpdater::createTables() const
                     ",filetype INTEGER"     //does this still make sense?
                     ",bpm FLOAT"
                     ",createdate INTEGER"   //are the two dates needed?
-                    ",modifydate INTEGER);";
+                    ",modifydate INTEGER"
+                    ");";
 
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_url ON tracks(url);" );
-        m_collection->query( "CREATE INDEX tracks_artist ON tracks(artist);" );
-        m_collection->query( "CREATE INDEX tracks_albums ON tracks(album);" );
+
+        QStringList indices;
+        indices << "artist" << "album" << "genre" << "composer" << "year" << "title";
+        indices << "track" << "discnumber" << "createdate" << "length" << "bitrate" << "filesize";
+        foreach( QString index, indices )
+        {
+            QString query = QString( "CREATE INDEX tracks_%1 ON tracks(%2);" ).arg( index, index );
+            m_collection->query( query );
+        }
     }
+    {
+        QString c = "CREATE TABLE statistics "
+                    "(id " + m_collection->idType() +
+                    ",url INTEGER"
+                    ",createdate INTEGER"
+                    ",accessdate INTEGER"
+                    ",score FLOAT"
+                    ",rating INTEGER DEFAULT 0"
+                    ",playcount INTEGER"
+                    ");";
+        m_collection->query( c );
+        m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
+        QStringList indices;
+        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
+        foreach( QString index, indices )
+        {
+            QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
+            m_collection->query( q );
+        }
+    }
+    {
+        QString q = "CREATE TABLE labels "
+                    "(id " + m_collection->idType() +
+                    ",label " + m_collection->textColumnType() +
+                    ");";
+        m_collection->query( q );
+        m_collection->query( "CREATE UNIQUE INDEX labels_label ON labels(label);" );
+
+        QString r = "CREATE TABLE urls_labels(url INTEGER, label INTEGER);";
+        m_collection->query( r );
+        m_collection->query( "CREATE INDEX urlslabels_url ON urls_labels(url);" );
+        m_collection->query( "CREATE INDEX urlslabels_label ON urls_labels(label);" );
+    }
+    m_collection->query( "INSERT INTO admin(key,version) "
+                          "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
 }
+

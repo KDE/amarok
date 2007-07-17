@@ -33,6 +33,7 @@ private:
     void createTables() const;
 
     SqlCollection *m_collection;
+
 };
 
 #endif
