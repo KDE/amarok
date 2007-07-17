@@ -28,6 +28,12 @@
 #include <kshell.h>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
+    : QObject()
+    , m_albumDownloadJob( 0 )
+    , m_currentAlbumFileName()
+    , m_currentAlbumFileName()
+    , m_currentAlbumId( 0 )
+    , m_tempDir()
 {
     m_tempDir.setAutoRemove( false );
 
