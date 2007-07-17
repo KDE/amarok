@@ -250,17 +250,6 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker* qm );
     };
-
-    /**
-     * Save the given TrackList tracks at the specified path as a M3U file.
-     */
-    bool saveM3u( TrackList tracks, KUrl path, bool relative );
-
-     /**
-     * Save the given TrackList tracks at the specified path as a M3U file.
-     */
-     void saveXspf( TrackList tracks, KUrl path );
-     
 }
 
 Q_DECLARE_METATYPE( Meta::DataPtr )
