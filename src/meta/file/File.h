@@ -93,8 +93,8 @@ namespace MetaFile
             virtual void subscribe( Meta::TrackObserver *observer );
             virtual void unsubscribe( Meta::TrackObserver *observer );
 
-        private:
             class Private;
+        private:
             Private * const d;
     };
 }

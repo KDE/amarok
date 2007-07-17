@@ -23,7 +23,7 @@
 #include "meta.h"
 
 #include <QFile>
-#include <QSet>
+#include <QPointer>
 #include <QString>
 
 #include <kfilemetainfo.h>
@@ -31,38 +31,14 @@
 
 using namespace MetaFile;
 
-class Track::Private
-{
-public:
-    Private( Track *t )
-        : track( t )
-        , metaInfo()
-        , observers()
-        , url()
-        , batchUpdate( false )
-    {}
-    void notify() const
-    {
-        foreach( Meta::TrackObserver *observer, observers )
-            observer->metadataChanged( track );
-    }
-
-public:
-    KFileMetaInfo metaInfo;
-    QSet<Meta::TrackObserver*> observers;
-    KUrl url;
-    bool batchUpdate;
-
-private:
-    Track *track;
-};
-
 Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
     d->url = url;
     d->metaInfo = KFileMetaInfo( url.path() );
+    d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
+    d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
 }
 
 Track::~Track()
@@ -134,15 +110,13 @@ Track::isEditable() const
 Meta::AlbumPtr
 Track::album() const
 {
-    //TODO
-    return Meta::AlbumPtr();
+    return d->album;
 }
 
 Meta::ArtistPtr
 Track::artist() const
 {
-    //TODO
-    return Meta::ArtistPtr();
+    d->artist;
 }
 
 Meta::GenrePtr
@@ -287,7 +261,11 @@ Track::length() const
 int
 Track::filesize() const
 {
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( FILESIZE );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 int
@@ -368,3 +346,4 @@ Track::unsubscribe( Meta::TrackObserver *observer )
     d->observers.remove( observer );
 }
 
+#include "File.moc"
