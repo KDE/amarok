@@ -177,6 +177,7 @@ EngineController::loadEngine( const QString &engineName )
                        this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
             connect( engine, SIGNAL(showConfigDialog( const QByteArray& )),
                        kapp,   SLOT(slotConfigAmarok( const QByteArray& )) );
+            connect( engine, SIGNAL( metaData( QHash<qint64, QString> ) ), SLOT( slotEngineMetaData( QHash<qint64, QString> ) ) );
 
             if( engine->init() )
                 return engine;
@@ -337,6 +338,7 @@ void EngineController::play() //SLOT
 void EngineController::play( const Meta::TrackPtr& track, uint offset )
 {
     DEBUG_BLOCK
+    m_currentTrack = track;
     KUrl url = track->playableUrl();
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
     {
@@ -660,6 +662,13 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     else
         m_positionOffset = 0;
     newMetaDataNotify( m_bundle, false /* not a new track */ );
+}
+
+void
+EngineController::slotEngineMetaData( const QHash<qint64, QString> &newMetaData )
+{
+    bool trackChange = m_currentTrack->playableUrl().isLocalFile();
+    newMetaDataNotify( newMetaData, trackChange );
 }
 
 void EngineController::currentTrackMetaDataChanged( const MetaBundle& bundle )

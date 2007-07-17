@@ -14,6 +14,7 @@
 //Added by qt3to4:
 #include <QByteArray>
 #include <vector>
+#include <QHash>
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -82,6 +83,8 @@ namespace Engine
 
         /** Transmits metadata package. */
         void metaData( const Engine::SimpleMetaBundle& );
+
+        void metaData( const QHash<qint64, QString> &newMetaData );
 
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );

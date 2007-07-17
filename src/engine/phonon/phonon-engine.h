@@ -57,6 +57,9 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
 
 public:
     PhononEngine();
+
+private slots:
+    void slotMetaDataChanged();
 };
 
 #endif

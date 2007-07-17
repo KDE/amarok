@@ -15,6 +15,7 @@
 #include "phonon-engine.h"
 //these files are from libamarok
 #include "enginecontroller.h"
+#include "meta/MetaConstants.h"
 
 AMAROK_EXPORT_PLUGIN( PhononEngine )
 
@@ -27,6 +28,8 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 #include <phonon/audiopath.h>
 #include <phonon/audiooutput.h>
 #include <phonon/backendcapabilities.h>
+
+#include <QHash>
 
 
 PhononEngine::PhononEngine()
@@ -61,6 +64,7 @@ PhononEngine::init()
 
     connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
     //connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
+    connect( m_mediaObject, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
 
     return true;
 }
@@ -189,5 +193,41 @@ PhononEngine::canDecode( const KUrl &url ) const
     return Phonon::BackendCapabilities::isMimeTypeAvailable( mimeType );
 }
 
+void
+PhononEngine::slotMetaDataChanged()
+{
+    QHash<qint64, QString> meta;
+    {
+        QStringList data = m_mediaObject->metaData( "ARTIST" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valArtist, data.first() );
+    }
+    {
+        QStringList data = m_mediaObject->metaData( "ALBUM" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valAlbum, data.first() );
+    }
+    {
+        QStringList data = m_mediaObject->metaData( "TITLE" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valTitle, data.first() );
+    }
+    {
+        QStringList data = m_mediaObject->metaData( "GENRE" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valGenre, data.first() );
+    }
+    {
+        QStringList data = m_mediaObject->metaData( "TRACKNUMBER" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valTrackNr, data.first() );
+    }
+    {
+        QStringList data = m_mediaObject->metaData( "LENGTH" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valArtist, data.first() );
+    }
+    emit metaData( meta );
+}
 
 #include "phonon-engine.moc"

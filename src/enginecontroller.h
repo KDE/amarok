@@ -17,6 +17,7 @@
 #include "engineobserver.h"
 #include "metabundle.h"
 
+#include <QHash>
 #include <QMap>
 #include <QObject>
 
@@ -109,6 +110,7 @@ signals:
 
 private slots:
     void slotEngineMetaData( const Engine::SimpleMetaBundle& );
+    void slotEngineMetaData( const QHash<qint64, QString> &newMetaData );
     void slotMainTimer();
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
@@ -140,6 +142,7 @@ private:
     // try to correct start time for tracks from last.fm streams
     bool            m_lastFm;
     uint            m_positionOffset, m_lastPositionOffset;
+    Meta::TrackPtr  m_currentTrack;
 };
 
 
