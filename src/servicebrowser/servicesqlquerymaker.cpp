@@ -177,8 +177,8 @@ ServiceSqlQueryMaker::startTrackQuery()
 
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
         m_metaFactory->getAlbumSqlRows() + ',' +
-        m_metaFactory->getArtistSqlRows() + ',' +
-        m_metaFactory->getGenreSqlRows();
+        m_metaFactory->getArtistSqlRows();// + ',' +
+        //m_metaFactory->getGenreSqlRows();
 
     }
     return this;
@@ -613,8 +613,8 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
     //SqlRegistry* reg = m_collection->registry();
     int rowCount = ( m_metaFactory->getTrackSqlRowCount() +
                    m_metaFactory->getAlbumSqlRowCount() +
-                   m_metaFactory->getArtistSqlRowCount() +
-                   m_metaFactory->getGenreSqlRowCount() );
+                   m_metaFactory->getArtistSqlRowCount() );// +
+                  // m_metaFactory->getGenreSqlRowCount() );
 
     int resultRows = result.count() / rowCount;
 
