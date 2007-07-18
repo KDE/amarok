@@ -23,6 +23,8 @@
 #include "support/memoryquerymaker.h"
 #include "TheInstances.h"
 
+#include <kurl.h>
+
 #include <QFile>
 
 #include <klocale.h>
@@ -86,7 +88,7 @@ void
 PodcastCollection::slotUpdateAll()
 {
     //TODO: just calling it for the first one now
-    slotUpdate( QString("/home/kde-devel/tmp/testcast.xml") );
+    slotUpdate( urls.first().url() );
 }
 
 void
@@ -94,24 +96,32 @@ PodcastCollection::slotUpdate( QString url )
 {
     DEBUG_BLOCK
 
-    PodcastReader podcastReader( this );
-    QFile file( url );
+    bool result = false;
+    PodcastReader * podcastReader = new PodcastReader( this );
 
-    if (!file.open(QFile::ReadOnly | QFile::Text))
+    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
+             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+
+    result = podcastReader->read( url );
+}
+
+void
+PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
+{
+    if ( !result )
     {
-        debug() << "error opening file " << file.fileName() << endl;
-    }
-
-    if (!podcastReader.read(&file)) {
-        debug() << "Parse error in file " << file.fileName() << " at line "
-            << podcastReader.lineNumber() << " column "
-            << podcastReader.columnNumber() << " : "
-            << podcastReader.errorString() << endl;
+        debug() << "Parse error in podcast "
+            << podcastReader->url() << " line: "
+            << podcastReader->lineNumber() << " column "
+            << podcastReader->columnNumber() << " : "
+            << podcastReader->errorString() << endl;
     }
     else
     {
-        debug() << "Finished updating: " << url << endl;
+        debug() << "Finished updating: " << podcastReader->url() << endl;
     }
+
+    delete podcastReader;
 
     emit( updated() );
 }
@@ -123,6 +133,23 @@ PodcastCollection::instance()
         s_instance = new PodcastCollection();
 
     return s_instance;
+}
+
+void PodcastCollection::addPodcast(const QString & url)
+{
+    DEBUG_BLOCK
+
+    if( url.isNull() || url.isEmpty() )
+    {
+        debug() << " attempt to add an empty url" << endl;
+        return;
+    }
+
+    KUrl kurl = KUrl( url );
+    //TODO: do some checks here
+    urls << kurl;
+    debug() << url << " added" << endl;
+    slotUpdate( url );
 }
 
 #include "PodcastCollection.moc"

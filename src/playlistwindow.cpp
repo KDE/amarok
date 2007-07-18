@@ -57,6 +57,7 @@
 #include "toolbar.h"
 #include "ui_controlbar.h"
 #include "volumewidget.h"
+#include "PodcastCollection.h"
 
 #include <Q3PopupMenu>
 #include <QFont>
@@ -137,7 +138,7 @@ void PlaylistWindow::init()
     KVBox *playlistwindow = new KVBox;
     playlistwindow->setSpacing( 0 );
     playlistwindow->setMargin( 0 );
-    //make the playlist views resizable so the old one can be hidden! 
+    //make the playlist views resizable so the old one can be hidden!
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( 0 ); //Playlist
     new PlaylistNS::Widget( playlistwindow );
@@ -299,7 +300,7 @@ void PlaylistWindow::init()
        // ServiceBrowser * storeServiceBrowser = new ServiceBrowser(this, "Stores" );;
         //m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser );
         //m_browserNames.append( "Stores" );
-      
+
 
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
@@ -1055,6 +1056,13 @@ void PlaylistWindow::createActions()
     connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
     actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
 
+    KAction *update_podcasts = new KAction( this );
+    update_podcasts->setText( i18n( "Update Podcasts" ) );
+    //update_podcasts->setIcon( KIcon(Amarok::icon( "refresh" )) );
+    ac->addAction( "podcasts_update", update_podcasts );
+    connect(update_podcasts, SIGNAL(triggered(bool)),
+            The::podcastCollection(), SLOT(slotUpdateAll()));
+
     KAction *playact = new KAction( this );
     playact->setText( i18n("Play Media...") );
     playact->setIcon( KIcon(Amarok::icon( "files" )) );
@@ -1234,6 +1242,7 @@ void PlaylistWindow::createMenus()
     playlistMenu->addAction( actionCollection()->action("lastfm_add") );
     playlistMenu->addAction( actionCollection()->action("playlist_save") );
     playlistMenu->addAction( actionCollection()->action("playlist_burn") );
+    playlistMenu->addAction( actionCollection()->action("podcasts_update") );
     playlistMenu->addSeparator();
     playlistMenu->addAction( actionCollection()->action("playlist_undo") );
     playlistMenu->addAction( actionCollection()->action("playlist_redo") );
@@ -1264,7 +1273,7 @@ void PlaylistWindow::createMenus()
     m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->addAction( actionCollection()->action( "context_manager" ) ); 
+    m_toolsMenu->addAction( actionCollection()->action( "context_manager" ) );
     vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
                                   Vis::Selector::instance(), SLOT(show()) );
     m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );

@@ -22,6 +22,9 @@
 #include <collection.h>
 #include "support/memorycollection.h"
 
+class KUrl;
+class PodcastReader;
+
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
 */
@@ -42,6 +45,8 @@ class PodcastCollection : public Collection, public MemoryCollection
 
         virtual CollectionLocation* location() const;
 
+        void addPodcast( const QString &url );
+
     protected:
         PodcastCollection();
         ~PodcastCollection();
@@ -52,9 +57,12 @@ class PodcastCollection : public Collection, public MemoryCollection
     public slots:
         void slotUpdateAll();
         void slotUpdate( QString podcastChannelName );
+        void slotReadResult( PodcastReader *podcastReader, bool result );
 
     private:
         static PodcastCollection* s_instance;
+
+        QList<KUrl> urls;
 
 };
 

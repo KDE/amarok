@@ -71,7 +71,19 @@ typedef QList<PodcastYearPtr > PodcastYearList;
 //
 // };
 
-class PodcastTrack : public Meta::Track
+class PodcastMetaCommon
+{
+    public:
+//         PodcastMetaCommon();
+
+        virtual QString title() const = 0;
+        virtual QString description() const = 0;
+
+        virtual void setTitle( const QString &title ) = 0;
+        virtual void setDescription( const QString &description ) = 0;
+};
+
+class PodcastTrack : public Meta::Track, public PodcastMetaCommon
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -100,8 +112,6 @@ class PodcastTrack : public Meta::Track
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );
         virtual void setYear ( const QString &newYear );
-
-        virtual void setTitle( const QString &newTitle );
 
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
@@ -135,6 +145,11 @@ class PodcastTrack : public Meta::Track
 
         virtual void subscribe ( TrackObserver *observer );
         virtual void unsubscribe ( TrackObserver *observer );
+
+        virtual QString title() const { return m_name; };
+        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; };
+        virtual QString description() const { return m_description; };
+        virtual void setDescription( const QString &description ) { m_description = description; };
 
 //         virtual void processInfoOf( InfoParserBase * infoParser );
 
@@ -179,6 +194,7 @@ class PodcastTrack : public Meta::Track
         QString m_artistName;
 
         QString m_type;
+        QString m_description;
 };
 
 class PodcastArtist : public Meta::Artist
@@ -214,7 +230,7 @@ class PodcastArtist : public Meta::Artist
 
 };
 
-class PodcastAlbum : public Meta::Album
+class PodcastAlbum : public Meta::Album, public PodcastMetaCommon
 {
     public:
         PodcastAlbum();
@@ -233,6 +249,11 @@ class PodcastAlbum : public Meta::Album
         virtual bool canUpdateImage() const;
         virtual void updateImage();
 
+        virtual QString title() const { return m_name; };
+        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; };
+        virtual QString description() const { return m_description; };
+        virtual void setDescription( const QString &description ) { m_description = description; };
+
 //         virtual void processInfoOf( InfoParserBase * infoParser );
 
 
@@ -244,15 +265,12 @@ class PodcastAlbum : public Meta::Album
         void setAlbumArtist( ArtistPtr artist );
         void setIsCompilation( bool compilation );
 
-        void setDescription( const QString &description );
-        QString description( ) const;
         void setId( int id );
         int id( ) const;
         void setArtistId( int artistId );
         int artistId( ) const;
         void setArtistName( const QString &name );
         QString artistName() const;
-        void setTitle( const QString &title );
 
     private:
         int m_id;

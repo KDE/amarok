@@ -16,16 +16,21 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include <QDebug>
-#include <QMap>
-
 #include "PodcastReader.h"
+
 #include "PodcastMetaBase.h"
 #include "debug.h"
+
+#include <kio/job.h>
+#include <kurl.h>
+
+#include <QDebug>
+#include <QMap>
 
 PodcastReader::PodcastReader( PodcastCollection * collection )
         : QXmlStreamReader()
         , m_collection( collection )
+        , m_current( 0 )
 {}
 
 PodcastReader::~PodcastReader()
@@ -36,135 +41,148 @@ bool PodcastReader::read ( QIODevice *device )
 {
     DEBUG_BLOCK
     setDevice( device );
-
-    while ( !atEnd() )
-    {
-        readNext();
-
-        if ( isStartElement() )
-        {
-            if ( name() == "rss" && attributes().value ( "version" ) == "2.0" )
-            {
-                readRss();
-            }
-            else
-            {
-                raiseError ( QObject::tr ( "The file is not an RSS version 2.0 file." ) );
-            }
-        }
-    }
-
-    return !error();
+    return read();
 }
 
-void PodcastReader::readRss()
+bool
+PodcastReader::read(const QString & url)
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "rss" );
 
-    while ( !atEnd() )
-    {
-        readNext();
+    m_url = url;
 
-        if ( isEndElement() )
-            break;
+    KIO::TransferJob *getJob = KIO::get( KUrl( url ), true, false );
 
-        if ( isStartElement() )
-        {
-            if ( name() == "channel" )
-                readChannel();
-            else
-                readUnknownElement();
-        }
-    }
+    connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+             SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+    connect( getJob, SIGNAL( redirection( KIO::Job *, const KUrl & ) ),
+             SLOT( slotRedirection( KIO::Job *, const KUrl & ) ) );
+    connect( getJob, SIGNAL( permanentRedirection( KIO::Job *,
+             const KUrl &, const KUrl &) ),
+             SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
+             const KUrl &) ) );
+
+//     read();
+
+    return !getJob->isErrorPage();
 }
 
-void PodcastReader::readChannel()
+void
+PodcastReader::slotAddData( KIO::Job *, const QByteArray & data)
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "channel" );
-    PodcastAlbumPtr album = PodcastAlbumPtr( new PodcastAlbum() );
-    PodcastArtistPtr artist = PodcastArtistPtr( new PodcastArtist( "testcast" ) );
 
-    m_collection->acquireReadLock();
+    QXmlStreamReader::addData( data );
+    //parse some more data
+    read();
+}
+
+bool PodcastReader::read()
+{
+    DEBUG_BLOCK
+    bool result = true;
 
     while ( !atEnd() )
     {
-        readNext();
-
-        if ( isEndElement() )
-            break;
-
-        if ( isStartElement() )
+        if( !m_current )
         {
-            if ( name() == "title" )
-                album->setTitle( readTitle() );
-            else if ( name() == "description" )
-                readDescription();
-            else if ( name() == "link" )
-                readLink();
-            else if ( name() == "item" )
+            //Pre Channel
+            readNext();
+
+            if ( isStartElement() )
             {
-                PodcastTrackPtr item = readItem();
-                Q_ASSERT( album );
-                item->setAlbum( AlbumPtr::dynamicCast( album ) );
-                album->addTrack( TrackPtr::dynamicCast( item ) );
-                Q_ASSERT( artist );
-                item->setArtist( ArtistPtr::dynamicCast( artist ) );
-                artist->addTrack( TrackPtr::dynamicCast( item ) );
-                m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
+                debug() << "Initial StartElement: " << QXmlStreamReader::name().toString() << endl;
+                debug() << "version: " << attributes().value ( "version" ).toString() << endl;
+                if ( QXmlStreamReader::name() == "rss" && attributes().value ( "version" ) == "2.0" )
+                {
+                    while( readNext() == QXmlStreamReader::Characters )
+                    {
+                        debug() << "reading Characters" << endl;
+                    }
+
+                    if (isEndElement())
+                    {
+                        debug() << "endElement" << endl;
+                        Q_ASSERT( false );
+                        break;
+                    }
+                    if (isStartElement())
+                    {
+                        debug() << "nested StartElement: " << QXmlStreamReader::name().toString() << endl;
+                        if ( QXmlStreamReader::name() == "channel" )
+                        {
+                            debug() << "new channel" << endl;
+                            m_current = m_channel = new PodcastAlbum();
+                            m_artist = PodcastArtistPtr( new PodcastArtist( "testcast" ) );
+                        }
+//                         else
+//                             readUnknownElement();
+                    }
+                }
+                else
+                {
+                    raiseError ( QObject::tr ( "The file is not an RSS version 2.0 file." ) );
+                    result = false;
+                }
             }
-            else
-                readUnknownElement();
+            continue;
         }
-    }
-    m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
-    m_collection->addArtist( artist->name(), ArtistPtr::staticCast( artist) );
-    m_collection->releaseLock();
-}
 
-PodcastTrackPtr
-PodcastReader::readItem()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "item" );
+        Q_ASSERT( m_current );
 
-    PodcastTrackPtr item = PodcastTrackPtr( new PodcastTrack() );
+        if( error() == QXmlStreamReader::NoError )
+            readNext();
 
-    while ( !atEnd() )
-    {
-        readNext();
-
-        if ( isEndElement() )
-            break;
-
-        if ( isStartElement() )
+        if (isEndElement())
         {
-            if ( name() == "title" )
-                item->setTitle( readTitle() );
-            else if ( name() == "description" )
-                item->setComment( readDescription() );
-            else if ( name() == "link" )
-                debug() << "link: " << readLink() << endl;
-            else if ( name() == "pubDate" )
-                debug() << "year: " << readPubDate() << endl;
-            else if ( name() == "guid" )
-                debug() << "guid: " << readGuid() << endl;
-            else if ( name() == "enclosure" )
-                readEnclosure();
-            else
-                readUnknownElement();
+            debug() << "endElement: " << QXmlStreamReader::name().toString() << endl;;
+            if (QXmlStreamReader::name() == "item")
+            {
+                commitEpisode();
+                commitChannel(); //DEBUG: should not commit here.
+
+            }
+            else if( QXmlStreamReader::name() == "channel" )
+            {
+                commitChannel();
+                emit finished( this, true );
+            }
+            break;
+        }
+        else if( isStartElement() )
+        {
+            debug() << "startElement: " << QXmlStreamReader::name().toString() << endl;
+            Q_ASSERT( m_current );
+            if (QXmlStreamReader::name() == "title")
+                m_current->setTitle( readTitle() );
+            else if (QXmlStreamReader::name() == "description")
+                m_current->setDescription( readDescription() );
+            else if (QXmlStreamReader::name() == "item")
+            {
+                debug() << "new episode" << endl;
+                m_current = new PodcastTrack();
+            }
         }
     }
 
-    return item;
+    if ( error() && error() != QXmlStreamReader::PrematureEndOfDocumentError )
+    {
+        debug() << "XML ERROR:" << lineNumber() << ": " << errorString() << endl;
+        emit finished( this, result );
+    }
+
+    if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
+    {
+        debug() << "waiting for data at line " << lineNumber() << endl;
+    }
+    return result;
 }
 
 QString
 PodcastReader::readTitle()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "title" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "title" );
 
     return readElementText();
 }
@@ -173,7 +191,7 @@ QString
 PodcastReader::readDescription()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "description" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "description" );
 
     return readElementText();
 }
@@ -182,7 +200,7 @@ QString
 PodcastReader::readLink()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "link" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "link" );
     return readElementText();
 }
 
@@ -190,16 +208,18 @@ QString
 PodcastReader::readEnclosure()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "enclosure" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "enclosure" );
     //TODO: need to get the url argument here
-    return readElementText();
+    QString url = attributes().value( "", "url").toString();
+    readElementText();
+    return url;
 }
 
 QString
 PodcastReader::readGuid()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "guid" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "guid" );
     return readElementText();
 }
 
@@ -207,7 +227,7 @@ QString
 PodcastReader::readPubDate()
 {
     DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && name() == "pubDate" );
+    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "pubDate" );
     return readElementText();
 }
 
@@ -216,7 +236,7 @@ void PodcastReader::readUnknownElement()
     DEBUG_BLOCK
     Q_ASSERT ( isStartElement() );
 
-    debug() << "unknown element: " << name().toString() << endl;
+    debug() << "unknown element: " << QXmlStreamReader::name().toString() << endl;
 
     while ( !atEnd() )
     {
@@ -229,3 +249,58 @@ void PodcastReader::readUnknownElement()
             readUnknownElement();
     }
 }
+
+void
+PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
+{
+    DEBUG_BLOCK
+    debug() << "redirected to: " << url.url() << endl;
+
+}
+
+void
+PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
+        const KUrl & toUrl)
+{
+    DEBUG_BLOCK
+    debug() << "premanently redirected to: " << toUrl.url() << endl;
+
+}
+
+void
+PodcastReader::commitChannel()
+{
+    Q_ASSERT( m_channel );
+    debug() << "commit Podcast Channel (as Album) " << m_channel->title() << endl;
+    PodcastAlbumPtr album = PodcastAlbumPtr( m_channel );
+    album->setAlbumArtist( ArtistPtr::staticCast( m_artist) );
+
+    m_collection->acquireReadLock();
+    m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
+    m_collection->addArtist( m_artist->name(), ArtistPtr::staticCast( m_artist) );
+    m_collection->releaseLock();
+
+//     emit finished( this, true );
+}
+
+void
+PodcastReader::commitEpisode()
+{
+    Q_ASSERT( m_current );
+    debug() << "commit episode " << m_current->title() << endl;
+    PodcastTrackPtr item = PodcastTrackPtr( static_cast<PodcastTrack*>(m_current) );
+    item->setAlbum( AlbumPtr::staticCast( PodcastAlbumPtr( m_channel ) ) );
+    item->setArtist( ArtistPtr::dynamicCast( m_artist ) );
+    m_artist->addTrack( TrackPtr::dynamicCast( item ) );
+
+    m_collection->acquireReadLock();
+    m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
+    m_collection->releaseLock();
+
+    Q_ASSERT( m_channel );
+    m_channel->addTrack( TrackPtr::staticCast( item ) );
+
+    m_current = m_channel;
+}
+
+#include "PodcastReader.moc"

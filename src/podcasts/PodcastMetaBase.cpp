@@ -20,13 +20,12 @@
 #include "PodcastMetaBase.h"
 
 PodcastTrack::PodcastTrack()
-    : Meta::Track()
+        : Meta::Track()
         , m_genre( 0 )
         , m_composer( 0 )
         , m_year( 0 )
         , m_type( 0 )
-{
-}
+{}
 
 PodcastTrack::~PodcastTrack()
 {
@@ -35,60 +34,69 @@ PodcastTrack::~PodcastTrack()
 
 
 void
-PodcastTrack::setId(int id)
+PodcastTrack::setId( int id )
 {
     m_id = id;
 }
 
 int
+
 PodcastTrack::id() const
 {
     return m_id;
 }
 
 void
-PodcastTrack::setAlbumId(int albumId)
+
+PodcastTrack::setAlbumId( int albumId )
 {
     m_albumId = albumId;
 }
 
 int
+
 PodcastTrack::albumId() const
 {
     return m_albumId;
 }
 
 void
-PodcastTrack::setAlbumName(const QString & name)
+
+PodcastTrack::setAlbumName( const QString & name )
 {
     m_albumName = name;
 }
 
 QString
+
 PodcastTrack::albumName() const
 {
     return m_albumName;
 }
 
 void
-PodcastTrack::setArtistId(int id)
+
+PodcastTrack::setArtistId( int id )
 {
     m_artistId = id;
 }
 
 int
+
 PodcastTrack::artistId() const
 {
     return m_artistId;
 }
 
 void
-PodcastTrack::setArtistName(const QString & name)
+
+PodcastTrack::setArtistName( const QString & name )
 {
     m_artistName = name;
 }
 
 QString
+
 PodcastTrack::artistName() const
 {
     return m_artistName;
@@ -96,18 +104,21 @@ PodcastTrack::artistName() const
 
 
 QString
+
 PodcastTrack::name() const
 {
     return m_name;
 }
 
 QString
+
 PodcastTrack::prettyName() const
 {
     return m_name;
 }
 
 KUrl
+
 PodcastTrack::playableUrl() const
 {
     KUrl url( m_playableUrl );
@@ -115,247 +126,274 @@ PodcastTrack::playableUrl() const
 }
 
 QString
+
 PodcastTrack::url() const
 {
     return m_playableUrl;
 }
 
 QString
+
 PodcastTrack::prettyUrl() const
 {
     return m_displayUrl;
 }
 
-void PodcastTrack::setUrl(const QString & url)
+void PodcastTrack::setUrl( const QString & url )
+
 {
     m_playableUrl = url;
     m_displayUrl = url;
 }
 
 bool
-        PodcastTrack::isPlayable() const
+
+PodcastTrack::isPlayable() const
 {
     return true;
 }
 
 bool
-        PodcastTrack::isEditable() const
+
+PodcastTrack::isEditable() const
 {
     return false;
 }
 
 AlbumPtr
-        PodcastTrack::album() const
+
+PodcastTrack::album() const
 {
     return AlbumPtr::staticCast( m_album );
 }
 
 ArtistPtr
-        PodcastTrack::artist() const
+
+PodcastTrack::artist() const
 {
     return ArtistPtr::staticCast( m_artist );
 }
 
 GenrePtr
-        PodcastTrack::genre() const
+
+PodcastTrack::genre() const
 {
     return GenrePtr::staticCast( m_genre );
 }
 
 ComposerPtr
-        PodcastTrack::composer() const
+
+PodcastTrack::composer() const
 {
     return ComposerPtr::staticCast( m_composer );
 }
 
 YearPtr
-        PodcastTrack::year() const
+
+PodcastTrack::year() const
 {
     return YearPtr::staticCast( m_year );
 }
 
 void
-        PodcastTrack::setAlbum( const QString &newAlbum )
+
+PodcastTrack::setAlbum( const QString &newAlbum )
 {
     Q_UNUSED( newAlbum )
 }
 
 void
-        PodcastTrack::setArtist( const QString &newArtist )
+
+PodcastTrack::setArtist( const QString &newArtist )
 {
     Q_UNUSED( newArtist )
 }
 
 void
-        PodcastTrack::setComposer( const QString &newComposer )
+
+PodcastTrack::setComposer( const QString &newComposer )
 {
     Q_UNUSED( newComposer )
 }
 
 void
-        PodcastTrack::setGenre( const QString &newGenre )
+
+PodcastTrack::setGenre( const QString &newGenre )
 {
     Q_UNUSED( newGenre )
 }
 
 void
-        PodcastTrack::setYear( const QString &newYear )
+
+PodcastTrack::setYear( const QString &newYear )
 {
     Q_UNUSED( newYear )
 }
 
 QString
-        PodcastTrack::comment() const
+
+PodcastTrack::comment() const
 {
     return QString();
 }
 
 void
-        PodcastTrack::setComment( const QString &newComment )
+
+PodcastTrack::setComment( const QString &newComment )
 {
     Q_UNUSED( newComment )
 }
 
 double
-            PodcastTrack::score() const
+
+PodcastTrack::score() const
 {
     return 0.0;
 }
 
 void
-        PodcastTrack::setScore( double newScore )
+
+PodcastTrack::setScore( double newScore )
 {
     Q_UNUSED( newScore )
 }
 
 int
-        PodcastTrack::rating() const
+
+PodcastTrack::rating() const
 {
     return 0;
 }
 
 void
-        PodcastTrack::setRating( int newRating )
+
+PodcastTrack::setRating( int newRating )
 {
     Q_UNUSED( newRating )
 }
 
 int
-        PodcastTrack::length() const
+
+PodcastTrack::length() const
 {
     return m_length;
 }
 
 int
-        PodcastTrack::filesize() const
+
+PodcastTrack::filesize() const
 {
     return 0;
 }
 
 int
-        PodcastTrack::sampleRate() const
+
+PodcastTrack::sampleRate() const
 {
     return 0;
 }
 
 int
-        PodcastTrack::bitrate() const
+
+PodcastTrack::bitrate() const
 {
     return 0;
 }
 
 int
-        PodcastTrack::trackNumber() const
+
+PodcastTrack::trackNumber() const
 {
     return m_trackNumber;
 }
 
 void
-        PodcastTrack::setTrackNumber( int newTrackNumber )
+
+PodcastTrack::setTrackNumber( int newTrackNumber )
 {
     m_trackNumber = newTrackNumber;
 }
 
 int
-        PodcastTrack::discNumber() const
+
+PodcastTrack::discNumber() const
 {
     return 0;
 }
 
 void
-        PodcastTrack::setDiscNumber( int newDiscNumber )
+
+PodcastTrack::setDiscNumber( int newDiscNumber )
 {
     Q_UNUSED( newDiscNumber )
 }
 
 int
-        PodcastTrack::playCount() const
+
+PodcastTrack::playCount() const
 {
     return 0;
 }
 
 uint
-        PodcastTrack::lastPlayed() const
+
+PodcastTrack::lastPlayed() const
 {
     return 0;
 }
 
 QString
-        PodcastTrack::type() const
+
+PodcastTrack::type() const
 {
     return m_type;
 }
 
 void
-        PodcastTrack::subscribe( TrackObserver *observer )
+
+PodcastTrack::subscribe( TrackObserver *observer )
 {
     Q_UNUSED( observer )
 }
 
 void
-        PodcastTrack::unsubscribe( TrackObserver *observer )
+PodcastTrack::unsubscribe( TrackObserver *observer )
 {
     Q_UNUSED( observer )
 }
 
 void
-        PodcastTrack::setAlbum( AlbumPtr album )
+PodcastTrack::setAlbum( AlbumPtr album )
 {
     m_album = album;
 }
 
 void
-        PodcastTrack::setArtist( ArtistPtr artist )
+PodcastTrack::setArtist( ArtistPtr artist )
 {
     m_artist = artist;
 }
 
 void
-        PodcastTrack::setGenre( GenrePtr genre )
+PodcastTrack::setGenre( GenrePtr genre )
 {
     m_genre = genre;
 }
 
 void
-        PodcastTrack::setComposer( ComposerPtr composer )
+PodcastTrack::setComposer( ComposerPtr composer )
 {
     m_composer = composer;
 }
 
 void
-        PodcastTrack::setYear( YearPtr year )
+PodcastTrack::setYear( YearPtr year )
 {
     m_year = year;
 }
 
 void
-        PodcastTrack::setTitle( const QString &title )
-{
-    m_name = title;
-}
-
-void
-        PodcastTrack::setLength( int length )
+PodcastTrack::setLength( int length )
 {
     m_length = length;
 }
@@ -372,18 +410,19 @@ void
 
 
 PodcastArtist::PodcastArtist( const QString & name )
-    : Meta::Artist()
+        : Meta::Artist()
 //         , PodcastDisplayInfoProvider()
         , m_id( 0 )
-                , m_name( name )
-                        , m_description( 0 )
-                                , m_tracks()
+        , m_name( name )
+        , m_description( 0 )
+        , m_tracks()
 {
     //nothing to do
 }
 
 PodcastArtist::PodcastArtist()
-    : Meta::Artist()
+
+        : Meta::Artist()
         , m_tracks()
 {
 
@@ -400,7 +439,7 @@ PodcastArtist::~PodcastArtist()
 }
 
 
-void PodcastArtist::setId(int id)
+void PodcastArtist::setId( int id )
 {
     m_id = id;
 }
@@ -413,41 +452,46 @@ int PodcastArtist::id() const
 
 
 QString
-        PodcastArtist::name() const
+
+PodcastArtist::name() const
 {
     return m_name;
 }
 
 QString
-        PodcastArtist::prettyName() const
+
+PodcastArtist::prettyName() const
 {
     return m_name;
 }
 
-void PodcastArtist::setTitle(const QString & title)
+void PodcastArtist::setTitle( const QString & title )
+
 {
     m_name = title;
 }
 
 TrackList
-        PodcastArtist::tracks()
+
+PodcastArtist::tracks()
 {
     return m_tracks;
 }
 
 void
-        PodcastArtist::addTrack( TrackPtr track )
+PodcastArtist::addTrack( TrackPtr track )
 {
     m_tracks.append( track );
 }
 
 
-void PodcastArtist::setDescription(const QString &description)
+void PodcastArtist::setDescription( const QString &description )
 {
     m_description = description;
 }
 
 QString PodcastArtist::description() const
+
 {
     return m_description;
 }
@@ -458,7 +502,7 @@ QString PodcastArtist::description() const
 // }
 
 PodcastAlbum::PodcastAlbum()
-    : Meta::Album()
+        : Meta::Album()
 {
 //     m_id = resultRow[0].toInt();
 //     m_name = resultRow[1];
@@ -470,12 +514,13 @@ PodcastAlbum::PodcastAlbum()
 
 
 PodcastAlbum::~PodcastAlbum()
+
 {
     //nothing to do
 }
 
 
-void PodcastAlbum::setId(int id)
+void PodcastAlbum::setId( int id )
 {
     m_id = id;
 }
@@ -485,7 +530,8 @@ int PodcastAlbum::id() const
     return m_id;
 }
 
-void PodcastAlbum::setArtistId(int artistId)
+void PodcastAlbum::setArtistId( int artistId )
+
 {
     m_artistId = artistId;
 }
@@ -495,101 +541,97 @@ int PodcastAlbum::artistId() const
     return m_artistId;
 }
 
-void PodcastAlbum::setArtistName(const QString & name)
+void PodcastAlbum::setArtistName( const QString & name )
+
 {
     m_artistName = name;
 }
 
 QString PodcastAlbum::artistName() const
+
 {
     return m_artistName;
 }
 
 QString
-        PodcastAlbum::name() const
+
+PodcastAlbum::name() const
 {
     return m_name;
 }
 
 QString
-        PodcastAlbum::prettyName() const
+
+PodcastAlbum::prettyName() const
 {
     return m_name;
 }
 
-void PodcastAlbum::setTitle(const QString & title)
-{
-    m_name = title;
-}
+// void
+// PodcastAlbum::setTitle( const QString & title )
+// {
+//     m_name = title;
+// }
 
 bool
-        PodcastAlbum::isCompilation() const
+PodcastAlbum::isCompilation() const
 {
     return m_isCompilation;
 }
 
 bool
-        PodcastAlbum::hasAlbumArtist() const
+PodcastAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
 }
 
 ArtistPtr
-        PodcastAlbum::albumArtist() const
+PodcastAlbum::albumArtist() const
 {
     return ArtistPtr::staticCast( m_albumArtist );
 }
 
 TrackList
-        PodcastAlbum::tracks()
+
+PodcastAlbum::tracks()
 {
     return m_tracks;
 }
 
 void
-        PodcastAlbum::image() const
+PodcastAlbum::image() const
 {
     //TODO
 }
 
 bool
-        PodcastAlbum::canUpdateImage() const
+PodcastAlbum::canUpdateImage() const
 {
     return false;
 }
 
 void
-        PodcastAlbum::updateImage()
+PodcastAlbum::updateImage()
 {
     //TODO
 }
 
 void
-        PodcastAlbum::addTrack( TrackPtr track )
+PodcastAlbum::addTrack( TrackPtr track )
 {
     m_tracks.append( track );
 }
 
 void
-        PodcastAlbum::setAlbumArtist( ArtistPtr artist )
+PodcastAlbum::setAlbumArtist( ArtistPtr artist )
 {
     m_albumArtist = artist;
 }
 
 void
-        PodcastAlbum::setIsCompilation( bool compilation )
+PodcastAlbum::setIsCompilation( bool compilation )
 {
     m_isCompilation = compilation;
-}
-
-void PodcastAlbum::setDescription(const QString &description)
-{
-    m_description = description;
-}
-
-QString PodcastAlbum::description() const
-{
-    return m_description;
 }
 
 // void PodcastAlbum::processInfoOf(InfoParserBase * infoParser)
@@ -602,63 +644,68 @@ QString PodcastAlbum::description() const
 //PodcastGenre
 
 PodcastGenre::PodcastGenre( const QString &name )
-    : Meta::Genre()
+        : Meta::Genre()
 //         , PodcastDisplayInfoProvider()
         , m_name( name )
-                , m_tracks()
+        , m_tracks()
 {
     //nothing to do
 }
 
-PodcastGenre::PodcastGenre(const QStringList & row)
-    : Meta::Genre()
+PodcastGenre::PodcastGenre( const QStringList & row )
+
+        : Meta::Genre()
         , m_tracks()
 {
     m_name = row[0];
 }
 
 PodcastGenre::~PodcastGenre()
+
 {
     //nothing to do
 }
 
 QString
-        PodcastGenre::name() const
+PodcastGenre::name() const
 {
     return m_name;
 }
 
 QString
-        PodcastGenre::prettyName() const
+PodcastGenre::prettyName() const
 {
     return m_name;
 }
 
-void PodcastGenre::setName(const QString & name)
+void
+PodcastGenre::setName( const QString & name )
 {
     m_name = name;
 }
 
 
-int PodcastGenre::albumId()
+int
+PodcastGenre::albumId()
 {
     return m_albumId;
 }
 
-void PodcastGenre::setAlbumId(int albumId)
+void
+PodcastGenre::setAlbumId( int albumId )
 {
     m_albumId = albumId;
 }
 
 
 TrackList
-        PodcastGenre::tracks()
+PodcastGenre::tracks()
 {
     return m_tracks;
 }
 
 void
-        PodcastGenre::addTrack( PodcastTrackPtr track )
+PodcastGenre::addTrack( PodcastTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -671,39 +718,42 @@ void
 //PodcastComposer
 
 PodcastComposer::PodcastComposer( const QString &name )
-    : Meta::Composer()
+        : Meta::Composer()
 //         , PodcastDisplayInfoProvider()
         , m_name( name )
-                , m_tracks()
+        , m_tracks()
 {
     //nothing to do
 }
 
 PodcastComposer::~PodcastComposer()
+
 {
     //nothing to do
 }
 
 QString
-        PodcastComposer::name() const
+PodcastComposer::name() const
 {
     return m_name;
 }
 
 QString
-        PodcastComposer::prettyName() const
+
+PodcastComposer::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-        PodcastComposer::tracks()
+
+PodcastComposer::tracks()
 {
     return m_tracks;
 }
 
 void
-        PodcastComposer::addTrack( PodcastTrackPtr track )
+PodcastComposer::addTrack( PodcastTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -716,39 +766,43 @@ void
 //PodcastYear
 
 PodcastYear::PodcastYear( const QString &name )
-    : Meta::Year()
+        : Meta::Year()
 //         , PodcastDisplayInfoProvider()
         , m_name( name )
-                , m_tracks()
+        , m_tracks()
 {
     //nothing to do
 }
 
 PodcastYear::~PodcastYear()
+
 {
     //nothing to do
 }
 
 QString
-        PodcastYear::name() const
+
+PodcastYear::name() const
 {
     return m_name;
 }
 
 QString
-        PodcastYear::prettyName() const
+
+PodcastYear::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-        PodcastYear::tracks()
+
+PodcastYear::tracks()
 {
     return m_tracks;
 }
 
 void
-        PodcastYear::addTrack( PodcastTrackPtr track )
+PodcastYear::addTrack( PodcastTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }

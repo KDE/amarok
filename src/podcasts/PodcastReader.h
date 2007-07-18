@@ -23,32 +23,59 @@
 #include "PodcastMetaBase.h"
 
 #include <QXmlStreamReader>
+#include <QObject>
+
+class KIO::Job;
+class KUrl;
 
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
 */
-class PodcastReader : public QXmlStreamReader
+class PodcastReader : public QObject, public QXmlStreamReader
 {
-public:
-    PodcastReader( PodcastCollection * collection );
+    Q_OBJECT
+    public:
+        PodcastReader( PodcastCollection * collection );
 
-    bool read( QIODevice *device );
+        bool read( QIODevice *device );
+        bool read( const QString &url );
+        bool read();
+        QString & url() { return m_url; }
 
-    ~PodcastReader();
-private:
-    void readRss();
-    void readChannel();
-    PodcastTrackPtr readItem();
-    QString readTitle();
-    QString readLink();
-    QString readDescription();
-    QString readEnclosure();
-    QString readGuid();
-    QString readPubDate();
-    void readUnknownElement();
-//     void readImage();
-//     void readCopyright();
-    PodcastCollection * m_collection;
+        ~PodcastReader();
+
+    signals:
+        void finished( PodcastReader *podcastReader, bool result );
+
+    private:
+//         void readRss();
+//         void readChannel();
+//         PodcastTrackPtr readItem();
+        QString readTitle();
+        QString readLink();
+        QString readDescription();
+        QString readEnclosure();
+        QString readGuid();
+        QString readPubDate();
+        void readUnknownElement();
+    //     void readImage();
+    //     void readCopyright();
+        PodcastCollection * m_collection;
+
+        void commitChannel();
+        void commitEpisode();
+
+    private slots:
+        void slotRedirection( KIO::Job *job, const KUrl & url );
+        void slotPermanentRedirection ( KIO::Job * job, const KUrl & fromUrl,
+                const KUrl & toUrl );
+        void slotAddData( KIO::Job *, const QByteArray & data );
+
+    private:
+        QString m_url;
+        PodcastMetaCommon * m_current;
+        PodcastAlbum *m_channel;
+        PodcastArtistPtr m_artist;
 };
 
 #endif

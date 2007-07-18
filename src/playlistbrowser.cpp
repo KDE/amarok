@@ -26,6 +26,7 @@
 #include "playlistselection.h"
 #include "podcastbundle.h"
 #include "podcastsettings.h"
+#include "PodcastCollection.h"
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
@@ -1305,7 +1306,7 @@ void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        addPodcast( KUrl( name ), parent );
+        The::podcastCollection()->addPodcast( name ); //KUrl( name ), parent );
     }
 }
 
