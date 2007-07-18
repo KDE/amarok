@@ -497,7 +497,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 
-        void invalidateArtistAlbumCache() { m_validArtistCache=false; m_validComposerCache=false; m_validAlbumCache=false; };
+        void invalidateArtistAlbumCache() { m_validArtistCache=false; m_validComposerCache=false; m_validAlbumCache=false; }
 
         void vacuum();
 

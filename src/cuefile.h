@@ -22,7 +22,7 @@ class CueFileItem {
 
         {}
 
-        CueFileItem () {};
+        CueFileItem () {}
 
 		void setLength(const long length) { m_length = length; }
 
@@ -50,7 +50,7 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
     public:
         static CueFile *instance();
 
-        void setCueFileName( QString name ) { m_cueFileName = name; };
+        void setCueFileName( QString name ) { m_cueFileName = name; }
         bool load(int mediaLength);
 
         // EngineObserver
@@ -63,8 +63,8 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
         void newCuePoint( long currentPos, long startPos, long endPos );
 
     protected:
-        CueFile() : EngineObserver(), m_lastSeekPos(-1) { };
-        CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1) { };
+        CueFile() : EngineObserver(), m_lastSeekPos(-1) { }
+        CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1) { }
         ~CueFile();
 
     private:

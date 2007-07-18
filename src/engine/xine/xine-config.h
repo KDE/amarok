@@ -30,7 +30,7 @@ class XineGeneralEntry : public QObject
 
     public:
         virtual void save() = 0;
-        bool hasChanged()  const { return m_valueChanged; };
+        bool hasChanged()  const { return m_valueChanged; }
 
     signals:
         void viewChanged();

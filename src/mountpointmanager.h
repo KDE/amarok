@@ -45,8 +45,8 @@ typedef QMap<int, DeviceHandler*> HandlerMap;
 class AMAROK_EXPORT DeviceHandlerFactory : public Amarok::Plugin
 {
 public:
-    DeviceHandlerFactory() {};
-    virtual ~DeviceHandlerFactory() {};
+    DeviceHandlerFactory() {}
+    virtual ~DeviceHandlerFactory() {}
 
     /**
      * checks whether a DeviceHandler subclass can handle a given Medium.
@@ -90,8 +90,8 @@ public:
 class DeviceHandler
 {
 public:
-    DeviceHandler() {};
-    virtual ~DeviceHandler() {};
+    DeviceHandler() {}
+    virtual ~DeviceHandler() {}
 
 
     virtual bool isAvailable() const = 0;

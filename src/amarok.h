@@ -279,7 +279,7 @@ namespace Amarok
             const int i = K3ProcIO::commSetupDoneC();
             Amarok::closeOpenFiles( K3ProcIO::out[0],K3ProcIO::in[0],K3ProcIO::err[0] );
             return i;
-        };
+        }
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -297,7 +297,7 @@ namespace Amarok
             const int i = K3Process::commSetupDoneC();
             Amarok::closeOpenFiles(K3Process::out[0],K3Process::in[0], K3Process::err[0]);
             return i;
-        };
+        }
     };
 
 

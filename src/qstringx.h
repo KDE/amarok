@@ -17,13 +17,13 @@ namespace Amarok
 class QStringx : public QString
 {
 public:
-    QStringx() {};
-    QStringx( QChar ch ) : QString( ch ) {};
-    QStringx( const QString& s ) : QString( s ) {};
-    QStringx( const QByteArray& ba ) : QString( ba ) {};
-    QStringx( const QChar* unicode, uint length ) : QString( unicode, length ) {};
-    QStringx( const char* str ) : QString( str ) {};
-    virtual ~QStringx() {};
+    QStringx() {}
+    QStringx( QChar ch ) : QString( ch ) {}
+    QStringx( const QString& s ) : QString( s ) {}
+    QStringx( const QByteArray& ba ) : QString( ba ) {}
+    QStringx( const QChar* unicode, uint length ) : QString( unicode, length ) {}
+    QStringx( const char* str ) : QString( str ) {}
+    virtual ~QStringx() {}
 
     // the numbers following % obviously are not taken into account
     QString args( const QStringList& args ) const

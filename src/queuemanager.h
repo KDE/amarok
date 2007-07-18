@@ -47,7 +47,7 @@ class QueueList : public QListWidget
 
     public:
         explicit QueueList( QWidget *parent, const char *name = 0 );
-        ~QueueList() {};
+        ~QueueList() {}
 
         bool    hasSelection();
         bool    isEmpty() { return ( count() == 0 ); }

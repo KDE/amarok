@@ -32,7 +32,7 @@ class DeviceConfigureDialog : public KDialog
     public:
         DeviceConfigureDialog( const Medium &medium );
         ~DeviceConfigureDialog();
-        bool successful() { return m_accepted; };
+        bool successful() { return m_accepted; }
 
     private slots:
         void slotButtonClicked( KDialog::ButtonCode button );

@@ -34,7 +34,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
 
 public:
     MagnatuneMetaFactory( const QString &dbPrefix );
-    virtual ~MagnatuneMetaFactory() {};
+    virtual ~MagnatuneMetaFactory() {}
 
     virtual int getTrackSqlRowCount();
     virtual QString getTrackSqlRows();

@@ -75,8 +75,8 @@ namespace Meta
             virtual ~MetaBase() {}
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
-            virtual QString fullPrettyName() const { return prettyName(); };
-            virtual QString sortableName() const { return prettyName(); };
+            virtual QString fullPrettyName() const { return prettyName(); }
+            virtual QString sortableName() const { return prettyName(); }
 
             virtual void addMatchTo( QueryMaker *qm ) = 0;
     };

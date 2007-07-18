@@ -34,7 +34,7 @@ class QFixedListView : public Q3ListView
 {
 public:
     explicit QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
-                   :Q3ListView(parent, name, f) {};
+                   :Q3ListView(parent, name, f) {}
     QSize sizeHint() const
     {
         return QSize(400, 100);

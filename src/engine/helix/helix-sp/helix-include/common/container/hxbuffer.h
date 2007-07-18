@@ -196,7 +196,7 @@ CHXBuffer& CHXBuffer::operator=(const CHXString& str)
 class CHXBufferFragment : public CHXBuffer
 {
 public :
-    CHXBufferFragment(IHXBuffer * pWrappedBuffer, UCHAR* pModFrameStart, ULONG32 ulFragLen) : CHXBuffer( pModFrameStart, ulFragLen, FALSE ), m_pHXBufferPointedTo(pWrappedBuffer){ if(pWrappedBuffer) {pWrappedBuffer->AddRef();} };
+    CHXBufferFragment(IHXBuffer * pWrappedBuffer, UCHAR* pModFrameStart, ULONG32 ulFragLen) : CHXBuffer( pModFrameStart, ulFragLen, FALSE ), m_pHXBufferPointedTo(pWrappedBuffer){ if(pWrappedBuffer) {pWrappedBuffer->AddRef();} }
     ~CHXBufferFragment(){ HX_RELEASE(m_pHXBufferPointedTo);}
 
 protected :

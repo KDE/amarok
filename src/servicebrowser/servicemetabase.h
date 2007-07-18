@@ -54,7 +54,7 @@ class ServiceMetaFactory
 
 public:
     ServiceMetaFactory( const QString &dbPrefix );
-    virtual ~ServiceMetaFactory() {};
+    virtual ~ServiceMetaFactory() {}
 
     QString tablePrefix();
 

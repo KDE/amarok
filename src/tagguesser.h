@@ -28,7 +28,7 @@ class FileNameScheme
         QString composer() const;
         QString genre() const;
 
-        QString pattern() const { return m_cod; };
+        QString pattern() const { return m_cod; }
 
     private:
         QString composeRegExp( const QString &s ) const;

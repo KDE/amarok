@@ -22,6 +22,8 @@
 #include "taglib_speexfiletyperesolver.h"
 #include "speexfile.h"
 
+#include <string.h>
+
 TagLib::File *SpeexFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

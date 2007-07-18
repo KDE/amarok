@@ -89,7 +89,7 @@ extern DLLAccessPath* GetDLLAccessPath();
 class DLLAccessDestructor
 {
 public:
-    DLLAccessDestructor() {};
+    DLLAccessDestructor() {}
     ~DLLAccessDestructor() 
     { 
 #ifndef _VXWORKS

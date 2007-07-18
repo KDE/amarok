@@ -32,7 +32,7 @@ namespace Amarok
 class ToolTipClient
 {
 public:
-    virtual ~ToolTipClient() {};
+    virtual ~ToolTipClient() {}
     virtual QPair<QString, QRect> toolTipText( QWidget *widget, const QPoint &pos ) const = 0;
 };
 

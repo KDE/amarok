@@ -54,21 +54,21 @@ public:
     static const Medium create(const QStringList &properties);
     static List createList(const QStringList &properties);
 
-    const QStringList &properties() const { return m_properties; };
+    const QStringList &properties() const { return m_properties; }
 
-    bool isAutodetected() const { return m_properties[AUTODETECTED]=="true"; };
-    QString id() const { return m_properties[ID]; };
-    QString name() const { return m_properties[NAME]; };
-    QString label() const { return m_properties[LABEL]; };
-    QString userLabel() const { return m_properties[USER_LABEL]; };
-    bool isMountable() const { return m_properties[MOUNTABLE]=="true"; };
-    QString deviceNode() const { return m_properties[DEVICE_NODE]; };
-    QString mountPoint() const { return m_properties[MOUNT_POINT]; };
-    QString fsType() const { return m_properties[FS_TYPE]; };
-    bool isMounted() const { return m_properties[MOUNTED]=="true"; };
-    QString baseURL() const { return m_properties[BASE_URL]; };
-    QString mimeType() const { return m_properties[MIME_TYPE]; };
-    QString iconName() const { return m_properties[ICON_NAME]; };
+    bool isAutodetected() const { return m_properties[AUTODETECTED]=="true"; }
+    QString id() const { return m_properties[ID]; }
+    QString name() const { return m_properties[NAME]; }
+    QString label() const { return m_properties[LABEL]; }
+    QString userLabel() const { return m_properties[USER_LABEL]; }
+    bool isMountable() const { return m_properties[MOUNTABLE]=="true"; }
+    QString deviceNode() const { return m_properties[DEVICE_NODE]; }
+    QString mountPoint() const { return m_properties[MOUNT_POINT]; }
+    QString fsType() const { return m_properties[FS_TYPE]; }
+    bool isMounted() const { return m_properties[MOUNTED]=="true"; }
+    QString baseURL() const { return m_properties[BASE_URL]; }
+    QString mimeType() const { return m_properties[MIME_TYPE]; }
+    QString iconName() const { return m_properties[ICON_NAME]; }
 
     bool needMounting() const;
     KUrl prettyBaseURL() const;

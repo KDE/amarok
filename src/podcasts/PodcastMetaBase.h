@@ -146,10 +146,10 @@ class PodcastTrack : public Meta::Track, public PodcastMetaCommon
         virtual void subscribe ( TrackObserver *observer );
         virtual void unsubscribe ( TrackObserver *observer );
 
-        virtual QString title() const { return m_name; };
-        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; };
-        virtual QString description() const { return m_description; };
-        virtual void setDescription( const QString &description ) { m_description = description; };
+        virtual QString title() const { return m_name; }
+        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; }
+        virtual QString description() const { return m_description; }
+        virtual void setDescription( const QString &description ) { m_description = description; }
 
 //         virtual void processInfoOf( InfoParserBase * infoParser );
 
@@ -249,10 +249,10 @@ class PodcastAlbum : public Meta::Album, public PodcastMetaCommon
         virtual bool canUpdateImage() const;
         virtual void updateImage();
 
-        virtual QString title() const { return m_name; };
-        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; };
-        virtual QString description() const { return m_description; };
-        virtual void setDescription( const QString &description ) { m_description = description; };
+        virtual QString title() const { return m_name; }
+        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; }
+        virtual QString description() const { return m_description; }
+        virtual void setDescription( const QString &description ) { m_description = description; }
 
 //         virtual void processInfoOf( InfoParserBase * infoParser );
 

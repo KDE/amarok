@@ -22,6 +22,8 @@
 #include "wavfiletyperesolver.h"
 #include "wavfile.h"
 
+#include <string.h>
+
 TagLib::File *WavFileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

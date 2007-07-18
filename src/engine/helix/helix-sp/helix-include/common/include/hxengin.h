@@ -2276,14 +2276,14 @@ struct NIAddressInfo
         pSubnet = NULL;
         ulSubnetPrefix = 0;
         next = NULL;
-    };
+    }
 
     ~NIAddressInfo()
     {
         HX_RELEASE(pAddress);
         HX_RELEASE(pSubnet);
         next = NULL;
-    };
+    }
 };
 
 struct NIInfo
@@ -2305,7 +2305,7 @@ struct NIInfo
         ulIPv6Index = 0;
         ulMTU = 0;
         pAddressInfo = NULL;
-    };
+    }
 
     ~NIInfo()
     {
@@ -2318,7 +2318,7 @@ struct NIInfo
             HX_DELETE(pTemp);
             pTemp = pAddressInfo;
         }
-    };
+    }
 };
 
 DEFINE_GUID(IID_IHXNetInterfaces, 

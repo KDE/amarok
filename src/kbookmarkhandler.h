@@ -37,7 +37,7 @@ public:
     virtual QString currentURL() const;
 
     // FIXME: Implement me!
-    virtual void openBookmark(const KBookmark&, Qt::MouseButtons, Qt::KeyboardModifiers) {};
+    virtual void openBookmark(const KBookmark&, Qt::MouseButtons, Qt::KeyboardModifiers) {}
 };
 
 #endif // _KBOOKMARKHANDLER_H_

@@ -66,7 +66,7 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
 
         void activate();
 
-        SideBar *sideBar() const { return m_browsers; };
+        SideBar *sideBar() const { return m_browsers; }
 
     public slots:
         void showHide();

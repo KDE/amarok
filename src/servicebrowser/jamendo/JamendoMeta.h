@@ -34,7 +34,7 @@ class JamendoMetaFactory : public ServiceMetaFactory
 
 public:
     JamendoMetaFactory( const QString &dbPrefix );
-    virtual ~JamendoMetaFactory() {};
+    virtual ~JamendoMetaFactory() {}
 
     //virtual int getTrackSqlRowCount();
     //virtual QString getTrackSqlRows();

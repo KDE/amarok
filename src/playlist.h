@@ -161,7 +161,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         Q3ValueList<int> visibleColumns() const;
         MetaBundle::ColumnMask getVisibleColumnMask() const;
         int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
-        QString columnText( int c ) const { return K3ListView::columnText( c ); };
+        QString columnText( int c ) const { return K3ListView::columnText( c ); }
         void setColumns( Q3ValueList<int> order, Q3ValueList<int> visible );
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only

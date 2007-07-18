@@ -39,9 +39,9 @@ class MagnatuneInfoParser : public InfoParserBase
 Q_OBJECT
 
 public:
-    MagnatuneInfoParser() {};
+    MagnatuneInfoParser() {}
 
-    ~MagnatuneInfoParser() {};
+    ~MagnatuneInfoParser() {}
 
 
     virtual void getInfo( ArtistPtr artist );

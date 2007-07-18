@@ -37,6 +37,7 @@
 #include <tfile.h>
 #include <fileref.h>
 #include <iostream>
+#include <string.h>
 
 #include "rmff.h"
 

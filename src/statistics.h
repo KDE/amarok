@@ -56,7 +56,7 @@ class StatisticsList : public K3ListView
 
     public:
         explicit StatisticsList( QWidget *parent, const char *name=0 );
-        ~StatisticsList() {};
+        ~StatisticsList() {}
 
         QString filter()                           { return m_filter; }
         void    setFilter( const QString &filter ) { m_filter = filter; }
@@ -94,10 +94,10 @@ class StatisticsItem : public QObject, public K3ListViewItem
 
     public:
         StatisticsItem( QString text, StatisticsList *parent, K3ListViewItem *after=0, const char *name=0 );
-        ~StatisticsItem() {};
+        ~StatisticsItem() {}
 
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
-        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
+        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {}  //reimp
         void    setIcon( const QString &icon );
 
         void    enterHover();
@@ -137,7 +137,7 @@ class StatisticsDetailedItem : public K3ListViewItem
     public:
         StatisticsDetailedItem( const QString &text, const QString &subtext, StatisticsItem *parent,
                                 StatisticsDetailedItem *after=0, const char *name=0 );
-        ~StatisticsDetailedItem() {};
+        ~StatisticsDetailedItem() {}
 
         enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, HISTORY };
 
@@ -154,7 +154,7 @@ class StatisticsDetailedItem : public K3ListViewItem
         QString getSQL(); //get the sql query for all the urls the item represents
         KUrl::List getURLs();
 
-        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
+        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {}  //reimp
 
         int     rtti() const { return RTTI; }
         static  const int RTTI = 1001;    //detailed item

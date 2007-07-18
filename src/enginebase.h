@@ -176,7 +176,7 @@ namespace Engine
          * Fetch the current audio sample buffer.
          * @return Audio sample buffer.
          */
-        virtual const Scope &scope() { return m_scope; };
+        virtual const Scope &scope() { return m_scope; }
 
         /**
          * Set new volume value.
@@ -197,14 +197,14 @@ namespace Engine
           * You don't need to cache the parameters, setEqualizerParameters is called straight after this
           * function, _always_.
           */
-        virtual void setEqualizerEnabled( bool ) {};
+        virtual void setEqualizerEnabled( bool ) {}
 
         /** Set equalizer parameters, all in range -100..100, where 0 = no adjustment
           * @param preamp the preamplification value
           * @param bandGains a list of 10 integers, ascending in frequency, the exact frequencies you amplify
           *                  are not too-important at this time
           */
-        virtual void setEqualizerParameters( int /*preamp*/, const Q3ValueList<int> &/*bandGains*/ ) {};
+        virtual void setEqualizerParameters( int /*preamp*/, const Q3ValueList<int> &/*bandGains*/ ) {}
 
 
         /** Tries to retrieve metadata for the given url (called only if url
@@ -233,7 +233,7 @@ namespace Engine
         virtual bool flushBuffer() { return false; }
 
         /** allow the engine to perform necessary work on changes in the playlist **/
-        virtual void playlistChanged() { };
+        virtual void playlistChanged() { }
 
     protected:
         Base();

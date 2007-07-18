@@ -68,13 +68,13 @@ class PlaylistBrowserEntry :  public QObject, public K3ListViewItem
         void setKept( bool k );                 // to the cache files. If false, non-renameable
 
         virtual void updateInfo();
-        virtual void setDynamic( bool ) {};
+        virtual void setDynamic( bool ) {}
 
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotRenameItem();
         virtual void slotPostRenameItem( const QString newName );
-        virtual void showContextMenu( const QPoint & ) {};
+        virtual void showContextMenu( const QPoint & ) {}
 
     protected:
         virtual int compare( Q3ListViewItem*, int, bool ) const; //reimplemented
@@ -92,7 +92,7 @@ class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
     public:
         DynamicEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &title );
         DynamicEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
-        ~DynamicEntry() { };
+        ~DynamicEntry() { }
 
         virtual QString text( int column ) const;
 
@@ -116,7 +116,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
         PlaylistCategory( PlaylistCategory *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         PlaylistCategory( PlaylistCategory *parent, Q3ListViewItem *after, const QString &t, const int id );
 
-        ~PlaylistCategory() { };
+        ~PlaylistCategory() { }
 
         const QString &title() const { return m_title; }
         bool  isFolder() { return m_folder; }
@@ -162,7 +162,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~PlaylistEntry();
 
-        void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
+        void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ } //reimplemented
 
         void load();
 
@@ -246,7 +246,7 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
 
     public slots:
         virtual void slotDoubleClicked();
-        virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void slotRenameItem() { /* Do nothing */ }
         virtual void showContextMenu( const QPoint & );
 
     private:
@@ -305,7 +305,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
     public slots:
         const bool isOnDisk();
         virtual void slotDoubleClicked();
-        virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void slotRenameItem() { /* Do nothing */ }
         virtual void showContextMenu( const QPoint & );
 
     private slots:
@@ -401,7 +401,7 @@ class PodcastChannel : public PlaylistBrowserEntry
 
     public slots:
         virtual void slotDoubleClicked();
-        virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void slotRenameItem() { /* Do nothing */ }
         virtual void showContextMenu( const QPoint & );
 
     private slots:
@@ -451,7 +451,7 @@ class StreamEntry : public PlaylistBrowserEntry
     public:
         StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &, const QString &t );
         StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
-        ~StreamEntry() { };
+        ~StreamEntry() { }
 
         void  setUrl  ( KUrl u )    { m_url = u; }
         void  setTitle( QString t ) { m_title = t; }
