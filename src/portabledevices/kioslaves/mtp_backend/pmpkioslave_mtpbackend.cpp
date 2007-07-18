@@ -20,10 +20,13 @@
 
 #include <QCoreApplication>
 #include <QString>
+#include <QVariant>
 
 #include <kcomponentdata.h>
 #include <kdebug.h>
 #include <kio/slavebase.h>
+#include <solid/device.h>
+#include <solid/genericinterface.h>
 
 MTPBackend::MTPBackend()
             : PMPBackend()
@@ -34,36 +37,78 @@ MTPBackend::MTPBackend()
     LIBMTP_Init();
 
     if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
+    {
         m_slave->error( KIO::ERR_INTERNAL, "Could not get a connected device list from libmtp." );
+        return;
+    }
     quint32 deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );
     if( deviceCount == 0 )
+    {
         m_slave->error( KIO::ERR_INTERNAL, "libmtp found no devices." );
+        return;
+    }
 }
 
 MTPBackend::~MTPBackend()
 {
+    if( m_device )
+        LIBMTP_Release_Device( m_device );
 }
 
 void
-MTPBackend::setHost( const QString &host, quint16 port,
-                     const QString &user, const QString &pass )
+MTPBackend::setUdi( const QString &udi )
 {
-    Q_UNUSED(port);
-    Q_UNUSED(user);
-    Q_UNUSED(pass);
-    kDebug() << "host = " << host << endl;
+    kDebug() << "udi = " << udi << endl;
+    Solid::GenericInterface *gi = Solid::Device( udi ).as<Solid::GenericInterface>();
+    if( !gi )
+    {
+        m_slave->error( KIO::ERR_INTERNAL, "Error getting a GenericInterface to the device from Solid." );
+        return;
+    }
+    if( !gi->propertyExists( "usb.serial" ) )
+    {
+        m_slave->error( KIO::ERR_INTERNAL, "Could not find serial number of MTP device in HAL.  When filing a bug please include the full output of \"lshal -lt\"." );
+        return;
+    }
+    QVariant possibleSerial = gi->property( "usb.serial" );
+    if( !possibleSerial.isValid() || possibleSerial.isNull() || !possibleSerial.canConvert( QVariant::String ) )
+    {
+        m_slave->error( KIO::ERR_INTERNAL, "Did not get an expected String from HAL." );
+        return;
+    }
+    QString serial = possibleSerial.toString();
+    kDebug() << endl << endl << "Case-insensitively looking for serial number starting with: " << serial << endl << endl;
     LIBMTP_mtpdevice_t *currdevice;
     for( currdevice = m_deviceList; currdevice != NULL; currdevice = currdevice->next )
     {
         kDebug() << "currdevice serial number = " << LIBMTP_Get_Serialnumber( currdevice ) << endl;
-        if( QString( LIBMTP_Get_Serialnumber( currdevice ) ).compare( host, Qt::CaseInsensitive ) == 0 )
+        //WARNING: a startsWith is done below, as the value reported by HAL for the serial number seems to be about half
+        //the length of the value reported by libmtp...is this always true?  Could this cause two devices to
+        //be recognized as the same one?
+        if( QString( LIBMTP_Get_Serialnumber( currdevice ) ).startsWith( serial, Qt::CaseInsensitive ) )
+        {
+            kDebug() << endl << endl << "Found a matching serial!" << endl << endl;
             m_device = currdevice;
+        }
         else
             LIBMTP_Release_Device( currdevice );
     }
 
     if( m_device )
         kDebug() << "FOUND THE MTP DEVICE WE WERE LOOKING FOR!" << endl;
+
+    return;
+}
+
+void
+MTPBackend::get( const KUrl &url )
+{
+}
+
+void
+MTPBackend::listDir( const KUrl &url )
+{
+
 }
 
 #include "pmpkioslave_mtpbackend.moc"

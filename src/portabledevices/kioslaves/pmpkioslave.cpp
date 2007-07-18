@@ -53,6 +53,7 @@ extern "C" int KDE_EXPORT kdemain( int argc, char **argv )
 PMPProtocol::PMPProtocol( const QByteArray &protocol, const QByteArray &pool,
                           const QByteArray &app )
                         : SlaveBase( protocol, pool, app )
+                        , m_initialized( false )
                         , m_backend( 0 )
 {
     kDebug() << "Creating PMPPProtocol kioslave" << endl;
@@ -61,28 +62,90 @@ PMPProtocol::PMPProtocol( const QByteArray &protocol, const QByteArray &pool,
 
 PMPProtocol::~PMPProtocol()
 {
+    if( m_backend )
+        delete m_backend;
+
+    m_backend = 0;
 }
 
 void
 PMPProtocol::setHost( const QString &host, quint16 port,
-         const QString &user, const QString &pass)
+                      const QString &user, const QString &pass )
 {
-    Solid::Device sd = Solid::Device( host );
+    Q_UNUSED( port );
+    Q_UNUSED( user );
+    Q_UNUSED( pass );
+    if( !host.isEmpty() )
+    {
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING,
+                "portable media player : Setting a hostname is not supported.  Use a URL of the form pmp:/<udi> or pmp:///<udi>" );
+    }
+}
+
+void
+PMPProtocol::get( const KUrl &url )
+{
+    if( !m_initialized )
+        initialize( url );
+    m_backend->get( url );
+}
+
+void
+PMPProtocol::listDir( const KUrl &url )
+{
+    if( !m_initialized )
+        initialize( url );
+    m_backend->listDir( url );
+}
+
+void
+PMPProtocol::initialize( const KUrl &url )
+{
+
+    kDebug() << endl << endl << "url: " << url << endl << endl;
+    QString path = url.path( KUrl::RemoveTrailingSlash );
+    if( url.isEmpty() )
+    {
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING, "portable media player : Empty UDI passed in" );
+        return;
+    }
+
+    int index = path.indexOf( '/' );
+    QString udi = ( index == -1 ? path : path.left( index + 1 ) );
+
+    QString transUdi( path );
+    transUdi.replace( QChar( '.' ), QChar( '/' ) );
+
+    kDebug() << endl << endl << "Using udi: " << transUdi << endl << endl;
+
+    Solid::Device sd = Solid::Device( transUdi );
     if( !sd.isValid() )
-        error( KIO::ERR_INTERNAL, "Valid UDI not passed in." );
+    {
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING,
+                "portable media player : Device not found by Solid.  Ensure the UDI's forward slashes are replaced by periods (there should be no period before org)" );
+        return;
+    }
 
     Solid::PortableMediaPlayer *pmp = sd.as<Solid::PortableMediaPlayer>();
-    if( !pmp->isValid() )
-        error( KIO::ERR_INTERNAL, "UDI does not describe a Portable Media Player." );
+    if( !pmp )
+    {
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING, "device : Device is not a portable media player" );
+        return;
+    }
 
 #ifdef HAVE_MTP
     if( pmp->supportedProtocols().contains( "mtp", Qt::CaseInsensitive ) )
+    {
         m_backend = MTPType();
-    m_backend->setHost( host, port, user, pass );
-    return;
+        m_backend->setSlave( this );
+        m_backend->setUdi( transUdi );
+        m_initialized = true;
+        return;
+    }
 #endif
 
-    error( KIO::ERR_INTERNAL, "No supported protocol found." );
+    error( KIO::ERR_CANNOT_OPEN_FOR_READING, "device : No supported protocol found" );
+    return;
 }
 
 #include "pmpkioslave.moc"

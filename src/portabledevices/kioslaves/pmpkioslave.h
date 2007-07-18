@@ -44,9 +44,15 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
 
     protected:
         void setHost( const QString &host, quint16 port,
-                      const QString &user, const QString &pass);
+                      const QString &user, const QString &pass );
+
+        void get( const KUrl &url );
+        void listDir( const KUrl &url );
 
     private:
+        void initialize( const KUrl &url );
+
+        bool        m_initialized;
         PMPBackend* m_backend;
 };
 

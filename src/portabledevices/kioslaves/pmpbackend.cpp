@@ -30,9 +30,9 @@ PMPBackend::~PMPBackend()
 }
 
 void
-PMPBackend::setHost( const QString &host, quint16 port,
-                     const QString &user, const QString &pass)
+PMPBackend::setUdi( const QString &udi )
 {
+    Q_UNUSED( udi );
 }
 
 #include "pmpbackend.moc"

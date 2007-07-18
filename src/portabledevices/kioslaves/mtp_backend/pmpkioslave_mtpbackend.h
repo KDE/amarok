@@ -33,8 +33,9 @@ class MTPBackend : public PMPBackend
         virtual ~MTPBackend();
 
     protected:
-        void setHost( const QString &host, quint16 port,
-                      const QString &user, const QString &pass);
+        void setUdi( const QString &udi);
+        void get( const KUrl &url );
+        void listDir( const KUrl &url );
 
     private:
         LIBMTP_mtpdevice_t *m_deviceList;

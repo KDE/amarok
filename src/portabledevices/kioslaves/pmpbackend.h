@@ -32,8 +32,10 @@ class PMPBackend : public QObject
         virtual ~PMPBackend();
 
         void setSlave( KIO::SlaveBase *slave ) { m_slave = slave; }
-        virtual void setHost( const QString &host, quint16 port,
-                              const QString &user, const QString &pass);
+        virtual void setUdi( const QString &udi );
+
+        virtual void get( const KUrl &url ) {};
+        virtual void listDir( const KUrl &url ) {};
 
         KIO::SlaveBase *m_slave;
 
