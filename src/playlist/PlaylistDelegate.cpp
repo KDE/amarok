@@ -63,20 +63,22 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem(albumPixmap, 0 );
     pixmap->setPos( 0.0, 0.0 );
 
-    QFont boldFont;
-    boldFont.setBold( true );
+//    QFont boldFont;
+//    boldFont.setBold( true );
     const qreal lineTwoY = m_height / 2;
     const qreal textWidth = ( ( qreal( option.rect.width() ) - ALBUM_WIDTH ) / 2.0 );
     const qreal totalWidth = qreal( option.rect.width() );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
 
     QGraphicsTextItem* topLeftText = new QGraphicsTextItem();
-    topLeftText->setFont( boldFont );
+    topLeftText->setTextInteractionFlags( Qt::TextEditorInteraction );
+//    topLeftText->setFont( boldFont );
     QGraphicsTextItem* bottomLeftText = new QGraphicsTextItem();
+    bottomLeftText->setTextInteractionFlags( Qt::TextEditorInteraction );
     QGraphicsTextItem* topRightText = new QGraphicsTextItem();
-    topRightText->setFont( boldFont );
+//    topRightText->setFont( boldFont );
     QGraphicsTextItem* bottomRightText = new QGraphicsTextItem();
-    bottomRightText->setFont( boldFont );
+//    bottomRightText->setFont( boldFont );
 
     qreal rightAlignX;
     {
