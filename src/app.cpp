@@ -73,6 +73,7 @@ email                : markey@web.de
 #include <krun.h>                //Amarok::invokeBrowser()
 #include <ksplashscreen.h>
 #include <kstandarddirs.h>
+#include <kshell.h>
 
 #include <QCloseEvent>
 #include <QDBusInterface>
@@ -1115,8 +1116,9 @@ namespace Amarok
     bool invokeBrowser( const QString& url )
     {
         //URL can be in whatever forms KUrl understands - ie most.
-        const QString cmd = "%1 \"%2\"";
-        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KUrl( url ).url() ), 0 ) > 0;
+        const QString cmd = KShell::quoteArg(AmarokConfig::externalBrowser()) 
+            + " " + KShell::quoteArg(KUrl( url ).url());
+        return KRun::runCommand( cmd, 0L ) > 0;
     }
 
     namespace ColorScheme
