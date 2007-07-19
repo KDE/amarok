@@ -383,9 +383,9 @@ QStringList
 Model::mimeTypes() const //reimplemented
 {
     DEBUG_BLOCK
-    //QStringList ret = QAbstractTableModel::mimeTypes();
-    QStringList ret;
+    QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
+    ret << "application/x-amarok-playlist-header";
     debug() << ret << endl;
     return ret;
 }
