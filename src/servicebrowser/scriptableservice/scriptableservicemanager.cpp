@@ -87,13 +87,13 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
 
     int newId = m_serviceMap[serviceName]->addTrack( new ServiceTrack( name ), albumId );  
 
-     QList<int> levels;
+    //FIXME!!! What should be returned here?
+    return newId;
+
+     //QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
    // levels << CategoryId::Album;
-
     //m_serviceMap[serviceName]->getModel()->setLevels( levels );
-    
-
 }
 
 

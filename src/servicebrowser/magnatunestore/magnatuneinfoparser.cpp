@@ -83,6 +83,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
 
 void MagnatuneInfoParser::getInfo(TrackPtr track)
 {
+    Q_UNUSED( track );
     return;
 }
 

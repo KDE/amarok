@@ -90,6 +90,8 @@ int ScriptableService::addAlbum(ServiceAlbum * album)
 
 int ScriptableService::addArtist(ServiceArtist * artist)
 {
+    Q_UNUSED( artist );
+    return -1;
 }
 
 

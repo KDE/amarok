@@ -44,11 +44,13 @@ QString ScriptableServiceCollection::collectionId() const
 
 bool ScriptableServiceCollection::possiblyContainsTrack(const KUrl & url) const
 {
+    Q_UNUSED( url );
     return false;
 }
 
 Meta::TrackPtr ScriptableServiceCollection::ScriptableServiceCollection::trackForUrl(const KUrl & url)
 {
+    Q_UNUSED( url );
     return TrackPtr();
 }
 
