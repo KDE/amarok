@@ -174,14 +174,14 @@ void ServiceBase::homeButtonClicked( )
     emit( home() );
 }
 
-void ServiceBase::itemActivated ( const QModelIndex & index ) {
+void ServiceBase::itemActivated ( const QModelIndex & index )
+{
+    Q_UNUSED( index );
+}
 
 
- }
-
-
-void ServiceBase::setModel( SingleCollectionTreeItemModel * model ) {
-
+void ServiceBase::setModel( SingleCollectionTreeItemModel * model )
+{
     //m_filterModel->setSourceModel( model );
     //m_contentView->setModel( m_filterModel );
     m_contentView->setModel( model );

@@ -783,6 +783,7 @@ ServiceGenre::addTrack( TrackPtr track )
 
 void ServiceGenre::processInfoOf(InfoParserBase * infoParser)
 {
+    Q_UNUSED( infoParser );
     return; // do nothing
 }
 
@@ -828,6 +829,7 @@ ServiceComposer::addTrack( ServiceTrackPtr track )
 
 void ServiceComposer::processInfoOf(InfoParserBase * infoParser)
 {
+    Q_UNUSED( infoParser );
     return; // do nothing
 }
 
@@ -874,18 +876,8 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 
 void ServiceYear::processInfoOf(InfoParserBase * infoParser)
 {
+    Q_UNUSED( infoParser );
     return; // do nothing
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
