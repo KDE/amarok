@@ -56,12 +56,7 @@ int ScriptableService::addTrack( ServiceTrack * track, int albumId )
     if ( albumIdMap.contains( albumId ) ) {
         
         AlbumPtr albumPtr = albumIdMap.value( albumId );
-        ServiceAlbum * album = dynamic_cast< ServiceAlbum * >( albumPtr.data() );
-        if( !album )
-        {
-            error() << "addTrack album dynamic cast failed" << endl;
-            return -1;
-        }
+        ServiceAlbum * album = static_cast< ServiceAlbum * >( albumPtr.data() );
         track->setAlbum( albumPtr->name() );
         album->addTrack( trackPtr );
 

@@ -66,12 +66,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         TrackPtr trackPtr = m_metaFactory->createTrack( rowData.mid(index, m_metaFactory->getTrackSqlRowCount() ) );
         index += m_metaFactory->getTrackSqlRowCount();
 
-        ServiceTrack * track = dynamic_cast<ServiceTrack *> ( trackPtr.data() );
-        if( !track )
-        {
-            error() << "track dynamic cast failed" << endl;
-            return trackPtr;
-        }
+        ServiceTrack * track = static_cast<ServiceTrack *> ( trackPtr.data() );
         AlbumPtr albumPtr;
 
         
@@ -87,12 +82,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
         index += m_metaFactory->getAlbumSqlRowCount();
 
-        ServiceAlbum * album = dynamic_cast<ServiceAlbum *> ( albumPtr.data() );
-        if( !album )
-        {
-            error() << "album dynamic cast failed" << endl;
-            return trackPtr;
-        }
+        ServiceAlbum * album = static_cast<ServiceAlbum *> ( albumPtr.data() );
 
         album->addTrack( trackPtr );
         track->setAlbum( albumPtr );
@@ -113,12 +103,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
         index += m_metaFactory->getArtistSqlRowCount();
        
-        ServiceArtist * artist = dynamic_cast<ServiceArtist *> ( artistPtr.data() );
-        if( !artist )
-        {
-            error() << "artist dynamic cast failed" << endl;
-            return trackPtr;
-        }
+        ServiceArtist * artist = static_cast<ServiceArtist *> ( artistPtr.data() );
 
         artist->addTrack( trackPtr );
         track->setArtist( artistPtr );

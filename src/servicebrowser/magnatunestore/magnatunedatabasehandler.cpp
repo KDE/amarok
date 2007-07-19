@@ -152,12 +152,8 @@ MagnatuneDatabaseHandler::destroyDatabase( )
 int 
 MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 {
-    MagnatuneTrack * mTrack = dynamic_cast<MagnatuneTrack *> ( track );
-    if( !mTrack )
-    {
-        error() << "mTrack dynamic cast failed" << endl;
-        return 0;
-    }
+    MagnatuneTrack * mTrack = static_cast<MagnatuneTrack *> ( track );
+
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO magnatune_tracks ( name, track_number, length, "
                           "album_id, artist_id, preview_lofi, preview_url ) VALUES ( '"
@@ -182,12 +178,7 @@ int
 MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
-    MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album );
-    if( !mAlbum )
-    {
-        error() << "mAlbum dynamic cast failed" << endl;
-        return 0;
-    }
+    MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album );
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -210,12 +201,7 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 int 
 MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
-    MagnatuneArtist * mArtist = dynamic_cast<MagnatuneArtist *> ( artist );
-    if( !mArtist )
-    {
-        error() << "mArtist dynamic cast failed" << endl;
-        return 0;
-    }
+    MagnatuneArtist * mArtist = static_cast<MagnatuneArtist *> ( artist );
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();

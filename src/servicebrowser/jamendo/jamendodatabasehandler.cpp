@@ -161,12 +161,7 @@ int
 JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 {
 
-    JamendoTrack * jTrack = dynamic_cast<JamendoTrack *> ( track );
-    if( !jTrack )
-    {
-        error() << "jTrack dynamic cast failed" << endl;
-        return 0;
-    }
+    JamendoTrack * jTrack = static_cast<JamendoTrack *> ( track );
     QString numberString;
 
     CollectionDB *db = CollectionDB::instance();
@@ -204,12 +199,7 @@ int
 JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
-    JamendoAlbum * jAlbum = dynamic_cast<JamendoAlbum *> ( album );
-    if( !jAlbum )
-    {
-        error() << "jAlbum dynamic cast failed" << endl;
-        return 0;
-    }
+    JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album );
 
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -234,12 +224,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 int 
 JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
-    JamendoArtist * jArtist = dynamic_cast<JamendoArtist *> ( artist );
-    if( !jArtist )
-    {
-        error() << "jArtist dynamic cast failed" << endl;
-        return 0;
-    }
+    JamendoArtist * jArtist = static_cast<JamendoArtist *> ( artist );
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_artists ( id, name, description, "
