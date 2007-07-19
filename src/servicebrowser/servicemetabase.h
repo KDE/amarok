@@ -249,10 +249,6 @@ class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
-        virtual void image() const;
-        virtual bool canUpdateImage() const;
-        virtual void updateImage();
-
         virtual void processInfoOf( InfoParserBase * infoParser );
 
 

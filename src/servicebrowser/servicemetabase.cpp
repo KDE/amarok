@@ -665,24 +665,6 @@ ServiceAlbum::tracks()
 }
 
 void
-ServiceAlbum::image() const
-{
-    //TODO
-}
-
-bool
-ServiceAlbum::canUpdateImage() const
-{
-    return false;
-}
-
-void
-ServiceAlbum::updateImage()
-{
-    //TODO
-}
-
-void
 ServiceAlbum::addTrack( TrackPtr track )
 {
     m_tracks.append( track );
