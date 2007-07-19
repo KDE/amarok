@@ -64,7 +64,9 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
     if( mimeType == TRACK_MIME )
     {
         debug() << "yep it has " << TRACK_MIME << endl;
-        return !m_tracks.isEmpty() || !m_queryMakers.isEmpty();
+        //FIXME m_tracks is always empty
+        //return !m_tracks.isEmpty() || !m_queryMakers.isEmpty().;
+        return true;
     }
     else
     {
