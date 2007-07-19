@@ -26,8 +26,14 @@ Widget::Widget( QWidget* parent )
     PlaylistNS::Model* playmodel = The::playlistModel();
     playmodel->init();
     playmodel->testData();
+
     PlaylistNS::View* playView = new PlaylistNS::View( this );
     playView->setModel( playmodel );
+    playView->setAcceptDrops( true );
+    playView->setDragEnabled( true );
+    playView->setDropIndicatorShown( true );
+    playView->setSpacing( 2 );
+
     layout->setSpacing( 0 );
     layout->addWidget( header );
     layout->addWidget( playView );
