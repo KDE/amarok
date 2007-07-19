@@ -90,6 +90,7 @@ HeaderWidget::dropEvent( QDropEvent *event)
 void
 HeaderWidget::enterEvent( QEvent* event )
 {
+#if 0
     m_topLayout->setSpacing( 3 );
     QVBoxLayout* layout;
     QFont defaultFont;
@@ -99,11 +100,13 @@ HeaderWidget::enterEvent( QEvent* event )
         layout->setSpacing( 3 );
     }
     setStyleSheet("QLabel { border: 1px solid black; border-radius: 5px; } QLabel:hover { border-width: 3px }");
+#endif
 }
 
 void
 HeaderWidget::leaveEvent( QEvent* event )
 {
+#if 0
     setStyleSheet(" ");
     m_topLayout->setSpacing( 0 );
     QVBoxLayout* layout;
@@ -114,6 +117,7 @@ HeaderWidget::leaveEvent( QEvent* event )
     {
         layout->setSpacing( 0 );
     }
+#endif
 }
 
 void
