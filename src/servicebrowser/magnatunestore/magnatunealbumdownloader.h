@@ -65,7 +65,7 @@ protected:
     KIO::FileCopyJob * m_albumDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
-    int m_currentAlbumId;
+    MagnatuneAlbum * m_currentAlbum;
     KTempDir m_tempDir;
 
 protected slots:

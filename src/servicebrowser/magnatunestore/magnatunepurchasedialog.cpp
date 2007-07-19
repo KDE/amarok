@@ -39,21 +39,17 @@ MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* n
 MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
 {}
 
-void MagnatunePurchaseDialog::setAlbum( const MagnatuneAlbum &album )
+
+void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
 {
-    MagnatuneDatabaseHandler dbHandler; //FIXME
-
     //albumEdit->setText("Hello!");
-    albumEdit->setText( album.getName() );
+    albumEdit->setText( album->name() );
 
-    SimpleServiceArtist * artist = dbHandler.getArtistById( album.getArtistId() );
-    artistEdit->setText( artist->getName() );
-    genresEdit->setText( album.getMp3Genre() );
-    launchDateEdit->setText( QString::number( album.getLaunchDate().year() ) );
+    artistEdit->setText( album->artistName() );
+    //genresEdit->setText( album.getMp3Genre() ); FIXME:
+    launchDateEdit->setText( QString::number( album->launchYear() ) );
 
-    m_albumCode = album.getAlbumCode();
-
-    delete artist;
+    m_albumCode = album->albumCode();
 
 }
 
@@ -65,9 +61,6 @@ void MagnatunePurchaseDialog::purchase( )
 
 	setEnabled( false ); //to prevent accidental double purchases
         emit( makePurchase( ccEdit->text(), expYearEdit->text(), expMonthEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
-
-        //close();
-        //hide();
 
     }
 }

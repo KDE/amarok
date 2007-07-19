@@ -22,6 +22,8 @@
 #ifndef MAGNATUNE_DOWNLOAD_INFO_H
 #define MAGNATUNE_DOWNLOAD_INFO_H
 
+#include "MagnatuneMeta.h"
+
 #include <kurl.h>
 
 #include <qmap.h>
@@ -47,12 +49,12 @@ public:
     QString getUserName();
     QString getPassword();
     QString getDownloadMessage();
-    int getAlbumId();
+    MagnatuneAlbum * album();
 
 
     void setFormatSelection(const QString &selectedFormat);
     void setUnpackUrl(const QString &unpackUrl);
-    void setAlbumId(int id);
+    void setAlbum( MagnatuneAlbum * album );
     bool isReadyForDownload();
     KUrl getCompleteDownloadUrl();
     QString getUnpackLocation();
@@ -66,7 +68,7 @@ protected:
     QString m_password;
     QString m_downloadMessage;
 
-    int m_albumId;
+    MagnatuneAlbum * m_album;
 
     //the following members are for storing the user selections regarding a download
     QString m_unpackUrl;

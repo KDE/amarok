@@ -33,6 +33,7 @@
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()
+        , m_currentAlbum( 0 )
 {
 
     m_downloadDialog = 0;
@@ -49,7 +50,7 @@ MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 }
 
 
-void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
+void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 {
     m_currentAlbum = album;
 
@@ -57,7 +58,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
     //Then we can show it on the purchase dialog as well as put it in the
     //same directory as the album.
 
-    QString albumCoverUrlString = album.getCoverURL();
+    QString albumCoverUrlString = album->coverUrl();
 
     if ( m_albumDownloader == 0 )
     {
@@ -65,7 +66,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
         connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( const QString &) ), this, SLOT( showPurchaseDialog( const QString &) ) );
     }
 
-    m_currentAlbumCoverName = album.getName() + " - cover.jpg";
+    m_currentAlbumCoverName = album->name() + " - cover.jpg";
 
 
     m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
@@ -93,7 +94,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
 
 
 
-    if ( m_currentAlbum.getId() != 0 )
+    if ( m_currentAlbum )
     {
 
         debug() << "showing purchase dialog with image: " << coverTempLocation + m_currentAlbumCoverName << endl;
@@ -164,7 +165,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     {
 
 
-        downloadInfo->setAlbumId( m_currentAlbum.getId() );
+        downloadInfo->setAlbum( m_currentAlbum );
 
         saveDownloadInfo( resultXml );
         m_downloadDialog->setDownloadInfo( downloadInfo );
@@ -204,12 +205,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
         purchaseDir.mkdir( "." );
     }
 
-    //Create file name
-    SimpleServiceArtist * artist = dbHandler.getArtistById( m_currentAlbum.getArtistId() );
-    QString artistName = artist->getName();
-    delete artist;
-
-    QString fileName = artistName + " - " + m_currentAlbum.getName();
+    QString fileName = m_currentAlbum->albumArtist()->name() + " - " + m_currentAlbum->name();
 
     QFile file( purchaseDir.absolutePath() + '/' + fileName );
 

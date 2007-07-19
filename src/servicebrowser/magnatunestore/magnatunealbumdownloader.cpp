@@ -21,9 +21,9 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunealbumdownloader.h"
-#include "magnatunealbumdownloader.moc"
-#include "magnatunedatabasehandler.h"
-#include "magnatunetypes.h"
+
+//#include "magnatunedatabasehandler.h"
+#include "MagnatuneMeta.h"
 #include "statusbar.h"
 #include <kshell.h>
 
@@ -31,8 +31,7 @@ MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
     , m_albumDownloadJob( 0 )
     , m_currentAlbumFileName()
-    , m_currentAlbumFileName()
-    , m_currentAlbumId( 0 )
+    , m_currentAlbum( 0 )
     , m_tempDir()
 {
     m_tempDir.setAutoRemove( false );
@@ -47,7 +46,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 {
 
 
-    m_currentAlbumId = info->getAlbumId();
+    m_currentAlbum = info->album();
 
     KUrl downloadUrl = info->getCompleteDownloadUrl();
     m_currentAlbumUnpackLocation = info->getUnpackLocation();
@@ -109,21 +108,14 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
 
 
-    if (m_currentAlbumId != -1 ) {
+    if ( m_currentAlbum ) {
 
         //now I really want to add the album cover to the same folder where I just unzipped the album... The
         //only way of getting the actual location where the album was unpacked is using the artist and album names
 
-        MagnatuneDatabaseHandler dbHandler;
+        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbum->albumArtist()->name() + '/' + m_currentAlbum->name();
+        QString coverUrlString = m_currentAlbum->coverUrl();
 
-        MagnatuneAlbum * album = dynamic_cast<MagnatuneAlbum * > ( dbHandler.getAlbumById( m_currentAlbumId ) );
-        MagnatuneArtist * artist = dynamic_cast<MagnatuneArtist * > ( dbHandler.getArtistById( album->getArtistId() ) );
-
-        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + artist->getName() + '/' + album->getName();
-        QString coverUrlString = album->getCoverURL();
-
-        delete album;
-        delete artist;
 
         KUrl downloadUrl( coverUrlString );
 
@@ -212,7 +204,7 @@ void MagnatuneAlbumDownloader::coverAddAborted()
      emit( downloadComplete( true ) ); //the album download still went well, just the cover is missing
 }
 
-
+#include "magnatunealbumdownloader.moc"
 
 
 

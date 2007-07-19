@@ -24,11 +24,11 @@
 
 #include "amarok.h"
 //#include "magnatunepurchasedialog.h"
-//#include "magnatunepurchasehandler.h"
-//#include "magnatuneredownloadhandler.h"
+#include "magnatunepurchasehandler.h"
+#include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"
 #include "magnatunedatabasehandler.h"
-//#include "../databasedrivencontentmodel.h"
+
 #include "../servicebase.h"
 #include "servicesqlcollection.h"
 
@@ -82,7 +82,7 @@ private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
-   // void purchaseButtonClicked();
+    void purchaseButtonClicked();
 
     /**
      * Slot for recieving notification from the right click menu that the user
@@ -169,7 +169,7 @@ private slots:
      * Slot for recieving notifications of completed purchase operations
      * @param success Was the operation a success?
      */
-    //void purchaseCompleted( bool success );
+    void purchaseCompleted( bool success );
 
   
     /**
@@ -226,7 +226,7 @@ private:
     //MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
-    //MagnatunePurchaseHandler  *m_purchaseHandler;
+    MagnatunePurchaseHandler  *m_purchaseHandler;
     //MagnatuneRedownloadHandler *m_redownloadHandler;
     //MagnatuneDatabaseHandler * m_dbHandler;
 

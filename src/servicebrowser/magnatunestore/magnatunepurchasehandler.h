@@ -28,7 +28,7 @@
 #include "magnatunealbumdownloader.h"
 #include "magnatunedownloaddialog.h"
 #include "magnatunepurchasedialog.h"
-#include "magnatunetypes.h"
+#include "MagnatuneMeta.h"
 
 
 /**
@@ -48,7 +48,7 @@ public:
     * Starts a purchase operation
     * @param album The album to purchase
     */
-   void purchaseAlbum( const MagnatuneAlbum &album );
+   void purchaseAlbum( MagnatuneAlbum * album );
 
 signals:
 
@@ -63,7 +63,7 @@ private:
     MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
-    MagnatuneAlbum m_currentAlbum;
+    MagnatuneAlbum * m_currentAlbum;
     QString m_currentAlbumCoverName;
 
     bool parseDownloadXml( const QString &xml );

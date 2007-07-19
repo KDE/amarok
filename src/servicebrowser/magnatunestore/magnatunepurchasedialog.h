@@ -21,8 +21,8 @@
 #ifndef MAGNATUNEPURCHASEDIALOG_H
 #define MAGNATUNEPURCHASEDIALOG_H
 
-//#include "magnatunepurchasedialogbase.h"
-//#include "magnatunetypes.h"
+#include "magnatunepurchasedialogbase.h"
+#include "MagnatuneMeta.h"
 
 class MagnatunePurchaseDialog : public magnatunePurchaseDialogBase
 {
@@ -50,7 +50,7 @@ public:
      * Sets the album to process.
      * @param album The album to process.
      */
-    void setAlbum( const MagnatuneAlbum& album );
+    void setAlbum( MagnatuneAlbum * album );
 
     /**
      * Loads image into the cover label.

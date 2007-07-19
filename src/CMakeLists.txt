@@ -171,24 +171,24 @@ kde4_add_ui_files(libconfigdialog_SRCS
 set(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
 	servicebrowser/magnatunestore/magnatunebrowser.cpp
-	#servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
-	#servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
-	#servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
+	servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
+	servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
+	servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
 	#servicebrowser/magnatunestore/magnatunetypes.cpp
         servicebrowser/magnatunestore/MagnatuneMeta.cpp
 	servicebrowser/magnatunestore/magnatunexmlparser.cpp
 	servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
 	#servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
-	#servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-	#servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
+	servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
+	servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
 )
 
-#kde4_add_ui3_files(libmagnatunestore_SRCS
-#	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
-#	servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
-#	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
-#)
+kde4_add_ui3_files(libmagnatunestore_SRCS
+	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
+	servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
+	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
+)
 
 #####################################################################
 # COLLECTIONBROWSER

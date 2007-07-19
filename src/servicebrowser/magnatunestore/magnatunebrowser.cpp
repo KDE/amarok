@@ -165,18 +165,18 @@ void MagnatuneBrowser::menuAboutToShow( )
     }*/
 }
 
-/*void MagnatuneBrowser::purchaseButtonClicked( )
+void MagnatuneBrowser::purchaseButtonClicked( )
 {
+    QModelIndexList selected = m_contentView->selectionModel()->selectedIndexes();
 
-    if ( !m_purchaseInProgress && m_currentlySelectedItem != 0)
-    {
+    if ( selected.size() != 1 ) //there must be only one selected item
+        return;
 
-        if ( m_currentlySelectedItem->getType() == SERVICE_ITEM_ALBUM )
-            purchaseSelectedAlbum( );
-        else if ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )
-            purchaseAlbumContainingSelectedTrack( );
-    }
-}*/
+    QModelIndex selectedItem = selected.first();
+
+
+    selectedItem.internalPointer();
+}
 
 /*void MagnatuneBrowser::purchaseSelectedAlbum( )
 {
@@ -400,7 +400,7 @@ void MagnatuneBrowser::doneParsing()
     m_redownloadHandler->showRedownloadDialog();
 }*/
 
-/*void MagnatuneBrowser::purchaseCompleted( bool )
+void MagnatuneBrowser::purchaseCompleted( bool )
 {
 
     if ( m_purchaseHandler != 0 )
@@ -417,7 +417,7 @@ void MagnatuneBrowser::doneParsing()
     //TODO: display some kind of success dialog here?
 
 
-}*/
+}
 
 /*void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
 
