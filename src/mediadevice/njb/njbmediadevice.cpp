@@ -265,7 +265,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
     DEBUG_BLOCK
     int result = 0;
-    if ( isCanceled() )
+    if ( isCanceled() || !item )
     {
         return -1;
     }
@@ -390,6 +390,10 @@ NjbMediaDevice::downloadToCollection()
         if( (it->type() == MediaItem::TRACK) )
         {
             NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
+            if( !auxItem ) {
+                debug() << "Dynamic cast to NJB Media Item failed." << endl;
+                return -1;
+            }
             QString track_id;
             track_id.setNum( auxItem->track()->id() );
             filepath = path + auxItem->bundle()->url().path();
@@ -806,6 +810,12 @@ NjbMediaDevice::expandItem( Q3ListViewItem *item )
         delete item->firstChild();
 
     NjbMediaItem *it = dynamic_cast<NjbMediaItem *>( item );
+
+    if( !it )
+    {
+        debug() << "Dynamic cast to NJB media item failed" << endl;
+        return;
+    }
 
     switch( it->type() )
     {
