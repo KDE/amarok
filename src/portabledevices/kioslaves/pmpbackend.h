@@ -27,17 +27,22 @@ class PMPBackend : public QObject
 {
     Q_OBJECT
 
+
     public:
         PMPBackend();
         virtual ~PMPBackend();
 
         void setSlave( KIO::SlaveBase *slave ) { m_slave = slave; }
         virtual void setUdi( const QString &udi );
+        virtual void get( const KUrl &url ) { Q_UNUSED( url ); }
+        virtual void listDir( const KUrl &url ) { Q_UNUSED( url ); }
+        virtual void stat( const KUrl &url ) { Q_UNUSED( url ); }
 
-        virtual void get( const KUrl &url ) {};
-        virtual void listDir( const KUrl &url ) {};
+    protected:
+        QString getFilePath( const KUrl &url );
 
         KIO::SlaveBase *m_slave;
+        QString m_udi;
 
 };
 

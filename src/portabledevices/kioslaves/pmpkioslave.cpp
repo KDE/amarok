@@ -85,17 +85,31 @@ PMPProtocol::setHost( const QString &host, quint16 port,
 void
 PMPProtocol::get( const KUrl &url )
 {
+    kDebug() << endl << endl << "Entering get with url = " << url << endl << endl;
     if( !m_initialized )
         initialize( url );
     m_backend->get( url );
+    kDebug() << endl << endl << "Leaving get with url = " << url << endl << endl;
 }
 
 void
 PMPProtocol::listDir( const KUrl &url )
 {
+    kDebug() << endl << endl << "Entering listDir with url = " << endl << endl;
     if( !m_initialized )
         initialize( url );
+    if( url.isEmpty() )
+        return;
     m_backend->listDir( url );
+    kDebug() << endl << endl << "Leaving listDir with url = " << endl << endl;
+}
+
+void
+PMPProtocol::stat( const KUrl &url )
+{
+    kDebug() << endl << endl << "Entering stat with url = " << endl << endl;
+    m_backend->stat( url );
+    kDebug() << endl << endl << "Leaving stat with url = " << endl << endl;
 }
 
 void
@@ -110,11 +124,20 @@ PMPProtocol::initialize( const KUrl &url )
         return;
     }
 
-    int index = path.indexOf( '/' );
-    QString udi = ( index == -1 ? path : path.left( index + 1 ) );
+    //start out clean
+    while( path[0] == '.' || path[0] == '/' )
+        path.remove( 0, 1 );
 
-    QString transUdi( path );
+    kDebug() << endl << endl << "Path: " << path << endl << endl;
+
+
+    int index = path.indexOf( '/' );
+    //if not found, use the path as is; if it is truncate so we only get the udi
+    QString transUdi = ( index == -1 ? path : path.left( index ) );
+    //translate the udi to its required format
     transUdi.replace( QChar( '.' ), QChar( '/' ) );
+    //and now make sure it starts with a /
+    transUdi = '/' + transUdi;
 
     kDebug() << endl << endl << "Using udi: " << transUdi << endl << endl;
 
@@ -122,7 +145,7 @@ PMPProtocol::initialize( const KUrl &url )
     if( !sd.isValid() )
     {
         error( KIO::ERR_CANNOT_OPEN_FOR_READING,
-                "portable media player : Device not found by Solid.  Ensure the UDI's forward slashes are replaced by periods (there should be no period before org)" );
+                "portable media player : Device not found by Solid.  Ensure the device is turned on, you have permission to access it, and that the UDI's forward slashes are replaced by periods" );
         return;
     }
 

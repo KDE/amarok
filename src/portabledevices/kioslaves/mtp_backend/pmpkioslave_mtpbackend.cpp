@@ -59,7 +59,8 @@ void
 MTPBackend::setUdi( const QString &udi )
 {
     kDebug() << "udi = " << udi << endl;
-    Solid::GenericInterface *gi = Solid::Device( udi ).as<Solid::GenericInterface>();
+    m_udi = udi;
+    Solid::GenericInterface *gi = Solid::Device( m_udi ).as<Solid::GenericInterface>();
     if( !gi )
     {
         m_slave->error( KIO::ERR_INTERNAL, "Error getting a GenericInterface to the device from Solid." );
@@ -103,12 +104,22 @@ MTPBackend::setUdi( const QString &udi )
 void
 MTPBackend::get( const KUrl &url )
 {
+   QString path = getFilePath( url );
+   kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
 }
 
 void
 MTPBackend::listDir( const KUrl &url )
 {
+   QString path = getFilePath( url );
+   kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
+}
 
+void
+MTPBackend::stat( const KUrl &url )
+{
+   QString path = getFilePath( url );
+   kDebug() << "in MTPBackend::stat, path is: " << path << endl;
 }
 
 #include "pmpkioslave_mtpbackend.moc"

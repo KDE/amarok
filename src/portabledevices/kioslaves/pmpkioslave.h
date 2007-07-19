@@ -48,6 +48,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
 
         void get( const KUrl &url );
         void listDir( const KUrl &url );
+        void stat( const KUrl &url );
 
     private:
         void initialize( const KUrl &url );

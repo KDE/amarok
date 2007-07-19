@@ -22,6 +22,8 @@
 
 
 PMPBackend::PMPBackend()
+            : QObject()
+            , m_udi()
 {
 }
 
@@ -34,6 +36,22 @@ PMPBackend::setUdi( const QString &udi )
 {
     Q_UNUSED( udi );
 }
+
+QString
+PMPBackend::getFilePath( const KUrl &url )
+{
+    QString path = url.path( KUrl::RemoveTrailingSlash );
+
+    while( path[0] == '/' )
+        path.remove( 0, 1 );
+
+    int index = path.indexOf( '/' );
+    QString filePath;
+    if( index != -1 )
+        filePath = path.remove( 0, index + 1 ) ;
+    return filePath;
+}
+
 
 #include "pmpbackend.moc"
 
