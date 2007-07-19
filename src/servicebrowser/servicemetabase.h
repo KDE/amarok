@@ -157,9 +157,6 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
         virtual void endMetaDataUpdate() {}      //read only
         virtual void abortMetaDataUpdate() {}    //read only
 
-        virtual void subscribe ( TrackObserver *observer );
-        virtual void unsubscribe ( TrackObserver *observer );
-
         virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceTrack specific methods

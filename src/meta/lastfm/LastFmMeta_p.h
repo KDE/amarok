@@ -46,7 +46,7 @@ class Track::Private : public QObject
         KUrl proxyUrl;
         QString lastFmUri;
 
-        QList<Meta::TrackObserver*> observers;
+        QList<Meta::Observer*> observers;
         WebService *service;
 
         QPixmap albumArt;
@@ -69,7 +69,7 @@ class Track::Private : public QObject
     public:
         void notifyObservers()
         {
-            foreach( Meta::TrackObserver *observer, observers )
+            foreach( Meta::Observer *observer, observers )
                 observer->metadataChanged( t );
         }
 

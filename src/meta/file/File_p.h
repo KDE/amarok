@@ -44,7 +44,6 @@ public:
     Private( Track *t )
         : QObject()
         , metaInfo()
-        , observers()
         , url()
         , batchUpdate( false )
         , album()
@@ -52,15 +51,8 @@ public:
         , track( t )
     {}
 
-    void notify() const
-    {
-        foreach( Meta::TrackObserver *observer, observers )
-            observer->metadataChanged( track );
-    }
-
 public:
     KFileMetaInfo metaInfo;
-    QSet<Meta::TrackObserver*> observers;
     KUrl url;
     bool batchUpdate;
     Meta::AlbumPtr album;

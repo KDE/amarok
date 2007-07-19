@@ -147,7 +147,7 @@ Track::setAlbum( const QString &newAlbum )
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
-        d->notify();
+        notifyObservers();
     }
 }
 
@@ -158,7 +158,7 @@ Track::setArtist( const QString& newArtist )
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
-        d->notify();
+        notifyObservers();
     }
 }
 
@@ -187,7 +187,7 @@ Track::setTitle( const QString &newTitle )
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
-        d->notify();
+        notifyObservers();
     }
 }
 
@@ -333,18 +333,6 @@ Collection*
 Track::collection() const
 {
     return 0;
-}
-
-void
-Track::subscribe( Meta::TrackObserver *observer )
-{
-    d->observers.insert( observer );
-}
-
-void
-Track::unsubscribe( Meta::TrackObserver *observer )
-{
-    d->observers.remove( observer );
 }
 
 #include "File.moc"

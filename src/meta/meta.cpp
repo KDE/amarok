@@ -29,6 +29,66 @@
 
 #include <KStandardDirs>
 
+//Meta::Observer
+
+Meta::Observer::~Observer()
+{
+    //nothing to do
+}
+
+void
+Meta::Observer::metadataChanged( Track *track )
+{
+    Q_UNUSED( track );
+}
+
+void
+Meta::Observer::metadataChanged( Artist *artist )
+{
+    Q_UNUSED( artist );
+}
+
+void
+Meta::Observer::metadataChanged( Album *album )
+{
+    Q_UNUSED( album );
+}
+
+void
+Meta::Observer::metadataChanged( Composer *composer )
+{
+    Q_UNUSED( composer );
+}
+
+void
+Meta::Observer::metadataChanged( Genre *genre )
+{
+    Q_UNUSED( genre );
+}
+
+void
+Meta::Observer::metadataChanged( Year *year )
+{
+    Q_UNUSED( year );
+}
+
+//Meta::MetaBase
+
+void
+Meta::MetaBase::subscribe( Observer *observer )
+{
+    if( observer )
+        m_observers.insert( observer );
+}
+
+void
+Meta::MetaBase::unsubscribe( Observer *observer )
+{
+    m_observers.remove( observer );
+}
+
+//Meta::Track
+
 bool
 Meta::Track::inCollection() const
 {
@@ -66,15 +126,40 @@ Meta::Track::finishedPlaying( double playedFraction )
 }
 
 void
+Meta::Track::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Track*>( this ) );
+}
+
+//Meta::Artist
+
+void
 Meta::Artist::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( ArtistPtr( this ) );
 }
 
 void
+Meta::Artist::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Artist*>( this ) );
+}
+
+//Meta::Album
+
+void
 Meta::Album::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( AlbumPtr( this ) );
+}
+
+void
+Meta::Album::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Album*>( this ) );
 }
 
 QPixmap
@@ -103,11 +188,22 @@ Meta::Album::image( int size, bool withShadow ) const
     return QPixmap::fromImage( img );
 }
 
+//Meta::Genre
+
 void
 Meta::Genre::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( GenrePtr( this ) );
 }
+
+void
+Meta::Genre::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Genre*>( this ) );
+}
+
+//Meta::Composer
 
 void
 Meta::Composer::addMatchTo( QueryMaker *qm )
@@ -116,10 +212,24 @@ Meta::Composer::addMatchTo( QueryMaker *qm )
 }
 
 void
+Meta::Composer::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Composer*>( this ) );
+}
+
+//Meta::Year
+
+void
 Meta::Year::addMatchTo( QueryMaker *qm )
 {
     qm->addMatch( YearPtr( this ) );
 }
 
-
+void
+Meta::Year::notifyObservers() const
+{
+    foreach( Observer *observer, m_observers )
+        observer->metadataChanged( const_cast<Meta::Year*>( this ) );
+}
 

@@ -90,9 +90,6 @@ namespace MetaFile
             virtual bool inCollection() const;
             virtual Collection *collection() const;
 
-            virtual void subscribe( Meta::TrackObserver *observer );
-            virtual void unsubscribe( Meta::TrackObserver *observer );
-
             class Private;
         private:
             Private * const d;

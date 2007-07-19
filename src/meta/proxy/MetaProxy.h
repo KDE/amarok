@@ -94,8 +94,8 @@ namespace MetaProxy
             virtual bool inCollection() const;
             virtual Collection *collection() const;
 
-            virtual void subscribe( Meta::TrackObserver *observer );
-            virtual void unsubscribe( Meta::TrackObserver *observer );
+            virtual void subscribe( Meta::Observer *observer );
+            virtual void unsubscribe( Meta::Observer *observer );
 
         private:
             Private * const d;

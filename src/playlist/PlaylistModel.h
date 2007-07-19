@@ -72,7 +72,7 @@ class TrackAdvancer;
         AppendAndPlay = Append | Unique | StartPlay
     };
 
-    class Model : public QAbstractListModel, Meta::TrackObserver
+    class Model : public QAbstractListModel, Meta::Observer
     {
         friend class AddTracksCmd;
         friend class RemoveTracksCmd;

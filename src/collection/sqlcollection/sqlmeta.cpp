@@ -265,26 +265,6 @@ SqlTrack::setAlbum( const QString &newAlbum )
 }
 
 void
-SqlTrack::subscribe( TrackObserver *observer )
-{
-    if( !m_observers.contains( observer ) )
-        m_observers.append( observer );
-}
-
-void
-SqlTrack::unsubscribe( TrackObserver *observer )
-{
-    m_observers.removeAll( observer );
-}
-
-void
-SqlTrack::notifyObservers()
-{
-    for( QListIterator<TrackObserver*> iter( m_observers ) ; iter.hasNext(); )
-        iter.next()->metadataChanged( this );
-}
-
-void
 SqlTrack::setScore( double newScore )
 {
     if( m_batchUpdate )

@@ -344,14 +344,14 @@ Track::collection() const
 }
 
 void
-Track::subscribe( Meta::TrackObserver *observer )
+Track::subscribe( Meta::Observer *observer )
 {
     if( observer && !d->observers.contains( observer ) )
         d->observers.append( observer );
 }
 
 void
-Track::unsubscribe( Meta::TrackObserver *observer )
+Track::unsubscribe( Meta::Observer *observer )
 {
     if( observer )
         d->observers.removeAll( observer );

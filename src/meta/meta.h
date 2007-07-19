@@ -24,6 +24,7 @@
 #include <QList>
 #include <QMetaType>
 #include <QPixmap>
+#include <QSet>
 #include <QSharedData>
 #include <QString>
 
@@ -60,13 +61,18 @@ namespace Meta
     typedef KSharedPtr<Year> YearPtr;
     typedef QList<YearPtr > YearList;
 
-    class AMAROK_EXPORT TrackObserver
+    class AMAROK_EXPORT Observer
     {
         public:
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
-            virtual void metadataChanged( Track *track ) = 0;
-            virtual ~TrackObserver() {}
+            virtual void metadataChanged( Track *track );
+            virtual void metadataChanged( Artist *artist );
+            virtual void metadataChanged( Album *album );
+            virtual void metadataChanged( Genre *genre );
+            virtual void metadataChanged( Composer *composer );
+            virtual void metadataChanged( Year *year );
+            virtual ~Observer();
     };
 
     class AMAROK_EXPORT MetaBase : public QSharedData
@@ -79,6 +85,15 @@ namespace Meta
             virtual QString sortableName() const { return prettyName(); }
 
             virtual void addMatchTo( QueryMaker *qm ) = 0;
+
+            virtual void subscribe( Observer *observer );
+            virtual void unsubscribe( Observer *observer );
+
+        protected:
+            virtual void notifyObservers() const = 0;
+
+        protected:
+            QSet<Meta::Observer*> m_observers;
     };
 
     class AMAROK_EXPORT Track : public MetaBase
@@ -179,8 +194,9 @@ namespace Meta
             */
             virtual void setCachedLyrics( const QString &lyrics );
 
-            virtual void subscribe( TrackObserver *observer ) = 0;
-            virtual void unsubscribe( TrackObserver *observer ) = 0;
+        protected:
+            virtual void notifyObservers() const;
+
     };
 
     class AMAROK_EXPORT Artist : public MetaBase
@@ -192,6 +208,9 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+        protected:
+            virtual void notifyObservers() const;
     };
 
     class AMAROK_EXPORT Album : public MetaBase
@@ -216,6 +235,9 @@ namespace Meta
             virtual void updateImage() {} //TODO: choose parameter
 
             virtual void addMatchTo( QueryMaker* qm );
+
+        protected:
+            virtual void notifyObservers() const;
     };
 
     class AMAROK_EXPORT Composer : public MetaBase
@@ -227,6 +249,9 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+        protected:
+            virtual void notifyObservers() const;
     };
 
     class AMAROK_EXPORT Genre : public MetaBase
@@ -238,6 +263,9 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+        protected:
+            virtual void notifyObservers() const;
     };
 
     class AMAROK_EXPORT Year : public MetaBase
@@ -249,6 +277,9 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+        protected:
+            virtual void notifyObservers() const;
     };
 }
 

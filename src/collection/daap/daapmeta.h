@@ -99,8 +99,8 @@ class DaapTrack : public Meta::Track
         virtual void endMetaDataUpdate() {}      //read only
         virtual void abortMetaDataUpdate() {}    //read only
 
-        virtual void subscribe ( TrackObserver *observer );
-        virtual void unsubscribe ( TrackObserver *observer );
+        virtual void subscribe ( Observer *observer );
+        virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
         virtual Collection* collection() const;

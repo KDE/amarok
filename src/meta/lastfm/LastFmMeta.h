@@ -95,8 +95,8 @@ namespace LastFm
             virtual bool inCollection() const;
             virtual Collection *collection() const;
 
-            virtual void subscribe( Meta::TrackObserver *observer );
-            virtual void unsubscribe( Meta::TrackObserver *observer );
+            virtual void subscribe( Meta::Observer *observer );
+            virtual void unsubscribe( Meta::Observer *observer );
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)

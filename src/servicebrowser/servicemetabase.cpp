@@ -407,18 +407,6 @@ ServiceTrack::type() const
 }
 
 void
-ServiceTrack::subscribe( TrackObserver *observer )
-{
-    Q_UNUSED( observer )
-}
-
-void
-ServiceTrack::unsubscribe( TrackObserver *observer )
-{
-    Q_UNUSED( observer )
-}
-
-void
 ServiceTrack::setAlbum( AlbumPtr album )
 {
     m_album = album;

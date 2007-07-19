@@ -402,14 +402,14 @@ MetaProxy::Track::collection() const
 }
 
 void
-MetaProxy::Track::subscribe( Meta::TrackObserver *observer )
+MetaProxy::Track::subscribe( Meta::Observer *observer )
 {
     if( observer && !d->observers.contains( observer ) )
         d->observers.append( observer );
 }
 
 void
-MetaProxy::Track::unsubscribe( Meta::TrackObserver *observer )
+MetaProxy::Track::unsubscribe( Meta::Observer *observer )
 {
     if( observer )
         d->observers.removeAll( observer );

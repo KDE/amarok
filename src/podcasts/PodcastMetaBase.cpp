@@ -350,19 +350,6 @@ PodcastTrack::type() const
 }
 
 void
-
-PodcastTrack::subscribe( TrackObserver *observer )
-{
-    Q_UNUSED( observer )
-}
-
-void
-PodcastTrack::unsubscribe( TrackObserver *observer )
-{
-    Q_UNUSED( observer )
-}
-
-void
 PodcastTrack::setAlbum( AlbumPtr album )
 {
     m_album = album;

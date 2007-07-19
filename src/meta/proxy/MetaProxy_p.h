@@ -39,7 +39,7 @@
 
 using namespace MetaProxy;
 
-class MetaProxy::Track::Private : public QObject, public Meta::TrackObserver
+class MetaProxy::Track::Private : public QObject, public Meta::Observer
 {
     Q_OBJECT
 
@@ -49,7 +49,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::TrackObserver
 
         Meta::TrackPtr realTrack;
 
-        QList<Meta::TrackObserver*> observers;
+        QList<Meta::Observer*> observers;
 
         QString cachedArtist;
         QString cachedAlbum;
@@ -65,7 +65,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::TrackObserver
     public:
         void notifyObservers()
         {
-            foreach( Meta::TrackObserver *observer, observers )
+            foreach( Meta::Observer *observer, observers )
                 observer->metadataChanged( proxy );
         }
 

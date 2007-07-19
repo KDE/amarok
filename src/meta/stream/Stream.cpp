@@ -38,7 +38,7 @@ public:
     {}
     void notify() const
     {
-        foreach( Meta::TrackObserver *observer, observers )
+        foreach( Meta::Observer *observer, observers )
             observer->metadataChanged( track );
     }
 
@@ -55,7 +55,7 @@ public:
     }
 
 public:
-    QSet<Meta::TrackObserver*> observers;
+    QSet<Meta::Observer*> observers;
     KUrl url;
     QString title;
     QString artist;
@@ -348,13 +348,13 @@ Track::collection() const
 }
 
 void
-Track::subscribe( Meta::TrackObserver *observer )
+Track::subscribe( Meta::Observer *observer )
 {
     d->observers.insert( observer );
 }
 
 void
-Track::unsubscribe( Meta::TrackObserver *observer )
+Track::unsubscribe( Meta::Observer *observer )
 {
     d->observers.remove( observer );
 }

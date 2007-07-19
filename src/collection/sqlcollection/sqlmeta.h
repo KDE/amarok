@@ -65,9 +65,6 @@ class SqlTrack : public Track
         //helper functions
         static QString prettyTitle( const QString &filename );
 
-        virtual void subscribe( TrackObserver *observer );
-        virtual void unsubscribe( TrackObserver *observer );
-
         virtual void setTitle( const QString &newTitle );
 
         virtual QString comment() const { return m_comment; }
@@ -105,7 +102,6 @@ class SqlTrack : public Track
         QString rpath() const { return m_rpath; }
 
     protected:
-        void notifyObservers();
         void commitMetaDataChanges();
         void writeMetaDataToFile();
         void writeMetaDataToDb();
@@ -138,8 +134,6 @@ class SqlTrack : public Track
         GenrePtr m_genre;
         ComposerPtr m_composer;
         YearPtr m_year;
-
-        QList<TrackObserver*> m_observers;
 
         bool m_batchUpdate;
         class MetaCache;
