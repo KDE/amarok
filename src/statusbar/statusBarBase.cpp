@@ -89,9 +89,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 {
     setObjectName( name );;
 
-    m_mainTextLabel = new QLabel( 0, "mainTextLabel" );
+    m_mainTextLabel = new QLabel();
+    m_mainTextLabel->setObjectName( "mainTextLabel" );
     addPermanentWidget( m_mainTextLabel );
-    QToolButton *shortLongButton = new QToolButton( 0 );
+    QToolButton *shortLongButton = new QToolButton();
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
     addWidget(shortLongButton);
@@ -125,7 +126,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     QGridLayout *gl = new QGridLayout( m_popupProgress );
-    gl->setAutoAdd( true );
     gl->setMargin( 6 );
     gl->setSpacing( 3 );
 }
@@ -138,11 +138,12 @@ StatusBar::polish()
     QWidget::ensurePolished();
 
     int h = 0;
-    QObjectList list = queryList( "QWidget", 0, false, false );
+    QList<QWidget*> list = qFindChildren<QWidget *>( this );
 
-    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
-        QObject *o = *it;
-        int _h = static_cast<QWidget*>( o ) ->minimumSizeHint().height();
+    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
+    {
+        QWidget *o = *it;
+        int _h = o->minimumSizeHint().height();
         if ( _h > h )
             h = _h;
 
@@ -154,21 +155,22 @@ StatusBar::polish()
 
     h -= 4; // it's too big usually
 
-    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
-        QObject *o = *it;
-        static_cast<QWidget*>(o)->setFixedHeight( h );
+    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
+    {
+        QWidget *o = *it;
+        o->setFixedHeight( h );
     }
 }
 
 void
 StatusBar::paintEvent( QPaintEvent* )
 {
-    QObjectList list = queryList( "QWidget", 0, false, false );
+    QList<QWidget*> list = qFindChildren<QWidget *>( this );
     QPainter p( this );
 
-    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
-        QObject *o = *it;
-        QWidget *w = static_cast<QWidget*>( o );
+    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
+    {
+        QWidget *w = *it;
 
         if ( !w->isVisible() )
             continue;

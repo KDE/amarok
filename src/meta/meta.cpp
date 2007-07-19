@@ -80,6 +80,8 @@ Meta::Album::addMatchTo( QueryMaker *qm )
 QPixmap
 Meta::Album::image( int size, bool withShadow ) const
 {
+    Q_UNUSED( withShadow );
+
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if ( size <= 1 )
         size = AmarokConfig::coverPreviewSize();
