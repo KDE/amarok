@@ -116,7 +116,7 @@ Track::album() const
 Meta::ArtistPtr
 Track::artist() const
 {
-    d->artist;
+    return d->artist;
 }
 
 Meta::GenrePtr
@@ -319,6 +319,7 @@ Track::abortMetaDataUpdate()
 void
 Track::finishedPlaying( double playedFraction )
 {
+    Q_UNUSED( playedFraction );
     //TODO
 }
 

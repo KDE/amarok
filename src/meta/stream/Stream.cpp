@@ -331,6 +331,7 @@ Track::abortMetaDataUpdate()
 void
 Track::finishedPlaying( double playedFraction )
 {
+    Q_UNUSED( playedFraction );
     //TODO
 }
 

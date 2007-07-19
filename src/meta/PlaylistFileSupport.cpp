@@ -84,6 +84,7 @@ loadM3u( QTextStream &stream, const QString &playlistDir )
         if( line.startsWith( "#EXTINF" ) ) {
             const QString extinf = line.section( ':', 1 );
             const int length = extinf.section( ',', 0, 0 ).toInt();
+            Q_UNUSED( length );
             //b.setTitle( extinf.section( ',', 1 ) );
             //b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
         }
@@ -117,6 +118,8 @@ loadM3u( QTextStream &stream, const QString &playlistDir )
 bool
 saveXSPF( TrackList tracks, KUrl path, bool relative )
 {
+    Q_UNUSED( relative );
+
     XSPFPlaylist playlist;
 
     playlist.setCreator( "Amarok" );
@@ -131,6 +134,7 @@ saveXSPF( TrackList tracks, KUrl path, bool relative )
     playlist.save( stream, 2 );
 
     file.close();
+    return true;
 }
 
 }

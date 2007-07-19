@@ -662,6 +662,7 @@ MemoryQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 QueryMaker*
 MemoryQueryMaker::addReturnValue( qint64 value )
 {
+    Q_UNUSED( value );
     //TODO stub
     return this;
 }
@@ -669,6 +670,7 @@ MemoryQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 MemoryQueryMaker::orderBy( qint64 value, bool descending )
 {
+    Q_UNUSED( value ); Q_UNUSED( descending );
     //TODO stub
     return this;
 }
@@ -676,6 +678,7 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 MemoryQueryMaker::includeCollection( const QString &collectionId )
 {
+    Q_UNUSED( collectionId );
     //TODO stub
     return this;
 }
@@ -683,6 +686,7 @@ MemoryQueryMaker::includeCollection( const QString &collectionId )
 QueryMaker*
 MemoryQueryMaker::excludeCollection( const QString &collectionId )
 {
+    Q_UNUSED( collectionId );
     //TODO stub
     return this;
 }
