@@ -380,7 +380,7 @@ Model::flags(const QModelIndex &index) const
 }
 
 QStringList
-Model::mimeTypes() const
+Model::mimeTypes() const //reimplemented
 {
     DEBUG_BLOCK
     //QStringList ret = QAbstractTableModel::mimeTypes();
@@ -391,7 +391,7 @@ Model::mimeTypes() const
 }
 
 QMimeData*
-Model::mimeData( const QModelIndexList &indexes ) const
+Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
 {
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
@@ -406,7 +406,7 @@ Model::mimeData( const QModelIndexList &indexes ) const
 }
 
 bool
-Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
+Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
     DEBUG_BLOCK
 
