@@ -20,6 +20,8 @@
 
 #include <QtCore/QByteRef>
 
+#include <solid/device.h>
+
 #include "pmpbackend.h"
 
 #include "libmtp.h"
@@ -41,6 +43,7 @@ class MTPBackend : public PMPBackend
     private:
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
+        Solid::Device       m_solidDevice;
 
 };
 

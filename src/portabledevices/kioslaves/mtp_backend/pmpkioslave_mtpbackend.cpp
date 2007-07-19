@@ -18,12 +18,15 @@
 
 #include "pmpkioslave_mtpbackend.h"
 
+#include <sys/stat.h>
+
 #include <QCoreApplication>
 #include <QString>
 #include <QVariant>
 
 #include <kcomponentdata.h>
 #include <kdebug.h>
+#include <kurl.h>
 #include <kio/slavebase.h>
 #include <solid/device.h>
 #include <solid/genericinterface.h>
@@ -31,6 +34,7 @@
 MTPBackend::MTPBackend()
             : PMPBackend()
             , m_device( 0 )
+            , m_solidDevice( 0 )
 {
     kDebug() << "Creating MTPBackend" << endl;
 
@@ -90,6 +94,7 @@ MTPBackend::setUdi( const QString &udi )
         {
             kDebug() << endl << endl << "Found a matching serial!" << endl << endl;
             m_device = currdevice;
+            m_solidDevice = Solid::Device( m_udi );
         }
         else
             LIBMTP_Release_Device( currdevice );
@@ -105,7 +110,7 @@ void
 MTPBackend::get( const KUrl &url )
 {
    QString path = getFilePath( url );
-   kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
+   kDebug() << "in MTPBackend::get, path is: " << path << endl;
 }
 
 void
@@ -120,6 +125,12 @@ MTPBackend::stat( const KUrl &url )
 {
    QString path = getFilePath( url );
    kDebug() << "in MTPBackend::stat, path is: " << path << endl;
+   KIO::UDSEntry entry;
+   entry[ KIO::UDS_NAME ] = m_solidDevice.product();
+   entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
+   entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+   m_slave->statEntry( entry );
+   m_slave->finished();
 }
 
 #include "pmpkioslave_mtpbackend.moc"

@@ -122,6 +122,8 @@ void
 PMPProtocol::stat( const KUrl &url )
 {
     kDebug() << endl << endl << "Entering stat with url = " << url << endl << endl;
+    if( !m_initialized )
+        initialize( url );
     m_backend->stat( url );
     kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
 }
