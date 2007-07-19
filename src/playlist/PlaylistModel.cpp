@@ -181,9 +181,7 @@ Model::testData()
 Qt::DropActions
 Model::supportedDropActions() const
 {
-    DEBUG_BLOCK
-    return Qt::ActionMask;
-    //return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
+    return Qt::CopyAction | Qt::MoveAction;
 }
 
 void
@@ -382,7 +380,6 @@ Model::flags(const QModelIndex &index) const
 QStringList
 Model::mimeTypes() const //reimplemented
 {
-    DEBUG_BLOCK
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
     debug() << ret << endl;
@@ -392,12 +389,10 @@ Model::mimeTypes() const //reimplemented
 QMimeData*
 Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
 {
-    DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
-    
     Meta::TrackList selectedTracks;
 
-    foreach( QModelIndex it, m_selectionModel->selectedIndexes() )
+    foreach( QModelIndex it, indexes )
         selectedTracks << m_tracks.at( it.row() );
 
     mime->setTracks( selectedTracks );

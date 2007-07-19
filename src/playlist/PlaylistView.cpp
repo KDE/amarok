@@ -17,6 +17,17 @@ void
 View::setModel( QAbstractItemModel * model )
 {
     QListView::setModel( model );
+    setAcceptDrops( true );
+    setAlternatingRowColors( true );
+    setDragDropMode( QAbstractItemView::DragDrop );
+    setDragDropOverwriteMode( true );
+    setDragEnabled( true );
+    setDropIndicatorShown( true );
+    setDropIndicatorShown( true );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSpacing( 2 );
+    //setMovement( QListView::Free );
     delete itemDelegate();
     setItemDelegate( new Delegate( this ) );
     connect( this, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( play( const QModelIndex& ) ) );

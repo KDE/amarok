@@ -59,20 +59,10 @@ AmarokMimeData::formats() const
 bool
 AmarokMimeData::hasFormat( const QString &mimeType ) const
 {
-    DEBUG_BLOCK
-   
-    if( mimeType == TRACK_MIME )
-    {
-        debug() << "yep it has " << TRACK_MIME << endl;
-        //FIXME m_tracks is always empty
-        //return !m_tracks.isEmpty() || !m_queryMakers.isEmpty().;
-        return true;
-    }
+    if( mimeType == TRACK_MIME || mimeType == "text/uri-list" || mimeType == "text/plain" )
+        return !m_tracks.isEmpty() || !m_queryMakers.isEmpty();
     else
-    {
-         debug() << "not x-amarok" << " mimeType is " << mimeType << endl;
         return QMimeData::hasFormat( mimeType );
-    }
 }
 
 Meta::TrackList
