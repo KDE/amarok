@@ -522,8 +522,8 @@ Model::removeRowsCommand( int position, int rows )
         activeRowChanged = false;
     if( activeRowChanged )
     {
-        dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
-        dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
+        //dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
+        //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
     return ret;
