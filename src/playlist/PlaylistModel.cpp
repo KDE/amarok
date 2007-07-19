@@ -183,7 +183,7 @@ Model::supportedDropActions() const
 {
     DEBUG_BLOCK
     return Qt::ActionMask;
-   // return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
+    //return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
 }
 
 void
@@ -394,13 +394,13 @@ QMimeData*
 Model::mimeData( const QModelIndexList &indexes ) const
 {
     DEBUG_BLOCK
-    QModelIndexList selection = m_selectionModel->selectedIndexes();
-    QModelIndex it;
+    AmarokMimeData* mime = new AmarokMimeData();
+    
     Meta::TrackList selectedTracks;
-    foreach( it, selection )
+
+    foreach( QModelIndex it, m_selectionModel->selectedIndexes() )
         selectedTracks << m_tracks.at( it.row() );
 
-    AmarokMimeData* mime = new AmarokMimeData();
     mime->setTracks( selectedTracks );
     return mime;
 }
@@ -410,11 +410,17 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 {
     DEBUG_BLOCK
 
+    if( action == Qt::IgnoreAction )
+        return true;
+
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
+        debug() << "Found track mime type" << endl;
+
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
+            debug() << "It's a list drag!" << endl;
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we're appending to the list." << endl;
@@ -431,6 +437,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
     else if( data->hasUrls() )
     {
         //probably a drop from an external source
+        debug() << "Drop from external source" << endl;
         QList<QUrl> urls = data->urls();
         Meta::TrackList tracks;
         foreach( QUrl url, urls )
@@ -487,6 +494,8 @@ Model::insertTracksCommand( int row, TrackList list )
 TrackList
 Model::removeRowsCommand( int position, int rows )
 {
+    DEBUG_BLOCK
+
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
 //     TrackList::iterator end = start + rows;
