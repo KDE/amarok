@@ -67,7 +67,7 @@ CoverBling::initializeGL() //reimplemented
     qglClearColor( Qt::black );
     glEnable( GL_MULTISAMPLE ); //enable anti aliasing
     glEnable( GL_DEPTH_TEST );
-    glDepthMask( TRUE );
+    glDepthMask( true );
  
     //Display list for drawing a textured rectangle
     m_texturedRectList = glGenLists( 1 );

@@ -18,7 +18,7 @@
 namespace Meta {
 
 bool
-saveM3u( TrackList tracks, KUrl path, bool relative )
+saveM3u( const TrackList &tracks, const KUrl &path, bool relative )
 {
     if( path.isEmpty() )
         return false;
@@ -27,7 +27,7 @@ saveM3u( TrackList tracks, KUrl path, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "Cannot write playlist (%1).").arg( path.url() ) );
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "Cannot write playlist (%1).", path.url() ) );
         return false;
     }
 
@@ -88,12 +88,12 @@ loadM3u( QTextStream &stream, const QString &playlistDir )
             //b.setTitle( extinf.section( ',', 1 ) );
             //b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
         }
-        else if( !line.startsWith( "#" ) && !line.isEmpty() )
+        else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             //TODO: Unix specific
-            if( url.startsWith( "/" ) )
+            if( url.startsWith( '/' ) )
                 url.prepend( "file://" );
 
             TrackPtr track;
@@ -116,7 +116,7 @@ loadM3u( QTextStream &stream, const QString &playlistDir )
 }
 
 bool
-saveXSPF( TrackList tracks, KUrl path, bool relative )
+saveXSPF( const TrackList &tracks, const KUrl &path, bool relative )
 {
     Q_UNUSED( relative );
 

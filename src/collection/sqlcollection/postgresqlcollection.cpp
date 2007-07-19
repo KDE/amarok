@@ -204,6 +204,6 @@ PostgresqlCollection::insert( const QString& statement, const QString& table )
 void
 PostgresqlCollection::setPostgresqlError()
 {
-    m_error = i18n("Postgresql reported the following error:<br>") + PQerrorMessage(m_db)
+    m_error = i18n("Postgresql reported the following error:<br/>") + PQerrorMessage(m_db)
             + i18n("<p>You can configure Postgresql in the Collection section under Settings->Configure Amarok</p>");
 }

@@ -21,14 +21,14 @@ namespace Meta
     /**
      * Save the given TrackList tracks at the specified path as a M3U file.
      */
-    bool saveM3u( TrackList tracks, KUrl path, bool relative );
+    bool saveM3u( const TrackList &tracks, const KUrl &path, bool relative );
 
     TrackList loadM3u( QTextStream &stream, const QString &playlistDir );
 
     /**
      * Save the given TrackList tracks at the specified path as a M3U file.
      */
-    void saveXspf( TrackList tracks, KUrl path );
+    void saveXspf( const TrackList &tracks, const KUrl &path );
 
     
 

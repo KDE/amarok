@@ -16,6 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#ifndef AMAROK_MEMORYQUERYMAKERFILTERS_P_H
+#define AMAROK_MEMORYQUERYMAKERFILTERS_P_H
+
 #include "debug.h"
 #include "meta/meta.h"
 #include "collection/querymaker.h"
@@ -318,3 +321,5 @@ namespace FilterFactory
         return result;
     }
 }
+
+#endif

@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_LASTFMMETA_P_H
-#define AMAROK_LASTFMMETA_P_H
+#ifndef AMAROK_METAPROXY_P_H
+#define AMAROK_METAPROXY_P_H
 
 #include "debug.h"
 

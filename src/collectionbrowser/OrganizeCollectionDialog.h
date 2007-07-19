@@ -1,6 +1,9 @@
 // Mike Diehl (C) 2006 madpenguin8@yahoo.com
 // See COPYING file for licensing information.
 
+#ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_H
+#define AMAROK_ORGANIZECOLLECTIONDIALOG_H
+
 class OrganizeCollectionDialogBase : public KDialog
 {
     Q_OBJECT
@@ -22,3 +25,5 @@ class OrganizeCollectionDialogBase : public KDialog
     public slots:
         void slotDetails() { KDialog::slotButtonClicked( Details ); emit detailsClicked(); adjustSize(); }
 };
+
+#endif

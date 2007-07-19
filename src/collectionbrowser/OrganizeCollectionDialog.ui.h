@@ -1,3 +1,7 @@
+
+#ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
+#define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
+
 #include "amarok.h"
 #include "collectiontreeitemmodel.h"
 #include "collectiondb.h"
@@ -82,7 +86,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
             it != args.end();
             ++it )
     {
-        tooltip += QString( "<li>%1 - %2" ).arg( it.data(), "%" + it.key() );
+        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), "%" + it.key() );
     }
     tooltip += "</ul>";
 
@@ -216,3 +220,5 @@ void OrganizeCollectionDialog::init()
     formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 }
+
+#endif

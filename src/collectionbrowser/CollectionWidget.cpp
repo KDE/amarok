@@ -6,9 +6,8 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
  
-
-#include "collectiontreeview.h"
 #include "CollectionWidget.h"
+#include "collectiontreeview.h"
 
 #include <QVBoxLayout>
 
