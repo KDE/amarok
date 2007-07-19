@@ -56,7 +56,8 @@ namespace Amarok {
 
         int size = list.count();
 
-        Q_ASSERT( size>0 );
+        if( size<=0 )
+            error() << "size<=0" << endl;
 
         artist = size > 0 ? unescapeHTMLAttr( list[0] ) : "";
         album  = size > 1 ? unescapeHTMLAttr( list[1] ) : "";
