@@ -150,13 +150,35 @@ void ContextBox::mousePressEvent( QGraphicsSceneMouseEvent *event )
 // With help from QGraphicsView::mouseMoveEvent()
 void ContextBox::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
-    if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable))
+    if( (event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable) )
     {
-        if( (flags() & ItemIsMovable) && (!parentItem() || !parentItem()->isSelected()) )
+        if( !parentItem() || !parentItem()->isSelected() )
         {
-            QPointF diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
+            QPointF pos  = event->pos();
+            QPointF lastPos = event->lastPos();
+
+            bool movingUp = ( pos.x() < lastPos.x() );
+
+            QPointF diff = mapToParent( pos ) - mapToParent( lastPos );
 
             moveBy( 0, diff.y() );
+
+            QList<QGraphicsItem *> collisions = collidingItems();
+            foreach( QGraphicsItem *item, collisions )
+            {
+                qreal itemTop     = item->sceneBoundingRect().top();
+                qreal itemBottom  = item->sceneBoundingRect().bottom();
+
+                qreal crossover   = itemBottom - itemTop;
+
+                qreal top    = this->sceneBoundingRect().top();
+                qreal bottom = this->sceneBoundingRect().bottom();
+
+                if( movingUp && top == crossover )
+                    item->moveBy( 0, sceneBoundingRect().height() + ContextView::BOX_PADDING );
+                else if( !movingUp && bottom == crossover )
+                    item->moveBy( 0, -sceneBoundingRect().height() + ContextView::BOX_PADDING );
+            }
 
             if( flags() & ItemIsSelectable )
                 setSelected( true );
