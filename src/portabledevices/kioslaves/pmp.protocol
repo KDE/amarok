@@ -3,6 +3,15 @@ exec=kio_pmp
 protocol=pmp
 input=none
 output=filesystem
+listing=Name,Type,Size
 reading=true
+writing=true
+makedir=true
+deleting=true
+linking=false
+moving=false
+Icon=cdaudio_unmount
+CLass=:local
+ShowPreviews=true
 determineMimetypeFromExtension=true
 

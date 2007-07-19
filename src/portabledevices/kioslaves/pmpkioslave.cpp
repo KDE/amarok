@@ -95,21 +95,35 @@ PMPProtocol::get( const KUrl &url )
 void
 PMPProtocol::listDir( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering listDir with url = " << endl << endl;
-    if( !m_initialized )
-        initialize( url );
+    kDebug() << endl << endl << "Entering listDir with url = " << url << endl;
+    kDebug() << "path = " << url.path() << endl << ", path.isEmpty = " << (url.path().isEmpty() ? "true" : "false" ) << endl;
     if( url.isEmpty() )
         return;
+    if( url.path().isEmpty() || url.path() == "/" )
+    {
+        QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
+        foreach( Solid::Device device, deviceList )
+        {
+            UDSEntry entry;
+            entry[ KIO::UDS_NAME ] = device.udi().replace( QChar( '/' ), QChar( '.' ) );
+            listEntry( entry, false );
+        }
+        listEntry( UDSEntry(), true );
+        emit finished();
+        return;
+    }
+    if( !m_initialized )
+        initialize( url );
     m_backend->listDir( url );
-    kDebug() << endl << endl << "Leaving listDir with url = " << endl << endl;
+    kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
 }
 
 void
 PMPProtocol::stat( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering stat with url = " << endl << endl;
+    kDebug() << endl << endl << "Entering stat with url = " << url << endl << endl;
     m_backend->stat( url );
-    kDebug() << endl << endl << "Leaving stat with url = " << endl << endl;
+    kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
 }
 
 void
