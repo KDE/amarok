@@ -69,12 +69,14 @@ PodcastCollection::collectionId() const
 bool
 PodcastCollection::possiblyContainsTrack(const KUrl & url) const
 {
+    Q_UNUSED( url );
     return false;
 }
 
 Meta::TrackPtr
 PodcastCollection::trackForUrl(const KUrl & url)
 {
+    Q_UNUSED( url );
     return TrackPtr();
 }
 

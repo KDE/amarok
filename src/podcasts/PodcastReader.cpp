@@ -254,6 +254,7 @@ void
 PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
 {
     DEBUG_BLOCK
+    Q_UNUSED( job );
     debug() << "redirected to: " << url.url() << endl;
 
 }
@@ -263,6 +264,7 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
         const KUrl & toUrl)
 {
     DEBUG_BLOCK
+    Q_UNUSED( job ); Q_UNUSED( fromUrl );
     debug() << "premanently redirected to: " << toUrl.url() << endl;
 
 }
