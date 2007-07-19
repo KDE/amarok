@@ -75,7 +75,7 @@ class PodcastMetaCommon
 {
     public:
 //         PodcastMetaCommon();
-        virtual ~PodcastMetaCommon();
+        virtual ~PodcastMetaCommon() { }
 
         virtual QString title() const = 0;
         virtual QString description() const = 0;
