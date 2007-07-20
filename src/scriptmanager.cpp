@@ -716,7 +716,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     switch( id )
     {
         case EDIT:
-            KRun::runCommand( "kwrite " + it.data().url.path() );
+            KRun::runCommand( "kwrite " + KProcess::quote(it.data().url.path()) );
             break;
 
         case SHOW_LOG:
