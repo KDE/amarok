@@ -120,8 +120,6 @@ MID-TERM:
            sleep-timeouts? opinions?
 
 LONG-TERM:
-
-
   <markey> Use more accurate interpolation for analyzers (cubic or spline)
 
            Tabbed playlists.
@@ -143,6 +141,10 @@ LONG-TERM:
            the beat, visualisations have access to beat/bpm info.
 
            Audio system info widget, showing all available codecs and similar info.
+
+RELEASE:
+  <aplg>   Everyone should do power consumption testing at least before major
+           releases. (2.0.0!!!)
 
 IDEAS:
 
