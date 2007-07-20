@@ -123,6 +123,9 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
 QSize
 Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
+    Q_UNUSED( option );
+    Q_UNUSED( index );
+
     return QSize( m_view->width() - m_view->verticalScrollBar()->width(), int( m_height ) );
 }
 
