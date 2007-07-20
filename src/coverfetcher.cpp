@@ -128,13 +128,15 @@ void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
 
 
 CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString album )
-        : QObject( parent, "CoverFetcher" )
+        : QObject( parent )
         , m_artist( artist )
         , m_album( album )
         , m_size( 2 )
         , m_success( true )
 {
     DEBUG_FUNC_INFO
+
+    setObjectName( "CoverFetcher" );
 
     QStringList extensions;
     extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")

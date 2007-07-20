@@ -65,8 +65,6 @@ of the backgorund
         int m_duration;
         int m_animationSteps;
         int m_currentAlpha;
-
-
     };
 
 }

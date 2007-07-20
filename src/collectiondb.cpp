@@ -274,10 +274,11 @@ CollectionDB::CollectionDB()
 
     // Remove cached "nocover" images, so that a new version actually gets shown
     // The asterisk is for also deleting the shadow-caches.
-    const QStringList entryList = cacheCoverDir().entryList( "*nocover.png*", QDir::Files );
-    oldForeach( entryList )
-        cacheCoverDir().remove( *it );
-
+    QStringList filters;
+    filters << "*nocover.png*";
+    const QStringList entryList = cacheCoverDir().entryList( filters, QDir::Files );
+    foreach( QString entry, entryList )
+        cacheCoverDir().remove( entry );
 
     connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
              this, SLOT(aftMigratePermanentTablesUrl(const QString&, const QString&, const QString&)) );
@@ -1758,7 +1759,7 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
                 coverPm[i] = coverPm[i-1];
 
             QImage im( KStandardDirs::locate( "data","amarok/images/more_albums.png" ) );
-            coverPm[0].convertFromImage( im.scaled( coverW, coverH, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+            coverPm[0] = QPixmap::fromImage( im.scaled( coverW, coverH, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
         }
 
         pixmapH = coverPm[0].height();
@@ -1816,7 +1817,8 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
     bitBlt( &pmdrag, 0, pixmapH - fontH, &pmtext, 0 );
     p.end();
 
-    QBitmap pmdragMask( pmdrag.size(), true );
+    QBitmap pmdragMask( pmdrag.size() );
+    pmdragMask.clear();
     for ( int i = 0; i < covers; i++ )
     {
         QBitmap coverMask( coverPm[i].width(), coverPm[i].height() );
@@ -1955,7 +1957,7 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
         return;
     }
 
-    QImage image( job->data() );
+    QImage image = QImage::fromData( job->data() );
     if( !image.isNull() )
     {
        if( url.isEmpty() )
@@ -2045,7 +2047,7 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
 {
     const QImage original( albumImage );
 
-    if( original.hasAlphaBuffer() )
+    if( original.hasAlphaChannel() )
         return albumImage;
 
     const QFileInfo fileInfo( albumImage );
@@ -2159,9 +2161,9 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
         uint matches = 0;
         uint maxmatches = 0;
         QRegExp iTunesArt( "^AlbumArt_.*Large" );
-        for ( uint i = 0; i < values.count(); i++ )
+        for ( int i = 0; i < values.count(); i++ )
         {
-             matches = values[i].count( "front", Qt::CaseInsensitive ) + values[i].count( "cover", Qt::CaseInsensitive ) + values[i].count( "folder", Qt::CaseInsensitive ) + values[i].count( iTunesArt );
+            matches = values[i].count( "front", Qt::CaseInsensitive ) + values[i].count( "cover", Qt::CaseInsensitive ) + values[i].count( "folder", Qt::CaseInsensitive ) + values[i].count( iTunesArt );
             if ( matches > maxmatches )
             {
                 image = values[i];
@@ -2293,9 +2295,11 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     query( "DELETE FROM amazon WHERE filename='" + key + '\'' );
 
     // remove scaled versions of images (and add the asterisk for the shadow-caches)
-    QStringList scaledList = cacheCoverDir().entryList( widthKey + key + '*' );
+    QStringList filter;
+    filter << widthKey + key + '*';
+    QStringList scaledList = cacheCoverDir().entryList( filter );
     if ( scaledList.count() > 0 )
-        for ( uint i = 0; i < scaledList.count(); i++ )
+        for ( int i = 0; i < scaledList.count(); i++ )
             QFile::remove( cacheCoverDir().filePath( scaledList[ i ] ) );
 
     bool deleted = false;
@@ -2920,7 +2924,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( title.isEmpty() )
     {
         title = bundle->url().fileName();
-        if ( bundle->url().fileName().find( '-' ) > 0 )
+        if ( bundle->url().fileName().indexOf( '-' ) > 0 )
         {
             if ( artist.isEmpty() )
             {
@@ -3949,7 +3953,8 @@ void CollectionDB::cancelMovingFileJob()
 bool
 CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &dialog,*/ bool copy )
 {
-   return false;
+    Q_UNUSED( src ); Q_UNUSED( copy );
+    return false;
 /*
    if( !MetaBundle::isKioUrl( src ) )
        return false;
@@ -4354,7 +4359,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
               .arg( deviceid )
               .arg( escapeString( rpath ) ) );
 
-    for ( uint i = 0; i < albums.count(); i++ )
+    for ( int i = 0; i < albums.count(); i++ )
     {
         if ( albums[ i ].isEmpty() ) continue;
 
@@ -4377,6 +4382,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 void
 CollectionDB::setCompilation( const KUrl::List &urls, bool enabled, bool updateView )
 {
+    Q_UNUSED( updateView );
     for ( KUrl::List::const_iterator it = urls.begin(); it != urls.end(); ++it )
     {
         QString url( ( *it ).path() );
@@ -4460,6 +4466,7 @@ CollectionDB::deleteAllRedundant( const QString &table )
 void
 CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bool updateView )
 {
+    Q_UNUSED( updateView );
     DEBUG_BLOCK
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -4768,7 +4775,7 @@ DbConnection * CollectionDB::getMyConnection()
     DbConnection *dbConn;
     QThread *currThread = QThread::currentThread();
 
-    if (threadConnections->contains(currThread))
+    if( threadConnections->contains(currThread) )
     {
         QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
         dbConn = it.data();
@@ -4777,14 +4784,14 @@ DbConnection * CollectionDB::getMyConnection()
     }
 
 #ifdef USE_MYSQL
-    if ( m_dbConnType == DbConnection::mysql )
+    if( m_dbConnType == DbConnection::mysql )
     {
         dbConn = new MySqlConnection( static_cast<MySqlConfig*>( m_dbConfig ) );
     }
     else
 #endif
 #ifdef USE_POSTGRESQL
-    if ( m_dbConnType == DbConnection::postgresql )
+    if( m_dbConnType == DbConnection::postgresql )
     {
         dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*>( m_dbConfig ) );
     }
@@ -5521,9 +5528,12 @@ CollectionDB::updatePersistentTables()
         createPersistentTables();
         /* Copy lyrics */
         debug() << "Trying to get lyrics from old db schema." << endl;
-        QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
-        for (uint i=0; i<Lyrics.count(); i+=2  )
-        setLyrics( Lyrics[i], Lyrics[i+1]  );
+        
+        QStringList lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
+
+        for( int i = 0; i < lyrics.count(); i += 2  )
+            setLyrics( lyrics[i], lyrics[i+1] );
+
         debug() << "Building podcast tables" << endl;
         createPodcastTables();
     }
@@ -5533,9 +5543,12 @@ CollectionDB::updatePersistentTables()
                                      on some cases the table wouldn't be created.
                                      From 2 to 3, lyrics were made plain text, instead of HTML */
         debug() << "Converting Lyrics to Plain Text." << endl;
-        QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
-        for (uint i=0; i<Lyrics.count(); i+=2  )
-        setLyrics( Lyrics[i], Lyrics[i+1]  );
+        
+        QStringList lyrics = query( "SELECT url, lyrics FROM lyrics;" );
+        
+        for( int i=0; i < lyrics.count(); i += 2 )
+            setLyrics( lyrics[i], lyrics[i+1]  );
+        
         debug() << "Building podcast tables" << endl;
         createPodcastTables();
     }
@@ -6267,7 +6280,7 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
         pattern.replace( "/%", "%" ).replace( "/_", "_" ).replace( "//", "/" );
 
     int result = 0;
-    if ( begin && end ) result = ( text.find( pattern, 0, 0 ) != -1);
+    if ( begin && end ) result = ( text.indexOf( pattern, 0, Qt::CaseInsensitive ) != -1);
     else if ( begin ) result = text.endsWith( pattern, Qt::CaseInsensitive );
     else if ( end ) result = text.startsWith( pattern, Qt::CaseInsensitive );
     else result = ( text.toLower() == pattern.toLower() );

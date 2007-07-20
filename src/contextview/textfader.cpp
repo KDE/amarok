@@ -27,9 +27,9 @@ TextFader::TextFader( const QString & text, QGraphicsItem * parent )
     : QGraphicsTextItem ( text, parent )
     , m_startAlpha( 0 )
     , m_targetAlpha( 255 )
-    , m_currentAlpha( 0 )
     , m_fps ( 30 )
     , m_duration( 5000 )
+    , m_currentAlpha( 0 )
 {
 
     m_timeLine = new QTimeLine( 0, this );
@@ -80,7 +80,7 @@ void TextFader::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
 void TextFader::fadeSlot(int step)
 {
-    m_currentAlpha = (int) m_startAlpha + ( step * m_alphaStep );
+    m_currentAlpha = (int)( m_startAlpha + ( step * m_alphaStep ) );
     //debug() << "fading, new alpha = " << m_currentAlpha <<  endl;
     update();
     if ( m_currentAlpha == m_targetAlpha )
@@ -91,7 +91,7 @@ void TextFader::startFading()
 {
 
     //total number of animation steps;
-    m_animationSteps = m_fps * ( ( float ) m_duration / 1000.0 );
+    m_animationSteps = (int)( m_fps * ( ( float ) m_duration / 1000.0 ) );
 
     //how much should alpha change each step
     m_alphaStep = ( ( float ) ( m_targetAlpha - m_startAlpha ) ) / ( float ) m_animationSteps;

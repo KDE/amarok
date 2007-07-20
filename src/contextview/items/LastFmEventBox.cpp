@@ -56,6 +56,7 @@ LastFmEventMember::LastFmEventMember( QGraphicsItem * parent, LastFmEvent event,
 
 void LastFmEventMember::ensureWidthFits( qreal width )
 {
+    Q_UNUSED( width );
     qreal right = m_right->boundingRect().width();  
     m_right->setPos( parentItem()->boundingRect().width() - right, 0.0 );
 }

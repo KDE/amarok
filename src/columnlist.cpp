@@ -61,6 +61,7 @@ public:
 ColumnList::ColumnList( QWidget *parent, const char *name )
     : KHBox( parent), m_changed( true )
 {
+    setObjectName( name );
     setSpacing( 5 );
 
     KVBox *buttonbox = new KVBox( this );

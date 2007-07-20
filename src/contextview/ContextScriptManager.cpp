@@ -27,7 +27,7 @@ ContextScriptManager *ContextScriptManager::s_instance = 0;
 
 int ContextScriptManager::addContextBox( const QString& title, const QString& contents, const QString& stylesheet)
 {
-
+    Q_UNUSED( stylesheet );
     int boxNum;
     if( m_boxes->isEmpty() ) 
         boxNum = 1;
@@ -61,6 +61,7 @@ void ContextScriptManager::changeBoxContents( const int boxNum, const QString& c
 
 void ContextScriptManager::changeBoxStylesheet( const int boxNum, const QString& stylesheet )
 {
+    Q_UNUSED( boxNum ); Q_UNUSED( stylesheet );
     //TODO:
     return;
 }
@@ -69,7 +70,7 @@ void ContextScriptManager::removeContextBox( const int boxNum )
 {
     if( m_boxes != 0 && m_boxes->contains( boxNum ) )
     {
-        GenericInfoBox* b = (*m_boxes)[ boxNum ];
+        //GenericInfoBox* b = (*m_boxes)[ boxNum ];
         m_boxes->remove( boxNum );
         // TODO call removeContentBox on ContextView here... needs to be implemented first
         //ContextView::instance()->
