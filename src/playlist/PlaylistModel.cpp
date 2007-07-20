@@ -24,7 +24,6 @@
 #include "AmarokMimeData.h"
 
 #include <QAction>
-#include <QItemSelectionModel>
 #include <QStringList>
 #include <QUndoStack>
 
@@ -41,7 +40,6 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackAdvancer( this ) )
     , m_undoStack( new QUndoStack( this ) )
-    , m_selectionModel( new QItemSelectionModel( this ) )
 { 
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     s_instance = this;
