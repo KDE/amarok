@@ -74,12 +74,16 @@ CoverBling::initializeGL() //reimplemented
     glNewList( m_texturedRectList, GL_COMPILE );
         glBegin (GL_QUADS);
             glTexCoord2f (0.0, 0.0);
+            glColor3f( 1.0, 1.0, 1.0 );
             glVertex3f (-1.0, -1.0, -1.0);
             glTexCoord2f (1.0, 0.0);
+            glColor3f( 0.1, 0.1, 0.1 );
             glVertex3f (1.0, -1.0, -1.0);
             glTexCoord2f (1.0, 1.0);
+            glColor3f( 0.1, 0.1, 0.1 );
             glVertex3f (1.0, 1.0, -1.0);
             glTexCoord2f (0.0, 1.0);
+            glColor3f( 1.0, 1.0, 1.0 );
             glVertex3f (-1.0, 1.0, -1.0);
         glEnd ();
         //glDisable( GL_DEPTH_TEST );
@@ -99,10 +103,10 @@ CoverBling::initializeGL() //reimplemented
             glTexCoord2f (0.0, 0.0);
             glColor4f( 1.0, 1.0, 1.0, 0.3 );
             glVertex3f (-1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.3 );
+            glColor4f( 1.0, 1.0, 1.0, 0.3 - 0.15 );
             glTexCoord2f (1.0, 0.0);
             glVertex3f (1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.02 );
+            glColor4f( 1.0, 1.0, 1.0, 0.02 - 0.15 );
             glTexCoord2f (1.0, 1.0);
             glVertex3f (1.0, 1.0, -1.0);
             glColor4f( 1.0, 1.0, 1.0, 0.02 );
@@ -136,9 +140,6 @@ CoverBling::setPerspective()
 void
 CoverBling::paintGL() //reimplemented
 {
-    m_xOffset += 0.01;
-    m_zOffset += 0.005;
-
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     const QPoint mousePos = mapFromGlobal( QCursor::pos() );
@@ -152,7 +153,7 @@ CoverBling::draw( GLuint selected )
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    glRotatef( 4, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
+    glRotatef( 10, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
     glScalef( 1.0, 1.0, 6.0 );
 
     //draw the ground
@@ -170,19 +171,20 @@ CoverBling::draw( GLuint selected )
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
     glEnable( GL_TEXTURE_2D);
 
-    float xoffset = m_xOffset;
-    float zoffset = m_zOffset;
+    float xoffset = -5.5;
+    float yoffset = -0.6;
+    float zoffset = -1.1;
 
     foreach( GLuint id, m_textureIds ) {
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
             const float xsin = sin( xoffset );
             const float zsin = sin( zoffset );
-            xoffset += 5.5;
-            zoffset += 8.0;
-            glRotatef( xsin * 5, 0.0, 1.0, 0.0 );
-            glTranslatef( xsin * 2.4, 0.0, zsin / 3 );
-            
+            xoffset += 1.0;
+            zoffset += 0.2;
+            glTranslatef( xoffset, yoffset, zoffset );
+            glRotatef( 8, 0.0, 1.0, 0.0 );
+
             //draw the cover
             if( objectName == selected )
                 glColor3f( 1.0, 0.0, 0.0 );
