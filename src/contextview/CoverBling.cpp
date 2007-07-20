@@ -44,6 +44,10 @@ CoverBling::CoverBling( QWidget* parent )
     m_coverPaths << "amarok/images/album_cover_3.jpg";
     m_coverPaths << "amarok/images/album_cover_4.jpg";
     m_coverPaths << "amarok/images/album_cover_5.jpg";
+    m_coverPaths << "amarok/images/album_cover_6.jpg";
+    m_coverPaths << "amarok/images/album_cover_7.jpg";
+    m_coverPaths << "amarok/images/album_cover_8.jpg";
+    m_coverPaths << "amarok/images/album_cover_9.jpg";
    
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
@@ -181,7 +185,7 @@ CoverBling::draw( GLuint selected )
             const float xsin = sin( xoffset );
             const float zsin = sin( zoffset );
             xoffset += 1.0;
-            zoffset += 0.2;
+            zoffset += 0.1;
             glTranslatef( xoffset, yoffset, zoffset );
             glRotatef( 8, 0.0, 1.0, 0.0 );
 
