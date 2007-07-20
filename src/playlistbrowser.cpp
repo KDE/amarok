@@ -3218,6 +3218,9 @@ InfoPane::setInfo( const QString &title, const QString &info )
 
     if( m_pushButton->isOn() )
         toggle( !(info.isEmpty() && title.isEmpty()) );
+    
+    QString info_ = info;
+    info_.replace( "\n", "<br/>" );
 
     m_infoBrowser->set(
         m_enable ?
@@ -3234,7 +3237,7 @@ InfoPane::setInfo( const QString &title, const QString &info )
                   "</td>"
                   "</tr>"
                   "</table>"
-                  "</div>" ).arg( title, info ) :
+                  "</div>" ).arg( title, info_ ) :
         QString::null );
 }
 
