@@ -2848,7 +2848,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
             if( item->parent() == PlaylistBrowser::instance()->m_coolStreams )
             {
                 #define item static_cast<StreamEntry*>(item)
-                StreamEntry *copiedStream = new StreamEntry( newParent, after, item->url(), item->title() );
+                new StreamEntry( newParent, after, item->url(), item->title() );
                 #undef  item
             }
             else // otherwise, we move it
