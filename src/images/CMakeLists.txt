@@ -10,6 +10,11 @@ install(
         album_cover_3.jpg
         album_cover_4.jpg
         album_cover_5.jpg
+        album_cover_6.jpg
+        album_cover_7.jpg
+        album_cover_8.jpg
+        album_cover_9.jpg
+        album_cover_10.jpg
         amarok_icon.svg
         back_stars_grey.png
         currenttrack_bar_left.png
