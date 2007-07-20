@@ -27,6 +27,7 @@
 #include <kio/ioslave_defaults.h>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
+#include <solid/genericinterface.h>
 #include <solid/portablemediaplayer.h>
 
 using namespace KIO;
@@ -96,26 +97,71 @@ void
 PMPProtocol::listDir( const KUrl &url )
 {
     kDebug() << endl << endl << "Entering listDir with url = " << url << endl;
-    kDebug() << "path = " << url.path() << endl << ", path.isEmpty = " << (url.path().isEmpty() ? "true" : "false" ) << endl;
+    kDebug() << "path = " << url.path() << ", path.isEmpty = " << (url.path().isEmpty() ? "true" : "false" ) << endl;
     if( url.isEmpty() )
         return;
+    if( !m_initialized )
+        initialize( url );
     if( url.path().isEmpty() || url.path() == "/" )
     {
+        kDebug() << "Listing devices" << endl;
         QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
         foreach( Solid::Device device, deviceList )
         {
             UDSEntry entry;
-            entry[ KIO::UDS_NAME ] = device.udi().replace( QChar( '/' ), QChar( '.' ) );
+            QString name = getFriendlyName( device );
+            entry[ KIO::UDS_NAME ] = name.isEmpty() ? QString( "Portable Media Player at " + device.udi().replace( QChar( '/' ), QChar( '.' ) ) ) : name;
+            entry[ KIO::UDS_URL ] = "pmp:///" + device.udi().replace( QChar( '/' ), QChar( '.' ) );
+            entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
+            entry[ KIO::UDS_HIDDEN ] = 0;
             listEntry( entry, false );
         }
         listEntry( UDSEntry(), true );
         emit finished();
         return;
     }
-    if( !m_initialized )
-        initialize( url );
-    m_backend->listDir( url );
+    else
+    {
+        kDebug() << "Calling backend's listDir" << endl;
+        m_backend->listDir( url );
+    }
     kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
+}
+
+QString
+PMPProtocol::getFriendlyName( Solid::Device device )
+{
+    kDebug() << "Looking for a friendly name for " << device.udi() << "..." << endl;
+    Solid::GenericInterface *gi = device.as<Solid::GenericInterface>();
+    if( !gi )
+    {
+        kDebug() << "Couldn't get the device as a generic interface." << endl;
+        return QString();
+    }
+    if( !gi->propertyExists( "portable_audio_player.access_method.drivers" ) )
+    {
+        kDebug() << "No access_method.drivers property detected." << endl;
+        return QString();
+    }
+    QVariant possibleLibraries = gi->property( "portable_audio_player.access_method.drivers" );
+    if( !possibleLibraries.isValid() || possibleLibraries.isNull() || !possibleLibraries.canConvert( QVariant::StringList ) )
+    {
+        kDebug() << "drivers list not valid, null, or can't convert" << endl;
+        return QString();
+    }
+    QStringList libraries = possibleLibraries.toStringList();
+    kDebug() << "Found libraries: " << libraries << endl;
+    foreach( QString library, libraries )
+    {
+        QVariant possibleName = gi->property( "portable_audio_player." + library + ".name" );
+        if( possibleName.isValid() && !possibleName.isNull() && possibleName.canConvert( QVariant::String ) )
+        {
+            QString name = possibleName.toString();
+            if( !name.isEmpty() )
+                return name;
+        }
+    }
+    return QString();
 }
 
 void
@@ -124,7 +170,17 @@ PMPProtocol::stat( const KUrl &url )
     kDebug() << endl << endl << "Entering stat with url = " << url << endl << endl;
     if( !m_initialized )
         initialize( url );
-    m_backend->stat( url );
+    if( url.path().isEmpty() || url.path() == "/" )
+    {
+        KIO::UDSEntry entry;
+        entry[ KIO::UDS_NAME ] = QString( "Available Devices" );
+        entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
+        entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+        statEntry( entry );
+        emit finished();
+    }
+    else
+        m_backend->stat( url );
     kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
 }
 
@@ -146,7 +202,6 @@ PMPProtocol::initialize( const KUrl &url )
 
     kDebug() << endl << endl << "Path: " << path << endl << endl;
 
-
     int index = path.indexOf( '/' );
     //if not found, use the path as is; if it is truncate so we only get the udi
     QString transUdi = ( index == -1 ? path : path.left( index ) );
@@ -156,6 +211,10 @@ PMPProtocol::initialize( const KUrl &url )
     transUdi = '/' + transUdi;
 
     kDebug() << endl << endl << "Using udi: " << transUdi << endl << endl;
+
+    //if they didn't enter a udi, display available ones -- listDir will take care of it
+    if( transUdi.isEmpty() || transUdi == "/" )
+        return;
 
     Solid::Device sd = Solid::Device( transUdi );
     if( !sd.isValid() )

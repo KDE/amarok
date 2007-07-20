@@ -28,6 +28,7 @@
 
 #include <kurl.h>
 #include <kio/slavebase.h>
+#include <solid/device.h>
 
 class PMPProtocol : public QObject, public KIO::SlaveBase
 {
@@ -51,6 +52,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         void stat( const KUrl &url );
 
     private:
+        QString getFriendlyName( Solid::Device device );
         void initialize( const KUrl &url );
 
         bool        m_initialized;

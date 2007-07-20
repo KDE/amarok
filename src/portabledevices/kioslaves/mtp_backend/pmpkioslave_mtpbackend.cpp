@@ -118,6 +118,22 @@ MTPBackend::listDir( const KUrl &url )
 {
    QString path = getFilePath( url );
    kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
+   //first case: no specific folder chosen, display a list of available actions as folders
+   if( path.isEmpty() || path == "/" )
+   {
+        QStringList folders;
+        folders << "Playlists" << "Tracks";
+        foreach( QString folder, folders )
+        {
+            KIO::UDSEntry entry;
+            entry[ KIO::UDS_NAME ] = folder;
+            entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
+            entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+            m_slave->listEntry( entry, false );
+        }
+        m_slave->listEntry( KIO::UDSEntry(), true );
+        emit m_slave->finished();
+   }
 }
 
 void
@@ -130,7 +146,7 @@ MTPBackend::stat( const KUrl &url )
    entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
    entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
    m_slave->statEntry( entry );
-   m_slave->finished();
+   emit m_slave->finished();
 }
 
 #include "pmpkioslave_mtpbackend.moc"
