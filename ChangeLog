@@ -10,6 +10,7 @@ VERSION 1.4.7
       Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
+    * Fixed the formatting in the "Extended Info" pane for podcasts.
     * Don't show "Not Rated" for items rated with half a star. Patch by Tuomas
       Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 144675)
     * Copy, don't move items from Cool Streams to folders. (BR 147404)
