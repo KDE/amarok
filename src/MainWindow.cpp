@@ -31,13 +31,13 @@
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
+#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "mediadevicemanager.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlistbrowser.h"
 #include "playlist.h"
-#include "playlistwindow.h"
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
@@ -1412,4 +1412,4 @@ void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
     p.drawText( QRect(s_imageSize, yStart, s_curveWidth + textWidth +s_imageSize, textHeight), Qt::AlignCenter, m_title);
 }
 
-#include "playlistwindow.moc"
+#include "MainWindow.moc"

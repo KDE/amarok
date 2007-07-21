@@ -353,6 +353,7 @@ set(amaroklib_LIB_SRCS
     kbookmarkhandler.cpp
     ktrm.cpp
     lastfm.cpp
+    MainWindow.cpp
     mediabrowser.cpp
     mediadevicemanager.cpp
     medium.cpp
@@ -378,7 +379,6 @@ set(amaroklib_LIB_SRCS
     playlistitem.cpp
     playlistloader.cpp
     playlistselection.cpp
-    playlistwindow.cpp
     pluginmanager.cpp
     podcastsettings.cpp
     portabledevices/SolidHandler.cpp

@@ -14,10 +14,10 @@
 #ifndef AMAROK_STATISTICS_H
 #define AMAROK_STATISTICS_H
 
-#include "playlistwindow.h"
+#include "MainWindow.h"
 
-#include <k3listview.h>   //baseclass
-#include <kdialog.h>      //baseclass
+#include <K3ListView>   //baseclass
+#include <KDialog>      //baseclass
 
 
 class KLineEdit;

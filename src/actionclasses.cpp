@@ -12,8 +12,8 @@
 #include "covermanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
+#include "MainWindow.h"
 #include "mediumpluginmanager.h"
-#include "playlistwindow.h"
 #include "playlist.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "statusbar.h"

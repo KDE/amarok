@@ -19,12 +19,12 @@
 #include "collectiondb.h" // similar artists
 #include "debug.h"
 #include "enginecontroller.h" // HACK to get current artist for suggestion retrieval
+#include "MainWindow.h"
 #include "mountpointmanager.h" // device ids
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
-#include "playlistwindow.h"
 #include "statusbar.h"
 
 #include "dynamicmode.h"

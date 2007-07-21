@@ -47,6 +47,7 @@
 #include <kurlcompletion.h>
 #include <klineedit.h>
 
+#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "medium.h"
 #include "mydirlister.h"
@@ -54,7 +55,6 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
-#include "playlistwindow.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 

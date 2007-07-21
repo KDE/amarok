@@ -24,7 +24,7 @@
 #include "amarokconfig.h"
 #include "engineobserver.h"  //baseclass
 #include "dynamicmode.h"
-#include "playlistwindow.h"  //friend
+#include "MainWindow.h"      //friend
 #include "playlistitem.h"
 #include "metabundle.h"
 #include "tooltip.h"         //baseclass

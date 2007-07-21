@@ -22,7 +22,7 @@
 #define AMAROK_SCRIPTMANAGER_H
 
 #include "engineobserver.h"   //baseclass
-#include "playlistwindow.h"
+#include "MainWindow.h"
 #include "ui_scriptmanagerbase.h"
 
 #include <QMap>
