@@ -36,7 +36,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
-    setSelectionMode( QAbstractItemView::MultiSelection );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
