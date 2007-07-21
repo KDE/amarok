@@ -55,7 +55,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
         static int mainThreadId;
 
-        MainWindow *playlistWindow() const { return m_playlistWindow; }
+        inline MainWindow *mainWindow() const { return m_mainWindow; }
 
         // FRIENDS ------
         friend class MainWindow; //requires access to applySettings()
@@ -98,13 +98,10 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void initGlobalShortcuts();
         void firstRunWizard();
 
-        /** returns the playlistWindow */
-        QWidget *mainWindow() const;
-
         void setRating( int n );
 
         // ATTRIBUTES ------
-        MainWindow          *m_playlistWindow;
+        MainWindow          *m_mainWindow;
 #ifndef Q_WS_MAC
         Amarok::TrayIcon    *m_tray;
 #endif

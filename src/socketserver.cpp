@@ -150,7 +150,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 Vis::Selector*
 Vis::Selector::instance()
 {
-    QWidget *parent = reinterpret_cast<QWidget*>( pApp->playlistWindow() );
+    QWidget *parent = reinterpret_cast<QWidget*>( pApp->mainWindow() );
     QObject *o = parent->findChild<QObject *>( "Vis::Selector::instance" );
 
     debug() << bool(o == 0) << endl;
