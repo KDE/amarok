@@ -65,6 +65,7 @@ PMPProtocol::~PMPProtocol()
 {
     foreach( QString udi, m_devices.keys() )
     {
+        kDebug() << "Deleting device with key: " << udi << endl;
         delete m_devices[udi];
     }
 }
@@ -109,12 +110,24 @@ PMPProtocol::listDir( const KUrl &url )
         foreach( Solid::Device device, deviceList )
         {
             UDSEntry entry;
-            PMPDevice *newDevice = new PMPDevice( this, device );
-            newDevice->initialize();
-            QString name = newDevice->backend()->getFriendlyName();
+            if( !m_devices.contains( transUdi( device.udi() ) ) )
+            {
+                m_devices[transUdi( device.udi() )] = new PMPDevice( this, device );
+                m_devices[transUdi( device.udi() )]->initialize();
+            }
+            QString name = m_devices[transUdi( device.udi() )]->backend()->getFriendlyName();
+            kDebug() << "Friendly name returned from device is: " << name << endl;
             if( name.isEmpty() )
-                name = getFriendlyName( device );
-            m_devices[transUdi( device.udi() )] = newDevice;
+            {
+                name = m_devices[transUdi( device.udi() )]->backend()->getModelName();
+                kDebug() << "Model name returned from device is: " << name << endl;
+            }
+            if( name.isEmpty() )
+            {
+                kDebug() << "Getting Solid friendly name" << endl;
+                name = getSolidFriendlyName( device );
+                kDebug() << "Friendly name returned from Solid is: " << name << endl;
+            }
             entry[ KIO::UDS_NAME ] = name.isEmpty() ? QString( "Portable Media Player at " + device.udi() ) : name;
             entry[ KIO::UDS_URL ] = "pmp:///" + transUdi( device.udi() );
             entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
@@ -128,6 +141,8 @@ PMPProtocol::listDir( const KUrl &url )
     else
     {
         kDebug() << "Calling backend's listDir" << endl;
+        kDebug() << "udiFromUrl( url ) = " << udiFromUrl( url ) << endl;
+        kDebug() << "m_devices[udiFromUrl( url )] = " << m_devices[udiFromUrl( url )] << endl;
         m_devices[udiFromUrl( url )]->backend()->listDir( url );
     }
     kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
@@ -152,7 +167,7 @@ PMPProtocol::stat( const KUrl &url )
 }
 
 QString
-PMPProtocol::getFriendlyName( const Solid::Device & device ) const
+PMPProtocol::getSolidFriendlyName( const Solid::Device & device ) const
 {
     kDebug() << "Looking for a friendly name for " << device.udi() << "..." << endl;
     const Solid::GenericInterface *gi = device.as<Solid::GenericInterface>();
@@ -205,8 +220,6 @@ PMPProtocol::udiFromUrl( const KUrl &url )
     QString udi = ( index == -1 ? path : path.left( index ) );
     //translate the udi to its required format
     udi = transUdi( udi );
-    if( !( udi[0] == '/' ) )
-        udi.prepend( '/' );
 
     return udi;
 }

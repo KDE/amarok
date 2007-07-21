@@ -19,6 +19,8 @@
 #include "pmpbackend.h"
 #include "pmpkioslave.h"
 
+#include <kdebug.h>
+
 #include <QCoreApplication>
 
 
@@ -36,6 +38,7 @@ PMPBackend::~PMPBackend()
 QString
 PMPBackend::getFilePath( const KUrl &url ) const
 {
+    kDebug() << "Getting path for url: " << url.url() << endl;
     QString path = url.path( KUrl::RemoveTrailingSlash );
 
     while( path[0] == '/' )

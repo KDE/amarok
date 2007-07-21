@@ -52,7 +52,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         void stat( const KUrl &url );
 
     private:
-        QString getFriendlyName( const Solid::Device &device ) const;
+        QString getSolidFriendlyName( const Solid::Device &device ) const;
         void initialize( const KUrl &url );
         inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
         QString udiFromUrl( const KUrl &url );

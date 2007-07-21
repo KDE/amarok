@@ -56,6 +56,7 @@ MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
 
 MTPBackend::~MTPBackend()
 {
+    kDebug() << endl << "In MTPBackend destructor, releasing device" << endl << endl;
     if( m_device )
         LIBMTP_Release_Device( m_device );
 }
@@ -63,6 +64,7 @@ MTPBackend::~MTPBackend()
 void
 MTPBackend::initialize()
 {
+    kDebug() << "Initializing MTPBackend for device " << m_solidDevice.udi() << endl;
     Solid::GenericInterface *gi = m_solidDevice.as<Solid::GenericInterface>();
     if( !gi )
     {
@@ -108,13 +110,20 @@ QString
 MTPBackend::getFriendlyName()
 {
     kDebug() << "Getting MTPBackend friendly name" << endl;
-    char* model = LIBMTP_Get_Modelname( m_device );
     char* name = LIBMTP_Get_Friendlyname( m_device );
-    QString modelName = QString::fromUtf8( model );
     QString friendlyName = QString::fromUtf8( name );
-    free( model );
     free( name );
-    return QString( modelName + ( friendlyName.isEmpty() ? QString::null : " (" + friendlyName + ')' ) );
+    return friendlyName;
+}
+
+QString
+MTPBackend::getModelName()
+{
+    kDebug() << "Getting MTPBackend model name" << endl;
+    char* model = LIBMTP_Get_Modelname( m_device );
+    QString modelName = QString::fromUtf8( model );
+    free( model );
+    return modelName;
 }
 
 void

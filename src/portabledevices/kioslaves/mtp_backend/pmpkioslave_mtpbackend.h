@@ -37,6 +37,7 @@ class MTPBackend : public PMPBackend
         virtual ~MTPBackend();
         void initialize();
         QString getFriendlyName();
+        QString getModelName();
 
     protected:
         void get( const KUrl &url );

@@ -35,13 +35,14 @@ class PMPBackend : public QObject
     public:
         PMPBackend( PMPProtocol* slave, const Solid::Device &device );
         virtual ~PMPBackend();
-        void initialize() {};
+        virtual void initialize() = 0;
 
         virtual void setSolidDevice( const Solid::Device &device ) { m_solidDevice = device; }
         virtual QString getFriendlyName() const { return QString(); }
-        virtual void get( const KUrl &url ) { Q_UNUSED( url ); }
-        virtual void listDir( const KUrl &url ) { Q_UNUSED( url ); }
-        virtual void stat( const KUrl &url ) { Q_UNUSED( url ); }
+        virtual QString getModelName() const { return QString(); }
+        virtual void get( const KUrl &url ) = 0;
+        virtual void listDir( const KUrl &url ) = 0;
+        virtual void stat( const KUrl &url ) = 0;
 
     protected:
         QString getFilePath( const KUrl &url ) const;
