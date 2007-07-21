@@ -88,7 +88,7 @@ class ArtistItem : public K3ListViewItem
 };
 
 CoverManager::CoverManager()
-        : QSplitter( 0, "TheCoverManager" )
+        : QSplitter( 0 )
         , m_timer( new QTimer( this ) )    //search filter timer
         , m_fetchCounter( 0 )
         , m_fetchingCovers( 0 )
@@ -97,13 +97,15 @@ CoverManager::CoverManager()
 {
     DEBUG_BLOCK
 
+    setObjectName( "TheCoverManager" );
+
     s_instance = this;
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n("Cover Manager") ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("Cover Manager") ) );
     setAttribute( Qt::WA_DeleteOnClose );
-    setMargin( 4 );
+    setContentsMargins( 4, 4, 4, 4 );
 
     //artist listview
     m_artistView = new K3ListView( this );
@@ -289,7 +291,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     KWindowSystem::setType( winId(), NET::Utility );
 #endif
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 
     m_layout = new QHBoxLayout( this );
     m_layout->setAutoAdd( true );
