@@ -26,16 +26,19 @@
 
 #include "libmtp.h"
 
+class PMPProtocol;
+
 class MTPBackend : public PMPBackend
 {
     Q_OBJECT
 
     public:
-        MTPBackend();
+        MTPBackend( PMPProtocol* slave, const Solid::Device &device );
         virtual ~MTPBackend();
+        void initialize();
+        QString getFriendlyName();
 
     protected:
-        void setUdi( const QString &udi);
         void get( const KUrl &url );
         void listDir( const KUrl &url );
         void stat( const KUrl &url );
@@ -43,7 +46,6 @@ class MTPBackend : public PMPBackend
     private:
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
-        Solid::Device       m_solidDevice;
 
 };
 

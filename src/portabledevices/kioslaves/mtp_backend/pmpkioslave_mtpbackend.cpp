@@ -17,6 +17,7 @@
  */
 
 #include "pmpkioslave_mtpbackend.h"
+#include "pmpkioslave.h"
 
 #include <sys/stat.h>
 
@@ -31,14 +32,14 @@
 #include <solid/device.h>
 #include <solid/genericinterface.h>
 
-MTPBackend::MTPBackend()
-            : PMPBackend()
+MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
+            : PMPBackend( slave, device )
             , m_device( 0 )
-            , m_solidDevice( 0 )
 {
     kDebug() << "Creating MTPBackend" << endl;
 
-    LIBMTP_Init();
+    if( !m_slave->mtpInitialized() )
+        LIBMTP_Init();
 
     if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
     {
@@ -60,11 +61,9 @@ MTPBackend::~MTPBackend()
 }
 
 void
-MTPBackend::setUdi( const QString &udi )
+MTPBackend::initialize()
 {
-    kDebug() << "udi = " << udi << endl;
-    m_udi = udi;
-    Solid::GenericInterface *gi = Solid::Device( m_udi ).as<Solid::GenericInterface>();
+    Solid::GenericInterface *gi = m_solidDevice.as<Solid::GenericInterface>();
     if( !gi )
     {
         m_slave->error( KIO::ERR_INTERNAL, "Error getting a GenericInterface to the device from Solid." );
@@ -94,7 +93,6 @@ MTPBackend::setUdi( const QString &udi )
         {
             kDebug() << endl << endl << "Found a matching serial!" << endl << endl;
             m_device = currdevice;
-            m_solidDevice = Solid::Device( m_udi );
         }
         else
             LIBMTP_Release_Device( currdevice );
@@ -104,6 +102,19 @@ MTPBackend::setUdi( const QString &udi )
         kDebug() << "FOUND THE MTP DEVICE WE WERE LOOKING FOR!" << endl;
 
     return;
+}
+
+QString
+MTPBackend::getFriendlyName()
+{
+    kDebug() << "Getting MTPBackend friendly name" << endl;
+    char* model = LIBMTP_Get_Modelname( m_device );
+    char* name = LIBMTP_Get_Friendlyname( m_device );
+    QString modelName = QString::fromUtf8( model );
+    QString friendlyName = QString::fromUtf8( name );
+    free( model );
+    free( name );
+    return QString( modelName + ( friendlyName.isEmpty() ? QString::null : " (" + friendlyName + ')' ) );
 }
 
 void

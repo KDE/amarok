@@ -17,13 +17,15 @@
  */
 
 #include "pmpbackend.h"
+#include "pmpkioslave.h"
 
 #include <QCoreApplication>
 
 
-PMPBackend::PMPBackend()
+PMPBackend::PMPBackend( PMPProtocol* slave, const Solid::Device &device )
             : QObject()
-            , m_udi()
+            , m_slave( slave )
+            , m_solidDevice( device )
 {
 }
 
@@ -31,14 +33,8 @@ PMPBackend::~PMPBackend()
 {
 }
 
-void
-PMPBackend::setUdi( const QString &udi )
-{
-    Q_UNUSED( udi );
-}
-
 QString
-PMPBackend::getFilePath( const KUrl &url )
+PMPBackend::getFilePath( const KUrl &url ) const
 {
     QString path = url.path( KUrl::RemoveTrailingSlash );
 

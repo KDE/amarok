@@ -30,6 +30,8 @@
 #include <kio/slavebase.h>
 #include <solid/device.h>
 
+class PMPDevice;
+
 class PMPProtocol : public QObject, public KIO::SlaveBase
 {
     Q_OBJECT
@@ -38,10 +40,8 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         PMPProtocol( const QByteArray &protocol, const QByteArray &pool,
                      const QByteArray &app );
         virtual ~PMPProtocol();
-
-#ifdef HAVE_MTP 
-        MTPBackend* MTPType() { return new MTPBackend(); }
-#endif
+        bool mtpInitialized() const { return m_mtpInitialized; }
+        void setMtpInitialized( const bool inited ) { m_mtpInitialized = inited; }
 
     protected:
         void setHost( const QString &host, quint16 port,
@@ -52,11 +52,16 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         void stat( const KUrl &url );
 
     private:
-        QString getFriendlyName( Solid::Device device );
+        QString getFriendlyName( const Solid::Device &device ) const;
         void initialize( const KUrl &url );
+        inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
+        QString udiFromUrl( const KUrl &url );
 
-        bool        m_initialized;
-        PMPBackend* m_backend;
+        QMap<QString,PMPDevice*> m_devices;
+
+        //libmtp should never be inited more than once from the same process but we support
+        //multiple devices, so make sure
+        bool m_mtpInitialized;
 };
 
 #endif /* PMP_KIOSLAVE_H */

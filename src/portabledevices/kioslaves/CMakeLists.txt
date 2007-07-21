@@ -18,8 +18,9 @@ endif(MTP_FOUND)
 
 set(kio_pmp_PART_SRCS
     ${mtp_SRCS}
-    pmpkioslave.cpp
     pmpbackend.cpp
+    pmpdevice.cpp
+    pmpkioslave.cpp
 )
 
 kde4_add_plugin( kio_pmp ${kio_pmp_PART_SRCS} )

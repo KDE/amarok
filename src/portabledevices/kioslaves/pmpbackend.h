@@ -18,10 +18,14 @@
 #ifndef PMP_BACKEND_H
 #define PMP_BACKEND_H
 
+
 #include <QObject>
 #include <QString>
 
-#include <kio/slavebase.h>
+#include <kurl.h>
+#include <solid/device.h>
+
+class PMPProtocol;
 
 class PMPBackend : public QObject
 {
@@ -29,21 +33,21 @@ class PMPBackend : public QObject
 
 
     public:
-        PMPBackend();
+        PMPBackend( PMPProtocol* slave, const Solid::Device &device );
         virtual ~PMPBackend();
+        void initialize() {};
 
-        void setSlave( KIO::SlaveBase *slave ) { m_slave = slave; }
-        virtual void setUdi( const QString &udi );
+        virtual void setSolidDevice( const Solid::Device &device ) { m_solidDevice = device; }
+        virtual QString getFriendlyName() const { return QString(); }
         virtual void get( const KUrl &url ) { Q_UNUSED( url ); }
         virtual void listDir( const KUrl &url ) { Q_UNUSED( url ); }
         virtual void stat( const KUrl &url ) { Q_UNUSED( url ); }
 
     protected:
-        QString getFilePath( const KUrl &url );
+        QString getFilePath( const KUrl &url ) const;
 
-        KIO::SlaveBase *m_slave;
-        QString m_udi;
-
+        PMPProtocol *m_slave;
+        Solid::Device m_solidDevice;
 };
 
 #endif /* PMP_BACKEND_H */
