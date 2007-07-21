@@ -63,15 +63,15 @@ class QTimer;
  * @authors Mark Kretschmann && Max Howell
  *
  * Playlist inherits K3ListView privately and thus is no longer a ListView
- * Instead it is a part of PlaylistWindow and they interact in harmony. The change
+ * Instead it is a part of MainWindow and they interact in harmony. The change
  * was necessary as it is too dangerous to allow public access to PlaylistItems
  * due to the multi-threading environment.
  *
  * Unfortunately, since QObject is now inaccessible you have to connect slots
- * via one of PlaylistWindow's friend members or in Playlist
+ * via one of MainWindow's friend members or in Playlist
  *
  * If you want to add new playlist type functionality you should implement it
- * inside this class or inside PlaylistWindow.
+ * inside this class or inside MainWindow.
  *
  */
 
@@ -186,14 +186,14 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         friend class UrlLoader;
         friend class QueueManager;
         friend class QueueLabel;
-        friend class PlaylistWindow;
+        friend class MainWindow;
         friend class ColumnList;
 //        friend void Amarok::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
 //        friend void Amarok::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
         friend class TagWriter; //calls removeItem()
-        friend void PlaylistWindow::init(); //setting up connections etc.
+        friend void MainWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();
-        friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
+        friend bool MainWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
     public:
         QPair<QString, QRect> toolTipText( QWidget*, const QPoint &pos ) const;

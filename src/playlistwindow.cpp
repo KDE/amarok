@@ -88,13 +88,13 @@
 #include <kxmlguifactory.h>   //XMLGUI
 #include <fixx11h.h>
 
-PlaylistWindow *PlaylistWindow::s_instance = 0;
+MainWindow *MainWindow::s_instance = 0;
 
-PlaylistWindow::PlaylistWindow()
+MainWindow::MainWindow()
         :KXmlGuiWindow( 0, Qt::WGroupLeader )
         , m_lastBrowser( 0 )
 {
-    setObjectName("PlaylistWindow");
+    setObjectName("MainWindow");
     s_instance = this;
 
     new PlaylistNS::Model( this );
@@ -106,19 +106,19 @@ PlaylistWindow::PlaylistWindow()
 
     //new K3bExporter();
 
-    if( AmarokConfig::playlistWindowSize().isValid() ) {
+    if( AmarokConfig::mainWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
         // KWindowSystem place us otherwise use the stored values
-        resize( AmarokConfig::playlistWindowSize() );
-        move( AmarokConfig::playlistWindowPos() );
+        resize( AmarokConfig::mainWindowSize() );
+        move( AmarokConfig::mainWindowPos() );
     }
     m_browsers = new SideBar( this, new KVBox );
 }
 
-PlaylistWindow::~PlaylistWindow()
+MainWindow::~MainWindow()
 {
-    AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
-    AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
+    AmarokConfig::setMainWindowPos( pos() );  //TODO de XT?
+    AmarokConfig::setMainWindowSize( size() ); //TODO de XT?
 }
 
 
@@ -127,12 +127,12 @@ PlaylistWindow::~PlaylistWindow()
 /**
  * This function will initialize the playlist window.
  */
-void PlaylistWindow::init()
+void MainWindow::init()
 {
     DEBUG_BLOCK
 
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
-    //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
+    //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
@@ -350,13 +350,13 @@ void PlaylistWindow::init()
     Amarok::MessageQueue::instance()->sendMessages();
 }
 
-void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
+void MainWindow::slotSetFilter( const QString &filter ) //SLOT
 {
     Q_UNUSED( filter );
 //    m_lineEdit->setText( filter );
 }
 
-void PlaylistWindow::slotEditFilter() //SLOT
+void MainWindow::slotEditFilter() //SLOT
 {
     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
@@ -365,7 +365,7 @@ void PlaylistWindow::slotEditFilter() //SLOT
     delete fd;
 }
 
-void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
+void MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
     if( !m_browserNames.contains( name ) )
     {
@@ -374,7 +374,7 @@ void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QS
     }
 }
 
-void PlaylistWindow::showBrowser( const QString &name )
+void MainWindow::showBrowser( const QString &name )
 {
     const int index = m_browserNames.indexOf( name );
     if( index >= 0 )
@@ -385,7 +385,7 @@ void PlaylistWindow::showBrowser( const QString &name )
  * Reload the amarokui.rc xml file.
  * mainly just used by amarok::Menu
  */
-void PlaylistWindow::recreateGUI()
+void MainWindow::recreateGUI()
 {
 #if 0
     reloadXML();
@@ -398,7 +398,7 @@ void PlaylistWindow::recreateGUI()
  * Create the amarok gui from the xml file.
  */
 #if 0
-void PlaylistWindow::createGUI()
+void MainWindow::createGUI()
 {
     setUpdatesEnabled( false );
 
@@ -470,7 +470,7 @@ void PlaylistWindow::createGUI()
  * Apply the loaded settings on the playlist window.
  * this function loads the custom fonts (if chosen) and than calls PlayList::instance()->applySettings();
  */
-void PlaylistWindow::applySettings()
+void MainWindow::applySettings()
 {
     switch( AmarokConfig::useCustomFonts() )
     {
@@ -493,7 +493,7 @@ void PlaylistWindow::applySettings()
  * Here we filter some events for the Playlist Search LineEdit and the Playlist. @n
  * this makes life easier since we have more useful functions available from this class
  */
-bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
+bool MainWindow::eventFilter( QObject *o, QEvent *e )
 {
     Playlist* const pl = Playlist::instance();
     typedef Q3ListViewItemIterator It;
@@ -642,7 +642,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 }
 
 
-void PlaylistWindow::closeEvent( QCloseEvent *e )
+void MainWindow::closeEvent( QCloseEvent *e )
 {
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
@@ -653,7 +653,7 @@ void PlaylistWindow::closeEvent( QCloseEvent *e )
 }
 
 
-void PlaylistWindow::showEvent( QShowEvent* )
+void MainWindow::showEvent( QShowEvent* )
 {
     static bool firstTime = true;
     if( firstTime )
@@ -662,13 +662,13 @@ void PlaylistWindow::showEvent( QShowEvent* )
 }
 
 #include <qdesktopwidget.h>
-QSize PlaylistWindow::sizeHint() const
+QSize MainWindow::sizeHint() const
 {
     return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
 }
 
 
-void PlaylistWindow::savePlaylist() const //SLOT
+void MainWindow::savePlaylist() const //SLOT
 {
     Playlist *pl = Playlist::instance();
 
@@ -709,24 +709,24 @@ void PlaylistWindow::savePlaylist() const //SLOT
     QString path = PlaylistDialog::getSaveFileName( title, pl->proposeOverwriteOnSave() );
 
     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
-        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+        MainWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
 
-void PlaylistWindow::slotBurnPlaylist() const //SLOT
+void MainWindow::slotBurnPlaylist() const //SLOT
 {
     K3bExporter::instance()->exportCurrentPlaylist();
 }
 
 
-void PlaylistWindow::slotPlayMedia() //SLOT
+void MainWindow::slotPlayMedia() //SLOT
 {
     // Request location and immediately start playback
     slotAddLocation( true );
 }
 
 
-void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
+void MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
     KUrl::List files;
@@ -748,7 +748,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
             The::playlistModel()->insertMedia( *it, Playlist::Append );
 }
 
-void PlaylistWindow::slotAddStream() //SLOT
+void MainWindow::slotAddStream() //SLOT
 {
     bool ok;
     QString url = KInputDialog::getText( i18n("Add Stream"), i18n("URL"), QString(), &ok, this );
@@ -761,7 +761,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmPersonal() //SLOT
+void MainWindow::playLastfmPersonal() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -772,7 +772,7 @@ void PlaylistWindow::playLastfmPersonal() //SLOT
 }
 
 
-void PlaylistWindow::addLastfmPersonal() //SLOT
+void MainWindow::addLastfmPersonal() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -783,7 +783,7 @@ void PlaylistWindow::addLastfmPersonal() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmNeighbor() //SLOT
+void MainWindow::playLastfmNeighbor() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -794,7 +794,7 @@ void PlaylistWindow::playLastfmNeighbor() //SLOT
 }
 
 
-void PlaylistWindow::addLastfmNeighbor() //SLOT
+void MainWindow::addLastfmNeighbor() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -805,7 +805,7 @@ void PlaylistWindow::addLastfmNeighbor() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmCustom() //SLOT
+void MainWindow::playLastfmCustom() //SLOT
 {
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
@@ -815,7 +815,7 @@ void PlaylistWindow::playLastfmCustom() //SLOT
 }
 
 
-void PlaylistWindow::addLastfmCustom() //SLOT
+void MainWindow::addLastfmCustom() //SLOT
 {
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
@@ -825,7 +825,7 @@ void PlaylistWindow::addLastfmCustom() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmGlobaltag() //SLOT
+void MainWindow::playLastfmGlobaltag() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -839,7 +839,7 @@ void PlaylistWindow::playLastfmGlobaltag() //SLOT
 }
 
 
-void PlaylistWindow::addLastfmGlobaltag() //SLOT
+void MainWindow::addLastfmGlobaltag() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -853,7 +853,7 @@ void PlaylistWindow::addLastfmGlobaltag() //SLOT
 }
 
 
-void PlaylistWindow::playAudioCD() //SLOT
+void MainWindow::playAudioCD() //SLOT
 {
     KUrl::List urls;
     if( EngineController::engine()->getAudioCDContents(QString(), urls) )
@@ -869,18 +869,18 @@ void PlaylistWindow::playAudioCD() //SLOT
     }
 }
 
-void PlaylistWindow::showScriptSelector() //SLOT
+void MainWindow::showScriptSelector() //SLOT
 {
     ScriptManager::instance()->show();
     ScriptManager::instance()->raise();
 }
 
-void PlaylistWindow::showQueueManager() //SLOT
+void MainWindow::showQueueManager() //SLOT
 {
     Playlist::instance()->showQueueManager();
 }
 
-void PlaylistWindow::showStatistics() //SLOT
+void MainWindow::showStatistics() //SLOT
 {
     if( Statistics::instance() ) {
         Statistics::instance()->raise();
@@ -890,13 +890,13 @@ void PlaylistWindow::showStatistics() //SLOT
     dialog.exec();
 }
 
-void PlaylistWindow::slotToggleFocus() //SLOT
+void MainWindow::slotToggleFocus() //SLOT
 {
     if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchWidget->lineEdit()->hasFocus() ) )
         m_browsers->currentWidget()->setFocus();
 }
 
-void PlaylistWindow::slotMenuActivated( int index ) //SLOT
+void MainWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
     {
@@ -915,11 +915,11 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     }
 }
 
-void PlaylistWindow::actionsMenuAboutToShow() //SLOT
+void MainWindow::actionsMenuAboutToShow() //SLOT
 {
 }
 
-void PlaylistWindow::toolsMenuAboutToShow() //SLOT
+void MainWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
@@ -940,7 +940,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
  * this has taken me hours to get right, change at your peril!
  * there are more contingencies than you can believe
  */
-void PlaylistWindow::showHide() //SLOT
+void MainWindow::showHide() //SLOT
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -967,7 +967,7 @@ void PlaylistWindow::showHide() //SLOT
 #endif
 }
 
-void PlaylistWindow::activate()
+void MainWindow::activate()
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -983,7 +983,7 @@ void PlaylistWindow::activate()
 #endif
 }
 
-bool PlaylistWindow::isReallyShown() const
+bool MainWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -994,7 +994,7 @@ bool PlaylistWindow::isReallyShown() const
 }
 
 void
-PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
+MainWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
 {
     if( isAvailable )
     {
@@ -1012,7 +1012,7 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
     }
 }
 
-void PlaylistWindow::createActions()
+void MainWindow::createActions()
 {
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
@@ -1212,7 +1212,7 @@ void PlaylistWindow::createActions()
     ac->setAssociatedWidget( this );
 }
 
-void PlaylistWindow::createMenus()
+void MainWindow::createMenus()
 {
     m_menubar = menuBar();//new MenuBar( this );
 

@@ -18,13 +18,13 @@
         <label>Position of player window</label>
         <whatsthis>The position of the Amarok main window when Amarok is started.</whatsthis>
     </entry>
-    <entry key="Playlist Window Pos" type="Point">
-        <label>Position of playlist window</label>
-        <whatsthis>The position of the playlist window when Amarok is started.</whatsthis>
+    <entry key="Main Window Pos" type="Point">
+        <label>Position of main window</label>
+        <whatsthis>The position of the main window when Amarok is started.</whatsthis>
     </entry>
-    <entry key="Playlist Window Size" type="Size">
-        <label>Size of playlist window</label>
-        <whatsthis>The size of the playlist window when Amarok is started.</whatsthis>
+    <entry key="Main Window Size" type="Size">
+        <label>Size of main window</label>
+        <whatsthis>The size of the main window when Amarok is started.</whatsthis>
     </entry>
     <entry key="Save Playlist" type="Bool">
         <label>Whether to save playlist on quit</label>

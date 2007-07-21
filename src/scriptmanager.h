@@ -62,7 +62,7 @@ class ScriptManager : public KDialog, public EngineObserver
         explicit ScriptManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~ScriptManager();
 
-        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
+        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( MainWindow::self() ); }
 
         /**
          * Runs the script with the given name. Used by the DCOP handler.

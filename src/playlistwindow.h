@@ -33,18 +33,18 @@ class SearchWidget;
 class SideBar;
 
 /**
-  * @class PlaylistWindow
-  * @short The PlaylistWindow widget class.
+  * @class MainWindow
+  * @short The MainWindow widget class.
   *
   * This is the main window widget (the Playlist not Player).
   */
-class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
+class MainWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
 {
     Q_OBJECT
 
     public:
-        PlaylistWindow();
-       ~PlaylistWindow();
+        MainWindow();
+       ~MainWindow();
 
         void init();
         void applySettings();
@@ -62,7 +62,7 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         virtual bool eventFilter( QObject*, QEvent* );
 
         //instance is declared in KXMLGUI
-        static PlaylistWindow *self() { return s_instance; }
+        static MainWindow *self() { return s_instance; }
 
         void activate();
 
@@ -122,7 +122,7 @@ class PlaylistWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClien
         void    createMenus();
         int m_lastBrowser;
         int m_searchField;
-        static PlaylistWindow *s_instance;
+        static MainWindow *s_instance;
 };
 
 class DynamicTitle : public QWidget

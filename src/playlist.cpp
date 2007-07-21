@@ -5,8 +5,8 @@
 
  * NOTES
  *
- * The PlaylistWindow handles some Playlist events. Thanks!
- * This class has a QOBJECT but it's private so you can only connect via PlaylistWindow::PlaylistWindow
+ * The MainWindow handles some Playlist events. Thanks!
+ * This class has a QOBJECT but it's private so you can only connect via MainWindow::MainWindow
  * Mostly it's sensible to implement playlist functionality in this class
  * TODO Obtaining information about the playlist is currently hard, we need the playlist to be globally
  *      available and have some more useful public functions
@@ -412,7 +412,7 @@ Playlist::Playlist( QWidget *parent )
 
     setDynamicMode( 0 );
 
-    m_smartResizing = Amarok::config( "PlaylistWindow" ).readEntry( "Smart Resizing", true );
+    m_smartResizing = Amarok::config( "MainWindow" ).readEntry( "Smart Resizing", true );
 
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
@@ -2783,7 +2783,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         case SMARTRESIZING:
             m_smartResizing = !m_smartResizing;
-            Amarok::config( "PlaylistWindow" ).writeEntry( "Smart Resizing", m_smartResizing );
+            Amarok::config( "MainWindow" ).writeEntry( "Smart Resizing", m_smartResizing );
             if ( m_smartResizing )
                 columnResizeEvent( 0, 0, 0 ); //force refit. FIXME: It doesn't work perfectly
             break;
@@ -3283,7 +3283,7 @@ Playlist::editActiveDynamicMode() //SLOT
         return;
 
     DynamicMode *m = modifyDynamicMode();
-    ConfigDynamic::editDynamicPlaylist( PlaylistWindow::self(), m );
+    ConfigDynamic::editDynamicPlaylist( MainWindow::self(), m );
     m->rebuildCachedItemSet();
     finishedModifying( m );
 }
@@ -4561,7 +4561,7 @@ Playlist::saveSelectedAsPlaylist()
     }
 
     if( PlaylistBrowser::savePlaylist( path, urls, titles, lengths ) )
-        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+        MainWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
 void Playlist::initStarPixmaps()

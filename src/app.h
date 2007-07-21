@@ -37,7 +37,7 @@ namespace KIO { class Job; }
 class KJob;
 class MetaBundle;
 class Playlist;
-class PlaylistWindow;
+class MainWindow;
 class MediaDeviceManager;
 class KSplashScreen;
 
@@ -55,10 +55,10 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
         static int mainThreadId;
 
-        PlaylistWindow *playlistWindow() const { return m_playlistWindow; }
+        MainWindow *playlistWindow() const { return m_playlistWindow; }
 
         // FRIENDS ------
-        friend class PlaylistWindow; //requires access to applySettings()
+        friend class MainWindow; //requires access to applySettings()
 
     signals:
         void useScores( bool use );
@@ -104,7 +104,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void setRating( int n );
 
         // ATTRIBUTES ------
-        PlaylistWindow      *m_playlistWindow;
+        MainWindow          *m_playlistWindow;
 #ifndef Q_WS_MAC
         Amarok::TrayIcon    *m_tray;
 #endif

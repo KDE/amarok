@@ -485,13 +485,13 @@ namespace Amarok
     void DbusPlayerHandler::showBrowser( QString browser )
     {
         if ( browser == "collection" )
-            PlaylistWindow::self()->showBrowser( "CollectionBrowser" );
+            MainWindow::self()->showBrowser( "CollectionBrowser" );
         if ( browser == "playlist" )
-            PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+            MainWindow::self()->showBrowser( "PlaylistBrowser" );
         if ( browser == "media" )
-            PlaylistWindow::self()->showBrowser( "MediaBrowser" );
+            MainWindow::self()->showBrowser( "MediaBrowser" );
         if ( browser == "file" )
-            PlaylistWindow::self()->showBrowser( "FileBrowser" );
+            MainWindow::self()->showBrowser( "FileBrowser" );
     }
 
     void DbusPlayerHandler::showOSD()
@@ -671,7 +671,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::togglePlaylist()
     {
-        PlaylistWindow::self()->showHide();
+        MainWindow::self()->showHide();
     }
 
     QStringList DbusPlaylistHandler::filenames()

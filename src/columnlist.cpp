@@ -174,7 +174,7 @@ void ColumnList::setChanged() //slot
 }
 
 ColumnsDialog::ColumnsDialog()
-    : KDialog( PlaylistWindow::self() ),
+    : KDialog( MainWindow::self() ),
       m_list( new ColumnList( this ) )
 {
     setCaption( i18n( "Playlist Columns" ) );

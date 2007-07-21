@@ -687,7 +687,7 @@ App::continueInit()
 
     The::SolidHandler()->Initialize();
     m_mediaDeviceManager = MediaDeviceManager::instance();
-    m_playlistWindow = new PlaylistWindow();
+    m_playlistWindow = new MainWindow();
 #ifndef Q_WS_MAC
     m_tray           = new Amarok::TrayIcon( m_playlistWindow );
 #endif
@@ -712,7 +712,7 @@ App::continueInit()
     //create engine, show TrayIcon etc.
     applySettings( true );
     Debug::stamp();
-    // Start ScriptManager. Must be created _after_ PlaylistWindow.
+    // Start ScriptManager. Must be created _after_ MainWindow.
     ScriptManager::instance();
     Debug::stamp();
     //notify loader application that we have started
@@ -959,7 +959,7 @@ void App::slotConfigShortcuts()
 
 void App::slotConfigToolBars()
 {
-    PlaylistWindow* const pw = playlistWindow();
+    MainWindow* const pw = playlistWindow();
     KEditToolBar dialog( pw->actionCollection(), pw );
     dialog.setResourceFile( pw->xmlFile() );
 
@@ -1048,7 +1048,7 @@ void App::setRating( int n )
         EngineController::instance()->updateBundleRating( rating );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
     }
-    else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
+    else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
 }
 

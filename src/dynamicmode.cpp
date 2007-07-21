@@ -66,7 +66,7 @@ DynamicMode::edit()
     if( this == Playlist::instance()->dynamicMode() )
         Playlist::instance()->editActiveDynamicMode(); //so the changes get noticed
     else
-        ConfigDynamic::editDynamicPlaylist( PlaylistWindow::self(), this );
+        ConfigDynamic::editDynamicPlaylist( MainWindow::self(), this );
 }
 
 QStringList DynamicMode::items()   const { return m_items; }

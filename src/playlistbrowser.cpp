@@ -675,7 +675,7 @@ void PlaylistBrowser::addSmartPlaylist( Q3ListViewItem *parent ) //SLOT
             SmartPlaylist *sp = dynamic_cast<SmartPlaylist*>(item);
             if ( sp && sp->title() == dialog.name() ) {
                 if( KMessageBox::warningContinueCancel(
-                    PlaylistWindow::self(),
+                    MainWindow::self(),
                     i18n( "A Smart Playlist named \"%1\" already exists. Do you want to overwrite it?", dialog.name() ),
                     i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) ==
 KMessageBox::Continue )
@@ -1799,7 +1799,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KUrl>
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        KMessageBox::sorry( PlaylistWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
         return false;
     }
 
@@ -3057,7 +3057,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion, bool propose
 }
 
 PlaylistDialog::PlaylistDialog()
-    : KDialog( PlaylistWindow::self() )
+    : KDialog( MainWindow::self() )
     , customChosen( false )
 {
     setCaption( i18n( "Save Playlist" ) );
@@ -3094,7 +3094,7 @@ void PlaylistDialog::slotOk()
 
     if( !QFileInfo( result ).exists() ||
         KMessageBox::warningContinueCancel(
-            PlaylistWindow::self(),
+            MainWindow::self(),
             i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?", edit->text() ),
             i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) == KMessageBox::Continue )
     {
