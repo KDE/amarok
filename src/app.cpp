@@ -54,26 +54,26 @@ email                : markey@web.de
 
 #include <iostream>
 
-#include <kaboutdata.h>
-#include <kaction.h>
-#include <kcmdlineargs.h>        //initCliArgs()
-#include <kcombobox.h>           //firstRunWizard()
-#include <kconfigdialogmanager.h>
-#include <kcursor.h>             //Amarok::OverrideCursor
-#include <kedittoolbar.h>        //slotConfigToolbars()
-#include <kglobalaccel.h>        //initGlobalShortcuts()
-#include <kglobalsettings.h>     //applyColorScheme()
-#include <kiconloader.h>         //amarok Icon
-#include <kio/copyjob.h>
-#include <kjob.h>
-#include <kjobuidelegate.h>
-#include <kshortcutsdialog.h>          //slotConfigShortcuts()
-#include <klocale.h>
-#include <kmessagebox.h>         //applySettings(), genericEventHandler()
-#include <krun.h>                //Amarok::invokeBrowser()
-#include <ksplashscreen.h>
-#include <kstandarddirs.h>
+#include <KAboutData>
+#include <KAction>
+#include <KCmdLineArgs>        //initCliArgs()
+#include <KComboBox>           //firstRunWizard()
+#include <KConfigDialogManager>
+#include <KCursor>             //Amarok::OverrideCursor
+#include <KEditToolBar>        //slotConfigToolbars()
+#include <KGlobalAccel>        //initGlobalShortcuts()
+#include <KGlobalSettings>     //applyColorScheme()
+#include <KIO/CopyJob>
+#include <KIconLoader>         //amarok Icon
+#include <KJob>
+#include <KJobUiDelegate>
+#include <KLocale>
+#include <KMessageBox>         //applySettings(), genericEventHandler()
+#include <KRun>                //Amarok::invokeBrowser()
 #include <kshell.h>
+#include <KShortcutsDialog>     //slotConfigShortcuts()
+#include <KSplashScreen>
+#include <KStandardDirs>
 
 #include <QCloseEvent>
 #include <QDBusInterface>
