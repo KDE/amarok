@@ -235,7 +235,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     limitBox->setSpacing( 5 );
     m_limitSpin = new QSpinBox( limitBox );
     m_limitSpin->setMinimum( 1 );
-    m_limitSpin->setMaximum( 1000 );
+    m_limitSpin->setMaximum( 100000 );
     m_limitSpin->setValue( 15 );
     new QLabel( i18n("tracks"), limitBox );
     hbox1->setStretchFactor( new QWidget( hbox1 ), 1 );
