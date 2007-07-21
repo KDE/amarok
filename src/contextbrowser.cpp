@@ -3746,7 +3746,7 @@ ContextBrowser::showLabelsDialog()
     dialog->makeVBoxMainWidget();
 
     QLabel *labelText = new QLabel( i18n( 
-		"&Add a new label in the field below\nor choose labels from the list"),
+		"<p>Add a new label in the field below and press Enter, or choose labels from the list</p>"),
 	    			dialog->mainWidget() );
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
     m_addLabelEdit->installEventFilter( this );
