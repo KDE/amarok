@@ -3,17 +3,11 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include <qnamespace.h>
-#include <QString>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QEvent>
-
-#include <kactioncollection.h>
-#include <kconfig.h>
-#include <kurl.h> // recursiveUrlExpand
-#include <k3procio.h> //Amarok::ProcIO
-#include <kio/netaccess.h>
+#include <K3ProcIO> //Amarok::ProcIO
+#include <KActionCollection>
+#include <KConfig>
+#include <KIO/NetAccess>
+#include <KUrl> // recursiveUrlExpand
 
 #include "amarok_export.h"
 
