@@ -23,6 +23,11 @@
 
 #include "../servicemetabase.h"
 
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+
+#include <KTempDir>
+
 #include <QDateTime>
 #include <QString>
 #include <QStringList>
@@ -93,6 +98,29 @@ public:
     QString magnatuneUrl() const;
 };
 
+class MagnatuneAlbum;
+
+class MagnatuneAlbumCoverDownloader : public QObject
+{
+Q_OBJECT
+
+public:
+    
+    MagnatuneAlbumCoverDownloader();
+    ~MagnatuneAlbumCoverDownloader();
+    
+    void downloadCover( const MagnatuneAlbum * album );
+        
+private slots:
+
+    void coverDownloadComplete( KJob * downloadJob );
+private:
+    const MagnatuneAlbum * m_album;
+    QString m_coverDownloadPath;
+    KIO::FileCopyJob * m_albumDownloadJob;
+    KTempDir * m_tempDir;
+};
+
 
 class MagnatuneAlbum  : public ServiceAlbum
 {
@@ -100,10 +128,18 @@ private:
     QString m_coverUrl;
     int m_launchYear;
     QString m_albumCode;
+    mutable QImage m_cover;
+    mutable bool m_hasFetchedCover;
+    QString m_coverDownloadPath;
+    mutable MagnatuneAlbumCoverDownloader * m_coverDownloader;
 
 public:
     MagnatuneAlbum( const QString &name );
     MagnatuneAlbum( const QStringList &resultRow );
+    
+    ~MagnatuneAlbum();
+    
+    virtual QString name() const; //need to override this bacause of conflict wiht QObject 
 
     void setCoverUrl( const QString &coverUrl );
     QString coverUrl() const;
@@ -113,6 +149,12 @@ public:
 
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
+
+    void setImage( QImage image ) const;
+    
+    virtual QPixmap image(int size, bool withShadow) const; //overidden from Meta::Album
+    
+
 
 };
 
