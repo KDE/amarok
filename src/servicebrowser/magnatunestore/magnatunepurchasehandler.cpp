@@ -56,33 +56,12 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
     DEBUG_BLOCK
     m_currentAlbum = album;
 
-    //first lets get the album cover for the album we are about to purchase.
-    //Then we can show it on the purchase dialog as well as put it in the
-    //same directory as the album.
-
-    QString albumCoverUrlString = album->coverUrl();
-
-    if ( m_albumDownloader == 0 )
-    {
-        m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( const QString &) ), this, SLOT( showPurchaseDialog( const QString &) ) );
-    }
-
-    m_currentAlbumCoverName = album->name() + " - cover.jpg";
-
-
-    m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
+    showPurchaseDialog( QString() );
 
 }
 
 void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLocation )
 {
-
-    if ( m_albumDownloader != 0 )
-    {
-        delete m_albumDownloader;
-        m_albumDownloader = 0;
-    }
 
     if ( m_purchaseDialog == 0 )
     {
@@ -93,9 +72,6 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
     }
 
 
-
-
-
     if ( m_currentAlbum )
     {
 
@@ -103,7 +79,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
 
         KTempDir tempDir;
         m_purchaseDialog->setAlbum( m_currentAlbum );
-        m_purchaseDialog->setCover( coverTempLocation + m_currentAlbumCoverName );
+        //m_purchaseDialog->setCover( coverTempLocation + m_currentAlbumCoverName );
         m_purchaseDialog->show();
     }
 }

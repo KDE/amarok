@@ -24,7 +24,7 @@
 #include "magnatunepurchasedialogbase.h"
 #include "MagnatuneMeta.h"
 
-class MagnatunePurchaseDialog : public magnatunePurchaseDialogBase
+class MagnatunePurchaseDialog : public magnatunePurchaseDialogBase, public Observer
 {
     Q_OBJECT
 
@@ -56,7 +56,9 @@ public:
      * Loads image into the cover label.
      * @param coverFile image file to load.
      */
-    void setCover( const QString &coverFile );
+   // void setCover( const QString &coverFile );
+    
+    virtual void metadataChanged( Album *album ); //reimplemented from Observer
 
 
 signals:

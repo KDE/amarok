@@ -70,23 +70,6 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
 
-void MagnatuneAlbumDownloader::downloadCover( const QString &albumCoverUrlString, const QString &fileName )
-{
-    DEBUG_BLOCK
-    
-    KUrl downloadUrl( albumCoverUrlString );
-
-    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir->name() << fileName << endl;
-
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + fileName ), -1, true, false, false );
-
-    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
-
-    //FIXME: What to do with progress information?
-    //Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
-    //.setDescription( i18n( "Downloading album cover" ) )
-    //.setAbortSlot( this, SLOT( coverDownloadAborted() ) );
-}
 
 
 
@@ -142,20 +125,6 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
 }
 
-void MagnatuneAlbumDownloader::coverDownloadComplete( KJob * downloadJob )
-{
-  debug() << "cover download complete" << endl;
-
-    if ( !downloadJob || !downloadJob->error() == 0 )
-    {
-        //TODO: error handling here
-        return ;
-    }
-    if ( downloadJob != m_albumDownloadJob )
-        return ; //not the right job, so let's ignore it
-
-    emit( coverDownloadCompleted(  m_tempDir->name() ) );
-}
 
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
@@ -170,44 +139,6 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
 
 }
 
-void MagnatuneAlbumDownloader::coverDownloadAborted( )
-{
-    Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
-    m_albumDownloadJob->kill();
-    delete m_albumDownloadJob;
-    m_albumDownloadJob = 0;
-    debug() << "Aborted cover download" << endl;
-
-    emit( coverDownloadComplete( false ) );
-}
-
-void MagnatuneAlbumDownloader::coverAddComplete(KJob * downloadJob)
-{
-
-    debug() << "cover add complete" << endl;
-
-    if ( !downloadJob || !downloadJob->error() == 0 )
-    {
-        //TODO: error handling here
-        return ;
-    }
-    if ( downloadJob != m_albumDownloadJob )
-        return ; //not the right job, so let's ignore it
-
-    emit( downloadComplete( true ) ); //all done, everyone is happy! :-)
-}
-
-void MagnatuneAlbumDownloader::coverAddAborted()
-{
-
-    Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
-    m_albumDownloadJob->kill();
-    delete m_albumDownloadJob;
-    m_albumDownloadJob = 0;
-    debug() << "Aborted cover add" << endl;
-
-     emit( downloadComplete( true ) ); //the album download still went well, just the cover is missing
-}
 
 #include "magnatunealbumdownloader.moc"
 

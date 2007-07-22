@@ -50,6 +50,10 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
     launchDateEdit->setText( QString::number( album->launchYear() ) );
 
     m_albumCode = album->albumCode();
+    
+    album->subscribe( this );
+    
+    coverPixmapLabel->setPixmap( album->image( 200, false ) );
 
 }
 
@@ -139,14 +143,21 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 }
 
 
-void MagnatunePurchaseDialog::setCover( const QString &coverFile )
+/*void MagnatunePurchaseDialog::setCover( const QString &coverFile )
 {
     coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
+}*/
+
+
+void MagnatunePurchaseDialog::metadataChanged(Album * album)
+{
+    coverPixmapLabel->setPixmap( album->image( 200, false ) );
 }
 
 
-
 /*$SPECIALIZATION$*/
+
+
 
 
 #include "magnatunepurchasedialog.moc"
