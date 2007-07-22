@@ -130,6 +130,7 @@ private:
     QString m_albumCode;
     mutable QImage m_cover;
     mutable bool m_hasFetchedCover;
+    mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;
     mutable MagnatuneAlbumCoverDownloader * m_coverDownloader;
 

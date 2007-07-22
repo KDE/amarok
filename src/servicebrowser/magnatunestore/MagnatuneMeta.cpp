@@ -189,6 +189,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_launchYear( 0 )
     , m_albumCode()
     , m_hasFetchedCover( false )
+    , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
 {
 }
@@ -196,6 +197,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
+    , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
 {
     debug() << "create album from result row: " << resultRow << endl;
@@ -276,8 +278,9 @@ QPixmap MagnatuneAlbum::image(int size, bool withShadow) const
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
 
-    } else {
-    
+    } else if ( !m_isFetchingCover ) {
+        m_isFetchingCover = true;
+        
         if ( m_coverDownloader == 0 )
            m_coverDownloader = new MagnatuneAlbumCoverDownloader();
            m_coverDownloader->downloadCover( this );
@@ -292,6 +295,7 @@ void MagnatuneAlbum::setImage(QImage image) const
 {
     m_cover = image;
     m_hasFetchedCover = true;
+    m_isFetchingCover = false;
     notifyObservers();
 }
 
