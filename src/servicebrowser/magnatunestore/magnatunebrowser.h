@@ -74,68 +74,15 @@ public:
 private slots:
 
     /**
-     * Slot for recieving aboutToShow signals from the right click menu.
-     * Inserts items in the menu based on the type of the current selection
-     */
-    void menuAboutToShow();
-
-    /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
     void purchaseButtonClicked();
-
-    /**
-     * Slot for recieving notification from the right click menu that the user
-     * has chosen to purchase an album. Starts a purchase
-     */
-   // void purchaseSelectedAlbum();
-
-    /**
-     * Slot for recieving notification from the right click menu that the user 
-     * has chosen to purchase the album contining the selected track.
-     * Starts a purchase
-     */
-    //void purchaseAlbumContainingSelectedTrack();
-
-     /**
-     * Slot for recieving notification from the right click menu that the user 
-     * has selected "add to playlist" for the currently selected item,
-     */
-    //void addSelectionToPlaylist();
-
-    /**
-     * Slot for recieving notification that the user has double clicked an 
-     * item in the list view. Ads item to playlist.
-     * @param item The item that was double clicked
-     */
-   // void itemExecuted( QListWidgetItem * item);
-
-    /**
-     * Slot for recieving notification when a new item in the list is selected.
-     * Adds the corrosponding artist or album info to the info view (if visible)
-     * @param item The selected item
-     */
-    //void selectionChanged( QListWidgetItem * item);
-
-    /**
-     * Slot for recieving notifications about right clicks in the list view.
-     * if selection is valid the popup menu is shown
-     * @param item The item that was right clicked
-     * @param pos The position of the cursor at the time of thre right click
-     * @param column The column of the item that was right clicked (unused)
-     */
-    //void showPopupMenu( QListWidgetItem * item, const QPoint & pos, int column );
 
     /**
      * Slot for recieving notification that the update button has been clicked.
      */
     void updateButtonClicked();
 
-    /**
-     * Toggles the info area on and off
-     * @param show If true the info box is shown, if false it is hidden
-     */
-    //void showInfo(bool show);
 
     /**
      * Slot for recieving notification when the Magnatune xml file has been downloaded. 
@@ -148,11 +95,6 @@ private slots:
      * Slot for catching cancelled list downloads
      */
     void listDownloadCancelled();
-
-    /**
-     * Slot called when the genre combo box selection changes. Triggers an update of the list view.
-     */
-   // void genreChanged( QString genre);
 
     /**
      * Slot called when the parsing of the Magnatuin xml file is completed.
@@ -210,33 +152,12 @@ private:
      */
     void addTrackToPlaylist ( MagnatuneTrack  *item );
 
-    /**
-     * Adds all preview tracks on a magnatune album to the playlist
-     * @param item The album to add
-     */
-    //void addAlbumToPlaylist ( MagnatuneAlbum  *item );
-
-    /**
-     * Adds all preview tracks on all albums by a given artist to the playlist
-     * @param item the artist to add
-     */
-    //void addArtistToPlaylist( MagnatuneArtist *item );
-
-    /**
-     * Clears the genre combo box and inserts all genres from the database
-     */
-    //void updateGenreBox();
-
-
     static MagnatuneBrowser *s_instance;
 
-    //MagnatuneListView         *m_listView;
-    //MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
     //MagnatuneRedownloadHandler *m_redownloadHandler;
-    //MagnatuneDatabaseHandler * m_dbHandler;
 
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
@@ -253,7 +174,6 @@ private:
 
     ServiceSqlCollection * m_collection;
 
-   // DatabaseDrivenContentItem * m_currentlySelectedItem;
 };
 
 

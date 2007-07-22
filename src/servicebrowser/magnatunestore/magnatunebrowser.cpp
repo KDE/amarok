@@ -93,78 +93,7 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
     playlist->insertMedia( KUrl( url ) );
 }
 
-/*void MagnatuneBrowser::addAlbumToPlaylist( MagnatuneAlbum * item )
-{
-    if ( !item ) return ; // sanity check
-    debug() << "Magnatune browser: adding album" << endl;
 
-    MagnatuneTrackList tracks = m_dbHandler ->getTracksByAlbumId( item->getId() );
-
-    MagnatuneTrackList::iterator it;
-    for ( it = tracks.begin(); it != tracks.end(); ++it )
-        addTrackToPlaylist( &( *it ) );
-
-}*/
-
-/*void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist *item )
-{
-    if ( !item ) return ; // sanity check
-    debug() << "Magnatune browser: adding artist" << endl;
-
-    SimpleServiceAlbumList albums = MagnatuneDatabaseHandler::instance() ->getAlbumsByArtistId( item->getId(), "" );
-
-    SimpleServiceAlbumList::iterator it;
-    for ( it = albums.begin(); it != albums.end(); ++it )
-        addAlbumToPlaylist( &( *it ) );
-}*/
-
-
-/*void MagnatuneBrowser::showPopupMenu( QListWidgetItem * item, const QPoint & pos, int column )
-{
-    if ( !item ) return ;
-
-    m_popupMenu->exec( pos );
-}*/
-/*
-void MagnatuneBrowser::addSelectionToPlaylist( )
-{
-    QListWidgetItem * selectedItem = m_contentList->selectedItems ()[0]; //FIXME!!!
-
-    switch ( selectedItem->type() )
-    {
-    case 1000:
-        addArtistToPlaylist( dynamic_cast<MagnatuneListViewArtistItem *>( selectedItem ) );
-        break;
-    case 1001:
-        addAlbumToPlaylist( dynamic_cast<MagnatuneListViewAlbumItem *>( selectedItem ) );
-        break;
-    case 1002:
-        addTrackToPlaylist( dynamic_cast<MagnatuneListViewTrackItem *>( selectedItem ) );
-    }
-}*/
-
-void MagnatuneBrowser::menuAboutToShow( )
-{
-    m_popupMenu->clear();
-
-   /*  QListWidgetItem * selectedItem = m_contentList->selectedItems ()[0]; //FIXME!!
-
-    if ( !selectedItem ) return ;
-
-    switch ( selectedItem->type() )
-    {
-    case 1000:
-        m_popupMenu->addAction( i18n( "Add artist to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-        break;
-    case 1001:
-        m_popupMenu->addAction( i18n( "Add album to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-        m_popupMenu->addAction( i18n( "Purchase album" ), this, SLOT( purchaseSelectedAlbum() ) );
-        break;
-    case 1002:
-        m_popupMenu->addAction( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-        m_popupMenu->addAction( i18n( "Purchase album" ), this, SLOT( purchaseAlbumContainingSelectedTrack() ) );
-    }*/
-}
 
 void MagnatuneBrowser::purchaseButtonClicked( )
 {
@@ -185,52 +114,6 @@ void MagnatuneBrowser::purchaseButtonClicked( )
         m_purchaseHandler->purchaseAlbum( m_currentAlbum );
 }
 
-/*void MagnatuneBrowser::purchaseSelectedAlbum( )
-{
-
-   m_purchaseInProgress = true;
-   m_purchaseAlbumButton->setEnabled( false );
-
-    if ( !m_purchaseHandler ) //FIXME!!
-    {
-        m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent( this );
-        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
-    }
-
-    MagnatuneAlbum * selectedAlbum = dynamic_cast<MagnatuneAlbum *>( m_currentlySelectedItem->getContentUnion().albumValue );
-
-    if (selectedAlbum)
-        m_purchaseHandler->purchaseAlbum( *selectedAlbum );
-}*/
-
-/*void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
-{
-
-   m_purchaseInProgress = true;
-   m_purchaseAlbumButton->setEnabled( false );
-
-    if ( !m_purchaseHandler ) //FIXME!!
-    {
-        m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent( this );
-        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
-    }
-
-    DatabaseDrivenContentItem *albumContentItem = dynamic_cast<DatabaseDrivenContentItem*>( m_currentlySelectedItem->parent() );
-
-    if (!albumContentItem) {
-	debug() << "dynamic_cast to albumContentItem failed!" << endl;
-
-        m_purchaseInProgress = false;
-        m_purchaseAlbumButton->setEnabled( true );
-	return;
-    }
-
-    MagnatuneAlbum * selectedAlbum = dynamic_cast<MagnatuneAlbum *> ( albumContentItem->getContentUnion().albumValue );
-
-    m_purchaseHandler->purchaseAlbum( *selectedAlbum );
-}*/
 
 
 void MagnatuneBrowser::initTopPanel( )
@@ -364,25 +247,6 @@ void MagnatuneBrowser::listDownloadCancelled( )
     m_updateListButton->setEnabled( true );
 }
 
-/*void MagnatuneBrowser::showInfo( bool show )
-{
-    if ( show )
-    {
-        m_isInfoShown = true;
-        m_infoBox->widget() ->setMaximumHeight( 2000 );
-    }
-    else
-    {
-        m_infoBox->widget() ->setMaximumHeight( 0 );
-        m_isInfoShown = false;
-    }
-}*/
-
-/*void MagnatuneBrowser::genreChanged( QString genre )
-{
-  //  debug() << "Genre changed to: " << genre << endl;
-  //  static_cast< DatabaseDrivenContentModel *>( getModel() )->setGenre( genre );
-}*/
 
 
 void MagnatuneBrowser::doneParsing()
@@ -391,18 +255,6 @@ void MagnatuneBrowser::doneParsing()
     debug() << "MagnatuneBrowser: done parsing" << endl;
     m_collection->emitUpdated();
 }
-
-/*void MagnatuneBrowser::updateGenreBox()
-{
-    const QStringList genres = m_dbHandler->getAlbumGenres();
-
-    m_genreComboBox->clear();
-    m_genreComboBox->addItem( "All" , 0 ); // should not be i18n'ed as it is
-    //used as a trigger in the code in the database handler.
-
-    oldForeach( genres )
-    m_genreComboBox->addItem( ( *it ), -1 );
-}*/
 
 /*void MagnatuneBrowser::processRedownload( )
 {
@@ -434,18 +286,40 @@ void MagnatuneBrowser::purchaseCompleted( bool )
 
 }
 
-/*void MagnatuneBrowser::slotSelectionChanged( ServiceModelItemBase * selectedItem ) {
 
-   m_currentlySelectedItem = static_cast<DatabaseDrivenContentItem*>( selectedItem );
-   if ( ( m_currentlySelectedItem->getType() == SERVICE_ITEM_ALBUM ) ||  ( m_currentlySelectedItem->getType() == SERVICE_ITEM_TRACK )  ) {
+void MagnatuneBrowser::itemSelected( CollectionTreeItem * selectedItem ){
+    
+    DEBUG_BLOCK
+    
+    //we only enable the purchase button if there is only one item selected and it happens to 
+    //be an album or a track
+    DataPtr dataPtr = selectedItem->data();
+    
+    if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
+        
+        debug() << "is right type (track)" << endl;
+        MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
+        m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
+        m_purchaseAlbumButton->setEnabled( true );
+        
+    } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
+        
+        m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
+        debug() << "is right type (album) named " << m_currentAlbum->name() << endl;
+        
+        m_purchaseAlbumButton->setEnabled( true );
+    } else {
+        
+        debug() << "is wrong type" << endl;
+        m_purchaseAlbumButton->setEnabled( false );
+        
+    }
 
-       m_purchaseAlbumButton->setEnabled( true );
-   } else {
-       m_purchaseAlbumButton->setEnabled( false );
-   }
 
 
-}*/
+    return;
+}
+
 
 /*void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 {
@@ -458,21 +332,22 @@ void MagnatuneBrowser::purchaseCompleted( bool )
 
        foreach (SimpleServiceTrack * track, tracks) {
            addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( track ) );
-       }
-   } else {
+}
+} else {
 
        int randomIndex;
        for ( int i = 0; i < 10; i++ ) {
            randomIndex = rand() % (numberOfTracks - i);
            addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( tracks.takeAt( randomIndex ) ) );
 
-        }
-    }
+}
+}
 
 
     qDeleteAll( tracks );
 
 }*/
+
 
 
 //using namespace Context;
@@ -543,38 +418,6 @@ void MagnatuneBrowser::polish( )
 
 }
 
-void MagnatuneBrowser::itemSelected( CollectionTreeItem * selectedItem ){
-    
-    DEBUG_BLOCK
-    
-    //we only enable the purchase button if there is only one item selected and it happens to 
-    //be an album or a track
-    DataPtr dataPtr = selectedItem->data();
-    
-    if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
-        
-        debug() << "is right type (track)" << endl;
-        MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
-        m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
-        m_purchaseAlbumButton->setEnabled( true );
-        
-    } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
-        
-        m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
-        debug() << "is right type (album) named " << m_currentAlbum->name() << endl;
-        
-        m_purchaseAlbumButton->setEnabled( true );
-    } else {
-        
-        debug() << "is wrong type" << endl;
-        m_purchaseAlbumButton->setEnabled( false );
-        
-    }
-
-
-
-    return;
-}
 
 /*bool MagnatuneBrowser::updateContextView()
 {
