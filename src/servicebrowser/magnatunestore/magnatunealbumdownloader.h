@@ -66,7 +66,7 @@ protected:
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
     MagnatuneAlbum * m_currentAlbum;
-    KTempDir m_tempDir;
+    KTempDir * m_tempDir;
 
 protected slots:
     /**

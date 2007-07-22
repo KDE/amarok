@@ -33,12 +33,13 @@
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()
-        , m_currentAlbum( 0 )
+        //, m_currentAlbum( 0 )
 {
 
     m_downloadDialog = 0;
     m_purchaseDialog = 0;
     m_albumDownloader = 0;
+    m_currentAlbum = 0;
 }
 
 
@@ -52,6 +53,7 @@ MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 
 void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 {
+    DEBUG_BLOCK
     m_currentAlbum = album;
 
     //first lets get the album cover for the album we are about to purchase.

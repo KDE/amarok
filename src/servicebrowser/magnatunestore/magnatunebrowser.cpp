@@ -49,6 +49,7 @@
 
 MagnatuneBrowser::MagnatuneBrowser( const char *name )
         : ServiceBase( "Magnatune Store" )
+        , m_currentAlbum( 0 )
 {
     setObjectName(name);
     DEBUG_BLOCK
@@ -70,7 +71,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     m_currentInfoUrl = "";
 
-//    m_purchaseHandler = 0;
+    m_purchaseHandler = 0;
   //  m_redownloadHandler = 0;
 
     m_purchaseInProgress = 0;
@@ -167,15 +168,21 @@ void MagnatuneBrowser::menuAboutToShow( )
 
 void MagnatuneBrowser::purchaseButtonClicked( )
 {
-    QModelIndexList selected = m_contentView->selectionModel()->selectedIndexes();
-
-    if ( selected.size() != 1 ) //there must be only one selected item
+    if ( m_purchaseInProgress ) 
         return;
+    
+    m_purchaseInProgress = true;
+    m_purchaseAlbumButton->setEnabled( false );
 
-    QModelIndex selectedItem = selected.first();
+    if ( !m_purchaseHandler )
+    {
+        m_purchaseHandler = new MagnatunePurchaseHandler();
+        m_purchaseHandler->setParent( this );
+        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+    }
 
-
-    selectedItem.internalPointer();
+    if (m_currentAlbum != 0)
+        m_purchaseHandler->purchaseAlbum( m_currentAlbum );
 }
 
 /*void MagnatuneBrowser::purchaseSelectedAlbum( )
@@ -290,9 +297,17 @@ void MagnatuneBrowser::initBottomPanel()
 void MagnatuneBrowser::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
-    updateMagnatuneList();
-}
+   // updateMagnatuneList();
+    
+    
+    //HACK for testing
+    debug() << "MagnatuneBrowser: create xml parser" << endl;
+    MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
+    parser->setDbHandler( new MagnatuneDatabaseHandler() );
+    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
+    ThreadManager::instance() ->queueJob( parser );
+}
 bool MagnatuneBrowser::updateMagnatuneList()
 {
     //download new list from magnatune
@@ -501,8 +516,7 @@ void MagnatuneBrowser::polish( )
         //setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
-
-        connect ( this, SIGNAL( selectionChanged ( ServiceModelItemBase * ) ) , this, SLOT( slotSelectionChanged( ServiceModelItemBase * ) ) );
+        connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) ); 
 
        /* m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );
@@ -527,6 +541,39 @@ void MagnatuneBrowser::polish( )
 
 
 
+}
+
+void MagnatuneBrowser::itemSelected( CollectionTreeItem * selectedItem ){
+    
+    DEBUG_BLOCK
+    
+    //we only enable the purchase button if there is only one item selected and it happens to 
+    //be an album or a track
+    DataPtr dataPtr = selectedItem->data();
+    
+    if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
+        
+        debug() << "is right type (track)" << endl;
+        MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
+        m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
+        m_purchaseAlbumButton->setEnabled( true );
+        
+    } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
+        
+        m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
+        debug() << "is right type (album) named " << m_currentAlbum->name() << endl;
+        
+        m_purchaseAlbumButton->setEnabled( true );
+    } else {
+        
+        debug() << "is wrong type" << endl;
+        m_purchaseAlbumButton->setEnabled( false );
+        
+    }
+
+
+
+    return;
 }
 
 /*bool MagnatuneBrowser::updateContextView()

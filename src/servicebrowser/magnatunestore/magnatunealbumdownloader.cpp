@@ -32,15 +32,18 @@ MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     , m_albumDownloadJob( 0 )
     , m_currentAlbumFileName()
     , m_currentAlbum( 0 )
-    , m_tempDir()
 {
-    m_tempDir.setAutoRemove( false );
+    m_tempDir = new KTempDir();
+    m_tempDir->setAutoRemove( false );
 
 }
 
 
 MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
-{}
+{
+    delete m_tempDir;
+    m_tempDir = 0;
+}
 
 void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 {
@@ -56,9 +59,9 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     m_currentAlbumFileName = downloadUrl.fileName();
 
 
-    debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
+    debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
@@ -69,11 +72,13 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
 void MagnatuneAlbumDownloader::downloadCover( const QString &albumCoverUrlString, const QString &fileName )
 {
+    DEBUG_BLOCK
+    
     KUrl downloadUrl( albumCoverUrlString );
 
-    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir.name() << fileName << endl;
+    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir->name() << fileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + fileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + fileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
 
@@ -100,7 +105,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip " + KShell::quoteArg( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + KShell::quoteArg( m_currentAlbumUnpackLocation ) + " &";
+    QString unzipString = "unzip " + KShell::quoteArg( m_tempDir->name() + m_currentAlbumFileName ) + " -d " + KShell::quoteArg( m_currentAlbumUnpackLocation ) + " &";
 
     debug() << "unpacking: " << unzipString << endl;
 
@@ -149,7 +154,7 @@ void MagnatuneAlbumDownloader::coverDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    emit( coverDownloadCompleted(  m_tempDir.name() ) );
+    emit( coverDownloadCompleted(  m_tempDir->name() ) );
 }
 
 

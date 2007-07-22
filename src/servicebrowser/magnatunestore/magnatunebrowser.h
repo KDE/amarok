@@ -177,6 +177,14 @@ private slots:
      * @param mood The mood of the tracks to add
      */
     //void addMoodyTracksToPlaylist( QString mood );
+    
+    
+     /**
+     * Checks if purchase button should be enabled
+     * @param selection the new selection
+     * @param deseleted items that were previously selected but have been deselected
+     */
+    void itemSelected( CollectionTreeItem * selectedItem );
 
 private:
     /**
@@ -238,7 +246,7 @@ private:
     QComboBox   *m_genreComboBox;
     bool         m_purchaseInProgress;
 
-    //MagnatuneContentModel * m_model;
+    MagnatuneAlbum * m_currentAlbum;
    
 
     KIO::FileCopyJob * m_listDownloadJob;

@@ -108,7 +108,7 @@ ServiceSqlQueryMaker::reset()
     d->queryMatch.clear();
     d->queryFilter.clear();
     d->queryOrderBy.clear();
-   // d->linkedTables = 0;
+    d->linkedTables = 0;
     if( d->worker && d->worker->isFinished() )
         delete d->worker;   //TODO error handling
     //d->resultAsDataPtrs = false;
@@ -209,7 +209,8 @@ ServiceSqlQueryMaker::startAlbumQuery()
         d->linkedTables |= Private::ALBUMS_TABLE;
         d->withoutDuplicates = true;
         //d->queryFrom = m_metaFactory->tablePrefix() + "_albums";
-        d->queryReturnValues = m_metaFactory->getAlbumSqlRows();
+        d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
+        m_metaFactory->getArtistSqlRows();
     }
     return this;
 }
@@ -444,8 +445,8 @@ ServiceSqlQueryMaker::endAndOr()
 void
 ServiceSqlQueryMaker::linkTables()
 {
-    //d->linkedTables |= Private::TAGS_TAB; //HACK!!!
-    //assuming that tags is always included for now
+    
+    //FIXME:This whole function needs to be rewritten!!! The problem is that the service database schema does not make this easy
     if( !d->linkedTables )
         return;
 
@@ -458,12 +459,11 @@ ServiceSqlQueryMaker::linkTables()
         d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_tracks.artist_id = " + prefix + "_artists.id";
         d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
-
-      
-
     }
-    if( d->linkedTables & Private::ALBUMS_TABLE )
+    if( d->linkedTables & Private::ALBUMS_TABLE ) {
        d->queryFrom += ' ' + prefix + "_albums";
+       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+    }
     if( d->linkedTables & Private::ARTISTS_TABLE )
        d->queryFrom += ' ' + prefix + "_artists";
 
@@ -655,7 +655,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
     DEBUG_BLOCK
     AlbumList albums;
     // SqlRegistry* reg = m_collection->registry();
-    int rowCount = m_metaFactory->getAlbumSqlRowCount();
+    int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
     for( int i = 0; i < resultRows; i++ )
     {

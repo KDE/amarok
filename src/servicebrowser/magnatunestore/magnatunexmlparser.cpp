@@ -72,10 +72,12 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     QDomDocument doc( "config" );
 
     QFile file( filename );
-    if ( !file.open( QIODevice::ReadOnly ) )
+    if ( !file.open( QIODevice::ReadOnly ) ) {
+        debug() << "MagnatuneXmlParser::readConfigFile error reading file" << endl;
         return ;
-    if ( !doc.setContent( &file ) )
+    } if ( !doc.setContent( &file ) )
     {
+        debug() << "MagnatuneXmlParser::readConfigFile error parsing file" << endl;
         file.close();
         return ;
     }

@@ -85,12 +85,16 @@ JamendoXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
+      //HACK: for testing purposes only
     QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
-    if ( !file || !file->open( QIODevice::ReadOnly ) )
+    //QFile *file = new QFile("/tmp/dbdump.en.xml");
+    if ( !file || !file->open( QIODevice::ReadOnly ) ) {
+        debug() << "JamendoXmlParser::readConfigFile error reading file" << endl;
         return ;
-
+    }
     if ( !doc.setContent( file ) )
     {
+        debug() << "JamendoXmlParser::readConfigFile error parsing file" << endl;
         file->close();
         return ;
     }

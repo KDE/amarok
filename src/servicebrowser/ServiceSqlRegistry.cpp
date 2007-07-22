@@ -211,9 +211,38 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
         return m_albumMap.value( id );
     else
     {
-        AlbumPtr album = m_metaFactory->createAlbum( rowData );
-        m_albumMap.insert( id, album );
-        return album;
+        
+        int index = 0;
+        
+        AlbumPtr albumPtr = m_metaFactory->createAlbum( rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() ) );
+        m_albumMap.insert( id, albumPtr );
+        
+        index += m_metaFactory->getAlbumSqlRowCount();
+        
+        ServiceAlbum* album = static_cast<ServiceAlbum *> ( albumPtr.data() );
+
+        ArtistPtr artistPtr;
+        
+        // we need to set the artist for thsi album
+        if ( m_artistMap.contains( album->artistId() ) )
+            artistPtr = m_artistMap.value( album->artistId() );
+        else {
+
+            QStringList subRows = rowData.mid(index, m_metaFactory->getArtistSqlRowCount() );
+
+            artistPtr = m_metaFactory->createArtist( subRows );
+        }
+
+        index += m_metaFactory->getArtistSqlRowCount();
+       
+        ServiceArtist * artist = static_cast<ServiceArtist *> ( artistPtr.data() );
+
+        album->setAlbumArtist( artistPtr );
+
+        m_artistMap.insert( artist->id(), artistPtr );
+
+
+        return albumPtr;
     }
 }
 

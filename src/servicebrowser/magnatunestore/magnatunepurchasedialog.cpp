@@ -45,8 +45,8 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
     //albumEdit->setText("Hello!");
     albumEdit->setText( album->name() );
 
-    artistEdit->setText( album->artistName() );
-    //genresEdit->setText( album.getMp3Genre() ); FIXME:
+    artistEdit->setText( album->albumArtist()->name() );
+    //genresEdit->setText( album.getMp3Genre() ); FIXME: Broken because there can be more than one genre per album
     launchDateEdit->setText( QString::number( album->launchYear() ) );
 
     m_albumCode = album->albumCode();
