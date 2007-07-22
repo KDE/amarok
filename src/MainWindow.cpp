@@ -42,7 +42,7 @@
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "selectLabel.h"
-#include "servicebrowser/magnatunestore/MagnatuneStore.h"
+#include "servicebrowser/magnatunestore/magnatunebrowser.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
@@ -293,7 +293,7 @@ void MainWindow::init()
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
-        //addInstBrowserMacro( MagnatuneStore, "MagnatuneStore", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
+        //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
 
 
         //cant use macros here since we need access to the browsers directly
@@ -309,7 +309,7 @@ void MainWindow::init()
         debug() << "Add me dammit!!!!!" << endl;
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
-        internetContentServiceBrowser->addService( new MagnatuneStore( "Dummy service 1" ) );
+        internetContentServiceBrowser->addService( new MagnatuneBrowser( "Dummy service 1" ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
 

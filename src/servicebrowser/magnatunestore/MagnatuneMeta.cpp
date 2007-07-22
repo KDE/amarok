@@ -177,11 +177,13 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
+    , m_hasFetchedCover( false )
 {
 }
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbum( resultRow )
+    , m_hasFetchedCover( false )
 {
     debug() << "create album from result row: " << resultRow << endl;
     
@@ -220,7 +222,14 @@ void MagnatuneAlbum::setAlbumCode(const QString & albumCode)
 QString MagnatuneAlbum::albumCode()
 {
     return m_albumCode;
+
 }
+
+
+QPixmap MagnatuneAlbum::image(int size, bool withShadow) const
+{
+}
+
 
 
 
@@ -233,6 +242,7 @@ MagnatuneGenre::MagnatuneGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
+
 
 
 

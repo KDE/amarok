@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
-#include "MagnatuneStore.h"
+#include "magnatunebrowser.h"
 
 #include "amarok.h"
 #include "statusbar.h"
@@ -47,7 +47,7 @@
 #include <QStandardItemModel>
 #include <QDirModel>
 
-MagnatuneStore::MagnatuneStore( const char *name )
+MagnatuneBrowser::MagnatuneBrowser( const char *name )
         : ServiceBase( "Magnatune Store" )
         , m_currentAlbum( 0 )
 {
@@ -83,7 +83,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 }
 
-void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
+void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
 {
     if ( !item ) return ; // sanity check
 
@@ -95,7 +95,7 @@ void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
 
 
 
-void MagnatuneStore::purchaseButtonClicked( )
+void MagnatuneBrowser::purchaseButtonClicked( )
 {
     if ( m_purchaseInProgress ) 
         return;
@@ -116,7 +116,7 @@ void MagnatuneStore::purchaseButtonClicked( )
 
 
 
-void MagnatuneStore::initTopPanel( )
+void MagnatuneBrowser::initTopPanel( )
 {
 
     KHBox *hBox = new KHBox( m_topPanel);
@@ -139,7 +139,7 @@ void MagnatuneStore::initTopPanel( )
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
 }
 
-void MagnatuneStore::initBottomPanel()
+void MagnatuneBrowser::initBottomPanel()
 {
     m_bottomPanel->setMaximumHeight( 54 );
 
@@ -177,25 +177,25 @@ void MagnatuneStore::initBottomPanel()
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchaseButtonClicked() ) );
 }
 
-void MagnatuneStore::updateButtonClicked()
+void MagnatuneBrowser::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
    // updateMagnatuneList();
     
     
     //HACK for testing
-    debug() << "MagnatuneStore: create xml parser" << endl;
+    debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance() ->queueJob( parser );
 }
-bool MagnatuneStore::updateMagnatuneList()
+bool MagnatuneBrowser::updateMagnatuneList()
 {
     //download new list from magnatune
 
-     debug() << "MagnatuneStore: start downloading xml file" << endl;
+     debug() << "MagnatuneBrowser: start downloading xml file" << endl;
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ), KUrl("/tmp/album_info.xml"), 0774 , true, false, true );
     Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
@@ -210,10 +210,10 @@ bool MagnatuneStore::updateMagnatuneList()
 }
 
 
-void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
+void MagnatuneBrowser::listDownloadComplete( KJob * downLoadJob )
 {
 
-   debug() << "MagnatuneStore: xml file download complete" << endl;
+   debug() << "MagnatuneBrowser: xml file download complete" << endl;
 
     if ( downLoadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
@@ -226,7 +226,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    debug() << "MagnatuneStore: create xml parser" << endl;
+    debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -234,7 +234,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     ThreadManager::instance() ->queueJob( parser );
 }
 
-void MagnatuneStore::listDownloadCancelled( )
+void MagnatuneBrowser::listDownloadCancelled( )
 {
 
 
@@ -249,14 +249,14 @@ void MagnatuneStore::listDownloadCancelled( )
 
 
 
-void MagnatuneStore::doneParsing()
+void MagnatuneBrowser::doneParsing()
 {
 
-    debug() << "MagnatuneStore: done parsing" << endl;
+    debug() << "MagnatuneBrowser: done parsing" << endl;
     m_collection->emitUpdated();
 }
 
-/*void MagnatuneStore::processRedownload( )
+/*void MagnatuneBrowser::processRedownload( )
 {
     debug() << "Process redownload" << endl;
 
@@ -267,7 +267,7 @@ void MagnatuneStore::doneParsing()
     m_redownloadHandler->showRedownloadDialog();
 }*/
 
-void MagnatuneStore::purchaseCompleted( bool )
+void MagnatuneBrowser::purchaseCompleted( bool )
 {
 
     if ( m_purchaseHandler != 0 )
@@ -287,7 +287,7 @@ void MagnatuneStore::purchaseCompleted( bool )
 }
 
 
-void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
+void MagnatuneBrowser::itemSelected( CollectionTreeItem * selectedItem ){
     
     DEBUG_BLOCK
     
@@ -321,7 +321,7 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
 }
 
 
-/*void MagnatuneStore::addMoodyTracksToPlaylist(QString mood)
+/*void MagnatuneBrowser::addMoodyTracksToPlaylist(QString mood)
 {
    debug() << "addMoody: " << mood << endl;
    SimpleServiceTrackList tracks = m_dbHandler->getTracksByMood( mood );
@@ -352,7 +352,7 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
 
 //using namespace Context;
 
-void MagnatuneStore::polish( )
+void MagnatuneBrowser::polish( )
 {
 
     DEBUG_BLOCK;
@@ -419,7 +419,7 @@ void MagnatuneStore::polish( )
 }
 
 
-/*bool MagnatuneStore::updateContextView()
+/*bool MagnatuneBrowser::updateContextView()
 {
 
     MagnatuneMoodMap moodMap = m_dbHandler->getMoodMap( 20 );
@@ -472,4 +472,4 @@ void MagnatuneStore::polish( )
 
 
 
-#include "MagnatuneStore.moc"
+#include "magnatunebrowser.moc"

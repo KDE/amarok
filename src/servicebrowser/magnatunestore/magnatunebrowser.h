@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
-#ifndef AMAROKMAGNATUNESTORE_H
-#define AMAROKMAGNATUNESTORE_H
+#ifndef AMAROKMAGNATUNEBROWSER_H
+#define AMAROKMAGNATUNEBROWSER_H
 
 
 #include "amarok.h"
@@ -50,7 +50,7 @@ Implemented as a singleton
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneStore : public ServiceBase
+class MagnatuneBrowser : public ServiceBase
 {
     Q_OBJECT
 
@@ -59,11 +59,11 @@ public:
      /**
      * Constructor
      */
-    MagnatuneStore( const char *name );
+    MagnatuneBrowser( const char *name );
     /**
      * Destructor
      */
-    ~MagnatuneStore() { }
+    ~MagnatuneBrowser() { }
 
      /**
      * Do not do expensive initializations before we are actually shown
@@ -152,7 +152,7 @@ private:
      */
     void addTrackToPlaylist ( MagnatuneTrack  *item );
 
-    static MagnatuneStore *s_instance;
+    static MagnatuneBrowser *s_instance;
 
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
