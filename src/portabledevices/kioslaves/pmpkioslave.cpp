@@ -88,7 +88,7 @@ void
 PMPProtocol::get( const KUrl &url )
 {
     kDebug() << endl << endl << "Entering get with url = " << url << endl << endl;
-    m_devices[udiFromUrl( url )]->backend()->get( url );
+    getBackendForUrl( url )->get( url );
     kDebug() << endl << endl << "Leaving get with url = " << url << endl << endl;
 }
 
@@ -143,7 +143,7 @@ PMPProtocol::listDir( const KUrl &url )
         kDebug() << "Calling backend's listDir" << endl;
         kDebug() << "udiFromUrl( url ) = " << udiFromUrl( url ) << endl;
         kDebug() << "m_devices[udiFromUrl( url )] = " << m_devices[udiFromUrl( url )] << endl;
-        m_devices[udiFromUrl( url )]->backend()->listDir( url );
+        getBackendForUrl( url )->listDir( url );
     }
     kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
 }
@@ -162,7 +162,7 @@ PMPProtocol::stat( const KUrl &url )
         emit finished();
     }
     else
-        m_devices[udiFromUrl( url )]->backend()->stat( url );
+        getBackendForUrl( url )->stat( url );
     kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
 }
 
@@ -222,6 +222,15 @@ PMPProtocol::udiFromUrl( const KUrl &url )
     udi = transUdi( udi );
 
     return udi;
+}
+
+PMPBackend*
+PMPProtocol::getBackendForUrl( const KUrl &url )
+{
+    kDebug() << "udiFromUrl = " << udiFromUrl( url ) << endl;
+    if( !m_devices.contains( udiFromUrl( url ) ) )
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING, "portable media player : Invalid URL (backend doesn't exist)" );
+    return m_devices[udiFromUrl( url )]->backend();
 }
 
 #include "pmpkioslave.moc"
