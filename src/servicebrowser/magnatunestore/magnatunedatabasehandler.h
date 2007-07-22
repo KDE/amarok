@@ -28,7 +28,7 @@
 #include <QMap>
 
 /**
-* This class wraps the database operations needed by the MagnatuneBrowser
+* This class wraps the database operations needed by the MagnatuneStore
 * Uses the singleton pattern
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
