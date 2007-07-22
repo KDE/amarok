@@ -110,6 +110,7 @@ PodcastCollection::slotUpdate( QString url )
 void
 PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
 {
+    DEBUG_BLOCK
     if ( !result )
     {
         debug() << "Parse error in podcast "

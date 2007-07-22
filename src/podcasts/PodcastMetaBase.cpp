@@ -19,7 +19,7 @@
 
 #include "PodcastMetaBase.h"
 
-PodcastTrack::PodcastTrack()
+PodcastEpisode::PodcastEpisode()
         : Meta::Track()
         , m_genre( 0 )
         , m_composer( 0 )
@@ -27,77 +27,77 @@ PodcastTrack::PodcastTrack()
         , m_type( 0 )
 {}
 
-PodcastTrack::~PodcastTrack()
+PodcastEpisode::~PodcastEpisode()
 {
     //nothing to do
 }
 
 
 void
-PodcastTrack::setId( int id )
+PodcastEpisode::setId( int id )
 {
     m_id = id;
 }
 
 int
 
-PodcastTrack::id() const
+PodcastEpisode::id() const
 {
     return m_id;
 }
 
 void
 
-PodcastTrack::setAlbumId( int albumId )
+PodcastEpisode::setAlbumId( int albumId )
 {
     m_albumId = albumId;
 }
 
 int
 
-PodcastTrack::albumId() const
+PodcastEpisode::albumId() const
 {
     return m_albumId;
 }
 
 void
 
-PodcastTrack::setAlbumName( const QString & name )
+PodcastEpisode::setAlbumName( const QString & name )
 {
     m_albumName = name;
 }
 
 QString
 
-PodcastTrack::albumName() const
+PodcastEpisode::albumName() const
 {
     return m_albumName;
 }
 
 void
 
-PodcastTrack::setArtistId( int id )
+PodcastEpisode::setArtistId( int id )
 {
     m_artistId = id;
 }
 
 int
 
-PodcastTrack::artistId() const
+PodcastEpisode::artistId() const
 {
     return m_artistId;
 }
 
 void
 
-PodcastTrack::setArtistName( const QString & name )
+PodcastEpisode::setArtistName( const QString & name )
 {
     m_artistName = name;
 }
 
 QString
 
-PodcastTrack::artistName() const
+PodcastEpisode::artistName() const
 {
     return m_artistName;
 }
@@ -105,21 +105,21 @@ PodcastTrack::artistName() const
 
 QString
 
-PodcastTrack::name() const
+PodcastEpisode::name() const
 {
     return m_name;
 }
 
 QString
 
-PodcastTrack::prettyName() const
+PodcastEpisode::prettyName() const
 {
     return m_name;
 }
 
 KUrl
 
-PodcastTrack::playableUrl() const
+PodcastEpisode::playableUrl() const
 {
     KUrl url( m_playableUrl );
     return url;
@@ -127,19 +127,19 @@ PodcastTrack::playableUrl() const
 
 QString
 
-PodcastTrack::url() const
+PodcastEpisode::url() const
 {
     return m_playableUrl;
 }
 
 QString
 
-PodcastTrack::prettyUrl() const
+PodcastEpisode::prettyUrl() const
 {
     return m_displayUrl;
 }
 
-void PodcastTrack::setUrl( const QString & url )
+void PodcastEpisode::setUrl( const QString & url )
 
 {
     m_playableUrl = url;
@@ -148,245 +148,245 @@ void PodcastTrack::setUrl( const QString & url )
 
 bool
 
-PodcastTrack::isPlayable() const
+PodcastEpisode::isPlayable() const
 {
     return true;
 }
 
 bool
 
-PodcastTrack::isEditable() const
+PodcastEpisode::isEditable() const
 {
     return false;
 }
 
 AlbumPtr
 
-PodcastTrack::album() const
+PodcastEpisode::album() const
 {
     return AlbumPtr::staticCast( m_album );
 }
 
 ArtistPtr
 
-PodcastTrack::artist() const
+PodcastEpisode::artist() const
 {
     return ArtistPtr::staticCast( m_artist );
 }
 
 GenrePtr
 
-PodcastTrack::genre() const
+PodcastEpisode::genre() const
 {
     return GenrePtr::staticCast( m_genre );
 }
 
 ComposerPtr
 
-PodcastTrack::composer() const
+PodcastEpisode::composer() const
 {
     return ComposerPtr::staticCast( m_composer );
 }
 
 YearPtr
 
-PodcastTrack::year() const
+PodcastEpisode::year() const
 {
     return YearPtr::staticCast( m_year );
 }
 
 void
 
-PodcastTrack::setAlbum( const QString &newAlbum )
+PodcastEpisode::setAlbum( const QString &newAlbum )
 {
     Q_UNUSED( newAlbum )
 }
 
 void
 
-PodcastTrack::setArtist( const QString &newArtist )
+PodcastEpisode::setArtist( const QString &newArtist )
 {
     Q_UNUSED( newArtist )
 }
 
 void
 
-PodcastTrack::setComposer( const QString &newComposer )
+PodcastEpisode::setComposer( const QString &newComposer )
 {
     Q_UNUSED( newComposer )
 }
 
 void
 
-PodcastTrack::setGenre( const QString &newGenre )
+PodcastEpisode::setGenre( const QString &newGenre )
 {
     Q_UNUSED( newGenre )
 }
 
 void
 
-PodcastTrack::setYear( const QString &newYear )
+PodcastEpisode::setYear( const QString &newYear )
 {
     Q_UNUSED( newYear )
 }
 
 QString
 
-PodcastTrack::comment() const
+PodcastEpisode::comment() const
 {
     return QString();
 }
 
 void
 
-PodcastTrack::setComment( const QString &newComment )
+PodcastEpisode::setComment( const QString &newComment )
 {
     Q_UNUSED( newComment )
 }
 
 double
 
-PodcastTrack::score() const
+PodcastEpisode::score() const
 {
     return 0.0;
 }
 
 void
 
-PodcastTrack::setScore( double newScore )
+PodcastEpisode::setScore( double newScore )
 {
     Q_UNUSED( newScore )
 }
 
 int
 
-PodcastTrack::rating() const
+PodcastEpisode::rating() const
 {
     return 0;
 }
 
 void
 
-PodcastTrack::setRating( int newRating )
+PodcastEpisode::setRating( int newRating )
 {
     Q_UNUSED( newRating )
 }
 
 int
 
-PodcastTrack::length() const
+PodcastEpisode::length() const
 {
     return m_length;
 }
 
 int
 
-PodcastTrack::filesize() const
+PodcastEpisode::filesize() const
 {
     return 0;
 }
 
 int
 
-PodcastTrack::sampleRate() const
+PodcastEpisode::sampleRate() const
 {
     return 0;
 }
 
 int
 
-PodcastTrack::bitrate() const
+PodcastEpisode::bitrate() const
 {
     return 0;
 }
 
 int
 
-PodcastTrack::trackNumber() const
+PodcastEpisode::trackNumber() const
 {
     return m_trackNumber;
 }
 
 void
 
-PodcastTrack::setTrackNumber( int newTrackNumber )
+PodcastEpisode::setTrackNumber( int newTrackNumber )
 {
     m_trackNumber = newTrackNumber;
 }
 
 int
 
-PodcastTrack::discNumber() const
+PodcastEpisode::discNumber() const
 {
     return 0;
 }
 
 void
 
-PodcastTrack::setDiscNumber( int newDiscNumber )
+PodcastEpisode::setDiscNumber( int newDiscNumber )
 {
     Q_UNUSED( newDiscNumber )
 }
 
 int
 
-PodcastTrack::playCount() const
+PodcastEpisode::playCount() const
 {
     return 0;
 }
 
 uint
 
-PodcastTrack::lastPlayed() const
+PodcastEpisode::lastPlayed() const
 {
     return 0;
 }
 
 QString
 
-PodcastTrack::type() const
+PodcastEpisode::type() const
 {
     return m_type;
 }
 
 void
-PodcastTrack::setAlbum( AlbumPtr album )
+PodcastEpisode::setAlbum( AlbumPtr album )
 {
     m_album = album;
 }
 
 void
-PodcastTrack::setArtist( ArtistPtr artist )
+PodcastEpisode::setArtist( ArtistPtr artist )
 {
     m_artist = artist;
 }
 
 void
-PodcastTrack::setGenre( GenrePtr genre )
+PodcastEpisode::setGenre( GenrePtr genre )
 {
     m_genre = genre;
 }
 
 void
-PodcastTrack::setComposer( ComposerPtr composer )
+PodcastEpisode::setComposer( ComposerPtr composer )
 {
     m_composer = composer;
 }
 
 void
-PodcastTrack::setYear( YearPtr year )
+PodcastEpisode::setYear( YearPtr year )
 {
     m_year = year;
 }
 
 void
-PodcastTrack::setLength( int length )
+PodcastEpisode::setLength( int length )
 {
     m_length = length;
 }
 
 
-// void PodcastTrack::/*processInfoOf*/(InfoParserBase * infoParser)
+// void PodcastEpisode::/*processInfoOf*/(InfoParserBase * infoParser)
 // {
 //     infoParser->getInfo( TrackPtr( this ) );
 // }
@@ -483,12 +483,7 @@ QString PodcastArtist::description() const
     return m_description;
 }
 
-// void PodcastArtist::processInfoOf(InfoParserBase * infoParser)
-// {
-//     infoParser->getInfo( ArtistPtr ( this ) );
-// }
-
-PodcastAlbum::PodcastAlbum()
+PodcastChannel::PodcastChannel()
         : Meta::Album()
 {
 //     m_id = resultRow[0].toInt();
@@ -500,41 +495,41 @@ PodcastAlbum::PodcastAlbum()
 
 
 
-PodcastAlbum::~PodcastAlbum()
+PodcastChannel::~PodcastChannel()
 
 {
     //nothing to do
 }
 
 
-void PodcastAlbum::setId( int id )
+void PodcastChannel::setId( int id )
 {
     m_id = id;
 }
 
-int PodcastAlbum::id() const
+int PodcastChannel::id() const
 {
     return m_id;
 }
 
-void PodcastAlbum::setArtistId( int artistId )
+void PodcastChannel::setArtistId( int artistId )
 
 {
     m_artistId = artistId;
 }
 
-int PodcastAlbum::artistId() const
+int PodcastChannel::artistId() const
 {
     return m_artistId;
 }
 
-void PodcastAlbum::setArtistName( const QString & name )
+void PodcastChannel::setArtistName( const QString & name )
 
 {
     m_artistName = name;
 }
 
-QString PodcastAlbum::artistName() const
+QString PodcastChannel::artistName() const
 
 {
     return m_artistName;
@@ -542,260 +537,81 @@ QString PodcastAlbum::artistName() const
 
 QString
 
-PodcastAlbum::name() const
+PodcastChannel::name() const
 {
     return m_name;
 }
 
 QString
 
-PodcastAlbum::prettyName() const
+PodcastChannel::prettyName() const
 {
     return m_name;
 }
 
-// void
-// PodcastAlbum::setTitle( const QString & title )
-// {
-//     m_name = title;
-// }
 
 bool
-PodcastAlbum::isCompilation() const
+PodcastChannel::isCompilation() const
 {
     return m_isCompilation;
 }
 
 bool
-PodcastAlbum::hasAlbumArtist() const
+PodcastChannel::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
 }
 
 ArtistPtr
-PodcastAlbum::albumArtist() const
+PodcastChannel::albumArtist() const
 {
     return ArtistPtr::staticCast( m_albumArtist );
 }
 
 TrackList
 
-PodcastAlbum::tracks()
+PodcastChannel::tracks()
 {
     return m_tracks;
 }
 
 void
-PodcastAlbum::image() const
+PodcastChannel::image() const
 {
     //TODO
 }
 
 bool
-PodcastAlbum::canUpdateImage() const
+PodcastChannel::canUpdateImage() const
 {
     return false;
 }
 
 void
-PodcastAlbum::updateImage()
+PodcastChannel::updateImage()
 {
     //TODO
 }
 
 void
-PodcastAlbum::addTrack( TrackPtr track )
+PodcastChannel::addTrack( TrackPtr track )
 {
     m_tracks.append( track );
 }
 
 void
-PodcastAlbum::setAlbumArtist( ArtistPtr artist )
+PodcastChannel::setAlbumArtist( ArtistPtr artist )
 {
     m_albumArtist = artist;
 }
 
 void
-PodcastAlbum::setIsCompilation( bool compilation )
+PodcastChannel::setIsCompilation( bool compilation )
 {
     m_isCompilation = compilation;
 }
 
-// void PodcastAlbum::processInfoOf(InfoParserBase * infoParser)
+// void PodcastChannel::processInfoOf(InfoParserBase * infoParser)
 // {
 //     infoParser->getInfo( AlbumPtr( this ) );
-// }
-
-
-
-//PodcastGenre
-
-PodcastGenre::PodcastGenre( const QString &name )
-        : Meta::Genre()
-//         , PodcastDisplayInfoProvider()
-        , m_name( name )
-        , m_tracks()
-{
-    //nothing to do
-}
-
-PodcastGenre::PodcastGenre( const QStringList & row )
-
-        : Meta::Genre()
-        , m_tracks()
-{
-    m_name = row[0];
-}
-
-PodcastGenre::~PodcastGenre()
-
-{
-    //nothing to do
-}
-
-QString
-PodcastGenre::name() const
-{
-    return m_name;
-}
-
-QString
-PodcastGenre::prettyName() const
-{
-    return m_name;
-}
-
-void
-PodcastGenre::setName( const QString & name )
-{
-    m_name = name;
-}
-
-
-int
-PodcastGenre::albumId()
-{
-    return m_albumId;
-}
-
-void
-PodcastGenre::setAlbumId( int albumId )
-{
-    m_albumId = albumId;
-}
-
-
-TrackList
-PodcastGenre::tracks()
-{
-    return m_tracks;
-}
-
-void
-PodcastGenre::addTrack( PodcastTrackPtr track )
-{
-    m_tracks.append( TrackPtr::staticCast( track ) );
-}
-
-// void PodcastGenre::processInfoOf(InfoParserBase * infoParser)
-// {
-//     return; // do nothing
-// }
-
-//PodcastComposer
-
-PodcastComposer::PodcastComposer( const QString &name )
-        : Meta::Composer()
-//         , PodcastDisplayInfoProvider()
-        , m_name( name )
-        , m_tracks()
-{
-    //nothing to do
-}
-
-PodcastComposer::~PodcastComposer()
-
-{
-    //nothing to do
-}
-
-QString
-PodcastComposer::name() const
-{
-    return m_name;
-}
-
-QString
-
-PodcastComposer::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-
-PodcastComposer::tracks()
-{
-    return m_tracks;
-}
-
-void
-PodcastComposer::addTrack( PodcastTrackPtr track )
-{
-    m_tracks.append( TrackPtr::staticCast( track ) );
-}
-
-// void PodcastComposer::processInfoOf(InfoParserBase * infoParser)
-// {
-//     return; // do nothing
-// }
-
-//PodcastYear
-
-PodcastYear::PodcastYear( const QString &name )
-        : Meta::Year()
-//         , PodcastDisplayInfoProvider()
-        , m_name( name )
-        , m_tracks()
-{
-    //nothing to do
-}
-
-PodcastYear::~PodcastYear()
-
-{
-    //nothing to do
-}
-
-QString
-
-PodcastYear::name() const
-{
-    return m_name;
-}
-
-QString
-
-PodcastYear::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-
-PodcastYear::tracks()
-{
-    return m_tracks;
-}
-
-void
-PodcastYear::addTrack( PodcastTrackPtr track )
-{
-    m_tracks.append( TrackPtr::staticCast( track ) );
-}
-
-
-// void PodcastYear::/*/*processInfoOf*/*/(InfoParserBase * infoParser)
-// {
-//     return; // do nothing
 // }

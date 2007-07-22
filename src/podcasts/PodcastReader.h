@@ -29,7 +29,7 @@ class KIO::Job;
 class KUrl;
 
 /**
-	@author Bart Cerneels <bart.cerneels@gmail.com>
+    @author Bart Cerneels <bart.cerneels@gmail.com>
 */
 class PodcastReader : public QObject, public QXmlStreamReader
 {
@@ -50,7 +50,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
     private:
 //         void readRss();
 //         void readChannel();
-//         PodcastTrackPtr readItem();
+//         PodcastEpisodePtr readItem();
         QString readTitle();
         QString readLink();
         QString readDescription();
@@ -74,7 +74,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
     private:
         QString m_url;
         PodcastMetaCommon * m_current;
-        PodcastAlbum *m_channel;
+        PodcastChannel *m_channel;
         PodcastArtistPtr m_artist;
 };
 

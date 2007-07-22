@@ -25,27 +25,21 @@
 
 using namespace Meta;
 
-class PodcastTrack;
-class PodcastAlbum;
+class PodcastEpisode;
+class PodcastChannel;
 class PodcastArtist;
 class PodcastGenre;
 class PodcastComposer;
 class PodcastYear;
 
-typedef KSharedPtr<PodcastTrack> PodcastTrackPtr;
+typedef KSharedPtr<PodcastEpisode> PodcastEpisodePtr;
 typedef KSharedPtr<PodcastArtist> PodcastArtistPtr;
-typedef KSharedPtr<PodcastAlbum> PodcastAlbumPtr;
-typedef KSharedPtr<PodcastGenre> PodcastGenrePtr;
-typedef KSharedPtr<PodcastComposer> PodcastComposerPtr;
-typedef KSharedPtr<PodcastYear> PodcastYearPtr;
+typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
 
 
-typedef QList<PodcastTrackPtr > PodcastTrackList;
+typedef QList<PodcastEpisodePtr > PodcastEpisodeList;
 typedef QList<PodcastArtistPtr > PodcastArtistList;
-typedef QList<PodcastAlbumPtr > PodcastAlbumList;
-typedef QList<PodcastComposerPtr> PodcastComposerList;
-typedef QList<PodcastGenrePtr > PodcastGenreList;
-typedef QList<PodcastYearPtr > PodcastYearList;
+typedef QList<PodcastChannelPtr > PodcastChannelList;
 
 // class PodcastMetaFactory
 // {
@@ -84,13 +78,13 @@ class PodcastMetaCommon
         virtual void setDescription( const QString &description ) = 0;
 };
 
-class PodcastTrack : public Meta::Track, public PodcastMetaCommon
+class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
-        PodcastTrack();
+        PodcastEpisode();
 
-        virtual ~PodcastTrack();
+        virtual ~PodcastEpisode();
 
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -151,7 +145,7 @@ class PodcastTrack : public Meta::Track, public PodcastMetaCommon
 
 //         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        //PodcastTrack specific methods
+        //PodcastEpisode specific methods
 
         void setAlbum( AlbumPtr album );
         void setArtist( ArtistPtr artist );
@@ -195,6 +189,56 @@ class PodcastTrack : public Meta::Track, public PodcastMetaCommon
         QString m_description;
 };
 
+class PodcastChannel : public Meta::Album, public PodcastMetaCommon
+{
+    public:
+        PodcastChannel();
+        PodcastChannel( const QString & name  );
+        virtual ~PodcastChannel();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+
+        virtual bool isCompilation() const;
+        virtual bool hasAlbumArtist() const;
+        virtual ArtistPtr albumArtist() const;
+        virtual TrackList tracks();
+
+        virtual void image() const;
+        virtual bool canUpdateImage() const;
+        virtual void updateImage();
+
+        virtual QString title() const { return m_name; }
+        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; }
+        virtual QString description() const { return m_description; }
+        virtual void setDescription( const QString &description ) { m_description = description; }
+
+//         virtual void processInfoOf( InfoParserBase * infoParser );
+
+        //PodcastChannel specific methods
+
+        void addTrack( TrackPtr track );
+        void setAlbumArtist( ArtistPtr artist );
+        void setIsCompilation( bool compilation );
+
+        void setId( int id );
+        int id( ) const;
+        void setArtistId( int artistId );
+        int artistId( ) const;
+        void setArtistName( const QString &name );
+        QString artistName() const;
+
+    private:
+        int m_id;
+        QString m_name;
+        TrackList m_tracks;
+        bool m_isCompilation;
+        ArtistPtr m_albumArtist;
+        QString m_description;
+        int m_artistId;
+        QString m_artistName;
+};
+
 class PodcastArtist : public Meta::Artist
 {
     public:
@@ -226,127 +270,6 @@ class PodcastArtist : public Meta::Artist
         QString m_description;
         TrackList m_tracks;
 
-};
-
-class PodcastAlbum : public Meta::Album, public PodcastMetaCommon
-{
-    public:
-        PodcastAlbum();
-        PodcastAlbum( const QString & name  );
-        virtual ~PodcastAlbum();
-
-        virtual QString name() const;
-        virtual QString prettyName() const;
-
-        virtual bool isCompilation() const;
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
-
-        virtual void image() const;
-        virtual bool canUpdateImage() const;
-        virtual void updateImage();
-
-        virtual QString title() const { return m_name; }
-        virtual void setTitle( const QString &newTitle ) { m_name = newTitle; }
-        virtual QString description() const { return m_description; }
-        virtual void setDescription( const QString &description ) { m_description = description; }
-
-//         virtual void processInfoOf( InfoParserBase * infoParser );
-
-
-
-
-        //PodcastAlbum specific methods
-
-        void addTrack( TrackPtr track );
-        void setAlbumArtist( ArtistPtr artist );
-        void setIsCompilation( bool compilation );
-
-        void setId( int id );
-        int id( ) const;
-        void setArtistId( int artistId );
-        int artistId( ) const;
-        void setArtistName( const QString &name );
-        QString artistName() const;
-
-    private:
-        int m_id;
-        QString m_name;
-        TrackList m_tracks;
-        bool m_isCompilation;
-        ArtistPtr m_albumArtist;
-        QString m_description;
-        int m_artistId;
-        QString m_artistName;
-};
-
-class PodcastGenre : public Meta::Genre
-{
-    public:
-        PodcastGenre( const QString &name );
-        PodcastGenre( const QStringList &row );
-        virtual ~PodcastGenre();
-
-        virtual QString name() const;
-        virtual QString prettyName() const;
-
-        virtual TrackList tracks();
-
-//         virtual void processInfoOf( InfoParserBase * infoParser );
-
-        //PodcastGenre specific methods
-        void addTrack( PodcastTrackPtr track );
-        void setName( const QString &name );
-        int albumId();
-        void setAlbumId( int albumId );
-
-    private:
-        int m_albumId;
-        QString m_name;
-        TrackList m_tracks;
-};
-
-class PodcastComposer : public Meta::Composer
-{
-    public:
-        PodcastComposer( const QString &name );
-        virtual ~PodcastComposer();
-
-        virtual QString name() const;
-        virtual QString prettyName() const;
-
-        virtual TrackList tracks();
-
-//         virtual void processInfoOf( InfoParserBase * infoParser );
-
-        //PodcastComposer specific methods
-        void addTrack( PodcastTrackPtr track );
-
-    private:
-        QString m_name;
-        TrackList m_tracks;
-};
-
-class PodcastYear : public Meta::Year
-{
-    public:
-        PodcastYear( const QString &name );
-        virtual ~PodcastYear();
-
-        virtual QString name() const;
-        virtual QString prettyName() const;
-
-        virtual TrackList tracks();
-
-//         virtual void processInfoOf( InfoParserBase * infoParser );
-
-        //PodcastYear specific methods
-        void addTrack( PodcastTrackPtr track );
-
-    private:
-        QString m_name;
-        TrackList m_tracks;
 };
 
 #endif

@@ -35,6 +35,7 @@ PodcastReader::PodcastReader( PodcastCollection * collection )
 
 PodcastReader::~PodcastReader()
 {
+    DEBUG_BLOCK
 }
 
 bool PodcastReader::read ( QIODevice *device )
@@ -84,11 +85,23 @@ bool PodcastReader::read()
 
     while ( !atEnd() )
     {
+        if( !error() )
+        {
+            readNext();
+            debug() << "reading " << tokenString() << endl;
+        }
+        else if ( error() == PrematureEndOfDocumentError )
+        {
+            debug() << "recovering from PrematureEndOfDocumentError" << endl;
+        }
+        else
+            debug() << "some other error occured: " << errorString() << endl;
+
         if( !m_current )
         {
-            //Pre Channel
-            readNext();
+            debug() << "no m_current yet" << endl;
 
+            //Pre Channel
             if ( isStartElement() )
             {
                 debug() << "Initial StartElement: " << QXmlStreamReader::name().toString() << endl;
@@ -103,7 +116,6 @@ bool PodcastReader::read()
                     if (isEndElement())
                     {
                         debug() << "endElement" << endl;
-                        Q_ASSERT( false );
                         break;
                     }
                     if (isStartElement())
@@ -112,7 +124,7 @@ bool PodcastReader::read()
                         if ( QXmlStreamReader::name() == "channel" )
                         {
                             debug() << "new channel" << endl;
-                            m_current = m_channel = new PodcastAlbum();
+                            m_current = m_channel = new PodcastChannel();
                             m_artist = PodcastArtistPtr( new PodcastArtist( "testcast" ) );
                         }
 //                         else
@@ -123,57 +135,66 @@ bool PodcastReader::read()
                 {
                     raiseError ( QObject::tr ( "The file is not an RSS version 2.0 file." ) );
                     result = false;
+                    break;
                 }
             }
-            continue;
-        }
-
-        Q_ASSERT( m_current );
-
-        if( error() == QXmlStreamReader::NoError )
-            readNext();
-
-        if (isEndElement())
-        {
-            debug() << "endElement: " << QXmlStreamReader::name().toString() << endl;;
-            if (QXmlStreamReader::name() == "item")
+            else if( tokenType() != QXmlStreamReader::StartDocument )
             {
-                commitEpisode();
-                commitChannel(); //DEBUG: should not commit here.
-
+                debug() << "some weird thing happend. " << QXmlStreamReader::name().toString()
+                        << " : " << tokenString() << endl;
             }
-            else if( QXmlStreamReader::name() == "channel" )
+        }
+        else
+        {
+            if( isStartElement() )
             {
+                debug() << "startElement: " << QXmlStreamReader::name().toString() << endl;
+                if (QXmlStreamReader::name() == "title")
+                    m_current->setTitle( readTitle() );
+                else if (QXmlStreamReader::name() == "description")
+                    m_current->setDescription( readDescription() );
+                else if (QXmlStreamReader::name() == "item")
+                {
+                    debug() << "new episode" << endl;
+                    m_current = new PodcastEpisode();
+                }
+            }
+            else if( isEndElement() )
+            {
+                debug() << "endElement: " << QXmlStreamReader::name().toString() << endl;;
+                if (QXmlStreamReader::name() == "item")
+                {
+                    commitEpisode();
+                    commitChannel(); //DEBUG: should not commit here.
+                }
+                else if( QXmlStreamReader::name() == "channel" )
+                {
+                    commitChannel();
+                    emit finished( this, true );
+                    break;
+                }
+            }
+        }
+    }
+
+    if ( error() )
+    {
+        if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
+        {
+            qDebug() << "waiting for data at line " << lineNumber() << endl;
+        }
+        else
+        {
+            qDebug() << "XML ERROR: " << error() << " at line: " << lineNumber()
+                    << ": " << columnNumber ()
+                    << "\n\t" << errorString() << endl;
+            qDebug() << "\tname = " << QXmlStreamReader::name().toString()
+                    << " tokenType = " << tokenString() << endl;
+
+            if( m_channel )
                 commitChannel();
-                emit finished( this, true );
-            }
-            break;
+            emit finished( this, false );
         }
-        else if( isStartElement() )
-        {
-            debug() << "startElement: " << QXmlStreamReader::name().toString() << endl;
-            Q_ASSERT( m_current );
-            if (QXmlStreamReader::name() == "title")
-                m_current->setTitle( readTitle() );
-            else if (QXmlStreamReader::name() == "description")
-                m_current->setDescription( readDescription() );
-            else if (QXmlStreamReader::name() == "item")
-            {
-                debug() << "new episode" << endl;
-                m_current = new PodcastTrack();
-            }
-        }
-    }
-
-    if ( error() && error() != QXmlStreamReader::PrematureEndOfDocumentError )
-    {
-        debug() << "XML ERROR:" << lineNumber() << ": " << errorString() << endl;
-        emit finished( this, result );
-    }
-
-    if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
-    {
-        debug() << "waiting for data at line " << lineNumber() << endl;
     }
     return result;
 }
@@ -211,7 +232,7 @@ PodcastReader::readEnclosure()
     Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "enclosure" );
     //TODO: need to get the url argument here
     QString url = attributes().value( "", "url").toString();
-    readElementText();
+    debug() << readElementText() << endl;
     return url;
 }
 
@@ -266,7 +287,7 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
     DEBUG_BLOCK
     Q_UNUSED( job ); Q_UNUSED( fromUrl );
     debug() << "premanently redirected to: " << toUrl.url() << endl;
-
+    //TODO: change url in database
 }
 
 void
@@ -274,7 +295,7 @@ PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
     debug() << "commit Podcast Channel (as Album) " << m_channel->title() << endl;
-    PodcastAlbumPtr album = PodcastAlbumPtr( m_channel );
+    PodcastChannelPtr album = PodcastChannelPtr( m_channel );
     album->setAlbumArtist( ArtistPtr::staticCast( m_artist) );
 
     m_collection->acquireReadLock();
@@ -290,8 +311,8 @@ PodcastReader::commitEpisode()
 {
     Q_ASSERT( m_current );
     debug() << "commit episode " << m_current->title() << endl;
-    PodcastTrackPtr item = PodcastTrackPtr( static_cast<PodcastTrack*>(m_current) );
-    item->setAlbum( AlbumPtr::staticCast( PodcastAlbumPtr( m_channel ) ) );
+    PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode*>(m_current) );
+    item->setAlbum( AlbumPtr::staticCast( PodcastChannelPtr( m_channel ) ) );
     item->setArtist( ArtistPtr::dynamicCast( m_artist ) );
     m_artist->addTrack( TrackPtr::dynamicCast( item ) );
 
