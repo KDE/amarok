@@ -9,15 +9,15 @@
 #include "amarok_export.h"
 
 #include <kurl.h>
-#include <QObject>       //baseclass
+
 #include <q3valuelist.h>    //stack alloc
-//Added by qt3to4:
 #include <QByteArray>
-#include <vector>
 #include <QHash>
+#include <QObject>       //baseclass
 
 #include <sys/types.h>
 #include <stdint.h>
+#include <vector>
 
 /**
  * @class Engine::Base

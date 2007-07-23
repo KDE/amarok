@@ -18,7 +18,8 @@
 #define K3BEXPORTER_H
 
 #include "amarok_export.h"
-#include <kurl.h>
+
+#include <KUrl>
 
 //class DCOPRef;
 

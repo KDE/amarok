@@ -21,6 +21,7 @@
 
 #include "amarok.h"
 #include "kbookmarkhandler.h"
+
 #include <kbookmarkimporter.h>
 #include <kbookmarkmenu.h>
 #include <kdiroperator.h>

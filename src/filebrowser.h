@@ -24,12 +24,11 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <kvbox.h>        //baseclass
-//Added by qt3to4:
-#include <QDropEvent>
-#include <kdiroperator.h> //some inline functions
-#include <ktoolbar.h>     //baseclass
-#include <kurl.h>         //stack allocated
+#include <KDirOperator> //some inline functions
+#include <KToolBar>     //baseclass
+#include <KUrl>         //stack allocated
+#include <KVBox>        //baseclass
+
 
 class KLineEdit;
 class KFileItem;

@@ -18,13 +18,14 @@
 #ifndef AMAROK_EQUALIZERSETUP_H
 #define AMAROK_EQUALIZERSETUP_H
 
-#include <QList>           //stack alloc
-
 #include <kdialog.h>
 
+#include <QList>           //stack alloc
+
+
 class EqualizerGraph;
-class QGroupBox;
 class KComboBox;
+class QGroupBox;
 
 namespace Amarok { class Slider; }
 

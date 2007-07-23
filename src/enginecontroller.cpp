@@ -26,15 +26,15 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
+#include <KApplication>
+#include <kio/global.h>
+#include <KIO/Job>
+#include <KMessageBox>
+#include <KRun>
+
 #include <QByteArray>
 #include <QFile>
 #include <QTimer>
-
-#include <kapplication.h>
-#include <kio/global.h>
-#include <kio/job.h>
-#include <kmessagebox.h>
-#include <krun.h>
 
 #include <cstdlib>
 

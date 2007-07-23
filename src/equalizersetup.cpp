@@ -24,7 +24,21 @@
 #include "equalizersetup.h"
 #include "sliderwidget.h"
 
+#include <KApplication>
+#include <KComboBox>
+#include <KIconLoader>
+#include <KInputDialog>  //presets
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>
+#include <KStandardDirs> //locate()
+#include <KVBox>
+#include <KWindowSystem>
+
 #include <QCheckBox>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
@@ -32,18 +46,7 @@
 #include <QPushButton>
 #include <QTextStream>   //presets
 #include <QToolTip>
-#include <qdom.h>
 
-#include <kapplication.h>
-#include <kcombobox.h>
-#include <kiconloader.h>
-#include <kinputdialog.h>  //presets
-#include <klocale.h>
-#include <kmenu.h>
-#include <kmessagebox.h>
-#include <kstandarddirs.h> //locate()
-#include <kvbox.h>
-#include <kwindowsystem.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 

@@ -22,7 +22,7 @@
 
 #include "equalizersetup.h"
 
-#include <kdialog.h>      //baseclass
+#include <KDialog>      //baseclass
 
 class QPushButton;
 class K3ListView;

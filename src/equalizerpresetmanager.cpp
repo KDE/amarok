@@ -19,19 +19,21 @@
 
 #include "equalizerpresetmanager.h"
 
-#include <qdom.h>
+#include <k3listview.h>
+#include <KApplication>
+#include <KInputDialog>
+#include <KLocale>
+#include <KMessageBox>
+#include <KStandardDirs> //locate()
+#include <KVBox>
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QFile>
 #include <QLayout>
 #include <QPushButton>
-#include <kvbox.h>
 #include <QTextStream>
-
-#include <kapplication.h>
-#include <kinputdialog.h>
-#include <k3listview.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kstandarddirs.h> //locate()
 
 EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *name )
         : KDialog( parent )

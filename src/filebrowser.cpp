@@ -27,50 +27,44 @@
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
-#include "playlist/PlaylistModel.h"
-#include "TheInstances.h"
-
-#include <kaction.h>
-#include <kapplication.h>
 #include "kbookmarkhandler.h"
-#include <kdiroperator.h>
-#include <kiconloader.h>
-#include <kio/netaccess.h>
-#include <k3listview.h>
-#include <k3urldrag.h>
-#include <klocale.h>
-#include <kconfiggroup.h>
-#include <kmenu.h>
-#include <kpushbutton.h>     ///@see SearchPane
-  ///@see ctor
-#include <kurlcombobox.h>
-#include <kurlcompletion.h>
-#include <klineedit.h>
-
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "medium.h"
 #include "mydirlister.h"
 #include "mydiroperator.h"
-#include "playlist.h"
 #include "playlistbrowser.h"
+#include "playlist.h"
 #include "playlistloader.h"
+#include "playlist/PlaylistModel.h"
 #include "statusbar.h"
 #include "tagdialog.h"
+#include "TheInstances.h"
 
-#include <QDir>
-#include <khbox.h>
+
+#include <k3listview.h>
+#include <k3urldrag.h>
+#include <KAction>
+#include <KConfigGroup>
+#include <KDirOperator>
+#include <KHBox>
+#include <KIconLoader>
+#include <KIO/NetAccess>
+#include <KLineEdit>
+#include <KLocale>
+#include <KMenu>
+#include <KPushButton>     ///@see SearchPane
+#include <KUrlComboBox>    ///@see ctor
+#include <KUrlCompletion>
+
 #include <q3iconview.h>
+#include <Q3PopupMenu>
+#include <Q3PtrList>
+#include <QDir>
 #include <QLabel>
 #include <QTimer>
-#include <QToolTip>
 #include <QToolButton>
-//Added by qt3to4:
-#include <Q3PtrList>
-#include <QDropEvent>
-#include <Q3PopupMenu>
-#include <QPaintEvent>
-
+#include <QToolTip>
 
 
 //BEGIN Constructor/destructor

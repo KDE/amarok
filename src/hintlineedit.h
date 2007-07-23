@@ -1,9 +1,7 @@
 #ifndef HINTLINEEDIT_H
 #define HINTLINEEDIT_H
 
-#include <klineedit.h> //baseclass
-//Added by qt3to4:
-#include <QLabel>
+#include <KLineEdit> //baseclass
 
 class KVBox;
 class QLabel;

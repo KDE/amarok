@@ -18,24 +18,25 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  *
  *   USA                                                                   *
  ***************************************************************************/
-#include "config-amarok.h"
-#include "debug.h"
-#include "statusbar.h"
 #define DEBUG_PREFIX "KTRM"
 
+#include "config-amarok.h"
+
+#include "debug.h"
 #include "ktrm.h"
+#include "statusbar.h"
 
-#include <kapplication.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <kprotocolmanager.h>
-#include <kurl.h>
+#include <KIO/Job>
+#include <KProtocolManager>
+#include <KUrl>
 
-#include <qdom.h>
-#include <QMutex>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QEvent>
-#include <QObject>
 #include <QFile>
+#include <QMutex>
+#include <QObject>
 #include <QRegExp>
 
 //disabling for now

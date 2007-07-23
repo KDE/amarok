@@ -13,20 +13,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "amarok.h"
+#include "k3bexporter.h"
 #include "playlist.h"
 #include "playlistitem.h"
 #include "querybuilder.h"
-#include "k3bexporter.h"
-#include "amarok.h"
 
 #include <k3process.h>
-#include <kmessagebox.h>
-#include <klocale.h>
-#include <kstandarddirs.h>
+#include <KLocale>
+#include <KMessageBox>
+#include <KStandardDirs>
 
 #include <QByteArray>
 #include <QStringList>
-//Added by qt3to4:
 #include <Q3ValueList>
 
 
