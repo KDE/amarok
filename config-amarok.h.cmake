@@ -18,9 +18,6 @@
 /* Define to 1 if you have the <mp4.h> header file. */
 /* #undef HAVE_MP4_H */
 
-/* have NMM */
-/* #undef HAVE_NMM */
-
 /* have Qt with OpenGL support */
 /* #undef HAVE_QGLWIDGET */
 
@@ -48,5 +45,3 @@
 /* Postgresql database support enabled */
 #cmakedefine USE_POSTGRESQL 1
 
-/* Define the path to XMMS plugins */
-#define XMMS_PLUGIN_PATH "/usr/lib/xmms/Visualization"

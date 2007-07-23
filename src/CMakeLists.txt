@@ -66,6 +66,7 @@ include_directories(
 	meta
 	collection
     podcasts
+    widgets
 	${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${TAGLIB_INCLUDE_DIR}
@@ -323,7 +324,6 @@ set(amaroklib_LIB_SRCS
     ${mac_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
-    analyzerwidget.cpp
     app.cpp
     atomicstring.cpp
     collectiondb.cpp
@@ -383,17 +383,13 @@ set(amaroklib_LIB_SRCS
     podcastsettings.cpp
     portabledevices/SolidHandler.cpp
     prettypopupmenu.cpp
-    progressslider.cpp
     querybuilder.cpp
     queuemanager.cpp
     refreshimages.cpp
     scancontroller.cpp
     scriptmanager.cpp
     scrobbler.cpp
-    searchwidget.cpp
     sidebar.h
-    sidebarwidget.cpp
-    sliderwidget.cpp
     smartplaylisteditor.cpp
     socketserver.cpp
     StarManager.cpp
@@ -406,7 +402,12 @@ set(amaroklib_LIB_SRCS
     trackpickerdialog.cpp
     tracktooltip.cpp
     transferdialog.cpp
-    volumewidget.cpp
+    widgets/analyzerwidget.cpp
+    widgets/progressslider.cpp
+    widgets/searchwidget.cpp
+    widgets/sidebarwidget.cpp
+    widgets/sliderwidget.cpp
+    widgets/volumewidget.cpp
     xmlloader.cpp
     xspfplaylist.cpp
 )
