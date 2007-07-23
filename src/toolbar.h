@@ -54,32 +54,6 @@ namespace Amarok {
 
     };
 
-    class PrettyToolBar : public ToolBar
-    {
-        public:
-            /**
-            * Create a Toolbar with a nice context menu that increases
-            * volume on wheel events.
-            * @param parent The Widget that should be the parent of this toolbar
-            * @param name The QObject name of this toolbar
-            */
-            PrettyToolBar( QMainWindow *parent, const char *name )
-                : ToolBar( parent, name )
-            {
-            }
-
-        protected:
-            virtual void
-            contextMenuEvent( QContextMenuEvent *e ) {
-                Amarok::Menu::instance()->popup( e->globalPos() );
-            }
-
-            virtual void
-            wheelEvent( QWheelEvent *e ) {
-                EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
-            }
-    };
-
 }
 
 #endif
