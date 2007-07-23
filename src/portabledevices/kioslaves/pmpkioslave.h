@@ -49,6 +49,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
 
         void get( const KUrl &url );
         void listDir( const KUrl &url );
+        void rename( const KUrl &src, const KUrl &dest, bool overwrite );
         void stat( const KUrl &url );
 
     private:

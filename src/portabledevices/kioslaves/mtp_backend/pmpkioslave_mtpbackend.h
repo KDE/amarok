@@ -37,12 +37,14 @@ class MTPBackend : public PMPBackend
         virtual ~MTPBackend();
         void initialize();
         QString getFriendlyName();
+        void setFriendlyName( const QString &name );
         QString getModelName();
 
     protected:
         void get( const KUrl &url );
         void listDir( const KUrl &url );
         void stat( const KUrl &url );
+        void rename( const KUrl &src, const KUrl &dest, bool overwrite );
 
     private:
         LIBMTP_mtpdevice_t *m_deviceList;

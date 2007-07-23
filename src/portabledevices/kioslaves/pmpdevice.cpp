@@ -26,7 +26,6 @@
 void
 PMPDevice::initialize()
 {
-
     if( !m_device.isValid() )
     {
         m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING,

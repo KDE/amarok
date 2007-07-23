@@ -88,7 +88,10 @@ void
 PMPProtocol::get( const KUrl &url )
 {
     kDebug() << endl << endl << "Entering get with url = " << url << endl << endl;
-    getBackendForUrl( url )->get( url );
+    if( getBackendForUrl( url ) )
+        getBackendForUrl( url )->get( url );
+
+    emit finished();
     kDebug() << endl << endl << "Leaving get with url = " << url << endl << endl;
 }
 
@@ -143,9 +146,48 @@ PMPProtocol::listDir( const KUrl &url )
         kDebug() << "Calling backend's listDir" << endl;
         kDebug() << "udiFromUrl( url ) = " << udiFromUrl( url ) << endl;
         kDebug() << "m_devices[udiFromUrl( url )] = " << m_devices[udiFromUrl( url )] << endl;
-        getBackendForUrl( url )->listDir( url );
+        if( getBackendForUrl( url ) )
+            getBackendForUrl( url )->listDir( url );
     }
+
+    emit finished();
     kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
+}
+
+void
+PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
+{
+    QString srcPath = src.path( KUrl::RemoveTrailingSlash );
+    QString destPath = dest.path( KUrl::RemoveTrailingSlash );
+    while( srcPath[0] == '/' )
+        srcPath.remove( 0, 1 );
+    while( destPath[0] == '/' )
+        destPath.remove( 0, 1 );
+    //Check to see if they're trying to set a friendly name
+    //i.e. only top-level paths
+    kDebug() << endl << "srcPath = " << srcPath << endl << "destPath = " << destPath << endl;
+    if( srcPath.indexOf( '/' ) == -1 && destPath.indexOf( '/' ) == -1 )
+    {
+        QString srcName = udiFromUrl( src );
+        QString dstName = udiFromUrl( dest );
+        if( m_devices.contains( dstName ) )
+            warning( "Destination name cannot be the same as a Solid UDI!" );
+        else if ( getBackendForUrl( src ) )
+            getBackendForUrl( src )->setFriendlyName( destPath );
+        emit finished();
+        return;
+    }
+    if( udiFromUrl( src ) != udiFromUrl( dest ) )
+    {
+        //this shouldn't ever happen...
+        warning( "Could not rename file, files cannot be renamed across devices!" );
+        emit finished();
+        return;
+    }
+    if( getBackendForUrl( src ) )
+        getBackendForUrl( src )->rename( src, dest, overwrite ); 
+
+    emit finished();
 }
 
 void
@@ -160,9 +202,12 @@ PMPProtocol::stat( const KUrl &url )
         entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
         statEntry( entry );
         emit finished();
+        return;
     }
-    else
+    else if( getBackendForUrl( url ) )
         getBackendForUrl( url )->stat( url );
+
+    emit finished();
     kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
 }
 
@@ -229,7 +274,10 @@ PMPProtocol::getBackendForUrl( const KUrl &url )
 {
     kDebug() << "udiFromUrl = " << udiFromUrl( url ) << endl;
     if( !m_devices.contains( udiFromUrl( url ) ) )
+    {
         error( KIO::ERR_CANNOT_OPEN_FOR_READING, "portable media player : Invalid URL (backend doesn't exist)" );
+        return 0;
+    }
     return m_devices[udiFromUrl( url )]->backend();
 }
 

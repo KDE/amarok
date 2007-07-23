@@ -39,10 +39,12 @@ class PMPBackend : public QObject
 
         virtual void setSolidDevice( const Solid::Device &device ) { m_solidDevice = device; }
         virtual QString getFriendlyName() const { return QString(); }
+        virtual void setFriendlyName( const QString &name ) = 0;
         virtual QString getModelName() const { return QString(); }
         virtual void get( const KUrl &url ) = 0;
         virtual void listDir( const KUrl &url ) = 0;
         virtual void stat( const KUrl &url ) = 0;
+        virtual void rename( const KUrl &src, const KUrl &dest, bool overwrite ) = 0;
 
     protected:
         QString getFilePath( const KUrl &url ) const;

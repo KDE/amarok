@@ -25,6 +25,7 @@ class PMPProtocol;
 class PMPDevice
 {
     public:
+        PMPDevice() { m_slave = 0; m_device = Solid::Device(); }
         PMPDevice( PMPProtocol *slave, const Solid::Device &device ) { m_slave = slave; m_device = device; }
         ~PMPDevice() { delete m_backend; }
 

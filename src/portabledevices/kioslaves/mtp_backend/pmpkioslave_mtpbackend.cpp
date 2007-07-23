@@ -116,6 +116,14 @@ MTPBackend::getFriendlyName()
     return friendlyName;
 }
 
+void
+MTPBackend::setFriendlyName( const QString &name )
+{
+    kDebug() << "Setting MTPBackend friendly name" << endl;
+    if( LIBMTP_Set_Friendlyname( m_device, name.toUtf8() ) != 0 )
+        m_slave->warning( "Failed to set friendly name on the device!" );
+}
+
 QString
 MTPBackend::getModelName()
 {
@@ -152,8 +160,16 @@ MTPBackend::listDir( const KUrl &url )
             m_slave->listEntry( entry, false );
         }
         m_slave->listEntry( KIO::UDSEntry(), true );
-        emit m_slave->finished();
    }
+}
+
+void
+MTPBackend::rename( const KUrl &src, const KUrl &dest, bool overwrite )
+{
+    Q_UNUSED( src );
+    Q_UNUSED( dest );
+    Q_UNUSED( overwrite );
+    //make sure they're renaming playlists to playlists, tracks to tracks, etc...
 }
 
 void
@@ -166,7 +182,6 @@ MTPBackend::stat( const KUrl &url )
    entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
    entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
    m_slave->statEntry( entry );
-   emit m_slave->finished();
 }
 
 #include "pmpkioslave_mtpbackend.moc"
