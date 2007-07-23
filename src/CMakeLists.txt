@@ -5,7 +5,7 @@ FIND_PATH( KONQSIDEBAR_INCLUDE_DIR konqsidebarplugin.h
   /usr/local/include
 )
 
-MESSAGE(STATUS "reactivate konquesidebar when it will ported")
+MESSAGE(STATUS "reactivate konquesidebar when it is ported")
 #if(KONQSIDEBAR_INCLUDE_DIR)
 #   add_subdirectory( konquisidebar ) #disabling for now
 #else(KONQSIDEBAR_INCLUDE_DIR)
