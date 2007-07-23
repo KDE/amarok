@@ -239,7 +239,7 @@ MagnatuneDatabaseHandler::commit( )
 
 }
 
-void MagnatuneDatabaseHandler::insertMoods(int trackId, QStringList moods)
+void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods)
 {
  
     QString queryString;

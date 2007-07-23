@@ -119,7 +119,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
 }
 
 void 
-JamendoXmlParser::parseElement( QDomElement e )
+JamendoXmlParser::parseElement( const  QDomElement &e )
 {
     QString sElementName = e.tagName();
 
@@ -135,7 +135,7 @@ JamendoXmlParser::parseElement( QDomElement e )
 }
 
 void 
-JamendoXmlParser::parseChildren( QDomElement e )
+JamendoXmlParser::parseChildren( const  QDomElement &e )
 {
     QDomNode n = e.firstChild();
 
@@ -148,7 +148,7 @@ JamendoXmlParser::parseChildren( QDomElement e )
     }
 }
 
-void JamendoXmlParser::parseArtist( QDomElement e ) {
+void JamendoXmlParser::parseArtist( const  QDomElement &e ) {
 
 
       //debug() << "Found artist: " << endl;
@@ -201,7 +201,7 @@ void JamendoXmlParser::parseArtist( QDomElement e ) {
 */
 }
 
-void JamendoXmlParser::parseAlbum(QDomElement e)
+void JamendoXmlParser::parseAlbum( const  QDomElement &e)
 {
     //debug() << "Found album: " << endl;
     m_nNumberOfAlbums++;
@@ -272,7 +272,7 @@ void JamendoXmlParser::parseAlbum(QDomElement e)
 
 }
 
-void JamendoXmlParser::parseTrack(QDomElement e)
+void JamendoXmlParser::parseTrack( const  QDomElement &e)
 {
     //debug() << "Found track: " << endl;
     m_nNumberOfTracks++;
@@ -319,7 +319,7 @@ void JamendoXmlParser::parseTrack(QDomElement e)
 
 }
 
-QString JamendoXmlParser::getCoverUrl(QDomElement e, int size)
+QString JamendoXmlParser::getCoverUrl( const QDomElement &e, int size)
 {
 
     QDomNode n = e.firstChild();

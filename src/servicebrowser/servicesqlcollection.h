@@ -40,7 +40,7 @@ class ServiceSqlCollection : public Collection
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table );
 
-        virtual QString escape( QString text ) const;
+        virtual QString escape( const QString &text ) const;
 
         void emitUpdated() { emit( updated() ); }
 

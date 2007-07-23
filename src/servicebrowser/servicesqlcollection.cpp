@@ -73,7 +73,7 @@ ServiceSqlCollection::insert( const QString &statement, const QString &table )
 
 
 QString
-ServiceSqlCollection::escape( QString text ) const           //krazy:exclude=constref
+ServiceSqlCollection::escape( const QString &text ) const           //krazy:exclude=constref
 {
     return CollectionManager::instance()->sqlStorage()->escape( text );
 }

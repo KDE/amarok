@@ -103,7 +103,7 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
 
 
 void 
-MagnatuneXmlParser::parseElement( QDomElement e )
+MagnatuneXmlParser::parseElement( const QDomElement &e )
 {
     QString sElementName = e.tagName();
 
@@ -114,7 +114,7 @@ MagnatuneXmlParser::parseElement( QDomElement e )
 
 
 void 
-MagnatuneXmlParser::parseChildren( QDomElement e )
+MagnatuneXmlParser::parseChildren( const QDomElement &e )
 {
     QDomNode n = e.firstChild();
 
@@ -128,7 +128,7 @@ MagnatuneXmlParser::parseChildren( QDomElement e )
 }
 
 void 
-MagnatuneXmlParser::parseAlbum( QDomElement e )
+MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 {
     //DEBUG_BLOCK
     QString sElementName;
@@ -294,7 +294,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
 
 void 
-MagnatuneXmlParser::parseTrack( QDomElement e )
+MagnatuneXmlParser::parseTrack( const QDomElement &e )
 {
     //DEBUG_BLOCK
     m_currentTrackMoodList.clear();
@@ -355,7 +355,7 @@ MagnatuneXmlParser::parseTrack( QDomElement e )
 
 }
 
-void MagnatuneXmlParser::parseMoods(QDomElement e)
+void MagnatuneXmlParser::parseMoods( const QDomElement &e )
 {
     DEBUG_BLOCK
     QDomNode n = e.firstChild();

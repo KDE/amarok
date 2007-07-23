@@ -95,31 +95,31 @@ private:
      * Parses a DOM element
      * @param e The element to parse
      */
-    void parseElement( QDomElement e );
+    void parseElement( const  QDomElement &e );
 
     /**
      * Parses all children of a DOM element
      * @param e The element whose children is to be parsed
      */
-    void parseChildren( QDomElement e );
+    void parseChildren( const  QDomElement &e );
 
     /**
      * Parse a DOM element representing an artist
      * @param e The artist element to parse
      */
-    void parseArtist( QDomElement e );
+    void parseArtist( const  QDomElement &e );
 
     /**
      * Parse a DOM element representing an album
      * @param e The album element to parse
      */
-    void parseAlbum( QDomElement e );
+    void parseAlbum( const  QDomElement &e );
 
     /**
      * Parse a DOM element representing a track
      * @param e The track element to parse
      */
-    void parseTrack( QDomElement e );
+    void parseTrack( const  QDomElement &e );
 
 
     
@@ -129,7 +129,7 @@ private:
      * @param e the node to parse
      * @param size the desired size of the cover
      */
-    QString getCoverUrl( QDomElement e, int size );
+    QString getCoverUrl( const QDomElement &e, int size );
 
     void countTransaction();
 

@@ -94,31 +94,31 @@ private:
      * Parses a DOM element
      * @param e The element to parse
      */
-    void parseElement( QDomElement e );
+    void parseElement( const QDomElement &e );
 
     /**
      * Parses all children of a DOM element
      * @param e The element whose children is to be parsed
      */
-    void parseChildren( QDomElement e );
+    void parseChildren( const QDomElement &e );
 
     /**
      * Parse a DOM element representing an album
      * @param e The album element to parse
      */
-    void parseAlbum( QDomElement e );
+    void parseAlbum( const QDomElement &e );
 
     /**
      * Parse a DOM element representing a track
      * @param e The track element to parse
      */
-    void parseTrack( QDomElement e );
+    void parseTrack( const QDomElement &e );
 
     /**
      * Parse the moods of a track
      * @param e The moods element to parse
      */
-    void parseMoods( QDomElement e );
+    void parseMoods( const QDomElement &e );
 
     MagnatuneAlbum *m_pCurrentAlbum;
     MagnatuneArtist *m_pCurrentArtist;

@@ -85,7 +85,7 @@ public:
     int insertGenre( ServiceGenre *genre );
 
 
-    void insertMoods( int trackId, QStringList moods );
+    void insertMoods(int trackId, const QStringList &moods);
 
      /**
      * Retrieves the id of a named artist
