@@ -52,10 +52,14 @@ PodcastReader::read(const QString & url)
 
     m_url = url;
 
-    KIO::TransferJob *getJob = KIO::get( KUrl( url ), true, false );
+    KIO::TransferJob *getJob = KIO::storedGet( KUrl( url ), true, false );
 
-    connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-             SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+//     connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+//              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+
+    connect( getJob, SIGNAL(  result( KJob * ) ),
+             SLOT( downloadResult( KJob * ) ) );
+
     connect( getJob, SIGNAL( redirection( KIO::Job *, const KUrl & ) ),
              SLOT( slotRedirection( KIO::Job *, const KUrl & ) ) );
     connect( getJob, SIGNAL( permanentRedirection( KIO::Job *,
@@ -165,7 +169,7 @@ bool PodcastReader::read()
                 if (QXmlStreamReader::name() == "item")
                 {
                     commitEpisode();
-                    commitChannel(); //DEBUG: should not commit here.
+//                     commitChannel(); //DEBUG: should not commit here.
                 }
                 else if( QXmlStreamReader::name() == "channel" )
                 {
@@ -324,6 +328,16 @@ PodcastReader::commitEpisode()
     m_channel->addTrack( TrackPtr::staticCast( item ) );
 
     m_current = m_channel;
+}
+
+void PodcastReader::downloadResult( KJob * job )
+{
+    DEBUG_BLOCK
+
+//     KIO::StoredTransferJob *sjob = ;
+    QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
+    //parse some more data
+    read();
 }
 
 #include "PodcastReader.moc"

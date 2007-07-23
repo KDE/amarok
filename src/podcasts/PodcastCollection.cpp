@@ -124,7 +124,7 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
         debug() << "Finished updating: " << podcastReader->url() << endl;
     }
 
-    delete podcastReader;
+    podcastReader->deleteLater();
 
     emit( updated() );
 }

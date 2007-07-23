@@ -71,6 +71,9 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 const KUrl & toUrl );
         void slotAddData( KIO::Job *, const QByteArray & data );
 
+        //HACK: to make it work because of QXmlStreamReader bug.
+        void downloadResult( KJob * );
+
     private:
         QString m_url;
         PodcastMetaCommon * m_current;
