@@ -45,7 +45,8 @@ namespace Amarok
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
-            return i18nc( "monthname year", "%1 %2", cal->monthName(date), cal->yearString(date, false) );
+            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
+                          cal->yearString(date, KCalendarSystem::LongFormat) );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last sunday
