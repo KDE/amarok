@@ -19,15 +19,17 @@
  ***************************************************************************/ 
 
 
-#include "debug.h"
 #include "magnatunedownloaddialog.h"
+
+#include "debug.h"
 
 #include <kfiledialog.h>
 #include <kurlrequester.h>
 
+#include <q3textedit.h>
 #include <QCheckBox>
 #include <QComboBox>
-#include <q3textedit.h>
+
 
 
 MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, Qt::WFlags fl )

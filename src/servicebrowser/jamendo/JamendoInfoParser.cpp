@@ -17,8 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include "debug.h"
 #include "JamendoInfoParser.h"
+
+#include "debug.h"
 #include "JamendoMeta.h"
 
 JamendoInfoParser::JamendoInfoParser()

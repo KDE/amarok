@@ -18,13 +18,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
-#include "amarok.h"
-#include "debug.h"
 #include "magnatunealbumdownloader.h"
 
-//#include "magnatunedatabasehandler.h"
+#include "amarok.h"
+#include "debug.h"
 #include "MagnatuneMeta.h"
 #include "statusbar.h"
+
 #include <kshell.h>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()

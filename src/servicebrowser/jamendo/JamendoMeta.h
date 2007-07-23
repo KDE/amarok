@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#ifndef JAMENDOTYPES_H
-#define JAMENDOTYPES_H
+#ifndef JAMENDOMETA_H
+#define JAMENDOMETA_H
 
 
 #include "../servicemetabase.h"

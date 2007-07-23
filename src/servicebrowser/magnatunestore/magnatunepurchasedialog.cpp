@@ -18,18 +18,18 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
-#include "debug.h"
-#include "magnatunedatabasehandler.h"
 #include "magnatunepurchasedialog.h"
 
+#include "debug.h"
+#include "magnatunedatabasehandler.h"
+
 #include <QComboBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QPushButton>
 #include <QRegExp>
-#include <QLabel>
-//Added by qt3to4:
-#include <QPixmap>
 
 
 MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* name, bool modal, Qt::WFlags fl )

@@ -17,11 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/ 
 
-#include "debug.h"
 #include "scriptableservicemanager.h"
-#include <scriptableservicemanageradaptor.h>
+
+
 #include "collection/support/memorycollection.h"
+#include "debug.h"
 #include "ScriptableServiceCollection.h"
+#include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"
 
 #include <kiconloader.h> 

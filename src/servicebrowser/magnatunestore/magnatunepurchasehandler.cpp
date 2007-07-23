@@ -18,18 +18,20 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
+#include "magnatunepurchasehandler.h"
+
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
-#include "magnatunepurchasehandler.h"
 #include "statusbar.h"
 
 #include <ktempdir.h>
 
+#include <Q3TextStream>
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
-#include <Q3TextStream>
+
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()

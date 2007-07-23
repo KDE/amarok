@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AMAROK_SERVICESQLQUERYBUILDER_H
-#define AMAROK_SERVICESQLQUERYBUILDER_H
+#ifndef AMAROK_SERVICESQLQUERYMAKER_H
+#define AMAROK_SERVICESQLQUERYMAKER_H
 
 #include "servicemetabase.h"
 #include "ServiceSqlRegistry.h"

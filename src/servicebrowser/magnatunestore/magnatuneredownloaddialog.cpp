@@ -18,10 +18,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/ 
 
-#include "debug.h"
 #include "magnatuneredownloaddialog.h"
 
+#include "debug.h"
+
 #include <QPushButton>
+
 #include <k3listview.h>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)

@@ -17,11 +17,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include "JamendoInfoParser.h"
 #include "jamendoservice.h"
+
+#include "JamendoInfoParser.h"
+#include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"
 
-#include "jamendoxmlparser.h"
 
 #include <KTemporaryFile>
 
