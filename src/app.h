@@ -22,8 +22,8 @@
 
 #include "amarok_export.h"
 #include "engineobserver.h" //baseclass
-#include <kuniqueapplication.h>   //baseclass
-#include <kurl.h>
+#include <KUniqueApplication>   //baseclass
+#include <KUrl>
 
 #include <QByteArray>
 

@@ -19,12 +19,13 @@
 #ifndef AMAROK_DIRECTORYLIST_H
 #define AMAROK_DIRECTORYLIST_H
 
+#include <KDirLister> //stack allocated
+#include <KUrl>       //stack allocated
+#include <KVBox>      //baseclass
+
 #include <QCheckBox>  //inlined functions
 #include <q3listview.h>  //baseclass
-#include <kvbox.h>      //baseclass
 
-#include <kdirlister.h> //stack allocated
-#include <kurl.h>       //stack allocated
 
 
 namespace CollectionFolder { class Item; }

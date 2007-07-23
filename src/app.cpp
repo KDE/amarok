@@ -543,7 +543,7 @@ void App::initGlobalShortcuts()
 #include <id3v1tag.h>
 #include <tbytevector.h>
 #include <QTextCodec>
-#include <kglobal.h>
+#include <KGlobal>
 
 //this class is only used in this module, so I figured I may as well define it
 //here and save creating another header/source file combination

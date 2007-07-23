@@ -20,9 +20,9 @@
 #include "directorylist.h"
 #include "mountpointmanager.h"
 
-#include <kfileitem.h>
-#include <klocale.h>
-#include <kvbox.h>
+#include <KFileItem>
+#include <KLocale>
+#include <KVBox>
 
 #include <QFile>
 #include <QLabel>

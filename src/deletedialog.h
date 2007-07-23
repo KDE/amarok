@@ -16,12 +16,13 @@
 #ifndef _DELETEDIALOG_H
 #define _DELETEDIALOG_H
 
+#include "ui_deletedialogbase.h"
+
+#include <KDialog>
+#include <KUrl>
 
 #include <QCheckBox>
 #include <QLabel>
-#include <kdialog.h>
-#include <kurl.h>
-#include "ui_deletedialogbase.h"
 
 class KGuiItem;
 class QLabel;

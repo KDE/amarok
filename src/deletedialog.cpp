@@ -13,27 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kconfiggroup.h>
-#include <kdialog.h>
-#include <kglobal.h>
-#include <kiconloader.h>
-#include <kio/deletejob.h>
-#include <klocale.h>
-#include <kstandardguiitem.h>
-#include <kurl.h>
-
-#include <QStringList>
-#include <QCheckBox>
-#include <QLayout>
-#include <QLabel>
-#include <QTimer>
-#include <kvbox.h>
-#include <khbox.h>
-
 #include "amarok.h"
 #include "playlist.h"
 #include "deletedialog.h"
 #include "statusbar.h"
+
+#include <KConfigGroup>
+#include <KDialog>
+#include <KGlobal>
+#include <KHBox>
+#include <KIconLoader>
+#include <KIO/DeleteJob>
+#include <KLocale>
+#include <KStandardGuiItem>
+#include <KUrl>
+#include <KVBox>
+
+#include <QCheckBox>
+#include <QLabel>
+#include <QLayout>
+#include <QStringList>
+#include <QTimer>
+
 
 //////////////////////////////////////////////////////////////////////////////
 // DeleteWidget implementation

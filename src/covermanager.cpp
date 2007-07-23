@@ -15,7 +15,29 @@
 #include "playlist.h"
 #include "TheInstances.h"
 
-#include <qdesktopwidget.h>  //ctor: desktop size
+#include <k3listview.h>
+#include <k3multipledrag.h>
+#include <k3urldrag.h>
+#include <KApplication>
+#include <KConfig>
+#include <KCursor>
+#include <KFileDialog>
+#include <KIconLoader>
+#include <KIO/NetAccess>
+#include <KLineEdit>
+#include <KLocale>
+#include <KMenu>    //showCoverMenu()
+#include <KMessageBox>    //showCoverMenu()
+#include <KPushButton>
+#include <KSqueezedTextLabel> //status label
+#include <KStandardDirs>   //KGlobal::dirs()
+#include <KStatusBar>
+#include <KToolBar>
+#include <KUrl>
+#include <KVBox>
+#include <KWindowSystem>
+
+#include <QDesktopWidget>  //ctor: desktop size
 #include <QFile>
 #include <QFontMetrics>    //paintItem()
 #include <QImage>
@@ -25,41 +47,19 @@
 #include <QPainter>    //paintItem()
 #include <QPalette>    //paintItem()
 #include <QPixmap>
-#include <qpoint.h>
+#include <QPoint>
 #include <QProgressBar>
 #include <q3progressdialog.h>
 #include <QRect>
 #include <QStringList>
 #include <QToolTip>
 #include <QTimer>    //search filter timer
-#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3PtrList>
 #include <QDropEvent>
 #include <QToolButton>
 
-#include <kapplication.h>
-#include <kconfig.h>
-#include <kcursor.h>
-#include <kfiledialog.h>
-#include <kiconloader.h>
-#include <k3listview.h>
-#include <klocale.h>
-#include <kmessagebox.h>    //showCoverMenu()
-#include <k3multipledrag.h>
-#include <kio/netaccess.h>
-#include <kmenu.h>    //showCoverMenu()
-#include <kpushbutton.h>
-#include <ksqueezedtextlabel.h> //status label
-#include <kstandarddirs.h>   //KGlobal::dirs()
-#include <kstatusbar.h>
-#include <ktoolbar.h>
-    //clear filter button
-#include <kurl.h>
-#include <k3urldrag.h>
-#include <kwindowsystem.h>
-#include <klineedit.h>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;

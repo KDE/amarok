@@ -18,7 +18,7 @@
 
 #include "medium.h"
 
-#include <qmap.h>
+#include <QMap>
 
 
 typedef QMap<QString, Medium*> MediumMap;

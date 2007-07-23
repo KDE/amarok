@@ -20,16 +20,17 @@
 #include "pluginmanager.h"
 #include "scriptmanager.h"
 
+#include <KApplication>
+#include <KComboBox>
+#include <KLocale>
+#include <KPushButton>
+#include <KVBox>
+#include <KWindowSystem>
+
 #include <QLabel>
 #include <QToolTip>
 #include <q3buttongroup.h>
 
-#include <kapplication.h>
-#include <kcombobox.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kvbox.h>
-#include <kwindowsystem.h>
 
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         : KDialog( Amarok::mainWindow() )

@@ -20,10 +20,8 @@
 #include "socketserver.h"
 
 #include <KIcon>
-#include <klocale.h>
-#include <kmenu.h>
-
-#include <stdio.h>
+#include <KLocale>
+#include <KMenu>
 
 AnalyzerWidget::AnalyzerWidget( QWidget *parent )
     : QWidget( parent )

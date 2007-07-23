@@ -1,6 +1,18 @@
 // (c) 2006 Giovanni Venturi <giovanni@kde-it.org>
 // See COPYING file for licensing information.
 
+#include "amarokconfig.h"
+#include "collectiondb.h"
+#include "debug.h"
+#include "editfilterdialog.h"
+#include "metabundle.h"
+
+#include <KGlobal>
+#include <KLineEdit>
+#include <KLocale>
+#include <KMessageBox>
+#include <KPushButton>
+
 #include <QLayout>
 #include <QDateTime>
 #include <QLabel>
@@ -9,23 +21,9 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QCheckBox>
-#include <qspinbox.h>
+#include <QSpinBox>
 #include <QToolTip>
 
-//Added by qt3to4:
-
-#include <kglobal.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kmessagebox.h>
-
-
-#include "amarokconfig.h"
-#include "collectiondb.h"
-#include "debug.h"
-#include "editfilterdialog.h"
-#include "metabundle.h"
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
     : KDialog( parent ),

@@ -15,10 +15,11 @@
 
 #include "hintlineedit.h"
 
+#include <kdialog.h>
+
 #include <QCheckBox>
 #include <QRadioButton>
 
-#include <kdialog.h>
 
 class Medium;
 

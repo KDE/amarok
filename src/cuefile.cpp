@@ -3,17 +3,18 @@
 
 #define DEBUG_PREFIX "CueFile"
 
-#include <QFile>
-#include <qmap.h>
-#include <QStringList>
-#include <QTextStream>
-
-#include <kglobal.h>
-
 #include "cuefile.h"
 #include "metabundle.h"
 #include "enginecontroller.h"
 #include "debug.h"
+
+#include <KGlobal>
+
+#include <QFile>
+#include <QMap>
+#include <QStringList>
+#include <QTextStream>
+
 
 CueFile *CueFile::instance()
 {

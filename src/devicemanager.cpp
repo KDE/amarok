@@ -19,13 +19,13 @@
 #include "medium.h"
 #include "mediumpluginmanager.h"
 
-#include <q3ptrlist.h>
+#include <KApplication>
+
 #include <QTimer>
-//Added by qt3to4:
 #include <QByteArray>
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <kapplication.h>
+
 
 typedef Medium::List MediumList;
 typedef QMap<QString, Medium*>::Iterator MediumIterator;

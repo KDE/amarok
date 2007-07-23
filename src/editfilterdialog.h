@@ -4,22 +4,21 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
-#include <q3valuelist.h>
-#include <q3valuevector.h>
-//Added by qt3to4:
-#include <QVBoxLayout>
-#include <QLabel>
+#include <KDialog>
 
-#include <kdialog.h>
+#include <QList>
+#include <QVector>
 
-class QWidget;
-class QVBoxLayout;
-class QComboBox;
-class QCheckBox;
-class QRadioButton;
+
 class Q3GroupBox;
+class QCheckBox;
+class QComboBox;
+class QLabel;
+class QRadioButton;
 class QSpinBox;
 class QStringList;
+class QVBoxLayout;
+class QWidget;
 
 class KLineEdit;
 
@@ -58,7 +57,7 @@ class EditFilterDialog : public KDialog
         QRadioButton *m_checkAtLeastOne;
         QRadioButton *m_checkExactly;
         QRadioButton *m_checkExclude;
-        Q3ValueList<QRadioButton*> m_actionCheck;
+        QList<QRadioButton*> m_actionCheck;
 
         Q3GroupBox *m_groupBox3;
         QRadioButton *m_checkAND;
@@ -66,7 +65,7 @@ class EditFilterDialog : public KDialog
 
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
-        Q3ValueVector<QString> m_vector; // the vector of the amarok filter keyword
+        QVector<QString> m_vector; // the vector of the amarok filter keyword
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"

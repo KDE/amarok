@@ -11,10 +11,9 @@
 #include "prettypopupmenu.h"
 #include "sliderwidget.h"
 
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <ktoggleaction.h>
-#include <kselectaction.h>
+#include <KAction>
+#include <KToggleAction>
+#include <KSelectAction>
 
 #include <QPointer>
 

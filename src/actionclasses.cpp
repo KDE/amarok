@@ -20,16 +20,16 @@
 #include "threadmanager.h"
 #include "timeLabel.h"
 
-#include <khbox.h>
-#include <khelpmenu.h>
-#include <kiconloader.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kstandarddirs.h>
-#include <ktoolbar.h>
-#include <kurl.h>
-#include <kauthorized.h>
+#include <KHBox>
+#include <KHelpMenu>
+#include <KIconLoader>
+#include <KLineEdit>
+#include <KLocale>
+#include <KPushButton>
+#include <KStandardDirs>
+#include <KToolBar>
+#include <KUrl>
+#include <KAuthorized>
 
 #include <QPixmap>
 #include <QToolTip>

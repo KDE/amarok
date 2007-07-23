@@ -11,31 +11,30 @@
 #include "debug.h"
 #include "statusbar.h"
 
-#include <qdom.h>
-#include <khbox.h>
+#include <KApplication>
+#include <KComboBox>
+#include <KCursor> //waiting cursor
+#include <KDialog>
+#include <KHBox>
+#include <KIconLoader>
+#include <KFileDialog>
+#include <KIO/Job>
+#include <KLineEdit>
+#include <KLocale>
+#include <KMessageBox>
+#include <KMenu>
+#include <KPushButton>
+#include <KUrl>
+#include <KVBox>
+#include <KWindowSystem>
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <q3popupmenu.h>
 #include <QLabel>
 #include <QLayout>
 #include <QRegExp>
-//Added by qt3to4:
-#include <QMouseEvent>
-
-#include <kapplication.h>
-#include <kcombobox.h>
-#include <kcursor.h> //waiting cursor
-#include <kdialog.h>
-#include <kiconloader.h>
-#include <kfiledialog.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kmenu.h>
-#include <kpushbutton.h>
-#include <kurl.h>
-#include <kvbox.h>
-#include <kwindowsystem.h>
 
 
 void
