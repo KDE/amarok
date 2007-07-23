@@ -16,10 +16,10 @@
 
 #include "playlistitem.h"
 
-#include <kdialog.h>    //baseclass
+#include <KDialog>    //baseclass
+
 #include <QListWidget>      //baseclass
 #include <QListWidgetItem> //baseclass
-
 #include <QMap>
 
 class KPushButton;

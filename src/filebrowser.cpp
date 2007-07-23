@@ -21,11 +21,12 @@
    Boston, MA 02110-1301, USA.
 */
 
+#include "filebrowser.h"
+
 #include "amarok.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
 #include "enginecontroller.h"
-#include "filebrowser.h"
 #include "k3bexporter.h"
 #include "kbookmarkhandler.h"
 #include "MainWindow.h"
@@ -41,10 +42,11 @@
 #include "tagdialog.h"
 #include "TheInstances.h"
 
-
 #include <k3listview.h>
 #include <k3urldrag.h>
 #include <KAction>
+#include <KActionMenu>
+#include <KActionCollection>
 #include <KConfigGroup>
 #include <KDirOperator>
 #include <KHBox>

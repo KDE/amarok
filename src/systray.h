@@ -10,10 +10,12 @@
 #define AMAROKSYSTRAY_H
 
 #include "engineobserver.h" //baseclass
+
 #include <ksystemtrayicon.h>
+
 #include <QPixmap>
-//Added by qt3to4:
-#include <QEvent>
+
+class QEvent;
 
 class App;
 

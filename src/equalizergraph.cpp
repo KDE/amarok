@@ -15,9 +15,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "equalizergraph.h"
 
 #include "amarokconfig.h"
-#include "equalizergraph.h"
 
 #include <QPainter>
 #include <QPixmap>

@@ -1,5 +1,6 @@
-#include "medium.h"
 #include "mydiroperator.h"
+
+#include "medium.h"
 
 #include <kurl.h>
 

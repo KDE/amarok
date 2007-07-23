@@ -9,25 +9,27 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include "transferdialog.h"
+
 #include "amarok.h"
 #include "debug.h"
 #include "mediabrowser.h"
-#include "transferdialog.h"
+
+#include <KApplication>
+#include <KComboBox>
+#include <KConfig>
+#include <KLineEdit>
+#include <KLocale>
+#include <KPushButton>
+#include <KVBox>
 
 #include <QCheckBox>
 #include <q3groupbox.h>
 #include <QLabel>
 #include <QLayout>
-//Added by qt3to4:
 #include <Q3PtrList>
 
-#include <kapplication.h>
-#include <kcombobox.h>
-#include <kconfig.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kvbox.h>
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
         : KDialog( Amarok::mainWindow() )

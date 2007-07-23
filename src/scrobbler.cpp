@@ -23,29 +23,30 @@
 
 #define DEBUG_PREFIX "Scrobbler"
 
+#include "scrobbler.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "config-amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "playlist.h"
-#include "scrobbler.h"
 #include "statusbar.h"
 
-#include <unistd.h>
+#include <KApplication>
+#include <KCodecs>
+#include <KIO/Job>
+#include <kio/jobclasses.h>
+#include <KLocale>
+#include <KStandardDirs>
+#include <KUrl>
 
 #include <QtAlgorithms>
 #include <QDateTime>
 #include <QHashIterator>
 #include <QTextStream>
 
-#include <kapplication.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <klocale.h>
-#include <kcodecs.h>
-#include <kstandarddirs.h>
-#include <kurl.h>
+#include <unistd.h>
 
 //some setups require this
 #undef PROTOCOL_VERSION

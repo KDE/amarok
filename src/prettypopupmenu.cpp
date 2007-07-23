@@ -20,18 +20,17 @@
 
 #include "prettypopupmenu.h"
 
-#include <QPainter>
-#include <QPixmap>
-#include <QStyle>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QPaintEvent>
-#include <QStyleOptionFrame>
+#include <KApplication>
+#include <KConfig>
+#include <KIconEffect>
+#include <KStandardDirs>
 
-#include <kapplication.h>
-#include <kconfig.h>
-#include <kiconeffect.h>
-#include <kstandarddirs.h>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QResizeEvent>
+#include <QStyle>
+#include <QStyleOptionFrame>
 
 
 QImage PrettyPopupMenu::s_sidePixmap;

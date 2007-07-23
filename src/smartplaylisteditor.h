@@ -6,24 +6,26 @@
 #ifndef SMARTPLAYLISTEDITOR_H
 #define SMARTPLAYLISTEDITOR_H
 
-#include <kdialog.h> //baseclass
-#include <qdom.h>
-#include <khbox.h>       //baseclass
-#include <q3ptrlist.h>    //definition required
-//Added by qt3to4:
-#include <QLabel>
+#include <KDialog> //baseclass
 #include <klineedit.h>   //inline function
+#include <KHBox>       //baseclass
 
-class KComboBox;
-class QSpinBox;
-class KLineEdit;
-class QCheckBox;
-class Q3DateEdit;
-class QLabel;
-class QToolButton;
-class Q3VGroupBox;
+#include <QDomDocument>
+#include <QDomElement>
+#include <q3ptrlist.h>    //definition required
 
 class CriteriaEditor;
+
+class KComboBox;
+class KLineEdit;
+
+class Q3DateEdit;
+class Q3VGroupBox;
+class QCheckBox;
+class QLabel;
+class QSpinBox;
+class QToolButton;
+
 
 class SmartPlaylistEditor : public KDialog
 {

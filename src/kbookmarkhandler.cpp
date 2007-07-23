@@ -16,11 +16,9 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-
-// $Id$
+#include "kbookmarkhandler.h"
 
 #include "amarok.h"
-#include "kbookmarkhandler.h"
 
 #include <kbookmarkimporter.h>
 #include <kbookmarkmenu.h>

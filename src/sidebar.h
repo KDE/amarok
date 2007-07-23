@@ -20,11 +20,14 @@
 #ifndef AMAROK_SIDEBAR_H
 #define AMAROK_SIDEBAR_H
 
+#include "sidebarwidget.h"
+
+#include <KHBox>
+
 #include <QIcon>
 #include <QFrame>
 #include <QStackedWidget>
-#include <khbox.h>
-#include "sidebarwidget.h"
+
 
 class SideBar: public KHBox
 {

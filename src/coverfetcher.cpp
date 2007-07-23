@@ -3,11 +3,12 @@
 // (C) 2004 Max Howell
 // See COPYING file for licensing information.
 
+#include "coverfetcher.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "querybuilder.h"
 #include "covermanager.h"
-#include "coverfetcher.h"
 #include "debug.h"
 #include "statusbar.h"
 

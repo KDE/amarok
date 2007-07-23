@@ -12,24 +12,25 @@
  ***************************************************************************/
 
 #define DEBUG_PREFIX "QueueManager"
-#include "debug.h"
 
-#include "amarok.h"
-#include "amarokconfig.h"     //check if dynamic mode
-#include "playlist.h"
 #include "queuemanager.h"
+
+#include "amarokconfig.h"     //check if dynamic mode
+#include "amarok.h"
+#include "debug.h"
+#include "playlist.h"
+
+#include <k3urldrag.h>
+#include <KApplication>
+#include <KGuiItem>
+#include <KLocale>
+#include <KPushButton>
+#include <KVBox>
+#include <KWindowSystem>
 
 #include <QPainter>
 #include <QTextDocument>
 #include <QToolTip>
-
-#include <k3urldrag.h>
-#include <kapplication.h>
-#include <kguiitem.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kvbox.h>
-#include <kwindowsystem.h>
 
 #if 0
 //////////////////////////////////////////////////////////////////////////////////////////

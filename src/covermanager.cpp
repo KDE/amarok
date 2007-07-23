@@ -2,6 +2,8 @@
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
 
+#include "covermanager.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "browserToolBar.h"
@@ -9,7 +11,6 @@
 #include "querybuilder.h"
 #include "config-amarok.h"
 #include "coverfetcher.h"
-#include "covermanager.h"
 #include "pixmapviewer.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist.h"

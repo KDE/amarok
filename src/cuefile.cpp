@@ -4,9 +4,10 @@
 #define DEBUG_PREFIX "CueFile"
 
 #include "cuefile.h"
-#include "metabundle.h"
-#include "enginecontroller.h"
+
 #include "debug.h"
+#include "enginecontroller.h"
+#include "metabundle.h"
 
 #include <KGlobal>
 

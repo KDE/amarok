@@ -16,10 +16,10 @@ email                : markey@web.de
 #ifndef AMAROK_PLUGINMANAGER_H
 #define AMAROK_PLUGINMANAGER_H
 
-#include <vector>
+#include <KService>
+#include <KServiceTypeTrader>
 
-#include <kservice.h>
-#include <kservicetypetrader.h>
+#include <vector>
 
 namespace Amarok { class Plugin; }
 class KLibrary;

@@ -17,14 +17,16 @@
 
 #if HAVE_TUNEPIMP
 
-#include <QLabel>
-
-#include <kapplication.h>
-#include <k3listview.h>
-#include <klocale.h>
-
 #include "trackpickerdialog.h"
 #include "trackpickerdialogbase.h"
+
+#include <KApplication>
+#include <k3listview.h>
+#include <KLocale>
+
+#include <QLabel>
+
+
 
 #define NUMBER(x) (x == 0 ? QString::null : QString::number(x))
 

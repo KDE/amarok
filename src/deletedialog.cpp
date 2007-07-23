@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "deletedialog.h"
+
 #include "amarok.h"
 #include "playlist.h"
-#include "deletedialog.h"
 #include "statusbar.h"
 
 #include <KConfigGroup>

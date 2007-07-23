@@ -21,11 +21,11 @@
 
 #include "amarok_export.h"
 
+#include <KUrl>
+
 #include <QString>
 #include <QStringList>
-//Added by qt3to4:
 #include <QList>
-#include <kurl.h>
 
 class AMAROK_EXPORT Medium
 {

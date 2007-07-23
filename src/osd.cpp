@@ -11,18 +11,23 @@
  *            (C) 2004, 2005 Max Howell
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */
+ 
+#include "osd.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"    //for albumCover location
 #include "debug.h"
 #include "enginecontroller.h"
-#include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
 #include "StarManager.h"
+
+#include <KApplication>
+#include <KPixmapEffect>
+#include <KStandardDirs>   //locate
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -31,10 +36,6 @@
 #include <QRegExp>
 #include <QTimer>
 #include <QVector>
-
-#include <kapplication.h>
-#include <kpixmapeffect.h>
-#include <kstandarddirs.h>   //locate
 
 namespace ShadowEngine
 {

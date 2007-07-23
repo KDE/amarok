@@ -93,7 +93,7 @@ ProgressSlider::mouseMoveEvent( QMouseEvent *e )
         else if ( p.containsPoint( oldpoint, Qt::OddEvenFill) && !p.containsPoint( e->pos(), Qt::OddEvenFill ) )
         {
             if( m_popup->isVisible() )
-                m_popup->hide();
+                m_popup->deleteLater();
         }
     }
     oldpoint = e->pos();

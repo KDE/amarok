@@ -3,39 +3,34 @@
 // (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
-
-// FIXME Config check for this seems to be missing 
-#define HAVE_TUNEPIMP false
+#include "tagdialog.h"
 
 #include "amarok.h"
-#include "debug.h"
-#include "querybuilder.h"
 #include "coverfetcher.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "querybuilder.h"
 #include "statusbar.h"       //for status messages
-#include "tagdialog.h"
 #include "tagguesser.h"
-#include "ui_tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
+#include "ui_tagguesserconfigdialog.h"
 
-#include <tfile.h> //TagLib::File::isWritable
-
-#include <kapplication.h>
-#include <kcombobox.h>
-#include <kcursor.h>
-#include <kglobal.h>
-#include <khtmlview.h>
-#include <kiconloader.h>
-#include <klineedit.h>
-#include <kmessagebox.h>
-#include <knuminput.h>
-#include <krun.h>
-#include <kstandarddirs.h>
-#include <ktabwidget.h>
-#include <ktextedit.h>
-#include <kvbox.h>
+#include <KApplication>
+#include <KComboBox>
+#include <KCursor>
+#include <KGlobal>
+#include <KHTMLView>
+#include <KIconLoader>
+#include <KLineEdit>
+#include <KMessageBox>
+#include <KNumInput>
+#include <KRun>
+#include <KStandardDirs>
+#include <KTabWidget>
+#include <KTextEdit>
+#include <KVBox>
 
 #include <QCheckBox>
 #include <qdom.h>
@@ -46,7 +41,7 @@
 #include <QPushButton>
 #include <QToolTip>
 
-
+#include <tfile.h> //TagLib::File::isWritable
 
 class TagDialogWriter : public ThreadManager::Job
 {

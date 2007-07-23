@@ -25,14 +25,14 @@
 #include "pluginmanager.h"
 #include "threadmanager.h"
 
-#include <kconfig.h>
-#include <kurl.h>
+#include <KConfig>
+#include <KUrl>
 
-#include <qmap.h>
-#include <QMutex>
 #include <q3ptrlist.h>
-#include <QStringList>
 #include <q3valuelist.h>
+#include <QMap>
+#include <QMutex>
+#include <QStringList>
 
 class DeviceHandler;
 class DeviceHandlerFactory;

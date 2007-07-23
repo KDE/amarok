@@ -10,30 +10,32 @@
 
 #define DEBUG_PREFIX "SocketServer"
 
+#include "socketserver.h"
+
 #include "app.h"
 #include "amarok.h"
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "statusbar.h"
-#include <klocale.h>
-#include <kmenu.h>       //Vis::Selector
+
 #include <k3process.h>         //Vis::Selector
-#include <kwindowsystem.h>             //Vis::Selector
-#include <kstandarddirs.h>    //locateLocal()
-#include <kdialog.h>
-#include <QToolTip>         //Vis::Selector ctor
-//Added by qt3to4:
-#include <QByteArray>
+#include <KDialog>
+#include <KLocale>
+#include <KMenu>       //Vis::Selector
+#include <KStandardDirs>    //locateLocal()
+#include <KWindowSystem>             //Vis::Selector
+
 #include <Q3PopupMenu>
+#include <QByteArray>
 #include <QPaintEvent>
-#include "socketserver.h"
+#include <QToolTip>         //Vis::Selector ctor
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
-#include <vector>
 #include <unistd.h>
-
+#include <vector>
 
 
 //TODO allow stop/start and pause signals to be sent to registered visualizations

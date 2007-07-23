@@ -21,13 +21,14 @@
 #ifndef AMAROK_XML_LOADER_H
 #define AMAROK_XML_LOADER_H
 
+#include "metabundle.h"
+
 #include <QEvent>
 #include <QObject>
 #include <QtXml/QXmlInputSource>
 #include <QtXml/QXmlSimpleReader>
-//Added by qt3to4:
 #include <Q3ValueList>
-#include "metabundle.h"
+
 
 /**
  * Used for loading XML of the format outputted by MetaBundle::save(),

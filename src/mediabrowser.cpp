@@ -7,6 +7,8 @@
 
 #define DEBUG_PREFIX "MediaBrowser"
 
+#include "mediabrowser.h"
+
 #include "config-amarok.h"
 
 #include "amarok.h"
@@ -21,7 +23,6 @@
 #include "mediadevicemanager.h"
 #include "expression.h"
 #include "hintlineedit.h"
-#include "mediabrowser.h"
 #include "medium.h"
 #include "mediumpluginmanager.h"
 #include "metabundle.h"
@@ -40,56 +41,55 @@
 #include "transferdialog.h"
 #include "TheInstances.h"
 
+#include <q3header.h>
+#include <Q3PopupMenu>
+#include <Q3PtrList>
+#include <q3simplerichtext.h>
+#include <Q3ValueList>
+#include <QByteArray>
 #include <QCheckBox>
 #include <QDateTime>
 #include <QDir>
-#include <qdom.h>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
+#include <QDropEvent>
 #include <QFileInfo>
-//#include <q3groupbox.h>
 #include <QGroupBox>
-#include <q3header.h>
 #include <QImage>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QListIterator>
 #include <QObject>
 #include <QPainter>
+#include <QPaintEvent>
+#include <QPixmap>
 #include <QProgressBar>
 #include <QRadioButton>
-#include <q3simplerichtext.h>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip>       //QToolTip::add()
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3ValueList>
-#include <Q3PopupMenu>
-#include <QKeyEvent>
-#include <QDropEvent>
-#include <QByteArray>
-#include <QPaintEvent>
-#include <Q3PtrList>
 
-#include <kapplication.h> //kapp
-#include <kcombobox.h>
-#include <kdirlister.h>
-#include <kfiledialog.h>
-#include <kglobal.h>
-#include <kiconloader.h>
-#include <kinputdialog.h>
-#include <kio/job.h>
-#include <klocale.h>
-#include <kmessagebox.h>
 #include <k3multipledrag.h>
-#include <kmenu.h>
 #include <k3process.h>
-#include <kpushbutton.h>
-#include <krun.h>
-#include <kstandarddirs.h> //locate file
-#include <ktabbar.h>
 #include <k3tempfile.h>
- //ctor
 #include <k3urldrag.h>       //dragObject()
-#include <kactioncollection.h>
+#include <KActionCollection>
+#include <KApplication> //kapp
+#include <KComboBox>
+#include <KDirLister>
+#include <KFileDialog>
+#include <KGlobal>
+#include <KIconLoader>
+#include <KInputDialog>
+#include <KIO/Job>
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>
+#include <KPushButton>
+#include <KRun>
+#include <KStandardDirs> //locate file
+#include <KTabBar>
 
 
 MediaBrowser *MediaBrowser::s_instance = 0;

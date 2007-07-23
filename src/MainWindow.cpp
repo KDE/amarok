@@ -69,7 +69,9 @@
 #include <QToolTip>         //QToolTip::add()
 #include <QVBoxLayout>
 
-#include <kaction.h>          //m_actionCollection
+#include <KAction>          //m_actionCollection
+#include <KActionCollection>
+#include <KActionMenu>
 #include <kapplication.h>     //kapp
 #include <kfiledialog.h>      //savePlaylist(), openPlaylist()
 #include <kglobal.h>

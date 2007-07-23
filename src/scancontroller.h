@@ -20,11 +20,12 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
+#include "threadmanager.h" //baseclass
+
 #include <QEvent>
 #include <QMutex>
 #include <QtXml>         //baseclass
 
-#include "threadmanager.h" //baseclass
 
 class CollectionDB;
 class K3ProcIO;

@@ -1,9 +1,10 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
+#include "actionclasses.h"
+
 #include "config-amarok.h"             //HAVE_LIBVISUAL definition
 
-#include "actionclasses.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"

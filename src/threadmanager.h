@@ -6,16 +6,16 @@
 #ifndef THREADMANAGER_H
 #define THREADMANAGER_H
 
-#include <QEvent>   //baseclass
-#include <QPointer>
-#include <qmap.h>
-#include <QObject>
-#include <QThread>
+#include "amarok_export.h"
+
 #include <q3valuelist.h>
-#include <QMutex>
-//Added by qt3to4:
 #include <QByteArray>
-#include "debug.h"
+#include <QEvent>   //baseclass
+#include <QMap>
+#include <QMutex>
+#include <QObject>
+#include <QPointer>
+#include <QThread>
 
 #define DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T ) \
     T( const T& ); \

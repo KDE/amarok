@@ -32,7 +32,7 @@
 #include "expression.h"
 #include "mountpointmanager.h"
 
-#include <klocale.h>
+#include <KLocale>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS QueryBuilder

@@ -16,8 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokconfig.h"
 #include "directorylist.h"
+
+#include "amarokconfig.h"
 #include "mountpointmanager.h"
 
 #include <KFileItem>

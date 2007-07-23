@@ -27,10 +27,11 @@
 #ifndef KTRM_H
 #define KTRM_H
 
-#include <QObject>
-#include <qmap.h>
-#include <QString>
 #include <q3valuelist.h>
+#include <QMap>
+#include <QObject>
+#include <QString>
+
 
 /**
  * This represents a potential match for a TRM lookup.  KTRMResultList is

@@ -23,7 +23,9 @@
 #define AMAROK_SCROBBLER_H
 
 #include "engineobserver.h"
-#include <qdom.h>
+
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QList>
 #include <QObject>

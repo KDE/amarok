@@ -7,22 +7,24 @@
 // Copyright: like rest of Amarok
 //
 
+#include "systray.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "enginecontroller.h"
-#include "systray.h"
+
+#include <KAction>
+#include <KApplication>
+#include <KIconEffect>
+#include <KMenu>
+#include <KStandardDirs>
 
 #include <QEvent>
 #include <QImage>
-//Added by qt3to4:
-#include <QTimerEvent>
-#include <QPixmap>
 #include <QMouseEvent>
-#include <kaction.h>
-#include <kapplication.h>
-#include <kmenu.h>
-#include <kiconeffect.h>
-#include <kstandarddirs.h>
+#include <QPixmap>
+#include <QTimerEvent>
+
 
 namespace Amarok
 {

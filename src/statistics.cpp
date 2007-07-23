@@ -11,33 +11,35 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "statistics.h"
+
 #include "amarok.h"             //oldForeach macro
 #include "browserToolBar.h"     //search toolbar
-#include "querybuilder.h"
 #include "debug.h"
-#include "playlist/PlaylistModel.h"
 #include "playlist.h"
-#include "statistics.h"
+#include "playlist/PlaylistModel.h"
+#include "querybuilder.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "TheInstances.h"
 
 #include <k3multipledrag.h>
 #include <k3urldrag.h>          //startDrag()
-#include <kapplication.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kmenu.h>
-#include <kwindowsystem.h>
+#include <KApplication>
+#include <KIconLoader>
+#include <KLocale>
+#include <KMenu>
+#include <KWindowSystem>
 
+#include <kvbox.h>
+#include <q3header.h>
 #include <Q3PopupMenu>
+#include <q3simplerichtext.h>
 #include <QDateTime>
 #include <QPainter>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip>
-#include <kvbox.h>
-#include <q3header.h>
-#include <q3simplerichtext.h>
+
 
 namespace Amarok {
 

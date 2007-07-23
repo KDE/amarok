@@ -24,14 +24,14 @@
 #ifndef MOODBAR_H
 #define MOODBAR_H
 
-#include <QObject>
-#include <q3valuevector.h>
-#include <qcolor.h>
-#include <QPixmap>
-#include <QMutex>
-#include <q3valuelist.h>
+#include <KUrl>
 
-#include <kurl.h>
+#include <q3valuelist.h>
+#include <q3valuevector.h>
+#include <QColor>
+#include <QMutex>
+#include <QObject>
+#include <QPixmap>
 
 
 class MetaBundle;

@@ -15,15 +15,16 @@ email                : markey@web.de
 
 #define DEBUG_PREFIX "PluginManager"
 
-#include "debug.h"
-#include "plugin.h"
 #include "pluginmanager.h"
 
-#include <QFile>
+#include "debug.h"
+#include "plugin.h"
 
-#include <klibloader.h>
-#include <klocale.h>
-#include <kmessagebox.h>
+#include <KLibLoader>
+#include <KLocale>
+#include <KMessageBox>
+
+#include <QFile>
 
 using std::vector;
 using Amarok::Plugin;

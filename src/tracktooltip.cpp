@@ -15,25 +15,25 @@
   email:     illissius@gmail.com
 */
 
+#include "tracktooltip.h"
+
+#include "amarokconfig.h"
 #include "amarok.h"
 #include "app.h"
-#include "amarokconfig.h"
+#include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "moodbar.h"
-#include "collectiondb.h"
 #include "playlist.h"
 #include "playlistitem.h"
 #include "podcastbundle.h"
+
+#include <KCalendarSystem>
+#include <KStandardDirs>
+
 #include <QApplication>
-//Added by qt3to4:
 #include <QPixmap>
 
-#include <kcalendarsystem.h>
-#include <kstandarddirs.h>
-
-
-#include "tracktooltip.h"
 
 namespace Amarok 
 {

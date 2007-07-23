@@ -20,10 +20,11 @@
  ***************************************************************************/
 #define DEBUG_PREFIX "KTRM"
 
+#include "ktrm.h"
+
 #include "config-amarok.h"
 
 #include "debug.h"
-#include "ktrm.h"
 #include "statusbar.h"
 
 #include <KIO/Job>

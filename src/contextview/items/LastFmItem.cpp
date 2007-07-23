@@ -14,6 +14,7 @@
 #include "LastFmItem.h"
 
 #include "amarokconfig.h"
+#include "debug.h"
 #include "collectiondb.h" // all deprecated, i know
 #include "../contextview.h"
 #include "enginecontroller.h"

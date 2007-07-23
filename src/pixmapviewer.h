@@ -20,9 +20,9 @@
 #define PIXMAPVIEWER_H
 
 #include <q3scrollview.h>
-//Added by qt3to4:
 #include <QPixmap>
-#include <QMouseEvent>
+
+class QMouseEvent;
 
 class PixmapViewer : public Q3ScrollView {
     Q_OBJECT

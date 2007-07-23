@@ -11,16 +11,17 @@
 #ifndef VIS_SOCKETSERVER_H
 #define VIS_SOCKETSERVER_H
 
-#include <QString>          //stack allocated
 #include <q3listview.h>        //baseclass
 #include <q3serversocket.h>    //baseclass
+#include <QByteArray>       //stack allocated
 #include <QSocketNotifier>  //baseclass
-//Added by qt3to4:
-#include <QPaintEvent>
-#include <QByteArray>
+#include <QString>          //stack allocated
 
-class QPoint;
+
 class K3Process;
+
+class QPaintEvent;
+class QPoint;
 
 
 namespace Amarok

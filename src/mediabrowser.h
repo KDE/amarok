@@ -7,30 +7,28 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
-#include "amarok.h"
 #include "amarok_export.h"
+#include "amarok.h"
 #include "browserToolBar.h"
 #include "medium.h"
-#include "plugin/plugin.h"   //baseclass
-#include "pluginmanager.h"
-
-#include <QMutex>
-#include <kvbox.h>           //baseclass
-#include <QDateTime>
-//Added by qt3to4:
-#include <QKeyEvent>
-#include <Q3ValueList>
-#include <QLabel>
-#include <Q3PtrList>
-#include <QPixmap>
-#include <QDropEvent>
-#include <QPaintEvent>
-#include <khbox.h>
-#include <k3listview.h>       //baseclass
-#include <kurl.h>            //stack allocated
-#include <kio/global.h>      //filesize_t
-#include "scrobbler.h"       //SubmitItem
 #include "metabundle.h"
+#include "pluginmanager.h"
+#include "plugin/plugin.h"   //baseclass
+#include "scrobbler.h"       //SubmitItem
+
+#include <k3listview.h>       //baseclass
+#include <KHBox>
+#include <kio/global.h>      //filesize_t
+#include <KUrl>            //stack allocated
+#include <KVBox>           //baseclass
+
+#include <Q3PtrList>
+#include <Q3ValueList>
+#include <QDateTime>
+#include <QLabel>
+#include <QMutex>
+#include <QPixmap>
+
 
 class MediaBrowser;
 class MediaDevice;
@@ -44,6 +42,9 @@ class KComboBox;
 class KPushButton;
 class K3ShellProcess;
 
+class QDropEvent;
+class QKeyEvent;
+class QPaintEvent;
 class Q3DragObject;
 class QLabel;
 class QProgressBar;

@@ -37,9 +37,9 @@
 #include <kurl.h>  //KUrl::List
 //Added by qt3to4:
 #include <Q3PtrList>
+#include <QStringList>
 
 class QString;
-class QStringList;
 template<class T> class Q3PtrList;
 class PlaylistBrowserEntry;
 class PlaylistEntry;

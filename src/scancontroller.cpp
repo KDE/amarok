@@ -19,6 +19,8 @@
 
 #define DEBUG_PREFIX "ScanController"
 
+#include "scancontroller.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
@@ -27,16 +29,16 @@
 #include "mountpointmanager.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
-#include "scancontroller.h"
 #include "statusbar.h"
+
+#include <KApplication>
+#include <KLocale>
+#include <KMessageBox>
 
 #include <QByteArray>
 #include <QFileInfo>
 #include <QTextCodec>
 
-#include <kapplication.h>
-#include <klocale.h>
-#include <kmessagebox.h>
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////

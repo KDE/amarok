@@ -18,10 +18,11 @@
 //
 // $Id$
 
-#include <math.h>
-#include <string.h>
+
 #include "fht.h"
 
+#include <math.h>
+#include <string.h>
 
 FHT::FHT(int n) :
     m_buf(0),

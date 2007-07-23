@@ -13,11 +13,12 @@
 
 #define DEBUG_PREFIX "controller"
 
+#include "enginecontroller.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginebase.h"
-#include "enginecontroller.h"
 #include "lastfm.h"
 #include "mediabrowser.h"
 #include "meta.h"

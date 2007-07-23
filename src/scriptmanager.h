@@ -25,10 +25,11 @@
 #include "MainWindow.h"
 #include "ui_scriptmanagerbase.h"
 
+#include <KDialog>      //baseclass
+#include <KUrl>
+
 #include <QMap>
 
-#include <kdialog.h>      //baseclass
-#include <kurl.h>
 
 class MetaBundle;
 class KArchiveDirectory;

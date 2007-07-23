@@ -20,7 +20,7 @@
 
 #if HAVE_TUNEPIMP
 
-#include <kdialog.h>
+#include <KDialog.h>
 
 #include "ktrm.h"
 

@@ -5,7 +5,7 @@
 #ifndef XSPFPlaylist_H
 #define XSPFPlaylist_H
 
-class AtomicString;
+#include "atomicstring.h"
 class QString;
 class QDateTime;
 class KUrl;

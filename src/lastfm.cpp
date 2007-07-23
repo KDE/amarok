@@ -16,34 +16,35 @@
 
 #define DEBUG_PREFIX "LastFm"
 
-#include "amarok.h"         //APP_VERSION, actioncollection
+#include "lastfm.h"
+
 #include "amarokconfig.h"   //last.fm username and passwd
+#include "amarok.h"         //APP_VERSION, actioncollection
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "lastfm.h"
 #include "statusbar.h"      //showError()
 
-#include <qdom.h>
 #include <q3http.h>
-#include <QLabel>
-#include <QRegExp>
-#include <kapplication.h>
-//Added by qt3to4:
 #include <Q3ValueList>
 #include <QByteArray>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
+#include <QLabel>
+#include <QRegExp>
 
-#include <kaction.h>
-#include <klineedit.h>
-#include <kcodecs.h>       //md5sum
-#include <kmessagebox.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <kprotocolmanager.h>
-#include <kshortcut.h>
-#include <kurl.h>
-#include <khbox.h>
-#include <kvbox.h>
+#include <KAction>
+#include <KApplication>
+#include <KCodecs>       //md5sum
+#include <KHBox>
+#include <KIO/Job>
+#include <KLineEdit>
+#include <KMessageBox>
+#include <KProtocolManager>
+#include <KShortcut>
+#include <KUrl>
+#include <KVBox>
 
 #include <time.h>
 #include <unistd.h>

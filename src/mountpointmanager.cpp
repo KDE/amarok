@@ -18,20 +18,14 @@
 
 #define DEBUG_PREFIX "MountPointManager"
 
-#include "debug.h"
+#include "mountpointmanager.h"
 
 #include "amarok.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "devicemanager.h"
-#include "mountpointmanager.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
-
-#include <QFile>
-#include <QList>
-#include <QStringList>
-#include <QTimer>
-#include <q3valuelist.h>
 
 //solid stuff
 #include <solid/predicate.h>
@@ -39,6 +33,11 @@
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
 #include <solid/storagevolume.h>
+
+#include <QFile>
+#include <QList>
+#include <QStringList>
+#include <QTimer>
 
 typedef Medium::List MediumList;
 

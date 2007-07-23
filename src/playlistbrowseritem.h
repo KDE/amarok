@@ -14,21 +14,21 @@
 #include "podcastbundle.h"
 #include "podcastsettings.h"
 
-#include <kdialog.h> // StreamEditor baseclass
-#include <kio/job.h>
-#include <klineedit.h>
+#include <KDialog> // StreamEditor baseclass
+#include <KIO/Job>
+#include <KLineEdit>
 #include <k3listview.h>
-#include <kurl.h>
+#include <KUrl>
 
-#include <qdom.h>
-#include <QFile>
 #include <q3http.h>
 #include <q3ptrlist.h>
-#include <QTimer>     // Podcast loading animation
 #include <q3url.h>
-//Added by qt3to4:
 #include <Q3ValueList>
+#include <QDomElement>
+#include <QFile>
 #include <QPixmap>
+#include <QTimer>     // Podcast loading animation
+
 
 class MetaBundle;
 class PlaylistTrackItem;

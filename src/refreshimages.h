@@ -4,6 +4,7 @@
 #ifndef AMAROK_REFRESHIMAGES_H
 #define AMAROK_REFRESHIMAGES_H
 
+#include <QMap>
 #include <QObject>
 namespace KIO {
     class Job;

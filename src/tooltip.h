@@ -20,11 +20,11 @@
 #ifndef AMAROK_TOOLTIP_H
 #define AMAROK_TOOLTIP_H
 
-#include <QToolTip>
-#include <qpoint.h>
-#include <QTimer>
-//Added by qt3to4:
 #include <Q3ValueList>
+#include <QFrame>
+#include <QPoint>
+#include <QTimer>
+#include <QToolTip>
 
 namespace Amarok
 {

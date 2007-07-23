@@ -24,13 +24,13 @@
 #include "metabundle.h"
 #include "playlist.h"
 
+#include <KIconEffect>
+#include <KStandardDirs>   //KGlobal::dirs()
 
 #include <QFile>
 #include <QImage>
 #include <QPixmap>
 
-#include <KIconEffect>
-#include <KStandardDirs>   //KGlobal::dirs()
 
 StarManager* StarManager::instance()
 {

@@ -7,11 +7,11 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "xspfplaylist.h"
 
 #include "atomicstring.h"
 #include "debug.h"
 #include "meta.h"
-#include "xspfplaylist.h"
 
 #include <QDateTime>
 

@@ -17,21 +17,24 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include "columnlist.h"
+
 #include "config-amarok.h"
+#include "amarokconfig.h"
+
+#include "metabundle.h"
+#include "playlist.h"
+
+#include <KVBox>
+#include <k3listview.h>
+#include <kpushbutton.h>
 
 #include <q3header.h>
 #include <QPainter>
 #include <QToolTip>
-#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <k3listview.h>
-#include <kpushbutton.h>
-#include "amarokconfig.h"
-#include "metabundle.h"
-#include "playlist.h"
 
-#include "columnlist.h"
 
 class MyCheckListItem: public Q3CheckListItem
 {

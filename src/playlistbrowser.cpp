@@ -11,65 +11,66 @@
 
 #define DEBUG_PREFIX "PlaylistBrowser"
 
+#include "playlistbrowser.h"
+
 #include "amarok.h"            //actionCollection()
 #include "browserToolBar.h"
-#include "querybuilder.h"      //smart playlists
 #include "debug.h"
-#include "k3bexporter.h"
-#include "mediabrowser.h"
 #include "dynamicmode.h"
+#include "k3bexporter.h"
 #include "lastfm.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist.h"
-#include "playlistbrowser.h"
+#include "mediabrowser.h"
 #include "playlistbrowseritem.h"
+#include "playlist.h"
+#include "playlist/PlaylistModel.h"
 #include "playlistselection.h"
 #include "podcastbundle.h"
-#include "podcastsettings.h"
 #include "PodcastCollection.h"
+#include "podcastsettings.h"
+#include "querybuilder.h"      //smart playlists
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
+#include "statusbar.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "TheInstances.h"
 #include "threadmanager.h"
-#include "statusbar.h"
 #include "xspfplaylist.h"
 
-#include <QEvent>            //customEvent()
-#include <q3header.h>           //mousePressed()
-#include <QLabel>
-#include <QPainter>          //paintCell()
-#include <QPixmap>           //paintCell()
-#include <q3textstream.h>       //loadPlaylists(), saveM3U(), savePLS()
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QDragLeaveEvent>
-#include <QLinkedList>
-#include <QDragEnterEvent>
-#include <QKeyEvent>
-#include <QDropEvent>
-#include <QDragMoveEvent>
-#include <QPaintEvent>
-#include <Q3PtrList>
-#include <QSplitter>
-
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kapplication.h>
-#include <kfiledialog.h>       //openPlaylist()
-#include <kio/deletejob.h>     //deleteSelectedPlaylists()
-#include <kiconloader.h>       //smallIcon
-#include <kinputdialog.h>
-#include <klineedit.h>         //rename()
-#include <klocale.h>
-#include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
-#include <kmimetype.h>
 #include <k3multipledrag.h>     //dragObject()
-#include <kmenu.h>
-#include <kpushbutton.h>
-#include <kstandarddirs.h>     //KGlobal::dirs()
 #include <k3urldrag.h>          //dragObject()
-#include <kvbox.h>
+#include <KAction>
+#include <KActionCollection>
+#include <KActionMenu>
+#include <KApplication>
+#include <KFileDialog>       //openPlaylist()
+#include <KIconLoader>       //smallIcon
+#include <KInputDialog>
+#include <KIO/DeleteJob>     //deleteSelectedPlaylists()
+#include <KLineEdit>         //rename()
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>       //renamePlaylist(), deleteSelectedPlaylist()
+#include <KMimeType>
+#include <KPushButton>
+#include <KStandardDirs>     //KGlobal::dirs()
+#include <KVBox>
+
+#include <q3header.h>           //mousePressed()
+#include <Q3PtrList>
+#include <q3textstream.h>       //loadPlaylists(), saveM3U(), savePLS()
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QEvent>            //customEvent()
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLinkedList>
+#include <QPainter>          //paintCell()
+#include <QPaintEvent>
+#include <QPixmap>           //paintCell()
+#include <QResizeEvent>
+#include <QSplitter>
 
 #include <cstdio>              //rename() in renamePlaylist()
 

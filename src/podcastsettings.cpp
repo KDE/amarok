@@ -2,25 +2,24 @@
 // (c) 2006 Bart Cerneels <shanachie@yucom.be>
 // See COPYING file for licensing information.
 
-#include "mediabrowser.h"
-#include "podcastsettingsbase.h"
 #include "podcastsettings.h"
 
-#include <klineedit.h>
-#include <knuminput.h>
-#include <kmessagebox.h>    //global changes confirmation
-#include <kurlrequester.h>
-#include <klocale.h>
-#include <kurl.h>
-#include <kwindowsystem.h>
+#include "mediabrowser.h"
+#include "podcastsettingsbase.h"
+
+#include <KLineEdit>
+#include <KLocale>
+#include <KMessageBox>    //global changes confirmation
+#include <KNumInput>
+#include <KUrl>
+#include <KUrlRequester>
+#include <KWindowSystem>
 
 #include <QCheckBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QLabel>
 #include <QTextEdit>
-//Added by qt3to4:
-#include <Q3PtrList>
 
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString &title )
     : m_title( title )

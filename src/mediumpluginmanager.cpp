@@ -10,6 +10,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include "mediumpluginmanager.h"
+
 #include "amarok.h"
 #include "debug.h"
 #include "deviceconfiguredialog.h"
@@ -18,27 +20,27 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
-#include "mediumpluginmanager.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 
+#include <k3activelabel.h>
+#include <KApplication>
+#include <KComboBox>
+#include <KConfig>
+#include <KIconLoader>
+#include <KLineEdit>
+#include <KLocale>
+#include <KPushButton>
+#include <KVBox>
+
+#include <QAbstractButton>
 #include <q3groupbox.h>
 #include <QLabel>
 #include <QLayout>
 #include <QSignalMapper>
 #include <QToolTip>
-#include <QAbstractButton>
 
-#include <kapplication.h>
-#include <k3activelabel.h>
-#include <kcombobox.h>
-#include <kconfig.h>
-#include <kiconloader.h>
-#include <klineedit.h>
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kvbox.h>
 
 using Amarok::escapeHTMLAttr;
 

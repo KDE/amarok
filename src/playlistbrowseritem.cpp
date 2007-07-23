@@ -11,56 +11,49 @@
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
+#include "playlistbrowseritem.h"
+
 #include "amarok.h"
-#include "querybuilder.h"
 #include "debug.h"
 #include "dynamicmode.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist.h"
 #include "playlistbrowser.h"
-#include "playlistbrowseritem.h"
+#include "playlist.h"
 #include "playlistloader.h"    //load()
+#include "playlist/PlaylistModel.h"
 #include "playlistselection.h"
-#include "podcastbundle.h"
-#include "podcastsettings.h"
 #include "progressBar.h"
+#include "querybuilder.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "TheInstances.h"
 #include "threadmanager.h"
 
+#include <KApplication>      //Used for Shoutcast random name generation
+#include <KIconLoader>       //smallIcon
+#include <KIO/CopyJob>
+#include <KIO/DeleteJob>
+#include <KJobUiDelegate>
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>       //podcast info box
+#include <KMimeType>
+#include <KMimeTypeTrader>
+#include <KRandom>
+#include <KRun>
+#include <KStandardDirs>     //podcast loading icons
+#include <KUrlRequester>
+#include <KVBox>
 
+#include <Q3PopupMenu>
 #include <QDateTime>
 #include <QFileInfo>
 #include <QLabel>
 #include <QPainter>          //paintCell()
 #include <QPixmap>           //paintCell()
 #include <QRegExp>
-//Added by qt3to4:
-#include <Q3ValueList>
-#include <Q3PtrList>
-#include <Q3PopupMenu>
-
-#include <kapplication.h>      //Used for Shoutcast random name generation
-#include <kiconloader.h>       //smallIcon
-#include <kio/copyjob.h>
-#include <kio/deletejob.h>
-#include <kio/jobclasses.h>    //podcast retrieval
-#include <kio/job.h>           //podcast retrieval
-#include <kjobuidelegate.h>
-#include <klocale.h>
-#include <kmessagebox.h>       //podcast info box
-#include <kmimetype.h>
-#include <kmenu.h>
-#include <krun.h>
-#include <kstandarddirs.h>     //podcast loading icons
-#include <kmimetypetrader.h>
-#include <kurlrequester.h>
-#include <krandom.h>
-#include <kvbox.h>
 
 
 /////////////////////////////////////////////////////////////////////////////

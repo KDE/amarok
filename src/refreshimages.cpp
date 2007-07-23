@@ -3,25 +3,27 @@
 
 #define DEBUG_PREFIX "RefreshImages"
 
+#include "refreshimages.h"
+
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "refreshimages.h"
 #include "statusbar.h"
 
-#include <qdom.h>
+#include <KIO/Job>
+#include <kio/jobclasses.h>
+#include <KIO/Scheduler>
+#include <KLocale>
+
+#include <q3valuelist.h>
+#include <QDomDocument>
+#include <QDomNode>
 #include <QImage>
-#include <qmap.h>
+#include <QMap>
 #include <QObject>
 #include <QStringList>
-#include <q3valuelist.h>
 #include <QVariant>
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <kio/scheduler.h>
-
-#include <klocale.h>
 
 
 RefreshImages::RefreshImages()

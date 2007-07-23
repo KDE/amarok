@@ -7,17 +7,18 @@
 #define QT_FATAL_ASSERT
 #define DEBUG_PREFIX "ThreadManager"
 
-#include <kcursor.h>
-#include <QApplication>
-//Added by qt3to4:
-#include <QByteArray>
-#include <QEvent>
+#include "threadmanager.h"
 
+#include "amarokconfig.h"
+#include "collectiondb.h"
 #include "debug.h"
 #include "statusbar.h"
-#include "threadmanager.h"
-#include "collectiondb.h"
-#include "amarokconfig.h"
+
+#include <KCursor>
+
+#include <QApplication>
+#include <QByteArray>
+#include <QEvent>
 
 using Amarok::StatusBar;
 

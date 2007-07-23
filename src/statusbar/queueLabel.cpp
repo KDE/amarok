@@ -19,6 +19,7 @@
 
 #include "amarok.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"

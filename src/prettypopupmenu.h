@@ -21,15 +21,14 @@
 #ifndef AMAROK_PRETTYPOPUPMENU_H
 #define AMAROK_PRETTYPOPUPMENU_H
 
-#include <kmenu.h>
+#include <KMenu>
 
-#include <qcolor.h>
+#include <QColor>
 #include <QImage>
 #include <QRect>
-//Added by qt3to4:
-#include <QPaintEvent>
-#include <QResizeEvent>
 
+class QPaintEvent;
+class QSizeEvent;
 class QSize;
 
 /**

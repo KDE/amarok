@@ -19,6 +19,7 @@
 
 #include "jamendoservice.h"
 
+#include "debug.h" 
 #include "JamendoInfoParser.h"
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"

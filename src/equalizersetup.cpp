@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ 
+#include "equalizersetup.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -21,7 +23,6 @@
 #include "enginecontroller.h"
 #include "equalizergraph.h"
 #include "equalizerpresetmanager.h"
-#include "equalizersetup.h"
 #include "sliderwidget.h"
 
 #include <KApplication>

@@ -18,12 +18,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 #include "pixmapviewer.h"
-#include <kapplication.h>
+
+#include <KApplication>
+
+#include <QDesktopWidget>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QDesktopWidget>
+
 
 PixmapViewer::PixmapViewer(QWidget *widget, const QPixmap &pixmap)
     : Q3ScrollView(widget, 0, Qt::WNoAutoErase)

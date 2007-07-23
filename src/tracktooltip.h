@@ -15,11 +15,11 @@
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
 
-#include <QObject>
-#include <q3ptrlist.h>
-
 #include "metabundle.h"
 #include "tooltip.h"
+
+#include <QObject>
+#include <q3ptrlist.h>
 
 class QWidget;
 

@@ -15,12 +15,13 @@
 
 #define DEBUG_PREFIX "CollectionDB"
 
+#include "collectiondb.h"
+
 #include "app.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "config-amarok.h"
 #include "debug.h"
-#include "collectiondb.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
 #include "expression.h"

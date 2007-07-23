@@ -10,9 +10,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include "deviceconfiguredialog.h"
+
 #include "amarok.h"
 #include "debug.h"
-#include "deviceconfiguredialog.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"

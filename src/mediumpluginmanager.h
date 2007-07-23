@@ -16,16 +16,15 @@
 #include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
 
+#include <KHBox>
+#include <KConfig>
+#include <KPageDialog>
+#include <KLocale>
+
 #include <QLayout>
-#include <qmap.h>
-#include <khbox.h>
-//Added by qt3to4:
+#include <QMap>
 #include <QLabel>
 #include <Q3ValueList>
-
-#include <kconfig.h>
-#include <kpagedialog.h>
-#include <klocale.h>
 
 class QAbstractButton;
 class Q3GroupBox;

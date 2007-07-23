@@ -11,17 +11,18 @@
 //
 //
 
+#include "mediadevicemanager.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "devicemanager.h"
-#include "mediadevicemanager.h"
 #include "medium.h"
+
+#include <KApplication>
 
 #include <q3ptrlist.h>
 #include <QTimer>
-
-#include <kapplication.h>
 
 typedef Medium::List MediumList;
 

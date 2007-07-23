@@ -16,15 +16,14 @@
   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
   Boston, MA 02110-1301, USA.
 */
-
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
 #include "atomicstring.h"
 
 #include <QThread>
 #include <QCoreApplication>
+
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
 
 #if __GNUC__ >= 3
 

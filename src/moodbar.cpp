@@ -276,10 +276,12 @@
 
 #define DEBUG_PREFIX "Moodbar"
 
+#include "moodbar.h"
+
 #include "config-amarok.h"
 
-#include "amarok.h"
 #include "amarokconfig.h"
+#include "amarok.h"
 #include "app.h"
 #include "collectiondb.h"
 #include "debug.h"
@@ -287,15 +289,14 @@
 #include "mountpointmanager.h"
 #include "statusbar.h"
 
-#include <QFile>
-#include <QDir>  // For QDir::rename()
-#include <QPainter>
-#include <QTimer>
-//Added by qt3to4:
-#include <Q3ValueList>
-#include <QPixmap>
+#include <KStandardDirs>
 
-#include <kstandarddirs.h>
+#include <Q3ValueList>
+#include <QDir>  // For QDir::rename()
+#include <QFile>
+#include <QPainter>
+#include <QPixmap>
+#include <QTimer>
 
 #include <string.h> // for memset()
 

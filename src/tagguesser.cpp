@@ -10,15 +10,16 @@
 
 #define DEBUG_PREFIX "TagGuesser"
 
-#include "amarok.h"
-#include "debug.h"
 #include "tagguesser.h"
 
-#include <kapplication.h>
-#include <kconfig.h>
-#include <kconfiggroup.h>
-#include <kglobal.h>
-#include <kmacroexpander.h>
+#include "amarok.h"
+#include "debug.h"
+
+#include <KApplication>
+#include <KConfig>
+#include <KConfigGroup>
+#include <KGlobal>
+#include <KMacroExpanderBase>
 
 FileNameScheme::FileNameScheme( const QString &s )
     : m_cod( s )

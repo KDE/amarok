@@ -28,6 +28,7 @@
 #include <Q3PtrList>
 
 #include <kconfigdialog.h>
+#include <KJob>
 
 class KLineEdit;
 class KAction;

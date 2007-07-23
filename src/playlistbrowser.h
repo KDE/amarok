@@ -14,36 +14,39 @@
 #include "playlistbrowseritem.h"
 #include "podcastsettings.h"
 
-#include <kaction.h>
-#include <kactionmenu.h>
-#include <k3listview.h>
-#include <kpushbutton.h>
-#include <kurl.h>
-#include <qdom.h>
-#include <q3ptrlist.h>
-#include <kvbox.h>
-//Added by qt3to4:
-#include <QDragLeaveEvent>
-#include <QKeyEvent>
+#include <k3listview.h> // base class
+#include <KUrl> // stack allocated
+#include <KVBox> // base class
+
+#include <Q3PtrList>
 #include <Q3ValueList>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QPixmap>
-#include <QDragEnterEvent>
-#include <QDragMoveEvent>
-#include <QDropEvent>
-#include <QResizeEvent>
-#include <QPaintEvent>
-
-class KToolBar;
-
-class QPixmap;
-class QPoint;
-class QSplitter;
-class QTimer;
 
 class InfoPane;
 class PlaylistBrowserView;
 class PlaylistTrackItem;
+
+class KAction;
+class KActionCollection;
+class KActionMenu;
 class KHTMLPart;
+class KPushButton;
+class KToolBar;
+
+class QDragEnterEvent;
+class QDragLeaveEvent;
+class QDragMoveEvent;
+class QDropEvent;
+class QKeyEvent;
+class QPaintEvent;
+class QPixmap;
+class QPoint;
+class QResizeEvent;
+class QSplitter;
+class QTimer;
 
 class PlaylistBrowser : public KVBox
 {

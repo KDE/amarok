@@ -1,10 +1,11 @@
 // (c) 2006 Giovanni Venturi <giovanni@kde-it.org>
 // See COPYING file for licensing information.
 
+#include "editfilterdialog.h"
+
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "editfilterdialog.h"
 #include "metabundle.h"
 
 #include <KGlobal>

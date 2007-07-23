@@ -4,9 +4,8 @@
 #ifndef AMAROK_PODCASTSETTINGS_H
 #define AMAROK_PODCASTSETTINGS_H
 
-#include "kdialog.h"    //baseclass
-
-#include <kurl.h>
+#include <KDialog>    //baseclass
+#include <KUrl>
 
 #include <q3ptrlist.h>
 

@@ -6,24 +6,25 @@
 
 #define DEBUG_PREFIX "SmartPlaylistEditor"
 
+#include "smartplaylisteditor.h"
+
 #include "amarok.h" //oldForeach
 #include "debug.h"
 #include "querybuilder.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-#include "smartplaylisteditor.h"
 
-#include <kcombobox.h>
-#include <klineedit.h>
-#include <klocale.h>
+#include <KComboBox>
+#include <KLineEdit>
+#include <KLocale>
 #include <kmountpoint.h>
-#include <knuminput.h>
+#include <KNumInput>
+#include <KVBox>
 
 #include <QCheckBox>
 #include <QDateTime>
 #include <q3datetimeedit.h>    //loadEditWidgets()
 #include <QFrame>
-#include <khbox.h>
 #include <QLabel>
 #include <QLayout>
 #include <QObject>
@@ -31,7 +32,6 @@
 #include <QToolButton>
 #include <q3vgroupbox.h>
 
-#include <kvbox.h>
 
 enum Fields
 {

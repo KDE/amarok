@@ -12,10 +12,11 @@
 //
 //
 
+#include "devicemanager.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "devicemanager.h"
 #include "medium.h"
 #include "mediumpluginmanager.h"
 

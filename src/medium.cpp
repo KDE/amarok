@@ -15,12 +15,12 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-
-#include "debug.h"
 #include "medium.h"
 
-#include <kconfig.h>
-#include <klocale.h>
+#include "debug.h"
+
+#include <KConfig>
+#include <KLocale>
 
 const QString Medium::SEPARATOR = "---";
 

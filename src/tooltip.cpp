@@ -17,20 +17,22 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include "tooltip.h"
+
+#include "debug.h"
+
+#include <KApplication>
+#include <KGlobal>
+
+#include <q3simplerichtext.h>
+#include <Q3ValueList>
 #include <QApplication>
 #include <QCursor>
+#include <QEvent>
 #include <QFrame>
 #include <QPainter>
 #include <QPixmap>
-#include <q3simplerichtext.h>
-//Added by qt3to4:
-#include <Q3ValueList>
-#include <QEvent>
-#include <kglobal.h>
-#include <kapplication.h>
 
-#include "debug.h"
-#include "tooltip.h"
 
 class Amarok::ToolTip::Manager: public QObject
 {

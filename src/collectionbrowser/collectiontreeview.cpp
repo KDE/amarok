@@ -9,6 +9,7 @@
 #include "collectiontreeview.h"
 
 #include "amarok.h"
+#include "debug.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "contextview/contextview.h"
 #include "playlist/PlaylistModel.h"

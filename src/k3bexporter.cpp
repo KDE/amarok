@@ -13,8 +13,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "amarok.h"
+
 #include "k3bexporter.h"
+
+#include "amarok.h"
 #include "playlist.h"
 #include "playlistitem.h"
 #include "querybuilder.h"

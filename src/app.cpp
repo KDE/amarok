@@ -14,11 +14,11 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "app.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdbushandler.h"
-#include "app.h"
 #include "atomicstring.h"
 #include "collectiondb.h"
 #include "ConfigDialog.h"

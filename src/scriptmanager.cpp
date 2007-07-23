@@ -23,16 +23,32 @@
 
 #define DEBUG_PREFIX "ScriptManager"
 
+#include "scriptmanager.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "scriptmanager.h"
 #include "statusbar.h"
 
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <k3procio.h>
+#include <KAboutApplicationDialog>
+#include <KAboutData>
+#include <KApplication>
+#include <KFileDialog>
+#include <KIconLoader>
+#include <KIO/NetAccess>
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>
+#include <KProtocolManager>
+#include <KPushButton>
+#include <KRun>
+#include <KStandardDirs>
+#include <KTar>
+#include <KTextEdit>
+#include <KWindowSystem>
 
 #include <QCheckBox>
 #include <QDir>
@@ -44,24 +60,8 @@
 #include <QTextCodec>
 #include <QTimer>
 
-#include <kaboutapplicationdialog.h>
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kfiledialog.h>
-#include <kiconloader.h>
-#include <kio/netaccess.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kmenu.h>
-#include <k3procio.h>
-#include <kprotocolmanager.h>
-#include <kpushbutton.h>
-#include <krun.h>
-#include <kstandarddirs.h>
-#include <ktar.h>
-#include <ktextedit.h>
-#include <kwindowsystem.h>
-
+#include <sys/stat.h>
+#include <sys/types.h>
 
 namespace Amarok {
     void closeOpenFiles(int out, int in, int err) {

@@ -6,7 +6,6 @@
 #define TAGGUESSER_H
 
 #include <QRegExp>
-//Added by qt3to4:
 #include <Q3ValueList>
 
 class FileNameScheme

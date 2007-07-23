@@ -13,15 +13,12 @@
 #include "tagdialogbase.h"    //baseclass
 
 #include <khtml_part.h>
-#include <kurl.h>             //stack alloc
+#include <KUrl>             //stack alloc
 
 #include <QDateTime>
 #include <QLabel>
 #include <QMap>
 #include <QtGui/QWidget>
-
-
-
 
 
 class PlaylistItem;

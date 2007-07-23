@@ -18,11 +18,11 @@
 #include "amarok.h"
 #include "app.h"
 #include "crashhandler.h"
-#include <kaboutdata.h>
-#include <kcrash.h>
-#include <KCmdLineArgs>
-
 #include "metadata/tplugins.h"
+
+#include <KAboutData>
+#include <KCrash>
+#include <KCmdLineArgs>
 
 //#define AMAROK_USE_DRKONQI
 
