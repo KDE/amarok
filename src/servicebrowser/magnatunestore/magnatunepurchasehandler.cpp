@@ -25,12 +25,13 @@
 #include "magnatunedatabasehandler.h"
 #include "statusbar.h"
 
+#include <KMessageBox>
 #include <ktempdir.h>
 
 #include <Q3TextStream>
 #include <QDir>
 #include <QFile>
-#include <QMessageBox>
+
 
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
@@ -157,7 +158,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     else
     {
 
-        QMessageBox::information( m_parent, "Could not process payment",
+        KMessageBox::information( m_parent, "Could not process payment",
                                   "There seems to be an error in the information entered (check the credit card number), please try again\n" );
         m_purchaseDialog->setEnabled( true );
     }

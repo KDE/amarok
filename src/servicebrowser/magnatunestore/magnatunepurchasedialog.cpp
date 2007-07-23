@@ -23,10 +23,11 @@
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
 
+#include <KMessageBox>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
-#include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
 #include <QRegExp>
@@ -94,7 +95,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     if ( !ccExp.exactMatch( ccString ) )
     {
-        QMessageBox::information( this, "Invalid credit card number",
+        KMessageBox::information( this, "Invalid credit card number",
                                   "The credit card number entered does not appear to be valid\n" );
         return false;
     }
@@ -106,7 +107,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     if ( !emailExp.exactMatch( emailString ) )
     {
-        QMessageBox::information( this, "Invalid email",
+        KMessageBox::information( this, "Invalid email",
                                   "The email address entered does not appear to be valid\n" );
         return false;
     }
@@ -118,7 +119,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     if ( !monthExp.exactMatch( monthString ) )
     {
-        QMessageBox::information( this, "Invalid expiration month",
+        KMessageBox::information( this, "Invalid expiration month",
                                   "The credit card expitation month does not appear to be valid\n" );
         return false;
     }
@@ -130,7 +131,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     if ( !yearExp.exactMatch( yearString ) )
     {
-        QMessageBox::information( this, "Invalid expiration month",
+        KMessageBox::information( this, "Invalid expiration month",
                                   "The credit card expitation year does not appear to be valid\n" );
         return false;
     }

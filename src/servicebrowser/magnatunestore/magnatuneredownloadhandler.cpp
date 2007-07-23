@@ -24,11 +24,13 @@
 #include "amarok.h"
 #include "debug.h"
 
+#include <KLocale>
+#include "KMessageBox"
 
-#include "qdir.h"
-#include "qmessagebox.h"
+#include "QDir"
 
-#include <klocale.h>
+
+
 
 
 
@@ -55,7 +57,7 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
     if (previousDownloads.isEmpty()) {
 
         //No previously purchased track information found. No more to do here...
-        QMessageBox::information( m_parent, i18n( "No purchases found!" ) ,
+        KMessageBox::information( m_parent, i18n( "No purchases found!" ) ,
                                   i18n( "No previous purchases have been found. Nothing to redownload..." ) + '\n' );
         return;
     }
@@ -134,7 +136,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
     else
     {
 
-        QMessageBox::information( m_parent, i18n( "Could not re-download album" ),
+        KMessageBox::information( m_parent, i18n( "Could not re-download album" ),
                                   i18n( "There seems to be a problem with the selected redownload info file." ) + '\n' );
 
     }
