@@ -148,12 +148,6 @@ CollectionScanner::doJob() //SLOT
     quit();
 }
 
-
-/**
- * 
- * @param dir 
- * @param entries 
- */
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
