@@ -347,6 +347,7 @@ void EngineController::play( const Meta::TrackPtr& track, uint offset )
         {
             
         }
+        newTrackPlaying();
     }
 }
 

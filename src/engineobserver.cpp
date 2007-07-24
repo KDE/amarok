@@ -51,18 +51,16 @@ EngineObserver::engineStateChanged( Engine::State currentState, Engine::State ol
 }
 
 void
-EngineObserver::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
-{
-    Q_UNUSED( bundle );
-    Q_UNUSED( trackChanged );
-}
-
-void
 EngineObserver::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     Q_UNUSED( finalPosition );
     Q_UNUSED( trackLength );
     Q_UNUSED( reason );
+}
+
+void
+EngineObserver::engineNewTrackPlaying()
+{
 }
 
 void
@@ -115,23 +113,6 @@ void EngineSubject::stateChangedNotify( Engine::State state )
     m_oldEngineState = state;
 }
 
-
-void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChanged )
-{
-    PodcastEpisodeBundle peb;
-    MetaBundle b( bundle );
-    if( CollectionDB::instance()->getPodcastEpisodeBundle( bundle.url(), &peb ) )
-    {
-        b.setPodcastBundle( peb );
-    }
-
-    foreach( EngineObserver *observer, Observers )
-    {
-        observer->engineNewMetaData( b, trackChanged );
-    }
-}
-
-
 void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     foreach( EngineObserver *observer, Observers )
@@ -169,6 +150,13 @@ void EngineSubject::trackLengthChangedNotify( long length )
     {
         observer->engineTrackLengthChanged( length );
     }
+}
+
+void
+EngineSubject::newTrackPlaying() const
+{
+    foreach( EngineObserver *observer, Observers )
+        observer->engineNewTrackPlaying();
 }
 
 

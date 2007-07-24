@@ -39,8 +39,8 @@ public:
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
     virtual void engineStateChanged( Engine::State currentState, Engine::State oldState = Engine::Empty );
-    virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
     virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineVolumeChanged( int percent );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
@@ -64,13 +64,13 @@ protected:
     EngineSubject();
     virtual ~EngineSubject();
     void stateChangedNotify( Engine::State /*state*/ );
-    void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
     void trackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
     void trackLengthChangedNotify( long /*length*/ );
+    void newTrackPlaying() const;
 
 private:
     QSet<EngineObserver*> Observers;
