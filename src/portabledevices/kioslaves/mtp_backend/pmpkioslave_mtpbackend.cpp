@@ -154,9 +154,9 @@ MTPBackend::listDir( const KUrl &url )
         foreach( QString folder, folders )
         {
             KIO::UDSEntry entry;
-            entry[ KIO::UDS_NAME ] = folder;
-            entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
-            entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+            entry.insert( KIO::UDSEntry::UDS_NAME ,folder);
+            entry.insert( KIO::UDSEntry::UDS_FILE_TYPE , S_IFDIR);
+            entry.insert(KIO::UDSEntry::UDS_ACCESS ,S_IRUSR | S_IRGRP | S_IROTH);
             m_slave->listEntry( entry, false );
         }
         m_slave->listEntry( KIO::UDSEntry(), true );
@@ -178,9 +178,9 @@ MTPBackend::stat( const KUrl &url )
    QString path = getFilePath( url );
    kDebug() << "in MTPBackend::stat, path is: " << path << endl;
    KIO::UDSEntry entry;
-   entry[ KIO::UDS_NAME ] = m_solidDevice.product();
-   entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
-   entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+   entry.insert( KIO::UDSEntry::UDS_NAME,m_solidDevice.product());
+   entry.insert(KIO::UDSEntry::UDS_FILE_TYPE,S_IFDIR);
+   entry.insert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH);
    m_slave->statEntry( entry );
 }
 
