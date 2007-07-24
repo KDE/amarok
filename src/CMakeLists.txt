@@ -187,8 +187,12 @@ set(libmagnatunestore_SRCS
 
 kde4_add_ui3_files(libmagnatunestore_SRCS
 	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
-	servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
+    #servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
 	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
+)
+
+kde4_add_ui_files(libconfigdialog_SRCS
+    servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
 )
 
 #####################################################################

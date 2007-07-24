@@ -70,6 +70,9 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
         m_purchaseDialog = new MagnatunePurchaseDialog( m_parent, "PurchaseDialog", true, 0 );
 
         connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
+        
+        connect( m_purchaseDialog, SIGNAL( makeGiftCardPurchase( QString,  QString, QString, QString, int ) ), this, SLOT( processGiftCardPayment( QString, QString, QString, QString, int ) ) );
+        
         connect ( m_purchaseDialog, SIGNAL( cancelled() ), this, SLOT( albumPurchaseCancelled() ) );
     }
 

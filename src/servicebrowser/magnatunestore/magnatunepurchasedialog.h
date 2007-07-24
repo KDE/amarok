@@ -21,10 +21,10 @@
 #ifndef MAGNATUNEPURCHASEDIALOG_H
 #define MAGNATUNEPURCHASEDIALOG_H
 
-#include "magnatunepurchasedialogbase.h"
+#include "ui_magnatunepurchasedialogbase.h"
 #include "MagnatuneMeta.h"
 
-class MagnatunePurchaseDialog : public magnatunePurchaseDialogBase, public Observer
+class MagnatunePurchaseDialog : public QDialog, public Ui::magnatunePurchaseDialogBase, public Observer
 {
     Q_OBJECT
 
@@ -64,7 +64,8 @@ public:
 signals:
 
     /**
-     * Signal emitted when all needed info has been gathered and verified.
+     * Signal emitted when all needed info has been gathered and verified to purchase using
+     * a credit card.
      * @param ccNumber The credit card number.
      * @param expYear The credit card expiration year.
      * @param expMonth The credit card expiration month.
@@ -75,6 +76,17 @@ signals:
      * @param amount The amount to pay (in us $)
      */
     void makePurchase( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
+    
+     /**
+     * Signal emitted when all needed info has been gathered and verified to purchase using a gift card.
+     * @param gcCode The gift card code.
+     * @param name Name of customer.
+     * @param email Email of customer. Used to send verification email. Can also be used.
+     * on the Magnatune.com site to re-download any previous purchases.
+     * @param albumCode The album code of the album.
+     * @param amount The amount to pay (in us $)
+         */
+    void makeGiftCardPurchase( const QString &gcCode, const QString &name, const QString &email, const QString &albumCode, int amount );
 
     /**
      * Signal emitted if purchase operation is cancelled
@@ -102,6 +114,12 @@ protected slots:
      * Slot for recieving notification when the purchase button is clicked. 
      */
     void purchase();
+    
+    //use credit card to purchase album
+    void useCc();
+
+    //use gift card to purchase album
+    void useGc();
 
     /**
      * Slot for recieving notification when the cancel button is pressed.
