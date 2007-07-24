@@ -131,10 +131,10 @@ PMPProtocol::listDir( const KUrl &url )
                 name = getSolidFriendlyName( device );
                 kDebug() << "Friendly name returned from Solid is: " << name << endl;
             }
-            entry[ KIO::UDS_NAME ] = name.isEmpty() ? QString( "Portable Media Player at " + device.udi() ) : name;
-            entry[ KIO::UDS_URL ] = "pmp:///" + transUdi( device.udi() );
-            entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
-            entry[ KIO::UDS_HIDDEN ] = 0;
+            entry.insert( KIO::UDSEntry::UDS_NAME, name.isEmpty() ? QString( "Portable Media Player at " + device.udi() ) : name );
+            entry.insert( KIO::UDSEntry::UDS_URL,"pmp:///" + transUdi( device.udi() ) );
+            entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR );
+            entry.insert( KIO::UDSEntry::UDS_HIDDEN, 0 );
             listEntry( entry, false );
         }
         listEntry( UDSEntry(), true );
@@ -197,9 +197,9 @@ PMPProtocol::stat( const KUrl &url )
     if( url.path().isEmpty() || url.path() == "/" )
     {
         KIO::UDSEntry entry;
-        entry[ KIO::UDS_NAME ] = QString( "Available Devices" );
-        entry[ KIO::UDS_FILE_TYPE ] = S_IFDIR;
-        entry[ KIO::UDS_ACCESS ] = S_IRUSR | S_IRGRP | S_IROTH;
+        entry.insert( KIO::UDSEntry::UDS_NAME, "Available Devices" );
+        entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR );
+        entry.insert( KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH );
         statEntry( entry );
         emit finished();
         return;
