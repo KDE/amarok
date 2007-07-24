@@ -1739,7 +1739,7 @@ Playlist::activate( Q3ListViewItem *item )
     m_dynamicDirt = false;
 
     //use PlaylistItem::MetaBundle as it also updates the audioProps
-    EngineController::instance()->play( *item );
+//    EngineController::instance()->play( *item );
     #undef item
 }
 

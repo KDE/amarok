@@ -26,6 +26,8 @@
 #include "app.h" //transferCliArgs
 #include "debug.h"
 #include "collectiondb.h"
+#include "collection/collectionmanager.h"
+#include "collection/SqlStorage.h"
 #include "contextview/ContextScriptManager.h"
 #include "contextview/items/LyricsItem.h"
 #include "devicemanager.h"
@@ -35,6 +37,7 @@
 #include "lastfm.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
+#include "meta/meta.h"
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
@@ -127,21 +130,21 @@ namespace Amarok
 
     int DbusPlayerHandler::sampleRate()
     {
-        return EngineController::instance()->bundle().sampleRate();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->sampleRate() : 0;
     }
 
     float DbusPlayerHandler::score()
     {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        float score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-        return score;
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        //TODO: return type mismatch. fix this
+        return track ? track->score() : 0.0;
     }
 
     int DbusPlayerHandler::rating()
     {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
-        return rating;
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->rating() : 0;
     }
 
     int  DbusPlayerHandler::status()
@@ -172,57 +175,63 @@ namespace Amarok
 
     int DbusPlayerHandler::trackPlayCounter()
     {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        int count = CollectionDB::instance()->getPlayCount( bundle.url().path() );
-        return count;
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->playCount() : 0;
     }
 
     int DbusPlayerHandler::trackTotalTime()
     {
-        return EngineController::instance()->bundle().length();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->length() : 0;
     }
 
     QStringList DbusPlayerHandler::labels()
     {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        return CollectionDB::instance()->getLabels( bundle.url().path(), CollectionDB::typeUser );
+        //TODO: fix me
+        return QStringList();
     }
 
     QString DbusPlayerHandler::album()
     {
-        return EngineController::instance()->bundle().album();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->album()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::artist()
     {
-        return EngineController::instance()->bundle().artist();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->artist()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::bitrate()
     {
-        return EngineController::instance()->bundle().prettyBitrate();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? QString::number( track->bitrate() ) : QString();
     }
 
     QString DbusPlayerHandler::comment()
     {
-        return EngineController::instance()->bundle().comment();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->comment() : QString();
     }
 
     QString DbusPlayerHandler::coverImage()
     {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = CollectionDB::instance()->albumImage( bundle, 0 );
-        return image;
+        //TODO: fix me. oups, Meta:.Album can't actually do this yet:(
+        return QString();
     }
 
     QString DbusPlayerHandler::currentTime()
     {
-        return MetaBundle::prettyLength( EngineController::instance()->trackPosition() / 1000 ,true );
+        //TODO: move utility methods somewhere else
+        //return MetaBundle::prettyLength( EngineController::instance()->trackPosition() / 1000 ,true );
+        return QString();
     }
 
     QString DbusPlayerHandler::encodedURL()
     {
-        return EngineController::instance()->bundle().url().url();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->playableUrl().url() : QString();
     }
 
     QString DbusPlayerHandler::engine()
@@ -232,12 +241,15 @@ namespace Amarok
 
     QString DbusPlayerHandler::genre()
     {
-        return EngineController::instance()->bundle().genre();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->genre()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::lyrics()
     {
-        return CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+        //TODO: implement this
+        //return CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+        return QString();
     }
 
     QString DbusPlayerHandler::lyricsByPath( QString path )
@@ -252,43 +264,54 @@ namespace Amarok
 
     QString DbusPlayerHandler::nowPlaying()
     {
-        return EngineController::instance()->bundle().prettyTitle();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        //TODO: i think this is not correct yet
+        return track ? track->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::path()
     {
-        return EngineController::instance()->bundle().url().path();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->playableUrl().path() : QString();
     }
 
     QString DbusPlayerHandler::title()
     {
-        return EngineController::instance()->bundle().title();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::totalTime()
     {
-        return EngineController::instance()->bundle().prettyLength();
+        //TODO: implement utility method for this somewhere
+        //return EngineController::instance()->bundle().prettyLength();
+        return QString();
     }
 
     QString DbusPlayerHandler::track()
     {
-        if ( EngineController::instance()->bundle().track() != 0 )
+        //what does this do?
+        /*if ( EngineController::instance()->bundle().track() != 0 )
             return QString::number( EngineController::instance()->bundle().track() );
         else
-            return QString();
+            return QString();*/
+        return QString();
     }
 
     QString DbusPlayerHandler::type()
     {
-       if (EngineController::instance()->bundle().url().protocol() == "lastfm")
-          return QString("LastFm Stream");
-       else
-          return EngineController::instance()->bundle().type();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        QString type = track ? track->type() : QString();
+        if( type == "stream/lastfm" )
+            return "LastFm Stream";
+        else
+            return type;
     }
 
     QString DbusPlayerHandler::year()
     {
-        return QString::number( EngineController::instance()->bundle().year() );
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->year()->prettyName() : QString();
     }
 
     void DbusPlayerHandler::addBookmark( uint second )
@@ -436,8 +459,9 @@ namespace Amarok
 
     void DbusPlayerHandler::setScore( float score )
     {
-        const QString &url = EngineController::instance()->bundle().url().path();
-        CollectionDB::instance()->setSongPercentage(url, score);
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        if( track )
+            track->setScore( score );
     }
 
     void DbusPlayerHandler::setScoreByPath( const QString &url, float score )
@@ -447,24 +471,23 @@ namespace Amarok
 
     void DbusPlayerHandler::setBpm( float bpm )
     {
-        MetaBundle bundle = EngineController::instance()->bundle();
-        bundle.setBpm( bpm );
-        bundle.save();
-        CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
+        //Meta::Track does not provide a setBpm method
+        //is it necessary?
     }
 
     void DbusPlayerHandler::setBpmByPath( const QString &url, float bpm )
     {
-        MetaBundle bundle( url );
+        /*MetaBundle bundle( url );
         bundle.setBpm(bpm);
         bundle.save();
-        CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
+        CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );*/
     }
 
     void DbusPlayerHandler::setRating( int rating )
     {
-        const QString &url = EngineController::instance()->bundle().url().path();
-        CollectionDB::instance()->setSongRating(url, rating);
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        if( track )
+            track->setRating( rating );
     }
 
     void DbusPlayerHandler::setRatingByPath( const QString &url, int rating )
@@ -842,12 +865,13 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     QStringList DbusCollectionHandler::query( const QString& sql )
     {
-        return CollectionDB::instance()->query( sql );
+        return CollectionManager::instance()->sqlStorage()->query( sql );
     }
 
     QStringList DbusCollectionHandler::similarArtists( int artists )
     {
-        return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );
+        //TODO: implement
+        return QStringList();
     }
 
     void DbusCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )

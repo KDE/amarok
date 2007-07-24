@@ -12,6 +12,8 @@
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
+#include "meta/meta.h"
+
 #include <khtml_part.h>
 #include <KUrl>             //stack alloc
 
@@ -40,6 +42,8 @@ class TagDialog : public TagDialogBase
         explicit TagDialog( const KUrl& url, QWidget* parent = 0 );
         explicit TagDialog( const KUrl::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
+        explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
+        explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
         ~TagDialog();
 
         void setTab( int id );
@@ -126,6 +130,10 @@ class TagDialog : public TagDialogBase
         QString m_commaSeparatedLabels;
         KHTMLPart *m_labelCloud;
         //HTMLView *m_labelCloud;
+
+        //2.0 stuff
+        Meta::TrackList m_tracks;
+        Meta::TrackPtr m_currentTrack;
 };
 
 

@@ -18,6 +18,7 @@
 #include "../contextview.h"
 #include "enginecontroller.h"
 #include "debug.h"
+#include "meta/meta.h"
 #include "../GenericInfoBox.h"
 #include "statusbar.h"
 
@@ -135,9 +136,12 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
 #endif
     
     if ( m_wikiJob ) return;
-    
+
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( track ) return;
+
     m_wikiBox = new GenericInfoBox();
-    m_wikiBox->setTitle( QString( "Artist Info for %1" ).arg(  EngineController::instance()->bundle().artist() ) );
+    m_wikiBox->setTitle( QString( "Artist Info for %1" ).arg( track->artist()->prettyName() ) );
     m_wikiHTMLSource="";
     m_wikiHTMLSource.append(
                              "<html><body>\n"
@@ -166,27 +170,27 @@ void WikipediaItem::showWikipedia( const QString &url, bool fromHistory, bool re
     {
         QString tmpWikiStr;
         
-        if ( (EngineController::instance()->bundle().url().protocol() == "lastfm") ||
+        if ( /*(EngineController::instance()->bundle().url().protocol() == "lastfm") ||
              (EngineController::instance()->bundle().url().protocol() == "daap") ||
-             !EngineController::engine()->isStream() )
+             !EngineController::engine()->isStream() )*/ false )
         {
-            if ( !EngineController::instance()->bundle().artist().isEmpty() )
+            if ( !track->artist()->name().isEmpty() )
             {
-                tmpWikiStr = EngineController::instance()->bundle().artist();
+                tmpWikiStr = track->artist()->name();
                 tmpWikiStr += wikiArtistPostfix();
             }
-            else if ( !EngineController::instance()->bundle().title().isEmpty() )
+            else if ( !track->name().isEmpty() )
             {
-                tmpWikiStr = EngineController::instance()->bundle().title();
+                tmpWikiStr = track->name();
             }
             else
             {
-                tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
+                tmpWikiStr = track->prettyName();
             }
         }
         else
         {
-            tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
+            tmpWikiStr = track->prettyName();
         }
         
         //Hack to make wiki searches work with magnatune preview tracks
@@ -241,14 +245,15 @@ WikipediaItem::wikiArtistPage() //SLOT
 void
 WikipediaItem::wikiAlbumPage() //SLOT
 {
-    showWikipediaEntry( EngineController::instance()->bundle().album() + wikiAlbumPostfix() );
+    //TODO fix this
+    //showWikipediaEntry( EngineController::instance()->bundle().album() + wikiAlbumPostfix() );
 }
 
 
 void
 WikipediaItem::wikiTitlePage() //SLOT
 {
-    showWikipediaEntry( EngineController::instance()->bundle().title() + wikiTrackPostfix() );
+    //showWikipediaEntry( EngineController::instance()->bundle().title() + wikiTrackPostfix() );
 }
 
 

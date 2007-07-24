@@ -869,7 +869,8 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
 
 void App::engineStateChanged( Engine::State state, Engine::State oldState )
 {
-    const MetaBundle &bundle = EngineController::instance()->bundle();
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    //track is 0 if the engien state is Empty. we check that in the switch
     switch( state )
     {
     case Engine::Empty:
@@ -881,8 +882,9 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     case Engine::Playing:
         if ( oldState == Engine::Paused )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
-        if ( !bundle.prettyTitle().isEmpty() )
-            mainWindow()->setCaption( i18n("Amarok - %1", bundle.veryNiceTitle() ) );
+        if ( !track->prettyName().isEmpty() )
+            //TODO: write a utility function somewhere
+            mainWindow()->setCaption( i18n("Amarok - %1", /*bundle.veryNiceTitle()*/ track->prettyName() ) );
         break;
 
     case Engine::Paused:
@@ -1041,11 +1043,9 @@ void App::setRating( int n )
     const Engine::State s = EngineController::instance()->engine()->state();
     if( s == Engine::Playing || s == Engine::Paused || s == Engine::Idle )
     {
-        const QString path = EngineController::instance()->playingURL().path();
-        CollectionDB::instance()->setSongRating( path, n, true );
-        const int rating = CollectionDB::instance()->getSongRating( path );
-        EngineController::instance()->updateBundleRating( rating );
-        Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        track->setRating( n );
+        Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
     }
     else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );

@@ -14,6 +14,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "meta/meta.h"
 #include "progressslider.h"
 #include "timeLabel.h"
 
@@ -161,7 +162,10 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
-    const uint trackLength = EngineController::instance()->bundle().length();
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    const uint trackLength = track->length() / 1000;
 
     if( AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabel->show();
@@ -188,6 +192,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
         seconds2 = 0;
     }
 
+    //put Utility functions somewhere
     QString s1 = MetaBundle::prettyTime( seconds );
     QString s2 = MetaBundle::prettyTime( seconds2 );
 
@@ -267,7 +272,10 @@ ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
 {
     m_slider->newBundle( bundle );
     engineTrackLengthChanged( bundle.length() );
-    m_slider->setMaximum( EngineController::instance()->bundle().length() * 1000 );
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    m_slider->setMaximum( track->length() );
 
     ProgressSlider::instance()->addBookmark( 20 );
     ProgressSlider::instance()->addBookmark( 40);

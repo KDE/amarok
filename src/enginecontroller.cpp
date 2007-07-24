@@ -17,11 +17,12 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "collection/collectionmanager.h"
 #include "debug.h"
 #include "enginebase.h"
 #include "lastfm.h"
 #include "mediabrowser.h"
-#include "meta.h"
+#include "meta/meta.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -174,8 +175,6 @@ EngineController::loadEngine( const QString &engineName )
                 connect( engine, SIGNAL(infoMessage( const QString& )),
                             bar,   SLOT(longMessage( const QString& )) );
             }
-            connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
-                       this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
             connect( engine, SIGNAL(showConfigDialog( const QByteArray& )),
                        kapp,   SLOT(slotConfigAmarok( const QByteArray& )) );
             connect( engine, SIGNAL( metaData( QHash<qint64, QString> ) ), SLOT( slotEngineMetaData( QHash<qint64, QString> ) ) );
@@ -291,8 +290,9 @@ void EngineController::restoreSession()
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
         const KUrl url = AmarokConfig::resumeTrack();
-
-        play( MetaBundle( url ), AmarokConfig::resumeTime() );
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        if( track )
+            play( track, AmarokConfig::resumeTime() );
     }
 }
 
@@ -302,7 +302,7 @@ void EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() )
     {
-        trackEnded( trackPosition(), m_bundle.length() * 1000, "quit" );
+        trackEnded( trackPosition(), m_currentTrack->length() * 1000, "quit" );
     }
 
     PluginManager::unload( m_voidEngine );
@@ -321,7 +321,7 @@ void EngineController::previous() //SLOT
 
 void EngineController::next( bool forceNext ) //SLOT
 {
-    m_previousUrl = m_bundle.url();
+    m_previousUrl = m_currentTrack->url();
     m_isTiming = false;
     emit orderNext(forceNext);
 }
@@ -350,6 +350,11 @@ void EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
 }
 
+//i know that i should not jsut comment this code,
+//but there is a lot of important logic in there, so
+//i am leaving it in because we won't forget that it
+//exists that way
+/*
 void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
@@ -456,7 +461,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             m_xFadeThisTrack = !m_engine->isStream() && !(url.protocol() == "cdda") &&
                     m_bundle.length()*1000 - offset - AmarokConfig::crossfadeLength()*2 > 0;
 
-            newMetaDataNotify( m_bundle, true /* track change */ );
+            newMetaDataNotify( m_bundle, true );
             return;
         }
     }
@@ -505,7 +510,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             //treated as independent after playback is stopped)
             stop();
         }
-}
+}*/
 
 
 void EngineController::pause() //SLOT
@@ -521,7 +526,7 @@ void EngineController::stop() //SLOT
     m_playFailureCount = 0;
 
     //let Amarok know that the previous track is no longer playing
-    trackEnded( trackPosition(), m_bundle.length() * 1000, "stop" );
+    trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
 
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches
     //where stop never properly happens if call to m_engine->load fails in play)
@@ -551,7 +556,10 @@ void EngineController::playPause() //SLOT
 
 void EngineController::seek( int ms ) //SLOT
 {
-    if( bundle().length() > 0 )
+    Meta::TrackPtr track = currentTrack();
+    if( !track )
+        return;
+    if( track->length() > 0 )
     {
         trackPositionChangedNotify( ms, true ); /* User seek */
         engine()->seek( ms );
@@ -633,37 +641,34 @@ void EngineController::mute() //SLOT
     }
 }
 
-
-const MetaBundle&
-EngineController::bundle() const
+Meta::TrackPtr
+EngineController::currentTrack() const
 {
-    static MetaBundle null;
-    return m_engine->state() == Engine::Empty ? null : m_bundle;
+    return m_engine->state() == Engine::Empty ? Meta::TrackPtr() : m_currentTrack;
 }
 
-
-void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
+//do we actually need this method?
+uint
+EngineController::trackLength() const
 {
-    // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
-    if ( m_lastMetadata.contains( bundle ) )
-        return;
-
-    // We compare the new item with the last two items, because mth.house currently cycles
-    // two messages alternating, which gets very annoying
-    if ( m_lastMetadata.count() == 2 )
-        m_lastMetadata.pop_front();
-
-    m_lastMetadata << bundle;
-
-    m_previousUrl = m_bundle.url();
-    m_bundle = bundle;
-    m_lastPositionOffset = m_positionOffset;
-    if( m_lastFm )
-        m_positionOffset = m_engine->position();
+     Meta::TrackPtr track = currentTrack();
+    if( track )
+        return track->length() * 1000;
     else
-        m_positionOffset = 0;
-    newMetaDataNotify( m_bundle, false /* not a new track */ );
+        return 0;
 }
+
+//do we actually need this method?
+KUrl
+EngineController::playingURL() const
+{
+    Meta::TrackPtr track = currentTrack();
+    if( track )
+        return track->playableUrl();
+    else
+        return KUrl();
+}
+
 
 void
 EngineController::slotEngineMetaData( const QHash<qint64, QString> &newMetaData )
@@ -671,43 +676,11 @@ EngineController::slotEngineMetaData( const QHash<qint64, QString> &newMetaData 
     bool trackChange = m_currentTrack->playableUrl().isLocalFile();
     newMetaDataNotify( newMetaData, trackChange );
 }
-
-void EngineController::currentTrackMetaDataChanged( const MetaBundle& bundle )
-{
-    m_previousUrl = m_bundle.url();
-    m_bundle = bundle;
-    newMetaDataNotify( bundle, false /* no track change */ );
-} 
+ 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
-{
-    if ( !m_bundle.url().isLocalFile() )
-    {
-        MetaBundle bundle = m_bundle;
-        bundle.setArtist( simpleBundle.artist );
-        bundle.setTitle( simpleBundle.title );
-        bundle.setComment( simpleBundle.comment );
-        bundle.setAlbum( simpleBundle.album );
-
-        if( !simpleBundle.genre.isEmpty() )
-            bundle.setGenre( simpleBundle.genre );
-        if( !simpleBundle.bitrate.isEmpty() )
-            bundle.setBitrate( simpleBundle.bitrate.toInt() );
-        if( !simpleBundle.samplerate.isEmpty() )
-            bundle.setSampleRate( simpleBundle.samplerate.toInt() );
-        if( !simpleBundle.year.isEmpty() )
-            bundle.setYear( simpleBundle.year.toInt() );
-        if( !simpleBundle.tracknr.isEmpty() )
-            bundle.setTrack( simpleBundle.tracknr.toInt() );
-
-        slotStreamMetaData( bundle );
-    }
-}
-
 
 void EngineController::slotMainTimer() //SLOT
 {
@@ -723,7 +696,7 @@ void EngineController::slotMainTimer() //SLOT
          ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
            (uint) AmarokConfig::crossfadeType() == 1 ) &&  //...automatic track change only
          Playlist::instance()->isTrackAfter() &&
-         m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
+         m_currentTrack->length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {
         debug() << "Crossfading to next track...\n";
         m_engine->setXFadeNextTrack( true );
@@ -732,7 +705,7 @@ void EngineController::slotMainTimer() //SLOT
     else if ( m_engine->state() == Engine::Playing &&
               AmarokConfig::fadeout() &&
               Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
-              m_bundle.length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
+              m_currentTrack->length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
     {
        m_engine->stop();
     }

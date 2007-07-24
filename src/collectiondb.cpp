@@ -4580,11 +4580,12 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
             emit tagsChanged( values[12], values[14] );
     }
 
-    if ( EngineController::instance()->bundle().url() == bundle.url() )
+    //this method is totally useless now, so i'm not going to fix this
+    /*if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
         debug() << "Current song edited, updating widgets: " << bundle.title() << endl;
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
-    }
+    }*/
 
     emit tagsChanged( bundle );
 }
@@ -4842,47 +4843,6 @@ CollectionDB::md5sum( const QString& artist, const QString& album, const QString
 //     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
-
-
-void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
-{
-    //This is where percentages are calculated
-    //TODO statistics are not calculated when currentTrack doesn't exist
-
-    // Don't update statistics if song has been played for less than 15 seconds
-    // if ( finalPosition < 15000 ) return;
-
-    //below check is necessary because if stop after current track is selected,
-    //the url's path will be empty, so check the previous URL for the path that
-    //had just played
-    const KUrl url = EngineController::instance()->bundle().url().path().isEmpty() ?
-                            EngineController::instance()->previousURL() :
-                            EngineController::instance()->bundle().url();
-
-    debug() << "track ended: " << url.url() << endl;
-    PodcastEpisodeBundle peb;
-    if( getPodcastEpisodeBundle( url.url(), &peb ) )
-    {
-        PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() );
-        if ( p )
-            p->setListened();
-
-        if( !url.isLocalFile() )
-            return;
-    }
-
-    if ( url.path().isEmpty() || !m_autoScoring ) return;
-
-    // sanity check
-    if ( finalPosition > trackLength || finalPosition <= 0 )
-        finalPosition = trackLength;
-
-    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
-
-    // increase song counter & calculate new statistics
-    addSongPercentage( url.path(), pct, reason );
-}
-
 
 void
 CollectionDB::timerEvent( QTimerEvent* )

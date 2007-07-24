@@ -18,6 +18,7 @@
 #include "../contextview.h"
 #include "enginecontroller.h"
 #include "debug.h"
+#include "meta/meta.h"
 #include "scriptmanager.h"
 
 #include <qdom.h>
@@ -62,12 +63,16 @@ void LyricsItem::showLyrics( const QString& url )
         m_lyricsBox->ensureVisible();
         m_lyricsVisible = true;
     }
-    
-    QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+
+    QString lyrics = CollectionDB::instance()->getLyrics( track->playableUrl().path() );
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
-    QString title  = EngineController::instance()->bundle().title();
-    QString artist = EngineController::instance()->bundle().artist();
+    QString title  = track->prettyName();
+    QString artist = track->artist()->prettyName();
     
     
     m_lyricsBox->setTitle( QString( "Lyrics of %1").arg( title ) );
@@ -81,7 +86,7 @@ void LyricsItem::showLyrics( const QString& url )
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has "artist name" together, can be bad,
            but at least the user will hopefully get nice suggestions. */
-        QString prettyTitle = EngineController::instance()->bundle().prettyTitle();
+        QString prettyTitle = track->prettyName();
         int h = prettyTitle.indexOf( '-' );
         if ( h != -1 )
         {
@@ -266,7 +271,7 @@ LyricsItem::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
         
         if( !cached ) {
             lyrics.append( "<br/><br/><i>\n" + i18n( "Powered by %1 (%2)", site, site_url ) + "</i>\n" );
-            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc, EngineController::instance()->bundle().uniqueId() );
+            //CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc, EngineController::instance()->bundle().uniqueId() );
         }
     }
     

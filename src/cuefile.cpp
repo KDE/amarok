@@ -224,7 +224,8 @@ bool CueFile::load(int mediaLength)
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 {
-    position /= 1000;
+    //TODO: port 2.0 reimplement this
+    /*position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
         CueFile::Iterator it = end();
@@ -261,7 +262,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
         }
     }
 
-    m_lastSeekPos = position;
+    m_lastSeekPos = position;*/
 }
 
 

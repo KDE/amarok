@@ -12,6 +12,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "enginecontroller.h"
+#include "meta/meta.h"
 
 #include <KAction>
 #include <KApplication>
@@ -146,10 +147,15 @@ Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
 }
 
 void
-Amarok::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
-    trackLength = bundle.length() * 1000;
-    setLastFm( bundle.url().protocol() == "lastfm" );
+    Q_UNUSED( trackChanged )
+    Q_UNUSED( newMetaData )
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    trackLength = track->length() * 1000;
+    setLastFm( track->type() == "stream/lastfm" );
 }
 
 void

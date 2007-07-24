@@ -15,20 +15,17 @@
 
 #include "enginebase.h"
 #include "engineobserver.h"
-#include "metabundle.h"
+#include "meta/meta.h"
 
 #include <QHash>
 #include <QMap>
 #include <QObject>
 
+
 class QTimer;
 
-namespace KIO { class Job; }
-namespace Meta { 
-    class Track; 
-    typedef KSharedPtr<Track> TrackPtr;
-}
 
+namespace KIO { class Job; }
 
 /**
  * This class captures Amarok specific behaviour for some common features.
@@ -57,15 +54,13 @@ public:
 
     EngineBase* loadEngine();
 
-    uint trackLength() const { return m_bundle.length() * 1000; }
-    const MetaBundle &bundle() const;
+    Meta::TrackPtr currentTrack() const;
+    uint trackLength() const;
     KUrl previousURL() const { return m_previousUrl; }
-    KUrl playingURL() const { return bundle().url(); }
+    KUrl playingURL() const;
 
     void restoreSession();
     void endSession();
-
-    void updateBundleRating( const int rating ) { m_bundle.setRating(rating); } //Can't update metabundle rating from bundle(), d'oh
 
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 150;
@@ -79,7 +74,6 @@ public slots:
     //NOTE If the track ended normally, call next(false) !
     void next( const bool forceNext = true );
     void play();
-    void play( const MetaBundle&, uint offset = 0 );
     void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
     void stop();
@@ -98,9 +92,6 @@ public slots:
 
     void playlistChanged() { m_engine->playlistChanged(); }
 
-    void slotStreamMetaData( const MetaBundle &bundle );
-    void currentTrackMetaDataChanged( const MetaBundle& bundle );
-
 signals:
     void orderPrevious();
     void orderCurrent();
@@ -109,7 +100,6 @@ signals:
     void trackFinished();
 
 private slots:
-    void slotEngineMetaData( const Engine::SimpleMetaBundle& );
     void slotEngineMetaData( const QHash<qint64, QString> &newMetaData );
     void slotMainTimer();
     void slotTrackEnded();
@@ -130,8 +120,6 @@ private:
 
     EngineBase*     m_engine;
     EngineBase*     m_voidEngine;
-    MetaBundle      m_bundle;
-    BundleList      m_lastMetadata;
     KUrl            m_previousUrl;
     long            m_delayTime;
     int             m_muteVolume;

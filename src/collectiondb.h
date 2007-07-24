@@ -508,7 +508,6 @@ class CollectionDB : public QObject, public EngineObserver
 
     protected:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file = QString() );
-        void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
 

@@ -87,8 +87,10 @@ OSDWidget::show( const QString &text, QImage newImage )
 void
 OSDWidget::ratingChanged( const QString& path, int rating )
 {
-    const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    if( currentTrack.isFile() && currentTrack.url().path() == path )
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    if( track->playableUrl().isLocalFile() && track->playableUrl().path() == path )
         ratingChanged( rating );
 }
 
@@ -706,7 +708,8 @@ Amarok::OSD::forceToggleOSD()
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        show( EngineController::instance()->bundle() );
+        //TODO paort 2.0: fix this
+        //show( EngineController::instance()->bundle() );
         setEnabled( b );
     }
     else

@@ -88,6 +88,25 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     init();
 }
 
+TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
+    :TagDialogBase( parent )
+    , m_currentCover()
+    , m_tracks( tracks )
+    , m_currentTrack( 0 )
+{
+    init();
+}
+
+TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
+    :TagDialogBase( parent )
+    , m_currentCover()
+    , m_tracks()
+    , m_currentTrack( track )
+{
+    m_tracks.append( track );
+    init();
+}
+
 
 TagDialog::~TagDialog()
 {
@@ -540,7 +559,7 @@ void TagDialog::init()
     connect( pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
     connect( pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
-    if( m_urlList.count() ) {   //editing multiple tracks
+    if( m_tracks.count() ) {   //editing multiple tracks
         m_perTrack = false;
         setMultipleTracksMode();
         readMultipleTracks();

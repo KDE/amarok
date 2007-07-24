@@ -518,7 +518,10 @@ FileBrowser::contextMenuActivated( int id )
 inline void
 FileBrowser::gotoCurrentFolder()
 {
-    const KUrl &url = EngineController::instance()->bundle().url();
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    const KUrl &url = track->playableUrl();
     KUrl dirURL = KUrl( url.directory() );
 
     m_combo->setUrl( dirURL );

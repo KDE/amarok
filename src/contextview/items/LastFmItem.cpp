@@ -18,7 +18,7 @@
 #include "collectiondb.h" // all deprecated, i know
 #include "../contextview.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
+#include "meta/meta.h"
 #include "querybuilder.h"
 #include "StarManager.h"
 
@@ -26,6 +26,7 @@
 #include <QBuffer>
 
 #include <kcodecs.h> // for data: URLs
+#include <klocale.h>
 
 
 using namespace Context;
@@ -64,11 +65,12 @@ void LastFmItem::showRelatedArtists()
 {
     DEBUG_BLOCK
     // for now using old CollectionDB, i don't know if similarArtists has been ported to the new collection framework yet.
-    MetaBundle bundle = EngineController::instance()->bundle();
-    
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track ) return;
+
     CloudBox *relatedArtists = new CloudBox();
-    relatedArtists->setTitle( i18n("Related Artists to %1", bundle.artist() ) );
-    QStringList relations = CollectionDB::instance()->similarArtists( bundle.artist(), 10 );
+    relatedArtists->setTitle( i18n("Related Artists to %1", track->artist()->prettyName() ) );
+    QStringList relations = CollectionDB::instance()->similarArtists( track->artist()->name(), 10 );
     foreach( QString r, relations )
         relatedArtists->addText( r );
     
@@ -86,7 +88,10 @@ void LastFmItem::showSuggestedSongs()
     // again, using old QueryBuilder until a) i figure out how to use the new one and b) i know it supports all of this.
     
     // for now using old CollectionDB, i don't know if similarArtists has been ported to the new collection framework yet.
-        QStringList relArtists = CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), 10 );
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        if( !track )
+            return;
+        QStringList relArtists = CollectionDB::instance()->similarArtists( track->artist()->name(), 10 );
     
     QString token;
     
@@ -176,7 +181,7 @@ QString LastFmItem::statsHTML(  int score, int rating, bool statsbox )
     
     if( AmarokConfig::useRatings() )
     {
-        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Rating: %1", MetaBundle::ratingDescription( rating ) ) ) +
+        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Rating: %1", /*MetaBundle::ratingDescription( rating )*/ QString::number( rating ) ) ) +
             "<td class='ratingBox' align='right' colspan='2'>\n";
         if( rating )
         {

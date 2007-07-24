@@ -20,6 +20,7 @@
 #include "debug.h"
 #include "enginecontroller.h" // HACK to get current artist for suggestion retrieval
 #include "MainWindow.h"
+#include "meta/meta.h"
 #include "mountpointmanager.h" // device ids
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -119,7 +120,8 @@ DEBUG_BLOCK
         if( appendType() == SUGGESTION )
         {
             // TODO some clever stuff here for spanning across artists
-            QString artist = EngineController::instance()->bundle().artist();
+            Meta::TrackPtr track = EngineController::instance()->currentTrack();
+            QString artist = track ? track->artist()->name() : QString();
 
             if( artist.isEmpty() )
             {

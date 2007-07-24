@@ -27,6 +27,7 @@
 #include "graphicsitemfader.h"
 #include "graphicsitemscaler.h"
 #include "introanimation.h"
+#include "meta/meta.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
 #include "items/ContextItemManager.h"
@@ -502,16 +503,18 @@ void ContextView::showCurrentTrack()
 {
     clear();
 
-    MetaBundle bundle = EngineController::instance()->bundle();
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
 
     ContextBox *infoBox = new ContextBox();
-    infoBox->setTitle( i18n("%1 - %2", bundle.title(), bundle.artist() ) );
+    infoBox->setTitle( i18n("%1 - %2", track->prettyName(), track->artist()->prettyName() ) );
     addContextBox( infoBox );
 
     AlbumBox *albumBox = new AlbumBox();
-    albumBox->setTitle( i18n("Albums By %1", bundle.artist() ) );
+    albumBox->setTitle( i18n("Albums By %1", track->artist()->prettyName() ) );
 
-    int artistId = CollectionDB::instance()->artistID( bundle.artist() );
+    int artistId = CollectionDB::instance()->artistID( track->artist()->name() );
     // because i don't know how to use the new QueryMaker class...
     QString query = QString("SELECT distinct(AL.name), AR.name, YR.name "
             "FROM tags T "
