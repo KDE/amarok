@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "meta/meta.h"
+#include "meta/MetaUtility.h"
 #include "progressslider.h"
 #include "timeLabel.h"
 
@@ -165,7 +166,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
     if( !track )
         return;
-    const uint trackLength = track->length() / 1000;
+    const uint trackLength = track->length();
 
     if( AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabel->show();
@@ -193,8 +194,8 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     }
 
     //put Utility functions somewhere
-    QString s1 = MetaBundle::prettyTime( seconds );
-    QString s2 = MetaBundle::prettyTime( seconds2 );
+    QString s1 = Meta::secToPrettyTime( seconds );
+    QString s2 = Meta::secToPrettyTime( seconds2 );
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
@@ -290,7 +291,7 @@ ProgressWidget::engineTrackLengthChanged( long length )
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( length * 1000 );
     m_slider->setEnabled( length > 0 );
-    m_timeLength = MetaBundle::prettyTime( length ).length()+1; // account for - in remaining time
+    m_timeLength = Meta::secToPrettyTime( length ).length()+1; // account for - in remaining time
 }
 
 #include "progressslider.moc"
