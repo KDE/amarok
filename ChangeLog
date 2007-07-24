@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0
   FEATURES:
+  
+    * Magnatune store: Support purchases using Magnatune gift cards
 
   CHANGES:
     * Remove the amarok loader application.
