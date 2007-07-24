@@ -280,6 +280,7 @@ set(meta_SRCS
     meta/file/File.cpp
     meta/stream/Stream.cpp
     meta/PlaylistFileSupport.cpp
+    meta/MetaUtility.cpp
 )
 
 #####################################################################
