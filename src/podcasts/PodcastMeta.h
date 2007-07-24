@@ -110,7 +110,7 @@ class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
         virtual QString prettyName() const { return m_title; };
 
         //Track Methods
-        virtual KUrl playableUrl() const { return m_PlayableUrl; };
+        virtual KUrl playableUrl() const { return m_playableUrl; };
         virtual QString prettyUrl() const { return m_url.prettyUrl(); };
         virtual QString url() const { return m_url.prettyUrl(); };
         virtual bool isPlayable() const { return true; };
@@ -170,7 +170,7 @@ class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
         PodcastChannelPtr m_channel;
         QString m_pubDate;
         KUrl m_url;
-        KUrl m_PlayableUrl;
+        KUrl m_playableUrl;
         int m_duration;
         int m_size;
         int m_sequenceNmbr;
