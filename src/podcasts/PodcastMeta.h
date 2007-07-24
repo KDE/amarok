@@ -217,7 +217,7 @@ class PodcastChannel : public Meta::Playlist, public PodcastMetaCommon
         TrackList m_tracks;
 };
 
-};
+}
 
 // Q_DECLARE_METATYPE( Meta::PodcastMetaCommonPtr )
 // Q_DECLARE_METATYPE( Meta::PodcastMetaCommonList )

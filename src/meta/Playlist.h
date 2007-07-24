@@ -43,7 +43,7 @@ namespace Meta
             virtual TrackList tracks() = 0;
     };
 
-};
+}
 
 Q_DECLARE_METATYPE( Meta::PlaylistPtr )
 Q_DECLARE_METATYPE( Meta::PlaylistList )
