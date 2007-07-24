@@ -65,6 +65,7 @@ private:
     MagnatuneAlbumDownloader * m_albumDownloader;
     MagnatuneAlbum * m_currentAlbum;
     QString m_currentAlbumCoverName;
+    bool m_giftCardPurchase;
 
     bool parseDownloadXml( const QString &xml );
 
@@ -90,6 +91,8 @@ protected slots:
 public slots:
 
     void processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
+    
+    void processGiftCardPayment( const QString &giftCardCode, const QString &name, const QString &email, const QString &albumCode, int amount );
 
     
 

@@ -180,7 +180,7 @@ void MagnatuneStore::initBottomPanel()
 void MagnatuneStore::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
-   // updateMagnatuneList();
+    //updateMagnatuneList();
     
     
     //HACK for testing
