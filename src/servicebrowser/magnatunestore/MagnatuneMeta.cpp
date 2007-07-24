@@ -287,11 +287,11 @@ QPixmap MagnatuneAlbum::image(int size, bool withShadow) const
 
     }
 
-    return Meta::Album::image(size, withShadow);
+    return Meta::Album::image( size, withShadow );
 
 }
 
-void MagnatuneAlbum::setImage(QImage image) const
+void MagnatuneAlbum::setImage( const QImage & image ) const
 {
     m_cover = image;
     m_hasFetchedCover = true;
@@ -302,12 +302,12 @@ void MagnatuneAlbum::setImage(QImage image) const
 
 
 
-MagnatuneGenre::MagnatuneGenre(const QString & name)
+MagnatuneGenre::MagnatuneGenre( const QString & name )
     : ServiceGenre( name )
 {
 }
 
-MagnatuneGenre::MagnatuneGenre(const QStringList & resultRow)
+MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
@@ -343,7 +343,7 @@ void MagnatuneAlbumCoverDownloader::downloadCover( const  MagnatuneAlbum * album
     
 }
 
-void MagnatuneAlbumCoverDownloader::coverDownloadComplete(KJob * downloadJob)
+void MagnatuneAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
 
     debug() << "cover download complete" << endl;

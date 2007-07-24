@@ -149,9 +149,9 @@ public:
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
 
-    void setImage( QImage image ) const;
+    void setImage( const QImage & image ) const;
     
-    virtual QPixmap image(int size, bool withShadow) const; //overidden from Meta::Album
+    virtual QPixmap image( int size, bool withShadow ) const; //overridden from Meta::Album
     
 
 
