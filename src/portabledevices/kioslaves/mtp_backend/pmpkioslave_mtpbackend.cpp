@@ -27,6 +27,7 @@
 
 #include <kcomponentdata.h>
 #include <kdebug.h>
+#include <klocale.h>
 #include <kurl.h>
 #include <kio/slavebase.h>
 #include <solid/device.h>
@@ -43,13 +44,13 @@ MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
 
     if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "Could not get a connected device list from libmtp." );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not get a connected device list from libmtp." ) );
         return;
     }
     quint32 deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );
     if( deviceCount == 0 )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "libmtp found no devices." );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "libmtp found no devices." ) );
         return;
     }
 }
@@ -73,13 +74,14 @@ MTPBackend::initialize()
     }
     if( !gi->propertyExists( "usb.serial" ) )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "Could not find serial number of MTP device in HAL.  When filing a bug please include the full output of \"lshal -lt\"." );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not find serial number of MTP device in HAL. \
+                                                  When filing a bug please include the full output of \"lshal -lt\"." ) );
         return;
     }
     QVariant possibleSerial = gi->property( "usb.serial" );
     if( !possibleSerial.isValid() || possibleSerial.isNull() || !possibleSerial.canConvert( QVariant::String ) )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "Did not get an expected String from HAL." );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not get the serial number from HAL." ) );
         return;
     }
     QString serial = possibleSerial.toString();
@@ -121,7 +123,7 @@ MTPBackend::setFriendlyName( const QString &name )
 {
     kDebug() << "Setting MTPBackend friendly name" << endl;
     if( LIBMTP_Set_Friendlyname( m_device, name.toUtf8() ) != 0 )
-        m_slave->warning( "Failed to set friendly name on the device!" );
+        m_slave->warning( i18n( "Failed to set friendly name on the device!" ) );
 }
 
 QString
@@ -150,7 +152,7 @@ MTPBackend::listDir( const KUrl &url )
    if( path.isEmpty() || path == "/" )
    {
         QStringList folders;
-        folders << "Playlists" << "Tracks";
+        folders << i18n( "Playlists" ) << i18nc( "Music tracks", "Tracks" );
         foreach( QString folder, folders )
         {
             KIO::UDSEntry entry;

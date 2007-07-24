@@ -26,6 +26,7 @@
 #include <kcomponentdata.h>
 #include <kdebug.h>
 #include <kio/ioslave_defaults.h>
+#include <klocale.h>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/genericinterface.h>
@@ -58,16 +59,12 @@ PMPProtocol::PMPProtocol( const QByteArray &protocol, const QByteArray &pool,
                         , m_devices()
                         , m_mtpInitialized( false )
 {
-    kDebug() << "Creating PMPPProtocol kioslave" << endl;
 }
 
 PMPProtocol::~PMPProtocol()
 {
     foreach( QString udi, m_devices.keys() )
-    {
-        kDebug() << "Deleting device with key: " << udi << endl;
         delete m_devices[udi];
-    }
 }
 
 void
@@ -80,7 +77,8 @@ PMPProtocol::setHost( const QString &host, quint16 port,
     if( !host.isEmpty() )
     {
         error( KIO::ERR_CANNOT_OPEN_FOR_READING,
-                "portable media player : Setting a hostname is not supported.  Use a URL of the form pmp:/<udi> or pmp:///<udi>" );
+                i18n("portable media player : Setting a hostname is not supported. \
+                      Use a URL of the form pmp:/<udi> or pmp:///<udi>" ) );
     }
 }
 
@@ -108,7 +106,6 @@ PMPProtocol::listDir( const KUrl &url )
     }
     if( url.path().isEmpty() || url.path() == "/" )
     {
-        kDebug() << "Listing devices" << endl;
         QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
         foreach( Solid::Device device, deviceList )
         {
@@ -127,7 +124,6 @@ PMPProtocol::listDir( const KUrl &url )
             }
             if( name.isEmpty() )
             {
-                kDebug() << "Getting Solid friendly name" << endl;
                 name = getSolidFriendlyName( device );
                 kDebug() << "Friendly name returned from Solid is: " << name << endl;
             }
@@ -143,9 +139,6 @@ PMPProtocol::listDir( const KUrl &url )
     }
     else
     {
-        kDebug() << "Calling backend's listDir" << endl;
-        kDebug() << "udiFromUrl( url ) = " << udiFromUrl( url ) << endl;
-        kDebug() << "m_devices[udiFromUrl( url )] = " << m_devices[udiFromUrl( url )] << endl;
         if( getBackendForUrl( url ) )
             getBackendForUrl( url )->listDir( url );
     }
@@ -171,7 +164,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         QString srcName = udiFromUrl( src );
         QString dstName = udiFromUrl( dest );
         if( m_devices.contains( dstName ) )
-            warning( "Destination name cannot be the same as a Solid UDI!" );
+            warning( i18n( "Destination name cannot be the same as a Solid UDI!" ) );
         else if ( getBackendForUrl( src ) )
             getBackendForUrl( src )->setFriendlyName( destPath );
         emit finished();
@@ -180,7 +173,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
     if( udiFromUrl( src ) != udiFromUrl( dest ) )
     {
         //this shouldn't ever happen...
-        warning( "Could not rename file, files cannot be renamed across devices!" );
+        warning( i18n( "Could not rename file, files cannot be renamed across devices!" ) );
         emit finished();
         return;
     }
@@ -215,6 +208,7 @@ QString
 PMPProtocol::getSolidFriendlyName( const Solid::Device & device ) const
 {
     kDebug() << "Looking for a friendly name for " << device.udi() << "..." << endl;
+    //NOTE/TODO: The following is hal-dependent.
     const Solid::GenericInterface *gi = device.as<Solid::GenericInterface>();
     if( !gi )
     {
@@ -228,12 +222,8 @@ PMPProtocol::getSolidFriendlyName( const Solid::Device & device ) const
     }
     QVariant possibleLibraries = gi->property( "portable_audio_player.access_method.drivers" );
     if( !possibleLibraries.isValid() || possibleLibraries.isNull() || !possibleLibraries.canConvert( QVariant::StringList ) )
-    {
-        kDebug() << "drivers list not valid, null, or can't convert" << endl;
         return QString();
-    }
     QStringList libraries = possibleLibraries.toStringList();
-    kDebug() << "Found libraries: " << libraries << endl;
     foreach( QString library, libraries )
     {
         QVariant possibleName = gi->property( "portable_audio_player." + library + ".name" );
@@ -252,7 +242,7 @@ PMPProtocol::udiFromUrl( const KUrl &url )
 {
     if( url.isEmpty() )
     {
-        error( KIO::ERR_CANNOT_OPEN_FOR_READING, "portable media player : Empty UDI passed in (this error shouldn't happen)" );
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "portable media player : Empty UDI passed in" ) );
         return QString::null;
     }
     
@@ -272,10 +262,9 @@ PMPProtocol::udiFromUrl( const KUrl &url )
 PMPBackend*
 PMPProtocol::getBackendForUrl( const KUrl &url )
 {
-    kDebug() << "udiFromUrl = " << udiFromUrl( url ) << endl;
     if( !m_devices.contains( udiFromUrl( url ) ) )
     {
-        error( KIO::ERR_CANNOT_OPEN_FOR_READING, "portable media player : Invalid URL (backend doesn't exist)" );
+        error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "portable media player : Invalid URL (backend doesn't exist)" ) );
         return 0;
     }
     return m_devices[udiFromUrl( url )]->backend();
