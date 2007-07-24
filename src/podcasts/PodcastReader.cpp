@@ -18,7 +18,6 @@
 
 #include "PodcastReader.h"
 
-#include "PodcastMetaBase.h"
 #include "debug.h"
 
 #include <kio/job.h>
@@ -128,8 +127,8 @@ bool PodcastReader::read()
                         if ( QXmlStreamReader::name() == "channel" )
                         {
                             debug() << "new channel" << endl;
-                            m_current = m_channel = new PodcastChannel();
-                            m_artist = PodcastArtistPtr( new PodcastArtist( "testcast" ) );
+                            m_channel = new Meta::PodcastChannel();
+                            m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
 //                         else
 //                             readUnknownElement();
@@ -160,7 +159,7 @@ bool PodcastReader::read()
                 else if (QXmlStreamReader::name() == "item")
                 {
                     debug() << "new episode" << endl;
-                    m_current = new PodcastEpisode();
+                    m_current = new Meta::PodcastEpisode();
                 }
             }
             else if( isEndElement() )
@@ -300,11 +299,9 @@ PodcastReader::commitChannel()
     Q_ASSERT( m_channel );
     debug() << "commit Podcast Channel (as Album) " << m_channel->title() << endl;
     PodcastChannelPtr album = PodcastChannelPtr( m_channel );
-    album->setAlbumArtist( ArtistPtr::staticCast( m_artist) );
 
     m_collection->acquireReadLock();
     m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
-    m_collection->addArtist( m_artist->name(), ArtistPtr::staticCast( m_artist) );
     m_collection->releaseLock();
 
 //     emit finished( this, true );
@@ -315,19 +312,17 @@ PodcastReader::commitEpisode()
 {
     Q_ASSERT( m_current );
     debug() << "commit episode " << m_current->title() << endl;
-    PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode*>(m_current) );
-    item->setAlbum( AlbumPtr::staticCast( PodcastChannelPtr( m_channel ) ) );
-    item->setArtist( ArtistPtr::dynamicCast( m_artist ) );
-    m_artist->addTrack( TrackPtr::dynamicCast( item ) );
+    PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode *>(m_current) );
+    item->setAlbum( m_channel->name() );
 
     m_collection->acquireReadLock();
     m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
     m_collection->releaseLock();
 
     Q_ASSERT( m_channel );
-    m_channel->addTrack( TrackPtr::staticCast( item ) );
+    m_channel->addEpisode( item );
 
-    m_current = m_channel;
+    m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }
 
 void PodcastReader::downloadResult( KJob * job )

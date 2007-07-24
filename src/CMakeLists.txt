@@ -296,7 +296,6 @@ set(collection_SRCS
 #####################################################################
 set(libpodcasts_SRCS
     podcasts/PodcastCollection.cpp
-    podcasts/PodcastMetaBase.cpp
     podcasts/PodcastReader.cpp
 )
 

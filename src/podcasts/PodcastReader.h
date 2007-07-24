@@ -20,7 +20,7 @@
 #define PODCASTREADER_H
 
 #include "PodcastCollection.h"
-#include "PodcastMetaBase.h"
+#include "PodcastMeta.h"
 
 #include <QXmlStreamReader>
 #include <QObject>
@@ -48,9 +48,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void finished( PodcastReader *podcastReader, bool result );
 
     private:
-//         void readRss();
-//         void readChannel();
-//         PodcastEpisodePtr readItem();
         QString readTitle();
         QString readLink();
         QString readDescription();
@@ -76,9 +73,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
     private:
         QString m_url;
-        PodcastMetaCommon * m_current;
-        PodcastChannel *m_channel;
-        PodcastArtistPtr m_artist;
+        Meta::PodcastMetaCommon *m_current;
+        Meta::PodcastChannelPtr m_channel;
 };
 
 #endif
