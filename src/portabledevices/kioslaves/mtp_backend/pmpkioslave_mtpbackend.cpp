@@ -163,7 +163,7 @@ MTPBackend::listDir( const KUrl &url )
             KIO::UDSEntry entry;
             entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( folderList->name ) );
             entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-            entry.insert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH);
+            entry.insert( KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH );
             m_slave->listEntry( entry, false );
             folderList = folderList->sibling;
         }
@@ -174,9 +174,9 @@ MTPBackend::listDir( const KUrl &url )
         buildMusicListing();
     //next case: User requests something specific...first, find out what they requested
     //and error if not appropriate
-    bool endOfPath = path.indexOf( '/' ) == -1;
+    int nextSlash = path.indexOf( '/' );
     QString nextLevel, nextPath;
-    if( endOfPath )
+    if( nextSlash == -1 )
         nextLevel = path;
     else
     {
@@ -185,7 +185,7 @@ MTPBackend::listDir( const KUrl &url )
     }
     if( nextLevel == m_defaultMusicLocation )
     {
-        listMusic( nextPath );
+        listMusic( path );
         m_slave->listEntry( KIO::UDSEntry(), true );
     }
     else
@@ -196,13 +196,21 @@ void
 MTPBackend::listMusic( const QString &pathOffset )
 {
     kDebug() << "(listMusic) pathOffset = " << pathOffset << endl;
-    if( pathOffset.isEmpty() )
+    foreach( LIBMTP_folder_t* folder, m_folderParentToPtrHash.values( pathOffset ) )
     {
-        kDebug() << "LIST ENTRIES IN " << m_defaultMusicLocation << " NOW" << endl;
+        KIO::UDSEntry entry;
+        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( folder->name ) );
+        entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+        entry.insert( KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH );
+        m_slave->listEntry( entry, false );
     }
-    else
+    foreach( LIBMTP_track_t* track, m_trackParentToPtrHash.values( pathOffset ) )
     {
-        kDebug() << "LIST ENTRIES IN " << m_defaultMusicLocation << '/' << pathOffset << " NOW" << endl;
+        KIO::UDSEntry entry;
+        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( track->filename ) );
+        entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFREG);
+        entry.insert( KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH );
+        m_slave->listEntry( entry, false );
     }
 }
 
@@ -242,8 +250,8 @@ MTPBackend::buildMusicListing()
     {
         if( trackList->parent_id == 0 )
         {
-            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in folder " << defaultMusicLocation << endl;
-            m_trackParentToPtrHash.insert( defaultMusicLocation, trackList );
+            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in base folder." << endl;
+            m_trackParentToPtrHash.insert( QString::null, trackList );
         }
         else
         {
@@ -263,10 +271,16 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
 
     kDebug() << "Found folder " << QString::fromAscii( folderList->name ) << " in " << parentPath << endl;
 
-    m_folderParentToPtrHash.insert( parentPath, folderList );
-    m_folderIdToPathHash.insert( folderList->folder_id, parentPath + '/' + QString::fromAscii( folderList->name ) );
+    QString nextPath;
+    if( parentPath.isEmpty() )
+        nextPath = parentPath + QString::fromAscii( folderList->name );
+    else
+        nextPath = parentPath + "/" + QString::fromAscii( folderList->name );
 
-    buildFolderList( folderList->child, parentPath + '/' + QString::fromAscii( folderList->name ) );
+    m_folderParentToPtrHash.insert( parentPath, folderList );
+    m_folderIdToPathHash.insert( folderList->folder_id, nextPath );
+
+    buildFolderList( folderList->child, nextPath );
     buildFolderList( folderList->sibling, parentPath );
 }
 
