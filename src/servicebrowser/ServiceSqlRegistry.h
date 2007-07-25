@@ -44,13 +44,13 @@ class ServiceSqlRegistry : public QObject
         void setMetaFactory( ServiceMetaFactory * metaFactory );
 
         //TrackPtr getTrack( const QString &url );
-        TrackPtr getTrack( const QStringList &rowData );
+        Meta::TrackPtr getTrack( const QStringList &rowData );
 
-        ArtistPtr getArtist(  const QStringList &rowData );
-        GenrePtr getGenre(  const QStringList &rowData );
+        Meta::ArtistPtr getArtist(  const QStringList &rowData );
+        Meta::GenrePtr getGenre(  const QStringList &rowData );
        // ComposerPtr getComposer( const QString &name, int id = -1 );
        // YearPtr getYear( const QString &year, int id = -1 );
-        AlbumPtr getAlbum(  const QStringList &rowData ); //TODO fix this
+        Meta::AlbumPtr getAlbum(  const QStringList &rowData ); //TODO fix this
 
 
     //private slots:
@@ -59,12 +59,12 @@ class ServiceSqlRegistry : public QObject
     private:
 
         //we don't care about the ordering so use the faster QHash
-        QHash<int, TrackPtr > m_trackMap;
-        QHash<int, ArtistPtr > m_artistMap;
-        QHash<int, ComposerPtr > m_composerMap;
-        QHash<int, GenrePtr > m_genreMap;
-        QHash<int, YearPtr > m_yearMap;
-        QHash<int, AlbumPtr > m_albumMap;        //TODO: needs improvement
+        QHash<int, Meta::TrackPtr > m_trackMap;
+        QHash<int, Meta::ArtistPtr > m_artistMap;
+        QHash<int, Meta::ComposerPtr > m_composerMap;
+        QHash<int, Meta::GenrePtr > m_genreMap;
+        QHash<int, Meta::YearPtr > m_yearMap;
+        QHash<int, Meta::AlbumPtr > m_albumMap;        //TODO: needs improvement
 
         QMutex m_trackMutex;
         QMutex m_artistMutex;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef AMAROKMAGNATUNESTORE_H
 #define AMAROKMAGNATUNESTORE_H
@@ -55,7 +55,7 @@ class MagnatuneStore: public ServiceBase
     Q_OBJECT
 
 public:
-    
+
      /**
      * Constructor
      */
@@ -85,7 +85,7 @@ private slots:
 
 
     /**
-     * Slot for recieving notification when the Magnatune xml file has been downloaded. 
+     * Slot for recieving notification when the Magnatune xml file has been downloaded.
      * Triggers a parse of the file to get the info added to the databse
      * @param downLoadJob The calling download Job
      */
@@ -113,14 +113,14 @@ private slots:
      */
     void purchaseCompleted( bool success );
 
-  
+
     /**
      * Adds all tracks with a common mood to the playlist
      * @param mood The mood of the tracks to add
      */
     //void addMoodyTracksToPlaylist( QString mood );
-    
-    
+
+
      /**
      * Checks if purchase button should be enabled
      * @param selection the new selection
@@ -140,7 +140,7 @@ private:
     void initTopPanel();
 
     /**
-     * Starts downloading an updated track list xml file from 
+     * Starts downloading an updated track list xml file from
      * http://magnatune.com/info/album_info.xml
      * @return Currently always returns true
      */
@@ -150,7 +150,7 @@ private:
      * Adds a magnatune preview track to the playlist.
      * @param item The track to add
      */
-    void addTrackToPlaylist ( MagnatuneTrack  *item );
+    void addTrackToPlaylist ( Meta::MagnatuneTrack  *item );
 
     static MagnatuneStore *s_instance;
 
@@ -167,8 +167,8 @@ private:
     QComboBox   *m_genreComboBox;
     bool         m_purchaseInProgress;
 
-    MagnatuneAlbum * m_currentAlbum;
-   
+    Meta::MagnatuneAlbum * m_currentAlbum;
+
 
     KIO::FileCopyJob * m_listDownloadJob;
 

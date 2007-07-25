@@ -21,6 +21,8 @@
 #include "ScriptableServiceInfoParser.h"
 #include "servicemetabase.h"
 
+using namespace Meta;
+
 ScriptableServiceInfoParser::ScriptableServiceInfoParser()
  : InfoParserBase()
 {

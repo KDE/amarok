@@ -23,6 +23,7 @@
 #include "debug.h"
 #include "SqlStorage.h"
 
+using namespace Meta;
 
 JamendoDatabaseHandler::JamendoDatabaseHandler()
 {}
@@ -31,7 +32,7 @@ JamendoDatabaseHandler::JamendoDatabaseHandler()
 JamendoDatabaseHandler::~JamendoDatabaseHandler()
 {}
 
-void 
+void
 JamendoDatabaseHandler::createDatabase( )
 {
     //Get database instance
@@ -71,9 +72,9 @@ JamendoDatabaseHandler::createDatabase( )
                   "id INTEGER PRIMARY KEY, "
                   "name " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ',' +
-                  "popularity FLOAT, " + 
+                  "popularity FLOAT, " +
                   "cover_url " + db->exactTextColumnType() + ',' +
-                  "launch_year Integer, " 
+                  "launch_year Integer, "
                   "genre " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER );";
 
@@ -129,7 +130,7 @@ JamendoDatabaseHandler::createDatabase( )
 
 }
 
-void 
+void
 JamendoDatabaseHandler::destroyDatabase( )
 {
 
@@ -157,7 +158,7 @@ JamendoDatabaseHandler::destroyDatabase( )
     }
 }
 
-int 
+int
 JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 {
 
@@ -189,13 +190,13 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 
 
         //debug() << "Adding Jamendo mood: " << queryString << endl;
-        db->insert( queryString, NULL ); 
+        db->insert( queryString, NULL );
     }
 */
     return trackId;
 }
 
-int 
+int
 JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
@@ -221,14 +222,14 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 }
 
 
-int 
+int
 JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
     JamendoArtist * jArtist = static_cast<JamendoArtist *> ( artist );
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_artists ( id, name, description, "
-                  "country, photo_url, jamendo_url, home_url " 
+                  "country, photo_url, jamendo_url, home_url "
                   ") VALUES ( "
                   + QString::number( jArtist->id() ) + ", '"
                   + sqlDb->escape( jArtist->name() ) + "', '"
@@ -264,7 +265,7 @@ int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
 
 
 
-void 
+void
 JamendoDatabaseHandler::begin( )
 {
     CollectionManager *mgr = CollectionManager::instance();
@@ -272,7 +273,7 @@ JamendoDatabaseHandler::begin( )
     mgr->sqlStorage()->query( queryString );
 }
 
-void 
+void
 JamendoDatabaseHandler::commit( )
 {
     CollectionManager *mgr = CollectionManager::instance();

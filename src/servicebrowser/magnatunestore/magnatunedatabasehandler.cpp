@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "magnatunedatabasehandler.h"
 
@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "SqlStorage.h"
 
+using namespace Meta;
 
 MagnatuneDatabaseHandler::MagnatuneDatabaseHandler()
 {}
@@ -32,7 +33,7 @@ MagnatuneDatabaseHandler::MagnatuneDatabaseHandler()
 MagnatuneDatabaseHandler::~MagnatuneDatabaseHandler()
 {}
 
-void 
+void
 MagnatuneDatabaseHandler::createDatabase( )
 {
     //Get database instance
@@ -114,7 +115,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "album_id INTEGER" + ");";
 
     result = sqlDb->query( queryString );
- 
+
 
     //create moods table
      queryString = "CREATE TABLE magnatune_moods ("
@@ -130,7 +131,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
 }
 
-void 
+void
 MagnatuneDatabaseHandler::destroyDatabase( )
 {
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -149,7 +150,7 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     }*/
 }
 
-int 
+int
 MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 {
     MagnatuneTrack * mTrack = static_cast<MagnatuneTrack *> ( track );
@@ -169,12 +170,12 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
     // debug() << "Adding Magnatune track " << queryString << endl;
     int trackId = sqlDb->insert( queryString, NULL );
 
-    return trackId; 
+    return trackId;
 
-    
+
 }
 
-int 
+int
 MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
 
@@ -198,7 +199,7 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
 
 
-int 
+int
 MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
     MagnatuneArtist * mArtist = static_cast<MagnatuneArtist *> ( artist );
@@ -218,7 +219,7 @@ MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 }
 
 
-void 
+void
 MagnatuneDatabaseHandler::begin( )
 {
 
@@ -229,7 +230,7 @@ MagnatuneDatabaseHandler::begin( )
     sqlDb->query( queryString );
 }
 
-void 
+void
 MagnatuneDatabaseHandler::commit( )
 {
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
@@ -241,7 +242,7 @@ MagnatuneDatabaseHandler::commit( )
 
 void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods)
 {
- 
+
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
@@ -252,7 +253,7 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods
 
 
         //debug() << "Adding Magnatune mood: " << queryString << endl;
-        sqlDb->insert( queryString, NULL ); 
+        sqlDb->insert( queryString, NULL );
     }
 }
 
@@ -268,9 +269,9 @@ int MagnatuneDatabaseHandler::getArtistIdByExactName(const QString & name)
 
     if ( result.size() < 1 ) return -1;
     int artistId = result.first().toInt();
-    
+
     //debug() << "    Found: " << QString::number( artistId ) << ":" << endl;
-    
+
     return artistId;
 
 }
@@ -286,9 +287,9 @@ int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode(const QString & albumcode)
 
     if ( result.size() < 1 ) return -1;
     int albumId = result.first().toInt();
-    
+
     //debug() << "  Found: " << QString::number( albumId ) << ":" << endl;
-    
+
     return albumId;
 }
 

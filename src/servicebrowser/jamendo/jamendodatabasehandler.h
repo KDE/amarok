@@ -59,31 +59,31 @@ public:
 
     /**
      * Inserts a new track into the Jamendo database
-     * @param track pointer to the track to insert 
+     * @param track pointer to the track to insert
      * @return the database id of the newly inserted track
      */
-    int insertTrack( ServiceTrack *track );
+    int insertTrack( Meta::ServiceTrack *track );
 
     /**
      * inserts a new album into the Jamendo database
      * @param album pointer to the album to insert
      * @return the database id of the newly inserted album
      */
-    int insertAlbum( ServiceAlbum *album );
-   
+    int insertAlbum( Meta::ServiceAlbum *album );
+
     /**
      * inserts a new artist into the Jamendo database
      * @param artist pointer to the artist to insert
      * @return the database id of the newly inserted artist
      */
-    int insertArtist( ServiceArtist *artist );
+    int insertArtist( Meta::ServiceArtist *artist );
 
     /**
      * inserts a new genre into the Jamendo database
      * @param genre pointer to the genre to insert
      * @return the database id of the newly inserted genre
      */
-    int insertGenre( ServiceGenre *genre );
+    int insertGenre( Meta::ServiceGenre *genre );
 
 
     /**

@@ -38,24 +38,25 @@ public:
 
     //virtual int getTrackSqlRowCount();
     //virtual QString getTrackSqlRows();
-    virtual TrackPtr createTrack( const QStringList &rows );
+    virtual Meta::TrackPtr createTrack( const QStringList &rows );
 
     virtual int getAlbumSqlRowCount();
     virtual QString getAlbumSqlRows();
-    virtual AlbumPtr createAlbum( const QStringList &rows );
+    virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
 
     virtual int getArtistSqlRowCount();
     virtual QString getArtistSqlRows();
-    virtual ArtistPtr createArtist( const QStringList &rows );
+    virtual Meta::ArtistPtr createArtist( const QStringList &rows );
 
     //virtual int getGenreSqlRowCount();
     //virtual QString getGenreSqlRows();
-    virtual GenrePtr createGenre( const QStringList &rows );
+    virtual Meta::GenrePtr createGenre( const QStringList &rows );
 
 };
 
 
-
+namespace Meta
+{
 
 class JamendoTrack  : public ServiceTrack
 {
@@ -87,7 +88,7 @@ public:
 
     void setCountry( const QString &country );
     QString country() const;
-  
+
     void setHomeURL( const QString &homeURL );
     QString homeURL() const;
 
@@ -133,6 +134,6 @@ public:
 
 };
 
-
+}
 
 #endif

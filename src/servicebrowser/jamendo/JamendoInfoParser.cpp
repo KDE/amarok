@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "JamendoMeta.h"
 
+using namespace Meta;
+
 JamendoInfoParser::JamendoInfoParser()
  : InfoParserBase()
 {

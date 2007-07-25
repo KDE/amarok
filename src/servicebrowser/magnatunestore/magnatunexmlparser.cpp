@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "magnatunexmlparser.h"
 
@@ -26,6 +26,7 @@
 
 #include <QDomDocument>
 
+using namespace Meta;
 
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         : ThreadManager::Job( "MagnatuneXmlParser" )
@@ -39,9 +40,9 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
 MagnatuneXmlParser::~MagnatuneXmlParser()
 {}
 
-bool 
+bool
 MagnatuneXmlParser::doJob( )
-{   
+{
     m_pCurrentArtist = 0;
     m_pCurrentAlbum = 0;
     debug() << "MagnatuneXmlParser::doJob" << endl;
@@ -50,7 +51,7 @@ MagnatuneXmlParser::doJob( )
 }
 
 
-void 
+void
 MagnatuneXmlParser::completeJob( )
 {
     Amarok::StatusBar::instance() ->longMessage(
@@ -59,7 +60,7 @@ MagnatuneXmlParser::completeJob( )
     emit( doneParsing() );
 }
 
-void 
+void
 MagnatuneXmlParser::readConfigFile( const QString &filename )
 {
     m_nNumberOfTracks = 0;
@@ -99,7 +100,7 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
 }
 
 
-void 
+void
 MagnatuneXmlParser::parseElement( const QDomElement &e )
 {
     QString sElementName = e.tagName();
@@ -110,7 +111,7 @@ MagnatuneXmlParser::parseElement( const QDomElement &e )
 }
 
 
-void 
+void
 MagnatuneXmlParser::parseChildren( const QDomElement &e )
 {
     QDomNode n = e.firstChild();
@@ -124,7 +125,7 @@ MagnatuneXmlParser::parseChildren( const QDomElement &e )
     }
 }
 
-void 
+void
 MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 {
     //DEBUG_BLOCK
@@ -142,7 +143,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     QString artistPhotoUrl;
     QString mp3Genre;
     QString artistPageUrl;
-  
+
 
     QDomNode n = e.firstChild();
     QDomElement childElement;
@@ -219,7 +220,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
 
     int artistId;
-    
+
 
 
     if ( artistNameIdMap.contains( artistName ) )
@@ -235,7 +236,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
         //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
         artistId = m_dbHandler->insertArtist( m_pCurrentArtist );
-        
+
         m_nNumberOfArtists++;
 
         if ( artistId == 0 )
@@ -247,7 +248,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
         artistNameIdMap.insert( m_pCurrentArtist->name() , artistId );
 
-        
+
     }
 
     m_pCurrentAlbum->setArtistId( artistId );
@@ -290,7 +291,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
 
 
-void 
+void
 MagnatuneXmlParser::parseTrack( const QDomElement &e )
 {
     //DEBUG_BLOCK
@@ -372,11 +373,11 @@ void MagnatuneXmlParser::parseMoods( const QDomElement &e )
             if ( sElementName == "mood" )
             {
                 m_currentTrackMoodList.append( childElement.text() );
-            } 
+            }
             else
             {
                 //error, should not be here....
-            } 
+            }
 
         }
         n = n.nextSibling();

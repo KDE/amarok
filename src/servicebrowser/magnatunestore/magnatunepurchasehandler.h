@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef MAGNATUNEPURCHASEHANDLER_H
 #define MAGNATUNEPURCHASEHANDLER_H
@@ -42,13 +42,13 @@ Q_OBJECT
 public:
     MagnatunePurchaseHandler();
     ~MagnatunePurchaseHandler();
-    
+
    void setParent( QWidget * parent );
    /**
     * Starts a purchase operation
     * @param album The album to purchase
     */
-   void purchaseAlbum( MagnatuneAlbum * album );
+   void purchaseAlbum( Meta::MagnatuneAlbum * album );
 
 signals:
 
@@ -63,7 +63,7 @@ private:
     MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
-    MagnatuneAlbum * m_currentAlbum;
+    Meta::MagnatuneAlbum * m_currentAlbum;
     QString m_currentAlbumCoverName;
     bool m_giftCardPurchase;
 
@@ -73,8 +73,8 @@ private:
      * This function saves the xml download info received from Magnatune.com after a
      * successful payment. This information can be used to later redownload a lost album,
      * or acquire an album in a different file format. Note that no personal information
-     * or credit card number is stored. The information is saved to the amarok config 
-     * directory in the sub folder magnatune.com/purchases. The name of each info file 
+     * or credit card number is stored. The information is saved to the amarok config
+     * directory in the sub folder magnatune.com/purchases. The name of each info file
      * is genereated from the artist and album names.
      * @param infoXml The info to store.
      */
@@ -91,10 +91,10 @@ protected slots:
 public slots:
 
     void processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
-    
+
     void processGiftCardPayment( const QString &giftCardCode, const QString &name, const QString &email, const QString &albumCode, int amount );
 
-    
+
 
 };
 

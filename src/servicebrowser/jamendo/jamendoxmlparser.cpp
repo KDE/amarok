@@ -28,6 +28,7 @@
 
 #include <KFilterDev>
 
+using namespace Meta;
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
         : ThreadManager::Job( "JamendoXmlParser" )
@@ -46,14 +47,14 @@ JamendoXmlParser::~JamendoXmlParser()
     delete m_dbHandler;
 }
 
-bool 
+bool
 JamendoXmlParser::doJob( )
 {
     readConfigFile( m_sFileName );
     return true;
 }
 
-void 
+void
 JamendoXmlParser::completeJob( )
 {
     /*Amarok::StatusBar::instance()->longMessage(
@@ -69,7 +70,7 @@ JamendoXmlParser::completeJob( )
     emit( doneParsing() );
 }
 
-void 
+void
 JamendoXmlParser::readConfigFile( const QString &filename )
 {
     DEBUG_BLOCK
@@ -118,7 +119,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     //completeJob is called by ThreadManager
 }
 
-void 
+void
 JamendoXmlParser::parseElement( const  QDomElement &e )
 {
     QString sElementName = e.tagName();
@@ -134,7 +135,7 @@ JamendoXmlParser::parseElement( const  QDomElement &e )
     }
 }
 
-void 
+void
 JamendoXmlParser::parseChildren( const  QDomElement &e )
 {
     QDomNode n = e.firstChild();
@@ -225,7 +226,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
                 genre = currentChildElement.text();
             else if ( currentChildElement.tagName() == "description" )
                  description = currentChildElement.text();
-            //we use tags instad of genres for creating genres in the database, as the 
+            //we use tags instad of genres for creating genres in the database, as the
             //Jamendo.com genres are messy at best
             else if ( currentChildElement.tagName() == "tags" ) {
                 tags = currentChildElement.text().split(" ", QString::SkipEmptyParts);
@@ -252,7 +253,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
     currentAlbum.setLaunchYear( 1000 );
 
     currentAlbum.setCoverURL( coverUrl );
-    
+
     m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
    int newId = m_dbHandler->insertAlbum( &currentAlbum );

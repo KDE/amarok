@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "magnatunepurchasehandler.h"
 
@@ -32,7 +32,7 @@
 #include <QDir>
 #include <QFile>
 
-
+using namespace Meta;
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()
@@ -70,9 +70,9 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
         m_purchaseDialog = new MagnatunePurchaseDialog( m_parent, "PurchaseDialog", true, 0 );
 
         connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
-        
+
         connect( m_purchaseDialog, SIGNAL( makeGiftCardPurchase( QString,  QString, QString, QString, int ) ), this, SLOT( processGiftCardPayment( QString, QString, QString, QString, int ) ) );
-        
+
         connect ( m_purchaseDialog, SIGNAL( cancelled() ), this, SLOT( albumPurchaseCancelled() ) );
     }
 
@@ -101,19 +101,19 @@ void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QS
     debug() << "purchase url : " << debugPurchaseURL << endl;
 
     m_giftCardPurchase = false;
-    
+
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
-    
+
 }
 
 
 void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCode, const QString & name, const QString & email, const QString & albumCode, int amount)
 {
-    
+
     QString amountString;
     amountString.setNum( amount, 10 );
 
@@ -123,13 +123,13 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
     debug() << "purchase url : " << debugPurchaseURL << endl;
 
     m_giftCardPurchase = true;
-    
+
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
-    
+
 }
 
 
@@ -185,17 +185,17 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     else
     {
         QString checkInfoMessage;
-        
-        if ( m_giftCardPurchase ) 
+
+        if ( m_giftCardPurchase )
             checkInfoMessage = i18n( "check the gift card code" );
         else
             checkInfoMessage = i18n( "check the credit card information" );
-                
+
 
         KMessageBox::information( m_parent, "Could not process payment",
                                   "There seems to be an error in the information entered (" + checkInfoMessage + "), please try again\n" );
-        
-        
+
+
         m_purchaseDialog->setEnabled( true );
     }
 }

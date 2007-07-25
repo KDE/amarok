@@ -25,7 +25,7 @@
 /**
 Info parser for the scriptable services
 
-	@author 
+	@author
 */
 class ScriptableServiceInfoParser : public InfoParserBase
 {
@@ -36,9 +36,9 @@ public:
     ~ScriptableServiceInfoParser();
 
 
-    virtual void getInfo( ArtistPtr artist );
-    virtual void getInfo( AlbumPtr album ) ;
-    virtual void getInfo( TrackPtr track );
+    virtual void getInfo( Meta::ArtistPtr artist );
+    virtual void getInfo( Meta::AlbumPtr album ) ;
+    virtual void getInfo( Meta::TrackPtr track );
 
 };
 

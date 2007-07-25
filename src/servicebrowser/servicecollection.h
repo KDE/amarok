@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
@@ -25,9 +25,6 @@
 #include "jamendo/jamendodatabasehandler.h"
 
 #include <QtGlobal>
-
-using namespace Meta;
-
 
 class ServiceCollection : public Collection, public MemoryCollection
 {

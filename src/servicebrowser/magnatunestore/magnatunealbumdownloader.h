@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef MAGNATUNEALBUMDOWNLOADER_H
 #define MAGNATUNEALBUMDOWNLOADER_H
@@ -62,13 +62,13 @@ protected:
     KIO::FileCopyJob * m_albumDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
-    MagnatuneAlbum * m_currentAlbum;
+    Meta::MagnatuneAlbum * m_currentAlbum;
     KTempDir * m_tempDir;
 
 protected slots:
     /**
      * Unzip the downloaded album
-     * @param downLoadJob 
+     * @param downLoadJob
      */
     void albumDownloadComplete( KJob* downloadJob );
     void albumDownloadAborted();

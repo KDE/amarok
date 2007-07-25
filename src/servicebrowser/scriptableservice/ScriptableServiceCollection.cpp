@@ -15,8 +15,8 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
- ***************************************************************************/ 
- 
+ ***************************************************************************/
+
 #include "ScriptableServiceCollection.h"
 #include "support/memoryquerymaker.h"
 
@@ -24,7 +24,7 @@
 ScriptableServiceCollection::ScriptableServiceCollection(const QString & name)
     : Collection()
     , MemoryCollection()
-{ 
+{
     m_name = name;
 }
 
@@ -59,7 +59,7 @@ bool ScriptableServiceCollection::possiblyContainsTrack(const KUrl & url) const
 Meta::TrackPtr ScriptableServiceCollection::ScriptableServiceCollection::trackForUrl(const KUrl & url)
 {
     Q_UNUSED( url );
-    return TrackPtr();
+    return Meta::TrackPtr();
 }
 
 CollectionLocation * ScriptableServiceCollection::ScriptableServiceCollection::location() const

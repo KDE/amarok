@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef MAGNATUNEXMLPARSER_H
 #define MAGNATUNEXMLPARSER_H
@@ -44,13 +44,13 @@ public:
 
     /**
      * Constructor
-     * @param fileName The file to parse 
+     * @param fileName The file to parse
      * @return Pointer to new object
      */
     MagnatuneXmlParser( const QString &fileName );
 
     /**
-     * The function that starts the actual work. Inherited fromThreadManager::Job 
+     * The function that starts the actual work. Inherited fromThreadManager::Job
      * Note the work is performed in a separate thread
      * @return Returns true on success and false on failure
      */
@@ -120,9 +120,9 @@ private:
      */
     void parseMoods( const QDomElement &e );
 
-    MagnatuneAlbum *m_pCurrentAlbum;
-    MagnatuneArtist *m_pCurrentArtist;
-    QList<MagnatuneTrack *> m_currentAlbumTracksList;
+    Meta::MagnatuneAlbum *m_pCurrentAlbum;
+    Meta::MagnatuneArtist *m_pCurrentArtist;
+    QList<Meta::MagnatuneTrack *> m_currentAlbumTracksList;
     QStringList m_currentTrackMoodList;
 
     QString m_sFileName;

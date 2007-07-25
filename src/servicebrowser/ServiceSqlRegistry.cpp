@@ -27,6 +27,8 @@
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 
+using namespace Meta;
+
 ServiceSqlRegistry::ServiceSqlRegistry( ServiceMetaFactory * metaFactory )
     : QObject( 0 )
     , m_metaFactory( metaFactory )
@@ -50,7 +52,7 @@ ServiceSqlRegistry::~ServiceSqlRegistry()
 TrackPtr
 ServiceSqlRegistry::getTrack( const QStringList &rowData )
 {
-    
+
    // DEBUG_BLOCK
 
     int id = rowData[0].toInt();
@@ -69,7 +71,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         ServiceTrack * track = static_cast<ServiceTrack *> ( trackPtr.data() );
         AlbumPtr albumPtr;
 
-        
+
 
         if ( m_albumMap.contains( track->albumId() ) )
             albumPtr = m_albumMap.value( track->albumId() );
@@ -102,7 +104,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         }
 
         index += m_metaFactory->getArtistSqlRowCount();
-       
+
         ServiceArtist * artist = static_cast<ServiceArtist *> ( artistPtr.data() );
 
         artist->addTrack( trackPtr );
@@ -145,7 +147,7 @@ ServiceSqlRegistry::getArtist( const QStringList &rowData )
 
     int id = rowData[0].toInt();
 
-    
+
 
     QMutexLocker locker( &m_artistMutex );
     if( m_artistMap.contains( id ) )
@@ -159,7 +161,7 @@ ServiceSqlRegistry::getArtist( const QStringList &rowData )
 }
 
 GenrePtr
-ServiceSqlRegistry::getGenre( const QStringList &rowData ) 
+ServiceSqlRegistry::getGenre( const QStringList &rowData )
 {
     int id = rowData[0].toInt();
     QMutexLocker locker( &m_genreMutex );
@@ -211,18 +213,18 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
         return m_albumMap.value( id );
     else
     {
-        
+
         int index = 0;
-        
+
         AlbumPtr albumPtr = m_metaFactory->createAlbum( rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() ) );
         m_albumMap.insert( id, albumPtr );
-        
+
         index += m_metaFactory->getAlbumSqlRowCount();
-        
+
         ServiceAlbum* album = static_cast<ServiceAlbum *> ( albumPtr.data() );
 
         ArtistPtr artistPtr;
-        
+
         // we need to set the artist for thsi album
         if ( m_artistMap.contains( album->artistId() ) )
             artistPtr = m_artistMap.value( album->artistId() );
@@ -234,7 +236,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
         }
 
         index += m_metaFactory->getArtistSqlRowCount();
-       
+
         ServiceArtist * artist = static_cast<ServiceArtist *> ( artistPtr.data() );
 
         album->setAlbumArtist( artistPtr );

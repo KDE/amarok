@@ -20,7 +20,7 @@
 #include "infoparserbase.h"
 
 InfoParserBase::InfoParserBase()
-  : QObject() 
+  : QObject()
 {
 
 }

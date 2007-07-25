@@ -25,7 +25,7 @@
 /**
 Handles the fetching and processing of Jamendo specific information for meta items
 
-	@author 
+	@author
 */
 class JamendoInfoParser : public InfoParserBase
 {
@@ -37,9 +37,9 @@ public:
     ~JamendoInfoParser();
 
 
-    virtual void getInfo( ArtistPtr artist );
-    virtual void getInfo( AlbumPtr album );
-    virtual void getInfo( TrackPtr track );
+    virtual void getInfo( Meta::ArtistPtr artist );
+    virtual void getInfo( Meta::AlbumPtr album );
+    virtual void getInfo( Meta::TrackPtr track );
 
 signals:
 

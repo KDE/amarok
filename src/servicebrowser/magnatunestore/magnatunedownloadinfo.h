@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 
 #ifndef MAGNATUNE_DOWNLOAD_INFO_H
@@ -33,7 +33,7 @@
 typedef QMap<QString, QString> DownloadFormatMap;
 
 /**
-Class for parsing and storing the info from a download xml file or string 
+Class for parsing and storing the info from a download xml file or string
 
     @author Nikolaj Hald Nielsen
 */
@@ -49,12 +49,12 @@ public:
     QString getUserName();
     QString getPassword();
     QString getDownloadMessage();
-    MagnatuneAlbum * album();
+    Meta::MagnatuneAlbum * album();
 
 
     void setFormatSelection(const QString &selectedFormat);
     void setUnpackUrl(const QString &unpackUrl);
-    void setAlbum( MagnatuneAlbum * album );
+    void setAlbum( Meta::MagnatuneAlbum * album );
     bool isReadyForDownload();
     KUrl getCompleteDownloadUrl();
     QString getUnpackLocation();
@@ -68,7 +68,7 @@ protected:
     QString m_password;
     QString m_downloadMessage;
 
-    MagnatuneAlbum * m_album;
+    Meta::MagnatuneAlbum * m_album;
 
     //the following members are for storing the user selections regarding a download
     QString m_unpackUrl;

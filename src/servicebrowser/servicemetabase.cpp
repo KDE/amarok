@@ -21,6 +21,7 @@
 
 #include "debug.h"
 
+using namespace Meta;
 
 ServiceMetaFactory::ServiceMetaFactory(const QString &dbPrefix)
     : m_dbTablePrefix( dbPrefix )
@@ -127,7 +128,7 @@ ServiceTrack::ServiceTrack(const QString & name)
     , m_displayUrl( 0 )
     , m_playableUrl( 0 )
     , m_albumId( 0 )
-    , m_albumName( 0 ) 
+    , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
     , m_type( 0 )

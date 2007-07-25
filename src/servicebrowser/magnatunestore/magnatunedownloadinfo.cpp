@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 
 #include "magnatunedownloadinfo.h"
@@ -26,6 +26,8 @@
 
 #include <QFile>
 #include <Q3TextStream>
+
+using namespace Meta;
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {

@@ -25,7 +25,51 @@
 
 #include <QStringList>
 
-using namespace Meta;
+class ServiceMetaFactory
+{
+
+    public:
+        ServiceMetaFactory( const QString &dbPrefix );
+        virtual ~ServiceMetaFactory() {}
+
+        QString tablePrefix();
+
+        virtual int getTrackSqlRowCount();
+        virtual QString getTrackSqlRows();
+        virtual Meta::TrackPtr createTrack( const QStringList &rows );
+
+        virtual int getAlbumSqlRowCount();
+        virtual QString getAlbumSqlRows();
+        virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
+
+        virtual int getArtistSqlRowCount();
+        virtual QString getArtistSqlRows();
+        virtual Meta::ArtistPtr createArtist( const QStringList &rows );
+
+        virtual int getGenreSqlRowCount();
+        virtual QString getGenreSqlRows();
+        virtual Meta::GenrePtr createGenre( const QStringList &rows );
+
+    private:
+
+        QString m_dbTablePrefix;
+
+
+};
+
+class ServiceDisplayInfoProvider
+{
+
+    public:
+        ServiceDisplayInfoProvider() {}
+        virtual ~ServiceDisplayInfoProvider() {}
+
+        virtual void processInfoOf( InfoParserBase * infoParser ) = 0;
+
+};
+
+namespace Meta
+{
 
 class ServiceTrack;
 class ServiceAlbum;
@@ -48,50 +92,6 @@ typedef QList<ServiceAlbumPtr > ServiceAlbumList;
 typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
-
-class ServiceMetaFactory
-{
-
-public:
-    ServiceMetaFactory( const QString &dbPrefix );
-    virtual ~ServiceMetaFactory() {}
-
-    QString tablePrefix();
-
-    virtual int getTrackSqlRowCount();
-    virtual QString getTrackSqlRows();
-    virtual TrackPtr createTrack( const QStringList &rows );
-
-    virtual int getAlbumSqlRowCount();
-    virtual QString getAlbumSqlRows();
-    virtual AlbumPtr createAlbum( const QStringList &rows );
-
-    virtual int getArtistSqlRowCount();
-    virtual QString getArtistSqlRows();
-    virtual ArtistPtr createArtist( const QStringList &rows );
-
-    virtual int getGenreSqlRowCount();
-    virtual QString getGenreSqlRows();
-    virtual GenrePtr createGenre( const QStringList &rows );
-
-private:
-
-    QString m_dbTablePrefix;
-
-
-};
-
-class ServiceDisplayInfoProvider
-{
-
-    public:
-        ServiceDisplayInfoProvider() {}
-        virtual ~ServiceDisplayInfoProvider() {}
-
-        virtual void processInfoOf( InfoParserBase * infoParser ) = 0;
-
-};
-
 
 class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
 {
@@ -161,11 +161,11 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
 
         //ServiceTrack specific methods
 
-        void setAlbum( AlbumPtr album );
-        void setArtist( ArtistPtr artist ); 
-        void setComposer( ComposerPtr composer );
-        void setGenre( GenrePtr genre );
-        void setYear( YearPtr year );
+        void setAlbum( Meta::AlbumPtr album );
+        void setArtist( Meta::ArtistPtr artist );
+        void setComposer( Meta::ComposerPtr composer );
+        void setGenre( Meta::GenrePtr genre );
+        void setYear( Meta::YearPtr year );
 
         void setLength( int length );
 
@@ -221,14 +221,14 @@ class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider
         QString description( ) const;
         void setId( int id );
         int id( ) const;
-        void setTitle( const QString &title ); 
+        void setTitle( const QString &title );
 
     private:
         int m_id;
         QString m_name;
         QString m_description;
         TrackList m_tracks;
-        
+
 };
 
 class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
@@ -249,7 +249,7 @@ class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
         virtual void processInfoOf( InfoParserBase * infoParser );
 
 
-        
+
 
         //ServiceAlbum specific methods
 
@@ -296,7 +296,7 @@ class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider
         void addTrack( TrackPtr track );
         void setName( const QString &name );
         int albumId();
-        void setAlbumId( int albumId ); 
+        void setAlbumId( int albumId );
 
     private:
         int m_albumId;
@@ -345,6 +345,8 @@ class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider
         QString m_name;
         TrackList m_tracks;
 };
+
+}
 
 #endif
 

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "scriptableservicemanager.h"
 
@@ -26,10 +26,11 @@
 #include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"
 
-#include <kiconloader.h> 
- 
+#include <kiconloader.h>
 
-ScriptableServiceManager::ScriptableServiceManager(QObject* parent)  
+using namespace Meta;
+
+ScriptableServiceManager::ScriptableServiceManager(QObject* parent)
 : QObject(parent){
 
 
@@ -43,7 +44,7 @@ ScriptableServiceManager::ScriptableServiceManager(QObject* parent)
 }
 
 bool ScriptableServiceManager::createService( const QString &name, const QString &listHeader, const QString &rootHtml) {
-    
+
     debug() << "ScriptableServiceManager::CreateService, name: " << name << ", header: "<< listHeader <<  endl;
 
     if ( m_serviceMap.contains( name ) ) {
@@ -56,7 +57,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
     service->setIcon( KIcon( Amarok::icon( "download" ) ) );
 
     service->infoChanged( m_rootHtml );
-    
+
     m_serviceMap[name] = service;
 
 
@@ -69,9 +70,9 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
     SingleCollectionTreeItemModel * model = new SingleCollectionTreeItemModel( collection, levels );
 
-    service->setModel( model ); 
+    service->setModel( model );
     emit( addService ( service ) );
-    
+
     return true;
 }
 
@@ -81,13 +82,13 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
      debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", albumId: " << albumId << ", Service name: " << serviceName << endl;
 
     //get the service
-    
+
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
         return -1;
     }
 
-    int newId = m_serviceMap[serviceName]->addTrack( new ServiceTrack( name ), albumId );  
+    int newId = m_serviceMap[serviceName]->addTrack( new ServiceTrack( name ), albumId );
 
     //FIXME!!! What should be returned here?
     return newId;
@@ -105,14 +106,14 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
      debug() << "ScriptableServiceManager::insertElement, name: " << name  << ", info: " << infoHtml << /*", parentId: " << parentId <<*/ ", Service name: " << serviceName << endl;
 
     //get the service
-    
+
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
         return -1;
     }
     ServiceAlbum * album = new ServiceAlbum( name );
     album->setDescription( infoHtml );
-    
+
     int newId = m_serviceMap[serviceName]->addAlbum( album);
 
      QList<int> levels;
@@ -131,14 +132,14 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
      debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
 
     //get the service
-    
+
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
         return -1;
     }
 
     ScriptableServiceContentModel * model = static_cast< ScriptableServiceContentModel *> ( m_serviceMap[serviceName]->getModel() );
-    
+
     return model->insertDynamicItem( name, callbackScript, callbackArgument, infoHtml, parentId );
 
 }*/

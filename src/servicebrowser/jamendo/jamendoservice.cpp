@@ -19,13 +19,15 @@
 
 #include "jamendoservice.h"
 
-#include "debug.h" 
+#include "debug.h"
 #include "JamendoInfoParser.h"
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"
 
 
 #include <KTemporaryFile>
+
+using namespace Meta;
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
@@ -66,7 +68,7 @@ void JamendoService::polish()
 
     //TODO: move this to base class?
     connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
-     
+
     //m_model = new DatabaseDrivenContentModel();
     //m_dbHandler = new JamendoDatabaseHandler();
     //m_model->setDbHandler( m_dbHandler );
@@ -116,16 +118,16 @@ void JamendoService::updateButtonClicked()
 
 void JamendoService::listDownloadComplete(KJob * downloadJob)
 {
-    
+
 
     if ( downloadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
     debug() << "JamendoService: xml file download complete" << endl;
-   
+
 
     //testing
 
-   
+
 
     if ( !downloadJob->error() == 0 )
     {
@@ -133,7 +135,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
         return ;
     }
 
-    //system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!! 
+    //system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!!
 
     debug() << "JamendoService: create xml parser" << endl;
     JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef AMAROKSCRIPTABLESERVICE_H
 #define AMAROKSCRIPTABLESERVICE_H
@@ -27,12 +27,12 @@
 #include "ScriptableServiceCollection.h"
 
 
-typedef QMap<int, TrackPtr> TrackIdMap;
-typedef QMap<int, ArtistPtr> ArtistIdMap;
-typedef QMap<int, AlbumPtr> AlbumIdMap;
-typedef QMap<int, GenrePtr> GenreIdMap;
-typedef QMap<int, ComposerPtr> ComposerIdMap;
-typedef QMap<int, YearPtr> YearIdMap;
+typedef QMap<int, Meta::TrackPtr> TrackIdMap;
+typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
+typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
+typedef QMap<int, Meta::GenrePtr> GenreIdMap;
+typedef QMap<int, Meta::ComposerPtr> ComposerIdMap;
+typedef QMap<int, Meta::YearPtr> YearIdMap;
 
 
 class ScriptableService : public ServiceBase
@@ -40,7 +40,7 @@ class ScriptableService : public ServiceBase
     Q_OBJECT
 
 public:
-    
+
      /**
      * Constructor
      */
@@ -56,9 +56,9 @@ public:
     void setCollection( ScriptableServiceCollection * collection );
 
 
-    int addTrack( ServiceTrack * track, int albumId );
-    int addAlbum( ServiceAlbum * album );
-    int addArtist( ServiceArtist * artist );
+    int addTrack( Meta::ServiceTrack * track, int albumId );
+    int addAlbum( Meta::ServiceAlbum * album );
+    int addArtist( Meta::ServiceArtist * artist );
 
 private slots:
 

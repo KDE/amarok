@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 #include "MagnatuneStore.h"
 
 #include "amarok.h"
@@ -46,6 +46,8 @@
 
 #include <QStandardItemModel>
 #include <QDirModel>
+
+using namespace Meta;
 
 MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( "Magnatune Store" )
@@ -97,9 +99,9 @@ void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
 
 void MagnatuneStore::purchaseButtonClicked( )
 {
-    if ( m_purchaseInProgress ) 
+    if ( m_purchaseInProgress )
         return;
-    
+
     m_purchaseInProgress = true;
     m_purchaseAlbumButton->setEnabled( false );
 
@@ -181,8 +183,8 @@ void MagnatuneStore::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
     //updateMagnatuneList();
-    
-    
+
+
     //HACK for testing
     debug() << "MagnatuneStore: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
@@ -288,31 +290,31 @@ void MagnatuneStore::purchaseCompleted( bool )
 
 
 void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
-    
+
     DEBUG_BLOCK
-    
-    //we only enable the purchase button if there is only one item selected and it happens to 
+
+    //we only enable the purchase button if there is only one item selected and it happens to
     //be an album or a track
     DataPtr dataPtr = selectedItem->data();
-    
+
     if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
-        
+
         debug() << "is right type (track)" << endl;
         MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
         m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
         m_purchaseAlbumButton->setEnabled( true );
-        
+
     } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
-        
+
         m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
         debug() << "is right type (album) named " << m_currentAlbum->name() << endl;
-        
+
         m_purchaseAlbumButton->setEnabled( true );
     } else {
-        
+
         debug() << "is wrong type" << endl;
         m_purchaseAlbumButton->setEnabled( false );
-        
+
     }
 
 
@@ -391,7 +393,7 @@ void MagnatuneStore::polish( )
         //setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
-        connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) ); 
+        connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
        /* m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
         m_contentView->setSortingEnabled ( true );

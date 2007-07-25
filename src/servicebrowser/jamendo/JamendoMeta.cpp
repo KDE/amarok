@@ -21,6 +21,7 @@
 
 #include "JamendoMeta.h"
 
+using namespace Meta;
 
 JamendoMetaFactory::JamendoMetaFactory(const QString & dbPrefix)
     : ServiceMetaFactory( dbPrefix )

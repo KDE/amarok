@@ -27,6 +27,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+using namespace Meta;
+
 class ServiceSqlWorkerThread : public ThreadWeaver::Job
 {
     public:
@@ -141,7 +143,7 @@ ServiceSqlQueryMaker::run()
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
-        
+
     }
     else
     {
@@ -307,7 +309,7 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     //DEBUG_BLOCK
-    QString prefix = m_metaFactory->tablePrefix(); 
+    QString prefix = m_metaFactory->tablePrefix();
     if( d && d->queryType == Private::TRACK ) // a service track does not generally know its artist
         return this;
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
@@ -321,7 +323,7 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     //DEBUG_BLOCK
-    QString prefix = m_metaFactory->tablePrefix(); 
+    QString prefix = m_metaFactory->tablePrefix();
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
     if( !d || !serviceAlbum )
         return this;
@@ -333,7 +335,7 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
     //DEBUG_BLOCK
-    QString prefix = m_metaFactory->tablePrefix(); 
+    QString prefix = m_metaFactory->tablePrefix();
 
     const ServiceGenre* serviceGenre = dynamic_cast<const ServiceGenre *>( genre.data() );
     if( !d || !serviceGenre )
@@ -445,7 +447,7 @@ ServiceSqlQueryMaker::endAndOr()
 void
 ServiceSqlQueryMaker::linkTables()
 {
-    
+
     //FIXME:This whole function needs to be rewritten!!! The problem is that the service database schema does not make this easy
     if( !d->linkedTables )
         return;
@@ -493,7 +495,7 @@ ServiceSqlQueryMaker::buildQuery()
     query += d->queryReturnValues;
     query += " FROM ";
     query += d->queryFrom;
-    query += " WHERE 1 "; // oh... to not have to bother with the leadig "AND" 
+    query += " WHERE 1 "; // oh... to not have to bother with the leadig "AND"
                           // that may or may not be needed
     query += d->queryMatch;
     query += d->queryFilter;
@@ -576,7 +578,7 @@ ServiceSqlQueryMaker::nameForValue( qint64 value )
 
             return "album.name";
         case valGenre:
-   
+
             return "genre.name";
         case valComposer:
 

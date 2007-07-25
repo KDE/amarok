@@ -55,13 +55,13 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );
 
-        virtual QueryMaker* addMatch( const TrackPtr &track );
-        virtual QueryMaker* addMatch( const ArtistPtr &artist );
-        virtual QueryMaker* addMatch( const AlbumPtr &album );
-        virtual QueryMaker* addMatch( const ComposerPtr &composer );
-        virtual QueryMaker* addMatch( const GenrePtr &genre );
-        virtual QueryMaker* addMatch( const YearPtr &year );
-        virtual QueryMaker* addMatch( const DataPtr &data );
+        virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
+        virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
+        virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
+        virtual QueryMaker* addMatch( const Meta::YearPtr &year );
+        virtual QueryMaker* addMatch( const Meta::DataPtr &data );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );

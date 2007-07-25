@@ -24,10 +24,11 @@
 
 #include <QFile>
 
+using namespace Meta;
 
 void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 {
-    
+
     MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist.data() );
     if ( magnatuneArtist == 0) return;
 
@@ -51,7 +52,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
 
 
     MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album.data() );
-   
+
     const QString artistName = "Artist";
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
@@ -69,7 +70,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     infoHtml += "<br>Release Year: " + QString::number( magnatuneAlbum->launchYear() );
 
     if ( !magnatuneAlbum->description().isEmpty() ) {
- 
+
         //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'" << endl;
         infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->description();
 

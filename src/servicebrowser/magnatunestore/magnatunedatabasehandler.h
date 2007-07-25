@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef MAGNATUNEDATABASEHANDLER_H
 #define MAGNATUNEDATABASEHANDLER_H
@@ -58,31 +58,31 @@ public:
 
     /**
      * Inserts a new track into the Magnatune database
-     * @param track pointer to the track to insert 
+     * @param track pointer to the track to insert
      * @return the database id of the newly inserted track
      */
-    int insertTrack( ServiceTrack *track );
+    int insertTrack( Meta::ServiceTrack *track );
 
     /**
      * inserts a new album into the Magnatune database
      * @param album pointer to the album to insert
      * @return the database id of the newly inserted album
      */
-    int insertAlbum( ServiceAlbum *album );
-   
+    int insertAlbum( Meta::ServiceAlbum *album );
+
     /**
      * inserts a new artist into the Magnatune database
      * @param artist pointer to the artist to insert
      * @return the database id of the newly inserted artist
      */
-    int insertArtist( ServiceArtist *artist );
+    int insertArtist( Meta::ServiceArtist *artist );
 
     /**
      * inserts a new genre into the Magnatune database
      * @param genre pointer to the genre to insert
      * @return the database id of the newly inserted genre
      */
-    int insertGenre( ServiceGenre *genre );
+    int insertGenre( Meta::ServiceGenre *genre );
 
 
     void insertMoods(int trackId, const QStringList &moods);

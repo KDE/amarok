@@ -31,38 +31,13 @@
 #include <QString>
 #include <QStringList>
 
+class MagnatuneAlbumCoverDownloader;
 
-class MagnatuneMetaFactory : public ServiceMetaFactory
+namespace Meta
 {
-
-public:
-    MagnatuneMetaFactory( const QString &dbPrefix );
-    virtual ~MagnatuneMetaFactory() {}
-
-    virtual int getTrackSqlRowCount();
-    virtual QString getTrackSqlRows();
-    virtual TrackPtr createTrack( const QStringList &rows );
-
-    virtual int getAlbumSqlRowCount();
-    virtual QString getAlbumSqlRows();
-    virtual AlbumPtr createAlbum( const QStringList &rows );
-
-    virtual int getArtistSqlRowCount();
-    virtual QString getArtistSqlRows();
-    virtual ArtistPtr createArtist( const QStringList &rows );
-
-    //virtual int getGenreSqlRowCount();
-    //virtual QString getGenreSqlRows();
-    virtual GenrePtr createGenre( const QStringList &rows );
-
-};
-
-
-
 
 class MagnatuneTrack  : public ServiceTrack
 {
-
 
 public:
     MagnatuneTrack( const QString &name );
@@ -96,30 +71,6 @@ public:
     QString magnatuneUrl() const;
 };
 
-class MagnatuneAlbum;
-
-class MagnatuneAlbumCoverDownloader : public QObject
-{
-Q_OBJECT
-
-public:
-    
-    MagnatuneAlbumCoverDownloader();
-    ~MagnatuneAlbumCoverDownloader();
-    
-    void downloadCover( const MagnatuneAlbum * album );
-        
-private slots:
-
-    void coverDownloadComplete( KJob * downloadJob );
-private:
-    const MagnatuneAlbum * m_album;
-    QString m_coverDownloadPath;
-    KIO::FileCopyJob * m_albumDownloadJob;
-    KTempDir * m_tempDir;
-};
-
-
 class MagnatuneAlbum  : public ServiceAlbum
 {
 private:
@@ -135,10 +86,10 @@ private:
 public:
     MagnatuneAlbum( const QString &name );
     MagnatuneAlbum( const QStringList &resultRow );
-    
+
     ~MagnatuneAlbum();
-    
-    virtual QString name() const; //need to override this bacause of conflict wiht QObject 
+
+    virtual QString name() const; //need to override this bacause of conflict wiht QObject
 
     void setCoverUrl( const QString &coverUrl );
     QString coverUrl() const;
@@ -150,9 +101,9 @@ public:
     QString albumCode();
 
     void setImage( const QImage & image ) const;
-    
+
     virtual QPixmap image( int size, bool withShadow ) const; //overridden from Meta::Album
-    
+
 
 
 };
@@ -166,6 +117,52 @@ public:
 
 };
 
+}
 
+class MagnatuneMetaFactory : public ServiceMetaFactory
+{
+
+    public:
+        MagnatuneMetaFactory( const QString &dbPrefix );
+        virtual ~MagnatuneMetaFactory() {}
+
+        virtual int getTrackSqlRowCount();
+        virtual QString getTrackSqlRows();
+        virtual Meta::TrackPtr createTrack( const QStringList &rows );
+
+        virtual int getAlbumSqlRowCount();
+        virtual QString getAlbumSqlRows();
+        virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
+
+        virtual int getArtistSqlRowCount();
+        virtual QString getArtistSqlRows();
+        virtual Meta::ArtistPtr createArtist( const QStringList &rows );
+
+    //virtual int getGenreSqlRowCount();
+    //virtual QString getGenreSqlRows();
+        virtual Meta::GenrePtr createGenre( const QStringList &rows );
+
+};
+
+class MagnatuneAlbumCoverDownloader : public QObject
+{
+    Q_OBJECT
+
+    public:
+
+        MagnatuneAlbumCoverDownloader();
+        ~MagnatuneAlbumCoverDownloader();
+
+        void downloadCover( const Meta::MagnatuneAlbum * album );
+
+    private slots:
+
+        void coverDownloadComplete( KJob * downloadJob );
+    private:
+        const Meta::MagnatuneAlbum * m_album;
+        QString m_coverDownloadPath;
+        KIO::FileCopyJob * m_albumDownloadJob;
+        KTempDir * m_tempDir;
+};
 
 #endif

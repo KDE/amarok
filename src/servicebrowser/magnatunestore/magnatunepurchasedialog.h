@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #ifndef MAGNATUNEPURCHASEDIALOG_H
 #define MAGNATUNEPURCHASEDIALOG_H
@@ -24,7 +24,7 @@
 #include "ui_magnatunepurchasedialogbase.h"
 #include "MagnatuneMeta.h"
 
-class MagnatunePurchaseDialog : public QDialog, public Ui::magnatunePurchaseDialogBase, public Observer
+class MagnatunePurchaseDialog : public QDialog, public Ui::magnatunePurchaseDialogBase, public Meta::Observer
 {
     Q_OBJECT
 
@@ -50,15 +50,15 @@ public:
      * Sets the album to process.
      * @param album The album to process.
      */
-    void setAlbum( MagnatuneAlbum * album );
+    void setAlbum( Meta::MagnatuneAlbum * album );
 
     /**
      * Loads image into the cover label.
      * @param coverFile image file to load.
      */
    // void setCover( const QString &coverFile );
-    
-    virtual void metadataChanged( Album *album ); //reimplemented from Observer
+
+    virtual void metadataChanged( Meta::Album *album ); //reimplemented from Observer
 
 
 signals:
@@ -76,7 +76,7 @@ signals:
      * @param amount The amount to pay (in us $)
      */
     void makePurchase( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
-    
+
      /**
      * Signal emitted when all needed info has been gathered and verified to purchase using a gift card.
      * @param gcCode The gift card code.
@@ -111,10 +111,10 @@ protected slots:
     /*$PROTECTED_SLOTS$*/
 
     /**
-     * Slot for recieving notification when the purchase button is clicked. 
+     * Slot for recieving notification when the purchase button is clicked.
      */
     void purchase();
-    
+
     //use credit card to purchase album
     void useCc();
 

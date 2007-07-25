@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
- ***************************************************************************/ 
+ ***************************************************************************/
 
 #include "scriptableservice.h"
 
@@ -24,7 +24,7 @@
 #include "amarok.h"
 #include "debug.h"
 
-
+using namespace Meta;
 
 ScriptableService::ScriptableService( const QString &name )
         : ServiceBase( name )
@@ -52,9 +52,9 @@ int ScriptableService::addTrack( ServiceTrack * track, int albumId )
 
     TrackPtr trackPtr = TrackPtr( track );
     m_collection->addTrack( track->name(), trackPtr );
-    
+
     if ( albumIdMap.contains( albumId ) ) {
-        
+
         AlbumPtr albumPtr = albumIdMap.value( albumId );
         ServiceAlbum * album = static_cast< ServiceAlbum * >( albumPtr.data() );
         track->setAlbum( albumPtr->name() );
@@ -69,9 +69,9 @@ int ScriptableService::addTrack( ServiceTrack * track, int albumId )
         m_collection->emitUpdated();
 
         return m_trackIdCounter;
-        
+
     }
-    
+
     return -1;
 }
 
