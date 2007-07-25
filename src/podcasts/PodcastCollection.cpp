@@ -29,6 +29,8 @@
 
 #include <klocale.h>
 
+using namespace Meta;
+
 PodcastCollection * PodcastCollection::s_instance = 0;
 
 PodcastCollection*
@@ -153,6 +155,18 @@ void PodcastCollection::addPodcast(const QString & url)
     urls << kurl;
     debug() << url << " added" << endl;
     slotUpdate( url );
+}
+
+void
+PodcastCollection::addChannel( Meta::PodcastChannelPtr channel )
+{
+    addAlbum( channel->name(), AlbumPtr::dynamicCast( channel ) );
+}
+
+void
+PodcastCollection::addEpisode( Meta::PodcastEpisodePtr episode )
+{
+    addTrack( episode->name(), TrackPtr::dynamicCast( episode ) );
 }
 
 #include "PodcastCollection.moc"

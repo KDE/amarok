@@ -21,6 +21,7 @@
 
 #include <collection.h>
 #include "support/memorycollection.h"
+#include "PodcastMeta.h"
 
 class KUrl;
 class PodcastReader;
@@ -47,6 +48,11 @@ class PodcastCollection : public Collection, public MemoryCollection
 
         void addPodcast( const QString &url );
 
+        void addChannel( Meta::PodcastChannelPtr channel );
+        void addEpisode( Meta::PodcastEpisodePtr episode );
+
+        Meta::PodcastChannelList channels() { return m_channels; };
+
     protected:
         PodcastCollection();
         ~PodcastCollection();
@@ -63,6 +69,8 @@ class PodcastCollection : public Collection, public MemoryCollection
         static PodcastCollection* s_instance;
 
         QList<KUrl> urls;
+
+        Meta::PodcastChannelList m_channels;
 
 };
 

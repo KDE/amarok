@@ -26,6 +26,8 @@
 #include <QDebug>
 #include <QMap>
 
+using namespace Meta;
+
 PodcastReader::PodcastReader( PodcastCollection * collection )
         : QXmlStreamReader()
         , m_collection( collection )
@@ -301,7 +303,8 @@ PodcastReader::commitChannel()
     PodcastChannelPtr album = PodcastChannelPtr( m_channel );
 
     m_collection->acquireReadLock();
-    m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
+    //m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
+    m_collection->addChannel( m_channel );
     m_collection->releaseLock();
 
 //     emit finished( this, true );
@@ -316,7 +319,8 @@ PodcastReader::commitEpisode()
     item->setAlbum( m_channel->name() );
 
     m_collection->acquireReadLock();
-    m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
+//     m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
+    m_collection->addEpisode( item );
     m_collection->releaseLock();
 
     Q_ASSERT( m_channel );
