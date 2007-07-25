@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.7
   CHANGES:
+    * Improved application icon. Thanks go to Pasi Lallinaho.
     * Upgraded SQLite to 3.4.1
     * SQL improvements providing optimisations on intensive queries. Patch by
       Gosta <gostaj@gmail.com>. (BR 142999)
