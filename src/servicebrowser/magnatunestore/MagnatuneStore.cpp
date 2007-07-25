@@ -182,16 +182,16 @@ void MagnatuneStore::initBottomPanel()
 void MagnatuneStore::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
-    //updateMagnatuneList();
+    updateMagnatuneList();
 
 
     //HACK for testing
-    debug() << "MagnatuneStore: create xml parser" << endl;
+    /*debug() << "MagnatuneStore: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadManager::instance() ->queueJob( parser );
+    ThreadManager::instance() ->queueJob( parser );*/
 }
 bool MagnatuneStore::updateMagnatuneList()
 {
