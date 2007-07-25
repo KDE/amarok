@@ -275,8 +275,8 @@ PMPProtocol::getBackendForUrl( const KUrl &url )
 {
     if( !m_devices.contains( udiFromUrl( url ) ) )
     {
-        error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "portable media player : Invalid URL (backend doesn't exist)" ) );
-        return 0;
+        m_devices[udiFromUrl( url )] = new PMPDevice( this, Solid::Device( untransUdi( udiFromUrl( url ) ) ) );
+        m_devices[udiFromUrl( url )]->initialize();
     }
     return m_devices[udiFromUrl( url )]->backend();
 }

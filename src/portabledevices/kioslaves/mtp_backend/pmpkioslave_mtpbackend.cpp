@@ -49,7 +49,7 @@ MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
 
     if( LIBMTP_Get_Connected_Devices( &m_deviceList ) != LIBMTP_ERROR_NONE )
     {
-        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not get a connected device list from libmtp." ) );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not get a connected device list from libmtp. Possibly you are trying to run two copies of this kioslave at once, which is not supported." ) );
         return;
     }
     quint32 deviceCount = LIBMTP_Number_Devices_In_List( m_deviceList );

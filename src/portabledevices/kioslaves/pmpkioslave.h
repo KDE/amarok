@@ -57,6 +57,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         QString getSolidFriendlyName( const Solid::Device &device ) const;
         void initialize( const KUrl &url );
         inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
+        inline QString untransUdi( const QString &udi) const { return QString( udi ).replace( QChar( '.' ), QChar( '/' ) ); }
         QString udiFromUrl( const KUrl &url );
         PMPBackend* getBackendForUrl( const KUrl &url );
 
