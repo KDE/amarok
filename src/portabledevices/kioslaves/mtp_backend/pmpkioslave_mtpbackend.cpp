@@ -25,6 +25,7 @@
 #include <QString>
 #include <QVariant>
 
+#include <kapplication.h>
 #include <kcomponentdata.h>
 #include <kdebug.h>
 #include <klocale.h>
@@ -36,6 +37,8 @@
 MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
             : PMPBackend( slave, device )
             , m_device( 0 )
+            , m_gotTracklisting( false )
+            , m_defaultMusicLocation( "Music" )
 {
     kDebug() << "Creating MTPBackend" << endl;
 
@@ -69,7 +72,7 @@ MTPBackend::initialize()
     Solid::GenericInterface *gi = m_solidDevice.as<Solid::GenericInterface>();
     if( !gi )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "Error getting a GenericInterface to the device from Solid." );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Error getting a GenericInterface to the device from Solid." ) );
         return;
     }
     if( !gi->propertyExists( "usb.serial" ) )
@@ -139,30 +142,70 @@ MTPBackend::getModelName()
 void
 MTPBackend::get( const KUrl &url )
 {
-   QString path = getFilePath( url );
-   kDebug() << "in MTPBackend::get, path is: " << path << endl;
+    QString path = getFilePath( url );
+    kDebug() << "in MTPBackend::get, path is: " << path << endl;
 }
 
 void
 MTPBackend::listDir( const KUrl &url )
 {
-   QString path = getFilePath( url );
-   kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
-   //first case: no specific folder chosen, display a list of available actions as folders
-   if( path.isEmpty() || path == "/" )
-   {
-        QStringList folders;
-        folders << i18n( "Playlists" ) << i18nc( "Music tracks", "Tracks" );
-        foreach( QString folder, folders )
+    QString path = getFilePath( url );
+    kDebug() << "in MTPBackend::listDir, path is: " << path << endl;
+    //first case: no specific folder chosen, display a list of available actions as folders
+    if( path.isEmpty() )
+    {
+        LIBMTP_folder_t *folderList = LIBMTP_Get_Folder_List( m_device );
+        if( folderList == 0 )
+        {
+            m_slave->warning( i18n( "Could not find any folders on device!" ) );
+            return;
+        }
+        while( folderList )
         {
             KIO::UDSEntry entry;
-            entry.insert( KIO::UDSEntry::UDS_NAME ,folder);
-            entry.insert( KIO::UDSEntry::UDS_FILE_TYPE , S_IFDIR);
-            entry.insert(KIO::UDSEntry::UDS_ACCESS ,S_IRUSR | S_IRGRP | S_IROTH);
+            entry.insert( KIO::UDSEntry::UDS_NAME, folderList->name);
+            entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+            entry.insert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH);
             m_slave->listEntry( entry, false );
+            folderList = folderList->sibling;
         }
         m_slave->listEntry( KIO::UDSEntry(), true );
-   }
+        return;
+    }
+    if( !m_gotTracklisting )
+        buildMusicListing();
+    //next case: User requests something specific...first, find out what they requested
+    //and error if not appropriate
+    bool endOfPath = path.indexOf( '/' ) == -1;
+    QString nextLevel, nextPath;
+    if( endOfPath )
+        nextLevel = path;
+    else
+    {
+        nextLevel = path.left( path.indexOf( '/' ) );
+        nextPath = path.right( path.indexOf( '/' ) );
+    }
+    if( nextLevel == m_defaultMusicLocation )
+    {
+        listMusic( nextPath );
+        m_slave->listEntry( KIO::UDSEntry(), true );
+    }
+    else
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Invalid path requested!" ) );
+}
+
+void
+MTPBackend::listMusic( const QString &pathOffset )
+{
+    kDebug() << "(listMusic) pathOffset = " << pathOffset << endl;
+    if( pathOffset.isEmpty() )
+    {
+        kDebug() << "LIST ENTRIES IN " << m_defaultMusicLocation << " NOW" << endl;
+    }
+    else
+    {
+        kDebug() << "LIST ENTRIES IN " << m_defaultMusicLocation << '/' << pathOffset << " NOW" << endl;
+    }
 }
 
 void
@@ -184,6 +227,62 @@ MTPBackend::stat( const KUrl &url )
    entry.insert(KIO::UDSEntry::UDS_FILE_TYPE,S_IFDIR);
    entry.insert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH);
    m_slave->statEntry( entry );
+}
+
+void
+MTPBackend::buildMusicListing()
+{
+    LIBMTP_track_t* trackList;
+    trackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, (void *)this );
+    LIBMTP_folder_t* folderList = LIBMTP_Get_Folder_List( m_device );
+    QString defaultMusicLocation = LIBMTP_Find_Folder( folderList, m_device->default_music_folder )->name;
+    m_defaultMusicLocation = defaultMusicLocation;
+    kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation << endl;
+    buildFolderList( folderList, defaultMusicLocation );
+    QString folderPath;
+    while( trackList != 0 )
+    {
+        if( trackList->parent_id == 0 )
+        {
+            kDebug() << "Found track " << defaultMusicLocation << '/' << trackList->filename << endl;
+            m_trackParentToPtrHash.insert( defaultMusicLocation, trackList );
+        }
+        else
+        {
+            folderPath = m_folderIdToPathHash.value( trackList->parent_id );
+            kDebug() << "Found track " << folderPath << '/' << trackList->filename << endl;
+            m_trackParentToPtrHash.insert( folderPath, trackList );
+        }
+    }
+}
+
+void
+MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath )
+{
+    if( folderList == 0 )
+        return;
+
+    kDebug() << "Found folder " << parentPath << '/' << folderList->name << endl;
+
+    m_folderParentToPtrHash.insert( parentPath, folderList );
+    m_folderIdToPathHash.insert( folderList->folder_id, parentPath + '/' + folderList->name );
+
+    buildFolderList( folderList->child, parentPath + '/' + folderList->name );
+    buildFolderList( folderList->sibling, parentPath );
+}
+
+int
+MTPBackend::progressCallback( quint64 const sent, quint64 const total, void const * const data )
+{
+    Q_UNUSED( data );
+    kapp->processEvents();
+    MTPBackend *backend = (MTPBackend *)(data);
+    if( sent == total )
+        backend->getSlave()->infoMessage( i18n( "Receiving tracklisting...done" ) );
+    else
+        backend->getSlave()->infoMessage( i18n( "Receiving tracklisting...%1\%", sent/total ) );
+    kDebug() << "libmtp progress callback called, with " << sent/total << " done." << endl;
+    return 0;
 }
 
 #include "pmpkioslave_mtpbackend.moc"

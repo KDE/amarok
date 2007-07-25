@@ -19,6 +19,7 @@
 #define MTP_BACKEND_H
 
 #include <QtCore/QByteRef>
+#include <QMultiHash>
 
 #include <solid/device.h>
 
@@ -47,8 +48,19 @@ class MTPBackend : public PMPBackend
         void rename( const KUrl &src, const KUrl &dest, bool overwrite );
 
     private:
+        void listMusic( const QString &pathOffset );
+        void buildMusicListing();
+        void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
+        static int progressCallback( quint64 const sent, quint64 const total, void const * const data );
+
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
+        bool m_gotTracklisting;
+        QString m_defaultMusicLocation;
+
+        QMultiHash<QString, LIBMTP_track_t*> m_trackParentToPtrHash;
+        QMultiHash<quint32, QString> m_folderIdToPathHash;
+        QMultiHash<QString, LIBMTP_folder_t*> m_folderParentToPtrHash;
 
 };
 
