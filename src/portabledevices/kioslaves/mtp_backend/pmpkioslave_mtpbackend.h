@@ -37,9 +37,9 @@ class MTPBackend : public PMPBackend
         MTPBackend( PMPProtocol* slave, const Solid::Device &device );
         virtual ~MTPBackend();
         void initialize();
-        QString getFriendlyName();
+        QString getFriendlyName() const;
         void setFriendlyName( const QString &name );
-        QString getModelName();
+        QString getModelName() const;
 
     protected:
         void get( const KUrl &url );

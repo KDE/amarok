@@ -112,12 +112,11 @@ MTPBackend::initialize()
 }
 
 QString
-MTPBackend::getFriendlyName()
+MTPBackend::getFriendlyName() const
 {
     kDebug() << "Getting MTPBackend friendly name" << endl;
-    char* name = LIBMTP_Get_Friendlyname( m_device );
-    QString friendlyName = QString::fromUtf8( name );
-    free( name );
+    QString friendlyName = QString::fromUtf8( LIBMTP_Get_Friendlyname( m_device ) );
+    kDebug() << "Found MTPBackend friendly name = " << friendlyName << endl;
     return friendlyName;
 }
 
@@ -130,12 +129,11 @@ MTPBackend::setFriendlyName( const QString &name )
 }
 
 QString
-MTPBackend::getModelName()
+MTPBackend::getModelName() const
 {
     kDebug() << "Getting MTPBackend model name" << endl;
-    char* model = LIBMTP_Get_Modelname( m_device );
-    QString modelName = QString::fromUtf8( model );
-    free( model );
+    QString modelName = QString::fromUtf8( LIBMTP_Get_Modelname( m_device ) );
+    kDebug() << "Found MTPBackend model name = " << modelName << endl;
     return modelName;
 }
 
@@ -163,7 +161,7 @@ MTPBackend::listDir( const KUrl &url )
         while( folderList )
         {
             KIO::UDSEntry entry;
-            entry.insert( KIO::UDSEntry::UDS_NAME, folderList->name);
+            entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( folderList->name ) );
             entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
             entry.insert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH);
             m_slave->listEntry( entry, false );
@@ -235,24 +233,25 @@ MTPBackend::buildMusicListing()
     LIBMTP_track_t* trackList;
     trackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, (void *)this );
     LIBMTP_folder_t* folderList = LIBMTP_Get_Folder_List( m_device );
-    QString defaultMusicLocation = LIBMTP_Find_Folder( folderList, m_device->default_music_folder )->name;
+    QString defaultMusicLocation = QString::fromAscii( LIBMTP_Find_Folder( folderList, m_device->default_music_folder )->name );
     m_defaultMusicLocation = defaultMusicLocation;
     kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation << endl;
-    buildFolderList( folderList, defaultMusicLocation );
+    buildFolderList( folderList, QString() );
     QString folderPath;
     while( trackList != 0 )
     {
         if( trackList->parent_id == 0 )
         {
-            kDebug() << "Found track " << defaultMusicLocation << '/' << trackList->filename << endl;
+            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in folder " << defaultMusicLocation << endl;
             m_trackParentToPtrHash.insert( defaultMusicLocation, trackList );
         }
         else
         {
             folderPath = m_folderIdToPathHash.value( trackList->parent_id );
-            kDebug() << "Found track " << folderPath << '/' << trackList->filename << endl;
+            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in folder " << folderPath << endl;
             m_trackParentToPtrHash.insert( folderPath, trackList );
         }
+        trackList = trackList->next;
     }
 }
 
@@ -262,12 +261,12 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
     if( folderList == 0 )
         return;
 
-    kDebug() << "Found folder " << parentPath << '/' << folderList->name << endl;
+    kDebug() << "Found folder " << QString::fromAscii( folderList->name ) << " in " << parentPath << endl;
 
     m_folderParentToPtrHash.insert( parentPath, folderList );
-    m_folderIdToPathHash.insert( folderList->folder_id, parentPath + '/' + folderList->name );
+    m_folderIdToPathHash.insert( folderList->folder_id, parentPath + '/' + QString::fromAscii( folderList->name ) );
 
-    buildFolderList( folderList->child, parentPath + '/' + folderList->name );
+    buildFolderList( folderList->child, parentPath + '/' + QString::fromAscii( folderList->name ) );
     buildFolderList( folderList->sibling, parentPath );
 }
 
