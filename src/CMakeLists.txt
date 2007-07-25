@@ -38,6 +38,7 @@ add_subdirectory( collection )
 add_subdirectory( portabledevices )
 add_subdirectory( podcasts )
 add_subdirectory( strigi )
+add_subdirectory( playlistbrowser )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -47,36 +48,37 @@ if (USE_SYSTEM_SQLITE)
     set(libsqlite_SRCS )
 else (USE_SYSTEM_SQLITE)
     # Use our own copy
-	set(libsqlite_SRCS sqlite/sqlite3.c)
+    set(libsqlite_SRCS sqlite/sqlite3.c)
 endif (USE_SYSTEM_SQLITE)
 
 
 include_directories(
-	amarokcore
-	analyzers
+    amarokcore
+    analyzers
     configdialog
     configdialog/dialogs
-	plugin
-	statusbar
-	mediadevice
+    plugin
+    statusbar
+    mediadevice
     portabledevices
     servicebrowser
     #servicebrowser/magnatunestore
-	${CMAKE_CURRENT_SOURCE_DIR}
-	meta
-	collection
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    meta
+    collection
     podcasts
     widgets
-	${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
-	${KDE4_INCLUDE_DIR}
-	${TAGLIB_INCLUDE_DIR}
-	${QT_INCLUDES}
+    playlistbrowser
+    ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
+    ${KDE4_INCLUDE_DIR}
+    ${TAGLIB_INCLUDE_DIR}
+    ${QT_INCLUDES}
 )
 
 
 set(libamarokcore_SRCS
-	amarokcore/amarokdbushandler.cpp
-	amarokcore/crashhandler.cpp
+    amarokcore/amarokdbushandler.cpp
+    amarokcore/crashhandler.cpp
 )
 
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
@@ -91,7 +93,7 @@ qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.context.xml a
 # PLUGIN
 #####################################################################
 set(libplugin_SRCS
-	plugin/plugin.cpp
+    plugin/plugin.cpp
     plugin/pluginconfig.cpp
 )
 
@@ -170,25 +172,25 @@ kde4_add_ui_files(libconfigdialog_SRCS
 # MAGNATUNESTORE
 #####################################################################
 set(libmagnatunestore_SRCS
-	servicebrowser/magnatunestore/magnatuneinfoparser.cpp
-	servicebrowser/magnatunestore/MagnatuneStore.cpp
-	servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
-	servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
-	servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
-	#servicebrowser/magnatunestore/magnatunetypes.cpp
+    servicebrowser/magnatunestore/magnatuneinfoparser.cpp
+    servicebrowser/magnatunestore/MagnatuneStore.cpp
+    servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
+    servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
+    servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
+    #servicebrowser/magnatunestore/magnatunetypes.cpp
         servicebrowser/magnatunestore/MagnatuneMeta.cpp
-	servicebrowser/magnatunestore/magnatunexmlparser.cpp
-	servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
-	#servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
-	#servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
-	servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-	servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
+    servicebrowser/magnatunestore/magnatunexmlparser.cpp
+    servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
+    #servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
+    #servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
+    servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
+    servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
 )
 
 kde4_add_ui3_files(libmagnatunestore_SRCS
-	servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
+    servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
     #servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
-	servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
+    servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -305,6 +307,13 @@ set(libpodcasts_SRCS
 )
 
 #####################################################################
+# PLAYLISTBROWSER
+#####################################################################
+set(libplaylistbrowser_SRCS
+    playlistbrowser/PlaylistBrowser.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -326,6 +335,7 @@ set(amaroklib_LIB_SRCS
     ${meta_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
+    ${libplaylistbrowser_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
     app.cpp
@@ -441,9 +451,9 @@ kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 target_link_libraries(amaroklib
     ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
     ${TAGLIB_LIBRARIES}
-	${KDE4_KFILE_LIBS}
+    ${KDE4_KFILE_LIBS}
     ${KDE4_KDE3SUPPORT_LIBS}
-	${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}

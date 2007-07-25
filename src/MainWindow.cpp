@@ -59,6 +59,8 @@
 #include "volumewidget.h"
 #include "PodcastCollection.h"
 
+#include "playlistbrowser/PlaylistBrowser.h"
+
 #include <Q3PopupMenu>
 #include <QFont>
 #include <QHeaderView>
@@ -290,6 +292,8 @@ void MainWindow::init()
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
+
+        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "NeoPlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
