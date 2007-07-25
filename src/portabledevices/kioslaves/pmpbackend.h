@@ -42,6 +42,7 @@ class PMPBackend : public QObject
         virtual void setFriendlyName( const QString &name ) = 0;
         virtual QString getModelName() const { return QString(); }
         PMPProtocol* getSlave() const { return m_slave; }
+        virtual void del( const KUrl &url, bool isdir ) = 0;
         virtual void get( const KUrl &url ) = 0;
         virtual void listDir( const KUrl &url ) = 0;
         virtual void stat( const KUrl &url ) = 0;

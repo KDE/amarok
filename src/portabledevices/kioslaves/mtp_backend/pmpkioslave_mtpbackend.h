@@ -42,12 +42,14 @@ class MTPBackend : public PMPBackend
         QString getModelName() const;
 
     protected:
+        void del( const KUrl &url, bool isfile );
         void get( const KUrl &url );
         void listDir( const KUrl &url );
         void stat( const KUrl &url );
         void rename( const KUrl &src, const KUrl &dest, bool overwrite );
 
     private:
+        void delMusic( const QString &path, bool isdir );
         void listMusic( const QString &pathOffset );
         void buildMusicListing();
         void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
@@ -55,12 +57,17 @@ class MTPBackend : public PMPBackend
 
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
-        bool m_gotTracklisting;
+        LIBMTP_track_t     *m_trackList;
+        LIBMTP_folder_t    *m_folderList;
+        bool m_gotMusicListing;
         QString m_defaultMusicLocation;
 
         QMultiHash<QString, LIBMTP_track_t*> m_trackParentToPtrHash;
         QMultiHash<quint32, QString> m_folderIdToPathHash;
         QMultiHash<QString, LIBMTP_folder_t*> m_folderParentToPtrHash;
+        QMultiHash<QString, quint32> m_pathToFolderIdHash;
+        QMultiHash<QString, quint32> m_pathToTrackIdHash;
+        QHash<quint32, void*> m_idToPtrHash;
 
 };
 

@@ -47,6 +47,7 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         void setHost( const QString &host, quint16 port,
                       const QString &user, const QString &pass );
 
+        void del( const KUrl &url, bool isfile );
         void get( const KUrl &url );
         void listDir( const KUrl &url );
         void rename( const KUrl &src, const KUrl &dest, bool overwrite );

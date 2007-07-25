@@ -83,6 +83,17 @@ PMPProtocol::setHost( const QString &host, quint16 port,
 }
 
 void
+PMPProtocol::del( const KUrl &url, bool isfile )
+{
+    kDebug() << endl << endl << "Entering del with url = " << url << endl << endl;
+    if( getBackendForUrl( url ) )
+        getBackendForUrl( url )->del( url, isfile );
+
+    emit finished();
+    kDebug() << endl << endl << "Leaving del with url = " << url << endl << endl;
+}
+
+void
 PMPProtocol::get( const KUrl &url )
 {
     kDebug() << endl << endl << "Entering get with url = " << url << endl << endl;

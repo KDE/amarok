@@ -37,7 +37,9 @@
 MTPBackend::MTPBackend( PMPProtocol* slave, const Solid::Device &device )
             : PMPBackend( slave, device )
             , m_device( 0 )
-            , m_gotTracklisting( false )
+            , m_trackList( 0 )
+            , m_folderList( 0 )
+            , m_gotMusicListing( false )
             , m_defaultMusicLocation( "Music" )
 {
     kDebug() << "Creating MTPBackend" << endl;
@@ -138,6 +140,65 @@ MTPBackend::getModelName() const
 }
 
 void
+MTPBackend::del( const KUrl &url, bool isfile )
+{
+    QString path = getFilePath( url );
+    if( !m_gotMusicListing )
+        buildMusicListing();
+    int nextSlash = path.indexOf( '/' );
+    QString nextLevel, nextPath;
+    if( nextSlash == -1 )
+        nextLevel = path;
+    else
+    {
+        nextLevel = path.left( path.indexOf( '/' ) );
+        nextPath = path.right( path.indexOf( '/' ) );
+    }
+    if( nextLevel == m_defaultMusicLocation )
+    {
+        delMusic( path, isfile );
+        m_slave->listEntry( KIO::UDSEntry(), true );
+    }
+    else
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Invalid path requested!" ) );
+
+}
+
+void
+MTPBackend::delMusic( const QString &path, bool isfile )
+{
+    if( !isfile && m_pathToFolderIdHash.contains( path ) )
+    {
+        //TODO:recursively delete children
+    }
+    else if( isfile && m_pathToTrackIdHash.contains( path ) )
+    {
+        if( !LIBMTP_Delete_Object( m_device, m_pathToTrackIdHash.value( path ) ) )
+        {
+            m_slave->error( KIO::ERR_INTERNAL, i18n( "libmtp reported failure deleting %1", path ) );
+            return;
+        }
+        quint32 trackid = m_pathToTrackIdHash.value( path );
+        m_pathToTrackIdHash.remove( path, trackid );
+        m_trackParentToPtrHash.remove( path.left( path.lastIndexOf( '/' ) ), (LIBMTP_track_t*)(m_idToPtrHash.value( trackid )) );
+        m_idToPtrHash.remove( trackid );
+        LIBMTP_track_t *behind, *curr = m_trackList;
+        while( curr && curr->item_id != trackid )
+        {
+            behind = curr;
+            curr = curr->next;
+        }
+        if( curr->item_id == trackid )
+        {
+            behind->next = curr->next;
+            LIBMTP_destroy_track_t( curr );
+        }
+    }
+    else
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not find the proper path to delete!" ) );
+}
+
+void
 MTPBackend::get( const KUrl &url )
 {
     QString path = getFilePath( url );
@@ -170,7 +231,7 @@ MTPBackend::listDir( const KUrl &url )
         m_slave->listEntry( KIO::UDSEntry(), true );
         return;
     }
-    if( !m_gotTracklisting )
+    if( !m_gotMusicListing )
         buildMusicListing();
     //next case: User requests something specific...first, find out what they requested
     //and error if not appropriate
@@ -238,9 +299,10 @@ MTPBackend::stat( const KUrl &url )
 void
 MTPBackend::buildMusicListing()
 {
-    LIBMTP_track_t* trackList;
-    trackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, (void *)this );
-    LIBMTP_folder_t* folderList = LIBMTP_Get_Folder_List( m_device );
+    m_trackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, (void *)this );
+    LIBMTP_track_t* trackList = m_trackList;
+    m_folderList = LIBMTP_Get_Folder_List( m_device );
+    LIBMTP_folder_t* folderList = m_folderList;
     QString defaultMusicLocation = QString::fromAscii( LIBMTP_Find_Folder( folderList, m_device->default_music_folder )->name );
     m_defaultMusicLocation = defaultMusicLocation;
     kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation << endl;
@@ -252,12 +314,16 @@ MTPBackend::buildMusicListing()
         {
             kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in base folder." << endl;
             m_trackParentToPtrHash.insert( QString::null, trackList );
+            m_pathToTrackIdHash.insert( trackList->filename, trackList->item_id );
+            m_idToPtrHash.insert( trackList->item_id, trackList );
         }
         else
         {
             folderPath = m_folderIdToPathHash.value( trackList->parent_id );
             kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in folder " << folderPath << endl;
             m_trackParentToPtrHash.insert( folderPath, trackList );
+            m_pathToTrackIdHash.insert( folderPath + "/" + trackList->filename, trackList->item_id );
+            m_idToPtrHash.insert( trackList->item_id, trackList );
         }
         trackList = trackList->next;
     }
@@ -279,6 +345,8 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
 
     m_folderParentToPtrHash.insert( parentPath, folderList );
     m_folderIdToPathHash.insert( folderList->folder_id, nextPath );
+    m_pathToFolderIdHash.insert( nextPath, folderList->folder_id );
+    m_idToPtrHash.insert( folderList->folder_id, folderList );
 
     buildFolderList( folderList->child, nextPath );
     buildFolderList( folderList->sibling, parentPath );
