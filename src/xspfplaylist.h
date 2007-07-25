@@ -11,7 +11,6 @@ class QDateTime;
 class KUrl;
 
 #include <QDomDocument>
-using namespace Qt;
 
 #include "meta.h"
 
@@ -34,7 +33,7 @@ typedef QList<XSPFtrack> XSPFtrackList;
 /**
  * @class XSPFPlaylist
  * @author Mattias Fliesberg
- * @author Ian Monroe 
+ * @author Ian Monroe
  */
 class XSPFPlaylist : public QDomDocument
 {

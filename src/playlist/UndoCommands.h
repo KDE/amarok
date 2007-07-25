@@ -14,7 +14,6 @@
 
 
 #include <QUndoCommand>
-using namespace Qt;
 
 namespace PlaylistNS {
 /**

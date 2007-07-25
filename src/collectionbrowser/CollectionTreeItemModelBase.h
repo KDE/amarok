@@ -21,8 +21,6 @@
 #include <QSet>
 #include <QTimeLine>
 
-using namespace Meta;
-
 class CollectionTreeItem;
 class Collection;
 class QueryMaker;
@@ -89,7 +87,7 @@ Q_OBJECT
 
     protected:
 
-        virtual void populateChildren(const DataList &dataList, CollectionTreeItem *parent) const;
+        virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent) const;
         virtual void ensureChildrenLoaded( CollectionTreeItem *item ) const = 0;
         virtual void updateHeaderText();
         virtual QString nameForLevel( int level ) const;

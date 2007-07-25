@@ -11,6 +11,7 @@
 #include "UndoCommands.h"
 
 using namespace PlaylistNS;
+using namespace Qt;
 
 AddTracksCmd::AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList tracks )
     : QUndoCommand( i18n("Tracks Added"), parent )

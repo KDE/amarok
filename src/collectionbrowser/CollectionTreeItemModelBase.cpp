@@ -30,6 +30,8 @@
 #include <QPixmap>
 #include <QTimer>
 
+using namespace Meta;
+
 inline uint qHash( const Meta::DataPtr &data )
 {
     return qHash( data.data() );
@@ -71,7 +73,7 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
-QVariant 
+QVariant
 CollectionTreeItemModelBase::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -80,7 +82,7 @@ CollectionTreeItemModelBase::headerData(int section, Qt::Orientation orientation
     return QVariant();
 }
 
-QModelIndex 
+QModelIndex
 CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & parent) const
 {
     CollectionTreeItem *parentItem;
@@ -103,7 +105,7 @@ CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & pare
     //   return QModelIndex();
 }
 
-QModelIndex 
+QModelIndex
 CollectionTreeItemModelBase::parent(const QModelIndex & index) const
 {
      if (!index.isValid())
@@ -118,7 +120,7 @@ CollectionTreeItemModelBase::parent(const QModelIndex & index) const
      return createIndex(parentItem->row(), 0, parentItem);
 }
 
-int 
+int
 CollectionTreeItemModelBase::rowCount(const QModelIndex & parent) const
 {
 
@@ -184,7 +186,7 @@ QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indice
     return mimeData;
 }
 
-QPixmap 
+QPixmap
 CollectionTreeItemModelBase::iconForLevel(int level) const
 {
     QString icon;
@@ -260,14 +262,14 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         qm->run();
 
        //start animation
-       if ( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) ) 
+       if ( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
            m_timeLine->start();
 
     }
 }
 
 
-void 
+void
 CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
 {
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
@@ -311,7 +313,7 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
     }
 }
 
-void 
+void
 CollectionTreeItemModelBase::queryDone()
 {
     //DEBUG_BLOCK
@@ -329,7 +331,7 @@ CollectionTreeItemModelBase::queryDone()
     QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );
 }
 
-void 
+void
 CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
 {
     Q_UNUSED( collectionId )
@@ -345,13 +347,13 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         {
             parentIndex = QModelIndex();
         }
-        else 
+        else
         {
             parentIndex = createIndex( parent->row(), 0, parent );
         }
 
         beginInsertRows( parentIndex, 0, data.count()-1 );
-        populateChildren( data, parent ); 
+        populateChildren( data, parent );
         endInsertRows();
 
         for( int count = parent->childCount(), i = 0; i < count; i++ )
@@ -382,7 +384,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     }
 }
 
-void 
+void
 CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent) const
 {
     foreach( Meta::DataPtr data, dataList ) {
@@ -391,7 +393,7 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
     parent->setChildrenLoaded( true );
 }
 
-void 
+void
 CollectionTreeItemModelBase::updateHeaderText()
 {
     m_headerText.clear();
@@ -401,7 +403,7 @@ CollectionTreeItemModelBase::updateHeaderText()
     m_headerText.chop( 3 );
 }
 
-QString 
+QString
 CollectionTreeItemModelBase::nameForLevel(int level) const
 {
     switch( m_levelType[level] ) {
@@ -418,7 +420,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 {
 
     DEBUG_BLOCK
-    if ( m_animFrame == 0 ) 
+    if ( m_animFrame == 0 )
         m_currentAnimPixmap = m_loading2;
     else
         m_currentAnimPixmap = m_loading1;

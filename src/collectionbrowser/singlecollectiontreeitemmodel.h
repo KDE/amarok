@@ -20,8 +20,6 @@
 #include <QPair>
 #include <QPixmap>
 
-using namespace Meta;
-
 class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;

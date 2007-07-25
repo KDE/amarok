@@ -18,11 +18,8 @@
 #include <QMap>
 #include <QPair>
 
-using namespace Meta;
-
 class CollectionTreeItem;
 class Collection;
-
 
 class CollectionTreeItemModel: public CollectionTreeItemModelBase {
 Q_OBJECT

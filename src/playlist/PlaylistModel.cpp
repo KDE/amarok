@@ -32,6 +32,7 @@
 #include <KUrl>
 
 using namespace PlaylistNS;
+using namespace Meta;
 
 Model *Model::s_instance = 0;
 
@@ -40,7 +41,7 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackAdvancer( this ) )
     , m_undoStack( new QUndoStack( this ) )
-{ 
+{
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     s_instance = this;
 }
@@ -79,7 +80,7 @@ Model::data( const QModelIndex& index, int role ) const
         original.setBold( true );
         return original;
     }
-    else*/ 
+    else*/
     if( role == TrackRole && ( row != -1 ) && track )
     {
         return QVariant::fromValue( track );
@@ -233,7 +234,7 @@ Model::prettyColumnName( Column index ) //static
         case Filesize:   return i18n( "File Size"   );
         default:         return "This is a bug.";
     }
-    
+
 }
 
 
@@ -453,7 +454,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 void
 Model::insertTracksCommand( int row, TrackList list )
 {
-    DEBUG_BLOCK 
+    DEBUG_BLOCK
     debug() << "inserting... " << row << ' ' << list.count() << endl;
     if( !list.size() )
         return;
@@ -548,7 +549,7 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
 }
 
 namespace The {
-    PlaylistNS::Model* playlistModel() { return PlaylistNS::Model::s_instance; } 
+    PlaylistNS::Model* playlistModel() { return PlaylistNS::Model::s_instance; }
 }
 
 #include "PlaylistModel.moc"
