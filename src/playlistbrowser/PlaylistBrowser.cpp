@@ -19,8 +19,8 @@
 #include "PlaylistBrowser.h"
 #include "Playlist.h"
 #include "PodcastMeta.h"
+#include "PodcastModel.h"
 
-#include <QDirModel>
 #include <QHeaderView>
 #include <QToolBox>
 #include <QTreeView>
@@ -30,13 +30,12 @@ namespace PlaylistBrowserNS {
 PlaylistBrowser::PlaylistBrowser( const char *name )
  : KVBox()
 {
-    QToolBox *toolBox = new QToolBox();
+    QToolBox *toolBox = new QToolBox( this );
+    PodcastModel *podcastModel = new PodcastModel();
 
-    QDirModel *model = new QDirModel;
-    QTreeView *tree = new QTreeView(toolBox);
-    tree->setModel(model);
-    tree->setRootIndex(model->index(QDir::currentPath()));
-    tree->header()->hide();
+    QTreeView *tree = new QTreeView( toolBox );
+    tree->setModel( podcastModel );
+//     tree->header()->hide();
 
     toolBox->addItem( tree, QString( "Podcasts" ) );
 }

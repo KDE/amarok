@@ -311,6 +311,7 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     playlistbrowser/PlaylistBrowser.cpp
+    playlistbrowser/PodcastModel.cpp
 )
 
 #####################################################################

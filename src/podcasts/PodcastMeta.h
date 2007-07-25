@@ -70,6 +70,11 @@ typedef QList<PodcastChannelPtr> PodcastChannelList;
 class PodcastMetaCommon
 {
     public:
+        enum Type
+        {
+            ChannelType = 0,
+            EpisodeType
+        };
 //         PodcastMetaCommon();
         virtual ~PodcastMetaCommon() {}
 
@@ -87,6 +92,8 @@ class PodcastMetaCommon
         void setSubtitle( const QString &subtitle ) { m_subtitle = subtitle; };
         void setSummary( const QString &summary ) { m_summary = summary; };
         void setAuthor( const QString &author ) { m_author = author; };
+
+        virtual int podcastType() = 0;
 
     protected:
         QString m_title;
@@ -158,6 +165,9 @@ class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
         virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); };
         virtual void notifyObservers() const {};
 
+        //PodcastMetaCommon methods
+        virtual int podcastType() { return EpisodeType; };
+
         //PodcastEpisode methods
         QString pubDate() const { return m_pubDate; };
         int duration() const { return m_duration; };
@@ -165,6 +175,11 @@ class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
         void setPodcastChannel( PodcastChannelPtr channel ) { m_channel = channel; };
         void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
         void setDuration( int duration ) { m_duration = duration; };
+
+        int sequence() { return m_sequenceNmbr; };
+        void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
+
+        PodcastChannelPtr channel() { return m_channel; };
 
     private:
         PodcastChannelPtr m_channel;
@@ -189,6 +204,9 @@ class PodcastChannel : public Meta::Playlist, public PodcastMetaCommon
 
         virtual TrackList tracks() { return m_tracks; };
 
+        //PodcastMetaCommon methods
+        virtual int podcastType() { return ChannelType; };
+
         //PodcastChannel specific methods
 
         KUrl link() const { return m_link; };
@@ -203,6 +221,7 @@ class PodcastChannel : public Meta::Playlist, public PodcastMetaCommon
         void addCategory( QString &category ) { m_categories << category; };
 
         void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
+        PodcastEpisodeList episodes() { return m_episodes; };
 
     private:
 
