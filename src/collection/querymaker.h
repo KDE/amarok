@@ -25,8 +25,6 @@
 #include <QStringList>
 #include <QtGlobal>
 
-using namespace Meta;
-
 class AMAROK_EXPORT QueryMaker : public QObject
 {
     Q_OBJECT
@@ -164,13 +162,13 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
         virtual QueryMaker* excludeCollection( const QString &collectionId ) = 0;
 
-        virtual QueryMaker* addMatch( const TrackPtr &track ) = 0;
-        virtual QueryMaker* addMatch( const ArtistPtr &artist ) = 0;
-        virtual QueryMaker* addMatch( const AlbumPtr &album ) = 0;
-        virtual QueryMaker* addMatch( const ComposerPtr &composer ) = 0;
-        virtual QueryMaker* addMatch( const GenrePtr &genre ) = 0;
-        virtual QueryMaker* addMatch( const YearPtr &year ) = 0;
-        virtual QueryMaker* addMatch( const DataPtr &data ) = 0;
+        virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;
+        virtual QueryMaker* addMatch( const Meta::AlbumPtr &album ) = 0;
+        virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) = 0;
+        virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
+        virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
+        virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;

@@ -29,6 +29,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+using namespace Meta;
+
 class SqlWorkerThread : public ThreadWeaver::Job
 {
     public:
@@ -144,7 +146,7 @@ SqlQueryBuilder::run()
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
-        
+
     }
     else
     {

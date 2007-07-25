@@ -33,6 +33,8 @@
 
 #include <klocale.h>
 
+using namespace Meta;
+
 struct SqlTrack::MetaCache
 {
     QString title;

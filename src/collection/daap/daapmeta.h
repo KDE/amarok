@@ -21,9 +21,10 @@
 
 #include "meta.h"
 
-using namespace Meta;
-
 class DaapCollection;
+
+namespace Meta
+{
 
 class DaapTrack;
 class DaapAlbum;
@@ -107,7 +108,7 @@ class DaapTrack : public Meta::Track
 
         //DaapTrack specific methods
         void setAlbum( DaapAlbumPtr album );
-        void setArtist( DaapArtistPtr artist ); 
+        void setArtist( DaapArtistPtr artist );
         void setComposer( DaapComposerPtr composer );
         void setGenre( DaapGenrePtr genre );
         void setYear( DaapYearPtr year );
@@ -236,6 +237,8 @@ class DaapYear : public Meta::Year
         QString m_name;
         TrackList m_tracks;
 };
+
+}
 
 #endif
 

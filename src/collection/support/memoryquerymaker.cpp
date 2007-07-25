@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -26,6 +26,8 @@
 
 #include <QSet>
 #include <QStack>
+
+using namespace Meta;
 
 Matcher::Matcher()
     : m_next( 0 )
@@ -377,7 +379,7 @@ MemoryQueryMaker::run()
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
-        
+
     }
     else
     {

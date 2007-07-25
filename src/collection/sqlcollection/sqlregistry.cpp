@@ -28,6 +28,8 @@
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 
+using namespace Meta;
+
 SqlRegistry::SqlRegistry( SqlCollection* collection )
     : QObject( 0 )
     , m_collection( collection )

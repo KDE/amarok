@@ -25,6 +25,8 @@
 #include <QMutexLocker>
 #include <QStringList>
 
+using namespace Meta;
+
 struct BlockingQuery::Private
 {
     QueryMaker *qm;

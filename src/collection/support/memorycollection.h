@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -23,15 +23,13 @@
 
 #include <QReadWriteLock>
 
-using namespace Meta;
-
 //QMap is slower than QHash but the items are ordered by key
-typedef QMap<QString, TrackPtr> TrackMap;
-typedef QMap<QString, ArtistPtr> ArtistMap;
-typedef QMap<QString, AlbumPtr> AlbumMap;
-typedef QMap<QString, GenrePtr> GenreMap;
-typedef QMap<QString, ComposerPtr> ComposerMap;
-typedef QMap<QString, YearPtr> YearMap;
+typedef QMap<QString, Meta::TrackPtr> TrackMap;
+typedef QMap<QString, Meta::ArtistPtr> ArtistMap;
+typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
+typedef QMap<QString, Meta::GenrePtr> GenreMap;
+typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
+typedef QMap<QString, Meta::YearPtr> YearMap;
 
 
 class MemoryCollection
@@ -50,17 +48,17 @@ class MemoryCollection
         YearMap yearMap() { return m_yearMap; }
 
         void setTrackMap( TrackMap map ) { m_trackMap = map; }
-        void addTrack( QString key, TrackPtr trackPtr ) { m_trackMap.insert( key, trackPtr ); }
+        void addTrack( QString key, Meta::TrackPtr trackPtr ) { m_trackMap.insert( key, trackPtr ); }
         void setArtistMap( ArtistMap map ) { m_artistMap = map; }
-        void addArtist( QString key, ArtistPtr artistPtr) { m_artistMap.insert( key, artistPtr ); }
+        void addArtist( QString key, Meta::ArtistPtr artistPtr) { m_artistMap.insert( key, artistPtr ); }
         void setAlbumMap( AlbumMap map ) { m_albumMap = map; }
-        void addAlbum ( QString key, AlbumPtr albumPtr ) { m_albumMap.insert( key, albumPtr ); }
+        void addAlbum ( QString key, Meta::AlbumPtr albumPtr ) { m_albumMap.insert( key, albumPtr ); }
         void setGenreMap( GenreMap map ) { m_genreMap = map; }
-        void addGenre( QString key, GenrePtr genrePtr) { m_genreMap.insert( key, genrePtr ); }
+        void addGenre( QString key, Meta::GenrePtr genrePtr) { m_genreMap.insert( key, genrePtr ); }
         void setComposerMap( ComposerMap map ) { m_composerMap = map; }
-        void addComposer( QString key, ComposerPtr composerPtr ) { m_composerMap.insert( key, composerPtr ); }
+        void addComposer( QString key, Meta::ComposerPtr composerPtr ) { m_composerMap.insert( key, composerPtr ); }
         void setYearMap( YearMap map ) { m_yearMap = map; }
-        void addYear( QString key, YearPtr yearPtr ) { m_yearMap.insert( key, yearPtr ); }
+        void addYear( QString key, Meta::YearPtr yearPtr ) { m_yearMap.insert( key, yearPtr ); }
 
     protected:
         QReadWriteLock m_readWriteLock;

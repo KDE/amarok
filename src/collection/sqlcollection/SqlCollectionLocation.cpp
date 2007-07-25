@@ -26,6 +26,8 @@
 #include <KLocale>
 #include <KSharedPtr>
 
+using namespace Meta;
+
 SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation()
     , m_collection( const_cast<SqlCollection*>( collection ) )

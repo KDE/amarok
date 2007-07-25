@@ -40,14 +40,14 @@ class SqlRegistry : public QObject
         SqlRegistry(SqlCollection *collection);
         virtual ~SqlRegistry();
 
-        TrackPtr getTrack( const QString &url );
-        TrackPtr getTrack( const QStringList &rowData );
+        Meta::TrackPtr getTrack( const QString &url );
+        Meta::TrackPtr getTrack( const QStringList &rowData );
 
-        ArtistPtr getArtist( const QString &name, int id = -1 );
-        GenrePtr getGenre( const QString &name, int id = -1 );
-        ComposerPtr getComposer( const QString &name, int id = -1 );
-        YearPtr getYear( const QString &year, int id = -1 );
-        AlbumPtr getAlbum( const QString &album, int id = -1 ); //TODO fix this
+        Meta::ArtistPtr getArtist( const QString &name, int id = -1 );
+        Meta::GenrePtr getGenre( const QString &name, int id = -1 );
+        Meta::ComposerPtr getComposer( const QString &name, int id = -1 );
+        Meta::YearPtr getYear( const QString &year, int id = -1 );
+        Meta::AlbumPtr getAlbum( const QString &album, int id = -1 ); //TODO fix this
 
 
     private slots:
@@ -56,12 +56,12 @@ class SqlRegistry : public QObject
     private:
 
         //we don't care about the ordering so use the faster QHash
-        QHash<TrackId, TrackPtr > m_trackMap;
-        QHash<QString, ArtistPtr > m_artistMap;
-        QHash<QString, ComposerPtr > m_composerMap;
-        QHash<QString, GenrePtr > m_genreMap;
-        QHash<QString, YearPtr > m_yearMap;
-        QHash<QString, AlbumPtr > m_albumMap;        //TODO: needs improvement
+        QHash<TrackId, Meta::TrackPtr > m_trackMap;
+        QHash<QString, Meta::ArtistPtr > m_artistMap;
+        QHash<QString, Meta::ComposerPtr > m_composerMap;
+        QHash<QString, Meta::GenrePtr > m_genreMap;
+        QHash<QString, Meta::YearPtr > m_yearMap;
+        QHash<QString, Meta::AlbumPtr > m_albumMap;        //TODO: needs improvement
 
         QMutex m_trackMutex;
         QMutex m_artistMutex;

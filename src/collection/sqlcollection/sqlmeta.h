@@ -25,12 +25,12 @@
 #include <QMutex>
 #include <QStringList>
 
-using namespace Meta;
-
-
 class SqlCollection;
 
-class SqlTrack : public Track
+namespace Meta
+{
+
+class SqlTrack : public Meta::Track
 {
     public:
         static QString getTrackReturnValues();
@@ -49,15 +49,15 @@ class SqlTrack : public Track
         virtual bool isPlayable() const;
         virtual bool isEditable() const;
 
-        virtual AlbumPtr album() const { return m_album; }
+        virtual Meta::AlbumPtr album() const { return m_album; }
         virtual void setAlbum( const QString &newAlbum );
         virtual void setArtist( const QString &newArtist );
-        virtual ArtistPtr artist() const { return m_artist; }
-        virtual ComposerPtr composer() const { return m_composer; }
+        virtual Meta::ArtistPtr artist() const { return m_artist; }
+        virtual Meta::ComposerPtr composer() const { return m_composer; }
         virtual void setComposer( const QString &newComposer );
-        virtual YearPtr year() const { return m_year; }
+        virtual Meta::YearPtr year() const { return m_year; }
         virtual void setYear( const QString &newYear );
-        virtual GenrePtr genre() const { return m_genre; }
+        virtual Meta::GenrePtr genre() const { return m_genre; }
         virtual void setGenre( const QString &newGenre );
 
         virtual QString type() const;
@@ -129,18 +129,18 @@ class SqlTrack : public Track
         double m_score;
         QString m_comment;
 
-        AlbumPtr m_album;
-        ArtistPtr m_artist;
-        GenrePtr m_genre;
-        ComposerPtr m_composer;
-        YearPtr m_year;
+        Meta::AlbumPtr m_album;
+        Meta::ArtistPtr m_artist;
+        Meta::GenrePtr m_genre;
+        Meta::ComposerPtr m_composer;
+        Meta::YearPtr m_year;
 
         bool m_batchUpdate;
         class MetaCache;
         MetaCache *m_cache;
 };
 
-class SqlArtist : public Artist
+class SqlArtist : public Meta::Artist
 {
     public:
         SqlArtist( SqlCollection* collection, int id, const QString &name );
@@ -152,7 +152,7 @@ class SqlArtist : public Artist
 
         virtual void invalidateCache();
 
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -163,7 +163,7 @@ class SqlArtist : public Artist
         int m_id;
         mutable QString m_modifiedName;
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
@@ -171,7 +171,7 @@ class SqlArtist : public Artist
 
 };
 
-class SqlAlbum : public Album
+class SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( SqlCollection* collection, int id, const QString &name );
@@ -181,12 +181,12 @@ class SqlAlbum : public Album
 
         virtual void invalidateCache();
 
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
         virtual bool isCompilation() const { return false; } //TODO: fixme
 
         virtual bool hasAlbumArtist() const { return false; } //TODO: fixme
-        virtual ArtistPtr albumArtist() const { return ArtistPtr(); }
+        virtual Meta::ArtistPtr albumArtist() const { return ArtistPtr(); }
 
         //updating album images is possible or local tracks, but let's ignore it for now
         virtual bool canUpdateImage() const { return false; }
@@ -201,7 +201,7 @@ class SqlAlbum : public Album
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
@@ -210,7 +210,7 @@ class SqlAlbum : public Album
         //TODO: add album artist
 };
 
-class SqlComposer : public Composer
+class SqlComposer : public Meta::Composer
 {
     public:
         SqlComposer( SqlCollection* collection, int id, const QString &name );
@@ -220,7 +220,7 @@ class SqlComposer : public Composer
 
         virtual void invalidateCache();
 
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -230,14 +230,14 @@ class SqlComposer : public Composer
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 };
 
-class SqlGenre : public Genre
+class SqlGenre : public Meta::Genre
 {
     public:
         SqlGenre( SqlCollection* collection, int id, const QString &name );
@@ -247,7 +247,7 @@ class SqlGenre : public Genre
 
         virtual void invalidateCache();
 
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -257,14 +257,14 @@ class SqlGenre : public Genre
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 };
 
-class SqlYear : public Year
+class SqlYear : public Meta::Year
 {
     public:
         SqlYear( SqlCollection* collection, int id, const QString &name );
@@ -274,7 +274,7 @@ class SqlYear : public Year
 
         virtual void invalidateCache();
 
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -284,11 +284,13 @@ class SqlYear : public Year
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 };
+
+}
 
 #endif /* SQLMETA_H */

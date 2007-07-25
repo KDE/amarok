@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@
 #include "memorycollection.h"
 #include "querymaker.h"
 
-using namespace Meta;
 namespace ThreadWeaver
 {
     class Job;
@@ -55,13 +54,13 @@ class MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );
 
-        virtual QueryMaker* addMatch( const TrackPtr &track );
-        virtual QueryMaker* addMatch( const ArtistPtr &artist );
-        virtual QueryMaker* addMatch( const AlbumPtr &album );
-        virtual QueryMaker* addMatch( const ComposerPtr &composer );
-        virtual QueryMaker* addMatch( const GenrePtr &genre );
-        virtual QueryMaker* addMatch( const YearPtr &year );
-        virtual QueryMaker* addMatch( const DataPtr &data );
+        virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
+        virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
+        virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
+        virtual QueryMaker* addMatch( const Meta::YearPtr &year );
+        virtual QueryMaker* addMatch( const Meta::DataPtr &data );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -75,7 +74,7 @@ class MemoryQueryMaker : public QueryMaker
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();
-        void handleResult( const TrackList &tracks );
+        void handleResult( const Meta::TrackList &tracks );
 
     private slots:
         void done( ThreadWeaver::Job * job );
@@ -91,9 +90,9 @@ class Matcher {
     public:
         Matcher();
         virtual ~Matcher();
-        virtual TrackList match( MemoryCollection *memColl) = 0;
-        virtual TrackList match( const TrackList &tracks ) = 0;
-        
+        virtual Meta::TrackList match( MemoryCollection *memColl) = 0;
+        virtual Meta::TrackList match( const Meta::TrackList &tracks ) = 0;
+
         bool isLast() const;
         void setNext( Matcher *next );
         Matcher* next() const;

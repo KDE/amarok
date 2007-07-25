@@ -20,6 +20,8 @@
 
 #include <QtGlobal>
 
+using namespace Meta;
+
 MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     : QueryMaker()
     , m_queryDoneCount( 0 )
