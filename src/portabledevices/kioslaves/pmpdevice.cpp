@@ -54,4 +54,4 @@ PMPDevice::initialize()
     return;
 }
 
-#include "pmpdevice.moc"
+
