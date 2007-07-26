@@ -34,6 +34,14 @@ class MTPBackend : public PMPBackend
     Q_OBJECT
 
     public:
+
+        enum ObjectTypes{
+            MTP_TRACK,
+            MTP_FOLDER,
+            MTP_PLAYLIST,
+            MTP_UNKNOWN
+        };
+
         MTPBackend( PMPProtocol* slave, const Solid::Device &device );
         virtual ~MTPBackend();
         void initialize();
@@ -54,6 +62,7 @@ class MTPBackend : public PMPBackend
         void buildMusicListing();
         void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
         static int progressCallback( quint64 const sent, quint64 const total, void const * const data );
+        int getObjectType( const QString &path );
 
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
@@ -68,6 +77,7 @@ class MTPBackend : public PMPBackend
         QMultiHash<QString, quint32> m_pathToFolderIdHash;
         QMultiHash<QString, quint32> m_pathToTrackIdHash;
         QHash<quint32, void*> m_idToPtrHash;
+        QHash<quint32, int> m_objectTypeHash;
 
 };
 

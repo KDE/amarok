@@ -161,6 +161,7 @@ PMPProtocol::listDir( const KUrl &url )
 void
 PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
 {
+    kDebug() << "srcUrl = " << src.url() << ", destUrl = " << dest.url() << endl;
     QString srcPath = src.path( KUrl::RemoveTrailingSlash );
     QString destPath = dest.path( KUrl::RemoveTrailingSlash );
     while( srcPath[0] == '/' )
@@ -169,7 +170,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         destPath.remove( 0, 1 );
     //Check to see if they're trying to set a friendly name
     //i.e. only top-level paths
-    kDebug() << endl << "srcPath = " << srcPath << endl << "destPath = " << destPath << endl;
+    kDebug() << endl << "srcPath = " << srcPath << endl << ", destPath = " << destPath << endl;
     if( srcPath.indexOf( '/' ) == -1 && destPath.indexOf( '/' ) == -1 )
     {
         QString srcName = udiFromUrl( src );

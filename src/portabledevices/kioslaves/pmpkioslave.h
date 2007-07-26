@@ -42,6 +42,9 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         virtual ~PMPProtocol();
         bool mtpInitialized() const { return m_mtpInitialized; }
         void setMtpInitialized( const bool inited ) { m_mtpInitialized = inited; }
+        QString udiFromUrl( const KUrl &url );
+        inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
+        inline QString untransUdi( const QString &udi) const { return QString( udi ).replace( QChar( '.' ), QChar( '/' ) ); }
 
     protected:
         void setHost( const QString &host, quint16 port,
@@ -56,9 +59,6 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
     private:
         QString getSolidFriendlyName( const Solid::Device &device ) const;
         void initialize( const KUrl &url );
-        inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
-        inline QString untransUdi( const QString &udi) const { return QString( udi ).replace( QChar( '.' ), QChar( '/' ) ); }
-        QString udiFromUrl( const KUrl &url );
         PMPBackend* getBackendForUrl( const KUrl &url );
 
         QMap<QString,PMPDevice*> m_devices;

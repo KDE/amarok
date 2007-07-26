@@ -50,6 +50,7 @@ class PMPBackend : public QObject
 
     protected:
         QString getFilePath( const KUrl &url ) const;
+        QString getUrlPrefix() const;
 
         PMPProtocol *m_slave;
         Solid::Device m_solidDevice;
