@@ -300,11 +300,9 @@ PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
     debug() << "commit Podcast Channel (as Album) " << m_channel->title() << endl;
-    PodcastChannelPtr album = PodcastChannelPtr( m_channel );
 
     m_collection->acquireReadLock();
-    //m_collection->addAlbum( album->name(), AlbumPtr::dynamicCast( album ) );
-    m_collection->addChannel( m_channel );
+    m_collection->addChannel( PodcastChannelPtr( m_channel ) );
     m_collection->releaseLock();
 
 //     emit finished( this, true );
@@ -324,7 +322,8 @@ PodcastReader::commitEpisode()
     m_collection->releaseLock();
 
     Q_ASSERT( m_channel );
-    m_channel->addEpisode( item );
+    //make a copy of the pointer and add that to the channel
+    m_channel->addEpisode( PodcastEpisodePtr( item ) );
 
     m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }

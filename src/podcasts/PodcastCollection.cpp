@@ -160,6 +160,7 @@ void PodcastCollection::addPodcast(const QString & url)
 void
 PodcastCollection::addChannel( Meta::PodcastChannelPtr channel )
 {
+    m_channels << channel;
     addAlbum( channel->name(), AlbumPtr::dynamicCast( channel ) );
 }
 
