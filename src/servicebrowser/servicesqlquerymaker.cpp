@@ -170,13 +170,12 @@ ServiceSqlQueryMaker::startTrackQuery()
     //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
     if( d->queryType == Private::NONE )
     {
-
+        QString prefix = m_metaFactory->tablePrefix();
+        d->queryFrom = ' ' + prefix + "_tracks";
+        
         d->withoutDuplicates = true;
 
         d->queryType = Private::TRACK;
-        d->linkedTables |= Private::TRACKS_TABLE;
-        //d->queryFrom = m_metaFactory->tablePrefix() + "_tracks";
-
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
         m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows();// + ',' +
@@ -192,10 +191,10 @@ ServiceSqlQueryMaker::startArtistQuery()
     //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
+        QString prefix = m_metaFactory->tablePrefix();
+        d->queryFrom = ' ' + prefix + "_artists";
         d->queryType = Private::ARTIST;
-        d->linkedTables |= Private::ARTISTS_TABLE;
         d->withoutDuplicates = true;
-        //d->queryFrom = m_metaFactory->tablePrefix() + "_artists";
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
     }
     return this;
@@ -207,10 +206,10 @@ ServiceSqlQueryMaker::startAlbumQuery()
     //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
+        QString prefix = m_metaFactory->tablePrefix();
+        d->queryFrom = ' ' + prefix + "_albums";
         d->queryType = Private::ALBUM;
-        d->linkedTables |= Private::ALBUMS_TABLE;
         d->withoutDuplicates = true;
-        //d->queryFrom = m_metaFactory->tablePrefix() + "_albums";
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows();
     }
@@ -237,12 +236,12 @@ ServiceSqlQueryMaker::startGenreQuery()
     //DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
+        QString prefix = m_metaFactory->tablePrefix();
+        d->queryFrom = ' ' + prefix + "_genre";
         d->queryType = Private::GENRE;
         d->withoutDuplicates = true;
-        //d->linkedTables |= Private::ALBUM_TABLE;
-        d->linkedTables |= Private::GENRE_TABLE;
         d->queryReturnValues = m_metaFactory->getGenreSqlRows();
-        d->queryFilter = " GROUP BY name HAVING COUNT ( name ) > 10 ";
+        d->queryFilter = " GROUP BY " + prefix +"_genre.name HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
     }
     return this;
 }
@@ -310,12 +309,13 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
-    if( d && d->queryType == Private::TRACK ) // a service track does not generally know its artist
-        return this;
+
+    //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
     if( !d || !serviceArtist )
         return this;
-    d->queryMatch += QString( " AND " + prefix + "_albums.artist_id= '%1'" ).arg( serviceArtist->id() );
+    d->linkedTables |= Private::ARTISTS_TABLE;
+    d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
     return this;
 }
 
@@ -324,10 +324,14 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
+    
+    //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
     if( !d || !serviceAlbum )
         return this;
-    d->queryMatch += QString( " AND " + prefix + "_tracks.album_id = '%1'" ).arg( serviceAlbum->id() );
+    
+    d->linkedTables |= Private::ALBUMS_TABLE;
+    d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
     return this;
 }
 
@@ -337,12 +341,24 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
     //DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
-    const ServiceGenre* serviceGenre = dynamic_cast<const ServiceGenre *>( genre.data() );
+    //this should NOT be made into a static cast as this might get called with an incompatible type!
+    const ServiceGenre* serviceGenre = static_cast<const ServiceGenre *>( genre.data() );
     if( !d || !serviceGenre )
         return this;
+ 
+    //genres link to albums in the database, so we need to start from here unless soig a track query
+    
+    if (  d->queryType == Private::TRACK ) {
+        d->queryFrom = ' ' + prefix + "_tracks";
+        d->linkedTables |= Private::ALBUMS_TABLE;
+    } else 
+        d->queryFrom = ' ' + prefix + "_albums";
+    
+        if ( d->queryType == Private::ARTIST )
+        d->linkedTables |= Private::ARTISTS_TABLE;
     d->linkedTables |= Private::GENRE_TABLE;
-    if ( d->queryType == Private::ARTIST ) //HACK!
-        d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
+    d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
+    
     return this;
 }
 
@@ -448,40 +464,17 @@ void
 ServiceSqlQueryMaker::linkTables()
 {
 
-    //FIXME:This whole function needs to be rewritten!!! The problem is that the service database schema does not make this easy
     if( !d->linkedTables )
         return;
 
     QString prefix = m_metaFactory->tablePrefix();
 
-    if( d->linkedTables & Private::TRACKS_TABLE ) {
-
-        d->queryFrom += ' ' + prefix + "_tracks";
-        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
-        d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_tracks.artist_id = " + prefix + "_artists.id";
-        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
-
-    }
-    if( d->linkedTables & Private::ALBUMS_TABLE ) {
-       d->queryFrom += ' ' + prefix + "_albums";
-       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
-    }
+    if( d->linkedTables & Private::ALBUMS_TABLE )
+       d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     if( d->linkedTables & Private::ARTISTS_TABLE )
-       d->queryFrom += ' ' + prefix + "_artists";
-
-    //There must be a better way....
-    if( d->linkedTables & Private::GENRE_TABLE ) {
-        if ( d->queryType == Private::GENRE ) {
-            d->queryFrom += ' ' + prefix + "_genre";
-        } else if ( d->queryType == Private::ARTIST ) {
-
-             d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
-             d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
-
-        } else {
-            //HACK! for now only allow genre matches on artists
-       }
-    }
+       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+    if( d->linkedTables & Private::GENRE_TABLE )
+       d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
 }
 
