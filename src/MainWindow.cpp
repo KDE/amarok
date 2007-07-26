@@ -230,7 +230,7 @@ void MainWindow::init()
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->addWidget( ContextView::instance() );
-        if( QGLFormat::hasOpenGL() )
+        if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             layout->addWidget( new CoverBling( this ) );
     }
     contextWidget->setMinimumSize( QSize(500,100) );

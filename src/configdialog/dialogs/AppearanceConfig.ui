@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>345</height>
+    <width>421</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -19,18 +19,6 @@
    <string>Options2</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
-   </property>
    <item>
     <widget class="Q3GroupBox" name="groupBox6" >
      <property name="title" >
@@ -189,6 +177,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Bling Bling</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_UseCoverBling" >
+        <property name="text" >
+         <string>Use CoverBling (requires restart)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -198,8 +202,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>16</height>
+       <width>403</width>
+       <height>61</height>
       </size>
      </property>
     </spacer>

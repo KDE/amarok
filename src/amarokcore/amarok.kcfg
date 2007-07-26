@@ -273,6 +273,10 @@
         <label>Whether the collection view is in the flat or tree view mode</label>
         <default>0</default>
     </entry>
+    <entry key="Use CoverBling" type="Bool">
+        <label>Whether to use the CoverBling album art visualization.</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Playback">
