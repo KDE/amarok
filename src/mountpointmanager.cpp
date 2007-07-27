@@ -21,12 +21,14 @@
 #include "debug.h"
 
 #include "amarok.h"
+#include "amarokconfig.h"   //used in init()
 #include "collectiondb.h"
 #include "devicemanager.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 
+#include <kglobal.h>        //used in init()
 #include <ktrader.h>
 
 #include <qfile.h>
@@ -119,6 +121,12 @@ MountPointManager::init()
     foreachType ( MediumList, list )
     {
         mediumChanged( &(*it) );
+    }
+    if( !KGlobal::config()->hasGroup( "Collection Folders" ) )
+    {
+        QStringList folders = AmarokConfig::collectionFolders();
+        if( !folders.isEmpty() )
+            setCollectionFolders( folders );
     }
 }
 
