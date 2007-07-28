@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Default Context Theme
+Name[csb]=Krziseń
+Comment=Default Amarok Context Theme
+
+
+X-KDE-PluginInfo-Author=The Oxygen Project
+X-KDE-PluginInfo-Email=kde-artists@kde.org
+X-KDE-PluginInfo-Name=default
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=http://plasma.kde.org
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
