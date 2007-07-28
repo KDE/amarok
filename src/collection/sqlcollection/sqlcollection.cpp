@@ -24,7 +24,7 @@
 //#include "mysqlcollection.h"
 //#include "postgresqlcollection.h"
 #include "SqlCollectionLocation.h"
-#include "XesamCollectionBuilder.h"
+//#include "XesamCollectionBuilder.h"
 
 #include <klocale.h>
 
@@ -186,7 +186,7 @@ SqlCollection::randomFunc() const
 void
 SqlCollection::initXesam()
 {
-    m_xesamBuilder = new XesamCollectionBuilder( this );
+    //m_xesamBuilder = new XesamCollectionBuilder( this );
 }
 
 #include "sqlcollection.moc"

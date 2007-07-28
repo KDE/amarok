@@ -37,7 +37,7 @@
 #include <Q3ValueStack>
 
 
-class QueryBuilder
+class AMAROK_EXPORT QueryBuilder
 {
     public:
         //attributes:

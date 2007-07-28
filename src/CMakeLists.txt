@@ -39,6 +39,7 @@ add_subdirectory( portabledevices )
 add_subdirectory( podcasts )
 add_subdirectory( strigi )
 add_subdirectory( playlistbrowser )
+add_subdirectory( context )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -55,8 +56,10 @@ endif (USE_SYSTEM_SQLITE)
 include_directories(
     amarokcore
     analyzers
-    configdialog
-    configdialog/dialogs
+        context
+        context/widgets
+        configdialog
+        configdialog/dialogs
     plugin
     statusbar
     mediadevice
@@ -211,32 +214,6 @@ set(libcollectionbrowser_SRCS
 )
 
 #####################################################################
-# CONTEXTVIEW
-#####################################################################
-set(libcontextview_SRCS
-    contextview/contextview.cpp
-    contextview/contextbox.cpp
-    contextview/albumbox.cpp
-    contextview/GenericInfoBox.cpp
-    contextview/graphicsitemfader.cpp
-    contextview/graphicsitemscaler.cpp
-    contextview/textfader.cpp
-    #    contextview/introanimation.cpp
-    contextview/ContextScriptManager.cpp
-    contextview/ContextObserver.cpp
-    contextview/CoverBling.cpp
-    contextview/items/LyricsItem.cpp
-    contextview/items/WikipediaItem.cpp
-    contextview/items/ContextItem.cpp
-    contextview/items/LastFmItem.cpp
-    contextview/items/CloudBox.cpp
-    contextview/items/ContextItemManagerWidget.cpp
-    contextview/items/ContextItemManager.cpp
-    contextview/items/LastFmEventBox.cpp
-    contextview/items/LastFmEventItem.cpp
-)
-
-#####################################################################
 # ANALYZERS
 #####################################################################
 set(libanalyzers_SRCS
@@ -299,6 +276,23 @@ set(collection_SRCS
 )
 
 #####################################################################
+# CONTEXT
+#####################################################################
+# 
+
+set( libcontextview_SRCS 
+    context/Applet.cpp
+    context/ContextView.cpp
+    context/ContextObserver.cpp
+    context/ContextScene.cpp
+    context/ControlBox.cpp
+    context/CoverBling.cpp
+    context/DataEngineManager.cpp
+    context/widgets/TextWidget.cpp
+    context/widgets/VBoxLayout.cpp
+)
+
+#####################################################################
 # PODCASTS
 #####################################################################
 set(libpodcasts_SRCS
@@ -323,9 +317,9 @@ set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}
+    ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
-    ${libcontextview_SRCS}
     ${libjamendoservice_SRCS}
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}
@@ -428,6 +422,9 @@ set(amaroklib_LIB_SRCS
     xspfplaylist.cpp
 )
 
+
+set( amaroklib_DEPENDS "amarokplasma" )
+
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 
 kde4_add_ui3_files(amaroklib_LIB_SRCS
@@ -460,7 +457,9 @@ target_link_libraries(amaroklib
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
     amarok_taglib
+    amarokplasma
 )
+
 if(NOT WIN32)
     target_link_libraries(amaroklib dl)
 endif(NOT WIN32)
@@ -495,11 +494,17 @@ endif(Q_WS_MAC)
 ########### install files ###############
 
 install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+
+install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
 install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarokui.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
 install(FILES amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
+
+install(FILES context/servicetypes/amarok_context_applet.desktop
+              context/servicetypes/amarok_data_engine.desktop
+              DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

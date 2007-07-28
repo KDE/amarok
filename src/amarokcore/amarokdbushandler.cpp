@@ -28,8 +28,6 @@
 #include "collectiondb.h"
 #include "collection/collectionmanager.h"
 #include "collection/SqlStorage.h"
-#include "contextview/ContextScriptManager.h"
-#include "contextview/items/LyricsItem.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -764,40 +762,14 @@ DbusContextHandler::DbusContextHandler()
     (void)new ContextAdaptor(this);
     QDBusConnection::sessionBus().registerObject("/Context", this);
 }
-
-
-int DbusContextHandler::addContextBox( const QString& title, const QString& contents, const QString& stylesheet )
-{
-    return Context::ContextScriptManager::instance()->addContextBox( title, contents, stylesheet );
-}
-
-void DbusContextHandler::changeBoxTitle( const int boxNum, const QString& title )
-{
-    Context::ContextScriptManager::instance()->changeBoxTitle( boxNum, title );
-}
-
-void DbusContextHandler::changeBoxContents( const int boxNum, const QString& content )
-{
-    Context::ContextScriptManager::instance()->changeBoxContents( boxNum, content );
-}
-
-void DbusContextHandler::changeBoxStylesheet( const int boxNum, const QString& stylesheet )
-{
-    Context::ContextScriptManager::instance()->changeBoxStylesheet( boxNum, stylesheet );
-}
-
-void DbusContextHandler::removeContextBox( const int boxNum )
-{
-    Context::ContextScriptManager::instance()->removeContextBox( boxNum );
-}
-
+// TODO reimplement!!
 void DbusContextHandler::showLyrics()
 {
-    LyricsItem::instance()->showLyrics( QString() );
+    ;//     LyricsItem::instance()->showLyrics( QString() );
 }
 void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 {
-    LyricsItem::instance()->lyricsResult( lyrics );
+    ;//     LyricsItem::instance()->lyricsResult( lyrics );
 }
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusCollectionHandler

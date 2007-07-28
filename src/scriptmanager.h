@@ -53,7 +53,7 @@ class K3ProcIO;
  * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
 
-class ScriptManager : public KDialog, public EngineObserver
+class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
     Q_OBJECT
 
