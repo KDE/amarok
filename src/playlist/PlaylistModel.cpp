@@ -84,13 +84,13 @@ Model::data( const QModelIndex& index, int role ) const
     {
         return QVariant::fromValue( m_items.at( row ) );
     }
-    else if( role == TrackRole && ( row != -1 ) && m_items.at( row ).track() )
+    else if( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
     {
-        return QVariant::fromValue( m_items.at( row ).track() );
+        return QVariant::fromValue( m_items.at( row )->track() );
     }
     else if( role == Qt::DisplayRole && row != -1 )
     {
-        return m_items.at( row ).track()->name();
+        return m_items.at( row )->track()->name();
     }
     else
     {
@@ -189,7 +189,7 @@ Model::supportedDropActions() const
 void
 Model::trackFinished()
 {
-    Meta::TrackPtr track = m_items.at( m_activeRow ).track();
+    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
 }
@@ -204,7 +204,7 @@ void
 Model::play( int row )
 {
     setActiveRow( row );
-    EngineController::instance()->play( m_items[ m_activeRow ].track() );
+    EngineController::instance()->play( m_items[ m_activeRow ]->track() );
 }
 
 QString
@@ -266,7 +266,7 @@ Model::metadataChanged( Meta::Track *track )
     const Meta::TrackPtr needle =  Meta::TrackPtr( track );
     for( int i = 0; i < size; i++ )
     {
-        if( m_items.at( i ).track() == needle )
+        if( m_items.at( i )->track() == needle )
         {
             emit dataChanged( createIndex( i, 0 ), createIndex( i, 0 ) );
             break;
@@ -301,10 +301,10 @@ Model::insertOptioned( Meta::TrackList list, int options )
         int alreadyOnPlaylist = 0;
         for( int i = 0; i < list.size(); ++i )
         {
-            Item item;
+            Item* item;
             foreach( item, m_items )
             {
-                if( item.track() == list.at( i ) )
+                if( item->track() == list.at( i ) )
                 {
                     list.removeAt( i );
                     alreadyOnPlaylist++;
@@ -413,7 +413,7 @@ Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
     Meta::TrackList selectedTracks;
 
     foreach( QModelIndex it, indexes )
-        selectedTracks << m_items.at( it.row() ).track();
+        selectedTracks << m_items.at( it.row() )->track();
 
     mime->setTracks( selectedTracks );
     return mime;
@@ -487,7 +487,7 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
-            m_items.insert( row + i, track );
+            m_items.insert( row + i, new Item( track ) );
             i++;
         }
     }
@@ -517,9 +517,10 @@ Model::removeRowsCommand( int position, int rows )
     TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
-        Item item = m_items.takeAt( position ); //take at position, row times
-        item.track()->unsubscribe( this );
-        ret.push_back( item.track() );
+        Item* item = m_items.takeAt( position ); //take at position, row times
+        item->track()->unsubscribe( this );
+        ret.push_back( item->track() );
+        delete item;
     }
     endRemoveRows();
 

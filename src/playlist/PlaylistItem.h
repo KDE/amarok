@@ -26,7 +26,7 @@ namespace PlaylistNS {
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
             QGraphicsScene* scene( int totalWidth );
-            
+
             static qreal height() { return s_height; }
         private:
             Meta::TrackPtr m_track;
@@ -40,6 +40,6 @@ namespace PlaylistNS {
 
 }
 
-Q_DECLARE_METATYPE( PlaylistNS::Item )
+Q_DECLARE_METATYPE( PlaylistNS::Item* )
 
 #endif

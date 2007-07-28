@@ -42,11 +42,11 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     //if (option.state & QStyle::State_HasFocus)
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());
-    PlaylistNS::Item item = index.data( ItemRole ).value< PlaylistNS::Item >();
+    PlaylistNS::Item* item = index.data( ItemRole ).value< PlaylistNS::Item* >();
     //QRectF sourceShifted = scene.sceneRect().moveTopLeft( QPointF( 0.0, 0.0 ) );
     QRectF targetShifted = option.rect;
     targetShifted.moveTopLeft( QPointF( 0.0, 0.0 ) );
-    QGraphicsScene* scene = item.scene( option.rect.width() );
+    QGraphicsScene* scene = item->scene( option.rect.width() );
     QRectF croppedSource = scene->sceneRect().intersect( targetShifted );
     scene->render( painter, option.rect, croppedSource );
     painter->restore();

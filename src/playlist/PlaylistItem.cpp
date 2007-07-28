@@ -6,6 +6,7 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "metabundle.h"
 #include "PlaylistItem.h"
 
@@ -31,14 +32,21 @@ PlaylistNS::Item::Item( Meta::TrackPtr track )
 
 PlaylistNS::Item::~Item()
 {
+    DEBUG_BLOCK
     delete m_scene;
 }
 
 QGraphicsScene* 
 PlaylistNS::Item::scene( int totalWidth )
 {
+    DEBUG_BLOCK
     if( m_scene )
+    {
+        debug() << "returning scene" << endl;
         return m_scene;
+    }
+    else
+        debug() << "m_scene was 0, not returning" << endl;
     if( not m_track )
         return 0;
     m_scene = new QGraphicsScene();
