@@ -11,7 +11,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
-#include "context/ContextView.h"
+#include "contextview/contextview.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
 
@@ -160,8 +160,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
     if( ( e->pos() - m_dragStartPosition).manhattanLength() < QApplication::startDragDistance() )
         return;
 
-    // TODO port....
-    //ContextView::instance()->showPopupDropper();
+    ContextView::instance()->showPopupDropper();
 
     QTreeView::mouseMoveEvent( e );
 }

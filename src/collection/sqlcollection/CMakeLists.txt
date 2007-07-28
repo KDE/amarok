@@ -18,10 +18,10 @@ set(amarok_collection-sqlcollection_PART_SRCS
 	SqlCollectionLocation.cpp
 	sqlquerybuilder.cpp
 	sqlregistry.cpp
-	sqlmeta.cpp 
-    sqlitecollection.cpp)
-#    XesamDbus.cpp
-#	XesamCollectionBuilder.cpp )
+	sqlmeta.cpp
+    sqlitecollection.cpp
+    XesamDbus.cpp
+	XesamCollectionBuilder.cpp )
 
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})

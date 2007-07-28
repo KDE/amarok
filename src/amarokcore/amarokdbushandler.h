@@ -165,6 +165,12 @@ public:
     DbusContextHandler();
     
 public:
+    virtual int addContextBox( const QString& title, const QString& contents, const QString& stylesheet );
+    
+    virtual void changeBoxTitle( const int boxId, const QString& title );
+    virtual void changeBoxContents( const int boxId, const QString& contents );
+    virtual void changeBoxStylesheet( const int boxId, const QString& stylesheet );
+    virtual void removeContextBox( const int boxId );
     virtual void showLyrics();
     virtual void showLyrics( const QByteArray& in );
 };

@@ -38,7 +38,7 @@ class SideBar;
   *
   * This is the main window widget (the Playlist not Player).
   */
-class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
+class MainWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
 {
     Q_OBJECT
 

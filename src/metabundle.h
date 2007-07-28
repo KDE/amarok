@@ -55,7 +55,7 @@ namespace LastFm {
  *
  */
 
-class AMAROK_EXPORT MetaBundle
+class MetaBundle
 {
 
 public:

@@ -33,7 +33,7 @@ namespace KIO { class Job; }
  * TODO: Hide proxy stuff!
  */
 
-class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
+class EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
 
