@@ -31,10 +31,6 @@ namespace PlaylistNS {
             QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         private:
             View* m_view;
-            QFontMetricsF* m_fm;
-            qreal m_height;
-            static const qreal ALBUM_WIDTH;
-            static const qreal MARGIN;
     };
 
 }

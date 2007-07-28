@@ -13,6 +13,7 @@
 
 #include <QMetaType>
 
+class QFontMetricsF;
 class QGraphicsScene;
 
 namespace PlaylistNS {
@@ -20,13 +21,21 @@ namespace PlaylistNS {
     class Item
     {
         public:
+            Item() : m_scene( 0 ) { }
             Item( Meta::TrackPtr track );
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
-            QGraphicsScene* scene() const;
+            QGraphicsScene* scene( int totalWidth );
+            
+            static qreal height() { return s_height; }
         private:
             Meta::TrackPtr m_track;
             QGraphicsScene* m_scene;
+
+            static const qreal ALBUM_WIDTH;
+            static const qreal MARGIN;
+            static qreal s_height;
+            static QFontMetricsF* s_fm;
     };
 
 }

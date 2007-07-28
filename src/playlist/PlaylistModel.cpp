@@ -73,7 +73,6 @@ QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
-    TrackPtr track = ;
     /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
     {
         QFont original;
@@ -269,7 +268,7 @@ Model::metadataChanged( Meta::Track *track )
     {
         if( m_items.at( i ).track() == needle )
         {
-            emit dataChanged( createIndex( index, 0 ), createIndex( index, 0 ) );
+            emit dataChanged( createIndex( i, 0 ), createIndex( i, 0 ) );
             break;
         }
     }
@@ -303,9 +302,9 @@ Model::insertOptioned( Meta::TrackList list, int options )
         for( int i = 0; i < list.size(); ++i )
         {
             Item item;
-            foreach( m_items, item )
+            foreach( item, m_items )
             {
-                if( item->track() == list.at( i ) )
+                if( item.track() == list.at( i ) )
                 {
                     list.removeAt( i );
                     alreadyOnPlaylist++;

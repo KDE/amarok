@@ -24,22 +24,16 @@
 
 using namespace PlaylistNS;
 
-const qreal Delegate::ALBUM_WIDTH = 50.0;
-const qreal Delegate::MARGIN = 2.0;
-
 Delegate::Delegate( View* parent )
     : QAbstractItemDelegate()
     , m_view( parent )
-    , m_fm( new QFontMetricsF( QFont() ) )
+    
 { 
     //setParent( parent ); 
-    m_height = qMax( ALBUM_WIDTH, m_fm->height() * 2 );
 }
 
 Delegate::~Delegate()
-{
-    delete m_fm;
-}
+{ }
 
 void
 Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -54,7 +48,7 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     targetShifted.moveTopLeft( QPointF( 0.0, 0.0 ) );
     QGraphicsScene* scene = item.scene( option.rect.width() );
     QRectF croppedSource = scene->sceneRect().intersect( targetShifted );
-    scene->render( painter, option.rect, croppedSource )
+    scene->render( painter, option.rect, croppedSource );
     painter->restore();
 }
 
@@ -64,7 +58,7 @@ Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index 
     Q_UNUSED( option );
     Q_UNUSED( index );
 
-    return QSize( m_view->width() - m_view->verticalScrollBar()->width(), int( m_height ) );
+    return QSize( m_view->width() - m_view->verticalScrollBar()->width(), int( Item::height() ) );
 }
 
 #include "PlaylistDelegate.moc"

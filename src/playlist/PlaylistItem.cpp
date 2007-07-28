@@ -13,10 +13,21 @@
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
+const qreal PlaylistNS::Item::ALBUM_WIDTH = 50.0;
+const qreal PlaylistNS::Item::MARGIN = 2.0;
+qreal PlaylistNS::Item::s_height = -1.0;
+QFontMetricsF* PlaylistNS::Item::s_fm = 0;
+
 PlaylistNS::Item::Item( Meta::TrackPtr track )
     : m_track( track )
     , m_scene( 0 )
-{ }
+{
+    if( not s_fm )
+    {
+        s_fm = new QFontMetricsF( QFont() );
+        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 );
+    }
+}
 
 PlaylistNS::Item::~Item()
 {
@@ -26,7 +37,7 @@ PlaylistNS::Item::~Item()
 QGraphicsScene* 
 PlaylistNS::Item::scene( int totalWidth )
 {
-    if( not m_scene )
+    if( m_scene )
         return m_scene;
     if( not m_track )
         return 0;
@@ -43,9 +54,8 @@ PlaylistNS::Item::scene( int totalWidth )
     QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem(albumPixmap, 0 );
     pixmap->setPos( 0.0, 0.0 );
 
-    const qreal lineTwoY = m_height / 2;
+    const qreal lineTwoY = s_height / 2;
     const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
-    const qreal totalWidth = qreal( totalWidth );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
 
     QFont font;
@@ -65,14 +75,14 @@ PlaylistNS::Item::scene( int totalWidth )
     qreal rightAlignX;
     {
         qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
-        qreal rightWidth = totalWidth - qMax( m_fm->width( album )
-            , m_fm->width( prettyLength ) );
+        qreal rightWidth = totalWidth - qMax( s_fm->width( album )
+            , s_fm->width( prettyLength ) );
         rightAlignX = qMax( middle, rightWidth );
     }
     topRightText->setPos( rightAlignX, 0.0 );
     bottomRightText->setPos( rightAlignX, lineTwoY );
-    topRightText->setPlainText( m_fm->elidedText( album, Qt::ElideRight, totalWidth - rightAlignX ) );
-    bottomRightText->setPlainText( m_fm->elidedText( prettyLength, Qt::ElideRight, totalWidth - rightAlignX ) );
+    topRightText->setPlainText( s_fm->elidedText( album, Qt::ElideRight, totalWidth - rightAlignX ) );
+    bottomRightText->setPlainText( s_fm->elidedText( prettyLength, Qt::ElideRight, totalWidth - rightAlignX ) );
 
 
     qreal spaceForLeft = totalWidth - ( totalWidth - rightAlignX ) - leftAlignX;
@@ -80,11 +90,11 @@ PlaylistNS::Item::scene( int totalWidth )
         QString artist;
         if( m_track->artist() )
             artist = m_track->artist()->name();
-        topLeftText->setPlainText( m_fm->elidedText( artist, Qt::ElideRight, spaceForLeft ) );
+        topLeftText->setPlainText( s_fm->elidedText( artist, Qt::ElideRight, spaceForLeft ) );
         topLeftText->setPos( leftAlignX, 0.0 );
     }
 
-    bottomLeftText->setPlainText( m_fm->elidedText( QString("%1 - %2").arg( QString::number( m_track->m_trackNumber() ), m_track->name() )
+    bottomLeftText->setPlainText( s_fm->elidedText( QString("%1 - %2").arg( QString::number( m_track->trackNumber() ), m_track->name() )
         , Qt::ElideRight, spaceForLeft ) );
     bottomLeftText->setPos( leftAlignX, lineTwoY );
 
