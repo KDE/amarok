@@ -178,7 +178,6 @@ Dir.chdir( "amarok" )
 `rm -rf src/scripts/rbot`
 `rm -rf release_scripts`
 `rm -rf src/engine/gst10` #Removed for now
-`rm -rf autopackage`
 `rm -rf supplementary_scripts`
 
 Dir.chdir( "src" )
