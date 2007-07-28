@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=ServiceType
+X-KDE-ServiceType=AmarokContext/DataEngine
+
+Comment=Amarok Data Engine
+
+[PropertyDef::X-EngineName]
+Type=QString
+

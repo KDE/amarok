@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Wikipedia Data Engine
+ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=wikipedia
+X-KDE-Library=amarok_data_engine_wikipedia
+X-EngineName=amarok-wikipedia

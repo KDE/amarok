@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Lyrics Data Engine
+ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=lyrics
+X-KDE-Library=amarok_data_engine_lyrics
+X-EngineName=amarok-lyrics

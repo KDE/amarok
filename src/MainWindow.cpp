@@ -21,9 +21,10 @@
 #include "amarok.h"
 #include "analyzerwidget.h"
 #include "collectionbrowser/CollectionWidget.h"
-#include "contextview/CoverBling.h"
-#include "contextview/contextview.h"
-#include "contextview/items/ContextItemManager.h"
+#include "context/CoverBling.h"
+#include "context/ContextView.h"
+#include "context/ControlBox.h"
+#include "context/DataEngineManager.h"
 #include "debug.h"
 #include "dynamicmode.h"
 #include "editfilterdialog.h"
@@ -229,9 +230,17 @@ void MainWindow::init()
     QWidget *contextWidget = new QWidget( this );
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
-        layout->addWidget( ContextView::instance() );
+        layout->addWidget( Context::ContextView::self() );
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             layout->addWidget( new CoverBling( this ) );
+        ControlBox* m_controlBox = new ControlBox( contextWidget );
+        m_controlBox->show();
+        // TODO fix the location of the controlbox so its not a few pixels out of the 
+        // context view
+        connect(m_controlBox, SIGNAL(zoomIn()), Context::ContextView::self(), SLOT(zoomIn()));
+        connect(m_controlBox, SIGNAL(zoomOut()), Context::ContextView::self(), SLOT(zoomOut()));
+        connect(m_controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self()->contextScene(), SLOT(addApplet(const QString&)));
+        connect(m_controlBox, SIGNAL(lockInterface(bool)), Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)));
     }
     contextWidget->setMinimumSize( QSize(500,100) );
 
@@ -1093,12 +1102,6 @@ void MainWindow::createActions()
     ac->addAction( "queue_manager", queue );
     connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
 
-    KAction *context = new KAction( this );
-    context->setText( i18n( "Context Manager" ) );
-    context->setIcon( KIcon( Amarok::icon( "context" )) );
-    ac->addAction( "context_manager", context );
-    connect(context, SIGNAL(triggered(bool)), ContextItemManager::instance(), SLOT( showDialog() ));
-
     KAction *seekForward = new KAction( this );
     seekForward->setText( i18n("&Seek Forward") );
     seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
@@ -1279,7 +1282,6 @@ void MainWindow::createMenus()
     m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->addAction( actionCollection()->action( "context_manager" ) );
     vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
                                   Vis::Selector::instance(), SLOT(show()) );
     m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );

@@ -197,7 +197,7 @@ class PostgresqlConnection : public DbConnection
 #endif
 
 
-class CollectionDB : public QObject, public EngineObserver
+class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
 

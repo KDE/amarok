@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=ServiceType
+X-KDE-ServiceType=AmarokContext/Applet
+
+Comment=Amarok Context applet

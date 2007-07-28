@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=LastFM Data Engine
+ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=lastfm
+X-KDE-Library=amarok_data_engine_lastfm
+X-EngineName=amarok-lastfm

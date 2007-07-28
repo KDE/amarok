@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="245"
+   height="245"
+   id="svg2267"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   version="1.0"
+   sodipodi:docname="background.svg"
+   sodipodi:docbase="/home/leo/Desktop/amarok-linked/src/themes/context/default/widgets"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <defs
+     id="defs2269">
+    <linearGradient
+       id="linearGradient3248">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3250" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3252" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.1591837"
+     inkscape:cx="122.5"
+     inkscape:cy="122.5"
+     inkscape:document-units="px"
+     inkscape:current-layer="g180"
+     inkscape:window-width="1280"
+     inkscape:window-height="720"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata2272">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-37.57143,-18.505038)">
+    <g
+       style="opacity:1;fill:#333333;fill-opacity:1"
+       id="g180"
+       transform="matrix(3.6029412,0,0,3.6029412,-113.7521,-114.40386)">
+      <path
+         style="opacity:0.61499999;fill:#000000;fill-opacity:0.64321607"
+         id="path182"
+         d="M 110,98.889 C 110,102.189 107.3,104.889 104,104.889 L 48,104.889 C 44.7,104.889 42,102.189 42,98.889 L 42,42.889 C 42,39.589 44.7,36.889 48,36.889 L 104,36.889 C 107.3,36.889 110,39.589 110,42.889 L 110,98.889 z " />
+    </g>
+  </g>
+</svg>
