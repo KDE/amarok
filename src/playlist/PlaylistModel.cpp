@@ -9,8 +9,10 @@
 #include "PlaylistModel.h"
 
 #include "amarok.h"
+#include "AmarokMimeData.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "PlaylistItem.h"
 #include "StandardTrackAdvancer.h"
 #include "statusbar.h"
 #include "TheInstances.h"
@@ -21,12 +23,10 @@
 #include "collection/collectionmanager.h"
 #include "collection/querymaker.h"
 #include "meta/lastfm/LastFmMeta.h"
-#include "AmarokMimeData.h"
 
 #include <QAction>
 #include <QStringList>
 #include <QUndoStack>
-
 
 #include <KIcon>
 #include <KUrl>
@@ -66,14 +66,14 @@ Model::~Model()
 int
 Model::rowCount( const QModelIndex& ) const
 {
-    return m_tracks.size();
+    return m_items.size();
 }
 
 QVariant
 Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
-    TrackPtr track = m_tracks.at( row );
+    TrackPtr track = ;
     /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
     {
         QFont original;
@@ -81,13 +81,17 @@ Model::data( const QModelIndex& index, int role ) const
         return original;
     }
     else*/
-    if( role == TrackRole && ( row != -1 ) && track )
+    if( role == ItemRole && ( row != -1 ) )
     {
-        return QVariant::fromValue( track );
+        return QVariant::fromValue( m_items.at( row ) );
+    }
+    else if( role == TrackRole && ( row != -1 ) && m_items.at( row ).track() )
+    {
+        return QVariant::fromValue( m_items.at( row ).track() );
     }
     else if( role == Qt::DisplayRole && row != -1 )
     {
-        return track->name();
+        return m_items.at( row ).track()->name();
     }
     else
     {
@@ -186,7 +190,7 @@ Model::supportedDropActions() const
 void
 Model::trackFinished()
 {
-    Meta::TrackPtr track = m_tracks.at( m_activeRow );
+    Meta::TrackPtr track = m_items.at( m_activeRow ).track();
     track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
 }
@@ -201,7 +205,7 @@ void
 Model::play( int row )
 {
     setActiveRow( row );
-    EngineController::instance()->play( m_tracks[ m_activeRow ] );
+    EngineController::instance()->play( m_items[ m_activeRow ].track() );
 }
 
 QString
@@ -259,16 +263,29 @@ Model::setActiveRow( int row )
 void
 Model::metadataChanged( Meta::Track *track )
 {
+    const int size = m_items.size();
+    const Meta::TrackPtr needle =  Meta::TrackPtr( track );
+    for( int i = 0; i < size; i++ )
+    {
+        if( m_items.at( i ).track() == needle )
+        {
+            emit dataChanged( createIndex( index, 0 ), createIndex( index, 0 ) );
+            break;
+        }
+    }
+
+#if 0
     int index = m_tracks.indexOf( Meta::TrackPtr( track ), 0 );
     if( index != -1 )
         emit dataChanged( createIndex( index, 0 ), createIndex( index, 0 ) );
+#endif
 }
 
 void
 Model::clear()
 {
-    removeRows( 0, m_tracks.size() );
-    m_activeRow = -1;
+    removeRows( 0, m_items.size() );
+//    m_activeRow = -1;
 }
 
 void
@@ -285,10 +302,15 @@ Model::insertOptioned( Meta::TrackList list, int options )
         int alreadyOnPlaylist = 0;
         for( int i = 0; i < list.size(); ++i )
         {
-            if( m_tracks.contains( list.at( i ) ) )
+            Item item;
+            foreach( m_items, item )
             {
-                list.removeAt( i );
-                alreadyOnPlaylist++;
+                if( item->track() == list.at( i ) )
+                {
+                    list.removeAt( i );
+                    alreadyOnPlaylist++;
+                    break;
+                }
             }
         }
         if ( alreadyOnPlaylist )
@@ -318,7 +340,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
     {
         play( firstItemAdded );
     }
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 }
 
 void
@@ -392,7 +414,7 @@ Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
     Meta::TrackList selectedTracks;
 
     foreach( QModelIndex it, indexes )
-        selectedTracks << m_tracks.at( it.row() );
+        selectedTracks << m_items.at( it.row() ).track();
 
     mime->setTracks( selectedTracks );
     return mime;
@@ -466,7 +488,7 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
-            m_tracks.insert( row + i, track );
+            m_items.insert( row + i, track );
             i++;
         }
     }
@@ -480,7 +502,7 @@ Model::insertTracksCommand( int row, TrackList list )
         //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
     dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 }
 
 
@@ -496,13 +518,13 @@ Model::removeRowsCommand( int position, int rows )
     TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
-        TrackPtr track = m_tracks.takeAt( position ); //take at position, row times
-        track->unsubscribe( this );
-        ret.push_back( track );
+        Item item = m_items.takeAt( position ); //take at position, row times
+        item.track()->unsubscribe( this );
+        ret.push_back( item.track() );
     }
     endRemoveRows();
 
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_tracks.isEmpty() );
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
     //update m_activeRow
     bool activeRowChanged = true;

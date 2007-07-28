@@ -10,6 +10,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "meta.h"
+
 #include "UndoCommands.h"
 
 #include <QAbstractListModel>
@@ -18,6 +19,7 @@
 
 #include <KLocale>
 #include <kdemacros.h>
+#include "PlaylistItem.h"
 
 class QMimeData;
 class QModelIndex;
@@ -57,7 +59,11 @@ class TrackAdvancer;
         Year,
         NUM_COLUMNS
     };
-    static int TrackRole = 0xc0ffee;
+    enum DataRoles 
+    {
+        TrackRole = 0xc0ffee,
+        ItemRole
+    };
     ///Options for insertTracks
     enum AddOptions 
     { 
@@ -115,7 +121,7 @@ class TrackAdvancer;
 
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
-            Meta::TrackPtr activeTrack() const { return m_tracks[ m_activeRow ]; }
+            Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow ).track(); }
         //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();
             ///deprecated function to ease porting to Meta::Track from URLs
@@ -158,7 +164,7 @@ class TrackAdvancer;
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
-            Meta::TrackList m_tracks; //! list of tracks in order currently in the playlist
+            QList<Item> m_items; //! list of tracks in order currently in the playlist
             int m_activeRow; //! the row being played
             TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
             QUndoStack* m_undoStack; //! for pushing on undo commands

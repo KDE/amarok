@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "PlaylistDelegate.h"
+#include "PlaylistItem.h"
 #include "PlaylistModel.h"
 #include "PlaylistView.h"
 
@@ -47,76 +48,13 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
     //if (option.state & QStyle::State_HasFocus)
     if (option.state & QStyle::State_Selected)
          painter->fillRect(option.rect, option.palette.highlight());
-    QGraphicsScene scene;
-    Meta::TrackPtr track = index.data( TrackRole ).value< Meta::TrackPtr >();
-    if( !track )
-        return;
-    QString album;
-    QPixmap albumPixmap;
-    if( track->album() )
-    {
-        album = track->album()->name();
-        albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
-    }
-    QString prettyLength = MetaBundle::prettyTime( track->length(), false );
-
-    QGraphicsPixmapItem* pixmap = new QGraphicsPixmapItem(albumPixmap, 0 );
-    pixmap->setPos( 0.0, 0.0 );
-
-    const qreal lineTwoY = m_height / 2;
-    const qreal textWidth = ( ( qreal( option.rect.width() ) - ALBUM_WIDTH ) / 2.0 );
-    const qreal totalWidth = qreal( option.rect.width() );
-    const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
-
-    QFont font;
-    font.setPointSize( font.pointSize() - 1 );
-
-    QGraphicsTextItem* topLeftText = new QGraphicsTextItem();
-    topLeftText->setTextInteractionFlags( Qt::TextEditorInteraction );
-    topLeftText->setFont( font );
-    QGraphicsTextItem* bottomLeftText = new QGraphicsTextItem();
-    bottomLeftText->setTextInteractionFlags( Qt::TextEditorInteraction );
-    bottomLeftText->setFont( font );
-    QGraphicsTextItem* topRightText = new QGraphicsTextItem();
-    topRightText->setFont( font );
-    QGraphicsTextItem* bottomRightText = new QGraphicsTextItem();
-    bottomRightText->setFont( font );
-
-    qreal rightAlignX;
-    {
-        qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
-        qreal rightWidth = totalWidth - qMax( m_fm->width( album )
-            , m_fm->width( prettyLength ) );
-        rightAlignX = qMax( middle, rightWidth );
-    }
-    topRightText->setPos( rightAlignX, 0.0 );
-    bottomRightText->setPos( rightAlignX, lineTwoY );
-    topRightText->setPlainText( m_fm->elidedText( album, Qt::ElideRight, totalWidth - rightAlignX ) );
-    bottomRightText->setPlainText( m_fm->elidedText( prettyLength, Qt::ElideRight, totalWidth - rightAlignX ) );
-
-
-    qreal spaceForLeft = totalWidth - ( totalWidth - rightAlignX ) - leftAlignX;
-    {
-        QString artist;
-        if( track->artist() )
-            artist = track->artist()->name();
-        topLeftText->setPlainText( m_fm->elidedText( artist, Qt::ElideRight, spaceForLeft ) );
-        topLeftText->setPos( leftAlignX, 0.0 );
-    }
-    bottomLeftText->setPlainText( m_fm->elidedText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
-        , Qt::ElideRight, spaceForLeft ) );
-    bottomLeftText->setPos( leftAlignX, lineTwoY );
-
-    scene.addItem( pixmap );
-    scene.addItem( topLeftText );
-    scene.addItem( bottomLeftText );
-    scene.addItem( topRightText );
-    scene.addItem( bottomRightText );
+    PlaylistNS::Item item = index.data( ItemRole ).value< PlaylistNS::Item >();
     //QRectF sourceShifted = scene.sceneRect().moveTopLeft( QPointF( 0.0, 0.0 ) );
     QRectF targetShifted = option.rect;
     targetShifted.moveTopLeft( QPointF( 0.0, 0.0 ) );
-    QRectF croppedSource = scene.sceneRect().intersect( targetShifted );
-    scene.render( painter, option.rect, croppedSource );
+    QGraphicsScene* scene = item.scene( option.rect.width() );
+    QRectF croppedSource = scene->sceneRect().intersect( targetShifted );
+    scene->render( painter, option.rect, croppedSource )
     painter->restore();
 }
 

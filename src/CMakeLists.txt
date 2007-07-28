@@ -382,6 +382,7 @@ set(amaroklib_LIB_SRCS
     pixmapviewer.cpp
     playlist/PlaylistDelegate.cpp
     playlist/PlaylistHeader.cpp
+    playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistView.cpp
     playlist/PlaylistWidget.cpp
