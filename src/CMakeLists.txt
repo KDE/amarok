@@ -375,6 +375,7 @@ set(amaroklib_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
+    playlist/ItemScene.cpp
     playlist/PlaylistDelegate.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp

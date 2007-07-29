@@ -6,36 +6,38 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#ifndef AMAROKPLAYLISTITEM_H
-#define AMAROKPLAYLISTITEM_H
+#ifndef AMAROK_PLAYLIST_ITEMSCENE_H
+#define AMAROK_PLAYLIST_ITEMSCENE_H
 
 #include "meta.h"
 
-#include <QMetaType>
+#include <QGraphicsScene>
 
 class QFontMetricsF;
-class QGraphicsScene;
 
 namespace PlaylistNS {
 
-    class ItemScene;
-
-    class Item
+    class ItemScene : public QGraphicsScene
     {
         public:
-            Item() : m_scene( 0 ) { }
-            Item( Meta::TrackPtr track );
-            ~Item();
-            Meta::TrackPtr track() const { return m_track; }
-            QGraphicsScene* scene( int totalWidth = -1 );
-
+            ItemScene( Meta::TrackPtr track );
+            void resize( int totalWidth = -1 );
+    
+            static qreal height() { return s_height; }
         private:
             Meta::TrackPtr m_track;
-            ItemScene* m_scene;
+
+            QGraphicsTextItem* m_topLeftText;
+            QGraphicsTextItem* m_bottomLeftText;
+            QGraphicsTextItem* m_topRightText;
+            QGraphicsTextItem* m_bottomRightText;
+
+            static const qreal ALBUM_WIDTH;
+            static const qreal MARGIN;
+            static qreal s_height;
+            static QFontMetricsF* s_fm;
     };
 
 }
-
-Q_DECLARE_METATYPE( PlaylistNS::Item* )
 
 #endif

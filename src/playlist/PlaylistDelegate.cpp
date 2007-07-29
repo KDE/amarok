@@ -8,8 +8,8 @@
 
 #include "debug.h"
 #include "metabundle.h"
+#include "ItemScene.h"
 #include "PlaylistDelegate.h"
-#include "PlaylistItem.h"
 #include "PlaylistModel.h"
 #include "PlaylistView.h"
 
@@ -22,9 +22,8 @@
 #include <QRectF>
 #include <QScrollBar>
 
-using namespace PlaylistNS;
 
-Delegate::Delegate( View* parent )
+PlaylistNS::Delegate::Delegate( View* parent )
     : QAbstractItemDelegate()
     , m_view( parent )
     
@@ -32,11 +31,11 @@ Delegate::Delegate( View* parent )
     //setParent( parent ); 
 }
 
-Delegate::~Delegate()
+PlaylistNS::Delegate::~Delegate()
 { }
 
 void
-Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+PlaylistNS::Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     painter->save();
     //if (option.state & QStyle::State_HasFocus)
@@ -53,12 +52,12 @@ Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QMo
 }
 
 QSize
-Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
+PlaylistNS::Delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
     Q_UNUSED( option );
     Q_UNUSED( index );
 
-    return QSize( m_view->width() - m_view->verticalScrollBar()->width(), int( Item::height() ) );
+    return QSize( m_view->width() - m_view->verticalScrollBar()->width(), int( PlaylistNS::ItemScene::height() ) );
 }
 
 #include "PlaylistDelegate.moc"
