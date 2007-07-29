@@ -43,8 +43,8 @@ PlaylistNS::Item::scene( int totalWidth )
         return m_scene;
     if( not m_track )
         return 0;
-    if( totalWidth = -1 && m_scene )
-        totalWidth = m_scene->width();
+    if( totalWidth == -1 && m_scene )
+        totalWidth = (int)m_scene->width();
     m_scene = new QGraphicsScene();
     QString album;
     QPixmap albumPixmap;
