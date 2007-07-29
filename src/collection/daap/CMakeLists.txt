@@ -24,7 +24,7 @@ set(amarok_collection-daapcollection_PART_SRCS
 
 kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection-daapcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-daapcollection amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
+target_link_libraries(amarok_collection-daapcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
