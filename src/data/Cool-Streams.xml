@@ -6,8 +6,8 @@
  <stream name="Bassdrive [Drum n Bass]">
   <url>http://www.bassdrive.com/v2/streams/BassDrive.m3u</url>
  </stream>
- <stream name="Bluemars [Ambient/Space-Music]">
-  <url>http://207.200.96.225:8020/listen.pls</url>
+ <stream name="Digital Gunfire [Industrial/EBM]">
+  <url>http://www.digitalgunfire.com/playlist.pls</url>
  </stream>
  <stream name="Digitally Imported - Chillout [Chill-Out]">
   <url>http://di.fm/mp3/chillout.pls</url>
@@ -26,9 +26,6 @@
  </stream>
  <stream name="Frequence 3 [Pop]">
   <url>http://streams.frequence3.net/hd-mp3.m3u</url>
- </stream>
- <stream name="Gaming FM [Computer-Music]">
-  <url>http://208.64.81.140:7500/listen.pls</url>
  </stream>
  <stream name="Groove Salad [Chill-Out]">
   <url>http://www.somafm.com/groovesalad.pls</url>
