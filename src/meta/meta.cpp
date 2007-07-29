@@ -177,8 +177,8 @@ Meta::Album::image( int size, bool withShadow ) const
          img = QImage( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
     else
     {
-        img = QImage( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
-        img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
+        img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ); //scaled does not 
         img.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
 
