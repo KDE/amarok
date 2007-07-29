@@ -102,16 +102,17 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 
     PodcastMetaCommon *podcastMetaCommon = static_cast<PodcastMetaCommon*>(index.internalPointer());
 
-    debug() << k_funcinfo << "internal pointer = " << (void *)podcastMetaCommon << endl;
-    if ( podcastMetaCommon && podcastMetaCommon->podcastType() == PodcastMetaCommon::ChannelType )
+   // debug() << k_funcinfo << "internal pointer = " << (void *)podcastMetaCommon << endl;
+    if ( typeid( * podcastMetaCommon ) == typeid( PodcastChannel ) )
     {
         debug() << k_funcinfo << "podcastType() == ChannelType" << endl;
         return QModelIndex();
     }
-    else if ( podcastMetaCommon && podcastMetaCommon->podcastType() == PodcastMetaCommon::EpisodeType )
+    else if ( typeid( * podcastMetaCommon ) == typeid( PodcastEpisode ) )
     {
+        PodcastEpisode *episode = static_cast<PodcastEpisode*>( podcastMetaCommon );
         debug() << k_funcinfo << "podcastType() == EpisodeType" << endl;
-        PodcastEpisode * episode = static_cast<PodcastEpisode *>( podcastMetaCommon );
+        //PodcastEpisode * episode = static_cast<PodcastEpisode *>( podcastMetaCommon );
         return createIndex(episode->channel(), 0, podcastMetaCommon);
     }
     else
