@@ -296,6 +296,13 @@ void MagnatuneAlbum::setImage( const QImage & image ) const
     notifyObservers();
 }
 
+void Meta::MagnatuneAlbum::imageDownloadCanceled() const
+{
+    m_hasFetchedCover = false;
+    m_isFetchingCover = false;
+}
+
+
 
 
 
@@ -337,6 +344,7 @@ void MagnatuneAlbumCoverDownloader::downloadCover( const  MagnatuneAlbum * album
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
+    connect( m_albumDownloadJob, SIGNAL( canceled( KJob* ) ), SLOT( coverDownloadCanceled( KJob * ) ) );
 
 }
 
@@ -347,7 +355,10 @@ void MagnatuneAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 
     if ( !downloadJob || !downloadJob->error() == 0 )
     {
-        //TODO: error handling here
+        debug() << "error detected" << endl;
+        //we could not download, so inform album
+        m_album->imageDownloadCanceled();
+        
         return ;
     }
     if ( downloadJob != m_albumDownloadJob )
@@ -360,6 +371,13 @@ void MagnatuneAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     m_tempDir->unlink();
 
 }
+
+void MagnatuneAlbumCoverDownloader::coverDownloadCanceled(KJob * downloadJob)
+{
+    
+    debug() << "cover download cancelled" << endl;
+}
+
 
 
 

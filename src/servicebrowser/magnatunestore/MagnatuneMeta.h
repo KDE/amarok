@@ -101,7 +101,8 @@ public:
     QString albumCode();
 
     void setImage( const QImage & image ) const;
-
+    void imageDownloadCanceled() const;
+    
     virtual QPixmap image( int size, bool withShadow ) const; //overridden from Meta::Album
 
 
@@ -158,6 +159,7 @@ class MagnatuneAlbumCoverDownloader : public QObject
     private slots:
 
         void coverDownloadComplete( KJob * downloadJob );
+        void coverDownloadCanceled( KJob * downloadJob );
     private:
         const Meta::MagnatuneAlbum * m_album;
         QString m_coverDownloadPath;
