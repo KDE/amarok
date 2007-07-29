@@ -22,10 +22,8 @@
 
 
 #include "../servicemetabase.h"
+#include "../ServiceAlbumCoverDownloader.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-#include <KTempDir>
 #include <QDateTime>
 #include <QList>
 #include <QString>
@@ -71,39 +69,30 @@ public:
     QString magnatuneUrl() const;
 };
 
-class MagnatuneAlbum  : public ServiceAlbum
+class MagnatuneAlbum  : public ServiceAlbumWithCover
 {
 private:
     QString m_coverUrl;
     int m_launchYear;
     QString m_albumCode;
-    mutable QImage m_cover;
-    mutable bool m_hasFetchedCover;
-    mutable bool m_isFetchingCover;
-    QString m_coverDownloadPath;
-    mutable MagnatuneAlbumCoverDownloader * m_coverDownloader;
+
 
 public:
     MagnatuneAlbum( const QString &name );
     MagnatuneAlbum( const QStringList &resultRow );
 
     ~MagnatuneAlbum();
-
-    virtual QString name() const; //need to override this bacause of conflict wiht QObject
-
-    void setCoverUrl( const QString &coverUrl );
-    QString coverUrl() const;
+    
+    virtual QString downloadPrefix() const { return "magnatune"; }
 
     void setLaunchYear( int launchYear );
     int launchYear() const;
 
+    virtual void setCoverUrl( const QString &coverUrl );
+    virtual QString coverUrl() const;
+    
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
-
-    void setImage( const QImage & image ) const;
-    void imageDownloadCanceled() const;
-    
-    virtual QPixmap image( int size, bool withShadow ) const; //overridden from Meta::Album
 
 
 
@@ -145,26 +134,6 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
 
 };
 
-class MagnatuneAlbumCoverDownloader : public QObject
-{
-    Q_OBJECT
 
-    public:
-
-        MagnatuneAlbumCoverDownloader();
-        ~MagnatuneAlbumCoverDownloader();
-
-        void downloadCover( const Meta::MagnatuneAlbum * album );
-
-    private slots:
-
-        void coverDownloadComplete( KJob * downloadJob );
-        void coverDownloadCanceled( KJob * downloadJob );
-    private:
-        const Meta::MagnatuneAlbum * m_album;
-        QString m_coverDownloadPath;
-        KIO::FileCopyJob * m_albumDownloadJob;
-        KTempDir * m_tempDir;
-};
 
 #endif

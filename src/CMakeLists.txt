@@ -112,6 +112,7 @@ set(libservicebrowser_SRCS
     servicebrowser/servicesqlcollection.cpp
     servicebrowser/infoparserbase.cpp
     servicebrowser/ServiceSqlRegistry.cpp
+    servicebrowser/ServiceAlbumCoverDownloader.cpp
 
 )
 

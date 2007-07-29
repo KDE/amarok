@@ -21,15 +21,7 @@
 
 #include "MagnatuneMeta.h"
 
-#include "amarok.h"
-#include "amarokconfig.h"
 #include "debug.h"
-
-#include <KStandardDirs>
-
-
-#include <QDir>
-#include <QImage>
 
 using namespace Meta;
 
@@ -182,21 +174,16 @@ QString MagnatuneArtist::magnatuneUrl() const
 //// MagnatuneAlbum ////
 
 MagnatuneAlbum::MagnatuneAlbum( const QString &name )
-    : ServiceAlbum( name )
+    : ServiceAlbumWithCover( name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
-    , m_hasFetchedCover( false )
-    , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
+
 {
 }
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
-    : ServiceAlbum( resultRow )
-    , m_hasFetchedCover( false )
-    , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
+    : ServiceAlbumWithCover( resultRow )
 {
     debug() << "create album from result row: " << resultRow << endl;
 
@@ -209,24 +196,8 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
 
 MagnatuneAlbum::~ MagnatuneAlbum()
 {
-    delete m_coverDownloader;
 }
 
-
-QString MagnatuneAlbum::name() const
-{
-    return ServiceAlbum::name();
-}
-
-void MagnatuneAlbum::setCoverUrl( const QString &coverUrl )
-{
-    m_coverUrl = coverUrl;
-}
-
-QString MagnatuneAlbum::coverUrl( ) const
-{
-    return m_coverUrl;
-}
 
 void MagnatuneAlbum::setLaunchYear( int launchYear )
 {
@@ -249,60 +220,15 @@ QString MagnatuneAlbum::albumCode()
 
 }
 
-QPixmap MagnatuneAlbum::image(int size, bool withShadow) const
+void MagnatuneAlbum::setCoverUrl(const QString & coverUrl)
 {
-
-    //TODO: some of this stuff should be factored out
-
-    QString coverName = "magnatune_" + albumArtist()->name() + '_' + name() + "_cover.png";
-
-
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    if ( size <= 1 )
-        size = AmarokConfig::coverPreviewSize();
-    QString sizeKey = QString::number( size ) + '@';
-    QImage img;
-
-
-    if( cacheCoverDir.exists( sizeKey + coverName ) ) {
-        debug() << "Image exists in cache" << endl;
-        img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
-        return QPixmap::fromImage( img );
-    }
-    else if ( m_hasFetchedCover ) {
-
-        img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
-        return QPixmap::fromImage( img );
-
-    } else if ( !m_isFetchingCover ) {
-        m_isFetchingCover = true;
-
-        if ( m_coverDownloader == 0 )
-           m_coverDownloader = new MagnatuneAlbumCoverDownloader();
-           m_coverDownloader->downloadCover( this );
-
-    }
-
-    return Meta::Album::image( size, withShadow );
-
+    m_coverUrl = coverUrl;
 }
 
-void MagnatuneAlbum::setImage( const QImage & image ) const
+QString MagnatuneAlbum::coverUrl() const
 {
-    m_cover = image;
-    m_hasFetchedCover = true;
-    m_isFetchingCover = false;
-    notifyObservers();
+    return m_coverUrl;
 }
-
-void Meta::MagnatuneAlbum::imageDownloadCanceled() const
-{
-    m_hasFetchedCover = false;
-    m_isFetchingCover = false;
-}
-
-
 
 
 
@@ -317,72 +243,9 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
 }
 
 
-MagnatuneAlbumCoverDownloader::MagnatuneAlbumCoverDownloader()
-    : m_album( 0 )
-    , m_albumDownloadJob( 0 )
-{
-    m_tempDir = new KTempDir();
-    m_tempDir->setAutoRemove( false );
-}
-
-MagnatuneAlbumCoverDownloader::~ MagnatuneAlbumCoverDownloader()
-{
-    delete m_tempDir;
-}
-
-
-void MagnatuneAlbumCoverDownloader::downloadCover( const  MagnatuneAlbum * album )
-{
-    m_album = album;
-
-    KUrl downloadUrl( album->coverUrl() );
-
-    m_coverDownloadPath = m_tempDir->name() + downloadUrl.fileName();
-
-    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath << endl;
-
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, true, false, false );
-
-    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
-    connect( m_albumDownloadJob, SIGNAL( canceled( KJob* ) ), SLOT( coverDownloadCanceled( KJob * ) ) );
-
-}
-
-void MagnatuneAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
-{
-
-    debug() << "cover download complete" << endl;
-
-    if ( !downloadJob || !downloadJob->error() == 0 )
-    {
-        debug() << "error detected" << endl;
-        //we could not download, so inform album
-        m_album->imageDownloadCanceled();
-        
-        return ;
-    }
-    if ( downloadJob != m_albumDownloadJob )
-        return ; //not the right job, so let's ignore it
-
-    m_album->setImage( QImage( m_coverDownloadPath ) );
-
-    downloadJob->deleteLater();
-
-    m_tempDir->unlink();
-
-}
-
-void MagnatuneAlbumCoverDownloader::coverDownloadCanceled(KJob * downloadJob)
-{
-    
-    debug() << "cover download cancelled" << endl;
-}
 
 
 
 
 
 
-
-
-#include "MagnatuneMeta.moc"
