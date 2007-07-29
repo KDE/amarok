@@ -92,6 +92,6 @@ class ServiceAlbumCoverDownloader : public QObject
         KTempDir * m_tempDir;
 };
 
-};
+}
 
 #endif
