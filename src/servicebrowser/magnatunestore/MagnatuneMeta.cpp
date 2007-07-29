@@ -271,8 +271,7 @@ QPixmap MagnatuneAlbum::image(int size, bool withShadow) const
     }
     else if ( m_hasFetchedCover ) {
 
-        img = m_cover;
-        img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
 
