@@ -74,4 +74,3 @@ QStringList DataEngineManager::knownEngines()
 
 } // Context namespace
 
-#include "DataEngineManager.moc"

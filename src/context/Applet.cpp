@@ -77,4 +77,3 @@ Applet* Applet::loadApplet(const QString& appletName, uint appletId, const QStri
 */
 } // Context namespace
 
-#include "Applet.moc"
