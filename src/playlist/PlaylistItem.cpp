@@ -39,16 +39,12 @@ PlaylistNS::Item::~Item()
 QGraphicsScene* 
 PlaylistNS::Item::scene( int totalWidth )
 {
-    DEBUG_BLOCK
     if( m_scene )
-    {
-        debug() << "returning scene" << endl;
         return m_scene;
-    }
-    else
-        debug() << "m_scene was 0, not returning" << endl;
     if( not m_track )
         return 0;
+    if( totalWidth = -1 && m_scene )
+        totalWidth = m_scene->width();
     m_scene = new QGraphicsScene();
     QString album;
     QPixmap albumPixmap;

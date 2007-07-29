@@ -12,6 +12,7 @@
 #include <QListView>
 class QAbstractItemModel;
 class QKeyEvent;
+class QMouseEvent;
 /**
  * The view of the playlist, used to send user interaction signals back to the model.
  */
@@ -25,6 +26,7 @@ namespace PlaylistNS {
             virtual void setModel( QAbstractItemModel * model );
         protected:
             virtual void keyPressEvent( QKeyEvent* event );
+            virtual void mouseDoubleClickEvent(QMouseEvent *event);
     };
 }
 #endif

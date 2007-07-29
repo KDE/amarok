@@ -7,12 +7,22 @@
  ***************************************************************************/
 
 #include "PlaylistDelegate.h"
+#include "PlaylistModel.h"
 #include "PlaylistView.h"
 
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 #include <QItemDelegate>
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QModelIndex>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QPointF>
+#include <QRect>
+#include <QScrollBar>
+
+#include <KApplication>
 
 using namespace PlaylistNS;
 
@@ -53,4 +63,44 @@ View::keyPressEvent( QKeyEvent* event )
     }
     QListView::keyPressEvent( event );
 }
+
+void 
+View::mouseDoubleClickEvent(QMouseEvent *event)
+{
+//method based on QGraphicsView::mouseDoubleClickEvent, (c) 2007 Trolltech ASA, GPL v2
+    QModelIndex index = indexAt( event->pos() );
+    QGraphicsScene* scene = index.data( ItemRole ).value< PlaylistNS::Item* >()->scene();
+    QPoint pointInt = event->pos();
+    pointInt.rx() += horizontalScrollBar()->value();
+    pointInt.ry() += verticalScrollBar()->value();
+    QRect viewportRect = visualRect( index );
+    pointInt.rx() -= viewportRect.x();
+    pointInt.ry() -= viewportRect.y();
+    QPointF pointScene = pointInt;
+
+
+/*    d->storeMouseEvent(event);
+    d->mousePressViewPoint = event->pos();
+    d->mousePressScenePoint = mapToScene(d->mousePressViewPoint);
+    d->mousePressScreenPoint = event->globalPos();
+    d->lastMouseMoveScenePoint = d->mousePressScenePoint;
+    d->lastMouseMoveScreenPoint = d->mousePressScreenPoint;
+    d->mousePressButton = event->button(); */
+
+    QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
+    mouseEvent.setWidget( viewport() );
+    mouseEvent.setButtonDownScenePos(event->button(), pointScene);
+    mouseEvent.setButtonDownScreenPos( event->button(), event->globalPos() );
+    mouseEvent.setScenePos( pointScene );
+    mouseEvent.setScreenPos( event->globalPos() );
+    mouseEvent.setLastScenePos( pointScene );
+    mouseEvent.setLastScreenPos(  event->globalPos() );
+    mouseEvent.setButtons( event->buttons() );
+    mouseEvent.setButtons( event->buttons() );
+    mouseEvent.setAccepted( false );
+    mouseEvent.setButton( event->button() );
+    mouseEvent.setModifiers( event->modifiers() ); 
+    KApplication::sendEvent( scene, &mouseEvent );
+}
+
 #include "PlaylistView.moc"

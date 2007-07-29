@@ -25,7 +25,7 @@ namespace PlaylistNS {
             Item( Meta::TrackPtr track );
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
-            QGraphicsScene* scene( int totalWidth );
+            QGraphicsScene* scene( int totalWidth = -1 );
 
             static qreal height() { return s_height; }
         private:
