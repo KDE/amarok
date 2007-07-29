@@ -166,12 +166,12 @@ QString JamendoArtist::jamendoURL() const
 //// JamendoAlbum ////
 
 JamendoAlbum::JamendoAlbum( const QString &name )
-    : ServiceAlbum( name )
+    : ServiceAlbumWithCover( name )
 {
 }
 
 JamendoAlbum::JamendoAlbum(const QStringList & resultRow)
-    : ServiceAlbum( resultRow )
+    : ServiceAlbumWithCover( resultRow )
 {
 
     m_popularity = resultRow[4].toFloat();
@@ -181,12 +181,12 @@ JamendoAlbum::JamendoAlbum(const QStringList & resultRow)
 
 }
 
-void JamendoAlbum::setCoverURL( const QString &coverURL )
+void JamendoAlbum::setCoverUrl( const QString &coverURL )
 {
     m_coverURL = coverURL;
 }
 
-QString JamendoAlbum::coverURL( ) const
+QString JamendoAlbum::coverUrl( ) const
 {
     return m_coverURL;
 }

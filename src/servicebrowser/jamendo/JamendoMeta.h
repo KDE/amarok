@@ -22,6 +22,7 @@
 
 
 #include "../servicemetabase.h"
+#include "../ServiceAlbumCoverDownloader.h"
 
 #include <QDateTime>
 #include <QString>
@@ -97,7 +98,7 @@ public:
 };
 
 
-class JamendoAlbum  : public ServiceAlbum
+class JamendoAlbum  : public ServiceAlbumWithCover
 {
 private:
     float m_popularity;
@@ -110,11 +111,14 @@ public:
     JamendoAlbum( const QString &name );
     JamendoAlbum( const QStringList &resultRow );
 
+        
+    virtual QString downloadPrefix() const { return "jamendo"; }
+    
     void setPopularity( float popularity );
     float popularity() const;
 
-    void setCoverURL( const QString &coverURL );
-    QString coverURL() const;
+    virtual void setCoverUrl( const QString &coverURL );
+    virtual QString coverUrl() const;
 
     void setLaunchYear( int launchYear );
     int launchYear() const;

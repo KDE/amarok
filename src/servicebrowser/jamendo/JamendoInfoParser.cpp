@@ -84,8 +84,8 @@ void JamendoInfoParser::getInfo(AlbumPtr album)
     infoHtml +=        jamendoAlbum->fullPrettyName();
     infoHtml +=        "</strong><br><br><em>";
 
-    if ( !jamendoAlbum->coverURL().isEmpty() )
-        infoHtml +=    "<img src=\"" + jamendoAlbum->coverURL() +
+    if ( !jamendoAlbum->coverUrl().isEmpty() )
+        infoHtml +=    "<img src=\"" + jamendoAlbum->coverUrl() +
                        "\" align=\"middle\" border=\"1\"><br><br>";
 
     infoHtml +=        description;

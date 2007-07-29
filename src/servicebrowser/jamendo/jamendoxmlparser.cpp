@@ -252,7 +252,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
 
     currentAlbum.setLaunchYear( 1000 );
 
-    currentAlbum.setCoverURL( coverUrl );
+    currentAlbum.setCoverUrl( coverUrl );
 
     m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 

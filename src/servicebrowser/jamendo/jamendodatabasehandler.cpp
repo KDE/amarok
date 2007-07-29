@@ -211,7 +211,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + sqlDb->escape(  jAlbum->name() ) + "', '"
                   + sqlDb->escape( jAlbum->description() )+ "', "
                   + QString::number( jAlbum->popularity() ) + ", '"
-                  + sqlDb->escape( jAlbum->coverURL() )+ "', "
+                  + sqlDb->escape( jAlbum->coverUrl() )+ "', "
                   + QString::number( jAlbum->launchYear() ) + ", '"
                   + sqlDb->escape( jAlbum->genre() )+ "', "
                   + QString::number( jAlbum->artistId() ) + " );";
