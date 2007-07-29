@@ -109,3 +109,4 @@ PlaylistNS::Item::scene( int totalWidth )
     m_scene->addItem( bottomRightText );
     return m_scene;
 }
+

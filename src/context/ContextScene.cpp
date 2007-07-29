@@ -200,3 +200,4 @@ void ContextScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuE
 } // Context namespace
 
 #include "ContextScene.moc"
+

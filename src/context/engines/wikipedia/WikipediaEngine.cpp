@@ -21,10 +21,10 @@
 
 using namespace Context;
 
-WikipediaEngine::WikipediaEngine( QObject* parent, const QStringList& args )
-: DataEngine( parent )
-, ContextObserver( ContextView::self() )
-, m_wikiJob( 0 )
+WikipediaEngine::WikipediaEngine( QObject* parent, const QStringList& /*args*/ )
+    : DataEngine( parent )
+    , ContextObserver( ContextView::self() )
+    , m_wikiJob( 0 )
 {
     DEBUG_BLOCK
     m_requested = true; // testing
@@ -38,7 +38,10 @@ QStringList WikipediaEngine::sources() const
 
 bool WikipediaEngine::sourceRequested( const QString& name )
 {
+    Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+
+    //FIXME return something!
 }
 
 void WikipediaEngine::message( const ContextState& state )
@@ -270,3 +273,4 @@ WikipediaEngine::reloadWikipedia()
 }
 
 #include "WikipediaEngine.moc"
+

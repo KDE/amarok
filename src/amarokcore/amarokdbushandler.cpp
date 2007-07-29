@@ -469,12 +469,15 @@ namespace Amarok
 
     void DbusPlayerHandler::setBpm( float bpm )
     {
+        Q_UNUSED( bpm )
         //Meta::Track does not provide a setBpm method
         //is it necessary?
     }
 
     void DbusPlayerHandler::setBpmByPath( const QString &url, float bpm )
     {
+        Q_UNUSED( url )
+        Q_UNUSED( bpm )
         /*MetaBundle bundle( url );
         bundle.setBpm(bpm);
         bundle.save();
@@ -762,14 +765,17 @@ DbusContextHandler::DbusContextHandler()
     (void)new ContextAdaptor(this);
     QDBusConnection::sessionBus().registerObject("/Context", this);
 }
+
 // TODO reimplement!!
 void DbusContextHandler::showLyrics()
 {
-    ;//     LyricsItem::instance()->showLyrics( QString() );
+    //     LyricsItem::instance()->showLyrics( QString() );
 }
+
 void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 {
-    ;//     LyricsItem::instance()->lyricsResult( lyrics );
+    Q_UNUSED( lyrics )
+    //     LyricsItem::instance()->lyricsResult( lyrics );
 }
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusCollectionHandler

@@ -41,6 +41,7 @@ PodcastModel::~PodcastModel()
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
+    Q_UNUSED( role )
     debug() << k_funcinfo << " index: " << index.row() << ":" << index.column() << endl;
     return QVariant();
 }
@@ -169,6 +170,9 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 QVariant
 PlaylistBrowserNS::PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    Q_UNUSED( orientation )
+    Q_UNUSED( role )
+
     debug() << k_funcinfo << "section = " << section << endl;
     switch( section )
     {

@@ -25,9 +25,9 @@
 
 using namespace Context;
 
-LyricsEngine::LyricsEngine( QObject* parent, const QStringList& args )
-: DataEngine( parent )
-, ContextObserver( ContextView::self() )
+LyricsEngine::LyricsEngine( QObject* parent, const QStringList& /*args*/ )
+    : DataEngine( parent )
+    , ContextObserver( ContextView::self() )
 {
     DEBUG_BLOCK
     m_requested = true; // testing
@@ -41,7 +41,10 @@ QStringList LyricsEngine::sources() const
 
 bool LyricsEngine::sourceRequested( const QString& name )
 {
+    Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+
+    //FIXME return something!
 }
 
 void LyricsEngine::message( const ContextState& state )
@@ -107,6 +110,7 @@ void LyricsEngine::update()
 }
 void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 {
+    Q_UNUSED( cached )
     DEBUG_BLOCK
     
     QDomDocument doc;
@@ -159,3 +163,4 @@ void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 }
 
 #include "LyricsEngine.moc"
+
