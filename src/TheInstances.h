@@ -24,11 +24,16 @@ namespace PortableDevicesNS {
     class PodcastCollection;
 // }
 
+namespace QueueManagerNS {
+   class Model;
+}
+
 namespace The {
-    PlaylistNS::Model* playlistModel(); //defined in playlist/PlaylistModel.h
-    PopupDropperNS::PopupDropper* PopupDropper();
+    PlaylistNS::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
+    PopupDropperNS::PopupDropper*    PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
-    /*Podcast::*/PodcastCollection* podcastCollection();
+    /*Podcast::*/PodcastCollection*  podcastCollection();
+   QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
 }
 
 #endif

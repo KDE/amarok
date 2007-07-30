@@ -310,6 +310,14 @@ set(libplaylistbrowser_SRCS
 )
 
 #####################################################################
+# QUEUEMANAGER   
+#####################################################################
+set(libqueuemanager_SRCS
+    queuemanager/QueueManager.cpp
+    queuemanager/QueueModel.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -332,6 +340,7 @@ set(amaroklib_LIB_SRCS
     ${collection_SRCS}
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}
+    ${libqueuemanager_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
     app.cpp
