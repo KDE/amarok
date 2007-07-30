@@ -908,6 +908,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         #ifdef XINE_PARAM_GAPLESS_SWITCH
             if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() //Remote media break with gapless
             //don't prepare for a track that isn't coming
+            && Playlist::instance()
             && Playlist::instance()->isTrackAfter()
             && !AmarokConfig::crossfade() )
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
