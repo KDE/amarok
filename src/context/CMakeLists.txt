@@ -54,7 +54,7 @@ set(plasma_LIB_SRCS
 
 kde4_add_library(amarokplasma SHARED ${plasma_LIB_SRCS})
 
-target_link_libraries(amarokplasma ${KDE4_KIO_LIBS})
+target_link_libraries(amarokplasma ${KDE4_KIO_LIBS} ${QT_QTUITOOLS_LIBRARY})
 
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS amarokplasma DESTINATION ${LIB_INSTALL_DIR})
