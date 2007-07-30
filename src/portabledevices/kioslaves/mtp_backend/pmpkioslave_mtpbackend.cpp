@@ -221,9 +221,9 @@ MTPBackend::listDir( const KUrl &url )
         while( folderList )
         {
             KIO::UDSEntry entry;
-            entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( folderList->name ) );
+            entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromUtf8( folderList->name ) );
             KUrl url( getUrlPrefix() );
-            QString extraPath = QString::fromAscii( folderList->name ) + "_###_" + QString::number( folderList->folder_id );
+            QString extraPath = QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
             url.addPath( extraPath );
             entry.insert( KIO::UDSEntry::UDS_URL, url.url() );
             entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
@@ -263,10 +263,10 @@ MTPBackend::listMusic( const QString &pathOffset )
     foreach( LIBMTP_folder_t* folder, m_folderParentToPtrHash.values( pathOffset ) )
     {
         KIO::UDSEntry entry;
-        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( folder->name ) );
+        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromUtf8( folder->name ) );
         KUrl url( getUrlPrefix() );
         url.addPath( pathOffset );
-        QString extraPath = QString::fromAscii( folder->name ) + "_###_" + QString::number( folder->folder_id );
+        QString extraPath = QString::number( folder->folder_id ) + "_###_" + QString::fromUtf8( folder->name );
         url.addPath( extraPath ); 
         kDebug() << "(listMusic): folder url.url = " << url.url() << endl;
         entry.insert( KIO::UDSEntry::UDS_URL, url.url() );
@@ -277,10 +277,10 @@ MTPBackend::listMusic( const QString &pathOffset )
     foreach( LIBMTP_track_t* track, m_trackParentToPtrHash.values( pathOffset ) )
     {
         KIO::UDSEntry entry;
-        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromAscii( track->filename ) );
+        entry.insert( KIO::UDSEntry::UDS_NAME, QString::fromUtf8( track->filename ) );
         KUrl url( getUrlPrefix() );
         url.addPath( pathOffset );
-        QString extraPath = QString::fromAscii( track->filename ) + "_###_" + QString::number( track->item_id );
+        QString extraPath = QString::number( track->item_id ) + "_###_" + QString::fromUtf8( track->filename );
         url.addPath( extraPath ); 
         entry.insert( KIO::UDSEntry::UDS_URL, url.url() );
         entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFREG);
@@ -319,7 +319,7 @@ MTPBackend::buildMusicListing()
     m_folderList = LIBMTP_Get_Folder_List( m_device );
     LIBMTP_folder_t* folderList = m_folderList;
     LIBMTP_folder_t* defaultFolder = LIBMTP_Find_Folder( folderList, m_device->default_music_folder );
-    QString defaultMusicLocation = QString::fromAscii( defaultFolder->name ) + "_###_" + QString::number( defaultFolder->folder_id );
+    QString defaultMusicLocation = QString::number( defaultFolder->folder_id ) + "_###_" + QString::fromUtf8( defaultFolder->name );
     m_defaultMusicLocation = defaultMusicLocation;
     kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation << endl;
     buildFolderList( folderList, QString() );
@@ -328,17 +328,17 @@ MTPBackend::buildMusicListing()
     {
         if( trackList->parent_id == 0 )
         {
-            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in base folder." << endl;
+            kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in base folder." << endl;
             m_trackParentToPtrHash.insert( QString::null, trackList );
-            m_pathToTrackIdHash.insert( trackList->filename + QString( "_###_" ) + QString::number( trackList->item_id ), trackList->item_id );
+            m_pathToTrackIdHash.insert( QString::number( trackList->item_id ) + QString( "_###_" ) + QString::fromUtf8( trackList->filename ),  trackList->item_id );
             m_idToPtrHash.insert( trackList->item_id, trackList );
         }
         else
         {
             folderPath = m_folderIdToPathHash.value( trackList->parent_id );
-            kDebug() << "Found track " << QString::fromAscii( trackList->filename ) << " in folder " << folderPath << endl;
+            kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in folder " << folderPath << endl;
             m_trackParentToPtrHash.insert( folderPath, trackList );
-            m_pathToTrackIdHash.insert( folderPath + "/" + trackList->filename + "_###_" + QString::number( trackList->item_id ), trackList->item_id );
+            m_pathToTrackIdHash.insert( folderPath + "/" + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ), trackList->item_id );
             m_idToPtrHash.insert( trackList->item_id, trackList );
         }
         trackList = trackList->next;
@@ -358,13 +358,13 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
     if( folderList == 0 )
         return;
 
-    kDebug() << "buildFolderList: Found folder " << QString::fromAscii( folderList->name ) << " in " << parentPath << endl;
+    kDebug() << "buildFolderList: Found folder " << QString::fromUtf8( folderList->name ) << " in " << parentPath << endl;
 
     QString nextPath;
     if( parentPath.isEmpty() )
-        nextPath = QString::fromAscii( folderList->name ) + "_###_" + QString::number( folderList->folder_id );
+        nextPath = QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
     else
-        nextPath = parentPath + "/" + QString::fromAscii( folderList->name ) + "_###_" + QString::number( folderList->folder_id );
+        nextPath = parentPath + "/" + QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
 
     kDebug() << "nextPath is: " << nextPath << endl;
 
@@ -387,7 +387,7 @@ MTPBackend::progressCallback( quint64 const sent, quint64 const total, void cons
     if( sent == total )
         backend->getSlave()->infoMessage( i18n( "Receiving tracklisting...done" ) );
     else
-        backend->getSlave()->infoMessage( i18n( "Receiving tracklisting...%1\%", sent/total ) );
+        backend->getSlave()->infoMessage( i18n( "Receiving tracklisting...%1\%", ( ( sent * 1.0 )/total ) * 100 ) );
     kDebug() << "libmtp progress callback called, with " << sent/total << " done." << endl;
     return 0;
 }
@@ -396,7 +396,7 @@ int
 MTPBackend::getObjectType( const QString &path )
 {
     bool ok;
-    quint32 val = QString( path.right( path.length() - path.lastIndexOf( "_###_" ) + 4 ) ).toULong( &ok );
+    quint32 val = QString( path.left( path.indexOf( "_###_" ) ) ).toULong( &ok );
     if( !ok )
         return MTPBackend::MTP_UNKNOWN;
     else

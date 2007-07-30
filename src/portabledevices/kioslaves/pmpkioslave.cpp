@@ -22,9 +22,12 @@
 
 #include <QCoreApplication>
 #include <QString>
+#include <QTimer>
 
+#include <kapplication.h>
 #include <kcomponentdata.h>
 #include <kdebug.h>
+#include <kdirnotify.h>
 #include <kio/ioslave_defaults.h>
 #include <klocale.h>
 #include <solid/device.h>
@@ -170,16 +173,24 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         destPath.remove( 0, 1 );
     //Check to see if they're trying to set a friendly name
     //i.e. only top-level paths
-    kDebug() << endl << "srcPath = " << srcPath << endl << ", destPath = " << destPath << endl;
+    kDebug() << endl << "srcPath = " << srcPath << ", destPath = " << destPath << endl;
+    kDebug() << endl << "src.directory() = " << src.directory() << ", dest.directory() = " << dest.directory() << endl;
     if( srcPath.indexOf( '/' ) == -1 && destPath.indexOf( '/' ) == -1 )
     {
         QString srcName = udiFromUrl( src );
         QString dstName = udiFromUrl( dest );
+        kDebug() << "srcName = " << srcName << ", dstName (friendly name) = " << dstName << endl;
+        kDebug() << "m_devices keys: " << endl;
+        foreach( QString key, m_devices.keys() )
+            kDebug() << "key = " << key << endl;
         if( m_devices.contains( dstName ) )
             warning( i18n( "Destination name cannot be the same as a Solid UDI!" ) );
         else if ( getBackendForUrl( src ) )
-            getBackendForUrl( src )->setFriendlyName( destPath );
+        {
+            getBackendForUrl( src )->setFriendlyName( dstName );
+        }
         emit finished();
+        QTimer::singleShot( 500, this, SLOT( runFileAdded( QString( "pmp:///" ) ) ) );
         return;
     }
     if( udiFromUrl( src ) != udiFromUrl( dest ) )
@@ -277,7 +288,14 @@ PMPProtocol::getBackendForUrl( const KUrl &url )
     if( !m_devices.contains( udiFromUrl( url ) ) )
     {
         m_devices[udiFromUrl( url )] = new PMPDevice( this, Solid::Device( untransUdi( udiFromUrl( url ) ) ) );
-        m_devices[udiFromUrl( url )]->initialize();
+        if( m_devices[udiFromUrl( url )]->isValid() )
+            m_devices[udiFromUrl( url )]->initialize();
+        else
+        {
+            delete m_devices[udiFromUrl( url )];
+            m_devices.remove( udiFromUrl( url ) );
+            return 0;
+        }
     }
     return m_devices[udiFromUrl( url )]->backend();
 }

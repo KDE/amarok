@@ -25,11 +25,12 @@ class PMPProtocol;
 class PMPDevice
 {
     public:
-        PMPDevice() { m_slave = 0; m_device = Solid::Device(); }
-        PMPDevice( PMPProtocol *slave, const Solid::Device &device ) { m_slave = slave; m_device = device; }
-        ~PMPDevice() { delete m_backend; }
+        PMPDevice() { m_slave = 0; m_device = Solid::Device(); m_backend = 0; }
+        PMPDevice( PMPProtocol *slave, const Solid::Device &device ) { m_slave = slave; m_device = device; m_backend = 0; }
+        ~PMPDevice() { if( m_backend ) delete m_backend; }
 
         void initialize();
+        bool isValid() const;
         PMPBackend* backend() const { return m_backend; }
 
     private:

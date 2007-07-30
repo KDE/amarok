@@ -23,6 +23,12 @@
 #include <solid/device.h>
 #include <solid/portablemediaplayer.h>
 
+bool
+PMPDevice::isValid() const
+{
+    return m_device.isValid();
+}
+
 void
 PMPDevice::initialize()
 {
