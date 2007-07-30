@@ -53,7 +53,7 @@ PlaylistNS::ItemScene::ItemScene( Meta::TrackPtr track )
         NewText( m_bottomLeftText )
         NewText( m_topRightText )
         NewText( m_bottomRightText )
-        #undefine NewText
+        #undef NewText
     }
     addItem( pixmap );
     addItem( m_topLeftText );
