@@ -191,8 +191,6 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         }
         emit finished();
         org::kde::KDirNotify::emitFilesAdded( "pmp:///" );
-        //Why doesn't this work...
-        //QTimer::singleShot( 500, this, SLOT( refreshRootDir() ) );
         return;
     }
     if( udiFromUrl( src ) != udiFromUrl( dest ) )

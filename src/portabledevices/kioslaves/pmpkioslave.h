@@ -26,8 +26,6 @@
 
 #include <QtCore/QByteRef>
 
-#include <kdebug.h>
-#include <kdirnotify.h>
 #include <kurl.h>
 #include <kio/slavebase.h>
 #include <solid/device.h>
@@ -47,9 +45,6 @@ class PMPProtocol : public QObject, public KIO::SlaveBase
         QString udiFromUrl( const KUrl &url );
         inline QString transUdi( const QString &udi ) const { return QString( udi ).replace( QChar( '/' ), QChar( '.' ) ); }
         inline QString untransUdi( const QString &udi) const { return QString( udi ).replace( QChar( '.' ), QChar( '/' ) ); }
-
-    public slots:
-        void refreshRootDir() { kDebug() << "emitting files added for root dir" << endl; org::kde::KDirNotify::emitFilesAdded( "pmp:///" ); }
 
     protected:
         void setHost( const QString &host, quint16 port,
