@@ -24,6 +24,7 @@
 #include <KWindowSystem>
 
 #include <QListView>
+#include <QStringListModel>
 #include <QHBoxLayout>
 
 using namespace QueueManagerNS;
@@ -54,20 +55,14 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     KVBox *mainBox = new KVBox( this );
     setMainWidget( mainBox );
 
-    QHBoxLayout* box = new QHBoxLayout( mainWidget() );
-    box->setSpacing( 5 );
-
-    QListView *queueList = new QListView();
+    QListView *queueList = new QListView( mainWidget() );
     queueList->setViewMode( QListView::ListMode );
     queueList->setAcceptDrops( true );
     queueList->setDragEnabled( true );
     queueList->setDropIndicatorShown( true );
 
-    QueueManagerNS::Model* model = The::queueModel();
+    QueueManagerNS::Model *model = The::queueModel();
     queueList->setModel( model );
-
-    box->setSpacing( 0 );
-    box->addWidget( queueList );
 
     s_instance->enableButtonApply( false );
 
