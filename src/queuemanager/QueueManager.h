@@ -26,6 +26,7 @@ class QueueManager : public KDialog
     Q_OBJECT
 
     public:
+        explicit QueueManager( QWidget *parent = 0, const char *name = 0 );
         ~QueueManager();
 
 //         QList<PlaylistItem* > newQueue();
@@ -43,8 +44,6 @@ class QueueManager : public KDialog
 //         void    changed();
 
     private:
-        explicit QueueManager( QWidget *parent = 0, const char *name = 0 );
-
 //         void    insertItems();
 //         void    addQueuedItem( PlaylistItem *item );
 //         void    removeQueuedItem( PlaylistItem *item );

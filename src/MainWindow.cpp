@@ -62,6 +62,8 @@
 
 #include "playlistbrowser/PlaylistBrowser.h"
 
+#include "queuemanager/QueueManager.h"
+
 #include <Q3PopupMenu>
 #include <QFont>
 #include <QHeaderView>
@@ -235,7 +237,7 @@ void MainWindow::init()
             layout->addWidget( new CoverBling( this ) );
         ControlBox* m_controlBox = new ControlBox( contextWidget );
         m_controlBox->show();
-        // TODO fix the location of the controlbox so its not a few pixels out of the 
+        // TODO fix the location of the controlbox so its not a few pixels out of the
         // context view
         connect(m_controlBox, SIGNAL(zoomIn()), Context::ContextView::self(), SLOT(zoomIn()));
         connect(m_controlBox, SIGNAL(zoomOut()), Context::ContextView::self(), SLOT(zoomOut()));
@@ -358,8 +360,8 @@ void MainWindow::init()
 
     connect( playlist, SIGNAL( itemCountChanged(     int, int, int, int, int, int ) ),
              statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );
-    connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
-             statusbar,  SLOT( updateQueueLabel() ) );
+//     connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
+//              statusbar,  SLOT( updateQueueLabel() ) );
 //    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 
     Amarok::MessageQueue::instance()->sendMessages();
@@ -892,7 +894,17 @@ void MainWindow::showScriptSelector() //SLOT
 
 void MainWindow::showQueueManager() //SLOT
 {
-    Playlist::instance()->showQueueManager();
+    if( QueueManagerNS::QueueManager::instance() )
+    {
+        QueueManagerNS::QueueManager::instance()->raise();
+        return;
+    }
+
+    QueueManagerNS::QueueManager dialog;
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        // TODO: alter queue
+    }
 }
 
 void MainWindow::showStatistics() //SLOT
