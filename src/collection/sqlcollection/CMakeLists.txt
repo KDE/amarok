@@ -34,7 +34,6 @@ target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_L
 #       postgresqlcollection.cpp
 #        postgresqlquerymaker.cpp)
 #
-#    kde4_automoc(${amarok_postgresql_SRCS})
 #    kde4_add_plugin(amarok_collection-postgresql WITH_PREFIX ${amarok_postgresql_SRCS})
 #    target_link_libraries(amarok_collection-postgresql amarok_collection-sqlcollection ${KDE4_KDECORE_LIBS} )
 #    install(TARGETS amarok_collection-postgresql DESTINATION ${PLUGIN_INSTALL_DIR})
@@ -46,7 +45,6 @@ target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_L
 #        mysqlcollection.cpp
 #        mysqlquerymaker.cpp)
 
-#    kde4_automoc(${amarok_mysql_SRCS})
 #    kde4_add_plugin(amarok_collection-mysql WITH_PREFIX ${amarok_mysql_SRCS})
 #    target_link_libraries(amarok_collection-mysql amarok_collection-sqlcollection ${KDE4_KDECORE_LIBS} )
 #    install(TARGETS amarok_collection-mysql DESTINATION ${PLUGIN_INSTALL_DIR})
