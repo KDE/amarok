@@ -114,7 +114,7 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
     mouseEvent.setButton( event->button() );
     mouseEvent.setModifiers( event->modifiers() ); 
     KApplication::sendEvent( scene, &mouseEvent );
-    Animator::instance()->startAnimation( index );
+    Animator::instance()->startAnimation( index, scene );
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///Animator
@@ -123,35 +123,29 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
 Animator* PlaylistNS::Animator::s_instance = 0;
 
 void
-PlaylistNS::Animator::startAnimation( const QModelIndex& animatedRow )
+PlaylistNS::Animator::startAnimation( const QModelIndex& animatedRow, QGraphicsScene* animatedScene )
 {
     m_view->update( animatedRow );
-    m_rows.append( new QPersistentModelIndex( animatedRow ) );
-    if( not m_timer.isActive() )
-        m_timer.start( 40, this );
+    m_modelHash[ animatedScene ] =  new QPersistentModelIndex( animatedRow );
+    connect( animatedScene, SIGNAL( sceneRectChanged ( const QRectF & ) ), this, SLOT( paintRow() ) );
 }
 
 void
 PlaylistNS::Animator::stopAnimation( const QModelIndex& dullRow )
 {
+#if 0
     for( int i = 0; i < m_rows.size(); i++ )
         if( *( m_rows.at( i ) ) == dullRow )
             delete m_rows.takeAt( i );
     if( m_rows.isEmpty() )
         m_timer.stop();
+#endif
 }
 
 void
-PlaylistNS::Animator::timerEvent( QTimerEvent *event )
+PlaylistNS::Animator::paintRow()
 {
-    if( event->timerId() == m_timer.timerId() )
-        foreach( QPersistentModelIndex* index, m_rows )
-        {
-            if( index->isValid() )
-                m_view->update( *index );
-        }
-    else
-        QObject::timerEvent( event ); //probably not needed
+    m_view->update( *m_modelHash.value( sender() ) );
 }
 
 #include "PlaylistView.moc"

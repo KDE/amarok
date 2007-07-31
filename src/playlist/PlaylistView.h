@@ -12,7 +12,7 @@
 #include <QBasicTimer>
 #include <QListView>
 #include <QPersistentModelIndex>
-#include <QSet>
+#include <QHash>
 
 class QAbstractItemModel;
 class QKeyEvent;
@@ -44,13 +44,14 @@ namespace PlaylistNS {
         public:
             Animator( PlaylistNS::View* view ) : QObject(), m_view( view ) { s_instance = this; }
             static Animator* instance() { return s_instance; }
-            void startAnimation( const QModelIndex& animatedRow );
+            void startAnimation( const QModelIndex& animatedRow, QGraphicsScene* animatedScene );
             void stopAnimation( const QModelIndex& dullRow );
-        protected:
-            void timerEvent( QTimerEvent *event );
+        private slots:
+            void paintRow();
+
         private:
             QBasicTimer m_timer;
-            QList<QPersistentModelIndex*> m_rows;
+            QHash<QObject*, QPersistentModelIndex*> m_modelHash;
             PlaylistNS::View* m_view;
 
             static Animator* s_instance;
