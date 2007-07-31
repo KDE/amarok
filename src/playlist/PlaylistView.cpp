@@ -21,10 +21,22 @@
 #include <QPointF>
 #include <QRect>
 #include <QScrollBar>
+#include <QTimerEvent>
 
 #include <KApplication>
 
 using namespace PlaylistNS;
+
+View::View( QWidget* parent )
+  : QListView( parent )
+{
+    new Animator( this );
+}
+
+View::~View()
+{
+    delete Animator::instance();
+}
 
 void
 View::setModel( QAbstractItemModel * model )
@@ -70,6 +82,7 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
 //method based on QGraphicsView::mouseDoubleClickEvent, (c) 2007 Trolltech ASA, GPL v2
     QModelIndex index = indexAt( event->pos() );
     QGraphicsScene* scene = index.data( ItemRole ).value< PlaylistNS::Item* >()->scene();
+
     QPoint pointInt = event->pos();
     pointInt.rx() += horizontalScrollBar()->value();
     pointInt.ry() += verticalScrollBar()->value();
@@ -101,6 +114,44 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
     mouseEvent.setButton( event->button() );
     mouseEvent.setModifiers( event->modifiers() ); 
     KApplication::sendEvent( scene, &mouseEvent );
+    Animator::instance()->startAnimation( index );
+}
+///////////////////////////////////////////////////////////////////////////////
+///Animator
+///////////////////////////////////////////////////////////////////////////////
+
+Animator* PlaylistNS::Animator::s_instance = 0;
+
+void
+PlaylistNS::Animator::startAnimation( const QModelIndex& animatedRow )
+{
+    m_view->update( animatedRow );
+    m_rows.append( new QPersistentModelIndex( animatedRow ) );
+    if( not m_timer.isActive() )
+        m_timer.start( 40, this );
+}
+
+void
+PlaylistNS::Animator::stopAnimation( const QModelIndex& dullRow )
+{
+    for( int i = 0; i < m_rows.size(); i++ )
+        if( *( m_rows.at( i ) ) == dullRow )
+            delete m_rows.takeAt( i );
+    if( m_rows.isEmpty() )
+        m_timer.stop();
+}
+
+void
+PlaylistNS::Animator::timerEvent( QTimerEvent *event )
+{
+    if( event->timerId() == m_timer.timerId() )
+        foreach( QPersistentModelIndex* index, m_rows )
+        {
+            if( index->isValid() )
+                m_view->update( *index );
+        }
+    else
+        QObject::timerEvent( event ); //probably not needed
 }
 
 #include "PlaylistView.moc"
