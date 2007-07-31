@@ -36,9 +36,7 @@ public:
     
     void constraintsUpdated();
     
-    void paintInterface(QPainter *painter,
-                        const QStyleOptionGraphicsItem *option,
-                        const QRect& contentsRect);
+    void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
     void showConfigurationInterface();

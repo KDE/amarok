@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Current Info Data Engine
+ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=amarok
+X-KDE-Library=amarok_data_engine_current
+X-EngineName=amarok-current

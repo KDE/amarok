@@ -95,6 +95,7 @@ ContextView::ContextView( )
 
 ContextView::~ContextView() 
 {
+    DEBUG_BLOCK
     clear( m_curState );
 }
 

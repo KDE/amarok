@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "atomicstring.h"
 #include "collectiondb.h"
 #include "ConfigDialog.h"
+#include "context/ContextView.h"
 //#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
@@ -211,6 +212,8 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
+    Context::ContextView::self()->contextScene()->clear();
+    
     EngineBase* const engine = EngineController::engine();
 
     if ( AmarokConfig::resumePlayback() ) {

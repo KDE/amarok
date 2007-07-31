@@ -55,9 +55,10 @@ Applet* ContextScene::addApplet(const QString& name, const QStringList& args)
 
 void ContextScene::clear()
 {    
-    //foreach( Applet* applet, loadedApplets() )
-    //    applet->deleteLater();
-    ;
+    DEBUG_BLOCK
+    foreach( Applet* applet, loaded )
+        delete applet;
+    loaded.clear();
 }
 
 void ContextScene::clear( const ContextState& state )

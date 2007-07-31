@@ -46,20 +46,20 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     , m_sysEnabled( false )
     , m_userEnabled( false )
 {
-    
+    DEBUG_BLOCK
     Context::Theme::self()->setApplication( "amarok" );
     
     debug() << "Loading LastFmEvents applet" << endl;
     setAcceptDrops( false );
     
     setHasConfigurationInterface( true );
-    setDrawStandardBackground( true );
+    setDrawStandardBackground( false );
     
     KConfigGroup conf = globalConfig();
     m_userEnabled = conf.readEntry( "user", false );
     m_sysEnabled = conf.readEntry( "sys", false );
     m_friendEnabled = conf.readEntry( "friend", false );
-    m_size = QSizeF( conf.readEntry( "size" , 400 ), conf.readEntry( "size" , 200 ) );
+    m_size = QSizeF( conf.readEntry( "size" , 400 ), conf.readEntry( "size" , 400 ) );
     
     if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
         showConfigurationInterface();
@@ -73,7 +73,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     
     m_theme = new Plasma::Svg( "widgets/lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
-    m_theme->resize( m_size );
+    m_theme->resize( m_size  );
     
     m_friendItem = new Context::TextWidget( this );
     m_sysItem = new Context::TextWidget( this );
@@ -86,19 +86,27 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     updated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
     updated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
     updated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
-    
-    update();
-//     geometryChanged();
+
+    constraintsUpdated();
     
 }
 
 LastFmEvents::~LastFmEvents()
 {
     DEBUG_BLOCK
+    
+    delete m_userData;
+    delete m_sysData;
+    delete m_friendData;
+    delete m_theme;
+    delete m_userItem;
+    delete m_friendItem;
+    delete m_sysItem;
 }
 
 void LastFmEvents::geometryChanged()
 {
+    DEBUG_BLOCK
     prepareGeometryChange();
     
     QRect friendRect = m_theme->elementRect( "friendevents" );
@@ -158,15 +166,13 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
 
 void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect& contentsRect )
 {
-    DEBUG_BLOCK
     Q_UNUSED( option )
-        
+    
     p->setRenderHint(QPainter::SmoothPixmapTransform);
-    
-//     m_theme->resize();
-    
+        
+    debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
-    
+        
     QString text;
     foreach( QVariantList event, *m_friendData )
         text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
@@ -182,9 +188,13 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
     m_sysItem->setText( text );
     
+    debug() << "size: " << m_theme->size() << endl;
     debug() << "friend element rect: " << m_theme->elementRect( "friendevents" ) << endl;
     debug() << "user element rect: " << m_theme->elementRect( "userevents" ) << endl;
     debug() << "sys element rect: " << m_theme->elementRect( "sysevents" ) << endl;
+    debug() << "top element rect: " << m_theme->elementRect( "top" ) << endl;
+    debug() << "bottom element rect: " << m_theme->elementRect( "bottom" ) << endl;
+    debug() << "something: " << m_theme->elementRect( "something" ) << endl;
     
     QRectF friendRect = m_theme->elementRect( "friendevents" );
 //     friendRect.translate( friendRect.x(), friendRect.y() );
@@ -192,7 +202,7 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 //     userRect.translate( userRect.x(), userRect.y() );
     QRectF sysRect = m_theme->elementRect( "sysevents" );
 //     sysRect.translate( sysRect.x() , sysRect.y() );
-    
+
     m_friendItem->setGeometry( friendRect );
     m_userItem->setGeometry( userRect );
     m_sysItem->setGeometry( sysRect );
@@ -207,11 +217,12 @@ QSizeF LastFmEvents::contentSize() const
 
 void LastFmEvents::constraintsUpdated()
 {
-    prepareGeometryChange();
+    geometryChanged();
 }
 
 void LastFmEvents::showConfigurationInterface()
 {
+    DEBUG_BLOCK
     if (m_config == 0) 
     {
         m_config = new KDialog;
@@ -242,6 +253,7 @@ void LastFmEvents::showConfigurationInterface()
 
 void LastFmEvents::configAccepted() // SLOT
 {
+    DEBUG_BLOCK
     debug() << "saving config" << endl;
     KConfigGroup cg = globalConfig();
 
