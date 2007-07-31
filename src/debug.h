@@ -104,10 +104,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( ind.data(), 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_INFO ) ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_WARN ) ) << AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_ERROR ) ) << AMK_PREFIX << "[ERROR!] "; }
+        static inline kdbgstream fatal()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_FATAL ) ) << AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
 
