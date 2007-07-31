@@ -33,17 +33,19 @@ using namespace Context;
 LastFmEngine::LastFmEngine( QObject* parent, const QStringList& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , m_sources( 0 )
     , m_friendJob( 0 )
     , m_sysJob( 0 )
     , m_userJob( 0 )
+    , m_sources( 0 )
     , m_userevents( false )
     , m_friendevents( false )
     , m_sysevents( false )
     , m_suggestedsongs( false )
     , m_relatedartists( false )
 {
+    Q_UNUSED( args )
     DEBUG_BLOCK
+
     m_user = AmarokConfig::scrobblerUsername();
     m_sources << I18N_NOOP( "userevents" ) << I18N_NOOP( "sysevents" ) << I18N_NOOP( "friendevents" ) << I18N_NOOP( "relatedartists" ) << I18N_NOOP( "suggestedsongs" );
     

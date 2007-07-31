@@ -27,9 +27,10 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QStringList& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
+    , m_requested( true )
 {
+    Q_UNUSED( args )
     DEBUG_BLOCK
-    m_requested = true;
 }
 
 QStringList CurrentEngine::sources() const
