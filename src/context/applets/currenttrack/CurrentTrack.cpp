@@ -58,6 +58,8 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
 
 CurrentTrack::~CurrentTrack()
 {
+    DEBUG_BLOCK
+
     delete m_title;
     delete m_artist;
     delete m_album;

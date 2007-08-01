@@ -48,7 +48,7 @@ ContextScene::~ContextScene()
 
 Applet* ContextScene::addApplet(const QString& name, const QStringList& args)
 {
-    Applet* applet = Corona::addApplet( name, args );
+    AppletPointer applet = Corona::addApplet( name, args );
     loaded << applet;
     return applet;
 }
@@ -58,6 +58,7 @@ void ContextScene::clear()
     DEBUG_BLOCK
     foreach( Applet* applet, loaded )
         delete applet;
+
     loaded.clear();
 }
 

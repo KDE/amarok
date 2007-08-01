@@ -46,7 +46,8 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */
     
 private:
-    Applet::List loaded;
+    typedef QPointer<Applet> AppletPointer;
+    QList<AppletPointer> loaded;
 };
 
 } // Context namespace
