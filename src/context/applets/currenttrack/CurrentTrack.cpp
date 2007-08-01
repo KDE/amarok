@@ -34,7 +34,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     
     m_theme = new Context::Svg( "widgets/currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
-    m_theme->resize();
+    m_theme->resize( 554, 230 );
     
     m_size = m_theme->size();
     
@@ -124,16 +124,12 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     int stars = m_rating / 2;
     for( int i = 1; i <= stars; i++ )
     {
-        p->translate( i * m_theme->elementSize( "star" ).width(), 0 );
-        tempRect = m_theme->elementRect( "star" );
-        tempRect.setSize( m_theme->elementSize( "star" ) );
-        m_theme->paint( p, tempRect, "star" );
+        p->translate( m_theme->elementSize( "star" ).width(), 0 );
+        m_theme->paint( p, m_theme->elementRect( "star" ), "star" );
     } //
-    if( stars % 2 != 0 )
+    if( m_rating % 2 != 0 )
     { // paint a half star too
-        p->translate( m_theme->elementSize( "half-star" ).width(), 0 );
-        tempRect.setSize( m_theme->elementSize( "half-star" ) );
-        m_theme->paint( p, tempRect, "half-star" );
+        m_theme->paint( p, m_theme->elementRect( "half-star" ), "half-star" );
     }
     p->restore();
     
