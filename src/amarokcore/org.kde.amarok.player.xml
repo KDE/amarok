@@ -178,11 +178,11 @@
    <method name="setBpm" >
       <arg name="bpm" type="d" direction="in"/>
     </method>
-   <method name="setScore" >
-      <arg name="bpm" type="d" direction="in"/>
+   <method name="setRating" >
+      <arg name="rating" type="i" direction="in"/>
     </method>
    <method name="setScore" >
-      <arg name="rating" type="i" direction="in"/>
+      <arg name="score" type="i" direction="in"/>
     </method>
    <method name="setVolume" >
       <arg name="volume" type="i" direction="in"/>
@@ -203,7 +203,7 @@
     </method>
    <method name="setRatingByPath" >
       <arg name="url" type="s" direction="in"/>
-      <arg name="bpm" type="d" direction="in"/>
+      <arg name="rating" type="d" direction="in"/>
     </method>
    <method name="transferCliArgs" >
       <arg name="args" type="as" direction="in"/>

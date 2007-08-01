@@ -19,6 +19,7 @@
 
 #include "amarokconfig.h"
 #include "amarok.h"
+#include "amarok_export.h"
 #include "app.h"
 #include "collectiondb.h"
 #include "debug.h"
@@ -37,7 +38,7 @@
 
 namespace Amarok 
 {
-    QString verboseTimeSince( const QDateTime &datetime )
+    QString AMAROK_EXPORT verboseTimeSince( const QDateTime &datetime )
     {
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );

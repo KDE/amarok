@@ -13,6 +13,7 @@
 
 #include "CurrentTrack.h"
 
+#include "amarok.h"
 #include "debug.h"
 #include "context/Svg.h"
 
@@ -46,8 +47,13 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     m_albumCover = new QGraphicsPixmapItem( this );
 
     m_title->setBrush( QBrush( Qt::white ) );
+    m_artist->setBrush( QBrush( Qt::white ) );
+    m_album->setBrush( QBrush( Qt::white ) );
+    m_score->setBrush( QBrush( Qt::white ) );
+    m_numPlayed->setBrush( QBrush( Qt::white ) );
+    m_playedLast->setBrush( QBrush( Qt::white ) );
     
-    constraintsUpdated();
+//     constraintsUpdated();
 }
 
 CurrentTrack::~CurrentTrack()
@@ -88,14 +94,16 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     Q_UNUSED( name );
     
     QVariantList currentInfo = data[ "current" ].toList();
-    debug() << "got data from engine: " << currentInfo << endl;
+    kDebug() << "got data from engine: " << currentInfo << endl;
     m_title->setText( currentInfo[ 1 ].toString() );
     m_artist->setText( currentInfo[ 0 ].toString() );
     m_album->setText( currentInfo[ 2 ].toString() );
-    m_rating = currentInfo[ 3 ].toInt();
+//     m_rating = currentInfo[ 3 ].toInt();
+    // TODO i can't add ratings... so hardcoding to test
+    m_rating = 6;
     m_score->setText( currentInfo[ 4 ].toString() );
     m_trackLength = currentInfo[ 5 ].toInt();
-    m_playedLast->setText( currentInfo[ 6 ].toString() );
+//     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );
     m_numPlayed->setText( currentInfo[ 5 ].toString() );
     // TODO include albumCover when engine is fixed
 }
@@ -104,7 +112,32 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED( option );
     
-    m_theme->paint( p, contentsRect );
+    QRect tempRect( 0, 0, 0, 0 );
+    
+    p->save();
+    m_theme->paint( p, contentsRect, "background" );
+    p->restore();
+    
+//     kDebug() << "first star pos: " << m_theme->elementRect( "star" ) << endl;
+    
+    p->save();
+    int stars = m_rating / 2;
+    for( int i = 1; i <= stars; i++ )
+    {
+        p->translate( i * m_theme->elementSize( "star" ).width(), 0 );
+        tempRect = m_theme->elementRect( "star" );
+        tempRect.setSize( m_theme->elementSize( "star" ) );
+        m_theme->paint( p, tempRect, "star" );
+    } //
+    if( stars % 2 != 0 )
+    { // paint a half star too
+        p->translate( m_theme->elementSize( "half-star" ).width(), 0 );
+        tempRect.setSize( m_theme->elementSize( "half-star" ) );
+        m_theme->paint( p, tempRect, "half-star" );
+    }
+    p->restore();
+    
+    kDebug() << "contents rect: " << contentsRect << " size: " << m_theme->size() << endl;
     
     m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
     m_artist->setPos( m_theme->elementRect( "artist" ).topLeft() );
@@ -113,15 +146,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
 //     m_albumCover->setGeometry( m_theme->elementRect( "albumart" ) );
-    
-    debug() << "title rect: " << m_theme->elementRect( "track" ) << " exists: " << m_theme->elementExists( "track" ) << endl;
-    debug() << "artist rect: " << m_theme->elementRect( "artist" ) << " exists: " << m_theme->elementExists( "artist" ) << endl;
-    debug() << "album rect: " << m_theme->elementRect( "album" ) << " exists: " << m_theme->elementExists( "album" ) << endl;
-    debug() << "score rect: " << m_theme->elementRect( "score" ) << " exists: " << m_theme->elementExists( "score" ) << endl;
-    debug() << "numPlayed rect: " << m_theme->elementRect( "numplayed" ) << " exists: " << m_theme->elementExists( "numplayed" ) << endl;
-    debug() << "playedLast rect: " << m_theme->elementRect( "playedlast" ) << " exists: " << m_theme->elementExists( "playedlast" ) << endl;
-    debug() << "albumCover rect: " << m_theme->elementRect( "albumart" ) << " exists: " << m_theme->elementExists( "albumart" ) << endl;
-    
     
     // TODO get, and then paint, album pixmap
     
