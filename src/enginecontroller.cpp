@@ -527,7 +527,8 @@ void EngineController::stop() //SLOT
     m_playFailureCount = 0;
 
     //let Amarok know that the previous track is no longer playing
-    trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
+    if( m_currentTrack )
+        trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
 
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches
     //where stop never properly happens if call to m_engine->load fails in play)
