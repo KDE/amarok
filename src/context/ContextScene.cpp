@@ -49,17 +49,17 @@ ContextScene::~ContextScene()
 Applet* ContextScene::addApplet(const QString& name, const QStringList& args)
 {
     AppletPointer applet = Corona::addApplet( name, args );
-    loaded << applet;
+    m_loaded << applet;
     return applet;
 }
 
 void ContextScene::clear()
 {    
     DEBUG_BLOCK
-    foreach( Applet* applet, loaded )
+    foreach( Applet* applet, m_loaded )
         delete applet;
 
-    loaded.clear();
+    m_loaded.clear();
 }
 
 void ContextScene::clear( const ContextState& state )
@@ -73,7 +73,7 @@ void ContextScene::clear( const ContextState& state )
         return; // startup, or some other wierd case
     
     QStringList applets;
-    foreach( Applet* applet, loaded )
+    foreach( Applet* applet, m_loaded )
     {
         QString key = QString( "%1_%2" ).arg( name, applet->name() );
         applets << applet->name();
@@ -86,7 +86,7 @@ void ContextScene::clear( const ContextState& state )
     debug() << "saved list of applets: " << applets << endl;
     Amarok::config( "Context Applets" ).writeEntry( name, applets );
     Amarok::config( "Context Applets" ).sync();
-    loaded.clear();
+    m_loaded.clear();
 }
 
     

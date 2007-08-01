@@ -47,7 +47,7 @@ protected:
     
 private:
     typedef QPointer<Applet> AppletPointer;
-    QList<AppletPointer> loaded;
+    QList<AppletPointer> m_loaded;
 };
 
 } // Context namespace
