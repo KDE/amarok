@@ -41,6 +41,7 @@ PodcastModel::~PodcastModel()
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
+    DEBUG_BLOCK
     Q_UNUSED( role )
     debug() << k_funcinfo << " index: " << index.row() << ":" << index.column();
     switch( index.column() )
@@ -141,6 +142,8 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 int
 PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
 {
+    DEBUG_BLOCK
+    
     debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
     if (parent.column() > 0)
     {
@@ -187,13 +190,20 @@ PodcastModel::headerData(int section, Qt::Orientation orientation, int role) con
             Q_UNUSED( role )
 
             debug() << k_funcinfo << "section = " << section;
-    switch( section )
-    {
-        case 0: return QString("Type");
-        case 1: return QString("Title");
-        case 2: return QString("Summary");
-        default: return QString( "Section ") + QString::number( section );
+    
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) { 
+        switch( section )
+        {
+            case 0: return QString("Type");
+            case 1: return QString("Title");
+            case 2: return QString("Summary");
+            default: return QString( "Section ") + QString::number( section );
+        }
+    } else {
+        return QVariant();   
     }
+    
+    
 }
 
 void
