@@ -14,22 +14,11 @@
 #ifndef AMAROK_SVG_H
 #define AMAROK_SVG_H
 
-#include "amarok_export.h"
-
 #include <plasma/svg.h>
 
 namespace Context
 {
-
-class AMAROK_EXPORT Svg : public Plasma::Svg
-{
-public:
-    Svg( const QString& imagePath, QObject* parent = 0 );
-    
-    // our elementRect takes care of the transform matrix
-    QRect elementRect( const QString& elementId );
-
-};
+    typedef Plasma::Svg Svg;
 
 } // context  namespace
 

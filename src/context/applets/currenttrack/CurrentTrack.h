@@ -19,13 +19,7 @@
 #include <context/Svg.h>
 #include <context/widgets/TextWidget.h>
 
-#include <KDialog>
-
-class QGraphicsPixmapItem;
-class QLabel;
-class QVBoxLayout;
-class QSpinBox;
-class QCheckBox;
+#include <QGraphicsPixmapItem>
 
 class CurrentTrack : public Context::Applet
 {
@@ -41,25 +35,11 @@ public:
     
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
-    
-private slots:
-    void configAccepted();
     
 private:
-    void resize( qreal newWidth, qreal aspectRatio );
     
-    KDialog* m_config;
-    QVBoxLayout* m_configLayout;
-    QCheckBox* m_starBox;
-    QSpinBox* m_spinWidth;
-    int m_width;
-    bool m_ratingsEnabled;
-    
-    qreal m_aspectRatio;
-    
-    Context::Svg* m_theme;
     QSizeF m_size;
+    Context::Svg* m_theme;
     
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;

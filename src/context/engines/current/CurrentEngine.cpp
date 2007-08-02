@@ -31,18 +31,17 @@ CurrentEngine::CurrentEngine( QObject* parent, const QStringList& args )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK
-    m_sources = QStringList();
-    m_sources << "current";
 }
 
 QStringList CurrentEngine::sources() const
 {
-    return m_sources; // we don't have sources, if connected, it is enabled.
+    return QStringList(); // we don't have sources, if connected, it is enabled.
 }
 
 bool CurrentEngine::sourceRequested( const QString& name )
 {
-/*    m_sources << name;    // we are already enabled if we are alive*/
+    Q_UNUSED( name )
+    // we are already enabled if we are alive
     m_requested = true;
     return true;
 }
@@ -71,8 +70,8 @@ void CurrentEngine::update()
     trackInfo << track->lastPlayed();
     trackInfo << track->playCount();
     
-    int width = coverWidth();
-    trackInfo << QVariant( track->album()->image( width ) );
+    // TODO talk to maxx_k about getting local album url
+//     trackInfo << track->album()->
     
     setData( "current", "current", trackInfo );
     

@@ -499,16 +499,6 @@
        fx="24.26058"
        fy="96.778763"
        r="2.793914" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient9189"
-       id="linearGradient2293"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0312634,0,0,1.0485214,-23.296179,-407.85845)"
-       x1="133.57143"
-       y1="417.00504"
-       x2="137.14287"
-       y2="558.43359" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -559,14 +549,15 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <g
+       transform="translate(-22.003933,-383.57145)"
        id="albumart"
-       albumart="">
+       inkscape:label="#albumart">
       <rect
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
          inkscape:export-filename="/home/beast/Work/amarok applets/current track.png"
-         y="29.316399"
-         x="19.94878"
+         y="412.88785"
+         x="41.952713"
          height="168.94653"
          width="187.3119"
          id="rect6163"
@@ -579,14 +570,14 @@
          id="rect7219"
          width="19.331589"
          height="169.66324"
-         x="19.596333"
-         y="28.958031" />
+         x="41.600266"
+         y="412.52948" />
       <g
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
          inkscape:export-filename="/home/beast/Work/amarok applets/current track.png"
          style="opacity:0.5"
-         transform="matrix(1.0312634,0,0,1.0551489,-23.296179,-410.89029)"
+         transform="matrix(1.0312634,0,0,1.0551489,-1.2922465,-27.318842)"
          id="g6239">
         <rect
            y="417.72528"
@@ -653,12 +644,12 @@
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
          inkscape:export-filename="/home/beast/Work/amarok applets/current track.png"
-         y="29.380241"
-         x="38.947933"
+         y="412.95169"
+         x="60.951866"
          height="169.26131"
          width="169.05353"
          id="rect8190"
-         style="opacity:0.5;fill:url(#linearGradient2293);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="opacity:0.5;fill:url(#linearGradient9195);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
     <rect
        y="48.790771"

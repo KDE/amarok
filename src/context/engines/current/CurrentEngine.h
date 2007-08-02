@@ -34,15 +34,13 @@
         * Track Length
         * Last Played
         * Number of times played
-        * Album cover (QImage)
+        * Album cover url (local)
 
 */
 
 class CurrentEngine : public Context::DataEngine, public ContextObserver
 {
     Q_OBJECT
-        
-    Q_PROPERTY( int coverWidth READ coverWidth WRITE setCoverWidth  )
     
 public:
 
@@ -51,17 +49,12 @@ public:
     QStringList sources() const;
     void message( const Context::ContextState& state );
     
-    int coverWidth() { return m_coverWidth; }
-    void setCoverWidth( const int width ) { m_coverWidth = width; }
-    
 protected:
     bool sourceRequested( const QString& name );
     
 private:
     void update();
     
-    int m_coverWidth;
-    QStringList m_sources;
     bool m_requested;
 };
 
