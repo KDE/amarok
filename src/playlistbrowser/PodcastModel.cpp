@@ -44,14 +44,17 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
     DEBUG_BLOCK
     Q_UNUSED( role )
     debug() << k_funcinfo << " index: " << index.row() << ":" << index.column();
-    switch( index.column() )
-    {
-        case 0: return QString("data 0"); break;
-        case 1: return QString("data 1"); break;
-        case 2: return QString("data 2"); break;
-        case 3: return QString("data 3"); break;
-        case 4: return QString("data 4"); break;
-        default: return QString("data ?"); break;
+    
+    if ( role == Qt::DisplayRole ) {
+        switch( index.column() )
+        {
+            case 0: return QString("data 0"); break;
+            case 1: return QString("data 1"); break;
+            case 2: return QString("data 2"); break;
+            case 3: return QString("data 3"); break;
+            case 4: return QString("data 4"); break;
+            default: return QString("data ?"); break;
+        }
     }
     return QVariant();
 }
