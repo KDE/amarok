@@ -11,26 +11,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_SVG_H
-#define AMAROK_SVG_H
+#include "Svg.h"
 
-#include "amarok_export.h"
+#include <QMatrix>
 
-#include <plasma/svg.h>
+#include <KDebug>
 
 namespace Context
 {
 
-class AMAROK_EXPORT Svg : public Plasma::Svg
+Svg::Svg( const QString& imagePath, QObject* parent )
+    : Plasma::Svg( imagePath, parent )
+{}
+
+QRect Svg::elementRect( const QString& elementId )
 {
-public:
-    Svg( const QString& imagePath, QObject* parent = 0 );
+    QRect rect = Plasma::Svg::elementRect( elementId );
+    rect.translate( matrixForElement( elementId ).dx(), matrixForElement( elementId ).dy() );
     
-    // our elementRect takes care of the transform matrix
-    QRect elementRect( const QString& elementId );
+    return rect;
+    
+}
 
-};
-
-} // context  namespace
-
-#endif
+} // namespace Context

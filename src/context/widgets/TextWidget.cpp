@@ -26,10 +26,9 @@ TextWidget::TextWidget( QGraphicsItem* parent, QGraphicsScene* scene )
     : QGraphicsTextItem( parent, scene )
 {}
 
-void TextWidget::setText( const QString& text )
+void TextWidget::setText( const QString text )
 {
     setHtml( text );
-    
 }
 
 Qt::Orientations TextWidget::expandingDirections() const
