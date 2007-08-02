@@ -211,7 +211,7 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
         QPixmap cover = m_albumCover->pixmap();
         cover = cover.scaledToWidth( newWidth, Qt::SmoothTransformation );
         m_albumCover->setPixmap( cover );
-        debug() << "changing pixmap size from " << oldWidth << " to " << cover.width();
+        debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
     }
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
