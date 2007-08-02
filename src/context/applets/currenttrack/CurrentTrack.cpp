@@ -122,6 +122,13 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     m_score->setText( currentInfo[ 4 ].toString() );
     m_trackLength = currentInfo[ 5 ].toInt();
 //     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );
+    
+    // scale pixmap on demand
+    QPixmap cover = m_albumCover->pixmap();
+    cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
+    m_albumCover->setPixmap( cover );
+    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
+    
     m_numPlayed->setText( currentInfo[ 7 ].toString() );
     m_albumCover->setPixmap( currentInfo[ 8 ].value<QPixmap>() ); 
     
@@ -205,16 +212,9 @@ void CurrentTrack::configAccepted() // SLOT
 void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
 {
     qreal height = aspectRatio * newWidth;
-    qreal oldWidth = m_size.width();
-    if( oldWidth > newWidth ) // scale down pixmap so it doesn't look crappy
-    {
-        QPixmap cover = m_albumCover->pixmap();
-        cover = cover.scaledToWidth( newWidth, Qt::SmoothTransformation );
-        m_albumCover->setPixmap( cover );
-        debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-    }
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
+    
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size << endl;
     constraintsUpdated();
