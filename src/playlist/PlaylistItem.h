@@ -11,27 +11,18 @@
 
 #include "meta.h"
 
-#include <QMetaType>
-
-class QFontMetricsF;
-class QGraphicsScene;
-
 namespace PlaylistNS {
-
-    class ItemScene;
 
     class Item
     {
         public:
-            Item() : m_scene( 0 ) { }
+            Item() { }
             Item( Meta::TrackPtr track );
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
-            QGraphicsScene* scene( int totalWidth = -1 );
 
         private:
             Meta::TrackPtr m_track;
-            ItemScene* m_scene;
     };
 
 }

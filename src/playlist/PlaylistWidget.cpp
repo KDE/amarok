@@ -6,9 +6,10 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-#include "PlaylistView.h"
+//#include "PlaylistView.h"
 #include "PlaylistWidget.h"
 #include "TheInstances.h"
 
@@ -26,8 +27,9 @@ Widget::Widget( QWidget* parent )
     PlaylistNS::Model* playmodel = The::playlistModel();
     playmodel->init();
     playmodel->testData();
-    PlaylistNS::View* playView = new PlaylistNS::View( this );
-    playView->setModel( playmodel );
+ //   PlaylistNS::View* playView = new PlaylistNS::View( this );
+ //   playView->setModel( playmodel );
+    PlaylistNS::GraphicsView* playView = new PlaylistNS::GraphicsView( this, playmodel );
     layout->setSpacing( 0 );
     layout->addWidget( header );
     layout->addWidget( playView );

@@ -6,32 +6,28 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#ifndef AMAROK_PLAYLIST_ITEMSCENE_H
-#define AMAROK_PLAYLIST_ITEMSCENE_H
-
 #include "meta.h"
-
-#include <QGraphicsScene>
+#include <QGraphicsItem>
 
 class QFontMetricsF;
 
 namespace PlaylistNS {
 
-    class ItemScene : public QGraphicsScene
+    class GraphicsItem : public QGraphicsItem
     {
+        class ActiveItems;
         public:
-            ItemScene( Meta::TrackPtr track );
-            void resize( int totalWidth = -1 );
-    
+            GraphicsItem();
+            ~GraphicsItem();
+            void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
+            QRectF boundingRect() const;
+            void setupItem();
             static qreal height() { return s_height; }
         private:
-            Meta::TrackPtr m_track;
+            void init( Meta::TrackPtr track );
+            void resize( Meta::TrackPtr track, int totalWidth );
 
-            QGraphicsTextItem* m_topLeftText;
-            QGraphicsTextItem* m_bottomLeftText;
-            QGraphicsTextItem* m_topRightText;
-            QGraphicsTextItem* m_bottomRightText;
-
+            ActiveItems* m_items;
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
             static qreal s_height;
@@ -39,5 +35,3 @@ namespace PlaylistNS {
     };
 
 }
-
-#endif

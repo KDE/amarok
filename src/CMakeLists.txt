@@ -384,16 +384,15 @@ set(amaroklib_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
-    playlist/ItemScene.cpp
-    playlist/PlaylistDelegate.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
-    playlist/PlaylistView.cpp
     playlist/PlaylistWidget.cpp
     playlist/StandardTrackAdvancer.cpp
     playlist/TrackAdvancer.cpp
     playlist/UndoCommands.cpp
+    playlist/PlaylistGraphicsItem.cpp
+    playlist/PlaylistGraphicsView.cpp
     playlist.cpp
     playlistbrowser.cpp
     playlistbrowseritem.cpp
