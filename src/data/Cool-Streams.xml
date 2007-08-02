@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<coolstreams version="1.3-SVN" product="Amarok" >
- <stream name="Bassdrive [Drum 'n Bass]">
+<coolstreams version="1.4-SVN" product="Amarok" >
+ <stream name="Afterhours.FM [Trance/Progressive]">
+  <url>http://www.ah.fm/192k.m3u</url>
+ </stream>
+ <stream name="Bassdrive [Drum and Bass]">
   <url>http://www.bassdrive.com/v2/streams/BassDrive.m3u</url>
  </stream>
- <stream name="Bluemars [Ambient/Space-Music]">
-  <url>http://207.200.96.225:8020/listen.pls</url>
+ <stream name="Digital Gunfire [Industrial/EBM]">
+  <url>http://www.digitalgunfire.com/playlist.pls</url>
  </stream>
  <stream name="Digitally Imported - Chillout [Chill-Out]">
   <url>http://di.fm/mp3/chillout.pls</url>
@@ -15,14 +18,14 @@
  <stream name="Digitally Imported - Trance [Trance]">
   <url>http://di.fm/mp3/trance.pls</url>
  </stream>
+ <stream name="DnbRadio [Drum and Bass]">
+  <url>http://dnbradio.com/hi.pls</url>
+ </stream>
  <stream name="Electronic Culture [Minimal Techno]">
   <url>http://www.shouted.fm/tunein/electro-dsl.m3u</url>
  </stream>
  <stream name="Frequence 3 [Pop]">
   <url>http://streams.frequence3.net/hd-mp3.m3u</url>
- </stream>
- <stream name="Gaming FM [Computer-Music]">
-  <url>http://208.64.81.140:7500/listen.pls</url>
  </stream>
  <stream name="Groove Salad [Chill-Out]">
   <url>http://www.somafm.com/groovesalad.pls</url>
@@ -56,9 +59,6 @@
  </stream>
  <stream name="Pure DJ [Trance]">
   <url>http://www.puredj.com/etc/pls/128K.pls</url>
- </stream>
- <stream name="Radio.BMJ.net [Trance/Livesets]">
-  <url>http://radio.bmj.net:8000/listen.pls</url>
  </stream>
  <stream name="Radio Paradise [Rock/Pop/Alternative]">
   <url>http://www.radioparadise.com/musiclinks/rp_128.m3u</url>
