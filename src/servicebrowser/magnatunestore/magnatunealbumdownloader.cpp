@@ -53,13 +53,13 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
     KUrl downloadUrl = info->getCompleteDownloadUrl();
     m_currentAlbumUnpackLocation = info->getUnpackLocation();
-    debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
+    debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
 
     m_currentAlbumFileName = downloadUrl.fileName();
 
 
-    debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName << endl;
+    debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName;
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, true, false, false );
 
@@ -76,7 +76,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 {
 
-    debug() << "album download complete" << endl;
+    debug() << "album download complete";
 
     if ( !downloadJob->error() == 0 )
     {
@@ -90,7 +90,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     QString unzipString = "unzip " + KShell::quoteArg( m_tempDir->name() + m_currentAlbumFileName ) + " -d " + KShell::quoteArg( m_currentAlbumUnpackLocation ) + " &";
 
-    debug() << "unpacking: " << unzipString << endl;
+    debug() << "unpacking: " << unzipString;
 
     system( unzipString.toAscii() );
 
@@ -107,7 +107,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
         KUrl downloadUrl( coverUrlString );
 
-        debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath << endl;
+        debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
         m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, true, false, false );
 
@@ -133,7 +133,7 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
     m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
-    debug() << "Aborted album download" << endl;
+    debug() << "Aborted album download";
 
     emit( downloadComplete( false ) );
 

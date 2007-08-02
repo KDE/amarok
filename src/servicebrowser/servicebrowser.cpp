@@ -32,7 +32,7 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
 {
     setObjectName( name );
 
-    debug() << "ServiceBrowser starting..." << endl;
+    debug() << "ServiceBrowser starting...";
     m_serviceSelectionList = new QListWidget( this );
     m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
     m_serviceSelectionList->setSpacing ( 4 );
@@ -64,7 +64,7 @@ void ServiceBrowser::addService( ServiceBase * service ) {
 
 void ServiceBrowser::serviceSelected( QListWidgetItem * item )
 {
-    debug() << "Show service: " <<  item->text() << endl;
+    debug() << "Show service: " <<  item->text();
     showService(  item->text() );
 }
 

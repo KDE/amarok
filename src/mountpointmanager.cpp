@@ -49,7 +49,7 @@ MountPointManager::MountPointManager()
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
     {
-        debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals" << endl;
+        debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals";
         return;
     }
     //we are only interested in the mounting or unmounting of mediums
@@ -106,7 +106,7 @@ MountPointManager::init()
 {
     DEBUG_BLOCK
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers" << endl;
+    debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers";
     oldForeachType( KService::List, plugins )
     {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
@@ -119,9 +119,9 @@ MountPointManager::init()
                 m_remoteFactories.append( factory );
             else
                 //FIXME max: better error message
-                debug() << "Unknown DeviceHandlerFactory" << endl;
+                debug() << "Unknown DeviceHandlerFactory";
         }
-        else debug() << "Plugin could not be loaded" << endl;
+        else debug() << "Plugin could not be loaded";
     }
     //we need access to the unfiltered data
     MediumList list = DeviceManager::instance()->getDeviceList();
@@ -191,13 +191,13 @@ MountPointManager::getMountPointForId( const int id ) const
 void
 MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath, KUrl& absolutePath) const
 {
-    //debug() << "id is " << deviceId << ", relative path is " << relativePath.path() << endl;
+    //debug() << "id is " << deviceId << ", relative path is " << relativePath.path();
     if ( deviceId == -1 )
     {
         absolutePath.setPath( "/" );
         absolutePath.addPath( relativePath.path() );
         absolutePath.cleanPath();
-        //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path() << endl;
+        //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
         return;
     }
     m_handlerMapMutex.lock();
@@ -225,7 +225,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
             absolutePath.setPath( lastMountPoint.first() );
             absolutePath.addPath( relativePath.path() );
             absolutePath.cleanPath();
-//             debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path() << endl;
+//             debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
         }
     }
 }
@@ -279,24 +279,24 @@ MountPointManager::mediumChanged( const Medium *m )
         {
             if ( (*it)->canHandle ( m ) )
             {
-                debug() << "found handler for " << m->id() << endl;
+                debug() << "found handler for " << m->id();
                 DeviceHandler *handler = (*it)->createHandler( m );
                 if( !handler )
                 {
-                    debug() << "Factory " << (*it)->type() << "could not create device handler" << endl;
+                    debug() << "Factory " << (*it)->type() << "could not create device handler";
                     break;
                 }
                 int key = handler->getDeviceID();
                 m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
                 {
-                    debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
+                    debug() << "Key " << key << " already exists in handlerMap, replacing";
                     delete m_handlerMap[key];
                     m_handlerMap.erase( key );
                 }
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
-                debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
+                debug() << "added device " << key << " with mount point " << m->mountPoint();
                 emit mediumConnected( key );
                 break;  //we found the added medium and don't have to check the other device handlers
             }
@@ -312,7 +312,7 @@ MountPointManager::mediumChanged( const Medium *m )
                 delete it.data();
                 int key = it.key();
                 m_handlerMap.erase( key );
-                debug() << "removed device " << key << endl;
+                debug() << "removed device " << key;
                 m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
                 //we found the medium which was removed, so we can abort the loop
@@ -342,7 +342,7 @@ MountPointManager::mediumRemoved( const Medium *m )
                 delete it.data();
                 int key = it.key();
                 m_handlerMap.erase( key );
-                debug() << "removed device " << key << endl;
+                debug() << "removed device " << key;
                 m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
                 //we found the medium which was removed, so we can abort the loop
@@ -360,29 +360,29 @@ MountPointManager::mediumAdded( const Medium *m )
     if ( !m ) return;
     if ( m->isMounted() )
     {
-        debug() << "Device added and mounted, checking handlers" << endl;
+        debug() << "Device added and mounted, checking handlers";
         oldForeachType( FactoryList, m_mediumFactories )
         {
             if ( (*it)->canHandle ( m ) )
             {
-                debug() << "found handler for " << m->id() << endl;
+                debug() << "found handler for " << m->id();
                 DeviceHandler *handler = (*it)->createHandler( m );
                 if( !handler )
                 {
-                    debug() << "Factory " << (*it)->type() << "could not create device handler" << endl;
+                    debug() << "Factory " << (*it)->type() << "could not create device handler";
                     break;
                 }
                 int key = handler->getDeviceID();
                 m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
                 {
-                    debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
+                    debug() << "Key " << key << " already exists in handlerMap, replacing";
                     delete m_handlerMap[key];
                     m_handlerMap.erase( key );
                 }
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
-                debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
+                debug() << "added device " << key << " with mount point " << m->mountPoint();
                 emit mediumConnected( key );
                 break;  //we found the added medium and don't have to check the other device handlers
             }
@@ -544,7 +544,7 @@ void UrlUpdateJob::updateStatistics( )
     QStringList urls = collDB->query( "SELECT s.deviceid,s.url "
                                       "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
                                       "WHERE t.url IS NULL AND s.deviceid != -2;" );
-    debug() << "Trying to update " << urls.count() / 2 << " statistics rows" << endl;
+    debug() << "Trying to update " << urls.count() / 2 << " statistics rows";
     oldForeach( urls )
     {
         int deviceid = (*it).toInt();
@@ -580,7 +580,7 @@ void UrlUpdateJob::updateLabels( )
     QStringList labels = collDB->query( "SELECT l.deviceid,l.url "
                                         "FROM tags_labels AS l LEFT JOIN tags as t ON l.deviceid = t.deviceid AND l.url = t.url "
                                         "WHERE t.url IS NULL;" );
-    debug() << "Trying to update " << labels.count() / 2 << " tags_labels rows" << endl;
+    debug() << "Trying to update " << labels.count() / 2 << " tags_labels rows";
     oldForeach( labels )
     {
         int deviceid = (*it).toInt();

@@ -101,7 +101,7 @@ MediaItem
     if( m_fileNameToItem[ bundle.filename() ] != 0 )
     {
         // track already exists. don't do anything (for now).
-        debug() << "Track already exists on device." << endl;
+        debug() << "Track already exists on device.";
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Track already exists on device" ),
@@ -114,7 +114,7 @@ MediaItem
 
     if( fid < 0 )
     {
-        debug() << "Could not write file" << fid << endl;
+        debug() << "Could not write file" << fid;
         return 0;
     }
 
@@ -137,7 +137,7 @@ RioKarmaMediaDevice::synchronizeDevice()
     int ret;
     ret = lk_karma_write_smalldb();
     if( ret )
-        debug() << "error writing smalldb file" << endl;
+        debug() << "error writing smalldb file";
 }
 
 /**
@@ -252,23 +252,23 @@ RioKarmaMediaDevice::deleteRioTrack( RioKarmaMediaItem *trackItem )
 
     DEBUG_BLOCK
 
-    debug() << "delete this fid : " << trackItem->track()->id() << endl;
+    debug() << "delete this fid : " << trackItem->track()->id();
 
     // delete the file
     int status = lk_karma_delete_file( m_rio, trackItem->track()->id() );
     if( status < 0 ) {
-        debug() << "delete track failed" << endl;
+        debug() << "delete track failed";
         return -1;
     }
-    debug() << "track deleted" << endl;
+    debug() << "track deleted";
 
     // delete the properties (db entry)
     status = lk_properties_del_property( trackItem->track()->id() );
     if( status < 0 ) {
-        debug() << "delete property failed" << endl;
+        debug() << "delete property failed";
         return -1;
     }
-    debug() << "property deleted" << endl;
+    debug() << "property deleted";
 
     // remove from the listview
     delete trackItem;
@@ -304,11 +304,11 @@ RioKarmaMediaDevice::openDevice( bool silent )
     char *mount = qstrdup( mountPoint().toUtf8() );
     m_rio = lk_karma_connect( mount );
 
-    debug() << "Rio karma : " << m_rio << endl;
+    debug() << "Rio karma : " << m_rio;
 
     if( m_rio < 0 )
     {
-        debug()<< "Error connecting" << endl;
+        debug()<< "Error connecting";
         Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Rio Karma could not be opened" ), KDE::StatusBar::Error );
         setDisconnected();
         return false;
@@ -484,7 +484,7 @@ RioKarmaMediaDevice::readKarmaMusic()
 
     if( ret == 0 )
     {
-        debug()<< "Error reading tracks. NULL returned." << endl;
+        debug()<< "Error reading tracks. NULL returned.";
         Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Could not read Rio Karma tracks" ), KDE::StatusBar::Error );
         setDisconnected();
         hideProgress();
@@ -505,7 +505,7 @@ RioKarmaMediaDevice::readKarmaMusic()
         if( qstrcmp( "playlist", lk_properties_get_property( ret[i], "type" ) ) == 0 )
         {
             // nothing for now...
-            debug() << "Found a playlist at fid " << ret[i] << ". Skipping." << endl;
+            debug() << "Found a playlist at fid " << ret[i] << ". Skipping.";
         }
         else
         {

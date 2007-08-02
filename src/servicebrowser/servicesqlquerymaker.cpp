@@ -147,7 +147,7 @@ ServiceSqlQueryMaker::run()
     }
     else
     {
-        debug() << "Query is " << query() << endl;
+        debug() << "Query is " << query();
         d->worker = new ServiceSqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
@@ -511,7 +511,7 @@ QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
     DEBUG_BLOCK
-    debug() << "Query string: " << query << endl;
+    debug() << "Query string: " << query;
     return m_collection->query( query );
 }
 
@@ -519,7 +519,7 @@ void
 ServiceSqlQueryMaker::handleResult( const QStringList &result )
 {
     DEBUG_BLOCK
-    debug() << "Result length: " << result.count() << endl;
+    debug() << "Result length: " << result.count();
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -546,7 +546,7 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;*/
 
         case Private::NONE:
-            debug() << "Warning: queryResult with queryType == NONE" << endl;
+            debug() << "Warning: queryResult with queryType == NONE";
         }
     }
 
@@ -613,7 +613,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 
     int resultRows = result.count() / rowCount;
 
-    debug() << "number of result rows: " << resultRows << endl;
+    debug() << "number of result rows: " << resultRows;
     for( int i = 0; i < resultRows; i++ )
     {
         QStringList row = result.mid( i*rowCount, rowCount );

@@ -45,7 +45,7 @@ MediaDeviceManager::MediaDeviceManager()
     }
     if( !mediums.count() )
     {
-        debug() << "DeviceManager didn't return any devices, we are probably running on a non-KDE system. Trying to reinit media devices later" << endl;
+        debug() << "DeviceManager didn't return any devices, we are probably running on a non-KDE system. Trying to reinit media devices later";
         QTimer::singleShot( 4000, this, SLOT( reinitDevices() ) );
     }
     //load manual devices
@@ -141,9 +141,9 @@ void MediaDeviceManager::slotMediumRemoved( const Medium* , QString id )
     if ( m_mediumMap.contains(id) )
         removedMedium = m_mediumMap[id];
     if ( removedMedium )
-        debug() << "[MediaDeviceManager::slotMediumRemoved] Obtained medium name is " << id << ", id is: " << removedMedium->id() << endl;
+        debug() << "[MediaDeviceManager::slotMediumRemoved] Obtained medium name is " << id << ", id is: " << removedMedium->id();
     else
-        debug() << "[MediaDeviceManager::slotMediumRemoved] Medium was unknown and is null; name was " << id << endl;
+        debug() << "[MediaDeviceManager::slotMediumRemoved] Medium was unknown and is null; name was " << id;
     //if you get a null pointer from this signal, it means we did not know about the device
     //before it was removed, i.e. the removal was the first event for the device received while amarok
     //has been running

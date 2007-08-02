@@ -255,7 +255,7 @@ Model::setActiveRow( int row )
         emit dataChanged( createIndex( min, 0 ), createIndex( min, 0 ) );
         emit dataChanged( createIndex( max, 0 ), createIndex( max, 0 ) );
     }
-    debug() << "between " << min << " and " << max << endl;
+    debug() << "between " << min << " and " << max;
     m_activeRow = row;
 }
 
@@ -402,7 +402,7 @@ Model::mimeTypes() const //reimplemented
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
-    debug() << ret << endl;
+    debug() << ret;
     return ret;
 }
 
@@ -429,20 +429,20 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
-        debug() << "Found track mime type" << endl;
+        debug() << "Found track mime type";
 
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
-            debug() << "It's a list drag!" << endl;
+            debug() << "It's a list drag!";
             if( row < 0 )
             {
-                debug() << "Inserting at row: " << row << " so we're appending to the list." << endl;
+                debug() << "Inserting at row: " << row << " so we're appending to the list.";
                 insertOptioned( trackListDrag->tracks(), PlaylistNS::Append );
             }
             else
             {
-                debug() << "Inserting at row: " << row <<" so its inserted correctly." << endl;
+                debug() << "Inserting at row: " << row <<" so its inserted correctly.";
                 insertTracks( row, trackListDrag->tracks() );
             }
             return true;
@@ -451,7 +451,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
     else if( data->hasUrls() )
     {
         //probably a drop from an external source
-        debug() << "Drop from external source" << endl;
+        debug() << "Drop from external source";
         QList<QUrl> urls = data->urls();
         Meta::TrackList tracks;
         foreach( QUrl url, urls )
@@ -476,7 +476,7 @@ void
 Model::insertTracksCommand( int row, TrackList list )
 {
     DEBUG_BLOCK
-    debug() << "inserting... " << row << ' ' << list.count() << endl;
+    debug() << "inserting... " << row << ' ' << list.count();
     if( !list.size() )
         return;
 

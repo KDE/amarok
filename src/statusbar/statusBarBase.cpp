@@ -147,7 +147,7 @@ StatusBar::polish()
         if ( _h > h )
             h = _h;
 
-//         debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight() << endl;
+//         debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight();
 
         if ( o->inherits( "QLabel" ) )
             static_cast<QLabel*>(o)->setIndent( 4 );
@@ -222,7 +222,7 @@ void
 StatusBar::resetMainText()
 {
 //     if( sender() )
-//         debug() << sender()->name() << endl;
+//         debug() << sender()->name();
 
     // don't reset if we are showing a shortMessage
     if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )

@@ -278,7 +278,7 @@ Amarok::PrettySlider::moodbarJobEvent( int newState )
 {
     if( newState == Moodbar::JobStateSucceeded )
       {
-        debug() << "moodbarJobEvent: new moodbar data" << endl;
+        debug() << "moodbarJobEvent: new moodbar data";
         update();
       }
 }

@@ -185,7 +185,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
 {
-    debug() << "create album from result row: " << resultRow << endl;
+    debug() << "create album from result row: " << resultRow;
 
 
     m_coverUrl = resultRow[4];

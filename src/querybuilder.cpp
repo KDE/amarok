@@ -1080,7 +1080,7 @@ QueryBuilder::buildQuery( bool withDeviceidPlaceholder )
             else
             {
                 IdList list = MountPointManager::instance()->getMountedDeviceIds();
-                //debug() << "number of device ids " << list.count() << endl;
+                //debug() << "number of device ids " << list.count();
                 m_query += " AND tags.deviceid IN (";
                 oldForeachType( IdList, list )
                 {
@@ -1115,7 +1115,7 @@ QStringList
 QueryBuilder::run()
 {
     buildQuery();
-    //debug() << m_query << endl;
+    //debug() << m_query;
     QStringList rs = CollectionDB::instance()->query( m_query );
     //calling code is unaware of the dynamic collection implementation, it simply expects an URL
     if( m_deviceidPos > 0 )

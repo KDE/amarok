@@ -361,7 +361,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             CollectionTreeItem *item = parent->child( i );
             if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
             {
-                debug() << "Item in m_expandedItems, querying for children" << endl;
+                debug() << "Item in m_expandedItems, querying for children";
                 listForLevel( item->level(), item->queryMaker(), item );
             }
         }
@@ -370,7 +370,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         {
             if ( m_expandedItems.contains( parent->data() ) )
             {
-                debug() << "Requesting expansion of parent item" << endl;
+                debug() << "Requesting expansion of parent item";
                 emit expandIndex( parentIndex );
             }
             else

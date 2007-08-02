@@ -150,7 +150,7 @@ SqlQueryBuilder::run()
     }
     else
     {
-        //debug() << "Query is " << query() << endl;
+        //debug() << "Query is " << query();
         d->worker = new SqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
@@ -503,7 +503,7 @@ SqlQueryBuilder::handleResult( const QStringList &result )
             break;
 
         case Private::NONE:
-            debug() << "Warning: queryResult with queryType == NONE" << endl;
+            debug() << "Warning: queryResult with queryType == NONE";
         }
     }
 

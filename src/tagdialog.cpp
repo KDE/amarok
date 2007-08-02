@@ -1469,7 +1469,7 @@ TagDialog::generateHTML( const QStringList &labels )
                               .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
     }
     html.append( "</html></body>" );
-    debug() << "Dumping HTML for label cloud: " << html << endl;
+    debug() << "Dumping HTML for label cloud: " << html;
     return html;
 }
 

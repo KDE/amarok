@@ -280,7 +280,7 @@ Reader::songListFinished( int /*id*/, bool error )
     SongList result;
     Q3ValueList<QVariant> songList;
     songList = songResults["adbs"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList();
-    debug() << "songList.count() = " << songList.count() << endl;
+    debug() << "songList.count() = " << songList.count();
     Q3ValueList<QVariant>::iterator it;
     for( it = songList.begin(); it != songList.end(); ++it )
     {
@@ -333,16 +333,16 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
     uint index = 0;
     while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
     {
-    //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
+    //    debug() << "at index " << index << " of a total container size " << containerLength;
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
         {
-//             debug() << "tag " << tag << " has 0 length." << endl;
+//             debug() << "tag " << tag << " has 0 length.";
             index += 8;
             continue;
         }
-//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR << endl;
+//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
 #define DEBUGTAG( VAR )
         switch( s_codes[tag].type )
         {

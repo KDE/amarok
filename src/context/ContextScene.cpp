@@ -80,10 +80,10 @@ void ContextScene::clear( const ContextState& state )
         QStringList pos;
         pos << QString::number( applet->x() ) << QString::number( applet->y() );
         Amarok::config( "Context Applets" ).writeEntry( key, pos );
-        debug() << "saved applet: " << key << " at position: " << pos << endl;
+        debug() << "saved applet: " << key << " at position: " << pos;
         applet->deleteLater();
     }
-    debug() << "saved list of applets: " << applets << endl;
+    debug() << "saved list of applets: " << applets;
     Amarok::config( "Context Applets" ).writeEntry( name, applets );
     Amarok::config( "Context Applets" ).sync();
     m_loaded.clear();

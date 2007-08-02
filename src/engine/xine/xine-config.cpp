@@ -31,7 +31,7 @@ XineGeneralEntry::XineGeneralEntry(const QString& key, xine_t *xine, XineConfigD
     , m_key(key)
     , m_xine(xine)
 {
-    debug() << "new entry " << m_key << endl;
+    debug() << "new entry " << m_key;
     connect(this, SIGNAL(viewChanged()), xcf, SIGNAL(viewChanged() ) );
 }
 
@@ -48,7 +48,7 @@ void XineGeneralEntry::entryChanged()
 template<class T, class Functor>
 void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine)
 {
-    if(xine) debug() << "its not null " << key << ' ' << val << endl;
+    if(xine) debug() << "its not null " << key << ' ' << val;
     xine_cfg_entry_t ent;
     if(xine_config_lookup_entry(xine, key.ascii(), &ent))
     {
@@ -283,10 +283,10 @@ XineConfigDialog::isDefault() const
 void
 XineConfigDialog::reset(xine_t* xine) //SLOT
 {
-    debug() << &m_xine << " " << &xine << endl;
+    debug() << &m_xine << " " << &xine;
     m_entries.clear();
     m_xine = xine;
-    debug() << "m_entries now empty " << m_entries.isEmpty() << endl;
+    debug() << "m_entries now empty " << m_entries.isEmpty();
     init();
 }
 

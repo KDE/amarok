@@ -208,7 +208,7 @@ CoverFetcher::startFetch()
     m_size = 2;
 
     if ( m_queries.isEmpty() ) {
-        debug() << "m_queries is empty" << endl;
+        debug() << "m_queries is empty";
         finishWithError( i18n("No cover found") );
         return;
     }
@@ -242,7 +242,7 @@ CoverFetcher::startFetch()
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
-    debug() << url << endl;
+    debug() << url;
 
     KJob* job = KIO::storedGet( url, false, false );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
@@ -289,7 +289,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
             if(e.tagName()=="Asin")
             {
                 m_asin = e.firstChild().toText().data();
-                debug() << "setting the ASIN as" << m_asin << endl;
+                debug() << "setting the ASIN as" << m_asin;
                 break;
             }
         }
@@ -303,7 +303,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         default: size += "Large";  break;
     }
 
-    debug() << "Fetching size: " << size << endl;
+    debug() << "Fetching size: " << size;
 
     m_coverAsins.clear();
     m_coverAmazonUrls.clear();
@@ -321,7 +321,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         if (!artists.isNull())
             artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
 
-        debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl << endl;
+        debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl;
 
         if( !coverUrl.isEmpty() )
         {
@@ -340,7 +340,7 @@ void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
     if( job->error() ) {
-        debug() << "finishedImageFetch(): KIO::error(): " << job->error() << endl;
+        debug() << "finishedImageFetch(): KIO::error(): " << job->error();
 
         m_errors += i18n("The cover could not be retrieved.");
 

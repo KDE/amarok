@@ -50,7 +50,7 @@ MagnatuneRedownloadHandler::~MagnatuneRedownloadHandler()
 void MagnatuneRedownloadHandler::showRedownloadDialog( )
 {
 
-     debug() << "Show redownload dialog" << endl;
+     debug() << "Show redownload dialog";
 
     QStringList previousDownloads = GetPurchaseList();
 
@@ -78,7 +78,7 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
 QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
 {
    
-    debug() << "MagnatuneRedownloadHandler::GetPurchaseList( )" << endl;
+    debug() << "MagnatuneRedownloadHandler::GetPurchaseList( )";
     
     QStringList returnList;
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
@@ -99,7 +99,7 @@ QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
         returnList.append( fi.fileName() );
         ++it;
     }
-     debug() << "Done parsing previous purchases!" << endl;
+     debug() << "Done parsing previous purchases!";
     return returnList;
 
 }
@@ -110,7 +110,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
     QString absFileName = purchaseInfoDir.absolutePath() + '/' + storedInfoFileName;
 
-   debug() << "Redownload file: " << absFileName << endl;
+   debug() << "Redownload file: " << absFileName;
 
     if ( m_albumDownloader == 0 )
     {
@@ -129,7 +129,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
     if ( downloadInfo->initFromFile( absFileName ) )
     {
 
-        debug() << "Showing download dialog" << endl;
+        debug() << "Showing download dialog";
         m_downloadDialog->setDownloadInfo( downloadInfo );
         m_downloadDialog->show();
     }

@@ -32,7 +32,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist.data() );
     if ( magnatuneArtist == 0) return;
 
-    debug() << "MagnatuneInfoParser: getInfo about artist" << endl;
+    debug() << "MagnatuneInfoParser: getInfo about artist";
 
     // first get the entire artist html page
    /* QString tempFile;
@@ -71,7 +71,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
 
     if ( !magnatuneAlbum->description().isEmpty() ) {
 
-        //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'" << endl;
+        //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'";
         infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->description();
 
     }
@@ -106,10 +106,10 @@ MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 
 
     QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
-    //debug() << "MagnatuneInfoParser: Artist info downloaded: " << infoString << endl;
+    //debug() << "MagnatuneInfoParser: Artist info downloaded: " << infoString;
     infoString = extractArtistInfo( infoString );
 
-    //debug() << "html: " << trimmedInfo << endl;
+    //debug() << "html: " << trimmedInfo;
 
     emit ( info( infoString ) );
 

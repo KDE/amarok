@@ -199,14 +199,14 @@ ScanController::initIncremental()
             if( info.lastModified().toTime_t() != mtime.toUInt() )
             {
                 m_folders << folder;
-                debug() << "Collection dir changed: " << folder << endl;
+                debug() << "Collection dir changed: " << folder;
             }
         }
         else
         {
             // this folder has been removed
             m_folders << folder;
-            debug() << "Collection dir removed: " << folder << endl;
+            debug() << "Collection dir removed: " << folder;
         }
 
         kapp->processEvents(); // Don't block the GUI
@@ -214,7 +214,7 @@ ScanController::initIncremental()
 
     if ( !m_folders.isEmpty() )
     {
-        debug() << "Collection was modified." << endl;
+        debug() << "Collection was modified.";
         m_hasChanged = true;
         Amarok::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
 
@@ -275,9 +275,9 @@ main_loop:
                     sessionStarted = true;
                 }
                 else
-                    debug() << "Incremental parsing failed: " << errorString() << endl << QString( data ) << endl;
+                    debug() << "Incremental parsing failed: " << errorString() << endl << QString( data );
             else if( !m_reader->parseContinue() ) {
-                debug() << "parseContinue() failed: " << errorString() << endl << QString( data ) << endl;
+                debug() << "parseContinue() failed: " << errorString() << endl << QString( data );
             }
         }
     }
@@ -385,7 +385,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
     if( localName == "itemcount") {
         const int totalSteps = attrs.value( "count" ).toInt();
-        debug() << "itemcount event: " << totalSteps << endl;
+        debug() << "itemcount event: " << totalSteps;
         setProgressTotalSteps( totalSteps );
     }
 
@@ -475,7 +475,7 @@ ScanController::customEvent( QEvent* e )
 {
     if( e->type() == RestartEventType )
     {
-        debug() << "RestartEvent received." << endl;
+        debug() << "RestartEvent received.";
 
         QFile log( Amarok::saveLocation( QString() ) + "collection_scan.log" );
         if ( !log.open( QIODevice::ReadOnly ) )

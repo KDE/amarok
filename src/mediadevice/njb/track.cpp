@@ -280,7 +280,7 @@ trackValueList::readFromDevice( void )
 
         ++i;
     }
-    debug() << ": " << i << " jukebox tracks loaded from device." << endl;
+    debug() << ": " << i << " jukebox tracks loaded from device.";
 
     return NJB_SUCCESS;
 }

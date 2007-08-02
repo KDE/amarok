@@ -374,7 +374,7 @@ ScriptManager::findScripts() //SLOT
 
     foreach( QString str, runningScripts )
         if( m_scripts.contains( str ) ) {
-            debug() << "Auto-running script: " << str << endl;
+            debug() << "Auto-running script: " << str;
             m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
             slotRunScript();
         }
@@ -599,7 +599,7 @@ ScriptManager::slotRunScript( bool silent )
     }
 
     li->setIcon( 0, SmallIcon( Amarok::icon( "play" ) ) );
-    debug() << "Running script: " << url.path() << endl;
+    debug() << "Running script: " << url.path();
 
     m_scripts[name].process = script;
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
@@ -731,7 +731,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 void
 ScriptManager::slotReceivedStdout( K3Process*, char* buf, int len )
 {
-    debug() << QString::fromLatin1( buf, len ) << endl;
+    debug() << QString::fromLatin1( buf, len );
 }
 
 
@@ -862,7 +862,7 @@ ScriptManager::loadScript( const QString& path )
         QTreeWidgetItem* li = 0;
         const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
         if( QFile::exists( specPath ) ) {
-            debug() << "Spec file found: " << specPath << endl;
+            debug() << "Spec file found: " << specPath;
             QSettings spec( specPath, QSettings::IniFormat );
             if( spec.contains( "name" ) )
                 name = spec.value( "name" ).toString();
@@ -901,7 +901,7 @@ ScriptManager::loadScript( const QString& path )
         item.li = li;
 
         m_scripts[name] = item;
-        debug() << "Loaded: " << name << endl;
+        debug() << "Loaded: " << name;
 
         slotCurrentChanged( m_gui->treeWidget->currentItem() );
     }

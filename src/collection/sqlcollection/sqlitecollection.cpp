@@ -114,7 +114,7 @@ QStringList SqliteCollection::query( const QString& statement )
             if ( busyCnt )
             {
                 ::usleep( 100000 );      // Sleep 100 msec
-                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt;
             }
             error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
@@ -146,11 +146,11 @@ QStringList SqliteCollection::query( const QString& statement )
                         break;
                     }
                     ::usleep( 100000 ); // Sleep 100 msec
-                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt;
                     continue;
                 }
                 if ( error == SQLITE_MISUSE )
-                    debug() << "sqlite3_step: MISUSE" << endl;
+                    debug() << "sqlite3_step: MISUSE";
                 if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                     break;
 
@@ -173,9 +173,9 @@ QStringList SqliteCollection::query( const QString& statement )
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occurred on query: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on query: " << statement;
                 if ( retryCnt < 10 )
-                    debug() << "Retrying now." << endl;
+                    debug() << "Retrying now.";
                 else
                 {
                     Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
@@ -207,7 +207,7 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
             if ( busyCnt )
             {
                 ::usleep( 100000 );      // Sleep 100 msec
-                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt;
             }
             error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
@@ -237,10 +237,10 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
                         break;
                     }
                     ::usleep( 100000 ); // Sleep 100 msec
-                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt;
                 }
                 if ( error == SQLITE_MISUSE )
-                    debug() << "sqlite3_step: MISUSE" << endl;
+                    debug() << "sqlite3_step: MISUSE";
                 if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                     break;
             }
@@ -256,9 +256,9 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occurred on insert: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on insert: " << statement;
                 if ( retryCnt < 10 )
-                    debug() << "Retrying now." << endl;
+                    debug() << "Retrying now.";
                 else
                 {
                     Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;

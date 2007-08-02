@@ -373,7 +373,7 @@ WebService::WebService( QObject* parent )
     , m_server( 0 )
 {
     setObjectName( "lastfmParent" );
-    debug() << "Initialising Web Service" << endl;
+    debug() << "Initialising Web Service";
 }
 
 
@@ -391,7 +391,7 @@ WebService::readProxy() //SLOT
     QString line;
 
     while( m_server->readln( line ) != -1 ) {
-        debug() << line << endl;
+        debug() << line;
 
         if( line == "AMAROK_PROXY: SYNC" )
             requestMetaData();
@@ -428,7 +428,7 @@ WebService::handshake( const QString& username, const QString& password )
 
     const QString result( http.readAll() );
 
-    debug() << "result: " << result << endl;
+    debug() << "result: " << result;
 
     m_session = parameter( "session", result );
     m_baseHost = parameter( "base_url", result );
@@ -450,7 +450,7 @@ WebService::handshake( const QString& username, const QString& password )
     // Find free port
     MyServerSocket* socket = new MyServerSocket();
     const int port = socket->port();
-    debug() << "Proxy server using port: " << port << endl;
+    debug() << "Proxy server using port: " << port;
     delete socket;
 
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
@@ -486,7 +486,7 @@ WebService::handshake( const QString& username, const QString& password )
 bool
 WebService::changeStation( QString url )
 {
-    debug() << "Changing station:" << url << endl;
+    debug() << "Changing station:" << url;
 
     AmarokHttp http( m_baseHost, 80 );
 
@@ -548,11 +548,11 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     if( error ) return;
 
     const QString result( http->readAll() );
-    debug() << result << endl;
+    debug() << result;
 
     int errCode = parameter( "error", result ).toInt();
     if ( errCode > 0 ) {
-        debug() << "Metadata failed with error code: " << errCode << endl;
+        debug() << "Metadata failed with error code: " << errCode;
         showError( errCode );
         return;
     }
@@ -580,7 +580,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 
     const KUrl u( imageUrl );
     if( !u.isValid() ) {
-        debug() << "imageUrl empty or invalid." << endl;
+        debug() << "imageUrl empty or invalid.";
         emit metaDataResult( m_metaBundle );
         return;
     }
@@ -612,9 +612,9 @@ void
 WebService::enableScrobbling( bool enabled ) //SLOT
 {
     if ( enabled )
-        debug() << "Enabling Scrobbling!" << endl;
+        debug() << "Enabling Scrobbling!";
     else
-        debug() << "Disabling Scrobbling!" << endl;
+        debug() << "Disabling Scrobbling!";
 
     AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( enableScrobblingFinished( int, bool ) ) );
@@ -939,7 +939,7 @@ WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
     AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
 
-    debug() << "Recommendation:" << http->readAll() << endl;
+    debug() << "Recommendation:" << http->readAll();
 }
 
 

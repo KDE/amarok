@@ -80,7 +80,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLoca
     if ( m_currentAlbum )
     {
 
-        debug() << "showing purchase dialog with image: " << coverTempLocation + m_currentAlbumCoverName << endl;
+        debug() << "showing purchase dialog with image: " << coverTempLocation + m_currentAlbumCoverName;
 
         KTempDir tempDir;
         m_purchaseDialog->setAlbum( m_currentAlbum );
@@ -98,7 +98,7 @@ void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QS
     QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=" + ccNumber + "&mm=" + expMonth + "&yy=" + expYear + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
 
     QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=**********&mm=**&yy=**&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
-    debug() << "purchase url : " << debugPurchaseURL << endl;
+    debug() << "purchase url : " << debugPurchaseURL;
 
     m_giftCardPurchase = false;
 
@@ -120,7 +120,7 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
     QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?gc=" + giftCardCode + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
 
     QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?gc=**********&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
-    debug() << "purchase url : " << debugPurchaseURL << endl;
+    debug() << "purchase url : " << debugPurchaseURL;
 
     m_giftCardPurchase = true;
 
@@ -136,7 +136,7 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
 void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
 {
 
-    debug() << "xml download complete" << endl;
+    debug() << "xml download complete";
 
     if ( !downloadJob->error() == 0 )
     {
@@ -149,7 +149,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downloadJob );
     QString resultXml = QString( storedJob->data() );
 
-    debug() << endl << endl << "result: " << resultXml << endl << endl;
+    debug() << endl << endl << "result: " << resultXml << endl;
 
 
     if ( m_albumDownloader == 0 )
@@ -214,7 +214,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
 
     QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
 
-    debug() << "magnatune save location" << purchaseDir.absolutePath() << endl;
+    debug() << "magnatune save location" << purchaseDir.absolutePath();
 
     //if directory does not exist, create it
     if ( ! purchaseDir.exists () )
@@ -243,7 +243,7 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
 {
     //cleanup time!
 
-    debug() << "MagnatunePurchaseHandler::albumDownloadComplete" << endl;
+    debug() << "MagnatunePurchaseHandler::albumDownloadComplete";
 
     delete m_downloadDialog;
     m_downloadDialog = 0;
@@ -254,7 +254,7 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
 
 void MagnatunePurchaseHandler::albumPurchaseCancelled( )
 {
-    debug() << "Purchased dialog cancelled, deleting..." << endl;
+    debug() << "Purchased dialog cancelled, deleting...";
 
     delete m_purchaseDialog;
     m_purchaseDialog = 0;

@@ -544,7 +544,7 @@ MoodServer::slotJobCompleted( K3Process *proc )
     // If the moodbar was disabled, we killed the process
     if( !AmarokConfig::showMoodbar() )
       {
-        debug() << "MoodServer::slotJobCompleted: moodbar disabled, job killed" << endl;
+        debug() << "MoodServer::slotJobCompleted: moodbar disabled, job killed";
         m_mutex.unlock();
         emit jobEvent( url, Moodbar::JobStateFailed );
         return;
@@ -554,7 +554,7 @@ MoodServer::slotJobCompleted( K3Process *proc )
     switch( returnval )
       {
       case Success:
-        debug() << "MoodServer::slotJobCompleted: job completed successfully" << endl;
+        debug() << "MoodServer::slotJobCompleted: job completed successfully";
         m_mutex.unlock();
         slotNewJob();
         break;
@@ -621,7 +621,7 @@ MoodServer::slotFileDeleted( const QString &path )
     if( mood.isEmpty()  ||  !QFile::exists( mood ) )
       return;
 
-    debug() << "MoodServer::slotFileDeleted: deleting " << mood << endl;
+    debug() << "MoodServer::slotFileDeleted: deleting " << mood;
     QFile::remove( mood );
 }
 
@@ -779,7 +779,7 @@ Moodbar::reset( void )
 {
   m_mutex.lock();
 
-  debug() << "Resetting moodbar: " << m_bundle->url().path() << endl;
+  debug() << "Resetting moodbar: " << m_bundle->url().path();
 
   if( JOB_PENDING( m_state ) )
     {
@@ -1063,7 +1063,7 @@ Moodbar::readFile( void )
     if( path.isEmpty() )
       return false;
 
-    debug() << "Moodbar::readFile: Trying to read " << path << endl;
+    debug() << "Moodbar::readFile: Trying to read " << path;
 
     QFile moodFile( path );
 
@@ -1276,7 +1276,7 @@ Moodbar::readFile( void )
     m_hueSort += mx;
 
 
-    debug() << "Moodbar::readFile: All done." << endl;
+    debug() << "Moodbar::readFile: All done.";
 
     moodFile.close();
     m_state = Loaded;

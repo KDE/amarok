@@ -71,7 +71,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow) const
 
 
     if( cacheCoverDir.exists( sizeKey + coverName ) ) {
-        debug() << "Image exists in cache" << endl;
+        debug() << "Image exists in cache";
         img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
         return QPixmap::fromImage( img );
     }
@@ -137,7 +137,7 @@ void ServiceAlbumCoverDownloader::downloadCover( const  ServiceAlbumWithCover * 
 
     m_coverDownloadPath = m_tempDir->name() + downloadUrl.fileName();
 
-    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath << endl;
+    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath;
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, true, false, false );
 
@@ -149,11 +149,11 @@ void ServiceAlbumCoverDownloader::downloadCover( const  ServiceAlbumWithCover * 
 void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
 
-    debug() << "cover download complete" << endl;
+    debug() << "cover download complete";
 
     if ( !downloadJob || !downloadJob->error() == 0 )
     {
-        debug() << "error detected" << endl;
+        debug() << "error detected";
         //we could not download, so inform album
         m_album->imageDownloadCanceled();
         
@@ -173,7 +173,7 @@ void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 void ServiceAlbumCoverDownloader::coverDownloadCanceled(KJob * downloadJob)
 {
     
-    debug() << "cover download cancelled" << endl;
+    debug() << "cover download cancelled";
     m_album->imageDownloadCanceled();
 }
 

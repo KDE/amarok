@@ -152,7 +152,7 @@ void ContextView::loadConfig()
     {
         QString key = QString( "%1_%2" ).arg( cur, applet );
         QStringList pos = Amarok::config( "Context Applets" ).readEntry( key, QStringList() );
-        debug() << "trying to restore: " << key << " at: " << pos << endl;
+        debug() << "trying to restore: " << key << " at: " << pos;
         QString constraint = QString( "[Name] == '%1'" ).arg( applet );
         KService::List offers = KServiceTypeTrader::self()->query( "Plasma/Applet", constraint ); // find the right one
         KPluginInfo::List plugins = KPluginInfo::fromServices( offers );

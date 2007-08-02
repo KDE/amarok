@@ -46,11 +46,11 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
      while ( it.hasNext() ) {
 
            QString currentItem = it.next();
-           debug() << "Adding item to redownload dialog: " << currentItem << endl;
+           debug() << "Adding item to redownload dialog: " << currentItem;
            new Q3ListViewItem(redownloadListView, currentItem);
      }
 
-     debug() << "Nothing more to add..." << endl;
+     debug() << "Nothing more to add...";
 
 }
 

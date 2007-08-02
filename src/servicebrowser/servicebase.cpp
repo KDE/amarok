@@ -214,7 +214,7 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
 
     if (ptr.data() == 0) return; 
 
-    debug() << "selected item: " << ptr.data()->name() << endl;
+    debug() << "selected item: " << ptr.data()->name();
 
     ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
 

@@ -50,7 +50,7 @@ PopupDropperScene::PopupDropperScene( QObject* parent )
     m_fadeInTL.setFrameRange( 0, 10 );
     m_fadeOutTL.setFrameRange( 0, 10 );
     m_spinInTL.setFrameRange( 0, SPIN_IN_FRAMES );
-    debug() << "SPIN IN FRAMES = " << SPIN_IN_FRAMES << endl;
+    debug() << "SPIN IN FRAMES = " << SPIN_IN_FRAMES;
 }
 
 PopupDropperScene::~PopupDropperScene()
@@ -137,17 +137,17 @@ PopupDropperScene::updateIconSpinIn( int frame )
 {
     DEBUG_BLOCK
 
-    debug() << "frame number = " << frame << endl;
+    debug() << "frame number = " << frame;
     if( frame == 0 )
         return;
     const qreal percentage = frame * 1.0 / SPIN_IN_FRAMES;
-    debug() << "percentage being used: " << percentage << endl;
+    debug() << "percentage being used: " << percentage;
 
     foreach( QGraphicsItem* i, items() ) {
         PopupDropperBaseItem* item = static_cast<PopupDropperBaseItem *>( i );
-        debug() << "currItems's scaledPercent() = " << item->scaledPercent() << endl;
+        debug() << "currItems's scaledPercent() = " << item->scaledPercent();
         const qreal scalefactor = ( 1.0 / ( item->scaledPercent() * ( 1.0 / percentage ) ) );
-        debug() << "Scaling by " << scalefactor << endl;
+        debug() << "Scaling by " << scalefactor;
         item->scale( scalefactor, scalefactor );
         item->setScaledPercent( percentage );
     }

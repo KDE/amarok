@@ -147,7 +147,7 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
         if( !config.readEntry( (*it)->id(), QString() ).isEmpty() &&
                 config.readEntry( (*it)->id(), QString() ) == "deleted" && !redetect)
         {
-            debug() << "skipping: deleted" << endl;
+            debug() << "skipping: deleted";
             continue;
         }
 
@@ -160,14 +160,14 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
             if( (*it)->id() == (*dit)->medium()->id() )
             {
                 skipflag = true;
-                debug() << "skipping: already listed" << endl;
+                debug() << "skipping: already listed";
             }
         }
 
         if( m_deletedMap.contains( (*it)->id() ) && !(*it)->isAutodetected() )
         {
             skipflag = true;
-            debug() << "skipping: deleted & not autodetect" << endl;
+            debug() << "skipping: deleted & not autodetect";
         }
 
         if( skipflag )

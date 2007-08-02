@@ -1610,19 +1610,19 @@ bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
     //DEBUG_BLOCK
-    //debug() << "uniqueid of item = " << item->uniqueId() << ", url = " << item->url().path() << endl;
+    //debug() << "uniqueid of item = " << item->uniqueId() << ", url = " << item->url().path();
     if( !item->checkExists() )
     {
-        //debug() << "not found, finding new url" << endl;
+        //debug() << "not found, finding new url";
         QString path;
         if( !item->uniqueId().isEmpty() )
         {
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
-            //debug() << "found path = " << path << endl;
+            //debug() << "found path = " << path;
         }
         else
         {
-            //debug() << "Setting uniqueid of item and trying again" << endl;
+            //debug() << "Setting uniqueid of item and trying again";
             item->setUniqueId();
             if( !item->uniqueId().isEmpty() )
                 path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
@@ -2482,7 +2482,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
          QString subtype;
          Q3TextDrag::decode( e, data, subtype );
 
-         debug() << "QTextDrag::subtype(): " << subtype << endl;
+         debug() << "QTextDrag::subtype(): " << subtype;
 
         if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
@@ -2498,7 +2498,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
         else if( KUrl::List::canDecode( e->mimeData() ) )
         {
-            debug() << "KUrl::List::canDecode" << endl;
+            debug() << "KUrl::List::canDecode";
 
             KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
             if ( !list.isEmpty() )
@@ -4850,7 +4850,7 @@ Playlist::addCustomColumn()
             args.append("%f" );
         }
 
-        debug() << args << endl;
+        debug() << args;
 
         //TODO need to do it with a %u for url and %f for file
         //FIXME gets stuck it seems if you submit broken commands
@@ -4861,7 +4861,7 @@ Playlist::addCustomColumn()
             if( (*it)->url().protocol() != "file" )
                continue;
 
-            debug() << args << endl;
+            debug() << args;
 
             QProcess p;
             for( p.start( args.takeFirst(), args ); p.state() == QProcess::Running; /*kapp->processEvents()*/ )

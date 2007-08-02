@@ -302,7 +302,7 @@ void FileBrowser::setUrl( const KUrl &url )
     else {
         QString urlpath = url.isLocalFile() ? url.path() : url.prettyUrl();
         KUrl newURL( urlpath.prepend( m_medium->mountPoint() ).remove("..") );
-        //debug() << "set-url-kurl: changing to: " << newURL.path() << endl;
+        //debug() << "set-url-kurl: changing to: " << newURL.path();
         m_dir->setUrl( newURL, true );
     }
 }
@@ -313,7 +313,7 @@ void FileBrowser::setUrl( const QString &url )
         m_dir->setUrl( KUrl(url), true );
     else{
         KUrl newURL( QString(url).prepend( m_medium->mountPoint() ).remove("..") );
-        //debug() << "set-url-qstring: changing to: " << newURL.path() << endl;
+        //debug() << "set-url-qstring: changing to: " << newURL.path();
         m_dir->setUrl( newURL, true );
     }
 }
@@ -387,7 +387,7 @@ FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KUrl::
         if ( m_medium && !(*it).isLocalFile() )
             it = list.erase( it );
         else{
-            debug() << "Dropped: " << (*it) << endl;
+            debug() << "Dropped: " << (*it);
             it++;
         }
     }

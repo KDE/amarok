@@ -50,7 +50,7 @@ PluginManager::query( const QString& constraint )
     str += " and ";
     str += "[X-KDE-Amarok-rank] > 0";
 
-    debug() << "Plugin trader constraint: " << str << endl;
+    debug() << "Plugin trader constraint: " << str;
 
     return KServiceTypeTrader::self()->query( "Amarok/Plugin", str );
 }
@@ -83,7 +83,7 @@ PluginManager::createFromQuery( const QString &constraint )
 Plugin*
 PluginManager::createFromService( const KService::Ptr service )
 {
-    debug() << "Trying to load: " << service->library() << endl;
+    debug() << "Trying to load: " << service->library();
 
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
@@ -128,7 +128,7 @@ PluginManager::unload( Plugin* plugin )
 
     if ( iter != m_store.end() ) {
         delete (*iter).plugin;
-        debug() << "Unloading library: "<< (*iter).service->library() << endl;
+        debug() << "Unloading library: "<< (*iter).service->library();
         (*iter).library->unload();
 
         m_store.erase( iter );

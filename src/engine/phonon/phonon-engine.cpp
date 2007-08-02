@@ -38,12 +38,12 @@ PhononEngine::PhononEngine()
         , m_audioPath  ( 0 )
         , m_audioOutput( 0 )
 {
-    debug() << "Yay for Phonon being constructed" << endl;
+    debug() << "Yay for Phonon being constructed";
 }
 
 PhononEngine::~PhononEngine()
 {
-    debug() << "Phonon Engine destroyed!!" << endl;
+    debug() << "Phonon Engine destroyed!!";
 }
 
 bool
@@ -167,7 +167,7 @@ PhononEngine::length() const
     DEBUG_BLOCK
 
     const uint t = ( m_mediaObject->totalTime() == -1 ) ? 0 : m_mediaObject->totalTime();
-    debug() << "Length: " << t << endl;
+    debug() << "Length: " << t;
 
     return t;
 }

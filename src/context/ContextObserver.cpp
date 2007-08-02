@@ -43,7 +43,7 @@ ContextObserver::~ContextObserver()
 void ContextSubject::messageNotify( const Context::ContextState& message )
 {
     DEBUG_BLOCK
-    debug() << "sending message to context observers: " << message << endl;
+    debug() << "sending message to context observers: " << message;
     foreach( ContextObserver* obs, m_observers )
         obs->message( message );
 }

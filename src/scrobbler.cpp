@@ -135,7 +135,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     QDomDocument document;
     if ( !document.setContent( m_similarArtistsBuffer ) )
     {
-        debug() << "Couldn't read similar artists response" << endl;
+        debug() << "Couldn't read similar artists response";
         return;
     }
 
@@ -146,7 +146,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     for ( int i = 0; i < values.count() && i < 30; i++ ) // limit to top 30 artists
         suggestions << values.item( i ).namedItem( "name" ).toElement().text();
 
-    debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
+    debug() << "Suggestions retrieved (" << suggestions.count() << ")";
     if ( !suggestions.isEmpty() )
         emit similarArtistsFetched( m_artist, suggestions );
 
@@ -173,10 +173,10 @@ void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job* job, const QByteArra
  */
 void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
-    //debug() << "engineNewMetaData: " << bundle.artist() << ":" << bundle.album() << ":" << bundle.title() << ":" << trackChanged << endl;
+    //debug() << "engineNewMetaData: " << bundle.artist() << ":" << bundle.album() << ":" << bundle.title() << ":" << trackChanged;
     if ( !trackChanged )
     {
-        debug() << "It's still the same track." << endl;
+        debug() << "It's still the same track.";
         m_item->setArtist( bundle.artist() );
         m_item->setAlbum( bundle.album() );
         m_item->setTitle( bundle.title() );
@@ -195,12 +195,12 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
     // if they appear to be providing correct metadata.
     if ( !bundle.streamUrl().isEmpty() )
     {
-        debug() << "Won't submit: It's a stream." << endl;
+        debug() << "Won't submit: It's a stream.";
         m_validForSending = false;
     }
     else if( bundle.podcastBundle() != NULL )
     {
-        debug() << "Won't submit: It's a podcast." << endl;
+        debug() << "Won't submit: It's a podcast.";
         m_validForSending = false;
     }
     else
@@ -216,7 +216,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
  */
 void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
 {
-    //debug() << "subTrack: " << currentPos << ":" << startPos << ":" << endPos << endl;
+    //debug() << "subTrack: " << currentPos << ":" << startPos << ":" << endPos;
     *m_item = SubmitItem( m_item->artist(), m_item->album(), m_item->title(), endPos - startPos );
     if ( currentPos <= startPos + 2 ) // only submit if starting from the start of the track (need to allow 2 second difference for rounding/delay)
     {
@@ -225,7 +225,7 @@ void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
     }
     else
     {
-        debug() << "Won't submit: Detected cuefile jump to " << currentPos - startPos << " seconds into track." << endl;
+        debug() << "Won't submit: Detected cuefile jump to " << currentPos - startPos << " seconds into track.";
         m_validForSending = false;
     }
 }
@@ -236,14 +236,14 @@ void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
  */
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
-    //debug() << "engineTrackPositionChanged: " << position << ":" << userSeek << endl;
+    //debug() << "engineTrackPositionChanged: " << position << ":" << userSeek;
     if ( !m_validForSending )
         return;
 
     if ( userSeek )
     {
         m_validForSending = false;
-        debug() << "Won't submit: Seek detected." << endl;
+        debug() << "Won't submit: Seek detected.";
         return;
     }
 
@@ -257,7 +257,7 @@ void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
         if ( m_item->valid() )
             m_submitter->submitItem( new SubmitItem( *m_item ) );
         else
-            debug() << "Won't submit: No artist, no title, or less than 30 seconds." << endl;
+            debug() << "Won't submit: No artist, no title, or less than 30 seconds.";
         m_validForSending = false;
     }
 }
@@ -478,11 +478,11 @@ void ScrobblerSubmitter::performHandshake()
 
     else
     {
-        debug() << "Handshake not implemented for protocol version: " << PROTOCOL_VERSION << endl;
+        debug() << "Handshake not implemented for protocol version: " << PROTOCOL_VERSION;
         return;
     }
 
-    debug() << "Handshake url: " << handshakeUrl << endl;
+    debug() << "Handshake url: " << handshakeUrl;
 
     m_submitResultBuffer = "";
 
@@ -551,7 +551,7 @@ void ScrobblerSubmitter::performSubmit()
                 if( submitCounter == 0 )
                 {
                     // this shouldn't happen, since we shouldn't be scheduled until we have something to do!
-                    debug() << "Nothing to submit!" << endl;
+                    debug() << "Nothing to submit!";
                     return;
                 }
                 else
@@ -581,11 +581,11 @@ void ScrobblerSubmitter::performSubmit()
 
     else
     {
-        debug() << "Submit not implemented for protocol version: " << PROTOCOL_VERSION << endl;
+        debug() << "Submit not implemented for protocol version: " << PROTOCOL_VERSION;
         return;
     }
 
-    debug() << "Submit data: " << data << endl;
+    debug() << "Submit data: " << data;
 
     m_submitResultBuffer = "";
 
@@ -734,7 +734,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     else
         warning() << "Unknown handshake response: " << m_submitResultBuffer << endl;
 
-    debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl << endl;
+    debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl;
 
     schedule( m_challenge.isEmpty() ); // schedule to submit or re-attempt handshake
 }
@@ -762,7 +762,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     if (m_submitResultBuffer.startsWith( "OK" ) )
     {
-        debug() << "Submit successful" << endl;
+        debug() << "Submit successful";
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
@@ -824,7 +824,7 @@ bool ScrobblerSubmitter::canSubmit() const
 {
     if ( !m_scrobblerEnabled || m_username.isEmpty() || m_password.isEmpty() )
     {
-        debug() << "Unable to submit - no uname/pass or disabled" << endl;
+        debug() << "Unable to submit - no uname/pass or disabled";
         return false;
     }
 
@@ -929,7 +929,7 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
     {
         if( item->playStartTime() < m_lastSubmissionFinishTime )
         {
-//            debug() << "play times screwed up? - " << item->artist() << " - " << item->title() << ": " << item->playStartTime() << " < " << m_lastSubmissionFinishTime << endl;
+//            debug() << "play times screwed up? - " << item->artist() << " - " << item->title() << ": " << item->playStartTime() << " < " << m_lastSubmissionFinishTime;
         }
         int add = 30;
         if( item->length() / 2 + 1 > add )
@@ -1050,7 +1050,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "[SCROBBLER] Couldn't write submit queue to file: " << m_savePath << endl;
+        debug() << "[SCROBBLER] Couldn't write submit queue to file: " << m_savePath;
         return;
     }
 
@@ -1095,7 +1095,7 @@ void ScrobblerSubmitter::readSubmitQueue()
 
     if ( !file.open( QIODevice::ReadOnly ) )
     {
-        debug() << "Couldn't open file: " << m_savePath << endl;
+        debug() << "Couldn't open file: " << m_savePath;
         return;
     }
 
@@ -1105,7 +1105,7 @@ void ScrobblerSubmitter::readSubmitQueue()
     QDomDocument d;
     if( !d.setContent( stream.readAll() ) )
     {
-        debug() << "Couldn't read file: " << m_savePath << endl;
+        debug() << "Couldn't read file: " << m_savePath;
         return;
     }
 
@@ -1153,12 +1153,12 @@ bool ScrobblerSubmitter::schedule( bool failure )
 
         if ( when == 0 )
         {
-            debug() << "Performing immediate handshake" << endl;
+            debug() << "Performing immediate handshake";
             performHandshake();
         }
         else
         {
-            debug() << "Performing handshake in " << when << " seconds" << endl;
+            debug() << "Performing handshake in " << when << " seconds";
             m_timer.setSingleShot( true );
             m_timer.start( when * 1000 );
         }
@@ -1171,18 +1171,18 @@ bool ScrobblerSubmitter::schedule( bool failure )
 
         if ( when == 0 )
         {
-            debug() << "Performing immediate submit" << endl;
+            debug() << "Performing immediate submit";
             performSubmit();
             return true;
         }
         else
         {
-            debug() << "Performing submit in " << when << " seconds" << endl;
+            debug() << "Performing submit in " << when << " seconds";
             m_timer.setSingleShot( true );
             m_timer.start( when * 1000 );
         }
     } else {
-        debug() << "Nothing to schedule" << endl;
+        debug() << "Nothing to schedule";
     }
 
     return false;

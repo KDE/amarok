@@ -212,7 +212,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     char info[20];
     ifp_model( &m_ifpdev, info, 20 );
     m_transferDir = QString(info);
-    debug() << "Successfully connected to: " << info << endl;
+    debug() << "Successfully connected to: " << info;
 
     listDir( "" );
 
@@ -268,7 +268,7 @@ IfpMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
      //the rename line edit has already changed the QListViewItem text
     QByteArray dest = QFile::encodeName( getFullPath( item ) );
 
-    debug() << "Renaming " << src << " to: " << dest << endl;
+    debug() << "Renaming " << src << " to: " << dest;
 
     if( ifp_rename( &m_ifpdev, src, dest ) ) //success == 0
         //rename failed
@@ -287,7 +287,7 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString cleanedName = cleanPath( name );
 
     const QByteArray dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
-    debug() << "Creating directory: " << dirPath << endl;
+    debug() << "Creating directory: " << dirPath;
     int err = ifp_mkdir( &m_ifpdev, dirPath );
 
     if( err ) //failed
@@ -311,7 +311,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
 
     oldForeach( folders )
     {
-        debug() << "Checking folder: " << progress << endl;
+        debug() << "Checking folder: " << progress;
         progress += *it;
         const QByteArray dirPath = QFile::encodeName( progress );
 
@@ -364,7 +364,7 @@ IfpMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items
     {
         QByteArray src  = QFile::encodeName( getFullPath( *it ) );
         QByteArray dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
-        debug() << "Moving: " << src << " to: " << dest << endl;
+        debug() << "Moving: " << src << " to: " << dest;
 
         int err = ifp_rename( &m_ifpdev, src, dest );
         if( err ) //failed
@@ -437,7 +437,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 int
 IfpMediaDevice::uploadTrack( const QByteArray& src, const QByteArray& dest )
 {
-    debug() << "Transferring " << src << " to: " << dest << endl;
+    debug() << "Transferring " << src << " to: " << dest;
 
     return ifp_upload_file( &m_ifpdev, src, dest, filetransferCallback, this );
 }
@@ -445,7 +445,7 @@ IfpMediaDevice::uploadTrack( const QByteArray& src, const QByteArray& dest )
 int
 IfpMediaDevice::downloadTrack( const QByteArray& src, const QByteArray& dest )
 {
-    debug() << "Downloading " << src << " to: " << dest << endl;
+    debug() << "Downloading " << src << " to: " << dest;
 
     return ifp_download_file( &m_ifpdev, src, dest, filetransferCallback, this );
 }
@@ -494,7 +494,7 @@ IfpMediaDevice::filetransferCallback( void *pData, struct ifp_transfer_status *p
 
     if( that->isCanceled() )
     {
-        debug() << "Canceling transfer operation" << endl;
+        debug() << "Canceling transfer operation";
         that->setCanceled( false );
         that->setProgress( progress->file_bytes, progress->file_bytes );
         return 1; //see ifp docs, return 1 for user cancel request
@@ -527,13 +527,13 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     {
         case MediaItem::DIRECTORY:
             err = ifp_delete_dir_recursive( &m_ifpdev, encodedPath );
-            debug() << "Deleting folder: " << encodedPath << endl;
+            debug() << "Deleting folder: " << encodedPath;
             checkResult( err, i18n( "Directory cannot be deleted: '%1'", encodedPath ) );
             break;
 
         default:
             err = ifp_delete( &m_ifpdev, encodedPath );
-            debug() << "Deleting file: " << encodedPath << endl;
+            debug() << "Deleting file: " << encodedPath;
             count += 1;
             checkResult( err, i18n( "File does not exist: '%1'", encodedPath ) );
             break;

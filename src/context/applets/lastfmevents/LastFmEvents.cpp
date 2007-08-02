@@ -49,7 +49,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     DEBUG_BLOCK
     Context::Theme::self()->setApplication( "amarok" );
     
-    debug() << "Loading LastFmEvents applet" << endl;
+    debug() << "Loading LastFmEvents applet";
     
     setHasConfigurationInterface( true );
     setDrawStandardBackground( false );
@@ -253,7 +253,7 @@ void LastFmEvents::showConfigurationInterface()
 void LastFmEvents::configAccepted() // SLOT
 {
     DEBUG_BLOCK
-    debug() << "saving config" << endl;
+    debug() << "saving config";
     KConfigGroup cg = globalConfig();
 
     m_friendBox->checkState() ? m_friendEnabled = true : m_friendEnabled = false;

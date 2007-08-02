@@ -82,7 +82,7 @@ bool LastFmEngine::sourceRequested( const QString& name )
         m_suggestedsongs = true;
     } else
     {
-        debug() << "data source not found!" << endl;
+        debug() << "data source not found!";
         return false;
     }
     

@@ -46,20 +46,20 @@ NjbPlaylist::NjbPlaylist()
 NjbPlaylist::NjbPlaylist(njb_playlist_t* playlist):
     m_playlist(0)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " playlist=" << playlist << endl;
+    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " playlist=" << playlist;
     setPlaylist( playlist );
 }
 
 NjbPlaylist::NjbPlaylist(const NjbPlaylist& _copy):
     m_playlist(0)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << " playlist=" << _copy.m_playlist << endl;
+    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << " playlist=" << _copy.m_playlist;
     setPlaylist( _copy.m_playlist );
 }
 
 NjbPlaylist::~NjbPlaylist( void)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << endl;
+    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist;
 
     if ( m_playlist )
         NJB_Playlist_Destroy( m_playlist);
@@ -68,7 +68,7 @@ NjbPlaylist::~NjbPlaylist( void)
 void
 NjbPlaylist::operator=( const NjbPlaylist& _copy)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist " << m_playlist << " playlist=" << _copy.m_playlist << endl;
+    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist " << m_playlist << " playlist=" << _copy.m_playlist;
 
     setPlaylist( _copy.m_playlist );
 }
@@ -76,7 +76,7 @@ NjbPlaylist::operator=( const NjbPlaylist& _copy)
 void
 NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << endl;
+    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this;
 
     //
     // This function copys the new playlist BY VALUE over our current list.
@@ -109,7 +109,7 @@ NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
         // And move on...
         track = NJB_Playlist_Gettrack( _newlist  );
     }
-    debug() << __PRETTY_FUNCTION__ << " OK" << endl;
+    debug() << __PRETTY_FUNCTION__ << " OK";
 }
 
 QString
@@ -178,12 +178,12 @@ NjbPlaylist::setName( const QString& fileName)
 int
 NjbPlaylist::addTrack( const QString& fileName)
 {
-    debug() << __PRETTY_FUNCTION__ << " filename=" << fileName << endl;
+    debug() << __PRETTY_FUNCTION__ << " filename=" << fileName;
 /*
     trackValueList::const_iterator it_track = theTracks->findTrackByName( fileName );
     if( it_track == theTracks->end() ) {
         // couldn't find this track, skip it
-        debug() << "putPlaylist: couldn't find " << fileName << endl;
+        debug() << "putPlaylist: couldn't find " << fileName;
         return NJB_FAILURE;
     }
     njb_playlist_track_t* pl_track = NJB_Playlist_Track_New( (*it_track)->id());
@@ -198,29 +198,29 @@ NjbPlaylist::addTrack( const QString& fileName)
 void
 playlist_dump( njb_playlist_t* playlist )
 {
-    debug() << __PRETTY_FUNCTION__ << endl;
+    debug() << __PRETTY_FUNCTION__;
 
-    debug() << "name: " << playlist->name << endl;
-    debug() << "state: " << playlist->_state << endl;
-    debug() << "ntracks: " << playlist->ntracks << endl;
-    debug() << "plid: " << playlist->plid << endl;
+    debug() << "name: " << playlist->name;
+    debug() << "state: " << playlist->_state;
+    debug() << "ntracks: " << playlist->ntracks;
+    debug() << "plid: " << playlist->plid;
 
     NJB_Playlist_Reset_Gettrack( playlist );
     njb_playlist_track_t* track = NJB_Playlist_Gettrack( playlist );
     while ( track )
     {
-        debug() << "track: " << track->trackid << endl;
+        debug() << "track: " << track->trackid;
         track = NJB_Playlist_Gettrack( playlist );
     }
-    debug() << __PRETTY_FUNCTION__ << " done" << endl;
+    debug() << __PRETTY_FUNCTION__ << " done";
 }
 
 
 int
 NjbPlaylist::update( void)
 {
-    // 	debug() << "putPlaylist: state = " << m_playlist->_state << endl;
-    // 	debug() << "putPlaylist: id = " << m_playlist->plid << endl;
+    // 	debug() << "putPlaylist: state = " << m_playlist->_state;
+    // 	debug() << "putPlaylist: id = " << m_playlist->plid;
     debug() << "putPlaylist: sending...\n";
 
     playlist_dump( m_playlist );
@@ -277,7 +277,7 @@ NjbPlaylist::operator==(const NjbPlaylist& rval) const
 QString
 NjbPlaylist::getName(void) const
 {
-    debug() << __PRETTY_FUNCTION__ << " this=" << this << " list=" << m_playlist << endl;
+    debug() << __PRETTY_FUNCTION__ << " this=" << this << " list=" << m_playlist;
 
     return escapefilename(m_playlist->name);
 }

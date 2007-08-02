@@ -124,7 +124,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
         //code for handling media:/ or system:/media urls removed because of original comment
 
         else if( PlaylistFile::isPlaylistFile( url ) ) {
-            debug() << "remote playlist" << endl;
+            debug() << "remote playlist";
             new RemotePlaylistFetcher( url, after, m_options );
             m_playFirstUrl = false;
         }
@@ -303,14 +303,14 @@ UrlLoader::completeJob()
 
     if ( !m_badURLs.isEmpty() ) {
         QString text = i18n("These media could not be loaded into the playlist: " );
-        debug() << "The following urls were not suitable for the playlist:" << endl;
+        debug() << "The following urls were not suitable for the playlist:";
         for ( uint it = 0; it < m_badURLs.count(); it++  )
         {
             if( it < 5 )
                 text += QString("<br>%1").arg( m_badURLs[it].prettyUrl() );
             else if( it == 5 )
                 text += QString("<br>Plus %1 more").arg( m_badURLs.count() - it );
-            debug() << "\t" << m_badURLs[it] << endl;
+            debug() << "\t" << m_badURLs[it];
         }
 
         Amarok::StatusBar::instance()->shortLongMessage(
@@ -537,7 +537,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 
     if( m_error.isEmpty() && m_bundles.isEmpty() )
         m_error = i18n( "The playlist did not contain any references to files." );
-    debug() << m_error << endl;
+    debug() << m_error;
 }
 
 bool
@@ -742,7 +742,7 @@ PlaylistFile::loadXSPF( QTextStream &stream )
         }
         else
         {
-            debug() << location << ' ' << artist << ' ' << title << ' ' << album << endl;
+            debug() << location << ' ' << artist << ' ' << title << ' ' << album;
             MetaBundle b;
             b.setUrl( location );
             b.setArtist( artist );
@@ -908,7 +908,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 	QDomDocument doc;
     if( !doc.setContent( stream.read() ) )
     {
-        debug() << "Could now read smil playlist" << endl;
+        debug() << "Could now read smil playlist";
         return false;
     }
 	QDomElement root = doc.documentElement();

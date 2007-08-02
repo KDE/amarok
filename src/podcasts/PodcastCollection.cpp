@@ -123,7 +123,7 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
     }
     else
     {
-        debug() << "Finished updating: " << podcastReader->url() << endl;
+        debug() << "Finished updating: " << podcastReader->url();
     }
 
     podcastReader->deleteLater();
@@ -146,14 +146,14 @@ void PodcastCollection::addPodcast(const QString & url)
 
     if( url.isNull() || url.isEmpty() )
     {
-        debug() << " attempt to add an empty url" << endl;
+        debug() << " attempt to add an empty url";
         return;
     }
 
     KUrl kurl = KUrl( url );
     //TODO: do some checks here
     urls << kurl;
-    debug() << url << " added" << endl;
+    debug() << url << " added";
     slotUpdate( url );
 }
 

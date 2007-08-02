@@ -119,7 +119,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
         return new TagLib::MPC::File(fileName, readProperties, propertiesStyle);
     }
 
-    debug() << "kmimetype filetype guessing failed for" << fileName << endl;
+    debug() << "kmimetype filetype guessing failed for" << fileName;
 
     return 0;
 }

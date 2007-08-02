@@ -53,12 +53,12 @@ bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName )
         }
         file.close();
     } else {
-        debug() << "Error opening file: '" << downloadInfoFileName << "'" << endl;
+        debug() << "Error opening file: '" << downloadInfoFileName << "'";
         return false;
     }
 
 
-    //debug() << "XML from file: '" << xml << "'" << endl;
+    //debug() << "XML from file: '" << xml << "'";
     return initFromString( xml );
 }
 
@@ -86,7 +86,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         {
             startIndex += 13;
 
-            debug() << "found username: " << downloadInfoString.mid( startIndex, endIndex - startIndex ) << endl;
+            debug() << "found username: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
             m_userName = downloadInfoString.mid( startIndex, endIndex - startIndex );
         }
         else
@@ -107,7 +107,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 13;
-            debug() << "found password: " << downloadInfoString.mid( startIndex, endIndex - startIndex ) << endl;
+            debug() << "found password: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
             m_password = downloadInfoString.mid( startIndex, endIndex - startIndex );
         }
         else
@@ -128,7 +128,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 12;
-            debug() << "found wav" << endl;
+            debug() << "found wav";
             m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
 
         }
@@ -141,7 +141,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 16;
-            debug() << "found 128k mp3" << endl;
+            debug() << "found 128k mp3";
             m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
 
         }
@@ -154,7 +154,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 12;
-            debug() << "found ogg-vorbis" << endl;
+            debug() << "found ogg-vorbis";
             m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
 
         }
@@ -167,7 +167,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 12;
-            debug() << "found vbr mp3" << endl;
+            debug() << "found vbr mp3";
             m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
 
         }
@@ -180,7 +180,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 13;
-            debug() << "found flac" << endl;
+            debug() << "found flac";
             m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
 
         }
@@ -193,7 +193,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
         if ( endIndex != -1 )
         {
             startIndex += 9;
-            debug() << "found dl-message" << endl;
+            debug() << "found dl-message";
             m_downloadMessage = downloadInfoString.mid( startIndex, endIndex - startIndex );
         }
     }

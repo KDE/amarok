@@ -87,12 +87,12 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
     if( file.open( QIODevice::WriteOnly | QIODevice::Unbuffered ) ) {
         const Q_LONG s = file.write( m_data.data(), m_data.size() );
         if( s >= 0 && Q_LONG( s ) == m_data.size() ) {
-            debug() << "EmbeddedImage::save " << file.fileName() << endl;
+            debug() << "EmbeddedImage::save " << file.fileName();
             return true;
         }
         file.remove();
     }
-    debug() << "EmbeddedImage::save failed! " << file.fileName() << endl;
+    debug() << "EmbeddedImage::save failed! " << file.fileName();
     return false;
 }
 
@@ -370,7 +370,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
-    debug() << "MetaBundle path is " << url().url() << endl;
+    debug() << "MetaBundle path is " << url().url();
     m_exists = !isFile() || QFile::exists( url().path() );
 
     return m_exists;
@@ -1387,11 +1387,11 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
     oldForeachType( TagLib::ID3v2::FrameList, l ) {
-        debug() << "Found APIC frame" << endl;
+        debug() << "Found APIC frame";
         TagLib::ID3v2::AttachedPictureFrame *ap = static_cast<TagLib::ID3v2::AttachedPictureFrame*>( *it );
 
         const TagLib::ByteVector &imgVector = ap->picture();
-        debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+        debug() << "Size of image: " <<  imgVector.size() << " byte";
         // ignore APIC frames without picture and those with obviously bogus size
         if( imgVector.size() > 0 && imgVector.size() < 10000000 /*10MB*/ ) {
             images.push_back( EmbeddedImage( imgVector, ap->description() ) );
@@ -1407,7 +1407,7 @@ MetaBundle::safeSave()
     TagLib::FileRef* fileref = mbs.prepareToSave();
     if( !fileref )
     {
-        debug() << "Could not get a fileref!" << endl;
+        debug() << "Could not get a fileref!";
         mbs.cleanupSave();
         return false;
     }
@@ -1416,7 +1416,7 @@ MetaBundle::safeSave()
 
     if( !noproblem )
     {
-        debug() << "MetaBundle::save() didn't work!" << endl;
+        debug() << "MetaBundle::save() didn't work!";
         mbs.cleanupSave();
         return false;
     }
@@ -1425,7 +1425,7 @@ MetaBundle::safeSave()
 
     if( !noproblem )
     {
-        debug() << "Something failed during the save, cleaning up and exiting!" << endl;
+        debug() << "Something failed during the save, cleaning up and exiting!";
         mbs.cleanupSave();
         return false;
     }
@@ -1512,9 +1512,9 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) cons
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
         QDomElement tag = qDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
-        //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
+        //debug() << "exactColumName(i) = " << exactColumnName( i );
         QDomText text = qDomSucksItNeedsADocument.createTextNode( exactText( i, true ) );
-        //debug() << "exactText(i) = " << exactText( i ) << endl;
+        //debug() << "exactText(i) = " << exactText( i );
         tag.appendChild( text );
 
         item.appendChild( tag );
@@ -1670,7 +1670,7 @@ MetaBundle::getRandomString( int size, bool numbersOnly )
 {
     if( size != 8 )
     {
-        debug() << "Wrong size passed in!" << endl;
+        debug() << "Wrong size passed in!";
         return QString();
     }
 

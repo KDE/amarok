@@ -170,7 +170,7 @@ App::App()
                         path.prepend( ":" );
                     }
                     path.prepend( bp );
-                    debug() << "setting PATH=" << path << endl;
+                    debug() << "setting PATH=" << path;
                     setenv("PATH", path, 1);
                 }
             }
@@ -257,17 +257,17 @@ namespace
         KUrl deviceUrl(device);
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
-            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment" << endl;
+            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment";
            QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
            QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
            if (!reply.isValid()) {
-        debug() << "Invalid reply from mediamanager" << endl;
+        debug() << "Invalid reply from mediamanager";
                return QString();
            }
        QStringList properties = reply;
        if( properties.count()< 6 )
         return QString();
-      debug() << "Reply from mediamanager " << properties[5] << endl;
+      debug() << "Reply from mediamanager " << properties[5];
           return properties[5];
         }
 
@@ -570,15 +570,15 @@ public:
     ID3v1StringHandler( int codecIndex )
             : m_codec( QTextCodec::codecForName( QTextCodec::availableCodecs().at( codecIndex ) ) )
     {
-        debug() << "codec: " << m_codec << endl;
-        debug() << "codec-name: " << m_codec->name() << endl;
+        debug() << "codec: " << m_codec;
+        debug() << "codec-name: " << m_codec->name();
     }
 
     ID3v1StringHandler( QTextCodec *codec )
             : m_codec( codec )
     {
-        debug() << "codec: " << m_codec << endl;
-        debug() << "codec-name: " << m_codec->name() << endl;
+        debug() << "codec: " << m_codec;
+        debug() << "codec-name: " << m_codec->name();
     }
 
     virtual ~ID3v1StringHandler()

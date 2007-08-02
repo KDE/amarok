@@ -89,7 +89,7 @@ ContentFetcher::checkForErrors( int /*state*/ )
 {
     if( !m_selfDestruct && error() != 0 )
     {
-        debug() << "there is an error? " << error() << " " << errorString() << endl;
+        debug() << "there is an error? " << error() << " " << errorString();
         m_selfDestruct = true;
         emit httpError( errorString() );
     }

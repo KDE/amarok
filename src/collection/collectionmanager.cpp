@@ -90,7 +90,7 @@ CollectionManager::init()
 
     d->sqlDatabase = 0;
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers" << endl;
+    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
     foreach( KService::Ptr service, plugins )
     {
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
@@ -105,7 +105,7 @@ CollectionManager::init()
             }
             else
             {
-                debug() << "Plugin has wrong factory class" << endl;
+                debug() << "Plugin has wrong factory class";
                 continue;
             }
         }
@@ -135,10 +135,10 @@ CollectionManager::slotNewCollection( Collection* newCollection )
 {
     if( !newCollection )
     {
-        debug() << "Warning, newCollection in slotNewCollection is 0" << endl;
+        debug() << "Warning, newCollection in slotNewCollection is 0";
         return;
     }
-    debug() << "New collection with collectionId: " << newCollection->collectionId() << endl;
+    debug() << "New collection with collectionId: " << newCollection->collectionId();
     d->collections.append( newCollection );
     d->managedCollections.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
@@ -209,7 +209,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a podcast, in that case we'll have additional meta information
     //might be a lastfm track, another stream
     //or a file which is not in any collection
-    debug() << "track for url: " << url.url() << endl;
+    debug() << "track for url: " << url.url();
     //check lastfm track
     if( url.protocol() == "lastfm" )
         return Meta::TrackPtr( new LastFm::Track( url.url() ) );

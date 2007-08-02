@@ -71,7 +71,7 @@ DaapCollectionFactory::connectToManualServers()
     QStringList sl = AmarokConfig::manuallyAddedServers();
     foreach( QString server, sl )
     {
-        debug() << "Adding server " << server << endl;
+        debug() << "Adding server " << server;
         QStringList current = server.split( ':', QString::KeepEmptyParts );
         QString host = current.first();
         quint16 port = current.last().toUShort();
@@ -100,7 +100,7 @@ DaapCollectionFactory::resolve( const QString &hostname )
         if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();
-            debug() << "ip found is " << ip << endl;
+            debug() << "ip found is " << ip;
             return ip;
         }
     }
@@ -139,7 +139,7 @@ DaapCollectionFactory::resolvedDaap( bool success )
     DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
-    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
+    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
 
     QString ip = resolve( service->hostName() );
     if( ip == "0" || m_collectionMap.contains(serverKey( service )) ) //same server from multiple interfaces
@@ -177,7 +177,7 @@ DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 
     , m_ip( ip )
     , m_reader( 0 )
 {
-    debug() << "Host: " << host << " port: " << port << endl;
+    debug() << "Host: " << host << " port: " << port;
     m_reader = new Reader( this, host, port, QString(), this, "DaapReader" );
     connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
     connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
@@ -229,7 +229,7 @@ void
 DaapCollection::httpError( const QString &error )
 {
     DEBUG_BLOCK
-    debug() << "Http error in DaapReader: " << error << endl;
+    debug() << "Http error in DaapReader: " << error;
     deleteLater();
 }
 

@@ -147,7 +147,7 @@ MtpMediaDevice::progressCallback( uint64_t const sent, uint64_t const total, voi
 
     if( dev->isCanceled() )
     {
-        debug() << "Canceling transfer operation" << endl;
+        debug() << "Canceling transfer operation";
         dev->setCanceled( true );
         return 1;
     }
@@ -167,7 +167,7 @@ MediaItem
 
     LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
     trackmeta->item_id = 0;
-    debug() << "filetype : " << bundle.fileType() << endl;
+    debug() << "filetype : " << bundle.fileType();
     if( bundle.fileType() == MetaBundle::mp3 )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_MP3;
@@ -188,7 +188,7 @@ MediaItem
     {
         // Couldn't recognise an Amarok filetype.
         // fallback to checking the extension (e.g. .wma, .ogg, etc)
-        debug() << "No filetype found by Amarok filetype" << endl;
+        debug() << "No filetype found by Amarok filetype";
 
         const QString extension = bundle.url().path().section( ".", -1 ).toLower();
 
@@ -198,11 +198,11 @@ MediaItem
             int keyIndex = mtpFileTypes.values().findIndex( extension );
             libmtp_type = mtpFileTypes.keys()[keyIndex];
             trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
-            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension << endl;
+            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
         }
         else
         {
-            debug() << "We don't support the extension ." << extension << endl;
+            debug() << "We don't support the extension ." << extension;
             Amarok::StatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot determine a valid file type" ),
@@ -281,7 +281,7 @@ MediaItem
         parent_id = checkFolderStructure( bundle );
         if( parent_id == 0 )
         {
-            debug() << "Couldn't create new parent (" << m_folderStructure << ")" << endl;
+            debug() << "Couldn't create new parent (" << m_folderStructure << ")";
             Amarok::StatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot create parent folder. Check your structure." ),
@@ -294,10 +294,10 @@ MediaItem
     {
         parent_id = getDefaultParentId();
     }
-    debug() << "Parent id : " << parent_id << endl;
+    debug() << "Parent id : " << parent_id;
 
     m_critical_mutex.lock();
-    debug() << "Sending track... " << bundle.url().path().toLatin1() << endl;
+    debug() << "Sending track... " << bundle.url().path().toLatin1();
     int ret = LIBMTP_Send_Track_From_File(
         m_device, bundle.url().path().toLatin1(), trackmeta,
         progressCallback, this, parent_id
@@ -306,7 +306,7 @@ MediaItem
 
     if( ret < 0 )
     {
-        debug() << "Could not write file " << ret << endl;
+        debug() << "Could not write file " << ret;
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "File write failed" ),
@@ -341,11 +341,11 @@ MtpMediaDevice::sendAlbumArt( Q3PtrList<MediaItem> *items )
     image = CollectionDB::instance()->albumImage(items->first()->bundle()->artist(), items->first()->bundle()->album(), false, 100);
     if( ! image.endsWith( "@nocover.png" ) )
     {
-        debug() << "image " << image << " found for " << items->first()->bundle()->album() << endl;
+        debug() << "image " << image << " found for " << items->first()->bundle()->album();
         QByteArray *imagedata = getSupportedImage( image );
         if( imagedata == 0 )
         {
-            debug() << "Cannot generate a supported image format" << endl;
+            debug() << "Cannot generate a supported image format";
             return;
         }
         if( imagedata->size() )
@@ -361,7 +361,7 @@ MtpMediaDevice::sendAlbumArt( Q3PtrList<MediaItem> *items )
                 int ret = LIBMTP_Send_Representative_Sample( m_device, album_object->album_id, imagefile );
                 if( ret != 0 )
                 {
-                    debug() << "image send failed : " << ret << endl;
+                    debug() << "image send failed : " << ret;
                 }
             }
             m_critical_mutex.unlock();
@@ -385,13 +385,13 @@ MtpMediaDevice::getDefaultParentId( void )
         parent_id = folderNameToID( "Music", m_folders );
         if( !parent_id )
         {
-            debug() << "Parent folder could not be found. Going to use top level." << endl;
+            debug() << "Parent folder could not be found. Going to use top level.";
         }
     }
     // Give up and don't set a parent folder, let the device deal with it
     else
     {
-        debug() << "No folders found. Going to use top level." << endl;
+        debug() << "No folders found. Going to use top level.";
     }
     return parent_id;
 }
@@ -406,7 +406,7 @@ QByteArray
     if( m_format == 0 )
         return 0;
 
-    debug() << "Will convert image to " << m_format << endl;
+    debug() << "Will convert image to " << m_format;
 
     // open image
     const QImage original( path );
@@ -449,7 +449,7 @@ MtpMediaDevice::updateAlbumArt( Q3PtrList<MediaItem> *items )
         }
         if( it->type() == MediaItem::ALBUM )
         {
-            debug() << "look, we get albums too!" << endl;
+            debug() << "look, we get albums too!";
         }
     }
     int i = 0;
@@ -486,11 +486,11 @@ LIBMTP_album_t
     }
     if( albumid )
     {
-        debug() << "reusing existing album " << albumid << endl;
+        debug() << "reusing existing album " << albumid;
         album_object = LIBMTP_Get_Album( m_device, albumid );
         if( album_object == 0 )
         {
-            debug() << "retrieving album failed." << endl;
+            debug() << "retrieving album failed.";
             return 0;
         }
         uint32_t i;
@@ -508,7 +508,7 @@ LIBMTP_album_t
             }
             if( ! exists )
             {
-                debug() << "adding track " << it->track()->id() << " to existing album " << albumid << endl;
+                debug() << "adding track " << it->track()->id() << " to existing album " << albumid;
                 album_object->no_tracks++;
                 album_object->tracks = (uint32_t *)realloc( album_object->tracks, album_object->no_tracks * sizeof( uint32_t ) );
                 album_object->tracks[ ( album_object->no_tracks - 1 ) ] = it->track()->id();
@@ -518,12 +518,12 @@ LIBMTP_album_t
         {
             ret = LIBMTP_Update_Album( m_device, album_object );
             if( ret != 0 )
-                debug() << "updating album failed : " << ret << endl;
+                debug() << "updating album failed : " << ret;
         }
     }
     else
     {
-        debug() << "creating new album " << endl;
+        debug() << "creating new album ";
         album_object = LIBMTP_new_album_t();
         album_object->name = qstrdup( items->first()->bundle()->album().string().toUtf8() );
         album_object->tracks = (uint32_t *) malloc(items->count() * sizeof(uint32_t));
@@ -534,7 +534,7 @@ LIBMTP_album_t
         ret = LIBMTP_Create_New_Album( m_device, album_object, 0 );
         if( ret != 0 )
         {
-            debug() << "creating album failed : " << ret << endl;
+            debug() << "creating album failed : " << ret;
             return 0;
         }
         m_idToAlbum[ album_object->album_id ] = new MtpAlbum( album_object );
@@ -597,7 +597,7 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
         parent_id = check_folder;
     }
     m_critical_mutex.unlock();
-    debug() << "Folder path : " << completePath << endl;
+    debug() << "Folder path : " << completePath;
     // return parent
     return parent_id;
 }
@@ -608,14 +608,14 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
 uint32_t
 MtpMediaDevice::createFolder( const char *name, uint32_t parent_id )
 {
-    debug() << "Creating new folder '" << name << "' as a child of "<< parent_id << endl;
+    debug() << "Creating new folder '" << name << "' as a child of "<< parent_id;
     char *name_copy = qstrdup( name );
     uint32_t new_folder_id = LIBMTP_Create_Folder( m_device, name_copy, parent_id );
     delete(name_copy);
-    debug() << "New folder ID: " << new_folder_id << endl;
+    debug() << "New folder ID: " << new_folder_id;
     if( new_folder_id == 0 )
     {
-        debug() << "Attempt to create folder '" << name << "' failed." << endl;
+        debug() << "Attempt to create folder '" << name << "' failed.";
         return 0;
     }
     updateFolders();
@@ -703,7 +703,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
                   );
             if( ret != 0 )
             {
-                debug() << "Get Track failed: " << ret << endl;
+                debug() << "Get Track failed: " << ret;
                 Amarok::StatusBar::instance()->shortLongMessage(
                     genericError,
                     i18n( "Could not copy track from device." ),
@@ -927,12 +927,12 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
 
     if( item->playlist()->id() == 0 )
     {
-        debug() << "creating new playlist : " << metadata->name << endl;
+        debug() << "creating new playlist : " << metadata->name;
         int ret = LIBMTP_Create_New_Playlist( m_device, metadata, 0 );
         if( ret == 0 )
         {
             item->playlist()->setId( metadata->playlist_id );
-            debug() << "playlist saved : " << metadata->playlist_id << endl;
+            debug() << "playlist saved : " << metadata->playlist_id;
         }
         else
         {
@@ -946,7 +946,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
     else
     {
         metadata->playlist_id = item->playlist()->id();
-        debug() << "updating playlist : " << metadata->name << endl;
+        debug() << "updating playlist : " << metadata->name;
         int ret = LIBMTP_Update_Playlist( m_device, metadata );
         if( ret != 0 )
         {
@@ -1044,7 +1044,7 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
 
     QString genericError = i18n( "Could not delete item" );
 
-    debug() << "delete this id : " << object_id << endl;
+    debug() << "delete this id : " << object_id;
 
     m_critical_mutex.lock();
     int status = LIBMTP_Delete_Object( m_device, object_id );
@@ -1052,7 +1052,7 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
 
     if( status != 0 )
     {
-        debug() << "delete object failed" << endl;
+        debug() << "delete object failed";
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Delete failed" ),
@@ -1060,7 +1060,7 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
         );
         return -1;
     }
-    debug() << "object deleted" << endl;
+    debug() << "object deleted";
 
     // clear cached filename
     if( deleteItem->type() == MediaItem::TRACK )
@@ -1113,7 +1113,7 @@ MtpMediaDevice::openDevice( bool silent )
     m_device = LIBMTP_Get_First_Device();
     m_critical_mutex.unlock();
     if( m_device == 0 ) {
-        debug() << "No devices." << endl;
+        debug() << "No devices.";
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "MTP device could not be opened" ),
@@ -1135,7 +1135,7 @@ MtpMediaDevice::openDevice( bool silent )
         m_name += " (" + ownername + ')';
 
     m_default_parent_folder = m_device->default_music_folder;
-    debug() << "setting default parent : " << m_default_parent_folder << endl;
+    debug() << "setting default parent : " << m_default_parent_folder;
 
     MtpMediaDevice::readMtpMusic();
 
@@ -1192,7 +1192,7 @@ MtpMediaDevice::closeDevice()
         LIBMTP_destroy_folder_t( m_folders );
         m_critical_mutex.unlock();
         m_folders = 0;
-        debug() << "Folders destroyed" << endl;
+        debug() << "Folders destroyed";
     }
 
     // release device
@@ -1202,7 +1202,7 @@ MtpMediaDevice::closeDevice()
         LIBMTP_Release_Device( m_device );
         m_critical_mutex.unlock();
         setDisconnected();
-        debug() << "Device released" << endl;
+        debug() << "Device released";
     }
 
     // clear the cached mappings
@@ -1496,11 +1496,11 @@ MtpMediaDevice::readMtpMusic()
 
     LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, this );
 
-    debug() << "Got tracks from device" << endl;
+    debug() << "Got tracks from device";
 
     if( tracks == 0 )
     {
-        debug() << "0 tracks returned. Empty device..." << endl;
+        debug() << "0 tracks returned. Empty device...";
     }
     else
     {

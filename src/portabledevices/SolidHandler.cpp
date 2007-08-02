@@ -59,8 +59,8 @@ SolidHandler::Initialize()
     Solid::Device temp;
     foreach( Solid::Device device, deviceList )
     {
-        debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi() << endl;
-        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor() << endl;
+        debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
         m_portableList << device.udi();
     }
 }
@@ -70,7 +70,7 @@ SolidHandler::deviceAdded( const QString &udi )
 {
     if( m_portableList.contains( udi ) )
     {
-        debug() << "Error: duplicate UDI trying to be added from Solid." << endl;
+        debug() << "Error: duplicate UDI trying to be added from Solid.";
         return;
     }
     m_portableList << udi;

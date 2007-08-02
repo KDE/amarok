@@ -33,7 +33,7 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
 {
     m_currentArtist = "";
     m_sFileName = filename;
-    debug() << "Creating MagnatuneXmlParser" << endl;
+    debug() << "Creating MagnatuneXmlParser";
 }
 
 
@@ -45,7 +45,7 @@ MagnatuneXmlParser::doJob( )
 {
     m_pCurrentArtist = 0;
     m_pCurrentAlbum = 0;
-    debug() << "MagnatuneXmlParser::doJob" << endl;
+    debug() << "MagnatuneXmlParser::doJob";
     readConfigFile( m_sFileName );
     return true;
 }
@@ -71,11 +71,11 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
 
     QFile file( filename );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-        debug() << "MagnatuneXmlParser::readConfigFile error reading file" << endl;
+        debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
     } if ( !doc.setContent( &file ) )
     {
-        debug() << "MagnatuneXmlParser::readConfigFile error parsing file" << endl;
+        debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
         file.close();
         return ;
     }
@@ -277,7 +277,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
     foreach( QString genreName, magnatuneGenres ) {
 
-        debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName << endl;
+        debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName;
         ServiceGenre currentGenre( genreName );
         currentGenre.setAlbumId( albumId );
         m_dbHandler->insertGenre( &currentGenre );

@@ -83,7 +83,7 @@ namespace Amarok {
         const static QString escaped( "\\/" );
         const static QChar sep( '/' );
 
-        debug() << "Searching " << name << endl;
+        debug() << "Searching " << name;
         QStringList path = splitPath( name );
 
         Q3ListViewItem *prox = view->firstChild();
@@ -725,7 +725,7 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
         {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
-            debug() << "loading old format smart playlists, converted to new format" << endl;
+            debug() << "loading old format smart playlists, converted to new format";
             updateSmartPlaylists( p );
             saveSmartPlaylists( p );
             return p;
@@ -1143,7 +1143,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         e = d.namedItem( "category" ).toElement();
 
         if ( e.attribute("formatversion") == "1.1" ) {
-            debug() << "Podcasts are being moved to the database..." << endl;
+            debug() << "Podcasts are being moved to the database...";
             m_podcastItemsToScan.clear();
 
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
@@ -1359,7 +1359,7 @@ void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChann
 
     if( podcastChannelList.isEmpty() )
     {
-        debug() << "BUG: podcastChannelList is empty" << endl;
+        debug() << "BUG: podcastChannelList is empty";
         return;
     }
     Q3PtrList<PodcastSettings> podcastSettingsList;
@@ -1378,7 +1378,7 @@ void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChann
                 channel->setSettings( *it );
             }
             else
-                debug() << " BUG in playlistbrowser.cpp:configurePodcasts( )" << endl;
+                debug() << " BUG in playlistbrowser.cpp:configurePodcasts( )";
 
             channel = podcastChannelList.next();
         }
@@ -1708,10 +1708,10 @@ PlaylistBrowser::findPlaylistEntry( const QString &url, Q3ListViewItem *parent )
         if( isPlaylist( it ) )
         {
             PlaylistEntry *pl = static_cast<PlaylistEntry*>( it );
-            debug() << pl->url().path() << " == " << url << endl;
+            debug() << pl->url().path() << " == " << url;
             if( pl->url().path() == url )
             {
-                debug() << "ok!" << endl;
+                debug() << "ok!";
                 return pl;
             }
         }

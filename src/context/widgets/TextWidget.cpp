@@ -56,7 +56,7 @@ qreal TextWidget::heightForWidth( qreal w ) const
 {
     document()->setTextWidth( w );
     qreal height = document()->size().height();
-//     debug() << "heightForWidth( " << w << " ) is " << height << endl;
+//     debug() << "heightForWidth( " << w << " ) is " << height;
     return height;
 }
 
@@ -73,13 +73,13 @@ qreal TextWidget::widthForHeight( qreal h ) const
 
 QRectF TextWidget::geometry() const
 {
-//     debug() << "returning geometry: " << boundingRect().toRect() << endl;
+//     debug() << "returning geometry: " << boundingRect().toRect();
     return boundingRect().toRect();
 }
 
 void TextWidget::setGeometry( const QRectF& geom )
 {
-//     debug() << "getting told to change geometry from: " << geometry() << " to : " << geom << endl;
+//     debug() << "getting told to change geometry from: " << geometry() << " to : " << geom;
     prepareGeometryChange();
     setTextWidth( geom.width() );
     setPos( geom.topLeft() );
@@ -97,7 +97,7 @@ QSizeF TextWidget::sizeHint() const
 QTextDocument* TextWidget::shortenHeight( qreal height )
 {
     QStringList lines = document()->toHtml().split( "<br />" );
-//     debug() << "trying to shorten: " << document()->toHtml() << " split into " << lines.size() << " lines" << endl;
+//     debug() << "trying to shorten: " << document()->toHtml() << " split into " << lines.size() << " lines";
     for( int i = lines.size(); i > 1; i-- )
     {
         QStringList tmp = lines;
@@ -106,11 +106,11 @@ QTextDocument* TextWidget::shortenHeight( qreal height )
         QString newtext = tmp.join( "<br />" );
         QTextDocument* newdoc = new QTextDocument();
         newdoc->setHtml( newtext );
-//         debug() << "trying to remove bottom line: " << i - 1 << " new size is: " << newdoc->size().height() << " max is: " << height << endl;
+//         debug() << "trying to remove bottom line: " << i - 1 << " new size is: " << newdoc->size().height() << " max is: " << height;
         if( newdoc->size().height() <= height )
             return newdoc;
     }
-//     debug() << "couldn't shorten height, failing!" << endl;
+//     debug() << "couldn't shorten height, failing!";
     return document();
 }
         

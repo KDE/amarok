@@ -162,7 +162,7 @@ namespace ConfigDynamic
         saveMe->setPreviousCount( dialog->m_previousIntSpinBox->value() );
 
         QStringList list;
-        debug() << "Saving custom list..." << endl;
+        debug() << "Saving custom list...";
         Q3ListViewItemIterator it( dialog->selectPlaylist, Q3ListViewItemIterator::Checked );
 
         while( it.current() )

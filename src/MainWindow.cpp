@@ -323,7 +323,7 @@ void MainWindow::init()
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
 
-        debug() << "Add me dammit!!!!!" << endl;
+        debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
         internetContentServiceBrowser->addService( new MagnatuneStore( "Dummy service 1" ) );

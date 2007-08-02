@@ -420,7 +420,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     QString type = pathname.section('.', -1).toLower();
 
     track->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
-    debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
+    debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo;
 
     if( metaBundle.isValidMedia() || !metaBundle.title().isEmpty() )
         track->title = g_strdup( metaBundle.title().toUtf8() );
@@ -483,7 +483,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->size = propertiesBundle.filesize();
     if( track->size == 0 )
     {
-        debug() << "filesize is zero for " << track->ipod_path << ", expect strange problems with your ipod" << endl;
+        debug() << "filesize is zero for " << track->ipod_path << ", expect strange problems with your ipod";
     }
     track->bitrate = propertiesBundle.bitrate();
     track->samplerate = propertiesBundle.sampleRate();
@@ -550,7 +550,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
             image  = CollectionDB::instance()->albumImage(metaBundle.artist(), metaBundle.album(), false, 0);
         if( !image.endsWith( "@nocover.png" ) )
         {
-            debug() << "adding image " << image << " to " << metaBundle.artist() << ":" << metaBundle.album() << endl;
+            debug() << "adding image " << image << " to " << metaBundle.artist() << ":" << metaBundle.album();
             itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
         }
     }
@@ -624,7 +624,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
             parentdir.setPath(path);
         }
         while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
-        debug() << "trying to create \"" << path << "\"" << endl;
+        debug() << "trying to create \"" << path << "\"";
         if(!create.mkdir( create.absolutePath() ))
         {
             break;
@@ -671,7 +671,7 @@ IpodMediaDevice::tagsChanged( MediaItem *item, const MetaBundle &bundle )
 void
 IpodMediaDevice::synchronizeDevice()
 {
-    debug() << "Syncing iPod!" << endl;
+    debug() << "Syncing iPod!";
     Amarok::StatusBar::instance()->newProgressOperation( this )
         .setDescription( i18n( "Flushing iPod filesystem transfer cache" ) )
         .setTotalSteps( 1 );
@@ -907,7 +907,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, int flags )
             if(!(flags & OnlyPlayed) || item->played() > 0 || item->childCount() == 0)
             {
                 if(item->childCount() > 0)
-                    debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")" << endl;
+                    debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")";
                 else
                     delete item;
             }
@@ -986,7 +986,7 @@ IpodMediaDevice::initializeIpod()
         return false;
     }
 
-    debug() << "initializing iPod mounted at " << mountPoint() << endl;
+    debug() << "initializing iPod mounted at " << mountPoint();
 
     // initialize iPod
     m_itdb = itdb_new();
@@ -1174,7 +1174,7 @@ IpodMediaDevice::openDevice( bool silent )
             dir.setPath( real );
             if( !dir.exists() )
             {
-                debug() << "failed to create hash dir " << real << endl;
+                debug() << "failed to create hash dir " << real;
                 Amarok::StatusBar::instance()->longMessage(
                         i18n( "Media device: Failed to create directory %1", real ),
                         KDE::StatusBar::Error );
@@ -1230,18 +1230,18 @@ IpodMediaDevice::detectModel()
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
                 m_supportsVideo = true;
-                debug() << "detected video-capable iPod" << endl;
+                debug() << "detected video-capable iPod";
                 break;
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
-                debug() << "detected iTunes phone" << endl;
+                debug() << "detected iTunes phone";
                 break;
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
                 if( pathExists( ":iTunes:iTunes_Control" ) )
                 {
-                    debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
+                    debug() << "iTunes/iTunes_Control found - assuming itunes phone";
                     m_isMobile = true;
                 }
                 break;
@@ -1255,7 +1255,7 @@ IpodMediaDevice::detectModel()
     }
     else
     {
-        debug() << "iPod type detection failed, no video support" << endl;
+        debug() << "iPod type detection failed, no video support";
         Amarok::StatusBar::instance()->longMessage(
                 i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
     }
@@ -1378,7 +1378,7 @@ IpodMediaDevice::checkIntegrity()
             Itdb_Track *track = m_files[ipodPath.toLower()];
             if(!track)
             {
-                debug() << "file: " << filename << " is orphaned" << endl;
+                debug() << "file: " << filename << " is orphaned";
                 IpodMediaItem *item = new IpodMediaItem(m_orphanedItem, this);
                 item->setType(MediaItem::ORPHANED);
                 KUrl url = KUrl::fromPathOrUrl(filename);
@@ -1478,7 +1478,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         if( !pathExists( track->ipod_path ) )
         {
             stale = true;
-            debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
+            debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist";
             if( item )
                 m_staleItem->insertItem( item );
             else
@@ -1579,7 +1579,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
 
     if( !stale && !visible )
     {
-        debug() << "invisible, title=" << track->title << endl;
+        debug() << "invisible, title=" << track->title;
         if( item )
             m_invisibleItem->insertItem( item );
         else
@@ -1615,7 +1615,7 @@ IpodMediaDevice::addPlaylistToView( Itdb_Playlist *pl )
 
     if( pl->is_spl )
     {
-        debug() << "playlist " << pl->name << " is a smart playlist" << endl;
+        debug() << "playlist " << pl->name << " is a smart playlist";
     }
 
     QString name( QString::fromUtf8(pl->name) );
@@ -1717,9 +1717,9 @@ class IpodWriteDBJob : public ThreadManager::DependentJob
                 if(error)
                 {
                     if (error->message)
-                        debug() << "itdb_write error: " << error->message << endl;
+                        debug() << "itdb_write error: " << error->message;
                     else
-                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
+                        debug() << "itdb_write error: " << "error->message == 0!";
                     g_error_free (error);
                 }
                 error = 0;
@@ -1734,9 +1734,9 @@ class IpodWriteDBJob : public ThreadManager::DependentJob
                     if(error)
                     {
                         if (error->message)
-                            debug() << "itdb_shuffle_write error: " << error->message << endl;
+                            debug() << "itdb_shuffle_write error: " << error->message;
                         else
-                            debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
+                            debug() << "itdb_shuffle_write error: " << "error->message == 0!";
                         g_error_free (error);
                     }
                     error = 0;
@@ -1780,9 +1780,9 @@ IpodMediaDevice::writeITunesDB( bool threaded )
                 if(error)
                 {
                     if (error->message)
-                        debug() << "itdb_write error: " << error->message << endl;
+                        debug() << "itdb_write error: " << error->message;
                     else
-                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
+                        debug() << "itdb_write error: " << "error->message == 0!";
                     g_error_free (error);
                 }
                 error = 0;
@@ -1797,9 +1797,9 @@ IpodMediaDevice::writeITunesDB( bool threaded )
                     if(error)
                     {
                         if (error->message)
-                            debug() << "itdb_shuffle_write error: " << error->message << endl;
+                            debug() << "itdb_shuffle_write error: " << error->message;
                         else
-                            debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
+                            debug() << "itdb_shuffle_write error: " << "error->message == 0!";
                         g_error_free (error);
                     }
                     error = 0;
@@ -1963,7 +1963,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
 {
     if( !m_itdb )
     {
-        debug() << "m_itdb is NULL" << endl;
+        debug() << "m_itdb is NULL";
         return KUrl();
     }
 
@@ -2481,7 +2481,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
     for( ; it != components.end(); ++it )
         curPath += '/' + *it;
 
-    //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath << endl;
+    //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath;
 
     if( realPath )
         *realPath = curPath;
@@ -2494,7 +2494,7 @@ IpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
 {
     if(job->error())
     {
-        debug() << "file deletion failed: " << job->errorText() << endl;
+        debug() << "file deletion failed: " << job->errorText();
     }
     m_waitForDeletion = false;
     m_parent->updateStats();
@@ -2503,7 +2503,7 @@ IpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
 void
 IpodMediaDevice::deleteFile( const KUrl &url )
 {
-    debug() << "deleting " << url.prettyUrl() << endl;
+    debug() << "deleting " << url.prettyUrl();
     m_waitForDeletion = true;
     KIO::Job *job = KIO::file_delete( url, false );
     connect( job, SIGNAL( result( KIO::Job * ) ),

@@ -31,7 +31,7 @@ CueFile *CueFile::instance()
 
 CueFile::~CueFile()
 {
-    debug() << "shmack! destructed" << endl;
+    debug() << "shmack! destructed";
 }
 
 
@@ -97,10 +97,10 @@ bool CueFile::load(int mediaLength)
                     {
                         defaultAlbum = title;
                         title.clear();
-                        debug() << "Album: " << defaultAlbum << endl;
+                        debug() << "Album: " << defaultAlbum;
                     }
                     else
-                        debug() << "Title: " << title << endl;
+                        debug() << "Title: " << title;
                 }
 
                 else if( line.startsWith( "performer", Qt::CaseInsensitive ))
@@ -110,10 +110,10 @@ bool CueFile::load(int mediaLength)
                     {
                         defaultArtist = artist;
                         artist.clear();
-                        debug() << "Album Artist: " << defaultArtist << endl;
+                        debug() << "Album Artist: " << defaultArtist;
                     }
                     else
-                        debug() << "Artist: " << artist << endl;
+                        debug() << "Artist: " << artist;
                 }
 
                 else if( line.startsWith( "track", Qt::CaseInsensitive ) )
@@ -122,7 +122,7 @@ bool CueFile::load(int mediaLength)
                     {
                         // not valid, because we have to have an index for the previous track
                         file.close();
-                        debug() << "Mode is TRACK_FOUND, abort." << endl;
+                        debug() << "Mode is TRACK_FOUND, abort.";
                         return false;
                     }
                     if( mode == INDEX_FOUND )
@@ -130,7 +130,7 @@ bool CueFile::load(int mediaLength)
                         if(artist.isNull())
                             artist = defaultArtist;
 
-                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")" << endl;
+                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
                         prevIndex = index;
@@ -139,7 +139,7 @@ bool CueFile::load(int mediaLength)
                         track  = 0;
                     }
                     track = line.section (' ',1,1).toInt();
-                    debug() << "Track: " << track << endl;
+                    debug() << "Track: " << track;
                     mode = TRACK_FOUND;
                 }
                 else if( line.startsWith( "index", Qt::CaseInsensitive ) )
@@ -157,7 +157,7 @@ bool CueFile::load(int mediaLength)
                              if( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
                             {
                             	length = index - prevIndex;
-                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
+                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs.";
                             	(*this)[prevIndex].setLength(length);
                             }
 
@@ -174,7 +174,7 @@ bool CueFile::load(int mediaLength)
                             if( prevIndex != -1 )
                             {
                             	length -= prevIndex; //this[prevIndex].getIndex();
-                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
+                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs.";
                             	(*this)[prevIndex].setLength(length);
                             	index00Present = true;
                             }
@@ -183,24 +183,24 @@ bool CueFile::load(int mediaLength)
                         }
                         else
                         {
-                            debug() << "Skipping unsupported INDEX " << indexNo << endl;
+                            debug() << "Skipping unsupported INDEX " << indexNo;
                         }
                     }
                     else
                     {
                         // not valid, because we don't have an associated track
                         file.close();
-                        debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort." << endl;
+                        debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort.";
                         return false;
                     }
-                    debug() << "index: " << index << endl;
+                    debug() << "index: " << index;
                 }
             }
 
             if(artist.isNull())
                 artist = defaultArtist;
 
-            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")" << endl;
+            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
             // add previous entry to map
             insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
             file.close();
@@ -213,7 +213,7 @@ bool CueFile::load(int mediaLength)
             */
 
         (*this)[index].setLength(mediaLength*1000 - index);
-        debug() << "Setting length of track " << (*this)[index].getTitle() << " to " << mediaLength*1000 - index << " msecs." << endl;
+        debug() << "Setting length of track " << (*this)[index].getTitle() << " to " << mediaLength*1000 - index << " msecs.";
 
         return true;
     }
@@ -232,7 +232,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
         while( it != begin() )
         {
             --it;
-//            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
+//            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle();
             if(it.key()/1000 <= position)
             {
                 MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it

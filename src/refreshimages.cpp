@@ -58,7 +58,7 @@ RefreshImages::RefreshImages()
              .arg("0RQSQ0B8CRY7VX2VF3G2") //Ian Monroe
              .arg(asin);
 
-        debug() << url << endl;
+        debug() << url;
 
         KIO::TransferJob* job = KIO::storedGet( url, false, false );
         KIO::Scheduler::scheduleJob( job );
@@ -107,7 +107,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
                 break;
         }
     }
-    debug() << imageUrl << endl;
+    debug() << imageUrl;
     KUrl testUrl( imageUrl );
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
     {

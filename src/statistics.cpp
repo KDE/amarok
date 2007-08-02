@@ -736,7 +736,7 @@ StatisticsItem::setIcon( const QString &icon )
     QString path = KIconLoader::global()->iconPath( icon, -K3Icon::SizeHuge );
     path.replace( "32x32", "48x48" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
 
-//     debug() << "ICONPATH: " << path << endl;
+//     debug() << "ICONPATH: " << path;
 
     setPixmap( 0, path );
 }
@@ -979,7 +979,7 @@ StatisticsDetailedItem::getSQL()
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
-    debug() << "DetailedStatisticsItem: query is: " << qb.query() << endl;
+    debug() << "DetailedStatisticsItem: query is: " << qb.query();
 
     return qb.query();
 }

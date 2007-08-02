@@ -193,7 +193,7 @@ QueueList::clear() // SLOT
 void
 QueueList::dragEnterEvent( QDragEnterEvent *e )
 {
-    debug() << "dragEnterEvent()" << endl;
+    debug() << "dragEnterEvent()";
     if(  e->source() == reinterpret_cast<K3ListView*>( Playlist::instance() )->viewport() )
         e->acceptProposedAction();
 }
@@ -201,7 +201,7 @@ QueueList::dragEnterEvent( QDragEnterEvent *e )
 void
 QueueList::dragMoveEvent( QDragMoveEvent *e )
 {
-    debug() << "dragMoveEvent()" << endl;
+    debug() << "dragMoveEvent()";
     QListWidget::dragMoveEvent( e );
 
     //Comment From 1.4: Must be overloaded for dnd to work
@@ -213,7 +213,7 @@ QueueList::dragMoveEvent( QDragMoveEvent *e )
 void
 QueueList::dropEvent( QDropEvent *e )
 {
-    debug() << "dragDropEvent()" << endl;
+    debug() << "dragDropEvent()";
     if( e->source() == viewport() )
     {
         QListWidget::dropEvent( e );

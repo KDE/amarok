@@ -1017,7 +1017,7 @@ PlaylistTrackItem::PlaylistTrackItem( Q3ListViewItem *parent, Q3ListViewItem *af
     setRenameEnabled( 0, false );
     PlaylistEntry *p = dynamic_cast<PlaylistEntry *>(parent);
     if(!p)
-        debug() << "parent: " << parent << " is not a PlaylistEntry" << endl;
+        debug() << "parent: " << parent << " is not a PlaylistEntry";
     if( p && p->text( 0 ).contains( info->artist() ) )
         setText( 0, info->title() );
     else
@@ -1776,7 +1776,7 @@ PodcastChannel::fetchResult( KJob* job ) //SLOT
     if ( job->error() != 0 )
     {
         Amarok::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
-        debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
+        debug() << "Unable to retrieve podcast information. KIO Error: " << job->error();
 
         title().isEmpty() ?
             setText( 0, m_url.prettyUrl() ) :
@@ -1797,7 +1797,7 @@ PodcastChannel::fetchResult( KJob* job ) //SLOT
                 &error, &errorline, &errorcolumn ) )
     {
         Amarok::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
-        debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error << endl;
+        debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error;
 
         title().isEmpty() ?
             setText( 0, m_url.prettyUrl() ) :
@@ -1918,12 +1918,12 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     m_bundle.setParentId( m_parent->id() );
     if( !m_updating )
     { // don't reinsert on a refresh
-        debug() << "Adding podcast to database" << endl;
+        debug() << "Adding podcast to database";
         CollectionDB::instance()->addPodcastChannel( m_bundle );
     }
     else
     {
-        debug() << "Updating podcast in database: " << endl;
+        debug() << "Updating podcast in database: ";
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
     }
 
@@ -2527,7 +2527,7 @@ PodcastEpisode::downloadMedia()
 void PodcastEpisode::redirected( KIO::Job *, const KUrl & redirectedUrl )
 {
     DEBUG_BLOCK
-    debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName() << endl;
+    debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName();
     m_filename = redirectedUrl.fileName();
 }
 
@@ -2569,14 +2569,14 @@ void PodcastEpisode::downloadResult( KJob * transferJob )
     if( transferJob->error() )
     {
         Amarok::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
-        debug() << "Unable to retrieve podcast media. KIO Error: " << transferJob->error() << endl;
+        debug() << "Unable to retrieve podcast media. KIO Error: " << transferJob->error();
 
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
 
     m_localUrl.addPath( m_filename );
-    debug() << "filename: " << m_localUrl.path() << endl;
+    debug() << "filename: " << m_localUrl.path();
     QFile *localFile = new QFile( m_localUrl.path() );
     localFile->open( QIODevice::WriteOnly );
     localFile->write( m_podcastEpisodeJob->data() );

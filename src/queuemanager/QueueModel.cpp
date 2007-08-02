@@ -33,7 +33,7 @@ Model::mimeTypes() const
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
-    debug() << ret << endl;
+    debug() << ret;
     return ret;
 }
 

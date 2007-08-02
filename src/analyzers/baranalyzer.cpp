@@ -41,7 +41,7 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
 
 void BarAnalyzer::resizeEvent( QResizeEvent * e )
 {
-    debug() << "Baranalyzer Resized(" << width() << "x" << height() << ")" << endl;
+    debug() << "Baranalyzer Resized(" << width() << "x" << height() << ")";
     Analyzer::Base2D::resizeEvent( e );
     init();
 }
@@ -59,7 +59,7 @@ void BarAnalyzer::init()
     MAX_DOWN = int(0 -((height() / 50)));
     MAX_UP = int((height() / 25));
 
-    debug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN << endl;
+    debug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN;
 
     barVector.resize( BAND_COUNT, 0 );
     roofVector.resize( BAND_COUNT, height() -5 );

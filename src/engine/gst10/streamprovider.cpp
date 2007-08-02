@@ -139,7 +139,7 @@ StreamProvider::sendRequest() //SLOT
                                      .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
                                      .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
-    debug() << "Sending request:\n" << request << endl;
+    debug() << "Sending request:\n" << request;
     m_sockRemote.write( request.toLatin1(), request.length() );
 }
 
@@ -218,7 +218,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
     while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
-            debug() << "Got shoutcast header: '" << m_headerStr << "'" << endl;
+            debug() << "Got shoutcast header: '" << m_headerStr << "'";
             // Handle redirection
             QString loc( "Location: " );
             int index = m_headerStr.indexOf( loc );
@@ -226,7 +226,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 int start = index + loc.length();
                 int end = m_headerStr.indexOf( "\n", index );
                 m_url = m_headerStr.mid( start, end - start - 1 );
-                debug() << "Stream redirected to: " << m_url << endl;
+                debug() << "Stream redirected to: " << m_url;
                 m_sockRemote.close();
                 connectToHost();
                 return false;
@@ -261,7 +261,7 @@ StreamProvider::transmitData( const QString &data )
 {
     DEBUG_BLOCK
 
-    debug() << "Received MetaData: " << data << endl;
+    debug() << "Received MetaData: " << data;
 
     // we don't seem to have the recode options anymore...
     // because we assumed latin1 earlier this codec conversion works
@@ -280,8 +280,8 @@ StreamProvider::transmitData( const QString &data )
        bundle.artist = title.section('-',0,0).trimmed();
        bundle.title = title.section('-',1,1).trimmed();
 
-       debug() << "title = " << bundle.title << endl;
-       debug() << "artist = " << bundle.artist << endl;
+       debug() << "title = " << bundle.title;
+       debug() << "artist = " << bundle.artist;
     }
     else // just copy as is...
     {

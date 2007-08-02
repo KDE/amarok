@@ -42,7 +42,7 @@ Reader::Reader( DaapCollection* mc, const QString& host, quint16 port, const QSt
     , m_password( password )
 {
     setObjectName( name );
-    debug() << "Host: " << host << " port: " << port << endl;
+    debug() << "Host: " << host << " port: " << port;
 
     if( s_codes.size() == 0 )
     {
@@ -220,7 +220,7 @@ Reader::loginFinished( int /* id */, bool error )
         return;
     }
     Map loginResults = parse( http->results() , 0 ,true );
-    debug() << "list size is " << loginResults["mlog"].toList().size() << endl;
+    debug() << "list size is " << loginResults["mlog"].toList().size();
     if( loginResults["mlog"].toList().size() == 0 )
         return;
     QVariant tmp = loginResults["mlog"].toList()[0];
@@ -308,10 +308,10 @@ Reader::songListFinished( int /*id*/, bool error )
 
     QList<QVariant> songList;
     songList = songResults["adbs"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList();
-    debug() << "songList.count() = " << songList.count() << endl;
+    debug() << "songList.count() = " << songList.count();
     foreach( QVariant var, songList )
     {
-        //debug() << "begin iteration..." << endl;
+        //debug() << "begin iteration...";
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
         QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
         DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
@@ -401,16 +401,16 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
     uint index = 0;
     while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
     {
-    //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
+    //    debug() << "at index " << index << " of a total container size " << containerLength;
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
         {
-//             debug() << "tag " << tag << " has 0 length." << endl;
+//             debug() << "tag " << tag << " has 0 length.";
             index += 8;
             continue;
         }
-//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR << endl;
+//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
 #define DEBUGTAG( VAR )
         switch( s_codes[tag].type )
         {

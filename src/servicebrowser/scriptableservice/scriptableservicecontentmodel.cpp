@@ -49,7 +49,7 @@ ScriptableServiceContentModel::~ScriptableServiceContentModel()
 
 int ScriptableServiceContentModel::insertItem( const QString &name, const QString &url, const QString &infoHtml, const int parentId ) {
 
-    //debug() << "ScriptableServiceContentModel::insertItem, name: " << name <<  endl;
+    //debug() << "ScriptableServiceContentModel::insertItem, name: " << name;
 
     if ( !m_contentItemMap.contains( parentId ) ) {
         return -1;
@@ -99,7 +99,7 @@ int ScriptableServiceContentModel::insertDynamicItem( const QString &name, const
 int ScriptableServiceContentModel::columnCount( const QModelIndex &parent ) const
 {
 
-   //debug() << "ScriptableServiceContentModel::columnCount" << endl;
+   //debug() << "ScriptableServiceContentModel::columnCount";
 
 
     if (parent.isValid())
@@ -111,7 +111,7 @@ int ScriptableServiceContentModel::columnCount( const QModelIndex &parent ) cons
 
 QVariant ScriptableServiceContentModel::data( const QModelIndex &index, int role ) const
 {
-    //debug() << "ScriptableServiceContentModel::data" << endl;
+    //debug() << "ScriptableServiceContentModel::data";
     
 
     if ( !index.isValid() )
@@ -130,7 +130,7 @@ QVariant ScriptableServiceContentModel::data( const QModelIndex &index, int role
 QVariant ScriptableServiceContentModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
-    //debug() << "ScriptableServiceContentModel::headerData" << endl;
+    //debug() << "ScriptableServiceContentModel::headerData";
 
          if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
          return m_header;
@@ -142,7 +142,7 @@ QVariant ScriptableServiceContentModel::headerData(int section, Qt::Orientation 
 QModelIndex ScriptableServiceContentModel::index(int row, int column, const QModelIndex &parent) const
 {
 
-    //debug() << "ScriptableServiceContentModel::index, row: " << row << ", column: " << column << endl;
+    //debug() << "ScriptableServiceContentModel::index, row: " << row << ", column: " << column;
 
     ScriptableServiceContentItem *parentItem;
 
@@ -172,9 +172,9 @@ QModelIndex ScriptableServiceContentModel::parent(const QModelIndex &index) cons
 {
 
 
-      //debug() << "ScriptableServiceContentModel::parent" << endl; 
+      //debug() << "ScriptableServiceContentModel::parent"; 
       if (!index.isValid()) {
-         //debug() << "ScriptableServiceContentModel::parent, index invalid... " << endl; 
+         //debug() << "ScriptableServiceContentModel::parent, index invalid... "; 
          return QModelIndex();
      }
 
@@ -182,7 +182,7 @@ QModelIndex ScriptableServiceContentModel::parent(const QModelIndex &index) cons
      ScriptableServiceContentItem *parentItem = static_cast<ScriptableServiceContentItem*>(childItem->parent() );
 
      if (parentItem == m_rootContentItem)
-         //debug() << "MagnatuneContentModel::parent, root item... " << endl; 
+         //debug() << "MagnatuneContentModel::parent, root item... "; 
          return QModelIndex();
 
      return createIndex(parentItem->row(), 0, parentItem);
@@ -192,7 +192,7 @@ QModelIndex ScriptableServiceContentModel::parent(const QModelIndex &index) cons
 
 int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
 {
-      //debug() << "MagnatuneContentModel::rowCount"  << endl;
+      //debug() << "MagnatuneContentModel::rowCount";
 
       ScriptableServiceContentItem *parentItem;
 
@@ -201,7 +201,7 @@ int ScriptableServiceContentModel::rowCount(const QModelIndex &parent) const
      else
          parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
-              debug() << "ScriptableServiceContentModel::rowCount called on node: " << parentItem->data( 0 ).toString()  << ", count; " << parentItem->childCount() <<  endl;
+              debug() << "ScriptableServiceContentModel::rowCount called on node: " << parentItem->data( 0 ).toString()  << ", count; " << parentItem->childCount();
 
 
     /* if ( parentItem->getType() == DYNAMIC) {
@@ -227,7 +227,7 @@ bool ScriptableServiceContentModel::hasChildren ( const QModelIndex & parent ) c
          item = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
 
-     debug() << "ScriptableServiceContentModel::hasChildren called on node: " << item->data( 0 ).toString()  << endl;
+     debug() << "ScriptableServiceContentModel::hasChildren called on node: " << item->data( 0 ).toString();
 
     return item->hasChildren();
     //return true;
@@ -260,7 +260,7 @@ void ScriptableServiceContentModel::triggerUpdateScript(const QString &script, c
     // of opportunity to wreck havoc!
     QString scriptString = script + ' ' + KShell::quoteArg( QString().setNum(nodeId) ) + ' ' + KShell::quoteArg( argument ) + " &";
 
-    debug() << "ScriptableServiceContentModel::triggerUpdateScript String: " << scriptString << endl;
+    debug() << "ScriptableServiceContentModel::triggerUpdateScript String: " << scriptString;
     system( scriptString.toAscii() );
 
 }
@@ -287,14 +287,14 @@ bool ScriptableServiceContentModel::canFetchMore(const QModelIndex & parent) con
     else
          parentItem = static_cast<ScriptableServiceContentItem*>(parent.internalPointer());
 
-    debug() << "ScriptableServiceContentModel::canFetchMore called on node: " << parentItem->data( 0 ).toString()  << endl;
+    debug() << "ScriptableServiceContentModel::canFetchMore called on node: " << parentItem->data( 0 ).toString();
 
 
     if ( parentItem->getType() == DYNAMIC ) {
-        debug() << "    YES!"  << endl;
+        debug() << "    YES!";
         return true;
     } else {
-        debug() << "    NO!"  << endl;
+        debug() << "    NO!";
         return false;
     }
     
@@ -303,7 +303,7 @@ bool ScriptableServiceContentModel::canFetchMore(const QModelIndex & parent) con
 void ScriptableServiceContentModel::fetchMore(const QModelIndex & parent)
 {
 
-     debug() << "ScriptableServiceContentModel::fetchMore called"  << endl;
+     debug() << "ScriptableServiceContentModel::fetchMore called";
      ScriptableServiceContentItem *parentItem;
 
      if (!parent.isValid())

@@ -201,7 +201,7 @@ ThreadManager::event( QEvent *e )
     }
 
     case QEvent::Timer:
-        debug() << "Threads in pool: " << m_threads.count() << endl;
+        debug() << "Threads in pool: " << m_threads.count();
 
 //         for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
 //             if ( (*it)->readyForTrash() ) {

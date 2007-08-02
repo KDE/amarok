@@ -34,7 +34,7 @@ PostgreSqlCollection::PostgreSqlCollection( const QString &id, const QString &pr
     QString user = AmarokConfig::postgresqlUser();
     QString passwd = Amarok::config( "Postgresql" ).readEntry( "PostgresqlPassword" );
     QString conninfo;
-    debug() << k_funcinfo << endl;
+    debug() << k_funcinfo;
 
 //     if ( config->username().isEmpty() )
 //         pApp->slotConfigAmarok("Postgresql");

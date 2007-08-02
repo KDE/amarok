@@ -139,7 +139,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
                                                                 .arg( share ) );
     if ( ids.size() == 3 )
     {
-        debug() << "Found existing NFS config for ID " << ids[0] << " , server " << server << " ,share " << share << endl;
+        debug() << "Found existing NFS config for ID " << ids[0] << " , server " << server << " ,share " << share;
         CollectionDB::instance()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                                                   "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
         return new NfsDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
@@ -157,7 +157,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
             warning() << "Inserting into devices failed for type=nfs, server=" << server << ", share=" << share << endl;
             return 0;
         }
-        debug() << "Created new NFS device with ID " << id << " , server " << server << " ,share " << share << endl;
+        debug() << "Created new NFS device with ID " << id << " , server " << server << " ,share " << share;
         return new NfsDeviceHandler( id, server, share, m->mountPoint() );
     }
 }

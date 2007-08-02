@@ -150,8 +150,8 @@ class GenericMediaFile
 
             if( m_device->getFileMap()[m_fullName] )
             {
-                debug() << "Trying to create two GenericMediaFile items with same fullName!" << endl;
-                debug() << "name already existing: " << m_device->getFileMap()[m_fullName]->getFullName() << endl;
+                debug() << "Trying to create two GenericMediaFile items with same fullName!";
+                debug() << "name already existing: " << m_device->getFileMap()[m_fullName]->getFullName();
                 delete this;
             }
             else
@@ -462,7 +462,7 @@ GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
     QByteArray src = m_mim[item]->getEncodedFullName();
     QByteArray dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
 
-    debug() << "Renaming: " << src << " to: " << dst << endl;
+    debug() << "Renaming: " << src << " to: " << dst;
 
     //do we want a progress dialog?  If so, set last false to true
     if( KIO::NetAccess::file_move( KUrl::fromPathOrUrl(src), KUrl::fromPathOrUrl(dst), -1, false, false, false ) )
@@ -473,7 +473,7 @@ GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
     }
     else
     {
-        debug() << "Renaming FAILED!" << endl;
+        debug() << "Renaming FAILED!";
         //failed, so set the item's text back to how it should be
         item->setText( 0, m_mim[item]->getBaseName() );
     }
@@ -499,12 +499,12 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
     QByteArray dirPath = QFile::encodeName( fullPath );
-    debug() << "Creating directory: " << dirPath << endl;
+    debug() << "Creating directory: " << dirPath;
     const KUrl url( dirPath );
 
     if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
     {
-        debug() << "Failed to create directory " << dirPath << endl;
+        debug() << "Failed to create directory " << dirPath;
         return 0;
     }
 
@@ -537,13 +537,13 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> i
         GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
         QByteArray src  = m_mim[currItem]->getEncodedFullName();
         QByteArray dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
-        debug() << "Moving: " << src << " to: " << dst << endl;
+        debug() << "Moving: " << src << " to: " << dst;
 
         const KUrl srcurl(src);
         const KUrl dsturl(dst);
 
         if ( !KIO::NetAccess::file_move( srcurl, dsturl, -1, false, false, m_parent ) )
-            debug() << "Failed moving " << src << " to " << dst << endl;
+            debug() << "Failed moving " << src << " to " << dst;
         else
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
@@ -625,10 +625,10 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
-            debug() << "directory does not exist, creating..." << url << endl;
+            debug() << "directory does not exist, creating..." << url;
             if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
             {
-                debug() << "Failed to create directory " << url << endl;
+                debug() << "Failed to create directory " << url;
                 return;
             }
         }
@@ -669,7 +669,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     // use different naming schemes for differen kinds of tracks
     QString path = m_transferDir;
-    debug() << "bundle exists: " << bundle.podcastBundle() << endl;
+    debug() << "bundle exists: " << bundle.podcastBundle();
     if( bundle.podcastBundle() )
         path += buildPodcastDestination( bundle.podcastBundle() );
     else
@@ -684,7 +684,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     if( !kioCopyTrack( bundle.url(), desturl ) )
     {
-        debug() << "Failed to copy track: " << bundle.url().pathOrURL() << " to " << desturl.pathOrURL() << endl;
+        debug() << "Failed to copy track: " << bundle.url().pathOrURL() << " to " << desturl.pathOrURL();
         return 0;
     }
 
@@ -760,11 +760,11 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     #define item static_cast<GenericMediaItem*>(item)
 
     QByteArray encodedPath = m_mim[item]->getEncodedFullName();
-    debug() << "Deleting path: " << encodedPath << endl;
+    debug() << "Deleting path: " << encodedPath;
 
     if ( !KIO::NetAccess::del( KUrl::fromPathOrUrl(encodedPath), m_view ))
     {
-        debug() << "Could not delete!" << endl;
+        debug() << "Could not delete!";
         return -1;
     }
 
@@ -772,7 +772,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     if( m_mim[item] == m_initialFile )
     {
         m_mim[item]->deleteAll( false );
-        debug() << "Not deleting root directory of mount!" << endl;
+        debug() << "Not deleting root directory of mount!";
         path = m_initialFile->getFullName();
     }
     else
@@ -929,7 +929,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
         kapp->processEvents( 100 );
         count++;
         if (count > 120){
-            debug() << "KDiskFreeSp taking too long.  Returning false from getCapacity()" << endl;
+            debug() << "KDiskFreeSp taking too long.  Returning false from getCapacity()";
             return false;
         }
     }

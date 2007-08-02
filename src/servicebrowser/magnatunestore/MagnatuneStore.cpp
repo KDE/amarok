@@ -63,7 +63,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
     //QSplitter *spliter = new QSplitter( Qt::Vertical, this );
 
-    debug() << "Magnatune browser starting..." << endl;
+    debug() << "Magnatune browser starting...";
 
     //m_popupMenu = new QMenu( spliter);
     //m_infoBox = new MagnatuneArtistInfoBox( spliter, "ArtistInfoBox" );
@@ -89,7 +89,7 @@ void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
 {
     if ( !item ) return ; // sanity check
 
-    debug() << "Magnatune browser: adding single track" << endl;
+    debug() << "Magnatune browser: adding single track";
     QString url = item->url();
     Playlist * playlist = Playlist::instance();
     playlist->insertMedia( KUrl( url ) );
@@ -186,7 +186,7 @@ void MagnatuneStore::updateButtonClicked()
 
 
     //HACK for testing
-    /*debug() << "MagnatuneStore: create xml parser" << endl;
+    /*debug() << "MagnatuneStore: create xml parser";
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -197,7 +197,7 @@ bool MagnatuneStore::updateMagnatuneList()
 {
     //download new list from magnatune
 
-     debug() << "MagnatuneStore: start downloading xml file" << endl;
+     debug() << "MagnatuneStore: start downloading xml file";
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ), KUrl("/tmp/album_info.xml"), 0774 , true, false, true );
     Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
@@ -215,7 +215,7 @@ bool MagnatuneStore::updateMagnatuneList()
 void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 {
 
-   debug() << "MagnatuneStore: xml file download complete" << endl;
+   debug() << "MagnatuneStore: xml file download complete";
 
     if ( downLoadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
@@ -228,7 +228,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    debug() << "MagnatuneStore: create xml parser" << endl;
+    debug() << "MagnatuneStore: create xml parser";
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -244,7 +244,7 @@ void MagnatuneStore::listDownloadCancelled( )
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;
-    debug() << "Aborted xml download" << endl;
+    debug() << "Aborted xml download";
 
     m_updateListButton->setEnabled( true );
 }
@@ -254,13 +254,13 @@ void MagnatuneStore::listDownloadCancelled( )
 void MagnatuneStore::doneParsing()
 {
 
-    debug() << "MagnatuneStore: done parsing" << endl;
+    debug() << "MagnatuneStore: done parsing";
     m_collection->emitUpdated();
 }
 
 /*void MagnatuneStore::processRedownload( )
 {
-    debug() << "Process redownload" << endl;
+    debug() << "Process redownload";
 
     if ( m_redownloadHandler == 0 )
     {
@@ -281,7 +281,7 @@ void MagnatuneStore::purchaseCompleted( bool )
     m_purchaseAlbumButton->setEnabled( true );
     m_purchaseInProgress = false;
 
-    debug() << "Purchase operation complete" << endl;
+    debug() << "Purchase operation complete";
 
     //TODO: display some kind of success dialog here?
 
@@ -299,7 +299,7 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
 
     if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
 
-        debug() << "is right type (track)" << endl;
+        debug() << "is right type (track)";
         MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
         m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
         m_purchaseAlbumButton->setEnabled( true );
@@ -307,12 +307,12 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
     } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
 
         m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
-        debug() << "is right type (album) named " << m_currentAlbum->name() << endl;
+        debug() << "is right type (album) named " << m_currentAlbum->name();
 
         m_purchaseAlbumButton->setEnabled( true );
     } else {
 
-        debug() << "is wrong type" << endl;
+        debug() << "is wrong type";
         m_purchaseAlbumButton->setEnabled( false );
 
     }
@@ -325,7 +325,7 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
 
 /*void MagnatuneStore::addMoodyTracksToPlaylist(QString mood)
 {
-   debug() << "addMoody: " << mood << endl;
+   debug() << "addMoody: " << mood;
    SimpleServiceTrackList tracks = m_dbHandler->getTracksByMood( mood );
 
    int numberOfTracks = tracks.size();

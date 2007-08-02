@@ -93,7 +93,7 @@ void JamendoService::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
 
-    debug() << "JamendoService: start downloading xml file" << endl;
+    debug() << "JamendoService: start downloading xml file";
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".gz" );
@@ -122,7 +122,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 
     if ( downloadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
-    debug() << "JamendoService: xml file download complete" << endl;
+    debug() << "JamendoService: xml file download complete";
 
 
     //testing
@@ -137,7 +137,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 
     //system( "gzip -df /tmp/dbdump.en.xml.gz" ); //FIXME!!!!!!!!!
 
-    debug() << "JamendoService: create xml parser" << endl;
+    debug() << "JamendoService: create xml parser";
     JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
@@ -154,14 +154,14 @@ void JamendoService::listDownloadCancelled()
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;
-    debug() << "Aborted xml download" << endl;
+    debug() << "Aborted xml download";
 
     m_updateListButton->setEnabled( true );
 }
 
 void JamendoService::doneParsing()
 {
-    debug() << "JamendoService: done parsing" << endl;
+    debug() << "JamendoService: done parsing";
     m_updateListButton->setEnabled( true );
     // getModel->setGenre("All");
     //delete sender
@@ -172,7 +172,7 @@ void JamendoService::doneParsing()
 void JamendoService::debugSlot()
 {
 
-    debug() << "JamendoService: create xml parser" << endl;
+    debug() << "JamendoService: create xml parser";
     JamendoXmlParser * parser = new JamendoXmlParser( "/tmp/dbdump.en.xml" );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 

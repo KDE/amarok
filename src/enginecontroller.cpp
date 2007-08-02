@@ -374,7 +374,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     if ( !m_playFailureCount )
         failure_time.start();
 
-    debug() << "Loading URL: " << url.url() << endl;
+    debug() << "Loading URL: " << url.url();
     m_lastMetadata.clear();
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
@@ -385,7 +385,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     if ( url.isLocalFile() ) {
         // does the file really exist? the playlist entry might be old
         if ( ! QFile::exists( url.path()) ) {
-            //debug() << "  file >" << url.path() << "< does not exist!" << endl;
+            //debug() << "  file >" << url.path() << "< does not exist!";
             Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
             goto some_kind_of_failure;
         }
@@ -396,7 +396,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             Amarok::StatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
         else
             Amarok::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
-        debug() << "Connecting to protocol: " << url.protocol() << endl;
+        debug() << "Connecting to protocol: " << url.protocol();
     }
 
     // WebDAV protocol is HTTP with extensions (and the "webdav" scheme
@@ -426,14 +426,14 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
                     this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
         }
-        debug() << "New URL is " << url.url() << endl;
+        debug() << "New URL is " << url.url();
     }
     else if (url.protocol() == "daap" )
     {
         KUrl newUrl = MediaBrowser::instance()->getProxyUrl( url );
         if( !newUrl.isEmpty() )
         {
-            debug() << newUrl << endl;
+            debug() << newUrl;
             url = newUrl;
         }
         else
@@ -468,7 +468,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     }
 
     some_kind_of_failure:
-        debug() << "Failed to play this track." << endl;
+        debug() << "Failed to play this track.";
 
         ++m_playFailureCount;
 
@@ -490,7 +490,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             && failure_time.elapsed() < 500 )
         {
 
-           debug() << "Skipping to next track." << endl;
+           debug() << "Skipping to next track.";
 
            // The test for loaded must be done _before_ next is called
            if ( !m_engine->loaded() )

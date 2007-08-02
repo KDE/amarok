@@ -36,7 +36,7 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ), Qt::QueuedConnection );
     setLevels( levelType );
-    debug() << "Collection root has " << m_rootItem->childCount() << " childrens" << endl;
+    debug() << "Collection root has " << m_rootItem->childCount() << " childrens";
 }
 
 

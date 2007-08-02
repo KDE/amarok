@@ -99,7 +99,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 void
 Vis::SocketServer::newConnection( int sockfd )
 {
-    debug() << "Connection requested: " << sockfd << endl;
+    debug() << "Connection requested: " << sockfd;
     new SocketNotifier( sockfd ); //handles its own memory
 }
 
@@ -127,7 +127,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         {
             pid_t *pid = reinterpret_cast<pid_t*>(buf + 4);
 
-            debug() << "Registration pid: " << *pid << endl;
+            debug() << "Registration pid: " << *pid;
 
             Vis::Selector::instance()->mapPID( *pid, sockfd );
         }
@@ -139,7 +139,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         }
     }
     else {
-        debug() << "recv() error, closing socket: " << sockfd << endl;
+        debug() << "recv() error, closing socket: " << sockfd;
         ::close( sockfd );
         delete this;
     }
@@ -155,7 +155,7 @@ Vis::Selector::instance()
     QWidget *parent = reinterpret_cast<QWidget*>( pApp->mainWindow() );
     QObject *o = parent->findChild<QObject *>( "Vis::Selector::instance" );
 
-    debug() << bool(o == 0) << endl;
+    debug() << bool(o == 0);
 
     return o ? static_cast<Selector*>( o ) : new Selector( parent );
 }
@@ -213,7 +213,7 @@ Vis::Selector::processExited( K3Process *proc )
 void
 Vis::Selector::receivedStdout( K3Process */*proc*/, char* buffer, int length )
 {
-     debug() << QString::fromLatin1( buffer, length ) << endl;
+     debug() << QString::fromLatin1( buffer, length );
 }
 
 void

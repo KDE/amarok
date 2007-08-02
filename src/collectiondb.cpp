@@ -148,7 +148,7 @@ INotify::watchDir( const QString directory )
     int wd = inotify_add_watch( m_fd, directory.toLocal8Bit(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVE |
                                                              IN_MODIFY | IN_ATTRIB );
     if ( wd < 0 )
-        debug() << "Could not add INotify watch for: " << directory << endl;
+        debug() << "Could not add INotify watch for: " << directory;
 
     return ( wd >= 0 );
 #else
@@ -194,7 +194,7 @@ INotify::doJob()
         len = read( m_fd, buf, BUF_LEN );
         if ( len < 0 )
         {
-            debug() << "Read from INotify failed" << endl;
+            debug() << "Read from INotify failed";
             return false;
         }
         else
@@ -371,13 +371,13 @@ CollectionDB::initDirOperations()
     if ( inotify_fd < 0 )
 #endif
     {
-//         debug() << "INotify not available, using QTimer!" << endl;
+//         debug() << "INotify not available, using QTimer!";
         startTimer( MONITOR_INTERVAL * 1000 );
     }
 #ifdef HAVE_INOTIFY
     else
     {
-        debug() << "INotify enabled!" << endl;
+        debug() << "INotify enabled!";
         ThreadManager::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
     }
 #endif
@@ -694,7 +694,7 @@ CollectionDB::createIndices()
 {
     //This creates the indices for tables created in createTables. It should not refer to
     //tables which are not created in that function.
-    debug() << "Creating indices, ignore errors about already existing indices" << endl;
+    debug() << "Creating indices, ignore errors about already existing indices";
 
     query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );", true );
     query( "CREATE INDEX album_tag ON tags( album );" );
@@ -732,7 +732,7 @@ CollectionDB::createIndices()
 
     query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 
-    debug() << "Finished creating indices, stop ignoring errors" << endl;
+    debug() << "Finished creating indices, stop ignoring errors";
 }
 
 void
@@ -742,7 +742,7 @@ CollectionDB::createPermanentIndices()
     //this method is called on each startup of amarok
     //until we figure out a way to handle this better it produces SQL errors if the indices
     //already exist, but these can be ignored
-    debug() << "Creating permanent indices, ignore errors about already existing indices" << endl;
+    debug() << "Creating permanent indices, ignore errors about already existing indices";
 
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
     query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
@@ -764,7 +764,7 @@ CollectionDB::createPermanentIndices()
     query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
     query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 
-    debug() << "Finished creating permanent indices, stop ignoring errors" << endl;
+    debug() << "Finished creating permanent indices, stop ignoring errors";
 }
 
 
@@ -784,7 +784,7 @@ CollectionDB::dropTables( const bool temporary )
     if ( !temporary )
     {
         query( QString( "DROP TABLE related_artists;" ) );
-        debug() << "Dropping media table" << endl;
+        debug() << "Dropping media table";
     }
 
     if ( getDbConnectionType() == DbConnection::postgresql )
@@ -823,7 +823,7 @@ CollectionDB::clearTables( const bool temporary )
     if ( !temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
-        //debug() << "Clearing media table" << endl;
+        //debug() << "Clearing media table";
         //query( QString( "%1 media;" ).arg( clearCommand ) );
     }
 }
@@ -904,7 +904,7 @@ CollectionDB::prepareTempTables()
 void
 CollectionDB::createDevicesTable()
 {
-    debug() << "Creating DEVICES table" << endl;
+    debug() << "Creating DEVICES table";
     QString deviceAutoIncrement = "";
     if ( getDbConnectionType() == DbConnection::postgresql )
     {
@@ -1588,7 +1588,7 @@ CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString,
         sql += QString( ", '%1'" ).arg( escapeString( (*it).first ) );
         sql += QString( ", '%1' );" ).arg( escapeString( (*it).second ) );
 
-//         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
+//         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image;
         insert( sql, NULL );
     }
 }
@@ -1596,7 +1596,7 @@ CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString,
 void
 CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const QString& description )
 {
-//     debug() << "Added embedded image hash " << hash << " for file " << path << endl;
+//     debug() << "Added embedded image hash " << hash << " for file " << path;
     //TODO: figure out what this embedded table does and then add the necessary code
     //what are embedded images anyway?
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
@@ -1942,19 +1942,19 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
     KIO::StoredTransferJob *job = dynamic_cast<KIO::StoredTransferJob *>( gjob );
     if( !job )
     {
-        debug() << "connected to wrong job type" << endl;
+        debug() << "connected to wrong job type";
         return;
     }
 
     if( job->error() )
     {
-        debug() << "job finished with error" << endl;
+        debug() << "job finished with error";
         return;
     }
 
     if( job->isErrorPage() )
     {
-        debug() << "error page" << endl;
+        debug() << "error page";
         return;
     }
 
@@ -2309,7 +2309,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
         deleted = true;
 
     QString hardImage = findDirectoryImage( artist, album );
-    debug() << "hardImage: " << hardImage << endl;
+    debug() << "hardImage: " << hardImage;
 
     if( !hardImage.isEmpty() )
     {
@@ -2942,7 +2942,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     int deviceId = MountPointManager::instance()->getIdForUrl( bundle->url() );
     KUrl relativePath;
     MountPointManager::instance()->getRelativePath( deviceId, bundle->url(), relativePath );
-    //debug() << "File has deviceId " << deviceId << ", relative path " << relativePath.path() << ", absolute path " << bundle->url().path() << endl;
+    //debug() << "File has deviceId " << deviceId << ", relative path " << relativePath.path() << ", absolute path " << bundle->url().path();
 
     command += escapeString( relativePath.path() ) + "','";
     command += escapeString( relativePath.directory() ) + "',";
@@ -3006,8 +3006,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( mpm->getRelativePath( deviceIdInt, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( deviceIdInt, bundle->url().directory() ) );
-    //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
-    //debug() << "tempTables = " << (tempTables?"true":"false") << endl;
+    //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl;
+    //debug() << "tempTables = " << (tempTables?"true":"false");
 
 
     QStringList urls = query( QString(
@@ -3049,14 +3049,14 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
     if( tempTablesAndInPermanent && nonTempURLs.count() > 0 && nonTempIDs.count() > 0 )
             permanentFullMatch = true;
 
-    //debug() << "tempTablesAndInPermanent = " << (tempTablesAndInPermanent?"true":"false") << endl;
-    //debug() << "permanentFullMatch = " << (permanentFullMatch?"true":"false") << endl;
+    //debug() << "tempTablesAndInPermanent = " << (tempTablesAndInPermanent?"true":"false");
+    //debug() << "permanentFullMatch = " << (permanentFullMatch?"true":"false");
 
-    //debug() << "Entering checks" << endl;
+    //debug() << "Entering checks";
     //first case: not in permanent table or temporary table
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
-        //debug() << "first case" << endl;
+        //debug() << "first case";
         QString insertline = QStringx( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
                                       "VALUES ( %2,'%3', '%4', '%5');" )
                 .args( QStringList()
@@ -3066,7 +3066,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                  << currid
                  << currdir );
         insert( insertline, NULL );
-        //debug() << "aftCheckPermanentTables #1" << endl;
+        //debug() << "aftCheckPermanentTables #1";
         aftCheckPermanentTables( currdeviceid, currid, currurl );
         return;
     }
@@ -3079,7 +3079,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         {
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( uniqueids[2].toInt(), uniqueids[0] );
-            //debug() << "At doAFTStuff, stat-ing file " << absPath << endl;
+            //debug() << "At doAFTStuff, stat-ing file " << absPath;
             bool statSuccessful = false;
             bool pathsSame = absPath == bundle->url().path();
             if( !pathsSame )
@@ -3088,8 +3088,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                 warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                //debug() << "stat was NOT successful, updating tables with: " << endl;
-                //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
+                //debug() << "stat was NOT successful, updating tables with: ";
+                //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid );
                 query( QStringx( "UPDATE uniqueid%1 SET deviceid = %2, url='%3', dir='%4' WHERE uniqueid='%5';" )
                       .args( QStringList()
                       << ( tempTables ? "_temp" : "" )
@@ -3107,7 +3107,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         //NOTE: this should never happen during an incremental scan with temporary tables...!
         else if( uniqueids.empty() )
         {
-            //debug() << "file exists in same place as before, new uniqueid" << endl;
+            //debug() << "file exists in same place as before, new uniqueid";
             query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE deviceid = %3 AND url='%4';" )
                     .arg( tempTables ? "_temp" : ""
                    , currid
@@ -3131,9 +3131,9 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                                             .arg( currdeviceid
                                             , currurl );
             insertline += QString( ", '%1', '%2');" ).arg( currid ).arg( currdir );
-            //debug() << "running command: " << insertline << endl;
+            //debug() << "running command: " << insertline;
             insert( insertline, NULL );
-            //debug() << "aftCheckPermanentTables #2" << endl;
+            //debug() << "aftCheckPermanentTables #2";
             aftCheckPermanentTables( currdeviceid, currid, currurl );
             return;
         }
@@ -3143,7 +3143,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         {
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
-            //debug() << "At doAFTStuff part 2, stat-ing file " << absPath << endl;
+            //debug() << "At doAFTStuff part 2, stat-ing file " << absPath;
             bool statSuccessful = false;
             bool pathsSame = absPath == bundle->url().path();
             if( !pathsSame )
@@ -3152,7 +3152,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                 warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
+                //debug() << "stat part 2 was NOT successful, updating tables with: ";
                 query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
                       .arg( currid ) );
                 query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
@@ -3167,7 +3167,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         }
         else if( nonTempIDs.empty() )
         {
-            //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
+            //debug() << "file exists in same place as before, part 2, new uniqueid";
             query( QString( "DELETE FROM uniqueid WHERE deviceid = %1 AND url='%2';" )
                       .arg( currdeviceid )
                       .arg( currurl ) );
@@ -3355,7 +3355,7 @@ CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
 
     if( false && b.length() <= 0 ) {
         // we try to read the tags, despite the slow-down
-        debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
+        debug() << "Audioproperties not known for: " << b.url().fileName();
         b.readTags( TagLib::AudioProperties::Fast);
     }
 
@@ -3936,7 +3936,7 @@ CollectionDB::fileOperationResult( KIO::Job *job ) // slot
     if(job->error())
     {
         m_fileOperationFailed = true;
-        debug() << "file operation failed: " << job->errorText() << endl;
+        debug() << "file operation failed: " << job->errorText();
     }
     else
     {
@@ -4010,7 +4010,7 @@ CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &d
 
       if( m_fileOperationFailed )
       {
-         debug() << "failed to transfer " << src.url() << " to " << tmpSrc << endl;
+         debug() << "failed to transfer " << src.url() << " to " << tmpSrc;
 
          m_moveFileJobCancelled = false;
          return false;
@@ -4021,7 +4021,7 @@ CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &d
    MetaBundle mb( tmpSrc );
    QString dest = dialog.buildDestination( dialog.buildFormatString(), mb );
 
-   debug() << "Destination: " << dest << endl;
+   debug() << "Destination: " << dest;
 
    if( !m_moveFileJobCancelled && tmpSrc.path() != dest ) //suppress error warning that file couldn't be moved
    {
@@ -4064,7 +4064,7 @@ CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &d
 
    if( localFile && isDirInCollection( src.directory() ) && QDir().rmdir( src.directory() ) )
    {
-      debug() << "removed: " << src.directory() << endl;
+      debug() << "removed: " << src.directory();
    }
 
    m_moveFileJobCancelled = false;
@@ -4078,7 +4078,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 {
     DEBUG_BLOCK
     if(src == dest){
-        debug() << "Source and destination URLs are the same, aborting."  << endl;
+        debug() << "Source and destination URLs are the same, aborting.";
         return false;
     }
 
@@ -4092,7 +4092,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 
     // Make sure it is valid.
     if(!srcURL.isValid() || !dstURL.isValid())
-        debug() << "Invalid URL "  << endl;
+        debug() << "Invalid URL ";
 
     // Get just the directory.
     KUrl dir = dstURL;
@@ -4101,7 +4101,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     // Create the directory.
     if(!KStandardDirs::exists(dir.path()))
         if(!KStandardDirs::makeDir(dir.path())) {
-            debug() << "Unable to create directory " << dir.path() << endl;
+            debug() << "Unable to create directory " << dir.path();
         }
 
     m_fileOperationFailed = false;
@@ -4373,7 +4373,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 
         if ( artists.count() > dirs.count() )
         {
-            debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ':' << dirs.count() << endl;
+            debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ':' << dirs.count();
         }
         query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2' AND sampler IS NULL;" )
                          .arg(artists.count() > dirs.count() ? boolT() : boolF()).arg( album_id ) );
@@ -4442,7 +4442,7 @@ CollectionDB::IDFromExactValue( QString table, QString value, bool autocreate, b
     else
     {
         if ( result.count() > 1 )
-            debug() << "More than one entry in the " << table << " database for '" << value << '\'' << endl;
+            debug() << "More than one entry in the " << table << " database for '" << value << '\'';
         return result.first();
     }
 }
@@ -4546,7 +4546,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
         if ( "UPDATE tags SET " == command )
         {
-            debug() << "No tags selected to be changed" << endl;
+            debug() << "No tags selected to be changed";
         }
         else
         {
@@ -4583,7 +4583,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     //this method is totally useless now, so i'm not going to fix this
     /*if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
-        debug() << "Current song edited, updating widgets: " << bundle.title() << endl;
+        debug() << "Current song edited, updating widgets: " << bundle.title();
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
     }*/
 
@@ -4840,7 +4840,7 @@ QByteArray
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
-//     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
+//     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest();
     return context.hexDigest();
 }
 
@@ -4858,7 +4858,7 @@ CollectionDB::timerEvent( QTimerEvent* )
 void
 CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item ) //SLOT
 {
-    debug() << "Fetching cover for " << artist << " - " << album << endl;
+    debug() << "Fetching cover for " << artist << " - " << album;
 
     const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
     CoverFetcher* fetcher;
@@ -4920,7 +4920,7 @@ CollectionDB::stopScan() //SLOT
 void
 CollectionDB::dirDirty( const QString& path )
 {
-    debug() << k_funcinfo << "Dirty: " << path << endl;
+    debug() << k_funcinfo << "Dirty: " << path;
     QStringList dir;
     dir.append( path );
 
@@ -5003,13 +5003,13 @@ void
 CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl )
 {
     //DEBUG_BLOCK
-    //debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid << endl;
+    //debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid;
 
     QStringList check1, check2;
 
     oldForeach( m_aftEnabledPersistentTables )
     {
-        //debug() << "Checking " << (*it) << endl;;
+        //debug() << "Checking " << (*it);;
         check1 = query( QString(
                 "SELECT url, deviceid "
                 "FROM %1 "
@@ -5027,7 +5027,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
 
         if( !check1.empty() )
         {
-            //debug() << "uniqueid found, updating url" << endl;
+            //debug() << "uniqueid found, updating url";
             query( QString( "UPDATE %1 SET deviceid = %2, url = '%4' WHERE uniqueid = '%3';" )
                                 .arg( escapeString( *it ) )
                                 .arg( currdeviceid
@@ -5036,7 +5036,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
         }
         else if( !check2.empty() )
         {
-            //debug() << "url found, updating uniqueid" << endl;
+            //debug() << "url found, updating uniqueid";
             query( QString( "UPDATE %1 SET uniqueid = '%2' WHERE deviceid = %3 AND url = '%4';" )
                                 .arg( escapeString( *it ) )
                                 .arg( currid
@@ -5054,7 +5054,7 @@ CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QSt
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
-    //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl;
+    //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid;
     oldForeach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
@@ -5073,7 +5073,7 @@ void
 CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
 {
     //DEBUG_BLOCK
-    //debug() << "oldid = " << oldid << endl << "newid = " << newid << endl;
+    //debug() << "oldid = " << oldid << endl << "newid = " << newid;
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
     oldForeach( m_aftEnabledPersistentTables )
@@ -5236,7 +5236,7 @@ CollectionDB::initialize()
             }
             else
             {
-                debug() << "Updating DEVICES table" << endl;
+                debug() << "Updating DEVICES table";
                 //add future Devices update code here
             }
         }
@@ -5304,7 +5304,7 @@ CollectionDB::checkDatabase()
             QTimer::singleShot( 0, dialog, SLOT( show() ) );
             //process events in the main event loop so that the dialog actually gets shown
             kapp->processEvents();
-            debug() << "Beginning database update" << endl;
+            debug() << "Beginning database update";
 
             updateStatsTables();
 
@@ -5316,7 +5316,7 @@ CollectionDB::checkDatabase()
             if ( Amarok::config( "Collection Browser" ).readEntry( "Database Version", 0 ) != DATABASE_VERSION
                  || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
             {
-                debug() << "Rebuilding database!" << endl;
+                debug() << "Rebuilding database!";
                 dropTables(false);
                 createTables(false);
             }
@@ -5347,7 +5347,7 @@ CollectionDB::updateStatsTables()
     if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
           || Amarok::config( "Collection Browser" ).readEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
     {
-        debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
+        debug() << "Different database stats version detected! Stats table will be updated or rebuilt.";
 
             #if 0 // causes mysterious crashes
             if( getType() == DbConnection::sqlite && QFile::exists( Amarok::saveLocation()+"collection.db" ) )
@@ -5361,8 +5361,8 @@ CollectionDB::updateStatsTables()
 
                 if( !copied )
                 {
-                    debug() << "Backup failed! Perhaps the volume is not writable." << endl;
-                    debug() << "Error was: " << KIO::NetAccess::lastErrorString() << endl;
+                    debug() << "Backup failed! Perhaps the volume is not writable.";
+                    debug() << "Error was: " << KIO::NetAccess::lastErrorString();
                 }
             }
             #endif
@@ -5388,7 +5388,7 @@ CollectionDB::updateStatsTables()
 
         if ( prev < 3 ) //it is from before 1.2, or our poor user is otherwise fucked
         {
-            debug() << "Rebuilding stats-database!" << endl;
+            debug() << "Rebuilding stats-database!";
             dropStatsTableV1();
             createStatsTable();
         }
@@ -5396,14 +5396,14 @@ CollectionDB::updateStatsTables()
         {
             if( prev < 4 ) //every version from 1.2 forward had a stats version of 3
             {
-                debug() << "Updating stats-database!" << endl;
+                debug() << "Updating stats-database!";
                 query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
                 query( "CREATE INDEX rating_stats ON statistics( rating );" );
                 query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ';' );
             }
             if( prev < 5 )
             {
-                debug() << "Updating stats-database!" << endl;
+                debug() << "Updating stats-database!";
                 query( "UPDATE statistics SET rating = rating * 2;" );
             }
             if( prev < 8 )  //Versions 6, 7 and 8 all were all attempts to add columns for ATF. his code should do it all.
@@ -5441,7 +5441,7 @@ CollectionDB::updateStatsTables()
                 //FIXME: (max) i know this is bad but its fast
                 QStringList oldURLs = query( "SELECT url FROM statistics;" );
                 //it might be necessary to use batch updates to improve speed
-                debug() << "Updating " << oldURLs.count() << " rows in statistics" << endl;
+                debug() << "Updating " << oldURLs.count() << " rows in statistics";
                 oldForeach( oldURLs )
                 {
                     bool exists = QFile::exists( *it );
@@ -5485,17 +5485,17 @@ CollectionDB::updatePersistentTables()
     {
         /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
            copy/keep the good information instead of just deleting the tables */
-        debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors." << endl;
+        debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors.";
         createPersistentTables();
         /* Copy lyrics */
-        debug() << "Trying to get lyrics from old db schema." << endl;
+        debug() << "Trying to get lyrics from old db schema.";
         
         QStringList lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
 
         for( int i = 0; i < lyrics.count(); i += 2  )
             setLyrics( lyrics[i], lyrics[i+1] );
 
-        debug() << "Building podcast tables" << endl;
+        debug() << "Building podcast tables";
         createPodcastTables();
     }
     else if ( PersistentVersion == "1" || PersistentVersion == "2" )
@@ -5503,26 +5503,26 @@ CollectionDB::updatePersistentTables()
         createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
                                      on some cases the table wouldn't be created.
                                      From 2 to 3, lyrics were made plain text, instead of HTML */
-        debug() << "Converting Lyrics to Plain Text." << endl;
+        debug() << "Converting Lyrics to Plain Text.";
         
         QStringList lyrics = query( "SELECT url, lyrics FROM lyrics;" );
         
         for( int i=0; i < lyrics.count(); i += 2 )
             setLyrics( lyrics[i], lyrics[i+1]  );
         
-        debug() << "Building podcast tables" << endl;
+        debug() << "Building podcast tables";
         createPodcastTables();
     }
     else if ( PersistentVersion.toInt() < 4 )
     {
-        debug() << "Building podcast tables" << endl;
+        debug() << "Building podcast tables";
         createPodcastTables();
     }
     else
     {
         if ( PersistentVersion.toInt() < 5 )
         {
-            debug() << "Updating podcast tables" << endl;
+            debug() << "Updating podcast tables";
             query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD localurl " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ';' );
@@ -5533,7 +5533,7 @@ CollectionDB::updatePersistentTables()
         }
         if ( PersistentVersion.toInt() < 6 )
         {
-            debug() << "Updating podcast tables" << endl;
+            debug() << "Updating podcast tables";
             query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
@@ -5542,11 +5542,11 @@ CollectionDB::updatePersistentTables()
         }
         if ( PersistentVersion.toInt() < 11 )
         {
-            debug() << "This is used to handle problems from uniqueid changeover and should not do anything" << endl;
+            debug() << "This is used to handle problems from uniqueid changeover and should not do anything";
         }
         if ( PersistentVersion.toInt() < 12 )
         {
-            debug() << "Adding playlists table..." << endl;
+            debug() << "Adding playlists table...";
             createPersistentTablesV12();
         }
         if ( PersistentVersion.toInt() < 13 )
@@ -5557,7 +5557,7 @@ CollectionDB::updatePersistentTables()
             //FIXME: (max) i know this is bad but its fast
             QStringList oldURLs = query( "SELECT url FROM lyrics;" );
             //it might be necessary to use batch updates to improve speed
-            debug() << "Updating " << oldURLs.count() << " rows in lyrics" << endl;
+            debug() << "Updating " << oldURLs.count() << " rows in lyrics";
             oldForeach( oldURLs )
             {
                 int deviceid = MountPointManager::instance()->getIdForUrl( *it );
@@ -5634,7 +5634,7 @@ CollectionDB::updatePersistentTables()
                         << " database tables, I'm quitting" << endl;
                 exit( 1 );
 
-                debug() << "Rebuilding persistent tables database!" << endl;
+                debug() << "Rebuilding persistent tables database!";
                 dropPersistentTables();
                 createPersistentTables();
             }
@@ -5680,7 +5680,7 @@ CollectionDB::vacuum()
          DbConnection::postgresql == getDbConnectionType() )
     {
         //Clean up DB and free unused space.
-        debug() << "Running VACUUM" << endl;
+        debug() << "Running VACUUM";
         query( "VACUUM;" );
     }
 }
@@ -5754,13 +5754,13 @@ CollectionDB::customEvent( QEvent *e )
 QString
 CollectionDB::loadHashFile( const QByteArray& hash, uint width )
 {
-    //debug() << "loadHashFile: " << hash << " - " << width << endl;
+    //debug() << "loadHashFile: " << hash << " - " << width;
 
     QString full = tagCoverDir().filePath( hash );
 
     if ( width == 0 ) {
         if ( QFileInfo( full ).isReadable() ) {
-            //debug() << "loadHashFile: fullsize: " << full << endl;
+            //debug() << "loadHashFile: fullsize: " << full;
             return full;
         }
     } else {
@@ -5769,13 +5769,13 @@ CollectionDB::loadHashFile( const QByteArray& hash, uint width )
 
         QString path = cacheCoverDir().filePath( widthKey + hash );
         if ( QFileInfo( path ).isReadable() ) {
-            //debug() << "loadHashFile: scaled: " << path << endl;
+            //debug() << "loadHashFile: scaled: " << path;
             return path;
         } else if ( QFileInfo( full ).isReadable() ) {
-            //debug() << "loadHashFile: scaling: " << full << endl;
+            //debug() << "loadHashFile: scaling: " << full;
             QImage image( full );
             if ( image.scaled( width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" ) ) {
-                //debug() << "loadHashFile: scaled: " << path << endl;
+                //debug() << "loadHashFile: scaled: " << path;
                 return path;
             }
         }
@@ -5787,14 +5787,14 @@ CollectionDB::loadHashFile( const QByteArray& hash, uint width )
 bool
 CollectionDB::extractEmbeddedImage( const MetaBundle &trackInformation, QByteArray& hash )
 {
-    //debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
+    //debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path();
 
     MetaBundle::EmbeddedImageList images;
     trackInformation.embeddedImages( images );
     oldForeachType ( MetaBundle::EmbeddedImageList, images ) {
         if ( hash.isEmpty() || (*it).hash() == hash ) {
             if ( (*it).save( tagCoverDir() ) ) {
-                //debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;
+                //debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path();
                 hash = (*it).hash();
                 return true;
             }
@@ -6044,7 +6044,7 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
             if ( busyCnt )
             {
                 ::usleep( 100000 );      // Sleep 100 msec
-                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt;
             }
             error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
@@ -6076,11 +6076,11 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
                         break;
                     }
                     ::usleep( 100000 ); // Sleep 100 msec
-                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt;
                     continue;
                 }
                 if ( error == SQLITE_MISUSE )
-                    debug() << "sqlite3_step: MISUSE" << endl;
+                    debug() << "sqlite3_step: MISUSE";
                 if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                     break;
 
@@ -6103,9 +6103,9 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occurred on query: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on query: " << statement;
                 if ( retryCnt < 10 )
-                    debug() << "Retrying now." << endl;
+                    debug() << "Retrying now.";
                 else
                 {
                     Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
@@ -6136,7 +6136,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             if ( busyCnt )
             {
                 ::usleep( 100000 );      // Sleep 100 msec
-                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt;
             }
             error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
@@ -6166,10 +6166,10 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
                         break;
                     }
                     ::usleep( 100000 ); // Sleep 100 msec
-                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt;
                 }
                 if ( error == SQLITE_MISUSE )
-                    debug() << "sqlite3_step: MISUSE" << endl;
+                    debug() << "sqlite3_step: MISUSE";
                 if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                     break;
             }
@@ -6185,9 +6185,9 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occurred on insert: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on insert: " << statement;
                 if ( retryCnt < 10 )
-                    debug() << "Retrying now." << endl;
+                    debug() << "Retrying now.";
                 else
                 {
                     Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
@@ -6260,7 +6260,7 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
 {
     DEBUG_BLOCK
 
-    debug() << k_funcinfo << endl;
+    debug() << k_funcinfo;
     m_db = mysql_init(NULL);
     if (m_db)
     {
@@ -6281,7 +6281,7 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
             QStringList my_qslist = query( "SHOW VARIABLES LIKE 'character_set_database'" );
             if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, const_cast<char *>( my_qslist[1].toLatin1() ) ) )
                 //charset was updated
-                debug() << "Connection Charset is now: " << my_qslist[1].toLatin1() << endl;
+                debug() << "Connection Charset is now: " << my_qslist[1].toLatin1();
             else
                 error() << "Failed to set database charset\n";
 #endif
@@ -6369,7 +6369,7 @@ int MySqlConnection::insert( const QString& statement, const QString& /* table *
     mysql_query( m_db, statement.toUtf8() );
     if ( mysql_errno( m_db ) )
     {
-        debug() << "MYSQL INSERT FAILED: " << mysql_error( m_db ) << "\n" << "FAILED INSERT: " << statement << endl;
+        debug() << "MYSQL INSERT FAILED: " << mysql_error( m_db ) << "\n" << "FAILED INSERT: " << statement;
     }
     return mysql_insert_id( m_db );
 }
@@ -6394,7 +6394,7 @@ PostgresqlConnection::PostgresqlConnection( const PostgresqlConfig* config )
       , m_connected( false )
 {
   QString conninfo;
-    debug() << k_funcinfo << endl;
+    debug() << k_funcinfo;
 
 //     if ( config->username().isEmpty() )
 //         pApp->slotConfigAmarok("Postgresql");

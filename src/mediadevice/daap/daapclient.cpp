@@ -239,9 +239,9 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                 QStringList sl = m_serverItemMap.keys();
                 oldForeach( sl )
                 {
-                    debug() << (*it) << endl;
+                    debug() << (*it);
                 }
-                debug() << sitem->key() << endl;
+                debug() << sitem->key();
             }
             break;
         default:
@@ -355,7 +355,7 @@ DaapClient::resolvedDaap( bool success )
     DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
-    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
+    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
 
     QString ip = resolve( service->hostName() );
     if( ip == "0" || m_serverItemMap.contains(serverKey( service )) ) //same server from multiple interfaces
@@ -371,7 +371,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
     const Daap::Reader* callback = dynamic_cast<const Daap::Reader*>(sender());
     if( !callback )
     {
-        debug() << "No callback!" << endl;
+        debug() << "No callback!";
         return;
     }
 
@@ -529,7 +529,7 @@ DaapClient::passwordPrompt()
 
     Daap::Reader* callback = dynamic_cast<Daap::Reader*>( const_cast<QObject*>( sender() ) );
     if (!callback) {
-	debug() << "No callback!" << endl;
+	debug() << "No callback!";
 	return;
     }
     ServerItem* root = callback->rootMediaItem();
@@ -569,7 +569,7 @@ DaapClient::resolve( const QString& hostname )
         if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();
-            debug() << "ip found is " << ip << endl;
+            debug() << "ip found is " << ip;
             return ip;
         }
     }
@@ -657,14 +657,14 @@ DEBUG_BLOCK
     switch( m_broadcastServer )
     {
         case false:
-            debug() << "turning daap server off" << endl;
+            debug() << "turning daap server off";
             if( m_sharingServer )
                 delete m_sharingServer;
             m_sharingServer = 0;
             break;
 
         case true:
-            debug() << "turning daap server on" << endl;
+            debug() << "turning daap server on";
             if( !m_sharingServer )
                 m_sharingServer = new DaapServer( this, "DaapServer" );
             break;
@@ -807,7 +807,7 @@ DaapDownloader::doJob()
     while( !isAborted() && !m_errorOccured && urlIt != m_urls.end() )
     {
         m_ready = false;
-        debug() << "downloading " << (*urlIt).path() << endl;
+        debug() << "downloading " << (*urlIt).path();
         setProgressTotalSteps( 100 );
         KTemporaryFile* tempNewFile = new KTempFile();
         tempNewFile->setSuffix( '.' + QFileInfo( (*urlIt).path() ).extension() );
@@ -819,10 +819,10 @@ DaapDownloader::doJob()
         {
             msleep( 100 );   //Sleep 100 msec
         }
-        debug() << "finished " << (*urlIt).path() << endl;
+        debug() << "finished " << (*urlIt).path();
         ++urlIt;
     }
-    debug() << "returning " << m_successful << endl;
+    debug() << "returning " << m_successful;
     http->deleteLater();
     http = 0;
     return m_successful;
@@ -866,7 +866,7 @@ DaapDownloader::downloadFailed( const QString & error )
 {
  //   Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "An error occurred while downloading from remote music server." ), Amarok::StatusBar::Error );
     DEBUG_BLOCK
-    debug() << "failed on " << error << endl;
+    debug() << "failed on " << error;
     m_successful = false;
     m_errorOccured = true;
     m_ready = true;

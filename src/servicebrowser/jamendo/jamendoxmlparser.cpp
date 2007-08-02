@@ -64,9 +64,9 @@ JamendoXmlParser::completeJob( )
         .arg( m_nNumberOfArtists ), KDE::StatusBar::Information );
 */
 
-    debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists << endl;
-    debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums << endl;
-    debug() << "JamendoXmlParser: total number of tracks: " << m_nNumberOfTracks << endl;
+    debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists;
+    debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums;
+    debug() << "JamendoXmlParser: total number of tracks: " << m_nNumberOfTracks;
     emit( doneParsing() );
 }
 
@@ -82,7 +82,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
 
     if ( !QFile::exists( filename ) )
     {
-        debug() << "jamendo xml file does not exist" << endl;
+        debug() << "jamendo xml file does not exist";
         return;
     }
 
@@ -90,12 +90,12 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
     //QFile *file = new QFile("/tmp/dbdump.en.xml");
     if ( !file || !file->open( QIODevice::ReadOnly ) ) {
-        debug() << "JamendoXmlParser::readConfigFile error reading file" << endl;
+        debug() << "JamendoXmlParser::readConfigFile error reading file";
         return ;
     }
     if ( !doc.setContent( file ) )
     {
-        debug() << "JamendoXmlParser::readConfigFile error parsing file" << endl;
+        debug() << "JamendoXmlParser::readConfigFile error parsing file";
         file->close();
         return ;
     }
@@ -111,9 +111,9 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     QDomElement docElem = doc.documentElement();
 
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
-    debug() << "begin parsing content" << endl;
+    debug() << "begin parsing content";
     parseElement( docElem );
-    debug() << "finishing transaction" << endl;
+    debug() << "finishing transaction";
     m_dbHandler->commit(); //complete transaction
 
     //completeJob is called by ThreadManager
@@ -152,7 +152,7 @@ JamendoXmlParser::parseChildren( const  QDomElement &e )
 void JamendoXmlParser::parseArtist( const  QDomElement &e ) {
 
 
-      //debug() << "Found artist: " << endl;
+      //debug() << "Found artist: ";
     m_nNumberOfArtists++;
 
     QString name;
@@ -193,18 +193,18 @@ void JamendoXmlParser::parseArtist( const  QDomElement &e ) {
     m_dbHandler->insertArtist( &currentArtist );
     countTransaction();
 
-    /*debug() << "    Name:       " << currentArtist.getName() << endl;
-    debug() << "    Id:         " << currentArtist.getId() << endl;
-    //debug() << "    Photo:      " << currentArtist.getPhotoURL() << endl;
-    debug() << "    J_url:      " << currentArtist.getJamendoURL() << endl;
-    debug() << "    H_url:      " << currentArtist.getHomeURL() << endl;
-    debug() << "    Decription: " << currentArtist.getDescription() << endl;
+    /*debug() << "    Name:       " << currentArtist.getName();
+    debug() << "    Id:         " << currentArtist.getId();
+    //debug() << "    Photo:      " << currentArtist.getPhotoURL();
+    debug() << "    J_url:      " << currentArtist.getJamendoURL();
+    debug() << "    H_url:      " << currentArtist.getHomeURL();
+    debug() << "    Decription: " << currentArtist.getDescription();
 */
 }
 
 void JamendoXmlParser::parseAlbum( const  QDomElement &e)
 {
-    //debug() << "Found album: " << endl;
+    //debug() << "Found album: ";
     m_nNumberOfAlbums++;
 
     QString name;
@@ -261,7 +261,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
 
    foreach( QString genreName, tags ) {
 
-        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName << endl;
+        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
 
         ServiceGenre currentGenre( genreName );
         currentGenre.setAlbumId( newId );
@@ -275,7 +275,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
 
 void JamendoXmlParser::parseTrack( const  QDomElement &e)
 {
-    //debug() << "Found track: " << endl;
+    //debug() << "Found track: ";
     m_nNumberOfTracks++;
 
     QString name;
@@ -310,7 +310,7 @@ void JamendoXmlParser::parseTrack( const  QDomElement &e)
     if ( m_albumArtistMap.contains( currentTrack.albumId() ) )
         currentTrack.setArtistId( m_albumArtistMap.value( currentTrack.albumId() ) );
 
-   // debug() << "inserting track with artist id: " << currentTrack.artistId() << endl;
+   // debug() << "inserting track with artist id: " << currentTrack.artistId();
 
     m_dbHandler->insertTrack( &currentTrack );
     countTransaction();

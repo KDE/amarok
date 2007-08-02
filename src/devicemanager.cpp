@@ -47,7 +47,7 @@ DeviceManager::DeviceManager()
 
     if (!m_dc->isRegistered())
     {
-        debug() << "DeviceManager:  DCOP Client not registered!" << endl;
+        debug() << "DeviceManager:  DCOP Client not registered!";
     }
     else
     {
@@ -55,7 +55,7 @@ DeviceManager::DeviceManager()
             !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
             !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
         {
-            debug() << "DeviceManager:  Could not connect to signal mediumAdded/Removed/Changed!" << endl;
+            debug() << "DeviceManager:  Could not connect to signal mediumAdded/Removed/Changed!";
         }
         else
         {
@@ -69,10 +69,10 @@ DeviceManager::DeviceManager()
             arg << 5;
             if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData, false, 5000))
             {
-                debug() << "During DeviceManager init, error during DCOP call" << endl;
+                debug() << "During DeviceManager init, error during DCOP call";
             }
             reconcileMediumMap();
-            debug() << "DeviceManager:  connectDCOPSignal returned successfully!" << endl;
+            debug() << "DeviceManager:  connectDCOPSignal returned successfully!";
         }
     }*/
 }
@@ -91,9 +91,9 @@ DeviceManager::mediumAdded( const QString name )
         return;
     Medium* addedMedium = getDevice(name);
     if ( addedMedium != 0 )
-        debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
+        debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id();
     else
-        debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
+        debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name;
     emit mediumAdded( addedMedium, name );
 }
 
@@ -108,9 +108,9 @@ DeviceManager::mediumRemoved( const QString name )
     if ( m_mediumMap.contains(name) )
         removedMedium = m_mediumMap[name];
     if ( removedMedium != 0 )
-        debug() << "[DeviceManager::mediumRemoved] Obtained medium name is " << name << ", id is: " << removedMedium->id() << endl;
+        debug() << "[DeviceManager::mediumRemoved] Obtained medium name is " << name << ", id is: " << removedMedium->id();
     else
-        debug() << "[DeviceManager::mediumRemoved] Medium was unknown and is null; name was " << name << endl;
+        debug() << "[DeviceManager::mediumRemoved] Medium was unknown and is null; name was " << name;
     //if you get a null pointer from this signal, it means we did not know about the device
     //before it was removed, i.e. the removal was the first event for the device received while amarok
     //has been running
@@ -132,9 +132,9 @@ DeviceManager::mediumChanged( const QString name )
         return;
     Medium *changedMedium = getDevice(name);
     if ( changedMedium != 0 )
-        debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
+        debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id();
     else
-        debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
+        debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name;
     emit mediumChanged( changedMedium, name );
 }
 
@@ -181,7 +181,7 @@ DeviceManager::getDeviceStringList()
     arg << 5;
     if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
     {
-        debug() << "Error during DCOP call" << endl;
+        debug() << "Error during DCOP call";
     }
     else
     {
@@ -210,7 +210,7 @@ DeviceManager::getDevice( const QString name )
     DEBUG_BLOCK
     if ( !m_valid )
         return 0;
-    debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
+    debug() << "DeviceManager: getDevice called with name argument = " << name;
     Medium* returnedMedium = 0;
     MediumList currMediumList = getDeviceList();
 

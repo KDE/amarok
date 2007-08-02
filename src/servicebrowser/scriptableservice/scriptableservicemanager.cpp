@@ -45,7 +45,7 @@ ScriptableServiceManager::ScriptableServiceManager(QObject* parent)
 
 bool ScriptableServiceManager::createService( const QString &name, const QString &listHeader, const QString &rootHtml) {
 
-    debug() << "ScriptableServiceManager::CreateService, name: " << name << ", header: "<< listHeader <<  endl;
+    debug() << "ScriptableServiceManager::CreateService, name: " << name << ", header: "<< listHeader;
 
     if ( m_serviceMap.contains( name ) ) {
         //service name taken
@@ -79,7 +79,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
 int ScriptableServiceManager::insertTrack(const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int albumId) {
 
-     debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", albumId: " << albumId << ", Service name: " << serviceName << endl;
+     debug() << "ScriptableServiceManager::insertElement, name: " << name << ", url: "<< url << ", info: " << infoHtml << ", albumId: " << albumId << ", Service name: " << serviceName;
 
     //get the service
 
@@ -103,7 +103,7 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
 int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QString & name, const QString & infoHtml/*, int parentId*/)
 {
 
-     debug() << "ScriptableServiceManager::insertElement, name: " << name  << ", info: " << infoHtml << /*", parentId: " << parentId <<*/ ", Service name: " << serviceName << endl;
+     debug() << "ScriptableServiceManager::insertElement, name: " << name  << ", info: " << infoHtml << /*", parentId: " << parentId <<*/ ", Service name: " << serviceName;
 
     //get the service
 
@@ -129,7 +129,7 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
 
 /*int ScriptableServiceManager::insertDynamicElement( const QString &name, const QString &callbackScript, const QString &callbackArgument, const QString &infoHtml, int parentId, const QString &serviceName){
 
-     debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName << endl;
+     debug() << "ScriptableServiceManager::insertDynamicElement, name: " << name << ", callbackScript: "<< callbackScript << ", callbackArgument: "<< callbackArgument <<  ", info: " << infoHtml << ", parentId: " << parentId << ", Service name: " << serviceName;
 
     //get the service
 

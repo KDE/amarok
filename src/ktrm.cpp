@@ -333,7 +333,7 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
     track_t track = tp_GetTrack(pimp, fileId);
     TPFileStatus status = tr_GetStatus(track);
 #endif
-    //debug() << "Status is: " << status << endl;
+    //debug() << "Status is: " << status;
 
     switch(status) {
     case eRecognized:
@@ -583,7 +583,7 @@ int KTRMLookup::fileId() const
 void KTRMLookup::recognized()
 {
 #if HAVE_TUNEPIMP
-    debug() << k_funcinfo << d->file << endl;
+    debug() << k_funcinfo << d->file;
 
     d->results.clear();
 
@@ -611,7 +611,7 @@ void KTRMLookup::recognized()
 void KTRMLookup::unrecognized()
 {
 #if HAVE_TUNEPIMP
-    debug() << k_funcinfo << d->file << endl;
+    debug() << k_funcinfo << d->file;
     #if HAVE_TUNEPIMP >= 4
     char trm[255];
     bool finish = false;
@@ -643,12 +643,12 @@ void KTRMLookup::unrecognized()
 void KTRMLookup::collision()
 {
 #if HAVE_TUNEPIMP && HAVE_TUNEPIMP < 5
-    debug() << k_funcinfo << d->file << endl;
+    debug() << k_funcinfo << d->file;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
 
     if(track <= 0) {
-        debug() << "invalid track number" << endl;
+        debug() << "invalid track number";
         return;
     }
 
@@ -670,17 +670,17 @@ void KTRMLookup::collision()
 
         switch(type) {
         case eNone:
-            debug() << k_funcinfo << "eNone" << endl;
+            debug() << k_funcinfo << "eNone";
             break;
         case eArtistList:
-            debug() << "eArtistList" << endl;
+            debug() << "eArtistList";
             break;
         case eAlbumList:
-            debug() << "eAlbumList" << endl;
+            debug() << "eAlbumList";
             break;
         case eTrackList:
         {
-            debug() << "eTrackList" << endl;
+            debug() << "eTrackList";
             albumtrackresult_t **tracks = reinterpret_cast<albumtrackresult_t **>( results );
             d->results.clear();
 
@@ -708,7 +708,7 @@ void KTRMLookup::collision()
             break;
         }
         case eMatchedTrack:
-            debug() << k_funcinfo << "eMatchedTrack" << endl;
+            debug() << k_funcinfo << "eMatchedTrack";
             break;
         }
 
@@ -727,13 +727,13 @@ void KTRMLookup::puidGenerated()
 {
 #if HAVE_TUNEPIMP >= 5
     DEBUG_BLOCK
-    debug() << k_funcinfo << d->file << endl;
+    debug() << k_funcinfo << d->file;
     char puid[255] = {0};
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
     tr_Lock(track);
 
     tr_GetPUID(track, puid, 255);
-    debug() << puid << endl;
+    debug() << puid;
     tr_Unlock(track);
     tp_ReleaseTrack(KTRMRequestHandler::instance()->tunePimp(), track);
     d->results.clear();
@@ -814,11 +814,11 @@ void KTRMLookup::lookupResult( KIO::Job* job )
 void KTRMLookup::error()
 {
 #if HAVE_TUNEPIMP
-    debug() << k_funcinfo << d->file << endl;
+    debug() << k_funcinfo << d->file;
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
     char error[1000];
     tr_GetError( track, error, 1000);
-    debug() << "Error: " << error << endl;
+    debug() << "Error: " << error;
     d->errorString = error;
     d->results.clear();
     finished();

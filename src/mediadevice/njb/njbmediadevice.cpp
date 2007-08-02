@@ -119,12 +119,12 @@ NjbMediaDevice::closeDevice()
 
     }
 
-    debug()<< "Disconnected NJB device" << endl;
+    debug()<< "Disconnected NJB device";
 
     clearItems();
 
     m_name = i18n("NJB Media device");
-    debug() << "Done" << endl;
+    debug() << "Done";
     return true;
 }
 
@@ -250,7 +250,7 @@ NjbMediaDevice::deleteFromDevice(unsigned id)
 
     if( status != NJB_SUCCESS)
     {
-        debug() << ": NJB_Delete_Track failed" << endl;
+        debug() << ": NJB_Delete_Track failed";
         return -1;
     }
 
@@ -319,12 +319,12 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 
     if( status != NJB_SUCCESS)
     {
-        debug() << ": NJB_Delete_Track failed" << endl;
+        debug() << ": NJB_Delete_Track failed";
         Amarok::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
         return -1;
     }
 
-    debug() << ": NJB_Delete_Track track deleted" << endl;
+    debug() << ": NJB_Delete_Track track deleted";
 
     // remove from the cache
     trackList.remove(trackList.findTrackById( trackItem->track()->id() ) );
@@ -391,7 +391,7 @@ NjbMediaDevice::downloadToCollection()
         {
             NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
             if( !auxItem ) {
-                debug() << "Dynamic cast to NJB Media Item failed." << endl;
+                debug() << "Dynamic cast to NJB Media Item failed.";
                 return -1;
             }
             QString track_id;
@@ -401,7 +401,7 @@ NjbMediaDevice::downloadToCollection()
             if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), filepath.toUtf8(), progressCallback, this)
                 != NJB_SUCCESS )
             {
-                debug() << "Get Track failed. " << endl;
+                debug() << "Get Track failed. ";
                 if( NJB_Error_Pending(m_njb) )
                 {
                     const char *njbError;
@@ -409,7 +409,7 @@ NjbMediaDevice::downloadToCollection()
                         error() << njbError << endl;
                 }
                 else
-                    debug() << "No reason to report for failure" << endl;
+                    debug() << "No reason to report for failure";
             }
             urls << filepath;
         }
@@ -498,7 +498,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
     if( NJB_Get_Track( m_njb, track->id(), track->bundle()->filesize(), filename.toUtf8(), progressCallback, this)
         != NJB_SUCCESS )
     {
-        debug() << "Get Track failed. " << endl;
+        debug() << "Get Track failed. ";
         if( NJB_Error_Pending(m_njb) )
         {
             const char *njbError;
@@ -506,7 +506,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
                 error() << njbError << endl;
         }
         else
-            debug() << "No reason to report for failure" << endl;
+            debug() << "No reason to report for failure";
     }
 }
 
@@ -694,7 +694,7 @@ NjbMediaDevice::progressCallback(  u_int64_t sent, u_int64_t total, const char* 
 
     if( njb_media->isCanceled() )
     {
-        debug() << "Canceling transfer operation" << endl;
+        debug() << "Canceling transfer operation";
         njb_media->setCanceled( false );
         njb_media->setProgress( sent, total );
         return 1;
@@ -749,7 +749,7 @@ NjbMediaDevice::readJukeboxMusic( void )
             }
         }
     }
-    debug() << ": return " << result << endl;
+    debug() << ": return " << result;
     return result;
 }
 
@@ -813,7 +813,7 @@ NjbMediaDevice::expandItem( Q3ListViewItem *item )
 
     if( !it )
     {
-        debug() << "Dynamic cast to NJB media item failed" << endl;
+        debug() << "Dynamic cast to NJB media item failed";
         return;
     }
 

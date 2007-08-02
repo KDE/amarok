@@ -231,7 +231,7 @@ void TagGuesser::guess( const QString &absFileName )
     for ( ; it != end; ++it ) {
         const FileNameScheme schema( *it );
         if( schema.matches( absFileName ) ) {
-            debug() <<"Schema used: " << " " << schema.pattern() <<endl;
+            debug() <<"Schema used: " << " " << schema.pattern();
             m_title = capitalizeWords( schema.title().replace( '_', " " ) ).trimmed();
             m_artist = capitalizeWords( schema.artist().replace( '_', " " ) ).trimmed();
             m_album = capitalizeWords( schema.album().replace( '_', " " ) ).trimmed();

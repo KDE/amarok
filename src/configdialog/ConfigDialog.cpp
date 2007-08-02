@@ -162,7 +162,7 @@ bool Amarok2ConfigDialog::hasChanged()
     foreach( ConfigDialogBase* page, m_pageList )
         if( page->hasChanged() ) {
             changed = true;
-            debug() << "Changed: " << page->metaObject()->className() << endl;
+            debug() << "Changed: " << page->metaObject()->className();
         }
 
     return changed;

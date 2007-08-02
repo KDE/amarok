@@ -51,14 +51,14 @@ XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
         QDBusReply<QString> sessionId = m_xesam->NewSession();
         if( !sessionId.isValid() )
         {
-            debug() << "Could not acquire Xesam session, aborting" << endl;
+            debug() << "Could not acquire Xesam session, aborting";
             return;
             //TODO error handling
         }
         m_session = sessionId.value();
         if( !setupXesam() )
         {
-            debug() << "Warning, could not setup xesam correctly" << endl;
+            debug() << "Warning, could not setup xesam correctly";
         }
         QDBusReply<QString> search = m_xesam->NewSearch( m_session, generateXesamQuery() );
         if( search.isValid() )
@@ -68,7 +68,7 @@ XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
         }
         else
         {
-            debug() << "Invalid response for NewSearch" << endl;
+            debug() << "Invalid response for NewSearch";
         }
     }
     else
@@ -90,7 +90,7 @@ XesamCollectionBuilder::setupXesam()
     bool status = true;
     if( !m_xesam->SetProperty( m_session, "search.live", QDBusVariant( true ) ).value().variant().toBool() )
     {
-        debug() << "could not select xesam live search mode" << endl;
+        debug() << "could not select xesam live search mode";
         status = false;
     }
     QStringList fields;
@@ -108,7 +108,7 @@ void
 XesamCollectionBuilder::slotHitsAdded( const QString &search, int count )
 {
     DEBUG_BLOCK
-    debug() << "New Xesam hits: " << count << endl;
+    debug() << "New Xesam hits: " << count;
     QDBusReply<VariantListVector> reply = m_xesam->GetHits( m_search, count );
     if( reply.isValid() )
     {
@@ -180,7 +180,7 @@ XesamCollectionBuilder::generateXesamQuery() const
     }
     writer.writeEndDocument();
     if( DEBUG_XML )
-        debug() << result << endl;
+        debug() << result;
     return result;
 }
 

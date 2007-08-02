@@ -102,7 +102,7 @@ void LyricsEngine::update()
     else
     { // fetch by lyrics script
         setData( "lyrics", "fetching" );
-        debug() << "notifying without url" << endl;
+        debug() << "notifying without url";
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }

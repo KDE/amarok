@@ -245,9 +245,9 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     // hack so I don't have to cast everywhere
     #define amount static_cast<int>(_amount)
-//     #define STAMP debug() << (QValueList<int>() << fh << fs << fv) << endl;
-//     #define STAMP1( string ) debug() << string << ": " << (QValueList<int>() << fh << fs << fv) << endl;
-//     #define STAMP2( string, value ) debug() << string << "=" << value << ": " << (QValueList<int>() << fh << fs << fv) << endl;
+//     #define STAMP debug() << (QValueList<int>() << fh << fs << fv);
+//     #define STAMP1( string ) debug() << string << ": " << (QValueList<int>() << fh << fs << fv);
+//     #define STAMP2( string, value ) debug() << string << "=" << value << ": " << (QValueList<int>() << fh << fs << fv);
 
     OutputOnExit allocateOnTheStack( fg );
 

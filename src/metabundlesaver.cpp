@@ -69,7 +69,7 @@ MetaBundleSaver::prepareToSave()
     hostbuf[31] = '\0';
     if( hostname != 0 )
     {
-        debug() << "Could not determine hostname!" << endl;
+        debug() << "Could not determine hostname!";
         return 0;
     }
     QString pid;
@@ -84,11 +84,11 @@ MetaBundleSaver::prepareToSave()
     //and std and QFile only have provisions for renaming and removing, so manual it is
     //doing it block-by-block results it not needing a huge amount of memory overhead
 
-    debug() << "Copying original file to copy and caluclating MD5" << endl;
+    debug() << "Copying original file to copy and caluclating MD5";
 
     if( QFile::exists( m_tempSavePath ) )
     {
-        debug() << "Temp file already exists!" << endl;
+        debug() << "Temp file already exists!";
         return 0;
     }
 
@@ -97,14 +97,14 @@ MetaBundleSaver::prepareToSave()
 
     if( !orig.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
-        debug() << "Could not open original file!" << endl;
+        debug() << "Could not open original file!";
         return 0;
     }
 
     //Do this separately so as not to create a zero-length file if you can't read from input
     if( !copy.open( QIODevice::Unbuffered | QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-        debug() << "Could not create file copy" << endl;
+        debug() << "Could not create file copy";
         return 0;
     }
 
@@ -115,14 +115,14 @@ MetaBundleSaver::prepareToSave()
         md5sum.update( m_databuf, actualreadlen );
         if( ( actualwritelen = copy.write( m_databuf, actualreadlen ) ) != actualreadlen )
         {
-            debug() << "Error during copying of original file data to copy!" << endl;
+            debug() << "Error during copying of original file data to copy!";
             return 0;
         }
     }
 
     if( actualreadlen == -1 )
     {
-        debug() << "Error during reading original file!" << endl;
+        debug() << "Error during reading original file!";
         return 0;
     }
 
@@ -134,7 +134,7 @@ MetaBundleSaver::prepareToSave()
     //We have successfully copied the original file to the temp location
     //We've calculated the md5sum of the original file
 
-    debug() << "MD5 sum of temp file: " << m_tempSaveDigest.data() << endl;
+    debug() << "MD5 sum of temp file: " << m_tempSaveDigest.data();
 
     //Now, we have a MD5 sum of the original file at the time of copying saved in m_tempSaveDigest
     //Create a fileref on the copied file, for modification
@@ -144,7 +144,7 @@ MetaBundleSaver::prepareToSave()
     if( m_saveFileref && !m_saveFileref->isNull() )
         return m_saveFileref;
 
-    debug() << "Error creating temp file's fileref!" << endl;
+    debug() << "Error creating temp file's fileref!";
     return 0;
 }
 
@@ -169,37 +169,37 @@ MetaBundleSaver::doSave()
 
     if( !m_saveFileref || m_tempSavePath.isEmpty() || m_tempSaveDigest.isEmpty() || m_origRenamedSavePath.isEmpty() )
     {
-        debug() << "You must run prepareToSave() and it must return successfully before calling doSave()!" << endl;
+        debug() << "You must run prepareToSave() and it must return successfully before calling doSave()!";
         return false;
     }
 
-    debug() << "Saving tag changes to the temporary file..." << endl;
+    debug() << "Saving tag changes to the temporary file...";
 
     //We've made our changes to the fileref; save it first, then do the logic to move the correct file back
     if( !m_saveFileref->save() )
     {
-        debug() << "Could not save the new file!" << endl;
+        debug() << "Could not save the new file!";
         goto fail_remove_copy;
     }
 
-    debug() << "Renaming original file to temporary name " << m_origRenamedSavePath << endl;
+    debug() << "Renaming original file to temporary name " << m_origRenamedSavePath;
 
     errcode = std::rename( QFile::encodeName( m_bundle->url().path() ).data(),
                                QFile::encodeName( m_origRenamedSavePath ).data() );
     if( errcode != 0 )
     {
-        debug() << "Could not move original!" << endl;
+        debug() << "Could not move original!";
         perror( "Could not move original!" );
         goto fail_remove_copy;
     }
 
     revert = true;
 
-    debug() << "Calculating MD5 of " << m_origRenamedSavePath << endl;
+    debug() << "Calculating MD5 of " << m_origRenamedSavePath;
 
     if( !origRenamedFile.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
-        debug() << "Could not open temporary file!" << endl;
+        debug() << "Could not open temporary file!";
         goto fail_remove_copy;
     }
 
@@ -208,64 +208,64 @@ MetaBundleSaver::doSave()
 
     if( actualreadlen == -1 )
     {
-        debug() << "Error during checksumming temp file!" << endl;
+        debug() << "Error during checksumming temp file!";
         goto fail_remove_copy;
     }
 
     origRenamedDigest = md5sum.hexDigest();
 
-    debug() << "md5sum of original file: " << origRenamedDigest.data() << endl;
+    debug() << "md5sum of original file: " << origRenamedDigest.data();
 
     if( origRenamedDigest != m_tempSaveDigest )
     {
-        debug() << "Original checksum did not match current checksum!" << endl;
+        debug() << "Original checksum did not match current checksum!";
         goto fail_remove_copy;
     }
 
-    debug() << "Renaming temp file to original's filename" << endl;
+    debug() << "Renaming temp file to original's filename";
 
     errcode = std::rename( QFile::encodeName( m_tempSavePath ).data(),
                                 QFile::encodeName( m_bundle->url().path() ).data() );
     if( errcode != 0 )
     {
-        debug() << "Could not rename newly-tagged file to original!" << endl;
+        debug() << "Could not rename newly-tagged file to original!";
         perror( "Could not rename newly-tagged file to original!" );
         goto fail_remove_copy;
     }
 
-    debug() << "Deleting original" << endl;
+    debug() << "Deleting original";
 
     errcode = std::remove( QFile::encodeName( m_origRenamedSavePath ) );
     if( errcode != 0 )
     {
-        debug() << "Could not delete the original file!" << endl;
+        debug() << "Could not delete the original file!";
         perror( "Could not delete the original file!" );
         return false;
     }
 
-    debug() << "Save done, returning true!" << endl;
+    debug() << "Save done, returning true!";
 
     return true;
 
     fail_remove_copy:
 
-        debug() << "Deleting temporary file..." << endl;
+        debug() << "Deleting temporary file...";
         errcode = std::remove( QFile::encodeName( m_tempSavePath ).data() );
         if( errcode != 0 )
         {
-            debug() << "Could not delete the temporary file!" << endl;
+            debug() << "Could not delete the temporary file!";
             perror( "Could not delete the temporary file!" );
         }
 
         if( !revert )
             return false;
 
-        debug() << "Reverting original file to original filename!" << endl;
+        debug() << "Reverting original file to original filename!";
         errcode = std::rename( QFile::encodeName( m_origRenamedSavePath ).data(),
                                 QFile::encodeName( m_bundle->url().path() ).data() );
         if( errcode != 0 )
         {
-            debug() << "Could not revert file to original filename!" << endl;
+            debug() << "Could not revert file to original filename!";
             perror( "Could not revert file to original filename!" );
         }
 
@@ -286,7 +286,7 @@ MetaBundleSaver::cleanupSave()
         if( errcode != 0 )
         {
             dirty = true;
-            debug() << "Could not delete the temporary file!" << endl;
+            debug() << "Could not delete the temporary file!";
         }
     }
 

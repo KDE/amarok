@@ -62,7 +62,7 @@ JamendoDatabaseHandler::createDatabase( )
                           "album_id INTEGER,"
                           "artist_id INTEGER );";
 
-    debug() << "Creating jamendo_tracks: " << queryString << endl;
+    debug() << "Creating jamendo_tracks: " << queryString;
 
 
     QStringList result = db->query( queryString );
@@ -78,7 +78,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "genre " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER );";
 
-    debug() << "Creating jamendo_albums: " << queryString << endl;
+    debug() << "Creating jamendo_albums: " << queryString;
 
     result = db->query( queryString );
 
@@ -95,7 +95,7 @@ JamendoDatabaseHandler::createDatabase( )
 
 
 
-    debug() << "Creating jamendo_artists: " << queryString << endl;
+    debug() << "Creating jamendo_artists: " << queryString;
 
     result = db->query( queryString );
 
@@ -105,7 +105,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "name " + db->textColumnType() + ',' +
                   "album_id INTEGER" + ");";
 
-    debug() << "Creating jamendo_genres: " << queryString << endl;
+    debug() << "Creating jamendo_genres: " << queryString;
 
     result = db->query( queryString );
 
@@ -134,7 +134,7 @@ void
 JamendoDatabaseHandler::destroyDatabase( )
 {
 
-    debug() << "Destroy Jamendo database " << endl;
+    debug() << "Destroy Jamendo database ";
 
     CollectionDB *db = CollectionDB::instance();
     QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
@@ -176,7 +176,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( jTrack->artistId() ) + ", '"
                           + db->escapeString( jTrack->url() ) + "' );";
 
-    // debug() << "Adding Jamendo track " << queryString << endl;
+    // debug() << "Adding Jamendo track " << queryString;
     int trackId = db->insert( queryString, NULL );
 
     // Process moods:
@@ -189,7 +189,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
                       + db->escapeString( mood ) +  "' );";
 
 
-        //debug() << "Adding Jamendo mood: " << queryString << endl;
+        //debug() << "Adding Jamendo mood: " << queryString;
         db->insert( queryString, NULL );
     }
 */
@@ -216,7 +216,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + sqlDb->escape( jAlbum->genre() )+ "', "
                   + QString::number( jAlbum->artistId() ) + " );";
 
-    //debug() << "Adding Jamendo album " << queryString << endl;
+    //debug() << "Adding Jamendo album " << queryString;
 
     return sqlDb->insert( queryString, QString() );
 }
@@ -239,7 +239,7 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
                   + sqlDb->escape( jArtist->jamendoURL() ) + "', '"
                   + sqlDb->escape( jArtist->homeURL() ) + "' );";
 
-    //debug() << "Adding Jamendo artist " << queryString << endl;
+    //debug() << "Adding Jamendo artist " << queryString;
 
     return sqlDb->insert( queryString, QString() );
 /*
@@ -258,7 +258,7 @@ int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
                   + QString::number ( genre->albumId() ) + ", '"
                   + sqlDb->escape( genre->name() ) + "' );";
 
-    //debug() << "Adding Jamendo genre " << queryString << endl;
+    //debug() << "Adding Jamendo genre " << queryString;
 
     return sqlDb->insert( queryString, 0 );
 }

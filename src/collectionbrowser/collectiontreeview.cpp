@@ -142,7 +142,7 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         }
     }
     else
-        debug() << "invalid index or null internalPointer" << endl;
+        debug() << "invalid index or null internalPointer";
 }
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )

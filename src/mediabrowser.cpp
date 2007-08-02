@@ -364,7 +364,7 @@ MediaBrowser::MediaBrowser( const char *name )
             it++ )
     {
         QString handler = Amarok::config( "MediaBrowser" ).readEntry( (*it)->id(), QString() );
-        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler << endl;
+        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler;
         if( handler.isEmpty() )
         {
             //this should probably never be the case with a manually added device, unless amarokrc's been messed with
@@ -423,7 +423,7 @@ void
 MediaBrowser::tagsChanged( const MetaBundle &bundle )
 {
     m_itemMapMutex.lock();
-    debug() << "tags changed for " << bundle.url().url() << endl;
+    debug() << "tags changed for " << bundle.url().url();
     ItemMap::iterator it = m_itemMap.find( bundle.url().url() );
     if( it != m_itemMap.end() )
     {
@@ -597,7 +597,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
 {
     DEBUG_BLOCK
 
-    debug() << "remove device: type=" << device->deviceType() << endl;
+    debug() << "remove device: type=" << device->deviceType();
 
     for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
@@ -619,7 +619,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
             unloadDevicePlugin( device );
         else
         {
-            debug() << "Cannot remove device because disconnect failed" << endl;
+            debug() << "Cannot remove device because disconnect failed";
             Amarok::StatusBar::instance()->longMessage(
                     i18n( "Cannot remove device because disconnect failed" ),
                     KDE::StatusBar::Warning );
@@ -724,7 +724,7 @@ MediaBrowser::transcode( const KUrl &src, const QString &filetype )
 
     if( sm->transcodeScriptRunning().isEmpty() )
     {
-        debug() << "cannot transcode with no transcoder registered" << endl;
+        debug() << "cannot transcode with no transcoder registered";
         return KUrl();
     }
 
@@ -791,7 +791,7 @@ MediaBrowser::prepareToQuit()
 
 MediaBrowser::~MediaBrowser()
 {
-    debug() << "having to remove " << m_devices.count() << " devices" << endl;
+    debug() << "having to remove " << m_devices.count() << " devices";
     while( !m_devices.isEmpty() )
     {
         removeDevice( m_devices.last() );
@@ -1519,7 +1519,7 @@ MediaView::newDirectory( MediaItem *parent )
 void
 MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
 {
-    debug() << "mediumAdded: " << (medium ? medium->properties() : QStringList()) << endl;
+    debug() << "mediumAdded: " << (medium ? medium->properties() : QStringList());
     if( medium )
     {
         QString handler = Amarok::config( "MediaBrowser" ).readEntry( medium->id(), QString() );
@@ -1531,7 +1531,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
                 mpm->exec();
             }
         }
-        //debug() << "id=" << medium->id() << ", handler=" << handler << endl;
+        //debug() << "id=" << medium->id() << ", handler=" << handler;
         MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
@@ -1549,7 +1549,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     DEBUG_BLOCK
     if( !plugin.isEmpty() )
     {
-        debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
+        debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin;
         Amarok::config( "MediaBrowser" ).writeEntry( medium->id(), plugin );
 
         bool success = true;
@@ -1559,7 +1559,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                debug() << "removing " << medium->deviceNode() << endl;
+                debug() << "removing " << medium->deviceNode();
                 if( (*it)->isConnected() )
                 {
                     if( (*it)->disconnectDevice( false ) )
@@ -1579,14 +1579,14 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         }
         else
         {
-            debug() << "Cannot change plugin while operation is in progress" << endl;
+            debug() << "Cannot change plugin while operation is in progress";
             Amarok::StatusBar::instance()->longMessage(
                     i18n( "Cannot change plugin while operation is in progress" ),
                     KDE::StatusBar::Warning );
         }
     }
     else
-        debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin" << endl;
+        debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin";
 }
 
 void
@@ -1670,14 +1670,14 @@ MediaBrowser::loadDevicePlugin( const QString &deviceType )
 
     if( plugin )
     {
-        debug() << "Returning plugin!" << endl;
+        debug() << "Returning plugin!";
         MediaDevice *device = static_cast<MediaDevice *>( plugin );
         device->init( this );
         device->m_type = deviceType;
         return device;
     }
 
-    debug() << "no plugin for " << deviceType << endl;
+    debug() << "no plugin for " << deviceType;
     return 0;
 }
 
@@ -2353,7 +2353,7 @@ MediaQueue::URLsAdded()
 void
 MediaDevice::copyTrackFromDevice( MediaItem *item )
 {
-    debug() << "copyTrackFromDevice: not copying " << item->url() << ": not implemented" << endl;
+    debug() << "copyTrackFromDevice: not copying " << item->url() << ": not implemented";
 }
 
 Q3DragObject *
@@ -2392,9 +2392,9 @@ int MediaDevice::runPreConnectCommand()
 
     QString cmd = replaceVariables( m_preconnectcmd );
 
-    debug() << "running pre-connect command: [" << cmd << "]" << endl;
+    debug() << "running pre-connect command: [" << cmd << "]";
     int e=sysCall(cmd);
-    debug() << "pre-connect: e=" << e << endl;
+    debug() << "pre-connect: e=" << e;
     return e;
 }
 
@@ -2404,9 +2404,9 @@ int MediaDevice::runPostDisconnectCommand()
         return 0;
 
     QString cmd = replaceVariables( m_postdisconnectcmd );
-    debug() << "running post-disconnect command: [" << cmd << "]" << endl;
+    debug() << "running post-disconnect command: [" << cmd << "]";
     int e=sysCall(cmd);
-    debug() << "post-disconnect: e=" << e << endl;
+    debug() << "post-disconnect: e=" << e;
 
     return e;
 }
@@ -2498,7 +2498,7 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
     if(job->error())
     {
         m_copyFailed = true;
-        debug() << "file transfer failed: " << job->errorText() << endl;
+        debug() << "file transfer failed: " << job->errorText();
     }
     else
     {
@@ -2702,16 +2702,16 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
 
     abortTransfer();
 
-    debug() << "disconnecting: hook=" << postDisconnectHook << endl;
+    debug() << "disconnecting: hook=" << postDisconnectHook;
 
     if( !lockDevice( true ) )
     {
         m_runDisconnectHook = postDisconnectHook;
         m_deferredDisconnect = true;
-        debug() << "disconnecting: locked" << endl;
+        debug() << "disconnecting: locked";
         return false;
     }
-    debug() << "disconnecting: ok" << endl;
+    debug() << "disconnecting: ok";
 
     if( m_syncStats )
     {
@@ -2766,7 +2766,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                             && !bundle->title().isEmpty() && bundle->title() != i18n( "Unknown" ) )
                     {
                         // don't submit tracks shorter than 30 sec or w/o artist/title
-                        debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << endl;
+                        debug() << "scrobbling " << bundle->artist() << " - " << bundle->title();
                         SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false /* fake time */ );
                         Scrobbler::instance()->m_submitter->submitItem( sit );
                     }
@@ -2777,7 +2777,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     {
                         QDateTime t = it->playTime();
                         CollectionDB::instance()->addSongPercentage( url, 100, "mediadevice", t.isValid() ? &t : 0 );
-                        debug() << "played " << url << endl;
+                        debug() << "played " << url;
                     }
                 }
 
@@ -2785,7 +2785,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 {
                     // copy rating from media device to Amarok
                     QString url = CollectionDB::instance()->getURL( *bundle );
-                    debug() << "rating changed " << url << ": " << it->rating()/10 << endl;
+                    debug() << "rating changed " << url << ": " << it->rating()/10;
                     if( !url.isEmpty() )
                     {
                         CollectionDB::instance()->setSongRating( url, it->rating()/10 );
@@ -2802,14 +2802,14 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 {
                     if( PodcastEpisodeBundle *peb = bundle->podcastBundle() )
                     {
-                        debug() << "marking podcast episode as played: " << peb->url() << endl;
+                        debug() << "marking podcast episode as played: " << peb->url();
                         if( PlaylistBrowser::instance() )
                         {
                             PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
                             if ( p )
                                 p->setListened();
                             else
-                                debug() << "did not find podcast episode: " << peb->url() << " from " << peb->parent() << endl;
+                                debug() << "did not find podcast episode: " << peb->url() << " from " << peb->parent();
                         }
                     }
                 }
@@ -2940,7 +2940,7 @@ MediaDevice::transferFiles()
         else
         {
             // this should not happen
-            debug() << "invalid item in transfer queue" << endl;
+            debug() << "invalid item in transfer queue";
             m_parent->m_queue->subtractItemFromSize( transferredItem, true );
             delete transferredItem;
             m_parent->m_queue->itemCountChanged();
@@ -2976,13 +2976,13 @@ MediaDevice::transferFiles()
                 if( m_transcode && ( !isPlayable( *bundle ) || m_transcodeAlways ) )
                 {
                     QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
-                    debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
+                    debug() << "transcoding " << bundle->url() << " to " << preferred;
                     KUrl transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
                     if( isCanceled() )
                         break;
                     if( transcoded.isEmpty() )
                     {
-                        debug() << "transcoding failed" << endl;
+                        debug() << "transcoding failed";
                         transcodeFail++;
                     }
                     else

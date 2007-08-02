@@ -86,7 +86,7 @@ XineEngine::XineEngine()
     addPluginProperty( "HasCrossfade", "true" );
     #endif
     addPluginProperty("HasCDDA", "true"); // new property
-    debug() << "hello" << endl;
+    debug() << "hello";
 
 }
 
@@ -142,7 +142,7 @@ XineEngine::init()
    #endif
 
    xine_config_load( m_xine, configPath() );
-   debug() << "w00t" << configPath() << endl;
+   debug() << "w00t" << configPath();
 
    xine_init( m_xine );
 
@@ -193,7 +193,7 @@ XineEngine::makeNewStream()
 #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
     if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) ) {
         // enable gapless playback
-        debug() << "gapless playback enabled." << endl;
+        debug() << "gapless playback enabled.";
         //xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
     }
 #endif
@@ -247,11 +247,11 @@ XineEngine::load( const KUrl &url, bool isStream )
    // why doesn't xine do this? I cannot say.
    xine_close( m_stream );
 
-   debug() << "Before xine_open() *****" << endl;
+   debug() << "Before xine_open() *****";
 
    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
    {
-      debug() << "After xine_open() *****" << endl;
+      debug() << "After xine_open() *****";
 
       #ifndef XINE_SAFE_MODE
       //we must ensure the scope is pruned of old buffers
@@ -471,7 +471,7 @@ XineEngine::position() const
     {
         const Engine::SimpleMetaBundle bundle = fetchMetaData();
         if( bundle.title != m_currentBundle.title || bundle.artist != m_currentBundle.artist ) {
-            debug() << "Metadata received." << endl;
+            debug() << "Metadata received.";
             m_currentBundle = bundle;
 
             XineEngine* p = const_cast<XineEngine*>( this );
@@ -813,7 +813,7 @@ XineEngine::customEvent( QEvent *event )
         break;
 
     case 3003: { //meta info has changed
-        debug() << "Metadata received." << endl;
+        debug() << "Metadata received.";
         const Engine::SimpleMetaBundle bundle = fetchMetaData();
         m_currentBundle = bundle;
         emit metaData( bundle );
@@ -869,13 +869,13 @@ XineEngine::playlistChanged()
          && m_url.isLocalFile() && Playlist::instance()->isTrackAfter() )
     {
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
-        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled" << endl;
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled";
     }
     else
     {
         //we don't want an early finish event if there is no track after the current one
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 0 );
-        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled" << endl;
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled";
     }
     #endif
     #endif
@@ -960,7 +960,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
                 *p = *msg == '\0' ? '\n' : *msg;
             *p = '\0';
 
-            debug() << str << endl;
+            debug() << str;
 
             break;
         }
@@ -1130,7 +1130,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
     int i = 0;
 
     if (!device.isNull()) {
-        debug() << "xine-engine setting CD Device to: " << device << endl;
+        debug() << "xine-engine setting CD Device to: " << device;
         xine_cfg_entry_t config;
         if (!xine_config_lookup_entry(m_xine, "input.cdda_device", &config)) {
 	    emit statusText(i18n("Failed CD device lookup in xine engine"));

@@ -103,9 +103,9 @@ void VBoxLayout::setGeometry(const QRectF& geometry)
     Plasma::BoxLayout::setGeometry(geometry);
     /*if( sizes.size() != 0 ) // we shrink the layout
     {
-        debug() << "looking up entry: " << sizes.size() - 1 << " in array of size: " << sizes.size() << endl;
+        debug() << "looking up entry: " << sizes.size() - 1 << " in array of size: " << sizes.size();
         qreal bottom = sizes[ sizes.size() - 1 ].height();
-        debug() << "new bottom is: " << sizeHint().height() << " and old is: " << geometry.height() << endl;
+        debug() << "new bottom is: " << sizeHint().height() << " and old is: " << geometry.height();
         if( sizeHint().height() < geometry.height() )
              d->geometry.setHeight( sizeHint().height() );
     }*/
@@ -115,7 +115,7 @@ void VBoxLayout::shrinkToMinimumSize()
 {
     DEBUG_BLOCK
     QRectF geometry = this->geometry();
-     debug() << "trying to shrink size from: " << geometry.height() << " to: " << sizeHint().height() << endl;
+     debug() << "trying to shrink size from: " << geometry.height() << " to: " << sizeHint().height();
     if( sizeHint().height() < geometry.height() ) {
         geometry.setSize( sizeHint() );
         Plasma::BoxLayout::setGeometry(geometry);

@@ -62,24 +62,24 @@ DaapServer::readSql()
         if( line.startsWith( sqlPrefix ) )
         {
             line.remove( 0, sqlPrefix.length() );
-            debug() << "sql run " << line << endl;
+            debug() << "sql run " << line;
             m_server->writeStdin( CollectionDB::instance()->query( line ).join("\n") );
             m_server->writeStdin( "**** END SQL ****" );
         }
         else if( line.startsWith( serverStartPrefix ) )
         {
             line.remove( 0, serverStartPrefix.length() );
-            debug() << "Server starting on port " << line << '.' << endl;
+            debug() << "Server starting on port " << line << '.';
             #if DNSSD_SUPPORT
                 KUser current;
                 if( !m_service )
                     m_service = new DNSSD::PublicService( i18n("%1's Amarok Share", current.fullName() ), "_daap._tcp", line.toInt() );
-                    debug() << "port number: " << line.toInt() << endl;
+                    debug() << "port number: " << line.toInt();
                 m_service->publishAsync();
             #endif
         }
         else
-            debug() << "server says " << line << endl;
+            debug() << "server says " << line;
    }
    //m_server->ackRead();
    //m_server->enableReadSignals(true);

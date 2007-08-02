@@ -130,7 +130,7 @@ DEBUG_BLOCK
                     artist = currentItem->artist();
             }
 
-            debug() << "seeding from: " << artist << endl;
+            debug() << "seeding from: " << artist;
 
             QStringList suggestions = CollectionDB::instance()->similarArtists( artist, 16 );
             // for this artist, choose 4 suggested artists at random, to get further suggestions from
@@ -142,7 +142,7 @@ DEBUG_BLOCK
 
                 QString chosen = suggestions[ KRandom::random() % suggestions.count() ];
 
-                debug() << "found similar artist: " << chosen << endl;
+                debug() << "found similar artist: " << chosen;
 
                 QStringList newSuggestions = CollectionDB::instance()->similarArtists( chosen, 10 );
                 for( uint c = 0; c < 4; ++c ) // choose another 4 artists
@@ -152,7 +152,7 @@ DEBUG_BLOCK
 
                     QString s = newSuggestions[ KRandom::random() % newSuggestions.count() ];
 
-                    debug() << "found extended similar artist: " << s << endl;
+                    debug() << "found extended similar artist: " << s;
                     newChosen += s;
                     newSuggestions.remove( s );
                 }
@@ -164,7 +164,7 @@ DEBUG_BLOCK
         }
 
         qb.setLimit( 0, CACHE_SIZE );
-        debug() << "Using SQL: " << qb.query() << endl;
+        debug() << "Using SQL: " << qb.query();
 
         QStringList urls = qb.run();
 
@@ -217,7 +217,7 @@ DEBUG_BLOCK
             int itemsForThisSource = trackCountTotal ? CACHE_SIZE * trackCount[i] / trackCountTotal : 1;
             if (itemsForThisSource == 0)
               itemsForThisSource = 1;
-            debug() << "this source will return " << itemsForThisSource << " entries" << endl;
+            debug() << "this source will return " << itemsForThisSource << " entries";
 
             if( entry->rtti() == PlaylistEntry::RTTI )
             {
@@ -257,7 +257,7 @@ DEBUG_BLOCK
         trackList.removeAt( index );
     }
 
-    debug() << "Returning " << returnList.count() << " tracks from " << item->text(0) << endl;
+    debug() << "Returning " << returnList.count() << " tracks from " << item->text(0);
 
     return returnList;
 }
@@ -270,7 +270,7 @@ DEBUG_BLOCK
 
     bool useDirect = true;
     const bool hasTimeOrder = item->isTimeOrdered();
-    debug() << "The smart playlist: " << item->text(0) << ", time order? " << hasTimeOrder << endl;
+    debug() << "The smart playlist: " << item->text(0) << ", time order? " << hasTimeOrder;
 
     QString sql = item->query();
 
@@ -321,7 +321,7 @@ DEBUG_BLOCK
         }
         else // time ordered criteria, only mess with the limits
         {
-            debug() << "time based criteria used!" << endl;
+            debug() << "time based criteria used!";
             if ( limit <= songCount ) // The list is even smaller than the number of songs we want :-(
                 songCount = limit;
             else
@@ -344,7 +344,7 @@ DEBUG_BLOCK
     QStringList queryResult = CollectionDB::instance()->query( sql );
     QStringList items;
 
-    debug() << "Smart Playlist: adding urls from query: " << sql << endl;
+    debug() << "Smart Playlist: adding urls from query: " << sql;
     if ( !item->query().isEmpty() )
         //We have to filter all the un-needed results from query( sql )
         for( uint x=0; x < queryResult.count() ; x += 2 )
@@ -376,7 +376,7 @@ DEBUG_BLOCK
 
     useDirect ?
             debug() << "Returning " << urls.count()  << " tracks from " << item->text(0) << endl:
-            debug() << "Returning " << addMe.count() << " tracks from " << item->text(0) << endl;
+            debug() << "Returning " << addMe.count() << " tracks from " << item->text(0);
 
     return useDirect ? urls : addMe;
 }

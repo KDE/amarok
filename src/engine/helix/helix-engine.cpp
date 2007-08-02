@@ -272,7 +272,7 @@ HelixEngine::init()
       entry->ext = QStringList::split('|', me);
       m_mimes[i] = *entry;
 
-      debug() << ml->mimetypes << endl;
+      debug() << ml->mimetypes;
 
       i++;
       ml = ml->fwd;
@@ -287,7 +287,7 @@ HelixEngine::init()
 bool
 HelixEngine::load( const KUrl &url, bool isStream )
 {
-   debug() << "In load " << url.url() << endl;
+   debug() << "In load " << url.url();
 
    if (!m_inited)
       return false;
@@ -300,7 +300,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
       return false;
    }
 
-   debug() << "xfadeLength is " << m_xfadeLength << endl;
+   debug() << "xfadeLength is " << m_xfadeLength;
    if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream &&
         ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
          (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
@@ -353,7 +353,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
 bool
 HelixEngine::play( uint offset )
 {
-   debug() << "In play" << endl;
+   debug() << "In play";
    int nextPlayer;
 
    if (!m_inited)
@@ -422,7 +422,7 @@ HelixEngine::stop()
    if (!m_inited)
       return;
 
-   debug() << "In stop where=" << where(m_current) << " duration=" << duration(m_current) << endl;
+   debug() << "In stop where=" << where(m_current) << " duration=" << duration(m_current);
 
    if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() == Engine::Playing )
    {
@@ -496,7 +496,7 @@ HelixEngine::unpause()
 Engine::State
 HelixEngine::state() const
 {
-   //debug() << "In state, state is " << m_state << endl;
+   //debug() << "In state, state is " << m_state;
 
    if (!m_inited || m_url.isEmpty())
       return (Engine::Empty);
@@ -551,7 +551,7 @@ HelixEngine::canDecode( const KUrl &url ) const
    if (!m_inited)
       return false;
 
-   debug() << "In canDecode " << url.prettyUrl() << endl;
+   debug() << "In canDecode " << url.prettyUrl();
 
    if (url.protocol() == "http" || url.protocol() == "rtsp")
       return true;
@@ -618,7 +618,7 @@ HelixEngine::timerEvent( QTimerEvent * )
    {
       memcpy(&m_md, md, sizeof(m_md));
 
-      debug() << "{Title}: " << md->title << " {Artist}: " << md->artist << " {Bitrate}: " << md->bitrate << endl;
+      debug() << "{Title}: " << md->title << " {Artist}: " << md->artist << " {Bitrate}: " << md->bitrate;
 
       /* Real Radio One (and Rhapsody?) streams have their own format, where title is:
        * clipinfo:title=<title>|artist name=<artist>|Album name=<album>|Artist:Next artist=<next artist>| \
@@ -646,10 +646,10 @@ HelixEngine::timerEvent( QTimerEvent * )
                 bndl.length = (*it).section('=', 1, 1);
          }
 
-         //debug() << "Title: " << bndl.title << endl;
-         //debug() << "Artist: " << bndl.artist << endl;
-         //debug() << "Album: " << bndl.album << endl;
-         //debug() << "length: " << bndl.length << endl;
+         //debug() << "Title: " << bndl.title;
+         //debug() << "Artist: " << bndl.artist;
+         //debug() << "Album: " << bndl.album;
+         //debug() << "length: " << bndl.length;
       }
       else
       {

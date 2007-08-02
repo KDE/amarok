@@ -515,7 +515,7 @@ void EditFilterDialog::setMinMaxValueSpins()
 // SLOTS
 void EditFilterDialog::selectedKeyword(int index) // SLOT
 {
-    debug() << "you selected index " << index << ": '" << m_comboKeyword->currentText() << "'" << endl;
+    debug() << "you selected index " << index << ": '" << m_comboKeyword->currentText() << "'";
     m_groupBox2->setEnabled( false );
     m_comboUnitSize->setEnabled( false );
     m_filesizeLabel->setEnabled( false );
@@ -748,7 +748,7 @@ void EditFilterDialog::slotDefault() // SLOT
     if( m_selectedIndex == 0 )
     {
         // Simple Search
-        debug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
+        debug() << "selected text: '" << m_editKeyword->text() << "'";
         if (m_actionCheck[0]->isChecked())
         {
             // all words

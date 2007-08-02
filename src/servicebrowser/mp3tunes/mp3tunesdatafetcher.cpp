@@ -66,7 +66,7 @@ int Mp3tunesDataFetcher::authenticate(const QString & uname, const QString & pas
     authenticationString.replace(QString("<partner token>"), m_partnerToken);
     authenticationString.replace(QString("<output format>"), m_apiOutputFormat);
 
-    debug() << "Authenticating with string: " << authenticationString << endl;
+    debug() << "Authenticating with string: " << authenticationString;
 
 
 
@@ -92,7 +92,7 @@ void Mp3tunesDataFetcher::authenticationComplete(KJob * job)
 
 
     QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
-    debug() << "Authentication reply: " << xmlReply << endl;
+    debug() << "Authentication reply: " << xmlReply;
 
 }
 
