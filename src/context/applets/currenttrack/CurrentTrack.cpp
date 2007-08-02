@@ -100,7 +100,6 @@ void CurrentTrack::constraintsUpdated()
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
     
-    kDebug() << "got album cover element width: " << m_theme->elementRect( "albumart" ).size().width() << endl;
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
     update();
 }

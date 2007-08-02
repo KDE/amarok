@@ -72,7 +72,6 @@ void CurrentEngine::update()
     trackInfo << track->playCount();
     
     int width = coverWidth();
-    kDebug() << "found width: " << width << endl;
     trackInfo << QVariant( track->album()->image( width ) );
     
     setData( "current", "current", trackInfo );
