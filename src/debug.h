@@ -6,15 +6,12 @@
 #define AMAROK_DEBUG_H
 
 #include <kdebug.h>
-#include <QByteArray>
+#include <QApplication>
 #include <QMutex>
 #include <QObject>
-//Added by qt3to4:
-#include <Q3ValueList>
-#include <sys/time.h>
 
-#include <QApplication>
 #include <iostream>
+#include <sys/time.h>
 
 #include "amarok_export.h"
 
@@ -63,19 +60,19 @@ namespace Debug
     #define qOApp reinterpret_cast<QObject*>(qApp)
     class Indent : QObject
     {
-        friend QByteArray &modifieableIndent();
+        friend QString &modifieableIndent();
         Indent() : QObject( qOApp ) { setObjectName( "DEBUG_indent" ); }
-        QByteArray m_string;
+        QString m_string;
     };
 
-    inline QByteArray &modifieableIndent()
+    inline QString &modifieableIndent()
     {
         QObject* o = qOApp ? qOApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
-        QByteArray &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
+        QString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
     }
 
-    inline QByteArray indent()
+    inline QString indent()
     {
         return modifieableIndent();
     }
@@ -104,10 +101,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_INFO ) ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_WARN ) ) << AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_ERROR ) ) << AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { mutex.lock(); QByteArray ind = indent(); mutex.unlock(); return kdbgstream( new QString( ind.data() + KDEBUG_FATAL ) ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX; }
+        static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX << "[ERROR!] "; }
+        static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
 
@@ -245,7 +242,7 @@ namespace Debug
      *     debug() << (Debug::List() << anInt << aString << aQStringList << aDouble) << endl;
      */
 
-    typedef Q3ValueList<QVariant> List;
+    typedef QList<QVariant> List;
 }
 
 #endif
