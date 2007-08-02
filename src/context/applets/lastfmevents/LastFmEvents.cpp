@@ -169,7 +169,7 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     p->setRenderHint(QPainter::SmoothPixmapTransform);
         
-    kDebug() << "painting rect: " << contentsRect << endl;
+    debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
         
     QString text;
@@ -187,13 +187,13 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
     m_sysItem->setText( text );
     
-    kDebug() << "size: " << m_theme->size() << endl;
-    kDebug() << "friend element rect: " << m_theme->elementRect( "friendevents" ) << endl;
-    kDebug() << "user element rect: " << m_theme->elementRect( "userevents" ) << endl;
-    kDebug() << "sys element rect: " << m_theme->elementRect( "sysevents" ) << endl;
-    kDebug() << "top element rect: " << m_theme->elementRect( "top" ) << endl;
-    kDebug() << "bottom element rect: " << m_theme->elementRect( "bottom" ) << endl;
-    kDebug() << "something: " << m_theme->elementRect( "something" ) << endl;
+    debug() << "size: " << m_theme->size() << endl;
+    debug() << "friend element rect: " << m_theme->elementRect( "friendevents" ) << endl;
+    debug() << "user element rect: " << m_theme->elementRect( "userevents" ) << endl;
+    debug() << "sys element rect: " << m_theme->elementRect( "sysevents" ) << endl;
+    debug() << "top element rect: " << m_theme->elementRect( "top" ) << endl;
+    debug() << "bottom element rect: " << m_theme->elementRect( "bottom" ) << endl;
+    debug() << "something: " << m_theme->elementRect( "something" ) << endl;
     
     QRectF friendRect = m_theme->elementRect( "friendevents" );
 //     friendRect.translate( friendRect.x(), friendRect.y() );

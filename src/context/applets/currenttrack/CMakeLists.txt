@@ -22,4 +22,4 @@ set_target_properties(amarok_context_applet_currenttrack PROPERTIES VERSION 1.0.
 
 install(TARGETS amarok_context_applet_currenttrack DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-currenttrack.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES currenttrack.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/amarok-default/widgets/ )
+install(FILES amarok-currenttrack.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )

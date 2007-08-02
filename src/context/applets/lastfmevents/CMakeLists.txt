@@ -22,4 +22,4 @@ set_target_properties(amarok_context_applet_lastfmevents PROPERTIES VERSION 1.0.
 
 install(TARGETS amarok_context_applet_lastfmevents DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-lastfmevents.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES lastfm.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/amarok-default/widgets/ )
+install(FILES amarok-lastfm.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
