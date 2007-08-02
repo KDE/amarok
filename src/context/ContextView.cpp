@@ -88,7 +88,7 @@ ContextView::ContextView( )
     //kDebug() << "wallpaperPath is " << m_
     if ( m_wallpaperPath.isEmpty() ||
         !QFile::exists(m_wallpaperPath ) )
-        m_background = new Svg( "widgets/wallpaper", this );
+        m_background = new Svg( "widgets/amarok-wallpaper", this );
     
     showHome();
 }

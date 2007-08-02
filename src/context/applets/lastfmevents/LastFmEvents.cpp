@@ -70,7 +70,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     m_sysData = new QList< QVariantList >();
     m_friendData = new QList< QVariantList >();
     
-    m_theme = new Plasma::Svg( "widgets/lastfm", this );
+    m_theme = new Plasma::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
     m_theme->resize( m_size  );
     

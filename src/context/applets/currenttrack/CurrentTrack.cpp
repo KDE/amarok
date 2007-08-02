@@ -41,7 +41,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     
     dataEngine( "amarok-current" )->connectSource( "current", this );
     
-    m_theme = new Context::Svg( "widgets/currenttrack", this );
+    m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
     
