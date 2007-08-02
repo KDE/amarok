@@ -16,6 +16,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 #include <QGraphicsPixmapItem>
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
@@ -42,6 +43,7 @@ struct PlaylistNS::GraphicsItem::ActiveItems
     QGraphicsTextItem* topRightText;
     QGraphicsTextItem* bottomRightText;
     int lastWidth;
+    Meta::TrackPtr track;
 };
 
 const qreal PlaylistNS::GraphicsItem::ALBUM_WIDTH = 50.0;
@@ -71,14 +73,16 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
 {
     if( not m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
-        const int row = ( mapToScene( 0.0, 0.0 ).y() ) / s_height;
-        const Meta::TrackPtr track = The::playlistModel()->index( row, 0 ).data( ItemRole ).value< PlaylistNS::Item* >()->track();
+
         if( not m_items )
         {
+            const int row = ( mapToScene( 0.0, 0.0 ).y() ) / s_height;
+            const Meta::TrackPtr track = The::playlistModel()->index( row, 0 ).data( ItemRole ).value< PlaylistNS::Item* >()->track();
             m_items = new PlaylistNS::GraphicsItem::ActiveItems();
+            m_items->track = track;
             init( track );
         }
-        resize( track, option->rect.width() );
+        resize( m_items->track, option->rect.width() );
     }
   /*  QGraphicsItem *items[5] = { albumArt, topLeftText, bottomLeftText, topRightText, bottomRightText };
     QStyleOptionGraphicsItem *options[5] = { option, option, option, option, option };
@@ -152,6 +156,18 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     m_items->bottomLeftText->setPlainText( s_fm->elidedText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
         , Qt::ElideRight, spaceForLeft ) );
     m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
+}
+
+void 
+PlaylistNS::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
+{
+    if( m_items )
+    {
+        The::playlistModel()->play( ( mapToScene( 0.0, 0.0 ).y() ) / s_height );
+        event->accept();
+        return;
+    }
+    QGraphicsItem::mouseDoubleClickEvent( event );
 }
 
 QRectF

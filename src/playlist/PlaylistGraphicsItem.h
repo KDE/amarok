@@ -23,6 +23,8 @@ namespace PlaylistNS {
             QRectF boundingRect() const;
             void setupItem();
             static qreal height() { return s_height; }
+        protected:
+            void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event );
         private:
             void init( Meta::TrackPtr track );
             void resize( Meta::TrackPtr track, int totalWidth );
