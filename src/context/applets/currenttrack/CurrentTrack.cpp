@@ -175,22 +175,15 @@ void CurrentTrack::showConfigurationInterface()
         connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
         connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
         
-        m_configLayout = new QVBoxLayout( widget );
-        QHBoxLayout* widthLayout = new QHBoxLayout();
+        m_configLayout = new QHBoxLayout( widget );
         m_spinWidth = new QSpinBox();
         m_spinWidth->setRange( 200, 700 );
         m_spinWidth->setValue( m_width );
         
         QLabel *labelWidth = new QLabel(i18n("Width"));
-        widthLayout->addWidget( labelWidth );
-        widthLayout->addWidget( m_spinWidth );
-        
-        m_starBox = new QCheckBox();
-        m_starBox->setText( i18n( "Show Ratings" ) );
-        
-        m_configLayout->addLayout( widthLayout );
-        m_configLayout->addWidget( m_starBox );
-        
+        m_configLayout->addWidget( labelWidth );
+        m_configLayout->addWidget( m_spinWidth );
+
     }
 
     m_config->show();
@@ -200,11 +193,9 @@ void CurrentTrack::configAccepted() // SLOT
 {
     KConfigGroup cg = globalConfig();
     
-    m_starBox->checkState() ? m_ratingsEnabled = true : m_ratingsEnabled = false;
     m_width = m_spinWidth->value();
     resize( m_width, m_aspectRatio );
     
-    cg.writeEntry( "showRating" , m_ratingsEnabled );
     cg.writeEntry( "width", m_width );
     
     cg.sync();
@@ -214,6 +205,14 @@ void CurrentTrack::configAccepted() // SLOT
 void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
 {
     qreal height = aspectRatio * newWidth;
+    qreal oldWidth = m_size.width();
+    if( oldWidth > newWidth ) // scale down pixmap so it doesn't look crappy
+    {
+        QPixmap cover = m_albumCover->pixmap();
+        cover = cover.scaledToWidth( newWidth, Qt::SmoothTransformation );
+        m_albumCover->setPixmap( cover );
+        debug() << "changing pixmap size from " << oldWidth << " to " << cover.width();
+    }
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
     m_theme->resize( m_size );

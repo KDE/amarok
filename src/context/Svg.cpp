@@ -13,9 +13,9 @@
 
 #include "Svg.h"
 
-#include <QMatrix>
+#include "debug.h"
 
-#include <KDebug>
+#include <QMatrix>
 
 namespace Context
 {
@@ -27,8 +27,10 @@ Svg::Svg( const QString& imagePath, QObject* parent )
 QRect Svg::elementRect( const QString& elementId )
 {
     QRect rect = Plasma::Svg::elementRect( elementId );
+    debug() << "original rect: " << rect << " transform matrix: " << matrixForElement( elementId ) << " new rect: " << rect.translated( matrixForElement( elementId ).dx(), matrixForElement( elementId ).dy() );
     rect.translate( matrixForElement( elementId ).dx(), matrixForElement( elementId ).dy() );
     
+
     return rect;
     
 }

@@ -23,7 +23,7 @@
 
 class QGraphicsPixmapItem;
 class QLabel;
-class QVBoxLayout;
+class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 
@@ -50,11 +50,9 @@ private:
     void resize( qreal newWidth, qreal aspectRatio );
     
     KDialog* m_config;
-    QVBoxLayout* m_configLayout;
-    QCheckBox* m_starBox;
+    QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
-    bool m_ratingsEnabled;
     
     qreal m_aspectRatio;
     
