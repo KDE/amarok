@@ -29,10 +29,10 @@ QRect Svg::elementRect( const QString& elementId )
     QRect rect = Plasma::Svg::elementRect( elementId );
     debug() << "original rect of element: " << elementId << " " << rect << " transform matrix: " << matrixForElement( elementId ) << " new rect: " << rect.translated( matrixForElement( elementId ).dx(), matrixForElement( elementId ).dy() );
     rect.translate( matrixForElement( elementId ).dx(), matrixForElement( elementId ).dy() );
-    
+
 
     return rect;
-    
+
 }
 
 } // namespace Context

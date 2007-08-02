@@ -105,7 +105,7 @@ class PodcastMetaCommon
 
 };
 
-class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
+class PodcastEpisode : public Track, public PodcastMetaCommon
 {
     public:
         PodcastEpisode() {};
@@ -192,7 +192,7 @@ class PodcastEpisode : public Meta::Track, public PodcastMetaCommon
 
 };
 
-class PodcastChannel : public Meta::Playlist, public PodcastMetaCommon
+class PodcastChannel : public Playlist, public PodcastMetaCommon
 {
     public:
         PodcastChannel() {};

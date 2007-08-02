@@ -110,9 +110,6 @@ CollectionManager::init()
             }
         }
     }
-    //TODO: this is a hack to test it out, PodcastCollection belongs in the Playlistwindow
-    addUnmanagedCollection( The::podcastCollection() );
-
 }
 
 void
