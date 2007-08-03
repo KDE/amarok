@@ -16,8 +16,6 @@
 #include <QHttp>
 #include <QByteArray>
 
-class QDataStream;
-
 namespace Daap {
 
 /**
@@ -34,7 +32,7 @@ class ContentFetcher : public QHttp
         ~ContentFetcher();
 
         void getDaap( const QString & command, QIODevice* musicFile = 0 );
-        QDataStream& results();
+        QByteArray results();
 
     private slots:
         void checkForErrors( int state );

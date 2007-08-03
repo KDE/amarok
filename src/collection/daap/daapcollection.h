@@ -57,6 +57,7 @@ class DaapCollectionFactory : public CollectionFactory
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void slotCollectionReady();
+        void slotCollectionDownloadFailed();
 
     private:
         DNSSD::ServiceBrowser* m_browser;
@@ -78,10 +79,13 @@ class DaapCollection : public Collection, public MemoryCollection
         virtual QString prettyName() const;
 
         void serverOffline();
-        void loadedDataFromServer();
 
     signals:
         void collectionReady();
+
+    public slots:
+        void loadedDataFromServer();
+        void parsingFailed();
 
     private slots:
         void passwordRequired();

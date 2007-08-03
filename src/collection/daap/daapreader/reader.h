@@ -16,6 +16,7 @@
 #include <QObject>
 
 #include <kurl.h>
+#include <threadweaver/Job.h>
 
 class QString;
 
@@ -59,6 +60,8 @@ namespace Daap
             int sessionId() const { return m_sessionId; }
             QString host() const { return m_host; }
             quint16 port() const { return m_port; }
+
+            bool parseSongList( const QByteArray &data );
         public slots:
             void logoutRequest(int, bool );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
@@ -93,6 +96,24 @@ namespace Daap
             int m_sessionId;
             QString m_password;
 
+    };
+
+    class WorkerThread : public ThreadWeaver::Job
+    {
+        Q_OBJECT
+        public:
+            WorkerThread( const QByteArray &data, Reader* reader, DaapCollection *coll );
+            virtual ~WorkerThread();
+
+            virtual bool success() const;
+
+        protected:
+            virtual void run();
+
+        private:
+            bool m_success;
+            QByteArray m_data;
+            Reader *m_reader;
     };
 
 }

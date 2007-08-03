@@ -147,6 +147,7 @@ DaapCollectionFactory::resolvedDaap( bool success )
 
     DaapCollection *coll = new DaapCollection( service->hostName(), ip, service->port() );
     connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
     m_collectionMap.insert( serverKey( service ), coll );
 }
 
@@ -163,7 +164,25 @@ DaapCollectionFactory::slotCollectionReady()
     DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
     if( collection )
     {
+        disconnect( collection, SIGNAL( remove() ), this, SLOT( slotCollectionDownloadFailed() ) );
         emit newCollection( collection );
+    }
+}
+
+void
+DaapCollectionFactory::slotCollectionDownloadFailed()
+{
+    DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
+    if( !collection )
+        return;
+    foreach( QString key, m_collectionMap.keys() )
+    {
+        if( m_collectionMap.value( key ) == collection )
+        {
+            m_collectionMap.remove( key );
+            collection->deleteLater();
+            break;
+        }
     }
 }
 
@@ -244,6 +263,12 @@ DaapCollection::loadedDataFromServer()
 {
     DEBUG_BLOCK
     emit collectionReady();
+}
+
+void
+DaapCollection::parsingFailed()
+{
+    emit remove();
 }
 
 #include "daapcollection.moc"

@@ -27,6 +27,8 @@
 #include <QHttpResponseHeader>
 #include <QVariant>
 
+#include <threadweaver/ThreadWeaver.h>
+
 using namespace Daap;
 using namespace Meta;
 
@@ -219,7 +221,8 @@ Reader::loginFinished( int /* id */, bool error )
         http->deleteLater();
         return;
     }
-    Map loginResults = parse( http->results() , 0 ,true );
+    QDataStream raw( http->results() );
+    Map loginResults = parse( raw , 0 ,true );
     debug() << "list size is " << loginResults["mlog"].toList().size();
     if( loginResults["mlog"].toList().size() == 0 )
         return;
@@ -245,7 +248,8 @@ Reader::updateFinished( int /*id*/, bool error )
         return;
     }
 
-    Map updateResults = parse( http->results(), 0, true );
+    QDataStream raw( http->results() );
+    Map updateResults = parse( raw, 0, true );
     if( updateResults["mupd"].toList().isEmpty() )
         return; //error
     if( updateResults["mupd"].toList()[0].toMap()["musr"].toList().isEmpty() )
@@ -269,7 +273,8 @@ Reader::databaseIdFinished( int /*id*/, bool error )
         return;
     }
 
-    Map dbIdResults = parse( http->results(), 0, true );
+    QDataStream raw( http->results() );
+    Map dbIdResults = parse( raw, 0, true );
     m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
@@ -288,8 +293,17 @@ Reader::songListFinished( int /*id*/, bool error )
         http->deleteLater();
         return;
     }
+    QByteArray result = http->results();
+    http->deleteLater();
 
-    Map songResults = parse( http->results(), 0, true );
+    ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( result, this, m_memColl ) );
+}
+
+bool
+Reader::parseSongList( const QByteArray &data )
+{
+    QDataStream raw( data );
+    Map songResults = parse( raw, 0, true );
 
     TrackMap trackMap;
     ArtistMap artistMap;
@@ -301,9 +315,8 @@ Reader::songListFinished( int /*id*/, bool error )
     if( songResults["adbs"].toList().size() < 1 ||
         songResults["adbs"].toList()[0].toMap()["mlcl"].toList().count() < 1 ) {
         emit httpError( "Invalid response" ); //it's not a real http error, but the effect is the same
-        http->deleteLater();
         deleteLater();
-        return;
+        return false;
     }
 
     QList<QVariant> songList;
@@ -367,7 +380,6 @@ Reader::songListFinished( int /*id*/, bool error )
         track->setGenre( genrePtr );
     }
 
-    http->deleteLater();
     m_memColl->acquireWriteLock();
     m_memColl->setTrackMap( trackMap );
     m_memColl->setArtistMap( artistMap );
@@ -376,7 +388,7 @@ Reader::songListFinished( int /*id*/, bool error )
     m_memColl->setComposerMap( composerMap );
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
-    m_memColl->loadedDataFromServer();
+    return true;
 }
 
 quint32
@@ -493,5 +505,35 @@ Reader::fetchingError( const QString& error )
     const_cast< QObject* >( sender() )->deleteLater();
     emit httpError( error );
 }
+
+WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, DaapCollection *coll )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_data( data )
+    , m_reader( reader )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), coll, SLOT( loadedDataFromServer() ) );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), coll, SLOT( parsingFailed() ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+}
+
+WorkerThread::~WorkerThread()
+{
+    //nothing to do
+}
+
+bool
+WorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+WorkerThread::run()
+{
+    m_success = m_reader->parseSongList( m_data );
+}
+
 #include "reader.moc"
 

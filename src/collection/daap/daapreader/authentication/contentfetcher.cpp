@@ -44,16 +44,23 @@ ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QS
 ContentFetcher::~ContentFetcher()
 { }
 
-QDataStream&
+QByteArray
 ContentFetcher::results()
 {
-    //QByteArray read = readAll();
-    //QBuffer* bytes = new QBuffer( &read );
-    //QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
-    //stream->open( QIODevice::ReadOnly );
-    //QDataStream* ds = new QDataStream( stream );
-    QDataStream* ds = new QDataStream( readAll() );
-    return *ds;
+    QByteArray read = readAll();
+    QHttpResponseHeader header = lastResponse();
+    if( header.value( "Content-Encoding" ) == "gzip" )
+    {
+        QBuffer* bytes = new QBuffer( &read );
+        QIODevice* stream = KFilterDev::device( bytes, "application/x-gzip", false );
+        stream->open( QIODevice::ReadOnly );
+        //do not assign directly to read, see the documentation of the QBuffer ctor
+        QByteArray filteredRead = stream->readAll();
+        delete stream;
+        delete bytes;
+        read = filteredRead;
+    }
+    return read;
 }
 
 void
@@ -76,7 +83,7 @@ ContentFetcher::getDaap( const QString & command, QIODevice* musicFile /*= 0*/ )
     header.setValue( "Client-DAAP-Version", "3.0" );
     header.setValue( "User-Agent", "iTunes/4.6 (Windows; N)" );
     header.setValue( "Accept", "*/*" );
-    //header.setValue( "Accept-Encoding", "gzip" );
+    header.setValue( "Accept-Encoding", "gzip" );
 
     request( header, 0, musicFile );
 }
