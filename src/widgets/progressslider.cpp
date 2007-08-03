@@ -11,26 +11,29 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "progressslider.h"
+
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "meta/meta.h"
 #include "meta/MetaUtility.h"
-#include "progressslider.h"
 #include "timeLabel.h"
-
-#include <kpassivepopup.h>
-#include <khbox.h>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QList>
 #include <QPolygon>
 
+#include <khbox.h>
+#include <klocale.h>
+#include <kpassivepopup.h>
+
+
 // Class ProgressSlider
 ProgressSlider *ProgressSlider::s_instance = 0;
 ProgressSlider::ProgressSlider( QWidget *parent ) :
-        Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal, parent )
+        Amarok::Slider( Qt::Horizontal, parent )
 {
     s_instance = this;
     setMouseTracking( true );
@@ -56,7 +59,7 @@ ProgressSlider::addBookmarks( QList<uint> seconds )
 void
 ProgressSlider::paintEvent( QPaintEvent *e )
 {
-    Amarok::PrettySlider::paintEvent( e );
+    Amarok::Slider::paintEvent( e );
 
     if( isEnabled() )
     {
@@ -100,7 +103,7 @@ ProgressSlider::mouseMoveEvent( QMouseEvent *e )
     }
     oldpoint = e->pos();
 
-    Amarok::PrettySlider::mouseMoveEvent( e );
+    Amarok::Slider::mouseMoveEvent( e );
 }
 
 void
@@ -111,7 +114,7 @@ ProgressSlider::mousePressEvent( QMouseEvent *e )
         if( p.containsPoint( e->pos(), Qt::OddEvenFill ) )
             ec->seek( p.seconds() * 1000 );
 
-    Amarok::PrettySlider::mousePressEvent( e );
+    Amarok::Slider::mousePressEvent( e );
 }
 // END Class ProgressSlider
 
@@ -245,13 +248,11 @@ ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 void
 ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
-
     switch ( state ) {
         case Engine::Empty:
             m_slider->setEnabled( false );
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
-            m_slider->newBundle( MetaBundle() ); // Set an empty bundle
             m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
             m_timeLabel2->setEnabled( false );
             break;
@@ -269,29 +270,21 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
 }
 
 void
-ProgressWidget::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+ProgressWidget::engineTrackLengthChanged( long seconds )
 {
-    m_slider->newBundle( bundle );
-    engineTrackLengthChanged( bundle.length() );
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    if( !track )
-        return;
-    m_slider->setMaximum( track->length() );
-
-    ProgressSlider::instance()->addBookmark( 20 );
-    ProgressSlider::instance()->addBookmark( 40);
-    QList<uint> bookmarkList;
-    bookmarkList << 30 << 50 << 45;
-    ProgressSlider::instance()->addBookmarks( bookmarkList );
+    m_slider->setMinimum( 0 );
+    m_slider->setMaximum( seconds * 1000 );
+    m_slider->setEnabled( seconds > 0 );
+    m_timeLength = Meta::secToPrettyTime( seconds ).length()+1; // account for - in remaining time
 }
 
 void
-ProgressWidget::engineTrackLengthChanged( long length )
+ProgressWidget::engineNewTrackPlaying()
 {
-    m_slider->setMinimum( 0 );
-    m_slider->setMaximum( length * 1000 );
-    m_slider->setEnabled( length > 0 );
-    m_timeLength = Meta::secToPrettyTime( length ).length()+1; // account for - in remaining time
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( !track )
+        return;
+    engineTrackLengthChanged( track->length() );
 }
 
 #include "progressslider.moc"

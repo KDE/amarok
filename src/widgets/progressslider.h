@@ -64,7 +64,7 @@ class Bookmark : public QPolygon
         int m_seconds;
 };
 
-class ProgressSlider : public Amarok::PrettySlider
+class ProgressSlider : public Amarok::Slider
 {
     Q_OBJECT
     static ProgressSlider *s_instance;
@@ -104,8 +104,8 @@ class ProgressWidget : public QWidget, public EngineObserver
     protected:
         virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-        virtual void engineTrackLengthChanged( long length );
-        virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+        virtual void engineTrackLengthChanged( long seconds );
+        virtual void engineNewTrackPlaying();
 
     private:
         QLabel *m_timeLabel;

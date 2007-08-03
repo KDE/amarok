@@ -20,8 +20,6 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
-#include "metabundle.h"
-
 #include <QPixmap>
 #include <QSlider>
 #include <QVector>
@@ -73,41 +71,6 @@ namespace Amarok
 
             Slider( const Slider& ); //undefined
             Slider &operator=( const Slider& ); //undefined
-    };
-
-
-    class PrettySlider : public Slider
-    {
-        Q_OBJECT
-
-        public:
-            typedef enum
-            {
-                Normal,  // Same behavior as Slider *unless* there's a moodbar
-                Pretty
-            } SliderMode;
-
-            PrettySlider( Qt::Orientation orientation, SliderMode mode,
-                          QWidget *parent, uint max = 0 );
-
-            virtual void newBundle( const MetaBundle &bundle );
-
-        protected:
-            virtual void paintEvent( QPaintEvent *e );
-            virtual void slideEvent( QMouseEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
-
-        protected slots:
-            void moodbarJobEvent( int newState );
-            void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-
-        private:
-            PrettySlider( const PrettySlider& ); //undefined
-            PrettySlider &operator=( const PrettySlider& ); //undefined
-
-            SliderMode m_mode;
-            MetaBundle m_bundle;  // Has our moodbar data!
-            bool       m_showingMoodbar;
     };
 
     class VolumeSlider: public Slider
