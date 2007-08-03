@@ -30,6 +30,7 @@ namespace PlaylistBrowserNS {
 PlaylistBrowser::PlaylistBrowser( const char *name )
  : KVBox()
 {
+    setObjectName( name );
     QToolBox *toolBox = new QToolBox( this );
     PodcastModel *podcastModel = new PodcastModel();
 

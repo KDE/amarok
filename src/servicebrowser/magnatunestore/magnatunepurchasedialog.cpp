@@ -37,7 +37,9 @@ using namespace Meta;
 MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* name, bool modal, Qt::WFlags fl )
         : QDialog( parent, fl )
 {
-    setupUi(this);
+    Q_UNUSED( modal );
+    setObjectName( name );
+    setupUi( this );
 
     connect( ccRadioButton, SIGNAL( clicked() ), this, SLOT( useCc() ) );
     connect( gcRadioButton, SIGNAL( clicked() ), this, SLOT( useGc() ) );

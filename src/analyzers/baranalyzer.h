@@ -9,6 +9,7 @@
 #include "analyzerbase.h"
 //Added by qt3to4:
 #include <QResizeEvent>
+#include <QPalette>
 #include <QPixmap>
 
 typedef std::vector<uint> aroofMemVec;
@@ -54,7 +55,7 @@ class BarAnalyzer : public Analyzer::Base2D
     private:
         QPixmap m_pixBarGradient;
         Scope m_scope;             //so we don't create a vector every frame
-        QColor m_bg;
+        QPalette::ColorRole m_bg;
 };
 
 #endif

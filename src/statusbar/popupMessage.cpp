@@ -162,8 +162,8 @@ void PopupMessage::display() //SLOT
 
     if( m_maskEffect == Dissolve )
     {
-        // necessary to create the mask
-        m_mask.resize( width(), height() );
+        // create the mask
+        m_mask = QPixmap( width(), height() );
         // make the mask empty and hence will not show widget with show() called below
         dissolveMask();
         m_timerId = startTimer( 1000 / 30 );
@@ -208,7 +208,11 @@ void PopupMessage::countDown()
     QFrame *&h = m_countdownFrame;
 
     if( m_counter < h->height() - 3 )
-        QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, palette().active().highlight() );
+    {
+        QPalette p = palette();
+        p.setCurrentColorGroup( QPalette::Active );
+        QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, p.highlight() );
+    }
 
     if( !testAttribute(Qt::WA_UnderMouse))
         m_counter++;

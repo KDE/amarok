@@ -848,6 +848,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     QStringList DbusCollectionHandler::similarArtists( int artists )
     {
+        Q_UNUSED( artists );
         //TODO: implement
         return QStringList();
     }

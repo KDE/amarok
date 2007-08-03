@@ -203,7 +203,7 @@
     </method>
    <method name="setRatingByPath" >
       <arg name="url" type="s" direction="in"/>
-      <arg name="rating" type="d" direction="in"/>
+      <arg name="rating" type="i" direction="in"/>
     </method>
    <method name="transferCliArgs" >
       <arg name="args" type="as" direction="in"/>

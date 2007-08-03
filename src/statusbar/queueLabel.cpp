@@ -107,27 +107,29 @@ void QueueLabel::setNum( int num )
         QPixmap pix( w, h );
         QPainter p( &pix );
 
-        p.setBrush( QColorGroup(palette()).background() );
-        p.setPen( QColorGroup(palette()).background() );
+        p.setBrush( palette().window() );
+        p.setPen( palette().window() );
         p.drawRect( pix.rect() );
 
-        p.setBrush( QColorGroup(palette()).highlight() );
-        p.setPen( QColorGroup(palette()).highlight().dark() );
+        p.setBrush( palette().highlight().color() );
+        p.setPen( palette().highlight().color().darker() );
         if( w > h )
         {
             p.drawPie( 0, 0, h, h, 90*16, 180*16 );
             p.drawPie( w-1 -h, 0, h, h, -90*16, 180*16 );
             p.drawLine( h/2-1, 0, w-1 - h/2, 0 );
             p.drawLine( h/2-1, h-1, w-1 - h/2, h-1 );
-            p.setPen( QColorGroup(palette()).highlight() );
+            p.setPen( palette().highlight().color() );
             p.drawRect( h/2-1, 1, w - h + 1, h-2 );
         }
         else
             p.drawEllipse( pix.rect() );
 
         p.setFont( f );
-        p.setPen( QColorGroup(palette()).highlightedText() );
-        p.setBrush( QColorGroup(palette()).highlight().dark() );
+        p.setPen( palette().highlightedText().color() );
+        QBrush b = palette().highlight();
+        b.setColor( b.color().darker() );
+        p.setBrush( b );
         p.drawText( pix.rect(), Qt::AlignCenter | Qt::TextSingleLine, text );
 
         p.end();

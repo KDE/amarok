@@ -12,12 +12,9 @@
 //
 
 #include "baranalyzer.h"
-#include <cmath>     //log10(), etc.
 #include "debug.h"
+#include <cmath>     //log10(), etc.
 #include <QPainter>
-//Added by qt3to4:
-#include <QResizeEvent>
-
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 30, 8 )
@@ -27,7 +24,8 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
 //     , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
-    m_bg = parent->paletteBackgroundColor();
+
+    m_bg = backgroundRole();
 
     QColor fg( 0xff, 0x50, 0x70 );
 
@@ -53,7 +51,7 @@ void BarAnalyzer::init()
     const double MAX_AMPLITUDE = 1.0;
     const double F = double(height() - 2) / (log10( static_cast<double>(255) ) * MAX_AMPLITUDE );
 
-    setPaletteBackgroundColor(m_bg);
+    setBackgroundRole( m_bg );
 
     BAND_COUNT = width() / 5;
     MAX_DOWN = int(0 -((height() / 50)));

@@ -58,8 +58,6 @@ Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 
 QPixmap ServiceAlbumWithCover::image(int size, bool withShadow) const
 {
-
-
     QString coverName = downloadPrefix() + '_' + albumArtist()->name() + '_' + name() + "_cover.png";
 
 
@@ -91,10 +89,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow) const
     }
 
     return Album::image( size, withShadow );
-
 }
-
-
 
 void ServiceAlbumWithCover::setImage( const QImage & image ) const
 {
@@ -112,9 +107,6 @@ void ServiceAlbumWithCover::imageDownloadCanceled() const
 
 
 
-
-
-
 ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
     : m_album( 0 )
         , m_albumDownloadJob( 0 )
@@ -123,11 +115,10 @@ ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
     m_tempDir->setAutoRemove( false );
 }
 
-ServiceAlbumCoverDownloader::~ ServiceAlbumCoverDownloader()
+ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
 {
     delete m_tempDir;
 }
-
 
 void ServiceAlbumCoverDownloader::downloadCover( const  ServiceAlbumWithCover * album )
 {
@@ -143,7 +134,6 @@ void ServiceAlbumCoverDownloader::downloadCover( const  ServiceAlbumWithCover * 
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
     connect( m_albumDownloadJob, SIGNAL( canceled( KJob* ) ), SLOT( coverDownloadCanceled( KJob * ) ) );
-
 }
 
 void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
@@ -167,21 +157,14 @@ void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     downloadJob->deleteLater();
 
     m_tempDir->unlink();
-
 }
 
-void ServiceAlbumCoverDownloader::coverDownloadCanceled(KJob * downloadJob)
+void ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
 {
-    
+    Q_UNUSED( downloadJob );
     debug() << "cover download cancelled";
     m_album->imageDownloadCanceled();
 }
 
-
-
-
-
-
-
 #include "ServiceAlbumCoverDownloader.moc"
-                 
+
