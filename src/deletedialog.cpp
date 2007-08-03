@@ -84,13 +84,14 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
 // DeleteDialog implementation
 //////////////////////////////////////////////////////////////////////////////
 
-DeleteDialog::DeleteDialog(QWidget *parent, const char *name) :
-    KDialog( parent ),
+DeleteDialog::DeleteDialog( QWidget *parent, const char *name )
+    : KDialog( parent ),
     m_trashGuiItem(i18n("&Send to Trash"), "trashcan_full")
 {
 //Swallow, Qt::WStyle_DialogBorder, parent, name,
         //true /* modal */, i18n("About to delete selected files"),
        // Ok | Cancel, Cancel /* Default */, true /* separator */
+    setObjectName( name );
     setCaption( i18n("About to delete selected files") );
     setModal( true );
     setButtons( Ok | Cancel );

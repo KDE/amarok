@@ -42,7 +42,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection:"), this ))->setAlignment( Qt::TextWordWrap );
+        "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
 
     m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
@@ -96,7 +96,7 @@ CollectionSetup::writeConfig()
                 //As all directories are subdirectories of "/", if "/" is selected, we
                 //can delete everything else.
                 if ( ( *jt ).startsWith( *it + '/' ) || *it=="/" )
-                    jt = m_dirs.remove( jt );
+                    jt = m_dirs.erase( jt );
                 else
                     ++jt;
             }

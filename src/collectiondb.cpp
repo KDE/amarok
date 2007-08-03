@@ -4780,7 +4780,7 @@ DbConnection * CollectionDB::getMyConnection()
     if( threadConnections->contains(currThread) )
     {
         QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
-        dbConn = it.data();
+        dbConn = it.value();
         connectionMutex->unlock();
         return dbConn;
     }
@@ -4819,9 +4819,9 @@ CollectionDB::releasePreviousConnection(QThread *currThread)
     if (threadConnections->contains(currThread))
     {
         QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
-        dbConn = it.data();
+        dbConn = it.value();
         delete dbConn;
-        threadConnections->erase(currThread);
+        threadConnections->remove(currThread);
     }
     connectionMutex->unlock();
 }

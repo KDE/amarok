@@ -348,10 +348,10 @@ void CoverManager::fetchMissingCovers() //SLOT
 
 void CoverManager::fetchCoversLoop() //SLOT
 {
-
-    if( m_fetchCounter < m_fetchCovers.count() ) {
+    if( (int)m_fetchCounter < m_fetchCovers.count() )
+    {
         //get artist and album from keyword
-        const QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter], true );
+        const QStringList values = m_fetchCovers[m_fetchCounter].split( " @@@ ", QString::KeepEmptyParts );
 
         if( values.count() > 1 )
            CollectionDB::instance()->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
@@ -376,7 +376,7 @@ void CoverManager::showOnce( const QString &artist )
         new CoverManager(); //shows itself
     }
     else {
-        s_instance->setActiveWindow();
+        s_instance->activateWindow();
         s_instance->raise();
     }
 }
@@ -402,7 +402,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
 
     Q3ProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
-    progress.QDialog::setCaption( i18n("...") );
+    progress.QDialog::setWindowTitle( i18n("...") );
 
     //NOTE we MUST show the dialog, otherwise the closeEvents get processed
     // in the processEvents() calls below, GRUMBLE! Qt sux0rs
@@ -446,7 +446,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         cl = qb.run();
 
-        for ( uint i = 0; i < cl.count(); i++ ) {
+        for( int i = 0; i < cl.count(); i++ ) {
             albums.append( i18n( "Various Artists" ) );
             albums.append( cl[ i ] );
         }
@@ -584,7 +584,7 @@ void CoverManager::slotSetFilter() //SLOT
     for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, false ) )
+        if( coverItem->album().contains( m_filter, Qt::CaseInsensitive ) || coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
             m_coverView->insertItem( item, m_coverView->lastItem() );
     }
     m_coverView->setAutoArrange( true );
@@ -597,9 +597,9 @@ void CoverManager::slotSetFilter() //SLOT
 void CoverManager::slotSetFilterTimeout() //SLOT
 {
     if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 180, true );
+    m_timer->setSingleShot( true );
+    m_timer->start( 180 );
 }
-
 
 void CoverManager::changeView( int id  ) //SLOT
 {
@@ -619,7 +619,7 @@ void CoverManager::changeView( int id  ) //SLOT
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !m_filter.isEmpty() ) {
-            if( !coverItem->album().contains( m_filter, false ) && !coverItem->artist().contains( m_filter, false ) )
+            if( !coverItem->album().contains( m_filter, Qt::CaseInsensitive ) && !coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
                 continue;
         }
 
@@ -684,9 +684,9 @@ void CoverManager::stopFetching()
     m_fetchCounter = 0;
 
     //delete all cover fetchers
-    QObjectList list = queryList( "CoverFetcher" );
-    for( int i = 0; i < list.size(); ++i  )
-        list.at(i)->deleteLater();
+    QList<CoverFetcher *> list = qFindChildren<CoverFetcher*>(this);
+    foreach( CoverFetcher *cf, list )
+        cf->deleteLater();
 
     m_fetchingCovers = 0;
     updateStatusBar();
@@ -821,7 +821,7 @@ void CoverManager::updateStatusBar()
         }
 
         if( m_fetchingCovers == 1 ) {
-            QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0], true );    //get artist and album name
+            QStringList values = m_fetchCovers[0].split( " @@@ ", QString::KeepEmptyParts ); //get artist and album name
             if ( values.count() >= 2 )
             {
                 if( values[0].isEmpty() )
@@ -848,7 +848,7 @@ void CoverManager::updateStatusBar()
 
         uint totalCounter = 0, missingCounter = 0;
 
-        if( m_progressBox->isShown() )
+        if( m_progressBox->isVisible() )
             m_progressBox->hide();
 
         //album info
@@ -1001,13 +1001,15 @@ void CoverViewItem::calcRect( const QString& )
 
 void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
 {
+    Q_UNUSED( cg ); // FIXME is this correct (cg replaced by palette() )?
+    QPalette palette = KApplication::palette();
     QRect itemRect = rect();
 
     p->save();
     p->translate( itemRect.x(), itemRect.y() );
 
     // draw the border
-    p->setPen( cg.mid() );
+    p->setPen( palette.mid().color() );
     p->drawRect( 0, 0, itemRect.width(), pixmapRect().height()+2 );
 
     // draw the cover image
@@ -1018,14 +1020,13 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     //justify the album name
     QString str = text();
     QFontMetrics fm = p->fontMetrics();
-    int nameWidth = fm.width( str );
     str = fm.elidedText( str, Qt::ElideRight, textRect().width() );
 
-    p->setPen( cg.text() );
+    p->setPen( palette.text().color() );
     p->drawText( textRect(), Qt::AlignCenter, str );
 
     if( isSelected() ) {
-       p->setPen( cg.highlight() );
+       p->setPen( palette.highlight().color() );
        p->drawRect( pixmapRect() );
        p->drawRect( pixmapRect().left()+1, pixmapRect().top()+1, pixmapRect().width()-2, pixmapRect().height()-2);
        p->drawRect( pixmapRect().left()+2, pixmapRect().top()+2, pixmapRect().width()-4, pixmapRect().height()-4);
