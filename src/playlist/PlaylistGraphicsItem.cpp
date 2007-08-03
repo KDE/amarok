@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 #include "debug.h"
-#include "metabundle.h"
+#include "meta/MetaUtility.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
@@ -171,7 +171,7 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
         prepareGeometryChange();
     m_items->lastWidth = totalWidth;
-    QString prettyLength = MetaBundle::prettyTime( track->length(), false );
+    QString prettyLength = Meta::secToPrettyTime( track->length() );
     QString album;
     if( track->album() )
         album = track->album()->name();
