@@ -19,7 +19,6 @@ email                : fh@ez.no
 
 #include "debug.h"
 #include "collectiondb.h"
-#include "metabundle.h"
 #include "podcastbundle.h"
 
 
@@ -84,9 +83,9 @@ EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
 }
 
 void
-EngineObserver::engineTrackLengthChanged( long length )
+EngineObserver::engineTrackLengthChanged( long seconds )
 {
-    Q_UNUSED( length );
+    Q_UNUSED( seconds );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -144,11 +143,11 @@ void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 }
 
 
-void EngineSubject::trackLengthChangedNotify( long length )
+void EngineSubject::trackLengthChangedNotify( long seconds )
 {
     foreach( EngineObserver *observer, Observers )
     {
-        observer->engineTrackLengthChanged( length );
+        observer->engineTrackLengthChanged( seconds );
     }
 }
 
