@@ -42,6 +42,7 @@ struct PlaylistNS::GraphicsItem::ActiveItems
     QGraphicsTextItem* bottomLeftText;
     QGraphicsTextItem* topRightText;
     QGraphicsTextItem* bottomRightText;
+    QGraphicsRectItem* background;
     int lastWidth;
     Meta::TrackPtr track;
 };
@@ -83,6 +84,19 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
             init( track );
         }
         resize( m_items->track, option->rect.width() );
+    }
+    if( isSelected() && ( not m_item.background ) )
+    {
+        m_item.background = new QGraphicsRectItem( option->rect, this );
+        m_item.background->setPos( 0.0, 0.0 );
+        m_item.background->setBrush( option.palette.highlight() );
+        m_item.background->setZValue( -5.0 );
+        scene()->addItem( m_item.background )
+    }
+    else if ( not isSelected && m_item.background )
+    {
+        delete m_item.background;
+        m_item.background = 0;
     }
   /*  QGraphicsItem *items[5] = { albumArt, topLeftText, bottomLeftText, topRightText, bottomRightText };
     QStyleOptionGraphicsItem *options[5] = { option, option, option, option, option };
