@@ -53,6 +53,8 @@ int main( int argc, char *argv[] )
             ki18n(( "Developer (maxx_k)" )), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( ki18n("Mike 'Purple is not girly!' Diehl"),
             ki18n(( "DCOP, improvements, Preci-i-o-u-u-s handbook maintainer (madpenguin8)" )), "madpenguin8@yahoo.com" );
+    aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
+            ki18n(( "Developer (nhnFreespirit)" )), "nhnfreespirit@gmail.com" );
     aboutData.addAuthor( ki18n("Paul 'Meet me at the Amarok Bar!' Cifarelli"),
             ki18n(( "Developer (foreboy)" )), "paul@cifarelli.net" );
     aboutData.addAuthor( ki18n("Pierpaolo 'Spaghetti Coder' Di Panfilo"),
@@ -89,7 +91,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Melchior Franz"), ki18n(( "FHT routine, bugfixes" )), "mfranz@kde.org" );
     aboutData.addCredit( ki18n("Michael Pyne"), ki18n(( "K3B export code" )), "michael.pyne@kdemail.net" );
     aboutData.addCredit( ki18n("Nenad Grujicic"), ki18n(( "Splash screen" )), "mchitman@neobee.net" );
-    aboutData.addCredit( ki18n("Nikolaj Hald Nielsen"), ki18n(( "Magnatune.com store integration (nhnFreespirit)" )), "nhnFreespirit@gmail.com" );
     aboutData.addCredit( ki18n("Olivier Bédard"), ki18n(( "Website hosting" )), "paleo@pwsp.net" );
     aboutData.addCredit( ki18n("Peter C. Ndikuwera"), ki18n(( "Bugfixes, PostgreSQL support" )), "pndiku@gmail.com" );
     aboutData.addCredit( ki18n("Reigo Reinmets"), ki18n(( "Wikipedia support, patches" )), "xatax@hot.ee" );
