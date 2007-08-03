@@ -138,7 +138,6 @@ void ContextScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuE
 {
     
     QPointF point = contextMenuEvent->scenePos();
-    /*
      * example for displaying the SuperKaramba context menu
     QGraphicsItem *item = itemAt(point);
     if(item) {

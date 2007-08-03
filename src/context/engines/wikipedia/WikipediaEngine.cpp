@@ -42,6 +42,7 @@ bool WikipediaEngine::sourceRequested( const QString& name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
 
     //FIXME return something!
+    return true;
 }
 
 void WikipediaEngine::message( const ContextState& state )

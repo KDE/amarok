@@ -24,7 +24,6 @@
 #include <KWindowSystem>
 
 #include <QListView>
-#include <QStringListModel>
 #include <QHBoxLayout>
 
 using namespace QueueManagerNS;

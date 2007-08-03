@@ -39,8 +39,8 @@ public:
     QStringList sources() const;
     
     void message( const ContextState& state );
+
 protected:
-    
     bool sourceRequested( const QString& name );
     
 private slots:
