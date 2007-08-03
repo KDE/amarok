@@ -12,11 +12,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "volumewidget.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "volumewidget.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
+
+#include <klocale.h>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : QWidget( parent ),
