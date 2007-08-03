@@ -4115,20 +4115,22 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     if( m_wiki.find( "var wgArticleId = 0" ) != -1 )
     {
+        debug() << "Article not found." << endl;
+        
         // article was not found
-        if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
+        if( !wikiArtistPostfix().isEmpty() && m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
         {
             m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
             reloadWikipedia();
             return;
         }
-        else if( m_wikiCurrentEntry.endsWith( wikiAlbumPostfix() ) )
+        else if( !wikiAlbumPostfix().isEmpty() && m_wikiCurrentEntry.endsWith( wikiAlbumPostfix() ) )
         {
             m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiAlbumPostfix().length() );
             reloadWikipedia();
             return;
         }
-        else if( m_wikiCurrentEntry.endsWith( wikiTrackPostfix() ) )
+        else if( !wikiTrackPostfix().isEmpty() && m_wikiCurrentEntry.endsWith( wikiTrackPostfix() ) )
         {
             m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
             reloadWikipedia();

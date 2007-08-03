@@ -12,6 +12,8 @@ VERSION 1.4.7
       Gosta <gostaj@gmail.com>. (BR 142999)
 
   BUGFIXES:
+    * Wikipedia artist lookup would freeze Amarok if the artist was not found
+      and the locale was not English. (BR 142764)
     * Cannot limit smart playlists to more than 1000 tracks. (BR 148084)
     * Fixed the formatting in the "Extended Info" pane for podcasts.
     * Don't show "Not Rated" for items rated with half a star. Patch by Tuomas
