@@ -30,10 +30,6 @@
 #include "overlayWidget.h"
 #include "popupMessage.h"
 
-#include <kglobalsettings.h>
-#include <kiconloader.h>
-#include <kactioncollection.h>
-#include <kpassivepopup.h>
 #include <QIcon>
 #include <QLabel>
 #include <QTimer>
@@ -43,6 +39,14 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QStyle>
+
+#include <kactioncollection.h>
+#include <kglobalsettings.h>
+#include <kiconloader.h>
+#include <klocale.h>
+#include <kpassivepopup.h>
+
+
 
 class SelectLabel : public QLabel
 {
