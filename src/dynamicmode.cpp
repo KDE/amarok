@@ -154,9 +154,9 @@ DEBUG_BLOCK
 
                     debug() << "found extended similar artist: " << s;
                     newChosen += s;
-                    newSuggestions.remove( s );
+                    newSuggestions.removeAll( s );
                 }
-                suggestions.remove( chosen );
+                suggestions.removeAll( chosen );
             }
             if ( !newChosen.isEmpty() )
                 suggestions += newChosen;
@@ -277,7 +277,7 @@ DEBUG_BLOCK
     // FIXME: All this SQL magic out of collectiondb is not a good thing
 
     // if there is no ordering, add random ordering
-    if ( sql.find( QString("ORDER BY"), false ) == -1 )
+    if ( sql.indexOf( QString("ORDER BY"), false ) == -1 )
     {
         QRegExp limit( "(LIMIT.*)?;$" );
         sql.replace( limit, QString(" ORDER BY %1 LIMIT %2 OFFSET 0;")
@@ -289,7 +289,7 @@ DEBUG_BLOCK
         uint limit=0, offset=0;
 
         QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
-        int findLocation = limitSearch.search( sql, 0 );
+        int findLocation = limitSearch.indexIn( sql, 0 );
         if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
         {
             QString counting( sql );
@@ -347,7 +347,7 @@ DEBUG_BLOCK
     debug() << "Smart Playlist: adding urls from query: " << sql;
     if ( !item->query().isEmpty() )
         //We have to filter all the un-needed results from query( sql )
-        for( uint x=0; x < queryResult.count() ; x += 2 )
+        for( int x=0; x < queryResult.count() ; x += 2 )
             items << MountPointManager::instance()->getAbsolutePath( queryResult[x+1].toInt(), queryResult[x] );
     else
         items = queryResult;
@@ -387,7 +387,7 @@ KUrl::List DynamicMode::retrieveTracks( const uint trackCount )
 DEBUG_BLOCK
     KUrl::List retrieval;
 
-    if( m_cachedItemSet.count() <= trackCount )
+    if( m_cachedItemSet.count() <= (int)trackCount )
         rebuildCachedItemSet();
 
     for( uint i=0; i < trackCount; i++ )

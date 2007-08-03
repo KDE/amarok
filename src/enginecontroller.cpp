@@ -474,14 +474,14 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 
         //Code to skip to next track if playback fails:
         //
-        //* The failure counter is reset if a track plays successfully or if playback is
+        //  The failure counter is reset if a track plays successfully or if playback is
         //  stopped, for whatever reason.
-        //* For normal playback, the attempt to play is stopped at the end of the playlist
-        //* For repeat playlist , a whole playlist worth of songs is tried
-        //* For repeat album, the number of songs tried is the number of tracks from the
+        //  For normal playback, the attempt to play is stopped at the end of the playlist
+        //  For repeat playlist , a whole playlist worth of songs is tried
+        //  For repeat album, the number of songs tried is the number of tracks from the
         //  album that are in the playlist.
-        //* For repeat track, no attempts are made
-        //* To prevent GUI freezes we don't try to play again after 0.5s of failure
+        //  For repeat track, no attempts are made
+        //  To prevent GUI freezes we don't try to play again after 0.5s of failure
         int totalTracks = Playlist::instance()->totalTrackCount();
         int currentTrack = Playlist::instance()->currentTrackIndex();
         if ( ( ( Amarok::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
