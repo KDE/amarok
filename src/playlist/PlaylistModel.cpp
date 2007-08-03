@@ -84,6 +84,8 @@ Model::data( const QModelIndex& index, int role ) const
     {
         return QVariant::fromValue( m_items.at( row ) );
     }
+    else if( role == ActiveTrackRole )
+        return ( row == m_activeRow );
     else if( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
     {
         return QVariant::fromValue( m_items.at( row )->track() );

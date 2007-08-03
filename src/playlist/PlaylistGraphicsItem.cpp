@@ -12,12 +12,16 @@
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 
+#include <QBrush>
 #include <QFontMetricsF>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 #include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+#include <QPen>
+#include <QRadialGradient>
 #include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
 
@@ -28,14 +32,19 @@ struct PlaylistNS::GraphicsItem::ActiveItems
     , bottomLeftText( 0 )
     , topRightText( 0 )
     , bottomRightText( 0 )
+    , background( 0 )
+    , foreground( 0 )
     , lastWidth( -5 )
     { }
     ~ActiveItems()
     {
+        delete albumArt;
         delete topLeftText;
         delete bottomLeftText;
         delete topRightText;
         delete bottomRightText;
+        delete background;
+        delete foreground;
     }
     QGraphicsPixmapItem* albumArt;
     QGraphicsTextItem* topLeftText;
@@ -43,6 +52,7 @@ struct PlaylistNS::GraphicsItem::ActiveItems
     QGraphicsTextItem* topRightText;
     QGraphicsTextItem* bottomRightText;
     QGraphicsRectItem* background;
+    QGraphicsRectItem* foreground;
     int lastWidth;
     Meta::TrackPtr track;
 };
@@ -61,7 +71,8 @@ PlaylistNS::GraphicsItem::GraphicsItem()
         s_fm = new QFontMetricsF( QFont() );
         s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 );
     }
-
+  //  setHandlesChildEvents( true );
+    setFlag( QGraphicsItem::ItemIsSelectable );
 }
 
 PlaylistNS::GraphicsItem::~GraphicsItem()
@@ -72,36 +83,59 @@ PlaylistNS::GraphicsItem::~GraphicsItem()
 void 
 PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
+    const int row = int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height );
+    const QModelIndex index = The::playlistModel()->index( row, 0 );
     if( not m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
 
         if( not m_items )
         {
-            const int row = ( mapToScene( 0.0, 0.0 ).y() ) / s_height;
-            const Meta::TrackPtr track = The::playlistModel()->index( row, 0 ).data( ItemRole ).value< PlaylistNS::Item* >()->track();
+            const Meta::TrackPtr track = index.data( ItemRole ).value< PlaylistNS::Item* >()->track();
             m_items = new PlaylistNS::GraphicsItem::ActiveItems();
             m_items->track = track;
             init( track );
         }
         resize( m_items->track, option->rect.width() );
     }
-    if( isSelected() && ( not m_item.background ) )
+    if( option->state & QStyle::State_Selected )
     {
-        m_item.background = new QGraphicsRectItem( option->rect, this );
-        m_item.background->setPos( 0.0, 0.0 );
-        m_item.background->setBrush( option.palette.highlight() );
-        m_item.background->setZValue( -5.0 );
-        scene()->addItem( m_item.background )
+        if( not m_items->background )
+        {
+            m_items->background = new QGraphicsRectItem( option->rect, this );
+            m_items->background->setPos( 0.0, 0.0 );
+            m_items->background->setPen( QPen( Qt::NoPen ) );
+            m_items->background->setBrush( option->palette.highlight() );
+            m_items->background->setZValue( -5.0 );
+        }
+        else
+            m_items->background->show();
     }
-    else if ( not isSelected && m_item.background )
+    else if( m_items->background )
+        m_items->background->hide();
+
+    if( index.data( ActiveTrackRole ).toBool() )
     {
-        delete m_item.background;
-        m_item.background = 0;
+        if( not m_items->foreground )
+        {
+            m_items->foreground = new QGraphicsRectItem( option->rect, this );
+            m_items->foreground->setPos( 0.0, 0.0 );
+            m_items->foreground->setZValue( 5.0 );
+            QRadialGradient gradient(option->rect.width() / 2.0, option->rect.height() / 2.0, option->rect.width() / 2.0, 20 + option->rect.width() / 2.0, option->rect.height() / 2.0 );
+            QColor start = option->palette.highlight().color().light();
+            start.setAlpha( 51 );
+            QColor end = option->palette.highlight().color().dark();
+            end.setAlpha( 51 );
+            gradient.setColorAt( 0.0, start );
+            gradient.setColorAt( 1.0, end );
+            QBrush brush( gradient );
+            m_items->foreground->setBrush( brush );
+            m_items->foreground->setPen( QPen( Qt::NoPen ) );
+        }
+        else
+            m_items->foreground->show();
     }
-  /*  QGraphicsItem *items[5] = { albumArt, topLeftText, bottomLeftText, topRightText, bottomRightText };
-    QStyleOptionGraphicsItem *options[5] = { option, option, option, option, option };
-    scene->drawItems( painter, */
-//    scene()->invalidate( option->rect, QGraphicsScene::ItemLayer );
+    else if( m_items->foreground )
+        m_items->foreground->hide();
 }
 
 void

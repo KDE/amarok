@@ -62,7 +62,8 @@ class TrackAdvancer;
     enum DataRoles 
     {
         TrackRole = 0xc0ffee,
-        ItemRole
+        ItemRole,
+        ActiveTrackRole
     };
     ///Options for insertTracks
     enum AddOptions 
