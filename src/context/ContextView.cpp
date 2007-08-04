@@ -40,27 +40,19 @@
 namespace Context
 {
 
-class ContextViewSingleton
-{
-public:
-    ContextView self;
-};
+ContextView* ContextView::s_self = 0;
 
-K_GLOBAL_STATIC( ContextViewSingleton, privateSelf )
 
-    
-ContextView* ContextView::self()
-{
-    return &privateSelf->self;
-}
-
-ContextView::ContextView( )
-    : QGraphicsView( )
+ContextView::ContextView( QWidget* parent )
+    : QGraphicsView( parent )
     , EngineObserver( EngineController::instance() )
     , m_background( 0 )
     , m_bitmapBackground( 0 )
 {
     DEBUG_BLOCK
+
+    s_self = this;
+
     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
     

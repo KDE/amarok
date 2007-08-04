@@ -212,8 +212,6 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
-    Context::ContextView::self()->clear();
-    
     EngineBase* const engine = EngineController::engine();
 
     if ( AmarokConfig::resumePlayback() ) {
@@ -233,6 +231,8 @@ App::~App()
     CollectionDB::instance()->stopScan();
 
     ThreadManager::deleteInstance(); //waits for jobs to finish
+
+    delete mainWindow();
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,

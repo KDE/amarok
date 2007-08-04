@@ -230,6 +230,7 @@ void MainWindow::init()
 
     createMenus();
     QWidget *contextWidget = new QWidget( this );
+    new Context::ContextView( contextWidget );
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->addWidget( Context::ContextView::self() );

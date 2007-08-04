@@ -40,13 +40,13 @@ class AMAROK_EXPORT ContextView : public QGraphicsView, public EngineObserver, p
     Q_OBJECT
     
 public:
-     ContextView();
+     ContextView( QWidget* parent );
     ~ContextView();
 
      /**
          * Singleton pattern accessor.
      */
-    static ContextView* self();
+    static ContextView* self() { return s_self; }
     
     /**
         Returns the context scene that this view is attached to.
@@ -81,6 +81,8 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     
 private:
+    static ContextView* s_self;
+
     void init();
     void resizeColumns();
     void balanceColumns();
