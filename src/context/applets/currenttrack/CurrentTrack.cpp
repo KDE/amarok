@@ -71,15 +71,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
 CurrentTrack::~CurrentTrack()
 {
     DEBUG_BLOCK
-
-    delete m_title;
-    delete m_artist;
-    delete m_album;
-    delete m_score;
-    delete m_numPlayed;
-    delete m_playedLast;
-    delete m_albumCover;
-    delete m_theme;
 }
 
 void CurrentTrack::setRect( const QRectF& rect )

@@ -91,8 +91,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
 LastFmEvents::~LastFmEvents()
 {
     DEBUG_BLOCK
-    
-    delete m_theme;
 }
 
 
