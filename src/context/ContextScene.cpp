@@ -29,6 +29,7 @@ namespace Context
 ContextScene::ContextScene(QObject * parent)
     : Plasma::Corona( parent )
 {
+    init();
 }
 
 ContextScene::ContextScene(const QRectF & sceneRect, QObject * parent )
@@ -39,6 +40,7 @@ ContextScene::ContextScene(const QRectF & sceneRect, QObject * parent )
 ContextScene::ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent)
     : Plasma::Corona( x, y, width, height, parent )
 {
+    init();
 }
 
 ContextScene::~ContextScene()
@@ -46,20 +48,50 @@ ContextScene::~ContextScene()
     clear();
 }
 
+void ContextScene::init()
+{
+    m_padding = 3;
+    m_defaultColumnSize = 400;
+    m_columns.append( QList< AppletPointer >() ); // initalize one column
+}
+
 Applet* ContextScene::addApplet(const QString& name, const QStringList& args)
 {
     AppletPointer applet = Corona::addApplet( name, args );
-    m_loaded << applet;
+
+    int lastColumn = m_columns.size() - 1;
+    QPointF newTop( 0.0, 0.0 );
+    if( lastColumn == -1 )
+    {
+        lastColumn = 0;
+        m_columns.append( QList< AppletPointer >() );
+        newTop.setX( m_padding );
+    }
+    
+    m_columns[ lastColumn ].append( applet );
+    debug() << "lastColumn: " << lastColumn << " size: " << m_columns.size();
+    
+    if( m_columns[ lastColumn ].size() >= 2 ) // get bottom of previous item
+    {
+        newTop = m_columns[ lastColumn ][ m_columns[ lastColumn ].size() - 2 ]->boundingRect().bottomLeft();
+        newTop = m_columns[ lastColumn ][ m_columns[ lastColumn ].size() - 2 ]->mapToScene( newTop );
+    }
+    
+    debug() << "bottom of previous element: " << newTop;
+    newTop.setY( newTop.y() + m_padding );
+    applet->setPos( newTop );
     return applet;
 }
 
 void ContextScene::clear()
 {    
-    DEBUG_BLOCK
-    foreach( Applet* applet, m_loaded )
-        delete applet;
-
-    m_loaded.clear();
+    DEBUG_BLOCK;
+    foreach( QList< AppletPointer > column, m_columns )
+    {
+        foreach( AppletPointer applet, column )
+            delete applet;
+    }
+    m_columns.clear();
 }
 
 void ContextScene::clear( const ContextState& state )
@@ -73,23 +105,50 @@ void ContextScene::clear( const ContextState& state )
         return; // startup, or some other wierd case
     
     QStringList applets;
-    foreach( Applet* applet, m_loaded )
+    foreach( QList< AppletPointer > column, m_columns )
     {
-        QString key = QString( "%1_%2" ).arg( name, applet->name() );
-        applets << applet->name();
-        QStringList pos;
-        pos << QString::number( applet->x() ) << QString::number( applet->y() );
-        Amarok::config( "Context Applets" ).writeEntry( key, pos );
-        debug() << "saved applet: " << key << " at position: " << pos;
-        applet->deleteLater();
+        foreach( AppletPointer applet, column )
+        {
+            QString key = QString( "%1_%2" ).arg( name, applet->name() );
+            applets << applet->name();
+            QStringList pos;
+            pos << QString::number( applet->x() ) << QString::number( applet->y() );
+            Amarok::config( "Context Applets" ).writeEntry( key, pos );
+            debug() << "saved applet: " << key << " at position: " << pos;
+            applet->deleteLater();
+        }
     }
     debug() << "saved list of applets: " << applets;
     Amarok::config( "Context Applets" ).writeEntry( name, applets );
     Amarok::config( "Context Applets" ).sync();
-    m_loaded.clear();
+    m_columns.clear();
 }
 
+// from Corona::appletDestroyed
+void ContextScene::appletDestroyed(QObject* object)
+{
+    DEBUG_BLOCK
+    // we do a static_cast here since it really isn't an Applet by this
+    // point anymore since we are in the qobject dtor. we don't actually
+    // try and do anything with it, we just need the value of the pointer
+    // so this unsafe looking code is actually just fine.
+    Applet* applet = static_cast<Applet*>(object);
     
+    // TODO make this work
+    foreach( QList< AppletPointer > column, m_columns )
+    {
+        debug() << "looking through a column";
+        foreach( AppletPointer savedApplet, column )
+        {
+            if( savedApplet == applet )
+            {
+                column.remove( AppletPointer( applet ) );
+                debug() << "removed running applet";
+            }
+        }
+    }
+}
+
 /*
 void ContextScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event)
 {

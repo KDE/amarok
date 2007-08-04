@@ -63,7 +63,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    kDebug() << "aspect ratio is: " << m_aspectRatio << endl;
     resize( m_width, m_aspectRatio ); 
     
     constraintsUpdated();
@@ -81,6 +80,12 @@ CurrentTrack::~CurrentTrack()
     delete m_playedLast;
     delete m_albumCover;
     delete m_theme;
+}
+
+void CurrentTrack::setRect( const QRectF& rect )
+{
+    setPos( rect.topLeft() );
+    resize( rect.width(), m_aspectRatio );
 }
 
 QSizeF CurrentTrack::contentSize() const

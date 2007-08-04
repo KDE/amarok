@@ -22,6 +22,7 @@
 #include <QCheckBox>
 #include <QPainter>
 #include <QVariant>
+#include <QFontMetrics>
 
 #include <KDialog>
 #include <KLocale>
@@ -35,13 +36,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     , m_friendBox( 0 )
     , m_sysBox( 0 )
     , m_userBox( 0 )
-    , m_theme( 0 )
-    , m_friendData( 0 )
-    , m_userData( 0 )
-    , m_sysData( 0 )
-    , m_userItem( 0 )
-    , m_friendItem( 0 )
-    , m_sysItem( 0 )
     , m_friendEnabled( false )
     , m_sysEnabled( false )
     , m_userEnabled( false )
@@ -58,7 +52,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     m_userEnabled = conf.readEntry( "user", false );
     m_sysEnabled = conf.readEntry( "sys", false );
     m_friendEnabled = conf.readEntry( "friend", false );
-    m_size = QSizeF( conf.readEntry( "size" , 400 ), conf.readEntry( "size" , 400 ) );
+    m_width = conf.readEntry( "width" , 400 );
     
     if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
         showConfigurationInterface();
@@ -66,17 +60,21 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     if( args.size() > 0 ) // we are being told what position to start at
         setPos( (qreal)args[0].toInt(), (qreal)args[1].toInt() );
     
-    m_userData = new QList< QVariantList >();
-    m_sysData = new QList< QVariantList >();
-    m_friendData = new QList< QVariantList >();
-    
-    m_theme = new Plasma::Svg( "widgets/amarok-lastfm", this );
+    m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
     m_theme->resize( m_size  );
     
-    m_friendItem = new Context::TextWidget( this );
-    m_sysItem = new Context::TextWidget( this );
-    m_userItem = new Context::TextWidget( this );
+    for( int i = 0; i < 14; i++ ) // create all the items
+    {
+        m_titles << new QGraphicsSimpleTextItem( this );
+        m_dates << new QGraphicsSimpleTextItem( this );
+        m_locations << new QGraphicsSimpleTextItem( this );
+    }
+    
+    // calculate aspect ratio, and resize to desired width
+    m_theme->resize();
+    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
+    resize( m_width, m_aspectRatio ); 
     
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "sysevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
@@ -94,31 +92,29 @@ LastFmEvents::~LastFmEvents()
 {
     DEBUG_BLOCK
     
-    delete m_userData;
-    delete m_sysData;
-    delete m_friendData;
     delete m_theme;
-    delete m_userItem;
-    delete m_friendItem;
-    delete m_sysItem;
 }
 
-void LastFmEvents::geometryChanged()
+
+void LastFmEvents::constraintsUpdated()
 {
     DEBUG_BLOCK
     prepareGeometryChange();
     
-    QRect friendRect = m_theme->elementRect( "friendevents" );
-    QRect userRect = m_theme->elementRect( "userevents" );
-    QRect sysRect = m_theme->elementRect( "sysevents" );
-    
-    m_friendItem->setPos( friendRect.x() + 3, friendRect.y() + 3 );
-    m_userItem->setPos( userRect.x() + 3, userRect.y() + 3 );
-    m_sysItem->setPos( sysRect.x() + 3, sysRect.y() + 3 );
-    
-    m_friendItem->setTextWidth( friendRect.width() );
-    m_userItem->setTextWidth( userRect.width() );
-    m_sysItem->setTextWidth( sysRect.width() );
+    for( int i = 0; i < 14; i++ ) // go through each row
+    {
+        QString titleElement = QString( "title%1" ).arg( i );
+        QString dateElement = QString( "date%1" ).arg( i );
+        QString locationElement = QString( "location%1" ).arg( i );
+        
+        m_titles[ i ]->setPos( m_theme->elementRect( titleElement ).topLeft() );
+        m_dates[ i ]->setPos( m_theme->elementRect( dateElement ).topLeft() );
+        m_locations[ i ]->setPos( m_theme->elementRect( locationElement ).topLeft() );
+        
+        m_titles[ i ]->setFont( shrinkTextSizeToFit( m_titles[ i ]->text(), m_theme->elementRect( titleElement ) ) );
+        m_dates[ i ]->setFont( shrinkTextSizeToFit( m_dates[ i ]->text(), m_theme->elementRect( dateElement ) ) );
+        m_locations[ i ]->setFont( shrinkTextSizeToFit( m_locations[ i ]->text(), m_theme->elementRect( locationElement ) ) );
+    }
     
     update();
 }
@@ -127,39 +123,69 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
 {
     DEBUG_BLOCK
     
+        debug() << "got data from engine: " << data << endl;
     Context::DataEngine::DataIterator iter( data );
     if( m_sysEnabled && name == QString( "sysevents" ) )
     {
+        int count = 4; // system events are the 5th-10th rows
         while( iter.hasNext() )
         {
             iter.next();
             const QVariantList event = iter.value().toList();
-            if( event.size() == 0 ) continue; // empty event
-            m_sysData->append( event );
+            if( event.size() == 0 || count > 9 ) continue; // empty event, or we are done
+   
+            m_titles[ count ]->setText( event[ 0 ].toString() );
+            m_dates[ count ]->setText( event[ 1 ].toString() );
+            m_locations[ count ]->setText( event[ 2 ].toString() );
+            
+            m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
+            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            
+            count++;
         }
     }
     if( m_friendEnabled && name == QString( "friendevents" ) )
     {
+        int count = 0; // first 5 rows
         while( iter.hasNext() )
         {
             iter.next();
             const QVariantList event = iter.value().toList();
-            if( event.size() == 0 ) continue; // empty event
+            if( event.size() == 0 || count > 4) continue; // empty event
             
-            m_friendData->append( event );
+            m_titles[ count ]->setText( event[ 0 ].toString() );
+            m_dates[ count ]->setText( event[ 1 ].toString() );
+            m_locations[ count ]->setText( event[ 2 ].toString() );
+            
+            m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect( QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
+            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            
+            count++;
         }
     }
-    if( m_userEnabled && name == QString( "sysevents" ) )
+    if( m_userEnabled && name == QString( "userevents" ) )
     {
+        int count = 10;
         while( iter.hasNext() )
         {
             iter.next();
             const QVariantList event = iter.value().toList();
-            if( event.size() == 0 ) continue; // empty event
+            if( event.size() == 0 || count > 14) continue; // empty event
             
-            m_sysData->append( event );
+            m_titles[ count ]->setText( event[ 0 ].toString() );
+            m_dates[ count ]->setText( event[ 1 ].toString() );
+            m_locations[ count ]->setText( event[ 2 ].toString() );
+            
+            m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
+            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            
+            count++;
         }
     }
+    
     update();
 }
 
@@ -171,40 +197,22 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         
     debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
+    
+    for( int i = 0; i < 14; i++ ) 
+    {
+        QString titleElement = QString( "title%1" ).arg( i );
+        QString dateElement = QString( "date%1" ).arg( i );
+        QString locationElement = QString( "location%1" ).arg( i );
         
-    QString text;
-    foreach( QVariantList event, *m_friendData )
-        text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
-    m_friendItem->setText( text );
-    
-    text.clear();
-    foreach( QVariantList event, *m_userData )
-        text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
-    m_userItem->setText( text );
-    
-    text.clear();
-    foreach( QVariantList event, *m_sysData )
-        text.append( QString( "%1 - %2<br>" ).arg( event[ 0 ].toString(), event[ 1 ].toString() ) );
-    m_sysItem->setText( text );
-    
-    debug() << "size: " << m_theme->size() << endl;
-    debug() << "friend element rect: " << m_theme->elementRect( "friendevents" ) << endl;
-    debug() << "user element rect: " << m_theme->elementRect( "userevents" ) << endl;
-    debug() << "sys element rect: " << m_theme->elementRect( "sysevents" ) << endl;
-    debug() << "top element rect: " << m_theme->elementRect( "top" ) << endl;
-    debug() << "bottom element rect: " << m_theme->elementRect( "bottom" ) << endl;
-    debug() << "something: " << m_theme->elementRect( "something" ) << endl;
-    
-    QRectF friendRect = m_theme->elementRect( "friendevents" );
-//     friendRect.translate( friendRect.x(), friendRect.y() );
-    QRectF userRect = m_theme->elementRect( "userevents" );
-//     userRect.translate( userRect.x(), userRect.y() );
-    QRectF sysRect = m_theme->elementRect( "sysevents" );
-//     sysRect.translate( sysRect.x() , sysRect.y() );
-
-    m_friendItem->setGeometry( friendRect );
-    m_userItem->setGeometry( userRect );
-    m_sysItem->setGeometry( sysRect );
+        QRectF titleRect = m_theme->elementRect( titleElement );
+        QRectF dateRect = m_theme->elementRect( dateElement );
+        QRectF locationRect = m_theme->elementRect( locationElement );
+        
+        m_titles[ i ]->setPos( titleRect.topLeft() );
+        m_dates[ i ]->setPos( dateRect.topLeft() );
+        m_locations[ i ]->setPos( locationRect.topLeft() );
+        
+    }
     
 }
     
@@ -212,11 +220,6 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 QSizeF LastFmEvents::contentSize() const 
 {
     return m_size;
-}
-
-void LastFmEvents::constraintsUpdated()
-{
-    geometryChanged();
 }
 
 void LastFmEvents::showConfigurationInterface()
@@ -266,6 +269,40 @@ void LastFmEvents::configAccepted() // SLOT
     
     cg.sync();
     
+    constraintsUpdated();
+}
+
+QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
+{
+    DEBUG_BLOCK
+    int size = 12; // start here, shrink if needed
+    QString font = "Arial";
+    if( text.length() == 0 )
+        return QFont( font, size );
+    QFontMetrics fm( QFont( font, size ) );
+    while( fm.height() > bounds.height() + 4 )
+    {
+        debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
+        size--;
+        fm = QFontMetrics( QFont( font, size ) );
+    }
+//     while( fm.width( text ) > bounds.width() )
+//     {
+//         size--;
+//         fm = QFontMetrics( QFont( font, size ) );
+//     }
+    
+    debug() << "resulting after shrink: " << font << ":" << size;
+    return QFont( font, size );
+}
+
+void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )
+{
+    qreal height = aspectRatio * newWidth;
+    m_size.setWidth( newWidth );
+    m_size.setHeight( height );
+    
+    m_theme->resize( m_size );
     constraintsUpdated();
 }
 

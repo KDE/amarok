@@ -35,36 +35,41 @@ public:
     QSizeF contentSize() const;
     
     void constraintsUpdated();
+    void setSize( const QRectF& rect );
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
     void showConfigurationInterface();
-    
-protected slots:
-    void geometryChanged();
-    
+        
 private slots:
     void configAccepted();
     
 private:
+    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
+    
+    void resize( qreal oldWidth, qreal aspectRatio );
+    
     KDialog* m_config;
     QVBoxLayout* m_configLayout;
     QCheckBox* m_friendBox;
     QCheckBox* m_sysBox;
     QCheckBox* m_userBox;
     
+    qreal m_aspectRatio;
+    qreal m_width;
     QSizeF m_size;
     
-    Plasma::Svg* m_theme;
+    Context::Svg* m_theme;
     
     // stored data
-    QList< QVariantList >* m_friendData;
-    QList< QVariantList >* m_userData;
-    QList< QVariantList >* m_sysData;
-    Context::TextWidget* m_userItem;
-    Context::TextWidget* m_friendItem;
-    Context::TextWidget* m_sysItem;
+//     QList< QVariantList > m_friendData;
+//     QList< QVariantList > m_userData;
+//     QList< QVariantList > m_sysData;
+    // items that go inside the svg
+    QList< QGraphicsSimpleTextItem* > m_titles;
+    QList< QGraphicsSimpleTextItem* > m_dates;
+    QList< QGraphicsSimpleTextItem* > m_locations;
     
     bool m_friendEnabled;
     bool m_sysEnabled;

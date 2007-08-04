@@ -39,6 +39,7 @@ public:
     QSizeF contentSize() const;
     void constraintsUpdated();
     
+    void setRect( const QRectF& rect );
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

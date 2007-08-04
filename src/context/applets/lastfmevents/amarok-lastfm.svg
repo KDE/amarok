@@ -9,29 +9,44 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="689.35437"
-   height="849.55383"
+   width="720"
+   height="740"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.45"
    version="1.0"
-   sodipodi:docname="lastfm.svg"
+   sodipodi:docname="amarok-lastfm.svg"
    sodipodi:docbase="/home/leo/Desktop/amarok/src/context/applets/lastfmevents"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/leo/Desktop/amarok/src/context/applets/lastfmevents/amarok-lastfm.png"
+   inkscape:export-xdpi="48"
+   inkscape:export-ydpi="48"
    sodipodi:modified="true">
   <defs
      id="defs4">
     <linearGradient
        inkscape:collect="always"
-       id="linearGradient4304">
+       id="linearGradient7170">
       <stop
-         style="stop-color:#bf0000;stop-opacity:1;"
+         style="stop-color:#8c0000;stop-opacity:1;"
          offset="0"
-         id="stop4306" />
+         id="stop7172" />
       <stop
-         style="stop-color:#bf0000;stop-opacity:0;"
+         style="stop-color:#8c0000;stop-opacity:0;"
          offset="1"
-         id="stop4308" />
+         id="stop7174" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3277">
+      <stop
+         style="stop-color:#8c0000;stop-opacity:1;"
+         offset="0"
+         id="stop3279" />
+      <stop
+         style="stop-color:#8c0000;stop-opacity:0;"
+         offset="1"
+         id="stop3281" />
     </linearGradient>
     <linearGradient
        id="linearGradient3311">
@@ -46,24 +61,124 @@
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4304"
-       id="linearGradient6275"
+       xlink:href="#linearGradient3277"
+       id="linearGradient3283"
+       x1="357.95197"
+       y1="54.931713"
+       x2="358.48419"
+       y2="89.79554"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0021277,0,0,-0.9982268,-674.35373,948.0581)"
-       x1="1041.6458"
-       y1="76.25"
-       x2="1041.6371"
-       y2="112.37453" />
+       gradientTransform="translate(19.999999,139.99997)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4304"
-       id="linearGradient6280"
+       xlink:href="#linearGradient7170"
+       id="linearGradient7176"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.002127,0,0,0.9982268,-674.35368,-8.3979796)"
-       x1="1041.6458"
-       y1="76.25"
-       x2="1041.6371"
-       y2="112.37453" />
+       gradientTransform="translate(49.160885,183.81803)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient7186"
+       gradientUnits="userSpaceOnUse"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617"
+       gradientTransform="translate(49.160885,394.31804)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient10563"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(49.160875,604.31803)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3277"
+       id="linearGradient11213"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.777735,0,0,0.851396,762.05249,151.96996)"
+       x1="357.95197"
+       y1="54.931713"
+       x2="358.48419"
+       y2="89.79554" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient11215"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.777735,0,0,0.851396,784.73194,189.27648)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient11217"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.777735,0,0,0.851396,784.73194,368.49536)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient11219"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.777735,0,0,0.851396,784.73193,547.2885)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient2329"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(19.999989,450.94612)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient2334"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(19.999999,240.94613)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7170"
+       id="linearGradient2342"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(19.999999,30.44612)"
+       x1="340"
+       y1="59.5625"
+       x2="340"
+       y2="86.836617" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3277"
+       id="linearGradient2348"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-9.160887,-13.37194)"
+       x1="357.95197"
+       y1="54.931713"
+       x2="358.48419"
+       y2="89.79554" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -76,15 +191,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="367.97001"
-     inkscape:cy="446.23123"
+     inkscape:cx="554.48019"
+     inkscape:cy="304.48"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:window-width="1668"
-     inkscape:window-height="991"
-     inkscape:window-x="0"
-     inkscape:window-y="30"
-     showgrid="false" />
+     inkscape:current-layer="g2354"
+     inkscape:window-width="913"
+     inkscape:window-height="567"
+     inkscape:window-x="15"
+     inkscape:window-y="211"
+     showgrid="true" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -97,80 +212,100 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-29.160886,-43.818059)">
+     id="g2354">
     <rect
-       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.84212315;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#2e3436;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.79088295;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="rect2241"
+       width="719.20911"
+       height="739.20911"
+       x="0.39544183"
+       y="0.39543924"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.97769773;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect10459"
+       width="638.80798"
+       height="179.02231"
+       x="40.488834"
+       y="510.48874"
+       rx="9.9929523"
+       ry="9.0536346"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.75921524;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2202"
-       width="688.51227"
-       height="848.71173"
-       x="29.581947"
-       y="44.23912"
-       rx="15.932516"
-       ry="17.071787"
+       width="679.24078"
+       height="699.24084"
+       x="20.379606"
+       y="20.379555"
+       rx="15.717969"
+       ry="14.065187"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
-       style="fill:#d3d7cf;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:13.11699963;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="friendevents"
-       width="645.8399"
-       height="249.5567"
-       x="49.621147"
-       y="96.242218"
-       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
-    <path
-       style="fill:url(#linearGradient6280);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 59.548217,67.716815 C 54.039603,67.716815 49.620886,72.168906 49.620886,77.699083 L 49.620886,95.043269 C 49.620886,95.529266 49.648621,96.01116 49.714825,96.47822 L 49.714825,96.103885 L 695.39836,96.103885 C 695.4341,95.757461 695.46089,95.399536 695.46089,95.043269 L 695.46089,77.699083 C 695.46089,72.168906 691.04208,67.716815 685.53367,67.716815 L 59.548217,67.716815 z "
-       id="rect3320"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008808;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title10"
+       width="265.28256"
+       height="18.609909"
+       x="50.695045"
+       y="560.69507"
+       inkscape:label="#rect3815" />
+    <rect
+       style="fill:url(#linearGradient2348);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2306"
+       width="638.44354"
+       height="26.2911"
+       x="44.230099"
+       y="41.559776"
+       rx="10.000425"
+       ry="9.4643126"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
        style="fill:#ffffff;fill-opacity:1"
-       d="M 61.877448,75.018635 L 61.877448,82.7945 C 61.877448,87.069089 62.006865,90.681399 62.176382,90.826833 C 62.345901,90.972277 62.883984,91.038338 63.372114,90.978392 C 64.229488,90.873096 64.264248,90.604263 64.377615,82.946048 L 64.499907,75.018635 L 63.181884,75.018635 L 61.877448,75.018635 z M 103.59221,75.053612 C 103.21945,75.050164 102.68361,75.21611 101.89373,75.566559 C 100.31092,76.268812 98.966869,77.722156 98.60546,79.133895 C 98.412504,79.887662 98.06263,80.241402 97.491258,80.241402 C 96.8904,80.241402 96.662396,80.502965 96.662396,81.174038 C 96.662396,81.857975 96.894298,82.106681 97.532028,82.106681 C 98.350497,82.106681 98.40165,82.359269 98.40166,86.338523 C 98.40166,88.663898 98.531066,90.681399 98.70058,90.826833 C 98.870105,90.972277 99.408194,91.038338 99.896323,90.978392 C 100.72374,90.876765 100.8014,90.579677 100.91541,86.513386 L 101.0377,82.15331 L 102.65465,82.036728 C 103.93703,81.945455 104.27161,81.765758 104.27161,81.174038 C 104.27161,80.581152 103.93675,80.403361 102.64107,80.311356 C 100.47205,80.157332 100.51829,79.393937 102.80413,77.583385 C 103.96061,76.667353 104.50539,75.96065 104.33954,75.589872 C 104.17888,75.230642 103.96497,75.05705 103.59221,75.053612 z M 88.006926,78.003074 C 87.207543,78.040718 87.096535,78.243952 87.096539,79.075605 C 87.096539,79.712229 86.819869,80.248712 86.417146,80.381298 C 85.614035,80.645712 85.753427,82.342176 86.566612,82.199939 C 86.948511,82.133145 87.095378,82.874112 87.096539,84.811328 C 87.098448,87.987086 88.030214,89.672871 90.248926,90.500412 C 92.39595,91.30122 93.183904,91.201414 93.183904,90.127362 C 93.183904,89.448971 92.887493,89.146394 92.083285,88.973217 C 90.373117,88.604962 89.705407,87.443016 89.705411,84.846305 L 89.705411,82.52636 L 91.335948,82.409789 C 92.749344,82.309424 92.966493,82.168997 92.966503,81.360571 C 92.966503,80.552137 92.749334,80.41171 91.335948,80.311356 C 89.852158,80.205993 89.705407,80.096874 89.705411,79.09892 C 89.705411,78.129132 89.554517,78.003074 88.400976,78.003074 C 88.257379,78.003074 88.121125,77.99769 88.006926,78.003074 z M 82.028263,79.856691 C 79.497684,79.925045 77.141484,82.571699 79.161221,84.683084 C 79.579728,85.120588 80.901635,85.7763 82.096203,86.140336 C 84.603997,86.90456 85.043431,87.74258 83.414225,88.658457 C 81.63177,89.660486 80.723096,89.008645 78.468241,85.079457 C 76.090058,80.935356 74.65694,79.866138 71.484075,79.868353 C 67.505235,79.871117 64.744463,82.359568 65.029835,85.685672 C 65.221042,87.914264 66.429428,89.56875 68.494742,90.44212 C 70.24495,91.18225 72.320638,91.223553 74.174472,90.558703 C 76.244542,89.816301 76.763981,89.121519 76.212653,87.877371 L 75.764252,86.85147 L 74.799515,87.597579 C 73.010268,88.995193 71.969445,89.274475 70.329104,88.810006 C 68.452247,88.27857 67.529998,87.174424 67.530003,85.46417 C 67.530003,84.734759 67.822766,83.771077 68.182222,83.330761 C 69.065859,82.248378 71.436688,81.601353 72.842861,82.060043 C 73.9225,82.412225 75.791425,84.135893 75.791429,84.776351 C 75.791429,84.958176 76.413103,86.20608 77.177393,87.55095 C 78.619085,90.087811 79.97302,91.059997 82.055438,91.059997 C 84.493751,91.059997 86.661721,89.337166 86.661726,87.399391 C 86.661726,86.238813 85.003434,84.761598 83.156056,84.28672 C 80.851753,83.694392 80.196396,83.013864 81.158638,82.188287 C 81.761419,81.671123 82.041602,81.634692 82.74842,82.013414 C 84.734536,83.077595 85.990495,82.163315 84.460493,80.766011 C 83.733396,80.101978 82.87179,79.833906 82.028263,79.856691 z M 116.07948,79.891668 C 115.1234,79.881305 114.20697,80.131639 113.45701,80.637777 L 112.31563,81.407201 L 111.16067,80.637777 C 108.70151,78.978138 104.99312,80.297489 104.06779,83.155898 C 103.56287,84.715643 103.44966,90.424729 103.91833,90.826833 C 104.08785,90.972277 104.62593,91.038338 105.11405,90.978392 C 105.92359,90.87897 106.02996,90.545491 106.22828,87.107947 C 106.36673,84.707535 106.66344,83.116078 107.04354,82.724548 C 107.75688,81.989754 109.84636,81.911865 110.50845,82.596313 C 110.768,82.864636 111.03765,84.837166 111.10631,86.979703 L 111.22861,90.873471 L 112.42433,90.990053 L 113.62006,91.106625 L 113.62006,87.28281 C 113.62006,84.252513 113.76926,83.324134 114.34022,82.782839 C 115.17547,81.990996 117.21462,81.88751 117.90024,82.596313 C 118.15981,82.864636 118.42944,84.837166 118.4981,86.979703 C 118.62239,90.857678 118.6253,90.873471 119.70744,90.873471 L 120.79446,90.873471 L 120.79446,86.921422 C 120.79446,82.537694 120.31064,81.27549 118.32146,80.39296 C 117.5842,80.065846 116.82308,79.899718 116.07948,79.891668 z M 120.57706,81.593725 C 120.58313,81.648915 120.60447,81.699049 120.63141,81.745284 L 120.57706,81.593725 z M 95.154153,83.657191 C 94.901144,83.646868 94.602403,83.673225 94.243751,83.750449 C 93.076821,84.001737 92.771522,85.331862 93.700247,86.128674 C 94.769122,87.045747 96.227585,86.43518 96.227585,85.067805 C 96.227585,84.121611 95.91314,83.688133 95.154153,83.657191 z "
+       d="M 50.696256,46.99948 L 50.696256,54.77535 C 50.696256,59.04994 50.825673,62.66225 50.99519,62.80768 C 51.164709,62.95313 51.702792,63.01919 52.190922,62.95924 C 53.048296,62.85395 53.083056,62.58511 53.196423,54.9269 L 53.318715,46.99948 L 52.000692,46.99948 L 50.696256,46.99948 z M 92.411014,47.03446 C 92.038254,47.03101 91.502414,47.19696 90.712534,47.54741 C 89.129724,48.24966 87.785674,49.70301 87.424264,51.11474 C 87.231314,51.86851 86.881434,52.22225 86.310064,52.22225 C 85.709204,52.22225 85.481204,52.48381 85.481204,53.15489 C 85.481204,53.83882 85.713104,54.08753 86.350834,54.08753 C 87.169304,54.08753 87.220454,54.34012 87.220464,58.31937 C 87.220464,60.64475 87.349874,62.66225 87.519384,62.80768 C 87.688914,62.95313 88.227004,63.01919 88.715134,62.95924 C 89.542544,62.85761 89.620204,62.56053 89.734214,58.49424 L 89.856504,54.13416 L 91.473454,54.01758 C 92.755834,53.9263 93.090414,53.74661 93.090414,53.15489 C 93.090414,52.562 92.755554,52.38421 91.459874,52.29221 C 89.290854,52.13818 89.337094,51.37479 91.622934,49.56423 C 92.779414,48.6482 93.324194,47.9415 93.158344,47.57072 C 92.997684,47.21149 92.783774,47.0379 92.411014,47.03446 z M 76.825734,49.98392 C 76.026354,50.02157 75.915344,50.2248 75.915344,51.05645 C 75.915344,51.69308 75.638674,52.22956 75.235954,52.36215 C 74.432844,52.62656 74.572234,54.32303 75.385424,54.18079 C 75.767314,54.11399 75.914184,54.85496 75.915344,56.79218 C 75.917254,59.96794 76.849024,61.65372 79.067734,62.48126 C 81.214754,63.28207 82.002714,63.18226 82.002714,62.10821 C 82.002714,61.42982 81.706304,61.12724 80.902094,60.95407 C 79.191924,60.58581 78.524214,59.42387 78.524214,56.82715 L 78.524214,54.50721 L 80.154754,54.39064 C 81.568154,54.29027 81.785304,54.14985 81.785314,53.34142 C 81.785314,52.53299 81.568144,52.39256 80.154754,52.29221 C 78.670964,52.18684 78.524214,52.07772 78.524214,51.07977 C 78.524214,50.10998 78.373324,49.98392 77.219784,49.98392 C 77.076184,49.98392 76.939934,49.97854 76.825734,49.98392 z M 70.847074,51.83754 C 68.316492,51.90589 65.960292,54.55255 67.980029,56.66393 C 68.398536,57.10144 69.720443,57.75715 70.915014,58.12119 C 73.422804,58.88541 73.862234,59.72343 72.233034,60.63931 C 70.450578,61.64134 69.541904,60.98949 67.287049,57.06031 C 64.908866,52.91621 63.475748,51.84699 60.302883,51.8492 C 56.324043,51.85197 53.563271,54.34042 53.848643,57.66652 C 54.03985,59.89511 55.248236,61.5496 57.31355,62.42297 C 59.063758,63.1631 61.139446,63.2044 62.99328,62.53955 C 65.06335,61.79715 65.582789,61.10237 65.031461,59.85822 L 64.58306,58.83232 L 63.618323,59.57843 C 61.829076,60.97604 60.788253,61.25532 59.147912,60.79086 C 57.271055,60.25942 56.348806,59.15527 56.348811,57.44502 C 56.348811,56.71561 56.641574,55.75193 57.00103,55.31161 C 57.884667,54.22923 60.255496,53.5822 61.661669,54.04089 C 62.741308,54.39307 64.610233,56.11674 64.610237,56.7572 C 64.610237,56.93903 65.231911,58.18693 65.996201,59.5318 C 67.437893,62.06866 68.791828,63.04085 70.874244,63.04085 C 73.312554,63.04085 75.480524,61.31802 75.480534,59.38024 C 75.480534,58.21966 73.822244,56.74245 71.974864,56.26757 C 69.670561,55.67524 69.015204,54.99471 69.977446,54.16914 C 70.580227,53.65197 70.860414,53.61554 71.567224,53.99426 C 73.553344,55.05844 74.809304,54.14416 73.279304,52.74686 C 72.552204,52.08283 71.690594,51.81476 70.847074,51.83754 z M 104.89828,51.87252 C 103.9422,51.86215 103.02577,52.11249 102.27581,52.61863 L 101.13443,53.38805 L 99.979474,52.61863 C 97.520314,50.95899 93.811924,52.27834 92.886594,55.13675 C 92.381674,56.69649 92.268464,62.40558 92.737134,62.80768 C 92.906654,62.95313 93.444734,63.01919 93.932854,62.95924 C 94.742394,62.85982 94.848764,62.52634 95.047084,59.0888 C 95.185534,56.68838 95.482244,55.09693 95.862344,54.7054 C 96.575684,53.9706 98.665164,53.89271 99.327254,54.57716 C 99.586804,54.84549 99.856454,56.81802 99.925114,58.96055 L 100.04741,62.85432 L 101.24313,62.9709 L 102.43886,63.08747 L 102.43886,59.26366 C 102.43886,56.23336 102.58806,55.30498 103.15902,54.76369 C 103.99427,53.97185 106.03342,53.86836 106.71904,54.57716 C 106.97861,54.84549 107.24824,56.81802 107.3169,58.96055 C 107.44119,62.83853 107.4441,62.85432 108.52624,62.85432 L 109.61326,62.85432 L 109.61326,58.90227 C 109.61326,54.51854 109.12944,53.25634 107.14026,52.37381 C 106.403,52.0467 105.64188,51.88057 104.89828,51.87252 z M 109.39586,53.57457 C 109.40193,53.62976 109.42327,53.6799 109.45021,53.72613 L 109.39586,53.57457 z M 83.972964,55.63804 C 83.719954,55.62772 83.421214,55.65407 83.062554,55.7313 C 81.895624,55.98259 81.590334,57.31271 82.519054,58.10952 C 83.587934,59.0266 85.046394,58.41603 85.046394,57.04865 C 85.046394,56.10246 84.731944,55.66898 83.972964,55.63804 z "
        id="path9211"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
-       y="594.0899"
-       x="49.620888"
-       height="249.5567"
-       width="645.8399"
-       id="userevents"
-       style="fill:#d3d7cf;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:13.11699963;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:label="#rect4313" />
-    <path
-       id="path4315"
-       d="M 59.548213,871.9433 C 54.039598,871.9433 49.620886,867.49121 49.620886,861.96103 L 49.620886,844.61684 C 49.620886,844.13085 49.648615,843.64895 49.714835,843.18189 L 49.714835,843.55623 L 695.39835,843.55623 C 695.43422,843.90265 695.46088,844.26058 695.46088,844.61684 L 695.46088,861.96103 C 695.46088,867.49121 691.04221,871.9433 685.53361,871.9433 L 59.548213,871.9433 z "
-       style="fill:url(#linearGradient6275);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:label="#rect3815"
+       y="169.88341"
+       x="50.500004"
+       height="9.6166"
+       width="265.67267"
+       id="rect4788"
+       style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.97769773;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4258"
+       width="638.80798"
+       height="179.02231"
+       x="40.48885"
+       y="90.488808"
+       rx="9.9929523"
+       ry="9.0536346"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
-    <rect
-       style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:13.11699963;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="sysevents"
-       width="645.8399"
-       height="249.5567"
-       x="49.620888"
-       y="345.32001"
+    <path
+       style="fill:url(#linearGradient2342);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 50.031249,90.00862 C 44.477507,90.00862 40,94.23414 39.999999,99.47737 L 39.999999,106.82112 C 39.999999,108.10767 40.261671,109.32991 40.749999,110.44612 L 679.25,110.44612 C 679.73833,109.32991 680,108.10767 680,106.82112 L 680,99.47737 C 680,94.23414 675.52247,90.00862 669.96875,90.00862 L 50.031249,90.00862 z "
+       id="rect3285"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       inkscape:label="#rect4319" />
+       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-size:47.44190979px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.25;fill:#fff9f9;fill-opacity:1;stroke:#858585;stroke-width:0.9038685px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="228.8495"
-       y="142.41852"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#fff9f9;fill-opacity:1;stroke:none;stroke-width:0.9038685px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="348.14362"
+       y="96.278618"
        id="text6287"
        transform="scale(0.918558,1.0886629)"
        sodipodi:linespacing="125%"
@@ -179,40 +314,606 @@
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan6289"
-         x="228.8495"
-         y="142.41852"
-         style="font-size:47.44190979px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;stroke-width:0.9038685;font-family:Bitstream Vera Sans;fill:#fff9f9;fill-opacity:1">friend events</tspan></text>
+         x="348.14362"
+         y="96.278618"
+         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#fff9f9;fill-opacity:1;stroke:none;stroke-width:0.9038685;font-family:Bitstream Vera Sans">friend events</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.97769773;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect7178"
+       width="638.80798"
+       height="179.02231"
+       x="40.48885"
+       y="300.4888"
+       rx="9.9929523"
+       ry="9.0536346"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:label="#rect3815"
+       y="450.56308"
+       x="460.6228"
+       height="18.93791"
+       width="208.75438"
+       id="location9"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394059;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:transform-center-x="-45.955671"
+       inkscape:transform-center-y="-5.6776615" />
+    <rect
+       inkscape:label="#rect3815"
+       y="350.69504"
+       x="50.695049"
+       height="18.609921"
+       width="265.28256"
+       id="title5"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008832;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="fill:url(#linearGradient2334);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 50.031249,300.50863 C 44.477499,300.50863 39.999999,304.73415 39.999999,309.97738 L 39.999999,317.32113 C 39.999999,318.60767 40.261669,319.82992 40.749999,320.94613 L 679.25,320.94613 C 679.73833,319.82992 680,318.60767 680,317.32113 L 680,309.97738 C 680,304.73415 675.52247,300.50863 669.96875,300.50863 L 50.031249,300.50863 z "
+       id="path7180"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <text
-       transform="scale(0.9114485,1.0971547)"
-       id="text6291"
-       y="362.65222"
-       x="130.38631"
-       style="font-size:47.41197586px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.25;fill:#fff9f9;fill-opacity:1;stroke:#858585;stroke-width:0.90329826px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#fff9f9;fill-opacity:1;stroke:none;stroke-width:0.9038685px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="325.59106"
+       y="289.63513"
+       id="text7182"
+       transform="scale(0.918558,1.0886629)"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
-         id="tspan6295"
-         x="130.38631"
-         y="362.65222"
-         style="font-size:47.41197586px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;stroke-width:0.90329826;font-family:Bitstream Vera Sans;fill:#fff9f9;fill-opacity:1">recommended events</tspan></text>
+         id="tspan7188"
+         x="325.59106"
+         y="289.63513">recommended events</tspan></text>
+    <path
+       style="fill:url(#linearGradient2329);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 50.031239,510.50862 C 44.477489,510.50862 39.999989,514.73414 39.999989,519.97737 L 39.999989,527.32112 C 39.999989,528.60766 40.261659,529.82991 40.749989,530.94612 L 679.25,530.94612 C 679.73833,529.82991 680,528.60766 680,527.32112 L 680,519.97737 C 680,514.73414 675.52247,510.50862 669.96875,510.50862 L 50.031239,510.50862 z "
+       id="path10461"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <text
-       sodipodi:linespacing="125%"
        xml:space="preserve"
-       style="font-size:45.49414825px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.25;fill:#fff9f9;fill-opacity:1;stroke:#858585;stroke-width:0.86675942px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="208.52887"
-       y="567.60333"
-       id="text6297"
-       transform="scale(0.8804904,1.1357307)"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#fff9f9;fill-opacity:1;stroke:none;stroke-width:0.9038685px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="341.86731"
+       y="482.40869"
+       id="text7194"
+       transform="scale(0.918558,1.0886629)"
+       sodipodi:linespacing="125%"
        inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
-         id="tspan6301"
-         x="208.52887"
-         y="567.60333"
-         style="font-size:45.49414825px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;stroke-width:0.86675942;font-family:Bitstream Vera Sans;fill:#fff9f9;fill-opacity:1">upcoming events</tspan></text>
+         id="tspan7203"
+         x="341.86731"
+         y="482.40869">upcoming events</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="49.941402"
+       y="129.83003"
+       id="text7205"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan7207"
+         x="49.941402"
+         y="129.83003">Title</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text8214"
+       y="129.83003"
+       x="343.89844"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8218"
+         x="343.89844"
+         y="129.83003">Date</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.9999733px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="536.02698"
+       y="129.11685"
+       id="text8220"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9999973,1.0000027)"><tspan
+         sodipodi:role="line"
+         id="tspan8224"
+         x="536.02698"
+         y="129.11685">Location</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.23816645;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location0"
+       width="208.76184"
+       height="18.761837"
+       x="460.61908"
+       y="140.61908"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="165.77325"
+       x="460.60849"
+       height="18.124031"
+       width="208.78297"
+       id="location1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.21700048;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text9240"
+       y="225.85895"
+       x="508.57285"
+       style="font-size:11.17959881px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(1.1187638,0.8938437)"><tspan
+         y="225.85895"
+         x="508.57285"
+         id="tspan9242"
+         sodipodi:role="line">Milwaukee, WI</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.17959881px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="508.57285"
+       y="253.80798"
+       id="text9244"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(1.1187638,0.8938437)"><tspan
+         sodipodi:role="line"
+         id="tspan9246"
+         x="508.57285"
+         y="253.80798">Milwaukee, WI</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text9248"
+       y="281.75696"
+       x="508.57285"
+       style="font-size:11.17959881px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(1.1187638,0.8938437)"><tspan
+         y="281.75696"
+         x="508.57285"
+         id="tspan9250"
+         sodipodi:role="line">Milwaukee, WI</tspan></text>
+    <rect
+       inkscape:label="#rect3815"
+       y="140.38611"
+       x="325.38608"
+       height="19.227816"
+       width="79.227814"
+       id="date0"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218187;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.76609284;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date1"
+       width="79.233902"
+       height="18.924316"
+       x="325.38303"
+       y="165.48624"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="190.2829"
+       x="325.38608"
+       height="19.227814"
+       width="79.227806"
+       id="date2"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218175;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77015746;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date3"
+       width="79.229836"
+       height="19.126642"
+       x="325.38507"
+       y="215.38509"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="240.38608"
+       x="325.38608"
+       height="19.227825"
+       width="79.227814"
+       id="date4"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218199;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008832;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title0"
+       width="265.28256"
+       height="18.609919"
+       x="50.695049"
+       y="140.69501"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="165.55188"
+       x="50.706032"
+       height="19.204529"
+       width="265.26062"
+       id="title1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.41206276;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008796;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title2"
+       width="265.28259"
+       height="18.609909"
+       x="50.695045"
+       y="191.00331"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="215.84918"
+       x="50.695049"
+       height="18.609919"
+       width="265.28259"
+       id="title3"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008832;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008832;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title4"
+       width="265.28259"
+       height="18.609919"
+       x="50.695049"
+       y="240.69504"
+       inkscape:label="#rect3815" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="49.941402"
+       y="339.83002"
+       id="text10363"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan10365"
+         x="49.941402"
+         y="339.83002">Title</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text10367"
+       y="339.83002"
+       x="343.89844"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan10369"
+         x="343.89844"
+         y="339.83002">Date</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.9999733px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="536.02698"
+       y="339.11639"
+       id="text10371"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9999973,1.0000027)"><tspan
+         sodipodi:role="line"
+         id="tspan10373"
+         x="536.02698"
+         y="339.11639">Location</tspan></text>
+    <rect
+       inkscape:label="#rect3815"
+       y="450.69504"
+       x="50.695045"
+       height="18.609905"
+       width="265.28259"
+       id="title9"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008772;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008772;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title6"
+       width="265.28259"
+       height="18.609905"
+       x="50.695049"
+       y="375.69507"
+       inkscape:label="#rect3815" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="49.941387"
+       y="549.83002"
+       id="text10467"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan10469"
+         x="49.941387"
+         y="549.83002">Title</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text10471"
+       y="549.83002"
+       x="343.89844"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan10473"
+         x="343.89844"
+         y="549.83002">Date</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.9999733px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="536.02698"
+       y="549.11566"
+       id="text10475"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/beast/Work/amarok applets/last.fm/last.fm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9999973,1.0000027)"><tspan
+         sodipodi:role="line"
+         id="tspan10477"
+         x="536.02698"
+         y="549.11566">Location</tspan></text>
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008725;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title14"
+       width="265.28259"
+       height="18.609888"
+       x="50.695049"
+       y="660.69507"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="585.69507"
+       x="50.695049"
+       height="18.609934"
+       width="265.28259"
+       id="title11"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008892;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008725;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title12"
+       width="265.28259"
+       height="18.609888"
+       x="50.695049"
+       y="610.69507"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="635.69507"
+       x="50.695049"
+       height="18.609934"
+       width="265.28259"
+       id="title13"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.39008892;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       inkscape:label="#rect3815"
+       y="400.69504"
+       x="50.695045"
+       height="18.609917"
+       width="265.28259"
+       id="title7"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.3900882;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.3900882;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="title8"
+       width="265.28259"
+       height="18.609919"
+       x="50.695049"
+       y="425.69504"
+       inkscape:label="#rect3815" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218187;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date5"
+       width="79.227814"
+       height="19.227816"
+       x="325.38608"
+       y="350.38611"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="375.48627"
+       x="325.38303"
+       height="18.924301"
+       width="79.233902"
+       id="date6"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.76609254;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218211;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date7"
+       width="79.227806"
+       height="19.227829"
+       x="325.38608"
+       y="400.2829"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="425.3851"
+       x="325.38507"
+       height="19.126596"
+       width="79.229836"
+       id="date8"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77015656;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218205;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date9"
+       width="79.227814"
+       height="19.227825"
+       x="325.38608"
+       y="450.38608"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="560.38611"
+       x="325.38608"
+       height="19.227818"
+       width="79.227814"
+       id="date10"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218187;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.76609313;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date11"
+       width="79.233902"
+       height="18.924332"
+       x="325.38303"
+       y="585.48627"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="610.28296"
+       x="325.38608"
+       height="19.227798"
+       width="79.227814"
+       id="date12"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218151;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77015716;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="date13"
+       width="79.229836"
+       height="19.126627"
+       x="325.38507"
+       y="635.38513"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="660.38611"
+       x="325.38608"
+       height="19.227825"
+       width="79.227814"
+       id="date14"
+       style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.77218199;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24259043;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location2"
+       width="208.75732"
+       height="18.896555"
+       x="460.62131"
+       y="190.29182"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="215.38698"
+       x="460.62131"
+       height="18.896559"
+       width="208.75732"
+       id="location3"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24259043;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24259019;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location4"
+       width="208.75732"
+       height="18.896549"
+       x="460.62137"
+       y="240.48215"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="350.62128"
+       x="460.6228"
+       height="18.937918"
+       width="208.75438"
+       id="location5"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394071;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.22279024;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location6"
+       width="208.77943"
+       height="18.297197"
+       x="460.61029"
+       y="375.93607"
+       inkscape:label="#rect3815" />
+    <rect
+       inkscape:label="#rect3815"
+       y="400.61017"
+       x="460.6228"
+       height="18.937897"
+       width="208.75438"
+       id="location7"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.22162604;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location8"
+       width="208.78081"
+       height="18.262253"
+       x="460.60959"
+       y="425.92441"
+       inkscape:label="#rect3815" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394083;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location10"
+       width="208.75438"
+       height="18.937918"
+       x="460.6228"
+       y="560.49902"
+       inkscape:label="#rect3815"
+       inkscape:export-filename="/home/leo/Desktop/amarok/src/context/applets/lastfmevents/location11.png"
+       inkscape:export-xdpi="48"
+       inkscape:export-ydpi="48" />
+    <rect
+       inkscape:label="#rect3815"
+       y="585.81378"
+       x="460.61029"
+       height="18.297228"
+       width="208.77943"
+       id="location11"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.22279131;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-xdpi="48"
+       inkscape:export-ydpi="48" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394011;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location12"
+       width="208.75438"
+       height="18.937897"
+       x="460.6228"
+       y="610.48792"
+       inkscape:label="#rect3815"
+       inkscape:export-filename="/home/leo/Desktop/amarok/src/context/applets/lastfmevents/location11.png"
+       inkscape:export-xdpi="48"
+       inkscape:export-ydpi="48" />
+    <rect
+       inkscape:label="#rect3815"
+       y="635.80212"
+       x="460.60959"
+       height="18.262283"
+       width="208.78081"
+       id="location13"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.221627;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/leo/Desktop/amarok/src/context/applets/lastfmevents/location11.png"
+       inkscape:export-xdpi="48"
+       inkscape:export-ydpi="48" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.24394131;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="location14"
+       width="208.75438"
+       height="18.937933"
+       x="460.6228"
+       y="660.4408"
+       inkscape:label="#rect3815"
+       inkscape:export-filename="/home/leo/Desktop/amarok/src/context/applets/lastfmevents/location11.png"
+       inkscape:export-xdpi="48"
+       inkscape:export-ydpi="48" />
   </g>
 </svg>

@@ -38,6 +38,9 @@ public slots:
     void clear();
     void clear( const ContextState& state );
     
+protected slots:
+    void appletDestroyed(QObject* object);
+        
 protected:
     
     void launchExplorer() {};
@@ -46,8 +49,14 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */
     
 private:
+    void init();
+    
     typedef QPointer<Applet> AppletPointer;
-    QList<AppletPointer> m_loaded;
+    // internal representation of the columns visible
+    QList< QList< AppletPointer > > m_columns;
+    
+    int m_defaultColumnSize;
+    int m_padding;
 };
 
 } // Context namespace
