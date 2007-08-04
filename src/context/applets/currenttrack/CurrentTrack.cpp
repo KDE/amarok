@@ -106,7 +106,6 @@ void CurrentTrack::constraintsUpdated()
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
     
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
-    update();
 }
 
 void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -132,7 +131,7 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
-    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
+//     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
     
     m_numPlayed->setText( currentInfo[ 7 ].toString() );
     m_albumCover->setPixmap( currentInfo[ 8 ].value<QPixmap>() ); 

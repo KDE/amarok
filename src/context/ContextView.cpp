@@ -90,6 +90,7 @@ ContextView::ContextView( )
         !QFile::exists(m_wallpaperPath ) )
         m_background = new Svg( "widgets/amarok-wallpaper", this );
     
+    init();
     showHome();
 }
 
@@ -98,6 +99,130 @@ ContextView::~ContextView()
     DEBUG_BLOCK
     clear( m_curState );
 }
+
+
+void ContextView::init()
+{
+    DEBUG_BLOCK
+    m_padding = 3;
+    m_defaultColumnSize = 400;
+    qreal width = sceneRect().width();
+    int numColumns = (int)( width - ( 2 * m_padding ) ) / m_defaultColumnSize;
+    if( numColumns == 0 ) numColumns = 1;
+    debug() << "need to create:" << numColumns << "columns";
+    for( int i = 0; i < numColumns; i++ )
+        m_columns << new Plasma::VBoxLayout();
+    resizeColumns();
+}
+
+void ContextView::resizeColumns()
+{
+    DEBUG_BLOCK
+    qreal width = sceneRect().width() - 2 * m_padding;
+    int numColumns = ( width - 2 * m_padding ) / m_defaultColumnSize;
+    if( numColumns > m_columns.size() ) // need to make more columns
+    {
+        for( int i = m_columns.size(); i < numColumns; i++ )
+            m_columns << new Plasma::VBoxLayout();
+    }
+    
+    qreal columnWidth = width / numColumns;
+    columnWidth -= ( numColumns - 1 ) * m_padding; // make room between columns
+    
+    for( int i = 0; i < numColumns; i++ ) // lay out columns
+    {
+        QPointF pos( ( ( i + 1 ) * m_padding ) + ( i * columnWidth ), m_padding );
+        QSizeF size( columnWidth, qMax( m_columns[ i ]->minimumSize().height(),
+                                        sceneRect().height() ) );
+        m_columns[ i ]->setGeometry( QRectF( pos, size ) );
+    }
+    balanceColumns();
+}
+
+// even out columns. this checks if any one column can be made shorter by
+// moving the last applet to another column
+void ContextView::balanceColumns()
+{
+    DEBUG_BLOCK
+    int numColumns = m_columns.size();
+    if( numColumns == 1 ) // no balancing to do :)
+        return;
+
+    while( 0 )
+    {
+        qreal maxHeight  = -1; int maxColumn = -1;
+        for( int i = 0; i < numColumns; i++ )
+        {
+            if( m_columns[ i ]->size().height() > maxHeight )
+            {
+                maxHeight = m_columns[ i ]->size().height();
+                maxColumn = i;
+            }
+        }
+        
+        if( maxHeight == 0 ) // no applets
+            return;
+        
+        debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn;
+        
+        qreal maxAppletHeight = m_columns[ maxColumn ]->itemAt( m_columns[ maxColumn ]->count() - 1 )->geometry().size().height();
+        
+        debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
+        int newHeight = -1, newColumn = -1;
+        bool found = false;
+        for( int i = 0; i < numColumns; i++ )
+        {
+            qreal newColHeight = m_columns[ i ]->size().height() + newHeight;
+            debug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
+            if( newColHeight < maxHeight ) // found a new place for this applet
+            {
+                debug() << "found new place for an applet!";
+                m_columns[ i ]->addItem( m_columns[ maxColumn ]->takeAt( m_columns[ maxColumn ]->count() - 1 ) );
+                found = true;
+                break;
+            }
+        }
+        if( !found ) break;
+    }
+}
+
+void ContextView::clear()
+{    
+    DEBUG_BLOCK;
+    m_columns.clear();
+}
+
+void ContextView::clear( const ContextState& state )
+{
+    QString name;
+    if( state == Home )
+        name = "home";
+    else if( state == Current )
+        name = "current";
+    else
+        return; // startup, or some other wierd case
+    
+    QStringList applets;
+    foreach( Plasma::VBoxLayout* column, m_columns )
+    {
+        for( int i = 0; i < column->count() - 1; i++ )
+        {
+            Applet* applet = dynamic_cast< Applet* >( column->itemAt( i ) );
+            if( applet == 0 ) continue;
+            QString key = QString( "%1_%2" ).arg( name, applet->name() );
+            applets << applet->name();
+            QStringList pos;
+            pos << QString::number( applet->x() ) << QString::number( applet->y() );
+            Amarok::config( "Context Applets" ).writeEntry( key, pos );
+            debug() << "saved applet: " << key << " at position: " << pos;
+        }
+    }
+    debug() << "saved list of applets: " << applets;
+    Amarok::config( "Context Applets" ).writeEntry( name, applets );
+    Amarok::config( "Context Applets" ).sync();
+    m_columns.clear();
+}
+
 
 void ContextView::engineStateChanged( Engine::State state, Engine::State oldState )
 {
@@ -170,6 +295,22 @@ void ContextView::engineNewMetaData( const MetaBundle&, bool )
 }
 
 
+Applet* ContextView::addApplet(const QString& name, const QStringList& args)
+{
+    AppletPointer applet = contextScene()->addApplet( name, args );
+    
+    int smallestColumn = -1, max = -1;
+    for( int i = 0; i < m_columns.size(); i++ ) // find shortest column to put
+    {                                           // the applet in
+        if( m_columns[ i ]->size().height() > max )
+            smallestColumn = i;
+    }
+    
+    debug() << "found" << m_columns.size() << " column, adding applet to column:" << smallestColumn;
+    m_columns[ smallestColumn ]->addItem( applet );
+    return applet;
+}
+
 void ContextView::zoomIn()
 {
     //TODO: Change level of detail when zooming
@@ -213,6 +354,8 @@ void ContextView::resizeEvent( QResizeEvent* event )
         m_bitmapBackground = new QPixmap( m_wallpaperPath );
         ( *m_bitmapBackground ) = m_bitmapBackground->scaled( size() );
     }
+    
+    resizeColumns();
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )

@@ -212,7 +212,7 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
-//     Context::ContextView::self()->contextScene()->clear();
+    Context::ContextView::self()->clear();
     
     EngineBase* const engine = EngineController::engine();
 

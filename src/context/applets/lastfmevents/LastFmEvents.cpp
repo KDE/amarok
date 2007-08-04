@@ -115,15 +115,13 @@ void LastFmEvents::constraintsUpdated()
         m_dates[ i ]->setFont( shrinkTextSizeToFit( m_dates[ i ]->text(), m_theme->elementRect( dateElement ) ) );
         m_locations[ i ]->setFont( shrinkTextSizeToFit( m_locations[ i ]->text(), m_theme->elementRect( locationElement ) ) );
     }
-    
-    update();
 }
 
 void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     
-        debug() << "got data from engine: " << data << endl;
+//         debug() << "got data from engine: " << data << endl;
     Context::DataEngine::DataIterator iter( data );
     if( m_sysEnabled && name == QString( "sysevents" ) )
     {
@@ -195,7 +193,7 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     p->setRenderHint(QPainter::SmoothPixmapTransform);
         
-    debug() << "painting rect: " << contentsRect << endl;
+//     debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
     
     for( int i = 0; i < 14; i++ ) 
@@ -274,26 +272,25 @@ void LastFmEvents::configAccepted() // SLOT
 
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
-    DEBUG_BLOCK
     int size = 12; // start here, shrink if needed
-    QString font = "Arial";
+//     QString font = "Arial";
     if( text.length() == 0 )
-        return QFont( font, size );
-    QFontMetrics fm( QFont( font, size ) );
+        return QFont( QString(), size );
+    QFontMetrics fm( QFont( QString(), size ) );
     while( fm.height() > bounds.height() + 4 )
     {
-        debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
+//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
         size--;
-        fm = QFontMetrics( QFont( font, size ) );
+        fm = QFontMetrics( QFont( QString(), size ) );
     }
-//     while( fm.width( text ) > bounds.width() )
-//     {
-//         size--;
-//         fm = QFontMetrics( QFont( font, size ) );
-//     }
+    while( fm.width( text ) > bounds.width() )
+    {
+        size--;
+        fm = QFontMetrics( QFont( QString(), size ) );
+    }
     
-    debug() << "resulting after shrink: " << font << ":" << size;
-    return QFont( font, size );
+//     debug() << "resulting after shrink: " << ":" << size;
+    return QFont( QString(), size );
 }
 
 void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )

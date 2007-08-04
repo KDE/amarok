@@ -18,6 +18,7 @@
 #include "Applet.h"
 #include "Context.h"
 #include <plasma/corona.h>
+#include <plasma/widgets/vboxlayout.h>
 
 namespace Context
 {
@@ -31,32 +32,14 @@ public:
     explicit ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent = 0);
     ~ContextScene();
     
-public slots:
-    
-    Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-    
-    void clear();
-    void clear( const ContextState& state );
-    
 protected slots:
-    void appletDestroyed(QObject* object);
+/*    void appletDestroyed(QObject* object);*/
         
 protected:
     
-    void launchExplorer() {};
     /*void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */
-    
-private:
-    void init();
-    
-    typedef QPointer<Applet> AppletPointer;
-    // internal representation of the columns visible
-    QList< QList< AppletPointer > > m_columns;
-    
-    int m_defaultColumnSize;
-    int m_padding;
 };
 
 } // Context namespace

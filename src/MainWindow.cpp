@@ -241,7 +241,7 @@ void MainWindow::init()
         // context view
         connect(m_controlBox, SIGNAL(zoomIn()), Context::ContextView::self(), SLOT(zoomIn()));
         connect(m_controlBox, SIGNAL(zoomOut()), Context::ContextView::self(), SLOT(zoomOut()));
-        connect(m_controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self()->contextScene(), SLOT(addApplet(const QString&)));
+        connect(m_controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self(), SLOT(addApplet(const QString&)));
         connect(m_controlBox, SIGNAL(lockInterface(bool)), Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)));
     }
     contextWidget->setMinimumSize( QSize(500,100) );

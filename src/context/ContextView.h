@@ -57,16 +57,18 @@ public:
         Clears the context scene of all items, but first saves the current state of the scene into the
         config file using as a key the string parameter.
     */
-    void clear( const ContextState& name ) { contextScene()->clear( name ); }
+    void clear( const ContextState& name );
     
     /**
         Clear the context scene of all items, discarding any data/widgets currently on the scene. 
     */
-    void clear() { contextScene()->clear(); }
+    void clear();
     
 public slots:
     void zoomIn();
     void zoomOut();
+    
+    Applet* addApplet(const QString& name, const QStringList& args = QStringList());
     
 protected:        
     void engineNewMetaData( const MetaBundle&, bool );
@@ -79,11 +81,20 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     
 private:
-    
+    void init();
+    void resizeColumns();
+    void balanceColumns();
     void loadConfig();
     
     void showHome();
     void showCurrentTrack();
+    
+    typedef QPointer< Context::Applet > AppletPointer;
+    // internal representation of the columns visible
+    QList< Plasma::VBoxLayout* > m_columns;
+    
+    int m_defaultColumnSize;
+    int m_padding;
     
     // holds what is currently being shown
     ContextState m_curState;

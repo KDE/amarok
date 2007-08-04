@@ -36,6 +36,8 @@ public:
     
     void constraintsUpdated();
     void setSize( const QRectF& rect );
+    // for compatibility with Plasma::Widget and Plasma::LayoutItem
+    QSizeF sizeHint() const { return contentSize(); }
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:

@@ -38,6 +38,8 @@ public:
     
     QSizeF contentSize() const;
     void constraintsUpdated();
+    // for compatibility with Plasma::Widget and Plasma::LayoutItem
+    QSizeF sizeHint() const { return contentSize(); }
     
     void setRect( const QRectF& rect );
 public slots:
