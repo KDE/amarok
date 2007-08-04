@@ -20,6 +20,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+#include <QMimeData>
 #include <QPen>
 #include <QRadialGradient>
 #include <QScrollBar>
@@ -73,6 +74,7 @@ PlaylistNS::GraphicsItem::GraphicsItem()
     }
   //  setHandlesChildEvents( true );
     setFlag( QGraphicsItem::ItemIsSelectable );
+    setAcceptDrops( true );
 }
 
 PlaylistNS::GraphicsItem::~GraphicsItem()
@@ -83,7 +85,7 @@ PlaylistNS::GraphicsItem::~GraphicsItem()
 void 
 PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
-    const int row = int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height );
+    const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
     if( not m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
@@ -206,21 +208,35 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
 }
 
+QRectF
+PlaylistNS::GraphicsItem::boundingRect() const
+{
+    const static int scrollBarWidth = scene()->views().at(0)->verticalScrollBar()->width();
+    return QRectF( 0.0, 0.0, scene()->views().at(0)->width() - scrollBarWidth, s_height );
+}
+
 void 
 PlaylistNS::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
 {
     if( m_items )
     {
-        The::playlistModel()->play( ( mapToScene( 0.0, 0.0 ).y() ) / s_height );
+        The::playlistModel()->play( getRow() );
         event->accept();
         return;
     }
     QGraphicsItem::mouseDoubleClickEvent( event );
 }
 
-QRectF
-PlaylistNS::GraphicsItem::boundingRect() const
+void 
+PlaylistNS::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
-    const static int scrollBarWidth = scene()->views().at(0)->verticalScrollBar()->width();
-    return QRectF( 0.0, 0.0, scene()->views().at(0)->width() - scrollBarWidth, s_height );
+    foreach( QString mime, The::playlistModel()->mimeTypes() )
+        if( event->mimeData()->hasFormat( mime ) )
+            event->accept();
+}
+
+void
+PlaylistNS::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
+{
+    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
 }

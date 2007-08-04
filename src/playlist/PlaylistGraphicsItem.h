@@ -25,10 +25,12 @@ namespace PlaylistNS {
             static qreal height() { return s_height; }
         protected:
             void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event );
+            void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
+            void dropEvent( QGraphicsSceneDragDropEvent * event );
         private:
             void init( Meta::TrackPtr track );
             void resize( Meta::TrackPtr track, int totalWidth );
-
+            int getRow() const { return int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height ); }
             ActiveItems* m_items;
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
