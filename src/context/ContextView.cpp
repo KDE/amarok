@@ -389,7 +389,7 @@ void ContextView::contextMenuEvent(QContextMenuEvent *event)
     }
     
     KMenu desktopMenu;
-    //kDebug() << "context menu event " << immutable << endl;
+    //kDebug() << "context menu event " << immutable;
     if (!applet) {
         if (contextScene() && contextScene()->isImmutable()) {
             QGraphicsView::contextMenuEvent(event);

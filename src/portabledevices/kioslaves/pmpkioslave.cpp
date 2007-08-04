@@ -88,30 +88,30 @@ PMPProtocol::setHost( const QString &host, quint16 port,
 void
 PMPProtocol::del( const KUrl &url, bool isfile )
 {
-    kDebug() << endl << endl << "Entering del with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Entering del with url = " << url << endl;
     if( getBackendForUrl( url ) )
         getBackendForUrl( url )->del( url, isfile );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving del with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Leaving del with url = " << url << endl;
 }
 
 void
 PMPProtocol::get( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering get with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Entering get with url = " << url << endl;
     if( getBackendForUrl( url ) )
         getBackendForUrl( url )->get( url );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving get with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Leaving get with url = " << url << endl;
 }
 
 void
 PMPProtocol::listDir( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering listDir with url = " << url << endl;
-    kDebug() << "path = " << url.path() << ", path.isEmpty = " << (url.path().isEmpty() ? "true" : "false" ) << endl;
+    kDebug() << endl << endl << "Entering listDir with url = " << url;
+    kDebug() << "path = " << url.path() << ", path.isEmpty = " << (url.path().isEmpty() ? "true" : "false" );
     if( url.isEmpty() )
     {
         listEntry( UDSEntry(), true );
@@ -130,16 +130,16 @@ PMPProtocol::listDir( const KUrl &url )
                 m_devices[transUdi( device.udi() )]->initialize();
             }
             QString name = m_devices[transUdi( device.udi() )]->backend()->getFriendlyName();
-            kDebug() << "Friendly name returned from device is: " << name << endl;
+            kDebug() << "Friendly name returned from device is: " << name;
             if( name.isEmpty() )
             {
                 name = m_devices[transUdi( device.udi() )]->backend()->getModelName();
-                kDebug() << "Model name returned from device is: " << name << endl;
+                kDebug() << "Model name returned from device is: " << name;
             }
             if( name.isEmpty() )
             {
                 name = getSolidFriendlyName( device );
-                kDebug() << "Friendly name returned from Solid is: " << name << endl;
+                kDebug() << "Friendly name returned from Solid is: " << name;
             }
             entry.insert( KIO::UDSEntry::UDS_NAME, name.isEmpty() ? QString( "Portable Media Player at " + device.udi() ) : name );
             entry.insert( KIO::UDSEntry::UDS_URL,"pmp:///" + transUdi( device.udi() ) );
@@ -158,13 +158,13 @@ PMPProtocol::listDir( const KUrl &url )
     }
 
     emit finished();
-    kDebug() << endl << endl << "Leaving listDir with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Leaving listDir with url = " << url << endl;
 }
 
 void
 PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
 {
-    kDebug() << "srcUrl = " << src.url() << ", destUrl = " << dest.url() << endl;
+    kDebug() << "srcUrl = " << src.url() << ", destUrl = " << dest.url();
     QString srcPath = src.path( KUrl::RemoveTrailingSlash );
     QString destPath = dest.path( KUrl::RemoveTrailingSlash );
     while( srcPath[0] == '/' )
@@ -173,16 +173,16 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         destPath.remove( 0, 1 );
     //Check to see if they're trying to set a friendly name
     //i.e. only top-level paths
-    kDebug() << endl << "srcPath = " << srcPath << ", destPath = " << destPath << endl;
-    kDebug() << endl << "src.directory() = " << src.directory() << ", dest.directory() = " << dest.directory() << endl;
+    kDebug() << endl << "srcPath = " << srcPath << ", destPath = " << destPath;
+    kDebug() << endl << "src.directory() = " << src.directory() << ", dest.directory() = " << dest.directory();
     if( srcPath.indexOf( '/' ) == -1 && destPath.indexOf( '/' ) == -1 )
     {
         QString srcName = udiFromUrl( src );
         QString dstName = udiFromUrl( dest );
-        kDebug() << "srcName = " << srcName << ", dstName (friendly name) = " << dstName << endl;
-        kDebug() << "m_devices keys: " << endl;
+        kDebug() << "srcName = " << srcName << ", dstName (friendly name) = " << dstName;
+        kDebug() << "m_devices keys: ";
         foreach( QString key, m_devices.keys() )
-            kDebug() << "key = " << key << endl;
+            kDebug() << "key = " << key;
         if( m_devices.contains( dstName ) )
             warning( i18n( "Destination name cannot be the same as a Solid UDI!" ) );
         else if ( getBackendForUrl( src ) )
@@ -209,7 +209,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
 void
 PMPProtocol::stat( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering stat with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Entering stat with url = " << url << endl;
     if( url.path().isEmpty() || url.path() == "/" )
     {
         KIO::UDSEntry entry;
@@ -224,23 +224,23 @@ PMPProtocol::stat( const KUrl &url )
         getBackendForUrl( url )->stat( url );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving stat with url = " << url << endl << endl;
+    kDebug() << endl << endl << "Leaving stat with url = " << url << endl;
 }
 
 QString
 PMPProtocol::getSolidFriendlyName( const Solid::Device & device ) const
 {
-    kDebug() << "Looking for a friendly name for " << device.udi() << "..." << endl;
+    kDebug() << "Looking for a friendly name for " << device.udi() << "...";
     //NOTE/TODO: The following is hal-dependent.
     const Solid::GenericInterface *gi = device.as<Solid::GenericInterface>();
     if( !gi )
     {
-        kDebug() << "Couldn't get the device as a generic interface." << endl;
+        kDebug() << "Couldn't get the device as a generic interface.";
         return QString();
     }
     if( !gi->propertyExists( "portable_audio_player.access_method.drivers" ) )
     {
-        kDebug() << "No access_method.drivers property detected." << endl;
+        kDebug() << "No access_method.drivers property detected.";
         return QString();
     }
     QVariant possibleLibraries = gi->property( "portable_audio_player.access_method.drivers" );

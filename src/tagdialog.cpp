@@ -330,7 +330,7 @@ void
 TagDialog::musicbrainzQuery() //SLOT
 {
 #if HAVE_TUNEPIMP
-    kDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo;
 
     m_mbTrack = m_bundle.url();
     KTRMLookup* ktrm = new KTRMLookup( m_mbTrack.path(), true );
@@ -377,7 +377,7 @@ void
 TagDialog::fillSelected( KTRMResult selected ) //SLOT
 {
 #if HAVE_TUNEPIMP
-    kDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo;
 
 
     if ( m_bundle.url() == m_mbTrack ) {

@@ -44,13 +44,13 @@ Plasma::DataEngine* DataEngineManager::loadDataEngine(const QString& name)
         constraint);
     
     if (offers.isEmpty()) {
-        kDebug() << "offers are empty for " << name << " with constraint " << constraint << endl;
+        kDebug() << "offers are empty for " << name << " with constraint " << constraint;
     } else {
         engine = KService::createInstance<Plasma::DataEngine>(offers.first(), 0);
     }
     
     if (!engine) {
-        kDebug() << "Couldn't load engine \"" << name << "\"!" << endl;
+        kDebug() << "Couldn't load engine \"" << name << "\"!";
         return d->nullEngine();
     }
     

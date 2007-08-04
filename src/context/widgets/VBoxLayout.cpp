@@ -55,7 +55,7 @@ void VBoxLayout::setGeometry(const QRectF& geometry)
 {
     DEBUG_BLOCK
     if (!geometry.isValid() || geometry.isEmpty()) {
-        kDebug() << "Invalid Geometry!" << endl;
+        kDebug() << "Invalid Geometry!";
         return;
     }
 
@@ -67,7 +67,7 @@ void VBoxLayout::setGeometry(const QRectF& geometry)
     QSizeF available = geometry.size() - QSizeF(2 * margin(), 2 * margin());
 
     foreach (LayoutItem *l, d->childList) {
-        kDebug() << "testing layout item " << l << endl;
+        kDebug() << "testing layout item " << l;
         if (l->expandingDirections() & Qt::Vertical) {
             expandingChildren += l;
         } else {

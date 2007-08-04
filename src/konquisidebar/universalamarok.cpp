@@ -95,7 +95,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
-    kDebug() << "parentPart() << " << browser->parentPart() << endl;
+    kDebug() << "parentPart() << " << browser->parentPart();
     browser->setDNDEnabled( true );
     browser->setEncoding( "utf8", true );
     updateBrowser( HTML_FILE );
@@ -130,7 +130,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, false );
-    kDebug() << "Connecting widget signal" << endl;
+    kDebug() << "Connecting widget signal";
 
     connect( widget,                      SIGNAL( emitURL( const KUrl &)),
              this,                        SLOT( openUrlRequest( const KUrl &) ) );
@@ -319,7 +319,7 @@ void UniversalAmarok::showIntroduction()
             "</div>"
             "</html>"
                        );
-kDebug() << m_HTMLSource << endl;
+kDebug() << m_HTMLSource;
     browser->begin();
     browser->write( m_HTMLSource );
     browser->end();

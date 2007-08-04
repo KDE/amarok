@@ -107,7 +107,7 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     if( data.size() == 0 ) return;
     
     QVariantList currentInfo = data[ "current" ].toList();
-    kDebug() << "got data from engine: " << currentInfo << endl;
+    kDebug() << "got data from engine: " << currentInfo;
     m_title->setText( currentInfo[ 1 ].toString() );
     m_artist->setText( currentInfo[ 0 ].toString() );
     m_album->setText( currentInfo[ 2 ].toString() );
@@ -211,7 +211,7 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
     m_size.setHeight( height );
     
     m_theme->resize( m_size );
-    kDebug() << "set new size: " << m_size << endl;
+    kDebug() << "set new size: " << m_size;
     constraintsUpdated();
 }
 

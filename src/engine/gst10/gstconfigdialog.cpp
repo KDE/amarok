@@ -19,7 +19,7 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     : PluginConfig()
     , m_engine( (GstEngine*)engine )
 {
-    kDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo;
 
     m_view = new GstConfigDialogBase();
 
@@ -47,7 +47,7 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
 
 GstConfigDialog::~GstConfigDialog()
 {
-    kDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo;
 
     delete m_view;
 }
@@ -82,7 +82,7 @@ GstConfigDialog::isDefault() const
 void
 GstConfigDialog::save() //SLOT
 {
-    kDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo;
 
     bool changed =  hasChanged();
 
