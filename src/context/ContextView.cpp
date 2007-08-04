@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "ColumnApplet.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "DataEngineManager.h"
@@ -103,7 +104,7 @@ void ContextView::init()
     if( numColumns == 0 ) numColumns = 1;
     debug() << "need to create:" << numColumns << "columns";
     for( int i = 0; i < numColumns; i++ )
-        m_columns << new Plasma::VBoxLayout();
+        m_columns << new ColumnApplet();
     resizeColumns();
 }
 
@@ -111,11 +112,11 @@ void ContextView::resizeColumns()
 {
     DEBUG_BLOCK
     qreal width = sceneRect().width() - 2 * m_padding;
-    int numColumns = ( width - 2 * m_padding ) / m_defaultColumnSize;
+    int numColumns = (int)( width - 2 * m_padding ) / m_defaultColumnSize;
     if( numColumns > m_columns.size() ) // need to make more columns
     {
         for( int i = m_columns.size(); i < numColumns; i++ )
-            m_columns << new Plasma::VBoxLayout();
+            m_columns << new ColumnApplet();
     }
     
     qreal columnWidth = width / numColumns;
@@ -124,11 +125,15 @@ void ContextView::resizeColumns()
     for( int i = 0; i < numColumns; i++ ) // lay out columns
     {
         QPointF pos( ( ( i + 1 ) * m_padding ) + ( i * columnWidth ), m_padding );
-        QSizeF size( columnWidth, qMax( m_columns[ i ]->minimumSize().height(),
+        QSizeF size( columnWidth, qMax( m_columns[ i ]->sizeHint().height(),
                                         sceneRect().height() ) );
         m_columns[ i ]->setGeometry( QRectF( pos, size ) );
+        m_columns[ i ]->setPos( pos );
     }
     balanceColumns();
+    debug() << "result is we have:" << m_columns.size() << "columns:";
+    foreach( ColumnApplet* column, m_columns )
+        debug() << "column rect:" << column->geometry() << "pos:" << column->pos();
 }
 
 // even out columns. this checks if any one column can be made shorter by
@@ -140,35 +145,35 @@ void ContextView::balanceColumns()
     if( numColumns == 1 ) // no balancing to do :)
         return;
 
-    while( 0 )
+    while( true )
     {
         qreal maxHeight  = -1; int maxColumn = -1;
         for( int i = 0; i < numColumns; i++ )
         {
-            if( m_columns[ i ]->size().height() > maxHeight )
+            if( m_columns[ i ]->sizeHint().height() > maxHeight )
             {
-                maxHeight = m_columns[ i ]->size().height();
+                maxHeight = m_columns[ i ]->sizeHint().height();
                 maxColumn = i;
             }
         }
         
         if( maxHeight == 0 ) // no applets
             return;
-        
-        debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn;
-        
+                
         qreal maxAppletHeight = m_columns[ maxColumn ]->itemAt( m_columns[ maxColumn ]->count() - 1 )->geometry().size().height();
         
-        debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
-        int newHeight = -1, newColumn = -1;
+//         debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
         bool found = false;
         for( int i = 0; i < numColumns; i++ )
         {
-            qreal newColHeight = m_columns[ i ]->size().height() + newHeight;
-            debug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
+            if( i == maxColumn ) continue; // don't bother
+//             debug() << "checking for column" << i << "of" << numColumns - 1;
+//             debug() << "doing math:" << m_columns[ i ]->sizeHint().height() << "+" << maxAppletHeight;
+            qreal newColHeight = m_columns[ i ]->sizeHint().height() + maxAppletHeight;
+//             debug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
             if( newColHeight < maxHeight ) // found a new place for this applet
             {
-                debug() << "found new place for an applet!";
+//                 debug() << "found new place for an applet: column" << i;
                 m_columns[ i ]->addItem( m_columns[ maxColumn ]->takeAt( m_columns[ maxColumn ]->count() - 1 ) );
                 found = true;
                 break;
@@ -195,7 +200,7 @@ void ContextView::clear( const ContextState& state )
         return; // startup, or some other wierd case
     
     QStringList applets;
-    foreach( Plasma::VBoxLayout* column, m_columns )
+    foreach( ColumnApplet* column, m_columns )
     {
         for( int i = 0; i < column->count() - 1; i++ )
         {
@@ -291,12 +296,14 @@ Applet* ContextView::addApplet(const QString& name, const QStringList& args)
 {
     AppletPointer applet = contextScene()->addApplet( name, args );
     
-    int smallestColumn = -1, max = -1;
-    for( int i = 0; i < m_columns.size(); i++ ) // find shortest column to put
+    int smallestColumn = 0, min = m_columns[ 0 ]->sizeHint().height();
+    for( int i = 1; i < m_columns.size(); i++ ) // find shortest column to put
     {                                           // the applet in
-        if( m_columns[ i ]->size().height() > max )
+        debug() << "comparing this column, size:" << m_columns[ i ]->sizeHint().height();
+        if( m_columns[ i ]->sizeHint().height() < min )
             smallestColumn = i;
     }
+    debug() << "smallest column is" << smallestColumn << "(" << min << ")" << "of" << m_columns.size();
     
     debug() << "found" << m_columns.size() << " column, adding applet to column:" << smallestColumn;
     m_columns[ smallestColumn ]->addItem( applet );

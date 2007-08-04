@@ -19,6 +19,7 @@
 #define CONTEXT_VIEW_H
 
 #include "amarok_export.h"
+#include "ColumnApplet.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "ContextObserver.h"
@@ -93,7 +94,7 @@ private:
     
     typedef QPointer< Context::Applet > AppletPointer;
     // internal representation of the columns visible
-    QList< Plasma::VBoxLayout* > m_columns;
+    QList< ColumnApplet* > m_columns;
     
     int m_defaultColumnSize;
     int m_padding;
