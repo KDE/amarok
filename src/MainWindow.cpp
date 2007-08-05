@@ -145,6 +145,7 @@ void MainWindow::init()
     KVBox *playlistwindow = new KVBox;
     playlistwindow->setSpacing( 0 );
     playlistwindow->setMargin( 0 );
+    playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
     //make the playlist views resizable so the old one can be hidden!
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( 0 ); //Playlist
