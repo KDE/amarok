@@ -104,8 +104,7 @@ private:
     
     ControlBox* m_controlBox;
     Svg *m_background;
-    QPixmap* m_bitmapBackground;
-    QString m_wallpaperPath;
+    Svg *m_logo;
     
 };
 

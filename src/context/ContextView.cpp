@@ -48,7 +48,7 @@ ContextView::ContextView( QWidget* parent )
     : QGraphicsView( parent )
     , EngineObserver( EngineController::instance() )
     , m_background( 0 )
-    , m_bitmapBackground( 0 )
+    , m_logo( 0 )
 {
     DEBUG_BLOCK
 
@@ -71,17 +71,11 @@ ContextView::ContextView( QWidget* parent )
     
     // here we initialize all the Plasma paths to Amarok paths
     Theme::self()->setApplication( "amarok" );
-    //contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
+    contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
     
-    //TODO: port to new config interface
-    //KConfigGroup config(KGlobal::config(), "General");
-    //m_wallpaperPath = config.readEntry("wallpaper", QString());
-    m_wallpaperPath = QString();
-    
-    //kDebug() << "wallpaperPath is " << m_
-    if ( m_wallpaperPath.isEmpty() ||
-        !QFile::exists(m_wallpaperPath ) )
-        m_background = new Svg( "widgets/amarok-wallpaper", this );
+    m_background = new Svg( "widgets/amarok-wallpaper", this );
+    m_logo = new Svg( "widgets/amarok-logo", this );
+    m_logo->resize();
     
     init();
     showHome();
@@ -130,10 +124,11 @@ void ContextView::resizeColumns()
         m_columns[ i ]->setGeometry( QRectF( pos, size ) );
         m_columns[ i ]->setPos( pos );
     }
+    debug() << "columns laid out, now balancing";
     balanceColumns();
     debug() << "result is we have:" << m_columns.size() << "columns:";
     foreach( ColumnApplet* column, m_columns )
-        debug() << "column rect:" << column->geometry() << "pos:" << column->pos();
+        debug() << "column rect:" << column->geometry() << "pos:" << column->pos() << "# of children:" << column->count();
 }
 
 // even out columns. this checks if any one column can be made shorter by
@@ -330,15 +325,23 @@ ContextScene* ContextView::contextScene()
 
 void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
 {
-    if ( m_background ) {
-        m_background->paint( painter, rect );
-    } else if ( m_bitmapBackground ) {
-        painter->drawPixmap( rect, *m_bitmapBackground, rect );
-    }
+    painter->save();
+    m_background->paint( painter, rect );
+    painter->restore();
+    QSize size = m_logo->size();
+    
+    QSize pos = m_background->size() - size;
+    debug() << m_background->size() << "-" << size << "=" << pos;
+    painter->save();
+//     painter->translate( QPointF( pos.width(), pos.height() ) );
+    m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
+    painter->restore();
+    
 }
 
 void ContextView::resizeEvent( QResizeEvent* event )
 {
+    DEBUG_BLOCK
     Q_UNUSED( event )
         if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
             return; // lets not do this more than necessary, shall we?
@@ -346,13 +349,8 @@ void ContextView::resizeEvent( QResizeEvent* event )
     
     scene()->setSceneRect( rect() );
     
-    if ( m_background ) {
-        m_background->resize( width(), height() );
-    } else if ( !m_wallpaperPath.isEmpty() ) {
-        delete m_bitmapBackground;
-        m_bitmapBackground = new QPixmap( m_wallpaperPath );
-        ( *m_bitmapBackground ) = m_bitmapBackground->scaled( size() );
-    }
+    m_background->resize( width(), height() );
+//     m_logo->
     
     resizeColumns();
 }

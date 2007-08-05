@@ -68,7 +68,11 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     {
         m_titles << new QGraphicsSimpleTextItem( this );
         m_dates << new QGraphicsSimpleTextItem( this );
-        m_locations << new QGraphicsSimpleTextItem( this );
+        m_cities << new QGraphicsSimpleTextItem( this );
+        // white font for now
+        m_titles[ i ]->setBrush( Qt::white );
+        m_dates[ i ]->setBrush( Qt::white );
+        m_cities[ i ]->setBrush( Qt::white );
     }
     
     // calculate aspect ratio, and resize to desired width
@@ -103,15 +107,15 @@ void LastFmEvents::constraintsUpdated()
     {
         QString titleElement = QString( "title%1" ).arg( i );
         QString dateElement = QString( "date%1" ).arg( i );
-        QString locationElement = QString( "location%1" ).arg( i );
+        QString cityElement = QString( "city%1" ).arg( i );
         
         m_titles[ i ]->setPos( m_theme->elementRect( titleElement ).topLeft() );
         m_dates[ i ]->setPos( m_theme->elementRect( dateElement ).topLeft() );
-        m_locations[ i ]->setPos( m_theme->elementRect( locationElement ).topLeft() );
+        m_cities[ i ]->setPos( m_theme->elementRect( cityElement ).topLeft() );
         
         m_titles[ i ]->setFont( shrinkTextSizeToFit( m_titles[ i ]->text(), m_theme->elementRect( titleElement ) ) );
         m_dates[ i ]->setFont( shrinkTextSizeToFit( m_dates[ i ]->text(), m_theme->elementRect( dateElement ) ) );
-        m_locations[ i ]->setFont( shrinkTextSizeToFit( m_locations[ i ]->text(), m_theme->elementRect( locationElement ) ) );
+        m_cities[ i ]->setFont( shrinkTextSizeToFit( m_cities[ i ]->text(), m_theme->elementRect( cityElement ) ) );
     }
 }
 
@@ -130,13 +134,20 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
             const QVariantList event = iter.value().toList();
             if( event.size() == 0 || count > 9 ) continue; // empty event, or we are done
    
-            m_titles[ count ]->setText( event[ 0 ].toString() );
-            m_dates[ count ]->setText( event[ 1 ].toString() );
-            m_locations[ count ]->setText( event[ 2 ].toString() );
-            
             m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
             m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
-            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setFont( shrinkTextSizeToFit( m_cities[ count ]->text(), m_theme->elementRect( QString( "city%1" ).arg( count ) ) ) );
+            
+            m_titles[ count ]->setText( truncateTextToFit( event[ 0 ].toString(),
+                m_titles[ count ]->font(),
+                m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setText( truncateTextToFit( event[ 1 ].toString(),
+                m_dates[ count ]->font(),
+                m_theme->elementRect(  QString( "date%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setText( truncateTextToFit( event[ 3 ].toString(),
+                m_cities[ count ]->font(),
+                m_theme->elementRect(  QString( "city%1" ).arg( count ) ) ) );
+            
             
             count++;
         }
@@ -150,14 +161,20 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
             const QVariantList event = iter.value().toList();
             if( event.size() == 0 || count > 4) continue; // empty event
             
-            m_titles[ count ]->setText( event[ 0 ].toString() );
-            m_dates[ count ]->setText( event[ 1 ].toString() );
-            m_locations[ count ]->setText( event[ 2 ].toString() );
-            
             m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect( QString( "title%1" ).arg( count ) ) ) );
             m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
-            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setFont( shrinkTextSizeToFit( m_cities[ count ]->text(), m_theme->elementRect( QString( "city%1" ).arg( count ) ) ) );
             
+            m_titles[ count ]->setText( truncateTextToFit( event[ 0 ].toString(),
+                m_titles[ count ]->font(),
+                m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setText( truncateTextToFit( event[ 1 ].toString(),
+                m_dates[ count ]->font(),
+                m_theme->elementRect(  QString( "date%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setText( truncateTextToFit( event[ 3 ].toString(),
+                m_cities[ count ]->font(),
+                m_theme->elementRect(  QString( "city%1" ).arg( count ) ) ) );
+                
             count++;
         }
     }
@@ -170,13 +187,19 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
             const QVariantList event = iter.value().toList();
             if( event.size() == 0 || count > 14) continue; // empty event
             
-            m_titles[ count ]->setText( event[ 0 ].toString() );
-            m_dates[ count ]->setText( event[ 1 ].toString() );
-            m_locations[ count ]->setText( event[ 2 ].toString() );
-            
             m_titles[ count ]->setFont( shrinkTextSizeToFit( m_titles[ count ]->text(), m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
             m_dates[ count ]->setFont( shrinkTextSizeToFit( m_dates[ count ]->text(), m_theme->elementRect( QString( "date%1" ).arg( count ) ) ) );
-            m_locations[ count ]->setFont( shrinkTextSizeToFit( m_locations[ count ]->text(), m_theme->elementRect( QString( "location%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setFont( shrinkTextSizeToFit( m_cities[ count ]->text(), m_theme->elementRect( QString( "city%1" ).arg( count ) ) ) );
+            
+            m_titles[ count ]->setText( truncateTextToFit( event[ 0 ].toString(),
+                m_titles[ count ]->font(),
+                m_theme->elementRect(  QString( "title%1" ).arg( count ) ) ) );
+            m_dates[ count ]->setText( truncateTextToFit( event[ 1 ].toString(),
+                m_dates[ count ]->font(),
+                m_theme->elementRect(  QString( "date%1" ).arg( count ) ) ) );
+            m_cities[ count ]->setText( truncateTextToFit( event[ 3 ].toString(),
+                m_cities[ count ]->font(),
+                m_theme->elementRect(  QString( "city%1" ).arg( count ) ) ) );
             
             count++;
         }
@@ -198,15 +221,15 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     {
         QString titleElement = QString( "title%1" ).arg( i );
         QString dateElement = QString( "date%1" ).arg( i );
-        QString locationElement = QString( "location%1" ).arg( i );
+        QString cityElement = QString( "city%1" ).arg( i );
         
         QRectF titleRect = m_theme->elementRect( titleElement );
         QRectF dateRect = m_theme->elementRect( dateElement );
-        QRectF locationRect = m_theme->elementRect( locationElement );
+        QRectF cityRect = m_theme->elementRect( cityElement );
         
         m_titles[ i ]->setPos( titleRect.topLeft() );
         m_dates[ i ]->setPos( dateRect.topLeft() );
-        m_locations[ i ]->setPos( locationRect.topLeft() );
+        m_cities[ i ]->setPos( cityRect.topLeft() );
         
     }
     
@@ -272,8 +295,6 @@ QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& boun
 {
     int size = 12; // start here, shrink if needed
 //     QString font = "Arial";
-    if( text.length() == 0 )
-        return QFont( QString(), size );
     QFontMetrics fm( QFont( QString(), size ) );
     while( fm.height() > bounds.height() + 4 )
     {
@@ -281,14 +302,24 @@ QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& boun
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
     }
-    while( fm.width( text ) > bounds.width() )
-    {
-        size--;
-        fm = QFontMetrics( QFont( QString(), size ) );
-    }
+    
+    // for aesthetics, we make it one smaller
+    size--;
     
 //     debug() << "resulting after shrink: " << ":" << size;
     return QFont( QString(), size );
+}
+
+// returns truncated text with ... appended.
+QString LastFmEvents::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
+{
+    QFontMetrics fm( font );
+    while( fm.width( text) > bounds.width() )
+    {
+        text.chop( 4 );
+        text += "...";
+    }
+    return text;
 }
 
 void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )

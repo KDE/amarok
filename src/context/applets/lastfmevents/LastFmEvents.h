@@ -48,6 +48,7 @@ private slots:
     void configAccepted();
     
 private:
+    QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
     
     void resize( qreal oldWidth, qreal aspectRatio );
@@ -71,7 +72,7 @@ private:
     // items that go inside the svg
     QList< QGraphicsSimpleTextItem* > m_titles;
     QList< QGraphicsSimpleTextItem* > m_dates;
-    QList< QGraphicsSimpleTextItem* > m_locations;
+    QList< QGraphicsSimpleTextItem* > m_cities;
     
     bool m_friendEnabled;
     bool m_sysEnabled;

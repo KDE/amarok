@@ -29,15 +29,14 @@
 namespace Context
 {
 
-class AMAROK_EXPORT ColumnApplet : public Applet, 
+class AMAROK_EXPORT ColumnApplet : public QGraphicsItem, 
                      public Plasma::VBoxLayout
 {
 public:
-    ColumnApplet( LayoutItem* parent = 0 ) : Applet(), Plasma::VBoxLayout( parent ) {}
+    ColumnApplet( LayoutItem* parent = 0 ) : QGraphicsItem(), Plasma::VBoxLayout( parent ) {}
     
-    void setGeometry( const QRectF& rect ) { Plasma::VBoxLayout::setGeometry( rect ); }
-    QSizeF sizeHint() const { return Plasma::VBoxLayout::sizeHint(); }
-    QRectF geometry() const{ return Plasma::VBoxLayout::geometry(); }
+    QRectF boundingRect() const { return geometry(); }
+    void paint( QPainter*, const QStyleOptionGraphicsItem*, QWidget* ) {}
 };
 
 }
