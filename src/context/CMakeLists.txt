@@ -50,6 +50,7 @@ set(plasma_LIB_SRCS
     plasma/widgets/layoutitem.cpp
     plasma/widgets/vboxlayout.cpp
     plasma/widgets/flash.cpp
+    plasma/shadowitem.cpp
 )
 
 kde4_add_library(amarokplasma SHARED ${plasma_LIB_SRCS})
