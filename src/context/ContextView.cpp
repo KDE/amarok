@@ -49,6 +49,7 @@ ContextView::ContextView( QWidget* parent )
     , EngineObserver( EngineController::instance() )
     , m_background( 0 )
     , m_logo( 0 )
+    , m_columns( 0 )
 {
     DEBUG_BLOCK
 
@@ -77,7 +78,10 @@ ContextView::ContextView( QWidget* parent )
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
     
-    init();
+    m_columns = new ColumnApplet();
+    scene()->addItem( m_columns );
+    m_columns->init();
+    
     showHome();
 }
 
@@ -87,101 +91,10 @@ ContextView::~ContextView()
     clear( m_curState );
 }
 
-
-void ContextView::init()
-{
-    DEBUG_BLOCK
-    m_padding = 3;
-    m_defaultColumnSize = 400;
-    qreal width = sceneRect().width();
-    int numColumns = (int)( width - ( 2 * m_padding ) ) / m_defaultColumnSize;
-    if( numColumns == 0 ) numColumns = 1;
-    debug() << "need to create:" << numColumns << "columns";
-    for( int i = 0; i < numColumns; i++ )
-        m_columns << new ColumnApplet();
-    resizeColumns();
-}
-
-void ContextView::resizeColumns()
-{
-    DEBUG_BLOCK
-    qreal width = sceneRect().width() - 2 * m_padding;
-    int numColumns = (int)( width - 2 * m_padding ) / m_defaultColumnSize;
-    if( numColumns > m_columns.size() ) // need to make more columns
-    {
-        for( int i = m_columns.size(); i < numColumns; i++ )
-            m_columns << new ColumnApplet();
-    }
-    
-    qreal columnWidth = width / numColumns;
-    columnWidth -= ( numColumns - 1 ) * m_padding; // make room between columns
-    
-    for( int i = 0; i < numColumns; i++ ) // lay out columns
-    {
-        QPointF pos( ( ( i + 1 ) * m_padding ) + ( i * columnWidth ), m_padding );
-        QSizeF size( columnWidth, qMax( m_columns[ i ]->sizeHint().height(),
-                                        sceneRect().height() ) );
-        m_columns[ i ]->setGeometry( QRectF( pos, size ) );
-        m_columns[ i ]->setPos( pos );
-    }
-    debug() << "columns laid out, now balancing";
-    balanceColumns();
-    debug() << "result is we have:" << m_columns.size() << "columns:";
-    foreach( ColumnApplet* column, m_columns )
-        debug() << "column rect:" << column->geometry() << "pos:" << column->pos() << "# of children:" << column->count();
-}
-
-// even out columns. this checks if any one column can be made shorter by
-// moving the last applet to another column
-void ContextView::balanceColumns()
-{
-    DEBUG_BLOCK
-    int numColumns = m_columns.size();
-    if( numColumns == 1 ) // no balancing to do :)
-        return;
-
-    while( true )
-    {
-        qreal maxHeight  = -1; int maxColumn = -1;
-        for( int i = 0; i < numColumns; i++ )
-        {
-            if( m_columns[ i ]->sizeHint().height() > maxHeight )
-            {
-                maxHeight = m_columns[ i ]->sizeHint().height();
-                maxColumn = i;
-            }
-        }
-        
-        if( maxHeight == 0 ) // no applets
-            return;
-                
-        qreal maxAppletHeight = m_columns[ maxColumn ]->itemAt( m_columns[ maxColumn ]->count() - 1 )->geometry().size().height();
-        
-//         debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
-        bool found = false;
-        for( int i = 0; i < numColumns; i++ )
-        {
-            if( i == maxColumn ) continue; // don't bother
-//             debug() << "checking for column" << i << "of" << numColumns - 1;
-//             debug() << "doing math:" << m_columns[ i ]->sizeHint().height() << "+" << maxAppletHeight;
-            qreal newColHeight = m_columns[ i ]->sizeHint().height() + maxAppletHeight;
-//             debug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
-            if( newColHeight < maxHeight ) // found a new place for this applet
-            {
-//                 debug() << "found new place for an applet: column" << i;
-                m_columns[ i ]->addItem( m_columns[ maxColumn ]->takeAt( m_columns[ maxColumn ]->count() - 1 ) );
-                found = true;
-                break;
-            }
-        }
-        if( !found ) break;
-    }
-}
-
 void ContextView::clear()
 {    
     DEBUG_BLOCK;
-    m_columns.clear();
+    delete m_columns;
 }
 
 void ContextView::clear( const ContextState& state )
@@ -193,7 +106,8 @@ void ContextView::clear( const ContextState& state )
         name = "current";
     else
         return; // startup, or some other wierd case
-    
+    // TODO redo this
+    /*
     QStringList applets;
     foreach( ColumnApplet* column, m_columns )
     {
@@ -212,7 +126,7 @@ void ContextView::clear( const ContextState& state )
     debug() << "saved list of applets: " << applets;
     Amarok::config( "Context Applets" ).writeEntry( name, applets );
     Amarok::config( "Context Applets" ).sync();
-    m_columns.clear();
+    m_columns.clear();*/
 }
 
 
@@ -291,18 +205,7 @@ Applet* ContextView::addApplet(const QString& name, const QStringList& args)
 {
     AppletPointer applet = contextScene()->addApplet( name, args );
     
-    int smallestColumn = 0, min = m_columns[ 0 ]->sizeHint().height();
-    for( int i = 1; i < m_columns.size(); i++ ) // find shortest column to put
-    {                                           // the applet in
-        debug() << "comparing this column, size:" << m_columns[ i ]->sizeHint().height();
-        if( m_columns[ i ]->sizeHint().height() < min )
-            smallestColumn = i;
-    }
-    debug() << "smallest column is" << smallestColumn << "(" << min << ")" << "of" << m_columns.size();
-    
-    debug() << "found" << m_columns.size() << " column, adding applet to column:" << smallestColumn;
-    m_columns[ smallestColumn ]->addItem( applet );
-    return applet;
+    return m_columns->addApplet( applet );
 }
 
 void ContextView::zoomIn()
@@ -331,9 +234,7 @@ void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
     QSize size = m_logo->size();
     
     QSize pos = m_background->size() - size;
-    debug() << m_background->size() << "-" << size << "=" << pos;
     painter->save();
-//     painter->translate( QPointF( pos.width(), pos.height() ) );
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
     
@@ -351,8 +252,7 @@ void ContextView::resizeEvent( QResizeEvent* event )
     
     m_background->resize( width(), height() );
 //     m_logo->
-    
-    resizeColumns();
+    m_columns->update();
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )

@@ -84,9 +84,6 @@ protected:
 private:
     static ContextView* s_self;
 
-    void init();
-    void resizeColumns();
-    void balanceColumns();
     void loadConfig();
     
     void showHome();
@@ -94,10 +91,7 @@ private:
     
     typedef QPointer< Context::Applet > AppletPointer;
     // internal representation of the columns visible
-    QList< ColumnApplet* > m_columns;
-    
-    int m_defaultColumnSize;
-    int m_padding;
+    ColumnApplet* m_columns;
     
     // holds what is currently being shown
     ContextState m_curState;
