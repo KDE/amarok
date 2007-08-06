@@ -42,6 +42,8 @@ public:
     QSizeF sizeHint() const { return contentSize(); }
     
     void setRect( const QRectF& rect );
+    void setGeometry( const QRectF& rect ) { setRect( rect ); }
+    
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

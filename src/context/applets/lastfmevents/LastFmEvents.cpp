@@ -62,7 +62,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     
     m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
-    m_theme->resize( m_size  );
+    m_theme->resize( m_size );
     
     for( int i = 0; i < 14; i++ ) // create all the items
     {
@@ -97,6 +97,11 @@ LastFmEvents::~LastFmEvents()
     DEBUG_BLOCK
 }
 
+void LastFmEvents::setRect( const QRectF& rect )
+{
+    setPos( rect.topLeft() );
+    resize( rect.width(), m_aspectRatio );
+}
 
 void LastFmEvents::constraintsUpdated()
 {

@@ -75,6 +75,7 @@ CurrentTrack::~CurrentTrack()
 
 void CurrentTrack::setRect( const QRectF& rect )
 {
+    DEBUG_BLOCK
     setPos( rect.topLeft() );
     resize( rect.width(), m_aspectRatio );
 }

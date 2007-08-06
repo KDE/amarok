@@ -27,7 +27,7 @@ namespace Context
 
 ColumnApplet::ColumnApplet( QGraphicsItem * parent )
     : QGraphicsItem( parent )
-    , m_padding( 3 )
+    , m_padding( 0 )
     , m_defaultColumnSize( 300 )
 {
 }
@@ -146,7 +146,8 @@ void ColumnApplet::balanceColumns()
     if( numColumns == 1 ) // no balancing to do :)
         return;
     
-    while( true )
+    bool found = true;
+    while( found )
     {
         qreal maxHeight  = -1; int maxColumn = -1;
         for( int i = 0; i < numColumns; i++ )
@@ -160,14 +161,20 @@ void ColumnApplet::balanceColumns()
         
         if( maxHeight == 0 ) // no applets
             return;
+        if( m_layout[ maxColumn ]->count() == 1 ) // if the largest column only has
+            return; // one applet, we can't do anything more
         
-        qreal maxAppletHeight = m_layout[ maxColumn ]->itemAt( m_layout[ maxColumn ]->count() - 1 )->geometry().size().height();
+        qreal maxAppletHeight = m_layout[ maxColumn ]->itemAt( m_layout[ maxColumn ]->count() - 1 )->sizeHint().height() + 10;
+        // HACK!
+        // adding 10 is needed to cover the borders/padding... i can't get the exact
+        // value from Plasma::VBoxLayout because it's not exposed. arg!
         
-//         debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
-        bool found = false;
+        
+        debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
+        found = false;
         for( int i = 0; i < numColumns; i++ )
         {
-            if( i == maxColumn || m_layout[ i ]->count() < 2 ) continue; // don't bother
+            if( i == maxColumn ) continue; // don't bother
             debug() << "checking for column" << i << "of" << numColumns - 1;
             debug() << "doing math:" << m_layout[ i ]->sizeHint().height() << "+" << maxAppletHeight;
             qreal newColHeight = m_layout[ i ]->sizeHint().height() + maxAppletHeight;
@@ -180,7 +187,6 @@ void ColumnApplet::balanceColumns()
                 break;
             }
         }
-        if( !found ) break;
     }
 }
 
