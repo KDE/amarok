@@ -9,6 +9,8 @@ VERSION 2.0
     * Magnatune store: Support purchases using Magnatune gift cards
 
   CHANGES:
+    * Debugging output is now enabled with a runtime option (--debug). It's no
+      longer necessary to rebuild Amarok.
     * Remove the amarok loader application.
     * The custom color theme options have been removed.
     * The player window (small XMMS like thingie) was removed.
