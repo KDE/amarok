@@ -5,6 +5,7 @@
 #ifndef AMAROK_DEBUG_H
 #define AMAROK_DEBUG_H
 
+#include <KConfig>
 #include <kdebug.h>
 #include <QApplication>
 #include <QMutex>
@@ -76,40 +77,46 @@ namespace Debug
     {
         return modifieableIndent();
     }
+
+    inline bool debugEnabled()
+    {
+        KConfigGroup config = KGlobal::config()->group( "General" );
+        const bool debug = config.readEntry( "Debug Enabled", false );
+        
+        return debug; 
+    }
+
+    inline kdbgstream dbgstream()
+    {
+        static QString nodebug;
+        return debugEnabled() ? kdbgstream( QtDebugMsg ) : kdbgstream( &nodebug );
+    }
+ 
     #undef qApp
 
-
-    #ifdef NDEBUG
-        static inline kndbgstream debug()   { return kndbgstream(); }
-        static inline kndbgstream warning() { return kndbgstream(); }
-        static inline kndbgstream error()   { return kndbgstream(); }
-        static inline kndbgstream fatal()   { return kndbgstream(); }
-
-        typedef kndbgstream DebugStream;
+    #ifndef DEBUG_PREFIX
+    #define AMK_PREFIX ""
     #else
-        #ifndef DEBUG_PREFIX
-        #define AMK_PREFIX ""
-        #else
-        #define AMK_PREFIX "[" DEBUG_PREFIX "] "
-        #endif
-
-        //from kdebug.h
-        enum DebugLevels {
-            KDEBUG_INFO  = 0,
-            KDEBUG_WARN  = 1,
-            KDEBUG_ERROR = 2,
-            KDEBUG_FATAL = 3
-        };
-
-        static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX ); }
-        static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX + "[WARNING!] " ); }
-        static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX + "[ERROR!] " ); }
-        static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX ); }
-
-        typedef kdbgstream DebugStream;
-
-        #undef AMK_PREFIX
+    #define AMK_PREFIX "[" DEBUG_PREFIX "] "
     #endif
+
+    //from kdebug.h
+    enum DebugLevels {
+        KDEBUG_INFO  = 0,
+        KDEBUG_WARN  = 1,
+        KDEBUG_ERROR = 2,
+        KDEBUG_FATAL = 3
+    };
+
+        
+    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX ); }
+    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX + "[WARNING!] " ); }
+    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX + "[ERROR!] " ); }
+    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX ); }
+
+    typedef kdbgstream DebugStream;
+
+    #undef AMK_PREFIX
 
     typedef kndbgstream NoDebugStream;
 }
@@ -170,6 +177,8 @@ namespace Debug
         Block( const char *label )
                 : m_label( label )
         {
+            if( !debugEnabled() ) return;
+
             mutex.lock();
             gettimeofday( &m_start, 0 );
 
@@ -180,6 +189,8 @@ namespace Debug
 
         ~Block()
         {
+            if( !debugEnabled() ) return;
+
             mutex.lock();
             timeval end;
             gettimeofday( &end, 0 );

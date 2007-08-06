@@ -372,6 +372,8 @@ void App::handleCliArgs() //static
         pApp->mainWindow()->showHide();
     }
 
+    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) ); 
+      
     static bool firstTime = true;
     if( !firstTime && !haveArgs )
         pApp->mainWindow()->activate();
@@ -411,6 +413,8 @@ void App::initCliArgs( int argc, char *argv[] ) //static
     options.add("queue", ki18n("Queue URLs after the currently playing track"));
     options.add("l");
     options.add("load", ki18n("Load URLs, replacing current playlist"));
+    options.add("d");
+    options.add("debug", ki18n("Print verbose debugging information"));
     options.add("m");
     options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
     options.add("wizard", ki18n( "Run first-run wizard" ));
