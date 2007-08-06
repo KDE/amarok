@@ -15,9 +15,8 @@
 #define AMAROK_CURRENT_ENGINE
 
 #include "ContextObserver.h"
-
 #include "context/DataEngine.h"
-
+#include "meta/meta.h" // album observer
 /**
     This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
 
@@ -38,7 +37,9 @@
 
 */
 
-class CurrentEngine : public Context::DataEngine, public ContextObserver
+class CurrentEngine : public Context::DataEngine, 
+                      public ContextObserver,
+                      public Meta::Observer
 {
     Q_OBJECT
         
@@ -54,6 +55,8 @@ public:
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
     
+    // reimplemented from Meta::Observer
+    void metadataChanged( Meta::Album* album );
 protected:
     bool sourceRequested( const QString& name );
     

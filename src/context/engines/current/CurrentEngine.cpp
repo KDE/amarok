@@ -55,6 +55,11 @@ void CurrentEngine::message( const ContextState& state )
         update();
 }
 
+void CurrentEngine::metadataChanged( Meta::Album* album )
+{
+    setData( "albumart", album->image( coverWidth() ) );
+}
+
 void CurrentEngine::update()
 {
     DEBUG_BLOCK
@@ -73,7 +78,8 @@ void CurrentEngine::update()
     trackInfo << track->playCount();
     
     int width = coverWidth();
-    trackInfo << QVariant( track->album()->image( width ) );
+    track->album()->subscribe( this );
+    setData( "current", "albumart",  QVariant( track->album()->image( width ) ) );
     
     setData( "current", "current", trackInfo );
     

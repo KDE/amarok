@@ -93,40 +93,22 @@ ContextView::~ContextView()
 
 void ContextView::clear()
 {    
-    DEBUG_BLOCK;
     delete m_columns;
 }
 
 void ContextView::clear( const ContextState& state )
 {
-    QString name;
+    QString name = "amarok_";
+    
     if( state == Home )
-        name = "home";
+        name += "home";
     else if( state == Current )
-        name = "current";
+        name += "current";
     else
         return; // startup, or some other wierd case
-    // TODO redo this
-    /*
-    QStringList applets;
-    foreach( ColumnApplet* column, m_columns )
-    {
-        for( int i = 0; i < column->count() - 1; i++ )
-        {
-            Applet* applet = dynamic_cast< Applet* >( column->itemAt( i ) );
-            if( applet == 0 ) continue;
-            QString key = QString( "%1_%2" ).arg( name, applet->name() );
-            applets << applet->name();
-            QStringList pos;
-            pos << QString::number( applet->x() ) << QString::number( applet->y() );
-            Amarok::config( "Context Applets" ).writeEntry( key, pos );
-            debug() << "saved applet: " << key << " at position: " << pos;
-        }
-    }
-    debug() << "saved list of applets: " << applets;
-    Amarok::config( "Context Applets" ).writeEntry( name, applets );
-    Amarok::config( "Context Applets" ).sync();
-    m_columns.clear();*/
+    name += "rc";
+    
+    
 }
 
 
@@ -153,18 +135,18 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 void ContextView::showHome()
 {
     DEBUG_BLOCK
-        //clear( m_curState );
+//     clear( m_curState );
     m_curState = Home;
-    loadConfig();
+//     loadConfig();
     messageNotify( m_curState );
 }
 
 void ContextView::showCurrentTrack()
 {
     DEBUG_BLOCK
-        //clear( m_curState );
+//     clear( m_curState );
     m_curState = Current;
-    loadConfig();
+//     loadConfig();
     messageNotify( Current );
 }
 
@@ -172,27 +154,13 @@ void ContextView::showCurrentTrack()
 void ContextView::loadConfig()
 {
     DEBUG_BLOCK
-    QString cur;
+    QString cur = "amarok_";
     if( m_curState == Home ) 
-        cur == QString( "home" );
+        cur += QString( "home" );
     else if( m_curState == Current )
-        cur == QString( "current" );
+        cur += QString( "current" );
     
-    QStringList applets = Amarok::config( "Context Applets" ).readEntry( cur, QStringList() );
-    foreach( QString applet, applets )
-    {
-        QString key = QString( "%1_%2" ).arg( cur, applet );
-        QStringList pos = Amarok::config( "Context Applets" ).readEntry( key, QStringList() );
-        debug() << "trying to restore: " << key << " at: " << pos;
-        QString constraint = QString( "[Name] == '%1'" ).arg( applet );
-        KService::List offers = KServiceTypeTrader::self()->query( "Plasma/Applet", constraint ); // find the right one
-        KPluginInfo::List plugins = KPluginInfo::fromServices( offers );
-        if( plugins.size() > 0 )
-            contextScene()->addApplet( plugins[0].pluginName(), pos ); // for now we only load the first result (there should only be one...)
-        else
-            warning() << "Help! tried to load a non-existent plugin: " << applet << " at: " << pos << endl;
-    }
-    Amarok::config( "Context Applets" ).sync();
+    contextScene()->loadApplets( cur + "rc" );
 }
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
