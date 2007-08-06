@@ -283,6 +283,7 @@ set(collection_SRCS
 
 set( libcontextview_SRCS 
     context/Applet.cpp
+    context/ColumnApplet.cpp
     context/ContextView.cpp
     context/ContextObserver.cpp
     context/ContextScene.cpp
