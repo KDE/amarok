@@ -162,7 +162,7 @@ bool PodcastReader::read()
                 else if (QXmlStreamReader::name() == "item")
                 {
                     debug() << "new episode";
-                    m_current = new Meta::PodcastEpisode();
+                    m_current = new Meta::PodcastEpisode( m_channel );
                 }
             }
             else if( isEndElement() )
@@ -318,7 +318,6 @@ PodcastReader::commitEpisode()
     item->setAlbum( m_channel->name() );
 
     m_collection->acquireReadLock();
-//     m_collection->addTrack( item->name(), TrackPtr::dynamicCast( item ) );
     m_collection->addEpisode( item );
     m_collection->releaseLock();
 

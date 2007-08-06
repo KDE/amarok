@@ -19,6 +19,8 @@
 #ifndef PLAYLISTBROWSERNSPODCASTMODEL_H
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
+#include "PodcastMeta.h"
+
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
@@ -48,6 +50,9 @@ class PodcastModel : public QAbstractItemModel
 
     public slots:
         void slotUpdate();
+
+    private:
+        Meta::PodcastChannelList m_channels;
 };
 
 }

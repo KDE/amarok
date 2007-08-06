@@ -109,6 +109,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
 {
     public:
         PodcastEpisode() {};
+        PodcastEpisode( PodcastChannelPtr channel ) : m_channel( channel ) {};
 
         virtual ~PodcastEpisode() {};
 
@@ -172,7 +173,6 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         QString pubDate() const { return m_pubDate; };
         int duration() const { return m_duration; };
 
-        void setPodcastChannel( PodcastChannelPtr channel ) { m_channel = channel; };
         void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
         void setDuration( int duration ) { m_duration = duration; };
 
@@ -180,6 +180,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
 
         PodcastChannelPtr channel() { return m_channel; };
+        void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
 
     private:
         PodcastChannelPtr m_channel;

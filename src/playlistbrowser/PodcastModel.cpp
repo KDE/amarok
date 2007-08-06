@@ -30,6 +30,8 @@ PodcastModel::PodcastModel()
  : QAbstractItemModel()
 {
     DEBUG_BLOCK
+
+    m_channels = The::podcastCollection()->channels();
     connect( The::podcastCollection(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
 
@@ -39,17 +41,17 @@ PodcastModel::~PodcastModel()
 }
 
 QVariant
-PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
+PodcastModel::data(const QModelIndex & index, int role) const
 {
     DEBUG_BLOCK
-    Q_UNUSED( role )
-    debug() << k_funcinfo << " index: " << index.row() << ":" << index.column();
-    
     if ( role == Qt::DisplayRole ) {
+        debug() << k_funcinfo << " display: " << index.row() << ":" << index.column();
+        PodcastMetaCommon* pmc = static_cast<PodcastMetaCommon *>( index.internalPointer() );
+        debug() << k_funcinfo << "&pmc = " << (void *)pmc;
         switch( index.column() )
         {
-            case 0: return QString("data 0"); break;
-            case 1: return QString("data 1"); break;
+            case 0: return pmc->title(); break;
+            case 1: return pmc->description(); break;
             case 2: return QString("data 2"); break;
             case 3: return QString("data 3"); break;
             case 4: return QString("data 4"); break;
@@ -60,7 +62,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 }
 
 QModelIndex
-PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & parent) const
+PodcastModel::index(int row, int column, const QModelIndex & parent) const
 {
     DEBUG_BLOCK
     debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
@@ -77,7 +79,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
     if (!parent.isValid())
     {
         debug() << k_funcinfo << "!parent.isValid()";
-        channel = The::podcastCollection()->channels()[row];
+        channel = m_channels[row];
     }
     else
     {
@@ -97,13 +99,13 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
     if( !episode.isNull() )
     {
         debug() << k_funcinfo << "create index for Episode: " << episode->title();
-        debug() << k_funcinfo << "data: " << episode.data();
+        debug() << k_funcinfo << "row: " << row << " column: " << column << " data: " << episode.data();
         return createIndex( row, column, episode.data() );
     }
     else if( !channel.isNull() )
     {
         debug() << k_funcinfo << "create index for Channel: " << channel->title();
-        debug() << k_funcinfo << "data: " << channel.data();
+        debug() << k_funcinfo << "row: " << row << " column: " << column << " data: " << channel.data();
         return createIndex( row, column, channel.data() );
     }
     else
@@ -111,7 +113,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
 }
 
 QModelIndex
-PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
+PodcastModel::parent(const QModelIndex & index) const
 {
     DEBUG_BLOCK
     debug() << k_funcinfo << " index: " << index.row() << ":" << index.column();
@@ -121,7 +123,7 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
         return QModelIndex();
     }
 
-    PodcastMetaCommon *podcastMetaCommon = static_cast<PodcastMetaCommon*>(index.internalPointer());
+    PodcastMetaCommon *podcastMetaCommon = static_cast<PodcastMetaCommon *>(index.internalPointer());
 
     if ( typeid( * podcastMetaCommon ) == typeid( PodcastChannel ) )
     {
@@ -130,10 +132,16 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
     }
     else if ( typeid( * podcastMetaCommon ) == typeid( PodcastEpisode ) )
     {
-        PodcastEpisode *episode = static_cast<PodcastEpisode*>( podcastMetaCommon );
+        //BUG: using static_cast on podcastMetaCommon returns wrong address (exact offset of 12 bytes)
+        debug() << k_funcinfo << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
+        PodcastEpisode *episode = static_cast<PodcastEpisode *>( index.internalPointer() );
         debug() << k_funcinfo << "podcastType() == EpisodeType";
-        return createIndex( The::podcastCollection()->channels().indexOf( episode->channel() ),
-                           0, episode->channel().data() );
+        debug() << k_funcinfo << "&episode = " << (void *)episode;
+        debug() << k_funcinfo << episode->title();
+        debug() << k_funcinfo << "channel = " << (void *)episode->channel().data();
+        int row = m_channels.indexOf( episode->channel() );
+        debug() << k_funcinfo << "channel at row " << row;
+        return createIndex( row , 0, episode->channel().data() );
     }
     else
     {
@@ -143,10 +151,10 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 }
 
 int
-PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
+PodcastModel::rowCount(const QModelIndex & parent) const
 {
     DEBUG_BLOCK
-    
+
     debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
     if (parent.column() > 0)
     {
@@ -162,16 +170,33 @@ PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
     }
     else
     {
-        debug() << k_funcinfo << " parent.isValid() return episode count";
-        PodcastChannel *channel = static_cast<PodcastChannel*>(parent.internalPointer());
-        debug() << k_funcinfo << channel->episodes().count() << " episodes";
-        return channel->episodes().count();
+        debug() << k_funcinfo << " parent.isValid(): check type";
+        PodcastMetaCommon *podcastMetaCommon = static_cast<PodcastMetaCommon *>(parent.internalPointer());
+        debug() << k_funcinfo << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
+
+        if ( typeid( * podcastMetaCommon ) == typeid( PodcastChannel ) )
+        {
+            debug() << k_funcinfo << "podcastType() == ChannelType";
+            PodcastChannel *channel = static_cast<PodcastChannel*>(parent.internalPointer());
+            debug() << k_funcinfo << channel->episodes().count() << " episodes";
+            return channel->episodes().count();
+        }
+        else if ( typeid( * podcastMetaCommon ) == typeid( PodcastEpisode ) )
+        {
+            debug() << k_funcinfo << "podcastType() == EpisodeType";
+            return 0;
+        }
+        else
+        {
+            debug() << k_funcinfo << "podcastType() == ?";
+            return 0;
+        }
     }
 
 }
 
 int
-PlaylistBrowserNS::PodcastModel::columnCount(const QModelIndex & parent) const
+PodcastModel::columnCount(const QModelIndex & parent) const
 {
     debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
     return 3;
@@ -190,11 +215,11 @@ QVariant
 PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_UNUSED( orientation )
-            Q_UNUSED( role )
+    Q_UNUSED( role )
 
-            debug() << k_funcinfo << "section = " << section;
-    
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) { 
+    debug() << k_funcinfo << "section = " << section;
+
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
             case 0: return QString("Type");
@@ -203,10 +228,10 @@ PodcastModel::headerData(int section, Qt::Orientation orientation, int role) con
             default: return QString( "Section ") + QString::number( section );
         }
     } else {
-        return QVariant();   
+        return QVariant();
     }
-    
-    
+
+
 }
 
 void
@@ -214,6 +239,8 @@ PodcastModel::slotUpdate()
 {
     DEBUG_BLOCK
     //emit dataChanged( QModelIndex(),  QModelIndex() );
+
+    m_channels = The::podcastCollection()->channels();
     emit layoutChanged();
 }
 
