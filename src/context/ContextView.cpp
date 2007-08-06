@@ -47,9 +47,9 @@ ContextView* ContextView::s_self = 0;
 ContextView::ContextView( QWidget* parent )
     : QGraphicsView( parent )
     , EngineObserver( EngineController::instance() )
+    , m_columns( 0 )
     , m_background( 0 )
     , m_logo( 0 )
-    , m_columns( 0 )
 {
     DEBUG_BLOCK
 
