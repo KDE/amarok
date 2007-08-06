@@ -226,8 +226,6 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
     private:
 
-        QString m_description;
-        QString m_title;
         KUrl m_link;
         QStringList m_categories;
         QString m_copyright;

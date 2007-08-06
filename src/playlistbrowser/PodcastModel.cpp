@@ -44,15 +44,37 @@ QVariant
 PodcastModel::data(const QModelIndex & index, int role) const
 {
     DEBUG_BLOCK
-    if ( role == Qt::DisplayRole ) {
+    if ( role == Qt::DisplayRole )
+    {
         debug() << k_funcinfo << " display: " << index.row() << ":" << index.column();
         PodcastMetaCommon* pmc = static_cast<PodcastMetaCommon *>( index.internalPointer() );
         debug() << k_funcinfo << "&pmc = " << (void *)pmc;
+
+        bool isChannel = false;
+        QString title;
+        QString description;
+        if ( typeid( * pmc ) == typeid( PodcastChannel ) )
+        {
+            debug() << k_funcinfo << "podcastType() == ChannelType";
+            PodcastChannel *channel = static_cast<PodcastChannel *>(index.internalPointer());
+            title = channel->title();
+            description = channel->description();
+            isChannel = true;
+        }
+        else if ( typeid( * pmc ) == typeid( PodcastEpisode ) )
+        {
+            debug() << k_funcinfo << "podcastType() == EpisodeType";
+            PodcastEpisode *episode = static_cast<PodcastEpisode *>(index.internalPointer());
+            title = episode->title();
+            description = episode->description();
+            isChannel = false;
+        }
+
         switch( index.column() )
         {
-            case 0: return pmc->title(); break;
-            case 1: return pmc->description(); break;
-            case 2: return QString("data 2"); break;
+            case 0: return isChannel ? QString("Channel") : QString("Episode"); break;
+            case 1: return title; break;
+            case 2: return description; break;
             case 3: return QString("data 3"); break;
             case 4: return QString("data 4"); break;
             default: return QString("data ?"); break;
