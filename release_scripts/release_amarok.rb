@@ -2,24 +2,22 @@
 #
 # Ruby script for generating Amarok tarball releases from KDE SVN
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (C) 2006-2007 Harald Sitter <sitter.harald@gmail.com>
+# (C) 2005 Mark Kretschmann <kretschmann@kde.org>
 # Some parts of this code taken from cvs2dist
 # License: GNU General Public License V2
 
+require 'fileutils'
 
-# Red Cards (removes translation)
-doc_redcards = ""
-po_redcards = ""
-
-tag = nil
-useStableBranch=false
+tag             = nil
+useStableBranch = false
 
 # Ask whether using branch or trunk
 location = `kdialog --combobox "Select checkout's place:" "Trunk" "Stable" "Tag"`.chomp()
 if location == "Tag"
     tag = `kdialog --inputbox "Enter tag name: "`.chomp()
 elsif location == "Stable"
-    useStableBranch=true
+    useStableBranch = true
 end
 
 # Ask user for targeted application version
@@ -28,7 +26,8 @@ if tag and not tag.empty?()
 else
     version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
 end
-user = `kdialog --inputbox "Your SVN user:"`.chomp()
+
+user     = `kdialog --inputbox "Your SVN user:"`.chomp()
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
 name     = "amarok"
@@ -40,12 +39,14 @@ do_l10n  = true
 oldmake = ENV["UNSERMAKE"]
 ENV["UNSERMAKE"] = "no"
 
+
 # Remove old folder, if exists
-`rm -rf #{folder} 2> /dev/null`
-`rm -rf #{folder}.tar.bz2 2> /dev/null`
+FileUtils.rm_rf( folder )
+FileUtils.rm_rf( "#{folder}.tar.bz2" )
 
 Dir.mkdir( folder )
 Dir.chdir( folder )
+
 branch="trunk"
 
 if useStableBranch
@@ -79,8 +80,8 @@ if do_l10n
     # docs
     for lang in i18nlangs
         lang.chomp!()
-        `rm -Rf ../doc/#{lang}`
-        `rm -rf amarok`
+        FileUtils.rm_rf( "../doc/#{lang}" )
+        FileUtils.rm_rf( name )
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
         `svn co -q #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/#{docdirname} > /dev/null 2>&1`
         next unless FileTest.exists?( "amarok" )
@@ -99,12 +100,6 @@ if do_l10n
         puts( "done.\n" )
     end
 
-    # red cards for documentation
-    for redcard in doc_redcards
-        `rm -rf #{redcard}`
-        print "\n Removed #{redcard} due to broken translation in last release \n"
-    end
-
     Dir.chdir( ".." ) # multimedia
     puts "\n"
 
@@ -120,7 +115,7 @@ if do_l10n
         dest = "po/#{lang}"
         Dir.mkdir( dest )
         print "Copying #{lang}'s #{name}.po over ..  "
-        `mv l10n/amarok.po #{dest}`
+        FileUtils.mv( "l10n/amarok.po", dest )
         puts( "done.\n" )
 
         makefile = File.new( "#{dest}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
@@ -132,23 +127,17 @@ if do_l10n
         $subdirs = true
     end
 
-    # red cards for translations
-    for redcard in po_redcards
-        `rm -rf #{redcard}`
-        print "\n Removed #{redcard} due to broken translation in last release \n"
-    end
-
     if $subdirs
         makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "SUBDIRS = $(AUTODIRS)\n"
         makefile.close()
         # Remove xx language
-        `rm -rf po/xx`
+        FileUtils.rm_rf( "po/xx" )
     else
-        `rm -rf po`
+        FileUtils.rm_rf( "po" )
     end
 
-    `rm -rf l10n`
+    FileUtils.rm_rf( "l10n" )
 end
 
 puts "\n"
@@ -160,25 +149,24 @@ puts "\n"
 if useStableBranch
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
     `mv multimedia/* .`
-    `rmdir multimedia`
+    FileUtils.rm_rf( "multimedia" )
 end
 
 Dir.chdir( "amarok" )
 
 # Move some important files to the root folder
-`mv AUTHORS ..`
-`mv ChangeLog ..`
-`mv COPYING ..`
-`mv COPYING.LGPL ..`
-`mv INSTALL ..`
-`mv README ..`
-`mv TODO ..`
+FileUtils.mv( "AUTHORS", ".." )
+FileUtils.mv( "ChangeLog", ".." )
+FileUtils.mv( "COPYING", ".." )
+FileUtils.mv( "COPYING.LGPL", ".." )
+FileUtils.mv( "INSTALL", ".." )
+FileUtils.mv( "README", ".." )
+FileUtils.mv( "TODO", ".." )
 
 # This stuff doesn't belong in the tarball
-`rm -rf src/scripts/rbot`
-`rm -rf release_scripts`
-`rm -rf src/engine/gst10` #Removed for now
-`rm -rf supplementary_scripts`
+FileUtils.rm_rf( "release_scripts" )
+FileUtils.rm_rf( "src/engine/gst10" ) #Removed for now
+FileUtils.rm_rf( "supplementary_scripts" )
 
 Dir.chdir( "src" )
 
@@ -201,18 +189,18 @@ puts "**** Generating Makefiles..  "
 `make -f Makefile.cvs`
 puts "done.\n"
 
-`rm -rf autom4te.cache`
-`rm stamp-h.in`
+FileUtils.rm_rf( "autom4te.cache" )
+FileUtils.rm_rf( "stamp-h.in" )
 
 
 puts "**** Compressing..  "
-`mv * ..`
+FileUtils.mv( ".", ".." )
 Dir.chdir( ".." ) # Amarok-foo
-`rm -rf multimedia`
+FileUtils.rm_rf( "multimedia" )
 Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
 `bzip2 #{folder}.tar`
-`rm -rf #{folder}`
+FileUtils.rm_rf( folder )
 puts "done.\n"
 
 
