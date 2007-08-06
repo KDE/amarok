@@ -101,10 +101,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX; }
-        static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << ind + AMK_PREFIX; }
+        static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX ); }
+        static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX + "[WARNING!] " ); }
+        static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX + "[ERROR!] " ); }
+        static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return kdbgstream( QtDebugMsg ) << qPrintable( ind + AMK_PREFIX ); }
 
         typedef kdbgstream DebugStream;
 
@@ -196,7 +196,7 @@ namespace Debug
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
             kDebug() << "END__: " << m_label
-                      << " - Took " << QString::number( duration, 'g', 2 ) << "s\n";
+                      << " - Took " << qPrintable( QString::number( duration, 'g', 2 ) ) << "s\n";
             mutex.unlock();
         }
     };
