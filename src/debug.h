@@ -1,9 +1,14 @@
 // Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-5
+// Author:    Mark Kretschmann <kretschmann@kde.org>, (C) 2007 
 // Copyright: See COPYING file that comes with this distribution
 //
 
 #ifndef AMAROK_DEBUG_H
 #define AMAROK_DEBUG_H
+
+// We always want debug output available at runtime
+#undef QT_NO_DEBUG_OUTPUT
+#undef KDE_NO_DEBUG_OUTPUT
 
 #include <KConfig>
 #include <kdebug.h>
@@ -88,8 +93,7 @@ namespace Debug
 
     inline kdbgstream dbgstream()
     {
-        static QString nodebug;
-        return debugEnabled() ? kdbgstream( QtDebugMsg ) : kdbgstream( &nodebug );
+        return debugEnabled() ? kdbgstream( QtDebugMsg ) : kDebugDevNull();
     }
  
     #undef qApp
