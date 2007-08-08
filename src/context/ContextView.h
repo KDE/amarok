@@ -100,6 +100,8 @@ private:
     Svg *m_background;
     Svg *m_logo;
     
+    qreal m_width;
+    qreal m_aspectRatio;
 };
 
 } // Context namespace

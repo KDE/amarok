@@ -77,6 +77,9 @@ ContextView::ContextView( QWidget* parent )
     m_background = new Svg( "widgets/amarok-wallpaper", this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
+    m_width = 300; // TODO hardcoding for now, do we want this configurable?
+    m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width(); 
+    m_logo->resize( m_width, m_width*m_aspectRatio );
     
     m_columns = new ColumnApplet();
     scene()->addItem( m_columns );
@@ -108,7 +111,15 @@ void ContextView::clear( const ContextState& state )
         return; // startup, or some other wierd case
     name += "rc";
     
+    // now we save the state, remembering the column info etc
+    KConfig appletConfig( name );
+    // erase previous config
+    foreach( const QString& group, appletConfig.groupList() )
+        appletConfig.deleteGroup( group );
     
+    m_columns->saveToConfig( appletConfig );
+    
+    contextScene()->clearApplets();
 }
 
 
@@ -135,18 +146,18 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 void ContextView::showHome()
 {
     DEBUG_BLOCK
-//     clear( m_curState );
+    clear( m_curState );
     m_curState = Home;
-//     loadConfig();
+    loadConfig();
     messageNotify( m_curState );
 }
 
 void ContextView::showCurrentTrack()
 {
     DEBUG_BLOCK
-//     clear( m_curState );
+    clear( m_curState );
     m_curState = Current;
-//     loadConfig();
+    loadConfig();
     messageNotify( Current );
 }
 
@@ -159,8 +170,11 @@ void ContextView::loadConfig()
         cur += QString( "home" );
     else if( m_curState == Current )
         cur += QString( "current" );
+    cur += "rc";
     
-    contextScene()->loadApplets( cur + "rc" );
+    contextScene()->clearApplets();
+    KConfig appletConfig( cur, KConfig::OnlyLocal );
+    m_columns->loadConfig( appletConfig );
 }
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
@@ -202,6 +216,8 @@ void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
     QSize size = m_logo->size();
     
     QSize pos = m_background->size() - size;
+    qreal newHeight  = m_aspectRatio * m_width;
+    m_logo->resize( QSize( m_width, newHeight ) );
     painter->save();
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();

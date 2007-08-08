@@ -1,10 +1,5 @@
 /***************************************************************************
 * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
-*                                                                         *
-*                        Significant parts of this code is inspired       *
-*                        and/or copied from KDE Plasma sources, available *
-*                        at kdebase/workspace/plasma                      *
-*
 **************************************************************************/
 
 /***************************************************************************
@@ -18,6 +13,7 @@
 
 #include "ColumnApplet.h"
 
+#include "ContextScene.h"
 #include "debug.h"
 
 #include <QGraphicsScene>
@@ -28,7 +24,7 @@ namespace Context
 ColumnApplet::ColumnApplet( QGraphicsItem * parent )
     : QGraphicsItem( parent )
     , m_padding( 0 )
-    , m_defaultColumnSize( 300 )
+    , m_defaultColumnSize( 400 )
 {
 }
 
@@ -52,6 +48,61 @@ void ColumnApplet::init() // SLOT
         warning() << "no scene to get data from!!";
 }
 
+void ColumnApplet::saveToConfig( KConfig& conf )
+{
+    DEBUG_BLOCK
+    for( int i = 0; i < m_layout.size(); i++ )
+    {
+        for( int k = 0; k < m_layout[ i ]->count() ; k++ )
+        {
+            Applet* applet = dynamic_cast< Applet* >( m_layout[ i ]->itemAt( k ) );
+            if( applet != 0 )
+            {
+                KConfigGroup cg( &conf, QString::number( applet->id() ) );
+                debug() << "saving applet" << applet->name();
+                cg.writeEntry( "plugin", applet->pluginName() );
+                cg.writeEntry( "column", QString::number( i ) );
+                cg.writeEntry( "position", QString::number( k ) );
+            }
+        }
+    }
+    conf.sync();
+}
+
+void ColumnApplet::loadConfig( KConfig& conf )
+{
+    DEBUG_BLOCK
+    m_layout.clear();
+    init();
+    foreach( const QString& group, conf.groupList() )
+    {
+        KConfigGroup cg( &conf, group );
+        debug() << "loading applet:" << cg.readEntry( "plugin", QString() )
+            << QStringList() << group.toUInt() << cg.readEntry( "column", QString() ) << cg.readEntry( "position", QString() );
+        
+        ContextScene* scene = qobject_cast< ContextScene* >( this->scene() );
+        if( scene != 0 )
+        {
+            Applet* applet = scene->addApplet( cg.readEntry( "plugin", QString() ),
+                              QStringList(),
+                              group.toUInt(),
+                              QRectF() );
+            int column = cg.readEntry( "column", 1000 );
+            int pos = cg.readEntry( "position", 1000 );
+            debug() << "restoring applet to column:" << column << "and position:" << pos;
+            if( column >= m_layout.size() ) // was saved in a column that is not available now
+                addApplet( applet );
+            else
+            {
+                if( pos < m_layout[ column ]->count() ) // there is a position for it
+                    m_layout[ column ]->insertItem( pos, applet );
+                else // just append it, there is no position for it
+                    m_layout[ column ]->addItem( applet );
+            }
+        }
+    }
+}
+                    
 QRectF ColumnApplet::boundingRect() const {
 //     qreal width = 2*m_padding;
 //     qreal height = 0;
@@ -59,6 +110,7 @@ QRectF ColumnApplet::boundingRect() const {
 //     {
 //         width += column->sizeHint().width();
 
+    debug() << "returning geometry:" << m_geometry;
     return m_geometry;
 }
 // call this when the view changes size: e.g. layout needs to be recalculated
@@ -67,6 +119,67 @@ void ColumnApplet::update() // SLOT
     if( scene() ) m_geometry = scene()->sceneRect();
     resizeColumns();
 }
+
+// parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
+void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
+{
+    DEBUG_BLOCK
+    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable)) 
+    {
+        bool multiSelect = (event->modifiers() & Qt::ControlModifier) != 0;
+        if (!multiSelect) {
+            if (!isSelected()) {
+                if (scene())
+                    scene()->clearSelection();
+                setSelected(true);
+            }
+        }
+    } else if (!(flags() & ItemIsMovable)) {
+        event->ignore();
+    }
+}
+
+// parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
+void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
+{
+    DEBUG_BLOCK
+    if ( ( event->buttons() & Qt::LeftButton ) )
+    {
+        
+        // Find the active view.
+        QGraphicsView *view = 0;
+        if (event->widget())
+            view = qobject_cast<QGraphicsView *>(event->widget()->parentWidget());
+        
+        if ((flags() & ItemIsMovable) && (!parentItem() || !parentItem()->isSelected())) {
+            QPointF diff;
+            if (flags() & ItemIgnoresTransformations) {
+                    // Root items that ignore transformations need to
+                    // calculate their diff by mapping viewport coordinates to
+                    // parent coordinates. Items whose ancestors ignore
+                    // transformations can ignore this problem; their events
+                    // are already mapped correctly.
+                QTransform viewToParentTransform = (sceneTransform() * view->viewportTransform()).inverted();
+                
+                QTransform myTransform = transform().translate(pos().x(), pos().y());
+                viewToParentTransform = myTransform * viewToParentTransform;
+                
+                diff = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())))
+                    - viewToParentTransform.map(QPointF(view->mapFromGlobal(event->lastScreenPos())));
+            } else 
+            {
+                diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
+            }
+            
+            moveBy(diff.x(), diff.y());
+            
+            if (flags() & ItemIsSelectable)
+                setSelected(true);
+        }
+    }
+}
+
+
 
 AppletPointer ColumnApplet::addApplet( AppletPointer applet ) 
 {
@@ -116,6 +229,7 @@ void ColumnApplet::resizeColumns()
             m_layout[ smallestColumn ]->addItem( applet );
         }
     }
+    
     qreal columnWidth = width / numColumns;
     columnWidth -= ( numColumns - 1 ) * m_padding; // make room between columns
     

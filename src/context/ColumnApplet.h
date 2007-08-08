@@ -1,10 +1,5 @@
 /***************************************************************************
 * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
-*                                                                         *
-*                        Significant parts of this code is inspired       *
-*                        and/or copied from KDE Plasma sources, available *
-*                        at kdebase/workspace/plasma                      *
-*
 **************************************************************************/
 
 /***************************************************************************
@@ -23,6 +18,9 @@
 #include "amarok_export.h"
 #include "plasma/widgets/vboxlayout.h"
 #include "plasma/widgets/hboxlayout.h"
+
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
 
 // this class basically joins a QGraphicsItem and Plasma::VBoxLayout
 // so we can manipulate it as a QGraphicsItem from ContextView. This allows
@@ -44,8 +42,15 @@ public:
     
     AppletPointer addApplet( AppletPointer applet );
     
+    void saveToConfig( KConfig& conf );
+    void loadConfig( KConfig& conf );
+    
     void init();
     void update();
+    
+protected:
+    void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+    void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
     
 private:
     void resizeColumns();

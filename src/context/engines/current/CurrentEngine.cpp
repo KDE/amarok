@@ -44,6 +44,7 @@ bool CurrentEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
+    setData( name, QVariant());
     m_requested = true;
     return true;
 }

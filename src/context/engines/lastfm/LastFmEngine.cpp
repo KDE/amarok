@@ -86,6 +86,7 @@ bool LastFmEngine::sourceRequested( const QString& name )
         return false;
     }
     
+    setData( name, QVariant());
     return true;
 }
 
