@@ -214,6 +214,7 @@ PMPProtocol::stat( const KUrl &url )
     {
         KIO::UDSEntry entry;
         entry.insert( KIO::UDSEntry::UDS_NAME, "Available Devices" );
+        entry.insert( KIO::UDSEntry::UDS_URL, "pmp:///" );
         entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR );
         entry.insert( KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IRGRP | S_IROTH );
         statEntry( entry );

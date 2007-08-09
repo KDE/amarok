@@ -28,6 +28,9 @@
 #include "libmtp.h"
 
 class PMPProtocol;
+namespace KIO {
+    class UDSEntry;
+}
 
 class MTPBackend : public PMPBackend
 {
@@ -35,11 +38,11 @@ class MTPBackend : public PMPBackend
 
     public:
 
-        enum ObjectTypes{
-            MTP_TRACK,
-            MTP_FOLDER,
-            MTP_PLAYLIST,
-            MTP_UNKNOWN
+        enum MTPRequestType{
+            TRACK,
+            FOLDER,
+            PLAYLIST,
+            UNKNOWN
         };
 
         MTPBackend( PMPProtocol* slave, const Solid::Device &device );
@@ -59,10 +62,12 @@ class MTPBackend : public PMPBackend
     private:
         void delMusic( const QString &path, bool isdir );
         void listMusic( const QString &pathOffset );
+        void statMusic( const KUrl &url, KIO::UDSEntry &entry );
         void buildMusicListing();
         void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
         static int progressCallback( quint64 const sent, quint64 const total, void const * const data );
         int getObjectType( const QString &path );
+        int getRequestType( const QString &path );
 
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
@@ -72,10 +77,10 @@ class MTPBackend : public PMPBackend
         QString m_defaultMusicLocation;
 
         QMultiHash<QString, LIBMTP_track_t*> m_trackParentToPtrHash;
-        QMultiHash<quint32, QString> m_folderIdToPathHash;
         QMultiHash<QString, LIBMTP_folder_t*> m_folderParentToPtrHash;
-        QMultiHash<QString, quint32> m_pathToFolderIdHash;
-        QMultiHash<QString, quint32> m_pathToTrackIdHash;
+        QHash<quint32, QString> m_folderIdToPathHash;
+        QHash<QString, quint32> m_pathToFolderIdHash;
+        QHash<QString, quint32> m_pathToTrackIdHash;
         QHash<quint32, void*> m_idToPtrHash;
         QHash<quint32, int> m_objectTypeHash;
 
