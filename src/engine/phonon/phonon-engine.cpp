@@ -25,7 +25,7 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 #include <kmimetype.h>
 
 #include <phonon/mediaobject.h>
-#include <phonon/audiopath.h>
+#include <phonon/path.h>
 #include <phonon/audiooutput.h>
 #include <phonon/backendcapabilities.h>
 
@@ -35,7 +35,6 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 PhononEngine::PhononEngine()
         : EngineBase()
         , m_mediaObject( 0 )
-        , m_audioPath  ( 0 )
         , m_audioOutput( 0 )
 {
     debug() << "Yay for Phonon being constructed";
@@ -54,13 +53,11 @@ PhononEngine::init()
     debug() << "'Phonon Engine has been successfully created.'\n";
 
     m_mediaObject = new Phonon::MediaObject( this );
-    m_audioPath   = new Phonon::AudioPath( this );
     m_audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_mediaObject->setTickInterval( 100 ); // Needed for position() to work
 
-    m_mediaObject->addAudioPath( m_audioPath );
-    m_audioPath->addOutput( m_audioOutput );
+    Phonon::createPath(m_mediaObject, m_audioOutput);
 
     connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
     //connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );

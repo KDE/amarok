@@ -49,7 +49,6 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
     virtual Engine::State state() const;
 
     Phonon::MediaObject *m_mediaObject;
-    Phonon::AudioPath   *m_audioPath;
     Phonon::AudioOutput *m_audioOutput;
 
 // private slots:
