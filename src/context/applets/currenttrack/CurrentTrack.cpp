@@ -137,10 +137,9 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    DEBUG_BLOCK
     Q_UNUSED( option );
-    
-    QRect tempRect( 0, 0, 0, 0 );
-    
+        
     p->save();
     m_theme->paint( p, contentsRect, "background" );
     p->restore();
@@ -172,7 +171,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 void CurrentTrack::showConfigurationInterface()
 {
-    DEBUG_BLOCK
     if (m_config == 0) 
     {
         m_config = new KDialog();

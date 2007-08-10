@@ -129,15 +129,7 @@ ControlWidget::ControlWidget(QWidget *parent)
     : QWidget(parent)
 {
     QPushButton* hideBoxButton = new QPushButton(i18n("Hide Config Box"), this);
-    zoomInButton = new QPushButton(i18n("Zoom In"), this);
-    zoomOutButton = new QPushButton(i18n("Zoom Out"), this);
     connect(hideBoxButton, SIGNAL(pressed()), parent, SLOT(hideBox()));
-
-    m_formFactorSelector = new KComboBox(this);
-    QStringList formFactors;
-    formFactors << "Desktop" << "Media Center" << "Horizontal Panel" << "Vertical Panel";
-    m_formFactorSelector->addItems(formFactors);
-    connect(m_formFactorSelector, SIGNAL(activated(int)), this, SLOT(switchFormFactor(int)));
 
     m_appletList = new QTreeView(this);
     m_appletList->header()->hide();
@@ -158,10 +150,7 @@ ControlWidget::ControlWidget(QWidget *parent)
     //This is all to change of course
     QVBoxLayout* boxLayout = new QVBoxLayout(this);
     boxLayout->addWidget(hideBoxButton);
-    boxLayout->addWidget(m_formFactorSelector);
     boxLayout->addWidget(lockApplets);
-    boxLayout->addWidget(zoomInButton);
-    boxLayout->addWidget(zoomOutButton);
     boxLayout->addWidget(m_label);
     boxLayout->addWidget(m_appletList);
     //setLayout(boxLayout);
@@ -212,11 +201,6 @@ void ControlWidget::addApplet(const QModelIndex& plasmoidIndex)
     }
 
     emit addApplet(item->data(Qt::UserRole).toString());
-}
-
-void ControlWidget::switchFormFactor(int formFactor)
-{
-    emit setFormFactor(static_cast<Plasma::FormFactor>(formFactor));
 }
 
 //BEGIN - ControlBox
