@@ -42,9 +42,9 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="1.275"
-     inkscape:cx="210.04274"
-     inkscape:cy="401.5482"
+     inkscape:zoom="0.6375"
+     inkscape:cx="7.8480222"
+     inkscape:cy="281.38482"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2" />
@@ -1827,4 +1827,12 @@
      y="70.561417"
      id="lyricsartist"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001000000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <rect
+     style="opacity:0.08974359;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+     id="lyrics"
+     width="372.54901"
+     height="496.47058"
+     x="23.529411"
+     y="116.07843"
+     inkscape:label="#rect2447" />
 </svg>

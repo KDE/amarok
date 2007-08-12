@@ -48,6 +48,11 @@ LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     m_artist = new QGraphicsSimpleTextItem( this );
     m_site = new QGraphicsSimpleTextItem( this );
     
+    m_lyrics->setDefaultTextColor( Qt::white );
+    m_title->setBrush( QBrush( Qt::white ) );
+    m_artist->setBrush( QBrush( Qt::white ) );
+    m_site->setBrush( QBrush( Qt::white ) );
+    
     constraintsUpdated(); 
 }
 
@@ -80,10 +85,12 @@ void LyricsApplet::constraintsUpdated()
 
 void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-        
+    DEBUG_BLOCK;
     Q_UNUSED( name )
     if( data.size() == 0 ) return;
     
+    if( data.contains( "noscriptrunning" ) )
+        m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
     else if( data.contains( "error" ) )
@@ -92,6 +99,7 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
         m_lyrics->setPlainText( i18n( "Todo.... show suggestions here!" ) );
     else if( data.contains( "lyrics" ) )
     {
+        debug() << "got lyrics from engine!" << data;
         QVariantList lyrics  = data[ "lyrics" ].toList();
         m_title->setText( lyrics[ 0 ].toString() );
         m_artist->setText( lyrics[ 1 ].toString() );
@@ -109,7 +117,7 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_theme->paint( p, contentsRect, "lyricsbackground" );
         
     // align items
-//     m_lyrics->setPos( m_theme->elementRect( "lyrics" ).topLeft() );
+    m_lyrics->setPos( m_theme->elementRect( "lyrics" ).topLeft() );
     m_title->setPos( m_theme->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_theme->elementRect( "lyricsartist" ).topLeft() );
     m_site->setPos( m_theme->elementRect( "lyricslyricssite" ).topLeft() );

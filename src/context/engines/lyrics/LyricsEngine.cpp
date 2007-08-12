@@ -93,7 +93,7 @@ void LyricsEngine::update()
     
     if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
     {
-        setData( "lyrics", "noscriptrunning" );
+        setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         return;
     }
     
@@ -101,7 +101,7 @@ void LyricsEngine::update()
         lyricsResult( lyrics.toUtf8(), true );
     else
     { // fetch by lyrics script
-        setData( "lyrics", "fetching" );
+        setData( "lyrics", "fetching", "fetching" );
         debug() << "notifying without url";
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
@@ -117,7 +117,7 @@ void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     QString xmldoc = QString::fromUtf8( cXmlDoc );
     if( !doc.setContent( xmldoc ) )
     {
-        setData( "lyrics", "error" ); // couldn't fetch
+        setData( "lyrics", "error", "error" ); // couldn't fetch
         return;
     }
     
@@ -163,6 +163,7 @@ void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
             << QString() // TODO lyrics site
             << lyrics;
         
+        debug() << "sending lyrics data:" << lyricsData;
         setData( "lyrics", "lyrics", lyricsData );
         
     }
