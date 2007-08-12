@@ -137,7 +137,6 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    DEBUG_BLOCK
     Q_UNUSED( option );
         
     p->save();

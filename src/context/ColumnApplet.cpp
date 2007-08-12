@@ -24,7 +24,7 @@ namespace Context
 ColumnApplet::ColumnApplet( QGraphicsItem * parent )
     : QGraphicsItem( parent )
     , m_padding( 0 )
-    , m_defaultColumnSize( 400 )
+    , m_defaultColumnSize( 300 )
 {
 }
 
@@ -110,7 +110,7 @@ QRectF ColumnApplet::boundingRect() const {
 //     {
 //         width += column->sizeHint().width();
 
-    debug() << "returning geometry:" << m_geometry;
+//     debug() << "returning geometry:" << m_geometry;
     return m_geometry;
 }
 // call this when the view changes size: e.g. layout needs to be recalculated

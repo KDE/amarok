@@ -24,8 +24,8 @@
     This class provides Lyrics data for use in Context applets. 
 
 NOTE: The QVariant data is structured like this:
-           * the key name is the song title
-           * the data is a QString containing the plaintext lyrics
+           * the key name is lyrics
+           * the data is a QVariantList with title, artist, lyricsurl, lyrics
 */
 
 using namespace Context;

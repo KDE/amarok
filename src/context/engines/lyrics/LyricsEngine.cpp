@@ -43,7 +43,7 @@ bool LyricsEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-
+    setData( name, QVariant() );
     return true;
 }
 
@@ -157,7 +157,13 @@ void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
         
         const QString title      = el.attribute( "title" );
         
-        setData( "lyrics", title, lyrics );
+        QVariantList lyricsData;
+        lyricsData << title 
+            << EngineController::instance()->currentTrack()->artist()->name()
+            << QString() // TODO lyrics site
+            << lyrics;
+        
+        setData( "lyrics", "lyrics", lyricsData );
         
     }
 }
