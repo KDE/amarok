@@ -41,7 +41,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_fade_pos( 1 << 8, 50 ) //vector<uint>
         , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
-    changeTimeout( Amarok::config( "General" )->readNumEntry( "Timeout", 50 ) );
+    changeTimeout( Amarok::config( "General" )->readNumEntry( "Timeout", 20 ) );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumWidth( MAX_COLUMNS*(WIDTH+1) -1 );
@@ -420,7 +420,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
     //the id of each menu item is the value of the attribute it represents,
     //so mapping is concise.
 
-    const uint ids[] = { 100, 50, 33, 25, 20, 10 };
+    const uint ids[] = { 50, 33, 25, 20, 10 };
 
     KPopupMenu menu;
     menu.insertTitle( i18n( "Framerate" ) );
