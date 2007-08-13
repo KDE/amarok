@@ -1,7 +1,6 @@
 #include <Carbon/Carbon.h>
 #include <QStringList>
 #include "dynamicmode.h"
-#include "playlistwindow.h"
 
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 
@@ -17,8 +16,10 @@ appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
     {
         if(aeID == kAEReopenApplication)
         {
+#if 0
             if( PlaylistWindow::self() )
                 PlaylistWindow::self()->show();
+#endif
         }
         return noErr;
     }
