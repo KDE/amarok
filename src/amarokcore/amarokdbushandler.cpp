@@ -28,6 +28,7 @@
 #include "collectiondb.h"
 #include "collection/collectionmanager.h"
 #include "collection/SqlStorage.h"
+#include "context/LyricsManager.h"
 #include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -766,16 +767,10 @@ DbusContextHandler::DbusContextHandler()
     QDBusConnection::sessionBus().registerObject("/Context", this);
 }
 
-// TODO reimplement!!
-void DbusContextHandler::showLyrics()
-{
-    //     LyricsItem::instance()->showLyrics( QString() );
-}
-
 void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 {
-    Q_UNUSED( lyrics )
-    //     LyricsItem::instance()->lyricsResult( lyrics );
+    DEBUG_BLOCK
+    LyricsManager::self()->lyricsResult( lyrics );
 }
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusCollectionHandler

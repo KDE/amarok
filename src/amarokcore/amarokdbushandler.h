@@ -165,7 +165,6 @@ public:
     DbusContextHandler();
     
 public:
-    virtual void showLyrics();
     virtual void showLyrics( const QByteArray& in );
 };
 

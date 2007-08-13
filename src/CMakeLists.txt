@@ -290,6 +290,7 @@ set( libcontextview_SRCS
     context/ControlBox.cpp
     context/CoverBling.cpp
     context/DataEngineManager.cpp
+    context/LyricsManager.cpp
     context/Svg.cpp
     context/widgets/TextWidget.cpp
     context/widgets/VBoxLayout.cpp

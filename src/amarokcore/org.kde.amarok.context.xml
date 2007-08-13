@@ -2,7 +2,7 @@
 "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.kde.Amarok.Context">
-    <method name="showLyrics" />
+<!--     <metshod name="showLyrics" /> -->
     <method name="showLyrics" >
         <arg name="lyrics" type="ay" direction="in" />
     </method>

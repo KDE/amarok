@@ -16,7 +16,8 @@
 
 #include "ContextObserver.h"
 
-#include <context/DataEngine.h>
+#include "context/DataEngine.h"
+#include "context/LyricsManager.h"
 
 #include <kio/job.h>
 
@@ -30,7 +31,7 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public ContextObserver
+class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver
 {
     Q_OBJECT
 public:
@@ -39,12 +40,13 @@ public:
     QStringList sources() const;
     
     void message( const ContextState& state );
+    
+    void newLyrics( QStringList& lyrics );
+    void lyricsMessage( QString& message );
+    
 protected:
     
     bool sourceRequested( const QString& name );
-    
-private slots:
-    void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false );
     
 private:
     void update();

@@ -28,6 +28,7 @@ using namespace Context;
 LyricsEngine::LyricsEngine( QObject* parent, const QStringList& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
+    , LyricsObserver( LyricsManager::self() )
 {
     DEBUG_BLOCK
     m_requested = true; // testing
@@ -92,81 +93,37 @@ void LyricsEngine::update()
     }
     
     if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
-    {
+    {   
+        clearData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         return;
     }
     
     if( cached )
-        lyricsResult( lyrics.toUtf8(), true );
+        LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
     else
     { // fetch by lyrics script
+        clearData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        debug() << "notifying without url";
+        debug() << "telling scripts to fetch lyrics!";
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
     
 }
-void LyricsEngine::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
+
+void LyricsEngine::newLyrics( QStringList& lyrics )
 {
-    Q_UNUSED( cached )
     DEBUG_BLOCK
-    
-    QDomDocument doc;
-    QString xmldoc = QString::fromUtf8( cXmlDoc );
-    if( !doc.setContent( xmldoc ) )
-    {
-        setData( "lyrics", "error", "error" ); // couldn't fetch
-        return;
-    }
-    
-    QString lyrics;
-    
-    QDomElement el = doc.documentElement();
-    
-    ScriptManager* const sm = ScriptManager::instance();
-    KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ),  KConfig::NoGlobals );
-    spec.setGroup( "Lyrics" );
-    
-    if ( el.tagName() == "suggestions" )
-    {
-        
-        const QDomNodeList l = doc.elementsByTagName( "suggestion" );
-        
-        if( l.length() ==0 )
-        {
-            setData( "lyrics", "not found" );
-        }
-        else
-        {
-            QVariantList suggested;
-            for( uint i = 0; i < l.length(); ++i ) {
-                const QString url    = l.item( i ).toElement().attribute( "url" );
-                const QString artist = l.item( i ).toElement().attribute( "artist" );
-                const QString title  = l.item( i ).toElement().attribute( "title" );
-                
-                suggested << QString( "%1 - %2 %3" ).arg( title, artist, url );
-            }
-            setData( "lyrics", "suggested", suggested );
-        }
-    } else
-    {
-        lyrics = el.text();
-        CollectionDB::instance()->setLyrics( EngineController::instance()->currentTrack()->url(), xmldoc, EngineController::instance()->currentTrack()->prettyUrl() ); // TODO port to new Meta:: api
-        
-        const QString title      = el.attribute( "title" );
-        
-        QVariantList lyricsData;
-        lyricsData << title 
-            << EngineController::instance()->currentTrack()->artist()->name()
-            << QString() // TODO lyrics site
-            << lyrics;
-        
-        debug() << "sending lyrics data:" << lyricsData;
-        setData( "lyrics", "lyrics", lyricsData );
-        
-    }
+    debug() << "got new lyrics, sending to applets!";
+    clearData( "lyrics" );
+    setData( "lyrics", "lyrics", lyrics );
+}
+
+void LyricsEngine::lyricsMessage( QString& msg )
+{
+    clearData( "lyrics" );
+    setData( "lyrics", msg, msg );
 }
 
 #include "LyricsEngine.moc"

@@ -89,11 +89,14 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
     Q_UNUSED( name )
     if( data.size() == 0 ) return;
     
+    debug() << "data:" << data;
     if( data.contains( "noscriptrunning" ) )
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )
+    {
+        debug() << "fetching";
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-    else if( data.contains( "error" ) )
+    }else if( data.contains( "error" ) )
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection." ) );
     else if( data.contains( "suggested" ) )
         m_lyrics->setPlainText( i18n( "Todo.... show suggestions here!" ) );
