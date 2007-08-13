@@ -23,20 +23,26 @@
 #endif
 
 #include <string>
+#if 1
 #include <strigi/streamthroughanalyzer.h>
 #include <strigi/analyzerplugin.h>
 #include <strigi/analysisresult.h>
 #include <strigi/fieldtypes.h>
 #include <strigi/textutils.h>
+#else
+#include "streamthroughanalyzer.h"
+#include "analyzerplugin.h"
+#include "analysisresult.h"
+#include "fieldtypes.h"
+#include "textutils.h"
+#endif
 
 using namespace Strigi;
 
 class AudibleThroughAnalyzerFactory;
 
-static const Strigi::RegisteredField *lengthField = 0,
-             *sampleRateField = 0,
+static const Strigi::RegisteredField *sampleRateField = 0,
              *channelsField = 0,
-             *encodingField = 0,
              *audioDurationField = 0,
              *mimeTypeField = 0,
              *audioArtistField = 0,
@@ -63,6 +69,7 @@ private:
 public:
     AudibleThroughAnalyzer(const AudibleThroughAnalyzerFactory* f) :factory(f) {}
     ~AudibleThroughAnalyzer() {}
+    const char *name() const { return "Audible"; }
     void setIndexable(Strigi::AnalysisResult* i) {
         analysisResult = i;
     }
