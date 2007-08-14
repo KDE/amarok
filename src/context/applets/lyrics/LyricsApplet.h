@@ -43,7 +43,11 @@ public:
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
     
+signals:
+    void changed();
+    
 private:
+    void calculateHeight();
     void resize( qreal newWidth, qreal aspectRatio );
     
     Context::Svg* m_theme;

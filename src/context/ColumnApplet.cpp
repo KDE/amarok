@@ -42,7 +42,7 @@ void ColumnApplet::init() // SLOT
         if( numColumns == 0 ) numColumns = 1;
         debug() << "need to create:" << numColumns << "columns";
         for( int i = 0; i < numColumns; i++ )
-            m_layout << new Plasma::VBoxLayout( this );
+            m_layout << new Context::VBoxLayout( this );
         resizeColumns();
     } else
         warning() << "no scene to get data from!!";
@@ -101,6 +101,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
             }
         }
     }
+    resizeColumns();
 }
                     
 QRectF ColumnApplet::boundingRect() const {
@@ -196,7 +197,17 @@ AppletPointer ColumnApplet::addApplet( AppletPointer applet )
     debug() << "found" << m_layout.size() << " column, adding applet to column:" << smallestColumn;
     m_layout[ smallestColumn ]->addItem( applet );
     
+    connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
+    
     return applet;
+}
+
+void ColumnApplet::recalculate()
+{
+    DEBUG_BLOCK
+    debug() << "got child item that wants a recalculation";
+    foreach( VBoxLayout* column, m_layout )
+        column->setGeometry( column->geometry() );
 }
 
 void ColumnApplet::resizeColumns()
@@ -209,11 +220,11 @@ void ColumnApplet::resizeColumns()
     if( numColumns > m_layout.size() ) // need to make more columns
     {
         for( int i = m_layout.size(); i < numColumns; i++ )
-            m_layout << new Plasma::VBoxLayout( this );
+            m_layout << new Context::VBoxLayout( this );
     } if( numColumns < m_layout.size() ) // view was shrunk
     {
         debug() << "gotta shrink!";
-        Plasma::VBoxLayout* column = m_layout[ m_layout.size() - 1 ];
+        Context::VBoxLayout* column = m_layout[ m_layout.size() - 1 ];
         m_layout.removeAt( m_layout.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
@@ -244,10 +255,10 @@ void ColumnApplet::resizeColumns()
     }
     debug() << "columns laid out, now balancing";
     balanceColumns();
-    foreach( Plasma::VBoxLayout* column, m_layout )
+    foreach( Context::VBoxLayout* column, m_layout )
         column->setGeometry( column->geometry() );
     debug() << "result is we have:" << m_layout.size() << "columns:";
-    foreach( Plasma::VBoxLayout* column, m_layout )
+    foreach( Context::VBoxLayout* column, m_layout )
         debug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 }
 
@@ -305,3 +316,5 @@ void ColumnApplet::balanceColumns()
 }
 
 } // Context namespace
+
+#include "ColumnApplet.moc"

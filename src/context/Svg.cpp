@@ -27,9 +27,9 @@ Svg::Svg( const QString& imagePath, QObject* parent )
 QRect Svg::elementRect( const QString& elementId )
 {
     QRect rect = Plasma::Svg::elementRect( elementId );
-    debug() << "original rect of element: " << elementId << " " << rect 
-            << " transform matrix: " << matrixForElement( elementId ) 
-            << " new rect: " << rect.translated( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
+//     debug() << "original rect of element: " << elementId << " " << rect 
+//             << " transform matrix: " << matrixForElement( elementId ) 
+//             << " new rect: " << rect.translated( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
     rect.translate( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
 
     return rect;

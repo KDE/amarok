@@ -55,19 +55,19 @@ ContextView::ContextView( QWidget* parent )
 
     s_self = this;
 
-    setFrameShape( QFrame::NoFrame );
+//     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
     
     setScene( new ContextScene( rect(), this ) );
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
-    setTransformationAnchor( QGraphicsView::AnchorUnderMouse ); // Why isn't this working???
+    setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
     setCacheMode( QGraphicsView::CacheBackground );
     setInteractive( true );
     setAcceptDrops( true );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
     setMouseTracking( true );
     
     // here we initialize all the Plasma paths to Amarok paths

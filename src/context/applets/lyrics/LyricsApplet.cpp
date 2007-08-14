@@ -109,6 +109,7 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
         m_site->setText( lyrics[ 2 ].toString() );
         
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
+        calculateHeight();
     }
     update();
 }
@@ -127,14 +128,36 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
 }
 
+void LyricsApplet::calculateHeight()
+{
+    debug() << "oldheight" << m_size.height();
+    qreal lyricsheight = m_lyrics->boundingRect().height() 
+        + m_theme->elementRect( "lyrics" ).y(); 
+    debug() << "checking if lyrics are too long for box:"
+        << lyricsheight
+        << m_theme->elementRect( "lyrics" );
+    
+    if( lyricsheight > m_theme->elementRect( "lyrics" ).height() ) // too short
+    {
+        qreal expandBy = lyricsheight - m_theme->elementRect( "lyrics" ).height();
+        debug() << "expanding by:" << expandBy;
+        m_size.setHeight( m_size.height() + expandBy );
+    }
+    m_theme->resize( m_size );
+    debug() << "newheight:" << m_size.height();
+}
+
 void LyricsApplet::resize( qreal newWidth, qreal aspectRatio )
 {
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
     
-    m_theme->resize( m_size );
+    calculateHeight();
     
+    m_theme->resize( m_size );
+    m_lyrics->setTextWidth( m_theme->elementRect( "lyrics" ).width() );
+    emit changed();
     constraintsUpdated();
 }
 

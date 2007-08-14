@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2007 by Matias Valdenegro T. <mvaldenegro@informatica.utem.cl>
- *   Copyright (C) 2007 by Leo Franchi <lfranchi@gmail.com> 
+ *   Copyright 2007 by Matias Valdenegro T. <mvaldenegro@informatica.utem.cl>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License version 2 as
@@ -20,106 +19,92 @@
 #include "VBoxLayout.h"
 
 #include "debug.h"
+
 #include <QtCore/QList>
-
-#include <KDebug>
-
-#define DEBUG_PREFIX "VBoxLayout"
 
 namespace Context
 {
 
-class VBoxLayout::Private
-{
-	public:
-		Private() {}
-		~Private() {}
-
-		QRectF geometry;
-		QList<LayoutItem *> childList;
-};
-
-
 VBoxLayout::VBoxLayout(LayoutItem *parent)
-	: Plasma::VBoxLayout(parent),
-	  d(0)
+    : BoxLayout(parent),
+      d(0)
 {
 }
 
 VBoxLayout::~VBoxLayout()
 {
-    delete d;
 }
 
-void VBoxLayout::setGeometry(const QRectF& geometry)
+Qt::Orientations VBoxLayout::expandingDirections() const
 {
-    DEBUG_BLOCK
+    return Qt::Vertical;
+}
+
+bool VBoxLayout::hasHeightForWidth() const
+{
+    return true;
+}
+
+qreal VBoxLayout::heightForWidth(qreal w) const
+{
+    Q_UNUSED(w);
+    return qreal();
+}
+
+void VBoxLayout::setGeometry(QRectF geometry)
+{
     if (!geometry.isValid() || geometry.isEmpty()) {
-        kDebug() << "Invalid Geometry!";
+        kDebug() << "Invalid Geometry " << geometry;
+        BoxLayout::setGeometry(geometry);
         return;
     }
 
-    qDebug("Geometry %p : %f, %f by %f, %f", this, geometry.x(), geometry.y(), geometry.width(), geometry.height());
+    kDebug() << this << " Geometry process " << geometry << " for " << children().count() << " children";
 
-    QList<LayoutItem *> children;
-    QList<LayoutItem *> expandingChildren;
     QList<QSizeF> sizes;
     QSizeF available = geometry.size() - QSizeF(2 * margin(), 2 * margin());
 
-    foreach (LayoutItem *l, d->childList) {
-        kDebug() << "testing layout item " << l;
-        if (l->expandingDirections() & Qt::Vertical) {
-            expandingChildren += l;
-        } else {
+    // we assume all children are fixed
 
-            children += l;
-        }
-    }
-
-    foreach (LayoutItem *l, children) {
+    foreach (LayoutItem *l, children() ) {
         QSizeF hint = l->sizeHint();
         sizes.insert(indexOf(l), QSizeF(available.width(), hint.height()));
         available -= QSizeF(0.0, hint.height() + spacing());
-    }
-
-    qreal expandHeight = (available.height() - ((expandingChildren.count() - 1) * spacing())) / expandingChildren.count();
-
-    foreach (LayoutItem *l, expandingChildren) {
-
-        sizes.insert(indexOf(l),QSizeF(available.width(), expandHeight));
+        if( available.height() < 0 )
+        {
+            geometry.setSize( QSizeF( geometry.size().width(), geometry.size().height() + (-1)*available.height() ) );
+        }
     }
 
     QPointF start = geometry.topLeft();
     start += QPointF(margin(), spacing());
 
     for (int i = 0; i < sizes.size(); i++) {
-
         LayoutItem *l = itemAt(i);
+
+        kDebug() << "Setting Geometry for child " << l << " to " << QRectF(start, sizes[i]);
 
         l->setGeometry(QRectF(start, sizes[i]));
         start += QPointF(0.0, sizes[i].height() + spacing());
     }
 
-    Plasma::BoxLayout::setGeometry(geometry);
-    /*if( sizes.size() != 0 ) // we shrink the layout
-    {
-        debug() << "looking up entry: " << sizes.size() - 1 << " in array of size: " << sizes.size();
-        qreal bottom = sizes[ sizes.size() - 1 ].height();
-        debug() << "new bottom is: " << sizeHint().height() << " and old is: " << geometry.height();
-        if( sizeHint().height() < geometry.height() )
-             d->geometry.setHeight( sizeHint().height() );
-    }*/
+    BoxLayout::setGeometry(geometry);
 }
 
-void VBoxLayout::shrinkToMinimumSize()
+QSizeF VBoxLayout::sizeHint() const
 {
-    DEBUG_BLOCK
-    QRectF geometry = this->geometry();
-     debug() << "trying to shrink size from: " << geometry.height() << " to: " << sizeHint().height();
-    if( sizeHint().height() < geometry.height() ) {
-        geometry.setSize( sizeHint() );
-        Plasma::BoxLayout::setGeometry(geometry);
+    qreal hintHeight = 0.0;
+    qreal hintWidth = 0.0;
+
+    foreach(LayoutItem *l, children()) {
+
+        QSizeF hint = l->sizeHint();
+
+        hintWidth = qMax(hint.width(), hintWidth);
+        hintHeight += hint.height() + spacing();
     }
+
+    return QSizeF(hintWidth, hintHeight);
 }
 
 }

@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2007 by Matias Valdenegro T. <mvaldenegro@informatica.utem.cl>
- *   Copyright (C) 2007 by Leo Franchi <lfranchi@gmail.com> 
+ *   Copyright 2007 by Matias Valdenegro T. <mvaldenegro@informatica.utem.cl>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License version 2 as
@@ -17,41 +16,51 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef AMAROK_VBOX_LAYOUT
-#define AMAROK_VBOX_LAYOUT
-
-#include <QtCore/QRectF>
-#include <QtCore/QSizeF>
+#ifndef AMAROK_VBOXLAYOUT
+#define AMAROK_VBOXLAYOUT
 
 #include "amarok_export.h"
-
-#include <plasma/widgets/vboxlayout.h>
-
-// note: this is the same as the plasma vboxlayout class except for we modify
-// setGeometry method so it acts like a collapsible VBoxLayout, that is, it packs
-// even expanding items from the top down according to their size hint
+#include "plasma/widgets/boxlayout.h"
 
 namespace Context
 {
 
+
 /**
  * Vertical Box Layout
+ *
+ * @author Matias Valdenegro T. <mvaldenegro@informatica.utem.cl>
+ *
+ * This class implements a Vertical Box Layout, it just lays items in vertical, from up to down.
  */
-class AMAROK_EXPORT VBoxLayout : public Plasma::VBoxLayout
+class AMAROK_EXPORT VBoxLayout : public Plasma::BoxLayout
 {
     public:
-        VBoxLayout(Plasma::LayoutItem *parent = 0);
-        virtual ~VBoxLayout();
 
-		void setGeometry(const QRectF& geometry);
+        /**
+         * Constructor.
+         */
+        explicit VBoxLayout(LayoutItem *parent = 0);
 
-        void shrinkToMinimumSize();
+        /**
+         * Virtual Destructor.
+         */
+        ~VBoxLayout();
 
-	private:
-		class Private;
-		Private *const d;
+        Qt::Orientations expandingDirections() const;
+
+        bool hasHeightForWidth() const;
+        qreal heightForWidth(qreal w) const;
+
+        void setGeometry(QRectF geometry);
+
+        QSizeF sizeHint() const;
+
+    private:
+        class Private;
+        Private *const d;
 };
 
 }
 
-#endif /* __V_BOX_LAYOUT__ */
+#endif /* AMAROK_VBOXLAYOUT */
