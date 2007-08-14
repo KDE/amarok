@@ -203,7 +203,7 @@ void MainWindow::init()
 
     QPalette p;
     QColor endColor = palette().highlight();
-    endColor.setAlpha( 200 );
+    endColor.setAlpha( 30 );
     if( endColor.darker().isValid() )
         endColor = endColor.darker();
     QColor middleColor( static_cast<int>( endColor.red() * .7 ),
