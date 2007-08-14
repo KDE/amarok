@@ -203,17 +203,21 @@ void MainWindow::init()
 
     QPalette p;
     QColor endColor = palette().highlight();
-    endColor.setAlpha( 30 );
+    endColor.setAlpha( 80 );
+    QColor startColor;
+    if( startColor.lighter().isValid() )
+        startColor = endColor.lighter();
     if( endColor.darker().isValid() )
         endColor = endColor.darker();
+    startColor.setAlpha( 80 );
     QColor middleColor( static_cast<int>( endColor.red() * .7 ),
                         static_cast<int>( endColor.green() * .7 ),
                         static_cast<int>( endColor.blue() * .7 ),
-                        100 /*alpha*/ );
+                        120 /*alpha*/ );
     middleColor = middleColor.lighter();
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
-    toolbarGradiant.setColorAt( 0, endColor );
+    toolbarGradiant.setColorAt( 0, startColor );
     toolbarGradiant.setColorAt( .7, middleColor );
     toolbarGradiant.setColorAt( 1, endColor );
     QBrush b( toolbarGradiant );
