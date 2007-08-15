@@ -23,6 +23,7 @@
 
 #include <QCoreApplication>
 #include <QString>
+#include <QTemporaryFile>
 #include <QVariant>
 
 #include <kapplication.h>
@@ -139,31 +140,11 @@ MTPBackend::getModelName() const
     return modelName;
 }
 
-int
-MTPBackend::getRequestType( const QString &origPath )
-{
-    if( !m_gotMusicListing )
-        buildMusicListing();
-    QString path = origPath;
-    int nextSlash = path.indexOf( '/' );
-    QString nextLevel;
-    if( nextSlash == -1 )
-        nextLevel = path;
-    else
-    {
-        nextLevel = path.left( path.indexOf( '/' ) );
-    }
-    if( nextLevel == m_defaultMusicLocation )
-        return MTPBackend::TRACK;
-
-    return MTPBackend::UNKNOWN;
-}
-
 void
 MTPBackend::del( const KUrl &url, bool isfile )
 {
     QString path = getFilePath( url );
-    if( getRequestType( path ) == MTPBackend::TRACK )
+    if( getObjectType( url ) == MTPBackend::TRACK )
     {
         delMusic( path, isfile );
         m_slave->listEntry( KIO::UDSEntry(), true );
@@ -210,8 +191,55 @@ MTPBackend::delMusic( const QString &path, bool isfile )
 void
 MTPBackend::get( const KUrl &url )
 {
-    QString path = getFilePath( url );
-    kDebug() << "in MTPBackend::get, path is: " << path << endl;
+    kDebug() << "in MTPBackend::get, url is: " << url << endl;
+    int type = getObjectType( url );
+    if( type == MTPBackend::TRACK )
+    {
+        QTemporaryFile tf;
+        if( !tf.open() )
+        {
+            kDebug() << "in MTPBackend::get, failed to open a temporary file!";
+            return;
+        }
+        quint32 id = getUIDFromFilename( url );
+        if( id == 0 )
+        {
+            kDebug() << "in MTPBackend::get, failed to get UID from filename!";
+            return;
+        }
+        int retval = LIBMTP_Get_Track_To_File_Descriptor( m_device, id, tf.handle(), 0, 0 );
+        if( retval != 0 )
+        {
+            kDebug() << "in MTPBackend::get, value returned from LIBMTP_Get_Track_To_File_Descriptor is not zero, it is " << retval;
+            return;
+        }
+        qint64 curr = 0;
+        const qint64 readsize = 4194304; //4MB at a time
+        for( ; curr + readsize < tf.size(); curr += readsize )
+        {
+            QByteArray qb = tf.read( readsize );
+            if( qb.size() != readsize )
+            {
+                kDebug() << "in MTPBackend::get, bytearray size is not readsize, it is " << qb.size();
+                return;
+            }
+            emit m_slave->data( qb );
+        }
+        qint64 left = tf.size() - curr;
+        if( left )
+        {
+            QByteArray qb = tf.read( left );
+            if( qb.size() != left )
+            {
+                kDebug() << "in MTPBackend::get, bytearray size is not left, it is " << qb.size();
+                return;
+            }
+            emit m_slave->data( qb );
+        }
+        emit m_slave->data( QByteArray() );
+    }
+    if( type == MTPBackend::UNKNOWN )
+        kDebug() << "in MTPBackend::get, type returned is UNKNOWN";
 }
 
 void
@@ -248,7 +276,7 @@ MTPBackend::listDir( const KUrl &url )
         buildMusicListing();
     //next case: User requests something specific...first, find out what they requested
     //and error if not appropriate
-    if( getRequestType( path ) == MTPBackend::TRACK )
+    if( getObjectType( url ) == MTPBackend::TRACK )
     {
         listMusic( path );
         m_slave->listEntry( KIO::UDSEntry(), true );
@@ -316,7 +344,7 @@ MTPBackend::stat( const KUrl &url )
         m_slave->statEntry( entry );
         return;
     }
-    if( getRequestType( path ) == MTPBackend::TRACK )
+    if( getObjectType( url ) == MTPBackend::TRACK )
         statMusic( url, entry );
     m_slave->statEntry( entry );
 }
@@ -364,7 +392,6 @@ MTPBackend::buildMusicListing()
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in base folder." << endl;
             m_trackParentToPtrHash.insert( QString::null, trackList );
             m_pathToTrackIdHash.insert( QString::number( trackList->item_id ) + QString( "_###_" ) + QString::fromUtf8( trackList->filename ),  trackList->item_id );
-            m_idToPtrHash.insert( trackList->item_id, (void*)trackList );
         }
         else
         {
@@ -372,8 +399,9 @@ MTPBackend::buildMusicListing()
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in folder " << folderPath << endl;
             m_trackParentToPtrHash.insert( folderPath, trackList );
             m_pathToTrackIdHash.insert( folderPath + "/" + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ), trackList->item_id );
-            m_idToPtrHash.insert( trackList->item_id, (void*)trackList );
         }
+        m_idToPtrHash.insert( trackList->item_id, (void*)trackList );
+        m_objectTypeHash.insert( trackList->item_id, MTPBackend::TRACK );
         trackList = trackList->next;
     }
     kDebug() << "Printing folder keys..." << endl;
@@ -406,6 +434,7 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
     m_folderIdToPathHash.insert( folderList->folder_id, nextPath );
     m_pathToFolderIdHash.insert( nextPath, folderList->folder_id );
     m_idToPtrHash.insert( folderList->folder_id, (void*)folderList );
+    m_objectTypeHash.insert( folderList->folder_id, MTPBackend::FOLDER );
 
     buildFolderList( folderList->child, nextPath );
     buildFolderList( folderList->sibling, parentPath );
@@ -426,14 +455,29 @@ MTPBackend::progressCallback( quint64 const sent, quint64 const total, void cons
 }
 
 int
-MTPBackend::getObjectType( const QString &path )
+MTPBackend::getObjectType( const KUrl &url )
 {
+    if( !m_gotMusicListing )
+        buildMusicListing();
     bool ok;
+    QString path = url.fileName();
     quint32 val = QString( path.left( path.indexOf( "_###_" ) ) ).toULong( &ok );
     if( !ok )
         return MTPBackend::UNKNOWN;
     else
         return m_objectTypeHash.value( val );
+}
+
+quint32
+MTPBackend::getUIDFromFilename( const KUrl &url )
+{
+    bool ok;
+    QString path = url.fileName();
+    quint32 val = QString( path.left( path.indexOf( "_###_" ) ) ).toULong( &ok );
+    if( !ok )
+        return 0;
+    else
+        return val;
 }
 
 #include "pmpkioslave_mtpbackend.moc"

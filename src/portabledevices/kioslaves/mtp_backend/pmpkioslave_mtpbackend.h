@@ -66,8 +66,8 @@ class MTPBackend : public PMPBackend
         void buildMusicListing();
         void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
         static int progressCallback( quint64 const sent, quint64 const total, void const * const data );
-        int getObjectType( const QString &path );
-        int getRequestType( const QString &path );
+        int getObjectType( const KUrl &path );
+        quint32 getUIDFromFilename( const KUrl &url );
 
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
