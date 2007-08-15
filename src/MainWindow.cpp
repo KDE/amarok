@@ -209,16 +209,16 @@ void MainWindow::init()
         startColor = endColor.lighter();
     if( endColor.darker().isValid() )
         endColor = endColor.darker();
-    startColor.setAlpha( 80 );
-    QColor middleColor( static_cast<int>( endColor.red() * .7 ),
-                        static_cast<int>( endColor.green() * .7 ),
-                        static_cast<int>( endColor.blue() * .7 ),
+    startColor.setAlpha( 40 );
+    QColor middleColor( static_cast<int>( endColor.red() * .5 ),
+                        static_cast<int>( endColor.green() * .5 ),
+                        static_cast<int>( endColor.blue() * .5 ),
                         120 /*alpha*/ );
     middleColor = middleColor.lighter();
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, startColor );
-    toolbarGradiant.setColorAt( .7, middleColor );
+    toolbarGradiant.setColorAt( .5, middleColor );
     toolbarGradiant.setColorAt( 1, endColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
