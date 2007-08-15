@@ -44,11 +44,14 @@ QVariant
 PodcastModel::data(const QModelIndex & index, int role) const
 {
     DEBUG_BLOCK
+
+    debug() << k_funcinfo << "index: " << index.row() << " : " << index.column();
+    if ( !index.isValid() )
+        return QVariant();
+
     if ( role == Qt::DisplayRole )
     {
-        debug() << k_funcinfo << " display: " << index.row() << ":" << index.column();
         PodcastMetaCommon* pmc = static_cast<PodcastMetaCommon *>( index.internalPointer() );
-        debug() << k_funcinfo << "&pmc = " << (void *)pmc;
 
         bool isChannel = false;
         QString title;
@@ -75,9 +78,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
             case 0: return isChannel ? QString("Channel") : QString("Episode"); break;
             case 1: return title; break;
             case 2: return description; break;
-            case 3: return QString("data 3"); break;
-            case 4: return QString("data 4"); break;
-            default: return QString("data ?"); break;
+            default: return QVariant(); break;
         }
     }
     return QVariant();
@@ -214,7 +215,6 @@ PodcastModel::rowCount(const QModelIndex & parent) const
             return 0;
         }
     }
-
 }
 
 int
@@ -225,7 +225,7 @@ PodcastModel::columnCount(const QModelIndex & parent) const
 }
 
 Qt::ItemFlags
-PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
+PodcastModel::flags(const QModelIndex & index) const
 {
     if (!index.isValid())
         return 0;
@@ -236,9 +236,6 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 QVariant
 PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    Q_UNUSED( orientation )
-    Q_UNUSED( role )
-
     debug() << k_funcinfo << "section = " << section;
 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
@@ -247,13 +244,11 @@ PodcastModel::headerData(int section, Qt::Orientation orientation, int role) con
             case 0: return QString("Type");
             case 1: return QString("Title");
             case 2: return QString("Summary");
-            default: return QString( "Section ") + QString::number( section );
+            default: return QVariant();
         }
-    } else {
-        return QVariant();
     }
 
-
+    return QVariant();
 }
 
 void
@@ -263,6 +258,7 @@ PodcastModel::slotUpdate()
     //emit dataChanged( QModelIndex(),  QModelIndex() );
 
     m_channels = The::podcastCollection()->channels();
+    emit layoutAboutToBeChanged();
     emit layoutChanged();
 }
 
