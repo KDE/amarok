@@ -25,6 +25,7 @@
 //#include "servicemodelitembase.h"
 //#include "servicemodelbase.h"
 
+#include "ServiceInfoObserver.h"
 #include "infoparserbase.h"
 
 #include "../collectionbrowser/singlecollectiontreeitemmodel.h"
