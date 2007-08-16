@@ -478,7 +478,7 @@ void TagDialog::init()
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
     m_labelCloud->write( html );
-    connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+    connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments& ) ),
              this,                             SLOT( openUrlRequest( const KUrl & ) ) );
 
     // looks better to have a blank label than 0, we can't do this in
