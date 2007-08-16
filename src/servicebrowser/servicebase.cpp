@@ -225,6 +225,17 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
 
 }
 
+void ServiceBase::subscribe(ServiceInfoObserver * observer)
+{
+    if( observer )
+        m_observers.insert( observer );
+}
+
+void ServiceBase::unsubscribe(ServiceInfoObserver * observer)
+{
+    m_observers.remove( observer );
+}
+
 
 
 #include "servicebase.moc"

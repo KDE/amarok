@@ -77,6 +77,9 @@ public:
     void setModel( SingleCollectionTreeItemModel * model );
     SingleCollectionTreeItemModel * getModel();
 
+    void subscribe( ServiceInfoObserver *observer );
+    void unsubscribe( ServiceInfoObserver *observer );
+
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
 
@@ -109,7 +112,7 @@ protected slots:
 
 protected:
 
-    
+    QSet<ServiceInfoObserver *> m_observers;
 
     static ServiceBase *s_instance;
 
