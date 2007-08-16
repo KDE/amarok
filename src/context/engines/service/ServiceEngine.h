@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROK_CURRENT_ENGINE
-#define AMAROK_CURRENT_ENGINE
+#ifndef AMAROK_SERVICE_ENGINE
+#define AMAROK_SERVICE_ENGINE
 
 #include "ContextObserver.h"
 #include "ServiceInfoObserver.h"
