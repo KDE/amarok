@@ -72,14 +72,14 @@ class PlaylistManager : public QObject
 
 }
 
-class AMAROK_EXPORT PlaylistProvider : public QObject : public Amarok::Plugin
+class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
 {
     Q_OBJECT
     public:
-        virtual ~PlaylistManager() = 0;
+        virtual ~PlaylistProvider() {};
 
         virtual QString prettyName() const = 0;
-        virtual int ofType() const = 0;
+        virtual int type() const = 0;
         virtual QString typeName() = 0;
 
 }
