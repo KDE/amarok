@@ -25,9 +25,9 @@ LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
     , m_theme( 0 )
     , m_header( 0 )
-    , m_size( QSizeF() )
     , m_aspectRatio( 0.0 )
     , m_headerAspectRatio( 0.0 )
+    , m_size( QSizeF() )
     , m_lyricsLabel( 0 )
     , m_titleLabel( 0 )
     , m_artistLabel( 0 )
@@ -190,15 +190,18 @@ void LyricsApplet::calculateHeight()
     if( lyricsheight > m_theme->elementRect( "lyrics" ).height() ) // too short
     {
         qreal expandBy = lyricsheight - m_theme->elementRect( "lyrics" ).height();
-        debug() << "expanding by:" << expandBy;
+//         debug() << "expanding by:" << expandBy;
         m_size.setHeight( m_size.height() + expandBy );
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
         qreal shrinkBy = m_theme->elementRect( "lyrics" ).height() - lyricsheight;
-        m_size.setHeight( shrinkBy );
+        debug() << "shrinking by:" << shrinkBy
+            << "final height:" << m_size.height() - shrinkBy;
+        m_size.setHeight( m_size.height() - shrinkBy );
     }*/
     
-    m_theme->resize( m_size );
+    m_theme->resize( m_size );    
+//     emit changed();
     debug() << "newheight:" << m_size.height();
 }
 
@@ -212,7 +215,6 @@ void LyricsApplet::resize( qreal newWidth, qreal aspectRatio )
     
     m_theme->resize( m_size );
     m_lyrics->setTextWidth( m_theme->elementRect( "lyrics" ).width() );
-    emit changed();
     constraintsUpdated();
 }
 
