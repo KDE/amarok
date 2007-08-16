@@ -113,6 +113,7 @@ set(libservicebrowser_SRCS
     servicebrowser/infoparserbase.cpp
     servicebrowser/ServiceSqlRegistry.cpp
     servicebrowser/ServiceAlbumCoverDownloader.cpp
+    servicebrowser/ServiceInfoProxy.cpp
 
 )
 

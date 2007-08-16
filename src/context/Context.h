@@ -24,7 +24,8 @@ namespace Context
 {
 
 enum ContextState { Home = 0 /**< Currently showing the home screen */,
-        Current /**< Showing Current Track screen*/
+        Current, /**< Showing Current Track screen*/
+        Service /** <User is browsing a service > */
 };
 
 } // Context namespace

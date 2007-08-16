@@ -28,12 +28,16 @@ namespace QueueManagerNS {
    class Model;
 }
 
+class ServiceInfoProxy;
+
 namespace The {
     PlaylistNS::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
     PopupDropperNS::PopupDropper*    PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
     /*Podcast::*/PodcastCollection*  podcastCollection();
-   QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
+    QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
+    ServiceInfoProxy *               serviceInfoProxy(); 
+
 }
 
 #endif

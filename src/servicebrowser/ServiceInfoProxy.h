@@ -17,22 +17,42 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOOBSERVER_H
-#define SERVICEINFOOBSERVER_H
+#ifndef SERVICEINFOPROXY_H
+#define SERVICEINFOPROXY_H
 
 #include "amarok_export.h"
+#include "ServiceInfoObserver.h"
 
-#include <QVariantMap>
+#include <QVariant>
+#include <QSet>
+
 
 /**
-An abstract base class for observers that wants to be notified when here is new contex information available about an active service
+A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "THE" namespace for easy access
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT ServiceInfoObserver{
+class AMAROK_EXPORT ServiceInfoProxy{
 public:
-    virtual void serviceInfoChanged( QVariantMap infoMap ) = 0;
-    virtual ~ServiceInfoObserver() {};
+
+    static AMAROK_EXPORT ServiceInfoProxy * instance();
+    ~ServiceInfoProxy();
+
+    void AMAROK_EXPORT subscribe( ServiceInfoObserver *observer );
+    void AMAROK_EXPORT unsubscribe( ServiceInfoObserver *observer );
+
+    void setInfo( QVariantMap infoMap );
+    QVariantMap AMAROK_EXPORT info();
+
+private:
+
+    ServiceInfoProxy();
+    void notifyObservers( QVariantMap infoMap ) const;
+    QSet<ServiceInfoObserver *> m_observers;
+
+    static ServiceInfoProxy * m_instance;
+
+    QVariantMap m_storedInfo;
 };
 
 #endif

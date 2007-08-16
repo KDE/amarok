@@ -17,22 +17,59 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOOBSERVER_H
-#define SERVICEINFOOBSERVER_H
+#include "ServiceInfoProxy.h"
 
-#include "amarok_export.h"
+ServiceInfoProxy * ServiceInfoProxy::m_instance = 0;
 
-#include <QVariantMap>
+ServiceInfoProxy * ServiceInfoProxy::instance()
+{
+    if ( m_instance == 0 )
+        m_instance = new ServiceInfoProxy();
 
-/**
-An abstract base class for observers that wants to be notified when here is new contex information available about an active service
+    return m_instance;
+}
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AMAROK_EXPORT ServiceInfoObserver{
-public:
-    virtual void serviceInfoChanged( QVariantMap infoMap ) = 0;
-    virtual ~ServiceInfoObserver() {};
-};
 
-#endif
+ServiceInfoProxy::ServiceInfoProxy()
+{
+}
+
+ServiceInfoProxy::~ServiceInfoProxy()
+{
+}
+
+
+void ServiceInfoProxy::subscribe(ServiceInfoObserver * observer)
+{
+    if( observer )
+        m_observers.insert( observer );
+}
+
+void ServiceInfoProxy::unsubscribe(ServiceInfoObserver * observer)
+{
+    m_observers.remove( observer );
+}
+
+void ServiceInfoProxy::notifyObservers(QVariantMap infoMap) const
+{
+    foreach( ServiceInfoObserver *observer, m_observers )
+        observer->serviceInfoChanged( infoMap );
+}
+
+void ServiceInfoProxy::setInfo(QVariantMap infoMap)
+{
+    m_storedInfo = infoMap;
+    notifyObservers( m_storedInfo );
+}
+
+QVariantMap ServiceInfoProxy::info()
+{
+    return m_storedInfo;
+}
+
+
+namespace The {
+    ServiceInfoProxy* serviceInfoProxy() { return ServiceInfoProxy::instance(); }
+}
+
+

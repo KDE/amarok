@@ -411,7 +411,7 @@ void MagnatuneStore::polish( )
         + "</td></tr></tbody></table>" );
         m_infoBox->end();
 
-
+        generateWidgetInfo();
 
     }
 

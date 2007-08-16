@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,22 +18,54 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOOBSERVER_H
-#define SERVICEINFOOBSERVER_H
+#ifndef AMAROK_CURRENT_ENGINE
+#define AMAROK_CURRENT_ENGINE
 
-#include "amarok_export.h"
-
-#include <QVariantMap>
+#include "ContextObserver.h"
+#include "ServiceInfoObserver.h"
+#include "context/DataEngine.h"
 
 /**
-An abstract base class for observers that wants to be notified when here is new contex information available about an active service
+    This class provides context information realted to the currently active service 
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    There is no data source: if you connect to the engine, you immediately
+    start getting updates when there is data. 
+
+    The key of the data is "service".
+    The data is a QMap with the keys
+        * service_name - the name of the currently running service
+ 
+
 */
-class AMAROK_EXPORT ServiceInfoObserver{
+
+class ServiceEngine : public Context::DataEngine, 
+                      public ServiceInfoObserver,
+                      public ContextObserver
+{
+    Q_OBJECT
+
+    
 public:
-    virtual void serviceInfoChanged( QVariantMap infoMap ) = 0;
-    virtual ~ServiceInfoObserver() {};
+
+    ServiceEngine( QObject* parent, const QStringList& args );
+
+    QStringList sources() const;
+    void message( const Context::ContextState& state );
+
+    void serviceInfoChanged( QVariantMap infoMap );
+
+protected:
+    bool sourceRequested( const QString& name );
+    
+private:
+    void update();
+
+    QStringList m_sources;
+    bool m_requested;
+    QVariantMap m_storedInfo;
+
 };
+
+K_EXPORT_AMAROK_DATAENGINE( service, ServiceEngine )
 
 #endif

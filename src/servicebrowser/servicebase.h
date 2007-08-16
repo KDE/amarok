@@ -25,7 +25,6 @@
 //#include "servicemodelitembase.h"
 //#include "servicemodelbase.h"
 
-#include "ServiceInfoObserver.h"
 #include "infoparserbase.h"
 
 #include "../collectionbrowser/singlecollectiontreeitemmodel.h"
@@ -77,8 +76,6 @@ public:
     void setModel( SingleCollectionTreeItemModel * model );
     SingleCollectionTreeItemModel * getModel();
 
-    void subscribe( ServiceInfoObserver *observer );
-    void unsubscribe( ServiceInfoObserver *observer );
 
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
@@ -112,9 +109,7 @@ protected slots:
 
 protected:
 
-    void notifyObservers( QVariantMap infoMap ) const;
-
-    QSet<ServiceInfoObserver *> m_observers;
+    virtual void generateWidgetInfo() const;
 
     static ServiceBase *s_instance;
 

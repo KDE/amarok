@@ -25,6 +25,9 @@
 #include "debug.h"
 #include "playlist.h"
 
+#include "TheInstances.h"
+#include "ServiceInfoProxy.h"
+
 #include <khbox.h>
 
 #include <QFrame>
@@ -225,21 +228,11 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
 
 }
 
-void ServiceBase::subscribe(ServiceInfoObserver * observer)
+void ServiceBase::generateWidgetInfo() const
 {
-    if( observer )
-        m_observers.insert( observer );
-}
-
-void ServiceBase::unsubscribe(ServiceInfoObserver * observer)
-{
-    m_observers.remove( observer );
-}
-
-void ServiceBase::notifyObservers(QVariantMap infoMap) const
-{
-    foreach( ServiceInfoObserver *observer, m_observers )
-        observer->serviceInfoChanged( infoMap );
+    QVariantMap map;
+    map["service_name"] = m_name;
+    The::serviceInfoProxy()->setInfo( map );
 }
 
 
