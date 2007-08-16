@@ -51,6 +51,9 @@ public:
     void init();
     void update();
     
+public slots:
+    void appletRemoved( QObject* object );
+    
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );

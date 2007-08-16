@@ -19,6 +19,7 @@
 #define CONTEXT_VIEW_H
 
 #include "amarok_export.h"
+#include "debug.h"
 #include "ColumnApplet.h"
 #include "Context.h"
 #include "ContextScene.h"
@@ -70,7 +71,6 @@ public slots:
     void zoomOut();
     
     Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-    
 protected:        
     void engineNewMetaData( const MetaBundle&, bool );
     void engineStateChanged( Engine::State, Engine::State = Engine::Empty );

@@ -32,8 +32,11 @@ public:
     explicit ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent = 0);
     ~ContextScene();
     
+signals:
+    void appletRemoved( QObject *object );
+   
 protected slots:
-/*    void appletDestroyed(QObject* object);*/
+    void appletDestroyed(QObject* object);
         
 protected:
     

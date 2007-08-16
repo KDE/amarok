@@ -121,6 +121,30 @@ void ColumnApplet::update() // SLOT
     resizeColumns();
 }
 
+void ColumnApplet::appletRemoved( QObject* object ) // SLOT
+{ 
+    // basically we want to reshuffle the columns since we know something is gone
+    DEBUG_BLOCK;
+    printf( "this object destroyed: %p\n", object );
+    
+    // (from corona.cpp)
+    // we do a static_cast here since it really isn't an Applet by this
+    // point anymore since we are in the qobject dtor. we don't actually
+    // try and do anything with it, we just need the value of the pointer
+    // so this unsafe looking code is actually just fine.
+//     Applet* applet = static_cast<Applet*>(object);
+//     foreach( VBoxLayout* column, m_layout )
+//     {
+//         for( int i = 0; i < column->count(); i++ )
+//         {
+//             printf( "comparing item: %i in column %p against: %p\n", i, column, column->itemAt( i ) );
+//             if( column->itemAt( i ) == applet )
+//                 column->removeItem( column->itemAt( i ) );
+//         }
+//     }
+    resizeColumns();
+}
+    
 // parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
 void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
@@ -196,6 +220,8 @@ AppletPointer ColumnApplet::addApplet( AppletPointer applet )
     
     debug() << "found" << m_layout.size() << " column, adding applet to column:" << smallestColumn;
     m_layout[ smallestColumn ]->addItem( applet );
+    
+    resizeColumns();
     
     connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
     

@@ -85,6 +85,9 @@ ContextView::ContextView( QWidget* parent )
     scene()->addItem( m_columns );
     m_columns->init();
     
+    connect(scene(), SIGNAL( appletRemoved( QObject * ) ), m_columns, SLOT( appletRemoved( QObject* ) ) );
+    
+    
     showHome();
 }
 

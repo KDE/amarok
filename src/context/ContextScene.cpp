@@ -48,7 +48,13 @@ ContextScene::~ContextScene()
 {
 }
 
+void ContextScene::appletDestroyed(QObject* object)
+{
+    DEBUG_BLOCK
+    Corona::appletDestroyed( object ); // corona needs to clean up internally
+    emit appletRemoved( object );
+}
+
 } // Context namespace
 
 #include "ContextScene.moc"
-
