@@ -112,6 +112,8 @@ protected slots:
 
 protected:
 
+    void notifyObservers( QVariantMap infoMap ) const;
+
     QSet<ServiceInfoObserver *> m_observers;
 
     static ServiceBase *s_instance;

@@ -236,6 +236,12 @@ void ServiceBase::unsubscribe(ServiceInfoObserver * observer)
     m_observers.remove( observer );
 }
 
+void ServiceBase::notifyObservers(QVariantMap infoMap) const
+{
+    foreach( ServiceInfoObserver *observer, m_observers )
+        observer->serviceInfoChanged( infoMap );
+}
+
 
 
 #include "servicebase.moc"
