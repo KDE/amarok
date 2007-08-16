@@ -141,57 +141,95 @@ MTPBackend::getModelName() const
 }
 
 void
+MTPBackend::copy( const KUrl &src, const KUrl &dst, int permissions, bool overwrite )
+{
+    Q_UNUSED( src );
+    Q_UNUSED( dst );
+    Q_UNUSED( permissions );
+    Q_UNUSED( overwrite );
+    kDebug() << "MTPBackend::copy";
+    m_slave->error( KIO::ERR_UNSUPPORTED_ACTION, i18n( "Direct copying not supported" ) );
+}
+
+void
 MTPBackend::del( const KUrl &url, bool isfile )
 {
+    if( !m_gotMusicListing )
+        buildMusicListing();
     QString path = getFilePath( url );
-    if( getObjectType( url ) == MTPBackend::TRACK )
+    if( getUIDFromPath( path ) == 0 )
     {
-        delMusic( path, isfile );
-        m_slave->listEntry( KIO::UDSEntry(), true );
+        m_slave->error( KIO::ERR_INTERNAL, "URL does not contain the MTP id!" );
+        return;
+    }
+    if( getObjectType( url ) == MTPBackend::TRACK ||
+            ( getObjectType( url ) == MTPBackend::FOLDER &&
+              path.startsWith( m_defaultMusicLocation ) ) )
+    {
+        delMusic( getNextLevelPath( path ), isfile );
     }
     else
         m_slave->error( KIO::ERR_INTERNAL, i18n( "Invalid path requested!" ) );
-
 }
 
 void
 MTPBackend::delMusic( const QString &path, bool isfile )
 {
-    if( !isfile && m_pathToFolderIdHash.contains( path ) )
+    kDebug() << "Looking for path " << path;
+    kDebug() << "isfile: " << isfile << endl;
+    quint32 id = getUIDFromPath( path );
+    if( !isfile )
     {
         //TODO:recursively delete children
-    }
-    else if( isfile && m_pathToTrackIdHash.contains( path ) )
-    {
-        if( !LIBMTP_Delete_Object( m_device, m_pathToTrackIdHash.value( path ) ) )
+        QList<LIBMTP_folder_t*> folders = m_folderParentToPtrHash.values( path );
+        QList<LIBMTP_track_t*> tracks = m_trackParentToPtrHash.values( path );
+        foreach( LIBMTP_folder_t* folder, folders )
+            delMusic( m_folderIdToPathHash.value( folder->folder_id ), false );
+        foreach( LIBMTP_track_t* track, tracks )
+            delMusic( m_trackIdToPathHash.value( track->item_id ), true );
+
+        //now do deletion of this folder
+        if( LIBMTP_Delete_Object( m_device, id ) )
         {
-            m_slave->error( KIO::ERR_INTERNAL, i18n( "libmtp reported failure deleting %1", path ) );
+            m_slave->error( KIO::ERR_INTERNAL, i18n( "libmtp reported failure deleting %1", id ) );
             return;
         }
-        quint32 trackid = m_pathToTrackIdHash.value( path );
-        m_pathToTrackIdHash.remove( path );
-        m_trackParentToPtrHash.remove( path.left( path.lastIndexOf( '/' ) ), (LIBMTP_track_t*)(m_idToPtrHash.value( trackid )) );
-        m_idToPtrHash.remove( trackid );
+        m_folderParentToPtrHash.remove( path );
+        m_trackParentToPtrHash.remove( path );
+        m_idToPtrHash.remove( id );
+        m_folderIdToPathHash.remove( id );
+        m_folderList = LIBMTP_Get_Folder_List( m_device );
+    }
+    else
+    {
+        if( LIBMTP_Delete_Object( m_device, id ) )
+        {
+            m_slave->error( KIO::ERR_INTERNAL, i18n( "libmtp reported failure deleting %1", id ) );
+            return;
+        }
+        m_trackParentToPtrHash.remove( path.left( path.lastIndexOf( '/' ) ), (LIBMTP_track_t*)(m_idToPtrHash.value( id )) );
+        m_idToPtrHash.remove( id );
+        m_trackIdToPathHash.remove( id );
         LIBMTP_track_t *behind, *curr = m_trackList;
-        while( curr && curr->item_id != trackid )
+        while( curr && curr->item_id != id )
         {
             behind = curr;
             curr = curr->next;
         }
-        if( curr->item_id == trackid )
+        if( curr->item_id == id )
         {
             behind->next = curr->next;
             LIBMTP_destroy_track_t( curr );
         }
     }
-    else
-        m_slave->error( KIO::ERR_INTERNAL, i18n( "Could not find the proper path to delete!" ) );
 }
 
 void
 MTPBackend::get( const KUrl &url )
 {
     kDebug() << "in MTPBackend::get, url is: " << url << endl;
+    if( !m_gotMusicListing )
+        buildMusicListing();
     int type = getObjectType( url );
     if( type == MTPBackend::TRACK )
     {
@@ -201,7 +239,7 @@ MTPBackend::get( const KUrl &url )
             kDebug() << "in MTPBackend::get, failed to open a temporary file!";
             return;
         }
-        quint32 id = getUIDFromFilename( url );
+        quint32 id = getUIDFromPath( getFilePath( url ) );
         if( id == 0 )
         {
             kDebug() << "in MTPBackend::get, failed to get UID from filename!";
@@ -276,7 +314,7 @@ MTPBackend::listDir( const KUrl &url )
         buildMusicListing();
     //next case: User requests something specific...first, find out what they requested
     //and error if not appropriate
-    if( getObjectType( url ) == MTPBackend::TRACK )
+    if( getObjectType( url ) == MTPBackend::FOLDER )
     {
         listMusic( path );
         m_slave->listEntry( KIO::UDSEntry(), true );
@@ -344,7 +382,15 @@ MTPBackend::stat( const KUrl &url )
         m_slave->statEntry( entry );
         return;
     }
-    if( getObjectType( url ) == MTPBackend::TRACK )
+    quint32 id = getUIDFromPath( path );
+    if( id == 0 )
+    {
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "Stat requested on an invalid path!" ) );
+        return;
+    }
+    if( getObjectType( url ) == MTPBackend::TRACK ||
+            getObjectType( url ) == MTPBackend::FOLDER &&
+            path.startsWith( m_defaultMusicLocation ) )
         statMusic( url, entry );
     m_slave->statEntry( entry );
 }
@@ -353,17 +399,18 @@ void
 MTPBackend::statMusic( const KUrl &url, KIO::UDSEntry &entry )
 {
     QString path = getFilePath( url );
-    kDebug() << "Found an instance of path " << path << " in the hash.";
-    if( m_pathToTrackIdHash.contains( path ) )
+    int type = getObjectType( url );
+    if( type == MTPBackend::TRACK  )
     {
-        quint32 id = m_pathToTrackIdHash[path];
+        quint32 id = getUIDFromPath( path );
         LIBMTP_track_t* track = static_cast<LIBMTP_track_t*>(m_idToPtrHash[id]);
         entry.insert( KIO::UDSEntry::UDS_NAME, track->filename );
         entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFREG );
+        entry.insert( KIO::UDSEntry::UDS_SIZE_LARGE, track->filesize );
     }
     else //it's a folder
     {
-        quint32 id = m_pathToFolderIdHash[path];
+        quint32 id = getUIDFromPath( path );
         LIBMTP_folder_t* folder = static_cast<LIBMTP_folder_t*>(m_idToPtrHash[id]);
         entry.insert( KIO::UDSEntry::UDS_NAME, folder->name );
         entry.insert( KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR );
@@ -383,7 +430,7 @@ MTPBackend::buildMusicListing()
     QString defaultMusicLocation = QString::number( defaultFolder->folder_id ) + "_###_" + QString::fromUtf8( defaultFolder->name );
     m_defaultMusicLocation = defaultMusicLocation;
     kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation << endl;
-    buildFolderList( folderList, QString() );
+    buildFolderList( folderList, QString::null );
     QString folderPath;
     while( trackList != 0 )
     {
@@ -391,25 +438,21 @@ MTPBackend::buildMusicListing()
         {
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in base folder." << endl;
             m_trackParentToPtrHash.insert( QString::null, trackList );
-            m_pathToTrackIdHash.insert( QString::number( trackList->item_id ) + QString( "_###_" ) + QString::fromUtf8( trackList->filename ),  trackList->item_id );
+            m_trackIdToPathHash.insert( trackList->item_id, QString::number( trackList->item_id ) + QString( "_###_" ) + QString::fromUtf8( trackList->filename ) );
         }
         else
         {
             folderPath = m_folderIdToPathHash.value( trackList->parent_id );
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in folder " << folderPath << endl;
             m_trackParentToPtrHash.insert( folderPath, trackList );
-            m_pathToTrackIdHash.insert( folderPath + "/" + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ), trackList->item_id );
+            m_trackIdToPathHash.insert( trackList->item_id, folderPath + "/" + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ) );
         }
         m_idToPtrHash.insert( trackList->item_id, (void*)trackList );
         m_objectTypeHash.insert( trackList->item_id, MTPBackend::TRACK );
         trackList = trackList->next;
     }
     kDebug() << "Printing folder keys..." << endl;
-    foreach( QString key, m_pathToFolderIdHash.keys() )
-        kDebug() << "Folder key: " << key << endl;
     kDebug() << "Printing track keys..." << endl;
-    foreach( QString key, m_pathToTrackIdHash.keys() )
-        kDebug() << "Track key: " << key << endl;
     m_gotMusicListing = true;
 }
 
@@ -421,18 +464,16 @@ MTPBackend::buildFolderList( LIBMTP_folder_t *folderList, const QString &parentP
 
     kDebug() << "buildFolderList: Found folder " << QString::fromUtf8( folderList->name ) << " in " << parentPath << endl;
 
-    QString nextPath;
-    if( parentPath.isEmpty() )
-        nextPath = QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
-    else
-        nextPath = parentPath + "/" + QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
+    QString prefix;
+    if( !parentPath.isEmpty() )
+        prefix = "/";
+    QString nextPath = parentPath + prefix + QString::number( folderList->folder_id ) + "_###_" + QString::fromUtf8( folderList->name );
 
     kDebug() << "nextPath is: " << nextPath << endl;
 
     m_folderParentToPtrHash.insert( parentPath, folderList );
     kDebug() << "inserted " << parentPath << " into m_folderParentToPtrHash" << endl;
     m_folderIdToPathHash.insert( folderList->folder_id, nextPath );
-    m_pathToFolderIdHash.insert( nextPath, folderList->folder_id );
     m_idToPtrHash.insert( folderList->folder_id, (void*)folderList );
     m_objectTypeHash.insert( folderList->folder_id, MTPBackend::FOLDER );
 
@@ -459,20 +500,23 @@ MTPBackend::getObjectType( const KUrl &url )
 {
     if( !m_gotMusicListing )
         buildMusicListing();
-    bool ok;
-    QString path = url.fileName();
-    quint32 val = QString( path.left( path.indexOf( "_###_" ) ) ).toULong( &ok );
-    if( !ok )
+    quint32 val = getUIDFromPath( getFilePath( url ) );
+    if( val == 0 )
         return MTPBackend::UNKNOWN;
     else
         return m_objectTypeHash.value( val );
 }
 
 quint32
-MTPBackend::getUIDFromFilename( const KUrl &url )
+MTPBackend::getUIDFromPath( const QString &p )
 {
     bool ok;
-    QString path = url.fileName();
+    QString path = p;
+    kDebug() << "path = " << path;
+    kDebug() << "path.lastIndexOf( '/' ) = " << path.lastIndexOf( '/' );
+    path = path.remove( 0, path.lastIndexOf( '/' ) + 1 );
+    kDebug() << "path now = " << path;
+    kDebug() << "path.left(path.indexOf( _###_ ) = " << QString( path.left( path.indexOf( "_###_" ) ) );
     quint32 val = QString( path.left( path.indexOf( "_###_" ) ) ).toULong( &ok );
     if( !ok )
         return 0;

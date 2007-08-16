@@ -42,6 +42,7 @@ class PMPBackend : public QObject
         virtual void setFriendlyName( const QString &name ) = 0;
         virtual QString getModelName() const { return QString(); }
         PMPProtocol* getSlave() const { return m_slave; }
+        virtual void copy( const KUrl &src, const KUrl &dst, int permissions, bool overwrite ) = 0;
         virtual void del( const KUrl &url, bool isdir ) = 0;
         virtual void get( const KUrl &url ) = 0;
         virtual void listDir( const KUrl &url ) = 0;
@@ -50,6 +51,7 @@ class PMPBackend : public QObject
 
     protected:
         QString getFilePath( const KUrl &url ) const;
+        QString getNextLevelPath(const QString&) const;
         QString getUrlPrefix() const;
 
         PMPProtocol *m_slave;

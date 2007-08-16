@@ -86,6 +86,16 @@ PMPProtocol::setHost( const QString &host, quint16 port,
 }
 
 void
+PMPProtocol::copy( const KUrl &src, const KUrl &dst, int permissions, bool overwrite )
+{
+    Q_UNUSED( permissions );
+    Q_UNUSED( overwrite );
+    kDebug() << endl << "Entering copy with src = " << src << ", dst = " << dst << endl;
+    //For now don't support copy
+    error( KIO::ERR_UNSUPPORTED_ACTION, i18n( "Direct copying not supported." ) );
+}
+
+void
 PMPProtocol::del( const KUrl &url, bool isfile )
 {
     kDebug() << endl << endl << "Entering del with url = " << url << endl;

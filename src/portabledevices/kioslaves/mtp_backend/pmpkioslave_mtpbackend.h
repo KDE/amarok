@@ -53,6 +53,7 @@ class MTPBackend : public PMPBackend
         QString getModelName() const;
 
     protected:
+        void copy( const KUrl &src, const KUrl &dst, int permissions, bool overwrite );
         void del( const KUrl &url, bool isfile );
         void get( const KUrl &url );
         void listDir( const KUrl &url );
@@ -67,7 +68,7 @@ class MTPBackend : public PMPBackend
         void buildFolderList( LIBMTP_folder_t *folderList, const QString &parentPath );
         static int progressCallback( quint64 const sent, quint64 const total, void const * const data );
         int getObjectType( const KUrl &path );
-        quint32 getUIDFromFilename( const KUrl &url );
+        quint32 getUIDFromPath( const QString &path );
 
         LIBMTP_mtpdevice_t *m_deviceList;
         LIBMTP_mtpdevice_t *m_device;
@@ -79,8 +80,7 @@ class MTPBackend : public PMPBackend
         QMultiHash<QString, LIBMTP_track_t*> m_trackParentToPtrHash;
         QMultiHash<QString, LIBMTP_folder_t*> m_folderParentToPtrHash;
         QHash<quint32, QString> m_folderIdToPathHash;
-        QHash<QString, quint32> m_pathToFolderIdHash;
-        QHash<QString, quint32> m_pathToTrackIdHash;
+        QHash<quint32, QString> m_trackIdToPathHash;
         QHash<quint32, void*> m_idToPtrHash;
         QHash<quint32, int> m_objectTypeHash;
 

@@ -40,14 +40,29 @@ PMPBackend::getFilePath( const KUrl &url ) const
 {
     QString path = url.path( KUrl::RemoveTrailingSlash );
 
+    //Strip off any prepended slashes
     while( path[0] == '/' )
         path.remove( 0, 1 );
 
+    //find the end of the Solid ID, strip it off
     int index = path.indexOf( '/' );
     QString filePath;
     if( index != -1 )
         filePath = path.remove( 0, index + 1 ) ;
     return filePath;
+}
+
+QString
+PMPBackend::getNextLevelPath( const QString &p ) const
+{
+    QString path = p;
+    while( path[0] == '/' )
+        path.remove( 0, 1 );
+    int index = path.indexOf( '/' );
+    QString nextPath;
+    if( index != -1 )
+        nextPath = path.remove( 0, index + 1 );
+    return nextPath;
 }
 
 QString
