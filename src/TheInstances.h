@@ -20,9 +20,8 @@ namespace PortableDevicesNS {
     class SolidHandler;
 }
 
-// namespace Podcasts {
-    class PodcastCollection;
-// }
+
+class PlaylistManager;
 
 namespace QueueManagerNS {
    class Model;
@@ -34,10 +33,9 @@ namespace The {
     PlaylistNS::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
     PopupDropperNS::PopupDropper*    PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
-    /*Podcast::*/PodcastCollection*  podcastCollection();
+    PlaylistManager*                 playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
-    ServiceInfoProxy *               serviceInfoProxy(); 
-
+    ServiceInfoProxy *               serviceInfoProxy();
 }
 
 #endif

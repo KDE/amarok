@@ -1307,7 +1307,7 @@ void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        The::podcastCollection()->addPodcast( name ); //KUrl( name ), parent );
+        //The::podcastCollection()->addPodcast( name ); //KUrl( name ), parent );
     }
 }
 

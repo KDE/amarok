@@ -31,14 +31,6 @@
 
 using namespace Meta;
 
-PodcastCollection * PodcastCollection::s_instance = 0;
-
-PodcastCollection*
-The::podcastCollection()
-{
-    return PodcastCollection::instance();
-}
-
 PodcastCollection::PodcastCollection()
  : Collection()
 {
@@ -58,7 +50,7 @@ PodcastCollection::queryMaker()
 QString
 PodcastCollection::prettyName() const
 {
-    return i18n("Podcasts");
+    return i18n("Local Podcasts");
 }
 
 QString
@@ -131,14 +123,6 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
     emit( updated() );
 }
 
-PodcastCollection *
-PodcastCollection::instance()
-{
-    if( s_instance == 0 )
-        s_instance = new PodcastCollection();
-
-    return s_instance;
-}
 
 void PodcastCollection::addPodcast(const QString & url)
 {

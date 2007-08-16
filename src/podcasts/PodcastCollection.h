@@ -22,6 +22,7 @@
 #include <collection.h>
 #include "support/memorycollection.h"
 #include "PodcastMeta.h"
+#include "playlistmanager/PlaylistManager.h"
 
 class KUrl;
 class PodcastReader;
@@ -33,7 +34,8 @@ class PodcastCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
-        static PodcastCollection * instance();
+        PodcastCollection();
+        ~PodcastCollection();
 
         virtual QueryMaker * queryMaker();
         virtual void startFullScan() { }
@@ -52,10 +54,6 @@ class PodcastCollection : public Collection, public MemoryCollection
         void addEpisode( Meta::PodcastEpisodePtr episode );
 
         Meta::PodcastChannelList channels() { return m_channels; };
-
-    protected:
-        PodcastCollection();
-        ~PodcastCollection();
 
     signals:
         void remove();

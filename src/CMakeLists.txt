@@ -40,6 +40,7 @@ add_subdirectory( podcasts )
 add_subdirectory( strigi )
 add_subdirectory( playlistbrowser )
 add_subdirectory( context )
+add_subdirectory( playlistmanager )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -280,9 +281,9 @@ set(collection_SRCS
 #####################################################################
 # CONTEXT
 #####################################################################
-# 
+#
 
-set( libcontextview_SRCS 
+set( libcontextview_SRCS
     context/Applet.cpp
     context/ColumnApplet.cpp
     context/ContextView.cpp
@@ -314,11 +315,18 @@ set(libplaylistbrowser_SRCS
 )
 
 #####################################################################
-# QUEUEMANAGER   
+# QUEUEMANAGER
 #####################################################################
 set(libqueuemanager_SRCS
     queuemanager/QueueManager.cpp
     queuemanager/QueueModel.cpp
+)
+
+#####################################################################
+# PLAYLISTMANAGER
+#####################################################################
+set(libplaylistmanager_SRCS
+    playlistmanager/PlaylistManager.cpp
 )
 
 #####################################################################
@@ -345,6 +353,7 @@ set(amaroklib_LIB_SRCS
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
+    ${libplaylistmanager_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
     app.cpp

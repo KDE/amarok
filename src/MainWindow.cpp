@@ -1089,12 +1089,12 @@ void MainWindow::createActions()
     connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
     actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
 
-    KAction *update_podcasts = new KAction( this );
-    update_podcasts->setText( i18n( "Update Podcasts" ) );
-    //update_podcasts->setIcon( KIcon(Amarok::icon( "refresh" )) );
-    ac->addAction( "podcasts_update", update_podcasts );
-    connect(update_podcasts, SIGNAL(triggered(bool)),
-            The::podcastCollection(), SLOT(slotUpdateAll()));
+//     KAction *update_podcasts = new KAction( this );
+//     update_podcasts->setText( i18n( "Update Podcasts" ) );
+//     //update_podcasts->setIcon( KIcon(Amarok::icon( "refresh" )) );
+//     ac->addAction( "podcasts_update", update_podcasts );
+//     connect(update_podcasts, SIGNAL(triggered(bool)),
+//             The::podcastCollection(), SLOT(slotUpdateAll()));
 
     KAction *playact = new KAction( this );
     playact->setText( i18n("Play Media...") );

@@ -18,9 +18,12 @@
 
 #include "debug.h"
 #include "PodcastModel.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "TheInstances.h"
 #include "PodcastCollection.h"
 #include "PodcastMeta.h"
+
+#include <QListIterator>
 
 using namespace Meta;
 
@@ -31,8 +34,13 @@ PodcastModel::PodcastModel()
 {
     DEBUG_BLOCK
 
-    m_channels = The::podcastCollection()->channels();
-    connect( The::podcastCollection(), SIGNAL(updated()), SLOT(slotUpdate()));
+    QList<PlaylistPtr> playlists =
+            The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
+    QListIterator<PlaylistPtr> i(playlists);
+    while (i.hasNext())
+        m_channels << PodcastChannelPtr::staticCast( i.next() );
+
+    //connect( The::podcastCollection(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
 
 
@@ -188,8 +196,8 @@ PodcastModel::rowCount(const QModelIndex & parent) const
     if (!parent.isValid())
     {
         debug() << k_funcinfo << " !parent.isValid()";
-        debug() << k_funcinfo << The::podcastCollection()->channels().count() << " channels";
-        return The::podcastCollection()->channels().count();
+        debug() << k_funcinfo << m_channels.count() << " channels";
+        return m_channels.count();
     }
     else
     {
@@ -257,7 +265,12 @@ PodcastModel::slotUpdate()
     DEBUG_BLOCK
     //emit dataChanged( QModelIndex(),  QModelIndex() );
 
-    m_channels = The::podcastCollection()->channels();
+    QList<PlaylistPtr> playlists =
+    The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
+    QListIterator<PlaylistPtr> i(playlists);
+    while (i.hasNext())
+        m_channels << PodcastChannelPtr::staticCast( i.next() );
+
     emit layoutAboutToBeChanged();
     emit layoutChanged();
 }

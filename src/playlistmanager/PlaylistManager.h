@@ -34,54 +34,61 @@ class PlaylistProvider;
  */
 class PlaylistManager : public QObject
 {
-    enum PlaylistType
-    {
-        UserPlaylist = 1,
-        PodcastChannel,
-        PodcastPlaylist,
-        Dynamic,
-        SmartPlaylist,
-        Lastfm
-    }
-
     Q_OBJECT
+
     public:
+        enum PlaylistCategory
+        {
+            UserPlaylist = 1,
+            PodcastChannel,
+            PodcastPlaylist,
+            Dynamic,
+            SmartPlaylist,
+            Lastfm
+        };
+
+        static PlaylistManager * instance();
+
+        /**
+         * returns playlists of a certain category from all registered PlaylistProviders
+         */
+        Meta::PlaylistList playlistsOfCategory( int playlistCategory );
+
+        /**
+         * Add a PlaylistProvider that contains Playlists of a category defined
+         * in the PlaylistCategory enum.
+         */
+        void addProvider( int playlistCategory, PlaylistProvider * provider );
+
+        /** Add a PlaylistProvider of a custom category.
+         * This is supposed to be used by plugins and scripts.
+         * Make sure custom categories don't conflict with the default category enum.
+         */
+        void addCustomProvider( int customCategory, PlaylistProvider * provider );
+
+    protected:
         PlaylistManager();
         ~PlaylistManager();
 
-        /**
-         * returns playlists of a certain type from all registered PlaylistProviders
-         */
-        Meta::PlaylistList PlaylistsOfType( int playlistType )
-                { return m_map.values( playlistType ); }
-
-        /**
-         * Add a PlaylistProvider that contains Playlists of a type defined
-         * in the PlaylistType enum.
-         */
-        void addProvider( int playlistType, PodcastProvider * provider );
-
-        /** Add a PlaylistProvider that of a custom type.
-         * This is supposed to be used by plugins and scripts.
-         * Make sure custom types don't conflict with the default types enum.
-         */
-        void addCustomProvider( int customPlaylistType, PodcastProvider * provider );
-
     private:
-        QMultiMap<int, Meta::PlaylistPtr> m_map;
+        static PlaylistManager* s_instance;
 
-}
+        QMultiMap<int, PlaylistProvider*> m_map;
+        QList<int> m_customCategories;
 
-class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
+};
+
+class AMAROK_EXPORT PlaylistProvider : public Amarok::Plugin
 {
-    Q_OBJECT
     public:
         virtual ~PlaylistProvider() {};
 
         virtual QString prettyName() const = 0;
-        virtual int type() const = 0;
+        virtual int category() const = 0;
         virtual QString typeName() = 0;
 
-}
+        virtual Meta::PlaylistList playlists() = 0;
+
+};
 
 #endif
