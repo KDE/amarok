@@ -31,8 +31,8 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="824"
-     inkscape:window-width="1432"
+     inkscape:window-height="566"
+     inkscape:window-width="952"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -42,11 +42,11 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.6375"
-     inkscape:cx="7.8480222"
-     inkscape:cy="281.38482"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="0.90156115"
+     inkscape:cx="155.80251"
+     inkscape:cy="647.37361"
+     inkscape:window-x="480"
+     inkscape:window-y="258"
      inkscape:current-layer="svg2" />
   <defs
      id="defs4">
@@ -1706,133 +1706,49 @@
        id="linearGradient8898"
        xlink:href="#radialGradient8126"
        gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5695"
-       id="linearGradient2545"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0022921,0,0,1.050283,-0.3539921,-0.9688407)"
-       x1="200"
-       y1="15"
-       x2="200.26465"
-       y2="38.905022" />
   </defs>
-  <rect
-     width="440"
-     height="660"
-     x="-10"
-     y="-10"
-     id="rect10058"
-     style="opacity:1;fill:#2e3436;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <g
-     id="lyricsbackground">
-    <g
-       inkscape:label="#g3146"
-       id="g2462">
-      <rect
-         width="419.51492"
-         height="639.42944"
-         rx="9.7077847"
-         ry="12.862084"
-         x="0.2852855"
-         y="0.2852855"
-         id="rect3108"
-         style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.57057101;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <rect
-         width="379.99808"
-         height="599.98901"
-         rx="8.7933445"
-         ry="12.068743"
-         x="20.001925"
-         y="20"
-         id="rect7889"
-         style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.52608609;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    </g>
-    <g
-       inkscape:label="#g3134"
-       id="lyricsheader">
-      <path
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         id="path5275"
-         d="M 26.138654,20.3125 C 22.841629,20.312501 20.187501,25.350723 20.1875,31.59375 L 20.1875,37.75 L 20.1875,38.75 L 20.1875,40.34375 L 20.1875,104.9375 L 20.1875,106.46875 L 20.1875,110 L 400.15304,110 L 400.15304,106.46875 L 400.15304,104.9375 L 400.15304,37.75 L 400.15304,31.59375 C 400.15305,25.350723 397.49893,20.312501 394.20189,20.3125 L 26.138654,20.3125 z " />
-      <text
-         sodipodi:linespacing="125%"
-         x="29.725878"
-         y="61.118603"
-         transform="scale(1.0069222,0.9931254)"
-         id="text2357"
-         xml:space="preserve"
-         style="font-size:13.90375519px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><tspan
-           x="29.725878"
-           y="61.118603"
-           id="tspan2367">Track Name: </tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         x="29.793766"
-         y="80.98111"
-         transform="scale(1.0069222,0.9931254)"
-         id="text2363"
-         xml:space="preserve"
-         style="font-size:13.90375519px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><tspan
-           x="29.793766"
-           y="80.98111"
-           id="tspan2365">Artist: </tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         x="30.033497"
-         y="100.93401"
-         transform="scale(1.0069222,0.9931254)"
-         id="text2369"
-         xml:space="preserve"
-         style="font-size:13.90375519px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><tspan
-           x="30.033497"
-           y="100.93401"
-           id="tspan2373">Lyrics Site: </tspan></text>
-      <path
-         d="M 25.633125,18.427283 C 22.325101,18.427283 19.658124,22.865274 19.658123,28.372149 C 19.658123,28.372149 19.813984,38.720103 20.104849,39.89244 L 400.42021,39.89244 C 400.71107,38.720103 400.86691,37.436406 400.86691,36.085164 L 400.86691,28.372149 C 400.86691,22.865274 398.19994,18.427283 394.89194,18.427283 L 25.633125,18.427283 z "
-         id="rect3285"
-         style="fill:url(#linearGradient2545);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <text
-         sodipodi:linespacing="125%"
-         x="193.96556"
-         y="35.255089"
-         transform="scale(1.0069222,0.9931254)"
-         id="text2343"
-         xml:space="preserve"
-         style="font-size:13.90375519px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><tspan
-           x="193.96556"
-           y="35.255089"
-           id="tspan2361">Lyrics</tspan></text>
-    </g>
+     id="lyricsbackground"
+     inkscape:label="#g3146">
+    <rect
+       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.57057101;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3108"
+       y="0.2852855"
+       x="0.2852855"
+       ry="12.862084"
+       rx="9.7077847"
+       height="639.42944"
+       width="419.51492" />
+    <rect
+       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.52608609;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect7889"
+       y="20"
+       x="20.001925"
+       ry="12.068743"
+       rx="8.7933445"
+       height="599.98901"
+       width="379.99808" />
   </g>
   <rect
-     width="260"
-     height="10.066211"
-     x="130"
-     y="50.835453"
-     id="lyricstrackname"
-     style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001000000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <rect
-     width="270"
-     height="10.066211"
-     x="120.00001"
-     y="90"
-     id="lyricslyricssite"
-     style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001000000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     inkscape:label="#lyricssite" />
-  <rect
-     width="305"
-     height="10.066211"
-     x="85.000008"
-     y="70.561417"
-     id="lyricsartist"
-     style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001000000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <rect
-     style="opacity:0.08974359;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+     style="opacity:0.07264957;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="lyrics"
      width="372.54901"
      height="496.47058"
      x="23.529411"
      y="116.07843"
      inkscape:label="#rect2447" />
+  <rect
+     style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+     id="title"
+     width="87.625778"
+     height="16.637806"
+     x="153.06783"
+     y="20.182783" />
+  <rect
+     style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+     id="headerrect"
+     width="382.66956"
+     height="94.280907"
+     x="18.85618"
+     y="19.964409" />
 </svg>

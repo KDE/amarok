@@ -19,12 +19,19 @@
 
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsTextItem>
+#include <QPoint>
 
 LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
     , m_theme( 0 )
+    , m_header( 0 )
     , m_size( QSizeF() )
-    , m_logoAspectRatio( 0.0 )
+    , m_aspectRatio( 0.0 )
+    , m_headerAspectRatio( 0.0 )
+    , m_lyricsLabel( 0 )
+    , m_titleLabel( 0 )
+    , m_artistLabel( 0 )
+    , m_siteLabel( 0 )
     , m_lyrics( 0 )
     , m_title( 0 )
     , m_artist( 0 )
@@ -40,13 +47,42 @@ LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     m_theme->setContentType( Context::Svg::SingleImage );
     m_theme->resize();
     m_size = m_theme->size();
-    m_logoAspectRatio = (qreal)m_theme->size().height() / 
-        (qreal)m_theme->size().width();
+    m_aspectRatio = (qreal)m_theme->size().height()
+        / (qreal)m_theme->size().width();
+    m_headerAspectRatio = (qreal)m_theme->elementRect( "headerrect" ).height()
+        / (qreal)m_theme->elementRect( "headerrect" ).width();
     
+    m_header = new Context::Svg( "widgets/amarok-lyricsheader", this );
+    m_header->setContentType( Context::Svg::SingleImage );
+    m_header->resize();
+    
+    m_lyricsLabel = new QGraphicsSimpleTextItem( this );
+    m_titleLabel = new QGraphicsSimpleTextItem( this );
+    m_artistLabel = new QGraphicsSimpleTextItem( this );
+    m_siteLabel = new QGraphicsSimpleTextItem( this );
     m_lyrics = new QGraphicsTextItem( this );
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
     m_site = new QGraphicsSimpleTextItem( this );
+    
+    QFont labelFont;
+    labelFont.setBold( true );
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_lyricsLabel->setBrush( Qt::white );
+    m_lyricsLabel->setFont( labelFont );
+    m_lyricsLabel->setText( i18n( "Lyrics" ) );
+    
+    m_titleLabel->setBrush( Qt::white );
+    m_titleLabel->setFont( labelFont );
+    m_titleLabel->setText( i18n( "Title" ) + ":" );
+    
+    m_artistLabel->setBrush( Qt::white );
+    m_artistLabel->setFont( labelFont );
+    m_artistLabel->setText( i18n( "Artist" ) + ":" );
+    
+    m_siteLabel->setBrush( Qt::white );
+    m_siteLabel->setFont( labelFont );
+    m_siteLabel->setText( i18n( "Site" ) + ":" );
     
     m_lyrics->setDefaultTextColor( Qt::white );
     m_title->setBrush( QBrush( Qt::white ) );
@@ -62,7 +98,7 @@ void LyricsApplet::setRect( const QRectF& rect )
         
     setPos( rect.topLeft() );
     m_size = rect.size();
-    resize( rect.width(), m_logoAspectRatio );
+    resize( rect.width(), m_aspectRatio );
 }
 
 QSizeF LyricsApplet::contentSize() const
@@ -75,11 +111,18 @@ void LyricsApplet::constraintsUpdated()
     DEBUG_BLOCK
         
     prepareGeometryChange();
+    
     // align items
+    QPoint add = m_theme->elementRect( "headerrect" ).topLeft();
+    m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft() + add );
+    m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() + add );
+    m_titleLabel->setPos( m_header->elementRect( "artistlabel" ).topLeft() + add );
+    m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() + add );
+    
     m_lyrics->setPos( m_theme->elementRect( "lyrics" ).topLeft() );
-    m_title->setPos( m_theme->elementRect( "lyricstrackname" ).topLeft() );
-    m_artist->setPos( m_theme->elementRect( "lyricsartist" ).topLeft() );
-    m_site->setPos( m_theme->elementRect( "lyricslyricssite" ).topLeft() );
+    m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() + add );
+    m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() + add );
+    m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() + add );
     
 }
 
@@ -89,7 +132,6 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
     Q_UNUSED( name )
     if( data.size() == 0 ) return;
     
-    debug() << "data:" << data;
     if( data.contains( "noscriptrunning" ) )
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )
@@ -102,7 +144,6 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
         m_lyrics->setPlainText( i18n( "Todo.... show suggestions here!" ) );
     else if( data.contains( "lyrics" ) )
     {
-        debug() << "got lyrics from engine!" << data;
         QVariantList lyrics  = data[ "lyrics" ].toList();
         m_title->setText( lyrics[ 0 ].toString() );
         m_artist->setText( lyrics[ 1 ].toString() );
@@ -119,20 +160,29 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     Q_UNUSED( option );
     
     m_theme->paint( p, contentsRect, "lyricsbackground" );
-        
-    // align items
-    m_lyrics->setPos( m_theme->elementRect( "lyrics" ).topLeft() );
-    m_title->setPos( m_theme->elementRect( "lyricstrackname" ).topLeft() );
-    m_artist->setPos( m_theme->elementRect( "lyricsartist" ).topLeft() );
-    m_site->setPos( m_theme->elementRect( "lyricslyricssite" ).topLeft() );
+    QRect headerRect = m_theme->elementRect( "headerrect" );
+    headerRect.setHeight( contentsRect.width() * m_headerAspectRatio );
+    m_header->resize( headerRect.size() );
+    m_header->paint( p, headerRect, "lyricsheader" );
     
+    QPoint add = m_theme->elementRect( "headerrect" ).topLeft();
+    m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft() + add );
+    m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() + add );
+    m_titleLabel->setPos( m_header->elementRect( "artistlabel" ).topLeft() + add );
+    m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() + add );
+    
+    m_lyrics->setPos( m_theme->elementRect( "lyrics" ).topLeft() );
+    m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() + add );
+    m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() + add );
+    m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() + add );
+    
+    calculateHeight();
 }
 
 void LyricsApplet::calculateHeight()
 {
     debug() << "oldheight" << m_size.height();
-    qreal lyricsheight = m_lyrics->boundingRect().height() 
-        + m_theme->elementRect( "lyrics" ).y(); 
+    qreal lyricsheight = m_lyrics->boundingRect().height(); 
     debug() << "checking if lyrics are too long for box:"
         << lyricsheight
         << m_theme->elementRect( "lyrics" );
@@ -142,7 +192,12 @@ void LyricsApplet::calculateHeight()
         qreal expandBy = lyricsheight - m_theme->elementRect( "lyrics" ).height();
         debug() << "expanding by:" << expandBy;
         m_size.setHeight( m_size.height() + expandBy );
-    }
+    } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
+    { // too long
+        qreal shrinkBy = m_theme->elementRect( "lyrics" ).height() - lyricsheight;
+        m_size.setHeight( shrinkBy );
+    }*/
+    
     m_theme->resize( m_size );
     debug() << "newheight:" << m_size.height();
 }

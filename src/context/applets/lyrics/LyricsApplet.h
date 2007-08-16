@@ -51,9 +51,16 @@ private:
     void resize( qreal newWidth, qreal aspectRatio );
     
     Context::Svg* m_theme;
-    qreal m_logoAspectRatio;
+    Context::Svg* m_header;
+    qreal m_aspectRatio;
+    qreal m_headerAspectRatio;
     QSizeF m_size;
     
+    // labels
+    QGraphicsSimpleTextItem* m_lyricsLabel;
+    QGraphicsSimpleTextItem* m_titleLabel;
+    QGraphicsSimpleTextItem* m_artistLabel;
+    QGraphicsSimpleTextItem* m_siteLabel;
     // holds main body
     QGraphicsTextItem* m_lyrics;
     // titles

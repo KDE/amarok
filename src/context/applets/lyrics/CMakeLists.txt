@@ -22,4 +22,4 @@ set_target_properties(amarok_context_applet_lyrics PROPERTIES VERSION 1.0.0 SOVE
 
 install(TARGETS amarok_context_applet_lyrics DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-lyrics.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES amarok-lyrics.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
+install(FILES amarok-lyrics.svg amarok-lyricsheader.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
