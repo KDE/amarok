@@ -462,7 +462,6 @@ kde4_add_ui3_files(amaroklib_LIB_SRCS
 )
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
-    controlbar.ui
     deletedialogbase.ui
     scriptmanagerbase.ui
     tagguesserconfigdialog.ui

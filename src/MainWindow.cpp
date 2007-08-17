@@ -56,7 +56,6 @@
 #include "TheInstances.h"
 #include "threadmanager.h"
 #include "toolbar.h"
-#include "ui_controlbar.h"
 #include "volumewidget.h"
 #include "PodcastCollection.h"
 
@@ -153,6 +152,8 @@ void MainWindow::init()
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );
+    m_searchWidget = new SearchWidget( playlistwindow );
+    m_searchWidget->setup( this );
 
     playlistwindow->setMinimumSize( QSize(250,100) );
 
@@ -165,7 +166,7 @@ void MainWindow::init()
         plBar->addAction( actionCollection()->action( "playlist_clear") );
         plBar->addAction( actionCollection()->action( "playlist_save") );
         plBar->addSeparator();
-        plBar->addAction( actionCollection()->action( "playlist_undo") );
+            plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
         plBar->addSeparator();
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
@@ -174,31 +175,37 @@ void MainWindow::init()
     //END Playlist Toolbar
     }
     {
-        m_controlBar = new QWidget( this );
+        m_controlBar = new KHBox( this );
+        m_controlBar->setMaximumSize( 20000, 62 );
         m_controlBar->setContentsMargins( 0, 0, 0, 0 );
         m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-        Ui::ControlBar uicb;
-        uicb.setupUi( m_controlBar );
 
-        #define center( A, O ) uicb.A##boxLayout->setAlignment( uicb.O, Qt::AlignCenter );
-        center( h, m_playerControlsToolbar );
-        center( h, m_searchWidget );
-        center( h, m_analyzerWidget );
-        center( h, m_volumeWidget );
-        #undef center
+        AnalyzerWidget *aw = new AnalyzerWidget( m_controlBar );
+        aw->setMinimumSize( 200, 30 );
+        m_controlBar->layout()->setAlignment( aw, Qt::AlignLeft );
+        KVBox *aVBox = new KVBox( m_controlBar );
+        ProgressWidget *pWidget = new ProgressWidget( aVBox );
+        pWidget->setMinimumSize( 400, 17 );
+        pWidget->setMaximumSize( 600000, 17 );
+        KHBox *insideBox = new KHBox( aVBox );
+        aVBox->setMaximumSize( 50000, 60 );
+        KToolBar *m_playerControlsToolbar = new Amarok::ToolBar( insideBox );
+        m_playerControlsToolbar->setMinimumSize( 200, 45 );
+        insideBox->layout()->setAlignment( m_playerControlsToolbar, Qt::AlignRight );
+        VolumeWidget *vw = new VolumeWidget( insideBox );
+        insideBox->setMaximumSize( 600000, 45 );
+        vw->setMinimumSize( 200, 25 );
+        insideBox->layout()->setAlignment( vw, Qt::AlignRight );
 
-        uicb.m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        uicb.m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        uicb.m_playerControlsToolbar->setIconDimensions( 32 );
-        uicb.m_playerControlsToolbar->setMovable( false );
-        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
-        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
-        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
-        uicb.m_playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
+        m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        m_playerControlsToolbar->setIconDimensions( 32 );
+        m_playerControlsToolbar->setMovable( false );
+        m_playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
+        m_playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
+        m_playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
+        m_playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
 
-        m_searchWidget = uicb.m_searchWidget;
-        m_searchWidget->setup( this );
-        m_searchWidget->setStyleSheet( "KLineEdit { min-height: 28; min-width: 170; }" );
     }
 
     QPalette p;
