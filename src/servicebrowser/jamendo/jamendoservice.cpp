@@ -45,6 +45,8 @@ JamendoService::~JamendoService()
 
 void JamendoService::polish()
 {
+
+    generateWidgetInfo();
     if ( m_polished ) return;
 
     m_updateListButton = new QPushButton;
@@ -85,6 +87,7 @@ void JamendoService::polish()
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
     m_polished = true;
+
 
 
 }
