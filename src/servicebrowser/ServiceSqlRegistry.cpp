@@ -114,7 +114,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
 
 
-       /* GenrePtr genrePtr;
+        GenrePtr genrePtr;
 
         int genreId = rowData[index].toInt();
 
@@ -135,7 +135,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         track->setGenre( genrePtr );
 
         m_genreMap.insert( genreId, genrePtr );
-        */
+        
         m_trackMap.insert( id, trackPtr );
         return trackPtr;
     }
