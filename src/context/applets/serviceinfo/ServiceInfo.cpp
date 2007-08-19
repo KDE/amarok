@@ -89,9 +89,8 @@ void ServiceInfo::updated( const QString& name, const Plasma::DataEngine::Data& 
     
     if( data.size() == 0 ) return;
     
-    QVariantList currentInfo = data[ "service" ].toList();
-    kDebug() << "got data from engine: " << currentInfo;
-    m_serviceName->setText( currentInfo[ 1 ].toString() );
+    kDebug() << "got data from engine: " << data[ "service_name" ].toString();
+    m_serviceName->setText( data[ "service_name" ].toString() );
     
 }
 
