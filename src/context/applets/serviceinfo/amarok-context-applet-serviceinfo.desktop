@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Service Info
+Type=Service
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_serviceinfo
+X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
+X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
+X-KDE-PluginInfo-Name=serviceinfo
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
