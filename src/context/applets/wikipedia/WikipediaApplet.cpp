@@ -141,7 +141,7 @@ void WikipediaApplet::resize( qreal newWidth, qreal aspectRatio )
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
     
-//     calculateHeight();
+    calculateHeight();
     
     debug() << "setting size to:" << m_size;
     m_theme->resize( m_size );
