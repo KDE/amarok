@@ -11,7 +11,8 @@ deleting=true
 linking=false
 moving=true
 Icon=cdaudio_unmount
-CLass=:local
+Class=:local
+fileNameUsedForCopying=Name
 ShowPreviews=true
 determineMimetypeFromExtension=true
 
