@@ -46,7 +46,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
     debug() << "Loading LastFmEvents applet";
     
     setHasConfigurationInterface( true );
-    setDrawStandardBackground( false );
+    setDrawStandardBackground( true );
     
     KConfigGroup conf = globalConfig();
     m_userEnabled = conf.readEntry( "user", false );
@@ -94,7 +94,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QStringList& args )
 
 LastFmEvents::~LastFmEvents()
 {
-    DEBUG_BLOCK
 }
 
 void LastFmEvents::setRect( const QRectF& rect )
@@ -105,7 +104,6 @@ void LastFmEvents::setRect( const QRectF& rect )
 
 void LastFmEvents::constraintsUpdated()
 {
-    DEBUG_BLOCK
     prepareGeometryChange();
     
     for( int i = 0; i < 14; i++ ) // go through each row
@@ -126,7 +124,6 @@ void LastFmEvents::constraintsUpdated()
 
 void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     
 //         debug() << "got data from engine: " << data << endl;
     Context::DataEngine::DataIterator iter( data );

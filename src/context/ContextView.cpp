@@ -67,7 +67,7 @@ ContextView::ContextView( QWidget* parent )
     setInteractive( true );
     setAcceptDrops( true );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
     
     // here we initialize all the Plasma paths to Amarok paths

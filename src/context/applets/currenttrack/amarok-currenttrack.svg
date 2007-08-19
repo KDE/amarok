@@ -45,7 +45,7 @@
      inkscape:zoom="0.88230945"
      inkscape:cx="196.65417"
      inkscape:cy="98.199395"
-     inkscape:window-x="22"
+     inkscape:window-x="710"
      inkscape:window-y="258"
      inkscape:current-layer="svg2581" />
   <defs
@@ -580,7 +580,8 @@
        id="g2493">
       <g
          id="g5316"
-         transform="matrix(0.9743404,0,0,0.9525436,-32.573897,-22.59866)">
+         transform="matrix(0.9743404,0,0,0.9525436,-32.573897,-22.59866)"
+         style="opacity:0">
         <rect
            style="opacity:0.75;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#fff9f9;stroke-width:0.11415055;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect8365"

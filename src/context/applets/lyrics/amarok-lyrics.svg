@@ -31,7 +31,7 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="566"
+     inkscape:window-height="567"
      inkscape:window-width="952"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -44,9 +44,9 @@
      id="base"
      inkscape:zoom="0.90156115"
      inkscape:cx="155.80251"
-     inkscape:cy="647.37361"
-     inkscape:window-x="480"
-     inkscape:window-y="258"
+     inkscape:cy="646.81902"
+     inkscape:window-x="-49"
+     inkscape:window-y="222"
      inkscape:current-layer="svg2" />
   <defs
      id="defs4">
@@ -1709,9 +1709,10 @@
   </defs>
   <g
      id="lyricsbackground"
-     inkscape:label="#g3146">
+     inkscape:label="#g3146"
+     style="opacity:1">
     <rect
-       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.57057101;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.57057101;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3108"
        y="0.2852855"
        x="0.2852855"
@@ -1720,7 +1721,7 @@
        height="639.42944"
        width="419.51492" />
     <rect
-       style="opacity:0.5;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.52608609;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.38888889;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.52608609;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect7889"
        y="20"
        x="20.001925"

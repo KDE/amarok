@@ -37,7 +37,7 @@ public:
     void constraintsUpdated();
     void setRect( const QRectF& rect );
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
-    QSizeF sizeHint() const { return contentSize(); }
+    QSizeF sizeHint() const { return boundingRect().size(); }
     
     // from LayoutItem
     void setGeometry( const QRectF& rect ) { setRect( rect ); }
