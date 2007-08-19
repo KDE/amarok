@@ -22,4 +22,4 @@ set_target_properties(amarok_context_applet_wikipedia PROPERTIES VERSION 1.0.0 S
 
 install(TARGETS amarok_context_applet_wikipedia DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-wikipedia.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES amarok-wikipedia.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
+install(FILES amarok-wikipedia.svg amarok-wikipediaheader.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )

@@ -23,7 +23,9 @@
 WikipediaApplet::WikipediaApplet( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
     , m_theme( 0 )
+    , m_header( 0 )
     , m_aspectRatio( 0 )
+    , m_headerAspectRatio( 0.0 )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_currentLabel( 0 )
@@ -31,7 +33,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QStringList& args )
 {
     
     setHasConfigurationInterface( false );
-    setDrawStandardBackground( false );
+    setDrawStandardBackground( true );
     
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
     
@@ -41,6 +43,12 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QStringList& args )
     m_aspectRatio = (qreal)m_theme->size().height()
         / (qreal)m_theme->size().width();
     m_size = m_theme->size();
+    
+    m_header = new Context::Svg( "widgets/amarok-wikipediaheader", this );
+    m_header->setContentType( Context::Svg::SingleImage );
+    m_header->resize();
+    m_headerAspectRatio = (qreal)m_header->size().height()
+        / (qreal)m_header->size().width();
     
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
     m_currentLabel = new QGraphicsSimpleTextItem( this );
@@ -79,10 +87,10 @@ void WikipediaApplet::constraintsUpdated()
 {
     prepareGeometryChange();
     
-    m_wikipediaLabel->setPos( m_theme->elementRect( "wikipedialabel" ).topLeft() );
-    m_currentLabel->setPos( m_theme->elementRect( "currentlabel" ).topLeft() );
+    m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
+    m_currentLabel->setPos( m_header->elementRect( "currentlabel" ).topLeft() );
     
-    m_wikiPage->setPos( m_theme->elementRect( "wikipediainformation" ).topLeft() );
+    m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
     
     calculateHeight();
 }
@@ -110,17 +118,28 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
     Q_UNUSED( option );
     
     m_theme->paint( p, contentsRect, "background" );
+    QRect headerRect( 0.0, 0.0, contentsRect.width(), 0.0 );
+    headerRect.setHeight( contentsRect.width() * m_headerAspectRatio );
+    debug() << "header rect:" << headerRect;
+    m_header->resize( headerRect.size() );
+    m_header->paint( p, headerRect, "header" );
     
+    calculateHeight();
 }
 
 void WikipediaApplet::calculateHeight()
 {
+    DEBUG_BLOCK
     qreal textHeight = m_wikiPage->boundingRect().height();
+    qreal boxHeight = m_theme->size().height() - m_header->size().height();
     
-    if( textHeight > m_theme->elementRect( "wikipediainformation" ).height() ) // too short
+     debug() << "checking if wiki text is too long for box:"
+        << textHeight
+        << boxHeight;
+    if( textHeight > boxHeight ) // too short
     {
-        qreal expandBy = textHeight - m_theme->elementRect( "wikipediainformation" ).height();
-//         debug() << "expanding by:" << expandBy;
+        qreal expandBy = textHeight - boxHeight;
+        debug() << "expanding by:" << expandBy;
         m_size.setHeight( m_size.height() + expandBy );
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
@@ -132,7 +151,7 @@ void WikipediaApplet::calculateHeight()
     
     m_theme->resize( m_size );    
 //     emit changed();
-//     debug() << "newheight:" << m_size.height();
+    debug() << "newheight:" << m_size.height();
 }
 
 void WikipediaApplet::resize( qreal newWidth, qreal aspectRatio )
@@ -145,7 +164,7 @@ void WikipediaApplet::resize( qreal newWidth, qreal aspectRatio )
     
     debug() << "setting size to:" << m_size;
     m_theme->resize( m_size );
-    m_wikiPage->setTextWidth( m_theme->elementRect( "wikipediainformation" ).width() );
+    m_wikiPage->setTextWidth( m_header->elementRect( "wikipediainformation" ).width() );
     constraintsUpdated();
 }
 
