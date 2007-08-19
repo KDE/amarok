@@ -29,6 +29,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QStringList& /*args*/ )
     DEBUG_BLOCK
     m_requested = true; // testing
     m_wikiLocale = "en";
+    m_currentSelection = "artist";
 }
 
 QStringList WikipediaEngine::sources() const
@@ -57,33 +58,31 @@ void WikipediaEngine::update()
     DEBUG_BLOCK
     QString tmpWikiStr;
     
-    // TODO port to new Meta:: framework
-    //
-    /*
-    if ( (EngineController::instance()->currentTrack()->url().protocol() == "lastfm") ||
-         (EngineController::instance()->bundle().url().protocol() == "daap") ||
-         !EngineController::engine()->isStream() )
+
+    if( selection() == "artist" ) // default, or applet told us to fetch artist 
     {
-        if ( !EngineController::instance()->bundle().artist().isEmpty() )
-        {
-            tmpWikiStr = EngineController::instance()->bundle().artist();
-            tmpWikiStr += wikiArtistPostfix();
-        }
-        else if ( !EngineController::instance()->bundle().title().isEmpty() )
+        if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
+             (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
+             !EngineController::engine()->isStream() )
         {
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->name();
-        }
-        else
+            tmpWikiStr += wikiArtistPostfix();
+        } else
+            tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
+    } else if( selection() == "title" )
+        tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
+    else if( selection() == "album" )
+    {
+        if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
+             (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
+             !EngineController::engine()->isStream() )
         {
-            tmpWikiStr = EngineController::instance()->currentTrack()()->prettyTitle();
+            tmpWikiStr = EngineController::instance()->currentTrack()->album ()->name();
+            tmpWikiStr += wikiAlbumPostfix();
         }
     }
-    else
-    {
-        tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
-    } */
     
-        //Hack to make wiki searches work with magnatune preview tracks
+    //Hack to make wiki searches work with magnatune preview tracks
     
     if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
@@ -97,6 +96,7 @@ void WikipediaEngine::update()
     
     m_wikiCurrentUrl = wikiURL( tmpWikiStr );
     
+    setData( "wikipedia", "message", "fetching" );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
 }
@@ -215,7 +215,9 @@ void WikipediaEngine::wikiResult( KJob* job )
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
     
-    setData( "wikipedia", m_wikiHTMLSource );
+    clearData( "wikipedia" );
+//     debug() << "sending wiki page:" << m_wikiHTMLSource;
+    setData( "wikipedia", selection(), m_wikiHTMLSource );
     
     m_wikiJob = 0;
 }

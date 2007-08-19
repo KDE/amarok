@@ -47,6 +47,7 @@ set(plasma_LIB_SRCS
     plasma/widgets/radiobutton.cpp
     plasma/widgets/widget.cpp
     plasma/widgets/layout.cpp
+    plasma/widgets/layoutanimator.cpp
     plasma/widgets/layoutitem.cpp
     plasma/widgets/vboxlayout.cpp
     plasma/widgets/flash.cpp

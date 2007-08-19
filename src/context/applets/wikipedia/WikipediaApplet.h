@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LYRICS_APPLET_H
-#define LYRICS_APPLET_H
+#ifndef WIKIPEDIA_APPLET_H
+#define WIKIPEDIA_APPLET_H
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
@@ -21,11 +21,11 @@
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
 
-class LyricsApplet : public Context::Applet
+class WikipediaApplet : public Context::Applet
 {
     Q_OBJECT
 public:
-    LyricsApplet( QObject* parent, const QStringList& args );
+    WikipediaApplet( QObject* parent, const QStringList& args );
     
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
     
@@ -43,32 +43,21 @@ public:
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
     
-signals:
-    void changed();
-    
 private:
     void calculateHeight();
     void resize( qreal newWidth, qreal aspectRatio );
     
     Context::Svg* m_theme;
-    Context::Svg* m_header;
     qreal m_aspectRatio;
-    qreal m_headerAspectRatio;
     QSizeF m_size;
     
-    // labels
-    QGraphicsSimpleTextItem* m_lyricsLabel;
-    QGraphicsSimpleTextItem* m_titleLabel;
-    QGraphicsSimpleTextItem* m_artistLabel;
-    QGraphicsSimpleTextItem* m_siteLabel;
-    // holds main body
-    QGraphicsTextItem* m_lyrics;
-    // titles
-    QGraphicsSimpleTextItem* m_title;
-    QGraphicsSimpleTextItem* m_artist;
-    QGraphicsSimpleTextItem* m_site;
+    QGraphicsSimpleTextItem* m_wikipediaLabel;
+    QGraphicsSimpleTextItem* m_currentLabel;
+        
+    QGraphicsTextItem* m_wikiPage;
+    
 };
 
-K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
-
+K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )
+                        
 #endif

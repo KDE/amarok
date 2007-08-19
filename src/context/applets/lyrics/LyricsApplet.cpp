@@ -181,11 +181,11 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 void LyricsApplet::calculateHeight()
 {
-    debug() << "oldheight" << m_size.height();
+//     debug() << "oldheight" << m_size.height();
     qreal lyricsheight = m_lyrics->boundingRect().height(); 
-    debug() << "checking if lyrics are too long for box:"
-        << lyricsheight
-        << m_theme->elementRect( "lyrics" );
+//     debug() << "checking if lyrics are too long for box:"
+//         << lyricsheight
+//         << m_theme->elementRect( "lyrics" );
     
     if( lyricsheight > m_theme->elementRect( "lyrics" ).height() ) // too short
     {
@@ -202,7 +202,7 @@ void LyricsApplet::calculateHeight()
     
     m_theme->resize( m_size );    
 //     emit changed();
-    debug() << "newheight:" << m_size.height();
+//     debug() << "newheight:" << m_size.height();
 }
 
 void LyricsApplet::resize( qreal newWidth, qreal aspectRatio )

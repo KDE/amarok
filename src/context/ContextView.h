@@ -19,7 +19,6 @@
 #define CONTEXT_VIEW_H
 
 #include "amarok_export.h"
-#include "debug.h"
 #include "ColumnApplet.h"
 #include "Context.h"
 #include "ContextScene.h"

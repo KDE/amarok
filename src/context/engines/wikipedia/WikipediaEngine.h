@@ -33,6 +33,8 @@ using namespace Context;
 class WikipediaEngine : public DataEngine, public ContextObserver
 {
     Q_OBJECT
+    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
+        
 public:
     WikipediaEngine( QObject* parent, const QStringList& args );
     
@@ -40,6 +42,9 @@ public:
     
     void message( const ContextState& state );
 
+    void setSelection( const QString& selection ) { m_currentSelection = selection; }
+    QString selection() { return m_currentSelection; }
+    
 protected:
     bool sourceRequested( const QString& name );
     
@@ -59,6 +64,7 @@ private:
     
     KJob* m_wikiJob;
         
+    QString m_currentSelection;
     QString m_wiki;
     QString m_wikiCurrentEntry;
     QString m_wikiCurrentUrl;
