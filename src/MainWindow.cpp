@@ -215,8 +215,8 @@ void MainWindow::init()
         topColor = topColor.lighter().isValid();
 
     QColor bottomColor = palette().highlight();
-    if( bottomColor.lighter().isValid() )
-        bottomColor = bottomColor.lighter();
+    if( bottomColor.darker().isValid() )
+        bottomColor = bottomColor.darker();
 
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
@@ -1085,7 +1085,11 @@ void MainWindow::createActions()
     ac->addAction( "equalizer", equalizer );
 
     KAction *toggleToolbar = new KAction( this );
-    toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+    toggleToolbar->setText( i18n("Hide Toolbar") );
+    
+    //FIXME m_controlBar is initialised after the actions are created so we need to change the text of this action
+    //when the menu is shown
+    //toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
     connect( toggleToolbar, SIGNAL( triggered(bool) ), SLOT( slotToggleToolbar() ) );
     ac->addAction( "toggle_toolbar", toggleToolbar );
 
