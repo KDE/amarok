@@ -35,19 +35,23 @@ ServiceInfo::ServiceInfo( QObject* parent, const QStringList& args )
 {
     DEBUG_BLOCK
         
-    setHasConfigurationInterface( true );
-    setDrawStandardBackground( false );
+    setHasConfigurationInterface( false );
+    setDrawStandardBackground( true );
     
     dataEngine( "amarok-service" )->connectSource( "service", this );
     
     m_theme = new Context::Svg( "widgets/amarok-serviceinfo", this );
     m_theme->setContentType( Context::Svg::SingleImage );
+    m_theme->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );
     
     m_serviceName = new QGraphicsSimpleTextItem( this );
+    m_serviceMainInfo = new QGraphicsTextItem( this );
+    m_serviceMainInfo->setDefaultTextColor( Qt::white  );
   
     
     m_serviceName->setBrush( QBrush( Qt::white ) );
+    //m_serviceMainInfo->setBrush( QBrush( Qt::white ) );
    
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
@@ -91,6 +95,7 @@ void ServiceInfo::updated( const QString& name, const Plasma::DataEngine::Data& 
     
     kDebug() << "got data from engine: " << data[ "service_name" ].toString();
     m_serviceName->setText( data[ "service_name" ].toString() );
+    m_serviceMainInfo->setHtml( data[ "main_info" ].toString() );
     
 }
 
@@ -103,8 +108,9 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     p->restore();
         
         
-    m_serviceName->setPos( m_theme->elementRect( "track" ).topLeft() );
-
+    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
+    m_serviceMainInfo->setPos( m_theme->elementRect( "main_info" ).topLeft() );
+    //m_serviceMainInfo->
     
 }
 
@@ -123,6 +129,8 @@ void ServiceInfo::resize( qreal newWidth, qreal aspectRatio )
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
+
+    m_serviceMainInfo->setTextWidth ( newWidth - 20 );
     
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;

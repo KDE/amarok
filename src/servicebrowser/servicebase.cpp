@@ -206,6 +206,12 @@ void ServiceBase::infoChanged ( const QString &infoHtml ) {
     m_infoBox->write( infoHtml ); 
     m_infoBox->end();
 
+
+    QVariantMap map;
+    map["service_name"] = m_name;
+    map["main_info"] = infoHtml;
+    The::serviceInfoProxy()->setInfo( map );
+
 }
 
 void ServiceBase::itemSelected( CollectionTreeItem * item )

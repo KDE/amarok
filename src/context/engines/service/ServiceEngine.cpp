@@ -79,6 +79,7 @@ void ServiceEngine::update()
 {
     DEBUG_BLOCK;
     setData( "service", "service_name", m_storedInfo["service_name"] );
+    setData( "service", "main_info", m_storedInfo["main_info"] );
 
 }
 

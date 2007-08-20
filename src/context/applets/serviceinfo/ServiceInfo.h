@@ -65,6 +65,7 @@ private:
     QSizeF m_size;
     
     QGraphicsSimpleTextItem* m_serviceName;
+    QGraphicsTextItem* m_serviceMainInfo;
 
 
 };
