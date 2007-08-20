@@ -405,15 +405,17 @@ ManualDeviceAdder::getMedium( bool recreate )
 }
 
 MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
-: KHBox( parent )
-, m_manager( mgr )
-, m_medium( medium )
-, m_configButton( 0 )
-, m_removeButton( 0 )
-, m_new( true )
+    : KHBox( parent )
+    , m_manager( mgr )
+    , m_medium( medium )
+    , m_configButton( 0 )
+    , m_removeButton( 0 )
+    , m_new( true )
 {
     if( !m_medium )
         return;
+
+    setObjectName( name );
 
     KConfigGroup config = Amarok::config( "MediaBrowser" );
     m_oldPlugin = config.readEntry( m_medium->id(), QString() );

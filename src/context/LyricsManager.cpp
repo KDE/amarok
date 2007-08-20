@@ -90,6 +90,7 @@ LyricsManager* LyricsManager::s_self = 0;
 void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 {
     DEBUG_BLOCK
+    Q_UNUSED( cached );
         
     QDomDocument doc;
     QString xmldoc = QString::fromUtf8( cXmlDoc );

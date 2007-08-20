@@ -30,8 +30,8 @@ public:
     LyricsObserver( LyricsSubject* );
     virtual ~LyricsObserver();
     
-    virtual void newLyrics( QStringList& lyrics ) {}
-    virtual void lyricsMessage( QString& msg ) {}
+    virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+    virtual void lyricsMessage( QString& msg ) { Q_UNUSED( msg ); }
 
 private:
     LyricsSubject *m_subject;
