@@ -165,18 +165,34 @@ CoverManager::CoverManager()
 
     // view menu
     m_viewMenu = new KMenu( this );
-    m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) )->setChecked( true );
-    m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
-    m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
+    m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) );
+    m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
+    m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
+
+    m_selectAllAlbums->setChecked( true );
 
     // amazon locale menu
+    QString locale = AmarokConfig::amazonLocale();
+    m_currentLocale = CoverFetcher::localeStringToID( locale );
+    QAction *a;
     m_amazonLocaleMenu = new KMenu( this );
-    m_amazonLocaleMenu->addAction( i18n("International"),  this, SLOT( slotSetLocaleIntl() ) );
-    m_amazonLocaleMenu->addAction( i18n("Canada"),         this, SLOT( slotSetLocaleCa() )   );
-    m_amazonLocaleMenu->addAction( i18n("France"),         this, SLOT( slotSetLocaleFr() )   );
-    m_amazonLocaleMenu->addAction( i18n("Germany"),        this, SLOT( slotSetLocaleDe() )   );
-    m_amazonLocaleMenu->addAction( i18n("Japan"),          this, SLOT( slotSetLocaleJp() )   );
-    m_amazonLocaleMenu->addAction( i18n("United Kingdom"), this, SLOT( slotSetLocaleUk() )   );
+    a = m_amazonLocaleMenu->addAction( i18n("International"),  this, SLOT( slotSetLocaleIntl() ) );
+    if( m_currentLocale == CoverFetcher::International ) a->setChecked( true );
+
+    a = m_amazonLocaleMenu->addAction( i18n("Canada"),         this, SLOT( slotSetLocaleCa() )   );
+    if( m_currentLocale == CoverFetcher::Canada ) a->setChecked( true );
+    
+    a = m_amazonLocaleMenu->addAction( i18n("France"),         this, SLOT( slotSetLocaleFr() )   );
+    if( m_currentLocale == CoverFetcher::France ) a->setChecked( true );
+    
+    a = m_amazonLocaleMenu->addAction( i18n("Germany"),        this, SLOT( slotSetLocaleDe() )   );
+    if( m_currentLocale == CoverFetcher::Germany ) a->setChecked( true );
+    
+    a = m_amazonLocaleMenu->addAction( i18n("Japan"),          this, SLOT( slotSetLocaleJp() )   );
+    if( m_currentLocale == CoverFetcher::Japan ) a->setChecked( true );
+    
+    a = m_amazonLocaleMenu->addAction( i18n("United Kingdom"), this, SLOT( slotSetLocaleUk() )   );
+    if( m_currentLocale == CoverFetcher::UK ) a->setChecked( true );
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -192,9 +208,6 @@ CoverManager::CoverManager()
         localeMenuAction->setMenu( m_amazonLocaleMenu );
         toolBar->addAction( localeMenuAction );
     }
-    QString locale = AmarokConfig::amazonLocale();
-    m_currentLocale = CoverFetcher::localeStringToID( locale );
-    m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), Amarok::icon( "download" ) ), hbox );
@@ -291,8 +304,8 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 
     m_layout = new QHBoxLayout( this );
-    m_layout->setAutoAdd( true );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
+    m_layout->addWidget( m_pixmapViewer );
 
     setFixedSize( m_pixmapViewer->maximalSize() );
 }
@@ -308,15 +321,15 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
 
 QString CoverManager::amazonTld() //static
 {
-    if (AmarokConfig::amazonLocale() == "us")
+    if( AmarokConfig::amazonLocale() == "us" )
         return "com";
-            else if (AmarokConfig::amazonLocale()== "jp")
+    else if( AmarokConfig::amazonLocale()== "jp" )
         return "co.jp";
-            else if (AmarokConfig::amazonLocale() == "uk")
+    else if( AmarokConfig::amazonLocale() == "uk" )
         return "co.uk";
-            else if (AmarokConfig::amazonLocale() == "ca")
+    else if( AmarokConfig::amazonLocale() == "ca" )
         return "ca";
-            else
+    else
         return AmarokConfig::amazonLocale();
 }
 
@@ -392,9 +405,8 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
 
     // reset current view mode state to "AllAlbum" which is the default on artist change in left panel
     m_currentView = AllAlbums;
-    m_viewMenu->setItemChecked( AllAlbums, true );
-    m_viewMenu->setItemChecked( AlbumsWithCover, false );
-    m_viewMenu->setItemChecked( AlbumsWithoutCover, false );
+    m_selectAllAlbums->trigger();
+    m_selectAllAlbums->setChecked( true );
 
     Q3ProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
@@ -629,9 +641,6 @@ void CoverManager::changeView( int id  ) //SLOT
         if( show )    m_coverView->insertItem( item, m_coverView->lastItem() );
     }
     m_coverView->setAutoArrange( true );
-
-    m_viewMenu->setItemChecked( m_currentView, false );
-    m_viewMenu->setItemChecked( id, true );
 
     m_coverView->arrangeItemsInGrid();
     m_currentView = id;

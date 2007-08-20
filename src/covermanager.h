@@ -107,6 +107,10 @@ class CoverManager : public QSplitter
         int             m_currentLocale;
         int             m_currentView;
 
+        QAction        *m_selectAllAlbums;
+        QAction        *m_selectAlbumsWithCover;
+        QAction        *m_selectAlbumsWithoutCover;
+
         //status bar widgets
         QLabel         *m_statusLabel;
         KHBox          *m_progressBox;
