@@ -434,10 +434,10 @@ BurnMenu::slotActivated( int index )
 StopAction::StopAction( KActionCollection *ac )
   : KAction( 0 )
 {
-    setText(i18n( "Stop" ));
-    setIcon(KIcon(Amarok::icon( "stop" )));
+    setText( i18n( "Stop" ) );
+    setIcon( KIcon(Amarok::icon( "stop" )) );
     connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
-    ac->addAction("stop", this);
+    ac->addAction( "stop", this );
 }
 
 int
@@ -474,9 +474,10 @@ StopAction::plug( QWidget *w, int index )
 StopMenu::StopMenu()
 {
     addTitle( i18n( "Stop" ) );
-    insertItem( i18n("Now"), NOW );
-    insertItem( i18n("After Current Track"), AFTER_TRACK );
-    insertItem( i18n("After Queue"), AFTER_QUEUE );
+
+    m_stopNow        = addAction( i18n( "Now" ), this, SLOT( slotStopNow() ) );
+    m_stopAfterTrack = addAction( i18n( "After Current Track" ), this, SLOT( slotStopAfterTrack() ) );
+    m_stopAfterQueue = addAction( i18n( "After Queue" ), this, SLOT( slotStopAfterQueue() ) );
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
@@ -494,40 +495,46 @@ StopMenu::slotAboutToShow()
 {
     Playlist *pl = Playlist::instance();
 
-    setItemEnabled( NOW,         Amarok::actionCollection()->action( "stop" )->isEnabled() );
+    m_stopNow->setEnabled( Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
-    setItemEnabled( AFTER_TRACK, EngineController::engine()->loaded() );
-    setItemChecked( AFTER_TRACK, pl->stopAfterMode() == Playlist::StopAfterCurrent );
+    m_stopAfterTrack->setEnabled( EngineController::engine()->loaded() );
+    m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
-    setItemEnabled( AFTER_QUEUE, pl->nextTracks().count() );
-    setItemChecked( AFTER_QUEUE, pl->stopAfterMode() == Playlist::StopAfterQueue );
+    m_stopAfterQueue->setEnabled( pl->nextTracks().count() );
+    m_stopAfterQueue->setChecked( pl->stopAfterMode() == Playlist::StopAfterQueue );
 }
 
 void
-StopMenu::slotActivated( int index )
+StopMenu::slotStopNow() //SLOT
 {
     Playlist* pl = Playlist::instance();
     const int mode = pl->stopAfterMode();
 
-    switch( index )
-    {
-        case NOW:
-            Amarok::actionCollection()->action( "stop" )->trigger();
-            if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
-                pl->setStopAfterMode( Playlist::DoNotStop );
-            break;
-        case AFTER_TRACK:
-            pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
-                                ? Playlist::DoNotStop
-                                : Playlist::StopAfterCurrent );
-            break;
-        case AFTER_QUEUE:
-            pl->setStopAfterMode( mode == Playlist::StopAfterQueue
-                                ? Playlist::DoNotStop
-                                : Playlist::StopAfterQueue );
-            break;
-    }
+    Amarok::actionCollection()->action( "stop" )->trigger();
+    if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
+        pl->setStopAfterMode( Playlist::DoNotStop );
 }
 
+void
+StopMenu::slotStopAfterTrack() //SLOT
+{
+    Playlist* pl = Playlist::instance();
+    const int mode = pl->stopAfterMode();
+
+    pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
+                                ? Playlist::DoNotStop
+                                : Playlist::StopAfterCurrent );
+}
+
+void
+StopMenu::slotStopAfterQueue() //SLOT
+{
+    Playlist* pl = Playlist::instance();
+    const int mode = pl->stopAfterMode();
+
+    pl->setStopAfterMode( mode == Playlist::StopAfterQueue
+                                ? Playlist::DoNotStop
+                                : Playlist::StopAfterQueue );
+}
 
 #include "actionclasses.moc"

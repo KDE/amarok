@@ -71,15 +71,10 @@ namespace Amarok
             SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name );
 
             virtual void setCurrentItem( int n );
-
             virtual void setEnabled( bool b );
-
             virtual void setIcons( QStringList icons );
-
             virtual QString currentText() const;
-
             QStringList icons() const;
-
             QString currentIcon() const;
 
         private:
@@ -137,23 +132,22 @@ namespace Amarok
 
     class StopMenu : public KMenu
     {
-            Q_OBJECT
+        Q_OBJECT
 
         public:
-            enum MenuIds {
-                NOW,
-                AFTER_TRACK,
-                AFTER_QUEUE
-            };
-
             static KMenu *instance();
 
         private slots:
             void slotAboutToShow();
-            void slotActivated( int index );
+            void slotStopNow();
+            void slotStopAfterTrack();
+            void slotStopAfterQueue();
 
         private:
             StopMenu();
+            QAction *m_stopNow;
+            QAction *m_stopAfterTrack;
+            QAction *m_stopAfterQueue;
     };
 
 
