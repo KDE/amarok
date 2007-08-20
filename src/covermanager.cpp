@@ -169,30 +169,46 @@ CoverManager::CoverManager()
     m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
     m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
 
+    QActionGroup *viewGroup = new QActionGroup( this );
+    viewGroup->setExclusive( true );
+    viewGroup->addAction( m_selectAllAlbums );
+    viewGroup->addAction( m_selectAlbumsWithCover );
+    viewGroup->addAction( m_selectAlbumsWithoutCover );
     m_selectAllAlbums->setChecked( true );
 
     // amazon locale menu
     QString locale = AmarokConfig::amazonLocale();
     m_currentLocale = CoverFetcher::localeStringToID( locale );
+    
     QAction *a;
+    QActionGroup *localeGroup = new QActionGroup( this );
+    localeGroup->setExclusive( true );
+
     m_amazonLocaleMenu = new KMenu( this );
+    
     a = m_amazonLocaleMenu->addAction( i18n("International"),  this, SLOT( slotSetLocaleIntl() ) );
     if( m_currentLocale == CoverFetcher::International ) a->setChecked( true );
+    localeGroup->addAction( a );
 
     a = m_amazonLocaleMenu->addAction( i18n("Canada"),         this, SLOT( slotSetLocaleCa() )   );
     if( m_currentLocale == CoverFetcher::Canada ) a->setChecked( true );
+    localeGroup->addAction( a );
     
     a = m_amazonLocaleMenu->addAction( i18n("France"),         this, SLOT( slotSetLocaleFr() )   );
     if( m_currentLocale == CoverFetcher::France ) a->setChecked( true );
+    localeGroup->addAction( a );
     
     a = m_amazonLocaleMenu->addAction( i18n("Germany"),        this, SLOT( slotSetLocaleDe() )   );
     if( m_currentLocale == CoverFetcher::Germany ) a->setChecked( true );
+    localeGroup->addAction( a );
     
     a = m_amazonLocaleMenu->addAction( i18n("Japan"),          this, SLOT( slotSetLocaleJp() )   );
     if( m_currentLocale == CoverFetcher::Japan ) a->setChecked( true );
+    localeGroup->addAction( a );
     
     a = m_amazonLocaleMenu->addAction( i18n("United Kingdom"), this, SLOT( slotSetLocaleUk() )   );
     if( m_currentLocale == CoverFetcher::UK ) a->setChecked( true );
+    localeGroup->addAction( a );
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -219,9 +235,14 @@ CoverManager::CoverManager()
 
     //status bar
     KStatusBar *m_statusBar = new KStatusBar( vbox );
-    m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
+
+    m_statusLabel = new KSqueezedTextLabel( m_statusBar );
     m_statusLabel->setIndent( 3 );
-    m_statusBar->addWidget( m_progressBox = new KHBox( m_statusBar ), 1, true );
+    m_progressBox = new KHBox( m_statusBar );
+    
+    m_statusBar->addWidget( m_statusLabel, 4 );
+    m_statusBar->addPermanentWidget( m_progressBox, 1 );
+
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new QProgressBar( m_progressBox );
@@ -650,8 +671,6 @@ void CoverManager::changeLocale( int id ) //SLOT
 {
     QString locale = CoverFetcher::localeIDToString( id );
     AmarokConfig::setAmazonLocale( locale );
-    m_amazonLocaleMenu->setItemChecked( m_currentLocale, false );
-    m_amazonLocaleMenu->setItemChecked( id, true );
     m_currentLocale = id;
 }
 
