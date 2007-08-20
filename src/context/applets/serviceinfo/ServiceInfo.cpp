@@ -104,7 +104,7 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     Q_UNUSED( option );
         
     p->save();
-    m_theme->paint( p, contentsRect, "background" );
+    m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();
         
         

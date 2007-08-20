@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -19,17 +16,6 @@
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/serviceinfo"
    sodipodi:modified="true">
-  <metadata
-     id="metadata138">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
   <sodipodi:namedview
      inkscape:window-height="977"
      inkscape:window-width="1680"
@@ -47,7 +33,7 @@
      inkscape:cy="236.87319"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:current-layer="g6244"
+     inkscape:current-layer="background"
      height="509px"
      width="588.5px" />
   <defs
@@ -454,166 +440,25 @@
        y1="116.10083"
        x2="89.72541"
        y2="-15.33666" />
-    <filter
-       inkscape:collect="always"
-       x="-0.01799459"
-       width="1.0359892"
-       y="-0.26588142"
-       height="1.5317628"
-       id="filter4178">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="4.4503356"
-         id="feGaussianBlur4180" />
-    </filter>
   </defs>
   <g
-     id="g2493"
-     transform="scale(1,2.3293053)">
-    <g
-       style="opacity:0"
-       transform="matrix(0.9743404,0,0,0.9525436,-32.573897,-22.59866)"
-       id="g5316">
-      <rect
-         width="519.71259"
-         height="169.93695"
-         rx="11.731662"
-         ry="11.106991"
-         x="33.495888"
-         y="23.790155"
-         id="rect8365"
-         style="opacity:0.75;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#fff9f9;stroke-width:0.11415055;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <text
-         x="218.61919"
-         y="145.93126"
-         transform="scale(1.0290189,0.9717994)"
-         id="text4314"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="218.61919"
-           y="145.93126"
-           id="tspan4316">Score: </tspan></text>
-      <text
-         x="218.02644"
-         y="167.17984"
-         transform="scale(1.0320399,0.9689547)"
-         id="text5426"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="218.02644"
-           y="167.17984"
-           id="tspan5436">Times Played: </tspan></text>
-      <text
-         x="191.20662"
-         y="211.65349"
-         transform="scale(1.1686796,0.8556665)"
-         id="text5430"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="191.20662"
-           y="211.65349"
-           id="tspan5434">Played Last: </tspan></text>
-      <text
-         x="218.61919"
-         y="48.173851"
-         transform="scale(1.0290189,0.9717994)"
-         id="text5438"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="218.61919"
-           y="48.173851"
-           id="tspan5450">Artist: </tspan></text>
-      <text
-         x="218.61919"
-         y="68.754372"
-         transform="scale(1.0290189,0.9717994)"
-         id="text5442"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="218.61919"
-           y="68.754372"
-           id="tspan5452">Track: </tspan></text>
-      <text
-         x="218.61919"
-         y="89.334869"
-         transform="scale(1.0290189,0.9717994)"
-         id="text5446"
-         xml:space="preserve"
-         style="font-size:10.00003052px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         sodipodi:linespacing="125%"><tspan
-           x="218.61919"
-           y="89.334869"
-           id="tspan5454">Album: </tspan></text>
-    </g>
+     id="background">
     <rect
-       width="277.68701"
-       height="8.8462725"
-       x="224.09988"
-       y="32.721859"
-       id="track"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:0.29775281;fill:#0000ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="service_name"
+       y="6.5548873"
+       x="5.5063281"
+       height="33.476093"
+       width="575.10101"
+       inkscape:label="#rect2499" />
     <rect
-       width="277.68701"
-       height="8.8462725"
-       x="224.09988"
-       y="13.670986"
-       id="artist"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <rect
-       width="272.81531"
-       height="8.8462725"
-       x="228.97159"
-       y="52.451874"
-       id="album"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <rect
-       width="233.84169"
-       height="8.8462725"
-       x="267.94522"
-       y="123.89265"
-       id="numplayed"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <rect
-       width="277.68698"
-       height="8.8462725"
-       x="224.09988"
-       y="104.84178"
-       id="score"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <rect
-       width="233.84169"
-       height="8.8462725"
-       x="267.94522"
-       y="142.94353"
-       id="playedlast"
-       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  </g>
-  <g
-     id="g6240">
-    <g
-       id="g6244">
-      <rect
-         style="opacity:1;fill:#0000ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4178)"
-         id="service_name"
-         y="6.5548873"
-         x="5.5063281"
-         height="33.476093"
-         width="575.10101"
-         inkscape:label="#rect2499" />
-      <rect
-         style="opacity:0.69101124;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;"
-         id="main_info"
-         y="46.17976"
-         x="6.5639806"
-         height="464.95032"
-         width="575.10107"
-         inkscape:label="#rect2499"
-         transform="matrix(1,0,0,0.9617439,0,9.7003794)" />
-    </g>
+       style="opacity:0.30337079;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="main_info"
+       y="46.17976"
+       x="6.5639806"
+       height="464.95032"
+       width="575.10107"
+       inkscape:label="#rect2499"
+       transform="matrix(1,0,0,0.9617439,0,9.7003794)" />
   </g>
 </svg>
