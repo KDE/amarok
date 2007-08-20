@@ -88,6 +88,13 @@ public:
 private slots:
     void draw() { drawFrame(); }
 
+protected slots:
+    void set50fps() { changeTimeout( 50 ); }
+    void set33fps() { changeTimeout( 33 ); }
+    void set25fps() { changeTimeout( 25 ); }
+    void set20fps() { changeTimeout( 20 ); }
+    void set10fps() { changeTimeout( 10 ); }
+
 protected:
     Base2D( QWidget*, uint timeout, uint scopeSize = 7 );
 

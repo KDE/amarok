@@ -941,10 +941,6 @@ void MainWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
     {
-    default:
-        //saves duplicating the code and header requirements
-        Amarok::Menu::instance()->slotActivated( index );
-        break;
     case ID_SHOW_TOOLBAR:
         m_controlBar->setVisible( !m_controlBar->isHidden() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
@@ -953,13 +949,9 @@ void MainWindow::slotMenuActivated( int index ) //SLOT
     }
 }
 
-void MainWindow::actionsMenuAboutToShow() //SLOT
-{
-}
-
 void MainWindow::toolsMenuAboutToShow() //SLOT
 {
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
+    Amarok::actionCollection()->action( "equalizer" )->setEnabled( !EngineController::hasEngineProperty( "HasEqualizer" ) );
     Amarok::actionCollection()->action( "rescan_collection" )->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 }
 
@@ -1092,6 +1084,10 @@ void MainWindow::createActions()
     KAction *visuals = new KAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"), this );
     // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
     ac->addAction( "visualizations", visuals );
+
+    KAction *equalizer = new KAction( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer"), this );
+    connect( equalizer, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
+    ac->addAction( "equalizer", equalizer );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -1249,9 +1245,6 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("next") );
     actionsMenu->addSeparator();
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
-
-
-    connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
     //END Actions menu
 
     //BEGIN Playlist menu
@@ -1293,7 +1286,7 @@ void MainWindow::createMenus()
     m_toolsMenu->addAction( actionCollection()->action("cover_manager") );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
     m_toolsMenu->addAction( actionCollection()->action("visualizations") );
-    m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );
+    m_toolsMenu->addAction( actionCollection()->action("equalizer") );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();

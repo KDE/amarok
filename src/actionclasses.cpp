@@ -129,8 +129,8 @@ Menu::Menu()
 
     safePlug( ac, "cover_manager", this );
     safePlug( ac, "queue_manager", this );
-    insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
-    insertItem( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
+    safePlug( ac, "visualizations", this );
+    safePlug( ac, "equalizer", this );
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
 
@@ -160,12 +160,8 @@ Menu::Menu()
 
     safePlug( ac, KStandardAction::name(KStandardAction::Quit), this );
 
-    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
-    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
-
-    setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
     #ifdef HAVE_LIBVISUAL
-    setItemEnabled( ID_SHOW_VIS_SELECTOR, true );
+    Amarok::actionCollection()->action( "visualizations" )->setEnabled( false );
     #endif
 }
 
@@ -185,24 +181,6 @@ Menu::helpMenu( QWidget *parent ) //STATIC
         s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
         
     return s_helpMenu->menu();
-}
-
-void
-Menu::slotAboutToShow()
-{
-    setItemEnabled( ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
-    setItemEnabled( ID_CONF_DECODER, EngineController::hasEngineProperty( "HasConfigure" ) );
-}
-
-void
-Menu::slotActivated( int index )
-{
-    switch( index )
-    {
-    case ID_SHOW_VIS_SELECTOR:
-        Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
-        break;
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

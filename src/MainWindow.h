@@ -92,7 +92,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KX
         void showScriptSelector();
         void showStatistics();
         void slotMenuActivated( int );
-        void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
         void slotToggleFocus();
         void slotEditFilter();

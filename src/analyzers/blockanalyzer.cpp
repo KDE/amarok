@@ -428,37 +428,30 @@ BlockAnalyzer::drawBackground()
 }
 
 void
-BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
+BlockAnalyzer::contextMenuEvent( QContextMenuEvent * )
 {
-    //this is hard to read in order to be compact, apologies..
-    //the id of each menu item is the value of the attribute it represents,
-    //so mapping is concise.
+    KMenu *menu = new KMenu( this );
+    menu->setTitle( i18n( "Framerate" ) );
 
-    const uint ids[] = { 50, 33, 25, 20, 10 };
+    QAction *a = menu->addAction( "50 fps", this, SLOT( set50fps() ) );
+    if( timeout() == 50 ) a->setChecked( true );
 
-    Q3PopupMenu menu;
-    menu.setTitle( i18n( "Framerate" ) );
-
-    for( uint x = 0; x < 5; ++x )
-    {
-        const uint v = ids[x];
-
-        menu.insertItem( i18n( "%1 fps", 1000/v ), v );
-        menu.setItemChecked( v, v == timeout() );
-    }
+    a = menu->addAction( "33 fps", this, SLOT( set33fps() ) );
+    if( timeout() == 33 ) a->setChecked( true );
+    
+    a = menu->addAction( "25 fps", this, SLOT( set25fps() ) );
+    if( timeout() == 25 ) a->setChecked( true );
+    
+    a = menu->addAction( "20 fps", this, SLOT( set20fps() ) );
+    if( timeout() == 20 ) a->setChecked( true );
+    
+    a = menu->addAction( "10 fps", this, SLOT( set10fps() ) );
+    if( timeout() == 10 ) a->setChecked( true );
 
 #if defined HAVE_LIBVISUAL
-    menu.addSeparator();
-    menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"),
-            0 );
+    menu->addSeparator();
+    menu->addAction( Amarok::actionCollection->action( "visualizations" ) );
 #endif
-
-    const int id = menu.exec( e->globalPos() );
-
-    if( id == 0 )
-        Amarok::Menu::instance()->slotActivated( Amarok::Menu::ID_SHOW_VIS_SELECTOR );
-    else if( id != -1 ) {
-        changeTimeout( id );
-        determineStep();
-    }
+    menu->exec();
 }
+

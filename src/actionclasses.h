@@ -30,18 +30,6 @@ namespace Amarok
             static Menu *instance();
             static KMenu *helpMenu( QWidget *parent = 0 );
 
-            enum MenuIds {
-                ID_CONF_DECODER,
-                ID_SHOW_VIS_SELECTOR,
-                ID_CONFIGURE_EQUALIZER,
-            };
-
-        public slots:
-            void slotActivated( int index );
-
-        private slots:
-            void slotAboutToShow();
-
         private:
             Menu();
 
