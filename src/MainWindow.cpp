@@ -209,24 +209,20 @@ void MainWindow::init()
     }
 
     QPalette p;
-    QColor endColor = palette().highlight();
-    endColor.setAlpha( 80 );
-    QColor startColor;
-    if( startColor.lighter().isValid() )
-        startColor = endColor.lighter();
-    if( endColor.darker().isValid() )
-        endColor = endColor.darker();
-    startColor.setAlpha( 40 );
-    QColor middleColor( static_cast<int>( endColor.red() * .5 ),
-                        static_cast<int>( endColor.green() * .5 ),
-                        static_cast<int>( endColor.blue() * .5 ),
-                        120 /*alpha*/ );
-    middleColor = middleColor.lighter();
+    QColor topColor = palette().highlight();
+    if( topColor.lighter().isValid() )
+        topColor = topColor.lighter().isValid();
+
+    QColor bottomColor = palette().highlight();
+    if( bottomColor.lighter().isValid() )
+        bottomColor = bottomColor.lighter();
+
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
-    toolbarGradiant.setColorAt( 0, startColor );
-    toolbarGradiant.setColorAt( .5, middleColor );
-    toolbarGradiant.setColorAt( 1, endColor );
+    toolbarGradiant.setColorAt( 0, topColor );
+    toolbarGradiant.setColorAt( .5, topColor );
+    toolbarGradiant.setColorAt( .6, bottomColor );
+    toolbarGradiant.setColorAt( 1, bottomColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
 
@@ -1065,35 +1061,26 @@ void MainWindow::createActions()
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
-    KAction *action = new KAction( this );
+    
+    KAction *action = new KAction( KIcon( Amarok::icon( "files" ) ), i18n("&Add Media..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
-    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    action->setText( i18n("&Add Media...") );
     ac->addAction( "playlist_add", action );
 
-    action = new KAction( this );
+    action = new KAction( KIcon( Amarok::icon( "playlist_clear" ) ), i18nc( "clear playlist", "&Clear" ), this );
     connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
-    action->setIcon( KIcon( Amarok::icon( "playlist_clear" ) ) );
-    action->setText( i18nc( "clear playlist", "&Clear" ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( this );
+    action = new KAction( KIcon( Amarok::icon( "files" ) ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
-    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    action->setText( i18n("&Add Stream...") );
     ac->addAction( "stream_add", action );
 
-    action = new KAction( this );
+    action = new KAction( KIcon( Amarok::icon( "save" ) ), i18n("&Save Playlist As..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
-    action->setIcon( KIcon( Amarok::icon( "save" ) ) );
-    action->setText( i18n("&Save Playlist As...") );
     ac->addAction( "playlist_save", action );
 
-    KAction *burn = new KAction( this );
-    burn->setText( i18n( "Burn Current Playlist" ) );
-    burn->setIcon( KIcon(Amarok::icon( "burn" )) );
+    KAction *burn = new KAction( KIcon(Amarok::icon( "burn" )), i18n( "Burn Current Playlist" ), this );
+    connect( burn, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
     ac->addAction( "playlist_burn", burn );
-    connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
     actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
 
 //     KAction *update_podcasts = new KAction( this );
@@ -1103,55 +1090,39 @@ void MainWindow::createActions()
 //     connect(update_podcasts, SIGNAL(triggered(bool)),
 //             The::podcastCollection(), SLOT(slotUpdateAll()));
 
-    KAction *playact = new KAction( this );
-    playact->setText( i18n("Play Media...") );
-    playact->setIcon( KIcon(Amarok::icon( "files" )) );
-    ac->addAction( "playlist_playmedia", playact );
+    KAction *playact = new KAction( KIcon(Amarok::icon( "files" )), i18n("Play Media..."), this );
     connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    ac->addAction( "playlist_playmedia", playact );
 
-    KAction *acd = new KAction( this );
-    acd->setText(  i18n("Play Audio CD") );
-    acd->setIcon(  KIcon( Amarok::icon( "album" ) ) );
-    ac->addAction( "play_audiocd", acd );
+    KAction *acd = new KAction( KIcon( Amarok::icon( "album" ) ), i18n("Play Audio CD"), this );
     connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
+    ac->addAction( "play_audiocd", acd );
 
-    KAction *script = new KAction( this );
-    script->setText( i18n("Script Manager") );
-    script->setIcon( KIcon(Amarok::icon( "scripts" )) );
-    ac->addAction( "script_manager", script );
+    KAction *script = new KAction( KIcon(Amarok::icon( "scripts" )), i18n("Script Manager"), this );
     connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
+    ac->addAction( "script_manager", script );
 
-    KAction *queue = new KAction( this );
-    queue->setText( i18n( "Queue Manager" ) );
-    queue->setIcon( KIcon( Amarok::icon( "queue" )) );
-    ac->addAction( "queue_manager", queue );
+    KAction *queue = new KAction( KIcon( Amarok::icon( "queue" )), i18n( "Queue Manager" ), this );
     connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
+    ac->addAction( "queue_manager", queue );
 
-    KAction *seekForward = new KAction( this );
-    seekForward->setText( i18n("&Seek Forward") );
-    seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
-    ac->addAction( "seek_forward", seekForward );
+    KAction *seekForward = new KAction( KIcon( Amarok::icon( "fastforward" ) ), i18n("&Seek Forward"), this );
     seekForward->setShortcut( Qt::Key_Right );
     connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
+    ac->addAction( "seek_forward", seekForward );
 
-    KAction *seekBackward = new KAction( this );
-    seekBackward->setText( i18n( "&Seek Backward" ) );
-    seekBackward->setIcon( KIcon(Amarok::icon( "rewind" )) );
+    KAction *seekBackward = new KAction( KIcon( Amarok::icon( "rewind" ) ), i18n("&Seek Backward"), this );
+    seekForward->setShortcut( Qt::Key_Left );
+    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
     ac->addAction( "seek_backward", seekBackward );
-    seekBackward->setShortcut(Qt::Key_Left);
-    connect(seekBackward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
-
-    KAction *statistics = new KAction( this );
-    statistics->setText( i18n( "Statistics" ) );
-    statistics->setIcon( KIcon(Amarok::icon( "info" )) );
-    ac->addAction( "statistics", statistics );
+    
+    KAction *statistics = new KAction( KIcon(Amarok::icon( "info" )), i18n( "Statistics" ), this );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
+    ac->addAction( "statistics", statistics );
 
-    KAction *update = new KAction( this );
-    update->setText( i18n( "Update Collection" ) );
-    update->setIcon( KIcon(Amarok::icon( "refresh")) );
-    actionCollection()->addAction( "update_collection", update );
+    KAction *update = new KAction( KIcon(Amarok::icon( "refresh")), i18n( "Update Collection" ), this );
     connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
+    ac->addAction( "update_collection", update );
 
     m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
