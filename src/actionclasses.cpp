@@ -114,8 +114,6 @@ Menu::Menu()
 {
     KActionCollection *ac = Amarok::actionCollection();
 
-    setCheckable( true );
-
     safePlug( ac, "repeat", this );
     safePlug( ac, "random_mode", this );
 
@@ -154,7 +152,7 @@ Menu::Menu()
 
     addSeparator();
 
-    insertItem( KIcon("help"), i18n( "&Help" ), helpMenu( this ) );
+    addMenu( helpMenu( this ) );
 
     addSeparator();
 
@@ -221,16 +219,6 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     case Engine::Idle:
         return;
     }
-/*
-    //update menu texts for this special action
-    for( int x = 0; x < associatedWidgets().count(); ++x ) {
-        QWidget *w = associatedWidgets().value( x );
-        if( w->inherits( "QPopupMenu" ) )
-            static_cast<Q3PopupMenu*>(w)->changeItem( *this, text );
-        //TODO KToolBar sucks so much
-//         else if( w->inherits( "KToolBar" ) )
-//             static_cast<KToolBar*>(w)->getButton( itemId( x ) )->setText( text );
-    }*/
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 // ToggleAction
