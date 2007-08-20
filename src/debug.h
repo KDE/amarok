@@ -132,10 +132,10 @@ using Debug::fatal;
 using Debug::DebugStream;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo; Debug::mutex.unlock(); }
+#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() ; Debug::mutex.unlock(); }
 
 /// Announce a line
-#define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__; Debug::mutex.unlock(); }
+#define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << "Line: " << __LINE__; Debug::mutex.unlock(); }
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );

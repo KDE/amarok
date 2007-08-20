@@ -83,7 +83,7 @@ static GstFlowReturn gst_equalizer_transform_ip (GstBaseTransform * base, GstBuf
 void
 gst_equalizer_base_init ( gpointer g_class )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_add_pad_template (gstelement_class,
@@ -97,7 +97,7 @@ gst_equalizer_base_init ( gpointer g_class )
 void
 gst_equalizer_class_init ( GstEqualizerClass * klass )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     GObjectClass* gobject_class;
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
@@ -119,7 +119,7 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
 void
 gst_equalizer_init ( GstEqualizer* obj, GstEqualizerClass * klass )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     // Properties
     obj->active = false;

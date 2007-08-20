@@ -384,7 +384,7 @@ private:
 };
 
 //useful debug thingy
-#define DEBUG_THREAD_FUNC_INFO kDebug() << Debug::indent() << k_funcinfo << "thread: " << long( QThread::currentThread() );
+#define DEBUG_THREAD_FUNC_INFO kDebug() << Debug::indent() << "thread: " << long( QThread::currentThread() );
 
 #define SHOULD_BE_GUI if( QThread::currentThread() != QCoreApplication::instance()->thread() ) std::cout \
     << "Should not be Threaded, but is running in" << \

@@ -145,7 +145,7 @@ void
 PodcastCollection::addChannel( Meta::PodcastChannelPtr channel )
 {
     m_channels << channel;
-    debug() << k_funcinfo << "channel.count() = " << channel.count() << endl;
+    debug() << "channel.count() = " << channel.count() << endl;
     addAlbum( channel->name(), AlbumPtr::dynamicCast( channel ) );
 }
 

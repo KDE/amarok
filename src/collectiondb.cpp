@@ -4920,7 +4920,7 @@ CollectionDB::stopScan() //SLOT
 void
 CollectionDB::dirDirty( const QString& path )
 {
-    debug() << k_funcinfo << "Dirty: " << path;
+    debug() << "Dirty: " << path;
     QStringList dir;
     dir.append( path );
 
@@ -6054,7 +6054,7 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
         {
             if ( SQLITE_BUSY==error )
                 Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+            Debug::error() << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on query: " << statement << endl;
             values = QStringList();
@@ -6095,7 +6095,7 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
             {
-                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << "sqlite_step error.\n";
                 Debug::error() << sqlite3_errmsg( m_db ) << endl;
                 Debug::error() << "on query: " << statement << endl;
                 values = QStringList();
@@ -6146,7 +6146,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
         {
             if ( SQLITE_BUSY==error )
                 Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+            Debug::error() << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on insert: " << statement << endl;
             break;
@@ -6178,7 +6178,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
             {
-                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << "sqlite_step error.\n";
                 Debug::error() << sqlite3_errmsg( m_db ) << endl;
                 Debug::error() << "on insert: " << statement << endl;
             }
@@ -6260,7 +6260,7 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
 {
     DEBUG_BLOCK
 
-    debug() << k_funcinfo;
+    debug() ;
     m_db = mysql_init(NULL);
     if (m_db)
     {
@@ -6394,7 +6394,7 @@ PostgresqlConnection::PostgresqlConnection( const PostgresqlConfig* config )
       , m_connected( false )
 {
   QString conninfo;
-    debug() << k_funcinfo;
+    debug() ;
 
 //     if ( config->username().isEmpty() )
 //         pApp->slotConfigAmarok("Postgresql");

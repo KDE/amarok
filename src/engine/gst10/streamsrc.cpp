@@ -58,7 +58,7 @@ GST_BOILERPLATE ( GstStreamSrc, gst_streamsrc, GstElement, GST_TYPE_ELEMENT );
 void
 gst_streamsrc_base_init ( gpointer g_class )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_set_details ( gstelement_class, &gst_streamsrc_details );
@@ -71,7 +71,7 @@ gst_streamsrc_base_init ( gpointer g_class )
 void
 gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     GObjectClass* gobject_class;
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
@@ -112,7 +112,7 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 void
 gst_streamsrc_init ( GstStreamSrc *streamsrc, GstStreamSrcClass *streamsrcclass )
 {
-    kDebug() << k_funcinfo;
+    kDebug() ;
 
     GstElementClass * klass = GST_ELEMENT_CLASS(streamsrcclass);
 
@@ -210,7 +210,7 @@ gst_streamsrc_change_state (GstElement * element, GstStateChange trans)
    GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
    GstStreamSrc *streamsrc = GST_STREAMSRC (element);
 
-   kDebug() << k_funcinfo;
+   kDebug() ;
 
    switch ( trans ) {
       case GST_STATE_CHANGE_NULL_TO_READY:
@@ -298,7 +298,7 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 void
 gst_streamsrc_dispose( GObject *object )
 {
-   kDebug() << "BEGIN: " << k_funcinfo;
+   kDebug() << "BEGIN: " ;
 
    GstStreamSrc* obj = GST_STREAMSRC( object );
    *obj->m_buffering = false;
@@ -307,7 +307,7 @@ gst_streamsrc_dispose( GObject *object )
       
    G_OBJECT_CLASS( parent_class )->dispose( object );
 
-   kDebug() << "END: " << k_funcinfo;
+   kDebug() << "END: " ;
 }
 
 

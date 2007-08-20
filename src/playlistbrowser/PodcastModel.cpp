@@ -53,7 +53,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
 {
     DEBUG_BLOCK
 
-    debug() << k_funcinfo << "index: " << index.row() << " : " << index.column();
+    debug() << "index: " << index.row() << " : " << index.column();
     if ( !index.isValid() )
         return QVariant();
 
@@ -66,7 +66,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
         QString description;
         if ( typeid( * pmc ) == typeid( PodcastChannel ) )
         {
-            debug() << k_funcinfo << "podcastType() == ChannelType";
+            debug() << "podcastType() == ChannelType";
             PodcastChannel *channel = static_cast<PodcastChannel *>(index.internalPointer());
             title = channel->title();
             description = channel->description();
@@ -74,7 +74,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
         }
         else if ( typeid( * pmc ) == typeid( PodcastEpisode ) )
         {
-            debug() << k_funcinfo << "podcastType() == EpisodeType";
+            debug() << "podcastType() == EpisodeType";
             PodcastEpisode *episode = static_cast<PodcastEpisode *>(index.internalPointer());
             title = episode->title();
             description = episode->description();
@@ -96,11 +96,11 @@ QModelIndex
 PodcastModel::index(int row, int column, const QModelIndex & parent) const
 {
     DEBUG_BLOCK
-    debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
-    debug() << k_funcinfo << " row: " << row << " column: " << column;
+    debug() << " parent: " << parent.row() << ":" << parent.column();
+    debug() << " row: " << row << " column: " << column;
     if (!hasIndex(row, column, parent))
     {
-        debug() << k_funcinfo << "!hasIndex(row, column, parent)";
+        debug() << "!hasIndex(row, column, parent)";
         return QModelIndex();
     }
 
@@ -109,12 +109,12 @@ PodcastModel::index(int row, int column, const QModelIndex & parent) const
 
     if (!parent.isValid())
     {
-        debug() << k_funcinfo << "!parent.isValid()";
+        debug() << "!parent.isValid()";
         channel = m_channels[row];
     }
     else
     {
-        debug() << k_funcinfo << "parent.isValid()";
+        debug() << "parent.isValid()";
         channel = static_cast<PodcastChannel *>(parent.internalPointer());
         if( !channel.isNull() )
         {
@@ -122,21 +122,21 @@ PodcastModel::index(int row, int column, const QModelIndex & parent) const
         }
         else
         {
-            debug() << k_funcinfo << "but channel == null";
+            debug() << "but channel == null";
             channel = 0;
         }
     }
 
     if( !episode.isNull() )
     {
-        debug() << k_funcinfo << "create index for Episode: " << episode->title();
-        debug() << k_funcinfo << "row: " << row << " column: " << column << " data: " << episode.data();
+        debug() << "create index for Episode: " << episode->title();
+        debug() << "row: " << row << " column: " << column << " data: " << episode.data();
         return createIndex( row, column, episode.data() );
     }
     else if( !channel.isNull() )
     {
-        debug() << k_funcinfo << "create index for Channel: " << channel->title();
-        debug() << k_funcinfo << "row: " << row << " column: " << column << " data: " << channel.data();
+        debug() << "create index for Channel: " << channel->title();
+        debug() << "row: " << row << " column: " << column << " data: " << channel.data();
         return createIndex( row, column, channel.data() );
     }
     else
@@ -147,10 +147,10 @@ QModelIndex
 PodcastModel::parent(const QModelIndex & index) const
 {
     DEBUG_BLOCK
-    debug() << k_funcinfo << " index: " << index.row() << ":" << index.column();
+    debug() << " index: " << index.row() << ":" << index.column();
     if (!index.isValid())
     {
-        debug() << k_funcinfo << "!index.isValid()";
+        debug() << "!index.isValid()";
         return QModelIndex();
     }
 
@@ -158,25 +158,25 @@ PodcastModel::parent(const QModelIndex & index) const
 
     if ( typeid( * podcastMetaCommon ) == typeid( PodcastChannel ) )
     {
-        debug() << k_funcinfo << "podcastType() == ChannelType";
+        debug() << "podcastType() == ChannelType";
         return QModelIndex();
     }
     else if ( typeid( * podcastMetaCommon ) == typeid( PodcastEpisode ) )
     {
         //BUG: using static_cast on podcastMetaCommon returns wrong address (exact offset of 12 bytes)
-        debug() << k_funcinfo << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
+        debug() << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
         PodcastEpisode *episode = static_cast<PodcastEpisode *>( index.internalPointer() );
-        debug() << k_funcinfo << "podcastType() == EpisodeType";
-        debug() << k_funcinfo << "&episode = " << (void *)episode;
-        debug() << k_funcinfo << episode->title();
-        debug() << k_funcinfo << "channel = " << (void *)episode->channel().data();
+        debug() << "podcastType() == EpisodeType";
+        debug() << "&episode = " << (void *)episode;
+        debug() << episode->title();
+        debug() << "channel = " << (void *)episode->channel().data();
         int row = m_channels.indexOf( episode->channel() );
-        debug() << k_funcinfo << "channel at row " << row;
+        debug() << "channel at row " << row;
         return createIndex( row , 0, episode->channel().data() );
     }
     else
     {
-        debug() << k_funcinfo << "podcastType() == ?";
+        debug() << "podcastType() == ?";
         return QModelIndex();
     }
 }
@@ -186,40 +186,40 @@ PodcastModel::rowCount(const QModelIndex & parent) const
 {
     DEBUG_BLOCK
 
-    debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
+    debug() << " parent: " << parent.row() << ":" << parent.column();
     if (parent.column() > 0)
     {
-        debug() << k_funcinfo << " parent.column() > 0";
+        debug() << " parent.column() > 0";
         return 0;
     }
 
     if (!parent.isValid())
     {
-        debug() << k_funcinfo << " !parent.isValid()";
-        debug() << k_funcinfo << m_channels.count() << " channels";
+        debug() << " !parent.isValid()";
+        debug() << m_channels.count() << " channels";
         return m_channels.count();
     }
     else
     {
-        debug() << k_funcinfo << " parent.isValid(): check type";
+        debug() << " parent.isValid(): check type";
         PodcastMetaCommon *podcastMetaCommon = static_cast<PodcastMetaCommon *>(parent.internalPointer());
-        debug() << k_funcinfo << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
+        debug() << "&podcastMetaCommon = " << (void *)podcastMetaCommon;
 
         if ( typeid( * podcastMetaCommon ) == typeid( PodcastChannel ) )
         {
-            debug() << k_funcinfo << "podcastType() == ChannelType";
+            debug() << "podcastType() == ChannelType";
             PodcastChannel *channel = static_cast<PodcastChannel*>(parent.internalPointer());
-            debug() << k_funcinfo << channel->episodes().count() << " episodes";
+            debug() << channel->episodes().count() << " episodes";
             return channel->episodes().count();
         }
         else if ( typeid( * podcastMetaCommon ) == typeid( PodcastEpisode ) )
         {
-            debug() << k_funcinfo << "podcastType() == EpisodeType";
+            debug() << "podcastType() == EpisodeType";
             return 0;
         }
         else
         {
-            debug() << k_funcinfo << "podcastType() == ?";
+            debug() << "podcastType() == ?";
             return 0;
         }
     }
@@ -228,7 +228,7 @@ PodcastModel::rowCount(const QModelIndex & parent) const
 int
 PodcastModel::columnCount(const QModelIndex & parent) const
 {
-    debug() << k_funcinfo << " parent: " << parent.row() << ":" << parent.column();
+    debug() << " parent: " << parent.row() << ":" << parent.column();
     return 3;
 }
 
@@ -244,7 +244,7 @@ PodcastModel::flags(const QModelIndex & index) const
 QVariant
 PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    debug() << k_funcinfo << "section = " << section;
+    debug() << "section = " << section;
 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )

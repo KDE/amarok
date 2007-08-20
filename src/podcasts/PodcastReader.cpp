@@ -130,7 +130,7 @@ bool PodcastReader::read()
                         {
                             debug() << "new channel";
                             m_channel = new Meta::PodcastChannel();
-                            debug() << k_funcinfo << "m_channel.data(): " << m_channel.data() << endl;
+                            debug() << "m_channel.data(): " << m_channel.data() << endl;
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
 //                         else

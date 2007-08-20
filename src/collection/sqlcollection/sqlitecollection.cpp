@@ -124,7 +124,7 @@ QStringList SqliteCollection::query( const QString& statement )
         {
             if ( SQLITE_BUSY==error )
                 Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+            Debug::error() << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on query: " << statement << endl;
             values = QStringList();
@@ -165,7 +165,7 @@ QStringList SqliteCollection::query( const QString& statement )
 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
             {
-                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << "sqlite_step error.\n";
                 Debug::error() << sqlite3_errmsg( m_db ) << endl;
                 Debug::error() << "on query: " << statement << endl;
                 values = QStringList();
@@ -217,7 +217,7 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
         {
             if ( SQLITE_BUSY==error )
                 Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+            Debug::error() << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on insert: " << statement << endl;
             break;
@@ -249,7 +249,7 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
             {
-                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << "sqlite_step error.\n";
                 Debug::error() << sqlite3_errmsg( m_db ) << endl;
                 Debug::error() << "on insert: " << statement << endl;
             }

@@ -64,7 +64,7 @@ PluginManager::createFromQuery( const QString &constraint )
     KService::List offers = query( constraint );
 
     if ( offers.isEmpty() ) {
-        warning() << k_funcinfo << "No matching plugin found.\n";
+        warning() << "No matching plugin found.\n";
         return 0;
     }
 
@@ -101,7 +101,7 @@ PluginManager::createFromService( const KService::Ptr service )
     Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->resolveSymbol( "create_plugin" );
 
     if ( !create_plugin ) {
-        warning() << k_funcinfo << "create_plugin == NULL\n";
+        warning() << "create_plugin == NULL\n";
         return 0;
     }
     //create plugin on the heap
@@ -134,7 +134,7 @@ PluginManager::unload( Plugin* plugin )
         m_store.erase( iter );
     }
     else
-        warning() << k_funcinfo << "Could not unload plugin (not found in store).\n";
+        warning() << "Could not unload plugin (not found in store).\n";
 }
 
 
@@ -142,7 +142,7 @@ KService::Ptr
 PluginManager::getService( const Plugin* plugin )
 {
     if ( !plugin ) {
-        warning() << k_funcinfo << "pointer == NULL\n";
+        warning() << "pointer == NULL\n";
         return KService::Ptr(0);
     }
 
@@ -150,7 +150,7 @@ PluginManager::getService( const Plugin* plugin )
     vector<StoreItem>::const_iterator iter = lookupPlugin( plugin );
 
     if ( iter == m_store.end() ) {
-        warning() << k_funcinfo << "Plugin not found in store.\n";
+        warning() << "Plugin not found in store.\n";
 	return KService::Ptr(0);
     }
 
