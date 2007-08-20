@@ -104,22 +104,17 @@ namespace Amarok
 
     class BurnMenu : public KMenu
     {
-            Q_OBJECT
+        Q_OBJECT
 
         public:
-            enum MenuIds {
-                CURRENT_PLAYLIST,
-                SELECTED_TRACKS
-            };
-
             static KMenu *instance();
-
-        private slots:
-            void slotAboutToShow();
-            void slotActivated( int index );
 
         private:
             BurnMenu();
+
+        private slots:
+            void slotBurnCurrentPlaylist();
+            void slotBurnSelectedTracks();
     };
 
 

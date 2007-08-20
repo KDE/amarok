@@ -369,7 +369,7 @@ BurnMenuAction::createWidget( QWidget *w )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && KAuthorized::authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( objectName() ) )
     {
         //const int id = KAction::getToolButtonID();
 
@@ -393,12 +393,9 @@ BurnMenuAction::createWidget( QWidget *w )
 
 BurnMenu::BurnMenu()
 {
-    insertItem( i18n("Current Playlist"), CURRENT_PLAYLIST );
-    insertItem( i18n("Selected Tracks"), SELECTED_TRACKS );
+    addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
+    addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
     //TODO add "album" and "all tracks by artist"
-
-    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
-    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 }
 
 KMenu*
@@ -409,23 +406,17 @@ BurnMenu::instance()
 }
 
 void
-BurnMenu::slotAboutToShow()
-{}
+BurnMenu::slotBurnCurrentPlaylist() //SLOT
+{
+    K3bExporter::instance()->exportCurrentPlaylist();
+}
 
 void
-BurnMenu::slotActivated( int index )
+BurnMenu::slotBurnSelectedTracks() //SLOT
 {
-    switch( index )
-    {
-    case CURRENT_PLAYLIST:
-        K3bExporter::instance()->exportCurrentPlaylist();
-        break;
-
-    case SELECTED_TRACKS:
-        K3bExporter::instance()->exportSelectedTracks();
-        break;
-    }
+    K3bExporter::instance()->exportSelectedTracks();
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // StopMenuAction
@@ -441,9 +432,9 @@ StopAction::StopAction( KActionCollection *ac )
 }
 
 int
-StopAction::plug( QWidget *w, int index )
+StopAction::plug( QWidget *w, int )
 {
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+    //KToolBar *bar = dynamic_cast<KToolBar*>(w);
     w->addAction( this );
     /*
     if( bar && KAuthorized::authorizeKAction( name() ) )
