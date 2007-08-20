@@ -91,9 +91,9 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KX
         void showQueueManager();
         void showScriptSelector();
         void showStatistics();
-        void slotMenuActivated( int );
         void toolsMenuAboutToShow();
         void slotToggleFocus();
+        void slotToggleToolbar();
         void slotEditFilter();
         void slotSetFilter( const QString &filter );
 

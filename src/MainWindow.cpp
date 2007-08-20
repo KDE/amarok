@@ -937,16 +937,11 @@ void MainWindow::slotToggleFocus() //SLOT
         m_browsers->currentWidget()->setFocus();
 }
 
-void MainWindow::slotMenuActivated( int index ) //SLOT
+void MainWindow::slotToggleToolbar() //SLOT
 {
-    switch( index )
-    {
-    case ID_SHOW_TOOLBAR:
-        m_controlBar->setVisible( !m_controlBar->isHidden() );
-        AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        m_settingsMenu->changeItem( index, !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
-        break;
-    }
+    m_controlBar->setVisible( !m_controlBar->isHidden() );
+    AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
+    Amarok::actionCollection()->action( "toggle_toolbar" )->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
 }
 
 void MainWindow::toolsMenuAboutToShow() //SLOT
@@ -1088,6 +1083,11 @@ void MainWindow::createActions()
     KAction *equalizer = new KAction( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer"), this );
     connect( equalizer, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
     ac->addAction( "equalizer", equalizer );
+
+    KAction *toggleToolbar = new KAction( this );
+    toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+    connect( toggleToolbar, SIGNAL( triggered(bool) ), SLOT( slotToggleToolbar() ) );
+    ac->addAction( "toggle_toolbar", toggleToolbar );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -1306,7 +1306,7 @@ void MainWindow::createMenus()
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
 #ifndef Q_WS_MAC
-    m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
+    m_settingsMenu->addAction( actionCollection()->action( "toggle_toolbar" ) );
     m_settingsMenu->addSeparator();
 #endif
 

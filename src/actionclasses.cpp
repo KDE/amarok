@@ -82,7 +82,7 @@ MenuAction::MenuAction( KActionCollection *ac )
 }
 
 int
-MenuAction::plug( QWidget *w, int index )
+MenuAction::plug( QWidget *w, int )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
