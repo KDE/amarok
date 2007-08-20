@@ -1090,7 +1090,7 @@ void MainWindow::createActions()
     ac->addAction( "cover_manager", covermanager );
 
     KAction *visuals = new KAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"), this );
-    connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
+    // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
     ac->addAction( "visualizations", visuals );
 
 //     KAction *update_podcasts = new KAction( this );
