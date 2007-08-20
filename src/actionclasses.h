@@ -33,9 +33,7 @@ namespace Amarok
             enum MenuIds {
                 ID_CONF_DECODER,
                 ID_SHOW_VIS_SELECTOR,
-                ID_SHOW_COVER_MANAGER,
                 ID_CONFIGURE_EQUALIZER,
-                ID_RESCAN_COLLECTION
             };
 
         public slots:

@@ -75,6 +75,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KX
     private slots:
         void savePlaylist() const;
         void slotBurnPlaylist() const;
+        void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();

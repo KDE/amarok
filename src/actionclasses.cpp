@@ -127,7 +127,7 @@ Menu::Menu()
 
     addSeparator();
 
-    insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
+    safePlug( ac, "cover_manager", this );
     safePlug( ac, "queue_manager", this );
     insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
@@ -136,10 +136,8 @@ Menu::Menu()
 
     addSeparator();
 
-
     safePlug( ac, "update_collection", this );
-    insertItem( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
-    setItemEnabled( ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
+    safePlug( ac, "rescan_collection", this );
 
 #ifndef Q_WS_MAC
     addSeparator();
@@ -201,14 +199,8 @@ Menu::slotActivated( int index )
 {
     switch( index )
     {
-    case ID_SHOW_COVER_MANAGER:
-        CoverManager::showOnce();
-        break;
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
-        break;
-    case ID_RESCAN_COLLECTION:
-        CollectionDB::instance()->startScan();
         break;
     }
 }

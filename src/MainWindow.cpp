@@ -25,6 +25,7 @@
 #include "context/ContextView.h"
 #include "context/ControlBox.h"
 #include "context/DataEngineManager.h"
+#include "covermanager.h" // for actions
 #include "debug.h"
 #include "dynamicmode.h"
 #include "editfilterdialog.h"
@@ -744,6 +745,10 @@ void MainWindow::slotBurnPlaylist() const //SLOT
     K3bExporter::instance()->exportCurrentPlaylist();
 }
 
+void MainWindow::slotShowCoverManager() const //SLOT
+{
+    CoverManager::showOnce();
+}
 
 void MainWindow::slotPlayMedia() //SLOT
 {
@@ -945,9 +950,6 @@ void MainWindow::slotMenuActivated( int index ) //SLOT
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
         m_settingsMenu->changeItem( index, !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
-    case Amarok::Menu::ID_RESCAN_COLLECTION:
-        CollectionDB::instance()->startScan();
-        break;
     }
 }
 
@@ -958,7 +960,7 @@ void MainWindow::actionsMenuAboutToShow() //SLOT
 void MainWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
+    Amarok::actionCollection()->action( "rescan_collection" )->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 }
 
 
@@ -1080,8 +1082,16 @@ void MainWindow::createActions()
 
     KAction *burn = new KAction( KIcon(Amarok::icon( "burn" )), i18n( "Burn Current Playlist" ), this );
     connect( burn, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
+    burn->setEnabled( K3bExporter::isAvailable() );
     ac->addAction( "playlist_burn", burn );
-    actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
+
+    KAction *covermanager = new KAction( KIcon(Amarok::icon( "covermanager" )), i18n( "Cover Manager" ), this );
+    connect( covermanager, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
+    ac->addAction( "cover_manager", covermanager );
+
+    KAction *visuals = new KAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"), this );
+    connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
+    ac->addAction( "visualizations", visuals );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -1123,6 +1133,11 @@ void MainWindow::createActions()
     KAction *update = new KAction( KIcon(Amarok::icon( "refresh")), i18n( "Update Collection" ), this );
     connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
     ac->addAction( "update_collection", update );
+
+    KAction *rescan = new KAction( KIcon(Amarok::icon( "rescan")), i18n( "Rescan Collection" ), this );
+    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(startScan()));
+    rescan->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
+    ac->addAction( "rescan_collection", rescan );
 
     m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
@@ -1273,23 +1288,20 @@ void MainWindow::createMenus()
     //END Mode menu
 
     //BEGIN Tools menu
-    QAction *vis; // Used locally to enable/disable visualizations menu based on presense of libvisual //krazy:exclude=spelling
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->setTitle( i18n("&Tools") );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->addAction( actionCollection()->action("cover_manager") );
     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    vis = m_toolsMenu->addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
-                                  Vis::Selector::instance(), SLOT(show()) );
+    m_toolsMenu->addAction( actionCollection()->action("visualizations") );
     m_toolsMenu->addAction( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ) );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-    m_toolsMenu->addAction( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"),
-                            CollectionDB::instance(), SLOT(startScan()) );
+    m_toolsMenu->addAction( actionCollection()->action("rescan_collection") );
 
     #ifndef HAVE_LIBVISUAL
-    vis->setEnabled( false );
+    actionCollection()->action( "visualizations" )->setEnabled( false );
     #endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
