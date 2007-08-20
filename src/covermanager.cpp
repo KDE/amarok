@@ -10,7 +10,6 @@
 #include "debug.h"
 #include "querybuilder.h"
 #include "config-amarok.h"
-#include "coverfetcher.h"
 #include "pixmapviewer.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist.h"
@@ -166,21 +165,18 @@ CoverManager::CoverManager()
 
     // view menu
     m_viewMenu = new KMenu( this );
-    m_viewMenu->insertItem( i18n("All Albums"), AllAlbums );
-    m_viewMenu->insertItem( i18n("Albums With Cover"), AlbumsWithCover );
-    m_viewMenu->insertItem( i18n("Albums Without Cover"), AlbumsWithoutCover );
-    m_viewMenu->setItemChecked( AllAlbums, true );
-    connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
+    m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) )->setChecked( true );
+    m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
+    m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
 
     // amazon locale menu
     m_amazonLocaleMenu = new KMenu( this );
-    m_amazonLocaleMenu->insertItem( i18n("International"), CoverFetcher::International );
-    m_amazonLocaleMenu->insertItem( i18n("Canada"), CoverFetcher::Canada );
-    m_amazonLocaleMenu->insertItem( i18n("France"), CoverFetcher::France );
-    m_amazonLocaleMenu->insertItem( i18n("Germany"), CoverFetcher::Germany );
-    m_amazonLocaleMenu->insertItem( i18n("Japan"), CoverFetcher::Japan);
-    m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), CoverFetcher::UK );
-    connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
+    m_amazonLocaleMenu->addAction( i18n("International"),  this, SLOT( slotSetLocaleIntl() ) );
+    m_amazonLocaleMenu->addAction( i18n("Canada"),         this, SLOT( slotSetLocaleCa() )   );
+    m_amazonLocaleMenu->addAction( i18n("France"),         this, SLOT( slotSetLocaleFr() )   );
+    m_amazonLocaleMenu->addAction( i18n("Germany"),        this, SLOT( slotSetLocaleDe() )   );
+    m_amazonLocaleMenu->addAction( i18n("Japan"),          this, SLOT( slotSetLocaleJp() )   );
+    m_amazonLocaleMenu->addAction( i18n("United Kingdom"), this, SLOT( slotSetLocaleUk() )   );
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );

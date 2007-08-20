@@ -5,6 +5,8 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
+#include "coverfetcher.h"
+
 #include <q3ptrlist.h>
 #include <QSplitter>
 //Added by qt3to4:
@@ -46,21 +48,34 @@ class CoverManager : public QSplitter
 
         void setStatusText( QString text );
 
-         /**
-         * Return the top level domain for the current locale
-         **/
+        // Return the top level domain for the current locale
         static QString amazonTld();
+    
     public slots:
         void updateStatusBar();
         void changeLocale( int id );
 
     private slots:
+        void init();
+        
         void slotArtistSelected( Q3ListViewItem* );
         void coverItemExecuted( Q3IconViewItem *item );
         void showCoverMenu( Q3IconViewItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
+        
+        void slotShowAllAlbums()          { changeView( AllAlbums );          }
+        void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
+        void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
         void changeView( int id );
+
+        void slotSetLocaleIntl() { changeLocale( CoverFetcher::International ); }
+        void slotSetLocaleCa()   { changeLocale( CoverFetcher::Canada );        }
+        void slotSetLocaleDe()   { changeLocale( CoverFetcher::Germany );       }
+        void slotSetLocaleFr()   { changeLocale( CoverFetcher::France );        }
+        void slotSetLocaleJp()   { changeLocale( CoverFetcher::Japan );         }
+        void slotSetLocaleUk()   { changeLocale( CoverFetcher::UK );            }
+        
         void fetchMissingCovers();
         void fetchCoversLoop();
         void coverFetched( const QString&, const QString& );
@@ -68,26 +83,25 @@ class CoverManager : public QSplitter
         void coverFetcherError();
         void stopFetching();
 
-        void init();
 
-    private slots:
         void setCustomSelectedCovers();
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         void viewSelectedCover();
         void playSelectedAlbums();
+
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
         void loadCover( const QString &, const QString & );
         Q3PtrList<CoverViewItem> selectedItems();
 
-        K3ListView      *m_artistView;
+        K3ListView     *m_artistView;
         CoverView      *m_coverView;
-        KLineEdit  *m_searchEdit;
+        KLineEdit      *m_searchEdit;
         KPushButton    *m_fetchButton;
-        KMenu     *m_amazonLocaleMenu;
-        KMenu     *m_viewMenu;
+        KMenu          *m_amazonLocaleMenu;
+        KMenu          *m_viewMenu;
         QToolButton    *m_amazonLocaleButton;
         QToolButton    *m_viewButton;
         int             m_currentLocale;
@@ -95,7 +109,7 @@ class CoverManager : public QSplitter
 
         //status bar widgets
         QLabel         *m_statusLabel;
-        KHBox         *m_progressBox;
+        KHBox          *m_progressBox;
         QProgressBar   *m_progress;
         QString         m_oldStatusText;
 
