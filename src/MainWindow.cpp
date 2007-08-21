@@ -185,9 +185,6 @@ void MainWindow::init()
         aw->setMinimumSize( 200, 30 );
         m_controlBar->layout()->setAlignment( aw, Qt::AlignLeft );
         KVBox *aVBox = new KVBox( m_controlBar );
-        ProgressWidget *pWidget = new ProgressWidget( aVBox );
-        pWidget->setMinimumSize( 400, 17 );
-        pWidget->setMaximumSize( 600000, 17 );
         KHBox *insideBox = new KHBox( aVBox );
         aVBox->setMaximumSize( 50000, 60 );
         KToolBar *m_playerControlsToolbar = new Amarok::ToolBar( insideBox );
@@ -197,6 +194,10 @@ void MainWindow::init()
         insideBox->setMaximumSize( 600000, 45 );
         vw->setMinimumSize( 200, 25 );
         insideBox->layout()->setAlignment( vw, Qt::AlignRight );
+
+        ProgressWidget *pWidget = new ProgressWidget( aVBox );
+        pWidget->setMinimumSize( 400, 17 );
+        pWidget->setMaximumSize( 600000, 17 );
 
         m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
