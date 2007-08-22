@@ -6,6 +6,9 @@ VERSION 1.4.8
   BUGFIXES:
     * Fix transferring files with UTF8 names to MTP devices.  Thanks to Kevin
       Becker <kevman3000@gmail.com> for the fix. (BR 139722)
+    * Display warning that iPod sysinfo could not be written in the case of
+      incorrect file permissions. Patch by Christian Ober-Blöbaum
+      <cob@tzi.de>. (BR 148607)
 
 
 VERSION 1.4.7
