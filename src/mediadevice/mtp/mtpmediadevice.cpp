@@ -297,9 +297,9 @@ MediaItem
     debug() << "Parent id : " << parent_id;
 
     m_critical_mutex.lock();
-    debug() << "Sending track... " << bundle.url().path().toLatin1();
+    debug() << "Sending track... " << bundle.url().path().toUtf8();
     int ret = LIBMTP_Send_Track_From_File(
-        m_device, bundle.url().path().toLatin1(), trackmeta,
+        m_device, bundle.url().path().toUtf8(), trackmeta,
         progressCallback, this, parent_id
     );
     m_critical_mutex.unlock();
