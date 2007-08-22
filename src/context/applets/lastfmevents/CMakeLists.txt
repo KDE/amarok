@@ -18,7 +18,6 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../../
 
 kde4_add_plugin(amarok_context_applet_lastfmevents ${lastfmevents_SRCS})
 target_link_libraries(amarok_context_applet_lastfmevents amaroklib ${KDE4_KIO_LIBS})
-set_target_properties(amarok_context_applet_lastfmevents PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 install(TARGETS amarok_context_applet_lastfmevents DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-lastfmevents.desktop DESTINATION ${SERVICES_INSTALL_DIR})
