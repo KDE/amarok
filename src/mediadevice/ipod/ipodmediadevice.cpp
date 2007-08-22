@@ -357,11 +357,31 @@ IpodMediaDevice::slotIpodAction( int id )
                     itdb_device_set_sysinfo( m_itdb->device,
                             "ModelNumStr", model );
 
-                    Amarok::StatusBar::instance()->shortMessage(
-                            i18n( "Setting iPod model to %1 GB %2 (x%3)" )
-                            .arg( QString::number( table[index].capacity ),
-                                itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
-                                table[index].model_number ) );
+                    GError *err = 0; 
+                    gboolean success = itdb_device_write_sysinfo(m_itdb->device, &err);
+                    debug() << "success writing sysinfo to ipod?: " << success << endl;
+                    if( !success && err )
+                    {
+                        g_error_free(err);
+                        //FIXME: update i18n files for next message
+                        Amarok::StatusBar::instance()->longMessage( 
+                                i18n( "Could not write sysinfo file to ipod (check the permissions of the file \"iPod_Control/Device/SysInfo\" on your iPod)" ) );
+
+                        //FIXME: update i18n files for next message
+                        Amarok::StatusBar::instance()->shortMessage(
+                                i18n( "Unable to set iPod model to %1 GB %2 (x%3)" )
+                                .arg( QString::number( table[index].capacity ),
+                                    itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
+                                    table[index].model_number ) );
+                    } 
+                    else
+                    {
+                        Amarok::StatusBar::instance()->shortMessage(
+                                i18n( "Setting iPod model to %1 GB %2 (x%3)" )
+                                .arg( QString::number( table[index].capacity ),
+                                    itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
+                                    table[index].model_number ) );
+                    }
                 }
                 detectModel();
                 MediaBrowser::instance()->updateDevices();
