@@ -450,7 +450,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent * )
 
 #if defined HAVE_LIBVISUAL
     menu->addSeparator();
-    menu->addAction( Amarok::actionCollection->action( "visualizations" ) );
+    menu->addAction( Amarok::actionCollection()->action( "visualizations" ) );
 #endif
     menu->exec();
 }
