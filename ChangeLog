@@ -2,6 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2007 the Amarok authors.
 
+VERSION 1.4.8
+  BUGFIXES:
+    * Fix transferring files with UTF8 names to MTP devices.  Thanks to Kevin
+      Becker <kevman3000@gmail.com> for the fix. (BR 139722)
+
 
 VERSION 1.4.7
   CHANGES:
