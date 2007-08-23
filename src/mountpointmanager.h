@@ -28,8 +28,6 @@
 #include <KConfig>
 #include <KUrl>
 
-#include <q3ptrlist.h>
-#include <q3valuelist.h>
 #include <QMap>
 #include <QMutex>
 #include <QStringList>
@@ -37,8 +35,8 @@
 class DeviceHandler;
 class DeviceHandlerFactory;
 
-typedef Q3ValueList<int> IdList;
-typedef Q3PtrList<DeviceHandlerFactory> FactoryList;
+typedef QList<int> IdList;
+typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
 

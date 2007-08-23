@@ -68,8 +68,6 @@ MountPointManager::MountPointManager()
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
 
-    m_mediumFactories.setAutoDelete( true );
-    m_remoteFactories.setAutoDelete( true );
     init();
 
     CollectionDB *collDB = CollectionDB::instance();
@@ -88,10 +86,14 @@ MountPointManager::MountPointManager()
 MountPointManager::~MountPointManager()
 {
     m_handlerMapMutex.lock();
-    oldForeachType( HandlerMap, m_handlerMap )
+    foreach( DeviceHandler *dh, m_handlerMap )
     {
-        delete it.data();
+        delete dh;
     }
+    while( !m_mediumFactories.isEmpty() )
+        delete m_mediumFactories.takeFirst();
+    while( !m_remoteFactories.isEmpty() )
+        delete m_remoteFactories.takeFirst();
     m_handlerMapMutex.unlock();
 }
 
@@ -134,15 +136,15 @@ MountPointManager::init()
 int
 MountPointManager::getIdForUrl( const KUrl &url )
 {
-    uint mountPointLength = 0;
+    int mountPointLength = 0;
     int id = -1;
     m_handlerMapMutex.lock();
-    oldForeachType( HandlerMap, m_handlerMap )
+    foreach( DeviceHandler *dh, m_handlerMap )
     {
-        if ( url.path().startsWith( it.data()->getDevicePath() ) && mountPointLength < it.data()->getDevicePath().length() )
+        if ( url.path().startsWith( dh->getDevicePath() ) && mountPointLength < dh->getDevicePath().length() )
         {
-            id = it.key();
-            mountPointLength = it.data()->getDevicePath().length();
+            id = m_handlerMap.key( dh );
+            mountPointLength = dh->getDevicePath().length();
         }
     }
     m_handlerMapMutex.unlock();
@@ -153,7 +155,7 @@ MountPointManager::getIdForUrl( const KUrl &url )
     else
     {
         //default fallback if we could not identify the mount point.
-        //treat -1 as mount point / in al other methods
+        //treat -1 as mount point / in all other methods
         return -1;
     }
 }
@@ -275,15 +277,15 @@ MountPointManager::mediumChanged( const Medium *m )
     if ( !m ) return;
     if ( m->isMounted() )
     {
-        oldForeachType( FactoryList, m_mediumFactories )
+        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
         {
-            if ( (*it)->canHandle ( m ) )
+            if ( factory->canHandle ( m ) )
             {
                 debug() << "found handler for " << m->id();
-                DeviceHandler *handler = (*it)->createHandler( m );
+                DeviceHandler *handler = factory->createHandler( m );
                 if( !handler )
                 {
-                    debug() << "Factory " << (*it)->type() << "could not create device handler";
+                    debug() << "Factory " << factory->type() << "could not create device handler";
                     break;
                 }
                 int key = handler->getDeviceID();
@@ -292,7 +294,7 @@ MountPointManager::mediumChanged( const Medium *m )
                 {
                     debug() << "Key " << key << " already exists in handlerMap, replacing";
                     delete m_handlerMap[key];
-                    m_handlerMap.erase( key );
+                    m_handlerMap.remove( key );
                 }
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
@@ -305,13 +307,13 @@ MountPointManager::mediumChanged( const Medium *m )
     else
     {
         m_handlerMapMutex.lock();
-        oldForeachType( HandlerMap, m_handlerMap )
+        foreach( DeviceHandler *dh, m_handlerMap )
         {
-            if ( it.data()->deviceIsMedium( m ) )
+            if ( dh->deviceIsMedium( m ) )
             {
-                delete it.data();
-                int key = it.key();
-                m_handlerMap.erase( key );
+                int key = m_handlerMap.key( dh );
+                m_handlerMap.remove( key );
+                delete dh;
                 debug() << "removed device " << key;
                 m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
@@ -335,13 +337,13 @@ MountPointManager::mediumRemoved( const Medium *m )
     {
         //this works for USB devices, special cases might be required for other devices
         m_handlerMapMutex.lock();
-        oldForeachType( HandlerMap, m_handlerMap )
+        foreach( DeviceHandler *dh, m_handlerMap )
         {
-            if ( it.data()->deviceIsMedium( m ) )
+            if( dh->deviceIsMedium( m ) )
             {
-                delete it.data();
-                int key = it.key();
-                m_handlerMap.erase( key );
+                int key = m_handlerMap.key( dh );
+                m_handlerMap.remove( key );
+                delete dh;
                 debug() << "removed device " << key;
                 m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
@@ -361,24 +363,24 @@ MountPointManager::mediumAdded( const Medium *m )
     if ( m->isMounted() )
     {
         debug() << "Device added and mounted, checking handlers";
-        oldForeachType( FactoryList, m_mediumFactories )
+        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
         {
-            if ( (*it)->canHandle ( m ) )
+            if( factory->canHandle( m ) )
             {
                 debug() << "found handler for " << m->id();
-                DeviceHandler *handler = (*it)->createHandler( m );
+                DeviceHandler *handler = factory->createHandler( m );
                 if( !handler )
                 {
-                    debug() << "Factory " << (*it)->type() << "could not create device handler";
+                    debug() << "Factory " << factory->type() << "could not create device handler";
                     break;
                 }
                 int key = handler->getDeviceID();
                 m_handlerMapMutex.lock();
-                if ( m_handlerMap.contains( key ) )
+                if( m_handlerMap.contains( key ) )
                 {
                     debug() << "Key " << key << " already exists in handlerMap, replacing";
                     delete m_handlerMap[key];
-                    m_handlerMap.erase( key );
+                    m_handlerMap.remove( key );
                 }
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
@@ -406,19 +408,19 @@ MountPointManager::collectionFolders( )
     QStringList result;
     KConfigGroup folders = Amarok::config( "Collection Folders" );
     IdList ids = getMountedDeviceIds();
-    oldForeachType( IdList, ids )
+    foreach( int id, ids )
     {
-        QStringList rpaths = folders.readEntry( QString::number( *it ), QStringList() );
-        for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
+        QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
+        foreach( QString strIt, rpaths )
         {
             QString absPath;
-            if ( *strIt == "./" )
+            if ( strIt == "./" )
             {
-                absPath = getMountPointForId( *it );
+                absPath = getMountPointForId( id );
             }
             else
             {
-                absPath = getAbsolutePath( *it, *strIt );
+                absPath = getAbsolutePath( id, strIt );
             }
             if ( !result.contains( absPath ) )
                 result.append( absPath );
@@ -434,10 +436,11 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
-    oldForeach( folders )
+    
+    foreach( QString folder, folders )
     {
-        int id = getIdForUrl( *it );
-        QString rpath = getRelativePath( id, *it );
+        int id = getIdForUrl( folder );
+        QString rpath = getRelativePath( id, folder );
         if ( folderMap.contains( id ) ) {
             if ( !folderMap[id].contains( rpath ) )
                 folderMap[id].append( rpath );
@@ -454,9 +457,10 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
             folderConf.deleteEntry( QString::number( *it ) );
         }
     }
-    oldForeachType( FolderMap, folderMap )
+    QMapIterator<int, QStringList> i( folderMap );
+    while( i.hasNext() )
     {
-        folderConf.writeEntry( QString::number( it.key() ), it.data() );
+        folderConf.writeEntry( QString::number( i.key() ), i.value() );
     }
 }
 
@@ -464,17 +468,17 @@ void
 MountPointManager::migrateStatistics()
 {
     QStringList urls = CollectionDB::instance()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
-    oldForeach( urls )
+    foreach( QString url, urls )
     {
-        if ( QFile::exists( *it) )
+        if ( QFile::exists( url ) )
         {
-            int deviceid = getIdForUrl( *it );
-            QString rpath = getRelativePath( deviceid, *it );
+            int deviceid = getIdForUrl( url );
+            QString rpath = getRelativePath( deviceid, url );
             QString update = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
                                       .arg( deviceid )
                                       .arg( CollectionDB::instance()->escapeString( rpath ) );
             update += QString( " WHERE url = '%1' AND deviceid = -2;" )
-                               .arg( CollectionDB::instance()->escapeString( *it ) );
+                               .arg( CollectionDB::instance()->escapeString( url ) );
             CollectionDB::instance()->query( update );
         }
     }
@@ -518,13 +522,14 @@ MountPointManager::deviceAdded( const QString &udi )
     if( !devices.isEmpty() )
     {
         Solid::StorageVolume *volume = devices[0].as<Solid::StorageVolume>();
-        
+        Q_UNUSED( volume );
     }
 }
 
 void
 MountPointManager::deviceRemoved( const QString &udi )
 {
+    Q_UNUSED( udi );
 }
 
 //UrlUpdateJob
