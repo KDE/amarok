@@ -85,6 +85,7 @@ PlaylistNS::GraphicsItem::~GraphicsItem()
 void 
 PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
+    Q_UNUSED( painter ); Q_UNUSED( widget );
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
     if( not m_items || ( option->rect.width() != m_items->lastWidth ) )

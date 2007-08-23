@@ -379,6 +379,7 @@ Model::insertMedia( KUrl::List list, int options )
 bool
 Model::saveM3U( const QString &path, bool relative ) const
 {
+    Q_UNUSED( path ); Q_UNUSED( relative );
 //     Q3ValueList<KUrl> urls;
 //     Q3ValueList<QString> titles;
 //     Q3ValueList<int> lengths;
@@ -424,6 +425,7 @@ Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
 bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
+    Q_UNUSED( column ); Q_UNUSED( parent );
     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
@@ -499,6 +501,7 @@ Model::insertTracksCommand( int row, TrackList list )
     {
         int oldActiveRow = m_activeRow;
         m_activeRow += list.size();
+        Q_UNUSED( oldActiveRow );
         //dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }

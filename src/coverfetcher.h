@@ -12,7 +12,7 @@
 
 
 namespace Amarok {
-    void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
+    void coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
 }
 
 class KJob;

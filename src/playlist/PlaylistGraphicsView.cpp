@@ -30,6 +30,7 @@ DEBUG_BLOCK
 void
 PlaylistNS::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int end )
 {
+    Q_UNUSED( parent );
     for( int i = start; i <= end; i++ )
     {
         PlaylistNS::GraphicsItem* item = new PlaylistNS::GraphicsItem();
@@ -42,6 +43,7 @@ PlaylistNS::GraphicsView::rowsInserted( const QModelIndex& parent, int start, in
 void
 PlaylistNS::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
+    Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
         delete m_tracks.takeAt( i );
 }
