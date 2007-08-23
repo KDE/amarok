@@ -504,11 +504,9 @@ void MainWindow::applySettings()
     {
     case true:
         Playlist::instance()->setFont( AmarokConfig::playlistWindowFont() );
-//        ContextBrowser::instance()->setFont( AmarokConfig::contextBrowserFont() );
         break;
     case false:
         Playlist::instance()->setFont( QFont() );
-//        ContextBrowser::instance()->setFont( QFont() );
         break;
     }
 }

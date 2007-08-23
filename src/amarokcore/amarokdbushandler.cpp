@@ -596,12 +596,12 @@ namespace Amarok
 
     int  DbusPlaylistHandler::getActiveIndex()
     {
-        return Playlist::instance()->currentTrackIndex( false );
+        return The::playlistModel()->activeRow();
     }
 
     int  DbusPlaylistHandler::getTotalTrackCount()
     {
-        return Playlist::instance()->totalTrackCount();
+        return The::playlistModel()->rowCount();
     }
 
     QString DbusPlaylistHandler::saveCurrentPlaylist()
@@ -612,12 +612,14 @@ namespace Amarok
 
     void DbusPlaylistHandler::addMedia(const KUrl &url)
     {
-        Playlist::instance()->appendMedia(url);
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        The::playlistModel()->insertOptioned( track, PlaylistNS::Append );
     }
 
     void DbusPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
-        The::playlistModel()->insertMedia(urls);
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls ); 
+        The::playlistModel()->insertOptioned( tracks, PlaylistNS::Append );
     }
 
     void DbusPlaylistHandler::clearPlaylist()
