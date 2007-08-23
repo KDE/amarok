@@ -68,6 +68,7 @@ QStringList m_expandableDbFields;
 SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, const char *name )
     : KDialog( parent )
 {
+    setObjectName( name );
     setCaption( i18n("Create Smart Playlist") );
     setModal( true );
     setButtons( Ok | Cancel );
@@ -83,6 +84,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name)
     : KDialog( parent )
 {
+    setObjectName( name );
     setCaption( i18n("Edit Smart Playlist") );
     setModal( true );
     setButtons( Ok | Cancel );
@@ -135,7 +137,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         QDomElement orderby = orderbyList.item(0).toElement(); // we only allow one orderby node
 
         //random is always the last one.
-        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
+        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count() : m_dbFields.indexOf( orderby.attribute( "field" ) );
 
         m_orderCombo->setCurrentIndex( dbfield );
         updateOrderTypes( dbfield );
@@ -158,7 +160,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         m_expandCheck->setChecked( true );
         QDomElement expandby = expandbyList.item(0).toElement(); // we only allow one orderby node
 
-        int dbfield = m_expandableFields.findIndex( expandby.attribute( "field" ) );
+        int dbfield = m_expandableFields.indexOf( expandby.attribute( "field" ) );
         m_expandCombo->setCurrentIndex( dbfield );
     }
 }
@@ -221,7 +223,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     orderBox->setSpacing( 5 );
     //fields combo
     m_orderCombo = new KComboBox( orderBox );
-    m_orderCombo->insertStringList( m_fields );
+    m_orderCombo->insertItems( 0, m_fields );
     m_orderCombo->addItem( i18n("Random") );
     //order type
     m_orderTypeCombo = new KComboBox( orderBox );
@@ -246,7 +248,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     KHBox *expandBox = new KHBox( hbox3 );
     expandBox->setSpacing( 5 );
     m_expandCombo = new KComboBox( expandBox );
-    m_expandCombo->insertStringList( m_expandableFields );
+    m_expandCombo->insertItems( 0, m_expandableFields );
     hbox3->setStretchFactor( new QWidget( hbox3 ), 1 );
 
     //add stretch
@@ -425,7 +427,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
     setSpacing( 5 );
 
     m_fieldCombo = new KComboBox( this );
-    m_fieldCombo->insertStringList( m_fields );
+    m_fieldCombo->insertItems( 0, m_fields );
 
     m_criteriaCombo = new KComboBox( this );
 
@@ -434,11 +436,11 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
     setStretchFactor( m_editBox, 1 );
 
     m_addButton = new QToolButton( this );
-    m_addButton->setUsesTextLabel( true );
-    m_addButton->setTextLabel("+");
+    m_addButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+    m_addButton->setText( "+" );
     m_removeButton = new QToolButton( this );
-    m_removeButton->setUsesTextLabel( true );
-    m_removeButton->setTextLabel("-");
+    m_removeButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+    m_removeButton->setText( "-" );
 
     connect( m_fieldCombo,    SIGNAL( activated(int) ), SLOT( slotFieldSelected(int) ) );
     connect( m_criteriaCombo, SIGNAL( activated(int) ), SLOT( loadEditWidgets() ) );
@@ -452,7 +454,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
     }
 
     if ( !criteria.isNull() ) {
-        int field = m_dbFields.findIndex( criteria.attribute( "field" ) );
+        int field = m_dbFields.indexOf( criteria.attribute( "field" ) );
         QString condition = criteria.attribute("condition");
 
 
@@ -851,10 +853,10 @@ void CriteriaEditor::slotFieldSelected( int field )
         else  //genre
            items = CollectionDB::instance()->genreList();
 
-        m_comboBox->insertStringList( items );
+        m_comboBox->insertItems( 0, items );
         m_comboBox->completionObject()->insertItems( items );
         m_comboBox->completionObject()->setIgnoreCase( true );
-        m_comboBox->setCurrentText( "" );
+        m_comboBox->setItemText( m_comboBox->currentIndex(), "" );
         m_comboBox->setFocus();
     }
 }
@@ -876,9 +878,9 @@ void CriteriaEditor::loadEditWidgets()
     /* Store lastCriteria. This information is used above to decide whether it's necessary to change the Widgets */
     m_lastCriteria = m_criteriaCombo->currentText();
 
-    QObjectList list = m_editBox->queryList( "QWidget" );
-    for( QObjectList::const_iterator it = list.begin(); it != list.end(); ++it )
-        static_cast<QWidget*>( *it )->deleteLater();
+    QList<QWidget *> list = qFindChildren<QWidget *>( m_editBox );
+    foreach( QWidget *w, list )
+        w->deleteLater();
 
     switch( valueType ) {
 
@@ -934,7 +936,7 @@ void CriteriaEditor::loadEditWidgets()
         {
             const QStringList list = MetaBundle::ratingList();
             m_comboBox = new KComboBox( false, m_editBox );
-            m_comboBox->insertStringList( list );
+            m_comboBox->insertItems( 0, list );
             m_comboBox->show();
 
             if( m_criteriaCombo->currentText() == i18n("is between") ) {
@@ -942,7 +944,7 @@ void CriteriaEditor::loadEditWidgets()
                 m_rangeLabel->setAlignment( Qt::AlignHCenter );
                 m_rangeLabel->show();
                 m_comboBox2 = new KComboBox( false, m_editBox );
-                m_comboBox2->insertStringList( list );
+                m_comboBox2->insertItems( 0, list );
                 m_comboBox2->show();
             }
             break;
@@ -1036,11 +1038,12 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
     };
 
     m_criteriaCombo->clear();
-    m_criteriaCombo->insertStringList( items );
+    m_criteriaCombo->insertItems( 0, items );
 
-    if ( !condition.isEmpty() ) {
-        int index = items.findIndex( condition );
-        if (index!=-1)
+    if( !condition.isEmpty() )
+    {
+        int index = items.indexOf( condition );
+        if( index != -1 )
             m_criteriaCombo->setCurrentIndex( index );
     }
 }
