@@ -50,7 +50,7 @@ void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine)
 {
     if(xine) debug() << "its not null " << key << ' ' << val;
     xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(xine, key.ascii(), &ent))
+    if(xine_config_lookup_entry(xine, key.toAscii(), &ent))
     {
         storeEntry(&ent, val);
         xine_config_update_entry(xine, &ent);
@@ -72,7 +72,7 @@ XineIntFunctor::operator()( xine_cfg_entry_t* ent, int val )
 void
 XineStrFunctor::operator()( xine_cfg_entry_t* ent, const QString& val )
 {
-    ent->str_value = const_cast<char*>(val.ascii());
+    ent->str_value = val.toAscii().data();
 }
 
 ////////////////////
@@ -82,7 +82,7 @@ XineStrEntry::XineStrEntry(QLineEdit* input, const QByteArray & key, xine_t *xin
     : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
-    if( xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent) )
+    if( xine_config_lookup_entry( m_xine, m_key.toAscii(), &ent ) )
     {
         input->setText(ent.str_value);
         m_val = ent.str_value;
@@ -114,7 +114,7 @@ XineIntEntry::XineIntEntry(QSpinBox* input, const QByteArray & key, xine_t *xine
   : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
+    if(xine_config_lookup_entry(m_xine,  m_key.toAscii(), &ent))
         {
             input->setValue(ent.num_value);
             m_val = ent.num_value;
@@ -152,12 +152,12 @@ XineEnumEntry::XineEnumEntry(QComboBox* input, const QByteArray & key, xine_t *x
 {
     input->clear();
     xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
+    if(xine_config_lookup_entry( m_xine, m_key.toAscii(), &ent) )
     {
         for( int i = 0; ent.enum_values[i]; ++i )
         {
-            input->insertItem( QString::fromLocal8Bit( ent.enum_values[i] ) );
-            input->setCurrentItem( ent.num_value );
+            input->insertItem( i, QString::fromLocal8Bit( ent.enum_values[i] ) );
+            input->setCurrentIndex( i );
             m_val = ent.num_value;
         }
     }
@@ -175,12 +175,12 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     m_view = new XineConfigBase();
     m_view->xineLogo->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
     //sound output combo box
-    m_view->deviceComboBox->insertItem(i18n("Autodetect"));
+    m_view->deviceComboBox->insertItem( 0, i18n("Autodetect") );
     const char* const* drivers = xine_list_audio_output_plugins(m_xine);
-    for(int i =0; drivers[i]; ++i)
+    for(int i=0; drivers[i]; ++i)
     {
         if(qstrcmp(drivers[i],"none") != 0) //returns 0 if equal
-            m_view->deviceComboBox->insertItem(drivers[i]);
+            m_view->deviceComboBox->insertItem( i+1, drivers[i] ); // i+1 to be after the Autodetect entry
     }
 
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2007  Dan Meltzer <hydrogen@notyetimplemented.com>      *
- *   Copyright (C) 2007  Seb Ruiz <me@sebruiz.net>                         *
+ *   Copyright (C) 2007  Seb Ruiz <ruiz@kde.org>                           *
  *   Copyright (C) 2007  Mark Kretschmann <markey@web.de>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -80,6 +80,7 @@ PhononEngine::load( const KUrl &url, bool isStream )
 bool
 PhononEngine::play( uint offset )
 {
+    Q_UNUSED( offset );
     DEBUG_BLOCK
 
     m_mediaObject->play();

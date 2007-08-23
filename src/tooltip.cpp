@@ -60,7 +60,7 @@ public:
             case QEvent::Enter:
             case QEvent::Leave:
             case QEvent::FocusOut:
-                if( !dynamic_cast<Amarok::ToolTip*>( kapp->widgetAt( QCursor::pos(), true ) ) )
+                if( !dynamic_cast<Amarok::ToolTip*>( kapp->widgetAt( QCursor::pos() ) ) )
                     Amarok::ToolTip::hideTips();
             default: break;
         }
@@ -78,6 +78,7 @@ int Amarok::ToolTip::s_hack = 0;
 
 void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 {
+    Q_UNUSED( client ); Q_UNUSED( parent );
     //if( !s_manager )
     //    s_manager = new Amarok::ToolTip::Manager( kapp );
     //new ToolTip( client, parent );
@@ -85,6 +86,7 @@ void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 
 void Amarok::ToolTip::remove( QWidget *widget ) //static
 {
+    Q_UNUSED( widget );
     //for( int i = s_tooltips.count() - 1; i >= 0; --i )
     //    if( s_tooltips[i]->QToolTip::parentWidget() == widget )
     //        delete s_tooltips[i];
@@ -99,6 +101,7 @@ void Amarok::ToolTip::hideTips() //static
 
 QString Amarok::ToolTip::textFor( QWidget *widget, const QPoint &pos ) //static
 {
+    Q_UNUSED( widget ); Q_UNUSED( pos );
     /*for( int i = 0, n = s_tooltips.count(); i < n; ++i )
         if( s_tooltips[i]->QToolTip::parentWidget() == widget )
             return s_tooltips[i]->m_client->toolTipText( widget, pos ).first;

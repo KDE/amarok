@@ -140,16 +140,16 @@ TransferDialog::sort1_activated( int index )
 {
     //sort3
     if( m_sort2LastIndex > 0 )
-        m_sort3->addItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+        m_sort3->addItem( m_sort2->itemText( m_sort2LastIndex ), m_sort2LastIndex );
     if( m_sort1LastIndex > 0 )
-        m_sort3->addItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+        m_sort3->addItem( m_sort1->itemText( m_sort1LastIndex ), m_sort1LastIndex );
     if( index > 0 )
         m_sort3->removeItem( index );
     m_sort3->setCurrentItem( 0 );
     m_sort3->setDisabled( true );
     //sort2
     if( m_sort1LastIndex > 0 )
-        m_sort2->addItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+        m_sort2->addItem( m_sort1->itemText( m_sort1LastIndex ), m_sort1LastIndex );
     if( index > 0 )
         m_sort2->removeItem( index );
     m_sort2->setCurrentItem( 0 );
@@ -167,7 +167,7 @@ TransferDialog::sort2_activated( int index )
 {
     //sort3
     if( m_sort2LastIndex > 0 )
-        m_sort3->addItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+        m_sort3->addItem( m_sort2->itemText( m_sort2LastIndex ), m_sort2LastIndex );
     if( index > 0 )
         m_sort3->removeItem( index );
     m_sort3->setCurrentItem( 0 );

@@ -295,6 +295,7 @@ void LastFmEvents::configAccepted() // SLOT
 
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
+    Q_UNUSED( text );
     int size = 12; // start here, shrink if needed
 //     QString font = "Arial";
     QFontMetrics fm( QFont( QString(), size ) );

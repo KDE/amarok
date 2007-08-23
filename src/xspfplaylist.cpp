@@ -38,7 +38,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
     QString errorMsg;
     int errorLine, errorColumn;
     stream.setCodec( "UTF8" );
-    if (!setContent(stream.read(), &errorMsg, &errorLine, &errorColumn))
+    if (!setContent(stream.readAll(), &errorMsg, &errorLine, &errorColumn))
     {
         debug() << "[XSPFPlaylist]: Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn << endl;

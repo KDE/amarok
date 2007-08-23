@@ -352,6 +352,7 @@ SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin
 QueryMaker*
 SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
+    Q_UNUSED( value ); Q_UNUSED( filter ); Q_UNUSED( matchBegin ); Q_UNUSED( matchEnd );
     //TODO
     return this;
 }
