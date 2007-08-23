@@ -198,6 +198,15 @@ CollectionManager::sqlStorage() const
     return d->sqlDatabase;
 }
 
+Meta::TrackList
+CollectionManager::tracksForUrls( const KUrl::List &urls )
+{
+    Meta::TrackList tracks;
+    foreach( KUrl url, urls )
+        tracks.append( trackForUrl( url ) );
+    return tracks;
+}
+
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
