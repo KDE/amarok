@@ -155,15 +155,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         m_theme->paint( p, m_theme->elementRect( "half-star" ), "half-star" );
     }
     p->restore();
-        
-    m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
-    m_artist->setPos( m_theme->elementRect( "artist" ).topLeft() );
-    m_album->setPos( m_theme->elementRect( "album" ).topLeft() );
-    m_score->setPos( m_theme->elementRect( "score" ).topLeft() );
-    m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
-    m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
-    m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
-    
+
     // TODO get, and then paint, album pixmap
     
 }
