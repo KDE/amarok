@@ -139,6 +139,7 @@ void ColumnApplet::update() // SLOT
 
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
 { 
+    Q_UNUSED( object )
     // basically we want to reshuffle the columns since we know something is gone
     resizeColumns();
 }
@@ -165,7 +166,7 @@ void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
 // parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
 void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
-    DEBUG_BLOCK
+    debug() << "layout manager got a mouse event";
     if ( ( event->buttons() & Qt::LeftButton ) )
     {
         
