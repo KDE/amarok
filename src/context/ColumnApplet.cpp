@@ -27,7 +27,7 @@ namespace Context
 ColumnApplet::ColumnApplet( QGraphicsItem * parent )
     : QGraphicsItem( parent )
     , m_padding( 20 )
-    , m_defaultColumnSize( 300 )
+    , m_defaultColumnSize( 450 )
 {
 }
 
@@ -218,10 +218,10 @@ AppletPointer ColumnApplet::addApplet( AppletPointer applet )
     
     debug() << "found" << m_layout.size() << " column, adding applet to column:" << smallestColumn;
     m_layout[ smallestColumn ]->addItem( applet );
+        
+    connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
     
     resizeColumns();
-    
-    connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
     
     return applet;
 }
