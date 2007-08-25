@@ -211,19 +211,19 @@ void MainWindow::init()
     }
 
     QPalette p;
+    QColor bottomColor;
     QColor topColor = palette().highlight();
     if( topColor.lighter().isValid() )
         topColor = topColor.lighter().isValid();
 
-    QColor bottomColor = palette().highlight();
-    if( bottomColor.darker().isValid() )
+    if( topColor.darker().isValid() )
         bottomColor = bottomColor.darker();
+    topColor.setAlpha( 100 );
+    bottomColor.setAlpha( 100 );
 
     QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
                                      m_controlBar->contentsRect().bottomLeft() );
     toolbarGradiant.setColorAt( 0, topColor );
-    toolbarGradiant.setColorAt( .5, topColor );
-    toolbarGradiant.setColorAt( .6, bottomColor );
     toolbarGradiant.setColorAt( 1, bottomColor );
     QBrush b( toolbarGradiant );
     p.setBrush( QPalette::Window, b );
