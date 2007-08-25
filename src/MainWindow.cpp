@@ -211,13 +211,13 @@ void MainWindow::init()
     }
 
     QPalette p;
-    QColor bottomColor;
+    QColor bottomColor = palette().base();
     QColor topColor = palette().highlight();
     if( topColor.lighter().isValid() )
         topColor = topColor.lighter().isValid();
 
-    if( topColor.darker().isValid() )
-        bottomColor = bottomColor.darker();
+//     if( topColor.darker().isValid() )
+//         bottomColor = bottomColor.darker();
     topColor.setAlpha( 100 );
     bottomColor.setAlpha( 100 );
 
