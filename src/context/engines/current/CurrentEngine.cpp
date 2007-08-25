@@ -44,6 +44,7 @@ bool CurrentEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
+    clearData( name );
     setData( name, QVariant());
     m_requested = true;
     return true;
@@ -80,6 +81,7 @@ void CurrentEngine::update()
     
     int width = coverWidth();
     track->album()->subscribe( this );
+    clearData( "current" );
     setData( "current", "albumart",  QVariant( track->album()->image( width ) ) );
     
     setData( "current", "current", trackInfo );

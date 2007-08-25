@@ -39,7 +39,7 @@ protected slots:
     void appletDestroyed(QObject* object);
         
 protected:
-    
+    void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
     /*void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */

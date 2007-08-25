@@ -130,7 +130,6 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
 
 void WikipediaApplet::calculateHeight()
 {
-    DEBUG_BLOCK
     qreal textHeight = m_wikiPage->boundingRect().height();
     qreal boxHeight = m_theme->size().height() - m_header->size().height();
     

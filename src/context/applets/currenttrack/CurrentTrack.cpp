@@ -119,7 +119,7 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     m_album->setText( currentInfo[ 2 ].toString() );
 //     m_rating = currentInfo[ 3 ].toInt();
     // TODO i can't add ratings... so hardcoding to test
-    m_rating = 6;
+    m_rating = 7;
     m_score->setText( currentInfo[ 4 ].toString() );
     m_trackLength = currentInfo[ 5 ].toInt();
 //     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );

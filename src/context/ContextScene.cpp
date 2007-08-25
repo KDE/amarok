@@ -48,6 +48,11 @@ ContextScene::~ContextScene()
 {
 }
 
+void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
+{
+    DEBUG_BLOCK
+}
+
 void ContextScene::appletDestroyed(QObject* object)
 {
     DEBUG_BLOCK

@@ -50,7 +50,6 @@ private:
     void calculateHeight();
     void resize( qreal newWidth, qreal aspectRatio );
     
-    Context::Svg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
