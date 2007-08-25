@@ -339,7 +339,7 @@ TagDialog::musicbrainzQuery() //SLOT
 
     pushButton_musicbrainz->setEnabled( false );
     pushButton_musicbrainz->setText( i18n( "Generating audio fingerprint..." ) );
-    QApplication::setOverrideCursor( KCursor::workingCursor() );
+    QApplication::setOverrideCursor( Qt::BusyCursor );
 #endif
 }
 

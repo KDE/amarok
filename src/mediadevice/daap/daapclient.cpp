@@ -44,7 +44,7 @@
 #include <knuminput.h>
 #include <kpassworddialog.h>
 #include <kmenu.h>
-#include <kresolver.h>
+#include <k3resolver.h>
 #include <kstandarddirs.h>     //loading icons
 #include <k3tempfile.h>
 #include <ktoolbar.h>

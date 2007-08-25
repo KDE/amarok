@@ -23,7 +23,7 @@ email                : markey@web.de
 #include <QObject>
 #include <q3serversocket.h>    //baseclass
 #include <q3socket.h>          //stack allocated
-#include <kresolver.h> // namespace
+#include <k3resolver.h> // namespace
 
 class MetaBundle;
 class GstEngine;

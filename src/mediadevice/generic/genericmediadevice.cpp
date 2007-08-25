@@ -40,7 +40,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
-#include <kdiskfreesp.h>
+#include <kdiskfreespace.h>
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -423,8 +423,8 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     m_actuallyVfat = ( m_medium.fsType() == "msdosfs" || m_medium.fsType() =="vfat" )
         ? true : false;
     m_connected = true;
-    KURL tempurl = KURL::fromPathOrURL( m_medium.mountPoint() );
-    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyURL( -1 ); //no trailing slash
+    KUrl tempurl = KUrl::fromPathOrUrl( m_medium.mountPoint() );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyUrl( -1 ); //no trailing slash
     m_transferDir = newMountPoint;
     m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
     listDir( newMountPoint );
@@ -583,7 +583,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();
-    args["filetype"] = mb.url().pathOrURL().section( ".", -1 ).toLower();
+    args["filetype"] = mb.url().pathOrUrl().section( ".", -1 ).toLower();
     QString track;
     if ( mb.track() )
         track.sprintf( "%02d", mb.track() );
@@ -684,7 +684,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     if( !kioCopyTrack( bundle.url(), desturl ) )
     {
-        debug() << "Failed to copy track: " << bundle.url().pathOrURL() << " to " << desturl.pathOrURL();
+        debug() << "Failed to copy track: " << bundle.url().pathOrUrl() << " to " << desturl.pathOrUrl();
         return 0;
     }
 
@@ -853,15 +853,15 @@ GenericMediaDevice::dirListerClear()
     m_mfm.clear();
     m_mim.clear();
 
-    KURL tempurl = KURL::fromPathOrURL( m_medium.mountPoint() );
-    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyURL( -1 ); //no trailing slash
+    KUrl tempurl = KUrl::fromPathOrUrl( m_medium.mountPoint() );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyUrl( -1 ); //no trailing slash
     m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
 }
 
 void
 GenericMediaDevice::dirListerClear( const KUrl &url )
 {
-    QString directory = url.pathOrURL();
+    QString directory = url.pathOrUrl();
     GenericMediaFile *vmf = m_mfm[directory];
     if( vmf )
         vmf->deleteAll( false );
@@ -870,7 +870,7 @@ GenericMediaDevice::dirListerClear( const KUrl &url )
 void
 GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
-    QString filename = fileitem->url().pathOrURL();
+    QString filename = fileitem->url().pathOrUrl();
     GenericMediaFile *vmf = m_mfm[filename];
     if( vmf )
         vmf->deleteAll( true );
@@ -879,7 +879,7 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 {
-    QString path = url.isLocalFile() ? url.path( -1 ) : url.prettyURL( -1 ); //no trailing slash
+    QString path = url.isLocalFile() ? url.path( -1 ) : url.prettyUrl( -1 ); //no trailing slash
     int index = path.lastIndexOf( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );
@@ -915,9 +915,9 @@ GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 bool
 GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
-    if( !m_connected || !KURL::fromPathOrURL( m_medium.mountPoint() ).isLocalFile() ) return false;
+    if( !m_connected || !KUrl::fromPathOrUrl( m_medium.mountPoint() ).isLocalFile() ) return false;
 
-    KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "generic_kdf" );
+    KDiskFreeSpace* kdf = new KDiskFreeSpace( m_parent, "generic_kdf" );
     kdf->readDF( m_medium.mountPoint() );
     connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
                  SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
@@ -929,7 +929,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
         kapp->processEvents( 100 );
         count++;
         if (count > 120){
-            debug() << "KDiskFreeSp taking too long.  Returning false from getCapacity()";
+            debug() << "KDiskFreeSpace taking too long.  Returning false from getCapacity()";
             return false;
         }
     }

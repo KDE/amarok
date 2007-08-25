@@ -66,7 +66,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this, SLOT( ratingChanged( const QString&, int ) ) );
 
-    //or crashes, KWin bug I think, crashes in QWidget::icon()
+    //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
 }
 

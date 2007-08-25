@@ -760,7 +760,7 @@ void MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
     KUrl::List files;
-    //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
+    //files = KFileDialog::getOpenUrls( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
     KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
