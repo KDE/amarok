@@ -31,6 +31,7 @@ class QMenuBar;
 class QTimer;
 class SearchWidget;
 class SideBar;
+class QSplitter;
 
 /**
   * @class MainWindow
@@ -38,7 +39,7 @@ class SideBar;
   *
   * This is the main window widget (the Playlist not Player).
   */
-class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KXMLGUIClient
+class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 {
     Q_OBJECT
 
@@ -73,6 +74,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KX
         void mbAvailabilityChanged( bool isAvailable );
 
     private slots:
+        void slotShrinkBrowsers( int index ) const;
         void savePlaylist() const;
         void slotBurnPlaylist() const;
         void slotShowCoverManager() const;
@@ -117,6 +119,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow//public QWidget, public KX
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
+        QSplitter     *m_splitter;
 
         void    createActions();
         void    createMenus();

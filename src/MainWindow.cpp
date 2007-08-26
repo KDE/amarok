@@ -68,6 +68,7 @@
 #include <QFont>
 #include <QHeaderView>
 #include <QLabel>           //search filter label
+#include <QList>
 #include <QPainter>         //dynamic title
 #include <QPen>
 #include <QTimer>           //search filter timer
@@ -265,12 +266,14 @@ void MainWindow::init()
 
     mainLayout->addWidget( m_controlBar );
 
-    QSplitter *childSplitter = new QSplitter( Qt::Horizontal, centralWidget );
-    childSplitter->setContentsMargins( 0, 0, 0, 0 );
-    childSplitter->addWidget( m_browsers );
-    childSplitter->addWidget( contextWidget );
-    childSplitter->addWidget( playlistwindow );
-    mainLayout->addWidget( childSplitter );
+    m_splitter = new QSplitter( Qt::Horizontal, centralWidget );
+    m_splitter->setContentsMargins( 0, 0, 0, 0 );
+    m_splitter->addWidget( m_browsers );
+    m_splitter->addWidget( contextWidget );
+    m_splitter->addWidget( playlistwindow );
+    connect( m_browsers, SIGNAL( widgetActivated( int ) ),
+             SLOT( slotShrinkBrowsers( int ) ) );
+    mainLayout->addWidget( m_splitter );
 
     centralWidget->setLayout( mainLayout );
 
@@ -379,6 +382,19 @@ void MainWindow::slotSetFilter( const QString &filter ) //SLOT
 {
     Q_UNUSED( filter );
 //    m_lineEdit->setText( filter );
+}
+
+void MainWindow::slotShrinkBrowsers( int index ) const
+{
+    // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
+    if( index == -1 )
+    {
+        QList<int> sizes;
+        sizes << m_browsers->sideBarWidget()->width()
+            << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->sideBarWidget()->width()
+            << m_splitter->sizes()[2];
+        m_splitter->setSizes( sizes );
+    }
 }
 
 void MainWindow::slotEditFilter() //SLOT

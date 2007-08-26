@@ -59,6 +59,7 @@ class SideBar: public KHBox
             if( w )
                 w->setParent( this );
         }
+        SideBarWidget *sideBarWidget() const { return m_bar; }
 
         QWidget *contentsWidget() const { return m_contentsWidget; }
 
@@ -105,6 +106,7 @@ class SideBar: public KHBox
         {
             m_contentsWidget->setParent( this );
             m_frame->hide();
+            resize( m_bar->sizeHint() );
             m_current = -1;
             emit widgetActivated( currentIndex() );
             emit widgetActivated( currentWidget() );
