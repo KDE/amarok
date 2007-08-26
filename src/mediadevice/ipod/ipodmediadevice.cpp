@@ -1675,7 +1675,7 @@ IpodMediaDevice::itunesDir(const QString &p) const
     if( m_isMobile )
         base = ":iTunes:iTunes_Control";
 
-    if( !p.startsWith( ":" ) )
+    if( !p.startsWith( ':' ) )
         base += ':';
     return base + p;
 }

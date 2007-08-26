@@ -591,7 +591,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
-    if( !result.startsWith( "/" ) )
+    if( !result.startsWith( '/' ) )
         result.prepend( "/" );
 
    return result.replace( QRegExp( "/\\.*" ), "/" );
@@ -605,10 +605,10 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
     int mountPointDepth = m_medium.mountPoint().contains( '/', false );
     int locationDepth = location.contains( '/', false );
 
-    if( m_medium.mountPoint().endsWith( "/" ) )
+    if( m_medium.mountPoint().endsWith( '/' ) )
         mountPointDepth--;
 
-    if( location.endsWith( "/") )
+    if( location.endsWith( '/' ) )
         locationDepth--;
 
     // the locationDepth indicates the filename, in the following loop
@@ -638,7 +638,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 QString
 GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle )
 {
-    QString location = m_podcastLocation.endsWith("/") ? m_podcastLocation : m_podcastLocation + '/';
+    QString location = m_podcastLocation.endsWith('/') ? m_podcastLocation : m_podcastLocation + '/';
     // get info about the PodcastChannel
     QString parentUrl = bundle->parent().url();
     QString sql = "SELECT title,parent FROM podcastchannels WHERE url='" + CollectionDB::instance()->escapeString( parentUrl ) + "';";

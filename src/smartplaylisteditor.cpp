@@ -725,7 +725,7 @@ QString CriteriaEditor::getSearchCriteria()
     {
         if( field == "tags.url" )
         {
-            if( value.startsWith( "/" ) )
+            if( value.startsWith( '/' ) )
                 value = '.' + value;
             if( !value.startsWith( "./" ) )
                 value = "./" + value;
@@ -736,7 +736,7 @@ QString CriteriaEditor::getSearchCriteria()
     {
         if( field == "tags.url" )
         {
-            if( value.startsWith( "/" ) )
+            if( value.startsWith( '/' ) )
                 value = '.' + value;
             if( !value.startsWith( "./" ) )
                 value = "./" + value;

@@ -62,24 +62,24 @@ LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     m_lyricsLabel->setBrush( Qt::white );
     m_lyricsLabel->setFont( labelFont );
     m_lyricsLabel->setText( i18n( "Lyrics" ) );
-    
+
     m_titleLabel->setBrush( Qt::white );
     m_titleLabel->setFont( labelFont );
-    m_titleLabel->setText( i18n( "Title" ) + ":" );
-    
+    m_titleLabel->setText( i18n( "Title" ) + ':' );
+
     m_artistLabel->setBrush( Qt::white );
     m_artistLabel->setFont( labelFont );
-    m_artistLabel->setText( i18n( "Artist" ) + ":" );
-    
+    m_artistLabel->setText( i18n( "Artist" ) + ':' );
+
     m_siteLabel->setBrush( Qt::white );
     m_siteLabel->setFont( labelFont );
-    m_siteLabel->setText( i18n( "Site" ) + ":" );
-    
+    m_siteLabel->setText( i18n( "Site" ) + ':' );
+
     m_lyrics->setDefaultTextColor( Qt::white );
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
     m_site->setBrush( QBrush( Qt::white ) );
-    
+
     constraintsUpdated(); 
 }
 

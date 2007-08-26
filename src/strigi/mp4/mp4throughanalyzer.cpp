@@ -225,7 +225,7 @@ bool Mp4ThroughAnalyzer::readSubBoxes(const char *buf, int64_t size, const std::
    {
       int64_t length = readBigEndianUInt32(buf+pos);
       std::string subtype(buf+pos+4, 4);
-      std::string type = parenttype + "." + subtype;
+      std::string type = parenttype + '.' + subtype;
 
       int64_t boxoff = 8;
       if(length==0)

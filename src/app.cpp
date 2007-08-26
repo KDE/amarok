@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "atomicstring.h"
 #include "collectiondb.h"
+#include "collectionmanager.h"
 #include "ConfigDialog.h"
 #include "context/ContextView.h"
 //#include "dbsetup.h"             //firstRunWizard()
@@ -357,8 +358,9 @@ void App::handleCliArgs() //static
         device = DeviceManager::instance()->convertMediaUrlToDevice( device );
         KUrl::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
-            The::playlistModel()->insertMedia(
-                urls, Playlist::Replace|Playlist::DirectPlay);
+            Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
+            The::playlistModel()->insertOptioned(
+                tracks, Playlist::Replace|Playlist::DirectPlay);
         } else { // Default behaviour
             debug() <<
                 "Sorry, the engine doesn't support direct play from AudioCD..."
@@ -1118,7 +1120,7 @@ namespace Amarok
     {
         //URL can be in whatever forms KUrl understands - ie most.
         const QString cmd = KShell::quoteArg(AmarokConfig::externalBrowser()) 
-            + " " + KShell::quoteArg(KUrl( url ).url());
+            + ' ' + KShell::quoteArg(KUrl( url ).url());
         return KRun::runCommand( cmd, 0L ) > 0;
     }
 

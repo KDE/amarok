@@ -120,7 +120,7 @@ CollectionScanner::doJob() //SLOT
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
-            if( !dir.endsWith( "/" ) )
+            if( !dir.endsWith( '/' ) )
                 dir += '/';
             readDir( dir, entries );
         }

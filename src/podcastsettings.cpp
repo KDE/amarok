@@ -91,7 +91,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &
 
     init();
     m_settings = m_settingsList.first();
-    if( !m_settings->m_saveLocation.endsWith( "/" ) )
+    if( !m_settings->m_saveLocation.endsWith( '/' ) )
         m_settings->m_saveLocation = m_settings->m_saveLocation.section( "/", 0, -2 );
     setSettings( m_settings );
 }

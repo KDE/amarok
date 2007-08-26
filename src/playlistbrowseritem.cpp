@@ -3209,7 +3209,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             {
                 // need to take care of absolute paths
                 if ( field == "tags.url" )
-                    if ( filters[0].startsWith( "/" ) )
+                    if ( filters[0].startsWith( '/' ) )
                         filters[0].prepend( '.' );
                     else if ( !filters[0].startsWith( "./" ) )
                         filters[0].prepend( "./" );
@@ -3219,7 +3219,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             {
                 // need to take care of absolute paths
                 if ( field == "tags.url" )
-                    if ( filters[0].startsWith( "/" ) )
+                    if ( filters[0].startsWith( '/' ) )
                         filters[0].prepend( '.' );
                     else if ( !filters[0].startsWith( "./" ) )
                         filters[0].prepend( "./" );
