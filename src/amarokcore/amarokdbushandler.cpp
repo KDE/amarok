@@ -634,7 +634,8 @@ namespace Amarok
 
     void DbusPlaylistHandler::playMedia( const KUrl &url )
     {
-        The::playlistModel()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        The::playlistModel()->insertOptioned( track, PlaylistNS::DirectPlay | PlaylistNS::Unique );
     }
 
     void DbusPlaylistHandler::popupMessage( const QString& msg )
