@@ -211,13 +211,9 @@ void MainWindow::init()
     }
 
     QPalette p;
-    QColor bottomColor; /*= palette().base();*/
-    QColor topColor = bottomColor = palette().highlight();
-//     if( topColor.lighter().isValid() )
-//         topColor = topColor.lighter().isValid();
-
-//     if( topColor.darker().isValid() )
-//         bottomColor = bottomColor.darker();
+    QColor bottomColor;
+    QColor topColor = bottomColor = palette().highlight().color().dark( 150 );
+    bottomColor = bottomColor.dark( 100 );
     topColor.setAlpha( 75 );
     bottomColor.setAlpha( 130 );
 
@@ -257,8 +253,8 @@ void MainWindow::init()
     }
     contextWidget->setMinimumSize( QSize(500,100) );
 
-    m_browsers->setMaximumSize( QSize(300,7000) );
-    m_browsers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+//     m_browsers->setMaximumSize( QSize(300,7000) );
+//     m_browsers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
     contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
 
@@ -270,6 +266,7 @@ void MainWindow::init()
     mainLayout->addWidget( m_controlBar );
 
     QSplitter *childSplitter = new QSplitter( Qt::Horizontal, centralWidget );
+    childSplitter->setContentsMargins( 0, 0, 0, 0 );
     childSplitter->addWidget( m_browsers );
     childSplitter->addWidget( contextWidget );
     childSplitter->addWidget( playlistwindow );
