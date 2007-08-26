@@ -1,6 +1,3 @@
-find_package(KDE4 REQUIRED)
-include (KDE4Defaults)
-include (MacroLibrary)
 
 find_package(Strigi REQUIRED)
 include_directories(${STRIGI_INCLUDE_DIR})
