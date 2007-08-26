@@ -48,10 +48,9 @@ signals:
     
 private:
     void calculateHeight();
-    void resize( qreal newWidth, qreal aspectRatio );
+    void resize( qreal newWidth );
     
     Context::Svg* m_header;
-    qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;
     

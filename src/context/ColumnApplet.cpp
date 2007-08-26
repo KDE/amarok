@@ -248,12 +248,12 @@ void ColumnApplet::resizeColumns()
             m_layout << new Context::VBoxLayout( this );
     } if( numColumns < m_layout.size() ) // view was shrunk
     {
-//         debug() << "gotta shrink!";
+        debug() << "gotta shrink!";
         Context::VBoxLayout* column = m_layout[ m_layout.size() - 1 ];
         m_layout.removeAt( m_layout.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
-//             debug() << "trying to put away an item";
+            debug() << "trying to put away an item";
             LayoutItem* applet = column->takeAt( i );
             int smallestColumn = 0, min = (int)m_layout[ 0 ]->sizeHint().height();
             for( int i = 1; i < m_layout.size(); i++ ) // find shortest column to put
@@ -261,7 +261,7 @@ void ColumnApplet::resizeColumns()
                 if( m_layout[ i ]->sizeHint().height() < min )
                     smallestColumn = i;
             }
-//             debug() << "found column for item:" << smallestColumn;
+            debug() << "found column for item:" << smallestColumn;
             m_layout[ smallestColumn ]->addItem( applet );
         }
     }

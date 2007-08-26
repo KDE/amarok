@@ -24,7 +24,6 @@
 LyricsApplet::LyricsApplet( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
     , m_header( 0 )
-    , m_aspectRatio( 0.0 )
     , m_headerAspectRatio( 0.0 )
     , m_size( QSizeF() )
     , m_lyricsLabel( 0 )
@@ -90,7 +89,7 @@ void LyricsApplet::setRect( const QRectF& rect )
         
     setPos( rect.topLeft() );
     m_size = rect.size();
-    resize( rect.width(), m_aspectRatio );
+    resize( rect.width() );
 }
 
 QSizeF LyricsApplet::contentSize() const
@@ -108,15 +107,6 @@ void LyricsApplet::constraintsUpdated()
         
     prepareGeometryChange();
     
-    debug() << "got these topLefts:" 
-        << "title" << m_header->elementRect( "title" ).topLeft()
-        << "titlelable" << m_header->elementRect( "titlelabel" ).topLeft()
-        << "artistlabel" << m_header->elementRect( "artistlabel" ).topLeft()
-        << "sitelabel" << m_header->elementRect( "sitelabel" ).topLeft()
-        << "lyrics" << m_header->elementRect( "lyrics" ).topLeft()
-        << "lyricstrackname" << m_header->elementRect( "lyricstrackname" ).topLeft()
-        << "lyricsartist" << m_header->elementRect( "lyricsartist" ).topLeft()
-        << "lyricslyricssite" << m_header->elementRect( "lyricslyricssite" ).topLeft();
     // align items
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
@@ -164,21 +154,12 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     QRect tmp( 0.0, 0.0, m_header->size().width(), 0.0 );
     tmp.setHeight( m_header->size().width() * m_headerAspectRatio );
-    debug() << "finding height:" << m_header->size().width() << "*" << m_headerAspectRatio;
-    debug() << "painting into rect:" << tmp << "contentsRect:" << contentsRect;
+/*    debug() << "finding height:" << m_header->size().width() << "*" << m_headerAspectRatio;
+    debug() << "painting into rect:" << tmp << "contentsRect:" << contentsRect;*/
     m_header->paint( p, tmp, "lyricsheader" );
-    
-    debug() << "got these topLefts:" 
-        << "title" << m_header->elementRect( "title" ).topLeft()
-        << "titlelable" << m_header->elementRect( "titlelabel" ).topLeft()
-        << "artistlabel" << m_header->elementRect( "artistlabel" ).topLeft()
-        << "sitelabel" << m_header->elementRect( "sitelabel" ).topLeft()
-        << "lyrics" << m_header->elementRect( "lyrics" ).topLeft()
-        << "lyricstrackname" << m_header->elementRect( "lyricstrackname" ).topLeft()
-        << "lyricsartist" << m_header->elementRect( "lyricsartist" ).topLeft()
-        << "lyricslyricssite" << m_header->elementRect( "lyricslyricssite" ).topLeft();
+
 // align items
-    debug() << "size:" << m_header->size();
+//     debug() << "size:" << m_header->size();
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
     m_titleLabel->setPos( m_header->elementRect( "artistlabel" ).topLeft() );
@@ -216,9 +197,8 @@ void LyricsApplet::calculateHeight()
 //     debug() << "newheight:" << m_size.height();
 }
 
-void LyricsApplet::resize( qreal newWidth, qreal aspectRatio )
+void LyricsApplet::resize( qreal newWidth )
 {
-    qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( m_header->size().height() );
 //     m_size.setHeight( height );
