@@ -128,7 +128,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
         if ( !monthExp.exactMatch( monthString ) )
         {
             KMessageBox::information( this, "Invalid expiration month",
-                                    "The credit card expitation month does not appear to be valid\n" );
+                                    "The credit card expiration month does not appear to be valid\n" );
             return false;
         }
 
@@ -140,7 +140,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
         if ( !yearExp.exactMatch( yearString ) )
         {
             KMessageBox::information( this, "Invalid expiration year",
-                                    "The credit card expitation year does not appear to be valid\n" );
+                                    "The credit card expiration year does not appear to be valid\n" );
             return false;
         }
 
