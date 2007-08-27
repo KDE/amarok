@@ -58,17 +58,25 @@ class PlaylistManager : public QObject
          * Add a PlaylistProvider that contains Playlists of a category defined
          * in the PlaylistCategory enum.
          */
-        void addProvider( int playlistCategory, PlaylistProvider * provider );
+        void addProvider( PlaylistProvider * provider, PlaylistCategory category );
 
         /** Add a PlaylistProvider of a custom category.
          * This is supposed to be used by plugins and scripts.
          * Make sure custom categories don't conflict with the default category enum.
          */
-        void addCustomProvider( int customCategory, PlaylistProvider * provider );
+        void addCustomProvider( PlaylistProvider * provider, int customCategory );
+
+        PlaylistProvider * playlistProvider( int category, QString name );
+
+    signals:
+        void updated();
 
     protected:
         PlaylistManager();
         ~PlaylistManager();
+
+    private slots:
+        void slotUpdated( PlaylistProvider * provider );
 
     private:
         static PlaylistManager* s_instance;
@@ -78,16 +86,21 @@ class PlaylistManager : public QObject
 
 };
 
-class AMAROK_EXPORT PlaylistProvider : public Amarok::Plugin
+class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
 {
+    Q_OBJECT
+
     public:
         virtual ~PlaylistProvider() {};
 
         virtual QString prettyName() const = 0;
         virtual int category() const = 0;
-        virtual QString typeName() = 0;
+        virtual QString typeName() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
+
+    signals:
+        virtual void updated();
 
 };
 

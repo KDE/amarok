@@ -43,13 +43,14 @@ PlaylistManager::instance()
 }
 
 void
-PlaylistManager::addProvider( int playlistCategory, PlaylistProvider * provider )
+PlaylistManager::addProvider( PlaylistProvider * provider, PlaylistCategory category )
 {
-    m_map.insert( playlistCategory, provider );
+    m_map.insert( category, provider );
+    connect( provider, SIGNAL(updated()), this, SLOT(slotUpdated()) );
 }
 
 void
-PlaylistManager::addCustomProvider( int customCategory, PlaylistProvider * provider )
+PlaylistManager::addCustomProvider( PlaylistProvider * provider, int customCategory )
 {
     m_map.insert( customCategory, provider );
     if ( !m_customCategories.contains( customCategory ) )
@@ -57,6 +58,14 @@ PlaylistManager::addCustomProvider( int customCategory, PlaylistProvider * provi
         m_customCategories << customCategory;
         //notify PlaylistBrowser of new custom category.
     }
+    connect( provider, SIGNAL(updated(PlaylistProvider *)), SLOT(slotUpdated(PlaylistProvider *)) );
+}
+
+
+void
+PlaylistManager::slotUpdated(PlaylistProvider * provider)
+{
+    emit(updated());
 }
 
 Meta::PlaylistList
@@ -70,6 +79,22 @@ PlaylistManager::playlistsOfCategory( int playlistCategory )
         list << i.next()->playlists();
 
     return list;
+}
+
+PlaylistProvider *
+PlaylistManager::playlistProvider(int category, QString name)
+{
+    QList<PlaylistProvider *> providers( m_map.values( category ) );
+
+    QListIterator<PlaylistProvider *> i(providers);
+    while( i.hasNext() )
+    {
+        PlaylistProvider * p = static_cast<PlaylistProvider *>( i.next() );
+        if( p->prettyName() == name )
+            return p;
+    }
+
+    return 0;
 }
 
 #include "PlaylistManager.moc"

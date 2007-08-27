@@ -31,9 +31,11 @@
 
 using namespace Meta;
 
-PodcastCollection::PodcastCollection()
- : Collection()
+PodcastCollection::PodcastCollection() : Collection()
 {
+    m_channelProvider = new PodcastChannelProvider( this );
+
+    connect( this, SIGNAL(updated()), m_channelProvider, SLOT(slotUpdated()) );
 }
 
 
@@ -48,17 +50,10 @@ PodcastCollection::queryMaker()
 }
 
 QString
-PodcastCollection::prettyName() const
-{
-    return i18n("Local Podcasts");
-}
-
-QString
 PodcastCollection::collectionId() const
 {
     return "Podcasts";
 }
-
 
 bool
 PodcastCollection::possiblyContainsTrack(const KUrl & url) const
@@ -124,7 +119,8 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
 }
 
 
-void PodcastCollection::addPodcast(const QString & url)
+void
+PodcastCollection::addPodcast(const QString & url)
 {
     DEBUG_BLOCK
 
@@ -153,6 +149,31 @@ void
 PodcastCollection::addEpisode( Meta::PodcastEpisodePtr episode )
 {
     addTrack( episode->name(), TrackPtr::dynamicCast( episode ) );
+}
+
+
+PodcastChannelProvider::PodcastChannelProvider( PodcastCollection *parent) : PlaylistProvider(),
+        m_parent( parent )
+{
+}
+
+void
+PodcastChannelProvider::slotUpdated()
+{
+    emit updated();
+}
+
+Meta::PlaylistList
+PodcastChannelProvider::playlists()
+{
+    Meta::PlaylistList playlistList;
+
+    QListIterator<Meta::PodcastChannelPtr> i( m_parent->channels() );
+    while( i.hasNext() )
+    {
+        playlistList << PlaylistPtr::staticCast( i.next() );
+    }
+    return playlistList;
 }
 
 #include "PodcastCollection.moc"

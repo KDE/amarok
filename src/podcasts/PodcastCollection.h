@@ -24,8 +24,11 @@
 #include "PodcastMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <klocale.h>
+
 class KUrl;
 class PodcastReader;
+class PodcastChannelProvider;
 
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
@@ -41,12 +44,13 @@ class PodcastCollection : public Collection, public MemoryCollection
         virtual void startFullScan() { }
 
         virtual QString collectionId() const;
-        virtual QString prettyName() const;
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
         virtual CollectionLocation* location() const;
+
+        virtual QString prettyName() const { return i18n("Local Podcasts"); };
 
         void addPodcast( const QString &url );
 
@@ -54,6 +58,8 @@ class PodcastCollection : public Collection, public MemoryCollection
         void addEpisode( Meta::PodcastEpisodePtr episode );
 
         Meta::PodcastChannelList channels() { return m_channels; };
+
+        PodcastChannelProvider * channelProvider() { return m_channelProvider; };
 
     signals:
         void remove();
@@ -69,7 +75,34 @@ class PodcastCollection : public Collection, public MemoryCollection
         QList<KUrl> urls;
 
         Meta::PodcastChannelList m_channels;
+        PodcastChannelProvider* m_channelProvider;
 
+};
+
+
+class PodcastChannelProvider: public PlaylistProvider
+{
+    Q_OBJECT
+    public:
+        PodcastChannelProvider( PodcastCollection * parent );
+
+        void addPodcast( QString url ) { m_parent->addPodcast( url ); };
+
+        // PlaylistProvider methods
+        virtual QString prettyName() const { return i18n( "Local Podcasts" ); };
+        virtual int category() const { return (int)PlaylistManager::PodcastChannel; };
+        virtual QString typeName() const { return i18n( "Podcasts" ); };
+
+        virtual Meta::PlaylistList playlists();
+
+    public slots:
+        void slotUpdated();
+
+    signals:
+        virtual void updated();
+
+    private:
+        PodcastCollection *m_parent;
 };
 
 #endif

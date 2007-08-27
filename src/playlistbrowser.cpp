@@ -35,6 +35,7 @@
 #include "TheInstances.h"
 #include "threadmanager.h"
 #include "xspfplaylist.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <k3multipledrag.h>     //dragObject()
 #include <k3urldrag.h>          //dragObject()
@@ -1307,7 +1308,14 @@ void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        //The::podcastCollection()->addPodcast( name ); //KUrl( name ), parent );
+        PodcastChannelProvider * podcastChannelProvider =
+                static_cast<PodcastChannelProvider *>(
+                The::playlistManager()->playlistProvider( PlaylistManager::PodcastChannel, i18n("Local Podcasts") )
+                );
+        if( podcastChannelProvider )
+            podcastChannelProvider->addPodcast( name ); //KUrl( name ), parent );
+        else
+            debug() << "no PodcastCollection found";
     }
 }
 

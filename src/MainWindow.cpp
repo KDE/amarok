@@ -59,6 +59,7 @@
 #include "toolbar.h"
 #include "volumewidget.h"
 #include "PodcastCollection.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include "playlistbrowser/PlaylistBrowser.h"
 
@@ -316,6 +317,9 @@ void MainWindow::init()
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "NeoPlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
+
+        PodcastCollection *podcastCollection = new PodcastCollection();
+        The::playlistManager()->addProvider( podcastCollection->channelProvider(), PlaylistManager::PodcastChannel );
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
@@ -1062,7 +1066,7 @@ void MainWindow::createActions()
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
-    
+
     KAction *action = new KAction( KIcon( Amarok::icon( "files" ) ), i18n("&Add Media..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
     ac->addAction( "playlist_add", action );
@@ -1098,7 +1102,7 @@ void MainWindow::createActions()
 
     KAction *toggleToolbar = new KAction( this );
     toggleToolbar->setText( i18n("Hide Toolbar") );
-    
+
     //FIXME m_controlBar is initialised after the actions are created so we need to change the text of this action
     //when the menu is shown
     //toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
@@ -1137,7 +1141,7 @@ void MainWindow::createActions()
     seekForward->setShortcut( Qt::Key_Left );
     connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
     ac->addAction( "seek_backward", seekBackward );
-    
+
     KAction *statistics = new KAction( KIcon(Amarok::icon( "info" )), i18n( "Statistics" ), this );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
     ac->addAction( "statistics", statistics );

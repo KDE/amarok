@@ -40,7 +40,7 @@ PodcastModel::PodcastModel()
     while (i.hasNext())
         m_channels << PodcastChannelPtr::staticCast( i.next() );
 
-    //connect( The::podcastCollection(), SIGNAL(updated()), SLOT(slotUpdate()));
+    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
 
 
@@ -268,8 +268,13 @@ PodcastModel::slotUpdate()
     QList<PlaylistPtr> playlists =
     The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
     QListIterator<PlaylistPtr> i(playlists);
+    debug() << "updating Podcast Category";
     while (i.hasNext())
-        m_channels << PodcastChannelPtr::staticCast( i.next() );
+    {
+        PodcastChannelPtr channel = PodcastChannelPtr::staticCast( i.next() );
+        debug() << "adding " << channel->name();
+        m_channels << channel;
+    }
 
     emit layoutAboutToBeChanged();
     emit layoutChanged();
