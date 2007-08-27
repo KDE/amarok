@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Immediately after loading a dynamic playlist, you couldn't drag a
+      track to the top of the playlist. (BR 149263)
     * Fix transferring files with UTF8 names to MTP devices. Thanks to Kevin
       Becker <kevman3000@gmail.com> for the fix. (BR 139722)
     * Display warning that iPod sysinfo could not be written in the case of

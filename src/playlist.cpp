@@ -2424,7 +2424,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
     //at the beginning or in the middle of the disabled tracks
     //Also, that the dynamic playlist has any tracks (suggested may not)
     if( dynamicMode() && Playlist::instance()->firstChild() &&
-            ( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() )  ) )
+            ( !m_marker || !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() )  ) && 
+            currentTrackIndex() != -1 )
     {
         // If marker is disabled, and there is a current track, or marker is not the last enabled track
         // don't allow inserting
