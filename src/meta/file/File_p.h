@@ -22,6 +22,7 @@
 #include "meta.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 #include <QString>
 
@@ -31,10 +32,16 @@
 namespace MetaFile
 {
 
-    static const QString ARTIST = "audio.artist";
-    static const QString ALBUM = "audio.album";
-    static const QString TITLE = "audio.title";
-    static const QString FILESIZE = "system.size";
+    static const QString ARTIST = "xesam:author";
+    static const QString ALBUM = "xesam:album";
+    static const QString TITLE = "xesam:title";
+    static const QString FILESIZE = "xesam:size";
+    static const QString GENRE = "xesam:genre";
+    static const QString COMPOSER = "xesam:composer";
+    static const QString YEAR = "xesam:contentCreated";
+    static const QString COMMENT = "xesam:comment";
+    static const QString TRACKNUMBER = "xesam:trackNumber";
+    static const QString DISCNUMBER = "xesam:cdNumber";
 
 //d-pointer implementation
 
@@ -96,7 +103,7 @@ public:
         return name();
     }
 
-    MetaFile::Track::Private * const d;
+    QPointer<MetaFile::Track::Private> const d;
 };
 
 class FileAlbum : public Meta::Album
@@ -151,8 +158,44 @@ public:
         return Meta::Album::image( size, withShadow );
     }
 
-    MetaFile::Track::Private * const d;
+    QPointer<MetaFile::Track::Private> const d;
 };
+
+class FileGenre : public Meta::Genre
+{
+public:
+    FileGenre( MetaFile::Track::Private *dptr )
+        : Meta::Genre()
+        , d( dptr )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( d )
+        {
+            KFileMetaInfoItem item = d->metaInfo.item( MetaFile::GENRE );
+            if( item.isValid() )
+                return item.value().toString();
+            else
+                return QString();
+        }
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    QPointer<MetaFile::Track::Private> const d;
+};
+
 
 }
 
