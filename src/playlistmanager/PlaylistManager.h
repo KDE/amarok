@@ -76,7 +76,7 @@ class PlaylistManager : public QObject
         ~PlaylistManager();
 
     private slots:
-        void slotUpdated( PlaylistProvider * provider );
+        void slotUpdated( /*PlaylistProvider * provider*/ );
 
     private:
         static PlaylistManager* s_instance;

@@ -19,6 +19,8 @@
 #include "PlaylistManager.h"
 #include "TheInstances.h"
 
+#include "debug.h"
+
 PlaylistManager * PlaylistManager::s_instance = 0;
 
 PlaylistManager*
@@ -45,8 +47,10 @@ PlaylistManager::instance()
 void
 PlaylistManager::addProvider( PlaylistProvider * provider, PlaylistCategory category )
 {
+    DEBUG_BLOCK
     m_map.insert( category, provider );
-    connect( provider, SIGNAL(updated()), this, SLOT(slotUpdated()) );
+    connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
+    emit(updated());
 }
 
 void
@@ -58,13 +62,15 @@ PlaylistManager::addCustomProvider( PlaylistProvider * provider, int customCateg
         m_customCategories << customCategory;
         //notify PlaylistBrowser of new custom category.
     }
-    connect( provider, SIGNAL(updated(PlaylistProvider *)), SLOT(slotUpdated(PlaylistProvider *)) );
+    connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
+    emit(updated());
 }
 
 
 void
-PlaylistManager::slotUpdated(PlaylistProvider * provider)
+PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 {
+    DEBUG_BLOCK
     emit(updated());
 }
 

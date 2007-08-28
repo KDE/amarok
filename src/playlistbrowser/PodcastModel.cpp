@@ -244,8 +244,6 @@ PodcastModel::flags(const QModelIndex & index) const
 QVariant
 PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    debug() << "section = " << section;
-
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
@@ -269,6 +267,7 @@ PodcastModel::slotUpdate()
     The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
     QListIterator<PlaylistPtr> i(playlists);
     debug() << "updating Podcast Category";
+    m_channels.clear();
     while (i.hasNext())
     {
         PodcastChannelPtr channel = PodcastChannelPtr::staticCast( i.next() );

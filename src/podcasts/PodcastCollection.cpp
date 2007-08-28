@@ -34,8 +34,6 @@ using namespace Meta;
 PodcastCollection::PodcastCollection() : Collection()
 {
     m_channelProvider = new PodcastChannelProvider( this );
-
-    connect( this, SIGNAL(updated()), m_channelProvider, SLOT(slotUpdated()) );
 }
 
 
@@ -115,6 +113,7 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
 
     podcastReader->deleteLater();
 
+    m_channelProvider->slotUpdated();
     emit( updated() );
 }
 
@@ -160,6 +159,7 @@ PodcastChannelProvider::PodcastChannelProvider( PodcastCollection *parent) : Pla
 void
 PodcastChannelProvider::slotUpdated()
 {
+    DEBUG_BLOCK
     emit updated();
 }
 
