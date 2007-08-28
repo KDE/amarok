@@ -460,6 +460,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     QMapIterator<int, QStringList> i( folderMap );
     while( i.hasNext() )
     {
+        i.next();
         folderConf.writeEntry( QString::number( i.key() ), i.value() );
     }
 }
