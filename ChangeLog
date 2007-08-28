@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Pressing Preveious Track in a Dynamic Playlist could cause undefined
+      behavior in certain edge conditions.  Now it always plays the current
+      track. (BR 148317)
     * Immediately after loading a dynamic playlist, you couldn't drag a
       track to the top of the playlist. (BR 149263)
     * Fix transferring files with UTF8 names to MTP devices. Thanks to Kevin

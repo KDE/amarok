@@ -1227,7 +1227,10 @@ Playlist::playPrevTrack()
     }
     else
     {
-        if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
+        if( dynamicMode() )
+        {
+        }
+        else if( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
         {
             if( item )
             {
