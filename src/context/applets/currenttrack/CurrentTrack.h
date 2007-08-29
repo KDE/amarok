@@ -31,50 +31,50 @@ class CurrentTrack : public Context::Applet
 {
     Q_OBJECT
 public:
-    CurrentTrack( QObject* parent, const QStringList& args );
+    CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
-    
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    
+
     QSizeF contentSize() const;
     void constraintsUpdated();
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF sizeHint() const { return boundingRect().size(); }
-    
+
     void setRect( const QRectF& rect );
     void setGeometry( const QRectF& rect ) { setRect( rect ); }
-    
+
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
-    
+
 private slots:
     void configAccepted();
-    
+
 private:
     void resize( qreal newWidth, qreal aspectRatio );
-    
+
     KDialog* m_config;
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
-    
+
     qreal m_aspectRatio;
-    
+
     Context::Svg* m_theme;
     QSizeF m_size;
-    
+
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
     QGraphicsSimpleTextItem* m_album;
     QGraphicsSimpleTextItem* m_score;
     QGraphicsSimpleTextItem* m_numPlayed;
     QGraphicsSimpleTextItem* m_playedLast;
-    
+
     int m_rating;
     int m_trackLength;
-    
+
     QGraphicsPixmapItem* m_albumCover;
 
 };

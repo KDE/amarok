@@ -49,7 +49,7 @@ void ColumnApplet::init() // SLOT
         resizeColumns();
     } else
         warning() << "no scene to get data from!!";
-    
+
     // TODO wait until this is completely implemented in plasma
     foreach( VBoxLayout* column, m_layout )
     {
@@ -61,7 +61,7 @@ void ColumnApplet::init() // SLOT
         animator->setEffect( Plasma::LayoutAnimator::RemovedState ,
                              Plasma::LayoutAnimator::FadeOutMoveEffect );
         column->setAnimator( animator );
-    } 
+    }
 }
 
 void ColumnApplet::saveToConfig( KConfig& conf )
@@ -95,12 +95,12 @@ void ColumnApplet::loadConfig( KConfig& conf )
         KConfigGroup cg( &conf, group );
         debug() << "loading applet:" << cg.readEntry( "plugin", QString() )
             << QStringList() << group.toUInt() << cg.readEntry( "column", QString() ) << cg.readEntry( "position", QString() );
-        
+
         ContextScene* scene = qobject_cast< ContextScene* >( this->scene() );
         if( scene != 0 )
         {
             Applet* applet = scene->addApplet( cg.readEntry( "plugin", QString() ),
-                              QStringList(),
+                              QVariantList(),
                               group.toUInt(),
                               QRectF() );
             int column = cg.readEntry( "column", 1000 );
@@ -119,7 +119,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
     }
     resizeColumns();
 }
-                    
+
 QRectF ColumnApplet::boundingRect() const {
 //     qreal width = 2*m_padding;
 //     qreal height = 0;
@@ -138,17 +138,17 @@ void ColumnApplet::update() // SLOT
 }
 
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
-{ 
+{
     Q_UNUSED( object )
     // basically we want to reshuffle the columns since we know something is gone
     resizeColumns();
 }
-    
+
 // parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
 void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
     DEBUG_BLOCK
-    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable)) 
+    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable))
     {
         bool multiSelect = (event->modifiers() & Qt::ControlModifier) != 0;
         if (!multiSelect) {
@@ -169,12 +169,12 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
     debug() << "layout manager got a mouse event";
     if ( ( event->buttons() & Qt::LeftButton ) )
     {
-        
+
         // Find the active view.
         QGraphicsView *view = 0;
         if (event->widget())
             view = qobject_cast<QGraphicsView *>(event->widget()->parentWidget());
-        
+
         if ((flags() & ItemIsMovable) && (!parentItem() || !parentItem()->isSelected())) {
             QPointF diff;
             if (flags() & ItemIgnoresTransformations) {
@@ -184,19 +184,19 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
                     // transformations can ignore this problem; their events
                     // are already mapped correctly.
                 QTransform viewToParentTransform = (sceneTransform() * view->viewportTransform()).inverted();
-                
+
                 QTransform myTransform = transform().translate(pos().x(), pos().y());
                 viewToParentTransform = myTransform * viewToParentTransform;
-                
+
                 diff = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())))
                     - viewToParentTransform.map(QPointF(view->mapFromGlobal(event->lastScreenPos())));
-            } else 
+            } else
             {
                 diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
             }
-            
+
             moveBy(diff.x(), diff.y());
-            
+
             if (flags() & ItemIsSelectable)
                 setSelected(true);
         }
@@ -205,9 +205,9 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 
 
 
-AppletPointer ColumnApplet::addApplet( AppletPointer applet ) 
+AppletPointer ColumnApplet::addApplet( AppletPointer applet )
 {
-    
+
     int smallestColumn = 0, min = (int)m_layout[ 0 ]->sizeHint().height();
     for( int i = 1; i < m_layout.size(); i++ ) // find shortest column to put
     {                                           // the applet in
@@ -216,14 +216,14 @@ AppletPointer ColumnApplet::addApplet( AppletPointer applet )
             smallestColumn = i;
     }
     debug() << "smallest column is" << smallestColumn << "(" << min << ")" << "of" << m_layout.size();
-    
+
     debug() << "found" << m_layout.size() << " column, adding applet to column:" << smallestColumn;
     m_layout[ smallestColumn ]->addItem( applet );
-        
+
     connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
-    
+
     resizeColumns();
-    
+
     return applet;
 }
 
@@ -265,10 +265,10 @@ void ColumnApplet::resizeColumns()
             m_layout[ smallestColumn ]->addItem( applet );
         }
     }
-    
+
     qreal columnWidth = width / numColumns;
     columnWidth -= ( numColumns - 1 ) * m_padding; // make room between columns
-    
+
     for( int i = 0; i < numColumns; i++ ) // lay out columns
     {
         debug() << "setting columns to width:" << columnWidth;
@@ -294,7 +294,7 @@ void ColumnApplet::balanceColumns()
     int numColumns = m_layout.size();
     if( numColumns == 1 ) // no balancing to do :)
         return;
-    
+
     bool found = true;
     while( found )
     {
@@ -307,18 +307,18 @@ void ColumnApplet::balanceColumns()
                 maxColumn = i;
             }
         }
-        
+
         if( maxHeight == 0 ) // no applets
             return;
         if( m_layout[ maxColumn ]->count() == 1 ) // if the largest column only has
             return; // one applet, we can't do anything more
-        
+
         qreal maxAppletHeight = m_layout[ maxColumn ]->itemAt( m_layout[ maxColumn ]->count() - 1 )->sizeHint().height() + 10;
         // HACK!
         // adding 10 is needed to cover the borders/padding... i can't get the exact
         // value from Plasma::VBoxLayout because it's not exposed. arg!
-        
-        
+
+
         debug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
         found = false;
         for( int i = 0; i < numColumns; i++ )

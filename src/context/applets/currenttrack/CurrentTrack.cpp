@@ -24,7 +24,7 @@
 #include <QSpinBox>
 #include <QLabel>
 
-CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
+CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
@@ -35,16 +35,16 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     , m_trackLength( 0 )
 {
     DEBUG_BLOCK
-        
+
     setHasConfigurationInterface( true );
     setDrawStandardBackground( true );
-    
+
     dataEngine( "amarok-current" )->connectSource( "current", this );
-    
+
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
-    
+
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
     m_album = new QGraphicsSimpleTextItem( this );
@@ -52,19 +52,19 @@ CurrentTrack::CurrentTrack( QObject* parent, const QStringList& args )
     m_numPlayed = new QGraphicsSimpleTextItem( this );
     m_playedLast = new QGraphicsSimpleTextItem( this );
     m_albumCover = new QGraphicsPixmapItem( this );
-    
+
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
     m_album->setBrush( QBrush( Qt::white ) );
     m_score->setBrush( QBrush( Qt::white ) );
     m_numPlayed->setBrush( QBrush( Qt::white ) );
     m_playedLast->setBrush( QBrush( Qt::white ) );
-   
+
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio ); 
-    
+    resize( m_width, m_aspectRatio );
+
     constraintsUpdated();
 }
 
@@ -96,12 +96,12 @@ void CurrentTrack::constraintsUpdated()
     m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
-    
+
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-    
+
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
@@ -109,9 +109,9 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-    
+
     if( data.size() == 0 ) return;
-    
+
     QVariantList currentInfo = data[ "current" ].toList();
     kDebug() << "got data from engine: " << currentInfo;
     m_title->setText( currentInfo[ 1 ].toString() );
@@ -123,26 +123,26 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     m_score->setText( currentInfo[ 4 ].toString() );
     m_trackLength = currentInfo[ 5 ].toInt();
 //     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );
-    
+
     // scale pixmap on demand
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-    
+
     m_numPlayed->setText( currentInfo[ 7 ].toString() );
-    m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() ); 
-    
+    m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
+
 }
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
-        
+
     p->save();
     m_theme->paint( p, contentsRect, "background" );
     p->restore();
-        
+
     p->save();
     int stars = m_rating / 2;
     for( int i = 1; i <= stars; i++ )
@@ -157,26 +157,26 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->restore();
 
     // TODO get, and then paint, album pixmap
-    
+
 }
 
 void CurrentTrack::showConfigurationInterface()
 {
-    if (m_config == 0) 
+    if (m_config == 0)
     {
         m_config = new KDialog();
         m_config->setCaption( i18n( "Configure Current Track Applet" ) );
-        
+
         QWidget* widget = new QWidget( m_config );
         m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
         connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
         connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
-        
+
         m_configLayout = new QHBoxLayout( widget );
         m_spinWidth = new QSpinBox();
         m_spinWidth->setRange( 200, 700 );
         m_spinWidth->setValue( m_width );
-        
+
         QLabel *labelWidth = new QLabel(i18n("Width"));
         m_configLayout->addWidget( labelWidth );
         m_configLayout->addWidget( m_spinWidth );
@@ -189,12 +189,12 @@ void CurrentTrack::showConfigurationInterface()
 void CurrentTrack::configAccepted() // SLOT
 {
     KConfigGroup cg = globalConfig();
-    
+
     m_width = m_spinWidth->value();
     resize( m_width, m_aspectRatio );
-    
+
     cg.writeEntry( "width", m_width );
-    
+
     cg.sync();
     constraintsUpdated();
 }
@@ -204,7 +204,7 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
-    
+
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
     constraintsUpdated();

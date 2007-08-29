@@ -57,7 +57,7 @@ ContextView::ContextView( QWidget* parent )
 
 //     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
-    
+
     setScene( new ContextScene( rect(), this ) );
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
@@ -69,43 +69,43 @@ ContextView::ContextView( QWidget* parent )
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
-    
+
     // here we initialize all the Plasma paths to Amarok paths
     Theme::self()->setApplication( "amarok" );
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
-    
+
     m_background = new Svg( "widgets/amarok-wallpaper", this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
-    m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width(); 
+    m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
     m_logo->resize( m_width, m_width*m_aspectRatio );
-    
+
     m_columns = new ColumnApplet();
     scene()->addItem( m_columns );
     m_columns->init();
-    
+
     connect(scene(), SIGNAL( appletRemoved( QObject * ) ), m_columns, SLOT( appletRemoved( QObject* ) ) );
-    
-    
+
+
     showHome();
 }
 
-ContextView::~ContextView() 
+ContextView::~ContextView()
 {
     DEBUG_BLOCK
     clear( m_curState );
 }
 
 void ContextView::clear()
-{    
+{
     delete m_columns;
 }
 
 void ContextView::clear( const ContextState& state )
 {
     QString name = "amarok_";
-    
+
     if( state == Home )
         name += "home";
     else if( state == Current )
@@ -113,15 +113,15 @@ void ContextView::clear( const ContextState& state )
     else
         return; // startup, or some other wierd case
     name += "rc";
-    
+
     // now we save the state, remembering the column info etc
     KConfig appletConfig( name );
     // erase previous config
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
-    
+
     m_columns->saveToConfig( appletConfig );
-    
+
     contextScene()->clearApplets();
 }
 
@@ -130,17 +130,17 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 {
     DEBUG_BLOCK
     Q_UNUSED( oldState );
-    
+
     switch( state )
     {
     case Engine::Playing:
         showCurrentTrack();
         break;
-        
+
     case Engine::Empty:
         showHome();
         break;
-        
+
     default:
         ;
     }
@@ -169,12 +169,12 @@ void ContextView::loadConfig()
 {
     DEBUG_BLOCK
     QString cur = "amarok_";
-    if( m_curState == Home ) 
+    if( m_curState == Home )
         cur += QString( "home" );
     else if( m_curState == Current )
         cur += QString( "current" );
     cur += "rc";
-    
+
     contextScene()->clearApplets();
     KConfig appletConfig( cur, KConfig::OnlyLocal );
     m_columns->loadConfig( appletConfig );
@@ -188,8 +188,13 @@ void ContextView::engineNewMetaData( const MetaBundle&, bool )
 
 Applet* ContextView::addApplet(const QString& name, const QStringList& args)
 {
-    AppletPointer applet = contextScene()->addApplet( name, args );
-    
+    QVariantList argList;
+    QStringListIterator i(args);
+    while( i.hasNext() )
+        argList << QVariant( i.next() );
+
+    AppletPointer applet = contextScene()->addApplet( name, argList );
+
     return m_columns->addApplet( applet );
 }
 
@@ -217,14 +222,14 @@ void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
     m_background->paint( painter, rect );
     painter->restore();
     QSize size = m_logo->size();
-    
+
     QSize pos = m_background->size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( m_width, newHeight ) );
     painter->save();
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
-    
+
 }
 
 void ContextView::resizeEvent( QResizeEvent* event )
@@ -234,9 +239,9 @@ void ContextView::resizeEvent( QResizeEvent* event )
         if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
             return; // lets not do this more than necessary, shall we?
         }
-    
+
     scene()->setSceneRect( rect() );
-    
+
     m_background->resize( width(), height() );
 //     m_logo->
     m_columns->update();
@@ -248,7 +253,7 @@ void ContextView::wheelEvent( QWheelEvent* event )
         QGraphicsView::wheelEvent( event );
         return;
     }
-    
+
     if ( event->modifiers() & Qt::ControlModifier ) {
         if ( event->delta() < 0 ) {
             zoomOut();
@@ -264,22 +269,22 @@ void ContextView::contextMenuEvent(QContextMenuEvent *event)
         QGraphicsView::contextMenuEvent( event );
         return;
     }
-    
+
     QPointF point = event->pos();
     QPointF globalPoint = event->globalPos();
 
     QGraphicsItem* item = scene()->itemAt(point);
     Plasma::Applet* applet = 0;
-    
+
     while (item) {
         applet = qgraphicsitem_cast<Plasma::Applet*>(item);
         if (applet) {
             break;
         }
-        
+
         item = item->parentItem();
     }
-    
+
     KMenu desktopMenu;
     //kDebug() << "context menu event " << immutable;
     if (!applet) {
@@ -287,10 +292,10 @@ void ContextView::contextMenuEvent(QContextMenuEvent *event)
             QGraphicsView::contextMenuEvent(event);
             return;
         }
-        
+
                 //FIXME: change this to show this only in debug mode (or not at all?)
         //       before final release
-        
+
     } else if (applet->isImmutable()) {
         QGraphicsView::contextMenuEvent(event);
         return;
@@ -304,7 +309,7 @@ void ContextView::contextMenuEvent(QContextMenuEvent *event)
             desktopMenu.addAction(configureApplet);
             hasEntries = true;
         }
-        
+
         if (!contextScene() || !contextScene()->isImmutable()) {
             QAction* closeApplet = new QAction(i18n("Close this %1", applet->name()), this);
             connect(closeApplet, SIGNAL(triggered(bool)),
@@ -312,13 +317,13 @@ void ContextView::contextMenuEvent(QContextMenuEvent *event)
             desktopMenu.addAction(closeApplet);
             hasEntries = true;
         }
-        
+
         if (!hasEntries) {
             QGraphicsView::contextMenuEvent(event);
             return;
         }
     }
-    
+
     event->accept();
     desktopMenu.exec(globalPoint.toPoint());
 }

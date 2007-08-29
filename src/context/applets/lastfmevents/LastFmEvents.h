@@ -29,44 +29,44 @@ class LastFmEvents : public Context::Applet
 {
     Q_OBJECT
 public:
-    LastFmEvents( QObject* parent, const QStringList& args );
+    LastFmEvents( QObject* parent, const QVariantList& args );
     ~LastFmEvents();
-    
+
     QSizeF contentSize() const;
-    
+
     void constraintsUpdated();
     void setRect( const QRectF& rect );
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF sizeHint() const { return boundingRect().size(); }
-    
+
     // from LayoutItem
     void setGeometry( const QRectF& rect ) { setRect( rect ); }
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
     void showConfigurationInterface();
-        
+
 private slots:
     void configAccepted();
-    
+
 private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
-    
+
     void resize( qreal oldWidth, qreal aspectRatio );
-    
+
     KDialog* m_config;
     QVBoxLayout* m_configLayout;
     QCheckBox* m_friendBox;
     QCheckBox* m_sysBox;
     QCheckBox* m_userBox;
-    
+
     qreal m_aspectRatio;
     qreal m_width;
     QSizeF m_size;
-    
+
     Context::Svg* m_theme;
-    
+
     // stored data
 //     QList< QVariantList > m_friendData;
 //     QList< QVariantList > m_userData;
@@ -75,7 +75,7 @@ private:
     QList< QGraphicsSimpleTextItem* > m_titles;
     QList< QGraphicsSimpleTextItem* > m_dates;
     QList< QGraphicsSimpleTextItem* > m_cities;
-    
+
     bool m_friendEnabled;
     bool m_sysEnabled;
     bool m_userEnabled;

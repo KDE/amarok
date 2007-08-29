@@ -23,12 +23,12 @@ namespace Context
 typedef Plasma::Applet Applet;
 
 } // Context namespace
+
 /**
  * Register an applet when it is contained in a loadable module
  */
 #define K_EXPORT_AMAROK_APPLET(libname, classname) \
-K_EXPORT_COMPONENT_FACTORY(                \
-    amarok_context_applet_##libname,    \
-    KGenericFactory<classname>("amarok_context_applet_" #libname))
-    
+K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
+K_EXPORT_PLUGIN(factory("amarok_context_applet_" #libname))
+
 #endif // multiple inclusion guard

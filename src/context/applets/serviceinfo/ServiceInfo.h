@@ -31,39 +31,39 @@ class ServiceInfo : public Context::Applet
 {
     Q_OBJECT
 public:
-    ServiceInfo( QObject* parent, const QStringList& args );
+    ServiceInfo( QObject* parent, const QVariantList& args );
     ~ServiceInfo();
-    
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    
+
     QSizeF contentSize() const;
     void constraintsUpdated();
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF sizeHint() const { return contentSize(); }
-    
+
     void setRect( const QRectF& rect );
     void setGeometry( const QRectF& rect ) { setRect( rect ); }
-    
+
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
-    
+
 private slots:
     void configAccepted();
-    
+
 private:
     void resize( qreal newWidth, qreal aspectRatio );
-    
+
     KDialog* m_config;
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
-    
+
     qreal m_aspectRatio;
-    
+
     Context::Svg* m_theme;
     QSizeF m_size;
-    
+
     QGraphicsSimpleTextItem* m_serviceName;
     QGraphicsTextItem* m_serviceMainInfo;
 
