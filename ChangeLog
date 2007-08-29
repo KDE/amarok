@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Amarok could needlessely reinitialize connections to MySQL databases
+      after a configuration change.  Combined with a bug in MySQL libraries,
+      this could lead to a crash.
     * Pressing Preveious Track in a Dynamic Playlist could cause undefined
       behavior in certain edge conditions.  Now it always plays the current
       track. (BR 148317)
@@ -16,6 +19,7 @@ VERSION 1.4.8
       <cob@tzi.de>. (BR 148607)
     * Fix Czech character conversion to ASCII for Generic Media Device. Patch
       by Matěj Laitl <strohel@gmail.com>. (BR 149125)
+
 
 VERSION 1.4.7
   CHANGES:

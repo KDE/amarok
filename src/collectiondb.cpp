@@ -4718,7 +4718,7 @@ CollectionDB::applySettings()
         {
             recreateConnections = true;
         }
-        else if ( AmarokConfig::mySqlPassword() != config->password() )
+        else if ( AmarokConfig::mySqlPassword2() != config->password() )
         {
             recreateConnections = true;
         }
