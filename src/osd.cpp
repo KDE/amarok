@@ -707,24 +707,24 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
                 args["length"] = QString::null;
 
 
-	    uint time=EngineController::instance()->engine()->position();
-	    uint sec=(time/1000)%60;	//is there a better way to calculate the time?
-	    time /= 1000;
-	    uint min=(time/60)%60;
-	    time /= 60;
-	    uint hour=(time/60)%60;
-	    QString timeformat="";
-	    if(hour!=0)
-	    {
-		    timeformat += QString::number(hour);
-		    timeformat +=":";
-	    }
-	    timeformat +=QString::number(min);
-	    timeformat +=":";
-	    if(sec<10)
-		    timeformat +="0";
-	    timeformat +=QString::number(sec);
-	    args["elapsed"]=timeformat;
+            uint time=EngineController::instance()->engine()->position();
+            uint sec=(time/1000)%60;	//is there a better way to calculate the time?
+            time /= 1000;
+            uint min=(time/60)%60;
+            time /= 60;
+            uint hour=(time/60)%60;
+            QString timeformat="";
+            if(hour!=0)
+            {
+       	        timeformat += QString::number(hour);
+                timeformat +=":";
+            }
+            timeformat +=QString::number(min);
+            timeformat +=":";
+            if(sec<10)
+                timeformat +="0";
+            timeformat +=QString::number(sec);
+            args["elapsed"]=timeformat;
             QStringx osd = AmarokConfig::osdText();
 
             // hacky, but works...
