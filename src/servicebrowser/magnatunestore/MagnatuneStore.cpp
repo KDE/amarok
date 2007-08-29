@@ -47,6 +47,8 @@
 #include <QStandardItemModel>
 #include <QDirModel>
 
+#include <typeinfo>
+
 using namespace Meta;
 
 MagnatuneStore::MagnatuneStore( const char *name )
