@@ -23,7 +23,6 @@
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "devicemanager.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 
@@ -43,7 +42,6 @@ typedef Medium::List MediumList;
 
 MountPointManager::MountPointManager()
     : QObject( 0 )
-    , m_noDeviceManager( false )
 {
     setObjectName( "MountPointManager" );
 
@@ -51,18 +49,6 @@ MountPointManager::MountPointManager()
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals";
         return;
-    }
-    //we are only interested in the mounting or unmounting of mediums
-    //therefore it is enough to listen to DeviceManager's mediumChanged signal
-    if (DeviceManager::instance()->isValid() )
-    {
-        connect( DeviceManager::instance(), SIGNAL( mediumAdded( const Medium*, QString ) ), SLOT( mediumAdded( const Medium* ) ) );
-        connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( mediumChanged( const Medium* ) ) );
-        connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( mediumRemoved( const Medium* ) ) );
-    }
-    else
-    {
-        handleMissingMediaManager();
     }
 
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
@@ -124,12 +110,6 @@ MountPointManager::init()
                 debug() << "Unknown DeviceHandlerFactory";
         }
         else debug() << "Plugin could not be loaded";
-    }
-    //we need access to the unfiltered data
-    MediumList list = DeviceManager::instance()->getDeviceList();
-    oldForeachType ( MediumList, list )
-    {
-        mediumChanged( &(*it) );
     }
 }
 
@@ -496,15 +476,6 @@ void
 MountPointManager::startStatisticsUpdateJob()
 {
     ThreadManager::instance()->queueJob( new UrlUpdateJob( this ) );
-}
-
-void
-MountPointManager::handleMissingMediaManager()
-{
-    //TODO this method should activate a fallback mode which simply shows all songs and uses the
-    //device's last mount point to build the absolute path
-    m_noDeviceManager = true;
-    //Amarok::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
 }
 
 void

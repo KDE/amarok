@@ -366,7 +366,6 @@ set(amaroklib_LIB_SRCS
     dbsetup.ui.h
     deletedialog.cpp
     deviceconfiguredialog.cpp
-    devicemanager.cpp
     directorylist.cpp
     dynamicmode.cpp
     editfilterdialog.cpp
@@ -387,9 +386,7 @@ set(amaroklib_LIB_SRCS
     lastfm.cpp
     MainWindow.cpp
     mediabrowser.cpp
-    mediadevicemanager.cpp
     medium.cpp
-    mediumpluginmanager.cpp
     metabundle.cpp
     metabundlesaver.cpp
     moodbar.cpp

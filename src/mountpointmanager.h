@@ -226,7 +226,6 @@ private:
      */
     bool isMounted ( const int deviceId ) const;
     void init();
-    void handleMissingMediaManager();
     /**
      * maps a device id to a mount point. does only work for mountable filesystems and needs to be
      * changed for the real Dynamic Collection implementation.
@@ -235,7 +234,6 @@ private:
     mutable QMutex m_handlerMapMutex;
     FactoryList m_mediumFactories;
     FactoryList m_remoteFactories;
-    bool m_noDeviceManager;
 
 //Solid specific
 private slots:

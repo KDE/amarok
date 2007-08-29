@@ -20,7 +20,6 @@
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
-#include "mediadevicemanager.h"
 #include "expression.h"
 #include "hintlineedit.h"
 #include "medium.h"
@@ -45,7 +44,6 @@
 #include <Q3PopupMenu>
 #include <Q3PtrList>
 #include <q3simplerichtext.h>
-#include <Q3ValueList>
 #include <QByteArray>
 #include <QCheckBox>
 #include <QDateTime>
@@ -59,6 +57,7 @@
 #include <QImage>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QList>
 #include <QListIterator>
 #include <QObject>
 #include <QPainter>
@@ -90,6 +89,10 @@
 #include <KRun>
 #include <KStandardDirs> //locate file
 #include <KTabBar>
+#include <solid/device.h>
+#include <solid/deviceinterface.h>
+#include <solid/devicenotifier.h>
+#include <solid/portablemediaplayer.h>
 
 
 MediaBrowser *MediaBrowser::s_instance = 0;
@@ -132,7 +135,7 @@ class SpaceLabel : public QLabel {
     void paintEvent(QPaintEvent *e)
     {
         QPainter p(this);
-        p.fillRect(e->rect(), colorGroup().brush(QColorGroup::Background));
+        p.fillRect(e->rect(), palette().brush(QColorGroup::Background));
 
         if(m_total > 0)
         {
@@ -175,7 +178,7 @@ class SpaceLabel : public QLabel {
                 if(scheduled > left)
                     left = scheduled;
                 int right = e->rect().right();
-                p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, colorGroup().brush(QColorGroup::Background));
+                p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, palette().brush(QColorGroup::Background));
             }
         }
         QLabel::paintEvent(e);
@@ -217,10 +220,10 @@ class DummyMediaDevice : public MediaDevice
 };
 
 
-MediaBrowser::MediaBrowser( const char *name )
-        : KVBox( 0)
+MediaBrowser::MediaBrowser( const char * /*name*/ )
+        : QWidget( 0)
         , m_timer( new QTimer( this ) )
-        , m_currentDevice( m_devices.end() )
+        , m_currentDevice( 0 )
         , m_waitForTranscode( false )
         , m_quitting( false )
         , m_connectAction( 0 )
@@ -230,6 +233,8 @@ MediaBrowser::MediaBrowser( const char *name )
         , m_transferAction( 0 )
 {
     s_instance = this;
+
+    QVBoxLayout *layout = new QVBoxLayout;
 
     // preload pixmaps used in browser
     KIconLoader iconLoader;
@@ -257,7 +262,9 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "process-stop" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
     MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
 
-    setSpacing( 4 );
+    layout->setSpacing( 4 );
+
+    m_timer->setSingleShot( true );
 
     m_toolbar = new Browser::ToolBar( this );
     m_toolbar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
@@ -300,7 +307,8 @@ MediaBrowser::MediaBrowser( const char *name )
 //     m_toolbar->getButton(CONFIGURE)->setToolTip( i18n( "Configure device" ) );
 
 
-    m_deviceCombo = new KComboBox( this );
+    m_deviceCombo = new KComboBox();
+    layout->addWidget( m_deviceCombo );
 
     // searching/filtering
     QToolBar* searchToolBar = new Browser::ToolBar( this );
@@ -312,12 +320,10 @@ MediaBrowser::MediaBrowser( const char *name )
 //     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // connect to device manager
-    connect( MediaDeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
-            SLOT( mediumAdded(const Medium *, QString) ) );
-    connect( MediaDeviceManager::instance(), SIGNAL( mediumChanged(const Medium *, QString) ),
-            SLOT( mediumChanged(const Medium *, QString) ) );
-    connect( MediaDeviceManager::instance(), SIGNAL( mediumRemoved(const Medium *, QString) ),
-            SLOT( mediumRemoved(const Medium *, QString) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded(const QString&) ),
+            SLOT( deviceAdded(const QString&) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved(const QString&) ),
+            SLOT( deviceRemoved(const QString&) ) );
 
 
     // we always have a dummy device
@@ -333,9 +339,10 @@ MediaBrowser::MediaBrowser( const char *name )
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
-    m_views = new KVBox( this );
+    m_views = new QWidget( this );
     m_queue = new MediaQueue( this );
-    m_progressBox  = new KHBox( this );
+    m_progressBox  = new KHBox();
+    layout->addWidget( m_progressBox );
     m_progress     = new QProgressBar( m_progressBox );
     m_cancelButton = new KPushButton( KIcon( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
@@ -346,6 +353,7 @@ MediaBrowser::MediaBrowser( const char *name )
 
     MediaDevice *dev = new DummyMediaDevice();
     dev->init( this );
+    dev->setUid( "DummyDevice" );
     addDevice( dev );
     activateDevice( 0, false );
     queue()->load( Amarok::saveLocation() + "transferlist.xml" );
@@ -355,33 +363,12 @@ MediaBrowser::MediaBrowser( const char *name )
 
     updateStats();
 
-    QMap<QString, Medium*> mmap = MediaDeviceManager::instance()->getMediumMap();
+    QList<Solid::Device> pmpList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
+    foreach( Solid::Device device, pmpList )
+        deviceAdded( device.udi() );
 
-    bool newflag = false;
-    //This deals with <strike>auto-detectable</strike> ALL devices!
-    for( QMap<QString, Medium*>::Iterator it = mmap.begin();
-            it != mmap.end();
-            it++ )
-    {
-        QString handler = Amarok::config( "MediaBrowser" ).readEntry( (*it)->id(), QString() );
-        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler;
-        if( handler.isEmpty() )
-        {
-            //this should probably never be the case with a manually added device, unless amarokrc's been messed with
-            Amarok::config( "MediaBrowser" ).writeEntry( (*it)->id(), "ignore" );
-            newflag = true;
-            mediumAdded( *it, (*it)->name(), true );
-        }
-        //and this definitely shouldn't!
-        else if( handler != "deleted" )
-            mediumAdded( *it, (*it)->name(), true );
-    }
-
-    if ( newflag )
-        Amarok::StatusBar::instance()->longMessageThreadSafe(
-                i18n("Amarok has detected new portable media devices.\n"
-                    "Go to the \"Media Devices\" pane of the configuration\n"
-                    "dialog to choose a plugin for these devices.") );
+    //TODO: Take generic storage devices into account too -- or do we rely on the
+    //Solid backend to tell us if it's a PMP with "storage" type?
 
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 
@@ -390,7 +377,8 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
             SLOT( tagsChanged( const MetaBundle& ) ) );
 
-    m_haveDevices = false;
+    //TODO: If we will be supporting manually adding devices, probably need the following section
+    /*m_haveDevices = false;
     QMap<QString,QString> savedDevices = Amarok::config( "MediaBrowser" ).entryMap();
     for( QMap<QString,QString>::Iterator it = savedDevices.begin();
             it != savedDevices.end();
@@ -402,13 +390,16 @@ MediaBrowser::MediaBrowser( const char *name )
             break;
         }
     }
-    emit availabilityChanged( m_haveDevices );
+    */
+    emit availabilityChanged( !pmpList.isEmpty() );
+
+    this->setLayout( layout );
 }
 
 bool
 MediaBrowser::blockQuit() const
 {
-    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::const_iterator it = m_devices.begin();
             it != m_devices.end();
             ++it )
     {
@@ -473,28 +464,16 @@ MediaBrowser::getProxyUrl( const KUrl& daapUrl ) const
 {
     DEBUG_BLOCK
     KUrl url;
-    MediaDevice* dc = dynamic_cast<MediaDevice*>( queryList( "DaapClient" ).first() );
+    MediaDevice* dc = findChildren<MediaDevice *>( "DaapClient" ).first();
     if( dc )
         url = dc->getProxyUrl( daapUrl );
     return url;
 }
 
 MediaDevice *
-MediaBrowser::currentDevice() const
-{
-    Q3ValueList<MediaDevice *>::const_iterator current = m_currentDevice;
-    if( current != m_devices.constEnd() )
-    {
-        return *m_currentDevice;
-    }
-
-    return 0;
-}
-
-MediaDevice *
 MediaBrowser::deviceFromId( const QString &id ) const
 {
-    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
+    for( QList<MediaDevice *>::const_iterator it = m_devices.constBegin();
                 it != m_devices.end();
                 it++ )
         {
@@ -509,7 +488,7 @@ void
 MediaBrowser::activateDevice( const MediaDevice *dev )
 {
     int index = 0;
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -525,14 +504,14 @@ MediaBrowser::activateDevice( const MediaDevice *dev )
 void
 MediaBrowser::activateDevice( int index, bool skipDummy )
 {
-    if( currentDevice() && currentDevice()->customAction() )
+    if( m_currentDevice && m_currentDevice->customAction() )
     {
-        m_toolbar->removeAction( currentDevice()->customAction() );
+        m_toolbar->removeAction( m_currentDevice->customAction() );
         m_toolbar->hide();
         m_toolbar->show();
     }
 
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -541,30 +520,30 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 
     if( index < 0 )
     {
-        m_currentDevice = m_devices.end();
+        m_currentDevice = m_devices.last();
         return;
     }
 
     if( skipDummy )
        index++;
 
-    if( (uint)index >= m_devices.count() )
+    if( index >= m_devices.count() )
     {
-        m_currentDevice = m_devices.end();
+        m_currentDevice = m_devices.last();
         updateButtons();
         queue()->computeSize();
         updateStats();
         return;
     }
 
-    m_currentDevice = m_devices.at( index );
-    if( currentDevice() )
+    m_currentDevice = m_devices[index];
+    if( m_currentDevice )
     {
-        currentDevice()->view()->show();
-        if( currentDevice()->customAction() )
+        m_currentDevice->view()->show();
+        if( m_currentDevice->customAction() )
         {
             m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-            m_toolbar->addAction( currentDevice()->customAction() );
+            m_toolbar->addAction( m_currentDevice->customAction() );
             m_toolbar->hide();
             m_toolbar->show();
         }
@@ -599,14 +578,14 @@ MediaBrowser::removeDevice( MediaDevice *device )
 
     debug() << "remove device: type=" << device->deviceType();
 
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
         if( *it == device )
         {
-            bool current = (it == m_currentDevice);
-            m_devices.remove( device );
+            bool current = ( (*it)->uid() == m_currentDevice->uid() );
+            m_devices.erase( it );
             if( current )
                 activateDevice( 0, false );
             break;
@@ -636,7 +615,7 @@ MediaBrowser::updateDevices()
 {
     m_deviceCombo->clear();
     uint i = 0;
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -652,7 +631,7 @@ MediaBrowser::updateDevices()
             name += i18n( " (mounted at %1)", (*it)->mountPoint() );
         }
         m_deviceCombo->addItem( name, i );
-        if( it == m_currentDevice )
+        if( (*it)->uid() == m_currentDevice->uid() )
         {
             m_deviceCombo->setCurrentItem( name );
         }
@@ -668,7 +647,7 @@ MediaBrowser::deviceNames() const
 {
     QStringList list;
 
-    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
+    for( QList<MediaDevice *>::const_iterator it = m_devices.constBegin();
             it != m_devices.constEnd();
             it++ )
     {
@@ -683,7 +662,7 @@ bool
 MediaBrowser::deviceSwitch( const QString &name )
 {
     int index = 0;
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -746,7 +725,7 @@ MediaBrowser::transcode( const KUrl &src, const QString &filetype )
 void
 MediaBrowser::slotSetFilterTimeout() //SLOT
 {
-    m_timer->start( 280, true ); //stops the timer for us first
+    m_timer->start( 280 ); //stops the timer for us first
 }
 
 void
@@ -754,8 +733,8 @@ MediaBrowser::slotSetFilter() //SLOT
 {
     m_timer->stop();
 
-    if( currentDevice() )
-        currentDevice()->view()->setFilter( m_searchWidget->lineEdit()->text() );
+    if( m_currentDevice )
+        m_currentDevice->view()->setFilter( m_searchWidget->lineEdit()->text() );
 }
 
 void
@@ -780,7 +759,7 @@ MediaBrowser::prepareToQuit()
 {
     m_waitForTranscode = false;
     m_quitting = true;
-    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             ++it )
     {
@@ -1488,9 +1467,9 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
         const uint w = t.width() + 20;
         const uint h = t.height() + 20;
 
-        p.setBrush( colorGroup().background() );
+        p.setBrush( palette().background() );
         p.drawRoundRect( 15, 15, w, h, (8*200)/w, (8*200)/h );
-        t.draw( &p, 20, 20, QRect(), colorGroup() );
+        t.draw( &p, 20, 20, QRect(), palette() );
     }
     MediaBrowser::instance()->updateButtons();
 }
@@ -1517,167 +1496,81 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
+MediaBrowser::deviceAdded( const QString &udi )
 {
-    debug() << "mediumAdded: " << (medium ? medium->properties() : QStringList());
-    if( medium )
+    MediaDevice *md = loadDevicePlugin( udi );
+    if( md )
     {
-        QString handler = Amarok::config( "MediaBrowser" ).readEntry( medium->id(), QString() );
-        if( handler.isEmpty() )
-        {
-            if( !constructing && medium->isAutodetected() )
-            {
-                MediumPluginManagerDialog *mpm = new MediumPluginManagerDialog();
-                mpm->exec();
-            }
-        }
-        //debug() << "id=" << medium->id() << ", handler=" << handler;
-        MediaDevice *device = loadDevicePlugin( handler );
-        if( device )
-        {
-            device->m_medium = *medium;
-            addDevice( device );
-            if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
-                activateDevice( m_devices.count()-1, false );
-        }
+        addDevice( md );
+        if( m_currentDevice == *(m_devices.begin()) || m_currentDevice == *(m_devices.end()) )
+            activateDevice( m_devices.count()-1, false );
     }
 }
 
 void
-MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
+MediaBrowser::deviceRemoved( const QString &udi )
 {
-    DEBUG_BLOCK
-    if( !plugin.isEmpty() )
+    for( QList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
     {
-        debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin;
-        Amarok::config( "MediaBrowser" ).writeEntry( medium->id(), plugin );
-
-        bool success = true;
-        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
-                it != m_devices.end();
-                it++ )
+        if( (*it)->m_uid == udi )
         {
-            if( (*it)->uniqueId() == medium->id() )
+            if( (*it)->isConnected() )
             {
-                debug() << "removing " << medium->deviceNode();
-                if( (*it)->isConnected() )
-                {
-                    if( (*it)->disconnectDevice( false ) )
-                        removeDevice( *it );
-                    else
-                        success = false;
-                }
-                else
+                if( (*it)->disconnectDevice() )
                     removeDevice( *it );
-                break;
+                Amarok::StatusBar::instance()->longMessage(
+                        i18n( "The device %1 was removed before it was disconnected. "
+                            "In order to avoid possible data loss, press the \"Disconnect\" "
+                            "button before disconnecting the device.", (*it)->name() ),
+                        KDE::StatusBar::Warning );
             }
-        }
-
-        if( success )
-        {
-            mediumAdded( medium, "doesntmatter", false );
-        }
-        else
-        {
-            debug() << "Cannot change plugin while operation is in progress";
-            Amarok::StatusBar::instance()->longMessage(
-                    i18n( "Cannot change plugin while operation is in progress" ),
-                    KDE::StatusBar::Warning );
-        }
-    }
-    else
-        debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin";
-}
-
-void
-MediaBrowser::showPluginManager()
-{
-    MediumPluginManagerDialog* mpm = new MediumPluginManagerDialog();
-    mpm->exec();
-    delete mpm;
-}
-
-void
-MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
-{
-    if( medium )
-    {
-        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
-                it != m_devices.end();
-                it++ )
-        {
-            if( (*it)->uniqueId() == medium->id() )
-            {
-                (*it)->m_medium = const_cast<Medium *>(medium);
-                if( !(*it)->isConnected() && medium->isMounted() )
-                    (*it)->connectDevice();
-#if 0
-                else if( (*it)->isConnected() && !medium->isMounted() )
-                {
-                    Amarok::StatusBar::instance()->longMessage(
-                            i18n( "The device %1 was unmounted before it was synchronized. "
-                                "In order to avoid data loss, press the \"Disconnect\" button "
-                                "before unmounting the device." ).arg( name ),
-                            KDE::StatusBar::Warning );
-                    //(*it)->disconnectDevice();
-                }
-#endif
-                break;
-            }
-        }
-    }
-}
-
-void
-MediaBrowser::mediumRemoved( const Medium *medium, QString name )
-{
-    if( medium )
-    {
-        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
-                it != m_devices.end();
-                it++ )
-        {
-            if( (*it)->uniqueId() == medium->id() )
-            {
-                if( (*it)->isConnected() )
-                {
-                    if( (*it)->disconnectDevice() )
-                        removeDevice( *it );
-                    Amarok::StatusBar::instance()->longMessage(
-                            i18n( "The device %1 was removed before it was disconnected. "
-                                "In order to avoid possible data loss, press the \"Disconnect\" "
-                                "button before disconnecting the device.", name ),
-                            KDE::StatusBar::Warning );
-                }
-                else
-                    removeDevice( *it );
-                break;
-            }
+            else
+                removeDevice( *it );
+            break;
         }
     }
 }
 
 MediaDevice *
-MediaBrowser::loadDevicePlugin( const QString &deviceType )
+MediaBrowser::loadDevicePlugin( const QString &udi )
 {
     DEBUG_BLOCK
 
-    if( deviceType == "ignore" )
-        return 0;
+    Solid::Device solidDevice( udi );
 
+    Solid::PortableMediaPlayer* pmp = solidDevice.as<Solid::PortableMediaPlayer>();
+
+    //TODO: Generic storage?
+    if( !pmp )
+    {
+        debug() << "Failed to convert Solid device to PortableMediaPlayer" << endl;
+        return 0;
+    }
+
+    QString protocol = pmp->supportedProtocols()[0];
+    if( protocol == "storage" )
+        protocol = "generic";
+    if( protocol == "pde" )
+        protocol == "njb";
+
+    protocol += "-mediadevice";
     QString query = "[X-KDE-Amarok-plugintype] == 'mediadevice' and [X-KDE-Amarok-name] == '%1'";
-    Amarok::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
+    Amarok::Plugin *plugin = PluginManager::createFromQuery( query.arg( protocol ) );
 
     if( plugin )
     {
         debug() << "Returning plugin!";
         MediaDevice *device = static_cast<MediaDevice *>( plugin );
         device->init( this );
-        device->m_type = deviceType;
+        device->m_uid = solidDevice.udi();
+        device->m_name = solidDevice.product();
+        device->m_type = protocol;
         return device;
     }
 
-    debug() << "no plugin for " << deviceType;
+    debug() << "no plugin for " << protocol;
     return 0;
 }
 
@@ -1706,75 +1599,16 @@ MediaBrowser::config()
 {
     if( m_deviceCombo->currentText() == "No Device Selected" )
     {
-        showPluginManager();
+        Amarok::StatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
+                                                       KDE::StatusBar::Sorry );
         return true;
     }
 
-    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( currentDevice()->m_medium );
+    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( m_currentDevice->m_medium );
     dcd->exec();
     bool successful = dcd->successful();
     delete dcd;
     return successful;
-}
-
-void
-MediaBrowser::configSelectPlugin( int index )
-{
-    Q_UNUSED( index );
-
-    if( m_currentDevice == m_devices.begin() )
-    {
-        AmarokConfig::setDeviceType( m_pluginName[m_configPluginCombo->currentText()] );
-    }
-    else if( currentDevice() )
-    {
-        KConfigGroup config = Amarok::config( "MediaBrowser" );
-        config.writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
-    }
-
-    if( !currentDevice() )
-        activateDevice( 0, false );
-
-    if( !currentDevice() )
-        return;
-
-    if( m_pluginName[m_configPluginCombo->currentText()] != currentDevice()->deviceType() )
-    {
-        MediaDevice *dev = currentDevice();
-        dev->removeConfigElements( m_configBox );
-        if( dev->isConnected() )
-        {
-            dev->disconnectDevice( false );
-        }
-        unloadDevicePlugin( dev );
-        *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
-        if( !*m_currentDevice )
-        {
-            *m_currentDevice = new DummyMediaDevice();
-            if( AmarokConfig::deviceType() != "dummy-mediadevice" )
-            {
-                QString msg = i18n( "The requested media device could not be loaded" );
-                Amarok::StatusBar::instance()->shortMessage( msg );
-            }
-        }
-        dev = currentDevice();
-        dev->init( this );
-        dev->loadConfig();
-
-        m_configBox->hide();
-        dev->addConfigElements( m_configBox );
-        m_configBox->show();
-
-        dev->view()->show();
-
-        if( dev->autoConnect() )
-        {
-            dev->connectDevice( true );
-            updateButtons();
-        }
-
-        updateDevices();
-    }
 }
 
 void
@@ -1783,15 +1617,15 @@ MediaBrowser::updateButtons()
     if( !connectAction() || !disconnectAction() || !transferAction() )
         return;
 
-    if( currentDevice() )
+    if( m_currentDevice )
     {
-        transferAction()->setVisible( currentDevice()->m_transfer );
-        customAction()->setVisible( currentDevice()->m_customButton );
-        configAction()->setVisible( currentDevice()->m_configure );
+        transferAction()->setVisible( m_currentDevice->m_transfer );
+        customAction()->setVisible( m_currentDevice->m_customButton );
+        configAction()->setVisible( m_currentDevice->m_configure );
 
-        connectAction()->setEnabled( !currentDevice()->isConnected() );
-        disconnectAction()->setEnabled( currentDevice()->isConnected() );
-        transferAction()->setEnabled( currentDevice()->isConnected() && m_queue->childCount() > 0 );
+        connectAction()->setEnabled( !m_currentDevice->isConnected() );
+        disconnectAction()->setEnabled( m_currentDevice->isConnected() );
+        transferAction()->setEnabled( m_currentDevice->isConnected() && m_queue->childCount() > 0 );
         if( customAction() )
             customAction()->setEnabled( true );
     }
@@ -1820,7 +1654,7 @@ MediaBrowser::updateStats()
     }
 
     KIO::filesize_t total, avail;
-    if( currentDevice() && currentDevice()->getCapacity(&total, &avail) )
+    if( m_currentDevice && m_currentDevice->getCapacity(&total, &avail) )
     {
         text += i18n( " - %1 of %2 available", KIO::convertSize( avail ), KIO::convertSize( total ) );
 
@@ -1844,7 +1678,7 @@ bool
 MediaView::setFilter( const QString &filter, MediaItem *parent )
 {
     bool advanced = ExpressionParser::isAdvancedExpression( filter );
-    Q3ValueList<int> defaultColumns;
+    QList<int> defaultColumns;
     defaultColumns << MetaBundle::Album;
     defaultColumns << MetaBundle::Title;
     defaultColumns << MetaBundle::Artist;
@@ -1887,7 +1721,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
             else if(it->type()==MediaItem::DIRECTORY)
             {
                 bool match = true;
-                QStringList list = QStringList::split( " ", filter );
+                QStringList list = filter.split( " ", QString::SkipEmptyParts );
                 for( QStringList::iterator i = list.begin();
                         i != list.end();
                         ++i )
@@ -1917,6 +1751,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
 
 MediaDevice::MediaDevice()
     : Amarok::Plugin()
+    , m_name( QString() )
     , m_hasMountPoint( true )
     , m_autoDeletePodcasts( false )
     , m_syncStats( false )
@@ -1926,6 +1761,7 @@ MediaDevice::MediaDevice()
     , sysProc ( 0 )
     , m_parent( 0 )
     , m_view( 0 )
+    , m_uid( QString() )
     , m_wait( false )
     , m_requireMount( false )
     , m_canceled( false )
@@ -2116,7 +1952,7 @@ MediaDevice::bundlesToSync( const QString &name, const QString &query )
     const QStringList values = CollectionDB::instance()->query( query );
 
     BundleList bundles;
-    for( for_iterators( QStringList, values ); it != end; ++it )
+    for( QStringList::const_iterator it = values.begin(); it != values.end(); ++it )
         bundles += CollectionDB::instance()->bundleFromQuery( &it );
     preparePlaylistForSync( name, bundles );
     return bundles;
@@ -2514,32 +2350,32 @@ MediaBrowser::cancelClicked()
     DEBUG_BLOCK
 
     m_waitForTranscode = false;
-    if( currentDevice() )
-        currentDevice()->abortTransfer();
+    if( m_currentDevice )
+        m_currentDevice->abortTransfer();
 }
 
 void
 MediaBrowser::transferClicked()
 {
     transferAction()->setEnabled( false );
-    if( currentDevice()
-            && currentDevice()->isConnected()
-            && !currentDevice()->isTransferring() )
+    if( m_currentDevice
+            && m_currentDevice->isConnected()
+            && !m_currentDevice->isTransferring() )
     {
-        if( !currentDevice()->hasTransferDialog() )
-            currentDevice()->transferFiles();
+        if( !m_currentDevice->hasTransferDialog() )
+            m_currentDevice->transferFiles();
         else
         {
-            currentDevice()->runTransferDialog();
+            m_currentDevice->runTransferDialog();
             //may not work with non-TransferDialog-class object, but maybe some run time introspection could solve it?
-            if( currentDevice()->getTransferDialog() &&
-              ( reinterpret_cast<TransferDialog *>(currentDevice()->getTransferDialog()))->isAccepted() )
-                currentDevice()->transferFiles();
+            if( m_currentDevice->getTransferDialog() &&
+              ( reinterpret_cast<TransferDialog *>(m_currentDevice->getTransferDialog()))->isAccepted() )
+                m_currentDevice->transferFiles();
             else
                 updateButtons();
         }
     }
-    currentDevice()->m_transferDir = currentDevice()->m_medium.mountPoint();
+    m_currentDevice->m_transferDir = m_currentDevice->m_medium.mountPoint();
 }
 
 void
@@ -2547,21 +2383,21 @@ MediaBrowser::connectClicked()
 {
     bool haveToConfig = false;
     // it was just clicked, so isOn() == true.
-    if( currentDevice() && !currentDevice()->isConnected() )
+    if( m_currentDevice && !m_currentDevice->isConnected() )
     {
-        haveToConfig = !currentDevice()->connectDevice();
+        haveToConfig = !m_currentDevice->connectDevice();
     }
 
-    haveToConfig |= !currentDevice();
-    haveToConfig |= ( currentDevice() && !currentDevice()->isConnected() );
+    haveToConfig |= !m_currentDevice;
+    haveToConfig |= ( m_currentDevice && !m_currentDevice->isConnected() );
 
-    if ( !currentDevice()->needsManualConfig() )
+    if ( !m_currentDevice->needsManualConfig() )
         haveToConfig = false;
 
-    if( haveToConfig && *m_devices.at( 0 ) == currentDevice() )
+    if( haveToConfig && m_devices.at( 0 ) == m_currentDevice )
     {
-        if( config() && currentDevice() && !currentDevice()->isConnected() )
-            currentDevice()->connectDevice();
+        if( config() && m_currentDevice && !m_currentDevice->isConnected() )
+            m_currentDevice->connectDevice();
     }
 
     updateDevices();
@@ -2573,7 +2409,7 @@ MediaBrowser::connectClicked()
 void
 MediaBrowser::disconnectClicked()
 {
-    if( currentDevice() && currentDevice()->isTransferring() )
+    if( m_currentDevice && m_currentDevice->isTransferring() )
     {
         int action = KMessageBox::questionYesNoCancel( MediaBrowser::instance(),
                 i18n( "Transfer in progress. Finish or stop after current track?" ),
@@ -2586,7 +2422,7 @@ MediaBrowser::disconnectClicked()
         }
         else if( action == KMessageBox::Yes )
         {
-            currentDevice()->scheduleDisconnect();
+            m_currentDevice->scheduleDisconnect();
             return;
         }
     }
@@ -2594,9 +2430,9 @@ MediaBrowser::disconnectClicked()
     transferAction()->setEnabled( false );
     disconnectAction()->setEnabled( false );
 
-    if( currentDevice() )
+    if( m_currentDevice )
     {
-        currentDevice()->disconnectDevice( true );
+        m_currentDevice->disconnectDevice( true );
     }
 
     updateDevices();
@@ -2607,8 +2443,8 @@ MediaBrowser::disconnectClicked()
 void
 MediaBrowser::customClicked()
 {
-    if( currentDevice() )
-        currentDevice()->customClicked();
+    if( m_currentDevice )
+        m_currentDevice->customClicked();
 }
 
 bool
@@ -3456,7 +3292,7 @@ MediaQueue::load( const QString& filename )
     QDomDocument d;
     QString er;
     int l, c;
-    if( !d.setContent( stream.read(), &er, &l, &c ) ) { // return error values
+    if( !d.setContent( stream.readAll(), &er, &l, &c ) ) { // return error values
         Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the transferlist was invalid. Please report this as a bug to the Amarok "
@@ -3466,7 +3302,7 @@ MediaQueue::load( const QString& filename )
         return;
     }
 
-    Q3ValueList<QDomNode> nodes;
+    QList<QDomNode> nodes;
     const QString ITEM( "item" ); //so we don't construct this QString all the time
     for( QDomNode n = d.namedItem( "playlist" ).firstChild(); !n.isNull(); n = n.nextSibling() )
     {

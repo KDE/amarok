@@ -25,7 +25,7 @@ namespace Browser
                 setMovable( false );
                 setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
                 setIconDimensions( 16 );
-                setContextMenuEnabled( false );
+                setContextMenuPolicy( Qt::NoContextMenu );
             }
     };
 }

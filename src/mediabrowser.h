@@ -23,11 +23,11 @@
 #include <KVBox>           //baseclass
 
 #include <Q3PtrList>
-#include <Q3ValueList>
 #include <QDateTime>
 #include <QLabel>
 #include <QMutex>
 #include <QPixmap>
+#include <QWidget>
 
 
 class MediaBrowser;
@@ -175,7 +175,7 @@ class MediaQueue : public K3ListView
 };
 
 
-class MediaBrowser : public KVBox
+class MediaBrowser : public QWidget
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
@@ -193,7 +193,7 @@ class MediaBrowser : public KVBox
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
         bool blockQuit() const;
-        MediaDevice *currentDevice() const;
+        MediaDevice *currentDevice() const { return m_currentDevice; }
         MediaDevice *deviceFromId( const QString &id ) const;
         QStringList deviceNames() const;
         bool deviceSwitch( const QString &name );
@@ -229,32 +229,28 @@ class MediaBrowser : public KVBox
         void slotSetFilter();
         void slotSetFilter( const QString &filter );
         void slotEditFilter();
-        void mediumAdded( const Medium *, QString , bool constructing = false);
-        void mediumChanged( const Medium *, QString );
-        void mediumRemoved( const Medium *, QString );
+        void deviceAdded( const QString &udi );
+        void deviceRemoved( const QString &udi );
         void activateDevice( const MediaDevice *device );
         void activateDevice( int index, bool skipDummy = true );
-        void pluginSelected( const Medium *, const QString );
-        void showPluginManager();
         void cancelClicked();
         void connectClicked();
         void disconnectClicked();
         void customClicked();
-        void configSelectPlugin( int index );
         bool config(); // false if canceled by user
         KUrl transcode( const KUrl &src, const QString &filetype );
         void tagsChanged( const MetaBundle &bundle );
         void prepareToQuit();
 
     private:
-        MediaDevice *loadDevicePlugin( const QString &deviceName );
+        MediaDevice *loadDevicePlugin( const QString &udi );
         void         unloadDevicePlugin( MediaDevice *device );
 
         QTimer *m_timer;
         AMAROK_EXPORT static MediaBrowser *s_instance;
 
-        Q3ValueList<MediaDevice *> m_devices;
-        Q3ValueList<MediaDevice *>::iterator m_currentDevice;
+        QList<MediaDevice *> m_devices;
+        MediaDevice * m_currentDevice;
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
@@ -269,7 +265,7 @@ class MediaBrowser : public KVBox
         SpaceLabel*      m_stats;
         KHBox*           m_progressBox;
         QProgressBar*       m_progress;
-        KVBox*           m_views;
+        QWidget*           m_views;
         KPushButton*     m_cancelButton;
         //KPushButton*     m_playlistButton;
         KVBox*           m_configBox;
@@ -483,7 +479,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         /**
          * @return a unique identifier that is constant across sessions
          */
-        QString uniqueId() const { return m_medium.id(); }
+        QString uniqueId() const { return m_uid; }
 
         /**
          * @return the name for the device that should be presented to the user
@@ -539,10 +535,13 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         void fileTransferFinished();
 
     private:
-        int              sysCall(const QString & command);
+        int  sysCall(const QString & command);
         int  runPreConnectCommand();
         int  runPostDisconnectCommand();
         QString replaceVariables( const QString &cmd ); // replace %m with mount point and %d with device node
+
+        QString uid() { return m_uid; }
+        void setUid( const QString &uid ) { m_uid = uid; }
 
         /**
          * Find a particular track
@@ -647,6 +646,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         QString          m_firstSort;
         QString          m_secondSort;
         QString          m_thirdSort;
+        QString          m_uid;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;

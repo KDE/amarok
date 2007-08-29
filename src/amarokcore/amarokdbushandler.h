@@ -218,20 +218,6 @@ class DbusScriptHandler : public QObject
       virtual QString proxyForProtocol(const QString& protocol);
 };
 
-class DbusDevicesHandler : public QObject
-{
-   Q_OBJECT
-
-   public:
-       DbusDevicesHandler();
-
-   public /* DCOP */ slots:
-      virtual void mediumAdded(QString name);
-      virtual void mediumRemoved(QString name);
-      virtual void mediumChanged(QString name);
-      virtual QStringList showDeviceList();
-};
-
 class DbusMediaBrowserHandler : public QObject
 {
     Q_OBJECT

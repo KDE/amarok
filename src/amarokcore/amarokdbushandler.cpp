@@ -29,7 +29,6 @@
 #include "collection/collectionmanager.h"
 #include "collection/SqlStorage.h"
 #include "context/LyricsManager.h"
-#include "devicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
@@ -980,35 +979,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DbusDevicesHandler
-/////////////////////////////////////////////////////////////////////////////////////
-
-    DbusDevicesHandler::DbusDevicesHandler()
-        : QObject( kapp )
-    {}
-
-    void DbusDevicesHandler::mediumAdded(QString name)
-    {
-        DeviceManager::instance()->mediumAdded(name);
-    }
-
-    void DbusDevicesHandler::mediumRemoved(QString name)
-    {
-        DeviceManager::instance()->mediumRemoved(name);
-    }
-
-    void DbusDevicesHandler::mediumChanged(QString name)
-    {
-        DeviceManager::instance()->mediumChanged(name);
-    }
-
-    QStringList DbusDevicesHandler::showDeviceList()
-    {
-        return DeviceManager::instance()->getDeviceStringList();
-    }
-
-/////////////////////////////////////////////////////////////////////////////////////
-// class DbusDevicesHandler
+// class DbusMediaBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusMediaBrowserHandler::DbusMediaBrowserHandler()

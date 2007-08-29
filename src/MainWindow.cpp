@@ -35,7 +35,6 @@
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "MainWindow.h"
 #include "mediabrowser.h"
-#include "mediadevicemanager.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlistbrowser.h"

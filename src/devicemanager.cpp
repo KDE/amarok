@@ -40,51 +40,19 @@ DeviceManager* DeviceManager::instance()
 DeviceManager::DeviceManager()
 {
     DEBUG_BLOCK
-/* //reimplement with Solid, disabling for now
-    m_dc = KApplication::dcopClient();
-    m_dc->setNotifications(true);
-    m_valid = false;
 
-    if (!m_dc->isRegistered())
-    {
-        debug() << "DeviceManager:  DCOP Client not registered!";
-    }
-    else
-    {
-        if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "mediumAdded(QString)", false) ||
-            !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
-            !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
-        {
-            debug() << "DeviceManager:  Could not connect to signal mediumAdded/Removed/Changed!";
-        }
-        else
-        {
-            m_valid = true;
-            //run the DCOP query here because apparently if you don't run KDE as a DM the first call will fail
-            //...go figure
-            QByteArray data, replyData;
-            QByteArray replyType;
-            QDataStream arg(data, QIODevice::WriteOnly);
-            QStringList result;
-            arg << 5;
-            if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData, false, 5000))
-            {
-                debug() << "During DeviceManager init, error during DCOP call";
-            }
-            reconcileMediumMap();
-            debug() << "DeviceManager:  connectDCOPSignal returned successfully!";
-        }
-    }*/
+    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString&)),
+                this, SLOT(deviceAdded(const QString&)));
+    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString&)),
+                this, SLOT(deviceRemoved(const QString&)));
 }
 
 DeviceManager::~DeviceManager()
 {
-    for( MediumIterator it = m_mediumMap.begin(); it != m_mediumMap.end(); it++ )
-        delete (*it);
 }
 
 void
-DeviceManager::mediumAdded( const QString name )
+DeviceManager::deviceAdded( const QString &udi)
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -99,7 +67,7 @@ DeviceManager::mediumAdded( const QString name )
 
 
 void
-DeviceManager::mediumRemoved( const QString name )
+DeviceManager::deviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -121,21 +89,6 @@ DeviceManager::mediumRemoved( const QString name )
         delete removedMedium;   //If we are to remove it from the map, delete it first
         m_mediumMap.remove(name);
     }
-}
-
-
-void
-DeviceManager::mediumChanged( const QString name )
-{
-    DEBUG_BLOCK
-    if ( !m_valid )
-        return;
-    Medium *changedMedium = getDevice(name);
-    if ( changedMedium != 0 )
-        debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id();
-    else
-        debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name;
-    emit mediumChanged( changedMedium, name );
 }
 
 

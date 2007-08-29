@@ -26,8 +26,6 @@ email                : markey@web.de
 #include "context/ContextView.h"
 //#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
-#include "devicemanager.h"
-#include "mediadevicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
@@ -189,7 +187,6 @@ App::App()
      new Amarok::DbusCollectionHandler();
      new Amarok::DbusMediaBrowserHandler();
      new Amarok::DbusScriptHandler();
-     new Amarok::DbusDevicesHandler();
 
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
@@ -355,7 +352,6 @@ void App::handleCliArgs() //static
     {
         haveArgs = true;
         QString device = args->getOption("cdplay");
-        device = DeviceManager::instance()->convertMediaUrlToDevice( device );
         KUrl::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
             Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
@@ -695,7 +691,6 @@ App::continueInit()
     CollectionDB::instance()->checkDatabase();
 
     The::SolidHandler()->Initialize();
-    m_mediaDeviceManager = MediaDeviceManager::instance();
     m_mainWindow = new MainWindow();
 #ifndef Q_WS_MAC
     m_tray           = new Amarok::TrayIcon( mainWindow() );
