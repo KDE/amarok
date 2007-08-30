@@ -25,7 +25,7 @@
 
 using namespace Context;
 
-LyricsEngine::LyricsEngine( QObject* parent, const QStringList& /*args*/ )
+LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , LyricsObserver( LyricsManager::self() )

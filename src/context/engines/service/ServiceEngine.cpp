@@ -33,7 +33,7 @@
 
 using namespace Context;
 
-ServiceEngine::ServiceEngine( QObject* parent, const QStringList& args )
+ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , m_requested( true )
 {

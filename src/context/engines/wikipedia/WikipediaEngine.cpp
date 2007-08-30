@@ -21,7 +21,7 @@
 
 using namespace Context;
 
-WikipediaEngine::WikipediaEngine( QObject* parent, const QStringList& /*args*/ )
+WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )

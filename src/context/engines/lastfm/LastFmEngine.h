@@ -38,7 +38,7 @@ class LastFmEngine : public DataEngine, public ContextObserver
 {
     Q_OBJECT
 public:
-    LastFmEngine( QObject* parent, const QStringList& args );
+    LastFmEngine( QObject* parent, const QList<QVariant>& args );
     ~LastFmEngine();
     
     QStringList sources() const;

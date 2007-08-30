@@ -35,7 +35,7 @@ class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObs
 {
     Q_OBJECT
 public:
-    LyricsEngine( QObject* parent, const QStringList& args );
+    LyricsEngine( QObject* parent, const QList<QVariant>& args );
     
     QStringList sources() const;
     

@@ -47,7 +47,7 @@ class CurrentEngine : public Context::DataEngine,
     
 public:
 
-    CurrentEngine( QObject* parent, const QStringList& args );
+    CurrentEngine( QObject* parent, const QList<QVariant>& args );
     
     QStringList sources() const;
     void message( const Context::ContextState& state );

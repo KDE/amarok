@@ -36,7 +36,7 @@ class WikipediaEngine : public DataEngine, public ContextObserver
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
         
 public:
-    WikipediaEngine( QObject* parent, const QStringList& args );
+    WikipediaEngine( QObject* parent, const QList<QVariant>& args );
     
     QStringList sources() const;
     

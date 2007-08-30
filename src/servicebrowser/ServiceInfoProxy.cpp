@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "ServiceInfoProxy.h"
+#include "debug.h"
 
 ServiceInfoProxy * ServiceInfoProxy::m_instance = 0;
 
@@ -41,6 +42,7 @@ ServiceInfoProxy::~ServiceInfoProxy()
 
 void ServiceInfoProxy::subscribe(ServiceInfoObserver * observer)
 {
+    DEBUG_BLOCK;
     if( observer )
         m_observers.insert( observer );
 }
@@ -58,6 +60,7 @@ void ServiceInfoProxy::notifyObservers(QVariantMap infoMap) const
 
 void ServiceInfoProxy::setInfo(QVariantMap infoMap)
 {
+    DEBUG_BLOCK;
     m_storedInfo = infoMap;
     notifyObservers( m_storedInfo );
 }

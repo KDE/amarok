@@ -24,7 +24,7 @@
 
 using namespace Context;
 
-CurrentEngine::CurrentEngine( QObject* parent, const QStringList& args )
+CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_requested( true )

@@ -30,7 +30,7 @@
 
 using namespace Context;
 
-LastFmEngine::LastFmEngine( QObject* parent, const QStringList& args )
+LastFmEngine::LastFmEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_friendJob( 0 )
