@@ -57,7 +57,7 @@ CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glShadeModel(GL_SMOOTH);
     //TODO:PORT
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
+//     qglClearColor( Qt::black );
     glEnable( GL_MULTISAMPLE ); //enable anti aliasing
     glEnable( GL_DEPTH_TEST );
     glDepthMask( true );
@@ -144,7 +144,7 @@ CoverBlingApplet::paintGLInterface( QPainter *, const QStyleOptionGraphicsItem *
 
     //TODO:no mapFromGlobal()
 //     const QPoint mousePos = mapFromGlobal( QCursor::pos() );
-    const QPoint mousePos = QPoint( 300, 200 );
+    const QPoint mousePos = QPoint( 1, 1 );
     draw( objectAtPosition(mousePos) );
 }
 
