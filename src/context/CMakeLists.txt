@@ -1,14 +1,16 @@
 # NOTE we link libplasma here instead of in the CMakeLists in plasma/ because we need control over the installation of header files and library name
 # this requires periodic syncing of this file with plasma/CMakeLists.txt as it changes, but thats better than the alternative. (the only option really.)
 
+find_package(OpenGL)
+
 add_subdirectory( applets )
 add_subdirectory( engines )
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} 
-                    ${CMAKE_CURRENT_SOURCE_DIR}/.. 
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../amarokcore
-                    ${CMAKE_CURRENT_SOURCE_DIR}/widgets
-                    ${CMAKE_CURRENT_SOURCE_DIR}/plasma
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
+                    ..
+                    ../amarokcore
+                    widgets
+                    plasma
                     ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 
@@ -41,22 +43,38 @@ set(plasma_LIB_SRCS
     plasma/widgets/boxlayout.cpp
     plasma/widgets/checkbox.cpp
     plasma/widgets/hboxlayout.cpp
+    plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
+    plasma/widgets/label.cpp
+    plasma/widgets/layout.cpp
+    plasma/widgets/layoutanimator.cpp
+    plasma/widgets/layoutitem.cpp
     plasma/widgets/lineedit.cpp
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
     plasma/widgets/widget.cpp
-    plasma/widgets/layout.cpp
-    plasma/widgets/layoutanimator.cpp
-    plasma/widgets/layoutitem.cpp
     plasma/widgets/vboxlayout.cpp
-    plasma/widgets/flash.cpp
     plasma/shadowitem.cpp
+    plasma/widgets/signalplotter.cpp
 )
+
+
+if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
+message(STATUS "Found opengl with plasma! ~Yay")
+set(plasma_LIB_SRCS
+    ${plasma_LIB_SRCS}
+    plasma/glapplet.cpp)
+endif(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 
 kde4_add_library(amarokplasma SHARED ${plasma_LIB_SRCS})
 
-target_link_libraries(amarokplasma ${KDE4_KIO_LIBS} ${QT_QTUITOOLS_LIBRARY})
+target_link_libraries(amarokplasma
+${KDE4_KIO_LIBS}
+${QT_QTUITOOLS_LIBRARY}
+${QT_QTOPENGL_LIBRARY}
+${OPENGL_gl_LIBRARY}
+${OPENGL_glu_LIBRARY}
+)
 
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS amarokplasma DESTINATION ${LIB_INSTALL_DIR})

@@ -241,8 +241,8 @@ void MainWindow::init()
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->addWidget( Context::ContextView::self() );
-        if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
-            layout->addWidget( new CoverBling( this ) );
+//         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
+//             layout->addWidget( new CoverBling( this ) );
         ControlBox* m_controlBox = new ControlBox( contextWidget );
         m_controlBox->show();
         // TODO fix the location of the controlbox so its not a few pixels out of the

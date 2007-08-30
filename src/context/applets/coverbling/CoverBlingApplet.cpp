@@ -1,43 +1,36 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Mark Kretschmann <kretschmann@kde.org>          *
+ * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ **************************************************************************/
+
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "CoverBling"
+#include "CoverBlingApplet.h"
 
 #include "debug.h"
-#include "CoverBling.h"
-
 #include <math.h>
 
-#include <QtOpenGL>
 #include <KStandardDirs>
+
+#include <QTimer>
 
 #define TEXTURE_SIZE QSize( 256, 256 )
 
-
-CoverBling::CoverBling( QWidget* parent )
-        : QGLWidget( QGLFormat(QGL::DepthBuffer|QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
-        , m_xOffset( 0.0 )
-        , m_zOffset( M_PI / 2 )
+CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
+    : Plasma::GLApplet( parent, args )
+    , m_xOffset( 0.0 )
+    , m_zOffset( M_PI / 2 )
 {
     DEBUG_BLOCK
 
-    setFixedHeight( 200 );
+    setHasConfigurationInterface( false );
+    setDrawStandardBackground( true );
 
     m_coverPaths << "amarok/images/album_cover_1.jpg";
     m_coverPaths << "amarok/images/album_cover_2.jpg";
@@ -48,18 +41,13 @@ CoverBling::CoverBling( QWidget* parent )
     m_coverPaths << "amarok/images/album_cover_7.jpg";
     m_coverPaths << "amarok/images/album_cover_8.jpg";
     m_coverPaths << "amarok/images/album_cover_9.jpg";
-   
-    QTimer* timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
-    timer->start( 20 ); //50fps
-}
 
-void
-CoverBling::initializeGL() //reimplemented
-{
-    DEBUG_BLOCK
+//     QTimer* timer = new QTimer( this );
+//     connect( timer, SIGNAL( timeout() ), this, SLOT( update( const QRectF) ) );
+//     timer->start( 20 ); //50fps
 
-    //generate all textures
+    //FIXME: this probably shouldn't be here but not sure where else to put it..
+       //generate all textures
     foreach( QString path, m_coverPaths ) {
         QImage image( KStandardDirs().findResource( "data", path ) );
         image = image.scaled( TEXTURE_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation );
@@ -67,91 +55,101 @@ CoverBling::initializeGL() //reimplemented
     }
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glShadeModel(GL_SMOOTH); 
-    qglClearColor( Qt::black );
+    glShadeModel(GL_SMOOTH);
+    //TODO:PORT
+    glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glEnable( GL_MULTISAMPLE ); //enable anti aliasing
     glEnable( GL_DEPTH_TEST );
     glDepthMask( true );
- 
+
     //Display list for drawing a textured rectangle
     m_texturedRectList = glGenLists( 1 );
     glNewList( m_texturedRectList, GL_COMPILE );
-        glBegin (GL_QUADS);
-            glTexCoord2f (0.0, 0.0);
-            glColor3f( 1.0, 1.0, 1.0 );
-            glVertex3f (-1.0, -1.0, -1.0);
-            glTexCoord2f (1.0, 0.0);
-            glColor3f( 0.1, 0.1, 0.1 );
-            glVertex3f (1.0, -1.0, -1.0);
-            glTexCoord2f (1.0, 1.0);
-            glColor3f( 0.1, 0.1, 0.1 );
-            glVertex3f (1.0, 1.0, -1.0);
-            glTexCoord2f (0.0, 1.0);
-            glColor3f( 1.0, 1.0, 1.0 );
-            glVertex3f (-1.0, 1.0, -1.0);
-        glEnd ();
+    glBegin (GL_QUADS);
+    glTexCoord2f (0.0, 0.0);
+    glColor3f( 1.0, 1.0, 1.0 );
+    glVertex3f (-1.0, -1.0, -1.0);
+    glTexCoord2f (1.0, 0.0);
+    glColor3f( 0.1, 0.1, 0.1 );
+    glVertex3f (1.0, -1.0, -1.0);
+    glTexCoord2f (1.0, 1.0);
+    glColor3f( 0.1, 0.1, 0.1 );
+    glVertex3f (1.0, 1.0, -1.0);
+    glTexCoord2f (0.0, 1.0);
+    glColor3f( 1.0, 1.0, 1.0 );
+    glVertex3f (-1.0, 1.0, -1.0);
+    glEnd ();
         //glDisable( GL_DEPTH_TEST );
     glEndList();
 
     //Display list for drawing reflection of the textured rectangle
     m_texturedRectReflectedList = glGenLists( 1 );
     glNewList( m_texturedRectReflectedList, GL_COMPILE );
-        glTranslatef( 0.0, -2.0, 0.0 );
-        glScalef( 1.0, -1.0, 1.0 );
+    glTranslatef( 0.0, -2.0, 0.0 );
+    glScalef( 1.0, -1.0, 1.0 );
 
-        glEnable( GL_BLEND );
+    glEnable( GL_BLEND );
         //glBlendFunc( GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        glBegin (GL_QUADS);
-            glTexCoord2f (0.0, 0.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.3 );
-            glVertex3f (-1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.3 - 0.15 );
-            glTexCoord2f (1.0, 0.0);
-            glVertex3f (1.0, -1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.02 - 0.15 );
-            glTexCoord2f (1.0, 1.0);
-            glVertex3f (1.0, 1.0, -1.0);
-            glColor4f( 1.0, 1.0, 1.0, 0.02 );
-            glTexCoord2f (0.0, 1.0);
-            glVertex3f (-1.0, 1.0, -1.0);
-        glEnd ();
+    glBegin (GL_QUADS);
+    glTexCoord2f (0.0, 0.0);
+    glColor4f( 1.0, 1.0, 1.0, 0.3 );
+    glVertex3f (-1.0, -1.0, -1.0);
+    glColor4f( 1.0, 1.0, 1.0, 0.3 - 0.15 );
+    glTexCoord2f (1.0, 0.0);
+    glVertex3f (1.0, -1.0, -1.0);
+    glColor4f( 1.0, 1.0, 1.0, 0.02 - 0.15 );
+    glTexCoord2f (1.0, 1.0);
+    glVertex3f (1.0, 1.0, -1.0);
+    glColor4f( 1.0, 1.0, 1.0, 0.02 );
+    glTexCoord2f (0.0, 1.0);
+    glVertex3f (-1.0, 1.0, -1.0);
+    glEnd ();
 
-        glDisable( GL_BLEND );
+    glDisable( GL_BLEND );
     glEndList();
 }
 
+CoverBlingApplet::~CoverBlingApplet()
+{
+    DEBUG_BLOCK
+}
+
 void
-CoverBling::resizeGL( int width, int height ) //reimplemented
+CoverBlingApplet::resize( qreal width, qreal height )
 {
     DEBUG_BLOCK
 
     glViewport( 0, 0, (GLint)width, (GLint)height );
-    glMatrixMode(GL_PROJECTION);
+    glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     //glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.3f, 4.5f );
     setPerspective();
-    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode( GL_MODELVIEW );
 }
 
 void
-CoverBling::setPerspective()
+CoverBlingApplet::setPerspective()
 {
-    gluPerspective( 30, (double)width() / height(), 1.0, 20.0 );
+    gluPerspective( 30, (double)boundingRect().width() / boundingRect().height(), 1.0, 20.0 );
 }
 
 void
-CoverBling::paintGL() //reimplemented
+CoverBlingApplet::paintGLInterface( QPainter *, const QStyleOptionGraphicsItem * )
 {
+    DEBUG_BLOCK
+
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    const QPoint mousePos = mapFromGlobal( QCursor::pos() );
-    draw( objectAtPosition( mousePos ) );
+    //TODO:no mapFromGlobal()
+//     const QPoint mousePos = mapFromGlobal( QCursor::pos() );
+    const QPoint mousePos = QPoint( 300, 200 );
+    draw( objectAtPosition(mousePos) );
 }
 
 void
-CoverBling::draw( GLuint selected )
+CoverBlingApplet::draw( GLuint selected )
 {
     GLuint objectName = 1;
 
@@ -182,25 +180,25 @@ CoverBling::draw( GLuint selected )
     foreach( GLuint id, m_textureIds ) {
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
-            const float xsin = sin( xoffset );
-            const float zsin = sin( zoffset );
-            xoffset += 1.0;
-            zoffset += 0.1;
-            glTranslatef( xoffset, yoffset, zoffset );
-            glRotatef( 8, 0.0, 1.0, 0.0 );
+        const float xsin = sin( xoffset );
+        const float zsin = sin( zoffset );
+        xoffset += 1.0;
+        zoffset += 0.1;
+        glTranslatef( xoffset, yoffset, zoffset );
+        glRotatef( 8, 0.0, 1.0, 0.0 );
 
             //draw the cover
-            if( objectName == selected )
-                glColor3f( 1.0, 0.0, 0.0 );
-            glLoadName( objectName++ );
-            glCallList( m_texturedRectList );
-            glColor4f( 1.0, 1.0, 1.0, 1.0 );
+        if( objectName == selected )
+            glColor3f( 1.0, 0.0, 0.0 );
+        glLoadName( objectName++ );
+        glCallList( m_texturedRectList );
+        glColor4f( 1.0, 1.0, 1.0, 1.0 );
 
             //draw reflection on the ground
-            glLoadName( 0 );
-            glPushMatrix();
-                glCallList( m_texturedRectReflectedList );
-            glPopMatrix();
+        glLoadName( 0 );
+        glPushMatrix();
+        glCallList( m_texturedRectReflectedList );
+        glPopMatrix();
         glPopMatrix();
         glColor4f( 1.0, 1.0, 1.0, 1.0 );
     }
@@ -209,7 +207,7 @@ CoverBling::draw( GLuint selected )
 }
 
 GLuint
-CoverBling::objectAtPosition( const QPoint& pos )
+CoverBlingApplet::objectAtPosition( const QPoint& pos )
 {
     // this is the same as in every OpenGL picking example
     const int MaxSize = 512; // see below for an explanation on the buffer content
@@ -226,11 +224,11 @@ CoverBling::objectAtPosition( const QPoint& pos )
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-        glLoadIdentity();
-        gluPickMatrix((GLdouble)pos.x(), (GLdouble)(viewport[3] - pos.y()), 5.0, 5.0, viewport);
-        setPerspective();
-        draw();
-        glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPickMatrix((GLdouble)pos.x(), (GLdouble)(viewport[3] - pos.y()), 5.0, 5.0, viewport);
+    setPerspective();
+    draw();
+    glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
     const int hits = glRenderMode( GL_RENDER );
@@ -240,17 +238,14 @@ CoverBling::objectAtPosition( const QPoint& pos )
     //determine object with the lowest Z value
     uint hitZValue = UINT_MAX;
     uint hit       = UINT_MAX;
-    for( int i = 0; i < hits; i++ ) { 
-        if( buffer[(i*4)+1] < hitZValue ) { 
+    for( int i = 0; i < hits; i++ ) {
+        if( buffer[(i*4)+1] < hitZValue ) {
             hit       = buffer[(i*4)+3];
             hitZValue = buffer[(i*4)+1];
         }
     }
-    
+
     // return the name of the clicked surface
     return hit;
 }
-
-
-#include "CoverBling.moc"
-
+#include "CoverBlingApplet.moc"
