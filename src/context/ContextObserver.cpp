@@ -55,6 +55,6 @@ void ContextSubject::attach( ContextObserver *obs )
 
 void ContextSubject::detach( ContextObserver *obs )
 {
-    m_observers.removeAll( obs );
+    m_observers.remove( obs );
 }
 
