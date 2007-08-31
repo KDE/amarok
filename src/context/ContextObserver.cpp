@@ -48,14 +48,13 @@ void ContextSubject::messageNotify( const Context::ContextState& message )
 
 void ContextSubject::attach( ContextObserver *obs )
 {
-    if( !obs || m_observers.indexOf( obs ) != -1 )
+    if( !obs  )
         return;
-    m_observers.append( obs );
+    m_observers.insert( obs );
 }
 
 void ContextSubject::detach( ContextObserver *obs )
 {
-    int index = m_observers.indexOf( obs );
-    if( index != -1 ) m_observers.removeAt( index );
+    m_observers.removeAll( obs );
 }
 

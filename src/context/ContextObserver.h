@@ -17,7 +17,7 @@
 #include "amarok_export.h"
 #include "Context.h"
 
-#include <QList>
+#include <QSet>
 
 
 class ContextSubject;
@@ -48,7 +48,7 @@ protected:
     void messageNotify( const Context::ContextState& message );
     
 private:
-    QList< ContextObserver* > m_observers;
+    QSet<ContextObserver*> m_observers;
 };
 
 #endif
