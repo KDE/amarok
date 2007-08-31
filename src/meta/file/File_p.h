@@ -189,7 +189,7 @@ public:
     QPointer<MetaFile::Track::Private> const d;
 };
 
-class FileComposer : public Meta::Compoer
+class FileComposer : public Meta::Composer
 {
 public:
     FileComposer( MetaFile::Track::Private *dptr )
