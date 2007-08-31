@@ -142,6 +142,9 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabel2 = new TimeLabel( this );
     m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
 
+    m_timeLabel->hide();
+    m_timeLabel2->hide();
+
     box->addSpacing( 3 );
     box->addWidget( m_timeLabel );
     box->addWidget( m_slider );
@@ -253,11 +256,15 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
             m_slider->setEnabled( false );
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
-            m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
-            m_timeLabel2->setEnabled( false );
+//             m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+//             m_timeLabel2->setEnabled( false );
+            m_timeLabel->hide();
+            m_timeLabel2->hide();
             break;
 
         case Engine::Playing:
+            m_timeLabel->show();
+            m_timeLabel2->show();
         case Engine::Paused:
             DEBUG_LINE_INFO
             m_timeLabel->setEnabled( true );
