@@ -94,9 +94,9 @@ DaapCollectionFactory::resolve( const QString &hostname )
     if( resolver.wait( 5000 ) )
     {
         KNetwork::KResolverResults results = resolver.results();
-        if( results.error() )
+/*        if( results.error() )
             debug() << "Error resolving "  << hostname << ": ("
-                    << resolver.errorString( results.error() ) << ")" << endl;
+                    << resolver.errorString( results.error() ) << ")" << endl;*/
         if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();

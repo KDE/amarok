@@ -53,14 +53,14 @@ void ColumnApplet::init() // SLOT
     // TODO wait until this is completely implemented in plasma
     foreach( VBoxLayout* column, m_layout )
     {
-        Plasma::LayoutAnimator* animator = new Plasma::LayoutAnimator();
-        QTimeLine* timeLine = new QTimeLine();
-        animator->setTimeLine( timeLine );
-        animator->setEffect( Plasma::LayoutAnimator::InsertedState, Plasma::LayoutAnimator::FadeInMoveEffect );
-        animator->setEffect( Plasma::LayoutAnimator::NormalState, Plasma::LayoutAnimator::MoveEffect );
-        animator->setEffect( Plasma::LayoutAnimator::RemovedState ,
-                             Plasma::LayoutAnimator::FadeOutMoveEffect );
-        column->setAnimator( animator );
+	
+        Plasma::LayoutAnimator* animator = new Plasma::LayoutAnimator;
+	QTimeLine* timeLine = new QTimeLine;
+	animator->setTimeLine(timeLine);
+        animator->setEffect( Plasma::LayoutAnimator::InsertedState , Plasma::LayoutAnimator::FadeInMoveEffect );
+        animator->setEffect( Plasma::LayoutAnimator::StandardState , Plasma::LayoutAnimator::MoveEffect );
+        animator->setEffect( Plasma::LayoutAnimator::RemovedState , Plasma::LayoutAnimator::FadeOutMoveEffect );
+	column->setAnimator(animator);    
     }
 }
 

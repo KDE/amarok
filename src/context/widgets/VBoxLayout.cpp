@@ -26,7 +26,7 @@ namespace Context
 {
 
 VBoxLayout::VBoxLayout(LayoutItem *parent)
-    : BoxLayout(parent),
+    : BoxLayout(Qt::Vertical, parent),
       d(0)
 {
 }
