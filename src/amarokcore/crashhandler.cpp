@@ -158,8 +158,8 @@ namespace Amarok
 
             const QByteArray gdb_batch =
                     "bt\n"
-                    "echo \\n\\n\n"
-                    "bt full\n"
+//                    "echo \\n\\n\n"
+//                    "bt full\n"
                     "echo \\n\\n\n"
                     "echo ==== (gdb) thread apply all bt ====\\n\n"
                     "thread apply all bt\n";
@@ -225,8 +225,8 @@ namespace Amarok
                 body += fileCommandOutput + "\n\n";
                 body += "==== (gdb) bt =====================\n";
                 body += bt + "\n\n";
-                body += "==== kBacktrace() ================\n";
-                body += kBacktrace();
+//                body += "==== kBacktrace() ================\n";
+//                body += kBacktrace();
 
                 //TODO startup notification
 //                 KToolInvocation::invokeMailer(
