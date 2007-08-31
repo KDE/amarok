@@ -18,7 +18,66 @@
 
 #include "MetaUtility.h"
 
+#include "meta.h"
+
 #include <QChar>
+
+QVariantMap
+Meta::Field::mapFromTrack( const Meta::Track *track )
+{
+    //note: track does not support bpm, first_played yet
+    QVariantMap map;
+    if( !track )
+        return map;
+
+    if( track->name().isEmpty() )
+        map.insert( Meta::Field::TITLE, QVariant( track->prettyName() ) );
+    else
+        map.insert( Meta::Field::TITLE, QVariant( track->name() ) );
+    if( !track->artist()->name().isEmpty() )
+    map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
+    if( !track->album()->name().isEmpty() )
+    map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
+    if( track->filesize() )
+        map.insert( Meta::Field::FILESIZE, QVariant( track->filesize() ) );
+    if( !track->genre()->name().isEmpty() )
+    map.insert( Meta::Field::GENRE, QVariant( track->genre()->name() ) );
+    if( !track->composer()->name().isEmpty() )
+    map.insert( Meta::Field::COMPOSER, QVariant( track->composer()->name() ) );
+    if( !track->year()->name().isEmpty() )
+    map.insert( Meta::Field::YEAR, QVariant( track->year()->name() ) );
+    if( !track->comment().isEmpty() )
+        map.insert( Meta::Field::COMMENT, QVariant( track->comment() ) );
+    if( track->trackNumber() )
+        map.insert( Meta::Field::TRACKNUMBER, QVariant( track->trackNumber() ) );
+    if( track->discNumber() )
+        map.insert( Meta::Field::DISCNUMBER, QVariant( track->discNumber() ) );
+    if( track->bitrate() )
+        map.insert( Meta::Field::BITRATE, QVariant( track->bitrate() ) );
+    if( track->length() )
+        map.insert( Meta::Field::LENGTH, QVariant( track->length() ) );
+    if( track->sampleRate() )
+        map.insert( Meta::Field::SAMPLERATE, QVariant( track->sampleRate() ) );
+    map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );
+    map.insert( Meta::Field::RATING, QVariant( track->rating() ) );
+    map.insert( Meta::Field::SCORE, QVariant( track->score() ) );
+    map.insert( Meta::Field::PLAYCOUNT, QVariant( track->playCount() ) );
+    map.insert( Meta::Field::LAST_PLAYED, QVariant( track->lastPlayed() ) );
+    return map;
+}
+
+
+void
+Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
+{
+    if( !track )
+        return;
+
+    QString title = metadata.contains( Meta::Field::TITLE ) ? 
+                            metadata.value( Meta::Field::TITLE ).toString() : QString();
+    track->setTitle( title );
+}
+
 
 QString
 Meta::msToPrettyTime( int ms )
