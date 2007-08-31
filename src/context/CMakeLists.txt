@@ -60,7 +60,6 @@ set(plasma_LIB_SRCS
 
 
 if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
-message(STATUS "Found opengl with plasma! ~Yay")
 set(plasma_LIB_SRCS
     ${plasma_LIB_SRCS}
     plasma/glapplet.cpp)
