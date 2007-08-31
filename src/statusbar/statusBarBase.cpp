@@ -25,6 +25,7 @@
 #include "squeezedtextlabel.h"
 #include "statusBarBase.h"
 #include "threadmanager.h"
+#include "enginecontroller.h"
 
 #include <kio/job.h>
 #include <kiconloader.h>
@@ -343,9 +344,13 @@ StatusBar::longMessageThreadSafe( const QString &text, int /*type*/ )
 void
 StatusBar::customEvent( QCustomEvent *e )
 {
-    QString *s = static_cast<QString*>( e->data() );
-    longMessage( *s );
-    delete s;
+    if(e->type() == 1000 ){ 
+      QString *s = static_cast<QString*>( e->data() );
+      longMessage( *s );
+      delete s;
+    }else if(e->type() == 2000 ){
+      EngineController::instance()->unplayableNotification();
+    }
 }
 
 

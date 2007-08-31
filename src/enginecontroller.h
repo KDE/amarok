@@ -52,6 +52,7 @@ public:
     uint                     trackPosition() const;
 
     EngineBase* loadEngine();
+    void unplayableNotification();
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;

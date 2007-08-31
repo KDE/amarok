@@ -2,8 +2,12 @@ Amarok ChangeLog
 ================
 (C) 2002-2007 the Amarok authors.
 
+
 VERSION 1.4.8
   BUGFIXES:
+    * Fixed possible GUI freeze when Amarok was showing the dialog for
+      installing mp3 support. Patch by Sascha Sommer <ssommer@suse.de>.
+      (BR 147126)
     * Amarok could needlessely reinitialize connections to MySQL databases
       after a configuration change.  Combined with a bug in MySQL libraries,
       this could lead to a crash.

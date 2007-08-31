@@ -244,13 +244,10 @@ bool EngineController::canDecode( const KURL &url ) //static
     if( engine() != EngineController::instance()->m_voidEngine )
     {
         //we special case this as otherwise users hate us
-        if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
-            Amarok::StatusBar::instance()->longMessageThreadSafe(
-                    i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
-                        "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-                        "the installation of the multimedia-framework that the current engine uses. "
-                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
-                    .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
+        if ( !valid && ext.lower() == "mp3"){
+            QCustomEvent * e = new QCustomEvent( 2000 );
+            QApplication::postEvent( Amarok::StatusBar::instance(), e );
+	}
 
         // Cache this result for the next lookup
         if ( !ext.isEmpty() )
@@ -258,6 +255,17 @@ bool EngineController::canDecode( const KURL &url ) //static
     }
 
     return valid;
+}
+
+void EngineController::unplayableNotification() {
+
+    if( !installDistroCodec(AmarokConfig::soundSystem()))
+        Amarok::StatusBar::instance()->longMessageThreadSafe(
+                  i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
+                        "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+                        "the installation of the multimedia-framework that the current engine uses. "
+                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
+                    .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
 }
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
