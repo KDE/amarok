@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "meta.h"
+#include "MetaUtility.h"
 
 #include <QFile>
 #include <QPointer>
@@ -39,6 +40,9 @@ Track::Track( const KUrl &url )
     d->metaInfo = KFileMetaInfo( url.path() );
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
+    d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QPointer<MetaFile::Track::Private>( d ) ) );
+    d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( QPointer<MetaFile::Track::Private>( d ) ) );
+    d->year = Meta::YearPtr( new MetaFile::FileYear( QPointer<MetaFile::Track::Private>( d ) ) );
 }
 
 Track::~Track()
@@ -49,7 +53,7 @@ Track::~Track()
 QString
 Track::name() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( TITLE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::TITLE );
     if( item.isValid() )
         return item.value().toString();
     else
@@ -122,28 +126,25 @@ Track::artist() const
 Meta::GenrePtr
 Track::genre() const
 {
-    //TODO
-    return Meta::GenrePtr();
+    return d->genre;
 }
 
 Meta::ComposerPtr
 Track::composer() const
 {
-    //TODO
-    return Meta::ComposerPtr();
+    return d->composer;
 }
 
 Meta::YearPtr
 Track::year() const
 {
-    //TODO
-    return Meta::YearPtr();
+    return d->year;
 }
 
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    d->metaInfo.item( ALBUM ).setValue( newAlbum );
+    d->metaInfo.item( Meta::Field::ALBUM ).setValue( newAlbum );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -154,7 +155,7 @@ Track::setAlbum( const QString &newAlbum )
 void
 Track::setArtist( const QString& newArtist )
 {
-    d->metaInfo.item( ARTIST ).setValue( newArtist );
+    d->metaInfo.item( Meta::Field::ARTIST ).setValue( newArtist );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -165,25 +166,40 @@ Track::setArtist( const QString& newArtist )
 void
 Track::setGenre( const QString& newGenre )
 {
-    Q_UNUSED( newGenre )
+    d->metaInfo.item( Meta::Field::GENRE ).setValue( newGenre );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 void
 Track::setComposer( const QString& newComposer )
 {
-    Q_UNUSED( newComposer )
+    d->metaInfo.item( Meta::Field::COMPOSER ).setValue( newComposer );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 void
 Track::setYear( const QString& newYear )
 {
-    Q_UNUSED( newYear )
+    d->metaInfo.item( Meta::Field::YEAR ).setValue( newYear );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 void
 Track::setTitle( const QString &newTitle )
 {
-    d->metaInfo.item( TITLE ).setValue( newTitle );
+    d->metaInfo.item( Meta::Field::TITLE ).setValue( newTitle );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -194,13 +210,22 @@ Track::setTitle( const QString &newTitle )
 QString
 Track::comment() const
 {
-    return QString();
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::COMMENT );
+    if( item.isValid() )
+        return item.value().toString();
+    else
+        return QString();
 }
 
 void
 Track::setComment( const QString& newComment )
 {
-    Q_UNUSED( newComment )
+    d->metaInfo.item( Meta::Field::COMMENT ).setValue( newComment );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 double
@@ -230,38 +255,59 @@ Track::setRating( int newRating )
 int
 Track::trackNumber() const
 {
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::TRACKNUMBER );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    Q_UNUSED( newTrackNumber )
+    d->metaInfo.item( Meta::Field::TRACKNUMBER ).setValue( newTrackNumber );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 int
 Track::discNumber() const
 {
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::DISCNUMBER );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    Q_UNUSED( newDiscNumber )
+    d->metaInfo.item( Meta::Field::DISCNUMBER ).setValue( newDiscNumber );
+    if( !d->batchUpdate )
+    {
+        d->metaInfo.applyChanges();
+        notifyObservers();
+    }
 }
 
 int
 Track::length() const
 {
-    //TODO
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::LENGTH );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 int
 Track::filesize() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( FILESIZE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::FILESIZE );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -271,13 +317,21 @@ Track::filesize() const
 int
 Track::sampleRate() const
 {
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::SAMPLERATE );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 int
 Track::bitrate() const
 {
-    return 0;
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::BITRATE );
+    if( item.isValid() )
+        return item.value().toInt();
+    else
+        return 0;
 }
 
 uint
@@ -301,19 +355,25 @@ Track::type() const
 void
 Track::beginMetaDataUpdate()
 {
-    //not editable
+    d->batchUpdate = true;
 }
 
 void
 Track::endMetaDataUpdate()
 {
-    //not editable
+    d->metaInfo.applyChanges();
+    d->batchUpdate = false;
+    notifyObservers();
+
+
 }
 
 void
 Track::abortMetaDataUpdate()
 {
-    //not editable
+    //KFileMetaInfo does not have a method to reset the items
+    d->metaInfo = KFileMetaInfo( d->url.path() );
+    d->batchUpdate = false;
 }
 
 void

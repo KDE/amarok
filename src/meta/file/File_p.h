@@ -20,6 +20,7 @@
 #define AMAROK_META_FILE_P_H
 
 #include "meta.h"
+#include "MetaUtility.h"
 
 #include <QObject>
 #include <QPointer>
@@ -31,17 +32,6 @@
 
 namespace MetaFile
 {
-
-    static const QString ARTIST = "xesam:author";
-    static const QString ALBUM = "xesam:album";
-    static const QString TITLE = "xesam:title";
-    static const QString FILESIZE = "xesam:size";
-    static const QString GENRE = "xesam:genre";
-    static const QString COMPOSER = "xesam:composer";
-    static const QString YEAR = "xesam:contentCreated";
-    static const QString COMMENT = "xesam:comment";
-    static const QString TRACKNUMBER = "xesam:trackNumber";
-    static const QString DISCNUMBER = "xesam:cdNumber";
 
 //d-pointer implementation
 
@@ -64,6 +54,9 @@ public:
     bool batchUpdate;
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;
+    Meta::GenrePtr genre;
+    Meta::ComposerPtr composer;
+    Meta::YearPtr year;
 
 private:
     Track *track;
@@ -88,7 +81,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( MetaFile::ARTIST );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::ARTIST );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -138,7 +131,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( MetaFile::ALBUM );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::ALBUM );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -178,7 +171,77 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( MetaFile::GENRE );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::GENRE );
+            if( item.isValid() )
+                return item.value().toString();
+            else
+                return QString();
+        }
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    QPointer<MetaFile::Track::Private> const d;
+};
+
+class FileComposer : public Meta::Compoer
+{
+public:
+    FileComposer( MetaFile::Track::Private *dptr )
+        : Meta::Composer()
+        , d( dptr )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( d )
+        {
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::COMPOSER );
+            if( item.isValid() )
+                return item.value().toString();
+            else
+                return QString();
+        }
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    QPointer<MetaFile::Track::Private> const d;
+};
+
+class FileYear : public Meta::Year
+{
+public:
+    FileYear( MetaFile::Track::Private *dptr )
+        : Meta::Year()
+        , d( dptr )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( d )
+        {
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::YEAR );
             if( item.isValid() )
                 return item.value().toString();
             else
