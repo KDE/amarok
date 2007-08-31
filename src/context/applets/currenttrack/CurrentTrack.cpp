@@ -16,6 +16,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "context/Svg.h"
+#include "meta/MetaUtility.h"
 
 #include <QPainter>
 #include <QBrush>
@@ -23,6 +24,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QLabel>
+#include <QMap>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
@@ -112,17 +114,18 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
 
     if( data.size() == 0 ) return;
 
-    QVariantList currentInfo = data[ "current" ].toList();
+    QVariantMap currentInfo = data[ "current" ].toMap();
     kDebug() << "got data from engine: " << currentInfo;
-    m_title->setText( currentInfo[ 1 ].toString() );
-    m_artist->setText( currentInfo[ 0 ].toString() );
-    m_album->setText( currentInfo[ 2 ].toString() );
+    m_title->setText( currentInfo[ Meta::Field::TITLE ].toString() );
+    m_artist->setText( currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString() );
+    m_album->setText( currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString() );
 //     m_rating = currentInfo[ 3 ].toInt();
     // TODO i can't add ratings... so hardcoding to test
     m_rating = 7;
-    m_score->setText( currentInfo[ 4 ].toString() );
-    m_trackLength = currentInfo[ 5 ].toInt();
-//     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );
+    //m_rating = currentInfo[ Meta::Field::RATING ].toInt();
+    m_score->setText( currentInfo[ Meta::Field::SCORE ].toString() );
+    m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
+//     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toInt() ) );
 
     // scale pixmap on demand
     QPixmap cover = m_albumCover->pixmap();
@@ -130,7 +133,7 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     m_albumCover->setPixmap( cover );
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
 
-    m_numPlayed->setText( currentInfo[ 7 ].toString() );
+    m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
     m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
 
 }

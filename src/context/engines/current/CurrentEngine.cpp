@@ -19,6 +19,7 @@
 #include "ContextView.h"
 #include "enginecontroller.h"
 #include "meta/meta.h"
+#include "meta/MetaUtility.h"
 
 #include <QVariant>
 
@@ -68,17 +69,8 @@ void CurrentEngine::update()
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
     uint length = EngineController::instance()->trackLength();
     
-    QVariantList trackInfo;
-    
-    trackInfo << track->artist()->name();
-    trackInfo << track->name();
-    trackInfo << track->album()->name();
-    trackInfo << track->rating();
-    trackInfo << track->score();
-    trackInfo << length;
-    trackInfo << track->lastPlayed();
-    trackInfo << track->playCount();
-    
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( track.data() );
+
     int width = coverWidth();
     track->album()->subscribe( this );
     clearData( "current" );
