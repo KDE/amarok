@@ -42,7 +42,6 @@ set(plasma_LIB_SRCS
     plasma/karambamanager.cpp
     plasma/widgets/boxlayout.cpp
     plasma/widgets/checkbox.cpp
-    plasma/widgets/hboxlayout.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
     plasma/widgets/label.cpp
@@ -53,7 +52,6 @@ set(plasma_LIB_SRCS
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
     plasma/widgets/widget.cpp
-    plasma/widgets/vboxlayout.cpp
     plasma/shadowitem.cpp
     plasma/widgets/signalplotter.cpp
 )
