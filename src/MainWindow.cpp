@@ -137,6 +137,7 @@ MainWindow::~MainWindow()
  */
 void MainWindow::init()
 {
+    layout()->setContentsMargins( 0, 0, 0, 0 );
     DEBUG_BLOCK
 
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
@@ -145,7 +146,7 @@ void MainWindow::init()
     //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
     playlistwindow->setSpacing( 0 );
-    playlistwindow->setMargin( 0 );
+    playlistwindow->layout()->setContentsMargins( 0, 0, 0, 0 );
     playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
     //make the playlist views resizable so the old one can be hidden!
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
@@ -179,7 +180,6 @@ void MainWindow::init()
     {
         m_controlBar = new KHBox( this );
         m_controlBar->setMaximumSize( 20000, 62 );
-        m_controlBar->setContentsMargins( 0, 0, 0, 0 );
         m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
         AnalyzerWidget *aw = new AnalyzerWidget( m_controlBar );
@@ -240,6 +240,7 @@ void MainWindow::init()
     new Context::ContextView( contextWidget );
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
+        layout->setContentsMargins( 0, 0, 0, 0 );
         layout->addWidget( Context::ContextView::self() );
          if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
              layout->addWidget( new CoverBling( this ) );
@@ -254,8 +255,7 @@ void MainWindow::init()
     }
     contextWidget->setMinimumSize( QSize(500,100) );
 
-//     m_browsers->setMaximumSize( QSize(300,7000) );
-//     m_browsers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    m_browsers->setMaximumSize( QSize(300,7000) );
     contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
 
@@ -267,7 +267,7 @@ void MainWindow::init()
     mainLayout->addWidget( m_controlBar );
 
     m_splitter = new QSplitter( Qt::Horizontal, centralWidget );
-    m_splitter->setContentsMargins( 0, 0, 0, 0 );
+    m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
     m_splitter->addWidget( contextWidget );
     m_splitter->addWidget( playlistwindow );

@@ -51,6 +51,7 @@ class SideBar: public KHBox
             m_frame->hide();
             m_widgets->setParent( m_frame );
             setContentsWidget( contentsWidget );
+            layout()->setContentsMargins( 0, 0, 0, 0 );
         }
 
         void setContentsWidget( QWidget *w )

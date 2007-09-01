@@ -20,6 +20,7 @@ CollectionWidget::CollectionWidget( const char* name )
     QVBoxLayout* layout = new QVBoxLayout;
     m_treeView = new CollectionTreeView( this );
     //layout->addWidget( new KLineEdit( this ) );
+    layout->setContentsMargins(0,0,0,0);
     layout->addWidget( new SearchWidget( this, m_treeView ) );
     layout->addWidget( m_treeView );
     setLayout( layout );
