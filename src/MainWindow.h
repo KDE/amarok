@@ -96,7 +96,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void toolsMenuAboutToShow();
         void slotToggleFocus();
         void slotToggleToolbar();
-        void slotEditFilter();
+//         void slotEditFilter();
         void slotSetFilter( const QString &filter );
 
     protected:

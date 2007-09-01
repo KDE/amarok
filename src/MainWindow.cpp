@@ -143,10 +143,7 @@ void MainWindow::init()
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-    //<Dynamic Mode Status Bar />
     KVBox *playlistwindow = new KVBox;
-    playlistwindow->setSpacing( 0 );
-    playlistwindow->layout()->setContentsMargins( 0, 0, 0, 0 );
     playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
     //make the playlist views resizable so the old one can be hidden!
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
@@ -155,8 +152,6 @@ void MainWindow::init()
     //This is our clear/undo/redo/save buttons
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );
-    m_searchWidget = new SearchWidget( playlistwindow );
-    m_searchWidget->setup( this );
 
     playlistwindow->setMinimumSize( QSize(250,100) );
 
@@ -169,7 +164,7 @@ void MainWindow::init()
         plBar->addAction( actionCollection()->action( "playlist_clear") );
         plBar->addAction( actionCollection()->action( "playlist_save") );
         plBar->addSeparator();
-            plBar->addAction( actionCollection()->action( "playlist_undo") );
+        plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
         plBar->addSeparator();
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
@@ -400,14 +395,14 @@ void MainWindow::slotShrinkBrowsers( int index ) const
     }
 }
 
-void MainWindow::slotEditFilter() //SLOT
-{
-    EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
-    connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
-    if( fd->exec() )
-        m_searchWidget->lineEdit()->setText( fd->filter() );
-    delete fd;
-}
+// void MainWindow::slotEditFilter() //SLOT
+// {
+//     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
+//     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
+//     if( fd->exec() )
+//         m_searchWidget->lineEdit()->setText( fd->filter() );
+//     delete fd;
+// }
 
 void MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
@@ -566,74 +561,74 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
         }
 
 
-        if( o == m_searchWidget->lineEdit() ) //the search lineedit
-        {
-            Q3ListViewItem *item;
-            switch( e->key() )
-            {
-            case Qt::Key_Up:
-            case Qt::Key_Down:
-            case Qt::Key_PageDown:
-            case Qt::Key_PageUp:
-                pl->setFocus();
-                QApplication::sendEvent( pl, e );
-                return true;
-
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-                item = *It( pl, It::Visible );
-                //m_lineEdit->clear();
-                pl->m_filtertimer->stop(); //HACK HACK HACK
-
-                if( e->modifiers() & Qt::ControlModifier )
-                {
-                    QList<PlaylistItem*> in, out;
-                    if( e->modifiers() & Qt::ShiftModifier )
-                        for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
-                        {
-                            pl->queue( x, true );
-                            ( pl->m_nextTracks.contains( x ) ? in : out ).append( x );
-                        }
-                    else
-                    {
-                        It it( pl, It::Visible );
-                        pl->activate( *it );
-                        ++it;
-                        for( int i = 0; PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++i, ++it )
-                        {
-                            in.append( x );
-                            pl->m_nextTracks.insert( i, x );
-                        }
-                    }
-                    if( !in.isEmpty() || !out.isEmpty() )
-                        emit pl->queueChanged( in, out );
-                    pl->setFilter( "" );
-                    pl->ensureItemCentered( ( e->modifiers() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
-                }
-                else
-                {
-                    pl->setFilter( "" );
-                    if( ( e->modifiers() & Qt::ShiftModifier ) && item )
-                    {
-                        pl->queue( item );
-                        pl->ensureItemCentered( item );
-                    }
-                    else
-                    {
-                        pl->activate( item );
-                        pl->showCurrentTrack();
-                    }
-                }
-                return true;
-
-            case Qt::Key_Escape:
-                m_searchWidget->lineEdit()->clear();
-                return true;
-
-            default:
-                return false;
-            }
-        }
+//         if( o == m_searchWidget->lineEdit() ) //the search lineedit
+//         {
+//             Q3ListViewItem *item;
+//             switch( e->key() )
+//             {
+//             case Qt::Key_Up:
+//             case Qt::Key_Down:
+//             case Qt::Key_PageDown:
+//             case Qt::Key_PageUp:
+//                 pl->setFocus();
+//                 QApplication::sendEvent( pl, e );
+//                 return true;
+// 
+//             case Qt::Key_Return:
+//             case Qt::Key_Enter:
+//                 item = *It( pl, It::Visible );
+//                 //m_lineEdit->clear();
+//                 pl->m_filtertimer->stop(); //HACK HACK HACK
+// 
+//                 if( e->modifiers() & Qt::ControlModifier )
+//                 {
+//                     QList<PlaylistItem*> in, out;
+//                     if( e->modifiers() & Qt::ShiftModifier )
+//                         for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
+//                         {
+//                             pl->queue( x, true );
+//                             ( pl->m_nextTracks.contains( x ) ? in : out ).append( x );
+//                         }
+//                     else
+//                     {
+//                         It it( pl, It::Visible );
+//                         pl->activate( *it );
+//                         ++it;
+//                         for( int i = 0; PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++i, ++it )
+//                         {
+//                             in.append( x );
+//                             pl->m_nextTracks.insert( i, x );
+//                         }
+//                     }
+//                     if( !in.isEmpty() || !out.isEmpty() )
+//                         emit pl->queueChanged( in, out );
+//                     pl->setFilter( "" );
+//                     pl->ensureItemCentered( ( e->modifiers() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
+//                 }
+//                 else
+//                 {
+//                     pl->setFilter( "" );
+//                     if( ( e->modifiers() & Qt::ShiftModifier ) && item )
+//                     {
+//                         pl->queue( item );
+//                         pl->ensureItemCentered( item );
+//                     }
+//                     else
+//                     {
+//                         pl->activate( item );
+//                         pl->showCurrentTrack();
+//                     }
+//                 }
+//                 return true;
+// 
+//             case Qt::Key_Escape:
+//                 m_searchWidget->lineEdit()->clear();
+//                 return true;
+// 
+//             default:
+//                 return false;
+//             }
+//         }
 
         //following are for Playlist::instance() only
         //we don't handle these in the playlist because often we manipulate the lineEdit too
@@ -666,12 +661,12 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
                 pl->removeSelectedItems();
                 return true;
             }
-            if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->modifiers() || e->modifiers() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
-            {
-                m_searchWidget->lineEdit();
-                QApplication::sendEvent( m_searchWidget->lineEdit(), e );
-                return true;
-            }
+//             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->modifiers() || e->modifiers() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
+//             {
+//                 m_searchWidget->lineEdit();
+//                 QApplication::sendEvent( m_searchWidget->lineEdit(), e );
+//                 return true;
+//             }
         }
         #undef e
         break;
@@ -948,7 +943,7 @@ void MainWindow::showStatistics() //SLOT
 
 void MainWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchWidget->lineEdit()->hasFocus() ) )
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() /*|| m_searchWidget->lineEdit()->hasFocus()*/ ) )
         m_browsers->currentWidget()->setFocus();
 }
 
