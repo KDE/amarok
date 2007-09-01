@@ -26,7 +26,7 @@ namespace Context
 {
 
 VBoxLayout::VBoxLayout(LayoutItem *parent)
-    : BoxLayout(Qt::Vertical, parent),
+    : BoxLayout(TopToBottom, parent),
       d(0)
 {
 }
@@ -59,14 +59,15 @@ void VBoxLayout::setGeometry(QRectF geometry)
         return;
     }
 
-    kDebug() << this << " Geometry process " << geometry << " for " << children().count() << " children";
+    kDebug() << this << " Geometry process " << geometry << " for " << count() << " children";
 
     QList<QSizeF> sizes;
     QSizeF available = geometry.size() - QSizeF(2 * margin(), 2 * margin());
 
     // we assume all children are fixed
 
-    foreach (LayoutItem *l, children() ) {
+    for (int i = 0; i < count(); ++i) {
+        LayoutItem *l = itemAt(i);
         QSizeF hint = l->sizeHint();
         sizes.insert(indexOf(l), QSizeF(available.width(), hint.height()));
         available -= QSizeF(0.0, hint.height() + spacing());
@@ -96,8 +97,8 @@ QSizeF VBoxLayout::sizeHint() const
     qreal hintHeight = 0.0;
     qreal hintWidth = 0.0;
 
-    foreach(LayoutItem *l, children()) {
-
+    for (int i = 0; i < count(); ++i) {
+        LayoutItem *l = itemAt(i);
         QSizeF hint = l->sizeHint();
 
         hintWidth = qMax(hint.width(), hintWidth);
