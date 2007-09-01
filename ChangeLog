@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Don't enable "Configure Podcasts" at the top-level Podcasts folder if
+      there is nothing beneath it. (BR 146504)
     * Generic Media Device could copy some non-ASCII filenames to turn to
       gibberish.  Thanks to David Smith <davidsmith@acm.org> for the fix.
     * Fixed possible GUI freeze when Amarok was showing the dialog for

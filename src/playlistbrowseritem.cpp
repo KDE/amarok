@@ -438,6 +438,8 @@ PlaylistCategory::showContextMenu( const QPoint &position )
         menu.insertItem( SmallIconSet( Amarok::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure Podcasts..." ), CONFIG );
+        if( parentCat->childCount() == 0 )
+            menu.setItemEnabled( CONFIG, false );
         if( parentCat == this )
             menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n("Scan Interval..."), INTERVAL );
     }
