@@ -148,19 +148,11 @@ class SelectLabel : public QLabel
                 tip += QString("<br><br>") + i18n("%1: %2", a->text().remove( '&' ), a->currentText().remove( '&' ) );
             }
 
-            tip += "&nbsp;";
-
-//             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
-//             m_tooltip->setShowCloseButton( false );
-//             m_tooltip->setShowCounter( false );
-//             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
-//             m_tooltip->setText( tip );
             const QPixmap pix = KIcon( m_action->currentIcon() )
                                 .pixmap( style()->pixelMetric(QStyle::PM_SmallIconSize), m_action->isEnabled()
                                                           ? QIcon::Normal
                                                           : QIcon::Disabled );
             m_tooltip = new KPassivePopup( parentWidget()->parentWidget() );
-//             m_tooltip->setAnchor(  rect().topLeft() );
             KHBox *labBox = new KHBox( m_tooltip );
             QLabel *lab = new QLabel( labBox );
             lab->setPixmap( pix );
