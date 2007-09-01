@@ -21,6 +21,7 @@ Widget::Widget( QWidget* parent )
     : QWidget( parent )
 {
     QVBoxLayout* layout = new QVBoxLayout( this );
+    layout->setContentsMargins(0,0,0,0);
 
     PlaylistNS::HeaderWidget* header = new PlaylistNS::HeaderWidget( this );
 
