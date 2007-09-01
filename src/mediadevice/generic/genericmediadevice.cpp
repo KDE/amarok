@@ -55,7 +55,6 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include <unistd.h>            //usleep()
 
-#include <QByteArray>
 #include <QFile>
 #include <qstringx.h>
 #include <QStringList>
@@ -82,18 +81,6 @@ class GenericMediaItem : public MediaItem
             : MediaItem( parent, after )
         { }
 
-        void
-        setEncodedName( QString &name )
-        {
-            m_encodedName = QFile::encodeName( name );
-        }
-
-        void
-        setEncodedName( QByteArray &name ) { m_encodedName = name; }
-
-        QByteArray
-        encodedName() { return m_encodedName; }
-
         // List directories first, always
         int
         compare( Q3ListViewItem *i, int col, bool ascending ) const
@@ -117,7 +104,6 @@ class GenericMediaItem : public MediaItem
 
     private:
         bool     m_dir;
-        QByteArray m_encodedName;
 };
 
 class GenericMediaFile
@@ -203,14 +189,8 @@ class GenericMediaFile
         QString
         getFullName() { return m_fullName; }
 
-        QByteArray
-        getEncodedFullName() { return m_encodedFullName; }
-
         QString
         getBaseName() { return m_baseName; }
-
-        QString
-        getEncodedBaseName() { return m_encodedBaseName; }
 
         //always follow this function with setNamesFromBase()
         void
@@ -225,8 +205,6 @@ class GenericMediaFile
                 m_fullName = m_parent->getFullName() + '/' + m_baseName;
             else
                 m_fullName = m_baseName;
-            m_encodedFullName = QFile::encodeName( m_fullName );
-            m_encodedBaseName = QFile::encodeName( m_baseName );
             if( m_viewItem )
                 m_viewItem->setBundle( new MetaBundle( KUrl::fromPathOrUrl( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
@@ -265,9 +243,7 @@ class GenericMediaFile
 
     private:
         QString m_fullName;
-        QByteArray m_encodedFullName;
         QString m_baseName;
-        QByteArray m_encodedBaseName;
         GenericMediaFile *m_parent;
         MediaFileList *m_children;
         GenericMediaItem *m_viewItem;
@@ -459,8 +435,8 @@ GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QByteArray src = m_mim[item]->getEncodedFullName();
-    QByteArray dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
+    QString src = m_mim[item]->getFullName();
+    QString dst = m_mim[item]->getParent()->getFullName() + '/' + QFile::encodeName( item->text(0) );
 
     debug() << "Renaming: " << src << " to: " << dst;
 
@@ -498,7 +474,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString fullName = m_mim[parent]->getFullName();
     QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
-    QByteArray dirPath = QFile::encodeName( fullPath );
+    QString dirPath = QFile::encodeName( fullPath );
     debug() << "Creating directory: " << dirPath;
     const KUrl url( dirPath );
 
@@ -535,8 +511,8 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> i
     for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
     {
         GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
-        QByteArray src  = m_mim[currItem]->getEncodedFullName();
-        QByteArray dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
+        QString src  = m_mim[currItem]->getFullName();
+        QString dst = dropDir->getFullName() + '/' + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst;
 
         const KUrl srcurl(src);
@@ -677,8 +653,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     checkAndBuildLocation( path );
 
-    const QByteArray dest = QFile::encodeName( path );
-    const KUrl desturl = KUrl::fromPathOrUrl( dest );
+    const KUrl desturl = KUrl::fromPathOrUrl( path );
 
     //kapp->processEvents( 100 );
 
@@ -759,16 +734,15 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QByteArray encodedPath = m_mim[item]->getEncodedFullName();
-    debug() << "Deleting path: " << encodedPath;
+    QString path = m_mim[item]->getFullName();
+    debug() << "Deleting path: " << path;
 
-    if ( !KIO::NetAccess::del( KUrl::fromPathOrUrl(encodedPath), m_view ))
+    if ( !KIO::NetAccess::del( KUrl::fromPathOrUrl(path), m_view ))
     {
         debug() << "Could not delete!";
         return -1;
     }
 
-    QString path;
     if( m_mim[item] == m_initialFile )
     {
         m_mim[item]->deleteAll( false );
