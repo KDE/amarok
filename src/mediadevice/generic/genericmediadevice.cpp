@@ -80,18 +80,6 @@ class GenericMediaItem : public MediaItem
             : MediaItem( parent, after )
         { }
 
-        void
-        setEncodedName( QString &name )
-        {
-            m_encodedName = QFile::encodeName( name );
-        }
-
-        void
-        setEncodedName( QCString &name ) { m_encodedName = name; }
-
-        QCString
-        encodedName() { return m_encodedName; }
-
         // List directories first, always
         int
         compare( QListViewItem *i, int col, bool ascending ) const
@@ -115,7 +103,6 @@ class GenericMediaItem : public MediaItem
 
     private:
         bool     m_dir;
-        QCString m_encodedName;
 };
 
 class GenericMediaFile
@@ -201,14 +188,8 @@ class GenericMediaFile
         QString
         getFullName() { return m_fullName; }
 
-        QCString
-        getEncodedFullName() { return m_encodedFullName; }
-
         QString
         getBaseName() { return m_baseName; }
-
-        QString
-        getEncodedBaseName() { return m_encodedBaseName; }
 
         //always follow this function with setNamesFromBase()
         void
@@ -223,8 +204,6 @@ class GenericMediaFile
                 m_fullName = m_parent->getFullName() + '/' + m_baseName;
             else
                 m_fullName = m_baseName;
-            m_encodedFullName = QFile::encodeName( m_fullName );
-            m_encodedBaseName = QFile::encodeName( m_baseName );
             if( m_viewItem )
                 m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
@@ -263,9 +242,7 @@ class GenericMediaFile
 
     private:
         QString m_fullName;
-        QCString m_encodedFullName;
         QString m_baseName;
-        QCString m_encodedBaseName;
         GenericMediaFile *m_parent;
         MediaFileList *m_children;
         GenericMediaItem *m_viewItem;
@@ -457,8 +434,8 @@ GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QCString src = m_mim[item]->getEncodedFullName();
-    QCString dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
+    QString src = m_mim[item]->getFullName();
+    QString dst = m_mim[item]->getParent()->getFullName() + '/' + item->text(0);
 
     debug() << "Renaming: " << src << " to: " << dst << endl;
 
@@ -496,13 +473,12 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString fullName = m_mim[parent]->getFullName();
     QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
-    QCString dirPath = QFile::encodeName( fullPath );
-    debug() << "Creating directory: " << dirPath << endl;    
-    const KURL url( dirPath );
+    debug() << "Creating directory: " << fullPath << endl;    
+    const KURL url( fullPath );
 
     if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
     {
-        debug() << "Failed to create directory " << dirPath << endl;
+        debug() << "Failed to create directory " << fullPath << endl;
         return 0;
     }
 
@@ -533,8 +509,8 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
         GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
-        QCString src  = m_mim[currItem]->getEncodedFullName();
-        QCString dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
+        QString src  = m_mim[currItem]->getFullName();
+        QString dst = dropDir->getFullName() + '/' + currItem->text(0);
         debug() << "Moving: " << src << " to: " << dst << endl;
 
         const KURL srcurl(src);
@@ -619,7 +595,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         QString firstpart = location.section( '/', 0, i-1 );
         QString secondpart = cleanPath( location.section( '/', i, i ) );
-        KURL url = KURL::fromPathOrURL( QFile::encodeName( firstpart + '/' + secondpart ) );
+        KURL url = KURL::fromPathOrURL( firstpart + '/' + secondpart );
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
@@ -675,8 +651,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     checkAndBuildLocation( path );
 
-    const QCString dest = QFile::encodeName( path );
-    const KURL desturl = KURL::fromPathOrURL( dest );
+    const KURL desturl = KURL::fromPathOrURL( path );
 
     //kapp->processEvents( 100 );
 
@@ -757,16 +732,15 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QCString encodedPath = m_mim[item]->getEncodedFullName();
-    debug() << "Deleting path: " << encodedPath << endl;
+    QString path = m_mim[item]->getFullName();
+    debug() << "Deleting path: " << path << endl;
 
-    if ( !KIO::NetAccess::del( KURL::fromPathOrURL(encodedPath), m_view ))
+    if ( !KIO::NetAccess::del( KURL::fromPathOrURL(path), m_view ))
     {
         debug() << "Could not delete!" << endl;
         return -1;
     }
 
-    QString path;
     if( m_mim[item] == m_initialFile )
     {
         m_mim[item]->deleteAll( false );

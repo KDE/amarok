@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Generic Media Device could copy some non-ASCII filenames to turn to
+      gibberish.  Thanks to David Smith <davidsmith@acm.org> for the fix.
     * Fixed possible GUI freeze when Amarok was showing the dialog for
       installing mp3 support. Patch by Sascha Sommer <ssommer@suse.de>.
       (BR 147126)
