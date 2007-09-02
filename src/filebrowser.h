@@ -53,8 +53,6 @@ class FileBrowser : public KVBox
 {
     Q_OBJECT
 
-    enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, QueueTrack, QueueTracks, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, OrganizeFiles, EditTags };
-
 public:
     explicit FileBrowser( const char *name = 0, Medium *medium = 0 );
    ~FileBrowser();
@@ -69,12 +67,22 @@ public slots:
 
 private slots:
     void activate( const KFileItem* );
-    void contextMenuActivated( int );
     void gotoCurrentFolder();
     void prepareContextMenu();
     void selectAll();
     void slotViewChanged( KFileView* );
     void urlChanged( const KUrl& );
+
+    void slotCreatePlaylist();
+    void slotSavePlaylist();
+    void slotAppendToPlaylist();
+    void slotQueueTracks();
+    void slotEditTags();
+    void slotCopyToCollection();
+    void slotMoveToCollection();
+    void slotOrganizeFiles();
+    void slotMediaDevice();
+    void slotBurnCd();
 
 private:
     Meta::TrackList selectedItems();
@@ -82,8 +90,15 @@ private:
 
     KUrlComboBox  *m_combo;
     KDirOperator  *m_dir;
-    KLineEdit *m_filter;
+    KLineEdit     *m_filter;
     Medium        *m_medium;
+
+    QAction *m_createPlaylistAction;
+    QAction *m_queueTracksAction;
+    QAction *m_mediaDeviceAction;
+    QAction *m_copyToCollectionAction;
+    QAction *m_moveToCollectionAction;
+    QAction *m_organizeFilesAction;
 };
 
 

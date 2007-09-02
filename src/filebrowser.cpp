@@ -61,8 +61,6 @@
 #include <KUrlCompletion>
 
 #include <q3iconview.h>
-#include <Q3PopupMenu>
-#include <Q3PtrList>
 #include <QDir>
 #include <QLabel>
 #include <QTimer>
@@ -174,37 +172,42 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     {
-        KMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
+        KMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->menu();
 
         menu->clear();
-        menu->insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
-        menu->insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QueueTrack );
-        menu->insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QueueTracks );
+        m_createPlaylistAction = menu->addAction( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), this, SLOT( slotCreatePlaylist() ) );
+        
+        menu->addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), this, SLOT( slotAppendToPlaylist() ) );
+        
+        m_queueTracksAction = menu->addAction( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), this, SLOT( slotQueueTrack() ) );
 
-        menu->insertItem( KIcon( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
-        menu->insertSeparator();
+        menu->addAction( KIcon( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), this, SLOT( slotSavePlaylist() ) );
+        menu->addSeparator();
 
-        if (!m_medium)
-            menu->insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
+        m_mediaDeviceAction = 0; // sanity
+        if( !m_medium )
+            m_mediaDeviceAction = menu->addAction( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), this, SLOT( slotMediaDevice() ) );
 
-        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
-        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
-        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
-        menu->insertItem( KIcon( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
-        menu->insertSeparator();
-        menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
-        menu->insertSeparator();
-        actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "remove" ) ) );
-        menu->addAction( actionCollection->action( "delete" ) );
-        menu->insertSeparator();
-        menu->insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), EditTags );
+        m_organizeFilesAction    = menu->addAction( KIcon( Amarok::icon( "collection" ) ), i18n( "&Organize Files..." ), this, SLOT( slotOrganizeFiles() ) );
+        m_copyToCollectionAction = menu->addAction( KIcon( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), this, SLOT( slotCopyToCollection() ) );
+        m_moveToCollectionAction = menu->addAction( KIcon( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), this, SLOT( slotMoveToCollection() ) );
+        
+        QAction *burnAction = menu->addAction( KIcon( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), this, SLOT( slotBurnCd() ) );
+        burnAction->setEnabled( K3bExporter::isAvailable() );
+
+        menu->addSeparator();
+        menu->addAction( i18n( "&Select All Files" ), this, SLOT( selectAll() ) );
+        menu->addSeparator();
+
+        QAction *deleteAction = actionCollection->action( "delete" );
+        deleteAction->setIcon( KIcon( Amarok::icon( "remove" ) ) );
+        menu->addAction( deleteAction );
+        
+        menu->addSeparator();
+        menu->addAction( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), this, SLOT( slotEditTags() ) );
         menu->addAction( actionCollection->action( "properties" ) );
 
-        menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
-
         connect( menu, SIGNAL(aboutToShow()), SLOT(prepareContextMenu()) );
-        connect( menu, SIGNAL(activated( int )), SLOT(contextMenuActivated( int )) );
     }
 
     {
@@ -224,7 +227,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
         a->setDelayed( false );
 
-        new KBookmarkHandler( m_dir, a->popupMenu() );
+        new KBookmarkHandler( m_dir, a->menu() );
     }
 
     {
@@ -364,10 +367,11 @@ FileBrowser::setFilter( const QString &text )
     else {
         QString filter;
 
-        const QStringList terms = QStringList::split( ' ', text );
-        oldForeach( terms ) {
+        const QStringList terms = text.split( ' ', QString::SkipEmptyParts );
+        foreach( QString it, terms )
+        {
             filter += '*';
-            filter += *it;
+            filter += it;
         }
         filter += '*';
 
@@ -414,7 +418,7 @@ FileBrowser::urlChanged( const KUrl &u )
     }
 
     QStringList urls = m_combo->urls();
-    urls.remove( url );
+    urls.removeAll( url );
     urls.prepend( url );
 
     m_combo->setUrls( urls, KUrlComboBox::RemoveBottom );
@@ -434,86 +438,95 @@ FileBrowser::slotViewChanged( KFileView *view )
 inline void
 FileBrowser::activate( const KFileItem *item )
 {
-    The::playlistModel()->insertMedia( item->url(), PlaylistNS::AppendAndPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item->url() );
+    The::playlistModel()->insertOptioned( track, PlaylistNS::AppendAndPlay );
 }
 
 inline void
 FileBrowser::prepareContextMenu()
 {
     const KFileItemList &items = *m_dir->selectedItems();
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist, items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTrack, items.count() == 1  );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTracks, items.count() > 1 );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice, MediaBrowser::isAvailable() );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MoveToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( CopyToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( OrganizeFiles, CollectionDB::instance()->isDirInCollection( url().path() ) );
+    m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
+
+    if( items.count() == 1 )
+        m_queueTracksAction->setText( i18n( "Queue Track" ) );
+    else if( items.count() > 1 )
+        m_queueTracksAction->setText( i18n( "Queue Tracks" ) );
+    
+    m_queueTracksAction->setVisible( items.count() > 0 );
+    m_mediaDeviceAction->setVisible( MediaBrowser::isAvailable() );
+    m_copyToCollectionAction->setVisible( CollectionDB::instance()->isDirInCollection( url().path() ) );
+    m_moveToCollectionAction->setVisible( CollectionDB::instance()->isDirInCollection( url().path() ) );
+    m_organizeFilesAction->setVisible( CollectionDB::instance()->isDirInCollection( url().path() ) );
 }
 
 inline void
-FileBrowser::contextMenuActivated( int id )
+FileBrowser::slotCreatePlaylist()
 {
-    switch( id )
-    {
-    case MakePlaylist:
-        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Replace );
-        break;
+    The::playlistModel()->insertOptioned( selectedItems(), Playlist::Replace );
+}
 
-    case SavePlaylist:
-//PORT 2.0        playlistFromURLs( selectedItems() );
-        break;
+inline void
+FileBrowser::slotSavePlaylist()
+{
+//PORT 2.0    playlistFromURLs( selectedItems() );
+}
 
-    case AppendToPlaylist:
-        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Append );
-        break;
+inline void
+FileBrowser::slotAppendToPlaylist()
+{
+    The::playlistModel()->insertOptioned( selectedItems(), Playlist::Append );
+}
 
-    case QueueTrack:
-    case QueueTracks:
-        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Queue );
-        break;
+inline void
+FileBrowser::slotQueueTracks()
+{
+    The::playlistModel()->insertOptioned( selectedItems(), Playlist::Queue );
+}
 
-    case EditTags:
-        {
-            /*
-            KUrl::List list = Amarok::recursiveUrlExpand( selectedItems() );
-            TagDialog *dialog = NULL;
-            if( list.count() == 1 )
-            {
-                dialog = new TagDialog( list.first(), this );
-            }
-            else
-            {
-                dialog = new TagDialog( list, this );
-            }
-            dialog->show();
-            */
-        }
-        break;
+inline void
+FileBrowser::slotEditTags()
+{
+    /*
+    KUrl::List list = Amarok::recursiveUrlExpand( selectedItems() );
+    TagDialog *dialog = 0;
+    
+    if( list.count() == 1 )
+        dialog = new TagDialog( list.first(), this );
+    else
+        dialog = new TagDialog( list, this );
+    dialog->show();
+    */
+}
 
-    case CopyToCollection:
+inline void
+FileBrowser::slotCopyToCollection()
+{
 //PORT 2.0        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Copy Files To Collection" ), true );
-        break;
+}
 
-    case MoveToCollection:
+inline void
+FileBrowser::slotMoveToCollection()
+{
 //PORT 2.0         CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Move Files To Collection" ), false );
-        break;
+}
 
-    case OrganizeFiles:
+inline void
+FileBrowser::slotOrganizeFiles()
+{
 //PORT 2.0         CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Organize Collection Files" ), false );
-        break;
+}
 
-    case MediaDevice:
+inline void
+FileBrowser::slotMediaDevice()
+{
 //PORT 2.0        MediaBrowser::queue()->addUrls( selectedItems() );
-        break;
+}
 
-    case SelectAllFiles:
-        selectAll();
-        break;
-
-    case BurnCd:
+inline void
+FileBrowser::slotBurnCd()
+{
 //PORT 2.0        K3bExporter::instance()->exportTracks( selectedItems() );
-        break;
-    }
 }
 
 inline void
@@ -646,7 +659,7 @@ SearchPane::SearchPane( FileBrowser *parent )
     connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 
     m_lister = new MyDirLister( true /*delay mimetypes*/ );
-    insertChild( m_lister );
+    m_lister->setParent( this );
     connect( m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(searchMatches( const KFileItemList& )) );
     connect( m_lister, SIGNAL(completed()), SLOT(searchComplete()) );
 }
@@ -657,7 +670,7 @@ SearchPane::toggle( bool toggled )
     if ( toggled )
         m_lineEdit->setFocus();
 
-    findChild<QWidget*>("container")->setShown( toggled );
+    findChild<QWidget*>("container")->setVisible( toggled );
 }
 
 void
@@ -723,7 +736,8 @@ SearchPane::_searchComplete()
 void
 SearchPane::activate( Q3ListViewItem *item )
 {
-    The::playlistModel()->insertMedia( static_cast<KURLView::Item*>(item)->m_url, Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( static_cast<KURLView::Item*>(item)->m_url );
+    The::playlistModel()->insertOptioned( track, PlaylistNS::DirectPlay );
 }
 
 #include "filebrowser.moc"
