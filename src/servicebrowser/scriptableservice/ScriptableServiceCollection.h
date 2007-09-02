@@ -21,7 +21,7 @@
 #define SCRIPTABLESERVICECOLLECTION_H
 
 #include "Collection.h"
-#include "support/memorycollection.h"
+#include "support/MemoryCollection.h"
 
 /**
 A collection for use by the scriptable service. Stores everything in memory

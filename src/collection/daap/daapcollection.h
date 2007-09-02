@@ -22,7 +22,7 @@
 #define DAAPCOLLECTION_H
 
 #include "Collection.h"
-#include "memorycollection.h"
+#include "MemoryCollection.h"
 #include "reader.h"
 
 #include <QMap>

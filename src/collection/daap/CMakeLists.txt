@@ -20,7 +20,7 @@ set(amarok_collection-daapcollection_PART_SRCS
 	daapreader/authentication/contentfetcher.cpp
 	daapreader/authentication/hasher.c
 	daapreader/authentication/md5.c
-	${AMAROK_COLLECTION_SUPPORT_DIR}/memoryquerymaker.cpp )
+	${AMAROK_COLLECTION_SUPPORT_DIR}/MemoryQueryMaker.cpp )
 
 kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection-daapcollection_PART_SRCS})
 

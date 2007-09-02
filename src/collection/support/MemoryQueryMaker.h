@@ -19,7 +19,7 @@
 #ifndef MEMORYQUERYMAKER_H
 #define MEMORYQUERYMAKER_H
 
-#include "memorycollection.h"
+#include "MemoryCollection.h"
 #include "QueryMaker.h"
 
 namespace ThreadWeaver

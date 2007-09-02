@@ -21,7 +21,7 @@
 #define SERVICECOLLECTION_H
 
 #include "Collection.h"
-#include "support/memorycollection.h"
+#include "support/MemoryCollection.h"
 #include "jamendo/jamendodatabasehandler.h"
 
 #include <QtGlobal>

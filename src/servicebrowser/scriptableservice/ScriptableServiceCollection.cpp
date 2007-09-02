@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "ScriptableServiceCollection.h"
-#include "support/memoryquerymaker.h"
+#include "support/MemoryQueryMaker.h"
 
 
 ScriptableServiceCollection::ScriptableServiceCollection(const QString & name)

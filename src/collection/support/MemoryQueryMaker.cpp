@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "memoryquerymaker.h"
-#include "memoryquerymakerfilters_p.h"
+#include "MemoryQueryMaker.h"
+#include "MemoryQueryMakerFilters_p.h"
 
 #include "debug.h"
 
@@ -854,4 +854,4 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
     emit queryDone();
 }
 
-#include "memoryquerymaker.moc"
+#include "MemoryQueryMaker.moc"

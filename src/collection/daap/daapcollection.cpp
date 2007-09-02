@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 #include "daapmeta.h"
 #include "debug.h"
-#include "memoryquerymaker.h"
+#include "MemoryQueryMaker.h"
 #include "reader.h"
 
 #include <QStringList>

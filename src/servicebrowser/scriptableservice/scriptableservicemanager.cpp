@@ -20,7 +20,7 @@
 #include "scriptableservicemanager.h"
 
 
-#include "collection/support/memorycollection.h"
+#include "collection/support/MemoryCollection.h"
 #include "debug.h"
 #include "ScriptableServiceCollection.h"
 #include <scriptableservicemanageradaptor.h>

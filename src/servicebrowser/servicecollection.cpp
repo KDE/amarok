@@ -26,7 +26,7 @@
 #include "amarokconfig.h"
 #include "servicemetabase.h"
 #include "debug.h"
-#include "support/memoryquerymaker.h"
+#include "support/MemoryQueryMaker.h"
 //#include "reader.h"
 
 #include <QStringList>

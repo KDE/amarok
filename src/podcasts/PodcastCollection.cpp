@@ -20,7 +20,7 @@
 
 #include "debug.h"
 #include "PodcastReader.h"
-#include "support/memoryquerymaker.h"
+#include "support/MemoryQueryMaker.h"
 #include "TheInstances.h"
 
 #include <kurl.h>
