@@ -21,7 +21,7 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "atomicstring.h"
 #include "collectiondb.h"
-#include "collectionmanager.h"
+#include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "context/ContextView.h"
 //#include "dbsetup.h"             //firstRunWizard()

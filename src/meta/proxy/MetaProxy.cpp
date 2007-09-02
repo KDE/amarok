@@ -22,7 +22,7 @@
 
 #include "debug.h"
 
-#include "collectionmanager.h"
+#include "CollectionManager.h"
 
 #include <QObject>
 #include <QPointer>

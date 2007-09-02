@@ -19,7 +19,7 @@
 #include "sqlmeta.h"
 
 #include "amarok.h"
-#include "blockingquery.h"
+#include "BlockingQuery.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
 

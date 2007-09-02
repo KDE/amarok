@@ -21,7 +21,7 @@
 
 #include "amarok_export.h"
 #include "meta/meta.h"
-#include "collection/querymaker.h"
+#include "collection/QueryMaker.h"
 
 #include <QList>
 #include <QMimeData>

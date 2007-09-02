@@ -21,7 +21,7 @@
 #include "amarok.h"
 #include "amarok_export.h"
 #include "plugin/plugin.h"
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include <QObject>
 #include <QString>

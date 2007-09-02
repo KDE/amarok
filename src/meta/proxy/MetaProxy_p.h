@@ -23,7 +23,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collection.h"
+#include "Collection.h"
 #include "lastfm.h"
 #include "meta.h"
 

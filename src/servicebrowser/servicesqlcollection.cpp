@@ -19,7 +19,7 @@
 
 #include "servicesqlcollection.h"
 
-#include "collectionmanager.h"
+#include "CollectionManager.h"
 #include "servicesqlquerymaker.h"
 #include "SqlStorage.h"
 

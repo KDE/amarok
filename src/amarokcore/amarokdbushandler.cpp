@@ -26,7 +26,7 @@
 #include "app.h" //transferCliArgs
 #include "debug.h"
 #include "collectiondb.h"
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "context/LyricsManager.h"
 #include "enginebase.h"

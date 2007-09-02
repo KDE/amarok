@@ -12,7 +12,7 @@
 #include "meta.h"
 //#include "sqlmeta.h"
 #include "querybuilder.h"
-#include "collection.h"
+#include "Collection.h"
 
 #include <QList>
 

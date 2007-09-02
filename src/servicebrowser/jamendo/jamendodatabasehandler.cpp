@@ -19,7 +19,7 @@
 
 #include "jamendodatabasehandler.h"
 
-#include "collectionmanager.h"
+#include "CollectionManager.h"
 #include "debug.h"
 #include "SqlStorage.h"
 

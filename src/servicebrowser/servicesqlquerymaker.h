@@ -22,7 +22,7 @@
 
 #include "servicemetabase.h"
 #include "ServiceSqlRegistry.h"
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include "threadmanager.h"
 

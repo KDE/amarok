@@ -20,7 +20,7 @@
 #ifndef SCRIPTABLESERVICECOLLECTION_H
 #define SCRIPTABLESERVICECOLLECTION_H
 
-#include "collection.h"
+#include "Collection.h"
 #include "support/memorycollection.h"
 
 /**

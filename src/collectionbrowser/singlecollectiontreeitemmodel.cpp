@@ -15,9 +15,9 @@
 //#include "collection/sqlregistry.h"
 #include "debug.h"
 #include "amarok.h"
-#include "collection.h"
-#include "collectionmanager.h"
-#include "querymaker.h"
+#include "Collection.h"
+#include "CollectionManager.h"
+#include "QueryMaker.h"
 
 #include <KLocale>
 #include <KIcon>

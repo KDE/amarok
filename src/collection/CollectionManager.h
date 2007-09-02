@@ -18,9 +18,9 @@
 #ifndef AMAROK_COLLECTIONMANAGER_H
 #define AMAROK_COLLECTIONMANAGER_H
 
-#include "collection.h"
+#include "Collection.h"
 #include "meta.h"
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include <QList>
 #include <QObject>

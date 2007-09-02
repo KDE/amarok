@@ -47,7 +47,7 @@
 #include "threadmanager.h"
 
 //queries moved to sqlcollection, CollectionDB is still being used by legacy stuff
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 #include "SqlStorage.h"
 
 #include <QBuffer>

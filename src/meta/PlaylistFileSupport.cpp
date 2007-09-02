@@ -8,7 +8,7 @@
 
 #include "PlaylistFileSupport.h"
 
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 #include "statusbar.h"
 #include "xspfplaylist.h"
 

@@ -16,12 +16,12 @@
 
 #include "amarok.h"
 #include "AmarokMimeData.h"
-#include "collection.h"
-#include "collectionmanager.h"
+#include "Collection.h"
+#include "CollectionManager.h"
 #include "collectiontreeitem.h"
 #include "debug.h"
 #include "expression.h"
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include <KIcon>
 #include <KIconLoader>

@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 QueryMaker::QueryMaker() : QObject()
 {
@@ -32,5 +32,5 @@ QueryMaker::resultCount() const
     return 1;
 }
 
-#include "querymaker.moc"
+#include "QueryMaker.moc"
 

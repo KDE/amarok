@@ -17,13 +17,13 @@
  */
 #define DEBUG_PREFIX "CollectionManager"
 
-#include "collectionmanager.h"
+#include "CollectionManager.h"
 
 #include "debug.h"
 
-#include "blockingquery.h"
-#include "collection.h"
-#include "metaquerybuilder.h"
+#include "BlockingQuery.h"
+#include "Collection.h"
+#include "MetaQueryBuilder.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
 #include "meta/lastfm/LastFmMeta.h"
@@ -306,4 +306,4 @@ CollectionManager::removeUnmanagedCollection( Collection *collection )
     }
 }
 
-#include "collectionmanager.moc"
+#include "CollectionManager.moc"

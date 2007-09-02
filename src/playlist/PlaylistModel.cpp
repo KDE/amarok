@@ -18,10 +18,10 @@
 #include "TheInstances.h"
 #include "UndoCommands.h"
 
-#include "collection/blockingquery.h"
-#include "collection/collection.h"
-#include "collection/collectionmanager.h"
-#include "collection/querymaker.h"
+#include "collection/BlockingQuery.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
+#include "collection/QueryMaker.h"
 #include "meta/lastfm/LastFmMeta.h"
 
 #include <QAction>

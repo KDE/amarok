@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 #include "meta.h"
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include <QHash>
 

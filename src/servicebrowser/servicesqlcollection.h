@@ -19,7 +19,7 @@
 #ifndef AMAROK_SERVICESQLCOLLECTION_H
 #define AMAROK_SERVICESQLCOLLECTION_H
 
-#include "collection.h"
+#include "Collection.h"
 #include "servicemetabase.h"
 #include "ServiceSqlRegistry.h"
 

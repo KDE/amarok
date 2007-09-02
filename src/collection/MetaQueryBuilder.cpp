@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "metaquerybuilder.h"
+#include "MetaQueryBuilder.h"
 
 #include <QtGlobal>
 
@@ -295,4 +295,4 @@ MetaQueryBuilder::slotQueryDone()
         m_queryDoneCountMutex.unlock();
 }
 
-#include "metaquerybuilder.moc"
+#include "MetaQueryBuilder.moc"

@@ -18,8 +18,8 @@
 #ifndef AMAROK_COLLECTION_METAQUERYBUILDER_H
 #define AMAROK_COLLECTION_METAQUERYBUILDER_H
 
-#include "querymaker.h"
-#include "collection.h"
+#include "QueryMaker.h"
+#include "Collection.h"
 
 #include <QList>
 #include <QMutex>

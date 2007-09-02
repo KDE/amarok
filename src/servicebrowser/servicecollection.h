@@ -20,7 +20,7 @@
 #ifndef SERVICECOLLECTION_H
 #define SERVICECOLLECTION_H
 
-#include "collection.h"
+#include "Collection.h"
 #include "support/memorycollection.h"
 #include "jamendo/jamendodatabasehandler.h"
 

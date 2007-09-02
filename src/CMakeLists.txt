@@ -269,12 +269,12 @@ set(meta_SRCS
 # COLLECTION
 #####################################################################
 set(collection_SRCS
-    collection/blockingquery.cpp
-    collection/collection.cpp
-    collection/collectionmanager.cpp
+    collection/BlockingQuery.cpp
+    collection/Collection.cpp
+    collection/CollectionManager.cpp
     collection/CollectionLocation.cpp
-    collection/metaquerybuilder.cpp
-    collection/querymaker.cpp
+    collection/MetaQueryBuilder.cpp
+    collection/QueryMaker.cpp
     collection/support/memoryquerymaker.cpp
 )
 

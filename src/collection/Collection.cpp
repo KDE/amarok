@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "collection.h"
+#include "Collection.h"
 
 #include "CollectionLocation.h"
 #include "meta/meta.h"
@@ -58,4 +58,4 @@ Collection::location() const
     return new CollectionLocation();
 }
 
-#include "collection.moc"
+#include "Collection.moc"

@@ -17,8 +17,7 @@
  */
 
 #include "CollectionLocation.h"
-
-#include "collection.h"
+#include "Collection.h"
 
 CollectionLocation::CollectionLocation()
     :QObject()

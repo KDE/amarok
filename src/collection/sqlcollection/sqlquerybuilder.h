@@ -18,7 +18,7 @@
 #ifndef AMAROK_COLLECTION_SQLQUERYBUILDER_H
 #define AMAROK_COLLECTION_SQLQUERYBUILDER_H
 
-#include "querymaker.h"
+#include "QueryMaker.h"
 
 #include "amarok_export.h"
 #include "threadmanager.h"

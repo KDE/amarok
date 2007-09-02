@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "blockingquery.h"
+#include "BlockingQuery.h"
 
 #include "debug.h"
 
@@ -285,4 +285,4 @@ BlockingQuery::result( const QString &collectionId, const QStringList &list )
     d->dataMutex.unlock();
 }
 
-#include "blockingquery.moc"
+#include "BlockingQuery.moc"

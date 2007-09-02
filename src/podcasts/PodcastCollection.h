@@ -19,7 +19,7 @@
 #ifndef PODCASTCOLLECTION_H
 #define PODCASTCOLLECTION_H
 
-#include <collection.h>
+#include "Collection.h"
 #include "support/memorycollection.h"
 #include "PodcastMeta.h"
 #include "playlistmanager/PlaylistManager.h"

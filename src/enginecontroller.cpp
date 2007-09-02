@@ -17,7 +17,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 #include "debug.h"
 #include "enginebase.h"
 #include "lastfm.h"

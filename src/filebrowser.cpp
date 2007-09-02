@@ -26,7 +26,7 @@
 #include "amarok.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "kbookmarkhandler.h"

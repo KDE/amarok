@@ -21,7 +21,7 @@
 #ifndef DAAPCOLLECTION_H
 #define DAAPCOLLECTION_H
 
-#include "collection.h"
+#include "Collection.h"
 #include "memorycollection.h"
 #include "reader.h"
 

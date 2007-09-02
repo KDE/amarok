@@ -21,8 +21,8 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collection.h"
-#include "querymaker.h"
+#include "Collection.h"
+#include "QueryMaker.h"
 
 #include <QDir>
 #include <QImage>
