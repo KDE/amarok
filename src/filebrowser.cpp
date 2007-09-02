@@ -26,6 +26,7 @@
 #include "amarok.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
+#include "collection/collectionmanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "kbookmarkhandler.h"
@@ -76,6 +77,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 {
     KActionCollection *actionCollection;
     SearchPane *searchPane;
+    setObjectName( name );
 
     KUrl location;
 
@@ -320,12 +322,12 @@ void FileBrowser::setUrl( const QString &url )
 
 //BEGIN Private Methods
 
-KUrl::List FileBrowser::selectedItems()
+Meta::TrackList FileBrowser::selectedItems()
 {
-    KUrl::List list;
+    Meta::TrackList list;
     const KFileItemList &source = m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items();
     for( KFileItemList::const_iterator it = source.begin(); it != source.end(); ++it )
-        list.append( (*it)->url() );
+        list.append( CollectionManager::instance()->trackForUrl( (*it)->url() ) );
 
     return list;
 }
@@ -376,7 +378,8 @@ FileBrowser::setFilter( const QString &text )
 }
 
 void
-FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KUrl::List &urls){
+FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KUrl::List &urls)
+{
     //Do nothing right now
     event->ignore();
     //Run into const problems iterating over the list, so copy it to a malleable one
@@ -438,14 +441,10 @@ inline void
 FileBrowser::prepareContextMenu()
 {
     const KFileItemList &items = *m_dir->selectedItems();
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
-        items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTrack,
-        items.count() == 1  );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTracks,
-        items.count() > 1 );
-    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
-        MediaBrowser::isAvailable() );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist, items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTrack, items.count() == 1  );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTracks, items.count() > 1 );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice, MediaBrowser::isAvailable() );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MoveToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( CopyToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( OrganizeFiles, CollectionDB::instance()->isDirInCollection( url().path() ) );
@@ -457,24 +456,25 @@ FileBrowser::contextMenuActivated( int id )
     switch( id )
     {
     case MakePlaylist:
-        The::playlistModel()->insertMedia( selectedItems(), Playlist::Replace );
+        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Replace );
         break;
 
     case SavePlaylist:
-        playlistFromURLs( selectedItems() );
+//PORT 2.0        playlistFromURLs( selectedItems() );
         break;
 
     case AppendToPlaylist:
-        The::playlistModel()->insertMedia( selectedItems() );
+        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Append );
         break;
 
     case QueueTrack:
     case QueueTracks:
-        The::playlistModel()->insertMedia( selectedItems(), Playlist::Queue );
+        The::playlistModel()->insertOptioned( selectedItems(), Playlist::Queue );
         break;
 
     case EditTags:
         {
+            /*
             KUrl::List list = Amarok::recursiveUrlExpand( selectedItems() );
             TagDialog *dialog = NULL;
             if( list.count() == 1 )
@@ -486,6 +486,7 @@ FileBrowser::contextMenuActivated( int id )
                 dialog = new TagDialog( list, this );
             }
             dialog->show();
+            */
         }
         break;
 
@@ -502,7 +503,7 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case MediaDevice:
-        MediaBrowser::queue()->addUrls( selectedItems() );
+//PORT 2.0        MediaBrowser::queue()->addUrls( selectedItems() );
         break;
 
     case SelectAllFiles:
@@ -510,7 +511,7 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case BurnCd:
-        K3bExporter::instance()->exportTracks( selectedItems() );
+//PORT 2.0        K3bExporter::instance()->exportTracks( selectedItems() );
         break;
     }
 }

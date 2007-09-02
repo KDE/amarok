@@ -24,6 +24,8 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
+#include "meta.h"
+
 #include <KDirOperator> //some inline functions
 #include <KToolBar>     //baseclass
 #include <KUrl>         //stack allocated
@@ -75,7 +77,7 @@ private slots:
     void urlChanged( const KUrl& );
 
 private:
-    KUrl::List selectedItems();
+    Meta::TrackList selectedItems();
     void playlistFromURLs( const KUrl::List &urls );
 
     KUrlComboBox  *m_combo;
