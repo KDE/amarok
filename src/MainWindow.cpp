@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 #include "analyzerwidget.h"
+#include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
 #include "context/CoverBling.h"
 #include "context/ContextView.h"
@@ -780,13 +781,14 @@ void MainWindow::slotAddLocation( bool directPlay ) //SLOT
     if( files.isEmpty() ) return;
     const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
 
-    const KUrl::List::ConstIterator end  = files.constEnd();
+    Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( files );
 
-    for(  KUrl::List::ConstIterator it = files.constBegin(); it != end; ++it )
-        if( it == files.constBegin() )
-            The::playlistModel()->insertMedia( *it, options );
-        else
-            The::playlistModel()->insertMedia( *it, Playlist::Append );
+    The::playlistModel()->insertOptioned( tracks.takeFirst(), options );
+
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        The::playlistModel()->insertOptioned( track, Playlist::Append );
+    }
 }
 
 void MainWindow::slotAddStream() //SLOT
@@ -899,8 +901,9 @@ void MainWindow::playAudioCD() //SLOT
     KUrl::List urls;
     if( EngineController::engine()->getAudioCDContents(QString(), urls) )
     {
-        if (!urls.isEmpty())
-            The::playlistModel()->insertMedia(urls, Playlist::Replace);
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
+        if( !tracks.isEmpty() )
+            The::playlistModel()->insertOptioned( tracks, Playlist::Replace );
     }
     else
     { // Default behaviour
