@@ -131,7 +131,8 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
     DEBUG_BLOCK
     Q_UNUSED( oldState );
 
-    switch( state )
+    //FIXME:
+    /*switch( state )
     {
     case Engine::Playing:
         showCurrentTrack();
@@ -143,25 +144,27 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 
     default:
         ;
-    }
+    }*/
 }
 
 void ContextView::showHome()
 {
     DEBUG_BLOCK
-    clear( m_curState );
+    //FIXME:
+   /* clear( m_curState );
     m_curState = Home;
     loadConfig();
-    messageNotify( m_curState );
+    messageNotify( m_curState );*/
 }
 
 void ContextView::showCurrentTrack()
 {
     DEBUG_BLOCK
-    clear( m_curState );
+    //FIXME:
+    /*clear( m_curState );
     m_curState = Current;
     loadConfig();
-    messageNotify( Current );
+    messageNotify( Current );*/
 }
 
 // loads applets onto the ContextScene from saved data, using m_curState
