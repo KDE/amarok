@@ -111,6 +111,8 @@ def fetchLyrics( artist, title, url )
 
     proxy_host = nil
     proxy_port = nil
+    proxy_user = nil
+    proxy_port = nil
     if ( @proxy == nil )
         @proxy = `qdbus org.kde.amarok /Script proxyForUrl #{@page_url.shellquote}`
     end
@@ -118,9 +120,10 @@ def fetchLyrics( artist, title, url )
     if ( proxy_uri.class != URI::Generic )
         proxy_host = proxy_uri.host
         proxy_port = proxy_uri.port
+        proxy_user, proxy_pass = proxy_uri.userinfo.split(':') unless proxy_uri.userinfo.nil?
     end
 
-    h = Net::HTTP.new( host, 80, proxy_host, proxy_port )
+    h = Net::HTTP.new( host, 80, proxy_host, proxy_port, proxy_user, proxy_pass )
     response = h.get( path )
 
     unless response.code == "200"
