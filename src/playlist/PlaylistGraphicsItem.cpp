@@ -140,6 +140,8 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     }
     else if( m_items->foreground )
         m_items->foreground->hide();
+
+    m_items->albumArt->show();
 }
 
 void
@@ -255,6 +257,8 @@ PlaylistNS::GraphicsItem::refresh()
     if( m_track->album() )
         albumPixmap =  m_track->album()->image( int( ALBUM_WIDTH ) );
 
+    m_items->albumArt->hide();
+    delete ( m_items->albumArt );
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
     m_items->albumArt->setPos( 0.0, 0.0 );
 }
