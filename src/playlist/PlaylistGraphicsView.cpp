@@ -64,6 +64,9 @@ void
 PlaylistNS::GraphicsView::dataChanged(const QModelIndex & index)
 {
      DEBUG_BLOCK
+     if ( !index.isValid() )
+        return;
+   
      if ( m_tracks.count() > index.row() )
          m_tracks[ index.row() ]->refresh();
 }
