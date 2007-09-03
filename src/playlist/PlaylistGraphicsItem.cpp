@@ -212,8 +212,8 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 QRectF
 PlaylistNS::GraphicsItem::boundingRect() const
 {
-    const static int scrollBarWidth = scene()->views().at(0)->verticalScrollBar()->width();
-    return QRectF( 0.0, 0.0, scene()->views().at(0)->width() - scrollBarWidth, s_height );
+    // the viewport()->size() takes scrollbars into account
+    return QRectF( 0.0, 0.0, scene()->views().at(0)->viewport()->size().width(), s_height );
 }
 
 void 
