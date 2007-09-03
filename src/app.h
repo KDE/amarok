@@ -96,7 +96,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
     private:
         void initGlobalShortcuts();
-        void firstRunWizard();
 
         void setRating( int n );
 

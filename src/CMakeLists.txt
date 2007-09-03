@@ -450,7 +450,6 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
-#   firstrunwizard.ui
    newdynamic.ui
    collectionbrowser/OrganizeCollectionDialog.ui
    podcastsettingsbase.ui
