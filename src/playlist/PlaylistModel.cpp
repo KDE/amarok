@@ -132,9 +132,11 @@ Model::data( const QModelIndex& index, int role ) const
 void
 Model::insertTrack( int row, TrackPtr track )
 {
+    DEBUG_BLOCK
     TrackList list;
     list.append( track );
     insertTracks( row, list );
+    
 }
 
 void
@@ -264,12 +266,14 @@ Model::setActiveRow( int row )
 void
 Model::metadataChanged( Meta::Track *track )
 {
+    DEBUG_BLOCK
     const int size = m_items.size();
     const Meta::TrackPtr needle =  Meta::TrackPtr( track );
     for( int i = 0; i < size; i++ )
     {
         if( m_items.at( i )->track() == needle )
         {
+            debug() << "Track in playlist";
             emit dataChanged( createIndex( i, 0 ), createIndex( i, 0 ) );
             break;
         }
@@ -280,6 +284,18 @@ Model::metadataChanged( Meta::Track *track )
     if( index != -1 )
         emit dataChanged( createIndex( index, 0 ), createIndex( index, 0 ) );
 #endif
+}
+
+void 
+Model::metadataChanged(Meta::Album * album)
+{
+    DEBUG_BLOCK
+    //process each track
+    TrackList tracks = album->tracks();
+    foreach( TrackPtr track, tracks ) {
+        metadataChanged( track.data() );
+    }
+
 }
 
 void
@@ -491,6 +507,7 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
+            track->album()->subscribe( this );
             m_items.insert( row + i, new Item( track ) );
             i++;
         }
@@ -578,5 +595,7 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
 namespace The {
     PlaylistNS::Model* playlistModel() { return PlaylistNS::Model::s_instance; }
 }
+
+
 
 #include "PlaylistModel.moc"

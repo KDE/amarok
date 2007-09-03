@@ -128,6 +128,7 @@ class TrackAdvancer;
             ///deprecated function to ease porting to Meta::Track from URLs
             KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
+            virtual void metadataChanged( Meta::Album *album );
             void play( int row );
             static Model* s_instance; //! instance variable
 
