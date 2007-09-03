@@ -61,6 +61,7 @@
 #include <KUrlCompletion>
 
 #include <q3iconview.h>
+#include <QAbstractItemView>
 #include <QDir>
 #include <QLabel>
 #include <QTimer>
@@ -328,9 +329,18 @@ void FileBrowser::setUrl( const QString &url )
 Meta::TrackList FileBrowser::selectedItems()
 {
     Meta::TrackList list;
-    const KFileItemList &source = m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items();
-    for( KFileItemList::const_iterator it = source.begin(); it != source.end(); ++it )
-        list.append( CollectionManager::instance()->trackForUrl( (*it)->url() ) );
+
+    QList<KFileItem>  source;
+    if ( m_dir->selectedItems().count() )
+        source = m_dir->selectedItems();
+    else {
+       //FIXME: not that simplw to do with the new api
+       //get all items...,
+       //source = m_dir->view()->omdel()->items();
+    }
+
+    for( QList<KFileItem>::const_iterator it = source.begin(); it != source.end(); ++it )
+        list.append( CollectionManager::instance()->trackForUrl( (*it).url() ) );
 
     return list;
 }
@@ -445,8 +455,8 @@ FileBrowser::activate( const KFileItem *item )
 inline void
 FileBrowser::prepareContextMenu()
 {
-    const KFileItemList &items = *m_dir->selectedItems();
-    m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
+    const QList<KFileItem> items = m_dir->selectedItems();
+    m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first().isDir() ) );
 
     if( items.count() == 1 )
         m_queueTracksAction->setText( i18n( "Queue Track" ) );
@@ -547,11 +557,14 @@ FileBrowser::gotoCurrentFolder()
 void
 FileBrowser::selectAll()
 {
-    KFileItemList list( *m_dir->view()->items() );
+
+    //FIME: B0rked with the new KDirOpperator API
+    /*KFileItemList list( *m_dir->view()->items() );
 
     // Select all items which represent files
     for( KFileItemList::const_iterator it = list.begin(); it != list.end(); ++it)
         m_dir->view()->setSelected( *it, (*it)->isFile() );
+*/
 }
 
 #include <QPainter>
