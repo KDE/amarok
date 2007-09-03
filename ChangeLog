@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Fix off-by-one error causing Smart Playlists to not load tracks with a
+      rating >= 4.5. (BR 148916)
     * Don't enable "Configure Podcasts" at the top-level Podcasts folder if
       there is nothing beneath it. (BR 146504)
     * Generic Media Device could copy some non-ASCII filenames to turn to
