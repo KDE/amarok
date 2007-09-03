@@ -137,16 +137,14 @@ Q_OBJECT
 inline int
 CriteriaEditor::indexToRating( int index )
 {
-    if ( index <= 9 && index >= 1 ) return index + 1;
-    if ( index == 0 ) return index;
+    if ( index <= 10 && index >= 0 ) return index;
     return -1;
 }
 
 inline int
 CriteriaEditor::ratingToIndex( int rating )
 {
-    if ( rating <= 10 && rating >= 2 ) return rating - 1;
-    if ( rating == 0 ) return rating;
+    if ( rating <= 10 && rating >= 0 ) return rating;
     return -1;
 }
 
