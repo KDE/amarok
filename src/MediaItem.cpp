@@ -437,5 +437,4 @@ MediaItem::createToolTip()
     //if( !text.isEmpty() ) setToolTip( text );
 }
 
-#include "MediaItem.moc"
 
