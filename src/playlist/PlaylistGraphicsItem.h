@@ -23,6 +23,7 @@ namespace PlaylistNS {
             QRectF boundingRect() const;
             void setupItem();
             static qreal height() { return s_height; }
+            void refresh();
         protected:
             void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event );
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
@@ -36,6 +37,7 @@ namespace PlaylistNS {
             static const qreal MARGIN;
             static qreal s_height;
             static QFontMetricsF* s_fm;
+            Meta::TrackPtr m_track;
     };
 
 }

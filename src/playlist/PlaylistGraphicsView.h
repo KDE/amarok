@@ -26,6 +26,7 @@ namespace PlaylistNS {
             void modelReset();
             void rowsInserted( const QModelIndex & parent, int start, int end );
             void rowsRemoved( const QModelIndex & parent, int start, int end );
+            void dataChanged( const QModelIndex & index );
         private:
             QList<GraphicsItem*> m_tracks;
             Model* m_model;

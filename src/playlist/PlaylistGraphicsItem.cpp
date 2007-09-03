@@ -66,6 +66,7 @@ QFontMetricsF* PlaylistNS::GraphicsItem::s_fm = 0;
 PlaylistNS::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
     , m_items( 0 )
+    , m_track( 0 )
 {
     if( not s_fm )
     {
@@ -144,6 +145,8 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
 void
 PlaylistNS::GraphicsItem::init( Meta::TrackPtr track )
 {
+    m_track = track;
+
     QPixmap albumPixmap;
     if( track->album() )
         albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
@@ -240,4 +243,18 @@ void
 PlaylistNS::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
+}
+
+void 
+PlaylistNS::GraphicsItem::refresh()
+{
+    QPixmap albumPixmap;
+    if ( ! m_track )
+        return;
+
+    if( m_track->album() )
+        albumPixmap =  m_track->album()->image( int( ALBUM_WIDTH ) );
+
+    m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
+    m_items->albumArt->setPos( 0.0, 0.0 );
 }

@@ -18,12 +18,13 @@ PlaylistNS::GraphicsView::GraphicsView( QWidget* parent, PlaylistNS::Model* mode
     : QGraphicsView( parent )
     , m_model( model )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK
     setScene( new QGraphicsScene() );
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( dataChanged( const QModelIndex& ) ) );
     show();
 }
 
@@ -56,6 +57,15 @@ PlaylistNS::GraphicsView::modelReset()
         delete it;
     }
     m_tracks.clear();
+}
+
+
+void 
+PlaylistNS::GraphicsView::dataChanged(const QModelIndex & index)
+{
+     DEBUG_BLOCK
+     if ( m_tracks.count() > index.row() )
+         m_tracks[ index.row() ]->refresh();
 }
 
 #include "PlaylistGraphicsView.moc"
