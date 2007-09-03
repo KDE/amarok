@@ -386,6 +386,7 @@ set(amaroklib_LIB_SRCS
     lastfm.cpp
     MainWindow.cpp
     mediabrowser.cpp
+    MediaItem.cpp
     medium.cpp
     metabundle.cpp
     metabundlesaver.cpp
