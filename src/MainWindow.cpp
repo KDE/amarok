@@ -65,7 +65,6 @@
 
 #include "queuemanager/QueueManager.h"
 
-#include <Q3PopupMenu>
 #include <QFont>
 #include <QHeaderView>
 #include <QLabel>           //search filter label
@@ -146,15 +145,20 @@ void MainWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     KVBox *playlistwindow = new KVBox;
     playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
-    //make the playlist views resizable so the old one can be hidden!
+    playlistwindow->setMinimumSize( QSize( 250, 100  ) );
+    playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    
     DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
-    Playlist *playlist = new Playlist( 0 ); //Playlist
+    
+    Playlist   *playlist   = new Playlist( 0 ); //Playlist
+    playlist->setContentsMargins( 2,2,2,2 );
+    playlist->installEventFilter( this ); //we intercept keyEvents
+    
     new PlaylistNS::Widget( playlistwindow );
-    //This is our clear/undo/redo/save buttons
+
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    playlistwindow->setMinimumSize( QSize(250,100) );
 
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -171,8 +175,8 @@ void MainWindow::init()
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode") ), plBar ) );
         plBar->addAction( new KToolBarSpacerAction( this ) );
-    //END Playlist Toolbar
-    }
+    } //END Playlist Toolbar
+
     {
         m_controlBar = new KHBox( this );
         m_controlBar->setMaximumSize( 20000, 62 );
@@ -180,15 +184,21 @@ void MainWindow::init()
 
         AnalyzerWidget *aw = new AnalyzerWidget( m_controlBar );
         aw->setMinimumSize( 200, 30 );
+        
         m_controlBar->layout()->setAlignment( aw, Qt::AlignLeft );
-        KVBox *aVBox = new KVBox( m_controlBar );
-        KHBox *insideBox = new KHBox( aVBox );
+
+        KVBox *aVBox     = new KVBox( m_controlBar );
         aVBox->setMaximumSize( 50000, 60 );
-        KToolBar *m_playerControlsToolbar = new Amarok::ToolBar( insideBox );
-        m_playerControlsToolbar->setMinimumSize( 200, 45 );
-        insideBox->layout()->setAlignment( m_playerControlsToolbar, Qt::AlignRight );
-        VolumeWidget *vw = new VolumeWidget( insideBox );
+
+        KHBox *insideBox = new KHBox( aVBox );
         insideBox->setMaximumSize( 600000, 45 );
+        
+        KToolBar *playerControlsToolbar = new Amarok::ToolBar( insideBox );
+        
+        playerControlsToolbar->setMinimumSize( 200, 45 );
+        insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignRight );
+        
+        VolumeWidget *vw = new VolumeWidget( insideBox );
         vw->setMinimumSize( 200, 25 );
         insideBox->layout()->setAlignment( vw, Qt::AlignRight );
 
@@ -196,15 +206,14 @@ void MainWindow::init()
         pWidget->setMinimumSize( 400, 17 );
         pWidget->setMaximumSize( 600000, 17 );
 
-        m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        m_playerControlsToolbar->setIconDimensions( 32 );
-        m_playerControlsToolbar->setMovable( false );
-        m_playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
-        m_playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
-        m_playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
-        m_playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
-
+        playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        playerControlsToolbar->setIconDimensions( 32 );
+        playerControlsToolbar->setMovable( false );
+        playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
+        playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
+        playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
+        playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
     }
 
     QPalette p;
@@ -232,51 +241,47 @@ void MainWindow::init()
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     createMenus();
+    
     QWidget *contextWidget = new QWidget( this );
+    contextWidget->setMinimumSize( QSize(500,100) );
+    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     new Context::ContextView( contextWidget );
     {
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->setContentsMargins( 0, 0, 0, 0 );
         layout->addWidget( Context::ContextView::self() );
-         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
+        
+        if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
              layout->addWidget( new CoverBling( this ) );
-        ControlBox* m_controlBox = new ControlBox( contextWidget );
-        m_controlBox->show();
+        
+        ControlBox* controlBox = new ControlBox( contextWidget );
+        controlBox->show();
         // TODO fix the location of the controlbox so its not a few pixels out of the
         // context view
-        connect(m_controlBox, SIGNAL(zoomIn()), Context::ContextView::self(), SLOT(zoomIn()));
-        connect(m_controlBox, SIGNAL(zoomOut()), Context::ContextView::self(), SLOT(zoomOut()));
-        connect(m_controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self(), SLOT(addApplet(const QString&)));
-        connect(m_controlBox, SIGNAL(lockInterface(bool)), Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)));
+        connect( controlBox, SIGNAL(zoomIn()),                  Context::ContextView::self(), SLOT(zoomIn()) );
+        connect( controlBox, SIGNAL(zoomOut()),                 Context::ContextView::self(), SLOT(zoomOut()) );
+        connect( controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self(), SLOT(addApplet(const QString&)) );
+        connect( controlBox, SIGNAL(lockInterface(bool)),       Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)) );
     }
-    contextWidget->setMinimumSize( QSize(500,100) );
 
     m_browsers->setMaximumSize( QSize(300,7000) );
-    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-
-    QWidget *centralWidget = new QWidget( this );
+    connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins( 0, 0, 0, 0 );
-
     mainLayout->addWidget( m_controlBar );
+    mainLayout->addWidget( m_splitter );
+    
+    QWidget *centralWidget = new QWidget( this );
+    centralWidget->setLayout( mainLayout );
 
     m_splitter = new QSplitter( Qt::Horizontal, centralWidget );
     m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
     m_splitter->addWidget( contextWidget );
     m_splitter->addWidget( playlistwindow );
-    connect( m_browsers, SIGNAL( widgetActivated( int ) ),
-             SLOT( slotShrinkBrowsers( int ) ) );
-    mainLayout->addWidget( m_splitter );
-
-    centralWidget->setLayout( mainLayout );
 
     setCentralWidget( centralWidget );
-
-    playlist->setContentsMargins( 2,2,2,2 );
-    playlist->installEventFilter( this ); //we intercept keyEvents
 
     //<XMLGUI>
     {
