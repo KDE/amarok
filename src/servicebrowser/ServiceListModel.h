@@ -14,67 +14,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROKSERVICEBROWSER_H
-#define AMAROKSERVICEBROWSER_H
+#ifndef SERVICELISTMODEL_H
+#define SERVICELISTMODEL_H
 
-
-#include "scriptableservice/scriptableservicemanager.h"
 #include "servicebase.h"
-#include "ServiceListModel.h"
 
-#include <klistwidget.h>
-#include <kvbox.h>
-#include <QMap>
+#include <QAbstractListModel>
 
-
-
+#include <QList>
 
 /**
-A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
-Implemented as a singleton
+A very simple model to hold the available services
 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author 
 */
-class ServiceBrowser : public KVBox
+class ServiceListModel : public QAbstractListModel
 {
-    Q_OBJECT
-
 public:
 
-     ServiceBrowser(QWidget * parent, const QString& name );
-    /**
-     * Destructor
-     */
-    ~ServiceBrowser() { }
+    ServiceListModel ();
+    ~ServiceListModel();
+
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 
-public slots:
-
-    void addService( ServiceBase * service );
-    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
+    void addService( ServiceBase * service ); 
 
 private:
 
-    QListWidget * m_serviceSelectionList;
-    
-    void showService( const QString &name );
+    QList<ServiceBase * > m_services;
 
-    QMap<QString, ServiceBase *> m_services;
-    ServiceBase * m_currentService;
-
-    ScriptableServiceManager * m_scriptableServiceManager;
-    bool m_usingContextView;
-    ServiceListModel * m_serviceListModel;
-
-
-private slots:
-
-    void serviceSelected( QListWidgetItem * item );
-    void home();
 };
-
 
 #endif

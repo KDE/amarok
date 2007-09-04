@@ -14,67 +14,52 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROKSERVICEBROWSER_H
-#define AMAROKSERVICEBROWSER_H
-
-
-#include "scriptableservice/scriptableservicemanager.h"
-#include "servicebase.h"
 #include "ServiceListModel.h"
 
-#include <klistwidget.h>
-#include <kvbox.h>
-#include <QMap>
-
-
-
-
-/**
-A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
-Implemented as a singleton
-
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class ServiceBrowser : public KVBox
+ServiceListModel::ServiceListModel()
+ : QAbstractListModel()
 {
-    Q_OBJECT
-
-public:
-
-     ServiceBrowser(QWidget * parent, const QString& name );
-    /**
-     * Destructor
-     */
-    ~ServiceBrowser() { }
+}
 
 
-public slots:
+ServiceListModel::~ServiceListModel()
+{
+}
 
-    void addService( ServiceBase * service );
-    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
+int ServiceListModel::rowCount(const QModelIndex & parent) const
+{
 
-private:
+    if ( !parent.isValid() )
+        return 0;
 
-    QListWidget * m_serviceSelectionList;
-    
-    void showService( const QString &name );
+    return m_services.count();
+}
 
-    QMap<QString, ServiceBase *> m_services;
-    ServiceBase * m_currentService;
-
-    ScriptableServiceManager * m_scriptableServiceManager;
-    bool m_usingContextView;
-    ServiceListModel * m_serviceListModel;
-
-
-private slots:
-
-    void serviceSelected( QListWidgetItem * item );
-    void home();
-};
+QVariant ServiceListModel::data(const QModelIndex & index, int role) const
+{
+     if ( (!index.isValid()) || ( m_services.count() <= index.row() ) )
+         return QVariant();
 
 
-#endif
+    if ( role == Qt::DisplayRole )
+        return m_services[index.row()]->getName();
+    else if ( role ==  Qt::DecorationRole )
+        return m_services[index.row()]->getIcon();
+    else 
+        return QVariant();
+}
+
+void ServiceListModel::addService(ServiceBase * service)
+{
+
+    beginInsertRows ( QModelIndex(), m_services.count(), m_services.count() + 1 );
+    m_services.push_back( service );
+    endInsertRows();
+
+
+}
+
+

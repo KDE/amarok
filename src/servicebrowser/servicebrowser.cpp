@@ -29,6 +29,7 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     : KVBox( parent )
     , m_currentService( 0 )
     , m_usingContextView( false )
+    , m_serviceListModel( new ServiceListModel() )
 {
     setObjectName( name );
 
@@ -57,6 +58,8 @@ void ServiceBrowser::addService( ServiceBase * service ) {
     QListWidgetItem * serviceListItem = new QListWidgetItem( service->getName() , m_serviceSelectionList );
     //serviceListItem->setTextAlignment( Qt::AlignHCenter );
     serviceListItem->setIcon( service->getIcon() );
+
+    m_serviceListModel->addService( service );
 
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
 }
