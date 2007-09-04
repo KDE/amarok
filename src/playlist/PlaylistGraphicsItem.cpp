@@ -67,11 +67,12 @@ PlaylistNS::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
     , m_items( 0 )
     , m_track( 0 )
+    , m_verticalOffset( 2.0 )
 {
     if( not s_fm )
     {
         s_fm = new QFontMetricsF( QFont() );
-        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 );
+        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * m_verticalOffset;
     }
   //  setHandlesChildEvents( true );
     setFlag( QGraphicsItem::ItemIsSelectable );
@@ -122,7 +123,7 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
         if( not m_items->foreground )
         {
             m_items->foreground = new QGraphicsRectItem( option->rect, this );
-            m_items->foreground->setPos( 0.0, 0.0 );
+            m_items->foreground->setPos( 0.0, m_verticalOffset );
             m_items->foreground->setZValue( 5.0 );
             QRadialGradient gradient(option->rect.width() / 2.0, option->rect.height() / 2.0, option->rect.width() / 2.0, 20 + option->rect.width() / 2.0, option->rect.height() / 2.0 );
             QColor start = option->palette.highlight().color().light();
@@ -154,7 +155,7 @@ PlaylistNS::GraphicsItem::init( Meta::TrackPtr track )
         albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
 
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, 0.0 );
+    m_items->albumArt->setPos( 0.0, m_verticalOffset );
 
     {
         QFont font;
@@ -184,7 +185,7 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if( track->album() )
         album = track->album()->name();
 
-    const qreal lineTwoY = s_height / 2;
+    const qreal lineTwoY = s_height / 2 + m_verticalOffset;
     const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
     qreal rightAlignX;
@@ -194,7 +195,7 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             , s_fm->width( prettyLength ) );
         rightAlignX = qMax( middle, rightWidth );
     }
-    m_items->topRightText->setPos( rightAlignX, 0.0 );
+    m_items->topRightText->setPos( rightAlignX, m_verticalOffset );
     m_items->bottomRightText->setPos( rightAlignX, lineTwoY );
     m_items->topRightText->setPlainText( s_fm->elidedText( album, Qt::ElideRight, totalWidth - rightAlignX ) );
     m_items->bottomRightText->setPlainText( s_fm->elidedText( prettyLength, Qt::ElideRight, totalWidth - rightAlignX ) );
@@ -206,7 +207,7 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         if( track->artist() )
             artist = track->artist()->name();
         m_items->topLeftText->setPlainText( s_fm->elidedText( artist, Qt::ElideRight, spaceForLeft ) );
-        m_items->topLeftText->setPos( leftAlignX, 0.0 );
+        m_items->topLeftText->setPos( leftAlignX, m_verticalOffset );
     }
 
     m_items->bottomLeftText->setPlainText( s_fm->elidedText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
@@ -260,5 +261,5 @@ PlaylistNS::GraphicsItem::refresh()
     m_items->albumArt->hide();
     delete ( m_items->albumArt );
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, 0.0 );
+    m_items->albumArt->setPos( 0.0, m_verticalOffset );
 }

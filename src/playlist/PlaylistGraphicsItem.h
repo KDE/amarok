@@ -38,6 +38,7 @@ namespace PlaylistNS {
             static qreal s_height;
             static QFontMetricsF* s_fm;
             Meta::TrackPtr m_track;
+            double m_verticalOffset;
     };
 
 }
