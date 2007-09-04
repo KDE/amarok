@@ -252,10 +252,6 @@ PlaylistBrowser::polish()
 
     Amarok::OverrideCursor cursor;
 
-//     blockSignals( true );
-//     BrowserBar::instance()->restoreWidth();
-//     blockSignals( false );
-
     KVBox::polish();
 
     /// Podcasting is always initialised in the ctor because of autoscanning

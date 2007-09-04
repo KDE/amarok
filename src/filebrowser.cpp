@@ -285,7 +285,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focused when we get focus events
-    // Toolbar is more than 250px wide, BrowserBar doesn't allow that. -> Resizing issues.
+    // Toolbar is more than 250px wide, SideBar doesn't allow that. -> Resizing issues.
     setMinimumWidth( 250 /* toolbar->sizeHint().width() */ );
 }
 
