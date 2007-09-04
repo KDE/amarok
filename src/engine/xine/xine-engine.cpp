@@ -215,6 +215,8 @@ XineEngine::load( const KUrl &url, bool isStream )
 {
     DEBUG_BLOCK
 
+    debug() << "Loading URL: " << url;
+
     if( !ensureStream() )
         return false;
 
