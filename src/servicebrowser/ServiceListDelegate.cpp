@@ -45,9 +45,11 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->save();
  
     painter->setPen(Qt::gray);
-    painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,100, 10 ,10 );
 
-
+    if (option.state & QStyle::State_Selected)
+        painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,200, 10 ,10 );
+    else
+        painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,100, 10 ,10 );
 
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
@@ -63,12 +65,16 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
 QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    Q_UNUSED( option );
+    //Q_UNUSED( option );
     Q_UNUSED( index );
 
     DEBUG_BLOCK
 
-    return QSize ( 200, 100 );
+    if (option.state & QStyle::State_Selected)
+        return QSize ( 200, 200 );
+    else 
+        return QSize ( 200, 100 );
+    
     
 
 }
