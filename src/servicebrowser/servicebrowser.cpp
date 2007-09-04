@@ -90,6 +90,7 @@ void ServiceBrowser::showService( const QString &name )
 
         m_serviceSelectionList->setParent ( 0 );
         m_serviceSelectionList->move ( QPoint( 0,0 ) );
+        m_serviceListView->setParent( 0 );
         service->setParent ( this );
         service->move( QPoint( 0,0 ) );
         service->show();
@@ -105,6 +106,7 @@ void ServiceBrowser::home()
     if ( m_currentService != 0 ) {
         m_currentService->setParent( 0 );
         m_serviceSelectionList->setParent( this );
+          m_serviceListView->setParent( this );
         m_serviceSelectionList->move( 0, 0 );
         m_serviceSelectionList->show();
         m_currentService = 0;
