@@ -17,7 +17,7 @@ void
 StandardTrackAdvancer::advanceTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
-    if( (updateRow + 1) <= m_playlistModel->rowCount() )
+    if( updateRow < m_playlistModel->rowCount() )
     {
         setCurrentTrack( updateRow );
     }
