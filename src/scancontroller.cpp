@@ -27,7 +27,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-#include "playlist.h"
+
 #include "playlistbrowser.h"
 #include "statusbar.h"
 

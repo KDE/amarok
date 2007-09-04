@@ -24,7 +24,7 @@
 #include "daapserver.h"
 #include "debug.h"
 #include "mediabrowser.h"
-#include "playlist.h"
+
 #include "proxy.h"
 #include "statusbar/statusbar.h"
 #include "tagdialog.h"

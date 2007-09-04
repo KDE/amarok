@@ -22,7 +22,7 @@
 #include "config-amarok.h"
 #include "debug.h"
 #include "metabundle.h"
-#include "playlist.h"
+
 
 #include <KIconEffect>
 #include <KStandardDirs>   //KGlobal::dirs()

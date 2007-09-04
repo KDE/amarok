@@ -32,7 +32,7 @@
 #include <q3ptrlist.h>
 #include <q3listview.h>
 
-#include "playlist.h"
+
 #include "track.h"
 
 #include <QByteArray>

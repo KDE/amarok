@@ -15,7 +15,7 @@
 #include "k3bexporter.h"
 #include "MainWindow.h"
 #include "mediumpluginmanager.h"
-#include "playlist.h"
+
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "statusbar.h"
 #include "threadmanager.h"

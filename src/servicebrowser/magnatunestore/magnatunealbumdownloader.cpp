@@ -25,6 +25,7 @@
 #include "MagnatuneMeta.h"
 #include "statusbar.h"
 
+#include <KLocale>
 #include <kshell.h>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()

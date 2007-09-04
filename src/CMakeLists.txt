@@ -244,7 +244,8 @@ set(libstatusbar_SRCS
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
 #    statusbar/squeezedtextlabel.cpp
-    statusbar/queueLabel.cpp
+#TODO: Port to new playlist
+#    statusbar/queueLabel.cpp
     statusbar/selectLabel.cpp
 )
 
@@ -406,12 +407,12 @@ set(amaroklib_LIB_SRCS
     playlist/UndoCommands.cpp
     playlist/PlaylistGraphicsItem.cpp
     playlist/PlaylistGraphicsView.cpp
-    playlist.cpp
-    playlistbrowser.cpp
-    playlistbrowseritem.cpp
-    playlistitem.cpp
-    playlistloader.cpp
-    playlistselection.cpp
+#    playlist.cpp
+#    playlistbrowser.cpp
+#    playlistbrowseritem.cpp
+#    playlistitem.cpp
+#    playlistloader.cpp
+#    playlistselection.cpp
     pluginmanager.cpp
     podcastsettings.cpp
     portabledevices/SolidHandler.cpp

@@ -32,7 +32,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "collectiondb.h"
 #include "collectiontreeitemmodel.h"
 #include "k3bexporter.h"
-#include "playlist.h"
+
 #include "podcastbundle.h"
 #include "statusbar/statusbar.h"
 #include "transferdialog.h"

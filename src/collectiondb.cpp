@@ -28,7 +28,7 @@
 #include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
 #include "mountpointmanager.h"    //buildQuery()
-#include "playlist.h"
+
 #include "playlistloader.h"
 #include "playlistbrowser.h"
 #include "podcastbundle.h"        //addPodcast

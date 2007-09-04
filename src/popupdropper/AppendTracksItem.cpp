@@ -50,7 +50,7 @@ AppendTracksItem::dropEvent( QGraphicsSceneDragDropEvent *event )
         if( mimeData )
         {
             Meta::TrackList tracks = mimeData->tracks();
-            The::playlistModel()->insertOptioned( tracks, PlaylistNS::Append );
+            The::playlistModel()->insertOptioned( tracks, Playlist::Append );
         }
     }
 }

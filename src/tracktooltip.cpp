@@ -25,7 +25,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "moodbar.h"
-#include "playlist.h"
+
 #include "playlistitem.h"
 #include "podcastbundle.h"
 

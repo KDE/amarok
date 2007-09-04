@@ -24,7 +24,6 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "queueLabel.h"
 #include "sliderwidget.h"
 #include "statusbar.h"
 

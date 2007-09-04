@@ -12,7 +12,7 @@
 #include "config-amarok.h"
 #include "pixmapviewer.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist.h"
+
 #include "TheInstances.h"
 
 #include <k3listview.h>

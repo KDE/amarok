@@ -39,7 +39,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlistbrowser.h"
-#include "playlist.h"
+
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
@@ -105,7 +105,7 @@ MainWindow::MainWindow()
     setObjectName("MainWindow");
     s_instance = this;
 
-    new PlaylistNS::Model( this );
+    new Playlist::Model( this );
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
@@ -154,7 +154,7 @@ void MainWindow::init()
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
     
-    new PlaylistNS::Widget( playlistwindow );
+    new Playlist::Widget( playlistwindow );
 
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );

@@ -20,13 +20,15 @@
 #include "MagnatuneStore.h"
 
 #include "amarok.h"
+#include "collection/CollectionManager.h"
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 #include "statusbar.h"
 
 #include "ServiceSqlRegistry.h"
 
 
 #include "magnatuneinfoparser.h"
-#include "playlist.h"
 #include "debug.h"
 //#include "../../contextview/contextview.h"
 //#include "../../contextview/cloudbox.h"
@@ -93,8 +95,8 @@ void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
 
     debug() << "Magnatune browser: adding single track";
     QString url = item->url();
-    Playlist * playlist = Playlist::instance();
-    playlist->insertMedia( KUrl( url ) );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 

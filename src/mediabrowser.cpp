@@ -28,7 +28,7 @@
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist.h"
+
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"
@@ -810,7 +810,7 @@ MediaView::invokeItem( Q3ListViewItem *i )
         return;
 
     KUrl::List urls = nodeBuildDragList( item );
-    The::playlistModel()->insertMedia( urls, PlaylistNS::AppendAndPlay );
+    The::playlistModel()->insertMedia( urls, Playlist::AppendAndPlay );
 }
 
 void

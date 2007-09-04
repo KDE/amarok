@@ -19,7 +19,7 @@
 #include "collectiondb.h"    //for albumCover location
 #include "debug.h"
 #include "enginecontroller.h"
-#include "playlist.h"        //if osdUsePlaylistColumns()
+        //if osdUsePlaylistColumns()
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"

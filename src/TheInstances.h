@@ -8,7 +8,7 @@
 #ifndef AMAROK_THE_INSTANCES
 #define AMAROK_THE_INSTANCES
 
-namespace PlaylistNS {
+namespace Playlist {
     class Model;
 }
 
@@ -30,7 +30,7 @@ namespace QueueManagerNS {
 class ServiceInfoProxy;
 
 namespace The {
-    PlaylistNS::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
+    Playlist::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
     PopupDropperNS::PopupDropper*    PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
     PlaylistManager*                 playlistManager();

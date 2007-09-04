@@ -9,7 +9,7 @@
 #include "coverfetcher.h"
 #include "debug.h"
 #include "metabundle.h"
-#include "playlist.h"
+
 #include "playlistitem.h"
 #include "querybuilder.h"
 #include "statusbar.h"       //for status messages

@@ -23,7 +23,7 @@
 #include "amarokconfig.h"
 
 #include "metabundle.h"
-#include "playlist.h"
+
 
 #include <KVBox>
 #include <k3listview.h>

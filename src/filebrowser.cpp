@@ -36,7 +36,7 @@
 #include "mydirlister.h"
 #include "mydiroperator.h"
 #include "playlistbrowser.h"
-#include "playlist.h"
+
 #include "playlistloader.h"
 #include "playlist/PlaylistModel.h"
 #include "statusbar.h"
@@ -449,7 +449,7 @@ inline void
 FileBrowser::activate( const KFileItem *item )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item->url() );
-    The::playlistModel()->insertOptioned( track, PlaylistNS::AppendAndPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::AppendAndPlay );
 }
 
 inline void
@@ -750,7 +750,7 @@ void
 SearchPane::activate( Q3ListViewItem *item )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( static_cast<KURLView::Item*>(item)->m_url );
-    The::playlistModel()->insertOptioned( track, PlaylistNS::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::DirectPlay );
 }
 
 #include "filebrowser.moc"

@@ -30,7 +30,7 @@
 #include "config-amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "playlist.h"
+
 #include "statusbar.h"
 
 #include <KApplication>

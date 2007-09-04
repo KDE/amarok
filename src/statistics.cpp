@@ -16,7 +16,7 @@
 #include "amarok.h"             //oldForeach macro
 #include "browserToolBar.h"     //search toolbar
 #include "debug.h"
-#include "playlist.h"
+
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"
 #include "tagdialog.h"         //showContextMenu()

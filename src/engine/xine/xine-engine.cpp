@@ -22,7 +22,7 @@
 #include "debug.h"
 //these files are from libamarok
 #include "enginecontroller.h"
-#include "playlist.h"
+
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 

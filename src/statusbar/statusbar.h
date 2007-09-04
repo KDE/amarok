@@ -22,7 +22,8 @@
 
 #include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
-#include "queueLabel.h"
+//TODO:PORT to new playlist
+// #include "queueLabel.h"
 
 #include <Q3ValueStack>
 //Added by qt3to4:
@@ -47,7 +48,8 @@ namespace Amarok
     public slots:
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
-        void updateQueueLabel() { m_queueLabel->update(); }
+        //FIXME: PORT
+//         void updateQueueLabel() { m_queueLabel->update(); }
     protected:  /* reimpl from engineobserver */
        virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
        virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -60,7 +62,8 @@ namespace Amarok
         QLabel *m_timeLabel2;
         int m_timeLength;
         QLabel *m_itemCountLabel;
-        QueueLabel *m_queueLabel;
+        //FIXME: Port
+//         QueueLabel *m_queueLabel;
         QTimer *m_pauseTimer;
     };
     /**

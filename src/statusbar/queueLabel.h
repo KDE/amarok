@@ -20,7 +20,6 @@
 #ifndef AMAROK_QUEUELABEL_H
 #define AMAROK_QUEUELABEL_H
 
-#include "playlistitem.h"
 #include "popupMessage.h"
 
 #include <QLabel>
@@ -37,6 +36,7 @@ class QueueLabel: public QLabel //homonym, heh heh
         explicit QueueLabel( QWidget *parent, const char *name = 0 );
 
     signals:
+        //TODO: port to new playlist
         void queueChanged( const PLItemList &, const PLItemList & );
 
     public slots:

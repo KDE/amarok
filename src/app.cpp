@@ -35,7 +35,7 @@ email                : markey@web.de
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist.h"
+
 #include "playlistbrowser.h"
 #include "pluginmanager.h"
 #include "portabledevices/SolidHandler.h"
@@ -295,7 +295,7 @@ void App::handleCliArgs() //static
                 list << url;
         }
 
-        int options = PlaylistNS::AppendAndPlay;
+        int options = Playlist::AppendAndPlay;
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
         else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )

@@ -132,12 +132,12 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                         tmp = tmp->parent();
                     }
                     m_treeModel->addFilters( qm );
-                    The::playlistModel()->insertOptioned( qm, PlaylistNS::Append );
+                    The::playlistModel()->insertOptioned( qm, Playlist::Append );
                 }
                 else
                 {
                     QList< Meta::TrackPtr > tracks = item->descendentTracks();
-                    The::playlistModel()->insertOptioned( tracks, PlaylistNS::Append );
+                    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
                 }
         }
     }

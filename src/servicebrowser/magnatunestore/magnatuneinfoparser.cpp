@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "statusbar.h"
 
+#include <KLocale>
+
 #include <QFile>
 
 using namespace Meta;

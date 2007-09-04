@@ -22,7 +22,7 @@
 
 // kionjb
 #include "njbmediadevice.h"
-#include "playlist.h"
+
 
 #define NJB_SUCCESS 0
 #define NJB_FAILURE -1

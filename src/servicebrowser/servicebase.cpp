@@ -23,7 +23,7 @@
 #include "amarok.h"
 
 #include "debug.h"
-#include "playlist.h"
+
 
 #include "TheInstances.h"
 #include "ServiceInfoProxy.h"

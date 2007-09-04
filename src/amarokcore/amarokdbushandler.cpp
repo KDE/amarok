@@ -39,7 +39,7 @@
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist.h"
+
 #include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "progressslider.h"
@@ -612,13 +612,13 @@ namespace Amarok
     void DbusPlaylistHandler::addMedia(const KUrl &url)
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        The::playlistModel()->insertOptioned( track, PlaylistNS::Append );
+        The::playlistModel()->insertOptioned( track, Playlist::Append );
     }
 
     void DbusPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls ); 
-        The::playlistModel()->insertOptioned( tracks, PlaylistNS::Append );
+        The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     }
 
     void DbusPlaylistHandler::clearPlaylist()
@@ -634,7 +634,7 @@ namespace Amarok
     void DbusPlaylistHandler::playMedia( const KUrl &url )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        The::playlistModel()->insertOptioned( track, PlaylistNS::DirectPlay | PlaylistNS::Unique );
+        The::playlistModel()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
     }
 
     void DbusPlaylistHandler::popupMessage( const QString& msg )
