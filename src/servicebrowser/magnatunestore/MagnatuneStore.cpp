@@ -60,7 +60,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
     //initTopPanel( );
 
 
-    setShortDescription("A very friendly service!");
+    setShortDescription("The friendly record company with the motto \"We are not evil!\"");
     setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
 
     //QSplitter *spliter = new QSplitter( Qt::Vertical, this );

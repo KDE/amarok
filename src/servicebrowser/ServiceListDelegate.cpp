@@ -21,7 +21,9 @@
 
 #include "debug.h"
 #include "servicebase.h"
+#include "ServiceListModel.h"
 
+#include <QIcon>
 #include <QPainter>
 
 ServiceListDelegate::ServiceListDelegate()
@@ -41,15 +43,14 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     //if ( ! service ) return;
 
     debug() << "Look ma' I am painting!";
- 
+
     painter->save();
- 
     painter->setPen(Qt::gray);
 
-    if (option.state & QStyle::State_Selected)
-        painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,200, 10 ,10 );
-    else
-        painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,100, 10 ,10 );
+    painter->setRenderHint ( QPainter::Antialiasing );
+
+
+    painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,250,100, 10 ,10 );
 
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
@@ -57,7 +58,22 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
         painter->setPen(Qt::black);
 
     painter->setFont(QFont("Arial", 16));
-    painter->drawText( option.rect.topLeft() + QPoint( 0, 16 ) , index.data( Qt::DisplayRole ).toString() );
+
+    painter->drawPixmap( option.rect.topLeft() + QPoint( 2, 2 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 50, 50 ) );
+
+    painter->drawText( option.rect.topLeft() + QPoint( 53, 33 ) , index.data( Qt::DisplayRole ).toString() );
+
+    painter->setFont(QFont("Arial", 12));
+    
+    QRectF textRect;
+
+    textRect.setLeft( option.rect.topLeft().x() + 4 );
+    textRect.setTop( option.rect.topLeft().y() + 46 );
+    textRect.setWidth( 250 );
+    textRect.setHeight( 100 - textRect.top() );
+
+    painter->drawText ( textRect, Qt::TextWordWrap, index.data( ShortDescriptionRole ).toString() );
+
 
     painter->restore();
 
@@ -65,16 +81,13 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
 QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    //Q_UNUSED( option );
+    Q_UNUSED( option );
     Q_UNUSED( index );
 
     DEBUG_BLOCK
 
-    if (option.state & QStyle::State_Selected)
-        return QSize ( 200, 200 );
-    else 
-        return QSize ( 200, 100 );
-    
+    return QSize ( 250, 100 );
+
     
 
 }
