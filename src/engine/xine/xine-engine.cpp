@@ -22,7 +22,8 @@
 #include "debug.h"
 //these files are from libamarok
 #include "enginecontroller.h"
-
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
@@ -868,7 +869,9 @@ XineEngine::playlistChanged()
     #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
     #ifdef XINE_PARAM_GAPLESS_SWITCH
     if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0)
-         && m_url.isLocalFile() && Playlist::instance()->isTrackAfter() )
+         && m_url.isLocalFile() )/* &&*/
+//FIXME: Breaks linking for some reason
+//       ( The::playlistModel()->activeRow() < The::playlistModel()->rowCount() ) )
     {
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
         debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled";
@@ -911,7 +914,8 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         #ifdef XINE_PARAM_GAPLESS_SWITCH
             if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() //Remote media break with gapless
             //don't prepare for a track that isn't coming
-            && Playlist::instance()->isTrackAfter()
+            //FIXME: breaks linking for some reason
+//             && ( The::playlistModel()->activeRow() < The::playlistModel()->rowCount() )
             && !AmarokConfig::crossfade() )
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
         #endif

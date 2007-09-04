@@ -484,48 +484,52 @@ StopMenu::instance()
 void
 StopMenu::slotAboutToShow()
 {
-    Playlist *pl = Playlist::instance();
+    //PORT 2.0
+//     Playlist *pl = Playlist::instance();
 
     m_stopNow->setEnabled( Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
     m_stopAfterTrack->setEnabled( EngineController::engine()->loaded() );
-    m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
+//     m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
-    m_stopAfterQueue->setEnabled( pl->nextTracks().count() );
-    m_stopAfterQueue->setChecked( pl->stopAfterMode() == Playlist::StopAfterQueue );
+//     m_stopAfterQueue->setEnabled( pl->nextTracks().count() );
+//     m_stopAfterQueue->setChecked( pl->stopAfterMode() == Playlist::StopAfterQueue );
 }
 
 void
 StopMenu::slotStopNow() //SLOT
 {
-    Playlist* pl = Playlist::instance();
-    const int mode = pl->stopAfterMode();
+    //PORT 2.0
+//     Playlist* pl = Playlist::instance();
+//     const int mode = pl->stopAfterMode();
 
-    Amarok::actionCollection()->action( "stop" )->trigger();
-    if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
-        pl->setStopAfterMode( Playlist::DoNotStop );
+//     Amarok::actionCollection()->action( "stop" )->trigger();
+//     if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
+//         pl->setStopAfterMode( Playlist::DoNotStop );
 }
 
 void
 StopMenu::slotStopAfterTrack() //SLOT
 {
-    Playlist* pl = Playlist::instance();
-    const int mode = pl->stopAfterMode();
+    //PORT 2.0
+//     Playlist* pl = Playlist::instance();
+//     const int mode = pl->stopAfterMode();
 
-    pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
-                                ? Playlist::DoNotStop
-                                : Playlist::StopAfterCurrent );
+//     pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
+//                                 ? Playlist::DoNotStop
+//                                 : Playlist::StopAfterCurrent );
 }
 
 void
 StopMenu::slotStopAfterQueue() //SLOT
 {
-    Playlist* pl = Playlist::instance();
-    const int mode = pl->stopAfterMode();
+    //PORT 2.0
+//     Playlist* pl = Playlist::instance();
+//     const int mode = pl->stopAfterMode();
 
-    pl->setStopAfterMode( mode == Playlist::StopAfterQueue
-                                ? Playlist::DoNotStop
-                                : Playlist::StopAfterQueue );
+//     pl->setStopAfterMode( mode == Playlist::StopAfterQueue
+//                                 ? Playlist::DoNotStop
+//                                 : Playlist::StopAfterQueue );
 }
 
 #include "actionclasses.moc"

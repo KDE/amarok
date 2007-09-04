@@ -12,6 +12,9 @@
 #include "statusbar.h"
 #include "xspfplaylist.h"
 
+
+#include <KLocale>
+
 #include <QDir>
 #include <QFile>
 

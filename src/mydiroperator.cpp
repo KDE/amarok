@@ -2,6 +2,7 @@
 
 #include "medium.h"
 
+#include <KActionCollection>
 #include <kurl.h>
 
 #include <QDir>

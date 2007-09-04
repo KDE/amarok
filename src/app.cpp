@@ -36,7 +36,6 @@ email                : markey@web.de
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
 
-#include "playlistbrowser.h"
 #include "pluginmanager.h"
 #include "portabledevices/SolidHandler.h"
 #include "refreshimages.h"
@@ -289,9 +288,10 @@ void App::handleCliArgs() //static
         for( int i = 0; i < args->count(); i++ )
         {
             KUrl url = args->url( i );
-            if( url.protocol() == "itpc" || url.protocol() == "pcast" )
-                PlaylistBrowser::instance()->addPodcast( url );
-            else
+            //TODO:PORTME
+//             if( url.protocol() == "itpc" || url.protocol() == "pcast" )
+//                 PlaylistBrowserNS::instance()->addPodcast( url );
+//             else
                 list << url;
         }
 
@@ -446,7 +446,8 @@ void App::initGlobalShortcuts()
 //    m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0, Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
     action = new KAction( i18n( "Stop Playing After Current Track" ), mainWindow() );
 //    action->setGlobalShortcut( KShortcut( Qt::META + Qt::CTRL + Qt::Key_V ) );
-    connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
+    //Port 2.0
+//     connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
 
 //    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0, ec, SLOT( next() ), true, true );
     action = new KAction( i18n( "Next Track" ), mainWindow() );
@@ -594,7 +595,6 @@ void App::applySettings( bool firstTime )
     //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
     //TrackToolTip::instance()->removeFromWidget( m_tray );
 #endif
-    mainWindow()->applySettings();
     Scrobbler::instance()->applySettings();
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
@@ -1015,8 +1015,9 @@ void App::setRating( int n )
         track->setRating( n );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
     }
-    else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
-        Playlist::instance()->setSelectedRatings( n );
+    //PORT 2.0
+//     else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
+//         Playlist::instance()->setSelectedRatings( n );
 }
 
 void App::slotTrashResult( KJob *job )

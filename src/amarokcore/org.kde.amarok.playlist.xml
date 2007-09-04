@@ -18,9 +18,6 @@
       <arg name="url" type="as" direction="in"/>
     </method>
     <method name="clearPlaylist" />
-    <method name="currentTrackUniqueId" >
-      <arg type="s" direction="out"/>
-    </method>
     <method name="playByIndex" >
       <arg name="name" type="i" direction="in"/>
     </method>

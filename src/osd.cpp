@@ -20,7 +20,6 @@
 #include "debug.h"
 #include "enginecontroller.h"
         //if osdUsePlaylistColumns()
-#include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
 #include "StarManager.h"
@@ -31,6 +30,7 @@
 
 #include <QBitmap>
 #include <QDesktopWidget>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
@@ -558,6 +558,7 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
+#if 0 //TODO:PORT
     QString text = "";
     if( bundle.url().isEmpty() )
         text = i18n( "No track playing" );
@@ -682,6 +683,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         text = i18n("No information available for this track");
 
     OSDWidget::show( text );
+#endif
 }
 
 void

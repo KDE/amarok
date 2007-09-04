@@ -75,7 +75,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     layout->setSpacing(2);
 
     layout->addSpacing( 3 );
-    layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
+    //PORT 2.0
+//     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead

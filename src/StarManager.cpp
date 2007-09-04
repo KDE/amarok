@@ -96,7 +96,8 @@ StarManager::reinitStars( int height, int margin )
         tempstar = QImage();
         temphalfstar = QImage();
     }
-    if( Playlist::instance() ) Playlist::instance()->qscrollview()->viewport()->update();
+    //TODO:PORT
+//     if( Playlist::instance() ) Playlist::instance()->qscrollview()->viewport()->update();
 /*PORT 2.0
     if( CollectionView::instance() &&
             CollectionView::instance()->viewMode() == CollectionView::modeFlatView )

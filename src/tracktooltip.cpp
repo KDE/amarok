@@ -25,8 +25,6 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "moodbar.h"
-
-#include "playlistitem.h"
 #include "podcastbundle.h"
 
 #include <KCalendarSystem>
@@ -101,7 +99,7 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
              this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString & ) ),
              this, SLOT( slotImageChanged( const QString & ) ) );
-    connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
+// PORT 2.0    connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
              this, SLOT( slotUpdate( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
@@ -148,133 +146,136 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
 
         QString filename = "", title = ""; //special case these, put the first one encountered on top
 
-        Playlist *playlist = Playlist::instance();
-        const int n = playlist->numVisibleColumns();
-        for( int i = 0; i < n; ++i )
-        {
-            const int column = playlist->mapToLogicalColumn( i );
-
-            if( column == PlaylistItem::Score )
-            {
-                const float score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
-                if( score > 0.f )
-                {
-                    right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
-                    left << playlist->columnText( column );
-                }
-            }
-            else if( column == PlaylistItem::Rating )
-            {
-                const int rating = CollectionDB::instance()->getSongRating( tags.url().path() );
-                if( rating > 0 )
-                {
-                    QString s;
-                    for( int i = 0; i < rating / 2; ++i )
-                        s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                             .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
-                             .arg( QFontMetrics( QToolTip::font() ).height() )
-                             .arg( QFontMetrics( QToolTip::font() ).height() );
-                    if( rating % 2 )
-                        s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                             .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
-                             .arg( QFontMetrics( QToolTip::font() ).height() )
-                             .arg( QFontMetrics( QToolTip::font() ).height() );
-                    right << s;
-                    left << playlist->columnText( column );
-                }
-            }
-            else if( column == PlaylistItem::Mood )
-            {
-                if( !AmarokConfig::showMoodbar() )
-                  continue;
-
-                m_tags.moodbar().load();
-
-                switch( tags.moodbar_const().state() )
-                  {
-                  case Moodbar::JobQueued:
-                  case Moodbar::JobRunning:
-                    right << tags.prettyText( column );
-                    left  << playlist->columnText( column );
-                    break;
-
-                  case Moodbar::Loaded:
-                    {
-                      // Ok so this is a hack, but it works quite well.
-                      // Save an image in the user's home directory just so
-                      // it can be referenced in an <img> tag.  Store which
-                      // moodbar is saved in m_moodbarURL so we don't have
-                      // to re-save it every second.
-                      left << playlist->columnText( column );
-                      QString filename = KStandardDirs::locateLocal( "data",
-                                                        "amarok/mood_tooltip.png" );
-                      int height = QFontMetrics( QToolTip::font() ).height() - 2;
-
-                      if( m_moodbarURL != tags.url().url() )
-                        {
-                          QPixmap moodbar
-                            = const_cast<MetaBundle&>( tags ).moodbar().draw(
-                                  MOODBAR_WIDTH, height );
-                          moodbar.save( filename, "PNG", 100 );
-                          m_moodbarURL = tags.url().url();
-                        }
-
-                      right << QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                          .arg( filename ).arg( height ).arg( MOODBAR_WIDTH );
-                    }
-                    break;
-
-                  default:
-                    // no tag
-                    break;
-                  }
-            }
-            else if( column == PlaylistItem::PlayCount )
-            {
-                const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
-                if( count > 0 )
-                {
-                    right << QString::number( count );
-                    left << playlist->columnText( column );
-                }
-            }
-            else if( column == PlaylistItem::LastPlayed )
-            {
-                const uint lastPlayed = CollectionDB::instance()->getLastPlay( tags.url().path() ).toTime_t();
-                right << Amarok::verboseTimeSince( lastPlayed );
-                left << playlist->columnText( column );
-            }
-            else if( column == PlaylistItem::Filename && title.isEmpty() )
-                filename = tags.prettyText( column );
-            else if( column == PlaylistItem::Title && filename.isEmpty() )
-                title = tags.prettyText( column );
-            else if( column != PlaylistItem::Length )
-            {
-                const QString tag = tags.prettyText( column );
-                if( !tag.isEmpty() )
-                {
-                    right << tag;
-                    left << playlist->columnText( column );
-                }
-            }
-        }
+//         Playlist *playlist = Playlist::instance();
+//         const int n = playlist->numVisibleColumns();
+//         for( int i = 0; i < n; ++i )
+//         {
+//             const int column = playlist->mapToLogicalColumn( i );
+// 
+//             if( column == PlaylistItem::Score )
+//             {
+//                 const float score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
+//                 if( score > 0.f )
+//                 {
+//                     right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
+//                     left << playlist->columnText( column );
+//                 }
+//             }
+//             else if( column == PlaylistItem::Rating )
+//             {
+//                 const int rating = CollectionDB::instance()->getSongRating( tags.url().path() );
+//                 if( rating > 0 )
+//                 {
+//                     QString s;
+//                     for( int i = 0; i < rating / 2; ++i )
+//                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+//                              .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
+//                              .arg( QFontMetrics( QToolTip::font() ).height() )
+//                              .arg( QFontMetrics( QToolTip::font() ).height() );
+//                     if( rating % 2 )
+//                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+//                              .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
+//                              .arg( QFontMetrics( QToolTip::font() ).height() )
+//                              .arg( QFontMetrics( QToolTip::font() ).height() );
+//                     right << s;
+//                     left << playlist->columnText( column );
+//                 }
+//             }
+//             else if( column == PlaylistItem::Mood )
+//             {
+//                 if( !AmarokConfig::showMoodbar() )
+//                   continue;
+// 
+//                 m_tags.moodbar().load();
+// 
+//                 switch( tags.moodbar_const().state() )
+//                   {
+//                   case Moodbar::JobQueued:
+//                   case Moodbar::JobRunning:
+//                     right << tags.prettyText( column );
+//                     left  << playlist->columnText( column );
+//                     break;
+// 
+//                   case Moodbar::Loaded:
+//                     {
+//                       // Ok so this is a hack, but it works quite well.
+//                       // Save an image in the user's home directory just so
+//                       // it can be referenced in an <img> tag.  Store which
+//                       // moodbar is saved in m_moodbarURL so we don't have
+//                       // to re-save it every second.
+//                       left << playlist->columnText( column );
+//                       QString filename = KStandardDirs::locateLocal( "data",
+//                                                         "amarok/mood_tooltip.png" );
+//                       int height = QFontMetrics( QToolTip::font() ).height() - 2;
+// 
+//                       if( m_moodbarURL != tags.url().url() )
+//                         {
+//                           QPixmap moodbar
+//                             = const_cast<MetaBundle&>( tags ).moodbar().draw(
+//                                   MOODBAR_WIDTH, height );
+//                           moodbar.save( filename, "PNG", 100 );
+//                           m_moodbarURL = tags.url().url();
+//                         }
+// 
+//                       right << QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+//                           .arg( filename ).arg( height ).arg( MOODBAR_WIDTH );
+//                     }
+//                     break;
+// 
+//                   default:
+//                     // no tag
+//                     break;
+//                   }
+//             }
+//             else if( column == PlaylistItem::PlayCount )
+//             {
+//                 const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
+//                 if( count > 0 )
+//                 {
+//                     right << QString::number( count );
+//                     left << playlist->columnText( column );
+//                 }
+//             }
+//             else if( column == PlaylistItem::LastPlayed )
+//             {
+//                 const uint lastPlayed = CollectionDB::instance()->getLastPlay( tags.url().path() ).toTime_t();
+//                 right << Amarok::verboseTimeSince( lastPlayed );
+//                 left << playlist->columnText( column );
+//             }
+//             else if( column == PlaylistItem::Filename && title.isEmpty() )
+//                 filename = tags.prettyText( column );
+//             else if( column == PlaylistItem::Title && filename.isEmpty() )
+//                 title = tags.prettyText( column );
+//             else if( column != PlaylistItem::Length )
+//             {
+//                 const QString tag = tags.prettyText( column );
+//                 if( !tag.isEmpty() )
+//                 {
+//                     right << tag;
+//                     left << playlist->columnText( column );
+//                 }
+//             }
+//         }
 
         if( !filename.isEmpty() )
         {
             right.prepend( filename );
-            left.prepend( playlist->columnText( PlaylistItem::Filename ) );
+            //PORT 2.0
+//             left.prepend( playlist->columnText( PlaylistItem::Filename ) );
         }
         else if( !title.isEmpty() )
         {
             right.prepend( title );
-            left.prepend( playlist->columnText( PlaylistItem::Title ) );
+            //PORT 2.0
+//             left.prepend( playlist->columnText( PlaylistItem::Title ) );
         }
 
         if( tags.length() > 0 ) //special case this too, always on the bottom
         {
             m_haspos = true;
             right << "%9 / " + tags.prettyLength();
-            left << playlist->columnText( PlaylistItem::Length );
+            //PORT 2.0
+//             left << playlist->columnText( PlaylistItem::Length );
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually

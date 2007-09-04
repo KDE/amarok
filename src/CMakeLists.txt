@@ -362,7 +362,7 @@ set(amaroklib_LIB_SRCS
     app.cpp
     atomicstring.cpp
     collectiondb.cpp
-    columnlist.cpp
+#    columnlist.cpp
     coverfetcher.cpp
     covermanager.cpp
     cuefile.cpp
@@ -370,7 +370,7 @@ set(amaroklib_LIB_SRCS
     deletedialog.cpp
     deviceconfiguredialog.cpp
     directorylist.cpp
-    dynamicmode.cpp
+#    dynamicmode.cpp
     editfilterdialog.cpp
     enginebase.cpp
     enginecontroller.cpp
@@ -452,7 +452,7 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
-   newdynamic.ui
+#   newdynamic.ui
    collectionbrowser/OrganizeCollectionDialog.ui
    podcastsettingsbase.ui
    tagdialogbase.ui

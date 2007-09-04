@@ -5,7 +5,6 @@
 //     media files in that directory show a longMessage (preferably one that disappears when given a signal)
 
 #include "enginecontroller.h"
-#include "playlistloader.h"
 
 #include <kdirlister.h>
 #include <kfileitem.h>
@@ -20,7 +19,7 @@ protected:
             item->isDir() ||
             EngineController::canDecode( item->url() ) ||
             item->url().protocol() == "audiocd" ||
-            PlaylistFile::isPlaylistFile( item->name() ) ||
+// Port 2.0            PlaylistFile::isPlaylistFile( item->name() ) ||
             item->name().endsWith( ".mp3", Qt::CaseInsensitive ) || //for now this is less confusing for the user
             item->name().endsWith( ".aa", Qt::CaseInsensitive ) || //for adding to iPod
             item->name().endsWith( ".mp4", Qt::CaseInsensitive ) || //for adding to iPod

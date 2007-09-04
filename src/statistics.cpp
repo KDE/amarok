@@ -14,6 +14,7 @@
 #include "statistics.h"
 
 #include "amarok.h"             //oldForeach macro
+#include "amarokconfig.h"
 #include "browserToolBar.h"     //search toolbar
 #include "debug.h"
 
@@ -695,32 +696,34 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 
     menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
 
-    switch( menu.exec( p ) )
-    {
-        case APPEND:
-            hasSQL ?
-                Playlist::instance()->insertMediaSql( item->getSQL() ):
-                The::playlistModel()->insertMedia( KUrl( item->url() ) );
-            break;
 
-        case QUEUE:
-            hasSQL ?
-                Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
-                The::playlistModel()->insertMedia( KUrl( item->url() ), Playlist::Queue );
-            break;
-
-        case INFO:
-            if( hasSQL )
-            {
-                TagDialog* dialog = new TagDialog( item->getURLs(), Statistics::instance() );
-                dialog->show();
-            }
-            else
-            {
-                TagDialog* dialog = new TagDialog( KUrl( item->url() ), Statistics::instance() );
-                dialog->show();
-            }
-    }
+    //PORT 2.0
+//     switch( menu.exec( p ) )
+//     {
+//         case APPEND:
+//             hasSQL ?
+//                 Playlist::instance()->insertMediaSql( item->getSQL() ):
+//                 The::playlistModel()->insertMedia( KUrl( item->url() ) );
+//             break;
+// 
+//         case QUEUE:
+//             hasSQL ?
+//                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
+//                 The::playlistModel()->insertMedia( KUrl( item->url() ), Playlist::Queue );
+//             break;
+// 
+//         case INFO:
+//             if( hasSQL )
+//             {
+//                 TagDialog* dialog = new TagDialog( item->getURLs(), Statistics::instance() );
+//                 dialog->show();
+//             }
+//             else
+//             {
+//                 TagDialog* dialog = new TagDialog( KUrl( item->url() ), Statistics::instance() );
+//                 dialog->show();
+//             }
+//     }
 #undef item
 }
 

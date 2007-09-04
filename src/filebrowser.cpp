@@ -27,6 +27,7 @@
 #include "browserToolBar.h"
 #include "collectiondb.h"
 #include "collection/CollectionManager.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "kbookmarkhandler.h"
@@ -35,9 +36,7 @@
 #include "medium.h"
 #include "mydirlister.h"
 #include "mydiroperator.h"
-#include "playlistbrowser.h"
 
-#include "playlistloader.h"
 #include "playlist/PlaylistModel.h"
 #include "statusbar.h"
 #include "tagdialog.h"
@@ -352,14 +351,14 @@ void FileBrowser::playlistFromURLs( const KUrl::List &urls )
         suggestion = urls.first().fileName();
     else
         suggestion = i18n( "Untitled" );
-    const QString path = PlaylistDialog::getSaveFileName( suggestion );
-    if( path.isEmpty() )
-        return;
+//PORT 2.0     const QString path = PlaylistDialog::getSaveFileName( suggestion );
+//     if( path.isEmpty() )
+//         return;
 
-    if( PlaylistBrowser::savePlaylist( path, urls ) )
-    {
-        Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
-    }
+//PORT 2.0     if( PlaylistBrowser::savePlaylist( path, urls ) )
+//     {
+//         Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
+//     }
 }
 
 

@@ -28,7 +28,6 @@
 #include "context/DataEngineManager.h"
 #include "covermanager.h" // for actions
 #include "debug.h"
-#include "dynamicmode.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
@@ -38,7 +37,6 @@
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-#include "playlistbrowser.h"
 
 #include "progressslider.h"
 #include "scriptmanager.h"
@@ -148,12 +146,6 @@ void MainWindow::init()
     playlistwindow->setMinimumSize( QSize( 250, 100  ) );
     playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
     
-    DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
-    
-    Playlist   *playlist   = new Playlist( 0 ); //Playlist
-    playlist->setContentsMargins( 2,2,2,2 );
-    playlist->installEventFilter( this ); //we intercept keyEvents
-    
     new Playlist::Widget( playlistwindow );
 
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
@@ -233,15 +225,14 @@ void MainWindow::init()
     m_controlBar->setAutoFillBackground( true );
     m_controlBar->setPalette( p );
 
-    dynamicBar->init();
+//     dynamicBar->init();
     this->toolBars().clear();
 
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
-    connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     createMenus();
-    
+
     QWidget *contextWidget = new QWidget( this );
     contextWidget->setMinimumSize( QSize(500,100) );
     contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -253,7 +244,7 @@ void MainWindow::init()
         
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
              layout->addWidget( new CoverBling( this ) );
-        
+
         ControlBox* controlBox = new ControlBox( contextWidget );
         controlBox->show();
         // TODO fix the location of the controlbox so its not a few pixels out of the
@@ -314,7 +305,6 @@ void MainWindow::init()
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
-        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "NeoPlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
@@ -370,17 +360,8 @@ void MainWindow::init()
     }
     //</Browsers>
 
-    connect( Playlist::instance()->qscrollview(), SIGNAL( dynamicModeChanged( const DynamicMode* ) ),
-             PlaylistBrowser::instance(), SLOT( loadDynamicItems() ) );
-
 
     kapp->installEventFilter( this ); // keyboards shortcuts for the browsers
-
-    connect( playlist, SIGNAL( itemCountChanged(     int, int, int, int, int, int ) ),
-             statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );
-//     connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
-//              statusbar,  SLOT( updateQueueLabel() ) );
-//    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 
     Amarok::MessageQueue::instance()->sendMessages();
 }
@@ -514,23 +495,6 @@ void MainWindow::createGUI()
 }
 #endif
 
-/**
- * Apply the loaded settings on the playlist window.
- * this function loads the custom fonts (if chosen) and than calls PlayList::instance()->applySettings();
- */
-void MainWindow::applySettings()
-{
-    switch( AmarokConfig::useCustomFonts() )
-    {
-    case true:
-        Playlist::instance()->setFont( AmarokConfig::playlistWindowFont() );
-        break;
-    case false:
-        Playlist::instance()->setFont( QFont() );
-        break;
-    }
-}
-
 
 /**
  * @param o The object
@@ -541,7 +505,6 @@ void MainWindow::applySettings()
  */
 bool MainWindow::eventFilter( QObject *o, QEvent *e )
 {
-    Playlist* const pl = Playlist::instance();
     typedef Q3ListViewItemIterator It;
 
     switch( e->type() )
@@ -552,22 +515,23 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
 
         #define e static_cast<QKeyEvent*>(e)
 
-        if( e->key() == Qt::Key_F2 )
-        {
-            // currentItem is ALWAYS visible.
-            Q3ListViewItem *item = pl->currentItem();
-
-            // intercept F2 for inline tag renaming
-            // NOTE: tab will move to the next tag
-            // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
-            // TODO: berkus has solved the "inability to cancel" issue with K3ListView, but it's not in kdelibs yet..
-
-            // item may still be null, but this is safe
-            // NOTE: column 0 cannot be edited currently, hence we pick column 1
-            pl->rename( item, 1 ); //TODO what if this column is hidden?
-
-            return true;
-        }
+        //TODO:PORT ME
+//         if( e->key() == Qt::Key_F2 )
+//         {
+//             // currentItem is ALWAYS visible.
+//             Q3ListViewItem *item = pl->currentItem();
+// 
+//             // intercept F2 for inline tag renaming
+//             // NOTE: tab will move to the next tag
+//             // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
+//             // TODO: berkus has solved the "inability to cancel" issue with K3ListView, but it's not in kdelibs yet..
+// 
+//             // item may still be null, but this is safe
+//             // NOTE: column 0 cannot be edited currently, hence we pick column 1
+//             pl->rename( item, 1 ); //TODO what if this column is hidden?
+// 
+//             return true;
+//         }
 
 
 //         if( o == m_searchWidget->lineEdit() ) //the search lineedit
@@ -642,41 +606,6 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
         //following are for Playlist::instance() only
         //we don't handle these in the playlist because often we manipulate the lineEdit too
 
-        if( o == pl )
-        {
-            if( pl->currentItem() && ( e->key() == Qt::Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->modifiers() & Qt::ShiftModifier) ) )
-            {
-                Q3ListViewItem *lastitem = *It( pl, It::Visible );
-                if ( !lastitem )
-                    return false;
-                while( lastitem->itemBelow() )
-                    lastitem = lastitem->itemBelow();
-                pl->currentItem()->setSelected( false );
-                pl->setCurrentItem( lastitem );
-                lastitem->setSelected( true );
-                pl->ensureItemVisible( lastitem );
-                return true;
-            }
-            if( pl->currentItem() && ( e->key() == Qt::Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->modifiers() & Qt::ShiftModifier) ) )
-            {
-                pl->currentItem()->setSelected( false );
-                pl->setCurrentItem( *It( pl, It::Visible ) );
-                (*It( pl, It::Visible ))->setSelected( true );
-                pl->ensureItemVisible( *It( pl, It::Visible ) );
-                return true;
-            }
-            if( e->key() == Qt::Key_Delete )
-            {
-                pl->removeSelectedItems();
-                return true;
-            }
-//             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->modifiers() || e->modifiers() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
-//             {
-//                 m_searchWidget->lineEdit();
-//                 QApplication::sendEvent( m_searchWidget->lineEdit(), e );
-//                 return true;
-//             }
-        }
         #undef e
         break;
 
@@ -701,10 +630,11 @@ void MainWindow::closeEvent( QCloseEvent *e )
 
 void MainWindow::showEvent( QShowEvent* )
 {
-    static bool firstTime = true;
-    if( firstTime )
-        Playlist::instance()->setFocus();
-    firstTime = false;
+    //PORT 2.0
+//     static bool firstTime = true;
+//     if( firstTime )
+//         Playlist::instance()->setFocus();
+//     firstTime = false;
 }
 
 #include <qdesktopwidget.h>
@@ -716,46 +646,47 @@ QSize MainWindow::sizeHint() const
 
 void MainWindow::savePlaylist() const //SLOT
 {
-    Playlist *pl = Playlist::instance();
-
-    PlaylistItem *item = pl->firstChild();
-    if( item && !item->isVisible() )
-        item = static_cast<PlaylistItem*>( item->itemBelow() );
-
-    QString title = pl->playlistName();
-
-    if( item && title == i18n( "Untitled" ) )
-    {
-        QString artist = item->artist();
-        QString album  = item->album();
-
-        bool useArtist = true, useAlbum = true;
-
-        item = static_cast<PlaylistItem*>( item->itemBelow() );
-
-        for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
-        {
-            if( artist != item->artist() )
-                useArtist = false;
-            if( album  != item->album() )
-                useAlbum = false;
-
-            if( !useArtist && !useAlbum )
-                break;
-        }
-
-        if( useArtist && useAlbum )
-            title = i18n("%1 - %2", artist, album );
-        else if( useArtist )
-            title = artist;
-        else if( useAlbum )
-            title = album;
-    }
-
-    QString path = PlaylistDialog::getSaveFileName( title, pl->proposeOverwriteOnSave() );
-
-    if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
-        MainWindow::self()->showBrowser( "PlaylistBrowser" );
+//PORT 2.0
+//     Playlist *pl = Playlist::instance();
+// 
+//     PlaylistItem *item = pl->firstChild();
+//     if( item && !item->isVisible() )
+//         item = static_cast<PlaylistItem*>( item->itemBelow() );
+// 
+//     QString title = pl->playlistName();
+// 
+//     if( item && title == i18n( "Untitled" ) )
+//     {
+//         QString artist = item->artist();
+//         QString album  = item->album();
+// 
+//         bool useArtist = true, useAlbum = true;
+// 
+//         item = static_cast<PlaylistItem*>( item->itemBelow() );
+// 
+//         for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
+//         {
+//             if( artist != item->artist() )
+//                 useArtist = false;
+//             if( album  != item->album() )
+//                 useAlbum = false;
+// 
+//             if( !useArtist && !useAlbum )
+//                 break;
+//         }
+// 
+//         if( useArtist && useAlbum )
+//             title = i18n("%1 - %2", artist, album );
+//         else if( useArtist )
+//             title = artist;
+//         else if( useAlbum )
+//             title = album;
+//     }
+// 
+//     QString path = PlaylistDialog::getSaveFileName( title, pl->proposeOverwriteOnSave() );
+// 
+//     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
+//         MainWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
 
@@ -968,8 +899,9 @@ void MainWindow::showStatistics() //SLOT
 
 void MainWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() /*|| m_searchWidget->lineEdit()->hasFocus()*/ ) )
-        m_browsers->currentWidget()->setFocus();
+    //Port 2.0
+//     if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() /*|| m_searchWidget->lineEdit()->hasFocus()*/ ) )
+//         m_browsers->currentWidget()->setFocus();
 }
 
 void MainWindow::slotToggleToolbar() //SLOT
@@ -1369,95 +1301,96 @@ void MainWindow::createMenus()
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// DynamicBar
-//////////////////////////////////////////////////////////////////////////////////////////
-DynamicBar::DynamicBar(QWidget* parent)
-       : KHBox( parent)
-{
-    setObjectName( "dynamicBar" );
-    m_titleWidget = new DynamicTitle( this );
-
-    setSpacing( KDialog::spacingHint() );
-    QWidget *spacer = new QWidget( this );
-    setStretchFactor( spacer, 10 );
-}
-
-// necessary because it has to be constructed before Playlist::instance(), but also connect to it
-void DynamicBar::init()
-{
-    connect(Playlist::instance()->qscrollview(), SIGNAL(dynamicModeChanged(const DynamicMode*)),
-                                                   SLOT(slotNewDynamicMode(const DynamicMode*)));
-
-    KPushButton* editDynamicButton = new KPushButton( i18n("Edit"), this );
-    connect( editDynamicButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(editActiveDynamicMode()) );
-
-    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this );
-    connect( repopButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(repopulate()) );
-
-    KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this );
-    connect( disableButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(disableDynamicMode()) );
-
-    slotNewDynamicMode( Playlist::instance()->dynamicMode() );
-}
-
-void DynamicBar::slotNewDynamicMode(const DynamicMode* mode)
-{
-    setVisible(mode);
-    if (mode)
-        changeTitle(mode->title());
-}
-
-void DynamicBar::changeTitle(const QString& title)
-{
-   m_titleWidget->setTitle(title);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-/// DynamicTitle
-//////////////////////////////////////////////////////////////////////////////////////////
-DynamicTitle::DynamicTitle(QWidget* w)
-    : QWidget()
-{
-    setParent( w );
-    setObjectName( "dynamicTitle" );
-    m_font.setBold( true );
-    setTitle("");
-}
-
-void DynamicTitle::setTitle(const QString& newTitle)
-{
-    m_title = newTitle;
-    QFontMetrics fm(m_font);
-    setMinimumWidth( s_curveWidth*3 + fm.width(m_title) + s_imageSize );
-    setMinimumHeight( fm.height() );
-}
-
-void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
-{
-    QPainter p;
-    p.begin( this );
-    QPen pen( palette().highlightedText(), 0, Qt::NoPen );
-    p.setPen( pen );
-    p.setBrush( palette().highlight() );
-    p.setFont( m_font );
-
-
-    QFontMetrics fm( m_font );
-    int textHeight = fm.height();
-    if (textHeight < s_imageSize)
-        textHeight = s_imageSize;
-    int textWidth = fm.width(m_title);
-    int yStart = (height() - textHeight) / 2;
-    if(yStart < 0)
-        yStart = 0;
-
-    p.drawEllipse( 0, yStart, s_curveWidth * 2, textHeight);
-    p.drawEllipse( s_curveWidth + textWidth + s_imageSize, yStart, s_curveWidth*2, textHeight);
-    p.fillRect( s_curveWidth, yStart, textWidth + s_imageSize + s_curveWidth, textHeight, QBrush( palette().highlight()) );
-    p.drawPixmap( s_curveWidth, yStart + ((textHeight - s_imageSize) /2), SmallIcon("dynamic") );
-    //not sure why first arg of Rect shouldn't add @curveWidth
-    p.drawText( QRect(s_imageSize, yStart, s_curveWidth + textWidth +s_imageSize, textHeight), Qt::AlignCenter, m_title);
-}
+//!PORT 2.0
+// //////////////////////////////////////////////////////////////////////////////////////////
+// /// DynamicBar
+// //////////////////////////////////////////////////////////////////////////////////////////
+// DynamicBar::DynamicBar(QWidget* parent)
+//        : KHBox( parent)
+// {
+//     setObjectName( "dynamicBar" );
+//     m_titleWidget = new DynamicTitle( this );
+// 
+//     setSpacing( KDialog::spacingHint() );
+//     QWidget *spacer = new QWidget( this );
+//     setStretchFactor( spacer, 10 );
+// }
+// 
+// // necessary because it has to be constructed before Playlist::instance(), but also connect to it
+// void DynamicBar::init()
+// {
+//     connect(Playlist::instance()->qscrollview(), SIGNAL(dynamicModeChanged(const DynamicMode*)),
+//                                                    SLOT(slotNewDynamicMode(const DynamicMode*)));
+// 
+//     KPushButton* editDynamicButton = new KPushButton( i18n("Edit"), this );
+//     connect( editDynamicButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(editActiveDynamicMode()) );
+// 
+//     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this );
+//     connect( repopButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(repopulate()) );
+// 
+//     KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this );
+//     connect( disableButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(disableDynamicMode()) );
+// 
+//     slotNewDynamicMode( Playlist::instance()->dynamicMode() );
+// }
+// 
+// void DynamicBar::slotNewDynamicMode(const DynamicMode* mode)
+// {
+//     setVisible(mode);
+//     if (mode)
+//         changeTitle(mode->title());
+// }
+// 
+// void DynamicBar::changeTitle(const QString& title)
+// {
+//    m_titleWidget->setTitle(title);
+// }
+// 
+// //////////////////////////////////////////////////////////////////////////////////////////
+// /// DynamicTitle
+// //////////////////////////////////////////////////////////////////////////////////////////
+// DynamicTitle::DynamicTitle(QWidget* w)
+//     : QWidget()
+// {
+//     setParent( w );
+//     setObjectName( "dynamicTitle" );
+//     m_font.setBold( true );
+//     setTitle("");
+// }
+// 
+// void DynamicTitle::setTitle(const QString& newTitle)
+// {
+//     m_title = newTitle;
+//     QFontMetrics fm(m_font);
+//     setMinimumWidth( s_curveWidth*3 + fm.width(m_title) + s_imageSize );
+//     setMinimumHeight( fm.height() );
+// }
+// 
+// void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
+// {
+//     QPainter p;
+//     p.begin( this );
+//     QPen pen( palette().highlightedText(), 0, Qt::NoPen );
+//     p.setPen( pen );
+//     p.setBrush( palette().highlight() );
+//     p.setFont( m_font );
+// 
+// 
+//     QFontMetrics fm( m_font );
+//     int textHeight = fm.height();
+//     if (textHeight < s_imageSize)
+//         textHeight = s_imageSize;
+//     int textWidth = fm.width(m_title);
+//     int yStart = (height() - textHeight) / 2;
+//     if(yStart < 0)
+//         yStart = 0;
+// 
+//     p.drawEllipse( 0, yStart, s_curveWidth * 2, textHeight);
+//     p.drawEllipse( s_curveWidth + textWidth + s_imageSize, yStart, s_curveWidth*2, textHeight);
+//     p.fillRect( s_curveWidth, yStart, textWidth + s_imageSize + s_curveWidth, textHeight, QBrush( palette().highlight()) );
+//     p.drawPixmap( s_curveWidth, yStart + ((textHeight - s_imageSize) /2), SmallIcon("dynamic") );
+//     //not sure why first arg of Rect shouldn't add @curveWidth
+//     p.drawText( QRect(s_imageSize, yStart, s_curveWidth + textWidth +s_imageSize, textHeight), Qt::AlignCenter, m_title);
+// }
 
 #include "MainWindow.moc"

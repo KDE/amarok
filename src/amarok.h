@@ -123,8 +123,9 @@ namespace Amarok
      * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
      */
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
+    //PORT 2.0
+//     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
+//     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 

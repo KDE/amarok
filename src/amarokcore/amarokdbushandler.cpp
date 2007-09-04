@@ -39,8 +39,6 @@
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
-
-#include "playlist/Pl"
 #include "progressslider.h"
 #include "scancontroller.h"
 #include "scriptmanager.h"
@@ -84,7 +82,8 @@ namespace Amarok
 
     bool DbusPlayerHandler::dynamicModeStatus()
     {
-        return Amarok::dynamicMode();
+        //TODO: PORT 2.0
+//         return Amarok::dynamicMode();
     }
 
     bool DbusPlayerHandler::equalizerEnabled()
@@ -604,8 +603,9 @@ namespace Amarok
 
     QString DbusPlaylistHandler::saveCurrentPlaylist()
     {
-        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
-        return Playlist::defaultPlaylistPath();
+        //PORT 2.0
+//         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
+//         return Playlist::defaultPlaylistPath();
     }
 
     void DbusPlaylistHandler::addMedia(const KUrl &url)
@@ -627,7 +627,8 @@ namespace Amarok
 
     void DbusPlaylistHandler::playByIndex(int index)
     {
-        Playlist::instance()->activateByIndex( index );
+        //PORT 2.0
+//         Playlist::instance()->activateByIndex( index );
     }
 
     void DbusPlaylistHandler::playMedia( const KUrl &url )
@@ -672,17 +673,19 @@ namespace Amarok
 
     void DbusPlaylistHandler::repopulate()
     {
-        Playlist::instance()->repopulate();
+        //PORT 2.0
+//         Playlist::instance()->repopulate();
     }
 
     void DbusPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
     {
-        Playlist::instance()->saveM3U( path, relativePaths );
+        The::playlistModel()->saveM3U( path, relativePaths );
     }
 
     void DbusPlaylistHandler::setStopAfterCurrent( bool on )
     {
-        Playlist::instance()->setStopAfterCurrent( on );
+        //PORT 2.0
+//         Playlist::instance()->setStopAfterCurrent( on );
     }
 
     void DbusPlaylistHandler::shortStatusMessage(const QString& msg)
@@ -692,7 +695,8 @@ namespace Amarok
 
     void DbusPlaylistHandler::shufflePlaylist()
     {
-        Playlist::instance()->shuffle();
+        //PORT 2.0
+//         Playlist::instance()->shuffle();
     }
 
     void DbusPlaylistHandler::togglePlaylist()
@@ -702,29 +706,31 @@ namespace Amarok
 
     QStringList DbusPlaylistHandler::filenames()
     {
-        Playlist *p_inst = Playlist::instance();
-        QStringList songlist;
-
-        if (!p_inst)
-                return songlist;
-
-        PlaylistItem *p_item = p_inst->firstChild();
-
-        while (p_item)
-        {
-                songlist.append(p_item->filename());
-                p_item = p_item->nextSibling();
-        }
-
-        return songlist;
+        //PORT 2.0
+//         Playlist *p_inst = Playlist::instance();
+//         QStringList songlist;
+// 
+//         if (!p_inst)
+//                 return songlist;
+// 
+//         PlaylistItem *p_item = p_inst->firstChild();
+// 
+//         while (p_item)
+//         {
+//                 songlist.append(p_item->filename());
+//                 p_item = p_item->nextSibling();
+//         }
+// 
+//         return songlist;
     }
+//     QString DbusPlaylistHandler::currentTrackUniqueId()
+//     {
+//         if( Playlist::instance()->currentItem() )
+//             return Playlist::instance()->currentItem()->uniqueId();
+//         return QString();
+//     }
 
-    QString DbusPlaylistHandler::currentTrackUniqueId()
-    {
-        if( Playlist::instance()->currentItem() )
-            return Playlist::instance()->currentItem()->uniqueId();
-        return QString();
-    }
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusPlaylistBrowserHandler
@@ -739,22 +745,26 @@ namespace Amarok
 
     void DbusPlaylistBrowserHandler::addPodcast( const QString &url )
     {
-        PlaylistBrowser::instance()->addPodcast( url );
+        //PORT 2.0
+//         PlaylistBrowser::instance()->addPodcast( url );
     }
 
     void DbusPlaylistBrowserHandler::scanPodcasts()
     {
-        PlaylistBrowser::instance()->scanPodcasts();
+        //PORT 2.0
+//         PlaylistBrowser::instance()->scanPodcasts();
     }
 
     void DbusPlaylistBrowserHandler::addPlaylist( const QString &url )
     {
-        PlaylistBrowser::instance()->addPlaylist( url );
+        //PORT 2.0
+//         PlaylistBrowser::instance()->addPlaylist( url );
     }
 
     int DbusPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
     {
-        return PlaylistBrowser::instance()->loadPlaylist( playlist );
+        //PORT 2.0
+//         return PlaylistBrowser::instance()->loadPlaylist( playlist );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -931,12 +941,14 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     void DbusScriptHandler::addCustomMenuItem(QString submenu, QString itemTitle )
     {
-        Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
+        //PORT 2.0
+//         Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
     }
 
     void DbusScriptHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
     {
-        Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
+        //PORT 2.0
+//         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
 
     QString DbusScriptHandler::readConfig(const QString& key)

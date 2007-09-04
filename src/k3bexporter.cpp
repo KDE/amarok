@@ -18,7 +18,6 @@
 
 #include "amarok.h"
 
-#include "playlistitem.h"
 #include "querybuilder.h"
 
 #include <k3process.h>

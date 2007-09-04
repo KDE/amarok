@@ -6,11 +6,10 @@
 #include "tagdialog.h"
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "coverfetcher.h"
 #include "debug.h"
 #include "metabundle.h"
-
-#include "playlistitem.h"
 #include "querybuilder.h"
 #include "statusbar.h"       //for status messages
 #include "tagguesser.h"
@@ -79,14 +78,14 @@ TagDialog::TagDialog( const KUrl::List list, QWidget* parent )
 }
 
 
-TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
-    : TagDialogBase( parent )
-    , m_bundle( mb )
-    , m_playlistItem( item )
-    , m_currentCover( 0 )
-{
-    init();
-}
+// TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
+//     : TagDialogBase( parent )
+//     , m_bundle( mb )
+//     , m_playlistItem( item )
+//     , m_currentCover( 0 )
+// {
+//     init();
+// }
 
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     :TagDialogBase( parent )
@@ -154,25 +153,26 @@ TagDialog::openPressed() //SLOT
 inline void
 TagDialog::previousTrack()
 {
-    if( m_playlistItem )
-    {
-        if( !m_playlistItem->itemAbove() ) return;
-
-        storeTags();
-
-        m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemAbove() );
-
-        loadTags( m_playlistItem->url() );
-    }
-    else
-    {
+    //PORT 2.0
+//     if( m_playlistItem )
+//     {
+//         if( !m_playlistItem->itemAbove() ) return;
+// 
+//         storeTags();
+// 
+//         m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemAbove() );
+// 
+//         loadTags( m_playlistItem->url() );
+//     }
+//     else
+//     {
         storeTags( *m_currentURL );
 
         if( m_currentURL != m_urlList.begin() )
             --m_currentURL;
         loadTags( *m_currentURL );
         enableItems();
-    }
+//     }
     readTags();
 }
 
@@ -180,18 +180,19 @@ TagDialog::previousTrack()
 inline void
 TagDialog::nextTrack()
 {
-    if( m_playlistItem )
-    {
-        if( !m_playlistItem->itemBelow() ) return;
-
-        storeTags();
-
-        m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemBelow() );
-
-        loadTags( m_playlistItem->url() );
-    }
-    else
-    {
+    //PORT 2.0
+//     if( m_playlistItem )
+//     {
+//         if( !m_playlistItem->itemBelow() ) return;
+// 
+//         storeTags();
+// 
+//         m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemBelow() );
+// 
+//         loadTags( m_playlistItem->url() );
+//     }
+//     else
+//     {
         storeTags( *m_currentURL );
 
         KUrl::List::iterator next = m_currentURL;
@@ -200,7 +201,7 @@ TagDialog::nextTrack()
             ++m_currentURL;
         loadTags( *m_currentURL );
         enableItems();
-    }
+//     }
     readTags();
 }
 
@@ -590,8 +591,9 @@ void TagDialog::init()
         }
         else
         {
+            //PORT 2.0
             //Reload the metadata from the file, to be sure it's accurate
-            loadTags( m_playlistItem->url() );
+//             loadTags( m_playlistItem->url() );
         }
 
         loadLyrics( m_bundle.url() );
@@ -806,10 +808,11 @@ void TagDialog::readTags()
     pushButton_musicbrainz->setEnabled( false );
 #endif
 
-    if( m_playlistItem ) {
-        pushButton_previous->setEnabled( m_playlistItem->itemAbove() );
-        pushButton_next->setEnabled( m_playlistItem->itemBelow() );
-    }
+    //PORT 2.0
+//     if( m_playlistItem ) {
+//         pushButton_previous->setEnabled( m_playlistItem->itemAbove() );
+//         pushButton_next->setEnabled( m_playlistItem->itemBelow() );
+//     }
 }
 
 
@@ -1560,7 +1563,7 @@ TagDialogWriter::completeJob()
      for( int i = 0, size=m_tags.size(); i<size; ++i ) {
         if ( !m_failed[i] ) {
             CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false /* don't update browsers*/ );
-            Playlist::instance()->updateMetaData( m_tags[i] );
+// PORT 2.0            Playlist::instance()->updateMetaData( m_tags[i] );
         }
      }
      QApplication::restoreOverrideCursor();

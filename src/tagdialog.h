@@ -10,6 +10,7 @@
 
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
+#include "playlist/PlaylistItem.h"
 #include "tagdialogbase.h"    //baseclass
 
 #include "meta/meta.h"
@@ -23,7 +24,6 @@
 #include <QtGui/QWidget>
 
 
-class PlaylistItem;
 namespace TagLib {
     namespace ID3v2 {
         class Tag;
@@ -41,7 +41,7 @@ class TagDialog : public TagDialogBase
 
         explicit TagDialog( const KUrl& url, QWidget* parent = 0 );
         explicit TagDialog( const KUrl::List list, QWidget* parent = 0 );
-        TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
+        TagDialog( const MetaBundle& mb, Playlist::Item* item, QWidget* parent = 0 );
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
         ~TagDialog();
@@ -112,7 +112,7 @@ class TagDialog : public TagDialogBase
         KUrl::List::iterator m_currentURL;
         QString m_lyrics;
         bool m_perTrack;
-        PlaylistItem* m_playlistItem;
+        Playlist::Item* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QMap<QString, float> storedScores;
         QMap<QString, int> storedRatings;

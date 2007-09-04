@@ -28,9 +28,9 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "config-amarok.h"
-#include "debug.h"
+#include "debug.h"r
 #include "enginecontroller.h"
-
+#include "metabundle.h"
 #include "statusbar.h"
 
 #include <KApplication>

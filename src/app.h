@@ -36,7 +36,6 @@ namespace KIO { class Job; }
 
 class KJob;
 class MetaBundle;
-class Playlist;
 class MainWindow;
 class MediaDeviceManager;
 class KSplashScreen;

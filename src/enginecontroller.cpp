@@ -21,12 +21,13 @@
 #include "debug.h"
 #include "enginebase.h"
 #include "lastfm.h"
+#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/meta.h"
-
-#include "playlistloader.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
+#include "TheInstances.h"
+#include "playlist/PlaylistModel.h"
 
 #include <KApplication>
 #include <kio/global.h>
@@ -215,7 +216,8 @@ bool EngineController::canDecode( const KUrl &url ) //static
     const QString fileName = url.fileName();
     const QString ext = Amarok::extension( fileName );
 
-    if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
+    //Port 2.0
+//     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
@@ -694,10 +696,10 @@ void EngineController::slotMainTimer() //SLOT
     if ( m_engine->state() == Engine::Playing &&
          AmarokConfig::crossfade() && m_xFadeThisTrack &&
          m_engine->hasPluginProperty( "HasCrossfade" ) &&
-         Playlist::instance()->stopAfterMode() != Playlist::StopAfterCurrent &&
+//Port 2.0        Playlist::instance()->stopAfterMode() != Playlist::StopAfterCurrent &&
          ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
            (uint) AmarokConfig::crossfadeType() == 1 ) &&  //...automatic track change only
-         Playlist::instance()->isTrackAfter() &&
+         ( The::playlistModel()->activeRow() < The::playlistModel()->rowCount() ) &&
          m_currentTrack->length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {
         debug() << "Crossfading to next track...\n";
@@ -706,7 +708,7 @@ void EngineController::slotMainTimer() //SLOT
     }
     else if ( m_engine->state() == Engine::Playing &&
               AmarokConfig::fadeout() &&
-              Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
+// Port 2.0              Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
               m_currentTrack->length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
     {
        m_engine->stop();

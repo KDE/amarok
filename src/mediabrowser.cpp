@@ -28,10 +28,6 @@
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
-
-#include "playlistbrowser.h"
-#include "playlistbrowseritem.h"
-#include "playlistloader.h"
 #include "pluginmanager.h"
 #include "podcastbundle.h"
 #include "scriptmanager.h"
@@ -1511,30 +1507,31 @@ MediaQueue::syncPlaylist( const QString &name, const KUrl &url, bool loading )
 BundleList
 MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
 {
-    BundleList bundles;
-    if( !PlaylistFile::isPlaylistFile( url ) )
-    {
-        Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
-                KDE::StatusBar::Sorry );
-        return bundles;
-    }
-
-    PlaylistFile playlist( url.path() );
-    if( playlist.isError() )
-    {
-        Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
-                KDE::StatusBar::Sorry );
-        return bundles;
-    }
-
-    for( BundleList::iterator it = playlist.bundles().begin();
-            it != playlist.bundles().end();
-            ++it )
-    {
-        bundles += MetaBundle( (*it).url() );
-    }
-    preparePlaylistForSync( name, bundles );
-    return bundles;
+    //PORT 2.0
+//     BundleList bundles;
+//     if( !PlaylistFile::isPlaylistFile( url ) )
+//     {
+//         Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
+//                 KDE::StatusBar::Sorry );
+//         return bundles;
+//     }
+// 
+//     PlaylistFile playlist( url.path() );
+//     if( playlist.isError() )
+//     {
+//         Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
+//                 KDE::StatusBar::Sorry );
+//         return bundles;
+//     }
+// 
+//     for( BundleList::iterator it = playlist.bundles().begin();
+//             it != playlist.bundles().end();
+//             ++it )
+//     {
+//         bundles += MetaBundle( (*it).url() );
+//     }
+//     preparePlaylistForSync( name, bundles );
+//     return bundles;
 }
 
 BundleList
@@ -1650,32 +1647,34 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
 {
     KUrl url = Amarok::mostLocalURL( url2 );
 
-    if( PlaylistFile::isPlaylistFile( url ) )
+//Port 2.0
+//     if( PlaylistFile::isPlaylistFile( url ) )
+//     {
+//         QString name = url.path().section( "/", -1 ).section( ".", 0, -2 ).replace( "_", " " );
+//      PlaylistFile playlist( url.path() );
+// 
+//         if( playlist.isError() )
+//         {
+//             Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
+//                     KDE::StatusBar::Sorry );
+//             return;
+//         }
+// 
+//         for( BundleList::iterator it = playlist.bundles().begin();
+//                 it != playlist.bundles().end();
+//                 ++it )
+//         {
+//             addUrl( (*it).url(), 0, name );
+//         }
+//         return;
+//     }
+    if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
     {
-        QString name = url.path().section( "/", -1 ).section( ".", 0, -2 ).replace( "_", " " );
-        PlaylistFile playlist( url.path() );
-
-        if( playlist.isError() )
-        {
-            Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
-                    KDE::StatusBar::Sorry );
-            return;
-        }
-
-        for( BundleList::iterator it = playlist.bundles().begin();
-                it != playlist.bundles().end();
-                ++it )
-        {
-            addUrl( (*it).url(), 0, name );
-        }
-        return;
-    }
-    else if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
-    {
-        KUrl::List urls = Amarok::recursiveUrlExpand( url );
-        oldForeachType( KUrl::List, urls )
-            addUrl( *it );
-        return;
+        //TODO: PORT
+//         KUrl::List urls = Amarok::recursiveUrlExpand( url );
+//         oldForeachType( KUrl::List, urls )
+//             addUrl( *it );
+//         return;
     }
 
     if( playlistName.isNull() )
@@ -2230,14 +2229,15 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     if( PodcastEpisodeBundle *peb = bundle->podcastBundle() )
                     {
                         debug() << "marking podcast episode as played: " << peb->url();
-                        if( PlaylistBrowser::instance() )
-                        {
-                            PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
-                            if ( p )
-                                p->setListened();
-                            else
-                                debug() << "did not find podcast episode: " << peb->url() << " from " << peb->parent();
-                        }
+//PORT 2.0
+//                         if( PlaylistBrowser::instance() )
+//                         {
+//                             PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
+//                             if ( p )
+//                                 p->setListened();
+//                             else
+//                                 debug() << "did not find podcast episode: " << peb->url() << " from " << peb->parent();
+//                         }
                     }
                 }
             }
@@ -2298,12 +2298,13 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
                 const MetaBundle *bundle = it->bundle();
                 if( PodcastEpisodeBundle *peb = bundle->podcastBundle() )
                 {
-                    if( PlaylistBrowser::instance() )
-                    {
-                        PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
-                        if( p )
-                            it->setListened( !p->isNew() );
-                    }
+// //PORT 2.0
+//                     if( PlaylistBrowser::instance() )
+//                     {
+//                         PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
+//                         if( p )
+//                             it->setListened( !p->isNew() );
+//                     }
                 }
             }
             break;

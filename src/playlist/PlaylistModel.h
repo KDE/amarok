@@ -9,7 +9,7 @@
 #ifndef AMAROK_PLAYLISTMODEL_H
 #define AMAROK_PLAYLISTMODEL_H
 
-#include "meta.h"
+#include "meta/meta.h"
 
 #include "UndoCommands.h"
 
@@ -26,7 +26,6 @@ class QModelIndex;
 class QueryMaker;
 class QUndoStack;
 
-//PORT rename to Playlist when the playlist class is removed
 namespace Playlist {
 
 class TrackAdvancer;

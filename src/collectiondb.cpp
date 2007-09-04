@@ -29,8 +29,6 @@
 #include "metabundle.h"           //updateTags()
 #include "mountpointmanager.h"    //buildQuery()
 
-#include "playlistloader.h"
-#include "playlistbrowser.h"
 #include "podcastbundle.h"        //addPodcast
 #include "qstringx.h"
 #include "querybuilder.h"
@@ -50,6 +48,7 @@
 #include "collection/CollectionManager.h"
 #include "SqlStorage.h"
 
+#include <QBitmap>
 #include <QBuffer>
 #include <QCheckBox>
 #include <QEvent>
@@ -62,6 +61,7 @@
 #include <QPainter>             //createDragPixmap()
 #include <QPalette>
 #include <QIODevice>
+#include <QToolTip>
 
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kcombobox.h>
@@ -1665,8 +1665,9 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
     KUrl::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        if( PlaylistFile::isPlaylistFile( *it )
-            || (*it).protocol() == "playlist" || (*it).protocol() == "smartplaylist"
+        //PORT 2.0
+        if( /*PlaylistFile::isPlaylistFile( *it )
+            ||*/ (*it).protocol() == "playlist" || (*it).protocol() == "smartplaylist"
             || (*it).protocol() == "dynamic" )
         {
             playlists++;
@@ -4762,7 +4763,7 @@ CollectionDB::applySettings()
         destroy();
         initialize();
 //PORT 2.0   CollectionView::instance()->renderView();
-        PlaylistBrowser::instance()->loadPodcastsFromDatabase();
+//         PlaylistBrowser::instance()->loadPodcastsFromDatabase();
 
         emit databaseEngineChanged();
     }
@@ -4898,11 +4899,12 @@ CollectionDB::startScan()  //SLOT
         clearTables( false );
         emit scanDone( true );
     }
-    else if( PlaylistBrowser::instance() )
-    {
-        emit scanStarted();
-        ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
-    }
+    //Port 2.0
+//     else if( PlaylistBrowser::instance() )
+//     {
+//         emit scanStarted();
+//         ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
+//     }
 }
 
 
@@ -5710,7 +5712,8 @@ CollectionDB::scanModifiedDirs()
             && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings
-        if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
+        //Port 2.0
+        if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) /*&& PlaylistBrowser::instance()*/ )
         {
             m_scanInProgress = true;
             m_rescanRequired = false;

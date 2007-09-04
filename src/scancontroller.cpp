@@ -27,8 +27,6 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-
-#include "playlistbrowser.h"
 #include "statusbar.h"
 
 #include <KApplication>
@@ -442,8 +440,9 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
-    else if( localName == "playlist" )
-        QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( attrs.value( "path" ) ) );
+    //PORT 2.0
+//     else if( localName == "playlist" )
+//         QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( attrs.value( "path" ) ) );
 
     else if( localName == "compilation" )
         CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental);

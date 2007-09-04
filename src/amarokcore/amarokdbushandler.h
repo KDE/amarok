@@ -128,7 +128,7 @@ class DbusPlaylistHandler : public QObject
       virtual void    addMedia(const KUrl &);
       virtual void    addMediaList(const KUrl::List &);
       virtual void    clearPlaylist();
-      virtual QString currentTrackUniqueId();
+//       virtual QString currentTrackUniqueId();
       virtual void    playByIndex(int);
       virtual void    playMedia(const KUrl &);
       virtual void    popupMessage(const QString&);
