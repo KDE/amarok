@@ -33,7 +33,6 @@
 #include "playlistbrowseritem.h" //for stream editor dialog
 #include "playlistloader.h"
 #include "playlistselection.h"
-#include "queuemanager.h"
 //Added by qt3to4:
 #include <QByteArray>
 #include <QWheelEvent>
@@ -3567,24 +3566,6 @@ Playlist::adjustColumn( int n )
         setColumnWidth( n, 120 );
     else
         K3ListView::adjustColumn( n );
-}
-
-void
-Playlist::showQueueManager()
-{
-    DEBUG_BLOCK
-
-    // Only show the dialog once
-    if( QueueManager::instance() ) {
-        QueueManager::instance()->raise();
-        return;
-    }
-
-    QueueManager dialog;
-    if( dialog.exec() == QDialog::Accepted )
-    {
-        changeFromQueueManager(dialog.newQueue());
-    }
 }
 
 void

@@ -240,7 +240,6 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void toggleStopAfterCurrentTrack();
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
-        void showQueueManager();
         void changeFromQueueManager( QList<PlaylistItem*> list );
         void shuffle();
         void undo();

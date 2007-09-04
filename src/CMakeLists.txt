@@ -417,7 +417,6 @@ set(amaroklib_LIB_SRCS
     portabledevices/SolidHandler.cpp
     prettypopupmenu.cpp
     querybuilder.cpp
-    queuemanager.cpp
     refreshimages.cpp
     scancontroller.cpp
     scriptmanager.cpp
