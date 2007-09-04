@@ -50,7 +50,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->setRenderHint ( QPainter::Antialiasing );
 
 
-    painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,250,100, 10 ,10 );
+    painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,100, 10 ,10 );
 
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
@@ -59,16 +59,16 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     painter->setFont(QFont("Arial", 16));
 
-    painter->drawPixmap( option.rect.topLeft() + QPoint( 2, 2 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 50, 50 ) );
+    painter->drawPixmap( option.rect.topLeft() + QPoint( 4, 4 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 50, 50 ) );
 
-    painter->drawText( option.rect.topLeft() + QPoint( 53, 33 ) , index.data( Qt::DisplayRole ).toString() );
+    painter->drawText( option.rect.topLeft() + QPoint( 55, 35 ) , index.data( Qt::DisplayRole ).toString() );
 
     painter->setFont(QFont("Arial", 12));
     
     QRectF textRect;
 
-    textRect.setLeft( option.rect.topLeft().x() + 4 );
-    textRect.setTop( option.rect.topLeft().y() + 46 );
+    textRect.setLeft( option.rect.topLeft().x() + 6 );
+    textRect.setTop( option.rect.topLeft().y() + 48 );
     textRect.setWidth( 250 );
     textRect.setHeight( 100 - textRect.top() );
 
@@ -86,7 +86,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     DEBUG_BLOCK
 
-    return QSize ( 250, 100 );
+    return QSize ( 252, 102 );
 
     
 
