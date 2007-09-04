@@ -15,7 +15,7 @@
 
 #include <QHBoxLayout>
 
-using namespace PlaylistNS;
+using namespace Playlist;
 
 Widget::Widget( QWidget* parent )
     : QWidget( parent )
@@ -23,14 +23,14 @@ Widget::Widget( QWidget* parent )
     QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins(0,0,0,0);
 
-    PlaylistNS::HeaderWidget* header = new PlaylistNS::HeaderWidget( this );
+    Playlist::HeaderWidget* header = new Playlist::HeaderWidget( this );
 
-    PlaylistNS::Model* playmodel = The::playlistModel();
+    Playlist::Model* playmodel = The::playlistModel();
     playmodel->init();
     playmodel->testData();
- //   PlaylistNS::View* playView = new PlaylistNS::View( this );
+ //   Playlist::View* playView = new Playlist::View( this );
  //   playView->setModel( playmodel );
-    PlaylistNS::GraphicsView* playView = new PlaylistNS::GraphicsView( this, playmodel );
+    Playlist::GraphicsView* playView = new Playlist::GraphicsView( this, playmodel );
     layout->setSpacing( 0 );
     layout->addWidget( header );
     layout->addWidget( playView );

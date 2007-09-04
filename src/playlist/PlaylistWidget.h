@@ -11,7 +11,7 @@
 
 #include <QWidget>
 
-namespace PlaylistNS {
+namespace Playlist {
 
     class Widget : public QWidget
     {

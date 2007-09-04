@@ -26,7 +26,7 @@
 #include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
 
-struct PlaylistNS::GraphicsItem::ActiveItems
+struct Playlist::GraphicsItem::ActiveItems
 {
     ActiveItems()
     : topLeftText( 0 )
@@ -58,12 +58,12 @@ struct PlaylistNS::GraphicsItem::ActiveItems
     Meta::TrackPtr track;
 };
 
-const qreal PlaylistNS::GraphicsItem::ALBUM_WIDTH = 50.0;
-const qreal PlaylistNS::GraphicsItem::MARGIN = 2.0;
-qreal PlaylistNS::GraphicsItem::s_height = -1.0;
-QFontMetricsF* PlaylistNS::GraphicsItem::s_fm = 0;
+const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
+const qreal Playlist::GraphicsItem::MARGIN = 2.0;
+qreal Playlist::GraphicsItem::s_height = -1.0;
+QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
 
-PlaylistNS::GraphicsItem::GraphicsItem()
+Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
     , m_items( 0 )
     , m_track( 0 )
@@ -79,13 +79,13 @@ PlaylistNS::GraphicsItem::GraphicsItem()
     setAcceptDrops( true );
 }
 
-PlaylistNS::GraphicsItem::~GraphicsItem()
+Playlist::GraphicsItem::~GraphicsItem()
 {
     delete m_items;
 }
 
 void 
-PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
     Q_UNUSED( painter ); Q_UNUSED( widget );
     const int row = getRow();
@@ -96,8 +96,8 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
 
         if( not m_items )
         {
-            const Meta::TrackPtr track = index.data( ItemRole ).value< PlaylistNS::Item* >()->track();
-            m_items = new PlaylistNS::GraphicsItem::ActiveItems();
+            const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
+            m_items = new Playlist::GraphicsItem::ActiveItems();
             m_items->track = track;
             init( track );
         }
@@ -159,7 +159,7 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
 }
 
 void
-PlaylistNS::GraphicsItem::init( Meta::TrackPtr track )
+Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
     m_track = track;
 
@@ -186,7 +186,7 @@ PlaylistNS::GraphicsItem::init( Meta::TrackPtr track )
 }
 
 void
-PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
+Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 {
     if( totalWidth == -1 || totalWidth == m_items->lastWidth ) //no change needed
         return;
@@ -229,14 +229,14 @@ PlaylistNS::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 }
 
 QRectF
-PlaylistNS::GraphicsItem::boundingRect() const
+Playlist::GraphicsItem::boundingRect() const
 {
     // the viewport()->size() takes scrollbars into account
     return QRectF( 0.0, 0.0, scene()->views().at(0)->viewport()->size().width(), s_height );
 }
 
 void 
-PlaylistNS::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
+Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
 {
     if( m_items )
     {
@@ -248,7 +248,7 @@ PlaylistNS::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event
 }
 
 void 
-PlaylistNS::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
+Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
     foreach( QString mime, The::playlistModel()->mimeTypes() )
         if( event->mimeData()->hasFormat( mime ) )
@@ -256,13 +256,13 @@ PlaylistNS::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 }
 
 void
-PlaylistNS::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
+Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
 }
 
 void 
-PlaylistNS::GraphicsItem::refresh()
+Playlist::GraphicsItem::refresh()
 {
     QPixmap albumPixmap;
     if ( ! m_track )

@@ -27,7 +27,7 @@ class QueryMaker;
 class QUndoStack;
 
 //PORT rename to Playlist when the playlist class is removed
-namespace PlaylistNS {
+namespace Playlist {
 
 class TrackAdvancer;
 

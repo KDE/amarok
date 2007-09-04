@@ -11,7 +11,7 @@
 
 #include "playlist/TrackAdvancer.h"
 
-namespace PlaylistNS {
+namespace Playlist {
 class Model;
 /**
  * Simply plays the next track and stops playing when the playlist is finished.

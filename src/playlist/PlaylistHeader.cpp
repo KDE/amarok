@@ -21,7 +21,7 @@
 #include <QStringList>
 #include <QVBoxLayout>
 
-using namespace PlaylistNS;
+using namespace Playlist;
 
 const QString HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-header";
 

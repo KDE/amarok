@@ -9,9 +9,9 @@
 #include "debug.h"
 #include "PlaylistItem.h"
 
-PlaylistNS::Item::Item( Meta::TrackPtr track )
+Playlist::Item::Item( Meta::TrackPtr track )
     : m_track( track )
 { }
 
-PlaylistNS::Item::~Item()
+Playlist::Item::~Item()
 { }

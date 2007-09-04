@@ -15,7 +15,7 @@
 
 #include <QUndoCommand>
 
-namespace PlaylistNS {
+namespace Playlist {
 /**
  * AddTracksCmd add tracks to the Playlist::Model. Is a friend of the Playlist::Model.
  * See Qt's QUndoCommand documentation for explanation of the command pattern and such.

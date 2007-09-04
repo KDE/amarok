@@ -18,7 +18,7 @@ class QAbstractItemModel;
 class QKeyEvent;
 class QMouseEvent;
 
-namespace PlaylistNS {
+namespace Playlist {
 /**
  * The view of the playlist, used to send user interaction signals back to the model.
  */
@@ -42,7 +42,7 @@ namespace PlaylistNS {
     {
         Q_OBJECT
         public:
-            Animator( PlaylistNS::View* view ) : QObject(), m_view( view ) { s_instance = this; }
+            Animator( Playlist::View* view ) : QObject(), m_view( view ) { s_instance = this; }
             static Animator* instance() { return s_instance; }
             void startAnimation( const QModelIndex& animatedRow, QGraphicsScene* animatedScene );
             void stopAnimation( const QModelIndex& dullRow );
@@ -52,7 +52,7 @@ namespace PlaylistNS {
         private:
             QBasicTimer m_timer;
             QHash<QObject*, QPersistentModelIndex*> m_modelHash;
-            PlaylistNS::View* m_view;
+            Playlist::View* m_view;
 
             static Animator* s_instance;
     };

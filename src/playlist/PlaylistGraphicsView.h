@@ -14,7 +14,7 @@
 class GraphicsItem;
 class QModelIndex;
 
-namespace PlaylistNS {
+namespace Playlist {
     class GraphicsItem;
     class Model;
     class GraphicsView : public QGraphicsView

@@ -17,7 +17,7 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
 
-namespace PlaylistNS
+namespace Playlist
 {
     class HeaderWidget : public QWidget
     {

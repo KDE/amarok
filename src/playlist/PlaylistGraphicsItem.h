@@ -11,7 +11,7 @@
 
 class QFontMetricsF;
 
-namespace PlaylistNS {
+namespace Playlist {
 
     class GraphicsItem : public QGraphicsItem
     {

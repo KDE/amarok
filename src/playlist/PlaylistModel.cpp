@@ -31,7 +31,7 @@
 #include <KIcon>
 #include <KUrl>
 
-using namespace PlaylistNS;
+using namespace Playlist;
 using namespace Meta;
 
 Model *Model::s_instance = 0;
@@ -458,7 +458,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we're appending to the list.";
-                insertOptioned( trackListDrag->tracks(), PlaylistNS::Append );
+                insertOptioned( trackListDrag->tracks(), Playlist::Append );
             }
             else
             {
@@ -481,7 +481,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
                 tracks.append( track );
         }
         if( !tracks.isEmpty() )
-            insertOptioned( tracks, PlaylistNS::Append );
+            insertOptioned( tracks, Playlist::Append );
         return true;
     }
     return false;
@@ -593,7 +593,7 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
 }
 
 namespace The {
-    PlaylistNS::Model* playlistModel() { return PlaylistNS::Model::s_instance; }
+    Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
 
 

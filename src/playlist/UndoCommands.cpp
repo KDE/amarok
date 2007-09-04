@@ -10,7 +10,7 @@
 #include "TheInstances.h"
 #include "UndoCommands.h"
 
-using namespace PlaylistNS;
+using namespace Playlist;
 using namespace Qt;
 
 AddTracksCmd::AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList tracks )

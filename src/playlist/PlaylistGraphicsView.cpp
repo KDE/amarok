@@ -14,7 +14,7 @@
 #include <QModelIndex>
 #include <QGraphicsScene>
 
-PlaylistNS::GraphicsView::GraphicsView( QWidget* parent, PlaylistNS::Model* model )
+Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     : QGraphicsView( parent )
     , m_model( model )
 {
@@ -29,20 +29,20 @@ PlaylistNS::GraphicsView::GraphicsView( QWidget* parent, PlaylistNS::Model* mode
 }
 
 void
-PlaylistNS::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int end )
+Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int end )
 {
     Q_UNUSED( parent );
     for( int i = start; i <= end; i++ )
     {
-        PlaylistNS::GraphicsItem* item = new PlaylistNS::GraphicsItem();
-        item->setPos( 0.0, PlaylistNS::GraphicsItem::height() * i );
+        Playlist::GraphicsItem* item = new Playlist::GraphicsItem();
+        item->setPos( 0.0, Playlist::GraphicsItem::height() * i );
         scene()->addItem( item );
         m_tracks.insert( i, item  );
     }
 }
 
 void
-PlaylistNS::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
+Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
     Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
@@ -50,9 +50,9 @@ PlaylistNS::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int 
 }
 
 void 
-PlaylistNS::GraphicsView::modelReset()
+Playlist::GraphicsView::modelReset()
 {
-    foreach( PlaylistNS::GraphicsItem* it, m_tracks )
+    foreach( Playlist::GraphicsItem* it, m_tracks )
     {
         delete it;
     }
@@ -61,7 +61,7 @@ PlaylistNS::GraphicsView::modelReset()
 
 
 void 
-PlaylistNS::GraphicsView::dataChanged(const QModelIndex & index)
+Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 {
      DEBUG_BLOCK
      if ( !index.isValid() )

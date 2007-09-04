@@ -40,8 +40,7 @@
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
 
-#include "playlistbrowser.h"
-#include "playlistitem.h"
+#include "playlist/Pl"
 #include "progressslider.h"
 #include "scancontroller.h"
 #include "scriptmanager.h"

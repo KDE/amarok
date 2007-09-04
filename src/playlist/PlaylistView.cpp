@@ -25,7 +25,7 @@
 
 #include <KApplication>
 
-using namespace PlaylistNS;
+using namespace Playlist;
 
 View::View( QWidget* parent )
   : QListView( parent )
@@ -81,7 +81,7 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
 {
 //method based on QGraphicsView::mouseDoubleClickEvent, (c) 2007 Trolltech ASA, GPL v2
     QModelIndex index = indexAt( event->pos() );
-    QGraphicsScene* scene = index.data( ItemRole ).value< PlaylistNS::Item* >()->scene();
+    QGraphicsScene* scene = index.data( ItemRole ).value< Playlist::Item* >()->scene();
 
     QPoint pointInt = event->pos();
     pointInt.rx() += horizontalScrollBar()->value();
@@ -120,10 +120,10 @@ View::mouseDoubleClickEvent(QMouseEvent *event)
 ///Animator
 ///////////////////////////////////////////////////////////////////////////////
 
-Animator* PlaylistNS::Animator::s_instance = 0;
+Animator* Playlist::Animator::s_instance = 0;
 
 void
-PlaylistNS::Animator::startAnimation( const QModelIndex& animatedRow, QGraphicsScene* animatedScene )
+Playlist::Animator::startAnimation( const QModelIndex& animatedRow, QGraphicsScene* animatedScene )
 {
     m_view->update( animatedRow );
     m_modelHash[ animatedScene ] =  new QPersistentModelIndex( animatedRow );
@@ -131,7 +131,7 @@ PlaylistNS::Animator::startAnimation( const QModelIndex& animatedRow, QGraphicsS
 }
 
 void
-PlaylistNS::Animator::stopAnimation( const QModelIndex& dullRow )
+Playlist::Animator::stopAnimation( const QModelIndex& dullRow )
 {
 #if 0
     for( int i = 0; i < m_rows.size(); i++ )
@@ -143,7 +143,7 @@ PlaylistNS::Animator::stopAnimation( const QModelIndex& dullRow )
 }
 
 void
-PlaylistNS::Animator::paintRow()
+Playlist::Animator::paintRow()
 {
     m_view->update( *m_modelHash.value( sender() ) );
 }

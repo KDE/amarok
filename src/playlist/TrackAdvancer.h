@@ -8,7 +8,7 @@
 #ifndef AMAROK_TRACKADVANCER_H
 #define AMAROK_TRACKADVANCER_H
 
-namespace PlaylistNS {
+namespace Playlist {
 
 class Model;
 

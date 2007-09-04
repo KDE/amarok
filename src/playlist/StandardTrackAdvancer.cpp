@@ -11,7 +11,7 @@
 #include "enginecontroller.h"
 #include "PlaylistModel.h"
 
-using namespace PlaylistNS;
+using namespace Playlist;
 
 void
 StandardTrackAdvancer::advanceTrack()

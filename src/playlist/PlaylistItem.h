@@ -11,7 +11,7 @@
 
 #include "meta.h"
 
-namespace PlaylistNS {
+namespace Playlist {
 
     class Item
     {
@@ -27,6 +27,6 @@ namespace PlaylistNS {
 
 }
 
-Q_DECLARE_METATYPE( PlaylistNS::Item* )
+Q_DECLARE_METATYPE( Playlist::Item* )
 
 #endif
