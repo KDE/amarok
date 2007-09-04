@@ -90,6 +90,7 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     Q_UNUSED( painter ); Q_UNUSED( widget );
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
+
     if( not m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
 
@@ -102,21 +103,32 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
         }
         resize( m_items->track, option->rect.width() );
     }
+
+    if( not m_items->background )
+    {
+	m_items->background = new QGraphicsRectItem( option->rect, this );
+	m_items->background->setPos( 0.0, 0.0 );
+	m_items->background->setPen( QPen( Qt::NoPen ) );
+	m_items->background->setBrush( option->palette.highlight() );
+	m_items->background->setZValue( -5.0 );
+    }
+
+
     if( option->state & QStyle::State_Selected )
     {
-        if( not m_items->background )
-        {
-            m_items->background = new QGraphicsRectItem( option->rect, this );
-            m_items->background->setPos( 0.0, 0.0 );
-            m_items->background->setPen( QPen( Qt::NoPen ) );
-            m_items->background->setBrush( option->palette.highlight() );
-            m_items->background->setZValue( -5.0 );
-        }
-        else
-            m_items->background->show();
+        m_items->background->setBrush( option->palette.highlight() );
+        m_items->background->show();
     }
-    else if( m_items->background )
-        m_items->background->hide();
+    else  
+    {
+       //alternate color of background
+       if ( row % 2 )
+           m_items->background->setBrush( option->palette.base() );
+       else
+           m_items->background->setBrush( option->palette.alternateBase() );
+
+        m_items->background->show();
+    }
 
     if( index.data( ActiveTrackRole ).toBool() )
     {
@@ -137,6 +149,7 @@ PlaylistNS::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
             m_items->foreground->setPen( QPen( Qt::NoPen ) );
         }
         else
+             m_items->background->hide();
             m_items->foreground->show();
     }
     else if( m_items->foreground )
