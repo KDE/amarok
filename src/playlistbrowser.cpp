@@ -352,7 +352,10 @@ PlaylistBrowser::~PlaylistBrowser()
 void
 PlaylistBrowser::setInfo( const QString &title, const QString &info )
 {
+// Temporarily disabled due to crash in KHTML-Part
+#if 0
     m_infoPane->setInfo( title, info );
+#endif
 }
 
 void
