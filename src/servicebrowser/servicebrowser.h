@@ -27,6 +27,7 @@
 
 #include <klistwidget.h>
 #include <kvbox.h>
+#include <QListView>
 #include <QMap>
 
 
@@ -59,6 +60,7 @@ public slots:
 private:
 
     QListWidget * m_serviceSelectionList;
+    QListView * m_serviceListView;
     
     void showService( const QString &name );
 

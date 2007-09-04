@@ -19,6 +19,9 @@
 
 #include "ServiceListModel.h"
 
+
+#include "debug.h"
+
 ServiceListModel::ServiceListModel()
  : QAbstractListModel()
 {
@@ -31,23 +34,24 @@ ServiceListModel::~ServiceListModel()
 
 int ServiceListModel::rowCount(const QModelIndex & parent) const
 {
-
-    if ( !parent.isValid() )
-        return 0;
+    DEBUG_BLOCK
+    /*if ( !parent.isValid() )
+        return 0;*/
 
     return m_services.count();
 }
 
 QVariant ServiceListModel::data(const QModelIndex & index, int role) const
 {
+     DEBUG_BLOCK
      if ( (!index.isValid()) || ( m_services.count() <= index.row() ) )
          return QVariant();
 
 
     if ( role == Qt::DisplayRole )
-        return m_services[index.row()]->getName();
+        return QVariant( m_services[index.row()]->getName() );
     else if ( role ==  Qt::DecorationRole )
-        return m_services[index.row()]->getIcon();
+        return QVariant( m_services[index.row()]->getIcon() );
     else 
         return QVariant();
 }

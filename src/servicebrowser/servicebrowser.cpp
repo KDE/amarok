@@ -35,6 +35,10 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
 
     debug() << "ServiceBrowser starting...";
     m_serviceSelectionList = new QListWidget( this );
+
+    m_serviceListView = new QListView( this );
+    m_serviceListView->setModel( m_serviceListModel );
+
     m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
