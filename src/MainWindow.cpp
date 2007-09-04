@@ -834,7 +834,7 @@ void MainWindow::addLastfmPersonal() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 
@@ -847,7 +847,7 @@ void MainWindow::playLastfmNeighbor() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 
@@ -860,7 +860,7 @@ void MainWindow::addLastfmNeighbor() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 
@@ -884,7 +884,7 @@ void MainWindow::addLastfmCustom() //SLOT
     const KUrl url( "lastfm://artist/" + token + "/similarartists" );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 
@@ -914,7 +914,7 @@ void MainWindow::addLastfmGlobaltag() //SLOT
     const KUrl url( "lastfm://globaltags/" + tag );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 
