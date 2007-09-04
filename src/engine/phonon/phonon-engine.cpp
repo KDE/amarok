@@ -92,6 +92,8 @@ PhononEngine::play( uint offset )
 void
 PhononEngine::stop()
 {
+    DEBUG_BLOCK
+
     m_mediaObject->stop();
     emit stateChanged( Engine::Empty );
 }
@@ -99,6 +101,8 @@ PhononEngine::stop()
 void
 PhononEngine::pause()
 {
+    DEBUG_BLOCK
+
     m_mediaObject->pause();
     emit stateChanged( Engine::Paused );
 }
@@ -106,6 +110,8 @@ PhononEngine::pause()
 void
 PhononEngine::unpause()
 {
+    DEBUG_BLOCK
+
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
 }
@@ -173,6 +179,8 @@ PhononEngine::length() const
 void
 PhononEngine::seek( uint ms )
 {
+    DEBUG_BLOCK
+    
     m_mediaObject->seek( ms );
 }
 
