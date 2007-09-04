@@ -260,7 +260,7 @@ void SideBarButton::slotAnimTimer()
 
 void SideBarButton::paintEvent( QPaintEvent* )
 {
-    const int gap = 10;
+    const int gap = 0;
     const int h = height() - gap;
 
     QPainter p( this );
