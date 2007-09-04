@@ -269,8 +269,6 @@ void MainWindow::init()
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins( 0, 0, 0, 0 );
-    mainLayout->addWidget( m_controlBar );
-    mainLayout->addWidget( m_splitter );
     
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
@@ -281,6 +279,8 @@ void MainWindow::init()
     m_splitter->addWidget( contextWidget );
     m_splitter->addWidget( playlistwindow );
 
+    mainLayout->addWidget( m_controlBar );
+    mainLayout->addWidget( m_splitter );
     setCentralWidget( centralWidget );
 
     //<XMLGUI>
