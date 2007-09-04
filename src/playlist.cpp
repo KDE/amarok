@@ -229,9 +229,11 @@ Playlist::Playlist( QWidget *parent )
     initStarPixmaps();
 
     EngineController* const ec = EngineController::instance();
+#if 0
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );
     connect( ec, SIGNAL(orderNext( const bool )),     SLOT(playNextTrack( const bool )) );
     connect( ec, SIGNAL(orderCurrent()),  SLOT(playCurrentTrack()) );
+#endif
 
     connect( this, SIGNAL( itemCountChanged( int, int, int, int, int, int ) ), ec, SLOT( playlistChanged() ) );
 
