@@ -20,7 +20,7 @@
 #ifndef AMAROK_SIDEBAR_H
 #define AMAROK_SIDEBAR_H
 
-#include "sidebarwidget.h"
+#include "SidebarWidget.h"
 
 #include <KHBox>
 

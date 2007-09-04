@@ -420,7 +420,7 @@ set(amaroklib_LIB_SRCS
     scancontroller.cpp
     scriptmanager.cpp
     scrobbler.cpp
-    sidebar.h
+    Sidebar.h
     smartplaylisteditor.cpp
     socketserver.cpp
     StarManager.cpp
@@ -436,7 +436,7 @@ set(amaroklib_LIB_SRCS
     widgets/analyzerwidget.cpp
     widgets/progressslider.cpp
     widgets/searchwidget.cpp
-    widgets/sidebarwidget.cpp
+    widgets/SidebarWidget.cpp
     widgets/sliderwidget.cpp
     widgets/volumewidget.cpp
     xmlloader.cpp

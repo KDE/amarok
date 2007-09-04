@@ -42,7 +42,6 @@ email                : markey@web.de
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
-#include "sidebar.h"
 #include "statusbar.h"
 #include "systray.h"
 #include "threadmanager.h"

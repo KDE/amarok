@@ -19,7 +19,7 @@
 */
 
 #include "debug.h"
-#include "sidebarwidget.h"
+#include "SidebarWidget.h"
 
 #include <QAbstractItemDelegate>
 #include <QAction>
@@ -307,4 +307,4 @@ QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, i
 }
 
 
-#include "sidebarwidget.moc"
+#include "SidebarWidget.moc"
