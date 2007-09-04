@@ -806,9 +806,9 @@ void MainWindow::slotAddStream() //SLOT
 
     if ( !ok ) return;
 
-    KUrl::List media;
-    media << KUrl( url );
-    The::playlistModel()->insertMedia( media, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -819,7 +819,9 @@ void MainWindow::playLastfmPersonal() //SLOT
     const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -830,7 +832,9 @@ void MainWindow::addLastfmPersonal() //SLOT
     const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -841,7 +845,9 @@ void MainWindow::playLastfmNeighbor() //SLOT
     const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -852,7 +858,9 @@ void MainWindow::addLastfmNeighbor() //SLOT
     const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -862,7 +870,9 @@ void MainWindow::playLastfmCustom() //SLOT
     if( token.isEmpty() ) return;
 
     const KUrl url( "lastfm://artist/" + token + "/similarartists" );
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -872,7 +882,9 @@ void MainWindow::addLastfmCustom() //SLOT
     if( token.isEmpty() ) return;
 
     const KUrl url( "lastfm://artist/" + token + "/similarartists" );
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -885,8 +897,9 @@ void MainWindow::playLastfmGlobaltag() //SLOT
 
     const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -899,8 +912,9 @@ void MainWindow::addLastfmGlobaltag() //SLOT
 
     const QString tag = action->text();
     const KUrl url( "lastfm://globaltags/" + tag );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-    The::playlistModel()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
 
