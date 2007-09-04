@@ -17,42 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICELISTMODEL_H
-#define SERVICELISTMODEL_H
+#ifndef SERVICELISTDELEGATE_H
+#define SERVICELISTDELEGATE_H
 
-#include "servicebase.h"
-
-#include <QAbstractListModel>
-
-#include <QList>
-
-enum {
-    ShortDescriptionRole = Qt::UserRole + 1,
-    LongDescriptionRole
-};
+#include <QItemDelegate>
 
 /**
-A very simple model to hold the available services
+A delegate for displaying a nice overview of a service
 
 	@author 
 */
-class ServiceListModel : public QAbstractListModel
+class ServiceListDelegate : public QItemDelegate
 {
 public:
-
-    ServiceListModel ();
-    ~ServiceListModel();
-
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    ServiceListDelegate();
+    ~ServiceListDelegate();
 
 
-    void addService( ServiceBase * service ); 
-
-private:
-
-    QList<ServiceBase * > m_services;
-
+    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 };
 
 #endif

@@ -116,6 +116,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceAlbumCoverDownloader.cpp
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListModel.cpp
+    servicebrowser/ServiceListDelegate.cpp
 
 )
 

@@ -22,6 +22,7 @@
 #include "servicebrowser.h"
 #include "context/ContextView.h"
 //#include "scriptableservicemanager.h"
+#include "ServiceListDelegate.h"
 
 #include <KIconLoader>
 
@@ -37,6 +38,9 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     m_serviceSelectionList = new QListWidget( this );
 
     m_serviceListView = new QListView( this );
+    ServiceListDelegate * delegate = new ServiceListDelegate();
+    m_serviceListView->setItemDelegate( delegate );
+
     m_serviceListView->setModel( m_serviceListModel );
 
     m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );

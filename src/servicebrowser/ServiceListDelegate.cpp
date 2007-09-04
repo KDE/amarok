@@ -17,42 +17,60 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICELISTMODEL_H
-#define SERVICELISTMODEL_H
+#include "ServiceListDelegate.h"
 
+#include "debug.h"
 #include "servicebase.h"
 
-#include <QAbstractListModel>
+#include <QPainter>
 
-#include <QList>
-
-enum {
-    ShortDescriptionRole = Qt::UserRole + 1,
-    LongDescriptionRole
-};
-
-/**
-A very simple model to hold the available services
-
-	@author 
-*/
-class ServiceListModel : public QAbstractListModel
+ServiceListDelegate::ServiceListDelegate()
+ : QItemDelegate()
 {
-public:
+}
 
-    ServiceListModel ();
-    ~ServiceListModel();
+ServiceListDelegate::~ServiceListDelegate()
+{
+}
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    DEBUG_BLOCK
+
+    //ServiceBase * service = static_cast< ServiceBase * >( index.internalPointer() );
+    //if ( ! service ) return;
+
+    debug() << "Look ma' I am painting!";
+ 
+    painter->save();
+ 
+    painter->setPen(Qt::gray);
+    painter->drawRoundRect( option.rect.topLeft().x(), option.rect.topLeft().y() ,200,100, 10 ,10 );
 
 
-    void addService( ServiceBase * service ); 
 
-private:
+    if (option.state & QStyle::State_Selected)
+        painter->setPen(Qt::blue);
+    else 
+        painter->setPen(Qt::black);
 
-    QList<ServiceBase * > m_services;
+    painter->setFont(QFont("Arial", 16));
+    painter->drawText( option.rect.topLeft() + QPoint( 0, 16 ) , index.data( Qt::DisplayRole ).toString() );
 
-};
+    painter->restore();
 
-#endif
+}
+
+QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    Q_UNUSED( option );
+    Q_UNUSED( index );
+
+    DEBUG_BLOCK
+
+    return QSize ( 200, 100 );
+    
+
+}
+
+
