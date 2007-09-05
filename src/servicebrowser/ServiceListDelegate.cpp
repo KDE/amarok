@@ -45,10 +45,15 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     debug() << "Look ma' I am painting!";
 
     painter->save();
-    painter->setPen(Qt::gray);
+
 
     painter->setRenderHint ( QPainter::Antialiasing );
 
+
+    if (option.state & QStyle::State_Selected)
+        painter->setPen(Qt::blue);
+    else 
+        painter->setPen(Qt::gray);
 
     painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,100, 10 ,10 );
 
