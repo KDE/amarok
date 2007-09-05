@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Make sure the localUrl of a PodcastEpisode is valid after a failed
+      download. (BR147351)
     * Fix off-by-one error causing Smart Playlists to not load tracks with a
       rating >= 4.5. (BR 148916)
     * Don't enable "Configure Podcasts" at the top-level Podcasts folder if
@@ -52,7 +54,7 @@ VERSION 1.4.7
       Patch by Kun Xi <quinnxi@gmail.com>. (BR 147223)
     * Show OSD when changing song rating via shortcut. Patch by Tuomas Nurmi
       <tnurmi@edu.kauhajoki.fi>. (BR 146918)
-    * Show the stars indicating rating with the correct size in the OSD. Patch 
+    * Show the stars indicating rating with the correct size in the OSD. Patch
       Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 147059)
 
 
@@ -117,7 +119,7 @@ VERSION 1.4.6
     * Correctly set iPod model. Patch by İsmail Dönmez <ismail@kde.org>.
     * Fix detection of vfat devices on FreeBSD. (BR 141614)
     * Right-click on volume slider would change the volume. (BR 141672)
- 
+
 
 VERSION 1.4.5
   FEATURES:
@@ -165,12 +167,12 @@ VERSION 1.4.5
 
   CHANGES:
     * Added configure option to build without DAAP support.
-    * Album covers are now downloaded and added to album directory when 
+    * Album covers are now downloaded and added to album directory when
       purchasing from the Magnatune.com store. (BR 136680)
     * Update context browser when a change in the collection has been detected.
       (BR 140588)
     * Ignore leading 'The ' when sorting playlist by artist. (BR 139829)
-    * Smart Playlists now have 'does not start with' and 'does not end with' 
+    * Smart Playlists now have 'does not start with' and 'does not end with'
       options, as well as a dropdown for mount points. (BR 139552)
     * Support for cue files not matching audio files' name. Patch by Dawid
       Wróbel <dawid@klej.net>. (BR 128046)
@@ -229,12 +231,12 @@ VERSION 1.4.5
       (BR 138562)
     * "Listening since..." has been changed to the more clear "First
       Played..."  Patch by Andrew Ash <ash211@gmail.com>. (BR 131727)
-    * Fixed regression: the DEL key no longer worked in the 
+    * Fixed regression: the DEL key no longer worked in the
       playlist after opening the File Browser context menu. (BR 140197)
     * Smart playlists now work correctly with "is not" filters containing
-      numbers. Patch by Felix Rotthowe <felix.rotthowe@cs.uni-dortmund.de>. 
+      numbers. Patch by Felix Rotthowe <felix.rotthowe@cs.uni-dortmund.de>.
     * Context browser would not display updated covers correctly. (BR 130518)
-    * The select custom cover dialog no longer starts in the wrong directory 
+    * The select custom cover dialog no longer starts in the wrong directory
       for compilations. (BR 131776)
     * Amarok's xine engine would cut off approximately the last second of an
       audio file. (BR 135190)
