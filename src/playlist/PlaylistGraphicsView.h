@@ -12,9 +12,11 @@
 #include <QGraphicsView>
 
 class GraphicsItem;
+class QGraphicsScene;
 class QModelIndex;
 
-namespace Playlist {
+namespace Playlist
+{
     class GraphicsItem;
     class Model;
     class GraphicsView : public QGraphicsView
@@ -22,14 +24,22 @@ namespace Playlist {
         Q_OBJECT
         public:
             GraphicsView( QWidget* parent, Model* model );
+
+        protected:
+            virtual void contextMenuEvent( QContextMenuEvent *event );
+            virtual void keyPressEvent( QKeyEvent *event );
+
         private slots:
             void modelReset();
             void rowsInserted( const QModelIndex & parent, int start, int end );
             void rowsRemoved( const QModelIndex & parent, int start, int end );
             void dataChanged( const QModelIndex & index );
+            void removeSelection();
+        
         private:
-            QList<GraphicsItem*> m_tracks;
-            Model* m_model;
+            QGraphicsScene       *m_scene;
+            QList<GraphicsItem*>  m_tracks;
+            Model                *m_model;
     };
 
 }

@@ -11,21 +11,63 @@
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
 
+#include <KMenu>
+
 #include <QModelIndex>
 #include <QGraphicsScene>
+#include <QKeyEvent>
 
 Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     : QGraphicsView( parent )
     , m_model( model )
 {
     DEBUG_BLOCK
-    setScene( new QGraphicsScene() );
+    m_scene = new QGraphicsScene();
+    setScene( m_scene );
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( dataChanged( const QModelIndex& ) ) );
     show();
+}
+
+void
+Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
+{
+    event->accept();
+           
+    KMenu *menu = new KMenu( this );
+    menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
+    menu->exec();
+}
+
+void
+Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
+{
+    DEBUG_BLOCK
+    debug() << "Pressed: " << event;
+    if( event->matches( QKeySequence::Delete ) )
+    {
+        if( not m_scene->selectedItems().isEmpty() )
+        {
+            event->accept();
+            removeSelection();
+            return;
+        }
+    }
+    QGraphicsView::keyPressEvent( event );
+}
+
+void
+Playlist::GraphicsView::removeSelection()
+{
+    QList<QGraphicsItem*> selection = m_scene->selectedItems();
+    foreach( QGraphicsItem *i, selection )
+    {
+        int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
+        m_model->removeRows( index, 1 );
+    }
 }
 
 void
@@ -68,7 +110,7 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
         return;
    
      if ( m_tracks.count() > index.row() )
-         m_tracks[ index.row() ]->refresh();
+         m_tracks.at( index.row() )->refresh();
 }
 
 #include "PlaylistGraphicsView.moc"
