@@ -2517,12 +2517,12 @@ PodcastEpisode::isOnDisk()
         return false;
     else
     {
-        bool oldOnDisk = m_onDisk;
+//         bool oldOnDisk = m_onDisk;
         m_onDisk = QFile::exists( m_localUrl.path() );
         updatePixmap();
-        m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
-        if( oldOnDisk != m_onDisk && dBId() )
-            CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
+//         m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
+//         if( oldOnDisk != m_onDisk && dBId() )
+//             CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
         return m_onDisk;
     }
 }
@@ -2543,17 +2543,17 @@ PodcastEpisode::downloadMedia()
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
-    KURL m_localDir;
+    KURL localDir;
     PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
     if( channel )
-        m_localDir = KURL::fromPathOrURL( channel->saveLocation() );
+        localDir = KURL::fromPathOrURL( channel->saveLocation() );
     else
-        m_localDir = KURL::fromPathOrURL( PodcastSettings("Podcasts").saveLocation() );
-    createLocalDir( m_localDir );
+        localDir = KURL::fromPathOrURL( PodcastSettings("Podcasts").saveLocation() );
+    createLocalDir( localDir );
 
     //filename might get changed by redirects later.
     m_filename = url().fileName();
-    m_localUrl = m_localDir;
+    m_localUrl = localDir;
     m_podcastEpisodeJob = KIO::storedGet( url().url(), false, false);
 
     Amarok::StatusBar::instance()->newProgressOperation( m_podcastEpisodeJob )
@@ -2570,7 +2570,6 @@ PodcastEpisode::downloadMedia()
 /* change the localurl if redirected, allows us to use the original filename to transfer to mediadevices*/
 void PodcastEpisode::redirected( KIO::Job *, const KURL & redirectedUrl )
 {
-    DEBUG_BLOCK
     debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName() << endl;
     m_filename = redirectedUrl.fileName();
 }
@@ -2605,7 +2604,6 @@ PodcastEpisode::abortDownload() //SLOT
 
 void PodcastEpisode::downloadResult( KIO::Job * transferJob )
 {
-    DEBUG_BLOCK
     emit downloadFinished();
     stopAnimation();
     setText( 0, title() );
@@ -2615,28 +2613,32 @@ void PodcastEpisode::downloadResult( KIO::Job * transferJob )
         Amarok::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
         debug() << "Unable to retrieve podcast media. KIO Error: " << transferJob->error() << endl;
 
+        m_localUrl = KURL();
         setPixmap( 0, SmallIcon("cancel") );
-        return;
     }
-
-    m_localUrl.addPath( m_filename );
-    debug() << "filename: " << m_localUrl.path() << endl;
-    QFile *localFile = new QFile( m_localUrl.path() );
-    localFile->open( IO_WriteOnly );
-    localFile->writeBlock( m_podcastEpisodeJob->data() );
-    localFile->close();
-
-    setLocalUrl( m_localUrl );
-
-    PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
-    if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
+    else
     {
-        addToMediaDevice();
-        MediaBrowser::queue()->URLsAdded();
-    }
 
-    updatePixmap();
+        m_localUrl.addPath( m_filename );
+        QFile *localFile = new QFile( m_localUrl.path() );
+        localFile->open( IO_WriteOnly );
+        localFile->writeBlock( m_podcastEpisodeJob->data() );
+        localFile->close();
+
+        setLocalUrl( m_localUrl );
+
+        PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
+        if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
+        {
+            addToMediaDevice();
+            MediaBrowser::queue()->URLsAdded();
+        }
+
+        updatePixmap();
+    }
+    return;
 }
+
 void
 PodcastEpisode::setLocalUrl( const KURL &localUrl )
 {
@@ -2662,9 +2664,12 @@ PodcastEpisode::addToMediaDevice()
 void
 PodcastEpisode::setLocalUrlBase( const QString &s )
 {
-    QString filename = m_localUrl.filename();
-    QString newL = s + filename;
-    m_localUrl = KURL::fromPathOrURL( newL );
+    if ( !m_localUrl.isEmpty() )
+    {
+        QString filename = m_localUrl.filename();
+        QString newL = s + filename;
+        m_localUrl = KURL::fromPathOrURL( newL );
+    }
 }
 
 void

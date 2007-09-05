@@ -280,7 +280,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
         const QString description() const { return m_bundle.description(); }
         const QString guid()        const { return m_bundle.guid(); }
         const int     duration()    const { return m_bundle.duration(); }
-        const KURL   &localUrl()    const { return m_localUrl; }
+        const KURL   &localUrl()    const { return m_bundle.localUrl(); }
         void  setLocalUrlBase( const QString &s );
         void setLocalUrl( const KURL &localUrl );
 
