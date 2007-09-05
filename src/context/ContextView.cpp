@@ -79,7 +79,7 @@ ContextView::ContextView( QWidget* parent )
     m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
-    m_logo->resize( m_width, m_width*m_aspectRatio );
+    m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
 
     m_columns = new ColumnApplet();
     scene()->addItem( m_columns );
@@ -129,7 +129,7 @@ void ContextView::clear( const ContextState& state )
 void ContextView::engineStateChanged( Engine::State state, Engine::State oldState )
 {
     DEBUG_BLOCK
-    Q_UNUSED( oldState );
+    Q_UNUSED( oldState ); Q_UNUSED( state );
 
     //FIXME:
     /*switch( state )
@@ -228,7 +228,7 @@ void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
 
     QSize pos = m_background->size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
-    m_logo->resize( QSize( m_width, newHeight ) );
+    m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
     painter->save();
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
