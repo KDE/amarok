@@ -122,39 +122,4 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 };
 
 
-//PORT 2.0 :Do we want to port this or redo it
-// class DynamicTitle : public QWidget
-// {
-//     Q_OBJECT
-// 
-//     public:
-//         DynamicTitle(QWidget* parent);
-//         void setTitle(const QString& newTitle);
-// 
-//         virtual void paintEvent(QPaintEvent* e);
-// 
-//     private:
-//         static const int s_curveWidth = 5;
-//         static const int s_imageSize = 16;
-//         QString m_title;
-//         QFont m_font;
-// };
-
-// class DynamicBar : public KHBox
-// {
-//     Q_OBJECT
-// 
-//     public:
-//         DynamicBar(QWidget* parent);
-//         void init();
-// 
-//     public slots:
-//         void slotNewDynamicMode(const DynamicMode* mode);
-//         void changeTitle(const QString& title);
-// 
-//     private:
-//         DynamicTitle* m_titleWidget;
-// };
-
-
 #endif //AMAROK_PLAYLISTWINDOW_H
