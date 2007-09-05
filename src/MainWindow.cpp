@@ -1049,7 +1049,7 @@ void MainWindow::createActions()
     previous->setIcon( KIcon(Amarok::icon( "back" )) );
     previous->setText( i18n( "Previous Track" ) );
     ac->addAction( "prev", previous );
-    connect( previous, SIGNAL(triggered(bool)), ec, SLOT( previous() ) );
+    connect( previous, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
 
     KAction *play = new KAction( this );
     play->setIcon( KIcon(Amarok::icon( "play" )) );

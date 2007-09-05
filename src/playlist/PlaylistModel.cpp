@@ -215,9 +215,17 @@ Model::play( int row )
 void Model::next()
 {
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
+    track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
 }
+
+void Model::back()
+{
+    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
+    track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
+    m_advancer->previousTrack();
+}
+
 
 
 
@@ -605,6 +613,7 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
 
 
 

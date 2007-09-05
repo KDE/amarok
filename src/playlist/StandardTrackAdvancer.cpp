@@ -8,6 +8,8 @@
 
 #include "StandardTrackAdvancer.h"
 
+
+#include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistModel.h"
 
@@ -17,6 +19,19 @@ void
 StandardTrackAdvancer::advanceTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
+    if( updateRow < m_playlistModel->rowCount() )
+    {
+        setCurrentTrack( updateRow );
+    }
+}
+
+void Playlist::StandardTrackAdvancer::previousTrack()
+{
+    DEBUG_BLOCK
+    int updateRow = m_playlistModel->activeRow() - 1;
+    if ( updateRow < 0 ) 
+        return;
+
     if( updateRow < m_playlistModel->rowCount() )
     {
         setCurrentTrack( updateRow );

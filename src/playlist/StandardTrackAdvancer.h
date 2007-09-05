@@ -21,6 +21,7 @@ class Model;
         public:
             StandardTrackAdvancer( Model* m ) : TrackAdvancer( m ) { }
             void advanceTrack();
+            void previousTrack();
     };
 
  }

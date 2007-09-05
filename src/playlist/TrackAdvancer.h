@@ -26,6 +26,7 @@ class Model;
             virtual ~TrackAdvancer() { }
             /// Performs actions that need to be done after a track has finished playing.
             virtual void advanceTrack() = 0;
+            virtual void previousTrack() = 0;
         protected:
             ///Convenience function, set the current track in the playlistmodel and play it.
             ///@param position position in Model of track to start playing
