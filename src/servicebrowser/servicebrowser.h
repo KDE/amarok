@@ -59,7 +59,6 @@ public slots:
 
 private:
 
-    QListWidget * m_serviceSelectionList;
     QListView * m_serviceListView;
     
     void showService( const QString &name );
@@ -74,7 +73,6 @@ private:
 
 private slots:
 
-    void serviceSelected( QListWidgetItem * item );
     void serviceActivated( const QModelIndex & index );
     void home();
 };

@@ -35,7 +35,6 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     setObjectName( name );
 
     debug() << "ServiceBrowser starting...";
-    m_serviceSelectionList = new QListWidget( this );
 
     m_serviceListView = new QListView( this );
     ServiceListDelegate * delegate = new ServiceListDelegate();
@@ -43,10 +42,6 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
 
     m_serviceListView->setModel( m_serviceListModel );
 
-    m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
-    m_serviceSelectionList->setSpacing ( 4 );
-    connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
-    
     connect(m_serviceListView, SIGNAL( doubleClicked ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
 
 
@@ -66,22 +61,13 @@ void ServiceBrowser::addService( ServiceBase * service ) {
     //insert service into service map
     m_services[service->getName()] = service;
 
-    //insert service name and image service selection list
-    QListWidgetItem * serviceListItem = new QListWidgetItem( service->getName() , m_serviceSelectionList );
-    //serviceListItem->setTextAlignment( Qt::AlignHCenter );
-    serviceListItem->setIcon( service->getIcon() );
-
     m_serviceListModel->addService( service );
 
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
 }
 
 
-void ServiceBrowser::serviceSelected( QListWidgetItem * item )
-{
-    debug() << "Show service: " <<  item->text();
-    showService(  item->text() );
-}
+
 
 void ServiceBrowser::serviceActivated(const QModelIndex & index)
 {
@@ -111,8 +97,6 @@ void ServiceBrowser::showService( const QString &name )
 
     if ( service != 0 ) {
 
-        m_serviceSelectionList->setParent ( 0 );
-        m_serviceSelectionList->move ( QPoint( 0,0 ) );
         m_serviceListView->setParent( 0 );
         service->setParent ( this );
         service->move( QPoint( 0,0 ) );
@@ -128,10 +112,7 @@ void ServiceBrowser::home()
 {
     if ( m_currentService != 0 ) {
         m_currentService->setParent( 0 );
-        m_serviceSelectionList->setParent( this );
-          m_serviceListView->setParent( this );
-        m_serviceSelectionList->move( 0, 0 );
-        m_serviceSelectionList->show();
+        m_serviceListView->setParent( this );
         m_currentService = 0;
         // remove any context stuff we might have added
 
