@@ -131,6 +131,15 @@ set(libscriptableservice_SRCS
 )
 
 #####################################################################
+# SHOUTCASTSERVICE
+#####################################################################
+set(libshoutcastservice_SRCS
+    servicebrowser/shoutcast/ShoutcastService.cpp
+
+)
+
+
+#####################################################################
 # JAMENDOSERVICE
 #####################################################################
 set(libjamendoservice_SRCS
@@ -337,6 +346,7 @@ set(libplaylistmanager_SRCS
 #####################################################################
 set(amaroklib_LIB_SRCS
     ${libmagnatunestore_SRCS}
+    ${libshoutcastservice_SRCS}
     #${libmp3tunesservice_SRCS}
     ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
