@@ -20,21 +20,38 @@
 #ifndef SHOUTCASTSERVICE_H
 #define SHOUTCASTSERVICE_H
 
-#include <servicebase.h>
+#include "servicebase.h"
+
+#include "servicecollection.h"
+#include "servicemetabase.h"
+
+#include <KIO/CopyJob>
 
 /**
 A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
 
-	@author 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class ShoutcastService : public ServiceBase
 {
+
+Q_OBJECT
+
 public:
     ShoutcastService( const char *name );
 
     ~ShoutcastService();
 
-    void polish() {}
+    void polish();
+
+public slots:
+
+    void genreDownloadComplete(KJob *job );
+
+private:
+
+    ServiceCollection * m_collection;
+    QString m_tempFileName;
 
 };
 

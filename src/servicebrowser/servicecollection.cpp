@@ -75,6 +75,11 @@ ServiceCollection::prettyName() const
     return "service collection";
 }
 
+void ServiceCollection::forceUpdate()
+{
+    emit ( updated() );
+}
+
 
 #include "servicecollection.moc"
 

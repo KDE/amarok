@@ -39,6 +39,8 @@ class ServiceCollection : public Collection, public MemoryCollection
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
+        void forceUpdate();
+
 };
 
 #endif
