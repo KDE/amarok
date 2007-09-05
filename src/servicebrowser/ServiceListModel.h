@@ -26,7 +26,7 @@
 
 #include <QList>
 
-Q_DECLARE_METATYPE(ServiceBase *);
+Q_DECLARE_METATYPE(ServiceBase *)
 
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
