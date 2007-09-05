@@ -104,22 +104,23 @@ QStringList PlasmoidListItemModel::mimeTypes() const
 
 QMimeData* PlasmoidListItemModel::mimeData(const QModelIndexList &indexes) const
 {
-    if (indexes.count() <= 0) {
+    if( indexes.count() <= 0 )
         return 0;
-    }
 
     QStringList types = mimeTypes();
 
-    if (types.isEmpty()) {
+    if( types.isEmpty() )
         return 0;
-    }
+    
+    QStandardItem* selectedItem = item( indexes[0].row(), 0 );
+    if( !selectedItem )
+        return 0;
 
     QMimeData *data = new QMimeData();
-    QString format = types.at(0);
+    QString format  = types.at(0);
     QByteArray byteArray;
-    QStandardItem* selectedItem = item(indexes[0].row(), 1);
-    byteArray.append(selectedItem->data(Qt::DisplayRole).toByteArray());
-    data->setData(format, byteArray);
+    byteArray.append( selectedItem->data(Qt::DisplayRole).toByteArray() );
+    data->setData( format, byteArray );
     return data;
 }
 
