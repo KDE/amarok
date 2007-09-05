@@ -66,13 +66,14 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->setFont(QFont("Arial", 12));
     
     QRectF textRect;
-
     textRect.setLeft( option.rect.topLeft().x() + 6 );
     textRect.setTop( option.rect.topLeft().y() + 48 );
-    textRect.setWidth( 250 );
-    textRect.setHeight( 100 - textRect.top() );
+    textRect.setWidth( 248 );
+    textRect.setHeight( 50 );
 
     painter->drawText ( textRect, Qt::TextWordWrap, index.data( ShortDescriptionRole ).toString() );
+
+    debug() << "Short description: " << index.data( ShortDescriptionRole ).toString() ;
 
 
     painter->restore();
@@ -86,7 +87,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     DEBUG_BLOCK
 
-    return QSize ( 252, 102 );
+    return QSize ( 252, 104 );
 
     
 
