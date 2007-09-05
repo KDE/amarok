@@ -34,7 +34,7 @@ ServiceListModel::~ServiceListModel()
 
 int ServiceListModel::rowCount(const QModelIndex & parent) const
 {
-    DEBUG_BLOCK
+   // DEBUG_BLOCK
     /*if ( !parent.isValid() )
         return 0;*/
 
@@ -43,7 +43,7 @@ int ServiceListModel::rowCount(const QModelIndex & parent) const
 
 QVariant ServiceListModel::data(const QModelIndex & index, int role) const
 {
-     DEBUG_BLOCK
+     //DEBUG_BLOCK
      if ( (!index.isValid()) || ( m_services.count() <= index.row() ) )
          return QVariant();
 
@@ -52,13 +52,16 @@ QVariant ServiceListModel::data(const QModelIndex & index, int role) const
         return QVariant( m_services[index.row()]->getName() );
     else if ( role ==  Qt::DecorationRole )
         return QVariant( m_services[index.row()]->getIcon() );
-
    else if ( role == ShortDescriptionRole )
        return QVariant( m_services[index.row()]->getShortDescription() );
    else if ( role == LongDescriptionRole )
        return QVariant( m_services[index.row()]->getLongDescription() );
+   else if ( role == ServiceRole )
+       return qVariantFromValue( m_services[index.row()] );
     else 
         return QVariant();
+
+
 }
 
 void ServiceListModel::addService(ServiceBase * service)

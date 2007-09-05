@@ -75,6 +75,7 @@ private:
 private slots:
 
     void serviceSelected( QListWidgetItem * item );
+    void serviceActivated( const QModelIndex & index );
     void home();
 };
 

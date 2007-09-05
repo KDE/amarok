@@ -46,6 +46,10 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
     m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
+    
+    connect(m_serviceListView, SIGNAL( doubleClicked ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
+
+
 
     m_scriptableServiceManager = 0;
 }
@@ -77,6 +81,25 @@ void ServiceBrowser::serviceSelected( QListWidgetItem * item )
 {
     debug() << "Show service: " <<  item->text();
     showService(  item->text() );
+}
+
+void ServiceBrowser::serviceActivated(const QModelIndex & index)
+{
+     DEBUG_BLOCK
+     ServiceBase * service = 0;
+
+    if ( index.data( ServiceRole ).canConvert<ServiceBase *>() )
+        service = index.data( ServiceRole ).value<ServiceBase *>();
+    else
+        return;
+
+
+    if ( service ) {
+        debug() << "Show service: " <<  service->getName();
+        showService(  service->getName() );
+    }
+
+
 }
 
 
@@ -117,6 +140,8 @@ void ServiceBrowser::home()
             Context::ContextView::self()->clear();
     }
 }
+
+
 
 
 #include "servicebrowser.moc"
