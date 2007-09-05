@@ -145,7 +145,7 @@ void MainWindow::init()
     playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
     playlistwindow->setMinimumSize( QSize( 250, 100  ) );
     playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-    
+
     new Playlist::Widget( playlistwindow );
 
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
@@ -176,7 +176,7 @@ void MainWindow::init()
 
         AnalyzerWidget *aw = new AnalyzerWidget( m_controlBar );
         aw->setMinimumSize( 200, 30 );
-        
+
         m_controlBar->layout()->setAlignment( aw, Qt::AlignLeft );
 
         KVBox *aVBox     = new KVBox( m_controlBar );
@@ -184,12 +184,12 @@ void MainWindow::init()
 
         KHBox *insideBox = new KHBox( aVBox );
         insideBox->setMaximumSize( 600000, 45 );
-        
+
         KToolBar *playerControlsToolbar = new Amarok::ToolBar( insideBox );
-        
+
         playerControlsToolbar->setMinimumSize( 200, 45 );
         insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignRight );
-        
+
         VolumeWidget *vw = new VolumeWidget( insideBox );
         vw->setMinimumSize( 200, 25 );
         insideBox->layout()->setAlignment( vw, Qt::AlignRight );
@@ -241,7 +241,7 @@ void MainWindow::init()
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->setContentsMargins( 0, 0, 0, 0 );
         layout->addWidget( Context::ContextView::self() );
-        
+
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
              layout->addWidget( new CoverBling( this ) );
 
@@ -260,7 +260,7 @@ void MainWindow::init()
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins( 0, 0, 0, 0 );
-    
+
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
 
@@ -273,20 +273,6 @@ void MainWindow::init()
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
     setCentralWidget( centralWidget );
-
-    //<XMLGUI>
-    {
-        QString xmlFile = Amarok::config().readEntry( "XMLFile", "amarokui.rc" );
-
-        // this bug can bite you if you are a pre 1.2 user, we
-        // deleted amarokui_first.rc, but we must still support it
-        // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
-        xmlFile = "amarokui.rc";
-
-        setXMLFile( xmlFile );
-//         createGUI(); //NOTE we implement this
-    }
-    //</XMLGUI>
 
     //<Browsers>
     {
@@ -301,7 +287,6 @@ void MainWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
              m_browserNames.append( name ); }
 
-//         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
@@ -409,91 +394,6 @@ void MainWindow::showBrowser( const QString &name )
     if( index >= 0 )
         m_browsers->showWidget( index );
 }
-
-/**
- * Reload the amarokui.rc xml file.
- * mainly just used by amarok::Menu
- */
-void MainWindow::recreateGUI()
-{
-#if 0
-    reloadXML();
-    createGUI();
-#endif
-}
-
-
-/**
- * Create the amarok gui from the xml file.
- */
-#if 0
-void MainWindow::createGUI()
-{
-    setUpdatesEnabled( false );
-
-    LastFm::Controller::instance(); // create love/ban/skip actions
-
-    m_toolbar->clear();
-
-
-    /* FIXME: Is this still necessary?
-    //KActions don't unplug themselves when the widget that is plugged is deleted!
-    //we need to unplug to detect if the menu is plugged in App::applySettings()
-    //TODO report to bugs.kde.org
-    //we unplug after clear as otherwise it crashes! dunno why..
-     KActionPtrList actions = actionCollection()->actions();
-     for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
-         (*it)->unplug( m_toolbar );
-    */
-    KXMLGUIBuilder builder( this );
-    KXMLGUIFactory factory( &builder, this );
-
-    //build Toolbar, plug actions
-    factory.addClient( this );
-
-    //TEXT ON RIGHT HACK
-    //KToolBarButtons have independent settings for their appearance.
-    //KToolBarButton::modeChange() causes that button to set its mode to that of its parent KToolBar
-    //KToolBar::setIconText() calls modeChange() for children, unless 2nd param is false
-
-    QStringList list;
-    list << "toolbutton_playlist_add"
-//         << "toolbutton_playlist_clear"
-//         << "toolbutton_playlist_shuffle"
-//         << "toolbutton_playlist_show"
-         << "toolbutton_burn_menu"
-         << "toolbutton_amarok_menu";
-
-    const QStringList::ConstIterator end  = list.constEnd();
-    const QStringList::ConstIterator last = list.fromLast();
-    for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
-    {
-        QToolButton* const button = m_toolbar->findChild<QToolButton*>( (*it).toLatin1() );
-
-        if ( it == last ) {
-            //if the user has no PlayerWindow, he MUST have the menu action plugged
-            //NOTE this is not saved to the local XMLFile, which is what the user will want
-            if ( !AmarokConfig::showMenuBar() && !button )
-                m_toolbar->addAction( actionCollection()->action( "amarok_menu" ) );
-        }
-
-        if ( button ) {
-//TODO: can we delete modeChange safely? It doesn't appear to have a direct QToolButton equiv... is it still needed?
-//             button->modeChange();
-            button->setFocusPolicy( Qt::NoFocus );
-        }
-    }
-
-    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
-    m_toolbar->setMovable( false );
-    m_toolbar->setAllowedAreas( Qt::TopToolBarArea );
-    KToolBar::setToolBarsLocked( true );
-    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-//TODO: is this okay to remove? kdelibs-todo talks about removing it
-//    conserveMemory();
-    setUpdatesEnabled( true );
-}
-#endif
 
 
 /**
@@ -1172,19 +1072,6 @@ void MainWindow::createActions()
     KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
     toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
     connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
-
-    KAction *spacer = new KToolBarSpacerAction( this );
-    ac->addAction( "spacer", spacer );
-
-    KAction *spacer1 = new KToolBarSpacerAction( this );
-    ac->addAction( "spacer1", spacer1 );
-
-    KAction *spacer2 = new KToolBarSpacerAction( this );
-    ac->addAction( "spacer2", spacer2 );
-
-    KAction *spacer3 = new KToolBarSpacerAction( this );
-    ac->addAction( "spacer3", spacer3 );
-
 
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );

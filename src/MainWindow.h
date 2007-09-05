@@ -46,9 +46,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
         void init();
 
-        void createGUI(); //should be private but App::slowConfigToolbars requires it
-        void recreateGUI();
-
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name );
         void addBrowser( const QString &name, QWidget *widget, const QString &text, const QString &icon );
