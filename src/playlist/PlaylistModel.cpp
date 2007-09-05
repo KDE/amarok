@@ -429,6 +429,9 @@ Model::insertMedia( KUrl::List list, int options )
         if( track )
             trackList.push_back( track );
     }
+    if( trackList.isEmpty() )
+        debug() << "Attempted to insert nothing into the playlist!";
+
     insertOptioned( trackList, options );
 }
 
@@ -547,7 +550,8 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
-            track->album()->subscribe( this );
+            if( track->album() )
+                track->album()->subscribe( this );
             m_items.insert( row + i, new Item( track ) );
             i++;
         }
