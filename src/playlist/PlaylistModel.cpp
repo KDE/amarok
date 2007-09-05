@@ -354,7 +354,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
         return; // don't add empty items
     }
 
-    if( Unique )
+    if( options & Unique )
     {
         int alreadyOnPlaylist = 0;
         for( int i = 0; i < list.size(); ++i )

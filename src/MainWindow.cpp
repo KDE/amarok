@@ -225,7 +225,6 @@ void MainWindow::init()
     m_controlBar->setAutoFillBackground( true );
     m_controlBar->setPalette( p );
 
-//     dynamicBar->init();
     this->toolBars().clear();
 
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
