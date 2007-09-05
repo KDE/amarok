@@ -16,7 +16,6 @@
 #include "app.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
-#include "colorgenerator.h"
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
