@@ -21,7 +21,6 @@
 #include "debug.h"
 #include "servicebrowser.h"
 #include "context/ContextView.h"
-//#include "scriptableservicemanager.h"
 #include "ServiceListDelegate.h"
 
 #include <KIconLoader>

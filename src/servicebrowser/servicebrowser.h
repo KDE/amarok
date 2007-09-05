@@ -25,7 +25,6 @@
 #include "servicebase.h"
 #include "ServiceListModel.h"
 
-#include <klistwidget.h>
 #include <kvbox.h>
 #include <QListView>
 #include <QMap>
