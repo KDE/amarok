@@ -211,6 +211,16 @@ Model::play( int row )
     EngineController::instance()->play( m_items[ m_activeRow ]->track() );
 }
 
+
+void Model::next()
+{
+    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
+    track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
+    m_advancer->advanceTrack();
+}
+
+
+
 QString
 Model::prettyColumnName( Column index ) //static
 {

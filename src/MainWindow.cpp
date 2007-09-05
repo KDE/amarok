@@ -1067,7 +1067,7 @@ void MainWindow::createActions()
     next->setIcon( KIcon(Amarok::icon( "next" )) );
     next->setText( i18n( "Next Track" ) );
     ac->addAction( "next", next );
-    connect( next, SIGNAL(triggered(bool)), ec, SLOT( next() ) );
+    connect( next, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );
 
     KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
     toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );

@@ -141,7 +141,7 @@ class TrackAdvancer;
         
         public slots:
             void play( const QModelIndex& index );
-
+            void next();
             void clear(); ///clear the playlist of all items
         private slots:
             void trackFinished(); //! what to do when a track finishes
