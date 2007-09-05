@@ -148,7 +148,8 @@ class TrackAdvancer;
             void trackFinished(); //! what to do when a track finishes
             void queryDone();
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-           
+            void playCurrentTrack();    ///connected to EngineController::orderCurrent
+
         private:
             QString m_playlistName;
             bool m_proposeOverwriting;

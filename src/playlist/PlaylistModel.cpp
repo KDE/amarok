@@ -43,6 +43,7 @@ Model::Model( QObject* parent )
     , m_undoStack( new QUndoStack( this ) )
 {
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
+    connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ) );
     s_instance = this;
 }
 
@@ -193,6 +194,8 @@ Model::supportedDropActions() const
 void
 Model::trackFinished()
 {
+    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
+        return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
@@ -212,21 +215,40 @@ Model::play( int row )
 }
 
 
-void Model::next()
+void
+Model::next()
 {
+    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
+        return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
     m_advancer->advanceTrack();
 }
 
-void Model::back()
+void
+Model::back()
 {
+    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
+        return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
     m_advancer->previousTrack();
 }
 
-
+void
+Model::playCurrentTrack()
+{
+    int selected = m_activeRow;
+    if( selected < 0 || selected >= m_items.size() )
+    {
+        //play first track if there are tracks in the playlist
+        if( m_items.size() )
+            selected = 0;
+        else
+            return;
+    }
+    play( selected );
+}
 
 
 QString
