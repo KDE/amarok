@@ -120,7 +120,10 @@ void ShoutcastServiceQueryMaker::run()
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->job );*/
 
+    if (  d->type == Private::GENRE )
         fetchGenres();
+    else if (  d->type == Private::TRACK )
+        fetchStations();
     }
 }
 
@@ -134,6 +137,8 @@ void ShoutcastServiceQueryMaker::runQuery()
     //this is where the fun stuff happens
     if (  d->type == Private::GENRE )
         fetchGenres();
+    else if (  d->type == Private::TRACK )
+        fetchStations();
 
     m_collection->releaseLock();
 }
@@ -194,8 +199,18 @@ void ShoutcastServiceQueryMaker::handleResult() {
             emitProperResult( GenrePtr, genres );
             break;
         }
+        case Private::TRACK :
+        {
+            TrackList tracks = m_currentTrackQueryResults;
+            if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
+                tracks = tracks.mid( 0, d->maxsize );
+            emitProperResult( TrackPtr, tracks );
+            break;
+        }
     }
 }
+
+
 
 
 void ShoutcastServiceQueryMaker::fetchGenres()
@@ -207,6 +222,17 @@ void ShoutcastServiceQueryMaker::fetchGenres()
 
 }
 
+
+void ShoutcastServiceQueryMaker::fetchStations()
+{
+    DEBUG_BLOCK
+    m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, true );
+    connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
+        , this, SLOT( stationDownloadComplete(KJob *) ) );
+
+}
+
+
 void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 {
 
@@ -216,7 +242,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     doc.setContent( m_storedTransferJob->data() );
 
-    debug() << "So far so good... Got this data: " << m_storedTransferJob->data();
+    //debug() << "So far so good... Got this data: " << m_storedTransferJob->data();
 
 
     // We use this list to filter out some obscure genres
@@ -246,7 +272,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
         if( !name.isNull() && !bannedGenres.contains( name.toLower() ) && !genreMap.contains( name ) )
         {
 
-            debug() << "add genre: " << name;
+           // debug() << "add genre: " << name;
 
             ServiceGenre * genre = new ServiceGenre( name );
             GenrePtr genrePtr( genre );
@@ -256,11 +282,60 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
         n = n.nextSibling();
     }
 
+    m_storedTransferJob->deleteLater();
+
     handleResult();
     emit queryDone();
     //emit( dynamicQueryComplete() );
 
+}
 
+void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job ) {
+
+
+    DEBUG_BLOCK
+    m_currentTrackQueryResults.clear();
+
+    QDomDocument doc( "list" );
+
+    doc.setContent( m_storedTransferJob->data() );
+
+    //Go through the XML file and add all the stations
+    QDomElement docElem = doc.documentElement();
+    QDomNode n = docElem.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement e = n.toElement(); // try to convert the node to an element.
+        if( e.hasAttribute( "name" ) )
+        {
+            if( !e.attribute( "name" ).isNull() /*&& ! m_currentTrackQueryResults.contains( e.attribute( "name" ) )*/ )
+            {
+
+                QString name =  e.attribute( "name" );
+
+                debug() << "add track: " <<  name;
+                ServiceTrack * track = new ServiceTrack(  name );
+                track->setUrl( "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
+                    + e.attribute( "id" ) + "&file=filename.pls" );
+
+                TrackPtr trackPtr( track );
+                m_collection->addTrack( name,  trackPtr );
+
+                GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
+                ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                genre->addTrack( trackPtr );
+                track->setGenre( genrePtr );
+
+                m_currentTrackQueryResults.push_front( trackPtr );
+
+            }
+        }
+        n = n.nextSibling();
+    }
+
+    m_storedTransferJob->deleteLater();
+    handleResult();
+    emit queryDone();
 }
 
 

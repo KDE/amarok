@@ -22,6 +22,8 @@
 
 #include "QueryMaker.h"
 
+#include "meta.h"
+
 #include "ShoutcastServiceCollection.h"
 
 #include <kio/jobclasses.h>
@@ -61,6 +63,7 @@ public:
     void handleResult( const Meta::TrackList &tracks );
 
     void fetchGenres();
+    void fetchStations();
 
 
     //currently unimplemented stuff:
@@ -113,10 +116,14 @@ protected:
     class Private;
     Private * const d;
 
+    Meta::TrackList m_currentTrackQueryResults;
+
 public slots:
 
     void done( ThreadWeaver::Job * job );
     void genreDownloadComplete(KJob *job );
+    void stationDownloadComplete(KJob *job );
+
 
 };
 
