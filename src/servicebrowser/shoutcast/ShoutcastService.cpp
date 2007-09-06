@@ -52,25 +52,11 @@ void ShoutcastService::polish()
 
     m_collection = new ServiceCollection();
 
-
-    //get the genre list
-    KTemporaryFile tempFile;
-    tempFile.setSuffix( ".xml" );
-    tempFile.setAutoRemove( false );
-    if( !tempFile.open() )
-    {
-        debug() << "Error: could not open temp file";
-       return; //error
-    }
-    m_tempFileName = tempFile.fileName();
-
-    debug() << "downloading genres to: " << m_tempFileName;
-
-    KIO::FileCopyJob * cj = KIO::file_copy( KUrl("http://www.shoutcast.com/sbin/newxml.phtml"), KUrl(m_tempFileName), 0774 , true, false, true  );
-    connect( cj, SIGNAL( result( KJob * ))
+    m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, true );
+    connect( m_storedTransferJob, SIGNAL( result( KJob * ))
         , this, SLOT(genreDownloadComplete(KJob *)));
 
-     Amarok::StatusBar::instance() ->newProgressOperation( cj )
+    Amarok::StatusBar::instance() ->newProgressOperation( m_storedTransferJob )
     .setDescription( i18n( "Downloading Shoutcasst genres" ) );
 
 }
@@ -83,23 +69,10 @@ void ShoutcastService::genreDownloadComplete( KJob *job )
 
     QDomDocument doc( "genres" );
 
-    debug() << "opening temp file: " << m_tempFileName;
-    QFile file( m_tempFileName );
-    if ( !file.open( QIODevice::ReadOnly ) )
-    {
-        return;
-    }
-    if ( !doc.setContent( &file ) )
-    {
-        file.close();
-        return;
-    }
+    doc.setContent( m_storedTransferJob->data() );
 
-    file.close();
+    debug() << "So far so good... Got this data: " << m_storedTransferJob->data();
 
-    debug() << "So far so good...";
-
-    //KIO::del( to, false, false );
 
     // We use this list to filter out some obscure genres
     QStringList bannedGenres;
@@ -139,6 +112,7 @@ void ShoutcastService::genreDownloadComplete( KJob *job )
     genreMapping["Spain"] = "Spanish";*/
 
     GenreMap genreMap;
+    TrackMap trackMap;
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
@@ -149,8 +123,20 @@ void ShoutcastService::genreDownloadComplete( KJob *job )
         if( !name.isNull() && !bannedGenres.contains( name.toLower() ) && !genreMap.contains( name ) )
         {
 
-            GenrePtr genrePtr( new ServiceGenre( name ) );
-            genreMap.insert("name",  genrePtr );
+            debug() << "add genre: " << name;
+
+            ServiceGenre * genre = new ServiceGenre( name );
+            GenrePtr genrePtr( genre );
+            genreMap.insert(name,  genrePtr );
+
+
+            ServiceTrack * track = new ServiceTrack ( "dummy" );
+            TrackPtr trackPtr ( track );
+            track->setGenre( genrePtr );
+            genre->addTrack( trackPtr );
+
+            trackMap.insert( "dummy - " + name, trackPtr );
+
 
             //genreCache[ name ] = last; // so we can append genres later if needed
         }
@@ -166,6 +152,7 @@ void ShoutcastService::genreDownloadComplete( KJob *job )
     }*/
 
     m_collection->setGenreMap( genreMap );
+    m_collection->setTrackMap( trackMap );
 
     QList<int> levels;
     levels << CategoryId::Genre;

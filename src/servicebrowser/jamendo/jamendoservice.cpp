@@ -24,7 +24,6 @@
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"
 
-
 #include <KTemporaryFile>
 
 using namespace Meta;
@@ -115,7 +114,12 @@ void JamendoService::updateButtonClicked()
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
 
-
+ 
+  /* KIO::StoredTransferJob * job =  KIO::storedGet(  KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), false, true );
+    Amarok::StatusBar::instance() ->newProgressOperation( job )
+    .setDescription( i18n( "Downloading Jamendo.com Database" ) )
+    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+*/
     //return true;
 }
 
