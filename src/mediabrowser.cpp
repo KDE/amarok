@@ -567,13 +567,15 @@ MediaBrowser::removeDevice( MediaDevice *device )
 void
 MediaBrowser::updateDevices()
 {
+    DEBUG_BLOCK
+    debug() << "device list size: " << m_devices.size();
     m_deviceCombo->clear();
     uint i = 0;
     for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
-        if( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) )
+        if( !(*it) || ( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) ) )
             continue;
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )
