@@ -4900,11 +4900,11 @@ CollectionDB::startScan()  //SLOT
         emit scanDone( true );
     }
     //Port 2.0
-//     else if( PlaylistBrowser::instance() )
-//     {
-//         emit scanStarted();
-//         ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
-//     }
+    else /*if( PlaylistBrowser::instance() )*/
+    {
+        emit scanStarted();
+        ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
+    }
 }
 
 
