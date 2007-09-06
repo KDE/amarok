@@ -575,7 +575,7 @@ MediaBrowser::updateDevices()
             it != m_devices.end();
             it++ )
     {
-        if( !(*it) || ( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) ) )
+        if( !(*it) || ( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) ) || !m_currentDevice )
             continue;
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )

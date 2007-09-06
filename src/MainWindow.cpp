@@ -331,17 +331,17 @@ void MainWindow::init()
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
 
-//         new MediaBrowser( "MediaBrowser" );
-//         if( MediaBrowser::isAvailable() )
-//         {
-//             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
+        new MediaBrowser( "MediaBrowser" );
+        if( MediaBrowser::isAvailable() )
+        {
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
             //to re-enable mediabrowser hiding, uncomment this:
             //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
             //         this, SLOT( mbAvailabilityChanged( bool ) ) );
             //FIXME: figure this out
             //m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
 
-//         }
+        }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
