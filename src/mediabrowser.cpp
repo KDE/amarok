@@ -483,7 +483,10 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 
     if( index >= m_devices.count() )
     {
-        m_currentDevice = m_devices.last();
+        if( !m_devices.isEmpty() )
+            m_currentDevice = m_devices.last();
+        else
+            m_currentDevice = 0;
         updateButtons();
         queue()->computeSize();
         updateStats();
@@ -567,15 +570,13 @@ MediaBrowser::removeDevice( MediaDevice *device )
 void
 MediaBrowser::updateDevices()
 {
-    DEBUG_BLOCK
-    debug() << "device list size: " << m_devices.size();
     m_deviceCombo->clear();
     uint i = 0;
     for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
-        if( !(*it) || ( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) ) || !m_currentDevice )
+        if( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) )
             continue;
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )
@@ -587,7 +588,7 @@ MediaBrowser::updateDevices()
             name += i18n( " (mounted at %1)", (*it)->mountPoint() );
         }
         m_deviceCombo->addItem( name, i );
-        if( (*it)->uid() == m_currentDevice->uid() )
+        if( !m_currentDevice || (*it)->uid() == m_currentDevice->uid() )
         {
             m_deviceCombo->setCurrentItem( name );
         }
