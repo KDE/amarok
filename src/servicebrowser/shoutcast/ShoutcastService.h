@@ -22,11 +22,9 @@
 
 #include "servicebase.h"
 
-#include "servicecollection.h"
+#include "ShoutcastServiceCollection.h"
 #include "servicemetabase.h"
 
-#include <KIO/CopyJob>
-#include <kio/jobclasses.h>
 
 /**
 A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
@@ -45,13 +43,10 @@ public:
 
     void polish();
 
-public slots:
-
-    void genreDownloadComplete(KJob *job );
 
 private:
 
-    ServiceCollection * m_collection;
+    ShoutcastServiceCollection * m_collection;
     QString m_tempFileName;
     KIO::StoredTransferJob * m_storedTransferJob;
 

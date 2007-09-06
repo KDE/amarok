@@ -135,6 +135,8 @@ set(libscriptableservice_SRCS
 #####################################################################
 set(libshoutcastservice_SRCS
     servicebrowser/shoutcast/ShoutcastService.cpp
+    servicebrowser/shoutcast/ShoutcastServiceCollection.cpp
+    servicebrowser/shoutcast/ShoutcastServiceQueryMaker.cpp
 
 )
 
