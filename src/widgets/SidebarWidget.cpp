@@ -21,11 +21,14 @@
 #include "debug.h"
 #include "SidebarWidget.h"
 
+#include <KStandardDirs>
+
 #include <QAbstractItemDelegate>
 #include <QAction>
 #include <QApplication>
 #include <QList>
 #include <QPainter>
+#include <QSvgRenderer>
 #include <QTimer>
 #include <QWheelEvent>
 
@@ -263,6 +266,8 @@ void SideBarButton::paintEvent( QPaintEvent* )
     const int gap = 0;
     const int h = height() - gap;
 
+    QSvgRenderer svg( KStandardDirs::locate( "data","amarok/images/sidebar_tab.svg" ) );
+
     QPainter p( this );
     p.initFrom( this );
 
@@ -277,8 +282,9 @@ void SideBarButton::paintEvent( QPaintEvent* )
         c = blendColors( palette().highlight().color().light(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
     else
         c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
-    p.setBrush( c );
-    p.drawRect( rect().adjusted( 0, 0, -1, -gap -1 ) );
+//    p.setBrush( c );
+//    p.drawRect( rect().adjusted( 0, 0, -1, -gap -1 ) );
+    svg.render( &p );
 
     const QString txt = text().replace( "&", "" );
 
