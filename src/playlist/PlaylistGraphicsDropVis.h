@@ -13,6 +13,7 @@
 #include "PlaylistGraphicsItem.h"
 
 #include <QGraphicsLineItem>
+#include <QGraphicsScene>
 #include <QPen>
 
 namespace Playlist
@@ -30,14 +31,22 @@ namespace Playlist
             }
             ~DropVis() { }
 
-            void showAboveItem( Playlist::GraphicsItem *item )
+            void showDropIndicator( Playlist::GraphicsItem *above = 0 )
             {
-                qreal width = item->boundingRect().width();
-                setLine( 0, 0, width, 0 );
+                if( !scene() )
+                    return;
 
-                QPointF itemPos = item->pos();
-                itemPos.setY( itemPos.y() - 1 );
-                setPos( itemPos );
+                QPointF indicatorPosition( 0.0, 0.0 );
+                // if we have an item to place it above, then move the indicator, 
+                // otherwise use the top of the scene
+                if( above )
+                {
+                    indicatorPosition = above->pos();
+                    indicatorPosition.setY( indicatorPosition.y() - 5 );
+                }
+
+                setLine( 0, 0, scene()->width(), 0 );
+                setPos( indicatorPosition );
                 show();
             }
 

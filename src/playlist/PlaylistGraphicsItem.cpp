@@ -257,7 +257,7 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
         if( event->mimeData()->hasFormat( mime ) )
         {
             event->accept();
-            Playlist::DropVis::instance()->showAboveItem( this );
+            Playlist::DropVis::instance()->showDropIndicator( this );
             break;
         }
     }

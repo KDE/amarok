@@ -15,6 +15,8 @@
 #include "TheInstances.h"
 
 #include <QGraphicsScene>
+#include <QGraphicsSceneDragDropEvent>
+#include <QMimeData>
 #include <QObject>
 
 namespace Playlist
@@ -27,8 +29,28 @@ namespace Playlist
             {
             }
         protected:
-            virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent * )
+            virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
             {
+                Playlist::DropVis::instance()->hide();
+                QGraphicsScene::dragLeaveEvent( event );
+            }
+
+            virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event )
+            {
+                foreach( QString mime, The::playlistModel()->mimeTypes() )
+                {
+                    if( event->mimeData()->hasFormat( mime ) )
+                    {
+                        event->accept();
+                        Playlist::DropVis::instance()->showDropIndicator();
+                        break;
+                    }
+                }
+            }
+
+            virtual void dropEvent( QGraphicsSceneDragDropEvent *event )
+            {
+                The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
                 Playlist::DropVis::instance()->hide();
             }
     };
