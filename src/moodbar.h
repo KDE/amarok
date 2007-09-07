@@ -33,10 +33,11 @@
 #include <QObject>
 #include <QPixmap>
 
+#include "amarok_export.h"
 
 class MetaBundle;
 
-class Moodbar : public QObject
+class AMAROK_EXPORT Moodbar : public QObject
 {
   Q_OBJECT
 
