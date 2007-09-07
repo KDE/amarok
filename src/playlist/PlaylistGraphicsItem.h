@@ -6,13 +6,17 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#ifndef AMAROK_PLAYLISTGRAPHICSITEM_H
+#define AMAROK_PLAYLISTGRAPHICSITEM_H
+
+
 #include "meta.h"
 #include <QGraphicsItem>
 
 class QFontMetricsF;
 
-namespace Playlist {
-
+namespace Playlist
+{
     class GraphicsItem : public QGraphicsItem
     {
         class ActiveItems;
@@ -42,3 +46,5 @@ namespace Playlist {
     };
 
 }
+#endif
+

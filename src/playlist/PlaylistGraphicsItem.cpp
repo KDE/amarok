@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "meta/MetaUtility.h"
 #include "PlaylistGraphicsItem.h"
+#include "PlaylistGraphicsDropVis.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 
@@ -74,7 +75,6 @@ Playlist::GraphicsItem::GraphicsItem()
         s_fm = new QFontMetricsF( QFont() );
         s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * m_verticalOffset;
     }
-  //  setHandlesChildEvents( true );
     setFlag( QGraphicsItem::ItemIsSelectable );
     setAcceptDrops( true );
 }
@@ -255,7 +255,11 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
     foreach( QString mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
+        {
             event->accept();
+            Playlist::DropVis::instance()->showAboveItem( this );
+            break;
+        }
     }
 }
 
@@ -263,6 +267,7 @@ void
 Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
+    Playlist::DropVis::instance()->hide();
 }
 
 void 

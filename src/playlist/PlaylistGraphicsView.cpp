@@ -10,6 +10,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
+#include "PlaylistGraphicsDropVis.h"
 
 #include <KMenu>
 
@@ -17,12 +18,15 @@
 #include <QGraphicsScene>
 #include <QKeyEvent>
 
+Playlist::DropVis *Playlist::DropVis::s_instance = 0;
+
 Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     : QGraphicsView( parent )
     , m_model( model )
 {
     DEBUG_BLOCK
     setScene( new QGraphicsScene() );
+    scene()->addItem( Playlist::DropVis::instance() );
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
