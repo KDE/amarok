@@ -9,7 +9,7 @@
 #include "debug.h"
 #include "meta/MetaUtility.h"
 #include "PlaylistGraphicsItem.h"
-#include "PlaylistGraphicsDropVis.h"
+#include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 

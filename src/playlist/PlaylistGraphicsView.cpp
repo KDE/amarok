@@ -11,14 +11,12 @@
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistGraphicsScene.h"
-#include "PlaylistGraphicsDropVis.h"
+#include "PlaylistDropVis.h"
 
 #include <KMenu>
 
 #include <QModelIndex>
 #include <QKeyEvent>
-
-Playlist::DropVis *Playlist::DropVis::s_instance = 0;
 
 Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     : QGraphicsView( parent )

@@ -8,7 +8,7 @@
 
 #include "debug.h"
 #include "PlaylistGraphicsScene.h"
-#include "PlaylistGraphicsDropVis.h"
+#include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 
@@ -45,6 +45,7 @@ Playlist::GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
+    event->accept();
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }

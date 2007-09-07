@@ -6,23 +6,27 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#ifndef AMAROK_PLAYLISTGRAPHICSSCENE_H
-#define AMAROK_PLAYLISTGRAPHICSSCENE_H
+#ifndef AMAROK_PLAYLISTDROPVIS_H
+#define AMAROK_PLAYLISTDROPVIS_H
 
-#include <QGraphicsScene>
-#include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsLineItem>
+#include "PlaylistGraphicsItem.h"
 
 namespace Playlist
 {
-    class GraphicsScene : public QGraphicsScene
+    class DropVis : public QGraphicsLineItem
     {
+        // we can only have one drop visualiser so it is a singleton class
         public:
-            GraphicsScene( QObject *parent = 0 );
-        
-        protected:
-            virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
-            virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
-            virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+            static DropVis *instance();
+            ~DropVis() { }
+
+            void showDropIndicator( Playlist::GraphicsItem *above = 0 );
+
+        private:
+            DropVis( QGraphicsItem *parent = 0 );
+
+            static DropVis *s_instance;
     };
 }
 
