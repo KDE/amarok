@@ -1137,6 +1137,11 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
         debug() << "Failed to convert Solid device to PortableMediaPlayer" << endl;
         return 0;
     }
+    if( pmp->supportedProtocols().size() == 0 )
+    {
+        debug() << "Portable Media Player " << udi << " does not support any protocols";
+        return 0;
+    }
 
     QString protocol = pmp->supportedProtocols()[0];
     if( protocol == "storage" )
