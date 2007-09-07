@@ -41,6 +41,7 @@ ServiceBase *ServiceBase::s_instance = 0;
 ServiceBase::ServiceBase( const QString &name )
         : KVBox( 0)
         , m_polished( false )
+        , m_infoParser( 0 )
 {
 
     DEBUG_BLOCK
@@ -221,13 +222,13 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
 
     Meta::DataPtr ptr = item->data();
 
-    if (ptr.data() == 0) return; 
+    if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
 
     debug() << "selected item: " << ptr.data()->name();
 
     ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
 
-    if (infoProvider == 0) return; 
+    if (infoProvider == 0 ) return; 
 
     infoProvider->processInfoOf( m_infoParser );
 
