@@ -37,6 +37,7 @@ namespace Playlist
             void removeSelection();
         
         private:
+            void shuffleTracks( int startPosition );
             QGraphicsScene       *m_scene;
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;

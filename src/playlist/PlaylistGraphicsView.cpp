@@ -81,6 +81,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
         scene()->addItem( item );
         m_tracks.insert( i, item  );
     }
+    shuffleTracks( end );
 }
 
 void
@@ -89,6 +90,18 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
     Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
         delete m_tracks.takeAt( i );
+
+    shuffleTracks( start );
+}
+
+void
+Playlist::GraphicsView::shuffleTracks( int startPosition )
+{
+    for( int i = startPosition; i < m_tracks.size(); ++i )
+    {
+        Playlist::GraphicsItem* item = m_tracks.at( i );
+        item->setPos( 0.0, Playlist::GraphicsItem::height() * i );
+    }
 }
 
 void 
@@ -100,7 +113,6 @@ Playlist::GraphicsView::modelReset()
     }
     m_tracks.clear();
 }
-
 
 void 
 Playlist::GraphicsView::dataChanged(const QModelIndex & index)
