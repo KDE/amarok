@@ -273,17 +273,16 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     QColor c;
     if( isDown() )
-        c = blendColors( palette().highlight().color().dark( 150 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().text().color().dark( 150 ), palette().text().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() && underMouse() )
-        c = blendColors( palette().highlight().color().light( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().text().color().light( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() )
-        c = blendColors( palette().highlight().color(), palette().highlight().color().light(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().text().color(), palette().text().color().light(), static_cast<int>( m_animCount * 3.5 ) );
     else if( underMouse() )
-        c = blendColors( palette().highlight().color().light(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().text().color().light(), palette().text().color(), static_cast<int>( m_animCount * 3.5 ) );
     else
-        c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
-//    p.setBrush( c );
-//    p.drawRect( rect().adjusted( 0, 0, -1, -gap -1 ) );
+        c = blendColors( palette().highlight().color(), palette().text().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+    p.setPen( c );
     svg.render( &p );
 
     const QString txt = text().replace( "&", "" );
