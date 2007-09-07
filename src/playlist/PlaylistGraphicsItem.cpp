@@ -163,6 +163,8 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
     m_track = track;
 
+    setHandlesChildEvents( true ); // don't let drops etc hit the text items, doing stupid things
+
     QPixmap albumPixmap;
     if( track->album() )
         albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
@@ -251,8 +253,10 @@ void
 Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
     foreach( QString mime, The::playlistModel()->mimeTypes() )
+    {
         if( event->mimeData()->hasFormat( mime ) )
             event->accept();
+    }
 }
 
 void
