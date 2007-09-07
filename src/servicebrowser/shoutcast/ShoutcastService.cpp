@@ -36,7 +36,7 @@ ShoutcastService::ShoutcastService( const char *name )
 
     setShortDescription("The biggest damn list of online radio stations on the net :-)");
     setIcon( KIcon( Amarok::icon( "download" ) ) );
-
+    showInfo( false );
 
 }
 
