@@ -10,6 +10,7 @@
 
 #include "debug.h"
 #include "PlaylistGraphicsItem.h"
+#include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 
@@ -44,13 +45,31 @@ Playlist::DropVis::showDropIndicator( Playlist::GraphicsItem *above )
     QPointF indicatorPosition( 0.0, 0.0 );
     // if we have an item to place it above, then move the indicator,
     // otherwise use the top of the scene
+    qreal width = scene()->width() - 10;
     if( above )
     {
+        width = above->boundingRect().width();
         indicatorPosition = above->pos();
         indicatorPosition.setY( indicatorPosition.y() - 5 );
     }
+    else // place indicator at end of track listing
+    {
+        QList<QGraphicsView*> allViews = scene()->views();
+        Playlist::GraphicsView *view = 0;
+        if( !allViews.isEmpty() && ( view = dynamic_cast<Playlist::GraphicsView*>(allViews.first()) ) )
+        {
+            const QList<Playlist::GraphicsItem*> tracks = view->tracks();
+            Playlist::GraphicsItem *below = 0;
+            if( !tracks.isEmpty() && ( below = tracks.last() ) )
+            {
+                width = below->boundingRect().width();
+                indicatorPosition = below->pos();
+                indicatorPosition.setY( indicatorPosition.y() + below->boundingRect().height() );
+            }
+        }
+    }
     
-    setLine( 0, 0, scene()->width(), 0 );
+    setLine( 0, 0, width, 0 );
     setPos( indicatorPosition );
     show();
 }

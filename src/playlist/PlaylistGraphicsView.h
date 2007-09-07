@@ -24,6 +24,8 @@ namespace Playlist
         public:
             GraphicsView( QWidget* parent, Model* model );
 
+            const QList<GraphicsItem*> tracks() const { return m_tracks; }
+
         protected:
             virtual void contextMenuEvent( QContextMenuEvent *event );
             virtual void keyPressEvent( QKeyEvent *event );
