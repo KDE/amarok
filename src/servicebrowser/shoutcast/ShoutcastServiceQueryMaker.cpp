@@ -31,41 +31,10 @@
 
 using namespace Meta;
 
-class QueryJob : public ThreadWeaver::Job
-{
-    public:
-        QueryJob( ShoutcastServiceQueryMaker *qm )
-            : ThreadWeaver::Job()
-            , m_queryMaker( qm )
-        {
-            //nothing to do
-        }
-
-    public slots:
-
-        void taskDone()
-        {
-            setFinished( true );
-        }
-
-    protected:
-        void run()
-        {
-            DEBUG_BLOCK
-            connect( m_queryMaker, SIGNAL( dynamicQueryComplete() ), this, SLOT( taskDone() ) );
-            m_queryMaker->runQuery();
-        }
-
-    private:
-        ShoutcastServiceQueryMaker *m_queryMaker;
-};
-
-
 
 struct ShoutcastServiceQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
-    QueryJob *job;
     int maxsize;
     bool returnDataPtrs;
 };
@@ -73,10 +42,12 @@ struct ShoutcastServiceQueryMaker::Private {
 
 ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection )
  : QueryMaker()
+ , m_storedTransferJob( 0 )
  , d( new Private )
+
 {
+    DEBUG_BLOCK
     m_collection = collection;
-    d->job = 0;
     reset();
 }
 
@@ -88,7 +59,6 @@ ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 QueryMaker * ShoutcastServiceQueryMaker::reset()
 {
     d->type = Private::NONE;
-    delete d->job;
     d->maxsize = -1;
     d->returnDataPtrs = false;
     m_genreMatch = QString();
@@ -105,37 +75,31 @@ ShoutcastServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 
 void ShoutcastServiceQueryMaker::run()
 {
-
+    DEBUG_BLOCK
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
-    else if( d->job && !d->job->isFinished() )
-    {
-        //the worker thread seems to be running
-        //TODO: wait for job to complete
-    }
-    else
-    {
-       /* d->job = new QueryJob( this );
-        connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
-        ThreadWeaver::Weaver::instance()->enqueue( d->job );*/
-
-    if (  d->type == Private::GENRE )
+    else if (  d->type == Private::GENRE )
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
-    }
+    //}
 }
 
 void ShoutcastServiceQueryMaker::runQuery()
 {
+
     DEBUG_BLOCK
+
+    if ( m_storedTransferJob != 0 )
+        return;
+
     m_collection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
   
     //this is where the fun stuff happens
-    if (  d->type == Private::GENRE )
+    if (  d->type == Private::GENRE )       
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
@@ -162,7 +126,15 @@ QueryMaker * ShoutcastServiceQueryMaker::startGenreQuery()
 
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 {
+    DEBUG_BLOCK
     m_genreMatch = genre->name();
+}
+
+QueryMaker*
+ShoutcastServiceQueryMaker::addMatch( const DataPtr &data )
+{
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    return this;
 }
 
 
@@ -219,7 +191,6 @@ void ShoutcastServiceQueryMaker::fetchGenres()
     m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, true );
     connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
         , this, SLOT( genreDownloadComplete(KJob *) ) );
-
 }
 
 
@@ -229,7 +200,6 @@ void ShoutcastServiceQueryMaker::fetchStations()
     m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, true );
     connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
         , this, SLOT( stationDownloadComplete(KJob *) ) );
-
 }
 
 
@@ -286,7 +256,6 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     handleResult();
     emit queryDone();
-    //emit( dynamicQueryComplete() );
 
 }
 
@@ -338,16 +307,6 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job ) {
     emit queryDone();
 }
 
-
-
-void
-ShoutcastServiceQueryMaker::done( ThreadWeaver::Job *job )
-{
-    ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
-    d->job = 0;
-    emit queryDone();
-}
 
 #include "ShoutcastServiceQueryMaker.moc"
 

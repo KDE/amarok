@@ -28,7 +28,6 @@
 
 #include <kio/jobclasses.h>
 
-
 namespace ThreadWeaver
 {
     class Job;
@@ -62,8 +61,9 @@ public:
     void handleResult();
     void handleResult( const Meta::TrackList &tracks );
 
-    void fetchGenres();
     void fetchStations();
+    void fetchGenres();
+
 
 
     //currently unimplemented stuff:
@@ -90,7 +90,7 @@ public:
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album ) { return this; }
     virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer ) { return this; }
     virtual QueryMaker* addMatch ( const Meta::YearPtr &year ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data ) { return this; }
+    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 
     virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
     virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
@@ -120,7 +120,6 @@ protected:
 
 public slots:
 
-    void done( ThreadWeaver::Job * job );
     void genreDownloadComplete(KJob *job );
     void stationDownloadComplete(KJob *job );
 
