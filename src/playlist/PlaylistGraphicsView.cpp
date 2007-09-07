@@ -38,7 +38,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
            
     KMenu *menu = new KMenu( this );
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
-    menu->exec();
+    menu->exec( event->globalPos() );
 }
 
 void
