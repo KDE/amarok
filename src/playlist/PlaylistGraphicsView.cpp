@@ -25,7 +25,9 @@ Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     DEBUG_BLOCK
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
+
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
+
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );

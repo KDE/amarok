@@ -14,6 +14,7 @@
 #include "TheInstances.h"
 
 #include <QBrush>
+#include <QDrag>
 #include <QFontMetricsF>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
@@ -238,7 +239,7 @@ Playlist::GraphicsItem::boundingRect() const
 }
 
 void 
-Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
+Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
     if( m_items )
     {
@@ -247,6 +248,14 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
         return;
     }
     QGraphicsItem::mouseDoubleClickEvent( event );
+}
+
+void
+Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    // TODO add mime data
+    QDrag *drag = new QDrag( event->widget() );
+    drag->start();
 }
 
 void 
