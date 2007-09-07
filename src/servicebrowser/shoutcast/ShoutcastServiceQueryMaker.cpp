@@ -188,9 +188,16 @@ void ShoutcastServiceQueryMaker::handleResult() {
 void ShoutcastServiceQueryMaker::fetchGenres()
 {
     DEBUG_BLOCK
-    m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, false );
-    connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-        , this, SLOT( genreDownloadComplete(KJob *) ) );
+    //check if we already have the genres
+    if ( m_collection->genreMap().values().count() != 0 ) {
+        handleResult();
+        debug() << "no need to fetch genres again! ";
+    }
+    else {
+        m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, false );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
+            , this, SLOT( genreDownloadComplete(KJob *) ) );
+    }
 }
 
 
