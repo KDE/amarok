@@ -228,8 +228,6 @@ void MainWindow::init()
 
     this->toolBars().clear();
 
-    Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
-    QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
 
     createMenus();
 
@@ -241,9 +239,11 @@ void MainWindow::init()
         QVBoxLayout* layout = new QVBoxLayout( contextWidget );
         layout->setContentsMargins( 0, 0, 0, 0 );
         layout->addWidget( Context::ContextView::self() );
+        Amarok::StatusBar *statusbar = new Amarok::StatusBar( contextWidget );
+        layout->addWidget( statusbar );
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
-             layout->addWidget( new CoverBling( this ) );
+            layout->addWidget( new CoverBling( this ) );
 
         ControlBox* controlBox = new ControlBox( contextWidget );
         controlBox->show();
