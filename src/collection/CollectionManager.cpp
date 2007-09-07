@@ -30,8 +30,6 @@
 #include "pluginmanager.h"
 #include "scrobbler.h"
 #include "SqlStorage.h"
-#include "PodcastCollection.h"
-#include "TheInstances.h"
 
 #include <QtAlgorithms>
 #include <QtGlobal>
