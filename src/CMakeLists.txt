@@ -419,6 +419,7 @@ set(amaroklib_LIB_SRCS
     playlist/UndoCommands.cpp
     playlist/PlaylistGraphicsDropVis.h
     playlist/PlaylistGraphicsItem.cpp
+    playlist/PlaylistGraphicsScene.h
     playlist/PlaylistGraphicsView.cpp
 #    playlist.cpp
 #    playlistbrowser.cpp
