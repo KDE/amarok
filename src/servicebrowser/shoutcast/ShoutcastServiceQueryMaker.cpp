@@ -188,7 +188,7 @@ void ShoutcastServiceQueryMaker::handleResult() {
 void ShoutcastServiceQueryMaker::fetchGenres()
 {
     DEBUG_BLOCK
-    m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, true );
+    m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, false );
     connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
         , this, SLOT( genreDownloadComplete(KJob *) ) );
 }
@@ -197,7 +197,7 @@ void ShoutcastServiceQueryMaker::fetchGenres()
 void ShoutcastServiceQueryMaker::fetchStations()
 {
     DEBUG_BLOCK
-    m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, true );
+    m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, false );
     connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
         , this, SLOT( stationDownloadComplete(KJob *) ) );
 }
