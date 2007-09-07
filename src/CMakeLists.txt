@@ -411,6 +411,7 @@ set(amaroklib_LIB_SRCS
     osd.cpp
     pixmapviewer.cpp
     playlist/PlaylistHeader.cpp
+    playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
     playlist/StandardTrackAdvancer.cpp
