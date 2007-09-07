@@ -96,6 +96,9 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
 void
 Playlist::GraphicsView::shuffleTracks( int startPosition )
 {
+    if ( startPosition < 0 )
+        return;
+
     for( int i = startPosition; i < m_tracks.size(); ++i )
     {
         Playlist::GraphicsItem* item = m_tracks.at( i );
