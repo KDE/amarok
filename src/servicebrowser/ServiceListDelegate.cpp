@@ -37,7 +37,7 @@ ServiceListDelegate::~ServiceListDelegate()
 
 void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     //ServiceBase * service = static_cast< ServiceBase * >( index.internalPointer() );
     //if ( ! service ) return;
@@ -90,7 +90,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     Q_UNUSED( option );
     Q_UNUSED( index );
 
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     return QSize ( 252, 70 );
 
