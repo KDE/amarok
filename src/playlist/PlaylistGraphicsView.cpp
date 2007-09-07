@@ -22,8 +22,7 @@ Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     , m_model( model )
 {
     DEBUG_BLOCK
-    m_scene = new QGraphicsScene();
-    setScene( m_scene );
+    setScene( new QGraphicsScene() );
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
@@ -49,7 +48,7 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
     debug() << "Pressed: " << event;
     if( event->matches( QKeySequence::Delete ) )
     {
-        if( not m_scene->selectedItems().isEmpty() )
+        if( not scene()->selectedItems().isEmpty() )
         {
             event->accept();
             removeSelection();
@@ -62,7 +61,7 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::GraphicsView::removeSelection()
 {
-    QList<QGraphicsItem*> selection = m_scene->selectedItems();
+    QList<QGraphicsItem*> selection = scene()->selectedItems();
     foreach( QGraphicsItem *i, selection )
     {
         int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
