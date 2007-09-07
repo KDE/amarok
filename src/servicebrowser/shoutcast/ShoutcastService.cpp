@@ -49,10 +49,14 @@ void ShoutcastService::polish()
 {
     DEBUG_BLOCK
 
+    if ( m_polished )
+        return;
+
     m_collection = new ShoutcastServiceCollection();
     QList<int> levels;
     levels << CategoryId::Genre;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+    m_polished = true;
 
 }
 
