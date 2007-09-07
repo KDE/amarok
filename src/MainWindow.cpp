@@ -911,11 +911,9 @@ void MainWindow::createActions()
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
 
-    KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );

@@ -532,7 +532,6 @@ install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
 install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarokui.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
 install(FILES amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
 
 install(FILES context/servicetypes/amarok_context_applet.desktop
