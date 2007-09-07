@@ -22,6 +22,108 @@ VERSION 2.0
 
 ==BEGIN Qt4 / KDE4 DEPENDENCY==
 
+VERSION 1.4.8
+  BUGFIXES:
+    * Make sure the localUrl of a PodcastEpisode is valid after a failed
+      download. (BR147351)
+    * Fix off-by-one error causing Smart Playlists to not load tracks with a
+      rating >= 4.5. (BR 148916)
+    * Don't enable "Configure Podcasts" at the top-level Podcasts folder if
+      there is nothing beneath it. (BR 146504)
+    * Generic Media Device could copy some non-ASCII filenames to turn to
+      gibberish.  Thanks to David Smith <davidsmith@acm.org> for the fix.
+    * Fixed possible GUI freeze when Amarok was showing the dialog for
+      installing mp3 support. Patch by Sascha Sommer <ssommer@suse.de>.
+      (BR 147126)
+    * Amarok could needlessely reinitialize connections to MySQL databases
+      after a configuration change.  Combined with a bug in MySQL libraries,
+      this could lead to a crash.
+    * Pressing Preveious Track in a Dynamic Playlist could cause undefined
+      behavior in certain edge conditions.  Now it always plays the current
+      track. (BR 148317)
+    * Immediately after loading a dynamic playlist, you couldn't drag a
+      track to the top of the playlist. (BR 149263)
+    * Fix transferring files with UTF8 names to MTP devices. Thanks to Kevin
+      Becker <kevman3000@gmail.com> for the fix. (BR 139722)
+    * Display warning that iPod sysinfo could not be written in the case of
+      incorrect file permissions. Patch by Christian Ober-Blöbaum
+      <cob@tzi.de>. (BR 148607)
+    * Fix Czech character conversion to ASCII for Generic Media Device. Patch
+      by Matěj Laitl <strohel@gmail.com>. (BR 149125)
+
+
+VERSION 1.4.7
+  CHANGES:
+    * Updated the Cool Streams.
+    * Improved application icon. Thanks go to Pasi Lallinaho.
+    * Upgraded SQLite to 3.4.1
+    * SQL improvements providing optimisations on intensive queries. Patch by
+      Gosta <gostaj@gmail.com>. (BR 142999)
+
+  BUGFIXES:
+    * Wikipedia artist lookup would freeze Amarok if the artist was not found
+      and the locale was not English. (BR 142764)
+    * Cannot limit smart playlists to more than 1000 tracks. (BR 148084)
+    * Fixed the formatting in the "Extended Info" pane for podcasts.
+    * Don't show "Not Rated" for items rated with half a star. Patch by Tuomas
+      Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 144675)
+    * Copy, don't move items from Cool Streams to folders. (BR 147404)
+    * Sometimes folders in the playlistbrowser could be lost. (BR 147404)
+    * NJB devices could have tags corrupted that contained Unicode characters.
+      Patch by Kun Xi <quinnxi@gmail.com>. (BR 147223)
+    * Show OSD when changing song rating via shortcut. Patch by Tuomas Nurmi
+
+VERSION 1.4.6
+  CHANGES:
+    * Improved icon theme, kindly provided by Landy DeField
+      <lando@revelinux.com>. Big thanks!
+    * Playlist now sends notifications to scripts if items are added, removed,
+      reordered, or if the playlist is cleared.  Useful for script authors.
+      Thanks to Miguel Angel Alvarez <maacruz@gmail.com> for the patch.
+    * iPod device plugin now handles RockBox devices.  Thanks to Michael
+      Buesch <mb@bu3sch.de> for the patch.
+    * Organising files will only delete empty parent folders if the folder
+      is within the collection hierarchy. (BR 136757)
+    * The default cover image preview size has been increased to 130px.
+    * The "hide menubar" option has been removed. It's too dangerous and led
+      to countless support requests.
+    * Generic media device can now handle any KIO-compatible URL, including
+      obex and smb. Manage your bluetooth phone's music collection through
+      Amarok!
+    * Upgraded SQLite to 3.3.17.
+    * Append an album to the playlist by right-clicking on it from within
+      the Cover Manager.  Patch by Doug Reich <dreich@hmc.edu>.
+    * Faster playlist handling. Patch by Ovy <ovy@alum.mit.edu>. (BR 142255)
+    * The moodbar process has been given a higher priority. (BR 136867)
+    * Allow for lyrics scripts to specifiy site, site_url, and add_url from
+      within the script. This will allow for "meta lyrics" scripts. Patch by
+      Sergio Pistone <sergio_pistone@yahoo.com.ar>. (BR 141885)
+    * First rating star now lets you toggle between no rating, half a star,
+      and one full star.
+
+  BUGFIXES:
+    * Uninstalling scripts would in some cases leave files behind. Patch by
+      Sergio Pistone <sergio_pistone@yahoo.com.ar>. (BR 143716)
+    * Last.fm "Custom Station" stream works again. (BR 146020)
+    * Fix regression where the "Show Script Manager" button displayed on the
+      Lyrics tab of the Context Browser wouldn't actually show the Script
+      Manager.
+    * Don't show ratings from the previous track's rating change in the OSD on
+      playing the next track.
+    * The config dialog is now less tall and fits on widescreen displays.
+    * Making a dynamic playlist with the number of previously played tracks to
+      show set to zero and attempting to play the first track would cause a
+      crash. (BR 145157)
+    * If "Stop after current track" was used, the last track would not be
+      counted or rated in the user's statistics. (BR 140980)
+    * Generic media device wouldn't allow you to drop a folder on the
+      viewport, meaning you couldn't move subfolders to the top level of the
+      mount point.
+    * Made the settings dialog less tall. (BR 141250)
+    * Star ratings now update instantly in the Context Browser, OSD, and
+      Collection Browser.
+    * lyrc script did not work behind proxy due to a stray quote mark. Gentoo
+
 VERSION 1.4.5
   FEATURES:
     * Added support for custom song labels. Labels can be managed
