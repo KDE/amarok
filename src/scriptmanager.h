@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
- *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
+ *                      2005 by Seb Ruiz <ruiz@kde.org>                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

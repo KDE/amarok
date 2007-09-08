@@ -7,7 +7,7 @@
  * osd.cpp:   Shows some text in a pretty way independent to the WM
  * begin:     Fre Sep 26 2003
  * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
- *            (C) 2004-2006 Seb Ruiz <me@sebruiz.net>
+ *            (C) 2004-2006 Seb Ruiz <ruiz@kde.org>  
  *            (C) 2004, 2005 Max Howell
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */

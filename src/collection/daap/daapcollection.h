@@ -1,6 +1,6 @@
 /* 
    Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2006 Seb Ruiz <me@sebruiz.net>
+   Copyright (C) 2006 Seb Ruiz <ruiz@kde.org>  
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or

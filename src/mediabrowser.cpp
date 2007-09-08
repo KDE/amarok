@@ -1,6 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
-// (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005 Seb Ruiz <ruiz@kde.org>  
 // (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // See COPYING file for licensing information
 

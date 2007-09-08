@@ -1,7 +1,7 @@
 /****************************************************************************
  * copyright            :(C) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com> *
  *                       (C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
- *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
+ *                       (C) 2005 Seb Ruiz <ruiz@kde.org>                   *
  *                                                                          *
  * With some code helpers from KIO_GENERIC                                  *
  *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *

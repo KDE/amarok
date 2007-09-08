@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ * copyright            : (C) 2005-2006 Seb Ruiz <ruiz@kde.org>            *
  *                                                                         *
  * With some code helpers from KIO_IFP                                     *
  *                        (c) 2004 Thomas Loeber <ifp@loeber1.de>          *
@@ -16,7 +16,7 @@
 
  /**
   *  iRiver ifp media device code
-  *  @author Seb Ruiz <me@sebruiz.net>
+  *  @author Seb Ruiz <ruiz@kde.org>  
   *  @see http://ifp-driver.sourceforge.net/libifp/docs/ifp_8h.html
   *  @note ifp uses a backslash '\' as a directory delimiter for _remote_ files
   */

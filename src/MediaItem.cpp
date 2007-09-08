@@ -1,7 +1,7 @@
 /*  Copyright (C) 2005-2007 Jeff Mitchell <kde-dev@emailgoeshere.com>
     (c) 2004 Christian Muehlhaeuser <chris@chris.de>
     (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
-    (c) 2005 Seb Ruiz <me@sebruiz.net>
+    (c) 2005 Seb Ruiz <ruiz@kde.org>  
     (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 
     This library is free software; you can redistribute it and/or

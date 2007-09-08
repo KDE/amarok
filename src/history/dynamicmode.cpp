@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2005 Seb Ruiz <ruiz@kde.org>                 *
  * copyright            : (C) 2006 Gábor Lehel <illissius@gmail.com>       *
  * copyright            : (C) 2006 Bonne Eggleston <b.eggleston@gmail.com  *
  **************************************************************************/

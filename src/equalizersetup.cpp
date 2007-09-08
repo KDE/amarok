@@ -2,7 +2,7 @@
  Setup dialog for the equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
- (c) 2005 Seb Ruiz <me@sebruiz.net>
+ (c) 2005 Seb Ruiz <ruiz@kde.org>  
  (c) 2005 Markus Brueffer <markus@brueffer.de>
 ***************************************************************************/
 

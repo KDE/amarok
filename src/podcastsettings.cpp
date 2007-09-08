@@ -1,4 +1,4 @@
-// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
+// (c) 2005-2006 Seb Ruiz <ruiz@kde.org>  
 // (c) 2006 Bart Cerneels <shanachie@yucom.be>
 // See COPYING file for licensing information.
 

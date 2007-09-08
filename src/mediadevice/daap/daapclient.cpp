@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright: (C) 2006, 2007 Ian Monroe <ian@monroe.nu>                    *
- *            (C) 2006 Seb Ruiz <me@sebruiz.net>                           *
+ *            (C) 2006 Seb Ruiz <ruiz@kde.org>                             *
  *            (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  ***************************************************************************/
 

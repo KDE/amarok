@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
- *                 2005-2007 by Seb Ruiz <me@sebruiz.net>                  *
+ *                 2005-2007 by Seb Ruiz <ruiz@kde.org>                    *
  *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
  *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
  *                      2007 by Leonardo Franchi <lfranchi@gmail.com>      *

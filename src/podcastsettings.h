@@ -1,4 +1,4 @@
-// (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005 Seb Ruiz <ruiz@kde.org>  
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_PODCASTSETTINGS_H

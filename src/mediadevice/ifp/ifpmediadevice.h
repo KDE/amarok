@@ -1,7 +1,7 @@
 //Added by qt3to4:
 #include <QByteArray>
 /***************************************************************************
- * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ * copyright            : (C) 2005-2006 Seb Ruiz <ruiz@kde.org>            *
  *                                                                         *
  * With some code helpers from KIO_IFP                                     *
  *                        (c) 2004 Thomas Loeber <ifp@loeber1.de>          *
