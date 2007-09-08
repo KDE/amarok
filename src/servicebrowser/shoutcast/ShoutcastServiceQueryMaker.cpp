@@ -2,6 +2,7 @@
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *             (c) 2007 Adam Pigg <adam@piggz.co.uk>                       *
  *                                                                         *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -23,6 +24,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "servicemetabase.h"
+#include "collection/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -30,7 +32,6 @@
  #include <QDomDocument>
 
 using namespace Meta;
-
 
 struct ShoutcastServiceQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
@@ -54,6 +55,7 @@ ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollecti
 
 ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 {
+    delete d;
 }
 
 QueryMaker * ShoutcastServiceQueryMaker::reset()
@@ -116,18 +118,21 @@ QueryMaker * ShoutcastServiceQueryMaker::startTrackQuery()
 {
     DEBUG_BLOCK
     d->type = Private::TRACK;
+    return this;
 }
 
 QueryMaker * ShoutcastServiceQueryMaker::startGenreQuery()
 {
     DEBUG_BLOCK
     d->type = Private::GENRE;
+    return this;
 }
 
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 {
     DEBUG_BLOCK
     m_genreMatch = genre->name();
+    return this;
 }
 
 QueryMaker*
@@ -204,9 +209,16 @@ void ShoutcastServiceQueryMaker::fetchGenres()
 void ShoutcastServiceQueryMaker::fetchStations()
 {
     DEBUG_BLOCK
-    m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, false );
-    connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-        , this, SLOT( stationDownloadComplete(KJob *) ) );
+
+    GenreMatcher genreMatcher( m_collection->genreMap()[m_genreMatch] );
+    m_currentTrackQueryResults = genreMatcher.match( m_collection );
+    if ( m_currentTrackQueryResults.count() > 0 ) {
+        handleResult();
+    } else {
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, false );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
+            , this, SLOT( stationDownloadComplete(KJob *) ) );
+    }
 }
 
 
