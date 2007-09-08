@@ -82,36 +82,40 @@ class TrackAdvancer;
         friend class AddTracksCmd;
         friend class RemoveTracksCmd;
         Q_OBJECT
+        
         public:
             Model( QObject* parent = 0 ); 
             ~Model();
-        //required by QAbstractListModel
+        
+            //required by QAbstractListModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
             int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 1; }
             QVariant data(const QModelIndex &index, int role) const;
-        //overriding QAbstractItemModel
+
+            //overriding QAbstractItemModel
             bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
             QVariant headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const { return QVariant(); }
             Qt::DropActions supportedDropActions() const;
 
-        //Drag and Drop methods
+            //Drag and Drop methods
             virtual bool insertRows(  int /*row*/, int /*count*/, const QModelIndex &parent = QModelIndex() ) { Q_UNUSED(parent); return true; }
             Qt::ItemFlags flags(const QModelIndex &index) const;
             QStringList mimeTypes() const;
             QMimeData* mimeData(const QModelIndexList &indexes) const;
             bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
-        //other methods
+        
+            //other methods
             void init();
-///Restore playlist from previous session of Amarok
+            ///Restore playlist from previous session of Amarok
             void restoreSession() { }
-///Save M3U of current playlist to a given location
+            ///Save M3U of current playlist to a given location
             bool saveM3U( const QString &path, bool relative ) const;
 
-/**
-* Insert tracks into the playlist with some handy options.
-* @param list tracks to add
-* @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
-**/
+            /**
+             * Insert tracks into the playlist with some handy options.
+             * @param list tracks to add
+             * @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
+             **/
             void insertOptioned( Meta::TrackList list, int options );
             void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
             void insertOptioned( QueryMaker *qm, int options );
@@ -122,14 +126,14 @@ class TrackAdvancer;
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
-        //    Qt::ItemFlags flags(const QModelIndex &index) const;
             void testData();
+            
             ///deprecated function to ease porting to Meta::Track from URLs
             KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
             virtual void metadataChanged( Meta::Album *album );
+            
             void play( int row );
-            static Model* s_instance; //! instance variable
 
             //various methods for playlist name
             //I believe this is used for when you open a playlist file, it can keep the same name when it is 
@@ -138,12 +142,15 @@ class TrackAdvancer;
             void proposePlaylistName( const QString &name, bool proposeOverwriting = false ) { if( ( rowCount() == 0 ) || m_playlistName==i18n("Untitled") ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
             const QString &playlistName() const { return m_playlistName; }
             bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
+            
+            static Model* s_instance; //! instance variable
         
         public slots:
             void play( const QModelIndex& index );
             void next();
             void back();
             void clear(); ///clear the playlist of all items
+
         private slots:
             void trackFinished(); //! what to do when a track finishes
             void queryDone();
@@ -151,15 +158,15 @@ class TrackAdvancer;
             void playCurrentTrack();    ///connected to EngineController::orderCurrent
 
         private:
-            QString m_playlistName;
-            bool m_proposeOverwriting;
-
-            /**This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
+            /**
+             * This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
              * @arg row Row number in the playlist to insert the list after.
              * @arg list The list to be inserted.
              */
             void insertTracksCommand( int row, Meta::TrackList list );
-            /**This performs the actual work involved with removing tracks. It is to be *only* called by an UndoCommand.
+            
+            /**
+             * This performs the actual work involved with removing tracks. It is to be *only* called by an UndoCommand.
              * @arg row Row number in the playlist to insert the list after.
              * @arg list The list to be inserted.
              */
@@ -167,12 +174,15 @@ class TrackAdvancer;
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
-            QList<Item*> m_items; //! list of tracks in order currently in the playlist
-            int m_activeRow; //! the row being played
-            TrackAdvancer* m_advancer; //! the strategy of what to do when a track finishes playing
-            QUndoStack* m_undoStack; //! for pushing on undo commands
-            QHash<QueryMaker*, int> m_queryMap; //!maps queries to the row where the results should be inserted
-            QHash<QueryMaker*, int> m_optionedQueryMap; //!maps queries to the options to be used when inserting the result
+            QString         m_playlistName;
+            bool            m_proposeOverwriting;
+
+            QList<Item*>    m_items;                    //! list of tracks in order currently in the playlist
+            int             m_activeRow;                //! the row being played
+            TrackAdvancer*  m_advancer;                 //! the strategy of what to do when a track finishes playing
+            QUndoStack*     m_undoStack;                //! for pushing on undo commands
+            QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
+            QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
     };
 }

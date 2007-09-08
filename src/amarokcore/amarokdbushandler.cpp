@@ -82,6 +82,7 @@ namespace Amarok
 
     bool DbusPlayerHandler::dynamicModeStatus()
     {
+        return false;
         //TODO: PORT 2.0
 //         return Amarok::dynamicMode();
     }
@@ -606,6 +607,7 @@ namespace Amarok
         //PORT 2.0
 //         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
 //         return Playlist::defaultPlaylistPath();
+        return QString();
     }
 
     void DbusPlaylistHandler::addMedia(const KUrl &url)
@@ -627,8 +629,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::playByIndex(int index)
     {
-        //PORT 2.0
-//         Playlist::instance()->activateByIndex( index );
+        The::playlistModel()->play( index );
     }
 
     void DbusPlaylistHandler::playMedia( const KUrl &url )
@@ -644,6 +645,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::removeCurrentTrack()
     {
+        The::playlistModel()->removeRows( getActiveIndex(), 1 );
 #if 0
         PlaylistItem* const item = Playlist::instance()->currentTrack();
         if ( item ) {
@@ -658,17 +660,10 @@ namespace Amarok
 #endif
     }
 
-    void DbusPlaylistHandler::removeByIndex( int /*index*/ )
+    void DbusPlaylistHandler::removeByIndex( int index )
     {
-#if 0
-            PlaylistItem* const item =
-            static_cast<PlaylistItem*>( Playlist::instance()->itemAtIndex( index ) );
-
-        if ( item ) {
-            Playlist::instance()->removeItem( item );
-            delete item;
-        }
-#endif
+        if( index < getTotalTrackCount() )
+            The::playlistModel()->removeRows( index, 1 );
     }
 
     void DbusPlaylistHandler::repopulate()
@@ -684,6 +679,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::setStopAfterCurrent( bool on )
     {
+        Q_UNUSED( on );
         //PORT 2.0
 //         Playlist::instance()->setStopAfterCurrent( on );
     }
@@ -722,6 +718,7 @@ namespace Amarok
 //         }
 // 
 //         return songlist;
+        return QStringList();
     }
 //     QString DbusPlaylistHandler::currentTrackUniqueId()
 //     {
@@ -745,6 +742,7 @@ namespace Amarok
 
     void DbusPlaylistBrowserHandler::addPodcast( const QString &url )
     {
+        Q_UNUSED( url );
         //PORT 2.0
 //         PlaylistBrowser::instance()->addPodcast( url );
     }
@@ -757,12 +755,14 @@ namespace Amarok
 
     void DbusPlaylistBrowserHandler::addPlaylist( const QString &url )
     {
+        Q_UNUSED( url );
         //PORT 2.0
 //         PlaylistBrowser::instance()->addPlaylist( url );
     }
 
     int DbusPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
     {
+        Q_UNUSED( playlist ); return -1;
         //PORT 2.0
 //         return PlaylistBrowser::instance()->loadPlaylist( playlist );
     }
@@ -941,12 +941,14 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     void DbusScriptHandler::addCustomMenuItem(QString submenu, QString itemTitle )
     {
+        Q_UNUSED( submenu ); Q_UNUSED( itemTitle );
         //PORT 2.0
 //         Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
     }
 
     void DbusScriptHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
     {
+        Q_UNUSED( submenu ); Q_UNUSED( itemTitle );
         //PORT 2.0
 //         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
