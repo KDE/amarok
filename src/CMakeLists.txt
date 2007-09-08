@@ -287,7 +287,9 @@ set(collection_SRCS
     collection/CollectionLocation.cpp
     collection/MetaQueryBuilder.cpp
     collection/QueryMaker.cpp
+    collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
+
 )
 
 #####################################################################
