@@ -43,7 +43,6 @@ AmarokMimeData::~AmarokMimeData()
 QStringList
 AmarokMimeData::formats() const
 {
-    DEBUG_BLOCK
     QStringList formats( QMimeData::formats() );
     if( !m_tracks.isEmpty() || !m_queryMakers.isEmpty())
     {

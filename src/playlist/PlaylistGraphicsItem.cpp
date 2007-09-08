@@ -8,6 +8,7 @@
 
 #include "debug.h"
 #include "meta/MetaUtility.h"
+#include "AmarokMimeData.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
@@ -258,8 +259,19 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    // TODO add mime data
+    if( event->buttons() & Qt::RightButton )
+    {
+        event->ignore();
+        return;
+    }
+    AmarokMimeData *mime= new AmarokMimeData();
+    Meta::TrackList tracks;
+    tracks << m_track;
+    mime->setTracks( tracks );
+
     QDrag *drag = new QDrag( event->widget() );
+    drag->setMimeData( mime );
+
     drag->start();
 }
 

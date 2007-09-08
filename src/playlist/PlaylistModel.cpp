@@ -455,8 +455,12 @@ Model::saveM3U( const QString &path, bool relative ) const
 Qt::ItemFlags
 Model::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
-    return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled | defaultFlags;
+    if( index.isValid() )
+    {
+        return ( Qt::ItemIsEnabled     | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled |
+                 Qt::ItemIsDragEnabled | Qt::ItemIsSelectable );
+    }
+    return Qt::ItemIsDropEnabled;
 }
 
 QStringList
