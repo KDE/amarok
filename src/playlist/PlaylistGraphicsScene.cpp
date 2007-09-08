@@ -45,8 +45,16 @@ Playlist::GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
-    event->accept();
-    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
-    Playlist::DropVis::instance()->hide();
+    if( itemAt( event->pos() ) )
+    {
+        event->ignore();
+        QGraphicsScene::dropEvent( event );
+    }
+    else
+    {
+        event->accept();
+        The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
+        Playlist::DropVis::instance()->hide();
+    }
 }
 

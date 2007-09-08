@@ -275,6 +275,7 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
+    event->accept();
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
@@ -283,7 +284,7 @@ void
 Playlist::GraphicsItem::refresh()
 {
     QPixmap albumPixmap;
-    if ( ! m_track )
+    if( !m_track )
         return;
 
     if( m_track->album() )
