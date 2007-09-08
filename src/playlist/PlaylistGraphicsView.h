@@ -35,6 +35,8 @@ namespace Playlist
             void rowsInserted( const QModelIndex & parent, int start, int end );
             void rowsRemoved( const QModelIndex & parent, int start, int end );
             void dataChanged( const QModelIndex & index );
+
+            void playTrack();
             void removeSelection();
         
         private:

@@ -38,9 +38,14 @@ Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
 void
 Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 {
-    event->accept();
+    if( !scene()->itemAt( mapToScene( event->pos() ) ) ) // we've clicked on empty space
+        return;
            
+    event->accept();
+
     KMenu *menu = new KMenu( this );
+    menu->addAction( i18n( "&Play" ), this, SLOT( playTrack() ) );
+    menu->addSeparator();
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
     menu->exec( event->globalPos() );
 }
@@ -60,6 +65,12 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
         }
     }
     QGraphicsView::keyPressEvent( event );
+}
+
+void
+Playlist::GraphicsView::playTrack()
+{
+
 }
 
 void
