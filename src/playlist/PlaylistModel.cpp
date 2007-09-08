@@ -468,7 +468,6 @@ Model::mimeTypes() const //reimplemented
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
-    debug() << ret;
     return ret;
 }
 
@@ -501,7 +500,6 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
-            debug() << "It's a list drag!";
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we're appending to the list.";

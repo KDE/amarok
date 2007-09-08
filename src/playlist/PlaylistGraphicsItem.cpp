@@ -151,7 +151,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->foreground->setPen( QPen( Qt::NoPen ) );
         }
         else
-             m_items->background->hide();
+            m_items->background->hide();
             m_items->foreground->show();
     }
     else if( m_items->foreground )
@@ -292,8 +292,15 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
+    Qt::DropAction dropAction = Qt::CopyAction;
+    if( event->source() == scene()->views().at(0) )
+    {
+        debug() << "internal drop!";
+        dropAction = Qt::MoveAction;
+    }
+
     event->accept();
-    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
+    The::playlistModel()->dropMimeData( event->mimeData(), dropAction, getRow(), 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
 
