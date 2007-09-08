@@ -264,6 +264,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
         event->ignore();
         return;
     }
+    /*
     AmarokMimeData *mime= new AmarokMimeData();
     Meta::TrackList tracks;
     tracks << m_track;
@@ -273,6 +274,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     drag->setMimeData( mime );
 
     drag->start();
+    */
 }
 
 void 
