@@ -10,6 +10,7 @@
 #include "meta/MetaUtility.h"
 #include "AmarokMimeData.h"
 #include "PlaylistGraphicsItem.h"
+#include "PlaylistGraphicsView.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
@@ -262,24 +263,12 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    debug() << event->pos();
     if( event->buttons() & Qt::RightButton )
     {
         event->ignore();
         return;
     }
     QGraphicsItem::mousePressEvent( event );
-    /*
-    AmarokMimeData *mime= new AmarokMimeData();
-    Meta::TrackList tracks;
-    tracks << m_track;
-    mime->setTracks( tracks );
-
-    QDrag *drag = new QDrag( event->widget() );
-    drag->setMimeData( mime );
-
-    drag->start();
-    */
 }
 
 // With help from QGraphicsView::mouseMoveEvent()
@@ -300,10 +289,21 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
         {
             if( (item->flags() & QGraphicsItem::ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected()) )
             {
+                Playlist::GraphicsItem *above = 0;
                 QPointF diff;
                 if( item == this )
                 {
                     diff = event->scenePos() - event->lastScenePos();
+                    QList<QGraphicsItem*> collisions = scene()->items( event->scenePos() );
+                    foreach( QGraphicsItem *i, collisions )
+                    {
+                        Playlist::GraphicsItem *c = dynamic_cast<Playlist::GraphicsItem *>( i );
+                        if( c && c != this )
+                        {
+                            above = c;
+                            break;
+                        }
+                    }
                 }
                 else
                 {
@@ -314,6 +314,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
                 item->moveBy( 0, diff.y() );
                 if( item->flags() & ItemIsSelectable )
                     item->setSelected( true );
+                Playlist::DropVis::instance()->showDropIndicator( above );
             }
         }
     }
@@ -340,17 +341,9 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
-
-    setZValue( 1.0 );
-    Qt::DropAction dropAction = Qt::CopyAction;
-    if( event->source() == scene()->views().at(0) )
-    {
-        debug() << "internal drop!";
-        dropAction = Qt::MoveAction;
-    }
-
     event->accept();
-    The::playlistModel()->dropMimeData( event->mimeData(), dropAction, getRow(), 0, QModelIndex() );
+    setZValue( 1.0 );
+    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
 
@@ -370,8 +363,29 @@ Playlist::GraphicsItem::refresh()
     m_items->albumArt->setPos( 0.0, m_verticalOffset );
 }
 
-void Playlist::GraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
+
+    Playlist::GraphicsItem *above = 0;
+    QList<QGraphicsItem*> collisions = scene()->items( event->scenePos() );
+    foreach( QGraphicsItem *i, collisions )
+    {
+        Playlist::GraphicsItem *c = dynamic_cast<Playlist::GraphicsItem *>( i );
+        if( c && c != this )
+        {
+            above = c;
+            break;
+        }
+    }
+    // if we've dropped ourself ontop of another item, then we need to shuffle the tracks below down
+    if( above )
+    {
+        Playlist::GraphicsView *view = dynamic_cast<Playlist::GraphicsView*>( scene()->views().at(0) );
+        if( view )
+            view->shuffleTracks( above );
+    }
+
     //make sure item resets its z value
     setZValue( 1.0 );
+    Playlist::DropVis::instance()->hide();
 }

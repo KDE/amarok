@@ -25,6 +25,8 @@ namespace Playlist
             GraphicsView( QWidget* parent, Model* model );
 
             const QList<GraphicsItem*> tracks() const { return m_tracks; }
+            void shuffleTracks( int startPosition );
+            void shuffleTracks( Playlist::GraphicsItem *startPosition );
 
         protected:
             virtual void contextMenuEvent( QContextMenuEvent *event );
@@ -40,7 +42,6 @@ namespace Playlist
             void removeSelection();
         
         private:
-            void shuffleTracks( int startPosition );
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
     };
