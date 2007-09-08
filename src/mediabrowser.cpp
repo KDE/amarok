@@ -465,13 +465,12 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         m_toolbar->show();
     }
 
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
-            it++ )
+    foreach( MediaDevice *md, m_devices )
     {
-        (*it)->view()->hide();
+        if( md && md->view() )
+            md->view()->hide();
     }
-
+            
     if( index < 0 )
     {
         m_currentDevice = m_devices.last();
@@ -494,7 +493,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
     }
 
     m_currentDevice = m_devices[index];
-    if( m_currentDevice )
+    if( m_currentDevice && m_currentDevice->view() )
     {
         m_currentDevice->view()->show();
         if( m_currentDevice->customAction() )
