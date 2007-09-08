@@ -299,7 +299,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
                 QPointF diff;
                 if( item == this )
                 {
-                    diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
+                    diff = event->scenePos() - event->lastScenePos();
                 }
                 else
                 {
