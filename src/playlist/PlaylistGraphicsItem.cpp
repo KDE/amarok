@@ -78,6 +78,7 @@ Playlist::GraphicsItem::GraphicsItem()
         s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * m_verticalOffset;
     }
     setFlag( QGraphicsItem::ItemIsSelectable );
+    setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
 }
 
@@ -251,6 +252,7 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
     if( m_items )
     {
         event->accept();
+        play();
         return;
     }
     QGraphicsItem::mouseDoubleClickEvent( event );
@@ -259,11 +261,13 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
+    debug() << event->pos();
     if( event->buttons() & Qt::RightButton )
     {
         event->ignore();
         return;
     }
+    QGraphicsItem::mousePressEvent( event );
     /*
     AmarokMimeData *mime= new AmarokMimeData();
     Meta::TrackList tracks;

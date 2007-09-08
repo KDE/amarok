@@ -43,7 +43,14 @@ void
 Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 {
     QPointF sceneClickPos = mapToScene( event->pos() );
-    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( scene()->itemAt( sceneClickPos )->parentItem() );
+    QGraphicsItem *topItem = scene()->itemAt( sceneClickPos );
+    if( !topItem )
+        return;
+
+    
+    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( topItem );
+    if( !item )
+        item = dynamic_cast<Playlist::GraphicsItem*>( topItem->parentItem() );
     if( !item ) // we've clicked on empty space
         return;
            
