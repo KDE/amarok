@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+             (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,6 +22,7 @@
 
 #include "MemoryCollection.h"
 #include "QueryMaker.h"
+
 
 namespace ThreadWeaver
 {
@@ -86,19 +88,5 @@ class MemoryQueryMaker : public QueryMaker
         Private * const d;
 };
 
-class Matcher {
-    public:
-        Matcher();
-        virtual ~Matcher();
-        virtual Meta::TrackList match( MemoryCollection *memColl) = 0;
-        virtual Meta::TrackList match( const Meta::TrackList &tracks ) = 0;
-
-        bool isLast() const;
-        void setNext( Matcher *next );
-        Matcher* next() const;
-
-    private:
-        Matcher *m_next;
-};
 
 #endif

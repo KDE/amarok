@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+             (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 
 #include "MemoryQueryMaker.h"
 #include "MemoryQueryMakerFilters_p.h"
-
+#include "MemoryMatcher.h"
 #include "debug.h"
 
 #include <threadweaver/Job.h>
@@ -28,277 +29,6 @@
 #include <QStack>
 
 using namespace Meta;
-
-Matcher::Matcher()
-    : m_next( 0 )
-{
-}
-
-Matcher::~Matcher()
-{
-    delete m_next;
-}
-
-bool
-Matcher::isLast() const
-{
-    return !m_next;
-}
-
-Matcher*
-Matcher::next() const
-{
-    return m_next;
-}
-
-void
-Matcher::setNext( Matcher *next )
-{
-    if ( !m_next )
-        delete m_next;
-    m_next = next;
-}
-
-//TODO check if it's possible to use templates here
-
-class TrackMatcher : public Matcher
-{
-    public:
-    TrackMatcher( TrackPtr track )
-        : Matcher()
-        , m_track( track )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        TrackMap trackMap = memColl->trackMap();
-        TrackList result;
-        if ( trackMap.contains( m_track->url()  ) )
-            result.append( trackMap.value( m_track->url() ) );
-        return result; //checking for another matcher is not necessary
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList result;
-        QString url = m_track->url();
-        foreach( TrackPtr track, tracks )
-            if ( track->url() == url )
-            {
-                result.append( track );
-                break;
-            }
-        return result; //checking for another matcher is not necessary
-    }
-
-    private:
-    TrackPtr m_track;
-};
-
-class ArtistMatcher : public Matcher
-{
-    public:
-     ArtistMatcher( ArtistPtr artist )
-        : Matcher()
-        , m_artist( artist )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        ArtistMap artistMap = memColl->artistMap();
-        if ( artistMap.contains( m_artist->name() ) )
-        {
-            ArtistPtr artist = artistMap.value( m_artist->name() );
-            TrackList matchingTracks = artist->tracks();
-            if ( isLast() )
-                return matchingTracks;
-            else
-                return next()->match( matchingTracks );
-        }
-        else
-            return TrackList();
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList matchingTracks;
-        QString name = m_artist->name();
-        foreach( TrackPtr track, tracks )
-            if ( track->artist()->name() == name )
-                matchingTracks.append( track );
-        if ( isLast() || matchingTracks.count() == 0)
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-
-    private:
-        ArtistPtr m_artist;
-};
-
-class AlbumMatcher : public Matcher
-{
-    public:
-        AlbumMatcher( AlbumPtr album )
-        : Matcher()
-        , m_album( album )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        AlbumMap albumMap = memColl->albumMap();
-        if ( albumMap.contains( m_album->name() ) )
-        {
-            AlbumPtr album = albumMap.value( m_album->name() );
-            TrackList matchingTracks = album->tracks();
-            if ( isLast() )
-                return matchingTracks;
-            else
-                return next()->match( matchingTracks );
-        }
-        else
-            return TrackList();
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList matchingTracks;
-        QString name = m_album->name();
-        foreach( TrackPtr track, tracks )
-            if ( track->album()->name() == name )
-                matchingTracks.append( track );
-        if ( isLast() || matchingTracks.count() == 0)
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-
-    private:
-        AlbumPtr m_album;
-};
-
-class GenreMatcher : public Matcher
-{
-    public:
-        GenreMatcher( GenrePtr genre )
-        : Matcher()
-        , m_genre( genre )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        GenreMap genreMap = memColl->genreMap();
-        if ( genreMap.contains( m_genre->name() ) )
-        {
-            GenrePtr genre = genreMap.value( m_genre->name() );
-            TrackList matchingTracks = genre->tracks();
-            if ( isLast() )
-                return matchingTracks;
-            else
-                return next()->match( matchingTracks );
-        }
-        else
-            return TrackList();
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList matchingTracks;
-        QString name = m_genre->name();
-        foreach( TrackPtr track, tracks )
-            if ( track->genre()->name() == name )
-                matchingTracks.append( track );
-        if ( isLast() || matchingTracks.count() == 0)
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-
-    private:
-        GenrePtr m_genre;
-};
-
-class ComposerMatcher : public Matcher
-{
-    public:
-        ComposerMatcher( ComposerPtr composer )
-        : Matcher()
-        , m_composer( composer )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        ComposerMap composerMap = memColl->composerMap();
-        if ( composerMap.contains( m_composer->name() ) )
-        {
-            ComposerPtr composer = composerMap.value( m_composer->name() );
-            TrackList matchingTracks = composer->tracks();
-            if ( isLast() )
-                return matchingTracks;
-            else
-                return next()->match( matchingTracks );
-        }
-        else
-            return TrackList();
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList matchingTracks;
-        QString name = m_composer->name();
-        foreach( TrackPtr track, tracks )
-            if ( track->composer()->name() == name )
-                matchingTracks.append( track );
-        if ( isLast() || matchingTracks.count() == 0)
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-
-    private:
-        ComposerPtr m_composer;
-};
-
-class YearMatcher : public Matcher
-{
-    public:
-        YearMatcher( YearPtr year )
-        : Matcher()
-        , m_year( year )
-    {}
-
-    virtual TrackList match( MemoryCollection *memColl )
-    {
-        YearMap yearMap = memColl->yearMap();
-        if ( yearMap.contains( m_year->name() ) )
-        {
-            YearPtr year = yearMap.value( m_year->name() );
-            TrackList matchingTracks = year->tracks();
-            if ( isLast() )
-                return matchingTracks;
-            else
-                return next()->match( matchingTracks );
-        }
-        else
-            return TrackList();
-    }
-
-    virtual TrackList match( const TrackList &tracks )
-    {
-        TrackList matchingTracks;
-        QString name = m_year->name();
-        foreach( TrackPtr track, tracks )
-            if ( track->year()->name() == name )
-                matchingTracks.append( track );
-        if ( isLast() || matchingTracks.count() == 0)
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-
-    private:
-        YearPtr m_year;
-};
 
 //QueryJob
 
@@ -328,7 +58,7 @@ struct MemoryQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     bool returnDataPtrs;
-    Matcher* matcher;
+    MemoryMatcher* matcher;
     QueryJob *job;
     int maxsize;
     QStack<ContainerFilter*> containerFilters;
@@ -696,12 +426,12 @@ MemoryQueryMaker::excludeCollection( const QString &collectionId )
 QueryMaker*
 MemoryQueryMaker::addMatch( const TrackPtr &track )
 {
-    Matcher *trackMatcher = new TrackMatcher( track );
+    MemoryMatcher *trackMatcher = new TrackMatcher( track );
     if ( d->matcher == 0 )
         d->matcher = trackMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( trackMatcher );
@@ -712,12 +442,12 @@ MemoryQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 MemoryQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    Matcher *artistMatcher = new ArtistMatcher( artist );
+    MemoryMatcher *artistMatcher = new ArtistMatcher( artist );
     if ( d->matcher == 0 )
         d->matcher = artistMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( artistMatcher );
@@ -728,12 +458,12 @@ MemoryQueryMaker::addMatch( const ArtistPtr &artist )
 QueryMaker*
 MemoryQueryMaker::addMatch( const AlbumPtr &album )
 {
-    Matcher *albumMatcher = new AlbumMatcher( album );
+    MemoryMatcher *albumMatcher = new AlbumMatcher( album );
     if ( d->matcher == 0 )
         d->matcher = albumMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( albumMatcher );
@@ -744,12 +474,12 @@ MemoryQueryMaker::addMatch( const AlbumPtr &album )
 QueryMaker*
 MemoryQueryMaker::addMatch( const GenrePtr &genre )
 {
-    Matcher *genreMatcher = new GenreMatcher( genre );
+    MemoryMatcher *genreMatcher = new GenreMatcher( genre );
     if ( d->matcher == 0 )
         d->matcher = genreMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( genreMatcher );
@@ -760,12 +490,12 @@ MemoryQueryMaker::addMatch( const GenrePtr &genre )
 QueryMaker*
 MemoryQueryMaker::addMatch( const ComposerPtr &composer )
 {
-    Matcher *composerMatcher = new ComposerMatcher( composer );
+    MemoryMatcher *composerMatcher = new ComposerMatcher( composer );
     if ( d->matcher == 0 )
         d->matcher = composerMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( composerMatcher );
@@ -776,12 +506,12 @@ MemoryQueryMaker::addMatch( const ComposerPtr &composer )
 QueryMaker*
 MemoryQueryMaker::addMatch( const YearPtr &year )
 {
-    Matcher *yearMatcher = new YearMatcher( year );
+    MemoryMatcher *yearMatcher = new YearMatcher( year );
     if ( d->matcher == 0 )
         d->matcher = yearMatcher;
     else
     {
-        Matcher *tmp = d->matcher;
+        MemoryMatcher *tmp = d->matcher;
         while ( !tmp->isLast() )
             tmp = tmp->next();
         tmp->setNext( yearMatcher );
