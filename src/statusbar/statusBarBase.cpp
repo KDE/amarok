@@ -675,7 +675,7 @@ StatusBar::writeLogFile( const QString &text )
     QTextStream stream( &file );
     stream.setCodec( "UTF8" );
 
-    stream << "[" << KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() ) << "] " << text << endl;
+    stream << "[" << KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() ) << "] " << text;
 }
 
 } //namespace KDE

@@ -478,7 +478,7 @@ ScanController::customEvent( QEvent* e )
 
         QFile log( Amarok::saveLocation( QString() ) + "collection_scan.log" );
         if ( !log.open( QIODevice::ReadOnly ) )
-        ::warning() << "Failed opening log file " << log.fileName() << endl;
+        ::warning() << "Failed opening log file " << log.fileName();
         else {
             QByteArray path = QByteArray(log.readAll());
             m_crashedFiles << QString::fromUtf8( path, path.length() );

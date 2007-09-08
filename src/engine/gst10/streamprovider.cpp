@@ -196,7 +196,7 @@ void
 StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
-        warning() << "Unable to connect to this stream server." << endl;
+        warning() << "Unable to connect to this stream server.";
         // it might have been timed out attempt to resolve host
         m_resolver.cancel( false );
         emit m_engine.gstStatusText( i18n( "Unable to connect to this stream server." ) );
@@ -268,7 +268,7 @@ StreamProvider::transmitData( const QString &data )
     QTextCodec *codec = QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
 
     if ( !codec ) {
-        error() << "QTextCodec* codec == NULL!" << endl;
+        error() << "QTextCodec* codec == NULL!";
         return;
     }
 

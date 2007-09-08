@@ -406,7 +406,7 @@ NjbMediaDevice::downloadToCollection()
                 {
                     const char *njbError;
                     while( (njbError = NJB_Error_Geterror(m_njb) ) )
-                        error() << njbError << endl;
+                        error() << njbError;
                 }
                 else
                     debug() << "No reason to report for failure";
@@ -461,7 +461,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
         {
             const char* njbError;
             while ((njbError = NJB_Error_Geterror(m_njb)))
-                warning() << ": " << njbError << endl;
+                warning() << ": " << njbError;
         }
         else
             debug() << ": No reason for failure reported.\n";
@@ -503,7 +503,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
         {
             const char *njbError;
             while( (njbError = NJB_Error_Geterror(m_njb) ) )
-                error() << njbError << endl;
+                error() << njbError;
         }
         else
             debug() << "No reason to report for failure";

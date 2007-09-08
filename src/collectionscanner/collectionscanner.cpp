@@ -89,7 +89,7 @@ CollectionScanner::doJob() //SLOT
         QString lastFile;
         if ( !logFile.open( QIODevice::ReadOnly ) )
             warning() << "Failed to open log file " << logFile.fileName() << " read-only"
-            << endl;
+           ;
         else {
             QTextStream logStream;
             logStream.setDevice(&logFile);
@@ -101,7 +101,7 @@ CollectionScanner::doJob() //SLOT
         QFile folderFile( Amarok::saveLocation( QString() ) + "collection_scan.files"   );
         if ( !folderFile.open( QIODevice::ReadOnly ) )
             warning() << "Failed to open folder file " << folderFile.fileName()
-            << " read-only" << endl;
+            << " read-only";
         else {
             QTextStream folderStream;
             folderStream.setDevice(&folderFile);

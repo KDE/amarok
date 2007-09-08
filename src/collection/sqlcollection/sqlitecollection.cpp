@@ -123,10 +123,10 @@ QStringList SqliteCollection::query( const QString& statement )
         if ( error != SQLITE_OK )
         {
             if ( SQLITE_BUSY==error )
-                Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << " sqlite3_compile error:" << endl;
-            Debug::error() << sqlite3_errmsg( m_db ) << endl;
-            Debug::error() << "on query: " << statement << endl;
+                Debug::error() << "Gave up waiting for lock to clear";
+            Debug::error() << " sqlite3_compile error:";
+            Debug::error() << sqlite3_errmsg( m_db );
+            Debug::error() << "on query: " << statement;
             values = QStringList();
             break;
         }
@@ -166,8 +166,8 @@ QStringList SqliteCollection::query( const QString& statement )
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
             {
                 Debug::error() << "sqlite_step error.\n";
-                Debug::error() << sqlite3_errmsg( m_db ) << endl;
-                Debug::error() << "on query: " << statement << endl;
+                Debug::error() << sqlite3_errmsg( m_db );
+                Debug::error() << "on query: " << statement;
                 values = QStringList();
             }
             if ( rc == SQLITE_SCHEMA )
@@ -178,8 +178,8 @@ QStringList SqliteCollection::query( const QString& statement )
                     debug() << "Retrying now.";
                 else
                 {
-                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
-                    Debug::error() << "SQL statement: " << statement << endl;
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!";
+                    Debug::error() << "SQL statement: " << statement;
                     values = QStringList();
                 }
             }
@@ -216,10 +216,10 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
         if ( error != SQLITE_OK )
         {
             if ( SQLITE_BUSY==error )
-                Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << " sqlite3_compile error:" << endl;
-            Debug::error() << sqlite3_errmsg( m_db ) << endl;
-            Debug::error() << "on insert: " << statement << endl;
+                Debug::error() << "Gave up waiting for lock to clear";
+            Debug::error() << " sqlite3_compile error:";
+            Debug::error() << sqlite3_errmsg( m_db );
+            Debug::error() << "on insert: " << statement;
             break;
         }
         else
@@ -250,8 +250,8 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
             {
                 Debug::error() << "sqlite_step error.\n";
-                Debug::error() << sqlite3_errmsg( m_db ) << endl;
-                Debug::error() << "on insert: " << statement << endl;
+                Debug::error() << sqlite3_errmsg( m_db );
+                Debug::error() << "on insert: " << statement;
             }
             if ( rc == SQLITE_SCHEMA )
             {
@@ -261,8 +261,8 @@ int SqliteCollection::insert( const QString& statement, const QString& /* table 
                     debug() << "Retrying now.";
                 else
                 {
-                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
-                    Debug::error() << "SQL statement: " << statement << endl;
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!";
+                    Debug::error() << "SQL statement: " << statement;
                 }
             }
         }

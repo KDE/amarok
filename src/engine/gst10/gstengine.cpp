@@ -934,7 +934,7 @@ GstEngine::handlePipelineError()  //SLOT
 
     m_gst_error = QString();
     emit statusText( text );
-    error() << text << endl;
+    error() << text;
 
     destroyPipeline();
 }

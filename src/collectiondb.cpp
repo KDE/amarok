@@ -3086,7 +3086,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             if( !pathsSame )
                 statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
+                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path();
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat was NOT successful, updating tables with: ";
@@ -3150,7 +3150,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             if( !pathsSame )
                 statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
+                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat part 2 was NOT successful, updating tables with: ";
@@ -4496,7 +4496,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
     if ( values.count() > 17 )
     {
-        error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
+        error() << "Query returned more than 1 song. Aborting updating metadata";
         return;
     }
 
@@ -4758,7 +4758,7 @@ CollectionDB::applySettings()
     {
         debug()
             << "Database engine settings changed: "
-            << "recreating DbConnections" << endl;
+            << "recreating DbConnections";
         // If Database engine was changed, recreate DbConnections.
         destroy();
         initialize();
@@ -4934,7 +4934,7 @@ void
 CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
     if( fetcher->wasError() ) {
-        error() << fetcher->errors() << endl;
+        error() << fetcher->errors();
         emit coverFetcherError( fetcher->errors().front() );
     }
 
@@ -5174,7 +5174,7 @@ CollectionDB::initialize()
 
     if ( !dbConn->isConnected() || !dbConn->isInitialized() )
     {
-        error() << "Failed to connect to or initialise database!" << endl;
+        error() << "Failed to connect to or initialise database!";
         Amarok::MessageQueue::instance()->addMessage( dbConn->lastError() );
     }
     else
@@ -5182,13 +5182,13 @@ CollectionDB::initialize()
         if ( !isValid() )
         {
             //No tables seem to exist (as doing a count(url) didn't even return any number, even 0).
-            warning() << "Tables seem to not exist." << endl;
-            warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
+            warning() << "Tables seem to not exist.";
+            warning() << "Attempting to create tables (this should be safe; ignore any errors)...";
             createTables(false);
             createPersistentTables();
             createPodcastTables();
             createStatsTable();
-            warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
+            warning() << "Tables should now definitely exist. (Stop ignoring errors)";
 
             //Since we have created the tables, we need to make sure the version numbers are
             //set to the correct values. If this is not done now, the database update code may
@@ -5232,7 +5232,7 @@ CollectionDB::initialize()
 
             if ( prev > DATABASE_DEVICES_VERSION || prev < 0 )
             {
-                error() << "Database devices version too new for this version of Amarok" << endl;
+                error() << "Database devices version too new for this version of Amarok";
                 exit( 1 );
                 //dropDevicesTable();
             }
@@ -5268,7 +5268,7 @@ CollectionDB::checkDatabase()
         int result = KMessageBox::warningContinueCancel( 0, text, "Database migration" );
         if ( result != KMessageBox::Continue )
         {
-            error() << "Dynamic Collection migration was aborted by user...exiting" << endl;
+            error() << "Dynamic Collection migration was aborted by user...exiting";
             exit( 1 );
         }
         */
@@ -5355,7 +5355,7 @@ CollectionDB::updateStatsTables()
             if( getType() == DbConnection::sqlite && QFile::exists( Amarok::saveLocation()+"collection.db" ) )
             {
                 debug() << "Creating a backup of the database in "
-                        << Amarok::saveLocation()+"collection-backup.db" << '.' << endl;
+                        << Amarok::saveLocation()+"collection-backup.db" << '.';
 
                 bool copied = KIO::NetAccess::file_copy( Amarok::saveLocation()+"collection.db",
                                                          Amarok::saveLocation()+"collection-backup.db",
@@ -5472,7 +5472,7 @@ CollectionDB::updateStatsTables()
             }
             else if( prev > DATABASE_STATS_VERSION )
             {
-                error() << "Database statistics version too new for this version of Amarok. Quitting..." << endl;
+                error() << "Database statistics version too new for this version of Amarok. Quitting...";
                 exit( 1 );
             }
         }
@@ -5633,7 +5633,7 @@ CollectionDB::updatePersistentTables()
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
             {
                 error() << "There is a bug in Amarok: instead of destroying your valuable"
-                        << " database tables, I'm quitting" << endl;
+                        << " database tables, I'm quitting";
                 exit( 1 );
 
                 debug() << "Rebuilding persistent tables database!";
@@ -5668,7 +5668,7 @@ CollectionDB::updatePodcastTables()
     //Keep this number in sync    \/
     if ( PodcastVersion.toInt() > 2 )
     {
-        error() << "Something is very wrong with the Podcast Tables. Aborting" << endl;
+        error() << "Something is very wrong with the Podcast Tables. Aborting";
         exit( 1 );
         dropPodcastTables();
         createPodcastTables();
@@ -6056,10 +6056,10 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
         if ( error != SQLITE_OK )
         {
             if ( SQLITE_BUSY==error )
-                Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << " sqlite3_compile error:" << endl;
-            Debug::error() << sqlite3_errmsg( m_db ) << endl;
-            Debug::error() << "on query: " << statement << endl;
+                Debug::error() << "Gave up waiting for lock to clear";
+            Debug::error() << " sqlite3_compile error:";
+            Debug::error() << sqlite3_errmsg( m_db );
+            Debug::error() << "on query: " << statement;
             values = QStringList();
             break;
         }
@@ -6099,8 +6099,8 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
             {
                 Debug::error() << "sqlite_step error.\n";
-                Debug::error() << sqlite3_errmsg( m_db ) << endl;
-                Debug::error() << "on query: " << statement << endl;
+                Debug::error() << sqlite3_errmsg( m_db );
+                Debug::error() << "on query: " << statement;
                 values = QStringList();
             }
             if ( rc == SQLITE_SCHEMA )
@@ -6111,8 +6111,8 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
                     debug() << "Retrying now.";
                 else
                 {
-                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
-                    Debug::error() << "SQL statement: " << statement << endl;
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!";
+                    Debug::error() << "SQL statement: " << statement;
                     values = QStringList();
                 }
             }
@@ -6148,10 +6148,10 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
         if ( error != SQLITE_OK )
         {
             if ( SQLITE_BUSY==error )
-                Debug::error() << "Gave up waiting for lock to clear" << endl;
-            Debug::error() << " sqlite3_compile error:" << endl;
-            Debug::error() << sqlite3_errmsg( m_db ) << endl;
-            Debug::error() << "on insert: " << statement << endl;
+                Debug::error() << "Gave up waiting for lock to clear";
+            Debug::error() << " sqlite3_compile error:";
+            Debug::error() << sqlite3_errmsg( m_db );
+            Debug::error() << "on insert: " << statement;
             break;
         }
         else
@@ -6182,8 +6182,8 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
             {
                 Debug::error() << "sqlite_step error.\n";
-                Debug::error() << sqlite3_errmsg( m_db ) << endl;
-                Debug::error() << "on insert: " << statement << endl;
+                Debug::error() << sqlite3_errmsg( m_db );
+                Debug::error() << "on insert: " << statement;
             }
             if ( rc == SQLITE_SCHEMA )
             {
@@ -6193,8 +6193,8 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
                     debug() << "Retrying now.";
                 else
                 {
-                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
-                    Debug::error() << "SQL statement: " << statement << endl;
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!";
+                    Debug::error() << "SQL statement: " << statement;
                 }
             }
         }

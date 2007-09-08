@@ -45,7 +45,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     else
     {
         bundle->setFilesize( 0 );
-    error() << " Unexpected frame type:" << frame->type << endl;
+    error() << " Unexpected frame type:" << frame->type;
     }
 
     frame = NJB_Songid_Findframe( song, FR_LENGTH );
@@ -54,7 +54,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     else
     {
         bundle->setLength( 0 );
-    error() << " Unexpected frame type:" << frame->type << endl;
+    error() << " Unexpected frame type:" << frame->type;
     }
 
     frame = NJB_Songid_Findframe( song, FR_GENRE );

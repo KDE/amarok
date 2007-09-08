@@ -114,7 +114,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 
     if ( job->error() )
     {
-        warning() << "KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error();
         return;
     }
 
@@ -669,7 +669,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     m_inProgress = false;
 
     if ( job->error() ) {
-        warning() << "KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error();
         schedule( true );
         return;
     }
@@ -679,7 +679,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 
 //     debug()
 //         << "Handshake result received: "
-//         << endl << m_submitResultBuffer << endl;
+//         << endl << m_submitResultBuffer;
 
     // UPTODATE
     // <md5 challenge>
@@ -700,7 +700,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "UPDATE" ) )
     {
-        warning() << "A new version of Amarok is available" << endl;
+        warning() << "A new version of Amarok is available";
 
         m_challenge = m_submitResultBuffer.section( "\n", 1, 1 );
         m_submitUrl = m_submitResultBuffer.section( "\n", 2, 2 );
@@ -716,7 +716,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).trimmed();
 
-        warning() << "Handshake failed (" << reason << ")" << endl;
+        warning() << "Handshake failed (" << reason << ")";
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
@@ -726,13 +726,13 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     else if ( m_submitResultBuffer.startsWith( "BADUSER" ) ||
               m_submitResultBuffer.startsWith( "BADAUTH" ) )
     {
-        warning() << "Handshake failed (Authentication failed)" << endl;
+        warning() << "Handshake failed (Authentication failed)";
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
     }
     else
-        warning() << "Unknown handshake response: " << m_submitResultBuffer << endl;
+        warning() << "Unknown handshake response: " << m_submitResultBuffer;
 
     debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl;
 
@@ -749,14 +749,14 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     m_inProgress = false;
 
     if ( job->error() ) {
-        warning() << "KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error();
         enqueueJob( job );
         return;
     }
 
 //     debug()
 //         << "Submit result received: "
-//         << endl << m_submitResultBuffer << endl;
+//         << endl << m_submitResultBuffer;
 
     // OK
     // INTERVAL n (protocol 1.1)
@@ -777,7 +777,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).trimmed();
 
-        warning() << "Submit failed (" << reason << ")" << endl;
+        warning() << "Submit failed (" << reason << ")";
 
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
@@ -789,7 +789,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "BADAUTH" ) )
     {
-        warning() << "Submit failed (Authentication failed)" << endl;
+        warning() << "Submit failed (Authentication failed)";
 
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
@@ -800,7 +800,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     }
     else
     {
-        warning() << "Unknown submit response" << endl;
+        warning() << "Unknown submit response";
         enqueueJob( job );
     }
 }
@@ -851,7 +851,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
         if ( itemFromQueue )
         {
             debug() << "Dropping " << itemFromQueue->artist()
-                    << " - " << itemFromQueue->title() << " from fake queue" << endl;
+                    << " - " << itemFromQueue->title() << " from fake queue";
             m_fakeQueueLength -= itemFromQueue->length();
         }
 
@@ -866,7 +866,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
             itemFromQueue = m_submitQueue.first();
             m_submitQueue.removeFirst();
             debug() << "Dropping " << itemFromQueue->artist()
-                     << " - " << itemFromQueue->title() << " from submit queue" << endl;
+                     << " - " << itemFromQueue->title() << " from submit queue";
         }
 
         delete itemFromQueue;

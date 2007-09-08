@@ -69,7 +69,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     *m_proxy << Amarok::proxyForUrl( realStream.url() );
 
     if( !m_proxy->start( K3ProcIO::NotifyOnExit, true ) ) {
-        error() << "Failed to start amarok_proxy.rb" << endl;
+        error() << "Failed to start amarok_proxy.rb";
         return;
     }
 

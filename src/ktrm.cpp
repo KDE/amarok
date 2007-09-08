@@ -752,7 +752,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
 #if HAVE_TUNEPIMP >= 5
     DEBUG_BLOCK
     if ( !job->error() == 0 ) {
-        warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error() << endl;
+        warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error();
         Amarok::StatusBar::instance()->longMessage( "Couldn't connect to MusicBrainz server." );
         finished();
         return;
@@ -764,7 +764,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
     QDomElement e;
 
     if( !doc.setContent( xml ) ) {
-        warning() << "[MusicBrainzLookup] Invalid XML" << endl;
+        warning() << "[MusicBrainzLookup] Invalid XML";
         Amarok::StatusBar::instance()->longMessage( "MusicBrainz returned invalid content." );
         finished();
         return;

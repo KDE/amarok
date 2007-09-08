@@ -154,7 +154,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
                                                             .arg( m->mountPoint() ), "devices" );
         if ( id == 0 )
         {
-            warning() << "Inserting into devices failed for type=nfs, server=" << server << ", share=" << share << endl;
+            warning() << "Inserting into devices failed for type=nfs, server=" << server << ", share=" << share;
             return 0;
         }
         debug() << "Created new NFS device with ID " << id << " , server " << server << " ,share " << share;

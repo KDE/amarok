@@ -465,7 +465,7 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
 
     if( !m_server->start( K3ProcIO::NotifyOnExit, true ) ) {
-        error() << "Failed to start amarok_proxy.rb" << endl;
+        error() << "Failed to start amarok_proxy.rb";
         return false;
     }
 

@@ -359,7 +359,7 @@ IpodMediaDevice::slotIpodAction( int id )
 
                     GError *err = 0; 
                     gboolean success = itdb_device_write_sysinfo(m_itdb->device, &err);
-                    debug() << "success writing sysinfo to ipod?: " << success << endl;
+                    debug() << "success writing sysinfo to ipod?: " << success;
                     if( !success && err )
                     {
                         g_error_free(err);
@@ -1345,7 +1345,7 @@ IpodMediaDevice::updateArtwork()
         if( !image.endsWith( "@nocover.png" ) )
         {
             debug() << "adding image " << image << " to " << bundle->artist() << ":"
-                << bundle->album() << endl;
+                << bundle->album();
             itdb_track_set_thumbnails( i->m_track, g_strdup( QFile::encodeName(image) ) );
             ++updateCount;
         }

@@ -74,7 +74,7 @@ namespace Amarok {
         int size = list.count();
 
         if( size<=0 )
-            error() << "size<=0" << endl;
+            error() << "size<=0";
 
         artist = size > 0 ? unescapeHTMLAttr( list[0] ) : "";
         album  = size > 1 ? unescapeHTMLAttr( list[1] ) : "";
@@ -242,7 +242,7 @@ StatisticsList::refreshView()
     {
         if( !firstChild() )
         {
-            error() << "Statistics: uh oh, no first child!" << endl;
+            error() << "Statistics: uh oh, no first child!";
             return;
         }
         while( firstChild()->firstChild() )

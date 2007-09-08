@@ -90,7 +90,7 @@ PMPProtocol::copy( const KUrl &src, const KUrl &dst, int permissions, bool overw
 {
     Q_UNUSED( permissions );
     Q_UNUSED( overwrite );
-    kDebug() << endl << "Entering copy with src = " << src << ", dst = " << dst << endl;
+    kDebug() << endl << "Entering copy with src = " << src << ", dst = " << dst;
     //For now don't support copy
     error( KIO::ERR_UNSUPPORTED_ACTION, i18n( "Direct copying not supported." ) );
 }
@@ -98,23 +98,23 @@ PMPProtocol::copy( const KUrl &src, const KUrl &dst, int permissions, bool overw
 void
 PMPProtocol::del( const KUrl &url, bool isfile )
 {
-    kDebug() << endl << endl << "Entering del with url = " << url << endl;
+    kDebug() << endl << endl << "Entering del with url = " << url;
     if( getBackendForUrl( url ) )
         getBackendForUrl( url )->del( url, isfile );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving del with url = " << url << endl;
+    kDebug() << endl << endl << "Leaving del with url = " << url;
 }
 
 void
 PMPProtocol::get( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering get with url = " << url << endl;
+    kDebug() << endl << endl << "Entering get with url = " << url;
     if( getBackendForUrl( url ) )
         getBackendForUrl( url )->get( url );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving get with url = " << url << endl;
+    kDebug() << endl << endl << "Leaving get with url = " << url;
 }
 
 void
@@ -168,7 +168,7 @@ PMPProtocol::listDir( const KUrl &url )
     }
 
     emit finished();
-    kDebug() << endl << endl << "Leaving listDir with url = " << url << endl;
+    kDebug() << endl << endl << "Leaving listDir with url = " << url;
 }
 
 void
@@ -219,7 +219,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
 void
 PMPProtocol::stat( const KUrl &url )
 {
-    kDebug() << endl << endl << "Entering stat with url = " << url << endl;
+    kDebug() << endl << endl << "Entering stat with url = " << url;
     if( url.path().isEmpty() || url.path() == "/" )
     {
         KIO::UDSEntry entry;
@@ -235,7 +235,7 @@ PMPProtocol::stat( const KUrl &url )
         getBackendForUrl( url )->stat( url );
 
     emit finished();
-    kDebug() << endl << endl << "Leaving stat with url = " << url << endl;
+    kDebug() << endl << endl << "Leaving stat with url = " << url;
 }
 
 QString

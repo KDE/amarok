@@ -232,7 +232,7 @@ Reader::updateFinished( int /*id*/, bool error )
     if( error )
     {
         http->deleteLater();
-        warning() << "what is going on here? " << http->error() << endl;
+        warning() << "what is going on here? " << http->error();
         return;
     }
 
@@ -400,7 +400,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             default:
-                warning() << tag << " doesn't work" << endl;
+                warning() << tag << " doesn't work";
             break;
         }
         index += tagLength + 8;

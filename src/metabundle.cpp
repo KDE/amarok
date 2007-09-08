@@ -750,7 +750,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case LastPlayed: setLastPlay(   newText.toInt() );   break;
         case Filesize:   setFilesize(   newText.toInt() );   break;
         case Type:       setFileType(   newText.toInt() );   break;
-        default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
+        default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column;
    }
 }
 
@@ -781,7 +781,7 @@ QString MetaBundle::exactText( int column, bool ensureCached ) const
         case LastPlayed: return QString::number( lastPlay( ensureCached ) );
         case Filesize:   return QString::number( filesize() );
         case Mood:       return QString();
-        default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
+        default: warning() << "Tried to get the text of a nonexistent column! [" << column;
     }
 
     return QString(); //shouldn't happen
@@ -819,7 +819,7 @@ QString MetaBundle::prettyText( int column ) const
                : moodbar_const().state() == Moodbar::JobQueued  ? i18n( "Queued..." )
                : QString::null;
         break;
-        default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
+        default: warning() << "Tried to get the text of a nonexistent column!";              break;
     }
 
     return text.trimmed();

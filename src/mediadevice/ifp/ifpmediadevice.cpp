@@ -150,7 +150,7 @@ IfpMediaDevice::checkResult( int result, QString message )
     if( result == 0 )
         return true;
 
-    error() << result << ": " << message << endl;
+    error() << result << ": " << message;
     return false;
 }
 
@@ -168,7 +168,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
 
     if( m_dh == NULL )
     {
-        error() << "A suitable iRiver iFP device couldn't be found" << endl;
+        error() << "A suitable iRiver iFP device couldn't be found";
         Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );
@@ -178,29 +178,29 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     m_dev = usb_device( m_dh );
     if( m_dev == NULL )
     {
-        error() << "Could not get usb_device()" << endl;
+        error() << "Could not get usb_device()";
         Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not get a USB device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
-            error() << "warning: release_device failed." << endl;
+            error() << "warning: release_device failed.";
         return false;
     }
 
     /* "must be called" written in the libusb documentation */
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
-        error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
+        error() << "Device is busy.  (I was unable to claim its interface.)";
         Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
-            error() << "warning: release_device failed." << endl;
+            error() << "warning: release_device failed.";
         return false;
     }
 
     int i = ifp_init( &m_ifpdev, m_dh );
     if( i )
     {
-        error() << "iFP device: Device cannot be opened." << endl;
+        error() << "iFP device: Device cannot be opened.";
         Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
@@ -231,7 +231,7 @@ IfpMediaDevice::closeDevice()  //SLOT
             usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
 
             if( ifp_release_device( m_dh ) )
-                error() << "warning: release_device failed." << endl;
+                error() << "warning: release_device failed.";
 
             ifp_finalize( &m_ifpdev );
             m_dh = 0;

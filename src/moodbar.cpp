@@ -357,7 +357,7 @@ MoodServer::queueJob( MetaBundle *bundle )
         m_currentData.m_url == bundle->url() )
       {
         debug() << "MoodServer::queueJob: Not re-queueing already-running job "
-                << bundle->url().path() << endl;
+                << bundle->url().path();
         m_mutex.unlock();
         return true;
       }
@@ -371,7 +371,7 @@ MoodServer::queueJob( MetaBundle *bundle )
             (*it).m_refcount++;
             debug() << "MoodServer::queueJob: Job for " << bundle->url().path()
                     << " already in queue, increasing refcount to "
-                    << (*it).m_refcount << endl;
+                    << (*it).m_refcount;
             m_mutex.unlock();
             return false;
           }
@@ -382,7 +382,7 @@ MoodServer::queueJob( MetaBundle *bundle )
                                  bundle->moodbar().moodFilename( bundle->url() ) ) );
 
     debug() << "MoodServer::queueJob: Queued job for " << bundle->url().path()
-            << ", " << m_jobQueue.size() << " jobs in queue." << endl;
+            << ", " << m_jobQueue.size() << " jobs in queue.";
 
     m_mutex.unlock();
 
@@ -405,7 +405,7 @@ MoodServer::deQueueJob( KUrl url )
         m_currentData.m_url == url )
       {
         debug() << "MoodServer::deQueueJob: Not de-queueing already-running job "
-                << url.path() << endl;
+                << url.path();
         m_mutex.unlock();
         return;
       }
@@ -422,14 +422,14 @@ MoodServer::deQueueJob( KUrl url )
               {
                 debug() << "MoodServer::deQueueJob: nobody cares about "
                         << (*it).m_url.path()
-                        << " anymore, deleting from queue" << endl;
+                        << " anymore, deleting from queue";
                 m_jobQueue.erase( it );
               }
 
             else
               debug() << "MoodServer::deQueueJob: decrementing refcount of "
                       << (*it).m_url.path() << " to " << (*it).m_refcount
-                      << endl;
+                     ;
 
             m_mutex.unlock();
             return;
@@ -437,7 +437,7 @@ MoodServer::deQueueJob( KUrl url )
       }
 
     debug() << "MoodServer::deQueueJob: tried to delete nonexistent job "
-            << url.path() << endl;
+            << url.path();
 
     m_mutex.unlock();
 }
@@ -466,9 +466,9 @@ MoodServer::slotNewJob( void )
 
   debug() << "MoodServer::slotNewJob: starting new analyzer process: "
           << "moodbar -o " << m_currentData.m_outfile << ".tmp "
-          << m_currentData.m_infile << endl;
+          << m_currentData.m_infile;
   debug() << "MoodServer::slotNewJob: " << m_jobQueue.size()
-          << " jobs left in queue." << endl;
+          << " jobs left in queue.";
 
 
   // Write to outfile.mood.tmp so that new Moodbar instances
@@ -491,7 +491,7 @@ MoodServer::slotNewJob( void )
     {
       // If we have an error starting the process, it's never
       // going to work, so call moodbarBroken()
-      warning() << "Can't start moodbar analyzer process!" << endl;
+      warning() << "Can't start moodbar analyzer process!";
       delete m_currentProcess;
       m_currentProcess = 0;
       m_mutex.unlock();
@@ -516,7 +516,7 @@ MoodServer::slotJobCompleted( K3Process *proc )
 
     // Pedantry
     if( proc != m_currentProcess )
-      warning() << "MoodServer::slotJobCompleted: proc != m_currentProcess!" << endl;
+      warning() << "MoodServer::slotJobCompleted: proc != m_currentProcess!";
 
     ReturnStatus returnval;
     if( !m_currentProcess->normalExit() )
@@ -564,14 +564,14 @@ MoodServer::slotJobCompleted( K3Process *proc )
         // Just log an error message and emit jobEvent().
       case Crash:
         debug() << "MoodServer::slotJobCompleted: moodbar crashed on "
-                << m_currentData.m_infile << endl;
+                << m_currentData.m_infile;
         m_mutex.unlock();
         slotNewJob();
         break;
 
       case NoFile:
         debug() << "MoodServer::slotJobCompleted: moodbar had a problem with "
-                << m_currentData.m_infile << endl;
+                << m_currentData.m_infile;
         m_mutex.unlock();
         slotNewJob();
         break;
@@ -639,7 +639,7 @@ MoodServer::slotFileMoved( const QString &srcPath, const QString &dstPath )
       return;
 
     debug() << "MoodServer::slotFileMoved: moving " << srcMood << " to "
-            << dstMood << endl;
+            << dstMood;
 
     Moodbar::copyFile( srcMood, dstMood );
     QFile::remove( srcMood );
@@ -653,7 +653,7 @@ void
 MoodServer::setMoodbarBroken( void )
 {
     warning() << "Uh oh, it looks like the moodbar analyzer is not going to work"
-              << endl;
+             ;
 
     Amarok::StatusBar::instance()->longMessage( i18n(
         "The Amarok moodbar analyzer program seems to be broken. "
@@ -936,7 +936,7 @@ Moodbar::slotJobEvent( KUrl url, int newState )
     // If we get here it means the analyzer job went wrong, but
     // somehow the MoodServer didn't know about it
     debug() << "WARNING: Failed to open file " << moodFilename( m_bundle->url() )
-            << " -- something is very wrong" << endl;
+            << " -- something is very wrong";
     m_state = JobFailed;
     m_mutex.unlock();
 
@@ -1084,7 +1084,7 @@ Moodbar::readFile( void )
           return false;
 
         debug() << "Moodbar::readFile: Found a file at " << path2
-                << " instead, using that and copying." << endl;
+                << " instead, using that and copying.";
 
         moodFile.close();
         if( !copyFile( path2, path ) )
@@ -1096,13 +1096,13 @@ Moodbar::readFile( void )
 
     int r, g, b, samples = moodFile.size() / 3;
     debug() << "Moodbar::readFile: File " << path
-            << " opened. Proceeding to read contents... s=" << samples << endl;
+            << " opened. Proceeding to read contents... s=" << samples;
 
     // This would be bad.
     if( samples == 0 )
       {
         debug() << "Moodbar::readFile: File " << moodFile.name()
-                << " is corrupted, removing." << endl;
+                << " is corrupted, removing.";
         moodFile.remove();
         return false;
       }
@@ -1211,7 +1211,7 @@ Moodbar::readFile( void )
 
         debug() << "ReadMood: Applying filter t=" << threshold
                 << ", rS=" << rangeStart << ", rD=" << rangeDelta
-                << ", s=" << sat << "%, v=" << val << "%" << endl;
+                << ", s=" << sat << "%, v=" << val << "%";
 
         // On average, huedist[i] = samples / 360.  This counts the
         // number of samples over the threshold, which is usually

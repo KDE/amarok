@@ -304,7 +304,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 
         //ELSE FALL_THROUGH
 
-        warning() << "Could not start " << text( 0 ) << endl;
+        warning() << "Could not start " << text( 0 );
 
     case Off:
         debug() << "Stopping visualization\n";

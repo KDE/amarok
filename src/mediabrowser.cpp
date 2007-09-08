@@ -648,7 +648,7 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
     else
     {
         debug() << "transcoding for " << src << " finished, "
-            << "but we are waiting for " << m_transcodeSrc << " -- aborting" << endl;
+            << "but we are waiting for " << m_transcodeSrc << " -- aborting";
         m_waitForTranscode = false;
     }
 }
@@ -1134,7 +1134,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
     //TODO: Generic storage?
     if( !pmp )
     {
-        debug() << "Failed to convert Solid device to PortableMediaPlayer" << endl;
+        debug() << "Failed to convert Solid device to PortableMediaPlayer";
         return 0;
     }
     if( pmp->supportedProtocols().size() == 0 )
@@ -2897,7 +2897,7 @@ MediaQueue::load( const QString& filename )
                 "The XML in the transferlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
         error() << "[TRANSFERLISTLOADER]: Error loading xml file: " << filename << "(" << er << ")"
-                << " at line " << l << ", column " << c << endl;
+                << " at line " << l << ", column " << c;
         return;
     }
 

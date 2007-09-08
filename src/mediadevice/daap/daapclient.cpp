@@ -326,11 +326,11 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
             removeMe = 0;
         }
         else
-            warning() << "root item already null" << endl;
+            warning() << "root item already null";
         m_serverItemMap.remove( key );
     }
     else
-        warning() << "removing non-existant service" << endl;
+        warning() << "removing non-existant service";
 }
 
 QString
@@ -565,7 +565,7 @@ DaapClient::resolve( const QString& hostname )
         KNetwork::KResolverResults results = resolver.results();
         if( results.error() )
             debug() << "Error resolving "  << hostname << ": ("
-                    << resolver.errorString( results.error() ) << ")" << endl;
+                    << resolver.errorString( results.error() ) << ")";
         if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();

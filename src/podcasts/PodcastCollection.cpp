@@ -104,7 +104,7 @@ PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
             << podcastReader->url() << " line: "
             << podcastReader->lineNumber() << " column "
             << podcastReader->columnNumber() << " : "
-            << podcastReader->errorString() << endl;
+            << podcastReader->errorString();
     }
     else
     {
@@ -140,7 +140,7 @@ void
 PodcastCollection::addChannel( Meta::PodcastChannelPtr channel )
 {
     m_channels << channel;
-    debug() << "channel.count() = " << channel.count() << endl;
+    debug() << "channel.count() = " << channel.count();
     addAlbum( channel->name(), AlbumPtr::dynamicCast( channel ) );
 }
 

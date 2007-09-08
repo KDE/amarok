@@ -906,7 +906,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
         metadata->no_tracks = i;
     } else {
         debug() << "no tracks available for playlist " << metadata->name
-            << endl;
+           ;
         metadata->no_tracks = 0;
     }
     QString genericError = i18n( "Could not save playlist." );

@@ -200,7 +200,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
             absolutePath.setPath( "/" );
             absolutePath.addPath( relativePath.path() );
             absolutePath.cleanPath();
-            warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path() << endl;
+            warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
         }
         else
         {

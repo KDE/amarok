@@ -130,7 +130,7 @@ bool PodcastReader::read()
                         {
                             debug() << "new channel";
                             m_channel = new Meta::PodcastChannel();
-                            debug() << "m_channel.data(): " << m_channel.data() << endl;
+                            debug() << "m_channel.data(): " << m_channel.data();
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
 //                         else
@@ -147,7 +147,7 @@ bool PodcastReader::read()
             else if( tokenType() != QXmlStreamReader::StartDocument )
             {
                 debug() << "some weird thing happend. " << QXmlStreamReader::name().toString()
-                        << " : " << tokenString() << endl;
+                        << " : " << tokenString();
             }
         }
         else
@@ -187,15 +187,15 @@ bool PodcastReader::read()
     {
         if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
         {
-            qDebug() << "waiting for data at line " << lineNumber() << endl;
+            qDebug() << "waiting for data at line " << lineNumber();
         }
         else
         {
             qDebug() << "XML ERROR: " << error() << " at line: " << lineNumber()
                     << ": " << columnNumber ()
-                    << "\n\t" << errorString() << endl;
+                    << "\n\t" << errorString();
             qDebug() << "\tname = " << QXmlStreamReader::name().toString()
-                    << " tokenType = " << tokenString() << endl;
+                    << " tokenType = " << tokenString();
 
             if( m_channel )
                 commitChannel();

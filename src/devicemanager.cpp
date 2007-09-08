@@ -214,7 +214,7 @@ DeviceManager::reconcileMediumMap()
 
     //Sanity check
     if ( currMediumList.size() != m_mediumMap.size() )
-        warning() << "Number of devices does not equal expected number" << endl;
+        warning() << "Number of devices does not equal expected number";
 }
 
 QString DeviceManager::convertMediaUrlToDevice( QString url )

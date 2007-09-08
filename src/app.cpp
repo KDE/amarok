@@ -356,7 +356,7 @@ void App::handleCliArgs() //static
         } else { // Default behaviour
             debug() <<
                 "Sorry, the engine doesn't support direct play from AudioCD..."
-                    << endl;
+                   ;
         }
     }
 

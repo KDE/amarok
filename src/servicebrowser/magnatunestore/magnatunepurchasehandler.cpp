@@ -149,7 +149,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downloadJob );
     QString resultXml = QString( storedJob->data() );
 
-    debug() << endl << endl << "result: " << resultXml << endl;
+    debug() << endl << endl << "result: " << resultXml;
 
 
     if ( m_albumDownloader == 0 )

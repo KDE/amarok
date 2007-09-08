@@ -140,7 +140,7 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Medium * m
                                                             .arg( m->mountPoint() ), "devices" );
         if ( id == 0 )
         {
-            warning() << "Inserting into devices failed for type=uuid, uuid=" << m->id() << endl;
+            warning() << "Inserting into devices failed for type=uuid, uuid=" << m->id();
             return 0;
         }
         debug() << "Created new UUID device with ID " << id << " , uuid " << m->id();

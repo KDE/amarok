@@ -640,7 +640,7 @@ void
 CoverFetcher::finishWithError( const QString &message, KJob *job )
 {
     if( job )
-        warning() << message << " KIO::error(): " << job->errorText() << endl;
+        warning() << message << " KIO::error(): " << job->errorText();
 
     m_errors += message;
     m_success = false;
