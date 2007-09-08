@@ -29,6 +29,7 @@ namespace Playlist
             void setupItem();
             static qreal height() { return s_height; }
             void refresh();
+            void play();
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );

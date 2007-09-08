@@ -6,17 +6,21 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "debug.h"
 #include "PlaylistModel.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistGraphicsScene.h"
 #include "PlaylistDropVis.h"
+#include "TheInstances.h"
 
+#include <KAction>
 #include <KMenu>
 
 #include <QModelIndex>
 #include <QKeyEvent>
+#include <QVariant>
 
 Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
     : QGraphicsView( parent )
@@ -38,13 +42,19 @@ Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
 void
 Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 {
-    if( !scene()->itemAt( mapToScene( event->pos() ) ) ) // we've clicked on empty space
+    QPointF sceneClickPos = mapToScene( event->pos() );
+    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( scene()->itemAt( sceneClickPos )->parentItem() );
+    if( !item ) // we've clicked on empty space
         return;
            
     event->accept();
 
+    KAction *playAction = new KAction( KIcon( Amarok::icon( "play" ) ), i18n( "&Play" ), this );
+    playAction->setData( QVariant( sceneClickPos ) );
+    connect( playAction, SIGNAL( triggered() ), this, SLOT( playTrack() ) );
+
     KMenu *menu = new KMenu( this );
-    menu->addAction( i18n( "&Play" ), this, SLOT( playTrack() ) );
+    menu->addAction( playAction );
     menu->addSeparator();
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
     menu->exec( event->globalPos() );
@@ -70,7 +80,15 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::GraphicsView::playTrack()
 {
+    QAction *playAction = dynamic_cast<QAction*>( sender() );
+    if( !playAction )
+        return;
 
+    QPointF sceneClickPos = playAction->data().toPointF();
+    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( scene()->itemAt( sceneClickPos )->parentItem() );
+    if( !item )
+        return;
+    item->play();
 }
 
 void

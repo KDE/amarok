@@ -238,12 +238,17 @@ Playlist::GraphicsItem::boundingRect() const
     return QRectF( 0.0, 0.0, scene()->views().at(0)->viewport()->size().width(), s_height );
 }
 
+void
+Playlist::GraphicsItem::play()
+{
+    The::playlistModel()->play( getRow() );
+}
+
 void 
 Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
     if( m_items )
     {
-        The::playlistModel()->play( getRow() );
         event->accept();
         return;
     }
