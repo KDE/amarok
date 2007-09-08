@@ -21,15 +21,16 @@
 */
 
 
-#ifndef AMAROK_MEDIAITEM_H
-#define AMAROK_MEDIAITEM_H
+#ifndef AMAROK_MEDIADEVICEMETA_H
+#define AMAROK_MEDIADEVICEMETA_H
 
-#include <k3listview.h>
-
+#include "meta.h"
 #include "amarok_export.h"
 
+#include <QStringList>
+#include <k3listview.h>
+
 class MediaDevice;
-class MetaBundle;
 
 class AMAROK_EXPORT MediaItem : public K3ListViewItem
 {
@@ -111,6 +112,211 @@ class AMAROK_EXPORT MediaItem : public K3ListViewItem
         mutable MetaBundle *m_bundle;
 };
 
-#endif /*AMAROK_MEDIAITEM_H*/
+namespace Meta
+{
+
+class MediaDeviceTrack;
+class MediaDeviceAlbum;
+class MediaDeviceArtist;
+class MediaDeviceGenre;
+
+typedef KSharedPtr<MediaDeviceTrack> MediaDeviceTrackPtr;
+typedef KSharedPtr<MediaDeviceArtist> MediaDeviceArtistPtr;
+typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
+typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
+
+
+typedef QList<MediaDeviceTrackPtr > MediaDeviceTrackList;
+typedef QList<MediaDeviceArtistPtr > MediaDeviceArtistList;
+typedef QList<MediaDeviceAlbumPtr > MediaDeviceAlbumList;
+typedef QList<MediaDeviceGenrePtr > MediaDeviceGenreList;
+
+class MediaDeviceTrack : public Meta::Track
+{
+    public:
+        //Give this a displayable name as some services has terrible names for their streams
+        MediaDeviceTrack( const QString & name );
+
+        //create track based on an sql query result
+        MediaDeviceTrack( const QStringList & resultRow );
+        virtual ~MediaDeviceTrack();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+
+        virtual KUrl playableUrl() const;
+        virtual QString url() const;
+        virtual QString prettyUrl() const;
+
+        virtual bool isPlayable() const;
+        virtual bool isEditable() const;
+
+        virtual AlbumPtr album() const;
+        virtual ArtistPtr artist() const;
+        virtual GenrePtr genre() const;
+        virtual ComposerPtr composer() const;
+        virtual YearPtr year() const;
+
+        virtual void setAlbum ( const QString &newAlbum );
+        virtual void setArtist ( const QString &newArtist );
+        virtual void setGenre ( const QString &newGenre );
+        virtual void setComposer ( const QString &newComposer );
+        virtual void setYear ( const QString &newYear );
+
+        virtual void setTitle( const QString &newTitle );
+
+        virtual QString comment() const;
+        virtual void setComment ( const QString &newComment );
+
+        virtual double score() const;
+        virtual void setScore ( double newScore );
+
+        virtual int rating() const;
+        virtual void setRating ( int newRating );
+
+        virtual int length() const;
+
+        virtual int filesize() const;
+        virtual int sampleRate() const;
+        virtual int bitrate() const;
+
+        virtual int trackNumber() const;
+        virtual void setTrackNumber ( int newTrackNumber );
+
+        virtual int discNumber() const;
+        virtual void setDiscNumber ( int newDiscNumber );
+
+        virtual uint lastPlayed() const;
+        virtual int playCount() const;
+
+        virtual QString type() const;
+
+        virtual void beginMetaDataUpdate() {}    //read only
+        virtual void endMetaDataUpdate() {}      //read only
+        virtual void abortMetaDataUpdate() {}    //read only
+
+        //MediaDeviceTrack specific methods
+
+        void setAlbum( Meta::AlbumPtr album );
+        void setArtist( Meta::ArtistPtr artist );
+        void setComposer( Meta::ComposerPtr composer );
+        void setGenre( Meta::GenrePtr genre );
+        void setYear( Meta::YearPtr year );
+
+        void setLength( int length );
+
+    private:
+        ArtistPtr m_artist;
+        AlbumPtr m_album;
+        GenrePtr m_genre;
+        ComposerPtr m_composer;
+        YearPtr m_year;
+
+        QString m_name;
+        int m_trackNumber;
+        int m_length;
+        QString m_displayUrl;
+        QString m_playableUrl;
+        QString m_albumName;
+        QString m_artistName;
+
+        QString m_type;
+};
+
+class MediaDeviceArtist : public Meta::Artist
+{
+    public:
+
+        MediaDeviceArtist( const QStringList & resultRow );
+        MediaDeviceArtist( const QString & name );
+        virtual ~MediaDeviceArtist();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual void setTitle( const QString &title );
+        virtual TrackList tracks();
+
+        //MediaDeviceArtist specific methods
+
+        void addTrack( TrackPtr track );
+
+    private:
+        QString m_name;
+        QString m_description;
+        TrackList m_tracks;
+
+};
+
+class MediaDeviceAlbum : public Meta::Album
+{
+    public:
+        MediaDeviceAlbum( const QStringList & resultRow );
+        MediaDeviceAlbum( const QString & name  );
+        virtual ~MediaDeviceAlbum();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+
+        virtual bool isCompilation() const;
+        virtual bool hasAlbumArtist() const;
+        virtual ArtistPtr albumArtist() const;
+        virtual TrackList tracks();
+
+        //MediaDeviceAlbum specific methods
+
+        void addTrack( TrackPtr track );
+        void setAlbumArtist( ArtistPtr artist );
+        void setIsCompilation( bool compilation );
+
+        void setDescription( const QString &description );
+        QString description( ) const;
+        void setId( int id );
+        int id( ) const;
+        void setArtistId( int artistId );
+        int artistId( ) const;
+        void setArtistName( const QString &name );
+        QString artistName() const;
+        void setTitle( const QString &title );
+
+    private:
+        int m_id;
+        QString m_name;
+        TrackList m_tracks;
+        bool m_isCompilation;
+        ArtistPtr m_albumArtist;
+        QString m_description;
+        int m_artistId;
+        QString m_artistName;
+};
+
+class MediaDeviceGenre : public Meta::Genre
+{
+    public:
+        MediaDeviceGenre( const QString &name );
+        MediaDeviceGenre( const QStringList &row );
+        virtual ~MediaDeviceGenre();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+
+        virtual TrackList tracks();
+
+        //MediaDeviceGenre specific methods
+        void addTrack( TrackPtr track );
+        void setName( const QString &name );
+        int albumId();
+        void setAlbumId( int albumId );
+
+    private:
+        int m_albumId;
+        QString m_name;
+        TrackList m_tracks;
+};
+
+
+}
+
+
+#endif /*AMAROK_MEDIADEVICEMETA_H*/
 
 
