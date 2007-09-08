@@ -90,47 +90,27 @@ HeaderWidget::dropEvent( QDropEvent *event)
 void
 HeaderWidget::enterEvent( QEvent* event )
 {
-#if 0
-    m_topLayout->setSpacing( 3 );
-    QVBoxLayout* layout;
-    QFont defaultFont;
-    setFont( defaultFont );
-    foreach( layout, m_verticalLayouts )
-    {
-        layout->setSpacing( 3 );
-    }
-    setStyleSheet("QLabel { border: 1px solid black; border-radius: 5px; } QLabel:hover { border-width: 3px }");
-#endif
+    Q_UNUSED( event );
 }
 
 void
 HeaderWidget::leaveEvent( QEvent* event )
 {
-#if 0
-    setStyleSheet(" ");
-    m_topLayout->setSpacing( 0 );
-    QVBoxLayout* layout;
-    QFont smallFont;
-    smallFont.setPointSize( 8 );
-    setFont( smallFont );
-    foreach( layout, m_verticalLayouts )
-    {
-        layout->setSpacing( 0 );
-    }
-#endif
+    Q_UNUSED( event );
 }
 
 void
 HeaderWidget::mousePressEvent(QMouseEvent *event)
 {
     QLabel *child = dynamic_cast<QLabel*>(childAt(event->pos()));
-    if (!child)
-        return;
+    if( !child ) return;
+
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << child->text();
     QMimeData* mimeData = new QMimeData;
     mimeData->setData( HeaderMimeType, itemData );
+    
     QDrag* drag = new QDrag( this );
     QPixmap labelPixmap = QPixmap::grabWidget( child );
     drag->setPixmap( labelPixmap );
