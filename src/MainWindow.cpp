@@ -51,7 +51,7 @@
 #include "Sidebar.h"
 #include "Sidebar.moc"
 #include "socketserver.h"
-#include "statistics.h"
+#include "Statistics.h"
 #include "statusbar.h"
 #include "TheInstances.h"
 #include "threadmanager.h"

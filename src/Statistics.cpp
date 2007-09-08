@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005-2007 Seb Ruiz <me@sebruiz.net>          *
+ * copyright            : (C) 2005-2007 Seb Ruiz <ruiz@kde.org>            *
  **************************************************************************/
 
 /***************************************************************************
@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "statistics.h"
+#include "Statistics.h"
 
 #include "amarok.h"             //oldForeach macro
 #include "amarokconfig.h"
@@ -1043,5 +1043,5 @@ StatisticsDetailedItem::getURLs()
     return urls;
 }
 
-#include "statistics.moc"
+#include "Statistics.moc"
 

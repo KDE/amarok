@@ -440,7 +440,7 @@ set(amaroklib_LIB_SRCS
     smartplaylisteditor.cpp
     socketserver.cpp
     StarManager.cpp
-    statistics.cpp
+    Statistics.cpp
     systray.cpp
     tagdialog.cpp
     tagguesser.cpp
