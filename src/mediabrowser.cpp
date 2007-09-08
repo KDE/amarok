@@ -1378,9 +1378,9 @@ MediaDevice::MediaDevice()
 void MediaDevice::init( MediaBrowser* parent )
 {
     m_parent = parent;
-    if( !m_view )
-        m_view = new MediaView( m_parent->m_views, this );
-    m_view->hide();
+    //if( !m_view )
+    //   m_view = new MediaView( m_parent->m_views, this );
+    //m_view->hide();
 }
 
 MediaDevice::~MediaDevice()

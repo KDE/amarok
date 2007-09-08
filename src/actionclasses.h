@@ -9,7 +9,7 @@
 
 #include "engineobserver.h"
 #include "prettypopupmenu.h"
-#include "sliderwidget.h"
+#include "widgets/sliderwidget.h"
 
 #include <KAction>
 #include <KToggleAction>

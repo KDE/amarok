@@ -26,6 +26,7 @@
 #define AMAROK_MTPMEDIADEVICE_H
 
 #include "mediabrowser.h"
+#include "MediaItem.h"
 
 #include <q3ptrlist.h>
 #include <QMutex>
@@ -37,30 +38,25 @@
 class MtpMediaDevice;
 class MtpMediaItem;
 
-class MtpTrack {
-    friend class MediaItem;
+class MtpMediaDeviceTrack : public MediaDeviceTrack {
     public:
-        MtpTrack( LIBMTP_track_t* track );
-        ~MtpTrack() {};
-        bool                    operator==( const MtpTrack& second ) const { return m_id == second.m_id; }
+        MtpMediaDeviceTrack( LIBMTP_track_t* track );
+        ~MtpMediaDeviceTrack() {};
+        bool                    operator==( const MtpMediaDeviceTrack& second ) const { return m_id == second.m_id; }
 
     public:
         u_int32_t               id() const { return m_id; }
-        MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
         uint32_t                folderId() const { return m_folder_id; }
-        void                    setBundle( MetaBundle &bundle );
         void                    setId( int id ) { m_id = id; }
         void                    setFolderId( const uint32_t folder_id ) { m_folder_id = folder_id; }
         void                    readMetaData( LIBMTP_track_t *track );
 
     private:
         u_int32_t               m_id;
-        MetaBundle              m_bundle;
         uint32_t                m_folder_id;
 };
 
 class MtpPlaylist {
-    friend class MediaItem;
     public:
         bool                    operator==( const MtpPlaylist& second ) const { return m_id == second.m_id; }
 
@@ -73,12 +69,11 @@ class MtpPlaylist {
 };
 
 
-class MtpAlbum {
-    friend class MediaItem;
+class MtpMediaDeviceAlbum : MediaDeviceAlbum {
     public:
-        MtpAlbum( LIBMTP_album_t* album );
-        ~MtpAlbum();
-        bool                    operator==( const MtpAlbum& second ) const { return m_id == second.m_id; }
+        MtpMediaDeviceAlbum( LIBMTP_album_t* album );
+        ~MtpMediaDeviceAlbum();
+        bool                    operator==( const MtpMediaDeviceAlbum& second ) const { return m_id == second.m_id; }
 
     public:
         u_int32_t               id() const { return m_id; }
@@ -113,14 +108,14 @@ class MtpMediaItem : public MediaItem
         {
             //m_track->removeItem(this);
         }
-        void                setTrack( MtpTrack *track ) { m_track = track; }
-        MtpTrack            *track() { return m_track; }
+        void                setTrack( MtpMediaDeviceTrack *track ) { m_track = track; }
+        MtpMediaDeviceTrack            *track() { return m_track; }
         void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
         MtpPlaylist         *playlist() { return m_playlist; }
         QString             filename() { return m_track->bundle()->url().path(); }
 
     private:
-        MtpTrack            *m_track;
+        MtpMediaDeviceTrack            *m_track;
         MtpPlaylist         *m_playlist;
 };
 
@@ -169,7 +164,7 @@ class MtpMediaDevice : public MediaDevice
         void                    playlistRenamed( Q3ListViewItem *item, const QString &, int );
 
     private:
-        MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
+        MtpMediaItem            *addTrackToView(MtpMediaDeviceTrack *track, MtpMediaItem *item=0 );
         int                     readMtpMusic( void );
         void                    clearItems();
         int                     deleteObject( MtpMediaItem *deleteItem );
@@ -196,11 +191,11 @@ class MtpMediaDevice : public MediaDevice
         QLineEdit               *m_folderStructureBox;
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
-        Q3PtrList<MediaItem>     *m_newTracks;
+        QList<MediaItem*>       m_newTracks;
         QMap<int,QString>       mtpFileTypes;
-        QMap<uint32_t,MtpTrack*> m_idToTrack;
+        QMap<uint32_t,MtpMediaDeviceTrack*> m_idToTrack;
         QMap<QString,MtpMediaItem*> m_fileNameToItem;
-        QMap<uint32_t,MtpAlbum*> m_idToAlbum;
+        QMap<uint32_t,MtpMediaDeviceAlbum*> m_idToAlbum;
         QString                 m_format;
 };
 

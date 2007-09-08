@@ -26,6 +26,7 @@
 
 #include "config-amarok.h"
 #include "mtpmediadevice.h"
+#include "MediaItem.h"
 //Added by qt3to4:
 #include <QLabel>
 #include <Q3PtrList>
@@ -34,7 +35,6 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 // Amarok
 #include <debug.h>
-#include <metabundle.h>
 #include <statusbar/statusbar.h>
 #include <statusbar/popupMessage.h>
 
@@ -109,8 +109,6 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
     mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
     mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
-
-    m_newTracks = new Q3PtrList<MediaItem>;
 }
 
 void
@@ -159,7 +157,7 @@ MtpMediaDevice::progressCallback( uint64_t const sent, uint64_t const total, voi
  * Copy a track to the device
  */
 MediaItem
-*MtpMediaDevice::copyTrackToDevice( const MetaBundle &bundle )
+*MtpMediaDevice::copyTrackToDevice( TrackPtr track )
 {
     DEBUG_BLOCK
 
@@ -167,20 +165,21 @@ MediaItem
 
     LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
     trackmeta->item_id = 0;
-    debug() << "filetype : " << bundle.fileType();
-    if( bundle.fileType() == MetaBundle::mp3 )
+    QString type = track.type();
+    debug() << "filetype : " << type;
+    if( type().compare( "mp3", Qt::CaseInsensitive ) == 0 )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_MP3;
     }
-    else if( bundle.fileType() == MetaBundle::ogg )
+    else if( type().compare( "ogg", Qt::CaseInsensitive ) == 0 )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_OGG;
     }
-    else if( bundle.fileType() == MetaBundle::wma )
+    else if( type().compare( "wma", Qt::CaseInsensitive ) == 0 )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_WMA;
     }
-    else if( bundle.fileType() == MetaBundle::mp4 )
+    else if( type().compare( "mp4", Qt::CaseInsensitive ) == 0 )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_MP4;
     }
@@ -212,46 +211,46 @@ MediaItem
         }
     }
 
-    if( bundle.title().isEmpty() )
+    if( track.prettyName().isEmpty() )
     {
         trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
     }
     else
     {
-        trackmeta->title = qstrdup( bundle.title().toUtf8() );
+        trackmeta->title = qstrdup( track.prettyName().toUtf8() );
     }
 
-    if( bundle.album().isEmpty() )
+    if( track.album().prettyName().isEmpty() )
     {
         trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
     }
     else
     {
-        trackmeta->album = qstrdup( bundle.album().string().toUtf8() );
+        trackmeta->album = qstrdup( track.album().prettyName().toUtf8() );
     }
 
-    if( bundle.artist().isEmpty() )
+    if( track.artist().prettyName().isEmpty() )
     {
         trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
     }
     else
     {
-        trackmeta->artist = qstrdup( bundle.artist().string().toUtf8() );
+        trackmeta->artist = qstrdup( track.artist().prettyName().toUtf8() );
     }
 
-    if( bundle.genre().isEmpty() )
+    if( track.genre().prettyName().isEmpty() )
     {
         trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
     }
     else
     {
-        trackmeta->genre = qstrdup( bundle.genre().string().toUtf8() );
+        trackmeta->genre = qstrdup( track.genre().prettyName().toUtf8() );
     }
 
-    if( bundle.year() > 0 )
+    if( track.year() > 0 )
     {
         QString date;
-        QTextOStream( &date ) << bundle.year() << "0101T0000.0";
+        QTextOStream( &date ) << track.year() << "0101T0000.0";
         trackmeta->date = qstrdup( date.toUtf8() );
     }
     else
@@ -259,26 +258,26 @@ MediaItem
         trackmeta->date = qstrdup( "00010101T0000.0" );
     }
 
-    if( bundle.track() > 0 )
+    if( track.trackNumber() > 0 )
     {
-        trackmeta->tracknumber = bundle.track();
+        trackmeta->tracknumber = track.trackNumber();
     }
-    if( bundle.length() > 0 )
+    if( track.length() > 0 )
     {
         // Multiply by 1000 since this is in milliseconds
-        trackmeta->duration = bundle.length() * 1000;
+        trackmeta->duration = track.length() * 1000;
     }
-    if( !bundle.filename().isEmpty() )
+    if( !track.playableUrl().filename().isEmpty() )
     {
-        trackmeta->filename = qstrdup( bundle.filename().toUtf8() );
+        trackmeta->filename = qstrdup( track.playableUrl().filename().toUtf8() );
     }
-    trackmeta->filesize = bundle.filesize();
+    trackmeta->filesize = track.filesize();
 
     // try and create the requested folder structure
     uint32_t parent_id = 0;
     if( !m_folderStructure.isEmpty() )
     {
-        parent_id = checkFolderStructure( bundle );
+        parent_id = checkFolderStructure( track );
         if( parent_id == 0 )
         {
             debug() << "Couldn't create new parent (" << m_folderStructure << ")";
@@ -297,9 +296,9 @@ MediaItem
     debug() << "Parent id : " << parent_id;
 
     m_critical_mutex.lock();
-    debug() << "Sending track... " << bundle.url().path().toUtf8();
+    debug() << "Sending track... " << track.playableUrl().path().toUtf8();
     int ret = LIBMTP_Send_Track_From_File(
-        m_device, bundle.url().path().toUtf8(), trackmeta,
+        m_device, track.playableUrl().path().toUtf8(), trackmeta,
         progressCallback, this, parent_id
     );
     m_critical_mutex.unlock();
@@ -316,18 +315,17 @@ MediaItem
     }
 
     MetaBundle temp( bundle );
-    MtpTrack *taggedTrack = new MtpTrack( trackmeta );
-    taggedTrack->setBundle( temp );
+    MtpMediaDeviceTrack *taggedTrack = new MtpMediaDeviceTrack( trackmeta );
     taggedTrack->setFolderId( parent_id );
 
     LIBMTP_destroy_track_t( trackmeta );
 
-    kapp->processEvents( 100 );
+    kapp->processEvents();
 
     // add track to view and to new tracks list
-    MediaItem *newItem = addTrackToView( taggedTrack );
-    m_newTracks->append( newItem );
-    return newItem;
+    addTrackToCollection( taggedTrack );
+    m_newTracks->append( taggedTrack );
+    return taggedTrack;
 }
 
 /**
@@ -380,18 +378,9 @@ MtpMediaDevice::getDefaultParentId( void )
         parent_id = m_default_parent_folder;
     }
     // Otherwise look for a folder called "Music"
-    else if( m_folders != 0 )
-    {
-        parent_id = folderNameToID( "Music", m_folders );
-        if( !parent_id )
-        {
-            debug() << "Parent folder could not be found. Going to use top level.";
-        }
-    }
-    // Give up and don't set a parent folder, let the device deal with it
     else
     {
-        debug() << "No folders found. Going to use top level.";
+        parent_id = current_device()->default_music_folder;
     }
     return parent_id;
 }

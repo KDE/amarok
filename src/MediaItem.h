@@ -24,7 +24,7 @@
 #ifndef AMAROK_MEDIADEVICEMETA_H
 #define AMAROK_MEDIADEVICEMETA_H
 
-#include "meta.h"
+#include "meta/meta.h"
 #include "amarok_export.h"
 
 #include <QStringList>
