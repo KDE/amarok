@@ -37,7 +37,6 @@ add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( portabledevices )
 add_subdirectory( strigi )
-add_subdirectory( playlistbrowser )
 add_subdirectory( context )
 add_subdirectory( playlistmanager )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
