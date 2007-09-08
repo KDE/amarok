@@ -150,7 +150,8 @@ bool CueFile::load(int mediaLength)
 
                         if( indexNo == 1 )
                         {
-                            QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
+                            QString splitMe = line.section( ' ', -1, -1 );
+                            QStringList time = splitMe.split( ":", QString::SkipEmptyParts );
 
                             index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
 
@@ -168,7 +169,9 @@ bool CueFile::load(int mediaLength)
 
                         else if( indexNo == 0 ) // gap, use to calc prev track length
                         {
-                            QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
+                            QString splitMe = line.section( ' ', -1, -1 );
+                            QStringList time = splitMe.split( ":", QString::SkipEmptyParts );
+
                             length = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
 
                             if( prevIndex != -1 )
@@ -224,6 +227,7 @@ bool CueFile::load(int mediaLength)
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 {
+    Q_UNUSED( position ); Q_UNUSED( userSeek );
     //TODO: port 2.0 reimplement this
     /*position /= 1000;
     if(userSeek || position > m_lastSeekPos)

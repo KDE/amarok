@@ -67,7 +67,7 @@ void CurrentEngine::update()
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    uint length = EngineController::instance()->trackLength();
+    //uint length = EngineController::instance()->trackLength();
     
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track.data() );
 

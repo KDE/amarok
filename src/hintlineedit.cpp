@@ -30,7 +30,8 @@ HintLineEdit::HintLineEdit( QWidget *parent )
 void
 HintLineEdit::init()
 {
-    reparent( m_vbox, 0, QPoint(0,0), true );
+    setParent( m_vbox );
+    show();
     m_hint = new QLabel( m_vbox );
     //m_hint->setBuddy( this );
     m_hint->setFocusPolicy( Qt::NoFocus );
@@ -41,7 +42,7 @@ HintLineEdit::init()
 
 HintLineEdit::~HintLineEdit()
 {
-    reparent( 0, 0, QPoint(0,0), false );
+    setParent( 0 );
     delete m_vbox;
 }
 

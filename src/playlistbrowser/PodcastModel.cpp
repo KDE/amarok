@@ -177,7 +177,7 @@ PodcastModel::rowCount(const QModelIndex & parent) const
 }
 
 int
-PodcastModel::columnCount(const QModelIndex & parent) const
+PodcastModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return 3;
 }

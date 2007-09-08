@@ -41,10 +41,10 @@
 #include <QRegExp>
 
 //disabling for now
-#if HAVE_TUNEPIMP
+//#if HAVE_TUNEPIMP
     #undef HAVE_TUNEPIMP
     #define HAVE_TUNEPIMP 0
-#endif
+//#endif
 
 #if HAVE_TUNEPIMP
 

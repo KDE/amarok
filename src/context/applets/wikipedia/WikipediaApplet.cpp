@@ -118,10 +118,8 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
     Q_UNUSED( option );
 
 //     m_theme->paint( p, contentsRect, "background" );
-    QRect headerRect( 0.0, 0.0, contentsRect.width(), 0.0 );
-//     debug() << "calculating height:" << contentsRect.width() << "*" << m_headerAspectRatio;
+    QRectF headerRect( 0, 0, contentsRect.width(), 0 );
     headerRect.setHeight( contentsRect.width() * m_headerAspectRatio );
-//     debug() << "header rect:" << headerRect;
     m_header->resize( headerRect.size() );
     m_header->paint( p, headerRect, "header" );
 
@@ -133,13 +131,9 @@ void WikipediaApplet::calculateHeight()
     qreal textHeight = m_wikiPage->boundingRect().height();
     qreal boxHeight = m_theme->size().height() - m_header->size().height();
 
-/*     debug() << "checking if wiki text is too long for box:"
-        << textHeight
-        << boxHeight;*/
     if( textHeight > boxHeight ) // too short
     {
         qreal expandBy = textHeight - boxHeight;
-//         debug() << "expanding by:" << expandBy;
         m_size.setHeight( m_size.height() + expandBy );
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
