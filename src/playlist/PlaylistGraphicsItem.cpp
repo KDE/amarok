@@ -281,6 +281,44 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     */
 }
 
+// With help from QGraphicsView::mouseMoveEvent()
+void
+Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
+{
+    if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable))
+    {
+        // Determine the list of selected items
+        QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
+        if( !isSelected() )
+            selectedItems << this;
+        // Move all selected items
+        foreach( QGraphicsItem *item, selectedItems )
+        {
+            if( (item->flags() & QGraphicsItem::ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected()) )
+            {
+                QPointF diff;
+                if( item == this )
+                {
+                    diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
+                }
+                else
+                {
+                    diff = item->mapToParent( item->mapFromScene(event->scenePos()))
+                                              - item->mapToParent(item->mapFromScene(event->lastScenePos()));
+                }
+
+                item->moveBy( 0, diff.y() );
+                if( item->flags() & ItemIsSelectable )
+                    item->setSelected( true );
+            }
+        }
+    }
+    else
+    {
+        QGraphicsItem::mouseMoveEvent( event );
+    }
+}
+
 void 
 Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {

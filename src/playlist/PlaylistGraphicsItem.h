@@ -36,6 +36,7 @@ namespace Playlist
             void dropEvent( QGraphicsSceneDragDropEvent * event );
             void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event );
             void mousePressEvent( QGraphicsSceneMouseEvent* event );
+            void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
         
         private:
             void init( Meta::TrackPtr track );
