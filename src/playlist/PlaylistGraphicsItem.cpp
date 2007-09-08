@@ -72,6 +72,7 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_track( 0 )
     , m_verticalOffset( 2.0 )
 {
+    setZValue( 1.0 );
     if( not s_fm )
     {
         s_fm = new QFontMetricsF( QFont() );
@@ -287,6 +288,9 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
     if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable))
     {
+        //make sure item is drawn on top of other items
+       setZValue( 2.0 );
+
         // Determine the list of selected items
         QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
         if( !isSelected() )
@@ -336,6 +340,8 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 void
 Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
+
+    setZValue( 1.0 );
     Qt::DropAction dropAction = Qt::CopyAction;
     if( event->source() == scene()->views().at(0) )
     {
@@ -362,4 +368,10 @@ Playlist::GraphicsItem::refresh()
     delete ( m_items->albumArt );
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
     m_items->albumArt->setPos( 0.0, m_verticalOffset );
+}
+
+void Playlist::GraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    //make sure item resets its z value
+    setZValue( 1.0 );
 }
