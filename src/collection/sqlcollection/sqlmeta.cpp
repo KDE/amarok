@@ -416,6 +416,8 @@ SqlTrack::commitMetaDataChanges()
 void
 SqlTrack::writeMetaDataToDb()
 {
+    // TODO use (numeric) track id for accessing rows in a table instead of string
+    // comparison; is probably much faster
     QString update = "UPDATE tags SET %1 WHERE deviceid = %2 AND url ='%3';";
     QString tags = "title='%1',comment='%2',tracknumber=%3,discnumber=%4, artist=%5,album=%6,genre=%7,composer=%8,year=%9";
     QString artist = QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() );

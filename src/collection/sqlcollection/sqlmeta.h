@@ -33,20 +33,31 @@ namespace Meta
 class SqlTrack : public Meta::Track
 {
     public:
-        static QString getTrackReturnValues();
+        /** returns a string of all database values that can be fetched for a track */
+        static QString getTrackReturnValues() const;
         static TrackPtr getTrack( int deviceid, const QString &rpath, SqlCollection *collection );
 
         SqlTrack( SqlCollection *collection, const QStringList &queryResult );
 
+        /** returns the title of this track as stored in the database **/
         virtual QString name() const { return m_title; }
+        /** returns the title of the track if existing in the database,
+            a value deduced from the file name otherwise */
         virtual QString prettyName() const;
+        /** returns "[artist] - [title]" if both are stored in the database,
+            a value deduced from the file name otherwise */
         virtual QString fullPrettyName() const;
 
+        /** returns the KUrl object describing the position of the track */
         virtual KUrl playableUrl() const { return m_url; }
+        /** returns a string describing the position of the track; same as url() */
         virtual QString prettyUrl() const { return m_url.path(); }
+        /** returns a string describing the position of the track */
         virtual QString url() const { return m_url.path(); }
 
+        /** true if there is a collection and the file exists on disk */
         virtual bool isPlayable() const;
+        /** true if there is a collection, the file exists on disk and is writeable */
         virtual bool isEditable() const;
 
         virtual Meta::AlbumPtr album() const { return m_album; }

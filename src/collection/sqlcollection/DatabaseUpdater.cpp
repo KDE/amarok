@@ -48,6 +48,7 @@ DatabaseUpdater::update()
 void
 DatabaseUpdater::createTables() const
 {
+    // see docs/database/amarokTables.svg for documentation about database layout
     {
         QString c = "CREATE TABLE admin (key " + m_collection->textColumnType() + ", version INTEGER);";
         m_collection->query( c );

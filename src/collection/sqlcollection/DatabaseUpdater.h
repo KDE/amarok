@@ -30,6 +30,7 @@ public:
     void update();
 
 private:
+    /** creates all the necessary tables, indexes etc. for the database */
     void createTables() const;
 
     SqlCollection *m_collection;
