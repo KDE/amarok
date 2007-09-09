@@ -57,7 +57,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 {
     //DEBUG_BLOCK
 
-    int width = m_view->viewport()->size().width();
+    int width = m_view->viewport()->size().width() - 4;
     int height = 90;
     int iconWidth = 32;
     int iconHeight = 32;
@@ -130,7 +130,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     //DEBUG_BLOCK
 
-    int width = m_view->viewport()->size().width();
+    int width = m_view->viewport()->size().width() - 4;
     int heigth = 90;
 
     return QSize ( width, heigth );
