@@ -43,7 +43,10 @@ public:
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
 private:
-    QSvgRenderer *m_svgRenderer;
+
+    QSvgRenderer *m_svgRendererActive;
+    QSvgRenderer *m_svgRendererInactive;
+    
 };
 
 #endif

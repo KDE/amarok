@@ -23,6 +23,7 @@
 #include "servicebase.h"
 #include "ServiceListModel.h"
 
+#include <QApplication>
 #include <QIcon>
 #include <QPainter>
 
@@ -32,17 +33,23 @@ ServiceListDelegate::ServiceListDelegate()
 {
     DEBUG_BLOCK
 
-    m_svgRenderer = new  QSvgRenderer( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
 
-    if ( !m_svgRenderer->isValid () )
-        debug() << "Svg is kaputski! :-( ";
+    QFile file( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
+    file.open( QIODevice::ReadOnly );
+    QString svg_source( file.readAll() );
+
+
+    m_svgRendererActive = new  QSvgRenderer( svg_source.toAscii() );
+    svg_source.replace("stop-color:#6193cf", "stop-color:" + QApplication::palette().window().color().name() );
+    m_svgRendererInactive = new  QSvgRenderer( svg_source.toAscii() );
 
 
 }
 
 ServiceListDelegate::~ServiceListDelegate()
 {
-    delete m_svgRenderer;
+    delete m_svgRendererActive;
+    delete m_svgRendererInactive;
 }
 
 void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
@@ -59,7 +66,14 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     //lets try yo have some fun with an svg...
 
-    m_svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66 ) );
+    QSvgRenderer * svgRenderer;
+
+    if (option.state & QStyle::State_Selected)
+        svgRenderer = m_svgRendererActive;
+    else 
+        svgRenderer = m_svgRendererInactive;
+
+    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66 ) );
 
 
     if (option.state & QStyle::State_Selected)
