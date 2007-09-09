@@ -344,6 +344,24 @@ set(libplaylistmanager_SRCS
 )
 
 #####################################################################
+# PLAYLIST
+#####################################################################
+set(libplaylist_SRCS
+    playlist/PlaylistHeader.cpp
+    playlist/PlaylistItem.cpp
+    playlist/PlaylistModel.cpp
+    playlist/PlaylistWidget.cpp
+    playlist/RepeatTrackAdvancer.cpp
+    playlist/StandardTrackAdvancer.cpp
+    playlist/TrackAdvancer.cpp
+    playlist/UndoCommands.cpp
+    playlist/PlaylistDropVis.cpp
+    playlist/PlaylistGraphicsItem.cpp
+    playlist/PlaylistGraphicsScene.cpp
+    playlist/PlaylistGraphicsView.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -357,6 +375,7 @@ set(amaroklib_LIB_SRCS
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libjamendoservice_SRCS}
+    ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}
     ${libservicebrowser_SRCS}
@@ -374,7 +393,6 @@ set(amaroklib_LIB_SRCS
     app.cpp
     atomicstring.cpp
     collectiondb.cpp
-#    columnlist.cpp
     coverfetcher.cpp
     covermanager.cpp
     cuefile.cpp
@@ -382,7 +400,6 @@ set(amaroklib_LIB_SRCS
     deletedialog.cpp
     deviceconfiguredialog.cpp
     directorylist.cpp
-#    dynamicmode.cpp
     editfilterdialog.cpp
     enginebase.cpp
     enginecontroller.cpp
@@ -410,23 +427,6 @@ set(amaroklib_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
-    playlist/PlaylistHeader.cpp
-    playlist/PlaylistItem.cpp
-    playlist/PlaylistModel.cpp
-    playlist/PlaylistWidget.cpp
-    playlist/StandardTrackAdvancer.cpp
-    playlist/TrackAdvancer.cpp
-    playlist/UndoCommands.cpp
-    playlist/PlaylistDropVis.cpp
-    playlist/PlaylistGraphicsItem.cpp
-    playlist/PlaylistGraphicsScene.cpp
-    playlist/PlaylistGraphicsView.cpp
-#    playlist.cpp
-#    playlistbrowser.cpp
-#    playlistbrowseritem.cpp
-#    playlistitem.cpp
-#    playlistloader.cpp
-#    playlistselection.cpp
     pluginmanager.cpp
     podcastsettings.cpp
     portabledevices/SolidHandler.cpp
