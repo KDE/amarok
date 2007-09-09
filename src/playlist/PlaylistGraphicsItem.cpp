@@ -365,7 +365,6 @@ Playlist::GraphicsItem::refresh()
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
-
     Playlist::GraphicsItem *above = 0;
     QList<QGraphicsItem*> collisions = scene()->items( event->scenePos() );
     foreach( QGraphicsItem *i, collisions )
@@ -380,9 +379,10 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     // if we've dropped ourself ontop of another item, then we need to shuffle the tracks below down
     if( above )
     {
+        setPos( above->pos() );
         Playlist::GraphicsView *view = dynamic_cast<Playlist::GraphicsView*>( scene()->views().at(0) );
         if( view )
-            view->shuffleTracks( above );
+            view->moveItem( this, above );
     }
 
     //make sure item resets its z value

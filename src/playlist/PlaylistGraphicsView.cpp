@@ -134,9 +134,12 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
 }
 
 void
-Playlist::GraphicsView::shuffleTracks( Playlist::GraphicsItem *startPosition )
+Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::GraphicsItem *above )
 {
-    shuffleTracks( m_tracks.indexOf( startPosition ) );
+    int moveMeIndex = m_tracks.indexOf( moveMe );
+    int aboveIndex  = m_tracks.indexOf( above  );
+    m_tracks.move( moveMeIndex, aboveIndex );
+    shuffleTracks( moveMeIndex );
 }
 
 void
