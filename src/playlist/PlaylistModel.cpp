@@ -218,7 +218,7 @@ Model::play( int row )
 void
 Model::playlistRepeatMode( int item )
 {
-    if( item = 0 )
+    if( item == 0 )
         playModeChanged( Playlist::Standard );
     else //for now just turn on repeat if anything but "off" is clicked
         playModeChanged( Playlist::Repeat );
