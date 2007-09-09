@@ -16,10 +16,14 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "amarok.h"
 #include "PlaylistBrowser.h"
 #include "Playlist.h"
 #include "PodcastMeta.h"
 #include "PodcastModel.h"
+
+#include <kicon.h>
+#include <klocale.h>
 
 #include <QHeaderView>
 #include <QToolBox>
@@ -34,11 +38,15 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     QToolBox *toolBox = new QToolBox( this );
     PodcastModel *podcastModel = new PodcastModel();
 
-    QTreeView *tree = new QTreeView( toolBox );
-    tree->setModel( podcastModel );
-//     tree->header()->hide();
+    QTreeView *podcastTree = new QTreeView( toolBox );
+    podcastTree->setModel( podcastModel );
+//     podcastTree->header()->hide();
 
-    toolBox->addItem( tree, QString( "Podcasts" ) );
+    toolBox->addItem( new QTreeView( toolBox ),
+            KIcon( Amarok::icon( "playlist" ) ) , QString("Playlists") );
+    toolBox->addItem( podcastTree, KIcon( Amarok::icon( "playlist" ) ) , i18n("Podcasts") );
+    toolBox->addItem( new QTreeView( toolBox ),
+            KIcon( Amarok::icon( "playlist" ) ) , QString("Streams") );
 }
 
 
