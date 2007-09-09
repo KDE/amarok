@@ -56,9 +56,6 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 {
     //DEBUG_BLOCK
 
-    //ServiceBase * service = static_cast< ServiceBase * >( index.internalPointer() );
-    //if ( ! service ) return;
-
     debug() << "Look ma' I am painting!";
 
     painter->save();
@@ -73,7 +70,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     else 
         svgRenderer = m_svgRendererInactive;
 
-    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66 ) );
+    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,76 ) );
 
 
     if (option.state & QStyle::State_Selected)
@@ -90,19 +87,19 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     painter->setFont(QFont("Arial", 14));
 
-    painter->drawPixmap( option.rect.topLeft() + QPoint( 4, 4 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 24, 24 ) );
+    painter->drawPixmap( option.rect.topLeft() + QPoint( 8, 4 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 32, 32 ) );
 
-    painter->drawText( option.rect.topLeft() + QPoint( 35, 21 ) , index.data( Qt::DisplayRole ).toString() );
+    painter->drawText( option.rect.topLeft() + QPoint( 47, 21 ) , index.data( Qt::DisplayRole ).toString() );
 
     painter->setFont(QFont("Arial", 10));
     
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + 6 );
-    textRect.setTop( option.rect.topLeft().y() + 24 );
+    textRect.setTop( option.rect.topLeft().y() + 34 );
     textRect.setWidth( 248 );
-    textRect.setHeight( 40 );
+    textRect.setHeight( 44 );
 
-    painter->drawText ( textRect, Qt::TextWordWrap, index.data( ShortDescriptionRole ).toString() );
+    painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
 
     debug() << "Short description: " << index.data( ShortDescriptionRole ).toString() ;
 
@@ -118,7 +115,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     //DEBUG_BLOCK
 
-    return QSize ( 252, 70 );
+    return QSize ( 252, 80 );
 
     
 
