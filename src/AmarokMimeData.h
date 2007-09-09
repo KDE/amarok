@@ -24,6 +24,7 @@
 #include "collection/QueryMaker.h"
 
 #include <QList>
+#include <QMap>
 #include <QMimeData>
 
 class AMAROK_EXPORT AmarokMimeData : public QMimeData
@@ -40,6 +41,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
 
         Meta::TrackList tracks() const;
         void setTracks( const Meta::TrackList &tracks );
+        void addTracks( const Meta::TrackList &tracks );
 
         QList<QueryMaker*> queryMakers();
         void addQueryMaker( QueryMaker *queryMaker );
@@ -60,11 +62,8 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void queryDone();
 
     private:
-        Meta::TrackList m_tracks;
-        QList<QueryMaker*> m_queryMakers;
-        bool m_deleteQueryMakers;
-        int m_completedQueries;
-
+        class Private;
+        Private * const d;
 };
 
 

@@ -26,25 +26,43 @@
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
 
+class AmarokMimeData::Private
+{
+public:
+    Private() : deleteQueryMakers( true ), completedQueries( 0 )
+    {}
+
+    ~Private()
+    {
+        if( deleteQueryMakers )
+            qDeleteAll( queryMakers );
+    }
+
+    Meta::TrackList tracks;
+    QList<QueryMaker*> queryMakers;
+    QMap<QueryMaker*, Meta::TrackList> trackMap;
+    bool deleteQueryMakers;
+    int completedQueries;
+
+};
+
 AmarokMimeData::AmarokMimeData()
     : QMimeData()
-    , m_deleteQueryMakers( true )
-    , m_completedQueries( 0 )
+    , d( new Private() )
 {
     //nothing to do
 }
 
 AmarokMimeData::~AmarokMimeData()
 {
-    if( m_deleteQueryMakers )
-        qDeleteAll( m_queryMakers );
+    delete d;
 }
 
 QStringList
 AmarokMimeData::formats() const
 {
     QStringList formats( QMimeData::formats() );
-    if( !m_tracks.isEmpty() || !m_queryMakers.isEmpty())
+    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty())
     {
         formats.append( TRACK_MIME );
         if( !formats.contains( "text/uri-list" ) )
@@ -59,7 +77,7 @@ bool
 AmarokMimeData::hasFormat( const QString &mimeType ) const
 {
     if( mimeType == TRACK_MIME || mimeType == "text/uri-list" || mimeType == "text/plain" )
-        return !m_tracks.isEmpty() || !m_queryMakers.isEmpty();
+        return !d->tracks.isEmpty() || !d->queryMakers.isEmpty();
     else
         return QMimeData::hasFormat( mimeType );
 }
@@ -67,47 +85,60 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
 Meta::TrackList
 AmarokMimeData::tracks() const
 {
-    while( m_completedQueries < m_queryMakers.count() )
+    while( d->completedQueries < d->queryMakers.count() )
     {
         QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
     }
-    return m_tracks;
+    Meta::TrackList result = d->tracks;
+    foreach( QueryMaker *qm, d->queryMakers )
+    {
+        if( d->trackMap.contains( qm ) )
+            result << d->trackMap.value( qm );
+    }
+    return result;
 }
 
 void
 AmarokMimeData::setTracks( const Meta::TrackList &tracks )
 {
-    m_tracks = tracks;
+    d->tracks = tracks;
+}
+
+void
+AmarokMimeData::addTracks( const Meta::TrackList &tracks )
+{
+    d->tracks << tracks;
 }
 
 QList<QueryMaker*>
 AmarokMimeData::queryMakers()
 {
-    m_deleteQueryMakers = false;
-    return m_queryMakers;
+    d->deleteQueryMakers = false;
+    return d->queryMakers;
 }
 
 void
 AmarokMimeData::addQueryMaker( QueryMaker *queryMaker )
 {
-    m_queryMakers.append( queryMaker );
+    d->queryMakers.append( queryMaker );
 }
 
 void
 AmarokMimeData::setQueryMakers( const QList<QueryMaker*> &queryMakers )
 {
-    m_queryMakers << queryMakers;
+    d->queryMakers << queryMakers;
 }
 
 QVariant
 AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
 {
-    if( !m_tracks.isEmpty() )
+    Meta::TrackList tracks = this->tracks();
+    if( !tracks.isEmpty() )
     {
         if( mimeType == "text/uri-list" && type == QVariant::List )
         {
             QList<QVariant> list;
-            foreach( Meta::TrackPtr track, m_tracks )
+            foreach( Meta::TrackPtr track, tracks )
             {
                 list.append( QVariant( QUrl( track->playableUrl().url() ) ) );
             }
@@ -116,7 +147,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
         if( mimeType == "text/plain" && type == QVariant::String )
         {
             QString result;
-            foreach( Meta::TrackPtr track, m_tracks )
+            foreach( Meta::TrackPtr track, tracks )
             {
                 if( !result.isEmpty() )
                     result += '\n';
@@ -134,7 +165,7 @@ void
 AmarokMimeData::startQueries()
 {
     DEBUG_BLOCK
-    foreach( QueryMaker *qm, m_queryMakers )
+    foreach( QueryMaker *qm, d->queryMakers )
     {
         qm->startTrackQuery();
         connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
@@ -147,14 +178,19 @@ void
 AmarokMimeData::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
     Q_UNUSED( collectionId )
-    //TODO: sort results
-    m_tracks << tracks;
+    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    if( qm )
+    {
+        d->trackMap.insert( qm, tracks );
+    }
+    else
+        d->tracks << tracks;
 }
 
 void
 AmarokMimeData::queryDone()
 {
-    m_completedQueries++;
+    d->completedQueries++;
 }
 
 #include "AmarokMimeData.moc"
