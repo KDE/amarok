@@ -373,6 +373,14 @@ Playlist::GraphicsItem::refresh()
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
+    bool dragOverOriginalPosition = m_preDragLocation.contains( event->scenePos() );
+    if( dragOverOriginalPosition )
+    {
+        setPos( m_preDragLocation.topLeft() );
+        Playlist::DropVis::instance()->hide();
+        return;
+    }
+
     Playlist::GraphicsItem *above = 0;
     QList<QGraphicsItem*> collisions = scene()->items( event->scenePos() );
     foreach( QGraphicsItem *i, collisions )
