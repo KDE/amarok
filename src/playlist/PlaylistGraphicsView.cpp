@@ -83,7 +83,7 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
     debug() << "Pressed: " << event;
     if( event->matches( QKeySequence::Delete ) )
     {
-        if( not scene()->selectedItems().isEmpty() )
+        if( !scene()->selectedItems().isEmpty() )
         {
             event->accept();
             removeSelection();

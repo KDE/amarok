@@ -74,7 +74,7 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_verticalOffset( 2.0 )
 {
     setZValue( 1.0 );
-    if( not s_fm )
+    if( !s_fm )
     {
         s_fm = new QFontMetricsF( QFont() );
         s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * m_verticalOffset;
@@ -96,10 +96,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
 
-    if( not m_items || ( option->rect.width() != m_items->lastWidth ) )
+    if( !m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
 
-        if( not m_items )
+        if( !m_items )
         {
             const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
             m_items = new Playlist::GraphicsItem::ActiveItems();
@@ -109,7 +109,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         resize( m_items->track, option->rect.width() );
     }
 
-    if( not m_items->background )
+    if( !m_items->background )
     {
 	m_items->background = new QGraphicsRectItem( option->rect, this );
 	m_items->background->setPos( 0.0, 0.0 );
@@ -137,7 +137,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     if( index.data( ActiveTrackRole ).toBool() )
     {
-        if( not m_items->foreground )
+        if( !m_items->foreground )
         {
             m_items->foreground = new QGraphicsRectItem( option->rect, this );
             m_items->foreground->setPos( 0.0, m_verticalOffset );
