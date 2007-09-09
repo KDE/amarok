@@ -20,7 +20,12 @@
 #ifndef SERVICELISTDELEGATE_H
 #define SERVICELISTDELEGATE_H
 
+#include <KStandardDirs>
+
 #include <QItemDelegate>
+#include <QSvgRenderer>
+
+
 
 /**
 A delegate for displaying a nice overview of a service
@@ -36,6 +41,9 @@ public:
 
     void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
+private:
+    QSvgRenderer *m_svgRenderer;
 };
 
 #endif

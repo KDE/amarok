@@ -26,13 +26,23 @@
 #include <QIcon>
 #include <QPainter>
 
+
 ServiceListDelegate::ServiceListDelegate()
  : QItemDelegate()
 {
+    DEBUG_BLOCK
+
+    m_svgRenderer = new  QSvgRenderer( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
+
+    if ( !m_svgRenderer->isValid () )
+        debug() << "Svg is kaputski! :-( ";
+
+
 }
 
 ServiceListDelegate::~ServiceListDelegate()
 {
+    delete m_svgRenderer;
 }
 
 void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
@@ -45,9 +55,11 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     debug() << "Look ma' I am painting!";
 
     painter->save();
-
-
     painter->setRenderHint ( QPainter::Antialiasing );
+
+    //lets try yo have some fun with an svg...
+
+    m_svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66 ) );
 
 
     if (option.state & QStyle::State_Selected)
@@ -55,7 +67,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     else 
         painter->setPen(Qt::gray);
 
-    painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66, 8 ,8 );
+    //painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66, 8 ,8 );
 
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
