@@ -332,40 +332,40 @@ MediaItem
  * Get the cover image for a track, convert it to a format supported on the
  * device and set it as the cover art.
  */
-void
-MtpMediaDevice::sendAlbumArt( Q3PtrList<MediaItem> *items )
-{
-    QString image;
-    image = CollectionDB::instance()->albumImage(items->first()->bundle()->artist(), items->first()->bundle()->album(), false, 100);
-    if( ! image.endsWith( "@nocover.png" ) )
-    {
-        debug() << "image " << image << " found for " << items->first()->bundle()->album();
-        QByteArray *imagedata = getSupportedImage( image );
-        if( imagedata == 0 )
-        {
-            debug() << "Cannot generate a supported image format";
-            return;
-        }
-        if( imagedata->size() )
-        {
-            m_critical_mutex.lock();
-            LIBMTP_album_t *album_object = getOrCreateAlbum( items );
-            if( album_object )
-            {
-                LIBMTP_filesampledata_t *imagefile = LIBMTP_new_filesampledata_t();
-                imagefile->data = (char *) imagedata->data();
-                imagefile->size = imagedata->size();
-                imagefile->filetype = LIBMTP_FILETYPE_JPEG;
-                int ret = LIBMTP_Send_Representative_Sample( m_device, album_object->album_id, imagefile );
-                if( ret != 0 )
-                {
-                    debug() << "image send failed : " << ret;
-                }
-            }
-            m_critical_mutex.unlock();
-        }
-    }
-}
+// void
+// MtpMediaDevice::sendAlbumArt( Q3PtrList<MediaItem> *items )
+// {
+//     QString image;
+//     image = CollectionDB::instance()->albumImage(items->first()->bundle()->artist(), items->first()->bundle()->album(), false, 100);
+//     if( ! image.endsWith( "@nocover.png" ) )
+//     {
+//         debug() << "image " << image << " found for " << items->first()->bundle()->album();
+//         QByteArray *imagedata = getSupportedImage( image );
+//         if( imagedata == 0 )
+//         {
+//             debug() << "Cannot generate a supported image format";
+//             return;
+//         }
+//         if( imagedata->size() )
+//         {
+//             m_critical_mutex.lock();
+//             LIBMTP_album_t *album_object = getOrCreateAlbum( items );
+//             if( album_object )
+//             {
+//                 LIBMTP_filesampledata_t *imagefile = LIBMTP_new_filesampledata_t();
+//                 imagefile->data = (char *) imagedata->data();
+//                 imagefile->size = imagedata->size();
+//                 imagefile->filetype = LIBMTP_FILETYPE_JPEG;
+//                 int ret = LIBMTP_Send_Representative_Sample( m_device, album_object->album_id, imagefile );
+//                 if( ret != 0 )
+//                 {
+//                     debug() << "image send failed : " << ret;
+//                 }
+//             }
+//             m_critical_mutex.unlock();
+//         }
+//     }
+// }
 
 uint32_t
 MtpMediaDevice::getDefaultParentId( void )
@@ -380,7 +380,7 @@ MtpMediaDevice::getDefaultParentId( void )
     // Otherwise look for a folder called "Music"
     else
     {
-        parent_id = current_device()->default_music_folder;
+        parent_id = m_device->default_music_folder;
     }
     return parent_id;
 }
@@ -416,44 +416,44 @@ QByteArray
 /**
  * Update cover art for a number of tracks
  */
-void
-MtpMediaDevice::updateAlbumArt( Q3PtrList<MediaItem> *items )
-{
-    DEBUG_BLOCK
-
-    if( m_format == 0 )  // no supported image types. Don't even bother.
-        return;
-
-    setCanceled( false );
-
-    kapp->processEvents( 100 );
-    QMap< QString, Q3PtrList<MediaItem> > albumList;
-
-    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it && !(m_canceled); it = dynamic_cast<MtpMediaItem*>(items->next()) )
-    {
-        // build album list
-        if( it->type() == MediaItem::TRACK )
-        {
-            albumList[ it->bundle()->album() ].append( it );
-        }
-        if( it->type() == MediaItem::ALBUM )
-        {
-            debug() << "look, we get albums too!";
-        }
-    }
-    int i = 0;
-    setProgress( i, albumList.count() );
-    kapp->processEvents( 100 );
-    QMap< QString, Q3PtrList<MediaItem> >::Iterator it;
-    for( it = albumList.begin(); it != albumList.end(); ++it )
-    {
-        sendAlbumArt( &it.data() );
-        setProgress( ++i );
-        if( i % 20 == 0 )
-            kapp->processEvents( 100 );
-    }
-    hideProgress();
-}
+// void
+// MtpMediaDevice::updateAlbumArt( Q3PtrList<MediaItem> *items )
+// {
+//     DEBUG_BLOCK
+// 
+//     if( m_format == 0 )  // no supported image types. Don't even bother.
+//         return;
+// 
+//     setCanceled( false );
+// 
+//     kapp->processEvents( 100 );
+//     QMap< QString, Q3PtrList<MediaItem> > albumList;
+// 
+//     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it && !(m_canceled); it = dynamic_cast<MtpMediaItem*>(items->next()) )
+//     {
+//         // build album list
+//         if( it->type() == MediaItem::TRACK )
+//         {
+//             albumList[ it->bundle()->album() ].append( it );
+//         }
+//         if( it->type() == MediaItem::ALBUM )
+//         {
+//             debug() << "look, we get albums too!";
+//         }
+//     }
+//     int i = 0;
+//     setProgress( i, albumList.count() );
+//     kapp->processEvents( 100 );
+//     QMap< QString, Q3PtrList<MediaItem> >::Iterator it;
+//     for( it = albumList.begin(); it != albumList.end(); ++it )
+//     {
+//         sendAlbumArt( &it.data() );
+//         setProgress( ++i );
+//         if( i % 20 == 0 )
+//             kapp->processEvents( 100 );
+//     }
+//     hideProgress();
+// }
 
 /**
  * Retrieve existing or create new album object.
@@ -729,225 +729,201 @@ MtpMediaDevice::synchronizeDevice()
 }
 
 /**
- * Find an existing track
- */
-MediaItem
-*MtpMediaDevice::trackExists( const MetaBundle &bundle )
-{
-    MediaItem *artist = dynamic_cast<MediaItem *>( m_view->findItem( bundle.artist(), 0 ) );
-    if( artist )
-    {
-        MediaItem *album = dynamic_cast<MediaItem *>( artist->findItem( bundle.album() ) );
-        if( album )
-        {
-            MediaItem *track = dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
-            if( track )
-                return track;
-        }
-    }
-    uint32_t folderId = checkFolderStructure( bundle, false );
-    MediaItem *file = m_fileNameToItem[ QString( "%1/%2" ).arg( folderId ).arg( bundle.filename() ) ];
-    if( file != 0 )
-	return file;
-    return 0;
-}
-
-/**
  * Create a new playlist
  */
-MtpMediaItem
-*MtpMediaDevice::newPlaylist( const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items )
-{
-    DEBUG_BLOCK
-    MtpMediaItem *item = new MtpMediaItem( parent, this );
-    item->setType( MediaItem::PLAYLIST );
-    item->setText( 0, name );
-    item->setPlaylist( new MtpPlaylist() );
-
-    addToPlaylist( item, 0, items );
-
-    if( ! isTransferring() )
-        m_view->rename( item, 0 );
-
-    return item;
-}
+// MtpMediaItem
+// *MtpMediaDevice::newPlaylist( const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items )
+// {
+//     DEBUG_BLOCK
+//     MtpMediaItem *item = new MtpMediaItem( parent, this );
+//     item->setType( MediaItem::PLAYLIST );
+//     item->setText( 0, name );
+//     item->setPlaylist( new MtpPlaylist() );
+// 
+//     addToPlaylist( item, 0, items );
+// 
+//     if( ! isTransferring() )
+//         m_view->rename( item, 0 );
+// 
+//     return item;
+// }
 
 /**
  * Add an item to a playlist
  */
-void
-MtpMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, Q3PtrList<MediaItem> items )
-{
-    DEBUG_BLOCK
-    MtpMediaItem *list = dynamic_cast<MtpMediaItem *>( mlist );
-    if( !list )
-        return;
-
-    int order;
-    MtpMediaItem *it;
-    if( after )
-    {
-        order = after->m_order + 1;
-        it = dynamic_cast<MtpMediaItem*>(after->nextSibling());
-    }
-    else
-    {
-        order = 0;
-        it = dynamic_cast<MtpMediaItem*>( list->firstChild() );
-    }
-
-    for(  ; it; it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
-    {
-        it->m_order += items.count();
-    }
-
-    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(items.first() );
-            it;
-            it = dynamic_cast<MtpMediaItem *>( items.next() ) )
-    {
-        if( !it->track() )
-            continue;
-
-        MtpMediaItem *add;
-        if( it->parent() == list )
-        {
-            add = it;
-            if( after )
-            {
-                it->moveItem(after);
-            }
-            else
-            {
-                list->takeItem(it);
-                list->insertItem(it);
-            }
-        }
-        else
-        {
-            if( after )
-            {
-                add = new MtpMediaItem( list, after );
-            }
-            else
-            {
-                add = new MtpMediaItem( list, this );
-            }
-        }
-        after = add;
-
-        add->setType( MediaItem::PLAYLISTITEM );
-        add->setTrack( it->track() );
-        add->setBundle( new MetaBundle( *(it->bundle()) ) );
-        add->m_device = this;
-        add->setText( 0, it->bundle()->artist() + " - " + it->bundle()->title() );
-        add->m_order = order;
-        order++;
-    }
-
-    // make numbering consecutive
-    int i = 0;
-    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>( list->firstChild() );
-            it;
-            it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
-    {
-        it->m_order = i;
-        i++;
-    }
-
-    playlistFromItem( list );
-}
+// void
+// MtpMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, Q3PtrList<MediaItem> items )
+// {
+//     DEBUG_BLOCK
+//     MtpMediaItem *list = dynamic_cast<MtpMediaItem *>( mlist );
+//     if( !list )
+//         return;
+// 
+//     int order;
+//     MtpMediaItem *it;
+//     if( after )
+//     {
+//         order = after->m_order + 1;
+//         it = dynamic_cast<MtpMediaItem*>(after->nextSibling());
+//     }
+//     else
+//     {
+//         order = 0;
+//         it = dynamic_cast<MtpMediaItem*>( list->firstChild() );
+//     }
+// 
+//     for(  ; it; it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
+//     {
+//         it->m_order += items.count();
+//     }
+// 
+//     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(items.first() );
+//             it;
+//             it = dynamic_cast<MtpMediaItem *>( items.next() ) )
+//     {
+//         if( !it->track() )
+//             continue;
+// 
+//         MtpMediaItem *add;
+//         if( it->parent() == list )
+//         {
+//             add = it;
+//             if( after )
+//             {
+//                 it->moveItem(after);
+//             }
+//             else
+//             {
+//                 list->takeItem(it);
+//                 list->insertItem(it);
+//             }
+//         }
+//         else
+//         {
+//             if( after )
+//             {
+//                 add = new MtpMediaItem( list, after );
+//             }
+//             else
+//             {
+//                 add = new MtpMediaItem( list, this );
+//             }
+//         }
+//         after = add;
+// 
+//         add->setType( MediaItem::PLAYLISTITEM );
+//         add->setTrack( it->track() );
+//         add->setBundle( new MetaBundle( *(it->bundle()) ) );
+//         add->m_device = this;
+//         add->setText( 0, it->bundle()->artist() + " - " + it->bundle()->title() );
+//         add->m_order = order;
+//         order++;
+//     }
+// 
+//     // make numbering consecutive
+//     int i = 0;
+//     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>( list->firstChild() );
+//             it;
+//             it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
+//     {
+//         it->m_order = i;
+//         i++;
+//     }
+// 
+//     playlistFromItem( list );
+// }
 
 /**
  * When a playlist has been renamed, we must save it
  */
-void
-MtpMediaDevice::playlistRenamed( Q3ListViewItem *item, const QString &, int ) // SLOT
-{
-    DEBUG_BLOCK
-    MtpMediaItem *playlist = static_cast<MtpMediaItem*>( item );
-    if( playlist->type() == MediaItem::PLAYLIST )
-        playlistFromItem( playlist );
-}
+// void
+// MtpMediaDevice::playlistRenamed( Q3ListViewItem *item, const QString &, int ) // SLOT
+// {
+//     DEBUG_BLOCK
+//     MtpMediaItem *playlist = static_cast<MtpMediaItem*>( item );
+//     if( playlist->type() == MediaItem::PLAYLIST )
+//         playlistFromItem( playlist );
+// }
 
 /**
  * Save a playlist
  */
-void
-MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
-{
-    if( item->childCount() == 0 )
-        return;
-    m_critical_mutex.lock();
-    LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
-    metadata->name = qstrdup( item->text( 0 ).toUtf8() );
-    const int trackCount = item->childCount();
-    if (trackCount > 0) {
-        uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * trackCount );
-        uint32_t i = 0;
-        for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
-                it;
-                it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
-        {
-            tracks[i] = it->track()->id();
-            i++;
-        }
-        metadata->tracks = tracks;
-        metadata->no_tracks = i;
-    } else {
-        debug() << "no tracks available for playlist " << metadata->name
-           ;
-        metadata->no_tracks = 0;
-    }
-    QString genericError = i18n( "Could not save playlist." );
-
-    uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * item->childCount() );
-    uint32_t i = 0;
-    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
-            it;
-            it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
-    {
-        tracks[i] = it->track()->id();
-        i++;
-    }
-    metadata->tracks = tracks;
-    metadata->no_tracks = i;
-
-    QString genericError = i18n( "Could not save playlist." );
-
-    if( item->playlist()->id() == 0 )
-    {
-        debug() << "creating new playlist : " << metadata->name;
-        int ret = LIBMTP_Create_New_Playlist( m_device, metadata, 0 );
-        if( ret == 0 )
-        {
-            item->playlist()->setId( metadata->playlist_id );
-            debug() << "playlist saved : " << metadata->playlist_id;
-        }
-        else
-        {
-            Amarok::StatusBar::instance()->shortLongMessage(
-                genericError,
-                i18n( "Could not create new playlist on device." ),
-                KDE::StatusBar::Error
-            );
-        }
-    }
-    else
-    {
-        metadata->playlist_id = item->playlist()->id();
-        debug() << "updating playlist : " << metadata->name;
-        int ret = LIBMTP_Update_Playlist( m_device, metadata );
-        if( ret != 0 )
-        {
-            Amarok::StatusBar::instance()->shortLongMessage(
-                genericError,
-                i18n( "Could not update playlist on device." ),
-                KDE::StatusBar::Error
-            );
-        }
-    }
-    m_critical_mutex.unlock();
-}
+// void
+// MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
+// {
+//     if( item->childCount() == 0 )
+//         return;
+//     m_critical_mutex.lock();
+//     LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
+//     metadata->name = qstrdup( item->text( 0 ).toUtf8() );
+//     const int trackCount = item->childCount();
+//     if (trackCount > 0) {
+//         uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * trackCount );
+//         uint32_t i = 0;
+//         for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
+//                 it;
+//                 it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
+//         {
+//             tracks[i] = it->track()->id();
+//             i++;
+//         }
+//         metadata->tracks = tracks;
+//         metadata->no_tracks = i;
+//     } else {
+//         debug() << "no tracks available for playlist " << metadata->name
+//            ;
+//         metadata->no_tracks = 0;
+//     }
+//     QString genericError = i18n( "Could not save playlist." );
+// 
+//     uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * item->childCount() );
+//     uint32_t i = 0;
+//     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
+//             it;
+//             it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
+//     {
+//         tracks[i] = it->track()->id();
+//         i++;
+//     }
+//     metadata->tracks = tracks;
+//     metadata->no_tracks = i;
+// 
+//     QString genericError = i18n( "Could not save playlist." );
+// 
+//     if( item->playlist()->id() == 0 )
+//     {
+//         debug() << "creating new playlist : " << metadata->name;
+//         int ret = LIBMTP_Create_New_Playlist( m_device, metadata, 0 );
+//         if( ret == 0 )
+//         {
+//             item->playlist()->setId( metadata->playlist_id );
+//             debug() << "playlist saved : " << metadata->playlist_id;
+//         }
+//         else
+//         {
+//             Amarok::StatusBar::instance()->shortLongMessage(
+//                 genericError,
+//                 i18n( "Could not create new playlist on device." ),
+//                 KDE::StatusBar::Error
+//             );
+//         }
+//     }
+//     else
+//     {
+//         metadata->playlist_id = item->playlist()->id();
+//         debug() << "updating playlist : " << metadata->name;
+//         int ret = LIBMTP_Update_Playlist( m_device, metadata );
+//         if( ret != 0 )
+//         {
+//             Amarok::StatusBar::instance()->shortLongMessage(
+//                 genericError,
+//                 i18n( "Could not update playlist on device." ),
+//                 KDE::StatusBar::Error
+//             );
+//         }
+//     }
+//     m_critical_mutex.unlock();
+// }
 
 /**
  * Recursively remove MediaItem from the device and media view
@@ -1094,7 +1070,6 @@ MtpMediaDevice::openDevice( bool silent )
     if( m_device != 0 )
         return true;
 
-
     QString genericError = i18n( "Could not connect to MTP Device" );
 
     m_critical_mutex.lock();
@@ -1111,11 +1086,6 @@ MtpMediaDevice::openDevice( bool silent )
         setDisconnected();
         return false;
     }
-
-    connect(
-        m_view, SIGNAL( itemRenamed( Q3ListViewItem*, const QString&, int ) ),
-        this,   SLOT( playlistRenamed( Q3ListViewItem*, const QString&, int ) )
-    );
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
@@ -1418,10 +1388,10 @@ MtpMediaDevice::loadConfig()
 }
 
 /**
- * Add a track to the current list view
+ * Add a track to the current Collection
  */
 MtpMediaItem
-*MtpMediaDevice::addTrackToView( MtpTrack *track, MtpMediaItem *item )
+*MtpMediaDevice::addTrackToCollection( MtpTrack *track, MtpMediaItem *item )
 {
     QString artistName = track->bundle()->artist();
 
@@ -1594,13 +1564,12 @@ MtpMediaDevice::readAlbums()
 }
 
 /**
- * Clear the current listview
+ * Clear the current Collection
  */
 void
 MtpMediaDevice::clearItems()
 {
-    m_view->clear();
-    initView();
+    
 }
 
 /**
@@ -1650,15 +1619,6 @@ MtpTrack::readMetaData( LIBMTP_track_t *track )
     this->setFolderId( track->parent_id );
 
     this->setBundle( *bundle );
-}
-
-/**
- * Set this track's metabundle
- */
-void
-MtpTrack::setBundle( MetaBundle &bundle )
-{
-    m_bundle = bundle;
 }
 
 /**
