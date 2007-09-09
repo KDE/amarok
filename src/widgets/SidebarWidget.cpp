@@ -286,7 +286,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     else
         c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
 
-    svg_source.replace( "stop-color:#2e3436", "stop-color:" + c.name() );
+    svg_source.replace( "stop-color:#6193cf", "stop-color:" + c.name() );
     QSvgRenderer svg( svg_source.toAscii() );
     svg.render( &p );
 
