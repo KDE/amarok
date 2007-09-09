@@ -239,7 +239,7 @@ QRectF
 Playlist::GraphicsItem::boundingRect() const
 {
     // the viewport()->size() takes scrollbars into account
-    return QRectF( 0.0, 0.0, scene()->views().at(0)->viewport()->size().width(), s_height );
+    return QRectF( 0.0, 0.0, The::playlistView()->viewport()->size().width(), s_height );
 }
 
 void
@@ -380,9 +380,7 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     if( above )
     {
         setPos( above->pos() );
-        Playlist::GraphicsView *view = dynamic_cast<Playlist::GraphicsView*>( scene()->views().at(0) );
-        if( view )
-            view->moveItem( this, above );
+        The::playlistView()->moveItem( this, above );
     }
 
     //make sure item resets its z value
