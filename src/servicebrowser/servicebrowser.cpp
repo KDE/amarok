@@ -36,7 +36,7 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     debug() << "ServiceBrowser starting...";
 
     m_serviceListView = new QListView( this );
-    ServiceListDelegate * delegate = new ServiceListDelegate();
+    ServiceListDelegate * delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( delegate );
 
     m_serviceListView->setModel( m_serviceListModel );

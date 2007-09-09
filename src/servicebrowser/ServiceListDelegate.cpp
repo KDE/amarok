@@ -28,8 +28,9 @@
 #include <QPainter>
 
 
-ServiceListDelegate::ServiceListDelegate()
+ServiceListDelegate::ServiceListDelegate( QListView *view )
  : QItemDelegate()
+ , m_view( view )
 {
     DEBUG_BLOCK
 
@@ -56,6 +57,13 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 {
     //DEBUG_BLOCK
 
+    int width = m_view->viewport()->size().width();
+    int height = 90;
+    int iconWidth = 32;
+    int iconHeight = 32;
+    int iconPadX = 8;
+    int iconPadY = 4;
+
     debug() << "Look ma' I am painting!";
 
     painter->save();
@@ -70,7 +78,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     else 
         svgRenderer = m_svgRendererInactive;
 
-    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,76 ) );
+    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,width, height - 4 ) );
 
 
     if (option.state & QStyle::State_Selected)
@@ -87,17 +95,24 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     painter->setFont(QFont("Arial", 14));
 
-    painter->drawPixmap( option.rect.topLeft() + QPoint( 8, 4 ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( 32, 32 ) );
+    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
-    painter->drawText( option.rect.topLeft() + QPoint( 47, 21 ) , index.data( Qt::DisplayRole ).toString() );
+
+    QRectF titleRect;
+    titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
+    titleRect.setTop( option.rect.top() );
+    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 ) );
+    titleRect.setHeight( iconHeight + iconPadY );
+
+    painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
     painter->setFont(QFont("Arial", 10));
-    
+
     QRectF textRect;
-    textRect.setLeft( option.rect.topLeft().x() + 6 );
-    textRect.setTop( option.rect.topLeft().y() + 34 );
-    textRect.setWidth( 248 );
-    textRect.setHeight( 44 );
+    textRect.setLeft( option.rect.topLeft().x() + iconPadX );
+    textRect.setTop( option.rect.top() + iconHeight + iconPadY );
+    textRect.setWidth( width - iconPadX * 2 );
+    textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
     painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
 
@@ -115,7 +130,10 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     //DEBUG_BLOCK
 
-    return QSize ( 252, 80 );
+    int width = m_view->viewport()->size().width();
+    int heigth = 90;
+
+    return QSize ( width, heigth );
 
     
 

@@ -23,6 +23,7 @@
 #include <KStandardDirs>
 
 #include <QItemDelegate>
+#include <QListView>
 #include <QSvgRenderer>
 
 
@@ -35,7 +36,7 @@ A delegate for displaying a nice overview of a service
 class ServiceListDelegate : public QItemDelegate
 {
 public:
-    ServiceListDelegate();
+    ServiceListDelegate( QListView *view );
     ~ServiceListDelegate();
 
 
@@ -46,6 +47,8 @@ private:
 
     QSvgRenderer *m_svgRendererActive;
     QSvgRenderer *m_svgRendererInactive;
+
+    QListView *m_view;
     
 };
 
