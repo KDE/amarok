@@ -38,9 +38,9 @@ void
 Playlist::GraphicsView::setModel( Playlist::Model *model )
 {
     DEBUG_BLOCK
-    
+
     m_model = model;
-    
+
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
 
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
@@ -58,13 +58,13 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     if( !topItem )
         return;
 
-    
+
     Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( topItem );
     if( !item )
         item = dynamic_cast<Playlist::GraphicsItem*>( topItem->parentItem() );
     if( !item ) // we've clicked on empty space
         return;
-           
+
     event->accept();
 
     KAction *playAction = new KAction( KIcon( Amarok::icon( "play" ) ), i18n( "&Play" ), this );

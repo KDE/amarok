@@ -1131,7 +1131,9 @@ void MainWindow::createMenus()
     //BEGIN Mode menu
     KMenu *modeMenu = new KMenu( m_menubar );
     modeMenu->setTitle( i18n("&Mode") );
-    modeMenu->addAction( actionCollection()->action("repeat") );
+    QAction *repeat = actionCollection()->action("repeat");
+    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
+    modeMenu->addAction( repeat );
     KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
     modeMenu->addAction( random );
     random->menu()->addSeparator();

@@ -13,6 +13,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistItem.h"
+#include "RepeatTrackAdvancer.h"
 #include "StandardTrackAdvancer.h"
 #include "statusbar.h"
 #include "TheInstances.h"
@@ -214,6 +215,14 @@ Model::play( int row )
     EngineController::instance()->play( m_items[ m_activeRow ]->track() );
 }
 
+void
+Model::playlistRepeatMode( int item )
+{
+    if( item = 0 )
+        playModeChanged( Playlist::Standard );
+    else //for now just turn on repeat if anything but "off" is clicked
+        playModeChanged( Playlist::Repeat );
+}
 
 void
 Model::next()
@@ -284,6 +293,20 @@ Model::prettyColumnName( Column index ) //static
 
 }
 
+void
+Model::playModeChanged( int row )
+{
+    delete m_advancer;
+    switch (row)
+    {
+        case Playlist::Standard:
+            m_advancer = new StandardTrackAdvancer(this);
+            break;
+        case Playlist::Repeat:
+            m_advancer = new RepeatTrackAdvancer(this);
+            break;
+    }
+}
 
 void
 Model::setActiveRow( int row )

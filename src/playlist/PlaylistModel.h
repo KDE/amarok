@@ -30,6 +30,11 @@ namespace Playlist {
 
 class TrackAdvancer;
 
+    enum PlaybackMode
+    {
+        Standard = 1,
+        Repeat
+    };
     enum Column
     {
         Album  = 1,
@@ -147,6 +152,7 @@ class TrackAdvancer;
         
         public slots:
             void play( const QModelIndex& index );
+            void playlistRepeatMode( int item );
             void next();
             void back();
             void clear(); ///clear the playlist of all items
@@ -173,6 +179,8 @@ class TrackAdvancer;
             Meta::TrackList removeRowsCommand( int position, int rows );
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
+
+            void playModeChanged( int mode ); //! Changes the trackadvancer to the given mode
 
             QString         m_playlistName;
             bool            m_proposeOverwriting;
