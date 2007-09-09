@@ -264,9 +264,6 @@ void SideBarButton::slotAnimTimer()
 
 void SideBarButton::paintEvent( QPaintEvent* )
 {
-    const int gap = 0;
-    const int h = height() - gap;
-
     QFile file( KStandardDirs::locate( "data","amarok/images/sidebar_button.svg" ) );
     file.open( QIODevice::ReadOnly );
     QString svg_source( file.readAll() );
@@ -292,7 +289,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     const QString txt = text().replace( "&", "" );
 
-    const int pos = qMin( h, h / 2 + heightHint() / 2 ) - iconSize().height();
+    const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
