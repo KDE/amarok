@@ -37,19 +37,26 @@ Playlist::DropVis::instance()
 }
 
 void
+Playlist::DropVis::showDropIndicator( qreal yPosition )
+{
+    qreal width = The::playlistView()->viewport()->size().width();
+    setLine( 0, 0, width, 0 );
+    setPos( QPointF( 0, yPosition ) );
+    show();
+}
+
+void
 Playlist::DropVis::showDropIndicator( Playlist::GraphicsItem *above )
 {
     if( !scene() )
         return;
-          
-    QPointF indicatorPosition( 0.0, 0.0 );
+    
+    qreal yPosition = 0;
     // if we have an item to place it above, then move the indicator,
     // otherwise use the top of the scene
-    qreal width = The::playlistView()->viewport()->size().width();
     if( above )
     {
-        indicatorPosition = above->pos();
-        indicatorPosition.setY( indicatorPosition.y() - 5 );
+        yPosition = above->pos().y() - 5;
     }
     else // place indicator at end of track listing
     {
@@ -57,13 +64,9 @@ Playlist::DropVis::showDropIndicator( Playlist::GraphicsItem *above )
         Playlist::GraphicsItem *below = 0;
         if( !tracks.isEmpty() && ( below = tracks.last() ) )
         {
-            indicatorPosition = below->pos();
-            indicatorPosition.setY( indicatorPosition.y() + below->boundingRect().height() );
+            yPosition = below->pos().y() + below->boundingRect().height();
         }
     }
-    
-    setLine( 0, 0, width, 0 );
-    setPos( indicatorPosition );
-    show();
+    showDropIndicator( yPosition );    
 }
 

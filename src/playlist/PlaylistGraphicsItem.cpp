@@ -268,6 +268,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
         event->ignore();
         return;
     }
+    m_preDragLocation = mapToScene( boundingRect() ).boundingRect();
     QGraphicsItem::mousePressEvent( event );
 }
 
@@ -277,8 +278,11 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
     if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable))
     {
+        bool dragOverOriginalPosition = m_preDragLocation.contains( event->scenePos() );
+        debug() << "originalLocation (" << m_preDragLocation << ") contains currentPoint (" << event->scenePos() << ") ? " << dragOverOriginalPosition;
+
         //make sure item is drawn on top of other items
-       setZValue( 2.0 );
+        setZValue( 2.0 );
 
         // Determine the list of selected items
         QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
@@ -291,7 +295,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
             {
                 Playlist::GraphicsItem *above = 0;
                 QPointF diff;
-                if( item == this )
+                if( item == this && !dragOverOriginalPosition )
                 {
                     diff = event->scenePos() - event->lastScenePos();
                     QList<QGraphicsItem*> collisions = scene()->items( event->scenePos() );
@@ -314,7 +318,11 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
                 item->moveBy( 0, diff.y() );
                 if( item->flags() & ItemIsSelectable )
                     item->setSelected( true );
-                Playlist::DropVis::instance()->showDropIndicator( above );
+                
+                if( dragOverOriginalPosition )
+                    Playlist::DropVis::instance()->showDropIndicator( m_preDragLocation.y() );
+                else
+                    Playlist::DropVis::instance()->showDropIndicator( above );
             }
         }
     }

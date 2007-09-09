@@ -21,6 +21,7 @@ namespace Playlist
             static DropVis *instance();
             ~DropVis() { }
 
+            void showDropIndicator( qreal yPosition );
             void showDropIndicator( Playlist::GraphicsItem *above = 0 );
 
         private:

@@ -44,6 +44,8 @@ namespace Playlist
             void resize( Meta::TrackPtr track, int totalWidth );
             int getRow() const { return int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height ); }
 
+            QRectF m_preDragLocation;
+
             ActiveItems* m_items;
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
