@@ -32,7 +32,7 @@ JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
 {
 
-    setShortDescription("Another very friendly service!");
+    setShortDescription("A site where artists can showcase their creations to the world");
     setIcon( KIcon( Amarok::icon( "download" ) ) );
 
 }
