@@ -116,6 +116,10 @@ class TrackAdvancer;
             ///Save M3U of current playlist to a given location
             bool saveM3U( const QString &path, bool relative ) const;
 
+            ///Return list of items in playlist
+            QList<Item*> itemList() { return m_items; }
+
+
             /**
              * Insert tracks into the playlist with some handy options.
              * @param list tracks to add
@@ -131,6 +135,7 @@ class TrackAdvancer;
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
+            void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
             void testData();
             
             ///deprecated function to ease porting to Meta::Track from URLs
