@@ -18,8 +18,10 @@
 #include <KAction>
 #include <KMenu>
 
+#include <QGraphicsItemAnimation>
 #include <QModelIndex>
 #include <QKeyEvent>
+#include <QTimeLine>
 #include <QVariant>
 
 Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
@@ -129,7 +131,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
         scene()->addItem( item );
         m_tracks.insert( i, item  );
     }
-    shuffleTracks( end );
+    shuffleTracks( end + 1 );
 }
 
 void
@@ -157,11 +159,33 @@ Playlist::GraphicsView::shuffleTracks( int startPosition )
     if ( startPosition < 0 )
         return;
 
+    QTimeLine *timer = new QTimeLine( 300 ); // 0.3 second duration
+    timer->setCurveShape( QTimeLine::EaseInCurve );
+
     for( int i = startPosition; i < m_tracks.size(); ++i )
     {
-        Playlist::GraphicsItem* item = m_tracks.at( i );
-        item->setPos( 0.0, Playlist::GraphicsItem::height() * i );
+        Playlist::GraphicsItem *item = m_tracks.at( i );
+        qreal currentY = item->pos().y();
+        qreal desiredY = Playlist::GraphicsItem::height() * i;
+
+        bool moveUp = false;
+        if( desiredY > currentY )
+            moveUp = true;
+
+        qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
+    
+        QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
+        animator->setItem( item );
+        animator->setTimeLine( timer );
+
+        // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
+        for( qreal i = 0; i < distanceMoved; ++i )
+        {
+            qreal newY = moveUp ? ( currentY + i ) : ( currentY - i );
+            animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
+        }
     }
+    timer->start();
 }
 
 void 
