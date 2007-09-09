@@ -99,7 +99,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     textRect.setWidth( 248 );
     textRect.setHeight( 44 );
 
-    painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
+    painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
 
     debug() << "Short description: " << index.data( ShortDescriptionRole ).toString() ;
 
