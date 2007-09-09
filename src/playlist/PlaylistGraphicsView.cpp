@@ -22,14 +22,23 @@
 #include <QKeyEvent>
 #include <QVariant>
 
-Playlist::GraphicsView::GraphicsView( QWidget* parent, Playlist::Model* model )
+Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
+
+Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
-    , m_model( model )
+    , m_model( 0 )
 {
-    DEBUG_BLOCK
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
+}
 
+void
+Playlist::GraphicsView::setModel( Playlist::Model *model )
+{
+    DEBUG_BLOCK
+    
+    m_model = model;
+    
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
 
     connect( m_model, SIGNAL( modelReset() ), this, SLOT( modelReset() ) );
@@ -175,5 +184,10 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
      if ( m_tracks.count() > index.row() )
          m_tracks.at( index.row() )->refresh();
 }
+
+namespace The {
+    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
+}
+
 
 #include "PlaylistGraphicsView.moc"

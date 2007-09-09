@@ -25,12 +25,13 @@ Widget::Widget( QWidget* parent )
 
     Playlist::HeaderWidget* header = new Playlist::HeaderWidget( this );
 
-    Playlist::Model* playmodel = The::playlistModel();
-    playmodel->init();
-    playmodel->testData();
- //   Playlist::View* playView = new Playlist::View( this );
- //   playView->setModel( playmodel );
-    Playlist::GraphicsView* playView = new Playlist::GraphicsView( this, playmodel );
+    Playlist::Model* playModel = The::playlistModel();
+    playModel->init();
+    playModel->testData();
+
+    Playlist::GraphicsView* playView = The::playlistView();
+    playView->setModel( playModel );
+    
     layout->setSpacing( 0 );
     layout->addWidget( header );
     layout->addWidget( playView );

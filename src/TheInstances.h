@@ -10,6 +10,7 @@
 
 namespace Playlist {
     class Model;
+    class GraphicsView;
 }
 
 namespace PopupDropperNS {
@@ -30,7 +31,8 @@ namespace QueueManagerNS {
 class ServiceInfoProxy;
 
 namespace The {
-    Playlist::Model*               playlistModel();       //defined in playlist/PlaylistModel.cpp
+    Playlist::Model*                 playlistModel();       //defined in playlist/PlaylistModel.cpp
+    Playlist::GraphicsView*          playlistView();
     PopupDropperNS::PopupDropper*    PopupDropper();
     PortableDevicesNS::SolidHandler* SolidHandler();
     PlaylistManager*                 playlistManager();

@@ -22,7 +22,13 @@ namespace Playlist
     {
         Q_OBJECT
         public:
-            GraphicsView( QWidget* parent, Model* model );
+            static GraphicsView *instance()
+            {
+                if( !s_instance )
+                    s_instance = new GraphicsView();
+                return s_instance;
+            }
+            void  setModel( Playlist::Model *model );
 
             const QList<GraphicsItem*> tracks() const { return m_tracks; }
             void  moveItem( Playlist::GraphicsItem *above, Playlist::GraphicsItem *above );
@@ -42,6 +48,9 @@ namespace Playlist
             void shuffleTracks( int startPosition );
         
         private:
+            GraphicsView( QWidget *parent = 0 );
+            static GraphicsView  *s_instance;
+
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
     };
