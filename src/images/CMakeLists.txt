@@ -36,7 +36,7 @@ install(
         sbinner_stars.png
         smallstar.png
         icons/svg/sources.svg
-        sidebar_tab.svg
+        sidebar_button.svg
         splash_screen.jpg
         star.png
         volumeslider-gradient.png

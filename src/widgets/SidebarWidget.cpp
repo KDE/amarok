@@ -266,7 +266,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     const int gap = 0;
     const int h = height() - gap;
 
-    QSvgRenderer svg( KStandardDirs::locate( "data","amarok/images/sidebar_tab.svg" ) );
+    QSvgRenderer svg( KStandardDirs::locate( "data","amarok/images/sidebar_button.svg" ) );
 
     QPainter p( this );
     p.initFrom( this );
