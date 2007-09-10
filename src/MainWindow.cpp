@@ -319,7 +319,7 @@ void MainWindow::init()
         debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
-        internetContentServiceBrowser->addService( new MagnatuneStore( "Dummy service 1" ) );
+        internetContentServiceBrowser->addService( new MagnatuneStore( "Magnatune Store" ) );
 
         internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
 

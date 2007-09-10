@@ -54,7 +54,7 @@
 using namespace Meta;
 
 MagnatuneStore::MagnatuneStore( const char *name )
-        : ServiceBase( "Magnatune Store" )
+        : ServiceBase( name )
         , m_currentAlbum( 0 )
 {
     setObjectName(name);
