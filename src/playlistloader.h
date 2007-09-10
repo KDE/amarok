@@ -8,15 +8,18 @@
 
 #include "amarok.h"
 #include "debug.h"        //stack allocated
-#include "meta/meta.h"
-
+#include <q3ptrlist.h>
 #include <QtXml>         //baseclass
 //Added by qt3to4:
+#include <Q3ValueList>
 #include <kurl.h>         //KUrl::List
+#include "metabundle.h"   //stack allocated
 #include "threadmanager.h" //baseclass
 #include "xmlloader.h"    //baseclass
 
+class Q3ListViewItem;
 class QTextStream;
+class PlaylistItem;
 class XMLData;
 class KJob;
 
@@ -38,9 +41,9 @@ public:
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
 
-    /// the tracks from this playlist, they only contain
+    /// the bundles from this playlist, they only contain
     /// the information that can be extracted from the playlists
-    Meta::TrackList &tracks() { return m_tracks; }
+    BundleList &bundles() { return m_bundles; }
 
     /// the name of the playlist. often stored in the document (eg xspf) or derived from the filename
     QString &title() { return m_title; }
@@ -68,7 +71,7 @@ protected:
     bool loadXSPF( QTextStream& );
     QString m_path;
     QString m_error;
-    Meta::TrackList m_tracks;
+    BundleList m_bundles;
     QString m_title;
 };
 
@@ -102,7 +105,7 @@ class UrlLoader : public ThreadManager::DependentJob
 Q_OBJECT
 
 public:
-    UrlLoader( const KUrl::List&, int after, int options = 0 );
+    UrlLoader( const KUrl::List&, Q3ListViewItem*, int options = 0 );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
