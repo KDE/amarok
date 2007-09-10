@@ -14,58 +14,68 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef MP3TUNESSERVICE_H
-#define MP3TUNESSERVICE_H
+#ifndef SHOUTCASTSERVICEQUERYMAKER_H
+#define SHOUTCASTSERVICEQUERYMAKER_H
 
+#include "DynamicServiceQueryMaker.h"
 
+#include "meta.h"
 
-#include "../servicebase.h"
 #include "Mp3tunesServiceCollection.h"
 
 #include <kio/jobclasses.h>
-#include <kio/job.h>
 
-
-
+namespace ThreadWeaver
+{
+    class Job;
+}
 
 
 /**
-A service for displaying, previewing and downloading music from Mp3tunes.com
+A query maker for fetching external data
 
-	@author 
+	@author
 */
-class Mp3tunesService : public ServiceBase
+class Mp3tunesServiceQueryMaker : public DynamicServiceQueryMaker
 {
-
 Q_OBJECT
 public:
-    Mp3tunesService( const QString &name );
+    Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection * collection, const QString &sessionId );
+    ~Mp3tunesServiceQueryMaker();
 
-    ~Mp3tunesService();
+    virtual QueryMaker* reset();
+    virtual void run();
+    virtual void abortQuery();
 
-    void polish();
+    virtual QueryMaker* startArtistQuery();
 
-private:
+    virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
+    //Methods "borrowed" from MemoryQueryMaker
+    void runQuery();
+    void handleResult();
+    void handleResult( const Meta::TrackList &tracks );
 
-private slots:
+    void fetchArtists();
 
-    void authenticationComplete(  KJob *job );
 
-private:
+protected:
+    Mp3tunesServiceCollection * m_collection;
+    KIO::StoredTransferJob * m_storedTransferJob;
 
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
+    class Private;
+    Private * const d;
 
-    bool m_authenticated;
     QString m_sessionId;
 
-    Mp3tunesServiceCollection *  m_collection;
+public slots:
+
+    void artistDownloadComplete(KJob *job );
+
+
 };
 
 #endif

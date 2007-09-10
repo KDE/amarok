@@ -122,12 +122,20 @@ void Mp3tunesService::authenticationComplete(KJob * job)
         m_sessionId = element.text();
         m_authenticated = true;
 
+
+        m_collection = new Mp3tunesServiceCollection( m_sessionId );
+        QList<int> levels;
+        levels << CategoryId::Artist;
+        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+
     } else {
 
         element = root.firstChildElement("errorMessage");
         KMessageBox::error ( this, element.text(), "Authentication Error!" );	
 
     }
+
+
 
     m_xmlDownloadJob->deleteLater();
 }

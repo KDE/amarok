@@ -156,6 +156,9 @@ set(libjamendoservice_SRCS
 #####################################################################
 set(libmp3tunesservice_SRCS
     servicebrowser/mp3tunes/mp3tunesservice.cpp
+    servicebrowser/mp3tunes/Mp3tunesServiceCollection.cpp
+    servicebrowser/mp3tunes/Mp3tunesServiceQueryMaker.cpp
+    
 )
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)

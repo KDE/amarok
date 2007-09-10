@@ -53,8 +53,6 @@ public:
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 
-    virtual QueryMaker* startTrackQuery() = 0;
-
     virtual void runQuery() = 0;
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs ) = 0;
@@ -63,6 +61,7 @@ public:
     //below here is the stuf that each dynamic querymaker will most likely only need 
     //Some of, hense they are all stubbed out:
 
+    virtual QueryMaker* startTrackQuery()  { return this; }
     virtual QueryMaker* startComposerQuery() { return this; }
     virtual QueryMaker* startArtistQuery() { return this; }
     virtual QueryMaker* startAlbumQuery() { return this; }

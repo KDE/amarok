@@ -14,58 +14,37 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef MP3TUNESSERVICE_H
-#define MP3TUNESSERVICE_H
-
-
-
-#include "../servicebase.h"
 #include "Mp3tunesServiceCollection.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
+#include "Mp3tunesServiceQueryMaker.h"
 
-
-
-
-
-/**
-A service for displaying, previewing and downloading music from Mp3tunes.com
-
-	@author 
-*/
-class Mp3tunesService : public ServiceBase
+Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId )
+ : ServiceCollection()
+ , m_sessionId( sessionId )
 {
+}
 
-Q_OBJECT
-public:
-    Mp3tunesService( const QString &name );
 
-    ~Mp3tunesService();
+Mp3tunesServiceCollection::~Mp3tunesServiceCollection()
+{
+}
 
-    void polish();
+QueryMaker * Mp3tunesServiceCollection::queryMaker()
+{
+    return new Mp3tunesServiceQueryMaker( this, m_sessionId );
+}
 
-private:
+QString Mp3tunesServiceCollection::collectionId() const
+{
+    return "Mp3Tunes collection";
+}
 
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
+QString Mp3tunesServiceCollection::prettyName() const
+{
+    return collectionId();
+}
 
-private slots:
 
-    void authenticationComplete(  KJob *job );
-
-private:
-
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
-
-    bool m_authenticated;
-    QString m_sessionId;
-
-    Mp3tunesServiceCollection *  m_collection;
-};
-
-#endif

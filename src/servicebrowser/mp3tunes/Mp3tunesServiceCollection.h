@@ -14,58 +14,34 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
+#ifndef MP3TUNESSERVICECOLLECTION_H
+#define MP3TUNESSERVICECOLLECTION_H
 
-#ifndef MP3TUNESSERVICE_H
-#define MP3TUNESSERVICE_H
-
-
-
-#include "../servicebase.h"
-#include "Mp3tunesServiceCollection.h"
-
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-
-
-
+#include <servicecollection.h>
 
 /**
-A service for displaying, previewing and downloading music from Mp3tunes.com
+A collection that dynamically fetches data from a remote location as needed
 
 	@author 
 */
-class Mp3tunesService : public ServiceBase
+class Mp3tunesServiceCollection : public ServiceCollection
 {
-
-Q_OBJECT
 public:
-    Mp3tunesService( const QString &name );
+    Mp3tunesServiceCollection( const QString &sessionId );
 
-    ~Mp3tunesService();
+    ~Mp3tunesServiceCollection();
 
-    void polish();
+    virtual QueryMaker* queryMaker();
 
-private:
-
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
-
-private slots:
-
-    void authenticationComplete(  KJob *job );
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
 
 private:
 
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
-
-    bool m_authenticated;
     QString m_sessionId;
 
-    Mp3tunesServiceCollection *  m_collection;
 };
 
 #endif
