@@ -23,7 +23,6 @@
 #include "meta/meta.h"
 #include "mountpointmanager.h" // device ids
 
-"
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
 #include "statusbar.h"
