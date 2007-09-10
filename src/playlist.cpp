@@ -508,7 +508,7 @@ Playlist::insertMedia( const KURL::List &list, int options )
         }
     }
 
-    if( options & Unique | options & Queue )
+    if( options & Unique || options & Queue )
         insertMediaInternal( addMe, after, options );
     else
         insertMediaInternal(  list, after, options );
