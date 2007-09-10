@@ -370,7 +370,7 @@ set(libplaylist_SRCS
 set(amaroklib_LIB_SRCS
     ${libmagnatunestore_SRCS}
     ${libshoutcastservice_SRCS}
-    ${libmp3tunesservice_SRCS}
+    #${libmp3tunesservice_SRCS}
     ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}
