@@ -5,8 +5,10 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    * Duplicate songs were not allowed in playlist when adding from the
+      collection browser. (BR 149643)
     * Make sure the localUrl of a PodcastEpisode is valid after a failed
-      download. (BR147351)
+      download. (BR 147351)
     * Fix off-by-one error causing Smart Playlists to not load tracks with a
       rating >= 4.5. (BR 148916)
     * Don't enable "Configure Podcasts" at the top-level Podcasts folder if
