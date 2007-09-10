@@ -32,7 +32,7 @@ public:
     // reimplemented to tell Plasma our size
     QSizeF contentSize() const;
     // reimplemented to help Plasma::Layout deal with us
-    QSizeF sizeHint() const { return boundingRect().size(); }
+    QSizeF contentSizeHint() const { return boundingRect().size(); }
 
     void constraintsUpdated();
 

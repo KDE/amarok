@@ -124,7 +124,7 @@ void LastFmEvents::constraintsUpdated()
 
 void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data& data )
 {
-
+    DEBUG_BLOCK
 //         debug() << "got data from engine: " << data;
     Context::DataEngine::DataIterator iter( data );
     if( m_sysEnabled && name == QString( "sysevents" ) )
@@ -212,11 +212,12 @@ void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data
 
 void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect& contentsRect )
 {
+    DEBUG_BLOCK
     Q_UNUSED( option )
 
     p->setRenderHint(QPainter::SmoothPixmapTransform);
 
-//     debug() << "painting rect: " << contentsRect;
+    debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
 
     for( int i = 0; i < 14; i++ )

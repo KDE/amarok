@@ -65,7 +65,7 @@ private:
     void resizeColumns();
     void balanceColumns();
     
-    QList< Context::VBoxLayout* > m_layout;
+    QList< Plasma::VBoxLayout* > m_layout;
     QRectF m_geometry;
     
     int m_padding;

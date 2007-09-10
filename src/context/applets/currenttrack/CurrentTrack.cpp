@@ -75,20 +75,23 @@ CurrentTrack::~CurrentTrack()
     DEBUG_BLOCK
 }
 
-void CurrentTrack::setRect( const QRectF& rect )
+void CurrentTrack::setGeometry( const QRectF& rect )
 {
     DEBUG_BLOCK
+    debug() << "being told to set rect to:" << rect;
     setPos( rect.topLeft() );
     resize( rect.width(), m_aspectRatio );
+    Plasma::Applet::setGeometry( rect );
 }
 
-QSizeF CurrentTrack::contentSize() const
+QSizeF CurrentTrack::contentSizeHint() const
 {
     return m_size;
 }
 
 void CurrentTrack::constraintsUpdated()
 {
+    DEBUG_BLOCK
     prepareGeometryChange();
     // here we put all of the text items into the correct locations
     m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
@@ -131,7 +134,7 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
-//     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
+    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
 
     m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
     m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
@@ -140,8 +143,11 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    DEBUG_BLOCK
     Q_UNUSED( option );
 
+    debug() << "painting currenttrack applet in:" << contentsRect;
+    
     p->save();
     m_theme->paint( p, contentsRect, "background" );
     p->restore();
@@ -204,10 +210,12 @@ void CurrentTrack::configAccepted() // SLOT
 
 void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
 {
+    DEBUG_BLOCK
+    debug() << "resizing to:" << newWidth;
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
-
+    
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
     constraintsUpdated();

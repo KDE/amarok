@@ -30,7 +30,7 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
     // reimplemented to tell Plasma our size
-    QSizeF contentSize() const;
+    QSizeF contentSizeHint() const;
     // reimplemented to help Plasma::Layout deal with us
     QSizeF sizeHint() const { return boundingRect().size(); }
 

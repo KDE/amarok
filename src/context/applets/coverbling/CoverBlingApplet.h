@@ -33,7 +33,7 @@ protected:
     void resize( qreal width, qreal height );
     void setPerspective();
     GLuint objectAtPosition( const QPoint& pos );
-    QSizeF contentSize() const { return QSizeF(400.0, 200.0 ); }
+    QSizeF contentSizeHint() const { return QSizeF(400.0, 200.0 ); }
 
 private:
     QStringList m_coverPaths;

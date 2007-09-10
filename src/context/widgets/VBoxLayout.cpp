@@ -26,7 +26,7 @@ namespace Context
 {
 
 VBoxLayout::VBoxLayout(LayoutItem *parent)
-    : BoxLayout(TopToBottom, parent),
+    : BoxLayout(Plasma::BoxLayout::TopToBottom, parent),
       d(0)
 {
 }

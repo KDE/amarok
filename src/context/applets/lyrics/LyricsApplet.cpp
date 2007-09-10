@@ -92,7 +92,7 @@ void LyricsApplet::setRect( const QRectF& rect )
     resize( rect.width() );
 }
 
-QSizeF LyricsApplet::contentSize() const
+QSizeF LyricsApplet::contentSizeHint() const
 {
 //     return m_size;
     qreal height = m_header->size().width() * m_headerAspectRatio;

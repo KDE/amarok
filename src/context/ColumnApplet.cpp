@@ -45,23 +45,24 @@ void ColumnApplet::init() // SLOT
         if( numColumns == 0 ) numColumns = 1;
         debug() << "need to create:" << numColumns << "columns";
         for( int i = 0; i < numColumns; i++ )
-            m_layout << new Context::VBoxLayout( this );
+            m_layout << new Plasma::VBoxLayout( this );
         resizeColumns();
     } else
         warning() << "no scene to get data from!!";
 
     // TODO wait until this is completely implemented in plasma
-    foreach( VBoxLayout* column, m_layout )
-    {
-	
-        Plasma::LayoutAnimator* animator = new Plasma::LayoutAnimator;
-	QTimeLine* timeLine = new QTimeLine;
-	animator->setTimeLine(timeLine);
-        animator->setEffect( Plasma::LayoutAnimator::InsertedState , Plasma::LayoutAnimator::FadeInMoveEffect );
-        animator->setEffect( Plasma::LayoutAnimator::StandardState , Plasma::LayoutAnimator::MoveEffect );
-        animator->setEffect( Plasma::LayoutAnimator::RemovedState , Plasma::LayoutAnimator::FadeOutMoveEffect );
-	column->setAnimator(animator);    
-    }
+// and for it to not crash....
+//     foreach( Plasma::VBoxLayout* column, m_layout )
+//     {
+// 	
+//         Plasma::LayoutAnimator* animator = new Plasma::LayoutAnimator;
+// 	QTimeLine* timeLine = new QTimeLine;
+// 	animator->setTimeLine(timeLine);
+//         animator->setEffect( Plasma::LayoutAnimator::InsertedState , Plasma::LayoutAnimator::FadeInMoveEffect );
+//         animator->setEffect( Plasma::LayoutAnimator::StandardState , Plasma::LayoutAnimator::MoveEffect );
+//         animator->setEffect( Plasma::LayoutAnimator::RemovedState , Plasma::LayoutAnimator::FadeOutMoveEffect );
+// 	column->setAnimator(animator);    
+//     }
 }
 
 void ColumnApplet::saveToConfig( KConfig& conf )
@@ -231,7 +232,7 @@ void ColumnApplet::recalculate()
 {
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
-    foreach( VBoxLayout* column, m_layout )
+    foreach( Plasma::VBoxLayout* column, m_layout )
         column->setGeometry( column->geometry() );
 }
 
@@ -245,11 +246,11 @@ void ColumnApplet::resizeColumns()
     if( numColumns > m_layout.size() ) // need to make more columns
     {
         for( int i = m_layout.size(); i < numColumns; i++ )
-            m_layout << new Context::VBoxLayout( this );
+            m_layout << new Plasma::VBoxLayout( this );
     } if( numColumns < m_layout.size() ) // view was shrunk
     {
         debug() << "gotta shrink!";
-        Context::VBoxLayout* column = m_layout[ m_layout.size() - 1 ];
+        Plasma::VBoxLayout* column = m_layout[ m_layout.size() - 1 ];
         m_layout.removeAt( m_layout.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
@@ -279,10 +280,10 @@ void ColumnApplet::resizeColumns()
     }
 //     debug() << "columns laid out, now balancing";
     balanceColumns();
-    foreach( Context::VBoxLayout* column, m_layout )
+    foreach( Plasma::VBoxLayout* column, m_layout )
         column->setGeometry( column->geometry() );
     debug() << "result is we have:" << m_layout.size() << "columns:";
-    foreach( Context::VBoxLayout* column, m_layout )
+    foreach( Plasma::VBoxLayout* column, m_layout )
         debug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 }
 

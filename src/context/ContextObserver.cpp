@@ -32,6 +32,7 @@ ContextObserver::ContextObserver( ContextSubject *s )
 
 ContextObserver::~ContextObserver()
 {
+    debug() << "contextobserver dying, trying to detach subject:" << m_subject;
     if( m_subject )
         m_subject->detach( this );
 }
@@ -40,9 +41,19 @@ ContextObserver::~ContextObserver()
 //// CLASS ContextSubject
 ///////////////////////////////////////////////////////////////
 
+ContextSubject::ContextSubject()
+{
+    m_observers = new QSet< ContextObserver* >();
+}
+
+ContextSubject::~ContextSubject()
+{
+    delete m_observers;
+}
+
 void ContextSubject::messageNotify( const Context::ContextState& message )
 {
-    foreach( ContextObserver* obs, m_observers )
+    foreach( ContextObserver* obs, *m_observers )
         obs->message( message );
 }
 
@@ -50,11 +61,15 @@ void ContextSubject::attach( ContextObserver *obs )
 {
     if( !obs  )
         return;
-    m_observers.insert( obs );
+    m_observers->insert( obs );
 }
 
 void ContextSubject::detach( ContextObserver *obs )
 {
-    m_observers.remove( obs );
+    debug() << "detaching observer:" << obs;
+    debug() << "contents of m_observers:" << m_observers;
+
+//     if( obs )
+//         m_observers->remove( obs );
 }
 
