@@ -42,7 +42,7 @@ struct ShoutcastServiceQueryMaker::Private {
 
 
 ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection )
- : QueryMaker()
+ : DynamicServiceQueryMaker()
  , m_storedTransferJob( 0 )
  , d( new Private )
 

@@ -17,10 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef DYNAMICSERVICEQUERYMAKER_H
-#define DYNAMICSERVICEQUERYMAKER_H
+#ifndef SHOUTCASTSERVICEQUERYMAKER_H
+#define SHOUTCASTSERVICEQUERYMAKER_H
 
-#include "QueryMaker.h"
+#include "DynamicServiceQueryMaker.h"
 
 #include "meta.h"
 
@@ -39,7 +39,7 @@ A query maker for fetching external data
 
 	@author
 */
-class ShoutcastServiceQueryMaker : public QueryMaker
+class ShoutcastServiceQueryMaker : public DynamicServiceQueryMaker
 {
 Q_OBJECT
 public:
@@ -53,8 +53,10 @@ public:
     virtual QueryMaker* startTrackQuery();
     virtual QueryMaker* startGenreQuery();
 
-
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
+    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
+
+    virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     //Methods "borrowed" from MemoryQueryMaker
     void runQuery();
@@ -63,43 +65,6 @@ public:
 
     void fetchStations();
     void fetchGenres();
-
-
-
-    //currently unimplemented stuff:
-
-    //as this particular QueryMaker ronly knows about genres and tracks, all the other stuuf is kinda overkill!!
-
-    virtual QueryMaker* startComposerQuery() { return this; }
-
-    virtual QueryMaker* startArtistQuery() { return this; }
-    virtual QueryMaker* startAlbumQuery() { return this; }
-    virtual QueryMaker* startYearQuery() { return this; }
-    virtual QueryMaker* startCustomQuery() { return this; }
-
-    virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
-    virtual QueryMaker* addReturnValue ( qint64 value ) { return this; }
-    virtual QueryMaker* orderBy ( qint64 value, bool descending = false ) { return this; }
-
-    virtual QueryMaker* includeCollection ( const QString &collectionId ) { return this; }
-    virtual QueryMaker* excludeCollection ( const QString &collectionId )  { return this; }
-
-
-    virtual QueryMaker* addMatch ( const Meta::TrackPtr &track ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::YearPtr &year ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
-
-    virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
-    virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
-
-    virtual QueryMaker* limitMaxResultSize ( int size ) { return this; }
-
-    virtual QueryMaker* beginAnd() { return this; }
-    virtual QueryMaker* beginOr() { return this; }
-    virtual QueryMaker* endAndOr() { return this; }
 
 
 signals:
