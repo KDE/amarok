@@ -115,6 +115,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListModel.cpp
     servicebrowser/ServiceListDelegate.cpp
+    servicebrowser/DynamicServiceQueryMaker.cpp
 
 )
 
