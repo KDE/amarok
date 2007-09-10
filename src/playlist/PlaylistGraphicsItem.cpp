@@ -38,7 +38,9 @@ struct Playlist::GraphicsItem::ActiveItems
     , topRightText( 0 )
     , bottomRightText( 0 )
     , background( 0 )
+    , alternateBackground( 0 )
     , foreground( 0 )
+    , selected( 0 )
     , lastWidth( -5 )
     { }
     ~ActiveItems()
@@ -50,6 +52,8 @@ struct Playlist::GraphicsItem::ActiveItems
         delete bottomRightText;
         delete background;
         delete foreground;
+        delete alternateBackground;
+        delete selected;
     }
     QGraphicsPixmapItem* albumArt;
     QGraphicsTextItem* topLeftText;
@@ -57,7 +61,9 @@ struct Playlist::GraphicsItem::ActiveItems
     QGraphicsTextItem* topRightText;
     QGraphicsTextItem* bottomRightText;
     QGraphicsRectItem* background;
+    QGraphicsRectItem* alternateBackground;
     QGraphicsRectItem* foreground;
+    QGraphicsRectItem* selected;
     int lastWidth;
     Meta::TrackPtr track;
 };
@@ -82,6 +88,7 @@ Playlist::GraphicsItem::GraphicsItem()
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
+
 }
 
 Playlist::GraphicsItem::~GraphicsItem()
@@ -92,9 +99,13 @@ Playlist::GraphicsItem::~GraphicsItem()
 void 
 Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
+    DEBUG_BLOCK
     Q_UNUSED( painter ); Q_UNUSED( widget );
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
+
+
+
 
     if( !m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
@@ -106,36 +117,29 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->track = track;
             init( track );
         }
+        m_items->lastWidth = option->rect.width();
         resize( m_items->track, option->rect.width() );
     }
 
-    if( !m_items->background )
-    {
-	m_items->background = new QGraphicsRectItem( option->rect, this );
-	m_items->background->setPos( 0.0, 0.0 );
-	m_items->background->setPen( QPen( Qt::NoPen ) );
-	m_items->background->setBrush( option->palette.highlight() );
-	m_items->background->setZValue( -5.0 );
-    }
-
-
     if( option->state & QStyle::State_Selected )
     {
-        m_items->background->setBrush( option->palette.highlight() );
-        m_items->background->show();
-    }
-    else  
-    {
-       //alternate color of background
-       if ( row % 2 )
-           m_items->background->setBrush( option->palette.base() );
-       else
-           m_items->background->setBrush( option->palette.alternateBase() );
 
-        m_items->background->show();
-    }
+        if ( !m_items->selected ) {
+            m_items->selected = new QGraphicsRectItem( option->rect, this );
+            m_items->selected->setPos( 0.0, 0.0 );
+            m_items->selected->setPen( QPen( Qt::NoPen ) );
+            m_items->selected->setBrush( option->palette.highlight() );
+            m_items->selected->setZValue( -5.0 );
+        }
 
-    if( index.data( ActiveTrackRole ).toBool() )
+
+        if ( m_items->background) m_items->background->hide();
+        if ( m_items->alternateBackground) m_items->alternateBackground->hide();
+        if ( m_items->foreground) m_items->foreground->hide();
+        if ( !m_items->selected->isVisible() ) m_items->selected->show();
+
+    }
+    else if( index.data( ActiveTrackRole ).toBool() )
     {
         if( !m_items->foreground )
         {
@@ -153,14 +157,45 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->foreground->setBrush( brush );
             m_items->foreground->setPen( QPen( Qt::NoPen ) );
         }
-        else
-            m_items->background->hide();
-            m_items->foreground->show();
+        if ( m_items->background) m_items->background->hide();
+        if ( m_items->alternateBackground) m_items->alternateBackground->hide();
+        if ( m_items->selected) m_items->selected->hide();
+        if ( !m_items->foreground->isVisible() ) m_items->foreground->show();
     }
-    else if( m_items->foreground )
-        m_items->foreground->hide();
+    else  
+    {
+       //alternate color of background
 
-    m_items->albumArt->show();
+       if ( row % 2 ) {
+           if( !m_items->background )
+           {
+                m_items->background = new QGraphicsRectItem( option->rect, this );
+                m_items->background->setPos( 0.0, 0.0 );
+                m_items->background->setPen( QPen( Qt::NoPen ) );
+                m_items->background->setBrush( option->palette.base()  );
+                m_items->background->setZValue( -5.0 );
+          }
+          if ( m_items->alternateBackground) m_items->alternateBackground->hide();
+          if ( m_items->foreground) m_items->foreground->hide();
+          if ( m_items->selected) m_items->selected->hide();
+          if ( !m_items->background->isVisible() ) m_items->background->show();
+       }
+       else {
+           if ( !m_items->alternateBackground ) {
+               	m_items->alternateBackground = new QGraphicsRectItem( option->rect, this );
+	        m_items->alternateBackground->setPos( 0.0, 0.0 );
+	        m_items->alternateBackground->setPen( QPen( Qt::NoPen ) );
+	        m_items->alternateBackground->setBrush( option->palette.alternateBase() );
+	        m_items->alternateBackground->setZValue( -5.0 );
+           }
+
+           if ( m_items->background) m_items->background->hide();
+           if ( m_items->foreground) m_items->foreground->hide();
+           if ( m_items->selected) m_items->selected->hide();
+           if ( !m_items->alternateBackground->isVisible() )m_items->alternateBackground->show();
+        }
+    }
+
 }
 
 void
@@ -183,7 +218,7 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
         #define NewText( X ) \
             X = new QGraphicsTextItem( this ); \
             X->setTextInteractionFlags( Qt::TextEditorInteraction ); \
-            X->setFont( font );
+            X->setFont( font ); 
         NewText( m_items->topLeftText )       
         NewText( m_items->bottomLeftText )
         NewText( m_items->topRightText )
