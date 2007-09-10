@@ -23,10 +23,9 @@
 
 
 #include "../servicebase.h"
-#include "databasedrivencontentmodel.h"
 
-#include "mp3tunesdatafetcher.h"
-
+#include <kio/jobclasses.h>
+#include <kio/job.h>
 
 
 
@@ -50,8 +49,20 @@ public:
 
 private:
 
-    Mp3tunesDataFetcher * m_dataFetcher;
+    void authenticate( const QString & uname = "", const QString & passwd = "" );
 
+private slots:
+
+    void authenticationComplete(  KJob *job );
+
+private:
+
+    KIO::StoredTransferJob *m_xmlDownloadJob;
+    QString m_partnerToken;
+    QString m_apiOutputFormat;
+
+    bool m_authenticated;
+    QString m_sessionId;
 };
 
 #endif
