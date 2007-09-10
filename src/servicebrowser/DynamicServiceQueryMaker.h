@@ -70,27 +70,27 @@ public:
     virtual QueryMaker* startYearQuery() { return this; }
     virtual QueryMaker* startCustomQuery() { return this; }
 
-    virtual QueryMaker* addReturnValue ( qint64 value ) { return this; }
-    virtual QueryMaker* orderBy ( qint64 value, bool descending = false ) { return this; }
+    virtual QueryMaker* addReturnValue ( qint64 value );
+    virtual QueryMaker* orderBy ( qint64 value, bool descending = false );
 
-    virtual QueryMaker* includeCollection ( const QString &collectionId ) { return this; }
-    virtual QueryMaker* excludeCollection ( const QString &collectionId )  { return this; }
+    virtual QueryMaker* includeCollection ( const QString &collectionId );
+    virtual QueryMaker* excludeCollection ( const QString &collectionId );
 
 
-    virtual QueryMaker* addMatch ( const Meta::TrackPtr &track ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre ) { return this; };
-    virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer ) { return this; }
-    virtual QueryMaker* addMatch ( const Meta::YearPtr &year ) { return this; }
+    virtual QueryMaker* addMatch ( const Meta::TrackPtr &track );
+    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
+    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
+    virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
+    virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer );
+    virtual QueryMaker* addMatch ( const Meta::YearPtr &year );
 
     //this function must be reimplemented if the QueryMaker accepts any kind of qualifiers
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data ) { return this; };
+    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 
-    virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
-    virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) { return this; }
+    virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
+    virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 
-    virtual QueryMaker* limitMaxResultSize ( int size ) { return this; }
+    virtual QueryMaker* limitMaxResultSize ( int size );
 
     virtual QueryMaker* beginAnd() { return this; }
     virtual QueryMaker* beginOr() { return this; }
