@@ -41,7 +41,7 @@ ServiceListDelegate::ServiceListDelegate( QListView *view )
 
 
     m_svgRendererActive = new  QSvgRenderer( svg_source.toAscii() );
-    svg_source.replace("stop-color:#6193cf", "stop-color:" + QApplication::palette().window().color().name() );
+    svg_source.replace("stop-color:#6193cf", "stop-color:" + QApplication::palette().highlight().color().dark( 150 ).name() );
     m_svgRendererInactive = new  QSvgRenderer( svg_source.toAscii() );
 
 
