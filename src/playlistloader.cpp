@@ -47,7 +47,7 @@
 
 struct XMLData
 {
-    MetaBundle bundle;
+    Meta::TrackPtr track;
     int queue;
     bool stopafter;
     bool dynamicdisabled;
@@ -55,13 +55,14 @@ struct XMLData
     XMLData(): queue(-1), stopafter(false), dynamicdisabled(false), filestatusdisabled(false) { }
 };
 
+TODO: What is this?
 class TagsEvent : public QEvent {
 public:
     static const int TagsValueTypeEvent = 10001;
     static const int TagsBundleTypeEvent = 10000;
-    TagsEvent( const Q3ValueList<XMLData> &x ) : QEvent( Type( TagsValueTypeEvent ) ), xml( Q3ValueList<XMLData>( x ) ) { }
-    TagsEvent( const BundleList &bees ) : QEvent( Type( TagsBundleTypeEvent ) ), bundles( bees ) {
-        for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
+    TagsEvent( const QListt<XMLData> &x ) : QEvent( Type( TagsValueTypeEvent ) ), xml( QList<XMLData>( x ) ) { }
+    TagsEvent( const Meta::TrackList &bees ) : QEvent( Type( TagsBundleTypeEvent ) ), tracks( bees ) {
+        for( Meta::TrackList::Iterator it = tracks.begin(), end = tracks.end(); it != end; ++it )
         {
             /// @see MetaBundle for explanation of audioproperties < 0
             if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
@@ -71,27 +72,25 @@ public:
 
 
 
-    Q3ValueList<XMLData> xml;
-    BundleList bundles;
+    QList<XMLData> xml;
+    Meta::TrackList bundles;
 };
 
 
-UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options )
+UrlLoader::UrlLoader( const KUrl::List &urls, int after, int options )
         : ThreadManager::DependentJob( Playlist::instance(), "UrlLoader" )
-        , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
         , m_coloring( options & Playlist::Colorize )
         , m_options( options )
         , m_block( "UrlLoader" )
-        , m_oldQueue( Playlist::instance()->m_nextTracks )
+//         , m_oldQueue( Playlist::instance()->m_nextTracks ) //TODO: REENABLE when we have a queue again
         , m_xmlSource( 0 )
 {
     qRegisterMetaType<XmlAttributeList>();
 
-    connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
-             Playlist::instance(), SLOT( queueChanged( const PLItemList &, const PLItemList & ) ) );
-
-    Playlist::instance()->lock(); // prevent user removing items as this could be bad
+// PORT 2.0 we need a queue
+//     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
+//              Playlist::instance(), SLOT( queueChanged( const PLItemList &, const PLItemList & ) ) );
 
     Amarok::OverrideCursor cursor;
 
@@ -103,17 +102,18 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
             .setAbortSlot( this, SLOT(abort()) )
             .setMaximum( 100 );
 
-    oldForeachType( KUrl::List, urls ) {
+    foreach( KUrl *it, urls ) {
         const KUrl url = Amarok::mostLocalURL( *it );
         const QString protocol = url.protocol();
 
         if( protocol == "seek" )
             continue;
 
-        else if( !MetaBundle::isKioUrl( url ) )
-        {
-            m_URLs += url;
-        }
+//PORT 2.0 is this still necessary?
+//         else if( !MetaBundle::isKioUrl( url ) )
+//         {
+//             m_URLs += url;
+//         }
 
         else if( protocol == "file" ) {
             if( QFileInfo( url.path() ).isDir() )
@@ -145,13 +145,6 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
 
 UrlLoader::~UrlLoader()
 {
-    if( Playlist::instance() )
-    {
-        Playlist::instance()->unlock();
-        if( m_markerListViewItem )
-            delete m_markerListViewItem;
-    }
-
     delete m_xmlSource;
 }
 
@@ -178,7 +171,7 @@ UrlLoader::doJob()
             PlaylistFile playlist( url.path() );
 
             if( !playlist.isError() )
-                QApplication::postEvent( this, new TagsEvent( playlist.bundles()) );
+                QApplication::postEvent( this, new TagsEvent( playlist.tracks()) );
             else
                 m_badURLs += url;
 
@@ -189,7 +182,7 @@ UrlLoader::doJob()
         }
 
         if( urls.count() == OPTIMUM_BUNDLE_COUNT || count == m_URLs.count() - 1 ) {
-            QApplication::postEvent( this, new TagsEvent( CollectionDB::instance()->bundlesByUrls( urls ) ) );
+            QApplication::postEvent( this, new TagsEvent( CollectionManager::instance()->tracksForUrls( urls ) ) );
             urls.clear();
         }
     }
@@ -205,21 +198,23 @@ UrlLoader::customEvent( QEvent *e)
     switch( e->type() ) {
     case TagsEvent::TagsBundleTypeEvent:
     {
-        oldForeachType( BundleList, e->bundles )
+        foreach( TrackPtr track, e->tracks )
         {
             //passing by value is quick for QValueLists, though it is slow
             //if we change the list, but this is unlikely
             KUrl::List::Iterator jt;
             int alreadyOnPlaylist = 0;
 
-            PlaylistItem *item = 0;
+            Playlist::Item *item = 0;
             if( m_options & (Playlist::Unique | Playlist::Queue) )
             {
-                for( PlaylistIterator jt( Playlist::instance(), PlaylistIterator::All ); *jt; ++jt )
+                QList<Playlist::Item*> items = The::playlistModel()->items();
+                foreach( Playlist::Item* playlistItem, items)
+//                 for( QList<Playlist::Item*>::iterator jt( The::playlistModel()->items, PlaylistIterator::All ); *jt; ++jt )
                 {
-                    if( (*jt)->url() == (*it).url() )
+                    if( playlistItem == track )
                     {
-                        item = *jt;
+                        item = playlistItem;
                         break;
                     }
                 }
@@ -228,14 +223,15 @@ UrlLoader::customEvent( QEvent *e)
             if( item )
                 alreadyOnPlaylist++;
             else
-                item = new PlaylistItem( *it, m_markerListViewItem, (*it).exists() );
+                item = new Playlist::Item( track );
 
-            if( m_options & Playlist::Queue )
-                Playlist::instance()->queue( item );
+// PORT 2.0
+//             if( m_options & Playlist::Queue )
+//                 Playlist::instance()->queue( item );
 
-            if( m_playFirstUrl && (*it).exists() )
+            if( m_playFirstUrl && track->exists() )
             {
-                Playlist::instance()->activate( item );
+                The::playlistModel()->setActiveTrack( item );
                 m_playFirstUrl = false;
             }
         }
@@ -243,7 +239,7 @@ UrlLoader::customEvent( QEvent *e)
     }
     case TagsEvent::TagsValueTypeEvent:
     {
-        oldForeachType( Q3ValueList<XMLData>, e->xml )
+        foreach( XmlData it, e->xml )
         {
             if( (*it).bundle.isEmpty() ) //safety
                 continue;
