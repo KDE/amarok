@@ -273,15 +273,15 @@ void SideBarButton::paintEvent( QPaintEvent* )
 
     QColor c;
     if( isDown() )
-        c = blendColors( palette().highlight().color().dark( 150 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().darker( 150 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() && underMouse() )
-        c = blendColors( palette().highlight().color().light( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().lighter( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() )
-        c = blendColors( palette().highlight().color(), palette().highlight().color().light(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
     else if( underMouse() )
-        c = blendColors( palette().highlight().color().light(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().lighter(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
     else
-        c = blendColors( palette().window().color(), palette().highlight().color().dark( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().window().color(), palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
 
     svg_source.replace( "stop-color:#6193cf", "stop-color:" + c.name() );
     QSvgRenderer svg( svg_source.toAscii() );
