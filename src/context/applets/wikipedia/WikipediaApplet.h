@@ -29,16 +29,8 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
-    // reimplemented to tell Plasma our size
-    QSizeF contentSize() const;
-    // reimplemented to help Plasma::Layout deal with us
-    QSizeF contentSizeHint() const { return boundingRect().size(); }
-
+    QSizeF contentSizeHint() const { return m_size; } 
     void constraintsUpdated();
-
-    void setRect( const QRectF& rect );
-    // for use with the Context layout
-    void setGeometry( const QRectF& rect ) { setRect( rect ); }
 
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );

@@ -42,6 +42,7 @@ set(plasma_LIB_SRCS
     plasma/karambamanager.cpp
     plasma/widgets/boxlayout.cpp
     plasma/widgets/checkbox.cpp
+    plasma/widgets/freelayout.cpp
     plasma/widgets/flowlayout.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp

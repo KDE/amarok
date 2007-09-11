@@ -96,11 +96,13 @@ LastFmEvents::~LastFmEvents()
 {
 }
 
+#if 0
 void LastFmEvents::setRect( const QRectF& rect )
 {
     setPos( rect.topLeft() );
     resize( rect.width(), m_aspectRatio );
 }
+#endif
 
 void LastFmEvents::constraintsUpdated()
 {

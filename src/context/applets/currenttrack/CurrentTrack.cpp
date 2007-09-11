@@ -68,20 +68,12 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     resize( m_width, m_aspectRatio );
 
     constraintsUpdated();
+    updateGeometry();
 }
 
 CurrentTrack::~CurrentTrack()
 {
     DEBUG_BLOCK
-}
-
-void CurrentTrack::setGeometry( const QRectF& rect )
-{
-    DEBUG_BLOCK
-    debug() << "being told to set rect to:" << rect;
-    setPos( rect.topLeft() );
-    resize( rect.width(), m_aspectRatio );
-    Plasma::Applet::setGeometry( rect );
 }
 
 QSizeF CurrentTrack::contentSizeHint() const
@@ -213,6 +205,7 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
     DEBUG_BLOCK
     debug() << "resizing to:" << newWidth;
     qreal height = aspectRatio * newWidth;
+    debug() << "setting size:" << m_size;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
     

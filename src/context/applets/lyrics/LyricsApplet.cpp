@@ -83,6 +83,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     constraintsUpdated();
 }
 
+#if 0
 void LyricsApplet::setRect( const QRectF& rect )
 {
     DEBUG_BLOCK
@@ -91,6 +92,7 @@ void LyricsApplet::setRect( const QRectF& rect )
     m_size = rect.size();
     resize( rect.width() );
 }
+#endif
 
 QSizeF LyricsApplet::contentSizeHint() const
 {
@@ -105,8 +107,6 @@ void LyricsApplet::constraintsUpdated()
 {
     DEBUG_BLOCK
 
-    prepareGeometryChange();
-
     // align items
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
@@ -117,6 +117,11 @@ void LyricsApplet::constraintsUpdated()
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
     m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
+
+    qDebug() << "Lyrics applet updating size" << contentSizeHint() << sizeHint()
+             << "parent layout" << managingLayout()
+             << "geometry" << geometry();
+    updateGeometry();
 }
 
 void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data& data )

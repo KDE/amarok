@@ -67,18 +67,6 @@ PlayistInfo::~PlayistInfo()
     DEBUG_BLOCK
 }
 
-void PlayistInfo::setRect( const QRectF& rect )
-{
-    DEBUG_BLOCK
-    setPos( rect.topLeft() );
-    resize( rect.width(), m_aspectRatio );
-}
-
-QSizeF PlayistInfo::contentSize() const
-{
-    return m_size;
-}
-
 void PlayistInfo::constraintsUpdated()
 {
     prepareGeometryChange();

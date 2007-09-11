@@ -35,12 +35,13 @@ public:
     QSizeF contentSize() const;
 
     void constraintsUpdated();
-    void setRect( const QRectF& rect );
+    //void setRect( const QRectF& rect );
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF contentSizeHint() const { return boundingRect().size(); }
 
     // from LayoutItem
-    void setGeometry( const QRectF& rect ) { setRect( rect ); }
+    //void setGeometry( const QRectF& rect ) { setRect( rect ); }
+    
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );

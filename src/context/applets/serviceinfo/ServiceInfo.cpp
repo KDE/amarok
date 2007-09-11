@@ -66,24 +66,10 @@ ServiceInfo::~ServiceInfo()
     DEBUG_BLOCK
 }
 
-void ServiceInfo::setRect( const QRectF& rect )
-{
-    DEBUG_BLOCK
-    setPos( rect.topLeft() );
-    resize( rect.width(), m_aspectRatio );
-}
-
-QSizeF ServiceInfo::contentSize() const
-{
-    return m_size;
-}
-
 void ServiceInfo::constraintsUpdated()
 {
-    prepareGeometryChange();
-
     m_serviceName->setPos( m_theme->elementRect( "track" ).topLeft() );
-
+    updateGeometry();
 }
 
 void ServiceInfo::updated( const QString& name, const Plasma::DataEngine::Data& data )

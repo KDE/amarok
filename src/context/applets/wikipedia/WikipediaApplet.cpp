@@ -71,28 +71,31 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     constraintsUpdated();
 }
 
+#if 0
 void WikipediaApplet::setRect( const QRectF& rect )
 {
     setPos( rect.topLeft() );
     m_size = rect.size();
     resize( rect.width(), m_aspectRatio );
 }
+#endif
 
+#if 0
 QSizeF WikipediaApplet::contentSize() const
 {
     return m_size;
 }
+#endif
 
 void WikipediaApplet::constraintsUpdated()
 {
-    prepareGeometryChange();
-
     m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
     m_currentLabel->setPos( m_header->elementRect( "currentlabel" ).topLeft() );
 
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
     calculateHeight();
+    updateGeometry();
 }
 
 void WikipediaApplet::updated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT

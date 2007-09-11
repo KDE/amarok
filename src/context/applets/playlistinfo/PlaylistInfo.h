@@ -37,14 +37,9 @@ public:
     
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     
-    QSizeF contentSize() const;
     void constraintsUpdated();
-    // for compatibility with Plasma::Widget and Plasma::LayoutItem
-    QSizeF contentSizeHint() const { return boundingRect().size(); }
-    
-    void setRect( const QRectF& rect );
-    void setGeometry( const QRectF& rect ) { setRect( rect ); }
-    
+    QSizeF contentSizeHint() const { return m_size; }
+        
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

@@ -38,11 +38,6 @@ public:
 
     QSizeF contentSizeHint() const;
     void constraintsUpdated();
-    // for compatibility with Plasma::Widget and Plasma::LayoutItem
-//     QSizeF sizeHint() const { return boundingRect().size(); }
-    QRectF boundingRect() const { return QRectF( QPointF(), contentSizeHint() ); }
-    
-    void setGeometry( const QRectF& rect );
 
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data &data );

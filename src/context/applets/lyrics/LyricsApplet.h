@@ -32,13 +32,13 @@ public:
     // reimplemented to tell Plasma our size
     QSizeF contentSizeHint() const;
     // reimplemented to help Plasma::Layout deal with us
-    QSizeF sizeHint() const { return boundingRect().size(); }
+//    QSizeF sizeHint() const { return boundingRect().size(); }
 
     void constraintsUpdated();
 
-    void setRect( const QRectF& rect );
+   // void setRect( const QRectF& rect );
     // for use with the Context layout
-    void setGeometry( const QRectF& rect ) { setRect( rect ); }
+   // void setGeometry( const QRectF& rect ) { setRect( rect ); }
 
 public slots:
     void updated( const QString& name, const Plasma::DataEngine::Data& data );
