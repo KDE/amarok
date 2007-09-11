@@ -17,6 +17,7 @@
 #define AMAROK_PLAYLISTWINDOW_H
 
 #include "amarok_export.h"
+#include "widgets/MainToolbar.h"
 
 #include <khbox.h>          //baseclass for DynamicBox
 #include <kxmlguiwindow.h>
@@ -108,7 +109,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         KMenu         *m_searchMenu;
 
         SearchWidget  *m_searchWidget;
-        QWidget       *m_controlBar;
+        MainToolbar    *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;

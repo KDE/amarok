@@ -68,6 +68,7 @@
 #include <QHeaderView>
 #include <QLabel>           //search filter label
 #include <QList>
+#include <QPaintEngine>
 #include <QPainter>         //dynamic title
 #include <QPen>
 #include <QTimer>           //search filter timer
@@ -152,7 +153,6 @@ void MainWindow::init()
     KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
     plBar->setObjectName( "PlaylistToolBar" );
 
-
     { //START Playlist toolbar
         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
@@ -171,7 +171,7 @@ void MainWindow::init()
     } //END Playlist Toolbar
 
     {
-        m_controlBar = new KHBox( this );
+        m_controlBar = new MainToolbar( this );
         m_controlBar->setMaximumSize( 20000, 62 );
         m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
@@ -188,12 +188,18 @@ void MainWindow::init()
 
         KToolBar *playerControlsToolbar = new Amarok::ToolBar( insideBox );
 
-        playerControlsToolbar->setMinimumSize( 200, 45 );
-        insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignRight );
+        playerControlsToolbar->setMinimumSize( 180, 45 );
+        insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
 
-        VolumeWidget *vw = new VolumeWidget( insideBox );
-        vw->setMinimumSize( 200, 25 );
-        insideBox->layout()->setAlignment( vw, Qt::AlignRight );
+        
+        QWidget * spacer = new QWidget( m_controlBar );
+        spacer->setMinimumSize( 50, 30 );
+        m_controlBar->layout()->setAlignment( spacer, Qt::AlignRight );
+
+        VolumeWidget *vw = new VolumeWidget( m_controlBar );
+        vw->setMinimumSize( 150, 30 );
+        m_controlBar->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
+        
 
         ProgressWidget *pWidget = new ProgressWidget( aVBox );
         pWidget->setMinimumSize( 400, 17 );
@@ -215,16 +221,6 @@ void MainWindow::init()
     bottomColor = bottomColor.dark( 100 );
     topColor.setAlpha( 75 );
     bottomColor.setAlpha( 130 );
-
-    QLinearGradient toolbarGradiant( m_controlBar->contentsRect().topLeft(),
-                                     m_controlBar->contentsRect().bottomLeft() );
-    toolbarGradiant.setColorAt( .8, topColor );
-    toolbarGradiant.setColorAt( 1, bottomColor );
-    QBrush b( toolbarGradiant );
-    p.setBrush( QPalette::Window, b );
-
-    m_controlBar->setAutoFillBackground( true );
-    m_controlBar->setPalette( p );
 
     this->toolBars().clear();
 
@@ -1191,6 +1187,7 @@ void MainWindow::createMenus()
     m_menubar->addMenu( m_settingsMenu );
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
 }
+
 
 
 #include "MainWindow.moc"
