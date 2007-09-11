@@ -41,6 +41,10 @@
 
 QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
 {
+    //FIXME Analyzers are temporarily disabled due to performance issues
+    return new QWidget( parent );
+    
+#if 0
     return new BarAnalyzer( parent );
 
 
@@ -87,4 +91,5 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
             break;
     }
     return analyzer;
+#endif
 }
