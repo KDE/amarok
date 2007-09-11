@@ -6,17 +6,16 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#include "RepeatTrackAdvancer.h"
+#include "RepeatTrackNavigator.h"
 
 
-#include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistModel.h"
 
 using namespace Playlist;
 
 void
-RepeatTrackAdvancer::advanceTrack()
+RepeatTrackNavigator::advanceTrack()
 {
     if( !m_previousTrack || (m_previousTrack != m_playlistModel->activeTrack() ) ) // we need to repeat
     {
@@ -35,15 +34,4 @@ RepeatTrackAdvancer::advanceTrack()
     m_previousTrack = m_playlistModel->activeTrack();
 }
 
-void Playlist::RepeatTrackAdvancer::previousTrack()
-{
-    DEBUG_BLOCK
-    int updateRow = m_playlistModel->activeRow() - 1;
-    if ( updateRow < 0 ) 
-        return;
 
-    if( updateRow < m_playlistModel->rowCount() )
-    {
-        setCurrentTrack( updateRow );
-    }
-}

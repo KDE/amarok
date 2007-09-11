@@ -6,7 +6,7 @@
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#include "StandardTrackAdvancer.h"
+#include "StandardTrackNavigator.h"
 
 
 #include "debug.h"
@@ -16,7 +16,7 @@
 using namespace Playlist;
 
 void
-StandardTrackAdvancer::advanceTrack()
+StandardTrackNavigator::advanceTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     if( updateRow < m_playlistModel->rowCount() )
@@ -25,15 +25,3 @@ StandardTrackAdvancer::advanceTrack()
     }
 }
 
-void Playlist::StandardTrackAdvancer::previousTrack()
-{
-    DEBUG_BLOCK
-    int updateRow = m_playlistModel->activeRow() - 1;
-    if ( updateRow < 0 ) 
-        return;
-
-    if( updateRow < m_playlistModel->rowCount() )
-    {
-        setCurrentTrack( updateRow );
-    }
-}

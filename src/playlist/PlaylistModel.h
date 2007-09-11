@@ -28,7 +28,7 @@ class QUndoStack;
 
 namespace Playlist {
 
-class TrackAdvancer;
+class TrackNavigator;
 
     enum PlaybackMode
     {
@@ -192,7 +192,7 @@ class TrackAdvancer;
 
             QList<Item*>    m_items;                    //! list of tracks in order currently in the playlist
             int             m_activeRow;                //! the row being played
-            TrackAdvancer*  m_advancer;                 //! the strategy of what to do when a track finishes playing
+            TrackNavigator*  m_advancer;                 //! the strategy of what to do when a track finishes playing
             QUndoStack*     m_undoStack;                //! for pushing on undo commands
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result

@@ -13,8 +13,8 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistItem.h"
-#include "RepeatTrackAdvancer.h"
-#include "StandardTrackAdvancer.h"
+#include "RepeatTrackNavigator.h"
+#include "StandardTrackNavigator.h"
 #include "statusbar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
@@ -40,7 +40,7 @@ Model *Model::s_instance = 0;
 Model::Model( QObject* parent )
     : QAbstractListModel( parent )
     , m_activeRow( -1 )
-    , m_advancer( new StandardTrackAdvancer( this ) )
+    , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
 {
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
@@ -231,7 +231,7 @@ Model::next()
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
-    m_advancer->advanceTrack();
+    m_advancer->userAdvanceTrack();
 }
 
 void
@@ -241,7 +241,7 @@ Model::back()
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
-    m_advancer->previousTrack();
+    m_advancer->recedeTrack();
 }
 
 void
@@ -300,10 +300,10 @@ Model::playModeChanged( int row )
     switch (row)
     {
         case Playlist::Standard:
-            m_advancer = new StandardTrackAdvancer(this);
+            m_advancer = new StandardTrackNavigator(this);
             break;
         case Playlist::Repeat:
-            m_advancer = new RepeatTrackAdvancer(this);
+            m_advancer = new RepeatTrackNavigator(this);
             break;
     }
 }

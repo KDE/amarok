@@ -1,27 +1,31 @@
 /***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>              *
+ * copyright       : (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License version 2        *
  *   as published by the Free Software Foundation.                         *
  ***************************************************************************/
 
-#ifndef AMAROK_STANDARDTRACKADVANCER_H
-#define AMAROK_STANDARDTRACKADVANCER_H
+#ifndef AMAROK_REPEATTRACKADVANCER_H
+#define AMAROK_REPEATTRACKADVANCER_H
 
-#include "playlist/TrackAdvancer.h"
+#include "meta/meta.h"
+#include "playlist/TrackNavigator.h"
+
 
 namespace Playlist {
 class Model;
 /**
  * Simply plays the next track and stops playing when the playlist is finished.
  */
-    class StandardTrackAdvancer : public TrackAdvancer
+    class RepeatTrackNavigator : public TrackNavigator
     {
         public:
-            StandardTrackAdvancer( Model* m ) : TrackAdvancer( m ) { }
+            RepeatTrackNavigator( Model* m ) : TrackNavigator( m ) { }
             void advanceTrack();
-            void previousTrack();
+
+        private:
+            Meta::TrackPtr m_previousTrack;
     };
 
  }

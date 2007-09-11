@@ -354,9 +354,9 @@ set(libplaylist_SRCS
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
-    playlist/RepeatTrackAdvancer.cpp
-    playlist/StandardTrackAdvancer.cpp
-    playlist/TrackAdvancer.cpp
+    playlist/RepeatTrackNavigator.cpp
+    playlist/StandardTrackNavigator.cpp
+    playlist/TrackNavigator.cpp
     playlist/UndoCommands.cpp
     playlist/PlaylistDropVis.cpp
     playlist/PlaylistGraphicsItem.cpp

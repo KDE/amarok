@@ -19,14 +19,17 @@ class Model;
  * became very confusing due to random mode and dynamic playlists requiring complicated
  * nested if statements. This should prevent that.
  */
-    class TrackAdvancer
+    class TrackNavigator
     {
         public: 
-            TrackAdvancer( Model* model ) : m_playlistModel( model ) { }
-            virtual ~TrackAdvancer() { }
-            /// Performs actions that need to be done after a track has finished playing.
+            TrackNavigator( Model* model ) : m_playlistModel( model ) { }
+            virtual ~TrackNavigator() { }
+            /** Performs actions that need to be done after a track has finished playing */
             virtual void advanceTrack() = 0;
-            virtual void previousTrack() = 0;
+            /// The user clicks next.
+            virtual void userAdvanceTrack() { advanceTrack(); }
+            ///The user clicks previous. By default it just go to the previous item in the playlist
+            virtual void recedeTrack();
         protected:
             ///Convenience function, set the current track in the playlistmodel and play it.
             ///@param position position in Model of track to start playing
