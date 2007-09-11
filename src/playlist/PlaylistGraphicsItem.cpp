@@ -112,7 +112,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     }
 
     { //background mania. blue if selected, alternating white/gray otherwise.
-        #define SetBrush( B ) \
+        #define SetBackgroundBrush( B ) \
             if( m_items->background->brush() != B ) \
                 m_items->background->setBrush( B );
         if( !m_items->background )
@@ -125,18 +125,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         }
         if( option->state & QStyle::State_Selected )
         {
-            SetBrush( option->palette.highlight() );
+            SetBackgroundBrush( option->palette.highlight() );
         }
         else if( row % 2 )
         {
-            SetBrush( option->palette.base()  );
+            SetBackgroundBrush( option->palette.base()  );
         }
         else
         {
-            SetBrush( option->palette.alternateBase() );
+            SetBackgroundBrush( option->palette.alternateBase() );
         }
-        if( row == 0 )
-            debug() << m_items->background->brush() << endl;
         #undef SetBrush
     }
 
