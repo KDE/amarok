@@ -38,9 +38,7 @@ struct Playlist::GraphicsItem::ActiveItems
     , topRightText( 0 )
     , bottomRightText( 0 )
     , background( 0 )
-    , alternateBackground( 0 )
     , foreground( 0 )
-    , selected( 0 )
     , lastWidth( -5 )
     { }
     ~ActiveItems()
@@ -52,18 +50,14 @@ struct Playlist::GraphicsItem::ActiveItems
         delete bottomRightText;
         delete background;
         delete foreground;
-        delete alternateBackground;
-        delete selected;
-    }
+     }
     QGraphicsPixmapItem* albumArt;
     QGraphicsTextItem* topLeftText;
     QGraphicsTextItem* bottomLeftText;
     QGraphicsTextItem* topRightText;
     QGraphicsTextItem* bottomRightText;
     QGraphicsRectItem* background;
-    QGraphicsRectItem* alternateBackground;
     QGraphicsRectItem* foreground;
-    QGraphicsRectItem* selected;
     int lastWidth;
     Meta::TrackPtr track;
 };
@@ -104,9 +98,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );
 
-
-
-
     if( !m_items || ( option->rect.width() != m_items->lastWidth ) )
     {
 
@@ -117,29 +108,39 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->track = track;
             init( track );
         }
-        m_items->lastWidth = option->rect.width();
         resize( m_items->track, option->rect.width() );
     }
 
-    if( option->state & QStyle::State_Selected )
-    {
-
-        if ( !m_items->selected ) {
-            m_items->selected = new QGraphicsRectItem( option->rect, this );
-            m_items->selected->setPos( 0.0, 0.0 );
-            m_items->selected->setPen( QPen( Qt::NoPen ) );
-            m_items->selected->setBrush( option->palette.highlight() );
-            m_items->selected->setZValue( -5.0 );
+    { //background mania. blue if selected, alternating white/gray otherwise.
+        #define SetBrush( B ) \
+            if( m_items->background->brush() != B ) \
+                m_items->background->setBrush( B );
+        if( !m_items->background )
+        {
+                m_items->background = new QGraphicsRectItem( option->rect, this );
+                m_items->background->setPos( 0.0, 0.0 );
+                m_items->background->setPen( QPen( Qt::NoPen ) );
+                m_items->background->setZValue( -5.0 );
+                m_items->background->show();
         }
-
-
-        if ( m_items->background) m_items->background->hide();
-        if ( m_items->alternateBackground) m_items->alternateBackground->hide();
-        if ( m_items->foreground) m_items->foreground->hide();
-        if ( !m_items->selected->isVisible() ) m_items->selected->show();
-
+        if( option->state & QStyle::State_Selected )
+        {
+            SetBrush( option->palette.highlight() );
+        }
+        else if( row % 2 )
+        {
+            SetBrush( option->palette.base()  );
+        }
+        else
+        {
+            SetBrush( option->palette.alternateBase() );
+        }
+        if( row == 0 )
+            debug() << m_items->background->brush() << endl;
+        #undef SetBrush
     }
-    else if( index.data( ActiveTrackRole ).toBool() )
+
+    if( index.data( ActiveTrackRole ).toBool() )
     {
         if( !m_items->foreground )
         {
@@ -157,45 +158,11 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->foreground->setBrush( brush );
             m_items->foreground->setPen( QPen( Qt::NoPen ) );
         }
-        if ( m_items->background) m_items->background->hide();
-        if ( m_items->alternateBackground) m_items->alternateBackground->hide();
-        if ( m_items->selected) m_items->selected->hide();
-        if ( !m_items->foreground->isVisible() ) m_items->foreground->show();
+        if( !m_items->foreground->isVisible() ) 
+            m_items->foreground->show();
     }
-    else  
-    {
-       //alternate color of background
-
-       if ( row % 2 ) {
-           if( !m_items->background )
-           {
-                m_items->background = new QGraphicsRectItem( option->rect, this );
-                m_items->background->setPos( 0.0, 0.0 );
-                m_items->background->setPen( QPen( Qt::NoPen ) );
-                m_items->background->setBrush( option->palette.base()  );
-                m_items->background->setZValue( -5.0 );
-          }
-          if ( m_items->alternateBackground) m_items->alternateBackground->hide();
-          if ( m_items->foreground) m_items->foreground->hide();
-          if ( m_items->selected) m_items->selected->hide();
-          if ( !m_items->background->isVisible() ) m_items->background->show();
-       }
-       else {
-           if ( !m_items->alternateBackground ) {
-               	m_items->alternateBackground = new QGraphicsRectItem( option->rect, this );
-	        m_items->alternateBackground->setPos( 0.0, 0.0 );
-	        m_items->alternateBackground->setPen( QPen( Qt::NoPen ) );
-	        m_items->alternateBackground->setBrush( option->palette.alternateBase() );
-	        m_items->alternateBackground->setZValue( -5.0 );
-           }
-
-           if ( m_items->background) m_items->background->hide();
-           if ( m_items->foreground) m_items->foreground->hide();
-           if ( m_items->selected) m_items->selected->hide();
-           if ( !m_items->alternateBackground->isVisible() )m_items->alternateBackground->show();
-        }
-    }
-
+    else if( m_items->foreground && m_items->foreground->isVisible() )
+        m_items->foreground->hide();
 }
 
 void
@@ -268,6 +235,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     m_items->bottomLeftText->setPlainText( s_fm->elidedText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
         , Qt::ElideRight, spaceForLeft ) );
     m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
+
+    m_items->lastWidth = totalWidth;
 }
 
 QRectF
