@@ -33,31 +33,32 @@
 struct Playlist::GraphicsItem::ActiveItems
 {
     ActiveItems()
-    : topLeftText( 0 )
-    , bottomLeftText( 0 )
-    , topRightText( 0 )
-    , bottomRightText( 0 )
+    : albumArt( 0 )
     , background( 0 )
+    , bottomLeftText( 0 )
+    , bottomRightText( 0 )
     , foreground( 0 )
     , lastWidth( -5 )
+    , topLeftText( 0 )
+    , topRightText( 0 )
     { }
     ~ActiveItems()
     {
         delete albumArt;
-        delete topLeftText;
-        delete bottomLeftText;
-        delete topRightText;
-        delete bottomRightText;
         delete background;
+        delete bottomLeftText;
+        delete bottomRightText;
         delete foreground;
+        delete topLeftText;
+        delete topRightText;
      }
     QGraphicsPixmapItem* albumArt;
-    QGraphicsTextItem* topLeftText;
-    QGraphicsTextItem* bottomLeftText;
-    QGraphicsTextItem* topRightText;
-    QGraphicsTextItem* bottomRightText;
     QGraphicsRectItem* background;
     QGraphicsRectItem* foreground;
+    QGraphicsTextItem* bottomLeftText;
+    QGraphicsTextItem* bottomRightText;
+    QGraphicsTextItem* topLeftText;
+    QGraphicsTextItem* topRightText;
     int lastWidth;
     Meta::TrackPtr track;
 };
