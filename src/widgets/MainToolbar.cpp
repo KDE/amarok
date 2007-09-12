@@ -23,7 +23,9 @@
 
 #include <KStandardDirs>   
 
+#include <QPaintEngine>
 #include <QPainter>
+#include <QPixmapCache>
 
 MainToolbar::MainToolbar( QWidget * parent )
  : KHBox( parent )
@@ -45,9 +47,25 @@ void MainToolbar::paintEvent(QPaintEvent *)
     int middle = contentsRect().width() / 2;
     QRect controlRect( middle - 125, 0, 250, 50 );
 
-    QPainter pt( this );
-    m_svgRenderer->render( &pt, "toolbarbackground",  contentsRect() );
-    m_svgRenderer->render( &pt, "buttonbar",  controlRect );
+
+    QString key = QString("toolbar-background:%1x%2")
+                            .arg(contentsRect().width())
+                            .arg(contentsRect().height());
+
+    QPixmap background(contentsRect().width(), contentsRect().height() );
+
+    if (!QPixmapCache::find(key, background)) {
+        debug() << QString("toolbar background %1 not in cache...").arg(key);
+
+        QPainter pt( &background );
+        m_svgRenderer->render( &pt, "toolbarbackground",  contentsRect() );
+        m_svgRenderer->render( &pt, "buttonbar",  controlRect );
+        QPixmapCache::insert(key, background);
+    } else {
+        debug() << QString("toolbar background %1 retrieved from cache :-D").arg(key);
+    }
+
+    bitBlt(this, 0, 0, &background);
 
 }
 

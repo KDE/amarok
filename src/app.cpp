@@ -133,7 +133,7 @@ App::App()
 
 
     //make sure we have enough cache space for all our crazy svg stuff
-    QPixmapCache::setCacheLimit ( 10 * 1024 ); 
+    QPixmapCache::setCacheLimit ( 20 * 1024 ); 
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
