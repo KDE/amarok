@@ -30,7 +30,6 @@
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
-#include "filebrowser.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "MainWindow.h"

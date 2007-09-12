@@ -412,7 +412,7 @@ set(amaroklib_LIB_SRCS
     equalizersetup.cpp
     expression.cpp
     fht.cpp
-    filebrowser.cpp
+    #filebrowser.cpp
     hintlineedit.cpp
     iconloader.cpp
     k3bexporter.cpp
