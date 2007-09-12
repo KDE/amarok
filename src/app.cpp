@@ -76,6 +76,7 @@ email                : markey@web.de
 #include <QEvent>              //genericEventHandler()
 #include <QEventLoop>          //applySettings()
 #include <QFile>
+#include <QPixmapCache>
 #include <Q3PopupMenu>          //genericEventHandler
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
@@ -129,6 +130,10 @@ App::App()
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
+
+
+    //make sure we have enough cache space for all our crazy svg stuff
+    QPixmapCache::setCacheLimit ( 10 * 1024 ); 
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp

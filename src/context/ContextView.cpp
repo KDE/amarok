@@ -30,7 +30,6 @@
 #include "Theme.h"
 
 #include <QFile>
-#include <QPixmapCache>
 #include <QWheelEvent>
 
 #include <KPluginInfo>
@@ -55,10 +54,6 @@ ContextView::ContextView( QWidget* parent )
     DEBUG_BLOCK
 
     s_self = this;
-
-    //make sure cache is large enough for background
-    QPixmapCache::setCacheLimit ( 10 * 1024 ); 
-
 
 //     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
