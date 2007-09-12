@@ -13,6 +13,7 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
+#include "PlaylistTextItem.h"
 #include "TheInstances.h"
 
 #include <QBrush>
@@ -35,12 +36,12 @@ struct Playlist::GraphicsItem::ActiveItems
     ActiveItems()
     : albumArt( 0 )
     , background( 0 )
+    , foreground( 0 )
     , bottomLeftText( 0 )
     , bottomRightText( 0 )
-    , foreground( 0 )
-    , lastWidth( -5 )
     , topLeftText( 0 )
     , topRightText( 0 )
+    , lastWidth( -5 )
     { }
     ~ActiveItems()
     {
@@ -55,11 +56,13 @@ struct Playlist::GraphicsItem::ActiveItems
     QGraphicsPixmapItem* albumArt;
     QGraphicsRectItem* background;
     QGraphicsRectItem* foreground;
-    QGraphicsTextItem* bottomLeftText;
-    QGraphicsTextItem* bottomRightText;
-    QGraphicsTextItem* topLeftText;
-    QGraphicsTextItem* topRightText;
+    Playlist::TextItem* bottomLeftText;
+    Playlist::TextItem* bottomRightText;
+    Playlist::TextItem* topLeftText;
+    Playlist::TextItem* topRightText;
     int lastWidth;
+
+    QRectF preDragLocation;
     Meta::TrackPtr track;
 };
 
@@ -71,19 +74,17 @@ QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
 Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
     , m_items( 0 )
-    , m_track( 0 )
-    , m_verticalOffset( 2.0 )
 {
     setZValue( 1.0 );
     if( !s_fm )
     {
         s_fm = new QFontMetricsF( QFont() );
-        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * m_verticalOffset;
+        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
     }
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
-
+   // setHandlesChildEvents( true ); // don't let drops etc hit the text items, doing stupid things
 }
 
 Playlist::GraphicsItem::~GraphicsItem()
@@ -150,7 +151,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         if( !m_items->foreground )
         {
             m_items->foreground = new QGraphicsRectItem( option->rect, this );
-            m_items->foreground->setPos( 0.0, m_verticalOffset );
+            m_items->foreground->setPos( 0.0, MARGIN );
             m_items->foreground->setZValue( 5.0 );
             QRadialGradient gradient(option->rect.width() / 2.0, option->rect.height() / 2.0, option->rect.width() / 2.0, 20 + option->rect.width() / 2.0, option->rect.height() / 2.0 );
             QColor start = option->palette.highlight().color().light();
@@ -173,22 +174,18 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 void
 Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
-    m_track = track;
-
-    setHandlesChildEvents( true ); // don't let drops etc hit the text items, doing stupid things
-
     QPixmap albumPixmap;
     if( track->album() )
         albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
 
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, m_verticalOffset );
+    m_items->albumArt->setPos( 0.0, MARGIN );
 
     {
         QFont font;
         font.setPointSize( font.pointSize() - 1 );
         #define NewText( X ) \
-            X = new QGraphicsTextItem( this ); \
+            X = new Playlist::TextItem( this ); \
             X->setTextInteractionFlags( Qt::TextEditorInteraction ); \
             X->setFont( font ); 
         NewText( m_items->topLeftText )       
@@ -212,7 +209,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if( track->album() )
         album = track->album()->name();
 
-    const qreal lineTwoY = s_height / 2 + m_verticalOffset;
+    const qreal lineTwoY = s_height / 2 + MARGIN;
     const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
     qreal rightAlignX;
@@ -222,10 +219,10 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             , s_fm->width( prettyLength ) );
         rightAlignX = qMax( middle, rightWidth );
     }
-    m_items->topRightText->setPos( rightAlignX, m_verticalOffset );
+    m_items->topRightText->setPos( rightAlignX, MARGIN );
     m_items->bottomRightText->setPos( rightAlignX, lineTwoY );
-    m_items->topRightText->setPlainText( s_fm->elidedText( album, Qt::ElideRight, totalWidth - rightAlignX ) );
-    m_items->bottomRightText->setPlainText( s_fm->elidedText( prettyLength, Qt::ElideRight, totalWidth - rightAlignX ) );
+    m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
+    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - rightAlignX );
 
 
     qreal spaceForLeft = totalWidth - ( totalWidth - rightAlignX ) - leftAlignX;
@@ -233,12 +230,12 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         QString artist;
         if( track->artist() )
             artist = track->artist()->name();
-        m_items->topLeftText->setPlainText( s_fm->elidedText( artist, Qt::ElideRight, spaceForLeft ) );
-        m_items->topLeftText->setPos( leftAlignX, m_verticalOffset );
+        m_items->topLeftText->setEditableText( artist, spaceForLeft );
+        m_items->topLeftText->setPos( leftAlignX, MARGIN );
     }
 
-    m_items->bottomLeftText->setPlainText( s_fm->elidedText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
-        , Qt::ElideRight, spaceForLeft ) );
+    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
+        , spaceForLeft );
     m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
 
     m_items->lastWidth = totalWidth;
@@ -272,12 +269,12 @@ Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    if( event->buttons() & Qt::RightButton )
+    if( event->buttons() & Qt::RightButton || !m_items )
     {
         event->ignore();
         return;
     }
-    m_preDragLocation = mapToScene( boundingRect() ).boundingRect();
+    m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
     QGraphicsItem::mousePressEvent( event );
 }
 
@@ -285,10 +282,10 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
-    if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable))
+    if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable) && m_items )
     {
-        bool dragOverOriginalPosition = m_preDragLocation.contains( event->scenePos() );
-        debug() << "originalLocation (" << m_preDragLocation << ") contains currentPoint (" << event->scenePos() << ") ? " << dragOverOriginalPosition;
+        bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
+        debug() << "originalLocation (" << m_items->preDragLocation << ") contains currentPoint (" << event->scenePos() << ") ? " << dragOverOriginalPosition;
 
         //make sure item is drawn on top of other items
         setZValue( 2.0 );
@@ -329,7 +326,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
                     item->setSelected( true );
                 
                 if( dragOverOriginalPosition )
-                    Playlist::DropVis::instance()->showDropIndicator( m_preDragLocation.y() );
+                    Playlist::DropVis::instance()->showDropIndicator( m_items->preDragLocation.y() );
                 else
                     Playlist::DropVis::instance()->showDropIndicator( above );
             }
@@ -368,24 +365,24 @@ void
 Playlist::GraphicsItem::refresh()
 {
     QPixmap albumPixmap;
-    if( !m_track )
+    if( !m_items || !m_items->track )
         return;
 
-    if( m_track->album() )
-        albumPixmap =  m_track->album()->image( int( ALBUM_WIDTH ) );
+    if( m_items->track->album() )
+        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
 
     m_items->albumArt->hide();
     delete ( m_items->albumArt );
     m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, m_verticalOffset );
+    m_items->albumArt->setPos( 0.0, MARGIN );
 }
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
-    bool dragOverOriginalPosition = m_preDragLocation.contains( event->scenePos() );
+    bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
     if( dragOverOriginalPosition )
     {
-        setPos( m_preDragLocation.topLeft() );
+        setPos( m_items->preDragLocation.topLeft() );
         Playlist::DropVis::instance()->hide();
         return;
     }

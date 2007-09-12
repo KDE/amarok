@@ -17,6 +17,16 @@ class QFontMetricsF;
 
 namespace Playlist
 {
+    /**
+     * A lazy-loading QGraphicsItem to display one track in the playlist.
+     * If a user drags 20000 tracks into the playlist, 20000 GraphicsItem's
+     * will be created. However only the tracks that are visible will query
+     * the model for their information, the rest will take up very little memory
+     * and really aren't associated with a particular track yet.
+     * On a paint operation the GraphicsItem will be "active" by creating an ActiveItems.
+     * Do not add any data members to GraphicsItem, you should be able to add them to
+     * ActiveItems instead.
+     */
     class GraphicsItem : public QGraphicsItem
     {
         class ActiveItems;
@@ -24,6 +34,7 @@ namespace Playlist
         public:
             GraphicsItem();
             ~GraphicsItem();
+            ///Be sure to read ::paint rules in-method
             void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
             QRectF boundingRect() const;
             void setupItem();
@@ -44,15 +55,13 @@ namespace Playlist
             void resize( Meta::TrackPtr track, int totalWidth );
             int getRow() const { return int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height ); }
 
-            QRectF m_preDragLocation;
+            
 
             ActiveItems* m_items;
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
             static       qreal s_height;
             static QFontMetricsF* s_fm;
-            Meta::TrackPtr m_track;
-            double m_verticalOffset;
     };
 
 }

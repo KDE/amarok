@@ -362,6 +362,7 @@ set(libplaylist_SRCS
     playlist/PlaylistGraphicsItem.cpp
     playlist/PlaylistGraphicsScene.cpp
     playlist/PlaylistGraphicsView.cpp
+    playlist/PlaylistTextItem.cpp
 )
 
 #####################################################################
