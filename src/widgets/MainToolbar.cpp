@@ -64,7 +64,9 @@ void MainToolbar::paintEvent(QPaintEvent *)
         debug() << QString("toolbar background %1 retrieved from cache :-D").arg(key);
     }
 
-    bitBlt(this, 0, 0, &background);
+
+    QPainter painter( this );
+    painter.drawPixmap( 0, 0, background );
 
 }
 
