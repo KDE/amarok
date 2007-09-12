@@ -23,7 +23,6 @@
 
 #include <KStandardDirs>   
 
-#include <QPaintEngine>
 #include <QPainter>
 #include <QPixmapCache>
 

@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QIcon>
 #include <QPainter>
+#include <QPixmapCache>
 
 
 ServiceListDelegate::ServiceListDelegate( QListView *view )
@@ -73,12 +74,37 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     QSvgRenderer * svgRenderer;
 
-    if (option.state & QStyle::State_Selected)
-        svgRenderer = m_svgRendererActive;
-    else 
-        svgRenderer = m_svgRendererInactive;
+    QString key;
 
-    svgRenderer->render ( painter,  QRectF( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,width, height - 4 ) );
+    if (option.state & QStyle::State_Selected) {
+        svgRenderer = m_svgRendererActive;
+        key = QString("service_list_item_selected:%1x%2")
+                      .arg( width )
+                      .arg( height );
+    } else { 
+        svgRenderer = m_svgRendererInactive;
+        key = QString("service_list_item_inactive:%1x%2")
+                      .arg( width )
+                      .arg( height );
+    }
+
+
+
+
+    QPixmap background( width - 4, height - 4 );
+
+    if (!QPixmapCache::find(key, background)) {
+        //debug() << QString("item %1 not in cache...").arg(key);
+
+        background.fill( Qt::transparent );
+        QPainter pt( &background );
+        svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 4, height - 4 ) );
+        QPixmapCache::insert(key, background);
+    } else {
+        //debug() << QString("item %1 retrieved from cache :-D").arg(key);
+    }
+
+    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
 
     if (option.state & QStyle::State_Selected)
