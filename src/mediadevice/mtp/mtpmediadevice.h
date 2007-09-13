@@ -89,39 +89,39 @@ class MtpMediaDeviceAlbum : public Meta::MediaDeviceAlbum
         QString                 m_album;
 };
 
-class MtpMediaItem : public MediaItem
-{
-    public:
-        explicit MtpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
-            : MediaItem( parent, after ) {}
-        explicit MtpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
-            : MediaItem( parent, after ) {}
-        MtpMediaItem( Q3ListView *parent, MediaDevice *dev )
-            : MediaItem( parent ) { init( dev ); }
-        MtpMediaItem( Q3ListViewItem *parent, MediaDevice *dev )
-            : MediaItem( parent ) { init( dev ); }
-
-        void init( MediaDevice *dev )
-        {
-            m_track  = 0;
-            m_playlist = 0;
-            m_device = dev;
-        }
-
-        ~MtpMediaItem()
-        {
-            //m_track->removeItem(this);
-        }
-        void                setTrack( MtpMediaDeviceTrack *track ) { m_track = track; }
-        MtpMediaDeviceTrack            *track() { return m_track; }
-        void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
-        MtpPlaylist         *playlist() { return m_playlist; }
-        QString             filename() { return KUrl( m_track->url() ).path(); }
-
-    private:
-        MtpMediaDeviceTrack     *m_track;
-        MtpPlaylist             *m_playlist;
-};
+// class MtpMediaItem : public MediaItem
+// {
+//     public:
+//         explicit MtpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
+//             : MediaItem( parent, after ) {}
+//         explicit MtpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
+//             : MediaItem( parent, after ) {}
+//         MtpMediaItem( Q3ListView *parent, MediaDevice *dev )
+//             : MediaItem( parent ) { init( dev ); }
+//         MtpMediaItem( Q3ListViewItem *parent, MediaDevice *dev )
+//             : MediaItem( parent ) { init( dev ); }
+// 
+//         void init( MediaDevice *dev )
+//         {
+//             m_track  = 0;
+//             m_playlist = 0;
+//             m_device = dev;
+//         }
+// 
+//         ~MtpMediaItem()
+//         {
+//             //m_track->removeItem(this);
+//         }
+//         void                setTrack( MtpMediaDeviceTrack *track ) { m_track = track; }
+//         MtpMediaDeviceTrack            *track() { return m_track; }
+//         void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
+//         MtpPlaylist         *playlist() { return m_playlist; }
+//         QString             filename() { return KUrl( m_track->url() ).path(); }
+// 
+//     private:
+//         MtpMediaDeviceTrack     *m_track;
+//         MtpPlaylist             *m_playlist;
+// };
 
 class MtpMediaDevice : public MediaDevice
 {
@@ -134,7 +134,7 @@ class MtpMediaDevice : public MediaDevice
         bool                    isConnected();
         LIBMTP_mtpdevice_t      *current_device();
         void                    setDisconnected();
-        virtual void            rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 );
+        virtual void            rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 ) {};
         virtual void            init( MediaBrowser* parent );
         virtual QStringList     supportedFiletypes();
         void                    setFolders( LIBMTP_folder_t *folders );
@@ -159,8 +159,8 @@ class MtpMediaDevice : public MediaDevice
 
         void                    synchronizeDevice();
         int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
-        void                    addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
-        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
+        //void                    addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
+        //MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         virtual void            updateRootItems() {};
 
