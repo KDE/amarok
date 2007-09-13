@@ -9,12 +9,26 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
+if(MTP_FOUND)
+    ADD_DEFINITIONS(-DHAVE_MTP)
+    set( mtp_SRCS
+        mtp_backend/pmpkioslave_mtpbackend.cpp
+    )
+    set( mtp_LIBS
+        mtp
+    )
+else(MTP_FOUND)
+    set( mtp_SRCS )
+    set( mtp_LIBS )
+endif(MTP_FOUND)
+
 set(amarok_mtp-mediadevice_PART_SRCS
+    ${mtp_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/mtpmediadevice.cpp )
 
 kde4_add_plugin(amarok_mtp-mediadevice WITH_PREFIX ${amarok_mtp-mediadevice_PART_SRCS})
 
-target_link_libraries(amarok_mtp-mediadevice  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(amarok_mtp-mediadevice  ${KDE4_KDECORE_LIBS} ${mtp_LIBS})
 
 install(TARGETS amarok_mtp-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR})
 

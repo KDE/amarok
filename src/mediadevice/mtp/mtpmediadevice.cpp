@@ -34,6 +34,7 @@
 AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 // Amarok
+#include <atomicstring.h>
 #include <collection/support/MemoryCollection.h>
 #include <debug.h>
 #include <statusbar/statusbar.h>
