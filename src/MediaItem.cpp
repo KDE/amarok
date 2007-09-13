@@ -662,6 +662,12 @@ MediaDeviceTrack::lastPlayed() const
 }
 
 QString
+MediaDeviceTrack::filename() const
+{
+    return m_filename;
+}
+
+QString
 MediaDeviceTrack::type() const
 {
     return m_type;
@@ -709,6 +715,11 @@ MediaDeviceTrack::setLength( int length )
     m_length = length;
 }
 
+void
+MediaDeviceTrack::setFilename( const QString &filename )
+{
+    m_filename = filename;
+}
 
 
 //MediaDeviceArtist

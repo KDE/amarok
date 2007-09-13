@@ -35,6 +35,7 @@
 
 #include <libmtp.h>
 
+class MemoryCollection;
 class MtpMediaDevice;
 class MtpMediaItem;
 
@@ -115,7 +116,7 @@ class MtpMediaItem : public MediaItem
         MtpMediaDeviceTrack            *track() { return m_track; }
         void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
         MtpPlaylist         *playlist() { return m_playlist; }
-        QString             filename() { return m_track.url().path(); }
+        QString             filename() { return KUrl( m_track->url() ).path(); }
 
     private:
         MtpMediaDeviceTrack     *m_track;
@@ -167,7 +168,7 @@ class MtpMediaDevice : public MediaDevice
         void                    playlistRenamed( Q3ListViewItem *item, const QString &, int );
 
     private:
-        MtpMediaItem            *addTrackToView(MtpMediaDeviceTrack *track, MtpMediaItem *item=0 );
+        void                    addTrackToCollection( MtpMediaDeviceTrack &track );
         int                     readMtpMusic( void );
         void                    clearItems();
         int                     deleteObject( MtpMediaItem *deleteItem );
@@ -200,6 +201,7 @@ class MtpMediaDevice : public MediaDevice
         QMap<QString,MtpMediaItem*> m_fileNameToItem;
         QMap<uint32_t,MtpMediaDeviceAlbum*> m_idToAlbum;
         QString                 m_format;
+        MemoryCollection        *m_collection;
 };
 
 #endif

@@ -19,7 +19,7 @@
 #ifndef MEMORYCOLLECTION_H
 #define MEMORYCOLLECTION_H
 
-#include "meta.h"
+#include "meta/meta.h"
 
 #include <QReadWriteLock>
 

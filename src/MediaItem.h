@@ -189,6 +189,9 @@ class MediaDeviceTrack : public Meta::Track
         virtual uint lastPlayed() const;
         virtual int playCount() const;
 
+        virtual QString filename() const;
+        virtual void setFilename ( const QString &filename );
+
         virtual QString type() const;
 
         virtual void beginMetaDataUpdate() {}    //read only
@@ -219,6 +222,7 @@ class MediaDeviceTrack : public Meta::Track
         QString m_playableUrl;
         QString m_albumName;
         QString m_artistName;
+        QString m_filename;
 
         QString m_type;
 };
