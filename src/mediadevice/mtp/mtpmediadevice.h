@@ -38,38 +38,41 @@
 class MtpMediaDevice;
 class MtpMediaItem;
 
-class MtpMediaDeviceTrack : public MediaDeviceTrack {
+class MtpMediaDeviceTrack : public Meta::MediaDeviceTrack
+{
     public:
         MtpMediaDeviceTrack( LIBMTP_track_t* track );
         ~MtpMediaDeviceTrack() {};
         bool                    operator==( const MtpMediaDeviceTrack& second ) const { return m_id == second.m_id; }
 
     public:
-        u_int32_t               id() const { return m_id; }
+        uint32_t                id() const { return m_id; }
         uint32_t                folderId() const { return m_folder_id; }
-        void                    setId( int id ) { m_id = id; }
+        void                    setId( const uint32_t id ) { m_id = id; }
         void                    setFolderId( const uint32_t folder_id ) { m_folder_id = folder_id; }
         void                    readMetaData( LIBMTP_track_t *track );
 
     private:
-        u_int32_t               m_id;
+        uint32_t                m_id;
         uint32_t                m_folder_id;
 };
 
-class MtpPlaylist {
+class MtpPlaylist
+{
     public:
         bool                    operator==( const MtpPlaylist& second ) const { return m_id == second.m_id; }
 
     public:
-        u_int32_t               id() const { return m_id; }
+        uint32_t               id() const { return m_id; }
         void                    setId( int id ) { m_id = id; }
 
     private:
-        u_int32_t               m_id;
+        uint32_t               m_id;
 };
 
 
-class MtpMediaDeviceAlbum : MediaDeviceAlbum {
+class MtpMediaDeviceAlbum : public Meta::MediaDeviceAlbum
+{
     public:
         MtpMediaDeviceAlbum( LIBMTP_album_t* album );
         ~MtpMediaDeviceAlbum();
@@ -112,11 +115,11 @@ class MtpMediaItem : public MediaItem
         MtpMediaDeviceTrack            *track() { return m_track; }
         void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
         MtpPlaylist         *playlist() { return m_playlist; }
-        QString             filename() { return m_track->bundle()->url().path(); }
+        QString             filename() { return m_track.url().path(); }
 
     private:
-        MtpMediaDeviceTrack            *m_track;
-        MtpPlaylist         *m_playlist;
+        MtpMediaDeviceTrack     m_track;
+        MtpPlaylist             *m_playlist;
 };
 
 class MtpMediaDevice : public MediaDevice
