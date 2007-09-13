@@ -118,7 +118,7 @@ class MtpMediaItem : public MediaItem
         QString             filename() { return m_track.url().path(); }
 
     private:
-        MtpMediaDeviceTrack     m_track;
+        MtpMediaDeviceTrack     *m_track;
         MtpPlaylist             *m_playlist;
 };
 
