@@ -457,6 +457,12 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         element = n.firstChildElement("downloadURL");
         track->setUrl( element.text() );
 
+        element = n.firstChildElement("trackLength");
+        track->setLength( element.text().toFloat() / 1000 );
+
+        element = n.firstChildElement("trackNumber");
+        track->setTrackNumber( element.text().toInt() );
+
 
         ArtistPtr artistPtr = m_collection->artistMap() [ artistId ];
         if ( artistPtr.data() != 0 ) { 
