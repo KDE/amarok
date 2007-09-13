@@ -34,9 +34,9 @@
 AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 // Amarok
-#include <atomicstring.h>
+#include "atomicstring.h"
 #include <collection/support/MemoryCollection.h>
-#include <debug.h>
+#include "debug.h"
 #include <statusbar/statusbar.h>
 #include <statusbar/popupMessage.h>
 #include <meta/meta.h>
@@ -1375,21 +1375,21 @@ MtpMediaDevice::setDisconnected()
 /**
  * Save changed config after dialog commit
  */
-void
-MtpMediaDevice::applyConfig()
-{
-    m_folderStructure = m_folderStructureBox->text();
-    setConfigString( "FolderStructure", m_folderStructure );
-}
+// void
+// MtpMediaDevice::applyConfig()
+// {
+//     m_folderStructure = m_folderStructureBox->text();
+//     setConfigString( "FolderStructure", m_folderStructure );
+// }
 
 /**
  * Load config from the amarokrc file
  */
-void
-MtpMediaDevice::loadConfig()
-{
-    m_folderStructure = configString( "FolderStructure","%a - %b" );
-}
+// void
+// MtpMediaDevice::loadConfig()
+// {
+//     m_folderStructure = configString( "FolderStructure","%a - %b" );
+// }
 
 /**
  * Add a track to the current Collection
@@ -1496,8 +1496,8 @@ MtpMediaDevice::readMtpMusic()
         }
     }
 
-    readPlaylists();
-    readAlbums();
+    //readPlaylists();
+    //readAlbums();
 
     setProgress( total );
     hideProgress();

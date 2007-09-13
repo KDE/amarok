@@ -134,16 +134,16 @@ class MtpMediaDevice : public MediaDevice
         bool                    isConnected();
         LIBMTP_mtpdevice_t      *current_device();
         void                    setDisconnected();
-        virtual void            rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 ) {};
+        //virtual void            rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 ) {};
         virtual void            init( MediaBrowser* parent );
         virtual QStringList     supportedFiletypes();
         void                    setFolders( LIBMTP_folder_t *folders );
         void                    cancelTransfer();
         void                    customClicked();
-        virtual void            addConfigElements( QWidget *parent );
-        virtual void            removeConfigElements( QWidget *parent );
-        virtual void            applyConfig();
-        virtual void            loadConfig();
+        //virtual void            addConfigElements( QWidget *parent );
+        //virtual void            removeConfigElements( QWidget *parent );
+        //virtual void            applyConfig();
+        //virtual void            loadConfig();
         static int              progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
 
     protected:
@@ -154,11 +154,11 @@ class MtpMediaDevice : public MediaDevice
         bool                    lockDevice( bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
         void                    unlockDevice() { m_mutex.unlock(); }
 
-        MediaItem               *copyTrackToDevice( const MetaBundle &bundle );
-        int                     downloadSelectedItemsToCollection();
+        //MediaItem               *copyTrackToDevice( const MetaBundle &bundle );
+        //int                     downloadSelectedItemsToCollection();
 
         void                    synchronizeDevice();
-        int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
+        //int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
         //void                    addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
         //MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -172,19 +172,19 @@ class MtpMediaDevice : public MediaDevice
         int                     readMtpMusic( void );
         void                    clearItems();
         int                     deleteObject( MtpMediaItem *deleteItem );
-        uint32_t                checkFolderStructure( const MetaBundle &bundle, bool create = true );
-        uint32_t                createFolder( const char *name, uint32_t parent_id );
+        //uint32_t                checkFolderStructure( const MetaBundle &bundle, bool create = true );
+        //uint32_t                createFolder( const char *name, uint32_t parent_id );
         uint32_t                getDefaultParentId( void );
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
         uint32_t                subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
         void                    updateFolders( void );
         void                    initView( void );
-        void                    readPlaylists( void );
-        void                    readAlbums( void );
-        void                    playlistFromItem( MtpMediaItem *item);
-        QByteArray              *getSupportedImage( QString path );
-        void                    sendAlbumArt( Q3PtrList<MediaItem> *items );
-        void                    updateAlbumArt( Q3PtrList<MediaItem> *items );
+        //void                    readPlaylists( void );
+        //void                    readAlbums( void );
+        //void                    playlistFromItem( MtpMediaItem *item);
+        //QByteArray              *getSupportedImage( QString path );
+        //void                    sendAlbumArt( Q3PtrList<MediaItem> *items );
+        //void                    updateAlbumArt( Q3PtrList<MediaItem> *items );
         LIBMTP_album_t          *getOrCreateAlbum( Q3PtrList<MediaItem> *items );
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
