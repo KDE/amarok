@@ -81,7 +81,7 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ComposerPtr & composer)
-{
+{ 
     Q_UNUSED( composer );
     return this;
 }
@@ -94,7 +94,7 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::YearPtr & year)
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
 {
-    Q_UNUSED( data );
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

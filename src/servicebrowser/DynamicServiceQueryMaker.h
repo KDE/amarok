@@ -53,8 +53,6 @@ public:
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 
-    virtual void runQuery() = 0;
-
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs ) = 0;
 
 

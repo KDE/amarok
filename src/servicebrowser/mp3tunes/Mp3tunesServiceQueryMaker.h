@@ -51,15 +51,23 @@ public:
     virtual void abortQuery();
 
     virtual QueryMaker* startArtistQuery();
+    virtual QueryMaker* startAlbumQuery();
+    virtual QueryMaker* startTrackQuery();
+
+    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
+    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     //Methods "borrowed" from MemoryQueryMaker
-    void runQuery();
     void handleResult();
     void handleResult( const Meta::TrackList &tracks );
+    void handleResult( const Meta::ArtistList &artists );
+    void handleResult( const Meta::AlbumList &albums );
 
     void fetchArtists();
+    void fetchAlbums();
+    void fetchTracks();
 
 
 protected:
@@ -70,10 +78,13 @@ protected:
     Private * const d;
 
     QString m_sessionId;
+    QString m_parentId;
 
 public slots:
 
     void artistDownloadComplete(KJob *job );
+    void albumDownloadComplete(KJob *job );
+    void trackDownloadComplete(KJob *job );
 
 
 };

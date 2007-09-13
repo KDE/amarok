@@ -54,7 +54,7 @@ public:
     virtual QueryMaker* startGenreQuery();
 
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
+    //virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 

@@ -320,7 +320,7 @@ void MainWindow::init()
 
         internetContentServiceBrowser->addService( new ShoutcastService( "Shoutcasst Directory" ) );
 
-        //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
+        internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
 
 
         //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );

@@ -38,6 +38,7 @@ Mp3tunesService::Mp3tunesService(const QString & name)
 
     setShortDescription("The Mp3Tunes Locker service. Access your stored music!");
     setIcon( KIcon( Amarok::icon( "download" ) ) );
+    showInfo( false );
 
 }
 
@@ -48,7 +49,8 @@ Mp3tunesService::~Mp3tunesService()
 
 void Mp3tunesService::polish()
 {
-    authenticate();
+    if ( !m_authenticated )
+        authenticate();
 
 }
 
@@ -125,7 +127,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
 
         m_collection = new Mp3tunesServiceCollection( m_sessionId );
         QList<int> levels;
-        levels << CategoryId::Artist;
+        levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
     } else {

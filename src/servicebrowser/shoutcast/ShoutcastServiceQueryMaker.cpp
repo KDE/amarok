@@ -135,14 +135,6 @@ QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
     return this;
 }
 
-QueryMaker*
-ShoutcastServiceQueryMaker::addMatch( const DataPtr &data )
-{
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
-
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,

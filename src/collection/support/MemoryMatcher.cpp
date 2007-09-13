@@ -102,6 +102,29 @@ TrackList ArtistMatcher::match( MemoryCollection *memColl )
         return TrackList();
 }
 
+AlbumList ArtistMatcher::matchAlbums(MemoryCollection * memColl)
+{
+    ArtistMap artistMap = memColl->artistMap();
+    if ( artistMap.contains( m_artist->name() ) )
+    {
+        ArtistPtr artist = artistMap.value( m_artist->name() );
+
+        AlbumList matchingAlbums;
+        AlbumList albums = memColl->albumMap().values();
+
+        foreach( AlbumPtr albumPtr, albums ) {
+
+            if ( albumPtr->albumArtist() == artist )
+                matchingAlbums.push_back( albumPtr );
+        }
+
+        return matchingAlbums;
+    }
+    else
+        return AlbumList();
+}
+
+
 TrackList ArtistMatcher::match( const TrackList &tracks )
 {
     TrackList matchingTracks;
@@ -258,6 +281,8 @@ TrackList YearMatcher::match( const TrackList &tracks )
     else
         return next()->match( matchingTracks );
 }
+
+
 
 
 
