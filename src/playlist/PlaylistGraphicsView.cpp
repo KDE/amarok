@@ -65,6 +65,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     if( !item ) // we've clicked on empty space
         return;
 
+    item->setSelected( true );
     event->accept();
 
     KAction *playAction = new KAction( KIcon( Amarok::icon( "play" ) ), i18n( "&Play" ), this );
@@ -173,7 +174,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition )
             moveUp = true;
 
         qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
-    
+
         QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
         animator->setItem( item );
         animator->setTimeLine( timer );
@@ -204,7 +205,7 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
      DEBUG_BLOCK
      if ( !index.isValid() )
         return;
-   
+
      if ( m_tracks.count() > index.row() )
          m_tracks.at( index.row() )->refresh();
 }
