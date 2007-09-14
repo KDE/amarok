@@ -40,6 +40,7 @@ class CollectionTreeView: public QTreeView {
     protected:
         void mousePressEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );
+        void mouseDoubleClickEvent( QMouseEvent *event );
 
     protected slots:
 

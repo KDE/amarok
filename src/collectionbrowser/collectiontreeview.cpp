@@ -145,6 +145,38 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         debug() << "invalid index or null internalPointer";
 }
 
+void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    QModelIndex index;
+    if( m_filterModel )
+        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
+    else
+        index = indexAt( event->pos() );
+
+    if( index.isValid() && index.internalPointer()  )
+    {
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+
+        if( !item->allDescendentTracksLoaded() )
+        {
+            QueryMaker *qm = item->queryMaker();
+            CollectionTreeItem *tmp = item;
+            while( tmp->isDataItem() )
+            {
+                qm->addMatch( tmp->data() );
+                tmp = tmp->parent();
+            }
+            m_treeModel->addFilters( qm );
+            The::playlistModel()->insertOptioned( qm, Playlist::Append );
+        }
+        else
+        {
+            Meta::TrackList tracks = item->descendentTracks();
+            The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+        }
+    }
+}
+
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 {
     if( e->button() == Qt::LeftButton )
@@ -165,6 +197,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
 
     QTreeView::mouseMoveEvent( e );
 }
+
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
