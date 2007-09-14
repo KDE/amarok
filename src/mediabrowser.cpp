@@ -1136,6 +1136,7 @@ MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
 //     }
 //     preparePlaylistForSync( name, bundles );
 //     return bundles;
+    return BundleList();
 }
 
 BundleList
