@@ -593,6 +593,8 @@ Model::insertTracksCommand( int row, TrackList list )
     }
     dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+
+    emit playlistCountChanged( rowCount() );
 }
 
 
@@ -632,6 +634,7 @@ Model::removeRowsCommand( int position, int rows )
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
+    emit playlistCountChanged( rowCount() );
     return ret;
 }
 

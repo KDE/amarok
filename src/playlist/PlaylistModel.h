@@ -162,6 +162,9 @@ class TrackNavigator;
             void back();
             void clear(); ///clear the playlist of all items
 
+        signals:
+            void playlistCountChanged( int newCount );
+
         private slots:
             void trackFinished(); //! what to do when a track finishes
             void queryDone();

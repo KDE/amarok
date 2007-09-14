@@ -47,7 +47,7 @@ namespace Amarok
 
     public slots:
         /** update total song count */
-        void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
+        void slotItemCountChanged( int newCount ); //TODO improve
         //FIXME: PORT
 //         void updateQueueLabel() { m_queueLabel->update(); }
     protected:  /* reimpl from engineobserver */

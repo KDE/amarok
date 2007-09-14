@@ -24,8 +24,11 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "sliderwidget.h"
+#include "meta/meta.h"
+#include "meta/MetaUtility.h"
+#include "playlist/PlaylistModel.h"
 #include "statusbar.h"
+#include "TheInstances.h"
 
 #include <khbox.h>
 #include <kiconloader.h>
@@ -91,7 +94,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // FIXME The slot segfaults for some reason
     //connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
-    slotItemCountChanged( 0, 0, 0, 0, 0, 0 );
+    connect( The::playlistModel(), SIGNAL(playlistCountChanged(int)),
+                                    SLOT(slotItemCountChanged(int)) );
 
     //see statupTips.h
     //KDE::showNextTip( this );
@@ -169,35 +173,42 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 }
 
 void
-StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
-                                 int visCount, int visLength,  //visible
-                                 int selCount, int selLength ) //selected
+StatusBar::slotItemCountChanged( int newCount )
 {
-    const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
-
-    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks",selCount, visCount )
-                 : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
-                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks", visCount, newCount )
-                 : ( hasSel ) ? i18n( "%1 selected of %2 tracks", selCount, newCount )
-                 : i18np( "1 track", "%1 tracks", newCount );
-
-    int getValue = 0;
-
-    if( hasSel )
-        getValue = selLength;
-
-    else if( hasVis )
-        getValue = visLength;
-
-    else
-        getValue = newLength;
-
-    if( getValue )
-        m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)", text, MetaBundle::fuzzyTime( getValue ) ) );
-    else
-        m_itemCountLabel->setText( text );
-
-    m_itemCountLabel->setToolTip(  i18n( "Play-time: %1", MetaBundle::veryPrettyTime( getValue ) ) );
+//     const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
+// 
+//     QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks",selCount, visCount )
+//                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
+//                  : ( hasVis ) ? i18n( "%1 visible of %2 tracks", visCount, newCount )
+//                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks", selCount, newCount )
+//                  : i18np( "1 track", "%1 tracks", newCount );
+// 
+//     int getValue = 0;
+// 
+//     if( hasSel )
+//         getValue = selLength;
+// 
+//     else if( hasVis )
+//         getValue = visLength;
+// 
+//     else
+//         getValue = newLength;
+// 
+//     if( getValue )
+//         m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)", text, MetaBundle::fuzzyTime( getValue ) ) );
+//     else
+//         m_itemCountLabel->setText( text );
+// 
+//     m_itemCountLabel->setToolTip(  i18n( "Play-time: %1", MetaBundle::veryPrettyTime( getValue ) ) );
+    uint totalSeconds = 0;
+    QList<Playlist::Item*> items;
+    items = The::playlistModel()->itemList();
+    foreach( Playlist::Item* item, items )
+    {
+        totalSeconds += item->track()->length();
+    }
+    m_itemCountLabel->setText( i18n( "%1 Tracks", newCount ) );
+    m_itemCountLabel->setToolTip( i18n( "Play-time: %1", Meta::secToPrettyTime( totalSeconds ) ) );
 }
 
 void
