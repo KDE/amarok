@@ -117,11 +117,11 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
         KMenu menu;
-        QAction* appendAction = new QAction( KIcon( Amarok::icon( "add_playlist") ), i18n( "&Append to Playlist" ), &menu);
         QAction* loadAction = new QAction( KIcon(Amarok::icon( "file_open" ) ), i18n( "&Load" ), &menu );
+        QAction* appendAction = new QAction( KIcon( Amarok::icon( "add_playlist") ), i18n( "&Append to Playlist" ), &menu);
         menu.addAction( loadAction );
         menu.addAction( appendAction );
-        QAction* result =  menu.exec( mapToGlobal( event->pos() ) );
+        QAction* result =  menu.exec( event->globalPos() );
         if( result == loadAction )
             playChildTracks( item, Playlist::Replace );
         else if( result == appendAction )
