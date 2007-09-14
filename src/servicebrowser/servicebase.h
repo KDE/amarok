@@ -27,9 +27,9 @@
 
 #include "infoparserbase.h"
 
-#include "../collectionbrowser/singlecollectiontreeitemmodel.h"
-#include "../collectionbrowser/collectiontreeitem.h"
-#include "../collectionbrowser/collectiontreeview.h"
+#include "../collectionbrowser/SingleCollectionTreeItemModel.h"
+#include "../collectionbrowser/CollectionTreeItem.h"
+#include "../collectionbrowser/CollectionTreeView.h"
 
 #include <khtml_part.h>
 //#include <klistwidget.h>

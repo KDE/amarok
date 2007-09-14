@@ -9,9 +9,7 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "meta.h"
-//#include "sqlmeta.h"
-#include "querybuilder.h"
+#include "meta/meta.h"
 #include "Collection.h"
 
 #include <QList>

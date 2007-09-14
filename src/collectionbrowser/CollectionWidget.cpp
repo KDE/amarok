@@ -7,7 +7,7 @@
  ***************************************************************************/
  
 #include "CollectionWidget.h"
-#include "collectiontreeview.h"
+#include "CollectionTreeView.h"
 
 #include <QVBoxLayout>
 

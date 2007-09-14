@@ -18,7 +18,7 @@
 #include "AmarokMimeData.h"
 #include "Collection.h"
 #include "CollectionManager.h"
-#include "collectiontreeitem.h"
+#include "CollectionTreeItem.h"
 #include "debug.h"
 #include "expression.h"
 #include "QueryMaker.h"

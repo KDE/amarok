@@ -9,8 +9,8 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
-#include "collectionsortfilterproxymodel.h"
-#include "collectionbrowser/collectiontreeitem.h"
+#include "CollectionSortFilterProxyModel.h"
+#include "CollectionTreeItem.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QSortFilterProxyModel>

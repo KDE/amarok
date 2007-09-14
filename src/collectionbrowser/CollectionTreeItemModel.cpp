@@ -9,9 +9,9 @@
 
 #define DEBUG_PREFIX "CollectionTreeItemModel"
 
-#include "collectiontreeitemmodel.h"
+#include "CollectionTreeItemModel.h"
 
-#include "collectiontreeitem.h"
+#include "CollectionTreeItem.h"
 //#include "collection/sqlregistry.h"
 #include "debug.h"
 #include "amarok.h"
@@ -200,4 +200,4 @@ namespace Amarok {
         str.truncate( newLen );
     }
 }
-#include "collectiontreeitemmodel.moc"
+#include "CollectionTreeItemModel.moc"

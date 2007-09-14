@@ -6,12 +6,13 @@
  *   as published by the Free Software Foundation.                            *
  ******************************************************************************/
 
-#include "collectiontreeview.h"
+#include "CollectionTreeView.h"
 
 #include "amarok.h"
 #include "debug.h"
-#include "collectionbrowser/collectiontreeitemmodel.h"
+#include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
+#include "querybuilder.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
@@ -240,4 +241,4 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
     }
 }
 
-#include "collectiontreeview.moc"
+#include "CollectionTreeView.moc"

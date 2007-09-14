@@ -9,10 +9,9 @@
 
 #define DEBUG_PREFIX "SingleCollectionTreeItemModel"
 
-#include "singlecollectiontreeitemmodel.h"
+#include "SingleCollectionTreeItemModel.h"
 
-#include "collectiontreeitem.h"
-//#include "collection/sqlregistry.h"
+#include "CollectionTreeItem.h"
 #include "debug.h"
 #include "amarok.h"
 #include "Collection.h"
@@ -136,4 +135,4 @@ SingleCollectionTreeItemModel::filterChildren()
     m_rootItem->setChildrenLoaded( false );
 }
 
-#include "singlecollectiontreeitemmodel.moc"
+#include "SingleCollectionTreeItemModel.moc"

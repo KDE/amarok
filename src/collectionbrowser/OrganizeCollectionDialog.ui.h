@@ -3,7 +3,7 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 
 #include "amarok.h"
-#include "collectiontreeitemmodel.h"
+#include "CollectionTreeItemModel.h"
 #include "collectiondb.h"
 #include "qstringx.h"
 

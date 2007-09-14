@@ -11,9 +11,7 @@
 #define SINGLECOLLECTIONTREEITEMMODEL_H
 
 #include "CollectionTreeItemModelBase.h"
-#include "meta.h"
-#include "../querybuilder.h"
-//#include "collection/collection.h"
+#include "meta/meta.h"
 
 #include <QAbstractItemModel>
 #include <QMap>

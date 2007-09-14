@@ -7,9 +7,7 @@
  ******************************************************************************/
 
 
-#include "collectiontreeitem.h"
-
-#include "querybuilder.h"
+#include "CollectionTreeItem.h"
 
 #include <KLocale>
 

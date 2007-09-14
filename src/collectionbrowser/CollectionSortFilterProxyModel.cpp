@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "collectionsortfilterproxymodel.h"
+#include "CollectionSortFilterProxyModel.h"
 
 CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * parent )
  : QSortFilterProxyModel( parent )

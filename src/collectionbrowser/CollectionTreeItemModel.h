@@ -11,8 +11,7 @@
 #define COLLECTIONTREEITEMMODEL_H
 
 #include "CollectionTreeItemModelBase.h"
-#include "meta.h"
-#include "../querybuilder.h"
+#include "meta/meta.h"
 
 
 #include <QMap>
