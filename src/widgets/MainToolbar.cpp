@@ -60,8 +60,6 @@ void MainToolbar::paintEvent(QPaintEvent *)
         m_svgRenderer->render( &pt, "toolbarbackground",  contentsRect() );
         m_svgRenderer->render( &pt, "buttonbar",  controlRect );
         QPixmapCache::insert(key, background);
-    } else {
-        debug() << QString("toolbar background %1 retrieved from cache :-D").arg(key);
     }
 
 

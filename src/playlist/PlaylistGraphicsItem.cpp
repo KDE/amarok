@@ -101,7 +101,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 3) Do not show or hide item that are already shown or hidden, respectively
 // 4) Do not setBrush without making sure its hasn't already been set to that brush().
 // 5) If this is your first night at ::paint method, you HAVE to paint.
-    DEBUG_BLOCK
     Q_UNUSED( painter ); Q_UNUSED( widget );
     const int row = getRow();
     const QModelIndex index = The::playlistModel()->index( row, 0 );

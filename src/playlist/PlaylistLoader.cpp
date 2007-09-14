@@ -38,7 +38,6 @@ PlaylistLoader::PlaylistLoader()
 
 bool PlaylistLoader::isPlaylist(const KUrl & path)
 {
-    DEBUG_BLOCK;
     return getFormat( path ) != Unknown;
 }
 
