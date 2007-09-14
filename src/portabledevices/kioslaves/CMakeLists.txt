@@ -2,18 +2,18 @@ project(pmp_kioslave)
 
 include_directories( ${KDE4_INCLUDE_DIR} ${KDE4_KIO_INCLUDES} ${QT_INCLUDES} )
 
-if(MTP_FOUND)
-    ADD_DEFINITIONS(-DHAVE_MTP)
-    set( mtp_SRCS
-        mtp_backend/pmpkioslave_mtpbackend.cpp
-    )
-    set( mtp_LIBS
-        mtp
-    )
-else(MTP_FOUND)
+#if(MTP_FOUND)
+#    ADD_DEFINITIONS(-DHAVE_MTP)
+#    set( mtp_SRCS
+#        mtp_backend/pmpkioslave_mtpbackend.cpp
+#    )
+#    set( mtp_LIBS
+#        mtp
+#    )
+#else(MTP_FOUND)
     set( mtp_SRCS )
     set( mtp_LIBS )
-endif(MTP_FOUND)
+#endif(MTP_FOUND)
 
 
 set(kio_pmp_PART_SRCS
