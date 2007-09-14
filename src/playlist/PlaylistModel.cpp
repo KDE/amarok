@@ -612,6 +612,8 @@ Model::removeRowsCommand( int position, int rows )
     {
         Item* item = m_items.takeAt( position ); //take at position, row times
         item->track()->unsubscribe( this );
+        if( item->track()->album() )
+            item->track()->album()->unsubscribe( this );
         ret.push_back( item->track() );
         delete item;
     }
