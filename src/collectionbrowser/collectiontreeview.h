@@ -11,6 +11,7 @@
 
 #include "collectionsortfilterproxymodel.h"
 #include "collectionbrowser/collectiontreeitem.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QSortFilterProxyModel>
 #include <QTimer>
@@ -49,6 +50,9 @@ class CollectionTreeView: public QTreeView {
         void slotCollapsed( const QModelIndex &index );
 
     private:
+        // Utility function to play all items
+        // that have this as a parent..
+        void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode );
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;
         QTimer m_filterTimer;

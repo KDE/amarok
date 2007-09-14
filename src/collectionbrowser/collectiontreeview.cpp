@@ -12,7 +12,6 @@
 #include "debug.h"
 #include "collectionbrowser/collectiontreeitemmodel.h"
 #include "context/ContextView.h"
-#include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
@@ -115,31 +114,17 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     if( index.isValid() && index.internalPointer()  )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-    
+
         KMenu menu;
         QAction* appendAction = new QAction( KIcon( Amarok::icon( "add_playlist") ), i18n( "&Append to Playlist" ), &menu);
+        QAction* loadAction = new QAction( KIcon(Amarok::icon( "file_open" ) ), i18n( "&Load" ), &menu );
+        menu.addAction( loadAction );
         menu.addAction( appendAction );
         QAction* result =  menu.exec( mapToGlobal( event->pos() ) );
-        if( result == appendAction )
-        {
-                if( !item->allDescendentTracksLoaded() )
-                {
-                    QueryMaker *qm = item->queryMaker();
-                    CollectionTreeItem *tmp = item;
-                    while( tmp->isDataItem() )
-                    {
-                        qm->addMatch( tmp->data() );
-                        tmp = tmp->parent();
-                    }
-                    m_treeModel->addFilters( qm );
-                    The::playlistModel()->insertOptioned( qm, Playlist::Append );
-                }
-                else
-                {
-                    QList< Meta::TrackPtr > tracks = item->descendentTracks();
-                    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
-                }
-        }
+        if( result == loadAction )
+            playChildTracks( item, Playlist::Replace );
+        else if( result == appendAction )
+            playChildTracks( item, Playlist::Append );
     }
     else
         debug() << "invalid index or null internalPointer";
@@ -157,23 +142,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
-        if( !item->allDescendentTracksLoaded() )
-        {
-            QueryMaker *qm = item->queryMaker();
-            CollectionTreeItem *tmp = item;
-            while( tmp->isDataItem() )
-            {
-                qm->addMatch( tmp->data() );
-                tmp = tmp->parent();
-            }
-            m_treeModel->addFilters( qm );
-            The::playlistModel()->insertOptioned( qm, Playlist::Append );
-        }
-        else
-        {
-            Meta::TrackList tracks = item->descendentTracks();
-            The::playlistModel()->insertOptioned( tracks, Playlist::Append );
-        }
+        playChildTracks( item, Playlist::Append );
     }
 }
 
@@ -247,6 +216,28 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
         m_treeModel->slotCollapsed( m_filterModel->mapToSource( index ) );
     else
         m_treeModel->slotCollapsed( index );
+}
+
+void
+CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode)
+{
+    if( !item->allDescendentTracksLoaded() )
+    {
+        QueryMaker *qm = item->queryMaker();
+        CollectionTreeItem *tmp = item;
+        while( tmp->isDataItem() )
+        {
+            qm->addMatch( tmp->data() );
+            tmp = tmp->parent();
+        }
+        m_treeModel->addFilters( qm );
+        The::playlistModel()->insertOptioned( qm, insertMode );
+    }
+    else
+    {
+        Meta::TrackList tracks = item->descendentTracks();
+        The::playlistModel()->insertOptioned( tracks, insertMode );
+    }
 }
 
 #include "collectiontreeview.moc"
