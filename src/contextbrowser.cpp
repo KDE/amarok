@@ -2612,7 +2612,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
     qb.setOptions( QueryBuilder::optNoCompilations );
     values = qb.run();
 
@@ -2775,7 +2775,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.setOptions( QueryBuilder::optOnlyCompilations );
     values = qb.run();
