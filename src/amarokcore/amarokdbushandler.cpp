@@ -355,14 +355,14 @@ namespace Amarok
 
     void DbusPlayerHandler::mediaDeviceMount()
     {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->connectDevice();
+        //if ( MediaBrowser::instance()->currentDevice() )
+        //   MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DbusPlayerHandler::mediaDeviceUmount()
     {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->disconnectDevice();
+        //if ( MediaBrowser::instance()->currentDevice() )
+        //    MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
     void DbusPlayerHandler::mute()
@@ -397,8 +397,8 @@ namespace Amarok
 
     void DbusPlayerHandler::queueForTransfer( KUrl url )
     {
-        MediaBrowser::queue()->addUrl( url );
-        MediaBrowser::queue()->URLsAdded();
+        //MediaBrowser::queue()->addUrl( url );
+        //MediaBrowser::queue()->URLsAdded();
     }
 
     void DbusPlayerHandler::seek(int s)
@@ -511,8 +511,8 @@ namespace Amarok
             MainWindow::self()->showBrowser( "CollectionBrowser" );
         if ( browser == "playlist" )
             MainWindow::self()->showBrowser( "PlaylistBrowser" );
-        if ( browser == "media" )
-            MainWindow::self()->showBrowser( "MediaBrowser" );
+        //if ( browser == "media" )
+        //    MainWindow::self()->showBrowser( "MediaBrowser" );
         if ( browser == "file" )
             MainWindow::self()->showBrowser( "FileBrowser" );
     }
@@ -529,8 +529,8 @@ namespace Amarok
 
     void DbusPlayerHandler::transferDeviceFiles()
     {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->transferFiles();
+        //if ( MediaBrowser::instance()->currentDevice() )
+        //    MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
     void DbusPlayerHandler::volumeDown()
@@ -995,56 +995,56 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 // class DbusMediaBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DbusMediaBrowserHandler::DbusMediaBrowserHandler()
-        : QObject( kapp )
-    {
-         (void)new MediaBrowserAdaptor(this);
-         QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
-    }
-
-    void DbusMediaBrowserHandler::deviceConnect()
-    {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->connectDevice();
-    }
-
-    void DbusMediaBrowserHandler::deviceDisconnect()
-    {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->disconnectDevice();
-    }
-
-    QStringList DbusMediaBrowserHandler::deviceList()
-    {
-        return MediaBrowser::instance()->deviceNames();
-    }
-
-    void DbusMediaBrowserHandler::deviceSwitch( QString name )
-    {
-        MediaBrowser::instance()->deviceSwitch( name );
-    }
-
-    void DbusMediaBrowserHandler::queue( KUrl url )
-    {
-        MediaBrowser::queue()->addUrl( url );
-        MediaBrowser::queue()->URLsAdded();
-    }
-
-    void DbusMediaBrowserHandler::queueList( KUrl::List urls )
-    {
-        MediaBrowser::queue()->addUrls( urls );
-    }
-
-    void DbusMediaBrowserHandler::transfer()
-    {
-        if ( MediaBrowser::instance()->currentDevice() )
-            MediaBrowser::instance()->currentDevice()->transferFiles();
-    }
-
-    void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
-    {
-        MediaBrowser::instance()->transcodingFinished( src, dest );
-    }
+//     DbusMediaBrowserHandler::DbusMediaBrowserHandler()
+//         : QObject( kapp )
+//     {
+//          (void)new MediaBrowserAdaptor(this);
+//          QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
+//     }
+// 
+//     void DbusMediaBrowserHandler::deviceConnect()
+//     {
+//         if ( MediaBrowser::instance()->currentDevice() )
+//             MediaBrowser::instance()->currentDevice()->connectDevice();
+//     }
+// 
+//     void DbusMediaBrowserHandler::deviceDisconnect()
+//     {
+//         if ( MediaBrowser::instance()->currentDevice() )
+//             MediaBrowser::instance()->currentDevice()->disconnectDevice();
+//     }
+// 
+//     QStringList DbusMediaBrowserHandler::deviceList()
+//     {
+//         return MediaBrowser::instance()->deviceNames();
+//     }
+// 
+//     void DbusMediaBrowserHandler::deviceSwitch( QString name )
+//     {
+//         MediaBrowser::instance()->deviceSwitch( name );
+//     }
+// 
+//     void DbusMediaBrowserHandler::queue( KUrl url )
+//     {
+//         MediaBrowser::queue()->addUrl( url );
+//         MediaBrowser::queue()->URLsAdded();
+//     }
+// 
+//     void DbusMediaBrowserHandler::queueList( KUrl::List urls )
+//     {
+//         MediaBrowser::queue()->addUrls( urls );
+//     }
+// 
+//     void DbusMediaBrowserHandler::transfer()
+//     {
+//         if ( MediaBrowser::instance()->currentDevice() )
+//             MediaBrowser::instance()->currentDevice()->transferFiles();
+//     }
+// 
+//     void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
+//     {
+//         MediaBrowser::instance()->transcodingFinished( src, dest );
+//     }
 
 } //namespace Amarok
 

@@ -185,7 +185,7 @@ App::App()
      new Amarok::DbusPlaylistBrowserHandler();
      new Amarok::DbusContextHandler();
      new Amarok::DbusCollectionHandler();
-     new Amarok::DbusMediaBrowserHandler();
+//     new Amarok::DbusMediaBrowserHandler();
      new Amarok::DbusScriptHandler();
 
     // tell AtomicString that this is the GUI thread
@@ -1034,12 +1034,12 @@ void App::slotTrashResult( KJob *job )
 void App::quit()
 {
     emit prepareToQuit();
-    if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
-    {
-        // don't quit yet, as some media devices still have to finish transferring data
-        QTimer::singleShot( 100, this, SLOT( quit() ) );
-        return;
-    }
+//     if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
+//     {
+//         // don't quit yet, as some media devices still have to finish transferring data
+//         QTimer::singleShot( 100, this, SLOT( quit() ) );
+//         return;
+//     }
     KApplication::quit();
 }
 

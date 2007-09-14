@@ -84,7 +84,7 @@ set(libamarokcore_SRCS
 )
 
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
+#qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
@@ -403,7 +403,7 @@ set(amaroklib_LIB_SRCS
     cuefile.cpp
     dbsetup.ui.h
     deletedialog.cpp
-    deviceconfiguredialog.cpp
+    #deviceconfiguredialog.cpp
     directorylist.cpp
     editfilterdialog.cpp
     enginebase.cpp
@@ -422,8 +422,8 @@ set(amaroklib_LIB_SRCS
     ktrm.cpp
     lastfm.cpp
     MainWindow.cpp
-    mediabrowser.cpp
-    MediaItem.cpp
+    #mediabrowser.cpp
+    #MediaItem.cpp
     medium.cpp
     metabundle.cpp
     metabundlesaver.cpp
@@ -453,7 +453,7 @@ set(amaroklib_LIB_SRCS
     tooltip.cpp
     trackpickerdialog.cpp
     tracktooltip.cpp
-    transferdialog.cpp
+    #transferdialog.cpp
     widgets/analyzerwidget.cpp
     widgets/progressslider.cpp
     widgets/searchwidget.cpp

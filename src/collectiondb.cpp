@@ -3421,10 +3421,10 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
         fillInBundle( values, *bundle );
         valid = true;
     }
-    else if( MediaBrowser::instance() && MediaBrowser::instance()->getBundle( bundle->url(), bundle ) )
-    {
-        valid = true;
-    }
+//    else if( MediaBrowser::instance() && MediaBrowser::instance()->getBundle( bundle->url(), bundle ) )
+//    {
+//        valid = true;
+//    }
     else
     {
         // check if it's a podcast
@@ -5709,7 +5709,8 @@ CollectionDB::scanModifiedDirs()
 {
     if ( !m_scanInProgress
 //PORT 2.0  && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
-            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
+//            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() )
+       )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings
         //Port 2.0

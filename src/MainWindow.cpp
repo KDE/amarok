@@ -328,17 +328,11 @@ void MainWindow::init()
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
 
-         new MediaBrowser( "MediaBrowser" );
-         if( MediaBrowser::isAvailable() )
-         {
-             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
-            //to re-enable mediabrowser hiding, uncomment this:
-            //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
-            //         this, SLOT( mbAvailabilityChanged( bool ) ) );
-            //FIXME: figure this out
-            //m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
-
-         }
+//          new MediaBrowser( "MediaBrowser" );
+//          if( MediaBrowser::isAvailable() )
+//          {
+//              addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
+//          }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
@@ -882,25 +876,6 @@ bool MainWindow::isReallyShown() const
 #else
     return isHidden();
 #endif
-}
-
-void
-MainWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
-{
-    if( isAvailable )
-    {
-        if( m_browserNames.indexOf( "MediaBrowser" ) == -1 )
-            addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
-    }
-    else
-    {
-        if( m_browserNames.indexOf( "MediaBrowser" ) != -1 )
-        {
-            showBrowser( "CollectionBrowser" );
-            //removeMediaBrowser( MediaBrowser::instance() );
-            m_browsers->removeWidget( MediaBrowser::instance() );
-        }
-    }
 }
 
 void MainWindow::createActions()

@@ -65,7 +65,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
     public slots:
         void showHide();
-        void mbAvailabilityChanged( bool isAvailable );
 
     private slots:
         void slotShrinkBrowsers( int index ) const;
