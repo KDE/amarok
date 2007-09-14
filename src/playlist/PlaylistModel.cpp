@@ -374,6 +374,7 @@ void
 Model::insertOptioned( Meta::TrackList list, int options )
 {
 
+    DEBUG_BLOCK
     if( list.isEmpty() ) {
         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
         return; // don't add empty items
@@ -428,9 +429,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
            firstItemAdded = orgCount;
         else 
            firstItemAdded = rowCount();
-
-        if ( rowCount() > firstItemAdded )
-            insertTracks( firstItemAdded, list );
+           insertTracks( firstItemAdded, list );
     }
     else if( options & Queue )
     {
