@@ -61,6 +61,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
         , m_pauseTimer( new QTimer( this ) )
 {
     s_instance = this; //static member
+    setSizeGripEnabled( false );
     // total songs count
     m_itemCountLabel = new QLabel( this );
     addPermanentWidget(m_itemCountLabel);
