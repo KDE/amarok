@@ -10,6 +10,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "meta/meta.h"
+#include "PlaylistLoader.h"
 
 #include "UndoCommands.h"
 
@@ -199,6 +200,8 @@ class TrackNavigator;
             QUndoStack*     m_undoStack;                //! for pushing on undo commands
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
+
+            PlaylistLoader * m_playlistLoader;
 
     };
 }

@@ -42,6 +42,7 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
+    , m_playlistLoader ( new PlaylistLoader )
 {
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ) );
@@ -63,6 +64,7 @@ Model::init()
 Model::~Model()
 {
     delete m_advancer;
+    delete m_playlistLoader;
 }
 
 int
@@ -377,11 +379,13 @@ Model::insertOptioned( Meta::TrackList list, int options )
         return; // don't add empty items
     }
 
+
     if( options & Unique )
     {
         int alreadyOnPlaylist = 0;
         for( int i = 0; i < list.size(); ++i )
         {
+
             Item* item;
             foreach( item, m_items )
             {
@@ -392,10 +396,25 @@ Model::insertOptioned( Meta::TrackList list, int options )
                     break;
                 }
             }
+
         }
         if ( alreadyOnPlaylist )
             Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
+
+   int orgCount = rowCount(); //needed because recursion messes up counting
+   bool playlistAdded = false;
+
+   //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
+   for( int i = 0; i < list.size(); ++i )
+   {
+       if ( m_playlistLoader->isPlaylist( list.at( i )->url() ) ) {
+           playlistAdded = true;
+           m_playlistLoader->load( list.takeAt( i )->url() );
+       }
+   }
+
+
     int firstItemAdded = -1;
     if( options & Replace )
     {
@@ -405,7 +424,10 @@ Model::insertOptioned( Meta::TrackList list, int options )
     }
     else if( options & Append )
     {
-        firstItemAdded = rowCount();
+        if ( playlistAdded )
+           firstItemAdded = orgCount;
+        else 
+           firstItemAdded = rowCount();
         insertTracks( firstItemAdded, list );
     }
     else if( options & Queue )

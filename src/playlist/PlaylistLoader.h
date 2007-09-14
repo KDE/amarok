@@ -1,204 +1,77 @@
-// Author: Max Howell (C) Copyright 2003-4
-// Author: Mark Kretschmann (C) Copyright 2004
-// Copyright: See COPYING file that comes with this distribution
-//
+/***************************************************************************
+ *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
+ ***************************************************************************/
 
-#ifndef UrlLoader_H
-#define UrlLoader_H
+#ifndef PlaylistLoader_H
+#define PlaylistLoader_H
 
 #include "amarok.h"
 #include "debug.h"        //stack allocated
 #include "meta/meta.h"
 
-#include <QtXml>         //baseclass
-//Added by qt3to4:
-#include <kurl.h>         //KUrl::List
-#include "threadmanager.h" //baseclass
-#include "xmlloader.h"    //baseclass
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 
-class QTextStream;
-class XMLData;
 class KJob;
 
 
 /**
- * @class PlaylistFile
- * @author Max Howell
- * @short Allocate on the stack, the contents are immediately available from bundles()
- *
- * Note, it won't do anything with XML playlists
- *
- * TODO be able to load directories too, it's in the spec
- * TODO and playlists within playlists, remote and local
+ * @class PlaylistLoader
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @short Simple frontend class for getting the contents of a playlist onto the playlist
  */
-class PlaylistFile
+
+class PlaylistLoader : public QObject
 {
+Q_OBJECT
 public:
-    PlaylistFile( const QString &path );
+
+    PlaylistLoader();
+    
+    bool isPlaylist( const KUrl &path );
+    void load( const QString &path ); 
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
 
-    /// the tracks from this playlist, they only contain
-    /// the information that can be extracted from the playlists
-    Meta::TrackList &tracks() { return m_tracks; }
 
-    /// the name of the playlist. often stored in the document (eg xspf) or derived from the filename
-    QString &title() { return m_title; }
+private:
 
-    ///@return true if couldn't load the playlist's contents
-    bool isError() const { return !m_error.isEmpty(); }
-
-    /// if start returns false this has a translated error description
-    QString error() const { return m_error; }
-
-
-    static inline bool isPlaylistFile( const KUrl &url ) { return isPlaylistFile( url.fileName() ); }
-    static inline bool isPlaylistFile( const QString &fileName ) { return format( fileName ) != Unknown; }
-    static inline Format format( const QString &fileName );
-    static QTime stringToTime(const QString&);
-
-protected:
-    /// make these virtual if you need to
-    bool loadM3u( QTextStream& );
-    bool loadPls( QTextStream& );
-    unsigned int loadPls_extractIndex( const QString &str ) const;
-    bool loadRealAudioRam( QTextStream& );
-    bool loadASX( QTextStream& );
-    bool loadSMIL( QTextStream& );
-    bool loadXSPF( QTextStream& );
+    Format m_format;
+    KIO::StoredTransferJob * m_downloadJob;
+    QString m_contents;
     QString m_path;
-    QString m_error;
-    Meta::TrackList m_tracks;
-    QString m_title;
-};
 
-inline PlaylistFile::Format
-PlaylistFile::format( const QString &fileName )
-{
-    const QString ext = Amarok::extension( fileName );
 
-    if( ext == "m3u" ) return M3U;
-    if( ext == "pls" ) return PLS;
-    if( ext == "ram" ) return RAM;
-    if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" ) return ASX;
-    if( ext == "xml" ) return XML;
-    if( ext == "xspf" ) return XSPF;
+    void downloadPlaylist( const KUrl & path ); 
+    bool loadPls( QTextStream &stream );
+    unsigned int loadPls_extractIndex( const QString &str ) const;
 
-    return Unknown;
-}
+    bool loadM3u( QTextStream &stream );
 
-/**
- * @author Max Howell
- * @author Mark Kretschmann
- * @short Populates the Playlist-view with URLs
- *
- * + Load playlists, remote and local
- * + List directories, remote and local
- * + Read tags, from file:/// and from DB
- */
-class UrlLoader : public ThreadManager::DependentJob
-{
-Q_OBJECT
-
-public:
-    UrlLoader( const KUrl::List&, int after, int options = 0 );
-   ~UrlLoader();
-
-    static const uint OPTIMUM_BUNDLE_COUNT = 50;
-
-signals:
-void queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & );
-
-protected:
-    /// reimplemented from ThreadManager::Job
-    virtual bool doJob();
-    virtual void completeJob();
-    virtual void customEvent( QEvent* );
-
-    void loadXml( const KUrl& );
+    Format getFormat( const KUrl &path );
+    void handleByFormat( QTextStream &stream, Format format);
+    Format getType( QString &contents );
 
 private slots:
-    void slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &attributes );
-    void slotPlaylistInfo( const QString &product, const QString &version, const QString &dynamicMode );
 
-private:
-    KUrl::List recurse( const KUrl& );
+    void downloadComplete( KJob *job );
 
-private:
-    KUrl::List    m_badURLs;
-    KUrl::List    m_URLs;
-    PlaylistItem *m_markerListViewItem;
-    bool          m_playFirstUrl;
-    bool          m_coloring;
-    int           m_options;
-    Debug::Block  m_block;
-    QList<PlaylistItem*> m_oldQueue;
-    QXmlInputSource  *m_xmlSource;
-    Q3ValueList<XMLData> m_xml;
-    KUrl m_currentURL;
-    QString m_dynamicMode;
-
-protected:
-    UrlLoader( const UrlLoader& ); //undefined
-    UrlLoader &operator=( const UrlLoader& ); //undefined
 };
-
-
-
-/**
- * @author Max Howell
- * @short Populates the Playlist-view using the result of a single SQL query
- *
- * The format of the query must be in a set order, see doJob()
- */
-class SqlLoader : public UrlLoader
-{
-    const QString m_sql;
-
-public:
-    SqlLoader( const QString &sql, Q3ListViewItem *after, int options = 0 );
-
-    virtual bool doJob();
-};
-
-
-
-/**
- * @author Max Howell
- * @short Fetches a playlist-file from any location, and then loads it into the Playlist-view
- */
-class RemotePlaylistFetcher : public QObject
-{
-    Q_OBJECT
-
-    const KUrl m_source;
-    KUrl m_destination;
-    Q3ListViewItem *m_after;
-    bool m_playFirstUrl;
-    int m_options;
-    class KTemporaryFile *m_temp;
-
-public:
-    RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem *after, int options = 0 );
-   ~RemotePlaylistFetcher();
-
-private slots:
-    void result( KJob* );
-    void abort() { delete this; }
-};
-
-// PRIVATE -- should be in the .cpp, but fucking moc.
-
-class MyXmlLoader: public MetaBundle::XmlLoader
-{
-    Q_OBJECT
-public:
-    MyXmlLoader() { }
-    virtual bool startElement( const QString&, const QString&, const QString &, const QXmlAttributes& );
-signals:
-    void playlistInfo( const QString &product, const QString &version, const QString &dynamicMode );
-};
-
 
 #endif
+
