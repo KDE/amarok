@@ -54,17 +54,10 @@ namespace Amarok
        virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
        virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
-    private slots:
-        void slotPauseTimer();
-
     private:
-        QLabel *m_timeLabel;
-        QLabel *m_timeLabel2;
-        int m_timeLength;
         QLabel *m_itemCountLabel;
         //FIXME: Port
 //         QueueLabel *m_queueLabel;
-        QTimer *m_pauseTimer;
     };
     /**
      * Is used to queue up longMessages for the StatusBar before the StatusBar

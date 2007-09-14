@@ -60,15 +60,22 @@ StatusBar* StatusBar::s_instance = 0;
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
         , EngineObserver( EngineController::instance() )
-        , m_timeLength( 9 )
-        , m_pauseTimer( new QTimer( this ) )
 {
     s_instance = this; //static member
     setSizeGripEnabled( false );
+    setMainText( "Test 1 two three four" );
     // total songs count
-    m_itemCountLabel = new QLabel( this );
-    addPermanentWidget(m_itemCountLabel);
-    addPermanentWidget(m_itemCountLabel);
+    QWidget *lengthBox = new QWidget( this );
+    addPermanentWidget( lengthBox );
+    QHBoxLayout *lengthLayout = new QHBoxLayout( lengthBox );
+    lengthLayout->setMargin(1);
+    lengthLayout->setSpacing(2);
+    lengthLayout->addSpacing(3);
+    m_itemCountLabel = new QLabel( lengthBox );
+    lengthLayout->addWidget( m_itemCountLabel );
+    lengthLayout->addSpacing( 3 );
+    lengthBox->setLayout( lengthLayout );
+
     m_itemCountLabel->setAlignment( Qt::AlignCenter );
     m_itemCountLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
@@ -91,8 +98,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     engineStateChanged( Engine::Empty );
 
     // for great justice!
-    // FIXME The slot segfaults for some reason
-    //connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
     connect( The::playlistModel(), SIGNAL(playlistCountChanged(int)),
                                     SLOT(slotItemCountChanged(int)) );
@@ -107,8 +112,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 void
 StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
-    m_pauseTimer->stop();
-
     switch ( state ) {
     case Engine::Empty:
         setMainText( QString() );
@@ -116,7 +119,6 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 
     case Engine::Paused:
         m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
-        m_pauseTimer->start( 300 );
         break;
 
     case Engine::Playing:
@@ -207,26 +209,8 @@ StatusBar::slotItemCountChanged( int newCount )
     {
         totalSeconds += item->track()->length();
     }
-    m_itemCountLabel->setText( i18n( "%1 Tracks", newCount ) );
+    m_itemCountLabel->setText( i18n( "%1 Tracks (%2)", newCount, Meta::secToPrettyTime(totalSeconds) ) );
     m_itemCountLabel->setToolTip( i18n( "Play-time: %1", Meta::secToPrettyTime( totalSeconds ) ) );
-}
-
-void
-StatusBar::slotPauseTimer()  //slot
-{
-    static uint counter = 0;
-
-    if ( counter == 0 )
-    {
-        m_timeLabel->erase();
-        m_timeLabel2->erase();
-    } else
-    {
-        m_timeLabel->update();
-        m_timeLabel2->update();
-    }
-
-    ++counter &= 3;
 }
 
 ///////////////////

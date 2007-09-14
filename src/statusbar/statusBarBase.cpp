@@ -232,7 +232,11 @@ StatusBar::resetMainText()
     shortLongButton()->hide();
 
     if( allDone() )
+    {
+        debug() << "All done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
         m_mainTextLabel->setText( m_mainText );
+        m_mainTextLabel->show();
+    }
 
     else {
         ProgressBar *bar = 0;
