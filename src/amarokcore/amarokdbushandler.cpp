@@ -55,7 +55,6 @@
 
 #include <collectionadaptor.h>
 #include <contextadaptor.h>
-#include <mediabrowseradaptor.h>
 #include <playeradaptor.h>
 #include <playlistadaptor.h>
 #include <playlistbrowseadaptor.h>
