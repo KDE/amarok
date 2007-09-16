@@ -167,6 +167,8 @@ void MainWindow::init()
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode") ), plBar ) );
         plBar->addAction( new KToolBarSpacerAction( this ) );
+        plBar->addSeparator();
+        plBar->addAction( actionCollection()->action( "playlist_switch") );
     } //END Playlist Toolbar
 
     {

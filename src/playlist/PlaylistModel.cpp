@@ -96,7 +96,14 @@ Model::data( const QModelIndex& index, int role ) const
     }
     else if( role == Qt::DisplayRole && row != -1 )
     {
-        return m_items.at( row )->track()->name();
+        switch ( index.column() ) {
+            case 0:
+                return m_items.at( row )->track()->name();
+            case 1:
+                return m_items.at( row )->track()->album()->name();
+            case 2:
+                return m_items.at( row )->track()->artist()->name();
+        }
     }
     else
     {
@@ -690,9 +697,34 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
     }
 }
 
+QVariant Model::headerData(int section, Qt::Orientation orientation, int role) const
+{
+
+    Q_UNUSED( orientation );
+    
+    if ( role != Qt::DisplayRole )
+        return QVariant();
+
+    switch ( section ) 
+    {
+        case 0:
+            return "title";
+        case 1:
+            return "album";
+        case 2:
+            return "artist";
+        default:
+            return QVariant();
+     }
+   
+ 
+}
+
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
+
 
 
 

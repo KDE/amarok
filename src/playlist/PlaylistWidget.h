@@ -9,6 +9,7 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
+#include <QStackedWidget>
 #include <QWidget>
 
 namespace Playlist {
@@ -18,6 +19,12 @@ namespace Playlist {
         Q_OBJECT
         public:
             Widget( QWidget* parent );
+
+        public slots:
+            void switchView();
+
+        private:
+            QStackedWidget *m_stackedWidget;
     };
 }
 

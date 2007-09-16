@@ -95,12 +95,12 @@ class TrackNavigator;
         
             //required by QAbstractListModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
-            int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 1; }
+            int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 3; }
             QVariant data(const QModelIndex &index, int role) const;
 
             //overriding QAbstractItemModel
             bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-            QVariant headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const { return QVariant(); }
+            QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
             Qt::DropActions supportedDropActions() const;
 
             //Drag and Drop methods
