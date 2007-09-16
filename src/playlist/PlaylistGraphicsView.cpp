@@ -30,6 +30,9 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
     , m_model( 0 )
 {
+    setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
+
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
 }

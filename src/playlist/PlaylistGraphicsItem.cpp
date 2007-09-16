@@ -283,8 +283,12 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
     if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable) && m_items )
     {
-        bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
-        debug() << "originalLocation (" << m_items->preDragLocation << ") contains currentPoint (" << event->scenePos() << ") ? " << dragOverOriginalPosition;
+        QPointF scenePosition = event->scenePos();
+
+        if( scenePosition.y() < 0 )
+            return;
+
+        bool dragOverOriginalPosition = m_items->preDragLocation.contains( scenePosition );
 
         //make sure item is drawn on top of other items
         setZValue( 2.0 );
