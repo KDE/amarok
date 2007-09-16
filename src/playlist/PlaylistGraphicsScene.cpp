@@ -38,7 +38,7 @@ GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
         {
             debug() << "Accepting!";
             event->accept();
-            DropVis::instance()->showDropIndicator();
+            DropVis::instance()->show();
             break;
         }
     }

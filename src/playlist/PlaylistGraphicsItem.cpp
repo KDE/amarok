@@ -325,9 +325,9 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
                     item->setSelected( true );
                 
                 if( dragOverOriginalPosition )
-                    Playlist::DropVis::instance()->showDropIndicator( m_items->preDragLocation.y() );
+                    Playlist::DropVis::instance()->show( m_items->preDragLocation.y() );
                 else
-                    Playlist::DropVis::instance()->showDropIndicator( above );
+                    Playlist::DropVis::instance()->show( above );
             }
         }
     }
@@ -345,7 +345,7 @@ Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
         if( event->mimeData()->hasFormat( mime ) )
         {
             event->accept();
-            Playlist::DropVis::instance()->showDropIndicator( this );
+            Playlist::DropVis::instance()->show( this );
             break;
         }
     }

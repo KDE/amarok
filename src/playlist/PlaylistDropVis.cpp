@@ -37,16 +37,16 @@ Playlist::DropVis::instance()
 }
 
 void
-Playlist::DropVis::showDropIndicator( qreal yPosition )
+Playlist::DropVis::show( qreal yPosition )
 {
     qreal width = The::playlistView()->viewport()->size().width();
     setLine( 0, 0, width, 0 );
     setPos( QPointF( 0, yPosition ) );
-    show();
+    QGraphicsItem::show();
 }
 
 void
-Playlist::DropVis::showDropIndicator( Playlist::GraphicsItem *above )
+Playlist::DropVis::show( Playlist::GraphicsItem *above )
 {
     if( !scene() )
         return;
@@ -67,6 +67,6 @@ Playlist::DropVis::showDropIndicator( Playlist::GraphicsItem *above )
             yPosition = below->pos().y() + below->boundingRect().height();
         }
     }
-    showDropIndicator( yPosition );    
+    show( yPosition );    
 }
 
