@@ -36,11 +36,9 @@
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
-#include "selectLabel.h"
 #include "servicebrowser/magnatunestore/MagnatuneStore.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
@@ -54,7 +52,6 @@
 #include "statusbar.h"
 #include "TheInstances.h"
 #include "threadmanager.h"
-#include "toolbar.h"
 #include "volumewidget.h"
 #include "PodcastCollection.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -89,11 +86,15 @@
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <kstatusbar.h>
 #include <ktoolbar.h>
-#include <ktoolbarspaceraction.h>
-   //createGUI()
-#include <kxmlguibuilder.h>   //XMLGUI
-#include <kxmlguifactory.h>   //XMLGUI
 #include <fixx11h.h>
+
+class ContextWidget : public KVBox
+{
+    // Set a useful size default of the center tab.
+    public:
+        ContextWidget( QWidget *parent ) : KVBox( parent ) {}
+        QSize sizeHint() const { return QSize( 400, 300 ); }
+};
 
 MainWindow *MainWindow::s_instance = 0;
 
@@ -142,34 +143,7 @@ void MainWindow::init()
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-    KVBox *playlistwindow = new KVBox;
-    playlistwindow->setMaximumSize( QSize( 300, 7000 ) );
-    playlistwindow->setMinimumSize( QSize( 250, 100  ) );
-    playlistwindow->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-
-    new Playlist::Widget( playlistwindow );
-
-    KToolBar *plBar = new Amarok::ToolBar( playlistwindow );
-    plBar->setObjectName( "PlaylistToolBar" );
-
-    { //START Playlist toolbar
-        plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        plBar->setIconDimensions( 22 );
-        plBar->setMovable( false );
-        plBar->addAction( new KToolBarSpacerAction( this ) );
-        plBar->addAction( actionCollection()->action( "playlist_clear") );
-        plBar->addAction( actionCollection()->action( "playlist_save") );
-        plBar->addSeparator();
-        plBar->addAction( actionCollection()->action( "playlist_undo") );
-        plBar->addAction( actionCollection()->action( "playlist_redo") );
-        plBar->addSeparator();
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("repeat") ), plBar ) );
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( actionCollection()->action("random_mode") ), plBar ) );
-        plBar->addAction( new KToolBarSpacerAction( this ) );
-        plBar->addSeparator();
-        plBar->addAction( actionCollection()->action( "playlist_switch") );
-    } //END Playlist Toolbar
+    Playlist::Widget *playlistWidget = new Playlist::Widget( this );
 
     {
         m_controlBar = new MainToolbar( this );
@@ -192,7 +166,6 @@ void MainWindow::init()
         playerControlsToolbar->setMinimumSize( 180, 45 );
         insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
 
-        
         QWidget * spacer = new QWidget( m_controlBar );
         spacer->setMinimumSize( 50, 30 );
         m_controlBar->layout()->setAlignment( spacer, Qt::AlignRight );
@@ -200,7 +173,6 @@ void MainWindow::init()
         VolumeWidget *vw = new VolumeWidget( m_controlBar );
         vw->setMinimumSize( 150, 30 );
         m_controlBar->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
-        
 
         ProgressWidget *pWidget = new ProgressWidget( aVBox );
         pWidget->setMinimumSize( 400, 17 );
@@ -223,24 +195,16 @@ void MainWindow::init()
     topColor.setAlpha( 75 );
     bottomColor.setAlpha( 130 );
 
-    this->toolBars().clear();
-
-
     createMenus();
 
-    QWidget *contextWidget = new QWidget( this );
-    contextWidget->setMinimumSize( QSize(500,100) );
-    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    ContextWidget *contextWidget = new ContextWidget( this );
+    contextWidget->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
     new Context::ContextView( contextWidget );
     {
-        QVBoxLayout* layout = new QVBoxLayout( contextWidget );
-        layout->setContentsMargins( 0, 0, 0, 0 );
-        layout->addWidget( Context::ContextView::self() );
-        Amarok::StatusBar *statusbar = new Amarok::StatusBar( contextWidget );
-        layout->addWidget( statusbar );
+        new Amarok::StatusBar( contextWidget );
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
-            layout->addWidget( new CoverBling( this ) );
+            new CoverBling( contextWidget );
 
         ControlBox* controlBox = new ControlBox( contextWidget );
         controlBox->show();
@@ -252,11 +216,10 @@ void MainWindow::init()
         connect( controlBox, SIGNAL(lockInterface(bool)),       Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)) );
     }
 
-    m_browsers->setMaximumSize( QSize(300,7000) );
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins( 0, 0, 0, 0 );
+    mainLayout->setContentsMargins( 1, 1, 1, 1 );
 
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
@@ -265,7 +228,7 @@ void MainWindow::init()
     m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
     m_splitter->addWidget( contextWidget );
-    m_splitter->addWidget( playlistwindow );
+    m_splitter->addWidget( playlistWidget );
 
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
