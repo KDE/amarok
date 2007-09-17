@@ -42,8 +42,6 @@
 // stuff that must be included last
 //#include "startupTips.h"
 #include "timeLabel.h"
-#include "toggleLabel.h"
-#include "toggleLabel.moc"
 
 
 namespace Amarok {
