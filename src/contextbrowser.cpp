@@ -212,7 +212,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_contextTab = new QVBox(this, "context_tab");
 
-    m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */ );
+    m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */,
+            false /*JScriptEnabled*/ );
 
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
@@ -264,7 +265,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
 
-    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */ );
+    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* JScriptEnabled*/ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
     m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
@@ -285,7 +286,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
 
-    m_wikiPage = new HTMLView( m_wikiTab, "wiki_page", true /* DNDEnabled */ );
+    m_wikiPage = new HTMLView( m_wikiTab, "wiki_page", true /* DNDEnabled */, false /* JScriptEnabled */ );
 
     m_cuefile = CueFile::instance();
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
