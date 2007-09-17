@@ -34,7 +34,7 @@ private:
 
     QProcess *m_proc;
     int       m_counter;
-    QObject  *m_splash;
+    QWidget  *m_splash;
 
     static const int INTERVAL = 10; //ms
 };

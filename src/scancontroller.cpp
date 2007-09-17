@@ -327,6 +327,7 @@ main_loop:
         CollectionDB::instance()->dropTables( true ); // drop temp tables
     }
 
+    setProgress100Percent();
     return !isAborted();
 }
 

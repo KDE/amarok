@@ -4,12 +4,11 @@ INCLUDES = \
         $(all_includes)
 
 amarok_SOURCES = \
-        loader.cpp \
-        splash.cpp
+        loader.cpp
 
 amarok_LDADD = \
         $(LIB_QT) \
-        $(LIB_KDECORE)
+        $(LIB_KDEUI)
 
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 

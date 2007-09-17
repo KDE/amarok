@@ -25,7 +25,7 @@
 #include <kinstance.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
-#include "splash.h"
+#include <ksplashscreen.h>
 
 extern "C"
 {
@@ -142,8 +142,15 @@ Loader::Loader( QStringList args )
     // we transmit the startup_id, so amarokapp can stop the startup animation
     //FIXME QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
-     if( !QApplication::isSessionRestored() && isSplashEnabled() )
-        m_splash = new Splash;
+     if( !QApplication::isSessionRestored())
+     {
+        KInstance instance("amarok"); // KGlobal::dirs() crashes without
+        if( isSplashEnabled() )
+        {
+            m_splash = new KSplashScreen( QPixmap( KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg")));
+            m_splash->show();
+        }
+     }
 
     args.prepend( "amarokapp" );
 
@@ -207,7 +214,6 @@ bool
 isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
-    KInstance instance("amarok"); // KGlobal::dirs() crashes without
     (void)KGlobal::config(); // the kubuntu special directory is not present without this
     QStringList dirs = KGlobal::dirs()->findAllResources( "config", "amarokrc" );
 
