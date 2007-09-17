@@ -301,15 +301,13 @@ yauapEngine::init( void )
 {
     GError *error = NULL;
     int i,  ret = 0;
-      
+
     debug() << "In init" << endl;
 
 #ifndef MANUAL_YAUAP_START
     /* start yauap in slave mode */
-    helper.addArgument( "yauap" );
-    helper.addArgument( "-noexit" );
-    helper.setCommunication( QProcess::Stdin|QProcess::Stdout );
-       
+    helper << "yauap" << "-noexit";
+
     if( !helper.start() )
     {
         debug() << "could not start yauap " << endl;
@@ -318,7 +316,6 @@ yauapEngine::init( void )
     }
 #endif
 
-	
     /* create and open qt DBus connection so that we are able to receive signals */
     con = new DBusConnection( (void*) this );
     con->open();

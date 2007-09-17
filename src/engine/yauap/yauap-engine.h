@@ -16,6 +16,7 @@ copyright            : (C) 2006 by Sascha Sommer <ssommer@suse.de>
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/connection.h>
 
+#include <kprocess.h>
 
 #include "enginebase.h"
 #include "debug.h"
@@ -38,7 +39,7 @@ public:
 
 class yauapEngine : public Engine::Base 
 {
-    virtual ~yauapEngine(); 
+    virtual ~yauapEngine();
     virtual bool init();
     virtual bool canDecode( const KURL& ) const;
     virtual uint position() const ;
@@ -70,7 +71,7 @@ private:
     Engine::State m_state;
     DBusConnection *con;
     /* helper process to start */
-    QProcess helper;
+    KProcess helper;
 };
 
 
