@@ -3132,7 +3132,8 @@ InfoPane::InfoPane( QWidget *parent )
         box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
-        m_infoBrowser = new HTMLView( box, "extended_info" );
+        m_infoBrowser = new HTMLView( box, "extended_info", false /*DNDEnabled*/, false /*JS
+                                                                                          enabled*/ );
 
         container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 3 );
