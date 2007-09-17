@@ -249,7 +249,6 @@ ScanController::doJob()
     CollectionDB::instance()->prepareTempTables();
 
     CollectionDB::instance()->invalidateArtistAlbumCache();
-    setProgressTotalSteps( 100 );
 
 main_loop:
     uint delayCount = 100;
