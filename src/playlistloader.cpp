@@ -99,8 +99,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
             .setTotalSteps( 100 );
 
     foreachType( KURL::List, urls ) {
-        const KURL url = Amarok::mostLocalURL( *it );
-        // FIXME: url needs detach()ing
+        const KURL url = Amarok::detachedKURL(Amarok::mostLocalURL( *it ));
         const QString protocol = url.protocol();
 
         if( protocol == "seek" )
@@ -111,7 +110,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
             DEBUG_BLOCK
             debug() << "context expandurl" << endl;
 
-            m_URLs += ContextBrowser::expandURL( url );
+            m_URLs += ContextBrowser::expandURL(Amarok::detachedKURL(url));
         }
 
         else if( !MetaBundle::isKioUrl( url ) )
