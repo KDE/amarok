@@ -25,6 +25,7 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
 #include <dbus/dbus-glib.h>
 #include <klocale.h>
 #include <iostream>
+#include <stdlib.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/connection.h>
