@@ -20,6 +20,7 @@ RepeatTrackNavigator::advanceTrack()
     if( !m_previousTrack || (m_previousTrack != m_playlistModel->activeTrack() ) ) // we need to repeat
     {
         setCurrentTrack( m_playlistModel->activeRow() );
+        m_previousTrack = m_playlistModel->activeTrack();
     }
     else {
         if( m_previousTrack == m_playlistModel->activeTrack() ) // We already repeated, advance
@@ -31,7 +32,16 @@ RepeatTrackNavigator::advanceTrack()
             }
         }
     }
-    m_previousTrack = m_playlistModel->activeTrack();
+}
+
+void
+RepeatTrackNavigator::userAdvanceTrack()
+{
+    int updateRow = m_playlistModel->activeRow() + 1;
+    if( updateRow < m_playlistModel->rowCount() )
+    {
+        setCurrentTrack( updateRow );
+    }
 }
 
 
