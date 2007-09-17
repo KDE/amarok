@@ -24,6 +24,7 @@
 #include "PodcastMeta.h"
 
 #include <QListIterator>
+#include <typeinfo>
 
 using namespace Meta;
 

@@ -31,7 +31,7 @@ namespace Playlist
             void  setModel( Playlist::Model *model );
 
             const QList<GraphicsItem*> tracks() const { return m_tracks; }
-            void  moveItem( Playlist::GraphicsItem *above, Playlist::GraphicsItem *above );
+            void  moveItem( Playlist::GraphicsItem *oldAbove, Playlist::GraphicsItem *newAbove );
 
         protected:
             virtual void contextMenuEvent( QContextMenuEvent *event );

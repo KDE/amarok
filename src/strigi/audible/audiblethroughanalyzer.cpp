@@ -23,6 +23,7 @@
 #endif
 
 #include <string>
+#include <string.h>
 #if 1
 #include <strigi/streamthroughanalyzer.h>
 #include <strigi/analyzerplugin.h>

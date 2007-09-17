@@ -26,6 +26,7 @@
 
 #include <string>
 #include <sstream>
+#include <string.h>
 #if 1
 #include <strigi/streamthroughanalyzer.h>
 #include <strigi/analyzerplugin.h>

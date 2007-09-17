@@ -15,6 +15,7 @@
 
 #include "debug.h"
 #include <math.h>
+#include <limits.h>
 
 #include <KStandardDirs>
 
