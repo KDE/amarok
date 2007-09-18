@@ -36,6 +36,7 @@
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/meta.h"
+#include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
@@ -130,10 +131,9 @@ namespace Amarok
         return track ? track->sampleRate() : 0;
     }
 
-    float DbusPlayerHandler::score()
+    double DbusPlayerHandler::score()
     {
         Meta::TrackPtr track = EngineController::instance()->currentTrack();
-        //TODO: return type mismatch. fix this
         return track ? track->score() : 0.0;
     }
 
@@ -219,9 +219,7 @@ namespace Amarok
 
     QString DbusPlayerHandler::currentTime()
     {
-        //TODO: move utility methods somewhere else
-        //return MetaBundle::prettyLength( EngineController::instance()->trackPosition() / 1000 ,true );
-        return QString();
+        return Meta::secToPrettyTime( EngineController::instance()->trackPosition() / 1000 );
     }
 
     QString DbusPlayerHandler::encodedURL()
@@ -243,14 +241,14 @@ namespace Amarok
 
     QString DbusPlayerHandler::lyrics()
     {
-        //TODO: implement this
-        //return CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
-        return QString();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? track->cachedLyrics() : QString();
     }
 
     QString DbusPlayerHandler::lyricsByPath( QString path )
     {
-        return CollectionDB::instance()->getLyrics( path );
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(path) );
+        return track ? track->cachedLyrics() : QString();
     }
 
     QString DbusPlayerHandler::lastfmStation()
@@ -279,19 +277,14 @@ namespace Amarok
 
     QString DbusPlayerHandler::totalTime()
     {
-        //TODO: implement utility method for this somewhere
-        //return EngineController::instance()->bundle().prettyLength();
-        return QString();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? Meta::secToPrettyTime( track->length() ) : QString();
     }
 
     QString DbusPlayerHandler::track()
     {
-        //what does this do?
-        /*if ( EngineController::instance()->bundle().track() != 0 )
-            return QString::number( EngineController::instance()->bundle().track() );
-        else
-            return QString();*/
-        return QString();
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        return track ? QString::number( track->trackNumber() ) : QString();
     }
 
     QString DbusPlayerHandler::type()
@@ -418,7 +411,7 @@ namespace Amarok
             bool instantiated = EqualizerSetup::isInstantiated();
             EqualizerSetup* eq = EqualizerSetup::instance();
 
-            Q3ValueList<int> gains;
+            QList<int> gains;
             gains << band60 << band170 << band310 << band600 << band1k
                   << band3k << band6k << band12k << band14k << band16k;
 
@@ -450,7 +443,9 @@ namespace Amarok
 
     void DbusPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )
     {
-        CollectionDB::instance()->setLyrics( url, lyrics );
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
+        if( track )
+            track->setCachedLyrics( lyrics );
     }
 
     void DbusPlayerHandler::setScore( float score )
@@ -460,9 +455,10 @@ namespace Amarok
             track->setScore( score );
     }
 
-    void DbusPlayerHandler::setScoreByPath( const QString &url, float score )
+    void DbusPlayerHandler::setScoreByPath( const QString &url, double score )
     {
-        CollectionDB::instance()->setSongPercentage(url, score);
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
+        track->setScore( score );
     }
 
     void DbusPlayerHandler::setBpm( float bpm )
@@ -491,7 +487,9 @@ namespace Amarok
 
     void DbusPlayerHandler::setRatingByPath( const QString &url, int rating )
     {
-        CollectionDB::instance()->setSongRating(url, rating);
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
+        if( track )
+            track->setRating( rating );
     }
 
     void DbusPlayerHandler::setVolume(int volume)

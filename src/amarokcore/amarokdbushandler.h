@@ -48,7 +48,7 @@ class DbusPlayerHandler : public QObject
       virtual bool repeatTrackStatus();
       virtual int  getVolume();
       virtual int sampleRate();
-      virtual float score ();
+      virtual double score ();
       virtual int rating ();
       virtual int  status();
       virtual int  trackCurrentTime();
@@ -97,7 +97,7 @@ class DbusPlayerHandler : public QObject
       virtual void setEqualizerPreset( QString name );
       virtual void setLyricsByPath( const QString& url, const QString& lyrics );
       virtual void setScore( float score );
-      virtual void setScoreByPath( const QString &url, float score );
+      virtual void setScoreByPath( const QString &url, double score );
       virtual void setBpm( float bpm );
       virtual void setBpmByPath( const QString &url, float bpm );
       virtual void setRating( int rating );
