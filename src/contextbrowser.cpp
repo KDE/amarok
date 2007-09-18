@@ -213,7 +213,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_contextTab = new QVBox(this, "context_tab");
 
     m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */,
-            false /*JScriptEnabled*/ );
+            true /*JScriptEnabled*/ );
 
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
