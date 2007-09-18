@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
+    *  Sort albums made in the same year alphabetically in 'ascending
+    order'.  (BR 149408)
+    * Statistics tool shouldn't show samplers in 'favorite albums'.
     * Duplicate songs were not allowed in playlist when adding from the
       collection browser. (BR 149643)
     * Make sure the localUrl of a PodcastEpisode is valid after a failed

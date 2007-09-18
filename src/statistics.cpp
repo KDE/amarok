@@ -444,6 +444,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
+        qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFavoriteAvg();
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
