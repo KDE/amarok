@@ -87,7 +87,7 @@ qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xm
 #qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.context.xml amarokcore/amarokdbushandler.h Amarok::DbusContextHandler)
 

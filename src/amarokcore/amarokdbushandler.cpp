@@ -57,7 +57,7 @@
 #include <contextadaptor.h>
 #include <playeradaptor.h>
 #include <playlistadaptor.h>
-#include <playlistbrowseadaptor.h>
+#include <playlistbrowseradaptor.h>
 #include <scriptadaptor.h>
 
 

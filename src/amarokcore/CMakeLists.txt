@@ -4,6 +4,6 @@ install(FILES org.kde.amarok.collection.xml
               org.kde.amarok.mediabrowser.xml
               org.kde.amarok.player.xml
               org.kde.amarok.playlist.xml
-              org.kde.amarok.playlistbrowse.xml
+              org.kde.amarok.playlistbrowser.xml
               org.kde.amarok.script.xml
 	      DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
