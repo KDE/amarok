@@ -153,20 +153,32 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 {
     int moveMeIndex = m_tracks.indexOf( moveMe );
     int aboveIndex  = m_tracks.indexOf( above  );
-    m_tracks.move( moveMeIndex, aboveIndex );
-    shuffleTracks( moveMeIndex );
+
+    if( moveMeIndex < aboveIndex )
+    {
+        m_tracks.move( moveMeIndex, aboveIndex - 1 );
+        shuffleTracks( moveMeIndex, aboveIndex );
+    }
+    else
+    {
+        m_tracks.move( moveMeIndex, aboveIndex );
+        shuffleTracks( aboveIndex, moveMeIndex + 1);
+    }
 }
 
 void
-Playlist::GraphicsView::shuffleTracks( int startPosition )
+Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 {
-    if ( startPosition < 0 )
+    if( startPosition < 0 )
         return;
+
+    if( stopPosition < 0 || stopPosition > m_tracks.size() )
+        stopPosition = m_tracks.size();
 
     QTimeLine *timer = new QTimeLine( 300 ); // 0.3 second duration
     timer->setCurveShape( QTimeLine::EaseInCurve );
 
-    for( int i = startPosition; i < m_tracks.size(); ++i )
+    for( int i = startPosition; i < stopPosition; ++i )
     {
         Playlist::GraphicsItem *item = m_tracks.at( i );
         qreal currentY = item->pos().y();

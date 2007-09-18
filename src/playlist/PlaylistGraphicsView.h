@@ -45,7 +45,7 @@ namespace Playlist
 
             void playTrack();
             void removeSelection();
-            void shuffleTracks( int startPosition );
+            void shuffleTracks( int startPosition, int stopPosition = -1 ); // -1: end of playlist
         
         private:
             GraphicsView( QWidget *parent = 0 );
