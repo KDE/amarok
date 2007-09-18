@@ -371,13 +371,13 @@ bool
 yauapEngine::canDecode( const KURL &kurl ) const 
 {
     GError *error = NULL;
-    QString qurl = kurl.prettyURL(); 
+    QString qurl = kurl.url();
     const char* url = qurl.ascii();
     int can_decode = 0;
-    
-    debug() << "In canDecode " << url << endl ;
+
+    debug() << " In canDecode " << url << endl ;
     if (!dbus_g_proxy_call( remote_object, "can_decode", &error,
-                          G_TYPE_STRING,url,
+                          G_TYPE_STRING, url,
                           G_TYPE_INVALID,
                           G_TYPE_INT,&can_decode,
                           G_TYPE_INVALID))
@@ -387,7 +387,7 @@ yauapEngine::canDecode( const KURL &kurl ) const
         g_error_free( error );
         return false;
     }
-       
+
     debug() << "=> " << can_decode << endl;
 
     if( can_decode )
@@ -400,10 +400,9 @@ bool
 yauapEngine::load( const KURL &url, bool isStream )
 {
     GError *error = NULL;
-    QString qurl = url.prettyURL();
+    QString qurl = url.url();
     const char* curl = qurl.ascii();
     int gerror = 0;
-    debug() << "In load " << curl << endl;
 
     m_isStream = isStream;
 
