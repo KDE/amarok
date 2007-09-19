@@ -69,7 +69,7 @@ void ContextSubject::detach( ContextObserver *obs )
     debug() << "detaching observer:" << obs;
     debug() << "contents of m_observers:" << m_observers;
 
-//     if( obs )
-//         m_observers->remove( obs );
+    if( obs )
+        m_observers->remove( obs );
 }
 

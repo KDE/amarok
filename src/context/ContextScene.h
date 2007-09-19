@@ -36,7 +36,7 @@ signals:
     void appletRemoved( QObject *object );
    
 protected slots:
-    void appletDestroyed(QObject* object);
+//     void appletDestroyed(QObject* object);
         
 protected:
     void dragMoveEvent( QGraphicsSceneDragDropEvent * event );

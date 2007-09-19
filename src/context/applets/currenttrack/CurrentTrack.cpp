@@ -200,9 +200,16 @@ void CurrentTrack::configAccepted() // SLOT
     constraintsUpdated();
 }
 
+void CurrentTrack::setGeometry( QRectF geometry )
+{
+    resize( geometry.width(), m_aspectRatio );
+    setPos( geometry.topLeft() );
+}
+
 void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
 {
     DEBUG_BLOCK
+    debug() << "aspectRatio:" << aspectRatio;
     debug() << "resizing to:" << newWidth;
     qreal height = aspectRatio * newWidth;
     debug() << "setting size:" << m_size;

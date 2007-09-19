@@ -16,8 +16,7 @@
 
 #include "Applet.h"
 #include "amarok_export.h"
-#include "widgets/VBoxLayout.h"
-#include "plasma/widgets/hboxlayout.h"
+#include "plasma/widgets/flowlayout.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
@@ -31,9 +30,7 @@ typedef QPointer< Context::Applet > AppletPointer;
 namespace Context
 {
 
-class AMAROK_EXPORT ColumnApplet : public QObject, 
-                                   public QGraphicsItem, 
-                                   public Plasma::HBoxLayout
+class AMAROK_EXPORT ColumnApplet : public Plasma::Applet
 {
     Q_OBJECT
 public:
@@ -41,14 +38,12 @@ public:
     ~ColumnApplet() {}
     
     virtual QRectF boundingRect() const;
-    virtual void paint( QPainter*, const QStyleOptionGraphicsItem*, QWidget* ) {}
     
     AppletPointer addApplet( AppletPointer applet );
     
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
     
-    void init();
     void update();
     
 public slots:
@@ -62,13 +57,7 @@ protected slots:
     void recalculate();
     
 private:
-    void resizeColumns();
-    void balanceColumns();
-    
-    QList< Plasma::VBoxLayout* > m_layout;
-    QRectF m_geometry;
-    
-    int m_padding;
+    Plasma::FlowLayout* m_columns;
     int m_defaultColumnSize;
 };
 

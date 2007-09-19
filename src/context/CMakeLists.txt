@@ -29,6 +29,7 @@ set(plasma_LIB_SRCS
     plasma/applet.cpp
     plasma/configxml.cpp
     plasma/corona.cpp
+    plasma/containment.cpp
     plasma/datacontainer.cpp
     plasma/dataengine.cpp
     plasma/dataenginemanager.cpp

@@ -53,13 +53,14 @@ void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
     DEBUG_BLOCK
     Q_UNUSED( event );
 }
-
+// TODO port to Containment
+/*
 void ContextScene::appletDestroyed(QObject* object)
 {
     DEBUG_BLOCK
     Corona::appletDestroyed( object ); // corona needs to clean up internally
     emit appletRemoved( object );
-}
+}*/
 
 } // Context namespace
 
