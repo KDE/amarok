@@ -969,6 +969,7 @@ StatisticsDetailedItem::getSQL()
         if ( artist != "0" )
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
 
@@ -978,6 +979,9 @@ StatisticsDetailedItem::getSQL()
 
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
 
@@ -987,6 +991,10 @@ StatisticsDetailedItem::getSQL()
 
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
+        qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
     debug() << "DetailedStatisticsItem: query is: " << qb.query() << endl;
