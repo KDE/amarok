@@ -190,25 +190,17 @@ PluginManager::showAbout( const QString &constraint )
 void
 PluginManager::dump( const KService::Ptr service )
 {
-    #define ENDLI endl << Debug::indent()
-
-    kdDebug()
-      << ENDLI
-      << "PluginManager Service Info:" << ENDLI
-      << "---------------------------" << ENDLI
-      << "name                          : " << service->name() << ENDLI
-      << "library                       : " << service->library() << ENDLI
-      << "desktopEntryPath              : " << service->desktopEntryPath() << ENDLI
-      << "X-KDE-Amarok-plugintype       : " << service->property( "X-KDE-Amarok-plugintype" ).toString() << ENDLI
-      << "X-KDE-Amarok-name             : " << service->property( "X-KDE-Amarok-name" ).toString() << ENDLI
-      << "X-KDE-Amarok-authors          : " << service->property( "X-KDE-Amarok-authors" ).toStringList() << ENDLI
-      << "X-KDE-Amarok-rank             : " << service->property( "X-KDE-Amarok-rank" ).toString() << ENDLI
-      << "X-KDE-Amarok-version          : " << service->property( "X-KDE-Amarok-version" ).toString() << ENDLI
-      << "X-KDE-Amarok-framework-version: " << service->property( "X-KDE-Amarok-framework-version" ).toString()
-      << endl
-      << endl;
-
-    #undef ENDLI
+      debug() << "PluginManager Service Info:" << endl;
+      debug() << "---------------------------" << endl;
+      debug() << "name                          : " << service->name() << endl;
+      debug() << "library                       : " << service->library() << endl;
+      debug() << "desktopEntryPath              : " << service->desktopEntryPath() << endl;
+      debug() << "X-KDE-Amarok-plugintype       : " << service->property( "X-KDE-Amarok-plugintype" ).toString() << endl;
+      debug() << "X-KDE-Amarok-name             : " << service->property( "X-KDE-Amarok-name" ).toString() << endl;
+      debug() << "X-KDE-Amarok-authors          : " << service->property( "X-KDE-Amarok-authors" ).toStringList() << endl;
+      debug() << "X-KDE-Amarok-rank             : " << service->property( "X-KDE-Amarok-rank" ).toString() << endl;
+      debug() << "X-KDE-Amarok-version          : " << service->property( "X-KDE-Amarok-version" ).toString() << endl;
+      debug() << "X-KDE-Amarok-framework-version: " << service->property( "X-KDE-Amarok-framework-version" ).toString() << endl;
 }
 
 
