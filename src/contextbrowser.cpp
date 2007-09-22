@@ -1105,6 +1105,10 @@ public:
         {
             m_metadataHistory += QDeepCopy<QString>( *it );
         }
+
+
+        m_amarokIconPath = QDeepCopy<QString>(KGlobal::iconLoader()->iconPath( "amarok",
+                    -KIcon::SizeEnormous ) );
     }
 
 private:
@@ -1146,6 +1150,7 @@ private:
         b->saveHtmlData(); // Send html code to file
     }
     QString m_HTMLSource;
+    QString m_amarokIconPath;
 
     ContextBrowser *b;
     MetaBundle m_currentTrack;
@@ -1330,7 +1335,7 @@ void CurrentTrackJob::showHome()
                 "</div>\n" )
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
-                    << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
+                    << escapeHTMLAttr( m_amarokIconPath )
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
@@ -3193,11 +3198,15 @@ ContextBrowser::getEncodedImage( const QString &imageUrl )
 {
     // Embed cover image in html (encoded string), to get around khtml's caching
     //debug() << "Encoding imageUrl: " << imageUrl << endl;
-    const QImage img( imageUrl );
+    qApp->lock();
+    const QImage img( imageUrl, "PNG" );
+    qApp->unlock();
     QByteArray ba;
     QBuffer buffer( ba );
     buffer.open( IO_WriteOnly );
+    qApp->lock();
     img.save( &buffer, "PNG" ); // writes image into ba in PNG format
+    qApp->unlock();
     const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
     //debug() << "Encoded imageUrl: " << coverImage << endl;
     return coverImage;
