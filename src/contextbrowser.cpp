@@ -4336,6 +4336,9 @@ void ContextBrowser::ratingOrScoreOrLabelsChanged( const QString &path ) //SLOT
     //which can be confusing, and looks less polished/professional
     //This can be changed if it slows things down too much...
     if( m_browseLabels || ( currentTrack.isFile() && ( currentTrack.url().path() == path || AmarokConfig::useRatings() ) ) )
+        m_dirtyCurrentTrackPage = true; // will be reloaded when viewed (much faster)
+     
+    if( currentPage() == m_contextTab )
         refreshCurrentTrackPage();
 }
 
