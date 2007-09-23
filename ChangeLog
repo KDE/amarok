@@ -5,8 +5,11 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   BUGFIXES:
-    *  Sort albums made in the same year alphabetically in 'ascending
-    order'.  (BR 149408)
+    * Always rebuild the dynamic mode cache when in Suggested songs mode,
+      so that we don't land up with stale suggestions. Patch by Jer Johnson
+      <jer@gweep.net>
+    * Sort albums made in the same year alphabetically in 'ascending
+      order'. (BR 149408)
     * Statistics tool shouldn't show samplers in 'favorite albums'.
     * Duplicate songs were not allowed in playlist when adding from the
       collection browser. (BR 149643)

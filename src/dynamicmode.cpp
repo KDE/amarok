@@ -380,7 +380,8 @@ KURL::List DynamicMode::retrieveTracks( const uint trackCount )
 DEBUG_BLOCK
     KURL::List retrieval;
 
-    if( m_cachedItemSet.count() <= trackCount )
+    // always rebuild with suggested mode since the artists will be changing
+    if( m_cachedItemSet.count() <= trackCount || appendType() == SUGGESTION )
         rebuildCachedItemSet();
 
     for( uint i=0; i < trackCount; i++ )
