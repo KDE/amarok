@@ -4,6 +4,10 @@ Amarok ChangeLog
 
 
 VERSION 1.4.8
+  CHANGES:
+    * Only re-render the context view when visible if changing ratings, scores
+      or labels for songs.
+
   BUGFIXES:
     * Always rebuild the dynamic mode cache when in Suggested songs mode,
       so that we don't land up with stale suggestions. Patch by Jer Johnson
