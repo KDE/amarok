@@ -48,7 +48,6 @@
 #include <kprogress.h>
 #include <kpushbutton.h>
 #include <ksqueezedtextlabel.h> //status label
-#include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstatusbar.h>
 #include <kstringhandler.h>    //paintItem
 #include <ktoolbar.h>
