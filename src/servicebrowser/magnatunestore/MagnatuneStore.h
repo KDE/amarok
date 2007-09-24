@@ -105,7 +105,7 @@ private slots:
     /**
      * Starts the process of redownloading a previously bought album
      */
-    //void processRedownload();
+    void processRedownload();
 
     /**
      * Slot for recieving notifications of completed purchase operations
@@ -157,7 +157,7 @@ private:
     QString                    m_currentInfoUrl;
     QMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
-    //MagnatuneRedownloadHandler *m_redownloadHandler;
+    MagnatuneRedownloadHandler *m_redownloadHandler;
 
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;

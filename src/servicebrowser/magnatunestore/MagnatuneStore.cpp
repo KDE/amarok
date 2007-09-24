@@ -78,7 +78,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
     m_currentInfoUrl = "";
 
     m_purchaseHandler = 0;
-  //  m_redownloadHandler = 0;
+    m_redownloadHandler = 0;
 
     m_purchaseInProgress = 0;
 
@@ -140,7 +140,7 @@ void MagnatuneStore::initTopPanel( )
     m_advancedFeaturesButton->setParent( hBox );
     m_advancedFeaturesButton->setText( i18n( "Advanced" ) );
     m_advancedFeaturesButton->setObjectName( "advancedButton" );
-    //connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
+    connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
 
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
 }
@@ -262,7 +262,7 @@ void MagnatuneStore::doneParsing()
     m_collection->emitUpdated();
 }
 
-/*void MagnatuneStore::processRedownload( )
+void MagnatuneStore::processRedownload( )
 {
     debug() << "Process redownload";
 
@@ -271,7 +271,7 @@ void MagnatuneStore::doneParsing()
         m_redownloadHandler = new MagnatuneRedownloadHandler( this );
     }
     m_redownloadHandler->showRedownloadDialog();
-}*/
+}
 
 void MagnatuneStore::purchaseCompleted( bool )
 {
