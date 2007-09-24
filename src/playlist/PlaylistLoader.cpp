@@ -108,13 +108,14 @@ void PlaylistLoader::handleByFormat( QTextStream &stream, Format format)
         case RAM: 
             loadRealAudioRam( stream ); 
             break;
+       case ASX: 
+            loadASX( stream ); 
+            break;
         case SMIL: 
             loadSMIL( stream ); 
             break;
-       /* case ASX: 
-            loadASX( stream ); 
-            break;
-        case XSPF: 
+
+        /*case XSPF: 
             loadXSPF( stream ); 
         break;*/
 
@@ -437,6 +438,127 @@ PlaylistLoader::loadSMIL( QTextStream &stream )
 
     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     return true;
+}
+
+
+bool
+PlaylistLoader::loadASX( QTextStream &stream )
+{
+    //adapted from Kaffeine 0.7
+    TrackList tracks;
+    QDomDocument doc;
+    QString errorMsg;
+    int errorLine, errorColumn;
+    stream.setCodec( "UTF8" );
+
+    QString content = stream.read();
+
+    //ASX looks a lot like xml, but doesn't require tags to be case sensitive,
+    //meaning we have to accept things like: <Abstract>...</abstract>
+    //We use a dirty way to achieve this: we make all tags lower case
+    QRegExp ex("(<[/]?[^>]*[A-Z]+[^>]*>)");
+    ex.setCaseSensitive(true);
+    while ( (ex.search(content)) != -1 )
+        content.replace(ex.cap( 1 ), ex.cap( 1 ).toLower());
+
+
+    if (!doc.setContent(content, &errorMsg, &errorLine, &errorColumn))
+    {
+        debug() << "Error loading xml file: " "(" << errorMsg << ")"
+                << " at line " << errorLine << ", column " << errorColumn << endl;
+        return false;
+    }
+
+    QDomElement root = doc.documentElement();
+
+    QString url;
+    QString title;
+    QString author;
+    QTime length;
+    QString duration;
+
+    if (root.nodeName().toLower() != "asx") return false;
+
+    QDomNode node = root.firstChild();
+    QDomNode subNode;
+    QDomElement element;
+
+    while (!node.isNull())
+    {
+    url.clear();
+    title.clear();
+    author.clear();
+    length = QTime();
+    if (node.nodeName().toLower() == "entry")
+    {
+        subNode = node.firstChild();
+        while (!subNode.isNull())
+        {
+            if ((subNode.nodeName().toLower() == "ref") && (subNode.isElement()) && (url.isNull()))
+            {
+                element = subNode.toElement();
+                if (element.hasAttribute("href"))
+                url = element.attribute("href");
+                if (element.hasAttribute("HREF"))
+                url = element.attribute("HREF");
+                if (element.hasAttribute("Href"))
+                url = element.attribute("Href");
+                if (element.hasAttribute("HRef"))
+                url = element.attribute("HRef");
+            }
+                if ((subNode.nodeName().toLower() == "duration") && (subNode.isElement()))
+                {
+                duration.clear();
+                element = subNode.toElement();
+                if (element.hasAttribute("value"))
+                    duration = element.attribute("value");
+                if (element.hasAttribute("Value"))
+                    duration = element.attribute("Value");
+                if (element.hasAttribute("VALUE"))
+                    duration = element.attribute("VALUE");
+
+                if (!duration.isNull())
+                    length = stringToTime(duration);
+                }
+
+                if ((subNode.nodeName().toLower() == "title") && (subNode.isElement()))
+                {
+                    title = subNode.toElement().text();
+                }
+                if ((subNode.nodeName().toLower() == "author") && (subNode.isElement()))
+                {
+                    author = subNode.toElement().text();
+                }
+                subNode = subNode.nextSibling();
+        }
+        if (!url.isNull())
+        {
+            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
+            trackPtr->setTitle( title );
+            tracks.append( trackPtr );
+        }
+        }
+        node = node.nextSibling();
+    }
+
+    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    return true;
+}
+
+QTime PlaylistLoader::stringToTime(const QString& timeString)
+{
+   int sec = 0;
+   bool ok = false;
+   QStringList tokens = QStringList::split(':',timeString);
+
+   sec += tokens[0].toInt(&ok)*3600; //hours
+   sec += tokens[1].toInt(&ok)*60; //minutes
+   sec += tokens[2].toInt(&ok); //secs
+
+   if (ok)
+      return QTime().addSecs(sec);
+         else
+            return QTime();
 }
 
 #include "PlaylistLoader.moc"

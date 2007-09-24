@@ -27,6 +27,8 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+#include <QTime>
+
 class KJob;
 
 
@@ -63,11 +65,14 @@ private:
     unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadM3u( QTextStream &stream );
     bool loadRealAudioRam( QTextStream& );
+    bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
 
     Format getFormat( const KUrl &path );
     void handleByFormat( QTextStream &stream, Format format);
     Format getType( QString &contents );
+
+    static QTime stringToTime(const QString&);
 
 private slots:
 
