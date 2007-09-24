@@ -20,6 +20,7 @@
 #include "PlaylistModel.h"
 #include "statusbar.h"
 #include "TheInstances.h"
+#include "xspfplaylist.h"
 
 #include <KUrl>
 
@@ -559,6 +560,47 @@ QTime PlaylistLoader::stringToTime(const QString& timeString)
       return QTime().addSecs(sec);
          else
             return QTime();
+}
+
+bool
+PlaylistLoader::loadXSPF( QTextStream &stream )
+{
+    XSPFPlaylist* doc = new XSPFPlaylist( stream );
+
+    XSPFtrackList trackList = doc->trackList();
+
+    TrackList tracks;
+    oldForeachType( XSPFtrackList, trackList )
+    {
+        KUrl location = (*it).location;
+        QString artist = (*it).creator;
+        QString title  = (*it).title;
+        QString album  = (*it).album;
+
+        if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.url() ) ) )
+        {
+
+            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( location );
+            tracks.append( trackPtr );
+        }
+        else
+        {
+            debug() << location << ' ' << artist << ' ' << title << ' ' << album;
+
+            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( location );
+            trackPtr->setTitle( title );
+            trackPtr->setArtist( artist );
+            trackPtr->setAlbum( album );
+            trackPtr->setComment( (*it).annotation );
+            tracks.append( trackPtr );
+
+        }
+    }
+
+    delete doc;
+
+    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    return true;
 }
 
 #include "PlaylistLoader.moc"

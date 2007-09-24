@@ -67,6 +67,7 @@ private:
     bool loadRealAudioRam( QTextStream& );
     bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
+    bool loadXSPF( QTextStream& );
 
     Format getFormat( const KUrl &path );
     void handleByFormat( QTextStream &stream, Format format);
