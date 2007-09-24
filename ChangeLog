@@ -9,6 +9,8 @@ VERSION 1.4.8
       or labels for songs.
 
   BUGFIXES:
+    * Replace slashes in artist name with spaces when querying Wikipedia
+      e.g. AC/DC, To/Die/For. (BR 150001) 
     * Always rebuild the dynamic mode cache when in Suggested songs mode,
       so that we don't land up with stale suggestions. Patch by Jer Johnson
       <jer@gweep.net>
