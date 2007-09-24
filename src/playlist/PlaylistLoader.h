@@ -57,11 +57,12 @@ private:
     QString m_path;
 
 
-    void downloadPlaylist( const KUrl & path ); 
+    void downloadPlaylist( const KUrl & path );
+
     bool loadPls( QTextStream &stream );
     unsigned int loadPls_extractIndex( const QString &str ) const;
-
     bool loadM3u( QTextStream &stream );
+    bool loadRealAudioRam( QTextStream& );
 
     Format getFormat( const KUrl &path );
     void handleByFormat( QTextStream &stream, Format format);

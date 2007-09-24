@@ -104,6 +104,19 @@ void PlaylistLoader::handleByFormat( QTextStream &stream, Format format)
         case M3U:
             loadM3u( stream );
             break;
+        case RAM: 
+            loadRealAudioRam( stream ); 
+            break;
+       /* case ASX: 
+            loadASX( stream ); 
+            break;
+        case SMIL: 
+            loadSMIL( stream ); 
+            break;
+        case XSPF: 
+            loadXSPF( stream ); 
+        break;*/
+
         default:
             debug() << "unknown type!";
             break;
@@ -349,9 +362,28 @@ PlaylistLoader::loadM3u( QTextStream &stream )
 }
 
 
+bool
+PlaylistLoader::loadRealAudioRam( QTextStream &stream )
+{
+    DEBUG_BLOCK
+
+    TrackList tracks;
+    QString url;
+    //while loop adapted from Kaffeine 0.5
+    while (!stream.atEnd())
+    {
+        url = stream.readLine();
+        if (url[0] == '#') continue; /* ignore comments */
+        if (url == "--stop--") break; /* stop line */
+        if ((url.left(7) == "rtsp://") || (url.left(6) == "pnm://") || (url.left(7) == "http://"))
+        {
+            tracks.append( CollectionManager::instance()->trackForUrl( url ) );
+        }
+    }
+
+     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    return true;
+}
+
 #include "PlaylistLoader.moc"
-
-
-
-
 
