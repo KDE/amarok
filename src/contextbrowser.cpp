@@ -3726,8 +3726,11 @@ ContextBrowser::setWikiLocale( const QString &locale )
 QString
 ContextBrowser::wikiURL( const QString &item )
 {
+    // add any special characters to be replaced here
+    QString wStr = QString(item).replace( "/", " " );
+
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + KURL::encode_string_no_slash( item, 106 /*utf-8*/ );
+        + KURL::encode_string_no_slash( wStr, 106 /*utf-8*/ );
 }
 
 void
