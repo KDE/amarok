@@ -233,6 +233,7 @@ QString
 MountPointManager::getAbsolutePath( const int deviceId, const QString& relativePath ) const
 {
     KURL rpath;
+    rpath.setProtocol("file");
     rpath.setPath( relativePath );
     KURL url;
     getAbsolutePath( deviceId, rpath, url );
