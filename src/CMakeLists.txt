@@ -201,8 +201,8 @@ set(libmagnatunestore_SRCS
         servicebrowser/magnatunestore/MagnatuneMeta.cpp
     servicebrowser/magnatunestore/magnatunexmlparser.cpp
     servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
-    #servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
-    #servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
+    servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
+    servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
     servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
     servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
 )
@@ -359,6 +359,7 @@ set(libplaylist_SRCS
     playlist/UndoCommands.cpp
     playlist/PlaylistDropVis.cpp
     playlist/PlaylistGraphicsItem.cpp
+    playlist/PlaylistGraphicsAlbumGroupItem.cpp
     playlist/PlaylistGraphicsScene.cpp
     playlist/PlaylistGraphicsView.cpp
     playlist/PlaylistTextItem.cpp

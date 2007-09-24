@@ -9,6 +9,9 @@
 #ifndef AMAROK_PLAYLISTGRAPHICSVIEW_H
 #define AMAROK_PLAYLISTGRAPHICSVIEW_H
 
+#include "meta.h"
+#include "PlaylistGraphicsAlbumGroupItem.h"
+
 #include <QGraphicsView>
 
 class GraphicsItem;
@@ -52,6 +55,8 @@ namespace Playlist
             static GraphicsView  *s_instance;
 
             QList<GraphicsItem*>  m_tracks;
+            QMap<Meta::AlbumPtr, Playlist::GraphicsAlbumGroupItem *> m_albumGroups;
+
             Model                *m_model;
     };
 
