@@ -24,6 +24,7 @@
 #include <KUrl>
 
 #include <QFile>
+#include <QtXml>
 
 
 using namespace Meta;
@@ -107,11 +108,11 @@ void PlaylistLoader::handleByFormat( QTextStream &stream, Format format)
         case RAM: 
             loadRealAudioRam( stream ); 
             break;
-       /* case ASX: 
-            loadASX( stream ); 
-            break;
         case SMIL: 
             loadSMIL( stream ); 
+            break;
+       /* case ASX: 
+            loadASX( stream ); 
             break;
         case XSPF: 
             loadXSPF( stream ); 
@@ -381,7 +382,60 @@ PlaylistLoader::loadRealAudioRam( QTextStream &stream )
         }
     }
 
-     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    return true;
+}
+
+bool
+PlaylistLoader::loadSMIL( QTextStream &stream )
+{
+     // adapted from Kaffeine 0.7
+    QDomDocument doc;
+    if( !doc.setContent( stream.read() ) )
+    {
+        debug() << "Could now read smil playlist";
+        return false;
+    }
+
+    QDomElement root = doc.documentElement();
+    stream.setEncoding ( QTextStream::UnicodeUTF8 );
+
+    if( root.nodeName().toLower() != "smil" )
+        return false;
+
+    KUrl kurl;
+    QString url;
+    QDomNodeList nodeList;
+    QDomNode node;
+    QDomElement element;
+
+    TrackList tracks;
+
+    //audio sources...
+    nodeList = doc.elementsByTagName( "audio" );
+    for( uint i = 0; i < nodeList.count(); i++ )
+    {
+            node = nodeList.item(i);
+            url.clear();
+            if( (node.nodeName().toLower() == "audio") && (node.isElement()) )
+            {
+                    element = node.toElement();
+                    if( element.hasAttribute("src") )
+                            url = element.attribute("src");
+
+                    else if( element.hasAttribute("Src") )
+                            url = element.attribute("Src");
+
+                    else if( element.hasAttribute("SRC") )
+                            url = element.attribute("SRC");
+            }
+            if( !url.isNull() )
+            {
+                tracks.append( CollectionManager::instance()->trackForUrl( url ) );
+            }
+    }
+
+    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     return true;
 }
 

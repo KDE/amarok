@@ -63,6 +63,7 @@ private:
     unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadM3u( QTextStream &stream );
     bool loadRealAudioRam( QTextStream& );
+    bool loadSMIL( QTextStream& );
 
     Format getFormat( const KUrl &path );
     void handleByFormat( QTextStream &stream, Format format);
