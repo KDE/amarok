@@ -123,9 +123,9 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     QRectF trackRect;
     if ( m_groupMode == Head ) {
 
-        //make the albu group header stand out
+        //make the album group header stand out
         painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
-        trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() + MARGIN );
+        trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
 
     } else {
         trackRect = option->rect;
@@ -165,10 +165,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     {
         if( !m_items->foreground )
         {
-            m_items->foreground = new QGraphicsRectItem( option->rect, this );
-            m_items->foreground->setPos( 0.0, MARGIN );
+            m_items->foreground = new QGraphicsRectItem( trackRect, this );
+            m_items->foreground->setPos( 0.0, trackRect.top() );
             m_items->foreground->setZValue( 5.0 );
-            QRadialGradient gradient(option->rect.width() / 2.0, option->rect.height() / 2.0, option->rect.width() / 2.0, 20 + option->rect.width() / 2.0, option->rect.height() / 2.0 );
+            QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
             QColor start = option->palette.highlight().color().light();
             start.setAlpha( 51 );
             QColor end = option->palette.highlight().color().dark();
@@ -262,14 +262,14 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
 
-        int underImageY = MARGIN * 2 + ALBUM_WIDTH;
+        int underImageY = MARGIN + ALBUM_WIDTH;
 
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( rightAlignX, underImageY );
 
     } else { 
-        m_items->bottomLeftText->setPos( MARGIN * 3, MARGIN );
-        m_items->bottomRightText->setPos( rightAlignX, MARGIN );
+        m_items->bottomLeftText->setPos( MARGIN * 3, 0 );
+        m_items->bottomRightText->setPos( rightAlignX, 0 );
     }
 
     m_items->lastWidth = totalWidth;
@@ -472,13 +472,13 @@ void Playlist::GraphicsItem::setRow(int row)
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
                 break;
             case Head:
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 3 * MARGIN + s_fm->height();
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height();
                 break;
             case Body:
-                m_height =  s_fm->height() + 2 * MARGIN;
+                m_height =  s_fm->height() /*+ 2 * MARGIN*/;
                 break;
             case End:
-                m_height =  s_fm->height() + 2 * MARGIN;
+                m_height =  s_fm->height() /*+ 2 * MARGIN*/;
                 break;
         }
     }
