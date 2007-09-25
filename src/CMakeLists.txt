@@ -359,7 +359,6 @@ set(libplaylist_SRCS
     playlist/UndoCommands.cpp
     playlist/PlaylistDropVis.cpp
     playlist/PlaylistGraphicsItem.cpp
-    playlist/PlaylistGraphicsAlbumGroupItem.cpp
     playlist/PlaylistGraphicsScene.cpp
     playlist/PlaylistGraphicsView.cpp
     playlist/PlaylistTextItem.cpp

@@ -143,33 +143,6 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for( int i = start; i <= end; i++ )
     {
 
-        /*const Meta::TrackPtr track = m_model->data( m_model->index( i, 0, parent ), Playlist::ItemRole ).value< Playlist::Item* >()->track();
-
-        if ( track->album().data() != 0 ) {
-            //testing stuff:
-            Playlist::GraphicsAlbumGroupItem * albumGroupItem;
-
-           int yPos = 0;
-           foreach( Playlist::GraphicsAlbumGroupItem * cAlbumGroupItem, m_albumGroups.values() ) 
-              yPos += cAlbumGroupItem->height();
-
-            if ( m_albumGroups.contains( track->album() ) ) {
-               albumGroupItem = m_albumGroups.value( track->album() );
-            } else {
-                albumGroupItem = new Playlist::GraphicsAlbumGroupItem( );
-                albumGroupItem->setAlbum( track->album() );
-                m_albumGroups.insert( track->album(), albumGroupItem );
-            }
-
-
-           albumGroupItem->addTrack( track );
-
-           albumGroupItem->setPos( 0.0, yPos );
-
-           scene()->addItem( albumGroupItem );
-
-       }*/
-
         Playlist::GraphicsItem* item = new Playlist::GraphicsItem();
         item->setRow( i );
         item->setPos( 0.0, cumulativeHeight );
