@@ -219,57 +219,66 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     const qreal lineTwoY = m_height / 2 + MARGIN;
     const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
-    qreal rightAlignX;
+    qreal topRightAlignX;
+    qreal bottomRightAlignX;
+    
     {
         qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
         qreal rightWidth = totalWidth - qMax( s_fm->width( album )
             , s_fm->width( prettyLength ) );
-        rightAlignX = qMax( middle, rightWidth );
-    }
+        topRightAlignX = qMax( middle, rightWidth );
+    } 
+
+    //lets use all the horizontal space we can get for now..
+    int lengthStringWidth = s_fm->width( prettyLength );
+    bottomRightAlignX = ( totalWidth - 4 * MARGIN ) - lengthStringWidth ;
 
 
-    qreal spaceForLeft = totalWidth - ( totalWidth - rightAlignX ) - leftAlignX;
-    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForLeft );
-    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - rightAlignX );
+
+
+    qreal spaceForTopLeft = totalWidth - ( totalWidth - topRightAlignX ) - leftAlignX;
+    qreal spaceForBottomLeft = totalWidth - ( totalWidth - bottomRightAlignX ) - leftAlignX;
+    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
 
     if ( m_groupMode == None ) {
 
-        m_items->topRightText->setPos( rightAlignX, MARGIN );
-        m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
+        m_items->topRightText->setPos( topRightAlignX, MARGIN );
+        m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
 
         {
             QString artist;
             if( track->artist() )
                 artist = track->artist()->name();
-            m_items->topLeftText->setEditableText( artist, spaceForLeft );
+            m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, MARGIN );
         }
 
         m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
-        m_items->bottomRightText->setPos( rightAlignX, lineTwoY );
+        m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoY );
     } else if ( m_groupMode == Head ) {
 
         int headingCenter = MARGIN + ( ALBUM_WIDTH - s_fm->height() ) / 2;
 
-        m_items->topRightText->setPos( rightAlignX, headingCenter );
-        m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
+        m_items->topRightText->setPos( topRightAlignX, headingCenter );
+        m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
 
         {
             QString artist;
             if( track->artist() )
                 artist = track->artist()->name();
-            m_items->topLeftText->setEditableText( artist, spaceForLeft );
+            m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
 
         int underImageY = MARGIN + ALBUM_WIDTH;
 
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
-        m_items->bottomRightText->setPos( rightAlignX, underImageY );
+        m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
 
     } else { 
         m_items->bottomLeftText->setPos( MARGIN * 3, 0 );
-        m_items->bottomRightText->setPos( rightAlignX, 0 );
+        m_items->bottomRightText->setPos( bottomRightAlignX, 0 );
     }
 
     m_items->lastWidth = totalWidth;
