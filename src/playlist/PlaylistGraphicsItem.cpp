@@ -34,52 +34,52 @@
 struct Playlist::GraphicsItem::ActiveItems
 {
     ActiveItems()
-    : albumArt( 0 )
-    , background( 0 )
-    , foreground( 0 )
+    : foreground( 0 )
     , bottomLeftText( 0 )
     , bottomRightText( 0 )
     , topLeftText( 0 )
     , topRightText( 0 )
     , lastWidth( -5 )
-    { }
-    ~ActiveItems()
-    {
-        delete albumArt;
-        delete background;
+     { }
+     ~ActiveItems()
+     {
         delete bottomLeftText;
         delete bottomRightText;
-        delete foreground;
+         delete foreground;
         delete topLeftText;
         delete topRightText;
-     }
-    QGraphicsPixmapItem* albumArt;
-    QGraphicsRectItem* background;
-    QGraphicsRectItem* foreground;
-    Playlist::TextItem* bottomLeftText;
-    Playlist::TextItem* bottomRightText;
-    Playlist::TextItem* topLeftText;
-    Playlist::TextItem* topRightText;
-    int lastWidth;
 
-    QRectF preDragLocation;
-    Meta::TrackPtr track;
-};
+      }
+
+     QGraphicsRectItem* foreground;
+     Playlist::TextItem* bottomLeftText;
+     Playlist::TextItem* bottomRightText;
+     Playlist::TextItem* topLeftText;
+     Playlist::TextItem* topRightText;
+
+     int lastWidth;
+
+     QRectF preDragLocation;
+     Meta::TrackPtr track;
+ };
+
 
 const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
 const qreal Playlist::GraphicsItem::MARGIN = 2.0;
-qreal Playlist::GraphicsItem::s_height = -1.0;
 QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
 
 Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
     , m_items( 0 )
+    , m_height( -1 )
+    , m_groupMode( -1 )
+    , m_groupModeChanged ( false )
 {
     setZValue( 1.0 );
     if( !s_fm )
     {
         s_fm = new QFontMetricsF( QFont() );
-        s_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
+        m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
     }
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
@@ -102,10 +102,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 4) Do not setBrush without making sure its hasn't already been set to that brush().
 // 5) If this is your first night at ::paint method, you HAVE to paint.
     Q_UNUSED( painter ); Q_UNUSED( widget );
-    const int row = getRow();
-    const QModelIndex index = The::playlistModel()->index( row, 0 );
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
-    if( !m_items || ( option->rect.width() != m_items->lastWidth ) )
+
+    if( !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
 
         if( !m_items )
@@ -115,36 +115,52 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->track = track;
             init( track );
         }
+        m_groupModeChanged = false;
         resize( m_items->track, option->rect.width() );
     }
 
-    { //background mania. blue if selected, alternating white/gray otherwise.
-        #define SetBackgroundBrush( B ) \
-            if( m_items->background->brush() != B ) \
-                m_items->background->setBrush( B );
-        if( !m_items->background )
-        {
-                m_items->background = new QGraphicsRectItem( option->rect, this );
-                m_items->background->setPos( 0.0, 0.0 );
-                m_items->background->setPen( QPen( Qt::NoPen ) );
-                m_items->background->setZValue( -5.0 );
-                m_items->background->show();
-        }
-        if( option->state & QStyle::State_Selected )
-        {
-            SetBackgroundBrush( option->palette.highlight() );
-        }
-        else if( row % 2 )
-        {
-            SetBackgroundBrush( option->palette.base()  );
-        }
-        else
-        {
-            SetBackgroundBrush( option->palette.alternateBase() );
-        }
-        #undef SetBrush
+    // paint item background:
+    QRectF trackRect;
+    if ( m_groupMode == Head ) {
+
+        //make the albu group header stand out
+        painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
+        trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() + MARGIN );
+
+    } else {
+        trackRect = option->rect;
     }
 
+    if( option->state & QStyle::State_Selected )
+        painter->fillRect( trackRect, option->palette.highlight() );
+    else if( m_currentRow % 2 )
+        painter->fillRect( trackRect, option->palette.base() );
+    else
+        painter->fillRect( trackRect, option->palette.alternateBase() );
+
+
+   
+     if ( m_groupMode < Body ) {
+          //if we are not grouped, or are the head of a group, paint cover:
+         QPixmap albumPixmap;
+         if( m_items->track->album() )
+            albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+         painter->drawPixmap( MARGIN, MARGIN, albumPixmap );
+         if ( m_groupMode == Head ) {
+            QRectF markerRect( 0, trackRect.top(), MARGIN * 2, trackRect.height() );
+            painter->fillRect( markerRect, QBrush( Qt::darkCyan ) );
+
+         } 
+     } else if ( ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
+         //pain a bit of color to mark this as part of a group:
+         QRectF markerRect( 0, 0, MARGIN * 2, option->rect.height() );
+         painter->fillRect( markerRect, QBrush( Qt::darkCyan ) );
+    }
+
+
+
+
+    //set overlay if item is active:
     if( index.data( ActiveTrackRole ).toBool() )
     {
         if( !m_items->foreground )
@@ -173,32 +189,24 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 void
 Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
-    QPixmap albumPixmap;
-    if( track->album() )
-        albumPixmap =  track->album()->image( int( ALBUM_WIDTH ) );
 
-    m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, MARGIN );
-
-    {
-        QFont font;
-        font.setPointSize( font.pointSize() - 1 );
-        #define NewText( X ) \
-            X = new Playlist::TextItem( this ); \
-            X->setTextInteractionFlags( Qt::TextEditorInteraction ); \
-            X->setFont( font ); 
-        NewText( m_items->topLeftText )       
-        NewText( m_items->bottomLeftText )
-        NewText( m_items->topRightText )
-        NewText( m_items->bottomRightText )
-        #undef NewText
-    }
+    QFont font;
+    font.setPointSize( font.pointSize() - 1 );
+    #define NewText( X ) \
+        X = new Playlist::TextItem( this ); \
+        X->setTextInteractionFlags( Qt::TextEditorInteraction ); \
+        X->setFont( font ); 
+    NewText( m_items->topLeftText )       
+    NewText( m_items->bottomLeftText )
+    NewText( m_items->topRightText )
+    NewText( m_items->bottomRightText )
+    #undef NewText
 }
 
 void
 Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 {
-    if( totalWidth == -1 || totalWidth == m_items->lastWidth ) //no change needed
+    if( totalWidth == -1 /*|| totalWidth == m_items->lastWidth */) //no change needed
         return;
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
         prepareGeometryChange();
@@ -208,7 +216,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if( track->album() )
         album = track->album()->name();
 
-    const qreal lineTwoY = s_height / 2 + MARGIN;
+    const qreal lineTwoY = m_height / 2 + MARGIN;
     const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
     qreal rightAlignX;
@@ -218,24 +226,51 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             , s_fm->width( prettyLength ) );
         rightAlignX = qMax( middle, rightWidth );
     }
-    m_items->topRightText->setPos( rightAlignX, MARGIN );
-    m_items->bottomRightText->setPos( rightAlignX, lineTwoY );
-    m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
-    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - rightAlignX );
 
 
     qreal spaceForLeft = totalWidth - ( totalWidth - rightAlignX ) - leftAlignX;
-    {
-        QString artist;
-        if( track->artist() )
-            artist = track->artist()->name();
-        m_items->topLeftText->setEditableText( artist, spaceForLeft );
-        m_items->topLeftText->setPos( leftAlignX, MARGIN );
-    }
+    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForLeft );
+    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - rightAlignX );
 
-    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() )
-        , spaceForLeft );
-    m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
+    if ( m_groupMode == None ) {
+
+        m_items->topRightText->setPos( rightAlignX, MARGIN );
+        m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
+
+        {
+            QString artist;
+            if( track->artist() )
+                artist = track->artist()->name();
+            m_items->topLeftText->setEditableText( artist, spaceForLeft );
+            m_items->topLeftText->setPos( leftAlignX, MARGIN );
+        }
+
+        m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
+        m_items->bottomRightText->setPos( rightAlignX, lineTwoY );
+    } else if ( m_groupMode == Head ) {
+
+        int headingCenter = MARGIN + ( ALBUM_WIDTH - s_fm->height() ) / 2;
+
+        m_items->topRightText->setPos( rightAlignX, headingCenter );
+        m_items->topRightText->setEditableText( album, totalWidth - rightAlignX );
+
+        {
+            QString artist;
+            if( track->artist() )
+                artist = track->artist()->name();
+            m_items->topLeftText->setEditableText( artist, spaceForLeft );
+            m_items->topLeftText->setPos( leftAlignX, headingCenter );
+        }
+
+        int underImageY = MARGIN * 2 + ALBUM_WIDTH;
+
+        m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
+        m_items->bottomRightText->setPos( rightAlignX, underImageY );
+
+    } else { 
+        m_items->bottomLeftText->setPos( MARGIN * 3, MARGIN );
+        m_items->bottomRightText->setPos( rightAlignX, MARGIN );
+    }
 
     m_items->lastWidth = totalWidth;
 }
@@ -244,13 +279,13 @@ QRectF
 Playlist::GraphicsItem::boundingRect() const
 {
     // the viewport()->size() takes scrollbars into account
-    return QRectF( 0.0, 0.0, The::playlistView()->viewport()->size().width(), s_height );
+    return QRectF( 0.0, 0.0, The::playlistView()->viewport()->size().width(), m_height );
 }
 
 void
 Playlist::GraphicsItem::play()
 {
-    The::playlistModel()->play( getRow() );
+    The::playlistModel()->play( m_currentRow );
 }
 
 void 
@@ -360,7 +395,7 @@ Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 {
     event->accept();
     setZValue( 1.0 );
-    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, getRow(), 0, QModelIndex() );
+    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, m_currentRow, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
 
@@ -374,10 +409,10 @@ Playlist::GraphicsItem::refresh()
     if( m_items->track->album() )
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
 
-    m_items->albumArt->hide();
-    delete ( m_items->albumArt );
-    m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    m_items->albumArt->setPos( 0.0, MARGIN );
+    //m_items->albumArt->hide();
+    //delete ( m_items->albumArt );
+    //m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
+    //m_items->albumArt->setPos( 0.0, MARGIN );
 }
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
@@ -411,4 +446,40 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     //make sure item resets its z value
     setZValue( 1.0 );
     Playlist::DropVis::instance()->hide();
+}
+
+void Playlist::GraphicsItem::setRow(int row)
+{
+    m_currentRow = row;
+
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
+
+    //figure out our group state and set height accordingly
+    int currentGroupState = index.data( GroupRole ).toInt();
+    if ( currentGroupState != m_groupMode ) {
+
+        debug() << "Group changed for row " << row;
+
+        prepareGeometryChange();
+      
+        
+        m_groupMode = currentGroupState;
+        m_groupModeChanged = true;
+
+        switch ( m_groupMode ) {
+        
+            case None:
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
+                break;
+            case Head:
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 3 * MARGIN + s_fm->height();
+                break;
+            case Body:
+                m_height =  s_fm->height() + 2 * MARGIN;
+                break;
+            case End:
+                m_height =  s_fm->height() + 2 * MARGIN;
+                break;
+        }
+    }
 }

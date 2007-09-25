@@ -94,6 +94,31 @@ Model::data( const QModelIndex& index, int role ) const
     {
         return QVariant::fromValue( m_items.at( row )->track() );
     }
+    else if ( role == GroupRole ) {
+
+
+        //get the track
+        TrackPtr track = m_items.at( row )->track();
+
+
+       
+        if ( !track->album() )
+            return None;  // no albm set
+        else if ( !m_albumGroups.contains( track->album() ) ) 
+            return None;  // no group for this album
+
+        QList< int > rowsInGroup = m_albumGroups.value( track->album() );
+
+        if ( row == rowsInGroup.first() )
+            return Head;
+        else if ( row == rowsInGroup.last() )
+            return End;
+        else if ( rowsInGroup.contains( row ) )
+            return Body;
+        else
+            return None; //Album has group, but this item is outside it
+
+    }
     else if( role == Qt::DisplayRole && row != -1 )
     {
         switch ( index.column() ) {
@@ -374,6 +399,7 @@ void
 Model::clear()
 {
     removeRows( 0, m_items.size() );
+    m_albumGroups.clear();
 //    m_activeRow = -1;
 }
 
@@ -606,8 +632,34 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
-            if( track->album() )
+            if( track->album() ) {
                 track->album()->subscribe( this );
+
+                //check if track should be added to an album group or
+                //if a new album group should be created
+
+                if ( track->album() == m_lastAddedTrackAlbum ) {
+                    //this thrack and the last one should be grouped
+
+                    //does a group already exist?
+                    if ( m_albumGroups.contains( track->album() ) ) {
+                        //yes, add track to existing album group
+                        m_albumGroups[track->album()].append( row + i );
+                    } else {
+                        //no group exists... create new one and add this and last track
+                        m_albumGroups.insert( track->album(), QList < int > () );
+                        m_albumGroups[track->album()].append( row + i -1 );
+                        m_albumGroups[track->album()].append( row + i );
+                    }
+
+                }
+                m_lastAddedTrackAlbum = track->album();
+
+            } else {
+                //make sure we dont group tracks "around" tracks with no album set
+                m_lastAddedTrackAlbum = AlbumPtr();
+
+            }
             m_items.insert( row + i, new Item( track ) );
             i++;
         }

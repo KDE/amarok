@@ -38,9 +38,10 @@ namespace Playlist
             void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
             QRectF boundingRect() const;
             void setupItem();
-            static qreal height() { return s_height; }
             void refresh();
             void play();
+
+            void setRow( int row );
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
@@ -53,15 +54,18 @@ namespace Playlist
         private:
             void init( Meta::TrackPtr track );
             void resize( Meta::TrackPtr track, int totalWidth );
-            int getRow() const { return int( ( mapToScene( 0.0, 0.0 ).y() ) / s_height ); }
-
-            
 
             ActiveItems* m_items;
+            qreal m_height;
+            int m_groupMode;
+            int m_currentRow;
+            bool m_groupModeChanged;
+
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
-            static       qreal s_height;
             static QFontMetricsF* s_fm;
+
+            
     };
 
 }

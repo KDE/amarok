@@ -68,7 +68,8 @@ class TrackNavigator;
     {
         TrackRole = 0xc0ffee,
         ItemRole,
-        ActiveTrackRole
+        ActiveTrackRole,
+        GroupRole
     };
     ///Options for insertTracks
     enum AddOptions 
@@ -82,6 +83,16 @@ class TrackNavigator;
         Colorize   = 64,    /// colorize newly added items
         AppendAndPlay = Append | Unique | StartPlay
     };
+
+    enum GroupMode
+    {
+        None = 1,
+        Head,
+        Body,
+        End
+    };
+
+    typedef QMap<Meta::AlbumPtr, QList< int > > AlbumGroupMap;
 
     class Model : public QAbstractListModel, Meta::Observer
     {
@@ -202,6 +213,9 @@ class TrackNavigator;
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
             PlaylistLoader * m_playlistLoader;
+
+            AlbumGroupMap m_albumGroups;
+            Meta::AlbumPtr m_lastAddedTrackAlbum;
 
     };
 }

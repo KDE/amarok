@@ -130,6 +130,15 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 {
     Q_UNUSED( parent );
 
+     //call setRow on track imidiately preceding the insertion as this might have to change its 
+    // look and height if it has been grouped by the model.
+    if ( start > 0 )
+        m_tracks[ start-1]->setRow( start-1 );
+
+    int cumulativeHeight = 0;
+    for ( int j = 0; j < start; j++ )
+        cumulativeHeight += m_tracks.at( j )->boundingRect().height();
+
     debug() << "start: " << start << " ,end: " << end;
     for( int i = start; i <= end; i++ )
     {
@@ -162,10 +171,14 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
        }*/
 
         Playlist::GraphicsItem* item = new Playlist::GraphicsItem();
-        item->setPos( 0.0, Playlist::GraphicsItem::height() * i );
+        item->setRow( i );
+        item->setPos( 0.0, cumulativeHeight );
+        cumulativeHeight += item->boundingRect().height();
         scene()->addItem( item );
         m_tracks.insert( i, item  );
     }
+   
+
     shuffleTracks( end + 1 );
 }
 
@@ -185,13 +198,17 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     int moveMeIndex = m_tracks.indexOf( moveMe );
     int aboveIndex  = m_tracks.indexOf( above  );
 
+    Playlist::GraphicsItem* item = m_tracks.at( moveMeIndex );
+
     if( moveMeIndex < aboveIndex )
     {
+        item->setRow( aboveIndex - 1 );
         m_tracks.move( moveMeIndex, aboveIndex - 1 );
         shuffleTracks( moveMeIndex, aboveIndex );
     }
     else
     {
+        item->setRow( aboveIndex );
         m_tracks.move( moveMeIndex, aboveIndex );
         shuffleTracks( aboveIndex, moveMeIndex + 1);
     }
@@ -209,11 +226,20 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     QTimeLine *timer = new QTimeLine( 300 ); // 0.3 second duration
     timer->setCurveShape( QTimeLine::EaseInCurve );
 
+
+    int cumulativeHeight = 0;
+
+    for ( int j = 0; j < startPosition; j++ )
+        cumulativeHeight += m_tracks.at( j )->boundingRect().height();
+
     for( int i = startPosition; i < stopPosition; ++i )
     {
         Playlist::GraphicsItem *item = m_tracks.at( i );
         qreal currentY = item->pos().y();
-        qreal desiredY = Playlist::GraphicsItem::height() * i;
+
+        
+        qreal desiredY = cumulativeHeight;
+        cumulativeHeight += item->boundingRect().height();
 
         bool moveUp = false;
         if( desiredY > currentY )
