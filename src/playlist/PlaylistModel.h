@@ -10,7 +10,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "meta/meta.h"
-#include "PlaylistLoader.h"
+#include "PlaylistHandler.h"
 
 #include "UndoCommands.h"
 
@@ -212,7 +212,7 @@ class TrackNavigator;
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
-            PlaylistLoader * m_playlistLoader;
+            PlaylistHandler * m_playlistHandler;
 
             AlbumGroupMap m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;

@@ -13,15 +13,18 @@
 
 
 
-#define DEBUG_PREFIX "PlaylistLoader"
+#define DEBUG_PREFIX "PlaylistHandler"
 
+#include "app.h"
 #include "CollectionManager.h"
-#include "PlaylistLoader.h"
+#include "MainWindow.h"
+#include "PlaylistHandler.h"
 #include "PlaylistModel.h"
 #include "statusbar.h"
 #include "TheInstances.h"
 #include "xspfplaylist.h"
 
+#include <KMessageBox>
 #include <KUrl>
 
 #include <QFile>
@@ -31,19 +34,19 @@
 using namespace Meta;
 
 
-PlaylistLoader::PlaylistLoader()
+PlaylistHandler::PlaylistHandler()
     : QObject( 0 )
     , m_format( Unknown )
 {
 
 }
 
-bool PlaylistLoader::isPlaylist(const KUrl & path)
+bool PlaylistHandler::isPlaylist(const KUrl & path)
 {
     return getFormat( path ) != Unknown;
 }
 
-void PlaylistLoader::load(const QString & path)
+void PlaylistHandler::load(const QString & path)
 {
     DEBUG_BLOCK
     debug() << "file: " << path;
@@ -75,8 +78,26 @@ void PlaylistLoader::load(const QString & path)
 
 }
 
+bool PlaylistHandler::save( Meta::TrackList tracks,
+                            const QString &location,
+                            Format playlistFormat,
+                            bool relative ) // static
+{
+    KUrl url( location );
+    switch (playlistFormat) {
 
-PlaylistLoader::Format PlaylistLoader::getFormat( const KUrl &path ) 
+        case M3U:
+            return saveM3u( tracks, location, relative );
+            break;
+        default:
+            debug() << "Currently unhandled type!";
+            return false;
+            break;
+    }
+}
+
+
+PlaylistHandler::Format PlaylistHandler::getFormat( const KUrl &path )
 {
     DEBUG_BLOCK
 
@@ -94,7 +115,7 @@ PlaylistLoader::Format PlaylistLoader::getFormat( const KUrl &path )
 }
 
 
-void PlaylistLoader::handleByFormat( QTextStream &stream, Format format)
+void PlaylistHandler::handleByFormat( QTextStream &stream, Format format)
 {
     DEBUG_BLOCK
 
@@ -129,7 +150,7 @@ void PlaylistLoader::handleByFormat( QTextStream &stream, Format format)
 }
 
 
-void PlaylistLoader::downloadPlaylist(const KUrl & path)
+void PlaylistHandler::downloadPlaylist(const KUrl & path)
 {
     DEBUG_BLOCK
     m_downloadJob =  KIO::storedGet( path, false, true );
@@ -142,7 +163,7 @@ void PlaylistLoader::downloadPlaylist(const KUrl & path)
 
 }
 
-void PlaylistLoader::downloadComplete(KJob * job)
+void PlaylistHandler::downloadComplete(KJob * job)
 {
     DEBUG_BLOCK
 
@@ -165,11 +186,11 @@ void PlaylistLoader::downloadComplete(KJob * job)
 
 
 bool
-PlaylistLoader::loadPls( QTextStream &stream )
+PlaylistHandler::loadPls( QTextStream &stream )
 {
     DEBUG_BLOCK
 
-    
+
     TrackList tracks;
     TrackPtr currentTrack;
 
@@ -259,7 +280,7 @@ PlaylistLoader::loadPls( QTextStream &stream )
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', 1).trimmed();
-            
+
             if ( currentTrack.data() != 0 )
                 currentTrack->setTitle( tmp );
             continue;
@@ -297,7 +318,7 @@ PlaylistLoader::loadPls( QTextStream &stream )
 }
 
 unsigned int
-PlaylistLoader::loadPls_extractIndex( const QString &str ) const
+PlaylistHandler::loadPls_extractIndex( const QString &str ) const
 {
     /* Extract the index number out of a .pls line.
      * Example:
@@ -313,7 +334,7 @@ PlaylistLoader::loadPls_extractIndex( const QString &str ) const
 }
 
 bool
-PlaylistLoader::loadM3u( QTextStream &stream )
+PlaylistHandler::loadM3u( QTextStream &stream )
 {
     DEBUG_BLOCK
 
@@ -364,9 +385,74 @@ PlaylistLoader::loadM3u( QTextStream &stream )
     return true;
 }
 
+bool
+PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location, bool relative )
+{
+    if( location.isEmpty() )
+        return false;
+
+    QFile file( location );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
+        return false;
+    }
+
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+    KUrl::List urls;
+    QStringList titles;
+    QList<int> lengths;
+    foreach( TrackPtr track, tracks )
+    {
+        urls << track->url();
+        titles << track->name();
+        lengths << track->length();
+    }
+
+    //Port 2.0 is this still necessary?
+//     foreach( KUrl url, urls)
+//     {
+//         if( url.isLocalFile() && QFileInfo( url.path() ).isDir() )
+//             urls += recurse( url );
+//         else
+//             urls += url;
+//     }
+
+    for( int i = 0, n = urls.count(); i < n; ++i )
+    {
+        const KUrl &url = urls[i];
+        
+        if( !titles.isEmpty() && !lengths.isEmpty() )
+        {
+            stream << "#EXTINF:";
+            stream << QString::number( lengths[i] );
+            stream << ',';
+            stream << titles[i];
+            stream << '\n';
+        }
+        if (url.protocol() == "file" ) {
+            if ( relative ) {
+                const QFileInfo fi(file);
+                stream << KUrl::relativePath(fi.path(), url.path());
+            } else
+                stream << url.path();
+        } else {
+            stream << url.url();
+        }
+        stream << "\n";
+    }
+
+    file.close(); // Flushes the file, before we read it
+//     PlaylistBrowser::instance()->addPlaylist( path, 0, true ); //Port 2.0: re add when we have a playlistbrowser
+
+    return true;
+}
 
 bool
-PlaylistLoader::loadRealAudioRam( QTextStream &stream )
+PlaylistHandler::loadRealAudioRam( QTextStream &stream )
 {
     DEBUG_BLOCK
 
@@ -389,7 +475,7 @@ PlaylistLoader::loadRealAudioRam( QTextStream &stream )
 }
 
 bool
-PlaylistLoader::loadSMIL( QTextStream &stream )
+PlaylistHandler::loadSMIL( QTextStream &stream )
 {
      // adapted from Kaffeine 0.7
     QDomDocument doc;
@@ -443,7 +529,7 @@ PlaylistLoader::loadSMIL( QTextStream &stream )
 
 
 bool
-PlaylistLoader::loadASX( QTextStream &stream )
+PlaylistHandler::loadASX( QTextStream &stream )
 {
     //adapted from Kaffeine 0.7
     TrackList tracks;
@@ -546,11 +632,11 @@ PlaylistLoader::loadASX( QTextStream &stream )
     return true;
 }
 
-QTime PlaylistLoader::stringToTime(const QString& timeString)
+QTime PlaylistHandler::stringToTime(const QString& timeString)
 {
    int sec = 0;
    bool ok = false;
-   QStringList tokens = QStringList::split(':',timeString);
+   QStringList tokens = timeString.split( ':' );
 
    sec += tokens[0].toInt(&ok)*3600; //hours
    sec += tokens[1].toInt(&ok)*60; //minutes
@@ -563,19 +649,19 @@ QTime PlaylistLoader::stringToTime(const QString& timeString)
 }
 
 bool
-PlaylistLoader::loadXSPF( QTextStream &stream )
+PlaylistHandler::loadXSPF( QTextStream &stream )
 {
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
     XSPFtrackList trackList = doc->trackList();
 
     TrackList tracks;
-    oldForeachType( XSPFtrackList, trackList )
+    foreach( XSPFtrack track, trackList )
     {
-        KUrl location = (*it).location;
-        QString artist = (*it).creator;
-        QString title  = (*it).title;
-        QString album  = (*it).album;
+        KUrl location = track.location;
+        QString artist = track.creator;
+        QString title  = track.title;
+        QString album  = track.album;
 
         if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.url() ) ) )
         {
@@ -591,7 +677,7 @@ PlaylistLoader::loadXSPF( QTextStream &stream )
             trackPtr->setTitle( title );
             trackPtr->setArtist( artist );
             trackPtr->setAlbum( album );
-            trackPtr->setComment( (*it).annotation );
+            trackPtr->setComment( track.annotation );
             tracks.append( trackPtr );
 
         }
@@ -603,5 +689,39 @@ PlaylistLoader::loadXSPF( QTextStream &stream )
     return true;
 }
 
-#include "PlaylistLoader.moc"
+#include <kdirlister.h>
+#include <QEventLoop>
+//this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+KUrl::List
+PlaylistHandler::recurse( const KUrl &url )
+{
+    typedef QMap<QString, KUrl> FileMap;
+
+    KDirLister lister( false );
+    lister.setAutoUpdate( false );
+    lister.setAutoErrorHandlingEnabled( false, 0 );
+    lister.openUrl( url );
+
+    while( !lister.isFinished() )
+        kapp->processEvents( QEventLoop::ExcludeUserInput );
+
+    KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
+    KUrl::List urls;
+    FileMap files;
+    foreach( KFileItem *it, items ) {
+        if( it->isFile() ) { files[it->name()] = it->url(); continue; }
+        if( it->isDir() ) urls += recurse( it->url() );
+    }
+
+    oldForeachType( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+            if( !isPlaylist( (*it).fileName() ) )
+            urls += *it;
+
+    return urls;
+}
+
+#include "PlaylistHandler.moc"
 

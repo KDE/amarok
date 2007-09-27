@@ -45,7 +45,7 @@ Widget::Widget( QWidget* parent )
 
     Playlist::Model* playModel = The::playlistModel();
     playModel->init();
-    playModel->testData();
+//     playModel->testData();
 
     Playlist::GraphicsView* playView = The::playlistView();
     playView->setModel( playModel );

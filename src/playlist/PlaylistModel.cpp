@@ -9,6 +9,7 @@
 #include "PlaylistModel.h"
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "debug.h"
 #include "enginecontroller.h"
@@ -42,7 +43,7 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
-    , m_playlistLoader ( new PlaylistLoader )
+    , m_playlistHandler ( new PlaylistHandler )
 {
     connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
     connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ) );
@@ -52,6 +53,11 @@ Model::Model( QObject* parent )
 void
 Model::init()
 {
+    if( AmarokConfig::savePlaylist() )
+    {
+        debug() << "Loading Previous Playlist";
+        m_playlistHandler->load( Amarok::saveLocation() + "current.m3u" );
+    }
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
     undoButton->setIcon( KIcon( Amarok::icon( "undo" ) ) );
@@ -63,8 +69,17 @@ Model::init()
 
 Model::~Model()
 {
+    if( AmarokConfig::savePlaylist() )
+    {
+        Meta::TrackList list;
+        foreach( Item* item, itemList() )
+        {
+            list << item->track();
+        }
+        m_playlistHandler->save( list, Amarok::saveLocation() + "current.m3u" );
+    }
     delete m_advancer;
-    delete m_playlistLoader;
+    delete m_playlistHandler;
 }
 
 int
@@ -442,9 +457,9 @@ Model::insertOptioned( Meta::TrackList list, int options )
    //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
    for( int i = 0; i < list.size(); ++i )
    {
-       if ( m_playlistLoader->isPlaylist( list.at( i )->url() ) ) {
+       if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
            playlistAdded = true;
-           m_playlistLoader->load( list.takeAt( i )->url() );
+           m_playlistHandler->load( list.takeAt( i )->url() );
        }
    }
 
