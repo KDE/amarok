@@ -48,5 +48,6 @@ install(
         wizard_xmms.png
         xine_logo.png
         toolbar-background.svg
+        playlist_items.svg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

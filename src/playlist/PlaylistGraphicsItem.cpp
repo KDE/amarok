@@ -16,6 +16,8 @@
 #include "PlaylistTextItem.h"
 #include "TheInstances.h"
 
+#include "KStandardDirs"
+
 #include <QBrush>
 #include <QDrag>
 #include <QFontMetricsF>
@@ -27,6 +29,7 @@
 #include <QGraphicsView>
 #include <QMimeData>
 #include <QPen>
+#include <QPixmapCache>
 #include <QRadialGradient>
 #include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
@@ -67,8 +70,9 @@ struct Playlist::GraphicsItem::ActiveItems
 
 
 const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
-const qreal Playlist::GraphicsItem::MARGIN = 2.0;
+const qreal Playlist::GraphicsItem::MARGIN = 4.0;
 QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
+QSvgRenderer * Playlist::GraphicsItem::s_svgRenderer = 0;
 
 Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
@@ -83,6 +87,13 @@ Playlist::GraphicsItem::GraphicsItem()
         s_fm = new QFontMetricsF( QFont() );
         m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
     }
+
+    if ( !s_svgRenderer ) {
+        s_svgRenderer = new QSvgRenderer( KStandardDirs::locate( "data","amarok/images/playlist_items.svg" ));
+        if ( ! s_svgRenderer->isValid() )
+            debug() << "svg is kaputski";
+    } 
+
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
@@ -126,19 +137,96 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     if ( m_groupMode == Head ) {
 
         //make the album group header stand out
-        painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
+        //painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
         trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
 
     } else {
         trackRect = option->rect;
+
+        if ( m_groupMode != Body ) 
+            trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
     }
 
-    if( option->state & QStyle::State_Selected )
-        painter->fillRect( trackRect, option->palette.highlight() );
-    else if( m_currentRow % 2 )
-        painter->fillRect( trackRect, option->palette.base() );
-    else
-        painter->fillRect( trackRect, option->palette.alternateBase() );
+
+    if ( m_groupMode == None ) {
+
+        QString key = QString("single_track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+        QPixmap background(trackRect.width(), trackRect.height() );
+        background.fill( Qt::transparent );
+
+
+        if (!QPixmapCache::find(key, background)) {
+            QPainter pt( &background );
+            s_svgRenderer->render( &pt, "single_track",  trackRect );
+            QPixmapCache::insert(key, background);
+        }
+        painter->drawPixmap( 0, 0, background );
+    } else  if ( m_groupMode == Head ) {
+
+        QString key = QString("head:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+        QPixmap background(option->rect.width(), option->rect.height() );
+        background.fill( Qt::transparent );
+    
+        if (!QPixmapCache::find(key, background)) {
+            QPainter pt( &background );
+            s_svgRenderer->render( &pt, "head",  option->rect );
+            QPixmapCache::insert(key, background);
+        }
+        painter->drawPixmap( 0, 0, background );
+    } else  if ( m_groupMode == Body ) {
+
+        QString key = QString("body:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+        QPixmap background(trackRect.width(), trackRect.height() );
+        background.fill( Qt::transparent );
+    
+        if (!QPixmapCache::find(key, background)) {
+            QPainter pt( &background );
+            s_svgRenderer->render( &pt, "body",  trackRect );
+            QPixmapCache::insert(key, background);
+        }
+        painter->drawPixmap( 0, 0, background );
+    } else  if ( m_groupMode == End ) {
+
+        QString key = QString( "tail:%1x%2" ).arg( trackRect.width() ).arg(trackRect.height()) ;
+        QPixmap background(trackRect.width(), trackRect.height() );
+        background.fill( Qt::transparent );
+    
+        if (!QPixmapCache::find(key, background)) {
+            QPainter pt( &background );
+            s_svgRenderer->render( &pt, "tail",  trackRect );
+            QPixmapCache::insert(key, background);
+        }
+        painter->drawPixmap( 0, 0, background );
+    }
+
+
+
+
+    if ( ( m_groupMode == Head ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
+        if( m_currentRow % 2 ) {
+        
+            QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 16 ).arg(trackRect.height() );
+            QPixmap background(trackRect.width() - 16, trackRect.height() );
+            background.fill( Qt::transparent );
+        
+            QRectF tempRect = trackRect;
+            tempRect.setWidth( tempRect.width() - 16 );
+            if ( m_groupMode == End )
+                tempRect.setHeight( tempRect.height() - 4 );
+
+            if (!QPixmapCache::find( key, background ) ) {
+                QPainter pt( &background );
+                s_svgRenderer->render( &pt, "body_background",  tempRect );
+                QPixmapCache::insert( key, background );
+            }
+
+             if ( m_groupMode == Head )
+                painter->drawPixmap( 8, MARGIN + ALBUM_WIDTH + 2, background );
+             else
+                painter->drawPixmap( 8, 0, background );
+        }
+
+    }
 
 
    
@@ -148,18 +236,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
          if( m_items->track->album() )
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
          painter->drawPixmap( MARGIN, MARGIN, albumPixmap );
-         if ( m_groupMode == Head ) {
-            QRectF markerRect( 0, trackRect.top(), MARGIN * 2, trackRect.height() );
-            painter->fillRect( markerRect, QBrush( Qt::darkCyan ) );
 
-         } 
-     } else if ( ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
-         //pain a bit of color to mark this as part of a group:
-         QRectF markerRect( 0, 0, MARGIN * 2, option->rect.height() );
-         painter->fillRect( markerRect, QBrush( Qt::darkCyan ) );
     }
-
-
 
 
     //set overlay if item is active:
@@ -281,7 +359,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
 
-        int underImageY = MARGIN + ALBUM_WIDTH;
+        int underImageY = MARGIN + ALBUM_WIDTH + 2;
 
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
@@ -531,16 +609,16 @@ void Playlist::GraphicsItem::setRow(int row)
         switch ( m_groupMode ) {
         
             case None:
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
                 break;
             case Head:
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height();
                 break;
             case Body:
-                m_height =  s_fm->height() /*+ 2 * MARGIN*/;
+                m_height =  s_fm->height()/*+ 2 * MARGIN*/;
                 break;
             case End:
-                m_height =  s_fm->height() /*+ 2 * MARGIN*/;
+                m_height =  s_fm->height() + 6 /*+ 2 * MARGIN*/;
                 break;
         }
     }

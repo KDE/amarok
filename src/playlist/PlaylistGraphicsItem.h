@@ -12,6 +12,7 @@
 
 #include "meta.h"
 #include <QGraphicsItem>
+#include <QSvgRenderer>
 
 class QFontMetricsF;
 
@@ -65,6 +66,7 @@ namespace Playlist
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
             static QFontMetricsF* s_fm;
+            static QSvgRenderer * s_svgRenderer;
 
             
     };
