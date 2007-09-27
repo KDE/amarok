@@ -16,13 +16,6 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
 
 #include <qprocess.h>
 
-/* FIXME use the qt bindings.... 
-   we can't use the glib signal handling because it requires a g_main loop 
-   otherwise the glib bindings might probably be ok because gstreamer is using glib anyway
-   Currently the engine uses the c bindings for signal handling and the glib bindings for function calls
-
-*/
-#include <dbus/dbus-glib.h>
 #include <klocale.h>
 #include <iostream>
 #include <stdlib.h>
@@ -31,7 +24,9 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
 #include <dbus/connection.h>
 
 //#define MANUAL_YAUAP_START
-#define YAUAP_STARTUP_TIMEOUT 10000
+#define YAUAP_DBUS_SERVICE "org.yauap.CommandService"
+#define YAUAP_DBUS_PATH "/yauapObject"
+#define YAUAP_DBUS_INTERFACE "org.yauap.CommandInterface"
 
 #include "yauap-engine.h"
 #include "debug.h"
@@ -138,7 +133,7 @@ DBusConnection::close()
 }
 
 
-DBusConnection::DBusConnection( void* c )
+DBusConnection::DBusConnection( yauapEngine* c )
 {
     qt_connection = NULL;
     dbus_connection = NULL;
@@ -149,6 +144,89 @@ DBusConnection::~DBusConnection()
 {
     close();
 }
+
+bool
+DBusConnection::send(const char *method, int first_arg_type, ...)
+{
+    dbus_uint32_t serial = 0;
+    bool ret = false;
+
+    QMutexLocker lock(&m_mutex);
+
+    DBusMessage* msg = dbus_message_new_method_call(
+            YAUAP_DBUS_SERVICE, YAUAP_DBUS_PATH, YAUAP_DBUS_INTERFACE,
+            method);
+
+    if (msg) {
+        va_list ap;
+
+        va_start(ap, first_arg_type);
+        dbus_message_append_args_valist(msg, first_arg_type, ap);
+        va_end(ap);
+
+        ret = dbus_connection_send(dbus_connection, msg, &serial);
+        dbus_message_unref (msg);
+    }
+
+    return ret;
+}
+
+int
+DBusConnection::call(const char *method, int first_arg_type, ...)
+{
+    dbus_uint32_t ret = -1;
+
+    va_list ap;
+    va_start (ap, first_arg_type);
+    DBusMessage* msg = send_with_reply(method, first_arg_type, ap);
+    va_end (ap);
+
+    if (msg) {
+        DBusMessageIter args;
+        if (dbus_message_iter_init(msg, &args) && DBUS_TYPE_INT32 ==
+                dbus_message_iter_get_arg_type(&args))
+            dbus_message_iter_get_basic(&args, &ret);
+
+        dbus_message_unref (msg);
+    }
+
+    return ret;
+}
+
+DBusMessage*
+DBusConnection::send_with_reply(const char* method, int first_arg_type, ...)
+{
+    va_list ap;
+    va_start(ap, first_arg_type);
+    DBusMessage* msg = send_with_reply(method, first_arg_type, ap);
+    va_end(ap);
+    return msg;
+}
+
+DBusMessage*
+DBusConnection::send_with_reply(const char* method, int first_arg_type, va_list ap)
+{
+    QMutexLocker lock(&m_mutex);
+
+    DBusMessage* msg = dbus_message_new_method_call(
+            YAUAP_DBUS_SERVICE, YAUAP_DBUS_PATH, YAUAP_DBUS_INTERFACE, method);
+
+    if (msg) {
+        dbus_message_append_args_valist(msg, first_arg_type, ap);
+
+        DBusPendingCall* pcall = 0;
+
+        dbus_connection_send_with_reply(dbus_connection, msg, &pcall, -1);
+        dbus_message_unref (msg);
+
+        dbus_pending_call_block(pcall);
+        msg = dbus_pending_call_steal_reply(pcall);
+        dbus_pending_call_unref(pcall);
+    }
+
+    return msg;
+}
+
 
 /* emit state change signal */
 void 
@@ -161,74 +239,58 @@ yauapEngine::change_state( Engine::State state )
 /* destroy engine */
 yauapEngine::~yauapEngine()
 {
-    GError *error = NULL;
     /* make sure we really stopped */
     stop();
 
     /* quit the player */
-    if ( !dbus_g_proxy_call( remote_object, "quit", &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_INVALID) )
-    {
+    if ( !con->send("quit", DBUS_TYPE_INVALID) )
+        debug() << "quit failed " <<  endl;
 
-                debug() << "quit failed " << error->message <<  endl;
-                g_error_free( error );
-    }
-
-
-    /* destroy Qt DBus connection */
-    if(con)
-        delete con; 
-
-    /* free remote object */
-    if(remote_object)
-        g_object_unref(remote_object);
-
-    /* kill yauap */
-#ifndef MANUAL_YAUAP_START
-    helper.kill();
-#endif
+    delete con;
 }
 
 /* fetch metadata from yauap */
 void 
-yauapEngine::update_metadata(void){
+yauapEngine::update_metadata()
+{
     Engine::SimpleMetaBundle bndl;
-    GError *error = NULL;
-    char **reply_list;
-    char **reply_ptr;
     debug() << " emit metadata change " << endl;
 
+    DBusMessage* msg = con->send_with_reply("get_metadata", DBUS_TYPE_INVALID);
+    if (msg) {
+        DBusMessageIter args;
+        if (dbus_message_iter_init(msg, &args) && DBUS_TYPE_ARRAY ==
+                dbus_message_iter_get_arg_type(&args)) {
+            DBusMessageIter sub;
+            dbus_message_iter_recurse(&args, &sub);
+            dbus_message_iter_next(&args);
+            while (dbus_message_iter_get_arg_type(&sub) == DBUS_TYPE_STRING) {
+                char* reply_ptr = 0;
+                dbus_message_iter_get_basic(&sub, &reply_ptr);
+                dbus_message_iter_next(&sub);
 
-    if( !dbus_g_proxy_call (remote_object, "get_metadata", &error,
-        G_TYPE_INVALID,G_TYPE_STRV, &reply_list, G_TYPE_INVALID) )
-    {
-        debug() << "get_metadata failed " << error->message <<  endl;
-        g_error_free(error);
-        return;
-    }
-    for(reply_ptr = reply_list; *reply_ptr; reply_ptr++)
-    {
-#define ASSIGN(a,b)  if(!strncmp(*reply_ptr,b,strlen(b)) && strlen(*reply_ptr + strlen(b) + 1)){ \
-                         bndl.a = *reply_ptr + strlen(b) + 1; \
+                debug() << "reply_ptr: " << reply_ptr << endl;
+
+#define ASSIGN(a,b)  if(!strncmp(reply_ptr,b,strlen(b)) && strlen(reply_ptr + strlen(b) + 1)){ \
+                         bndl.a = reply_ptr + strlen(b) + 1; \
                          continue; \
                      }
-        ASSIGN( title, "title" )
-        ASSIGN( artist, "artist" )
-        ASSIGN( album, "album" )
-        ASSIGN( comment, "comment" )
-        ASSIGN( genre, "genre" )
-        ASSIGN( samplerate, "samplerate" )
-        ASSIGN( year, "date" )
-        ASSIGN( tracknr, "track-number" )
-        ASSIGN( length, "length" )
-        ASSIGN( bitrate, "bitrate" )
+
+                ASSIGN( title, "title" )
+                ASSIGN( artist, "artist" )
+                ASSIGN( album, "album" )
+                ASSIGN( comment, "comment" )
+                ASSIGN( genre, "genre" )
+                ASSIGN( samplerate, "samplerate" )
+                ASSIGN( year, "date" )
+                ASSIGN( tracknr, "track-number" )
+                ASSIGN( length, "length" )
+                ASSIGN( bitrate, "bitrate" )
 #undef ASSIGN
+            }
+        }
+        dbus_message_unref(msg);
     }
-    /* free reply_list */
-    for( reply_ptr = reply_list; *reply_ptr; reply_ptr++)
-        free( *reply_ptr );
-    free( reply_list );
 
     debug() << "title:" << bndl.title << endl;
     debug() << "artist:" << bndl.artist << endl;
@@ -252,37 +314,107 @@ yauapEngine::update_metadata(void){
 
 /* fetch current sample buffer from yauap */
 const Engine::Scope &
-yauapEngine::scope(){ 
-    GError *error = NULL;
-    GArray *arr;
-    int i;
+yauapEngine::scope()
+{
+    int len = 0;
+    dbus_int16_t* data = 0;
 
-//        debug() << " update scope " << endl;
-
-    if (!dbus_g_proxy_call(remote_object, "get_scopedata", &error,
-        G_TYPE_INVALID,DBUS_TYPE_G_UCHAR_ARRAY, &arr, G_TYPE_INVALID))
-    {
-        debug() << "get_scopedata failed " << error->message <<  endl;
-        g_error_free( error );
-        return m_scope;
+    DBusMessage* msg = con->send_with_reply("get_scopedata", DBUS_TYPE_INVALID);
+    if (msg) {
+        DBusMessageIter args;
+        if (dbus_message_iter_init(msg, &args) && DBUS_TYPE_ARRAY ==
+                dbus_message_iter_get_arg_type(&args)) {
+            DBusMessageIter sub;
+            dbus_message_iter_recurse(&args, &sub);
+            dbus_message_iter_next(&args);
+            dbus_message_iter_get_fixed_array(&sub,&data,&len);
+        }
+        dbus_message_unref(msg);
     }
+
     /* 2 channel 16 bit samples */
-    if(arr->len == SCOPESIZE * 2)
+    if(len == SCOPESIZE * 2)
     {
-        /* and voila about 1000 memcpys later the data reaches amarok */
-        gint16 *data = reinterpret_cast<gint16 *>( arr->data );
-        for( i=0; i < SCOPESIZE ; i++)
+        for( int i=0; i < SCOPESIZE ; i++)
             m_scope[i] = data[i];
     }else
-       debug() << "get_scopedata returned the wrong amount of data " << arr->len << endl;
-    g_array_free( arr, TRUE);
+       debug() << "get_scopedata returned the wrong amount of data " << len << endl;
+
     return m_scope;
 }
 
+void
+yauapEngine::yauapProcessExited()
+{
+    debug() << "yauapProcessExited!!!!!" << endl;
+
+    closeDbusConnection();
+    initDbusConnection();
+}
+
+void
+yauapEngine::closeDbusConnection()
+{
+    /* destroy Qt DBus connection */
+    delete con;
+    con = 0;
+
+    /* kill yauap */
+#ifndef MANUAL_YAUAP_START
+    helper.kill();
+#endif
+}
+
+bool
+yauapEngine::initDbusConnection()
+{
+#ifndef MANUAL_YAUAP_START
+    /* start yauap in slave mode */
+    helper.clearArguments();
+    helper << "yauap" << "-noexit";
+
+    if( !helper.start(KProcess::NotifyOnExit, KProcess::All))
+    {
+        debug() << "could not start yauap " << endl;
+        emit statusText( i18n( "could not start yauap" ) );
+        return false;
+    }
+#endif
+
+    /* create and open qt DBus connection so that we are able to receive signals */
+    con = new DBusConnection( this );
+    if (!con->open())
+    {
+        debug() << "could not connect to dbus" << endl;
+        emit statusText( i18n( "Error: could not connect to dbus" ) );
+        return false;
+    }
+
+    /* makes sure the player is stopped: retry the call a few times because it takes some
+    time until yauap registered its dbus service  */
+    for( int i=0; i < 2; ++i ) {
+        if( con->send("stop", DBUS_TYPE_INVALID) >= 0 )
+            return true;
+        usleep(20 * 1000);
+    }
+
+    return false;
+}
+
+#if 0
+void 
+yauapEngine::handleDbusError(const char* method)
+{
+    debug() << method << " failed "  <<  endl;
+
+    closeDbusConnection();
+    initDbusConnection();
+}
+#endif
 
 /* tell amarok that the current track ended */
 void 
-yauapEngine::track_ended( void )
+yauapEngine::track_ended()
 {
     m_state = Engine::Idle;
     emit trackEnded();
@@ -297,132 +429,46 @@ yauapEngine::error_msg( char * msg )
 
 /* init engine */
 bool 
-yauapEngine::init( void )
+yauapEngine::init()
 {
-    GError *error = NULL;
-    int i,  ret = 0;
-
     debug() << "In init" << endl;
 
-#ifndef MANUAL_YAUAP_START
-    /* start yauap in slave mode */
-    helper << "yauap" << "-noexit";
+    m_state = Engine::Idle;
 
-    if( !helper.start() )
-    {
-        debug() << "could not start yauap " << endl;
-        emit statusText( i18n( "could not start yauap" ) );
-        return false;
-    }
-#endif
+    connect(&helper, SIGNAL(processExited(KProcess*)), SLOT(yauapProcessExited()));
 
-    /* create and open qt DBus connection so that we are able to receive signals */
-    con = new DBusConnection( (void*) this );
-    con->open();
+    if (initDbusConnection())
+        return true;
 
-    /* init g type for the DBus glib bindings */
-    g_type_init();
-
-    /* connect to DBus */
-    bus = dbus_g_bus_get( DBUS_BUS_SESSION, &error);
-    if( !bus )
-    {
-        debug() << "could not connect to dbus" << endl;
-        emit statusText( i18n( "Error: could not connect to dbus" ) );
-        return false;
-    }
-
-    /* create a yauap Remote Object */
-    remote_object = dbus_g_proxy_new_for_name( bus,
-                                             "org.yauap.CommandService",
-                                             "/yauapObject",
-                                             "org.yauap.CommandInterface");
-    if( !remote_object )
-    {
-        debug() << "could not create remote object" << endl;
-        return false;
-    }
-
-    /* makes sure the player is stopped: retry the call a few times because it takes some
-    time until yauap registered its dbus service  */
-
-    for( i=0; i < YAUAP_STARTUP_TIMEOUT ; i++ ){
-        if( dbus_g_proxy_call(remote_object, "stop", &error,
-            G_TYPE_INVALID,G_TYPE_INT,&ret, G_TYPE_INVALID) )
-             break;
-//                debug() << "stop failed " << error->message <<  endl;
-        usleep(1000);
-        g_error_free( error );
-        error = NULL;
-    }
-    if( i >= YAUAP_STARTUP_TIMEOUT )
-    {
-        debug() << "timed out waiting for yauap" << endl;
-        emit statusText( i18n( "Error: timed out waiting for yauap" ) );
-
-        return false;
-    }
-
-    return true;
+    emit statusText( i18n( "Error: timed out waiting for yauap" ) );
+    return false;
 }
 
 /* check if the given url can be decoded */
-bool 
-yauapEngine::canDecode( const KURL &kurl ) const 
+bool
+yauapEngine::canDecode( const KURL &kurl ) const
 {
-    GError *error = NULL;
-    QString qurl = kurl.url();
-    const char* url = qurl.ascii();
-    int can_decode = 0;
+    QCString qurl = kurl.url().utf8();
+    const char* url = qurl.data();
 
-    debug() << " In canDecode " << url << endl ;
-    if (!dbus_g_proxy_call( remote_object, "can_decode", &error,
-                          G_TYPE_STRING, url,
-                          G_TYPE_INVALID,
-                          G_TYPE_INT,&can_decode,
-                          G_TYPE_INVALID))
-    {
-
-        debug() << "canDecode " << error->message <<  endl;
-        g_error_free( error );
-        return false;
-    }
-
-    debug() << "=> " << can_decode << endl;
-
-    if( can_decode )
-        return true;
-    return false;
+    return con->call("can_decode", DBUS_TYPE_STRING, &url, DBUS_TYPE_INVALID) > 0;
 }
 
 /* load a new track FIXME: implement cross fading */
 bool 
 yauapEngine::load( const KURL &url, bool isStream )
 {
-    GError *error = NULL;
     QString qurl = url.url();
     const char* curl = qurl.ascii();
-    int gerror = 0;
 
     m_isStream = isStream;
 
     Engine::Base::load( url, isStream || url.protocol() == "http" );
     change_state(Engine::Idle);
 
-    if (!dbus_g_proxy_call( remote_object, "load", &error,
-        G_TYPE_STRING,curl,
-        G_TYPE_INVALID,
-        G_TYPE_INT,&gerror,
-        G_TYPE_INVALID))
-    {
-        debug() << "load failed " << error->message <<  endl;
-        g_error_free( error );
+    if (!con->call("load", DBUS_TYPE_STRING, &curl, DBUS_TYPE_INVALID))
         return false;
-    }
 
-    debug() << "=> " << gerror << endl;
-    if( !gerror )
-        return false;
     loaded_url = url;
     return true;
 }
@@ -431,40 +477,31 @@ yauapEngine::load( const KURL &url, bool isStream )
 void 
 yauapEngine::setVolumeSW( uint volume )
 {
-    GError *error = NULL;
-    int gerror = 0;
+    dbus_uint32_t dbus_volume = volume;
+    int ret;
+
     debug() << "In setVolumeSW " << volume << endl;
-    if( !dbus_g_proxy_call( remote_object, "set_volume", &error,
-        G_TYPE_UINT,volume,G_TYPE_INVALID,G_TYPE_INT,&gerror,G_TYPE_INVALID))
-    {
-        debug() << "set_volume failed " << error->message <<  endl;
-        g_error_free(error);
-        return;
-    }
-    debug() << "=> " << gerror << endl;
+
+    ret = con->call("set_volume", DBUS_TYPE_UINT32, &dbus_volume, DBUS_TYPE_INVALID);
+    debug() << "=> " << ret << endl;
 }
+
+#include <assert.h>
 
 /* start playback */
 bool 
 yauapEngine::play( uint offset )
 {
-    GError *error = NULL;
-    int gerror = 0;
-    debug() << "In play" << endl;
-    if (!dbus_g_proxy_call(remote_object, "start", &error,
-        G_TYPE_UINT,offset,G_TYPE_INVALID,G_TYPE_INT,&gerror,G_TYPE_INVALID))
-    {
-        debug() << "play failed " << error->message <<  endl;
-        g_error_free( error );
-        return false;
-    }
+    dbus_uint32_t dbus_offset = offset;
 
-    debug() << "=> " << gerror << endl;
-    if(gerror)
+    debug() << "In play" << endl;
+
+    if (con->call("start", DBUS_TYPE_UINT32, &dbus_offset, DBUS_TYPE_INVALID) > 0)
     {
         change_state( Engine::Playing );
         return true;
     }
+
     change_state( Engine::Empty );
     return false;
 }
@@ -472,157 +509,122 @@ yauapEngine::play( uint offset )
 
 /* stop playback */
 void 
-yauapEngine::stop( void )
+yauapEngine::stop()
 {
-    GError *error = NULL;
-    int gerror = 0;
     change_state( Engine::Empty );
 
-    if (!dbus_g_proxy_call(remote_object, "stop", &error,
-        G_TYPE_INVALID,G_TYPE_INT,&gerror,G_TYPE_INVALID))
+    if (con->send("stop", DBUS_TYPE_INVALID) <= 0)
     {
-        debug() << "stop failed " << error->message <<  endl;
-        g_error_free(error);
+        debug() << "stop failed " <<  endl;
         return;
     }
 
-    debug() << "=> " << gerror << endl;
+    change_state(Engine::Empty);
 }
 
 
 /* pause playback */
 void 
-yauapEngine::pause( void )
+yauapEngine::pause()
 {
-    GError *error = NULL;
-    int gerror = 0;
     debug() << "In pause " << endl;
-    if ( !dbus_g_proxy_call(remote_object, "pause", &error,
-        G_TYPE_INVALID,G_TYPE_INT,&gerror,G_TYPE_INVALID) )
-    {
-        debug() << "pause failed " << error->message <<  endl;
-        g_error_free( error );
+
+    if (!con->call("pause", DBUS_TYPE_INVALID))
         return;
-    }
 
-    debug() << "=> " << gerror << endl;
-
-    if( gerror ){
-        if( state() == Engine::Playing )
-            change_state( Engine::Paused );
-         else
-            change_state( Engine::Playing );
-    }
+    if( state() == Engine::Playing )
+        change_state( Engine::Paused );
+    else
+        change_state( Engine::Playing );
 }
 
 /* unpause playback */
-void 
-yauapEngine::unpause( void )
+void
+yauapEngine::unpause()
 {
     pause();
 }
 
 /* get track length in ms */
-uint 
-yauapEngine::length( void ) const 
+uint
+yauapEngine::length() const
 {
-    GError *error = NULL;
-    uint length = 0;
     debug() << "In length " << endl;
-    if (!dbus_g_proxy_call(remote_object, "get_length", &error,
-        G_TYPE_INVALID,G_TYPE_UINT,&length,G_TYPE_INVALID))
-    {
-        debug() << "get_length failed " << error->message <<  endl;
-        g_error_free(error);
-        return 0;
-    }
+
+    int length = con->call("get_length", DBUS_TYPE_INVALID);
+    if (length < 0) return 0;
 
     debug() << "=> " << length << endl;
-    return length;
+    return (uint) length;
 }
 
 /* get current position */
-uint 
-yauapEngine::position( void ) const 
+uint
+yauapEngine::position() const
 {
-    GError *error = NULL;
-    uint position = 0;
-//	debug() << "In position " << endl;
-    if ( !dbus_g_proxy_call(remote_object, "get_position", &error,
-        G_TYPE_INVALID,G_TYPE_UINT,&position,G_TYPE_INVALID) )
-    {
+    int position = 0;
 
-        debug() << "get_positon failed " << error->message <<  endl;
-        g_error_free(error);
-        return 0;
-    }
-//	debug() << "=> " << position << endl;
-    return position;
+    position = con->call("get_positon", DBUS_TYPE_INVALID);
+    if (position < 0) position = 0;
+    return (uint) position;
 }
 
 /* seek to offset in ms */
-void 
+void
 yauapEngine::seek( uint offset )
 {
-    GError *error = NULL;
-    int ret = 0;
-    debug() << "In seek " << endl;
-    if ( !dbus_g_proxy_call( remote_object, "seek", &error,
-        G_TYPE_UINT, offset, G_TYPE_INVALID, G_TYPE_INT, &ret, G_TYPE_INVALID) )
-    {
-        debug() << "seek failed " << error->message <<  endl;
-        g_error_free(error);
-        return;
-    }
-    debug() << "=> " << ret << endl;
-}
+    dbus_uint32_t dbus_offset = offset;
 
+    if (!con->send("seek", DBUS_TYPE_UINT32, &dbus_offset, DBUS_TYPE_INVALID))
+        debug() << "seek failed " <<  endl;
+}
 
 bool
 yauapEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 {
-    GError *error = NULL;
-    char **reply_list;
-    char **reply_ptr;
-    int i = 0;
-    
-
     debug() << "Getting AudioCD contents..." << endl;
 
-    if( !dbus_g_proxy_call (remote_object, "get_audio_cd_contents", &error,
-        G_TYPE_STRING,(char*)device.latin1(),G_TYPE_INVALID,G_TYPE_STRV, &reply_list, G_TYPE_INVALID) )
-    {
-        debug() << "get_audio_cd_contents failed " << error->message <<  endl;
-        g_error_free(error);
-        return false;
+    QCString cdevice = device.latin1();
+    const char* cdevice_ptr = cdevice.data();
+
+    DBusMessage* msg = con->send_with_reply("get_audio_cd_contents",
+            DBUS_TYPE_STRING, &cdevice_ptr, DBUS_TYPE_INVALID);
+    if (msg) {
+        DBusMessageIter args;
+        int i = 0;
+
+        if (dbus_message_iter_init(msg, &args) && DBUS_TYPE_ARRAY ==
+                dbus_message_iter_get_arg_type(&args)) {
+            DBusMessageIter sub;
+            dbus_message_iter_recurse(&args, &sub);
+            dbus_message_iter_next(&args);
+            while (dbus_message_iter_get_arg_type(&sub) == DBUS_TYPE_STRING) {
+                char* reply_ptr = 0;
+                dbus_message_iter_get_basic(&sub, &reply_ptr);
+                dbus_message_iter_next(&sub);
+
+                debug() << "reply_ptr: " << reply_ptr << endl;
+
+                Engine::SimpleMetaBundle b;
+                char* saveptr;
+                KURL url = QString("cdda://").append( strtok_r(reply_ptr,"=",&saveptr)); 
+                urls << url;
+                debug() << url << endl;
+                b.title  = QString( i18n( "Track %1" ) ).arg( i+1 );
+                b.length = strtok_r(NULL,"=",&saveptr);
+                b.album = "AudioCD";
+                b.tracknr = i+1;
+                b.samplerate = "44100";
+                b.bitrate = "1411";
+                cd_tracks.push_back(b);
+                ++i;
+            }
+        }
+        dbus_message_unref(msg);
     }
-   
-    cd_tracks.clear(); 
-    for(reply_ptr = reply_list; *reply_ptr; reply_ptr++)
-    {
-        Engine::SimpleMetaBundle b;
-        char* saveptr;
-        KURL url = QString("cdda://").append( strtok_r(*reply_ptr,"=",&saveptr)); 
-        urls << url;
-        debug() << url << endl;
-        b.title  = QString( i18n( "Track %1" ) ).arg( i+1 );
-        b.length = strtok_r(NULL,"=",&saveptr);
-        b.album = "AudioCD";
-        b.tracknr = i+1;
-        b.samplerate = "44100";
-        b.bitrate = "1411";
-        cd_tracks.push_back(b);
-        ++i;
-    }
-    /* free reply_list */
-    for( reply_ptr = reply_list; *reply_ptr; reply_ptr++)
-        free( *reply_ptr );
-    free( reply_list );
 
     return true;
 }
-
-
 
 bool 
 yauapEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
@@ -635,3 +637,4 @@ yauapEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
     return false;
 }
 
+#include "yauap-engine.moc"

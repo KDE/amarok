@@ -13,6 +13,9 @@ copyright            : (C) 2006 by Sascha Sommer <ssommer@suse.de>
  *                                                                         *
  ***************************************************************************/
 
+#ifndef AMAROK_YAUAP_ENGINE_H
+#define AMAROK_YAUAP_ENGINE_H
+
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/connection.h>
 
@@ -21,24 +24,35 @@ copyright            : (C) 2006 by Sascha Sommer <ssommer@suse.de>
 #include "enginebase.h"
 #include "debug.h"
 
+class yauapEngine;
 
-
-/* DBus Connection for the signal handler */
-class DBusConnection : public QObject 
+class DBusConnection : public QObject
 {
-//    Q_OBJECT
+    friend class yauapEngine;
+
     DBusQt::Connection *qt_connection;
     DBusConnection *dbus_connection;
-    void *context;
+    yauapEngine *context;
+    QMutex m_mutex;
+
 public:
     bool open();
     void close();
-    DBusConnection( void *context );
+    DBusConnection( yauapEngine *context );
     ~DBusConnection();
+
+    bool send(const char *method, int first_arg_type, ...);
+    DBusMessage* send_with_reply(const char* method, int first_arg_type, ...);
+    DBusMessage* send_with_reply(const char* method, int first_arg_type, va_list);
+    int call(const char *method, int first_arg_type, ...);
 };
 
-class yauapEngine : public Engine::Base 
+class yauapEngine : public Engine::Base
 {
+    Q_OBJECT
+
+    friend class DBusConnection;
+
     virtual ~yauapEngine();
     virtual bool init();
     virtual bool canDecode( const KURL& ) const;
@@ -55,24 +69,28 @@ class yauapEngine : public Engine::Base
     virtual const Engine::Scope &scope();
     virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
     virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
-public: 
+public:
     yauapEngine() : EngineBase() {}
     /* these need to be public because they are called from the dbus signal handler */
     void update_metadata();
     void update_scope();
     void track_ended();
     void error_msg(char* msg);
+
+private slots:
+    void yauapProcessExited();
+
 private:
     KURL loaded_url;
     std::vector<Engine::SimpleMetaBundle> cd_tracks;
     void change_state( Engine::State );
-    DBusGConnection *bus;
-    DBusGProxy *remote_object;
+    bool initDbusConnection();
+    void closeDbusConnection();
+
     Engine::State m_state;
     DBusConnection *con;
     /* helper process to start */
     KProcess helper;
 };
 
-
-
+#endif

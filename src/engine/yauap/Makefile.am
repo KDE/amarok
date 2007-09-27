@@ -23,8 +23,7 @@ libamarok_yauap_engine_plugin_la_LDFLAGS = \
     $(KDE_PLUGIN) \
     $(all_libraries)
 
-METASOURCES = \
-    AUTO
+METASOURCES = AUTO
 
 kde_services_DATA = \
     amarok_yauap-engine_plugin.desktop

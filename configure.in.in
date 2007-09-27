@@ -352,7 +352,7 @@ if test "$build_yauap" != "no"; then
         # check for dbus-glib
         have_yauap=no
 
-        PKG_CHECK_MODULES(DBUSGLIB, dbus-glib-1,
+        PKG_CHECK_MODULES(DBUS, dbus-1,
             have_yauap=yes,have_yauap=no)
 
 
@@ -361,10 +361,8 @@ if test "$build_yauap" != "no"; then
             LIB_YAUAP=""
             CFLAGS_YAUAP=""
         else
-            PKG_CHECK_MODULES(GOBJECT, gobject-2.0,
-                have_yauap=yes,have_yauap=no)
-            LIB_YAUAP="$DBUSGLIB_LIBS -ldbus-qt-1 $GOBJECT_LIBS"
-            CFLAGS_YAUAP="$DBUSGLIB_CFLAGS $GOBJECT_CFLAGS"
+            LIB_YAUAP="$DBUS_LIBS -ldbus-qt-1"
+            CFLAGS_YAUAP="$DBUS_CFLAGS"
             AC_SUBST(LIB_YAUAP)
             AC_SUBST(CFLAGS_YAUAP)
             AC_DEFINE(HAVE_YAUAP, 1, [have yauap])
