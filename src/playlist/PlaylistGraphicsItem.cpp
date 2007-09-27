@@ -31,6 +31,8 @@
 #include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
 
+#include <KLocale>
+
 struct Playlist::GraphicsItem::ActiveItems
 {
     ActiveItems()
@@ -265,8 +267,14 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         {
             QString artist;
-            if( track->artist() )
-                artist = track->artist()->name();
+            //various artist handling:
+            //if the album has no albumartist, use Various Artists, otherwise use the albumartist's name
+            if( track->album()->albumArtist() )
+                artist = track->album()->albumArtist()->name();
+            else
+                //TODO compare the actual artist of all the upcoming tracks of the album
+                //and use that if all of them match
+                artist = i18n( "Various Artists" );
             m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
