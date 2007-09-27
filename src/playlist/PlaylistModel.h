@@ -148,7 +148,6 @@ class TrackNavigator;
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
-            void testData();
             
             ///deprecated function to ease porting to Meta::Track from URLs
             KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );

@@ -214,27 +214,6 @@ Model::insertTracks( int row, QueryMaker *qm )
     qm->run();
 }
 
-void
-Model::testData()
-{
-    DEBUG_BLOCK
-    Collection *local = 0;
-    foreach( Collection *coll, CollectionManager::instance()->collections() )
-    {
-        if( coll->collectionId() == "localCollection" )
-            local = coll;
-    }
-    if( !local )
-        return;
-    QueryMaker *qm = local->queryMaker();
-    qm->startTrackQuery();
-    qm->limitMaxResultSize( 10 );
-    BlockingQuery bq( qm );
-    bq.startQuery();
-    insertTracks( 0, bq.tracks( "localCollection" ) );
-    reset();
-}
-
 Qt::DropActions
 Model::supportedDropActions() const
 {
