@@ -19,7 +19,7 @@ copyright            : (C) 2006 by Sascha Sommer <ssommer@suse.de>
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/connection.h>
 
-#include <kprocess.h>
+#include <amarok.h>
 
 #include "enginebase.h"
 #include "debug.h"
@@ -47,6 +47,14 @@ public:
     int call(const char *method, int first_arg_type, ...);
 };
 
+class yauapProcess : public Amarok::Process
+{
+public:
+    yauapProcess(QObject* parent) : Amarok::Process(parent) {}
+
+    virtual int commSetupDoneC();
+};
+
 class yauapEngine : public Engine::Base
 {
     Q_OBJECT
@@ -70,7 +78,7 @@ class yauapEngine : public Engine::Base
     virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
     virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
 public:
-    yauapEngine() : EngineBase() {}
+    yauapEngine() : EngineBase(), helper(0) {}
     /* these need to be public because they are called from the dbus signal handler */
     void update_metadata();
     void update_scope();
@@ -90,7 +98,7 @@ private:
     Engine::State m_state;
     DBusConnection *con;
     /* helper process to start */
-    KProcess helper;
+    yauapProcess helper;
 };
 
 #endif

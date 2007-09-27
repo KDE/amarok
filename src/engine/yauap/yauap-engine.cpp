@@ -18,6 +18,9 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
 
 #include <klocale.h>
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stdlib.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
@@ -65,6 +68,17 @@ signal_handler( DBusConnection * /*con*/, DBusMessage *msg, void *data )
         handled = false;
 
     return (handled ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+}
+
+int
+yauapProcess::commSetupDoneC()
+{
+    int r = Amarok::Process::commSetupDoneC();
+    int fd = open("/dev/null", O_RDWR);
+    dup2(fd, 1);
+    dup2(fd, 2);
+    close(fd);
+    return r;
 }
 
 /* create a qt dbus connection that will receive the signals */
@@ -212,16 +226,17 @@ DBusConnection::send_with_reply(const char* method, int first_arg_type, va_list 
             YAUAP_DBUS_SERVICE, YAUAP_DBUS_PATH, YAUAP_DBUS_INTERFACE, method);
 
     if (msg) {
+        DBusError error;
+        dbus_error_init(&error);
+
         dbus_message_append_args_valist(msg, first_arg_type, ap);
 
-        DBusPendingCall* pcall = 0;
+        DBusMessage* oldmsg = msg;
+        msg = dbus_connection_send_with_reply_and_block(dbus_connection, oldmsg, -1, &error);
+        dbus_message_unref (oldmsg);
 
-        dbus_connection_send_with_reply(dbus_connection, msg, &pcall, -1);
-        dbus_message_unref (msg);
-
-        dbus_pending_call_block(pcall);
-        msg = dbus_pending_call_steal_reply(pcall);
-        dbus_pending_call_unref(pcall);
+        if (!msg)
+            debug() << "dbus error while waiting for reply: " << error.message << endl;
     }
 
     return msg;
@@ -564,7 +579,7 @@ yauapEngine::position() const
 {
     int position = 0;
 
-    position = con->call("get_positon", DBUS_TYPE_INVALID);
+    position = con->call("get_position", DBUS_TYPE_INVALID);
     if (position < 0) position = 0;
     return (uint) position;
 }
