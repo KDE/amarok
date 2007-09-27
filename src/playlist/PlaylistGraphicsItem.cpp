@@ -272,9 +272,11 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             if( track->album()->albumArtist() )
                 artist = track->album()->albumArtist()->name();
             else
-                //TODO compare the actual artist of all the upcoming tracks of the album
-                //and use that if all of them match
-                artist = i18n( "Various Artists" );
+            {
+                artist = findArtistForCurrentAlbum();
+                if( artist.isEmpty() )
+                    artist = i18n( "Various Artists" );
+            }
             m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
@@ -290,6 +292,49 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     }
 
     m_items->lastWidth = totalWidth;
+}
+
+QString
+Playlist::GraphicsItem::findArtistForCurrentAlbum() const
+{
+    if( m_groupMode != Head )
+        return QString();
+
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
+    if( index.data( GroupRole ).toInt() != Head )
+    {
+        return QString();
+    }
+    else
+    {
+        QString artist;
+        Meta::TrackPtr currentTrack = index.data( TrackRole ).value< Meta::TrackPtr >();
+        if( currentTrack->artist() )
+            artist = currentTrack->artist()->name();
+        else
+            return QString();
+        //it's an album group, and the current row is the head, so the next row is either Body or End
+        //that means we have to execute the loop at least once
+        QModelIndex idx;
+        int row = m_currentRow + 1;
+        do
+        {
+            idx = The::playlistModel()->index( row++, 0 );
+            Meta::TrackPtr track = idx.data( TrackRole ).value< Meta::TrackPtr >();
+            if( track->artist() )
+            {
+                if( artist != track->artist()->name() )
+                    return QString();
+            }
+            else
+            {
+                return QString();
+            }
+        }
+        while( idx.data( GroupRole ).toInt() == Body );
+
+        return artist;
+    }
 }
 
 QRectF

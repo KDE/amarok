@@ -54,6 +54,7 @@ namespace Playlist
         private:
             void init( Meta::TrackPtr track );
             void resize( Meta::TrackPtr track, int totalWidth );
+            QString findArtistForCurrentAlbum() const;
 
             ActiveItems* m_items;
             qreal m_height;
