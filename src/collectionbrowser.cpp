@@ -63,7 +63,6 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <kstandarddirs.h>   //KGlobal::dirs()
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>

@@ -1109,6 +1109,9 @@ public:
 
         m_amarokIconPath = QDeepCopy<QString>(KGlobal::iconLoader()->iconPath( "amarok",
                     -KIcon::SizeEnormous ) );
+        m_musicBrainIconPath = QDeepCopy<QString>(locate( "data", "amarok/images/musicbrainz.png" )
+                );
+        m_lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
     }
 
 private:
@@ -1151,6 +1154,8 @@ private:
     }
     QString m_HTMLSource;
     QString m_amarokIconPath;
+    QString m_musicBrainIconPath;
+    QString m_lastfmIcon;
 
     ContextBrowser *b;
     MetaBundle m_currentTrack;
@@ -1749,7 +1754,6 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     const QString albumUrl   = lastFmInfo->albumUrl();
     const QString artistUrl  = lastFmInfo->artistUrl();
     const QString titleUrl   = lastFmInfo->titleUrl();
-    const QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
 
     const QString coverImage = ContextBrowser::getEncodedImage( lastFmInfo->imageUrl() );
 
@@ -1824,7 +1828,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             << escapeHTMLAttr( currentTrack.album() )//10
             << escapeHTMLAttr( userpage ) //11
             << escapeHTMLAttr( userpage ) //12
-            << escapeHTMLAttr( lastfmIcon ) //13
+            << escapeHTMLAttr( m_lastfmIcon ) //13
             << escapeHTML( i18n( "Skip" ) ) //14
             << escapeHTMLAttr( skipIcon ) //15
             << escapeHTML( i18n( "Love" ) ) //16
@@ -2255,7 +2259,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                         << escapeHTMLAttr( currentTrack.artist() )
                         << escapeHTMLAttr( currentTrack.album() )
                         << escapeHTMLAttr( currentTrack.title() )
-                        << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
+                        << escapeHTML( m_musicBrainIconPath ) )
                 : QString ( //no title
                         "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
                         "</div>\n"

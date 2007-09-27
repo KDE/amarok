@@ -217,6 +217,7 @@ CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
         , m_autoScoring( true )
         , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
+        , m_shadowImage( locate( "data", "amarok/images/shadow_albumcover.png" ) )
         , m_scanInProgress( false )
         , m_rescanRequired( false )
         , m_aftEnabledPersistentTables()
@@ -2055,11 +2056,12 @@ CollectionDB::albumImage( const MetaBundle &trackInformation, bool withShadow, u
     return s;
 }
 
-
 QString
 CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
 {
-    const QImage original( albumImage );
+    qApp->lock();
+    const QImage original( albumImage, "PNG" );
+    qApp->unlock();
 
     if( original.hasAlphaBuffer() )
         return albumImage;
@@ -2067,22 +2069,26 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
     const QFileInfo fileInfo( albumImage );
     const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
     const QString cacheFile = fileInfo.fileName() + "@shadow";
-    QImage shadow;
 
     if ( !cache && cacheCoverDir().exists( cacheFile ) )
         return cacheCoverDir().filePath( cacheFile );
 
+    QImage shadow;
+
     const QString folder = Amarok::saveLocation( "covershadow-cache/" );
     const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
-    if ( QFile::exists( folder + file ) )
-        shadow.load( folder + file );
+    if ( QFile::exists( folder + file ) ) {
+        qApp->lock();
+        shadow.load( folder + file, "PNG" );
+        qApp->unlock();
+    }
     else {
-        shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+        shadow = QDeepCopy<QImage>(instance()->m_shadowImage);
         shadow = shadow.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
         shadow.save( folder + file, "PNG" );
     }
 
-    QImage target( shadow );
+    QImage target(shadow);
     bitBlt( &target, 0, 0, &original );
 
     if ( cache ) {
@@ -7834,7 +7840,7 @@ QString
 QueryBuilder::tableName( int table )
 {
     // optimize for 1 table which is by far the most frequent case
-    static const QString tabNames[] = {
+    static const char tabNames[][16] = {
         "album",
         "artist",
         "composer",

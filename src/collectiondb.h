@@ -619,7 +619,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         static QMap<QListViewItem*, CoverFetcher*> *itemCoverMap;
         static QMutex *itemCoverMapMutex;
-        QImage m_noCover;
+        QImage m_noCover, m_shadowImage;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
         static QMutex *connectionMutex;
