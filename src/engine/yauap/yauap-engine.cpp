@@ -197,8 +197,9 @@ DBusConnection::call(const char *method, int first_arg_type, ...)
 
     if (msg) {
         DBusMessageIter args;
-        if (dbus_message_iter_init(msg, &args) && DBUS_TYPE_INT32 ==
-                dbus_message_iter_get_arg_type(&args))
+        if (dbus_message_iter_init(msg, &args) && 
+                (DBUS_TYPE_INT32 == dbus_message_iter_get_arg_type(&args) ||
+                 DBUS_TYPE_UINT32 == dbus_message_iter_get_arg_type(&args)))
             dbus_message_iter_get_basic(&args, &ret);
 
         dbus_message_unref (msg);
@@ -569,7 +570,7 @@ yauapEngine::length() const
     int length = con->call("get_length", DBUS_TYPE_INVALID);
     if (length < 0) return 0;
 
-    debug() << "=> " << length << endl;
+    debug() << "length is => " << length << endl;
     return (uint) length;
 }
 
@@ -580,6 +581,7 @@ yauapEngine::position() const
     int position = 0;
 
     position = con->call("get_position", DBUS_TYPE_INVALID);
+
     if (position < 0) position = 0;
     return (uint) position;
 }
