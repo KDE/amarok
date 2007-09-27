@@ -94,6 +94,7 @@ bool PlaylistHandler::save( Meta::TrackList tracks,
             return false;
             break;
     }
+    return false;
 }
 
 
@@ -479,14 +480,15 @@ PlaylistHandler::loadSMIL( QTextStream &stream )
 {
      // adapted from Kaffeine 0.7
     QDomDocument doc;
-    if( !doc.setContent( stream.read() ) )
+    if( !doc.setContent( stream.readAll() ) )
     {
         debug() << "Could now read smil playlist";
         return false;
     }
 
     QDomElement root = doc.documentElement();
-    stream.setEncoding ( QTextStream::UnicodeUTF8 );
+    stream.setAutoDetectUnicode( true );
+    stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
     if( root.nodeName().toLower() != "smil" )
         return false;
@@ -538,14 +540,14 @@ PlaylistHandler::loadASX( QTextStream &stream )
     int errorLine, errorColumn;
     stream.setCodec( "UTF8" );
 
-    QString content = stream.read();
+    QString content = stream.readAll();
 
     //ASX looks a lot like xml, but doesn't require tags to be case sensitive,
     //meaning we have to accept things like: <Abstract>...</abstract>
     //We use a dirty way to achieve this: we make all tags lower case
     QRegExp ex("(<[/]?[^>]*[A-Z]+[^>]*>)");
-    ex.setCaseSensitive(true);
-    while ( (ex.search(content)) != -1 )
+    ex.setCaseSensitivity( Qt::CaseSensitive );
+    while ( (ex.indexIn(content)) != -1 )
         content.replace(ex.cap( 1 ), ex.cap( 1 ).toLower());
 
 
