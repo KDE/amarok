@@ -50,7 +50,7 @@ public:
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
 
-    bool save( Meta::TrackList tracks, const QString &location, Format playlistFormat = M3U, bool relative = false );
+    bool save( Meta::TrackList tracks, const QString &location, bool relative = false );
 
 
 private:

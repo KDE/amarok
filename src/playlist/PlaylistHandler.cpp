@@ -80,12 +80,11 @@ void PlaylistHandler::load(const QString & path)
 
 bool PlaylistHandler::save( Meta::TrackList tracks,
                             const QString &location,
-                            Format playlistFormat,
-                            bool relative ) // static
+                            bool relative )
 {
     KUrl url( location );
+    Format playlistFormat = getFormat( url );
     switch (playlistFormat) {
-
         case M3U:
             return saveM3u( tracks, location, relative );
             break;
