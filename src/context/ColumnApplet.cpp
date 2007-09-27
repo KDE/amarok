@@ -29,7 +29,7 @@ ColumnApplet::ColumnApplet( QGraphicsItem * parent )
     , m_defaultColumnSize( 450 )
 {
     m_columns = new Plasma::FlowLayout( this );
-    m_columns->setColumnWidth( m_defaultColumnSize );
+    //m_columns->setColumnWidth( m_defaultColumnSize );
     
 }
 
