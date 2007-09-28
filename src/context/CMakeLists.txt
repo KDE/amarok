@@ -27,6 +27,11 @@ set(plasma_LIB_SRCS
     plasma/abstractrunner.cpp
     plasma/animator.cpp
     plasma/applet.cpp
+    plasma/appletbrowser.cpp
+    plasma/appletbrowser/kcategorizeditemsview.cpp
+    plasma/appletbrowser/kcategorizeditemsviewdelegate.cpp
+    plasma/appletbrowser/kcategorizeditemsviewmodels.cpp
+    plasma/appletbrowser/plasmaappletitemmodel.cpp
     plasma/configxml.cpp
     plasma/corona.cpp
     plasma/containment.cpp
@@ -57,8 +62,14 @@ set(plasma_LIB_SRCS
     plasma/widgets/widget.cpp
     plasma/shadowitem.cpp
     plasma/widgets/signalplotter.cpp
+    plasma/widgets/meter.cpp
+
 )
 
+kde4_add_ui_files (
+plasma_LIB_SRCS
+plasma/appletbrowser/kcategorizeditemsviewbase.ui
+)
 
 if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 set(plasma_LIB_SRCS
