@@ -126,7 +126,7 @@ DatabaseUpdater::createTables() const
                     ",year INTEGER"
                     ",title " + m_collection->textColumnType() +
                     ",comment " + m_collection->longTextColumnType() +
-                    ",track INTEGER"
+                    ",tracknumber INTEGER"
                     ",discnumber INTEGER"
                     ",bitrate INTEGER"
                     ",length INTEGER"
