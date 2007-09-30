@@ -54,7 +54,7 @@ class OrgFreedesktopXesamSearchInterface: public QDBusAbstractInterface
     Q_OBJECT
 public:
     static inline const char *staticInterfaceName()
-    { return "org.freedesktop.xesam.search"; }
+    { return "org.freedesktop.xesam.Search"; }
 
 public:
     OrgFreedesktopXesamSearchInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent = 0);

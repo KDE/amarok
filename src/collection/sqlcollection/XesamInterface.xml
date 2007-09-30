@@ -4,7 +4,7 @@
       <arg name='xml_data' type='s' direction='out'/>
     </method>
   </interface>
-  <interface name='org.freedesktop.xesam.search'>
+  <interface name='org.freedesktop.xesam.Search'>
     <method name='GetState'>
       <arg name='out' type='as' direction='out'/>
     </method>
@@ -37,7 +37,7 @@
     <method name='SetProperty'>
       <arg name='session' type='s' direction='in'/>
       <arg name='prop' type='s' direction='in'/>
-      <arg name='v' type='v' direction='in'/>
+      <arg name='val' type='v' direction='in'/>
       <arg name='out' type='v' direction='out'/>
     </method>
     <method name='NewSearch'>
