@@ -205,6 +205,13 @@ void
 XesamCollectionBuilder::processDirectory( const QList<QList<QVariant> > &data )
 {
     //URL TITLE ALBUM ARTIST GENRE COMPOSER YEAR COMMENT CODEC BITRATE BPM TRACKNUMBER DISCNUMBER FILESIZE LENGTH SAMPLERATE
+
+    //using the following heuristics:
+    //if more than one album is in the dir, use the artist of each track as albumartist
+    //if more than 60 files are in the dir, use the artist of each track as albumartist
+    //if all tracks have the same artist, use it as albumartist
+    //try to find the albumartist A: tracks must have the artist A or A feat. B (and variants)
+    //if no albumartist could be found, it's a compilation
     QSet<QString> artists;
     QString album;
     bool multipleAlbums = false;
@@ -215,6 +222,17 @@ XesamCollectionBuilder::processDirectory( const QList<QList<QVariant> > &data )
         artists.insert( row[3].toString() );
         if( row[2].toString() != album )
             multipleAlbums = true;
+    }
+    if( multipleAlbums || data.count() > 60 || artists.size() == 1 )
+    {
+        foreach(QList<QVariant> row, data )
+        {
+            int artist = artistId( row[3].toString() );
+            addTrack( row, artist );
+        }
+    }
+    else
+    {
     }
 }
 
