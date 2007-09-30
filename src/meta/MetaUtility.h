@@ -38,6 +38,7 @@ namespace Meta
         static const QString ARTIST         = "xesam:author";
         static const QString BITRATE        = "xesam:audioBitrate";
         static const QString BPM            = "xesam:audioBPM";
+        static const QString CODEC          = "xesam:audioCodec";
         static const QString COMMENT        = "xesam:comment";
         static const QString COMPOSER       = "xesam:composer";
         static const QString DISCNUMBER     = "xesam:cdNumber";
