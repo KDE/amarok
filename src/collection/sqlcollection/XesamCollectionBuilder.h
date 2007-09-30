@@ -24,6 +24,7 @@
 #include <QList>
 #include <QMap>
 #include <QObject>
+#include <QPair>
 #include <QString>
 
 class SqlCollection;
@@ -39,18 +40,21 @@ class XesamCollectionBuilder : public QObject
         void slotHitsAdded( const QString &search, int count );
         void slotHitsModified(const QString &search, const QList<int> &hit_ids);
         void slotHitsRemoved( const QString &search, const QList<int> &hit_ids );
+        void searchDone( const QString &search );
 
     private:
         QString generateXesamQuery() const;
         bool setupXesam();
 
         void processDirectory( const QList<QList<QVariant> > &data );
+        void addTrack( const QList<QVariant> &trackData, int albumArtistId );
 
-        int albumId( const QString &album );
+        int albumId( const QString &album, int artistId );
         int artistId( const QString &artist );
         int genreId( const QString &genre );
         int yearId( const QString &year );
         int composerId( const QString &composer );
+        int urlId( const QString &url );
 
     private:
         SqlCollection *m_collection;
@@ -60,10 +64,10 @@ class XesamCollectionBuilder : public QObject
         QString m_search;
 
         QMap<QString, int> m_artists;
-        QMap<QString, int> m_albums;
         QMap<QString, int> m_genre;
         QMap<QString, int> m_year;
         QMap<QString, int> m_composer;
+        QMap<QPair<QString, int>, int> m_albums;
 };
 
 #endif

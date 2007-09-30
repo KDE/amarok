@@ -19,6 +19,7 @@
 #include "XesamCollectionBuilder.h"
 
 #include "debug.h"
+#include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "sqlcollection.h"
 #include "XesamDbus.h"
@@ -31,7 +32,7 @@
 
 #include <kurl.h>
 
-static const QString XESAM_NS = "";
+static const QString XESAM_NS = "http://freedesktop.org/standards/xesam/1.0/query";
 
 #define DEBUG_XML true
 
@@ -51,7 +52,7 @@ XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
         QDBusReply<QString> sessionId = m_xesam->NewSession();
         if( !sessionId.isValid() )
         {
-            debug() << "Could not acquire Xesam session, aborting";
+            debug() << "Could not acquire Xesam session, aborting. error was: " << sessionId.error();
             return;
             //TODO error handling
         }
@@ -94,12 +95,14 @@ XesamCollectionBuilder::setupXesam()
         status = false;
     }
     QStringList fields;
-    fields << "uri" << "audio.title" << "audio.album" << "audio.artist" << "content.genre";
-    fields << "audio.composer" << "audio.year" << "audio.comment" << "media.codec";
+    fields << Meta::Field::URL << Meta::Field::TITLE << Meta::Field::ALBUM << Meta::Field::ARTIST << Meta::Field::GENRE;
+    fields << Meta::Field::COMPOSER << Meta::Field::YEAR << Meta::Field::COMMENT << Meta::Field::CODEC;
+    fields << Meta::Field::BITRATE << Meta::Field::BPM << Meta::Field::TRACKNUMBER << Meta::Field::DISCNUMBER;
+    fields << Meta::Field::FILESIZE << Meta::Field::LENGTH << Meta::Field::SAMPLERATE;
     m_xesam->SetProperty( m_session, "hit.fields", QDBusVariant( fields ) );
     QStringList fieldsExtended;
     m_xesam->SetProperty( m_session, "hit.fields.extended", QDBusVariant( fieldsExtended ) );
-    m_xesam->SetProperty( m_session, "sort.primary", QDBusVariant( "uri" ) );
+    m_xesam->SetProperty( m_session, "sort.primary", QDBusVariant( Meta::Field::URL ) );
     m_xesam->SetProperty( m_session, "search.blocking", QDBusVariant( false ) );
     return status;
 }
@@ -108,6 +111,8 @@ void
 XesamCollectionBuilder::slotHitsAdded( const QString &search, int count )
 {
     DEBUG_BLOCK
+    if( m_search != search )
+        return;
     debug() << "New Xesam hits: " << count;
     QDBusReply<VariantListVector> reply = m_xesam->GetHits( m_search, count );
     if( reply.isValid() )
@@ -140,12 +145,24 @@ void
 XesamCollectionBuilder::slotHitsModified( const QString &search, const QList<int> &hit_ids )
 {
     DEBUG_BLOCK
+    if( m_search != search )
+        return;
 }
 
 void
 XesamCollectionBuilder::slotHitsRemoved( const QString &search, const QList<int> &hit_ids )
 {
     DEBUG_BLOCK
+    if( m_search != search )
+        return;
+}
+
+void
+XesamCollectionBuilder::searchDone( const QString &search )
+{
+    DEBUG_BLOCK
+    if( m_search != search )
+        return;
 }
 
 QString
@@ -157,7 +174,7 @@ XesamCollectionBuilder::generateXesamQuery() const
     writer.setAutoFormatting( DEBUG_XML );
     writer.writeStartElement( XESAM_NS, "request" );
     writer.writeStartElement( XESAM_NS, "query" );
-    writer.writeAttribute( XESAM_NS, "type", "music" );
+    writer.writeAttribute( XESAM_NS, "content", "xesam:Audio" );
     if( collectionFolders.size() <= 1 )
     {
         QString folder = collectionFolders.isEmpty() ? QDir::homePath() : collectionFolders[0];
@@ -187,11 +204,43 @@ XesamCollectionBuilder::generateXesamQuery() const
 void
 XesamCollectionBuilder::processDirectory( const QList<QList<QVariant> > &data )
 {
+    //URL TITLE ALBUM ARTIST GENRE COMPOSER YEAR COMMENT CODEC BITRATE BPM TRACKNUMBER DISCNUMBER FILESIZE LENGTH SAMPLERATE
     QSet<QString> artists;
+    QString album;
+    bool multipleAlbums = false;
+    if( !data.isEmpty() )
+        album = data[0][2].toString();
     foreach(QList<QVariant> row, data )
     {
-        
+        artists.insert( row[3].toString() );
+        if( row[2].toString() != album )
+            multipleAlbums = true;
     }
+}
+
+void
+XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArtistId )
+{
+    int album = albumId( trackData[2].toString(), albumArtistId );
+    int artist = artistId( trackData[3].toString() );
+    int genre = genreId( trackData[4].toString() );
+    int composer = composerId( trackData[5].toString() );
+    int year = yearId( trackData[6].toString() );
+    int url = urlId( trackData[0].toString() );
+
+    QString insert = "INSERT INTO tracks(url,artist,album,genre,composer,year,title,comment,"
+                     "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm"
+                     "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8'"; //goes up to comment
+    insert = insert.arg( url ).arg( artist ).arg( album ).arg( genre ).arg( composer ).arg( year );
+    insert = insert.arg( m_collection->escape( trackData[1].toString() ), m_collection->escape( trackData[7].toString() ) );
+
+    QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9,%10);";
+    insert2 = insert2.arg( trackData[11].toInt() ).arg( trackData[12].toInt() ).arg( trackData[9].toInt() );
+    insert2 = insert2.arg( trackData[14].toInt() ).arg( trackData[15].toInt() ).arg( trackData[13].toInt() );
+    insert2 = insert2.arg( "0", "0", "0" ); //bpm, createdate, modifydate not implemented yet
+    insert += insert2;
+
+    m_collection->insert( insert, "tracks" );
 }
 
 int
@@ -257,6 +306,75 @@ XesamCollectionBuilder::composerId( const QString &composer )
         int id = res[0].toInt();
         m_composer.insert( composer, id );
         return id;
+    }
+}
+
+int
+XesamCollectionBuilder::yearId( const QString &year )
+{
+    if( m_year.contains( year ) )
+        return m_year.value( year );
+    QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+    QStringList res = m_collection->query( query );
+    if( res.isEmpty() )
+    {
+        QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->escape( year ) );
+        int id = m_collection->insert( insert, "years" );
+        m_year.insert( year, id );
+        return id;
+    }
+    else
+    {
+        int id = res[0].toInt();
+        m_year.insert( year, id );
+        return id;
+    }
+}
+
+int 
+XesamCollectionBuilder::albumId( const QString &album, int artistId )
+{
+    QPair<QString, int> key( album, artistId );
+    if( m_albums.contains( key ) )
+        return m_albums.value( key );
+
+    QString query = QString( "SELECT id FROM albums WHERE artist = %1 AND name = '%2';" )
+                        .arg( QString::number( artistId ), m_collection->escape( album ) );
+    QStringList res = m_collection->query( query );
+    if( res.isEmpty() )
+    {
+        QString insert = QString( "INSERT INTO albums(artist, name) VALUES( %1, '%2' );" )
+                    .arg( QString::number( artistId ), m_collection->escape( album ) );
+        int id = m_collection->insert( insert, "albums" );
+        m_albums.insert( key, id );
+        return id;
+    }
+    else
+    {
+        int id = res[0].toInt();
+        m_albums.insert( key, id );
+        return id;
+    }
+}
+
+int
+XesamCollectionBuilder::urlId( const QString &url )
+{
+    int deviceId = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    //don't bother caching the data, we only call this method for each url once
+    QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
+                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
+    QStringList res = m_collection->query( query );
+    if( res.isEmpty() )
+    {
+        QString insert = QString( "INSERT INTO urls(deviceid, rpath) VALUES ( %1, '%2' );" )
+                            .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
+        return m_collection->insert( insert, "urls" );
+    }
+    else
+    {
+        return res[0].toInt();
     }
 }
 
