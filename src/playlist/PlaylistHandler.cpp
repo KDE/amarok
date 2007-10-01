@@ -50,7 +50,6 @@ void PlaylistHandler::load(const QString & path)
 {
     DEBUG_BLOCK
     debug() << "file: " << path;
-    
 
     //check if file is local or remote
     KUrl url( path );
@@ -99,7 +98,6 @@ bool PlaylistHandler::save( Meta::TrackList tracks,
 
 PlaylistHandler::Format PlaylistHandler::getFormat( const KUrl &path )
 {
-    DEBUG_BLOCK
 
     const QString ext = Amarok::extension( path.fileName() );
 
