@@ -13,11 +13,10 @@
    height="1052.3622047"
    id="svg2465"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.45.1"
    sodipodi:docbase="/home/amarok-dev/amarok/src/images"
    sodipodi:docname="playlist_items.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs2467">
     <linearGradient
@@ -30,11 +29,11 @@
        gradientTransform="translate(301.5,-42.137817)">
       <stop
          id="stop41"
-         style="stop-color:#303030"
+         style="stop-color:#0f427f;stop-opacity:1;"
          offset="0" />
       <stop
          id="stop43"
-         style="stop-color:#666666"
+         style="stop-color:#4d7eba;stop-opacity:1;"
          offset="1" />
     </linearGradient>
     <linearGradient
@@ -171,13 +170,39 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#SVGID_3_"
-       id="linearGradient2221"
+       id="linearGradient2305"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(401.49846,8.8621836)"
        x1="156"
        y1="107.5"
        x2="156"
-       y2="59.5002" />
+       y2="59.500198" />
+    <linearGradient
+       id="linearGradient2477"
+       gradientUnits="userSpaceOnUse"
+       x1="156"
+       y1="386.5"
+       x2="156"
+       y2="338.5">
+      <stop
+         offset="0"
+         style="stop-color:#303030"
+         id="stop2479" />
+      <stop
+         offset="1"
+         style="stop-color:#666666"
+         id="stop2481" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#SVGID_3_"
+       id="linearGradient4249"
+       gradientUnits="userSpaceOnUse"
+       x1="156"
+       y1="386.5"
+       x2="156"
+       y2="338.5"
+       gradientTransform="translate(96.5,-270.13782)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -190,15 +215,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="703.49727"
+     inkscape:cx="260.39446"
      inkscape:cy="935.36935"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1672"
+     inkscape:window-width="1175"
      inkscape:window-height="972"
-     inkscape:window-x="2"
-     inkscape:window-y="0" />
+     inkscape:window-x="496"
+     inkscape:window-y="1" />
   <metadata
      id="metadata2470">
     <rdf:RDF>
@@ -220,11 +245,11 @@
          clip-rule="evenodd"
          d="M 410.49846,73.362184 C 410.49846,63.482183 411.12846,62.862183 421.06846,62.862183 L 693.92846,62.862183 C 703.86846,62.862183 704.49846,63.482183 704.49846,73.362184 L 704.49846,122.86218 L 410.49846,122.86218 L 410.49846,73.362184 z "
          id="path45"
-         style="fill:url(#linearGradient2221);fill-rule:evenodd;stroke:#555555" />
+         style="fill:url(#linearGradient2305);fill-rule:evenodd;stroke:#555555;fill-opacity:1.0" />
       <path
          id="path54"
          d="M 420.99846,119.875 C 411.11846,119.875 410.49846,120.495 410.49846,130.375 L 410.49846,138.71875 L 704.49846,138.71875 L 704.49846,130.375 C 704.49846,120.495 703.87846,119.875 693.99846,119.875 L 420.99846,119.875 z "
-         style="fill:#141414;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
+         style="fill:#2c609c;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
       <path
          id="path7378"
          d="M 410.5,120.01815 L 410.5,138.72156"
@@ -232,38 +257,17 @@
       <path
          id="path16260"
          d="M 410.99972,138.61218 L 703.99719,138.61218"
-         style="fill:none;fill-rule:evenodd;stroke:#141414;stroke-width:1.20500803;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-rule:evenodd;stroke:#2c609c;stroke-width:1.20500803;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="path19169"
          d="M 704.5,120.01736 L 704.5,138.72077"
          style="fill:none;fill-opacity:0;fill-rule:evenodd;stroke:#555555;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
     </g>
-    <g
-       id="single_track"
-       transform="translate(96.5,-270.13782)"
-       inkscape:label="#single_track">
-      <linearGradient
-         y2="338.5"
-         x2="156"
-         y1="386.5"
-         x1="156"
-         gradientUnits="userSpaceOnUse"
-         id="linearGradient2477">
-        <stop
-           id="stop2479"
-           style="stop-color:#303030"
-           offset="0" />
-        <stop
-           id="stop2481"
-           style="stop-color:#666666"
-           offset="1" />
-      </linearGradient>
-      <path
-         style="fill:url(#SVGID_1_);fill-rule:evenodd;stroke:#555555"
-         id="path17"
-         d="M 9,343.5 C 9,333.62 9.63,333 19.57,333 L 292.43,333 C 302.37,333 303,333.62 303,343.5 L 303,393 L 9,393 L 9,343.5 z "
-         clip-rule="evenodd" />
-    </g>
+    <path
+       clip-rule="evenodd"
+       d="M 105.5,73.36218 C 105.5,63.48218 106.13,62.86218 116.07,62.86218 L 388.93,62.86218 C 398.87,62.86218 399.5,63.48218 399.5,73.36218 L 399.5,122.86218 L 105.5,122.86218 L 105.5,73.36218 z "
+       id="track"
+       style="fill:url(#linearGradient4249);fill-rule:evenodd;stroke:#555555;fill-opacity:1.0" />
     <text
        style="font-size:12px;fill:#ffffff;font-family:ArialMT"
        id="text150"
@@ -274,39 +278,40 @@
        clip-rule="evenodd"
        d="M 162,240.86218 C 162,238.93218 163.57,237.36218 165.5,237.36218 L 441.5,237.36218 C 443.43,237.36218 445,238.93218 445,240.86218 L 445,247.86218 C 445,249.79218 443.43,251.36218 441.5,251.36218 L 165.5,251.36218 C 163.57,251.36218 162,249.79218 162,247.86218 L 162,240.86218 z "
        id="body_background"
-       style="fill:#333333;fill-rule:evenodd"
+       style="fill:#1d518d;fill-rule:evenodd;fill-opacity:1"
        inkscape:label="#body_background" />
     <g
        id="tail"
        transform="translate(0,30.000003)"
-       inkscape:label="#tail">
+       inkscape:label="#tail"
+       style="fill:#2e609c;fill-opacity:1">
       <path
          id="path20172"
          d="M 410.5,147.86218 L 410.5,167.54968 L 704.5,167.54968 L 704.5,147.86218 L 410.5,147.86218 z "
-         style="fill:#141414;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
+         style="fill:#2c609c;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
       <path
          id="path22137"
          d="M 411.65058,148.01596 L 703.34997,148.01596"
-         style="fill:none;fill-rule:evenodd;stroke:#141414;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#2e609c;fill-rule:evenodd;stroke:#2c609c;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1" />
       <path
          id="path26017"
          d="M 410.5,147.86218 L 410.5,165.95742"
-         style="fill:none;fill-rule:evenodd;stroke:#555555;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#2e609c;fill-rule:evenodd;stroke:#555555;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1" />
       <path
          id="path30866"
          d="M 704.5,147.86218 L 704.5,165.95742"
-         style="fill:none;fill-rule:evenodd;stroke:#555555;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#2e609c;fill-rule:evenodd;stroke:#555555;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1" />
     </g>
     <g
        id="body">
       <path
          id="path31845"
          d="M 410.47904,142.86256 L 410.47904,162.55007 L 704.47903,162.55007 L 704.47903,142.86256 L 410.47904,142.86256 z "
-         style="fill:#141414;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
+         style="fill:#2c609c;fill-opacity:1;fill-rule:evenodd;stroke:#555555;stroke-linecap:round;stroke-linejoin:round" />
       <path
          id="path31847"
          d="M 411.64862,143.01419 L 703.348,143.01419"
-         style="fill:none;fill-rule:evenodd;stroke:#141414;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-rule:evenodd;stroke:#2c609c;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="path31849"
          d="M 410.47904,142.88316 L 410.47904,162.52821"
@@ -318,7 +323,7 @@
       <path
          id="path31857"
          d="M 411.65267,162.40046 L 703.30538,162.40046"
-         style="fill:none;fill-rule:evenodd;stroke:#141414;stroke-width:1.30390441;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-rule:evenodd;stroke:#2c609c;stroke-width:1.30390441;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

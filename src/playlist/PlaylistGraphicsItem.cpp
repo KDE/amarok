@@ -150,14 +150,14 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     if ( m_groupMode == None ) {
 
-        QString key = QString("single_track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+        QString key = QString("track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
         QPixmap background(trackRect.width(), trackRect.height() );
         background.fill( Qt::transparent );
 
 
         if (!QPixmapCache::find(key, background)) {
             QPainter pt( &background );
-            s_svgRenderer->render( &pt, "single_track",  trackRect );
+            s_svgRenderer->render( &pt, "track",  trackRect );
             QPixmapCache::insert(key, background);
         }
         painter->drawPixmap( 0, 0, background );
