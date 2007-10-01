@@ -116,10 +116,10 @@ Model::data( const QModelIndex& index, int role ) const
         TrackPtr track = m_items.at( row )->track();
 
 
-       
+
         if ( !track->album() )
             return None;  // no albm set
-        else if ( !m_albumGroups.contains( track->album() ) ) 
+        else if ( !m_albumGroups.contains( track->album() ) )
             return None;  // no group for this album
 
         QList< int > rowsInGroup = m_albumGroups.value( track->album() );
@@ -187,7 +187,7 @@ Model::insertTrack( int row, TrackPtr track )
     TrackList list;
     list.append( track );
     insertTracks( row, list );
-    
+
 }
 
 void
@@ -377,7 +377,7 @@ Model::metadataChanged( Meta::Track *track )
 #endif
 }
 
-void 
+void
 Model::metadataChanged(Meta::Album * album)
 {
     DEBUG_BLOCK
@@ -402,10 +402,12 @@ Model::insertOptioned( Meta::TrackList list, int options )
 {
 
     DEBUG_BLOCK
-    if( list.isEmpty() ) {
-        Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
-        return; // don't add empty items
-    }
+
+//TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
+//     if( list.isEmpty() ) {
+//         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+//         return; // don't add empty items
+//     }
 
 
     if( options & Unique )
@@ -454,7 +456,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
     {
         if ( playlistAdded )
            firstItemAdded = orgCount;
-        else 
+        else
            firstItemAdded = rowCount();
            insertTracks( firstItemAdded, list );
     }
@@ -747,11 +749,11 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
 {
 
     Q_UNUSED( orientation );
-    
+
     if ( role != Qt::DisplayRole )
         return QVariant();
 
-    switch ( section ) 
+    switch ( section )
     {
         case 0:
             return "title";
@@ -762,8 +764,8 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
         default:
             return QVariant();
      }
-   
- 
+
+
 }
 
 namespace The {
