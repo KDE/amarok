@@ -285,7 +285,7 @@ Item::newItems( const KFileItemList &list ) //SLOT
             }
         }
 
-        item->setPixmap( 0, (*it)->pixmap( K3Icon::SizeSmall ) );
+        item->setPixmap( 0, (*it)->pixmap( KIconLoader::SizeSmall ) );
     }
 }
 

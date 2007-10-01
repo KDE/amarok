@@ -881,7 +881,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     case Engine::Empty:
         mainWindow()->setCaption( "Amarok" );
         TrackToolTip::instance()->clear();
-        Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) ) );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
     case Engine::Playing:

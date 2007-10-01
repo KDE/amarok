@@ -750,7 +750,7 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, K3ListView
 void
 StatisticsItem::setIcon( const QString &icon )
 {
-    QString path = KIconLoader::global()->iconPath( icon, -K3Icon::SizeHuge );
+    QString path = KIconLoader::global()->iconPath( icon, -KIconLoader::SizeHuge );
     path.replace( "32x32", "48x48" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
 
 //     debug() << "ICONPATH: " << path;

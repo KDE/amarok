@@ -451,7 +451,7 @@ OSDWidget::useMoodbar( void )
 
 namespace Amarok
 {
-    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) ); }
+    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
 }
 
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )

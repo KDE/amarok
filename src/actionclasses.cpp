@@ -290,7 +290,7 @@ void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
     for( int i = 0, n = items().count(); i < n; ++i )
-        menu()->changeItem( i, KIconLoader::global()->loadIconSet( icons.at( i ), K3Icon::Small ), menu()->text( i ) );
+        menu()->changeItem( i, KIconLoader::global()->loadIconSet( icons.at( i ), KIconLoader::Small ), menu()->text( i ) );
 }
 
 QStringList SelectAction::icons() const { return m_icons; }

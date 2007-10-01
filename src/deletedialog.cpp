@@ -71,12 +71,12 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
         ddDeleteText->setText(i18n("<qt>These items will be <b>permanently "
             "deleted</b> from your hard disk.</qt>"));
         ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("messagebox_warning",
-            K3Icon::Desktop, K3Icon::SizeLarge));
+            KIconLoader::Desktop, KIconLoader::SizeLarge));
     }
     else {
         ddDeleteText->setText(i18n("<qt>These items will be moved to the Trash Bin.</qt>"));
         ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("trashcan_full",
-            K3Icon::Desktop, K3Icon::SizeLarge));
+            KIconLoader::Desktop, KIconLoader::SizeLarge));
     }
 }
 

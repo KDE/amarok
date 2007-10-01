@@ -461,7 +461,7 @@ DaapClient::customClicked()
                 showButtonSeparator( true );
 
                 m_base = new AddHostBase( this, "DaapAddHostBase" );
-                m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( Amarok::icon( "download" ), -K3Icon::SizeEnormous ) ) );
+                m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( Amarok::icon( "download" ), -KIconLoader::SizeEnormous ) ) );
                 m_base->m_hostName->setFocus();
                 setMainWidget( m_base );
             }
@@ -518,7 +518,7 @@ DaapClient::passwordPrompt()
 
                 QLabel* passIcon = new QLabel( mainWidget() );
                 passIcon->setObjectName( "passicon" );
-                passIcon->setPixmap( QPixmap( KIconLoader::global()->iconPath( "password", -K3Icon::SizeHuge ) ) );
+                passIcon->setPixmap( QPixmap( KIconLoader::global()->iconPath( "password", -KIconLoader::SizeHuge ) ) );
                 KHBox* loginArea = new KHBox( mainWidget(), "passhbox" );
                 new QLabel( i18n( "Password:"), loginArea, "passlabel" );
                 m_input = new KPasswordEdit( loginArea, "passedit" );
