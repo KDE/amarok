@@ -55,11 +55,15 @@ public:
     virtual int commSetupDoneC();
 };
 
+static DBusHandlerResult signal_handler( DBusConnection *, DBusMessage *, void *);
+
 class yauapEngine : public Engine::Base
 {
     Q_OBJECT
 
     friend class DBusConnection;
+
+    friend DBusHandlerResult signal_handler( DBusConnection *, DBusMessage *, void *);
 
     virtual ~yauapEngine();
     virtual bool init();
@@ -82,8 +86,7 @@ public:
     /* these need to be public because they are called from the dbus signal handler */
     void update_metadata();
     void update_scope();
-    void track_ended();
-    void error_msg(char* msg);
+    virtual void customEvent(QCustomEvent*);
 
 private slots:
     void yauapProcessExited();

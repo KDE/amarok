@@ -13,8 +13,7 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
  *                                                                         *
  ***************************************************************************/
 
-
-#include <qprocess.h>
+#include <qapplication.h>
 
 #include <klocale.h>
 #include <iostream>
@@ -53,15 +52,19 @@ signal_handler( DBusConnection * /*con*/, DBusMessage *msg, void *data )
 
     if (dbus_message_is_signal( msg, "org.yauap.CommandInterface", "MetadataSignal")) 
         engine->update_metadata();
-    else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "EosSignal"))
-       	engine->track_ended();
+    else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "EosSignal")) {
+        QApplication::postEvent(engine, new QCustomEvent(3000));
+        engine->m_state = Engine::Idle;
+    }
     else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "ErrorSignal"))
     {
         char* text = NULL;
         DBusError error;
         dbus_error_init(&error);
-        if(dbus_message_get_args( msg, &error, DBUS_TYPE_STRING, &text, DBUS_TYPE_INVALID)){
-            engine->error_msg(text);
+        if(dbus_message_get_args( msg, &error, DBUS_TYPE_STRING, &text, DBUS_TYPE_INVALID)) {
+            QCustomEvent* e = new QCustomEvent(3002);
+            e->setData(new QString(text));
+            QApplication::postEvent(engine, e);
         }
     }
     else
@@ -245,12 +248,13 @@ DBusConnection::send_with_reply(const char* method, int first_arg_type, va_list 
 
 
 /* emit state change signal */
-void 
+void
 yauapEngine::change_state( Engine::State state )
 {
     m_state = state;
     emit stateChanged(m_state);
 }
+
 
 /* destroy engine */
 yauapEngine::~yauapEngine()
@@ -269,7 +273,7 @@ yauapEngine::~yauapEngine()
 void 
 yauapEngine::update_metadata()
 {
-    Engine::SimpleMetaBundle bndl;
+    Engine::SimpleMetaBundle* bndl = new Engine::SimpleMetaBundle;
     debug() << " emit metadata change " << endl;
 
     DBusMessage* msg = con->send_with_reply("get_metadata", DBUS_TYPE_INVALID);
@@ -288,7 +292,7 @@ yauapEngine::update_metadata()
                 debug() << "reply_ptr: " << reply_ptr << endl;
 
 #define ASSIGN(a,b)  if(!strncmp(reply_ptr,b,strlen(b)) && strlen(reply_ptr + strlen(b) + 1)){ \
-                         bndl.a = reply_ptr + strlen(b) + 1; \
+                         bndl->a = reply_ptr + strlen(b) + 1; \
                          continue; \
                      }
 
@@ -308,23 +312,25 @@ yauapEngine::update_metadata()
         dbus_message_unref(msg);
     }
 
-    debug() << "title:" << bndl.title << endl;
-    debug() << "artist:" << bndl.artist << endl;
-    debug() << "album:" << bndl.album << endl;
-    debug() << "comment:" << bndl.comment << endl;
-    debug() << "genre:" << bndl.genre << endl;
-    debug() << "samplerate:" << bndl.samplerate << endl;
-    debug() << "year:" << bndl.year << endl;
-    debug() << "tracknr:" << bndl.tracknr << endl;
-    debug() << "length:" << bndl.length << endl;
-    debug() << "bitrate:" << bndl.bitrate << endl;
+    debug() << "title:" << bndl->title << endl;
+    debug() << "artist:" << bndl->artist << endl;
+    debug() << "album:" << bndl->album << endl;
+    debug() << "comment:" << bndl->comment << endl;
+    debug() << "genre:" << bndl->genre << endl;
+    debug() << "samplerate:" << bndl->samplerate << endl;
+    debug() << "year:" << bndl->year << endl;
+    debug() << "tracknr:" << bndl->tracknr << endl;
+    debug() << "length:" << bndl->length << endl;
+    debug() << "bitrate:" << bndl->bitrate << endl;
 
 
     /* do not overwrite manually generated metadata from audio cds */
-    if(bndl.title.isEmpty() && loaded_url.protocol() == "cdda")
+    if(bndl->title.isEmpty() && loaded_url.protocol() == "cdda")
         return;
 
-    emit EngineBase::metaData( bndl );
+    QCustomEvent* e = new QCustomEvent(3003);
+    e->setData(bndl);
+    QApplication::postEvent(this, e);
 }
 
 
@@ -428,19 +434,29 @@ yauapEngine::handleDbusError(const char* method)
 }
 #endif
 
-/* tell amarok that the current track ended */
-void 
-yauapEngine::track_ended()
-{
-    m_state = Engine::Idle;
-    emit trackEnded();
-}
-
-/* display a error message */
 void
-yauapEngine::error_msg( char * msg )
+yauapEngine::customEvent(QCustomEvent *e)
 {
-    emit statusText( msg );
+    QString* message = static_cast<QString*>(e->data());
+
+    switch (e->type()) {
+    case 3000:
+        emit trackEnded();
+        break;
+    case 3002:
+        emit statusText(*message);
+        delete message;
+        break;
+    case 3003:
+        {
+            Engine::SimpleMetaBundle* bundle = static_cast<Engine::SimpleMetaBundle*>(e->data());
+            emit metaData(*bundle);
+            delete bundle;
+            break;
+        }
+    default:
+        ;
+    }
 }
 
 /* init engine */
@@ -521,7 +537,6 @@ yauapEngine::play( uint offset )
     change_state( Engine::Empty );
     return false;
 }
-
 
 /* stop playback */
 void 
