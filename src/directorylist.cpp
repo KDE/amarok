@@ -268,13 +268,13 @@ Item::newItems( const KFileItemList &list ) //SLOT
         //These match up with the skipped dirs in CollectionScanner::readDir.
         bool fully_disable=false;
 
-        if ( this->m_url.fileName().isEmpty() && ( ( *it )->url().fileName()=="proc"
-             || ( *it )->url().fileName()=="dev" || ( *it )->url().fileName()=="sys" ) )
+        if ( this->m_url.fileName().isEmpty() && ( (*it).url().fileName()=="proc"
+             || (*it).url().fileName()=="dev" || (*it).url().fileName()=="sys" ) )
         {
             fully_disable=true;
         }
 
-        Item *item = new Item( this, (*it)->url() , fully_disable || this->isFullyDisabled() );
+        Item *item = new Item( this, (*it).url() , fully_disable || this->isFullyDisabled() );
 
         if ( !item->isFullyDisabled() )
         {
@@ -285,7 +285,7 @@ Item::newItems( const KFileItemList &list ) //SLOT
             }
         }
 
-        item->setPixmap( 0, (*it)->pixmap( KIconLoader::SizeSmall ) );
+        item->setPixmap( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
     }
 }
 
