@@ -707,9 +707,9 @@ PlaylistHandler::recurse( const KUrl &url )
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KUrl::List urls;
     FileMap files;
-    foreach( KFileItem *it, items ) {
-        if( it->isFile() ) { files[it->name()] = it->url(); continue; }
-        if( it->isDir() ) urls += recurse( it->url() );
+    foreach( KFileItem it, items ) {
+        if( it.isFile() ) { files[it.name()] = it.url(); continue; }
+        if( it.isDir() ) urls += recurse( it.url() );
     }
 
     oldForeachType( FileMap, files )
