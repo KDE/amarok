@@ -378,16 +378,16 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
 //         {
 //             // currentItem is ALWAYS visible.
 //             Q3ListViewItem *item = pl->currentItem();
-// 
+//
 //             // intercept F2 for inline tag renaming
 //             // NOTE: tab will move to the next tag
 //             // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
 //             // TODO: berkus has solved the "inability to cancel" issue with K3ListView, but it's not in kdelibs yet..
-// 
+//
 //             // item may still be null, but this is safe
 //             // NOTE: column 0 cannot be edited currently, hence we pick column 1
 //             pl->rename( item, 1 ); //TODO what if this column is hidden?
-// 
+//
 //             return true;
 //         }
 
@@ -404,13 +404,13 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
 //                 pl->setFocus();
 //                 QApplication::sendEvent( pl, e );
 //                 return true;
-// 
+//
 //             case Qt::Key_Return:
 //             case Qt::Key_Enter:
 //                 item = *It( pl, It::Visible );
 //                 //m_lineEdit->clear();
 //                 pl->m_filtertimer->stop(); //HACK HACK HACK
-// 
+//
 //                 if( e->modifiers() & Qt::ControlModifier )
 //                 {
 //                     QList<PlaylistItem*> in, out;
@@ -451,11 +451,11 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
 //                     }
 //                 }
 //                 return true;
-// 
+//
 //             case Qt::Key_Escape:
 //                 m_searchWidget->lineEdit()->clear();
 //                 return true;
-// 
+//
 //             default:
 //                 return false;
 //             }
@@ -504,47 +504,13 @@ QSize MainWindow::sizeHint() const
 
 void MainWindow::savePlaylist() const //SLOT
 {
-//PORT 2.0
-//     Playlist *pl = Playlist::instance();
-// 
-//     PlaylistItem *item = pl->firstChild();
-//     if( item && !item->isVisible() )
-//         item = static_cast<PlaylistItem*>( item->itemBelow() );
-// 
-//     QString title = pl->playlistName();
-// 
-//     if( item && title == i18n( "Untitled" ) )
-//     {
-//         QString artist = item->artist();
-//         QString album  = item->album();
-// 
-//         bool useArtist = true, useAlbum = true;
-// 
-//         item = static_cast<PlaylistItem*>( item->itemBelow() );
-// 
-//         for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
-//         {
-//             if( artist != item->artist() )
-//                 useArtist = false;
-//             if( album  != item->album() )
-//                 useAlbum = false;
-// 
-//             if( !useArtist && !useAlbum )
-//                 break;
-//         }
-// 
-//         if( useArtist && useAlbum )
-//             title = i18n("%1 - %2", artist, album );
-//         else if( useArtist )
-//             title = artist;
-//         else if( useAlbum )
-//             title = album;
-//     }
-// 
-//     QString path = PlaylistDialog::getSaveFileName( title, pl->proposeOverwriteOnSave() );
-// 
-//     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
-//         MainWindow::self()->showBrowser( "PlaylistBrowser" );
+    PlaylistHandler *ph = new PlaylistHandler;
+    QList<Playlist::Item*> playlistItems = The::playlistModel()->itemList();
+    Meta::TrackList tracks;
+    foreach( Playlist::Item* item, playlistItems )
+        tracks << item->track();
+    QString playlistName = KFileDialog::getSaveFileName();
+    ph->save( tracks, playlistName );
 }
 
 
