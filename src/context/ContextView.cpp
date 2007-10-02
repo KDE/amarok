@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "ColumnApplet.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "DataEngineManager.h"
@@ -48,8 +47,6 @@ ContextView::ContextView( QWidget* parent )
     : QGraphicsView( parent )
     , EngineObserver( EngineController::instance() )
     , m_columns( 0 )
-    , m_background( 0 )
-    , m_logo( 0 )
 {
     DEBUG_BLOCK
 
@@ -74,16 +71,9 @@ ContextView::ContextView( QWidget* parent )
     Theme::self()->setApplication( "amarok" );
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
-    m_background = new Svg( "widgets/amarok-wallpaper", this );
-    m_logo = new Svg( "widgets/amarok-logo", this );
-    m_logo->resize();
-    m_width = 300; // TODO hardcoding for now, do we want this configurable?
-    m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
-    m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
-
-    m_columns = new ColumnApplet();
-    scene()->addItem( m_columns );
-    m_columns->init();
+    contextScene()->loadDefaultSetup();
+    
+    createContainment();
 
     connect(scene(), SIGNAL( appletRemoved( QObject * ) ), m_columns, SLOT( appletRemoved( QObject* ) ) );
 
@@ -120,7 +110,7 @@ void ContextView::clear( const ContextState& state )
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
 
-    m_columns->saveToConfig( appletConfig );
+    if( m_columns ) m_columns->saveToConfig( appletConfig );
 
     contextScene()->clearApplets();
 }
@@ -177,7 +167,7 @@ void ContextView::loadConfig()
 
     contextScene()->clearApplets();
     KConfig appletConfig( cur, KConfig::OnlyLocal );
-    m_columns->loadConfig( appletConfig );
+    if( m_columns ) m_columns->loadConfig( appletConfig );
 }
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
@@ -193,9 +183,13 @@ Applet* ContextView::addApplet(const QString& name, const QStringList& args)
     while( i.hasNext() )
         argList << QVariant( i.next() );
 
-    AppletPointer applet = contextScene()->addApplet( name, argList );
-
-    return m_columns->addApplet( applet );
+    if( m_columns )
+        return m_columns->addApplet( name, argList );
+    else
+    {
+        createContainment();
+        return m_columns->addApplet( name, argList );
+    }
 }
 
 void ContextView::zoomIn()
@@ -216,21 +210,6 @@ ContextScene* ContextView::contextScene()
     return static_cast<ContextScene*>( scene() );
 }
 
-void ContextView::drawBackground( QPainter * painter, const QRectF & rect )
-{
-    painter->save();
-    m_background->paint( painter, rect );
-    painter->restore();
-    QSize size = m_logo->size();
-
-    QSize pos = m_background->size() - size;
-    qreal newHeight  = m_aspectRatio * m_width;
-    m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
-    painter->save();
-    m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
-    painter->restore();
-
-}
 
 void ContextView::resizeEvent( QResizeEvent* event )
 {
@@ -242,9 +221,7 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
     scene()->setSceneRect( rect() );
 
-    m_background->resize( width(), height() );
-//     m_logo->
-    m_columns->update();
+    if( m_columns ) m_columns->update();
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )
@@ -263,72 +240,16 @@ void ContextView::wheelEvent( QWheelEvent* event )
     }
 }
 
-void ContextView::contextMenuEvent(QContextMenuEvent *event)
+void ContextView::createContainment()
 {
-    if ( !scene() ) {
-        QGraphicsView::contextMenuEvent( event );
-        return;
+    if( contextScene()->containments().size() == 0 ) // haven't created it yet
+    {
+        // yes, this is ugly :(
+        m_columns = dynamic_cast< Containment* >
+            (  contextScene()->addContainment( "context" ) );
     }
-
-    QPointF point = event->pos();
-    QPointF globalPoint = event->globalPos();
-
-    QGraphicsItem* item = scene()->itemAt(point);
-    Plasma::Applet* applet = 0;
-
-    while (item) {
-        applet = qgraphicsitem_cast<Plasma::Applet*>(item);
-        if (applet) {
-            break;
-        }
-
-        item = item->parentItem();
-    }
-
-    KMenu desktopMenu;
-    //kDebug() << "context menu event " << immutable;
-    if (!applet) {
-        if (contextScene() && contextScene()->isImmutable()) {
-            QGraphicsView::contextMenuEvent(event);
-            return;
-        }
-
-                //FIXME: change this to show this only in debug mode (or not at all?)
-        //       before final release
-
-    } else if (applet->isImmutable()) {
-        QGraphicsView::contextMenuEvent(event);
-        return;
-    } else {
-        //desktopMenu.addSeparator();
-        bool hasEntries = false;
-        if (applet->hasConfigurationInterface()) {
-            QAction* configureApplet = new QAction(i18n("%1 Settings...", applet->name()), this);
-            connect(configureApplet, SIGNAL(triggered(bool)),
-                    applet, SLOT(showConfigurationInterface()));
-            desktopMenu.addAction(configureApplet);
-            hasEntries = true;
-        }
-
-        if (!contextScene() || !contextScene()->isImmutable()) {
-            QAction* closeApplet = new QAction(i18n("Close this %1", applet->name()), this);
-            connect(closeApplet, SIGNAL(triggered(bool)),
-                    applet, SLOT(deleteLater()));
-            desktopMenu.addAction(closeApplet);
-            hasEntries = true;
-        }
-
-        if (!hasEntries) {
-            QGraphicsView::contextMenuEvent(event);
-            return;
-        }
-    }
-
-    event->accept();
-    desktopMenu.exec(globalPoint.toPoint());
 }
-
-
+       
 } // Context namespace
 
 #include "ContextView.moc"

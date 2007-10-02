@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2007 by Matt Williams <matt@milliams.com>
- *                      by Leo Franchi <lfranchi@gmail.com>
+ *   Copyright 2007 by Matt Williams <matt@milliams.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License version 2 as
@@ -52,6 +51,8 @@ class ControlBox : public QWidget
         bool eventFilter(QObject *watched, QEvent *event);
 
     Q_SIGNALS:
+        void zoomIn();
+        void zoomOut();
         void addApplet(const QString&);
         void lockInterface(bool);
 
@@ -84,6 +85,8 @@ class ControlWidget : public QWidget
     public:
         ControlWidget(QWidget* parent);
         ~ControlWidget();
+        QPushButton* zoomInButton;
+        QPushButton* zoomOutButton;
 
     protected:
         void refreshPlasmoidList();
@@ -107,6 +110,9 @@ class ControlWidget : public QWidget
 class PlasmoidListItemModel : public QStandardItemModel
 {
     public:
+        enum ItemDataRole {
+            AppletNameRole = Qt::UserRole
+        };
         PlasmoidListItemModel(QWidget* parent = 0);
 
         QStringList mimeTypes() const;

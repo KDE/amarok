@@ -5,6 +5,7 @@ find_package(OpenGL)
 
 add_subdirectory( applets )
 add_subdirectory( engines )
+add_subdirectory( containments )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..

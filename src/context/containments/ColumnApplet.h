@@ -14,37 +14,36 @@
 #ifndef COLUMN_APPLET_H
 #define COLUMN_APPLET_H
 
-#include "Applet.h"
+#include "Containment.h"
 #include "amarok_export.h"
-#include "plasma/widgets/flowlayout.h"
+#include "Svg.h"
 
+#include "plasma/widgets/flowlayout.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
-
-// this class basically joins a QGraphicsItem and Plasma::VBoxLayout
-// so we can manipulate it as a QGraphicsItem from ContextView. This allows
-// us to use setPos etc to move it around.
-
-typedef QPointer< Context::Applet > AppletPointer;
 
 namespace Context
 {
 
-class AMAROK_EXPORT ColumnApplet : public Plasma::Applet
+class AMAROK_EXPORT ColumnApplet : public Containment
 {
     Q_OBJECT
 public:
-    ColumnApplet( QGraphicsItem * parent = 0 );
+    ColumnApplet( QObject *parent, const QVariantList &args );
     ~ColumnApplet() {}
     
     virtual QRectF boundingRect() const;
     
-    AppletPointer addApplet( AppletPointer applet );
+    Applet* addApplet( Applet* applet );
     
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
     
     void update();
+    
+    virtual void paintInterface(QPainter *painter,
+                                const QStyleOptionGraphicsItem *option,
+                                const QRect& contentsRect);
     
 public slots:
     void appletRemoved( QObject* object );
@@ -59,6 +58,10 @@ protected slots:
 private:
     Plasma::FlowLayout* m_columns;
     int m_defaultColumnSize;
+    Plasma::Svg* m_background;
+    Plasma::Svg* m_logo;
+    qreal m_width;
+    qreal m_aspectRatio;
 };
 
 } // namespace

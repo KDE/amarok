@@ -32,6 +32,8 @@ public:
     explicit ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent = 0);
     ~ContextScene();
     
+    void loadDefaultSetup();
+    
 signals:
     void appletRemoved( QObject *object );
    

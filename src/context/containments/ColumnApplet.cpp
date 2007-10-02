@@ -24,12 +24,20 @@
 namespace Context
 {
 
-ColumnApplet::ColumnApplet( QGraphicsItem * parent )
-    : Plasma::Applet( parent )
+ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
+    : Context::Containment( parent, args )
     , m_defaultColumnSize( 450 )
 {
     m_columns = new Plasma::FlowLayout( this );
     //m_columns->setColumnWidth( m_defaultColumnSize );
+    
+    m_background = new Svg( "widgets/amarok-wallpaper", this );
+    m_logo = new Svg( "widgets/amarok-logo", this );
+    m_logo->resize();
+    m_width = 300; // TODO hardcoding for now, do we want this configurable?
+    m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
+    m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
+    
     
 }
 
@@ -128,6 +136,24 @@ void ColumnApplet::update() // SLOT
     if( scene() ) m_columns->setGeometry( scene()->sceneRect() );
 }
 
+void ColumnApplet::paintInterface(QPainter *painter,
+                    const QStyleOptionGraphicsItem *option,
+                    const QRect& rect)
+{
+    painter->save();
+    m_background->paint( painter, rect );
+    painter->restore();
+    QSize size = m_logo->size();
+    
+    QSize pos = m_background->size() - size;
+    qreal newHeight  = m_aspectRatio * m_width;
+    m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
+    painter->save();
+    m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
+    painter->restore();
+    
+}
+
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
 {
     Q_UNUSED( object )
@@ -196,7 +222,7 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 
 */
 
-AppletPointer ColumnApplet::addApplet( AppletPointer applet )
+Applet* ColumnApplet::addApplet( Applet* applet )
 {
     debug() << "m_columns:" << m_columns;
     m_columns->addItem( applet );

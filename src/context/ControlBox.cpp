@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2007 by Matt Williams <matt@milliams.com>
- *                      by Leo Franchi <lfranchi@gmail.com>
+ *   Copyright 2007 by Matt Williams <matt@milliams.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License version 2 as
@@ -41,9 +40,8 @@
 #include <KLibrary>
 //#include <KLibLoader>
 
-#include "plasma/applet.h"
-#include "plasma/svg.h"
-#include "debug.h"
+#include "context/plasma/applet.h"
+#include "context/plasma/svg.h"
 
 //BEGIN - DisplayLabel
 
@@ -98,29 +96,38 @@ PlasmoidListItemModel::PlasmoidListItemModel(QWidget* parent)
 QStringList PlasmoidListItemModel::mimeTypes() const
 {
     QStringList types;
-    types << QLatin1String("text/x-amarokappletservicename");
+    types << QLatin1String("text/x-plasmoidservicename");
     return types;
 }
 
 QMimeData* PlasmoidListItemModel::mimeData(const QModelIndexList &indexes) const
 {
-    if( indexes.count() <= 0 )
+    if (indexes.count() <= 0) {
         return 0;
+    }
+
+    QModelIndex parent = indexes[0].parent();
+    if (!parent.isValid()) {
+        //tried to grab a category
+        return 0;
+    }
+    QStandardItem* category = item(parent.row(), 0);
 
     QStringList types = mimeTypes();
 
-    if( types.isEmpty() )
+    if (types.isEmpty()) {
         return 0;
-    
-    QStandardItem* selectedItem = item( indexes[0].row(), 0 );
-    if( !selectedItem )
-        return 0;
+    }
 
     QMimeData *data = new QMimeData();
-    QString format  = types.at(0);
-    QByteArray byteArray;
-    byteArray.append( selectedItem->data(Qt::DisplayRole).toByteArray() );
-    data->setData( format, byteArray );
+
+    QString format = types.at(0);
+
+    QStandardItem* selectedItem = category->child(indexes[0].row(), 0);
+    QByteArray appletName(selectedItem->data(AppletNameRole).toByteArray());
+
+    data->setData(format, appletName);
+
     return data;
 }
 
@@ -130,6 +137,8 @@ ControlWidget::ControlWidget(QWidget *parent)
     : QWidget(parent)
 {
     QPushButton* hideBoxButton = new QPushButton(i18n("Hide Config Box"), this);
+    zoomInButton = new QPushButton(i18n("Zoom In"), this);
+    zoomOutButton = new QPushButton(i18n("Zoom Out"), this);
     connect(hideBoxButton, SIGNAL(pressed()), parent, SLOT(hideBox()));
 
     m_appletList = new QTreeView(this);
@@ -152,6 +161,8 @@ ControlWidget::ControlWidget(QWidget *parent)
     QVBoxLayout* boxLayout = new QVBoxLayout(this);
     boxLayout->addWidget(hideBoxButton);
     boxLayout->addWidget(lockApplets);
+    boxLayout->addWidget(zoomInButton);
+    boxLayout->addWidget(zoomOutButton);
     boxLayout->addWidget(m_label);
     boxLayout->addWidget(m_appletList);
     //setLayout(boxLayout);
@@ -165,7 +176,7 @@ void ControlWidget::refreshPlasmoidList()
     m_appletListModel->setColumnCount(1);
 
     foreach (const QString &category, Plasma::Applet::knownCategories( "amarok" )) {
-        KPluginInfo::List applets = Plasma::Applet::knownApplets(category, "amarok");
+        KPluginInfo::List applets = Plasma::Applet::knownApplets(category);
 
         if (applets.count() < 1) {
             continue;
@@ -175,18 +186,18 @@ void ControlWidget::refreshPlasmoidList()
         m_appletListModel->appendRow(parent);
         int rowCount = 0;
 
-        foreach (KPluginInfo info, applets) {
+        foreach (const KPluginInfo &info, applets) {
             QString category = Plasma::Applet::category(info);
 //            QStandardItem *item = new PlasmoidItem(info);
             QStandardItem *item = new QStandardItem(info.name());
-            item->setData(info.pluginName(), Qt::UserRole);
+            item->setData(info.pluginName(), PlasmoidListItemModel::AppletNameRole);
             parent->setChild(rowCount, 0, item);
             ++rowCount;
         }
     }
 
 #ifndef NDEBUG
-    kDebug() << "Known categories: " << Plasma::Applet::knownCategories("amarok");
+    //kDebug() << "Known categories: " << Plasma::Applet::knownCategories();
 #endif
 
     m_appletListModel->sort(0);
@@ -196,12 +207,12 @@ void ControlWidget::refreshPlasmoidList()
 void ControlWidget::addApplet(const QModelIndex& plasmoidIndex)
 {
     QStandardItem* item = m_appletListModel->itemFromIndex(plasmoidIndex);
-    if (!item || !item->data(Qt::UserRole).isValid()) {
+    if (!item || !item->data(PlasmoidListItemModel::AppletNameRole).isValid()) {
         kDebug() << "ControlWidget::addApplet no item at " << plasmoidIndex;
         return;
     }
 
-    emit addApplet(item->data(Qt::UserRole).toString());
+    emit addApplet(item->data(PlasmoidListItemModel::AppletNameRole).toString());
 }
 
 //BEGIN - ControlBox
@@ -243,13 +254,11 @@ bool ControlBox::eventFilter(QObject *watched, QEvent *event)
         }
     } else if (watched == m_box) {
         if (event->type() == QEvent::Leave) {
-            
-            // TODO not sure why this doesn't work
-            //QWidget* widget = kApp->activePopupWidget();
+            QWidget* widget = qApp->activePopupWidget();
 
-//             if ( !widget ||!m_box->m_formFactorSelector->isActiveWindow()) {
+            if (!widget) {
                 m_exitTimer->start();
-//             }
+            }
         } else if (event->type() == QEvent::Enter) {
             m_exitTimer->stop(); //If not a leave event, stop the box from closing
         }
@@ -270,8 +279,9 @@ void ControlBox::showBox()
         m_box->installEventFilter(this);
         //m_box->hide();
         connect(m_box, SIGNAL(addApplet(const QString&)), this, SIGNAL(addApplet(const QString&)));
-        connect(m_box, SIGNAL(setFormFactor(Plasma::FormFactor)), this, SIGNAL(setFormFactor(Plasma::FormFactor)));
         connect(m_box, SIGNAL(lockInterface(bool)), this, SIGNAL(lockInterface(bool)));
+        connect(m_box->zoomInButton, SIGNAL(clicked()), this, SIGNAL(zoomIn()));
+        connect(m_box->zoomOutButton, SIGNAL(clicked()), this, SIGNAL(zoomOut()));
     }
 
     m_boxIsShown = true;

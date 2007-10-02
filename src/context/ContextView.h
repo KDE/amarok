@@ -19,7 +19,7 @@
 #define CONTEXT_VIEW_H
 
 #include "amarok_export.h"
-#include "ColumnApplet.h"
+#include "Containment.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "ContextObserver.h"
@@ -74,12 +74,9 @@ protected:
     void engineNewMetaData( const MetaBundle&, bool );
     void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     
-    void drawBackground(QPainter *painter, const QRectF &);
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
-    
-    void contextMenuEvent(QContextMenuEvent *event);
-    
+        
 private:
     static ContextView* s_self;
 
@@ -88,19 +85,17 @@ private:
     void showHome();
     void showCurrentTrack();
     
+    void createContainment();
+    
     typedef QPointer< Context::Applet > AppletPointer;
     // internal representation of the columns visible
-    ColumnApplet* m_columns;
+    Containment* m_columns;
     
     // holds what is currently being shown
     ContextState m_curState;
     
     ControlBox* m_controlBox;
-    Svg *m_background;
-    Svg *m_logo;
-    
-    qreal m_width;
-    qreal m_aspectRatio;
+
 };
 
 } // Context namespace

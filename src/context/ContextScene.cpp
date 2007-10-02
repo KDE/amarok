@@ -16,6 +16,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
+#include "plasma/containment.h"
 
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
@@ -46,6 +47,14 @@ ContextScene::ContextScene(qreal x, qreal y, qreal width, qreal height, QObject 
 
 ContextScene::~ContextScene()
 {
+}
+
+void ContextScene::loadDefaultSetup()
+{
+    Plasma::Containment* c = addContainment( "context" );
+    c->setScreen( 0 );
+    c->setFormFactor( Plasma::Planar );
+    
 }
 
 void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
