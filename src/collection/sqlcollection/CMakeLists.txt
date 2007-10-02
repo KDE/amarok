@@ -1,6 +1,10 @@
 macro_optional_find_package(MySQL)
 macro_optional_find_package(PostgreSQL)
 
+#build-time only dependency in XesamDbus.h
+#remove at some point
+find_package(Strigi REQUIRED)
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
         ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
         ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
