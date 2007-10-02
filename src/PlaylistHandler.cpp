@@ -140,7 +140,6 @@ void PlaylistHandler::handleByFormat( QTextStream &stream, Format format)
         case SMIL:
             loadSMIL( stream );
             break;
-
         case XSPF:
             loadXSPF( stream );
         break;
