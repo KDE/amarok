@@ -56,7 +56,7 @@ Model::init()
     if( AmarokConfig::savePlaylist() )
     {
         debug() << "Loading Previous Playlist";
-        m_playlistHandler->load( Amarok::saveLocation() + "current.m3u" );
+        m_playlistHandler->load( defaultPlaylistPath() );
     }
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
@@ -76,7 +76,7 @@ Model::~Model()
         {
             list << item->track();
         }
-        m_playlistHandler->save( list, Amarok::saveLocation() + "current.m3u" );
+        m_playlistHandler->save( list, defaultPlaylistPath() );
     }
     delete m_advancer;
     delete m_playlistHandler;

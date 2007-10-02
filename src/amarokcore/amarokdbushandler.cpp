@@ -586,7 +586,7 @@ namespace Amarok
         : QObject( kapp )
     {
          (void)new PlaylistAdaptor(this);
-         QDBusConnection::sessionBus().registerObject("/PlayerList", this);
+         QDBusConnection::sessionBus().registerObject("/Playlist", this);
     }
 
     int  DbusPlaylistHandler::getActiveIndex()
@@ -601,10 +601,9 @@ namespace Amarok
 
     QString DbusPlaylistHandler::saveCurrentPlaylist()
     {
-        //PORT 2.0
-//         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
-//         return Playlist::defaultPlaylistPath();
-        return QString();
+        QString savePath = The::playlistModel()->defaultPlaylistPath();
+        The::playlistModel()->saveM3U( savePath );
+        return savePath;
     }
 
     void DbusPlaylistHandler::addMedia(const KUrl &url)
@@ -699,23 +698,10 @@ namespace Amarok
 
     QStringList DbusPlaylistHandler::filenames()
     {
-        //PORT 2.0
-//         Playlist *p_inst = Playlist::instance();
-//         QStringList songlist;
-//
-//         if (!p_inst)
-//                 return songlist;
-//
-//         PlaylistItem *p_item = p_inst->firstChild();
-//
-//         while (p_item)
-//         {
-//                 songlist.append(p_item->filename());
-//                 p_item = p_item->nextSibling();
-//         }
-//
-//         return songlist;
-        return QStringList();
+        QStringList fileNames;
+        foreach( Playlist::Item* item, The::playlistModel()->itemList() )
+            fileNames << item->track()->prettyUrl();
+        return fileNames;
     }
 //     QString DbusPlaylistHandler::currentTrackUniqueId()
 //     {
