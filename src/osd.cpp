@@ -25,7 +25,6 @@
 #include "StarManager.h"
 
 #include <KApplication>
-#include <KPixmapEffect>
 #include <KStandardDirs>   //locate
 
 #include <QBitmap>
