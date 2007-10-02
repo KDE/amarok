@@ -615,7 +615,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls ); 
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
         The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     }
 
@@ -671,7 +671,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
     {
-        The::playlistModel()->saveM3U( path, relativePaths );
+        The::playlistModel()->saveM3U( path );
     }
 
     void DbusPlaylistHandler::setStopAfterCurrent( bool on )
@@ -702,18 +702,18 @@ namespace Amarok
         //PORT 2.0
 //         Playlist *p_inst = Playlist::instance();
 //         QStringList songlist;
-// 
+//
 //         if (!p_inst)
 //                 return songlist;
-// 
+//
 //         PlaylistItem *p_item = p_inst->firstChild();
-// 
+//
 //         while (p_item)
 //         {
 //                 songlist.append(p_item->filename());
 //                 p_item = p_item->nextSibling();
 //         }
-// 
+//
 //         return songlist;
         return QStringList();
     }
@@ -998,46 +998,46 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 //          (void)new MediaBrowserAdaptor(this);
 //          QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::deviceConnect()
 //     {
 //         if ( MediaBrowser::instance()->currentDevice() )
 //             MediaBrowser::instance()->currentDevice()->connectDevice();
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::deviceDisconnect()
 //     {
 //         if ( MediaBrowser::instance()->currentDevice() )
 //             MediaBrowser::instance()->currentDevice()->disconnectDevice();
 //     }
-// 
+//
 //     QStringList DbusMediaBrowserHandler::deviceList()
 //     {
 //         return MediaBrowser::instance()->deviceNames();
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::deviceSwitch( QString name )
 //     {
 //         MediaBrowser::instance()->deviceSwitch( name );
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::queue( KUrl url )
 //     {
 //         MediaBrowser::queue()->addUrl( url );
 //         MediaBrowser::queue()->URLsAdded();
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::queueList( KUrl::List urls )
 //     {
 //         MediaBrowser::queue()->addUrls( urls );
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::transfer()
 //     {
 //         if ( MediaBrowser::instance()->currentDevice() )
 //             MediaBrowser::instance()->currentDevice()->transferFiles();
 //     }
-// 
+//
 //     void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
 //     {
 //         MediaBrowser::instance()->transcodingFinished( src, dest );

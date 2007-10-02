@@ -15,6 +15,7 @@
 
 #define DEBUG_PREFIX "PlaylistHandler"
 
+#include "amarokconfig.h"
 #include "app.h"
 #include "CollectionManager.h"
 #include "MainWindow.h"
@@ -78,14 +79,13 @@ void PlaylistHandler::load(const QString & path)
 }
 
 bool PlaylistHandler::save( Meta::TrackList tracks,
-                            const QString &location,
-                            bool relative )
+                            const QString &location )
 {
     KUrl url( location );
     Format playlistFormat = getFormat( url );
     switch (playlistFormat) {
         case M3U:
-            return saveM3u( tracks, location, relative );
+            return saveM3u( tracks, location );
             break;
         default:
             debug() << "Currently unhandled type!";
@@ -384,8 +384,9 @@ PlaylistHandler::loadM3u( QTextStream &stream )
 }
 
 bool
-PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location, bool relative )
+PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location )
 {
+    const bool relative = AmarokConfig::relativePlaylist();
     if( location.isEmpty() )
         return false;
 

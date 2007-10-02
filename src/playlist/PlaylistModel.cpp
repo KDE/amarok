@@ -512,12 +512,12 @@ Model::insertMedia( KUrl::List list, int options )
 }
 
 bool
-Model::saveM3U( const QString &path, bool relative ) const
+Model::saveM3U( const QString &path ) const
 {
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
         tl << item->track();
-    m_playlistHandler->save( tl, path, relative );
+    m_playlistHandler->save( tl, path );
 }
 
 Qt::ItemFlags

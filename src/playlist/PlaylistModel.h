@@ -126,7 +126,7 @@ class TrackNavigator;
             ///Restore playlist from previous session of Amarok
             void restoreSession() { }
             ///Save M3U of current playlist to a given location
-            bool saveM3U( const QString &path, bool relative ) const;
+            bool saveM3U( const QString &path ) const;
 
             ///Return list of items in playlist
             QList<Item*> itemList() const { return m_items; }

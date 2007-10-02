@@ -50,7 +50,7 @@ public:
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
 
-    bool save( Meta::TrackList tracks, const QString &location, bool relative = false );
+    bool save( Meta::TrackList tracks, const QString &location );
 
 
 private:
@@ -66,7 +66,7 @@ private:
     bool loadPls( QTextStream &stream );
     unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadM3u( QTextStream &stream );
-    bool saveM3u( Meta::TrackList tracks, const QString &location, bool relative );
+    bool saveM3u( Meta::TrackList tracks, const QString &location );
     bool loadRealAudioRam( QTextStream& );
     bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
