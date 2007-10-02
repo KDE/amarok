@@ -19,7 +19,7 @@
 #include "CollectionManager.h"
 #include "MainWindow.h"
 #include "PlaylistHandler.h"
-#include "PlaylistModel.h"
+#include "playlist/PlaylistModel.h"
 #include "statusbar.h"
 #include "TheInstances.h"
 #include "xspfplaylist.h"
@@ -125,18 +125,18 @@ void PlaylistHandler::handleByFormat( QTextStream &stream, Format format)
         case M3U:
             loadM3u( stream );
             break;
-        case RAM: 
-            loadRealAudioRam( stream ); 
+        case RAM:
+            loadRealAudioRam( stream );
             break;
-       case ASX: 
-            loadASX( stream ); 
+       case ASX:
+            loadASX( stream );
             break;
-        case SMIL: 
-            loadSMIL( stream ); 
+        case SMIL:
+            loadSMIL( stream );
             break;
 
-        /*case XSPF: 
-            loadXSPF( stream ); 
+        /*case XSPF:
+            loadXSPF( stream );
         break;*/
 
         default:
@@ -422,7 +422,7 @@ PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location, bool 
     for( int i = 0, n = urls.count(); i < n; ++i )
     {
         const KUrl &url = urls[i];
-        
+
         if( !titles.isEmpty() && !lengths.isEmpty() )
         {
             stream << "#EXTINF:";

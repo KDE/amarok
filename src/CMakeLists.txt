@@ -362,7 +362,6 @@ set(libplaylist_SRCS
     playlist/PlaylistGraphicsScene.cpp
     playlist/PlaylistGraphicsView.cpp
     playlist/PlaylistTextItem.cpp
-    playlist/PlaylistHandler.cpp
 )
 
 #####################################################################
@@ -431,6 +430,7 @@ set(amaroklib_LIB_SRCS
     mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
+    PlaylistHandler.cpp
     pluginmanager.cpp
     podcastsettings.cpp
     portabledevices/SolidHandler.cpp
