@@ -87,6 +87,8 @@ bool PlaylistHandler::save( Meta::TrackList tracks,
         case M3U:
             return saveM3u( tracks, location );
             break;
+        case PLS:
+            return savePls( tracks, location );
         default:
             debug() << "Currently unhandled type!";
             return false;
@@ -290,7 +292,7 @@ PlaylistHandler::loadPls( QTextStream &stream )
                 continue;
             tmp = (*i).section('=', 1).trimmed();
             //tracks.append( KUrl(tmp) );
-            Q_ASSERT(ok);
+//             Q_ASSERT(ok);
             continue;
         }
         if ((*i).contains(regExp_NumberOfEntries)) {
@@ -303,7 +305,7 @@ PlaylistHandler::loadPls( QTextStream &stream )
             // We only support Version=2
             if (tmp.toUInt(&ok) != 2)
                 warning() << ".pls playlist: Unsupported version." << endl;
-            Q_ASSERT(ok);
+//             Q_ASSERT(ok);
             continue;
         }
         warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
@@ -312,6 +314,46 @@ PlaylistHandler::loadPls( QTextStream &stream )
     debug() << QString( "inserting %1 tracks from playlist" ).arg( tracks.count() );
     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
 
+    return true;
+}
+
+bool
+PlaylistHandler::savePls( Meta::TrackList tracks, const QString &location )
+{
+    QFile file( location );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
+        return false;
+    }
+
+    KUrl::List urls;
+    QStringList titles;
+    QList<int> lengths;
+    foreach( TrackPtr track, tracks )
+    {
+        urls << track->url();
+        titles << track->name();
+        lengths << track->length();
+    }
+
+    QTextStream stream( &file );
+    stream << "[Playlist]\n";
+    stream << "NumberOfEntries=" << tracks.count() << endl;
+    for( int i = 1, n = urls.count(); i < n; ++i )
+    {
+        stream << "File" << i << "=";
+        stream << urls[i].path();
+        stream << "\nTitle" << i << "=";
+        stream << titles[i];
+        stream << "\nLength" << i << "=";
+        stream << lengths[i];
+        stream << "\n";
+    }
+
+    stream << "Version=2\n";
+    file.close();
     return true;
 }
 

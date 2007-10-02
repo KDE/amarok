@@ -64,6 +64,7 @@ private:
     void downloadPlaylist( const KUrl & path );
 
     bool loadPls( QTextStream &stream );
+    bool savePls( Meta::TrackList tracks, const QString &location );
     unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadM3u( QTextStream &stream );
     bool saveM3u( Meta::TrackList tracks, const QString &location );
