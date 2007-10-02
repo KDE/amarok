@@ -37,10 +37,8 @@
 #include <QTimer>
 
 #include <kicon.h>
-#include <kimageeffect.h>
 #include <klocale.h>
 #include <kmenu.h>
-#include <kpixmapeffect.h>
 #include <kstandarddirs.h>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
@@ -152,15 +150,18 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     setFocusPolicy( Qt::NoFocus );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
-    QImage pixmapHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
-    QImage pixmapHandleGlow( KStandardDirs::locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
+    QImage imgHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
+    QImage imgHandleGlow( KStandardDirs::locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
 
     float opacity = 0.0;
     const float step = 1.0 / ANIM_MAX;
     QImage dst;
     for ( int i = 0; i < ANIM_MAX; ++i ) {
-        dst = pixmapHandle;
-        KImageEffect::blend( pixmapHandleGlow, dst, opacity );
+        dst = imgHandle;
+        QPainter p( &dst );
+        p.setOpacity( opacity );
+        p.drawImage( 0, 0, imgHandleGlow );
+        p.end();
         m_handlePixmaps.append( QPixmap( dst ) );
         opacity += step;
     }
