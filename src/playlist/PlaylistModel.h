@@ -64,7 +64,7 @@ class TrackNavigator;
         Year,
         NUM_COLUMNS
     };
-    enum DataRoles 
+    enum DataRoles
     {
         TrackRole = 0xc0ffee,
         ItemRole,
@@ -72,8 +72,8 @@ class TrackNavigator;
         GroupRole
     };
     ///Options for insertTracks
-    enum AddOptions 
-    { 
+    enum AddOptions
+    {
         Append     = 1,     /// inserts media after the last item in the playlist
         Queue      = 2,     /// inserts media after the currentTrack
         Replace    = 4,     /// clears the playlist first
@@ -99,11 +99,11 @@ class TrackNavigator;
         friend class AddTracksCmd;
         friend class RemoveTracksCmd;
         Q_OBJECT
-        
+
         public:
-            Model( QObject* parent = 0 ); 
+            Model( QObject* parent = 0 );
             ~Model();
-        
+
             //required by QAbstractListModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
             int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 3; }
@@ -120,7 +120,7 @@ class TrackNavigator;
             QStringList mimeTypes() const;
             QMimeData* mimeData(const QModelIndexList &indexes) const;
             bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
-        
+
             //other methods
             void init();
             ///Restore playlist from previous session of Amarok
@@ -129,7 +129,7 @@ class TrackNavigator;
             bool saveM3U( const QString &path, bool relative ) const;
 
             ///Return list of items in playlist
-            QList<Item*> itemList() { return m_items; }
+            QList<Item*> itemList() const { return m_items; }
 
 
             /**
@@ -148,24 +148,24 @@ class TrackNavigator;
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
-            
+
             ///deprecated function to ease porting to Meta::Track from URLs
             KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
             virtual void metadataChanged( Meta::Album *album );
-            
+
             void play( int row );
 
             //various methods for playlist name
-            //I believe this is used for when you open a playlist file, it can keep the same name when it is 
+            //I believe this is used for when you open a playlist file, it can keep the same name when it is
             //later saved
             void setPlaylistName( const QString &name, bool proposeOverwriting = false ) { m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
             void proposePlaylistName( const QString &name, bool proposeOverwriting = false ) { if( ( rowCount() == 0 ) || m_playlistName==i18n("Untitled") ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
             const QString &playlistName() const { return m_playlistName; }
             bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
-            
+
             static Model* s_instance; //! instance variable
-        
+
         public slots:
             void play( const QModelIndex& index );
             void playlistRepeatMode( int item );
@@ -189,7 +189,7 @@ class TrackNavigator;
              * @arg list The list to be inserted.
              */
             void insertTracksCommand( int row, Meta::TrackList list );
-            
+
             /**
              * This performs the actual work involved with removing tracks. It is to be *only* called by an UndoCommand.
              * @arg row Row number in the playlist to insert the list after.

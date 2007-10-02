@@ -514,18 +514,10 @@ Model::insertMedia( KUrl::List list, int options )
 bool
 Model::saveM3U( const QString &path, bool relative ) const
 {
-    Q_UNUSED( path ); Q_UNUSED( relative );
-//     Q3ValueList<KUrl> urls;
-//     Q3ValueList<QString> titles;
-//     Q3ValueList<int> lengths;
-//     for( MyIt it( firstChild(), MyIt::Visible ); *it; ++it )
-//     {
-//         urls << (*it)->url();
-//         titles << (*it)->title();
-//         lengths << (*it)->length();
-//     }
-//     return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
-    return false;
+    Meta::TrackList tl;
+    foreach( Item* item, itemList() )
+        tl << item->track();
+    m_playlistHandler->save( tl, path, relative );
 }
 
 Qt::ItemFlags
