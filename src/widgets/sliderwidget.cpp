@@ -156,10 +156,14 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     float opacity = 0.0;
     const float step = 1.0 / ANIM_MAX;
     QImage dst;
+    QColor color = Qt::black;
     for ( int i = 0; i < ANIM_MAX; ++i ) {
         dst = imgHandle;
         QPainter p( &dst );
-        p.setCompositionMode( QPainter::CompositionMode_Source );
+        p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
+        color.setAlphaF( opacity );
+        p.fillRect( dst.rect(), color );
+        p.setCompositionMode( QPainter::CompositionMode_Plus );
         p.setOpacity( opacity );
         p.drawImage( 0, 0, imgHandleGlow );
         p.end();
