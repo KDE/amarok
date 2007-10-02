@@ -89,6 +89,10 @@ bool PlaylistHandler::save( Meta::TrackList tracks,
             break;
         case PLS:
             return savePls( tracks, location );
+            break;
+        case XSPF:
+            return saveXSPF( tracks, location );
+            break;
         default:
             debug() << "Currently unhandled type!";
             return false;
@@ -137,9 +141,9 @@ void PlaylistHandler::handleByFormat( QTextStream &stream, Format format)
             loadSMIL( stream );
             break;
 
-        /*case XSPF:
+        case XSPF:
             loadXSPF( stream );
-        break;*/
+        break;
 
         default:
             debug() << "unknown type!";
@@ -729,6 +733,31 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
 
     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     return true;
+}
+
+bool
+PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
+{
+
+    XSPFPlaylist playlist;
+
+    playlist.setCreator( "Amarok" );
+    playlist.setTitle( tracks[0]->artist()->name() );
+
+    playlist.setTrackList( tracks );
+
+    QFile file( location );
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
+        return false;
+    }
+
+    QTextStream stream ( &file );
+
+    playlist.save( stream, 2 );
+
+    file.close();
 }
 
 #include <kdirlister.h>

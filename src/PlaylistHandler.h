@@ -72,6 +72,7 @@ private:
     bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
     bool loadXSPF( QTextStream& );
+    bool saveXSPF( Meta::TrackList tracks, const QString &location );
 
     KUrl::List recurse( const KUrl & url );
 
