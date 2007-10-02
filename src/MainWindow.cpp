@@ -504,13 +504,8 @@ QSize MainWindow::sizeHint() const
 
 void MainWindow::savePlaylist() const //SLOT
 {
-    PlaylistHandler *ph = new PlaylistHandler;
-    QList<Playlist::Item*> playlistItems = The::playlistModel()->itemList();
-    Meta::TrackList tracks;
-    foreach( Playlist::Item* item, playlistItems )
-        tracks << item->track();
     QString playlistName = KFileDialog::getSaveFileName();
-    ph->save( tracks, playlistName );
+    The::playlistModel()->saveM3U( playlistName, AmarokConfig::relativePlaylist );
 }
 
 
