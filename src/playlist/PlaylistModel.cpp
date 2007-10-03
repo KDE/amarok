@@ -115,23 +115,13 @@ Model::data( const QModelIndex& index, int role ) const
         //get the track
         TrackPtr track = m_items.at( row )->track();
 
-
-
         if ( !track->album() )
             return None;  // no albm set
         else if ( !m_albumGroups.contains( track->album() ) )
-            return None;  // no group for this album
+            return None;  // no group for this album, should never happen...
 
-        QList< int > rowsInGroup = m_albumGroups.value( track->album() );
-
-        if ( row == rowsInGroup.first() )
-            return Head;
-        else if ( row == rowsInGroup.last() )
-            return End;
-        else if ( rowsInGroup.contains( row ) )
-            return Body;
-        else
-            return None; //Album has group, but this item is outside it
+        AlbumGroup albumGroup = m_albumGroups.value( track->album() );
+        return albumGroup.groupMode( row );
 
     }
     else if( role == Qt::DisplayRole && row != -1 )
@@ -636,22 +626,13 @@ Model::insertTracksCommand( int row, TrackList list )
                 //check if track should be added to an album group or
                 //if a new album group should be created
 
-                if ( track->album() == m_lastAddedTrackAlbum ) {
-                    //this thrack and the last one should be grouped
-
-                    //does a group already exist?
-                    if ( m_albumGroups.contains( track->album() ) ) {
-                        //yes, add track to existing album group
-                        m_albumGroups[track->album()].append( row + i );
-                    } else {
-                        //no group exists... create new one and add this and last track
-                        m_albumGroups.insert( track->album(), QList < int > () );
-                        m_albumGroups[track->album()].append( row + i -1 );
-                        m_albumGroups[track->album()].append( row + i );
-                    }
-
+                if ( m_albumGroups.contains( track->album() ) ) {
+                        m_albumGroups[ track->album() ].addRow( i );
+                } else {
+                        AlbumGroup newGroup;
+                        newGroup.addRow( i );
+                        m_albumGroups.insert( track->album(), newGroup );
                 }
-                m_lastAddedTrackAlbum = track->album();
 
             } else {
                 //make sure we dont group tracks "around" tracks with no album set
@@ -787,9 +768,9 @@ void Model::regroupAlbums()
 {
 
     m_albumGroups.clear();
-    m_lastAddedTrackAlbum = AlbumPtr();
+    //m_lastAddedTrackAlbum = AlbumPtr();
 
-    TrackPtr lastTrack;
+    //TrackPtr lastTrack;
 
     debug() << "number of rows: " << m_items.count();
 
@@ -797,30 +778,24 @@ void Model::regroupAlbums()
     for (  i = 0; i < m_items.count(); i++ )
     {
 
+
+
        debug() << "i: " << i;
+
+
        TrackPtr track = m_items.at( i )->track();
 
-        //is this track in the same album as the one preceding it?
-        if ( lastTrack.data() != 0 ) {
-            if ( lastTrack->album() == track->album() ) {
-                //Group 'em!
+       if ( !track->album() )
+           continue;
 
-                //does this album already have a group entry?
-                if ( m_albumGroups.contains( track->album() ) ) {
-                    //add track to existing album group
-                    m_albumGroups[track->album()].append( i );
-                } else {
-                    //no group exists... create new one and add this and last track
-                    m_albumGroups.insert( track->album(), QList < int > () );
-                    m_albumGroups[track->album()].append( i -1 );
-                    m_albumGroups[track->album()].append( i );
-                }
+       if ( m_albumGroups.contains( track->album() ) ) {
+            m_albumGroups[ track->album() ].addRow( i );
+       } else {
+            AlbumGroup newGroup;
+            newGroup.addRow( i );
+            m_albumGroups.insert( track->album(), newGroup );
+       }
 
-            }
-
-        }
-
-    lastTrack = track;
 
     }
 

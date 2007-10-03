@@ -10,6 +10,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "meta/meta.h"
+#include "PlaylistAlbumGroup.h"
 #include "PlaylistHandler.h"
 
 #include "UndoCommands.h"
@@ -84,15 +85,6 @@ class TrackNavigator;
         AppendAndPlay = Append | Unique | StartPlay
     };
 
-    enum GroupMode
-    {
-        None = 1,
-        Head,
-        Body,
-        End
-    };
-
-    typedef QMap<Meta::AlbumPtr, QList< int > > AlbumGroupMap;
 
     class Model : public QAbstractListModel, Meta::Observer
     {
@@ -224,7 +216,7 @@ class TrackNavigator;
 
             PlaylistHandler * m_playlistHandler;
 
-            AlbumGroupMap m_albumGroups;
+            QMap< Meta::AlbumPtr, AlbumGroup > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
 
     };
