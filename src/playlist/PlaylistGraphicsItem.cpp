@@ -115,6 +115,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 4) Do not setBrush without making sure its hasn't already been set to that brush().
 // 5) If this is your first night at ::paint method, you HAVE to paint.
     Q_UNUSED( painter ); Q_UNUSED( widget );
+
+    //debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
 
@@ -207,14 +209,14 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         
             QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 16 ).arg(trackRect.height() );
             QPixmap background(trackRect.width() - 16, trackRect.height() );
-            background.fill( Qt::transparent );
-        
+
             QRectF tempRect = trackRect;
             tempRect.setWidth( tempRect.width() - 16 );
             if ( m_groupMode == End )
                 tempRect.setHeight( tempRect.height() - 4 );
 
             if (!QPixmapCache::find( key, background ) ) {
+                background.fill( Qt::transparent );
                 QPainter pt( &background );
                 s_svgRenderer->render( &pt, "body_background",  tempRect );
                 QPixmapCache::insert( key, background );
@@ -236,7 +238,18 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
          if( m_items->track->album() )
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
          painter->drawPixmap( MARGIN, MARGIN, albumPixmap );
+         //and make sure the top text elements are shown
+        if( !m_items->topRightText->isVisible() ) 
+            m_items->topRightText->show();
+        if( !m_items->topLeftText->isVisible() ) 
+            m_items->topLeftText->show();
 
+    } else {
+        //if not, make sure that the top text items are not shown
+        if( m_items->topRightText->isVisible() ) 
+            m_items->topRightText->hide();
+        if( m_items->topLeftText->isVisible() ) 
+            m_items->topLeftText->hide();
     }
 
 
@@ -590,12 +603,14 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 
 void Playlist::GraphicsItem::setRow(int row)
 {
+    DEBUG_BLOCK
     m_currentRow = row;
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
     //figure out our group state and set height accordingly
     int currentGroupState = index.data( GroupRole ).toInt();
+
     if ( currentGroupState != m_groupMode ) {
 
         debug() << "Group changed for row " << row;

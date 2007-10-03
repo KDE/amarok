@@ -151,6 +151,8 @@ class TrackNavigator;
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
 
+            void moveRow( int row, int to );
+
             ///deprecated function to ease porting to Meta::Track from URLs
             KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
@@ -198,6 +200,14 @@ class TrackNavigator;
              * @arg list The list to be inserted.
              */
             Meta::TrackList removeRowsCommand( int position, int rows );
+
+            
+            /**
+             * This Method naively deletes all grouping information adn regroups all items from scratch. This is an O(n) opperation, 
+             * but it is very simple and handles pretty much all nasty corner cases without involving the black arts or the sacrifice of 
+             * of chickens under a full moon.
+             */
+            void regroupAlbums();
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 

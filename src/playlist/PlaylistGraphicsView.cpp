@@ -151,6 +151,9 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
         m_tracks.insert( i, item  );
     }
    
+    // make sure all following tracks has their colors updated correctly
+    for ( int i = end + 1 ; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
 
     shuffleTracks( end + 1 );
 }
@@ -158,9 +161,15 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 void
 Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
+    DEBUG_BLOCK
     Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
         delete m_tracks.takeAt( i );
+
+    // make sure all following tracks has their colors updated correctly
+    for ( int i = start; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
+
 
     shuffleTracks( start );
 }
@@ -171,18 +180,32 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     int moveMeIndex = m_tracks.indexOf( moveMe );
     int aboveIndex  = m_tracks.indexOf( above  );
 
-    Playlist::GraphicsItem* item = m_tracks.at( moveMeIndex );
+    //call set row on all items below the first one potentially modified to
+    //make sure that all items have correct background color and group info
+
 
     if( moveMeIndex < aboveIndex )
     {
-        item->setRow( aboveIndex - 1 );
+        m_model->moveRow( moveMeIndex, aboveIndex -1 );
         m_tracks.move( moveMeIndex, aboveIndex - 1 );
+
+
+        int i;
+        for ( i = moveMeIndex; i < m_tracks.count(); i++ )
+            m_tracks.at( i )->setRow( i );
+
+
         shuffleTracks( moveMeIndex, aboveIndex );
     }
     else
     {
-        item->setRow( aboveIndex );
+        m_model->moveRow( moveMeIndex, aboveIndex );
         m_tracks.move( moveMeIndex, aboveIndex );
+
+        int i;
+        for ( i = aboveIndex; i < m_tracks.count(); i++ )
+            m_tracks.at( i )->setRow( i );
+
         shuffleTracks( aboveIndex, moveMeIndex + 1);
     }
 }

@@ -394,6 +394,7 @@ Model::clear()
 {
     removeRows( 0, m_items.size() );
     m_albumGroups.clear();
+    m_lastAddedTrackAlbum = AlbumPtr();
 //    m_activeRow = -1;
 }
 
@@ -707,6 +708,10 @@ Model::removeRowsCommand( int position, int rows )
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
+
+
+    regroupAlbums();
+
     emit playlistCountChanged( rowCount() );
     return ret;
 }
@@ -760,9 +765,67 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
 
 }
 
+void Model::moveRow(int row, int to)
+{
+
+    m_items.move( row, to );
+
+    regroupAlbums();
+
+}
+
+
+void Model::regroupAlbums()
+{
+
+    m_albumGroups.clear();
+    m_lastAddedTrackAlbum = AlbumPtr();
+    
+    TrackPtr lastTrack;
+
+    debug() << "number of rows: " << m_items.count();
+
+    int i;
+    for (  i = 0; i < m_items.count(); i++ )
+    {
+
+       debug() << "i: " << i;
+       TrackPtr track = m_items.at( i )->track();
+
+        //is this track in the same album as the one preceding it?
+        if ( lastTrack.data() != 0 ) {
+            if ( lastTrack->album() == track->album() ) {
+                //Group 'em!
+
+                //does this album already have a group entry?
+                if ( m_albumGroups.contains( track->album() ) ) {
+                    //add track to existing album group
+                    m_albumGroups[track->album()].append( i );
+                } else {
+                    //no group exists... create new one and add this and last track
+                    m_albumGroups.insert( track->album(), QList < int > () );
+                    m_albumGroups[track->album()].append( i -1 );
+                    m_albumGroups[track->album()].append( i );
+                }
+
+            }
+
+        }
+
+    lastTrack = track;
+
+    }
+
+    //reset();
+
+}
+
+
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
+
 
 
 
