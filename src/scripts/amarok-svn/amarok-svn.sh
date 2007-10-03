@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "Amarok-svn (Version 3.2)"
-echo "=========================="
+echo "Amarok-svn (Version 3.2.1)"
+echo "============================"
 echo
 
 ## Define global variables
@@ -330,7 +330,7 @@ else
   else
     echo "Unsermake wasn't found. Downloading it to '$BUILD_DIR/unsermake'."
   fi
-  svn co -N $SVN_SERVER/home/kde/trunk/kdenonbeta/unsermake
+  svn co -N $SVN_SERVER/home/kde/tags/unmaintained/3/unsermake
   if [ "$?" != "0" ]; then #If the command didn't finish successfully
     Error "The SVN transfer failed."
   fi
