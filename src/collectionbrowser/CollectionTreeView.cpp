@@ -16,6 +16,7 @@
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
+#include <QSet>
 
 #include <kconfig.h>
 #include <KIcon>
@@ -106,15 +107,21 @@ void
 CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
 
-    QModelIndex index;
+    QModelIndexList indices = selectedIndexes();
     if( m_filterModel )
-        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
-    else
-        index = indexAt( event->pos() );
-
-    if( index.isValid() && index.internalPointer()  )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        QModelIndexList tmp;
+        foreach( QModelIndex idx, indices )
+        {
+            tmp.append( m_filterModel->mapToSource( idx ) );
+        }
+        indices = tmp;
+    }
+
+    //if( index.isValid() && index.internalPointer()  )
+    if( !indices.isEmpty() )
+    {
+        //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
         KMenu menu;
         QAction* loadAction = new QAction( KIcon(Amarok::icon( "file_open" ) ), i18n( "&Load" ), &menu );
@@ -122,10 +129,16 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction( loadAction );
         menu.addAction( appendAction );
         QAction* result =  menu.exec( event->globalPos() );
+        QSet<CollectionTreeItem*> items;
+        foreach( QModelIndex index, indices )
+        {
+            if( index.isValid() && index.internalPointer() )
+                items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
+        }
         if( result == loadAction )
-            playChildTracks( item, Playlist::Replace );
+            playChildTracks( items, Playlist::Replace );
         else if( result == appendAction )
-            playChildTracks( item, Playlist::Append );
+            playChildTracks( items, Playlist::Append );
     }
     else
         debug() << "invalid index or null internalPointer";
@@ -220,7 +233,7 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
 }
 
 void
-CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode)
+CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode) const
 {
     if( !item->allDescendentTracksLoaded() )
     {
@@ -240,5 +253,34 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
         The::playlistModel()->insertOptioned( tracks, insertMode );
     }
 }
+
+void
+CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const
+{
+    //find all selected parents in the list and ignore the rest
+    QSet<CollectionTreeItem*> parents;
+    foreach( CollectionTreeItem *item, items )
+    {
+        CollectionTreeItem *tmpItem = item;
+        while( tmpItem )
+        {
+            if( items.contains( tmpItem->parent() ) )
+            {
+                tmpItem = tmpItem->parent();
+            }
+            else
+            {
+                parents.insert( tmpItem );
+                break;
+            }
+        }
+    }
+    foreach( CollectionTreeItem *item, parents )
+    {
+        //FIXME:we are ignoring the order of the sleected items
+        playChildTracks( item, insertMode );
+    }
+}
+
 
 #include "CollectionTreeView.moc"

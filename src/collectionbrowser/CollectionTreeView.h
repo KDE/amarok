@@ -13,6 +13,7 @@
 #include "CollectionTreeItem.h"
 #include "playlist/PlaylistModel.h"
 
+#include <QSet>
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QTreeView>
@@ -52,7 +53,8 @@ class CollectionTreeView: public QTreeView {
     private:
         // Utility function to play all items
         // that have this as a parent..
-        void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode );
+        void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode ) const;
+        void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModel *m_treeModel;
         QTimer m_filterTimer;
