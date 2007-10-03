@@ -140,9 +140,15 @@ Model::data( const QModelIndex& index, int role ) const
             case 0:
                 return m_items.at( row )->track()->name();
             case 1:
-                return m_items.at( row )->track()->album()->name();
+                if ( m_items.at( row )->track()->album() )
+                    return m_items.at( row )->track()->album()->name();
+                else 
+                    return "";
             case 2:
-                return m_items.at( row )->track()->artist()->name();
+                if ( m_items.at( row )->track()->artist() )
+                    return m_items.at( row )->track()->artist()->name(); 
+                else 
+                    return "";
         }
     }
     else
