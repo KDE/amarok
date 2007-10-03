@@ -239,6 +239,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 
     QTimeLine *timer = new QTimeLine( 300 ); // 0.3 second duration
     timer->setCurveShape( QTimeLine::EaseInCurve );
+    timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
+                                    //that results in items not moving all the way
 
 
     int cumulativeHeight = 0;
@@ -271,6 +273,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
             qreal newY = moveUp ? ( currentY + i ) : ( currentY - i );
             animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
         }
+        animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
+
     }
     timer->start();
 }
