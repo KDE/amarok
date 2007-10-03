@@ -392,6 +392,8 @@ Model::metadataChanged(Meta::Album * album)
 void
 Model::clear()
 {
+    if( m_items.size() < 1 )
+        return;
     removeRows( 0, m_items.size() );
     m_albumGroups.clear();
     m_lastAddedTrackAlbum = AlbumPtr();
@@ -518,7 +520,8 @@ Model::saveM3U( const QString &path ) const
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
         tl << item->track();
-    m_playlistHandler->save( tl, path );
+    if( m_playlistHandler->save( tl, path ) )
+        return true;
 }
 
 Qt::ItemFlags
@@ -779,7 +782,7 @@ void Model::regroupAlbums()
 
     m_albumGroups.clear();
     m_lastAddedTrackAlbum = AlbumPtr();
-    
+
     TrackPtr lastTrack;
 
     debug() << "number of rows: " << m_items.count();
