@@ -204,7 +204,8 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
             m_tracks.at( i )->setRow( i );
 
 
-        shuffleTracks( moveMeIndex, aboveIndex );
+        //shuffleTracks( moveMeIndex, aboveIndex );
+        shuffleTracks( 0 );
     }
     else
     {
@@ -215,7 +216,8 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         for ( i = aboveIndex; i < m_tracks.count(); i++ )
             m_tracks.at( i )->setRow( i );
 
-        shuffleTracks( aboveIndex, moveMeIndex + 1);
+        //shuffleTracks( aboveIndex, moveMeIndex + 1);
+        shuffleTracks( 0 );
     }
 }
 
