@@ -252,6 +252,14 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->topLeftText->hide();
     }
 
+    //set selection marker if needed
+
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->fillRect( trackRect, QBrush( QColor( 0, 0, 255, 128 ) ) );
+
+    }
+
 
     //set overlay if item is active:
     if( index.data( ActiveTrackRole ).toBool() )
