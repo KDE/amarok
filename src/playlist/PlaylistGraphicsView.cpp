@@ -186,12 +186,17 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
 void
 Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::GraphicsItem *above )
 {
+
     int moveMeIndex = m_tracks.indexOf( moveMe );
-    int aboveIndex  = m_tracks.indexOf( above  );
+    int aboveIndex;
+    if ( above ) 
+        aboveIndex  = m_tracks.indexOf( above  );
+    else 
+        aboveIndex = m_tracks.count(); 
+
 
     //call set row on all items below the first one potentially modified to
     //make sure that all items have correct background color and group info
-
 
     if( moveMeIndex < aboveIndex )
     {
@@ -219,7 +224,9 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         //shuffleTracks( aboveIndex, moveMeIndex + 1);
         shuffleTracks( 0 );
     }
+
 }
+
 
 void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )

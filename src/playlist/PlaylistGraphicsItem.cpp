@@ -602,7 +602,14 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     {
         setPos( above->pos() );
         The::playlistView()->moveItem( this, above );
-    }
+    } else {
+        //Don't just drop item into the void, make it the last item!
+
+        The::playlistView()->moveItem( this, 0 );
+        //setPos( above->pos() );
+        //The::playlistView()->moveItem( this, above );
+
+    }   
 
     //make sure item resets its z value
     setZValue( 1.0 );
