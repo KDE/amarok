@@ -201,8 +201,7 @@ class TrackNavigator;
              */
             Meta::TrackList removeRowsCommand( int position, int rows );
 
-            
-            /**
+             /**
              * This Method naively deletes all grouping information adn regroups all items from scratch. This is an O(n) opperation, 
              * but it is very simple and handles pretty much all nasty corner cases without involving the black arts or the sacrifice of 
              * of chickens under a full moon.

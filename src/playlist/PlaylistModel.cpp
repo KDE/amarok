@@ -709,7 +709,6 @@ Model::removeRowsCommand( int position, int rows )
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
 
-
     regroupAlbums();
 
     emit playlistCountChanged( rowCount() );

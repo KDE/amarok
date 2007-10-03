@@ -118,11 +118,20 @@ void
 Playlist::GraphicsView::removeSelection()
 {
     QList<QGraphicsItem*> selection = scene()->selectedItems();
+
+    int firstIndex = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>( selection.first() ) );
+    if ( firstIndex > 0) firstIndex -= 1;
+ 
     foreach( QGraphicsItem *i, selection )
     {
         int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
         m_model->removeRows( index, 1 );
     }
+
+
+
+    for ( int i = firstIndex ; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
 }
 
 void
