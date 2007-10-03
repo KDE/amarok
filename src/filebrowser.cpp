@@ -161,8 +161,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         //TODO: Find out a way to fix this?
         //m_dir->setDropOptions( KFileView::AutoOpenDirs );
 
+#if 0 // TODO port
         static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
         static_cast<Q3IconView*>(m_dir->viewWidget())->setSpacing( 1 );
+#endif
 
         actionCollection = m_dir->actionCollection();
 
@@ -329,16 +331,16 @@ Meta::TrackList FileBrowser::selectedItems()
 {
     Meta::TrackList list;
 
-    QList<KFileItem>  source;
+    KFileItemList source;
     if ( m_dir->selectedItems().count() )
         source = m_dir->selectedItems();
     else {
        //FIXME: not that simplw to do with the new api
-       //get all items...,
-       //source = m_dir->view()->omdel()->items();
+       //get all items... DF: you can get them from the KDirLister
+       //source = m_dir->view()->model()->items();
     }
 
-    for( QList<KFileItem>::const_iterator it = source.begin(); it != source.end(); ++it )
+    for( KFileItemList::const_iterator it = source.begin(); it != source.end(); ++it )
         list.append( CollectionManager::instance()->trackForUrl( (*it).url() ) );
 
     return list;
@@ -454,7 +456,7 @@ FileBrowser::activate( const KFileItem *item )
 inline void
 FileBrowser::prepareContextMenu()
 {
-    const QList<KFileItem> items = m_dir->selectedItems();
+    const KFileItemList items = m_dir->selectedItems();
     m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first().isDir() ) );
 
     if( items.count() == 1 )
@@ -716,10 +718,10 @@ void
 SearchPane::searchMatches( const KFileItemList &list )
 {
     for( KFileItemList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it ) {
-        if( (*it)->isDir() )
-            m_dirs += (*it)->url();
-        else if( m_filter.exactMatch( (*it)->name() ) )
-            new KURLView::Item( (*it)->url(), static_cast<KURLView*>( m_listView ) );
+        if( (*it).isDir() )
+            m_dirs += (*it).url();
+        else if( m_filter.exactMatch( (*it).name() ) )
+            new KURLView::Item( (*it).url(), static_cast<KURLView*>( m_listView ) );
     }
 }
 

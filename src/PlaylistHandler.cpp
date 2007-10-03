@@ -775,10 +775,10 @@ PlaylistHandler::recurse( const KUrl &url )
     while( !lister.isFinished() )
         kapp->processEvents( QEventLoop::ExcludeUserInput );
 
-    KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
+    KFileItemList items = lister.items();
     KUrl::List urls;
     FileMap files;
-    foreach( KFileItem it, items ) {
+    foreach( const KFileItem& it, items ) {
         if( it.isFile() ) { files[it.name()] = it.url(); continue; }
         if( it.isDir() ) urls += recurse( it.url() );
     }
