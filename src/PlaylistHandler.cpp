@@ -737,7 +737,8 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
 bool
 PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
 {
-
+    if( tracks.isEmpty() )
+        return false;
     XSPFPlaylist playlist;
 
     playlist.setCreator( "Amarok" );
@@ -757,6 +758,8 @@ PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
     playlist.save( stream, 2 );
 
     file.close();
+
+    return true;
 }
 
 #include <kdirlister.h>
