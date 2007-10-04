@@ -27,12 +27,12 @@ class CollectionTreeView: public QTreeView {
     public:
         CollectionTreeView( QWidget *parent = 0 );
         ~CollectionTreeView();
-    
+
         QSortFilterProxyModel* filterModel() const;
-    
+
         void setLevels( const QList<int> &levels );
         void setLevel( int level, int type );
-    
+
         void setModel ( QAbstractItemModel * model );
 	    void contextMenuEvent(QContextMenuEvent* event);
 

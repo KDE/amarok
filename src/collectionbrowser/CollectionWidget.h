@@ -20,6 +20,15 @@ class CollectionWidget : public QWidget
         CollectionWidget( const char* name );
     public slots:
         //void slotSetFilter();
+
+    private slots:
+        void sortByArtist();
+        void sortByArtistAlbum();
+        void sortByArtistYearAlbum();
+        void sortByAlbum();
+        void sortByGenreArtist();
+        void sortByGenreArtistAlbum();
+
     private:
         SearchWidget           *m_searchWidget;
         CollectionTreeView* m_treeView;
