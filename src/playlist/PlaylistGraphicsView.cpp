@@ -36,6 +36,8 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
 
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
 }
 
 void
