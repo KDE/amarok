@@ -14,11 +14,14 @@
 #ifndef COLUMN_APPLET_H
 #define COLUMN_APPLET_H
 
+#include "context/Applet.h"
 #include "Containment.h"
 #include "amarok_export.h"
 #include "Svg.h"
 
 #include "plasma/widgets/flowlayout.h"
+#include "plasma/appletbrowser.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 
@@ -39,11 +42,15 @@ public:
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
     
-    void update();
+    void updateSize();
+    
+    QSizeF sizeHint() const;
     
     virtual void paintInterface(QPainter *painter,
                                 const QStyleOptionGraphicsItem *option,
                                 const QRect& contentsRect);
+    
+    QList<QAction*> contextActions();
     
 public slots:
     void appletRemoved( QObject* object );
@@ -53,9 +60,16 @@ protected:
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
 //     
 protected slots:
+    void launchAppletBrowser( const QString& cat = "all" );
+    
     void recalculate();
     
 private:
+    QAction* m_appletBrowserAction;
+    Plasma::AppletBrowser* m_appletBrowser;
+    
+    QRectF m_geometry;
+    
     Plasma::FlowLayout* m_columns;
     int m_defaultColumnSize;
     Plasma::Svg* m_background;
@@ -64,6 +78,8 @@ private:
     qreal m_aspectRatio;
 };
 
+K_EXPORT_AMAROK_APPLET( context, ColumnApplet )
+    
 } // namespace
 
 #endif

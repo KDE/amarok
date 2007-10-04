@@ -23,6 +23,7 @@
 namespace Context
 {
 
+
 class AMAROK_EXPORT Containment : public Plasma::Containment
 {
     Q_OBJECT
@@ -38,18 +39,7 @@ public:
     virtual void saveToConfig( KConfig& conf ) = 0;
     virtual void loadConfig( KConfig& conf ) = 0;
     
-    virtual void update() = 0;
-    
-    QList<QAction*> contextActions();
-    
-public slots:
-    virtual void appletRemoved( QObject* object ) = 0;
-    
-protected:
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
-    
-private:
-    QAction* m_appletBrowserAction;
+    virtual void updateSize() = 0;
 };
 
 } // Context namespace

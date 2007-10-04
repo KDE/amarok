@@ -15,6 +15,7 @@
 
 #include "ContextScene.h"
 #include "debug.h"
+#include "Svg.h"
 
 #include "plasma/widgets/layoutanimator.h"
 
@@ -28,8 +29,9 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_defaultColumnSize( 450 )
 {
+    DEBUG_BLOCK
     m_columns = new Plasma::FlowLayout( this );
-    //m_columns->setColumnWidth( m_defaultColumnSize );
+    m_columns->setColumnWidth( m_defaultColumnSize );
     
     m_background = new Svg( "widgets/amarok-wallpaper", this );
     m_logo = new Svg( "widgets/amarok-logo", this );
@@ -120,35 +122,48 @@ void ColumnApplet::loadConfig( KConfig& conf )
     resizeColumns();*/
 }
 
-QRectF ColumnApplet::boundingRect() const {
+QSizeF ColumnApplet::sizeHint() const
+{
+    debug() << "returning size hint:" << m_geometry.size();
+    return m_geometry.size();
+}
+
+QRectF ColumnApplet::boundingRect() const 
+{
 //     qreal width = 2*m_padding;
 //     qreal height = 0;
 //     foreach( Plasma::VBoxLayout* column, m_layout )
 //     {
 //         width += column->sizeHint().width();
 
-//     debug() << "returning geometry:" << m_geometry;
-    return m_columns->geometry();
+    return m_geometry;
 }
 // call this when the view changes size: e.g. layout needs to be recalculated
-void ColumnApplet::update() // SLOT
+void ColumnApplet::updateSize() // SLOT
 {
+    DEBUG_BLOCK
+    m_geometry = scene()->sceneRect();
+    debug() << "setting geometry:" << scene()->sceneRect();
     if( scene() ) m_columns->setGeometry( scene()->sceneRect() );
+    setGeometry( scene()->sceneRect() );
 }
 
 void ColumnApplet::paintInterface(QPainter *painter,
                     const QStyleOptionGraphicsItem *option,
                     const QRect& rect)
 {
+    DEBUG_BLOCK
+    debug() << "painting in:" << rect;
     painter->save();
     m_background->paint( painter, rect );
     painter->restore();
     QSize size = m_logo->size();
     
-    QSize pos = m_background->size() - size;
+    QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
     painter->save();
+    debug() << "painting logo:" << QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() );
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
     
@@ -236,6 +251,28 @@ void ColumnApplet::recalculate()
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
     m_columns->setGeometry( m_columns->geometry() );
+}
+
+QList<QAction*> ColumnApplet::contextActions()
+{
+    DEBUG_BLOCK
+        if (!m_appletBrowserAction) {
+            m_appletBrowserAction = new QAction(i18n("Add applet"), this);
+            connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser( "amarok" )));
+        }
+    
+    QList<QAction*> actions;
+    actions.append(m_appletBrowserAction);
+    debug() << "returning actions:" << actions;
+    return actions;
+}
+
+void ColumnApplet::launchAppletBrowser( const QString& cat ) // SLOT
+{
+    if( !m_appletBrowser )
+        m_appletBrowser = new Plasma::AppletBrowser( this, cat );
+    
+    m_appletBrowser->show();
 }
 
 

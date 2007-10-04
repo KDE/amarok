@@ -64,7 +64,7 @@ ContextView::ContextView( QWidget* parent )
     setInteractive( true );
     setAcceptDrops( true );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
     setMouseTracking( true );
 
     // here we initialize all the Plasma paths to Amarok paths
@@ -110,7 +110,8 @@ void ContextView::clear( const ContextState& state )
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
 
-    if( m_columns ) m_columns->saveToConfig( appletConfig );
+    if( contextScene()->containments().size() > 0 ) 
+        qobject_cast< Containment* >( contextScene()->containments()[0] )->saveToConfig( appletConfig );
 
     contextScene()->clearApplets();
 }
@@ -167,7 +168,8 @@ void ContextView::loadConfig()
 
     contextScene()->clearApplets();
     KConfig appletConfig( cur, KConfig::OnlyLocal );
-    if( m_columns ) m_columns->loadConfig( appletConfig );
+    if( contextScene()->containments().size() > 0 ) 
+        qobject_cast< Containment* >( contextScene()->containments()[0] )->loadConfig( appletConfig );
 }
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
@@ -221,7 +223,11 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
     scene()->setSceneRect( rect() );
 
-    if( m_columns ) m_columns->update();
+    if( contextScene()->containments().size() > 0 ) 
+    {
+        debug() << "got containment, updating";
+        qobject_cast< Containment* >( contextScene()->containments()[0] )->updateSize();
+    } 
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )
