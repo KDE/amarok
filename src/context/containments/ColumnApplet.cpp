@@ -19,6 +19,7 @@
 
 #include "plasma/widgets/layoutanimator.h"
 
+#include <QAction>
 #include <QGraphicsScene>
 #include <QTimeLine>
 
@@ -256,10 +257,10 @@ void ColumnApplet::recalculate()
 QList<QAction*> ColumnApplet::contextActions()
 {
     DEBUG_BLOCK
-        if (!m_appletBrowserAction) {
-            m_appletBrowserAction = new QAction(i18n("Add applet"), this);
-            connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser( "amarok" )));
-        }
+    if (!m_appletBrowserAction) {
+        m_appletBrowserAction = new QAction(i18n("Add applet"), this);
+        connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser( "amarok" )));
+    }
     
     QList<QAction*> actions;
     actions.append(m_appletBrowserAction);

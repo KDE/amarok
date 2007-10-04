@@ -111,8 +111,11 @@ void ContextView::clear( const ContextState& state )
         appletConfig.deleteGroup( group );
 
     if( contextScene()->containments().size() > 0 ) 
-        qobject_cast< Containment* >( contextScene()->containments()[0] )->saveToConfig( appletConfig );
-
+    {
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
+        if( containment )
+            containment->saveToConfig( appletConfig );
+    }
     contextScene()->clearApplets();
 }
 
@@ -169,7 +172,11 @@ void ContextView::loadConfig()
     contextScene()->clearApplets();
     KConfig appletConfig( cur, KConfig::OnlyLocal );
     if( contextScene()->containments().size() > 0 ) 
-        qobject_cast< Containment* >( contextScene()->containments()[0] )->loadConfig( appletConfig );
+    {
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
+        if( containment )
+            containment->loadConfig( appletConfig );
+    }
 }
 
 void ContextView::engineNewMetaData( const MetaBundle&, bool )
@@ -225,9 +232,10 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
     if( contextScene()->containments().size() > 0 ) 
     {
-        debug() << "got containment, updating";
-        qobject_cast< Containment* >( contextScene()->containments()[0] )->updateSize();
-    } 
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
+        if( containment )
+            containment->updateSize();
+    }
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )
