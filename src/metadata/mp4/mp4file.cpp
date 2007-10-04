@@ -156,7 +156,7 @@ bool MP4::File::save()
     }
 #endif
 
-    MP4Close(handle)
+    MP4Close(handle);
 
     mp4file = MP4Read(name());
     if(mp4file == MP4_INVALID_FILE_HANDLE)
