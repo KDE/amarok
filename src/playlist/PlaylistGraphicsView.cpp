@@ -121,11 +121,25 @@ Playlist::GraphicsView::removeSelection()
 
     int firstIndex = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>( selection.first() ) );
     if ( firstIndex > 0) firstIndex -= 1;
- 
+
     foreach( QGraphicsItem *i, selection )
     {
+        int count = 1;
         int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
-        m_model->removeRows( index, 1 );
+        QModelIndex modelIndex = The::playlistModel()->index( index, 0 );
+        QModelIndex nextIndex = The::playlistModel()->index( index+1 , 0 );
+        if( modelIndex.data( GroupRole ).toInt() == Head && nextIndex.data( GroupRole ).toInt() != Head )
+        {
+            QModelIndex in = modelIndex;
+            int i = index;
+            while( in.data( GroupRole ).toInt() != End )
+            {
+                 ++count;
+                 in = The::playlistModel()->index( i++, 0 );
+            }
+        }
+        count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
+        m_model->removeRows( index, count );
     }
 
 
@@ -139,7 +153,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 {
     Q_UNUSED( parent );
 
-     //call setRow on track imidiately preceding the insertion as this might have to change its 
+     //call setRow on track imidiately preceding the insertion as this might have to change its
     // look and height if it has been grouped by the model.
     if ( start > 0 )
         m_tracks[ start-1]->setRow( start-1 );
@@ -159,7 +173,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
         scene()->addItem( item );
         m_tracks.insert( i, item  );
     }
-   
+
     // make sure all following tracks has their colors updated correctly
     for ( int i = end + 1 ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
@@ -189,10 +203,10 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 
     int moveMeIndex = m_tracks.indexOf( moveMe );
     int aboveIndex;
-    if ( above ) 
+    if ( above )
         aboveIndex  = m_tracks.indexOf( above  );
-    else 
-        aboveIndex = m_tracks.count(); 
+    else
+        aboveIndex = m_tracks.count();
 
 
     //call set row on all items below the first one potentially modified to
@@ -253,7 +267,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         Playlist::GraphicsItem *item = m_tracks.at( i );
         qreal currentY = item->pos().y();
 
-        
+
         qreal desiredY = cumulativeHeight;
         cumulativeHeight += item->boundingRect().height();
 
@@ -279,7 +293,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     timer->start();
 }
 
-void 
+void
 Playlist::GraphicsView::modelReset()
 {
     foreach( Playlist::GraphicsItem* it, m_tracks )
@@ -289,7 +303,7 @@ Playlist::GraphicsView::modelReset()
     m_tracks.clear();
 }
 
-void 
+void
 Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 {
      DEBUG_BLOCK
