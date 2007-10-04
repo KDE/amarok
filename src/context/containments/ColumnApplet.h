@@ -60,7 +60,7 @@ protected:
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
 //     
 protected slots:
-    void launchAppletBrowser( const QString& cat = "all" );
+    void launchAppletBrowser();
     
     void recalculate();
     

@@ -41,7 +41,10 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
     
-    
+    m_appletBrowserAction = new QAction(i18n("Add applet"), this);
+    connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
+    m_appletBrowser = new Plasma::AppletBrowser( this, "amarok" );
+    m_appletBrowser->hide();
 }
 
 // fetches size from scene and creates columns according.
@@ -257,22 +260,16 @@ void ColumnApplet::recalculate()
 QList<QAction*> ColumnApplet::contextActions()
 {
     DEBUG_BLOCK
-    if (!m_appletBrowserAction) {
-        m_appletBrowserAction = new QAction(i18n("Add applet"), this);
-        connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser( "amarok" )));
-    }
-    
+
     QList<QAction*> actions;
     actions.append(m_appletBrowserAction);
     debug() << "returning actions:" << actions;
     return actions;
 }
 
-void ColumnApplet::launchAppletBrowser( const QString& cat ) // SLOT
+void ColumnApplet::launchAppletBrowser() // SLOT
 {
-    if( !m_appletBrowser )
-        m_appletBrowser = new Plasma::AppletBrowser( this, cat );
-    
+    DEBUG_BLOCK
     m_appletBrowser->show();
 }
 
