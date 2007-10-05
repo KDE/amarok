@@ -36,7 +36,6 @@ class Amarok2ConfigDialog : public KConfigDialog
         void showPageByName( const QByteArray& page );
 
     protected slots:
-        void updateButtons();
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();

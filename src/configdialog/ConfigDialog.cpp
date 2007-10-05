@@ -99,15 +99,6 @@ void Amarok2ConfigDialog::showPageByName( const QByteArray& page )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Update the buttons.
- * REIMPLEMENTED
- */
-void Amarok2ConfigDialog::updateButtons()
-{
-    KConfigDialog::updateButtons();
-}
-
-/**
  * Update the settings from the dialog.
  * Example use: User clicks Ok or Apply button in a configure dialog.
  * REIMPLEMENTED
