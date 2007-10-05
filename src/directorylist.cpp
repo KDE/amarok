@@ -169,7 +169,7 @@ Item::setOpen( bool b )
 {
     if ( !m_listed )
     {
-        m_lister.openUrl( m_url, true );
+        m_lister.openUrl( m_url, KDirLister::Keep );
         m_listed = true;
     }
 
