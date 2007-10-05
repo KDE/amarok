@@ -244,7 +244,7 @@ CoverFetcher::startFetch()
         + "&page=1&f=xml";
     debug() << url;
 
-    KJob* job = KIO::storedGet( url, false, false );
+    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
 
     Amarok::StatusBar::instance()->newProgressOperation( job );
@@ -376,7 +376,7 @@ CoverFetcher::attemptAnotherFetch()
     if( !m_coverUrls.isEmpty() ) {
         // Amazon suggested some more cover URLs to try before we
         // try a different query
-        KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), false, false );
+        KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
         Amarok::StatusBar::instance()->newProgressOperation( job );

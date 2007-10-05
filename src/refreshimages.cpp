@@ -60,7 +60,7 @@ RefreshImages::RefreshImages()
 
         debug() << url;
 
-        KIO::TransferJob* job = KIO::storedGet( url, false, false );
+        KIO::TransferJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         KIO::Scheduler::scheduleJob( job );
 
         //Amarok::StatusBar::instance()->newProgressOperation( job );
@@ -116,7 +116,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
         return;
     }
 
-    KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
+    KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, KIO::NoReload, KIO::HideProgressInfo );
     KIO::Scheduler::scheduleJob(imageJob);
     //Amarok::StatusBar::instance()->newProgressOperation( imageJob );
     imageJob->setObjectName(xmlJob->objectName());

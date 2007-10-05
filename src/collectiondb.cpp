@@ -1922,7 +1922,7 @@ CollectionDB::podcastImage( const QString &remoteURL, const bool withShadow, uin
         const KUrl url = KUrl( remoteURL );
         if( url.isValid() ) //KIO crashes with invalid URLs
         {
-            KIO::Job *job = KIO::storedGet( url, false, false );
+            KIO::Job *job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             m_podcastImageJobs[job] = remoteURL;
             connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
         }
@@ -3981,11 +3981,11 @@ CollectionDB::organizeFile( const KUrl &src, /*const OrganizeCollectionDialog &d
       KIO::FileCopyJob *job = 0;
       if( copy )
       {
-         job = KIO::file_copy( src, tmpSrc, -1, false, false, false );
+         job = KIO::file_copy( src, tmpSrc, -1, KIO::HideProgressInfo );
       }
       else
       {
-         job = KIO::file_move( src, tmpSrc, -1, false, false, false );
+         job = KIO::file_move( src, tmpSrc, -1, KIO::HideProgressInfo );
       }
       connect( job, SIGNAL(result( KIO::Job * )), SLOT(fileOperationResult( KIO::Job * )) );
       m_waitForFileOperation = true;
@@ -4106,14 +4106,17 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         }
 
     m_fileOperationFailed = false;
+    KIO::JobFlags jobFlags = KIO::HideProgressInfo;
+    if (overwrite)
+        jobFlags |= KIO::Overwrite;
     KIO::FileCopyJob *job = 0;
     if( copy )
     {
-        job = KIO::file_copy( srcURL, dstURL, -1, overwrite, false, false );
+        job = KIO::file_copy( srcURL, dstURL, -1, jobFlags );
     }
     else
     {
-        job = KIO::file_move( srcURL, dstURL, -1, overwrite, false, false );
+        job = KIO::file_move( srcURL, dstURL, -1, jobFlags );
     }
     connect( job, SIGNAL(result( KIO::Job * )), SLOT(fileOperationResult( KIO::Job * )) );
     m_waitForFileOperation = true;

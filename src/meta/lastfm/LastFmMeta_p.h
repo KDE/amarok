@@ -108,7 +108,7 @@ class Track::Private : public QObject
                 notifyObservers();
                 return;
             }
-            KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), true, false );
+            KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
             connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
         }
 

@@ -74,7 +74,7 @@ AmarokHttp::get ( const QString & path )
     m_done = false;
     m_error = Q3Http::NoError;
     m_state = Q3Http::Connecting;
-    KIO::TransferJob *job = KIO::get(uri, true, false);
+    KIO::TransferJob *job = KIO::get(uri, KIO::Reload, KIO::HideProgressInfo);
     connect(job,  SIGNAL(data(KIO::Job*, const QByteArray&)),
             this, SLOT(slotData(KIO::Job*, const QByteArray&)));
     connect(job,  SIGNAL(result(KJob*)),
@@ -585,7 +585,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
         return;
     }
 
-    KIO::Job* job = KIO::storedGet( u, true, false );
+    KIO::Job* job = KIO::storedGet( u, KIO::Reload, KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( fetchImageFinished( KIO::Job* ) ) );
 }
 

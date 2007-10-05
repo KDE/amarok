@@ -229,7 +229,7 @@ void Mp3tunesServiceQueryMaker::fetchArtists()
         urlString.replace( "<PARTNER_TOKEN>", "7359149936");
 
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), false, false );
+        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( artistDownloadComplete( KJob *) ) );
     }
@@ -259,7 +259,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
         urlString.replace( "<ARTIST_ID>", m_parentId );
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), false, false );
+        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( albumDownloadComplete( KJob *) ) );
     }
@@ -288,7 +288,7 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
         urlString.replace( "<ALBUM_ID>", m_parentId );
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), false, false );
+        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( trackDownloadComplete( KJob *) ) );
     }

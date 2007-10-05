@@ -2525,7 +2525,7 @@ IpodMediaDevice::deleteFile( const KUrl &url )
 {
     debug() << "deleting " << url.prettyUrl();
     m_waitForDeletion = true;
-    KIO::Job *job = KIO::file_delete( url, false );
+    KIO::Job *job = KIO::file_delete( url, KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KIO::Job * ) ),
             this,  SLOT( fileDeleted( KIO::Job * ) ) );
     do

@@ -40,7 +40,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
    /* QString tempFile;
     QString orgHtml;*/
 
-    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), false, true );
+    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl() );
     Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 

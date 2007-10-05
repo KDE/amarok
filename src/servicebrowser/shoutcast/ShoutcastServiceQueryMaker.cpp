@@ -191,7 +191,7 @@ void ShoutcastServiceQueryMaker::fetchGenres()
         debug() << "no need to fetch genres again! ";
     }
     else {
-        m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), false, false );
+        m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( genreDownloadComplete(KJob *) ) );
     }
@@ -207,7 +207,7 @@ void ShoutcastServiceQueryMaker::fetchStations()
     if ( m_currentTrackQueryResults.count() > 0 ) {
         handleResult();
     } else {
-        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), false, false );
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( stationDownloadComplete(KJob *) ) );
     }

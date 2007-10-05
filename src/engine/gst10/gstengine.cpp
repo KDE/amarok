@@ -682,7 +682,7 @@ GstEngine::load( const KUrl& url, bool stream )  //SLOT
 
           if ( !stream ) {
              // Use KIO for non-local files, except http, which is handled by StreamProvider
-             m_transferJob = KIO::get( url, false, false );
+             m_transferJob = KIO::get( url, KIO::NoReload, KIO::HideProgressInfo );
              connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ), SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
              connect( m_transferJob, SIGNAL( result( KIO::Job* ) ), SLOT( kioFinished() ) );
           }

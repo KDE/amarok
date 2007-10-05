@@ -156,7 +156,7 @@ void PlaylistHandler::handleByFormat( QTextStream &stream, Format format)
 void PlaylistHandler::downloadPlaylist(const KUrl & path)
 {
     DEBUG_BLOCK
-    m_downloadJob =  KIO::storedGet( path, false, true );
+    m_downloadJob =  KIO::storedGet( path );
 
     connect( m_downloadJob, SIGNAL( result( KJob * ) ),
         this, SLOT( downloadComplete( KJob * ) ) );

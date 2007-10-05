@@ -97,7 +97,7 @@ void WikipediaEngine::update()
     m_wikiCurrentUrl = wikiURL( tmpWikiStr );
     
     setData( "wikipedia", "message", "fetching" );
-    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
+    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
 }
 

@@ -102,7 +102,7 @@ void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QS
 
     m_giftCardPurchase = false;
 
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
+    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
@@ -124,7 +124,7 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
 
     m_giftCardPurchase = true;
 
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
+    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 

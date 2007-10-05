@@ -53,7 +53,7 @@ PodcastReader::read(const QString & url)
 
     m_url = url;
 
-    KIO::TransferJob *getJob = KIO::storedGet( KUrl( url ), true, false );
+    KIO::TransferJob *getJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
 
 //     connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
 //              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );

@@ -159,7 +159,7 @@ void LastFmEngine::updateEvents()
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/friendevents.rss" ).arg( m_user ) );
-            m_friendJob = KIO::storedGet( url, false, false );
+            m_friendJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_friendJob, SIGNAL( result( KJob* ) ), this, SLOT( friendResult( KJob* ) ) );
         } else // load from cache
         {
@@ -181,7 +181,7 @@ void LastFmEngine::updateEvents()
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/eventsysrecs.rss" ).arg( m_user ) );
-            m_sysJob = KIO::storedGet( url, false, false );
+            m_sysJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_sysJob, SIGNAL( result( KJob* ) ), this, SLOT( sysResult( KJob* ) ) );
         } else // load from cache
         {
@@ -203,7 +203,7 @@ void LastFmEngine::updateEvents()
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/events.rss" ).arg( m_user ) );
-            m_userJob = KIO::storedGet( url, false, false );
+            m_userJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_userJob, SIGNAL( result( KJob* ) ), this, SLOT( friendResult( KJob* ) ) );
         } else // load from cache
         {

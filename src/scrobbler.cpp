@@ -94,7 +94,7 @@ void Scrobbler::similarArtists( const QString & artist )
         m_similarArtistsBuffer = QByteArray();
         m_artist = artist;
 
-        m_similarArtistsJob = KIO::get( "http://ws.audioscrobbler.com/1.0/artist/" + safeArtist + "/similar.xml", false, false );
+        m_similarArtistsJob = KIO::get( "http://ws.audioscrobbler.com/1.0/artist/" + safeArtist + "/similar.xml", KIO::NoReload, KIO::HideProgressInfo );
 
         connect( m_similarArtistsJob, SIGNAL( result( KIO::Job* ) ),
                  this,                  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
@@ -487,7 +487,7 @@ void ScrobblerSubmitter::performHandshake()
     m_submitResultBuffer = "";
 
     m_inProgress = true;
-    KIO::TransferJob* job = KIO::storedGet( handshakeUrl, false, false );
+    KIO::TransferJob* job = KIO::storedGet( handshakeUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( audioScrobblerHandshakeResult( KIO::Job* ) ) );
 }
 
@@ -590,7 +590,7 @@ void ScrobblerSubmitter::performSubmit()
     m_submitResultBuffer = "";
 
     m_inProgress = true;
-    KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.toUtf8(), false );
+    KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.toUtf8(), KIO::HideProgressInfo );
     job->addMetaData( "content-type", "Content-Type: application/x-www-form-urlencoded" );
 
     // Loop in reverse order, which helps when items are later fetched from

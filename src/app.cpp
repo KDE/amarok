@@ -1001,7 +1001,7 @@ void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
-    KIO::Job *job = KIO::trash( files, true /*show progress*/ );
+    KIO::Job *job = KIO::trash( files );
     Amarok::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
