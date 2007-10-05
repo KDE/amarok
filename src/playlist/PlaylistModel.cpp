@@ -620,29 +620,16 @@ Model::insertTracksCommand( int row, TrackList list )
         if( track )
         {
             track->subscribe( this );
-            if( track->album() ) {
+            if( track->album() )
                 track->album()->subscribe( this );
 
-                //check if track should be added to an album group or
-                //if a new album group should be created
-
-                if ( m_albumGroups.contains( track->album() ) ) {
-                        m_albumGroups[ track->album() ].addRow( i );
-                } else {
-                        AlbumGroup newGroup;
-                        newGroup.addRow( i );
-                        m_albumGroups.insert( track->album(), newGroup );
-                }
-
-            } else {
-                //make sure we dont group tracks "around" tracks with no album set
-                m_lastAddedTrackAlbum = AlbumPtr();
-
-            }
             m_items.insert( row + i, new Item( track ) );
             i++;
         }
     }
+
+    regroupAlbums();
+
     endInsertRows();
     //push up the active row if needed
     if( m_activeRow > row )
@@ -655,6 +642,7 @@ Model::insertTracksCommand( int row, TrackList list )
     }
     dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+
 
     emit playlistCountChanged( rowCount() );
 }
