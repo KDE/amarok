@@ -86,10 +86,9 @@ PMPProtocol::setHost( const QString &host, quint16 port,
 }
 
 void
-PMPProtocol::copy( const KUrl &src, const KUrl &dst, int permissions, bool overwrite )
+PMPProtocol::copy( const KUrl &src, const KUrl &dst, int permissions, KIO::JobFlags )
 {
     Q_UNUSED( permissions );
-    Q_UNUSED( overwrite );
     kDebug() << endl << "Entering copy with src = " << src << ", dst = " << dst;
     //For now don't support copy
     error( KIO::ERR_UNSUPPORTED_ACTION, i18n( "Direct copying not supported." ) );
@@ -172,7 +171,7 @@ PMPProtocol::listDir( const KUrl &url )
 }
 
 void
-PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
+PMPProtocol::rename( const KUrl &src, const KUrl &dest, KIO::JobFlags flags )
 {
     kDebug() << "srcUrl = " << src.url() << ", destUrl = " << dest.url();
     QString srcPath = src.path( KUrl::RemoveTrailingSlash );
@@ -211,7 +210,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, bool overwrite )
         return;
     }
     if( getBackendForUrl( src ) )
-        getBackendForUrl( src )->rename( src, dest, overwrite ); 
+        getBackendForUrl( src )->rename( src, dest, flags ); 
 
     emit finished();
 }
