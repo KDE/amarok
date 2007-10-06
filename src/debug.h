@@ -10,7 +10,9 @@
 #undef QT_NO_DEBUG_OUTPUT
 #undef KDE_NO_DEBUG_OUTPUT
 
+#include <KGlobal>
 #include <KConfig>
+#include <KConfigGroup>
 #include <kdebug.h>
 #include <QApplication>
 #include <QMutex>

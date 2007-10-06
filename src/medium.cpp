@@ -162,17 +162,17 @@ void Medium::setFsType(const QString &type)
 void Medium::setUserLabel(const QString &label)
 {
 	KConfig cfg("mediamanagerrc");
-	cfg.setGroup("UserLabels");
+	KConfigGroup grp(&cfg, "UserLabels");
 
 	QString entry_name = m_properties[ID];
 
 	if ( label.isNull() )
 	{
-		cfg.deleteEntry(entry_name);
+		grp.deleteEntry(entry_name);
 	}
 	else
 	{
-		cfg.writeEntry(entry_name, label);
+		grp.writeEntry(entry_name, label);
 	}
 
 	m_properties[USER_LABEL] = label;
@@ -181,13 +181,13 @@ void Medium::setUserLabel(const QString &label)
 void Medium::loadUserLabel()
 {
 	KConfig cfg("mediamanagerrc");
-	cfg.setGroup("UserLabels");
+	KConfigGroup grp(&cfg, "UserLabels");
 
 	QString entry_name = m_properties[ID];
 
-	if ( cfg.hasKey(entry_name) )
+	if ( grp.hasKey(entry_name) )
 	{
-		m_properties[USER_LABEL] = cfg.readEntry(entry_name, QString());
+		m_properties[USER_LABEL] = grp.readEntry(entry_name, QString());
 	}
 	else
 	{

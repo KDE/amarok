@@ -23,6 +23,7 @@
 #include <KAboutData>
 #include <KCrash>
 #include <KCmdLineArgs>
+#include <KDebug>
 
 //#define AMAROK_USE_DRKONQI
 

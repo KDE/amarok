@@ -22,6 +22,7 @@
 
 #include <KApplication>
 #include <KConfig>
+#include <KConfigGroup>
 #include <KIconEffect>
 #include <KStandardDirs>
 
