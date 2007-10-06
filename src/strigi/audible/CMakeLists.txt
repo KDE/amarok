@@ -1,25 +1,14 @@
 find_package(Strigi REQUIRED)
 include_directories(${STRIGI_INCLUDE_DIR})
 
-MACRO(ADD_STRIGITA libname files)
-  if(WIN32)
-    # this is needed to have mingw and msvc libs installed in one directory
-    if(MSVC)
-      set(prefix msvc_strigita_)
-    else(MSVC)
-      # mingw
-      set(prefix mingw_strigita_)
-    endif(MSVC)
-  else(WIN32)
-    set(prefix strigita_)
-  endif(WIN32)
-  add_library(${libname} MODULE ${files})
-  set_target_properties(${libname} PROPERTIES
-    PREFIX ${prefix}
-    VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
-  target_link_libraries(${libname} ${STRIGI_STREAMANALYZER_LIBRARY} ${STRIGI_STREAMS_LIBRARY})
-  install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
-ENDMACRO(ADD_STRIGITA)
+# build the analyzer as a module
+kde4_add_library(audible MODULE audiblethroughanalyzer.cpp)
 
-ADD_STRIGITA(audible  audiblethroughanalyzer.cpp)
+# link with the required libraries
+target_link_libraries(audible ${STRIGI_STREAMANALYZER_LIBRARY} ${STRIGI_STREAMS_LIBRARY})
+
+# adjust the name so the module is recognized as a strigi plugin
+set_target_properties(audible PROPERTIES PREFIX strigita_)
+
+# install the module in the right directory so it is picked up
+install(TARGETS audible LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)

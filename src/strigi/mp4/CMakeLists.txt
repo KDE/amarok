@@ -1,29 +1,14 @@
-
 find_package(Strigi REQUIRED)
 include_directories(${STRIGI_INCLUDE_DIR})
 
-add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
+# build the analyzer as a module
+kde4_add_library(mp4 MODULE mp4throughanalyzer.cpp)
 
-MACRO(ADD_STRIGITA libname files)
-  if(WIN32)
-    # this is needed to have mingw and msvc libs installed in one directory
-    if(MSVC)
-      set(prefix msvc_strigita_)
-    else(MSVC)
-      # mingw
-      set(prefix mingw_strigita_)
-    endif(MSVC)
-  else(WIN32)
-    set(prefix strigita_)
-  endif(WIN32)
-  add_library(${libname} MODULE ${files})
-  set_target_properties(${libname} PROPERTIES
-    PREFIX ${prefix}
-    VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
-  target_link_libraries(${libname} ${STRIGI_STREAMANALYZER_LIBRARY} ${STRIGI_STREAMS_LIBRARY})
-  install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
-ENDMACRO(ADD_STRIGITA)
+# link with the required libraries
+target_link_libraries(mp4 ${STRIGI_STREAMANALYZER_LIBRARY} ${STRIGI_STREAMS_LIBRARY})
 
-ADD_STRIGITA(mp4  mp4throughanalyzer.cpp)
+# adjust the name so the module is recognized as a strigi plugin
+set_target_properties(mp4 PROPERTIES PREFIX strigita_)
+
+# install the module in the right directory so it is picked up
+install(TARGETS mp4 LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
