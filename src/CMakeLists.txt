@@ -437,7 +437,6 @@ set(amaroklib_LIB_SRCS
     prettypopupmenu.cpp
     querybuilder.cpp
     refreshimages.cpp
-    scancontroller.cpp
     scriptmanager.cpp
     scrobbler.cpp
     Sidebar.h
