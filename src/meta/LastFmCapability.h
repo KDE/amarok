@@ -28,13 +28,13 @@ namespace Meta
     {
         Q_OBJECT
         public:
-            virtual ~LastFmCapability() {};
+            virtual ~LastFmCapability();
 
             virtual void love() = 0;
             virtual void ban() = 0;
             virtual void skip() = 0;
 
-            static Type capabiltyInterfaceType() { return Meta::Capability::LastFm; }
+            static Type capabilityInterfaceType() { return Meta::Capability::LastFm; }
     };
 }
 

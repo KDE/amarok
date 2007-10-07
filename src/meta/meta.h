@@ -176,6 +176,12 @@ namespace Meta
 
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
+            /**
+             * Retrieves a specialized interface which represents a capability of this
+             * track.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
             template <class CapIface> CapIface *as()
             {
                 Meta::Capability::Type type = CapIface::capabilityInterfaceType();
@@ -184,10 +190,10 @@ namespace Meta
             }
 
             /**
-             * Retrieves a specialized interface to interact with the device corresponding
-             * to a given device interface.
+             * Retrieves a specialized interface which represents a capability of this
+             * track.
              *
-             * @returns a pointer to the device interface if it exists, 0 otherwise
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
              */
             template <class CapIface> const CapIface *as() const
             {

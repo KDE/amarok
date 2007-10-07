@@ -28,7 +28,7 @@ namespace Meta
     {
         Q_OBJECT
         public:
-            virtual ~EditCapability() {};
+            virtual ~EditCapability();
 
             static Type capabilityInterfaceType() { return Meta::Capability::Editable; }
 
@@ -61,7 +61,6 @@ namespace Meta
             virtual void endMetaDataUpdate() = 0;
             /** Abort the meta data update without committing the changes */
             virtual void abortMetaDataUpdate() = 0;
-
 
     };
 }

@@ -19,11 +19,12 @@
 #include "LastFmMeta.h"
 #include "LastFmMeta_p.h"
 #include "LastFmMeta_p.moc"
+#include "LastFmCapabilityImpl_p.h"
+#include "LastFmCapabilityImpl_p.moc"
 
 #include "debug.h"
 
 #include "lastfm.h"
-#include "meta/LastFmCapability.h"
 
 #include <QPointer>
 
@@ -36,25 +37,6 @@ class LastFmAlbum;
 class LastFmGenre;
 class LastFmComposer;
 class LastFmYear;
-
-class LastFmCapabilityImpl : public Meta::LastFmCapability
-{
-    Q_OBJECT
-    public:
-        LastFmCapabilityImpl( LastFm::Track *track )
-        {
-            m_track = KSharedPtr<LastFm::Track>( track );
-        }
-
-        virtual ~LastFmCapabilityImpl() {};
-
-        virtual void love() { m_track->love(); }
-        virtual void ban() { m_track->ban(); }
-        virtual void skip() { m_track->skip(); }
-
-    private:
-        KSharedPtr<LastFm::Track> m_track;
-};
 
 Track::Track( const QString &lastFmUri )
     : QObject()

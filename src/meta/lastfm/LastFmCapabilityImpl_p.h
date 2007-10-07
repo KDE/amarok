@@ -1,4 +1,4 @@
-/* This file is part of the KDE project
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -16,31 +16,27 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CAPABILITY_H
-#define AMAROK_CAPABILITY_H
+#ifndef AMAROK_LASTFMCAPABILITYIMPL_P_H
+#define AMAROK_LASTFMCAPABILITYIMPL_P_H
 
-#include "amarok_export.h"
+#include "meta/LastFmCapability.h"
 
-#include <QObject>
-
-namespace Meta
+class LastFmCapabilityImpl : public Meta::LastFmCapability
 {
-    class AMAROK_EXPORT Capability : public QObject
-    {
-        Q_OBJECT
-        Q_ENUMS( Type )
+    Q_OBJECT
+    public:
+        LastFmCapabilityImpl( LastFm::Track *track )
+            : Meta::LastFmCapability()
+            , m_track( track ) {}
 
-        public:
-            //add additional capabilities here
-            enum Type { Unknown = 0
-                        , Editable = 1
-                        , LastFm = 2
-                        , Buyable = 3 };
+        virtual ~LastFmCapabilityImpl() {};
 
-            virtual ~Capability();
+        virtual void love() { m_track->love(); }
+        virtual void ban() { m_track->ban(); }
+        virtual void skip() { m_track->skip(); }
 
-    };
-}
-
+    private:
+        KSharedPtr<LastFm::Track> m_track;
+};
 
 #endif

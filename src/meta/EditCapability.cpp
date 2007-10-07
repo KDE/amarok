@@ -16,31 +16,11 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CAPABILITY_H
-#define AMAROK_CAPABILITY_H
+#include "EditCapability.h"
 
-#include "amarok_export.h"
-
-#include <QObject>
-
-namespace Meta
+Meta::EditCapability::~EditCapability()
 {
-    class AMAROK_EXPORT Capability : public QObject
-    {
-        Q_OBJECT
-        Q_ENUMS( Type )
-
-        public:
-            //add additional capabilities here
-            enum Type { Unknown = 0
-                        , Editable = 1
-                        , LastFm = 2
-                        , Buyable = 3 };
-
-            virtual ~Capability();
-
-    };
+    //nothing to do
 }
 
-
-#endif
+#include "EditCapability.moc"

@@ -271,6 +271,9 @@ set(lastfm_SRCS
 # META
 #####################################################################
 set(meta_SRCS
+    meta/Capability.cpp
+    meta/EditCapability.cpp
+    meta/LastFmCapability.cpp
     meta/meta.cpp
     meta/proxy/MetaProxy.cpp
     meta/file/File.cpp
