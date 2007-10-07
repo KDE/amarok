@@ -41,7 +41,6 @@
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
 #include "progressslider.h"
-#include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
 #include "TheInstances.h"
