@@ -38,7 +38,7 @@
 #include <QLabel>
 #include <Q3ValueList>
 #include <QPixmap>
-#include "scancontroller.h"
+
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
@@ -3205,7 +3205,8 @@ CollectionDB::emitFileAdded( const QString &absPath, const QString &uniqueid )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
-    bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
+    //bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
+    bool scanning = false;
     QStringList urls = query( QString(
             "SELECT deviceid, url "
             "FROM uniqueid%1 "
@@ -3233,7 +3234,8 @@ CollectionDB::uniqueIdFromUrl( const KUrl &url )
     int currdeviceid = mpm->getIdForUrl( url.path() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
 
-    bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
+    //bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
+    bool scanning = false;
     QStringList uid = query( QString(
             "SELECT uniqueid "
             "FROM uniqueid%1 "
@@ -4906,7 +4908,7 @@ CollectionDB::startScan()  //SLOT
     else /*if( PlaylistBrowser::instance() )*/
     {
         emit scanStarted();
-        ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
+        CollectionManager::instance()->startFullScan();
     }
 }
 
@@ -4929,7 +4931,7 @@ CollectionDB::dirDirty( const QString& path )
     QStringList dir;
     dir.append( path );
 
-    ThreadManager::instance()->queueJob( new ScanController( this, false, dir ) );
+    CollectionManager::instance()->startFullScan();
 }
 
 
@@ -5710,14 +5712,14 @@ CollectionDB::destroy()
 void
 CollectionDB::scanModifiedDirs()
 {
-    if ( !m_scanInProgress
+   /* if ( !m_scanInProgress
 //PORT 2.0  && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
 //            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() )
        )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings
         //Port 2.0
-        if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) /*&& PlaylistBrowser::instance()*/ )
+        if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
         {
             m_scanInProgress = true;
             m_rescanRequired = false;
@@ -5727,14 +5729,14 @@ CollectionDB::scanModifiedDirs()
         }
     }
     else
-        m_rescanRequired = true;
+        m_rescanRequired = true;*/
 }
 
 
 void
 CollectionDB::customEvent( QEvent *e )
 {
-    if ( e->type() == (int)ScanController::JobFinishedEventType )
+    /*if ( e->type() == (int)ScanController::JobFinishedEventType )
     {
         ScanController* s = static_cast<ScanController*>( e );
         m_scanInProgress = false;
@@ -5754,7 +5756,7 @@ CollectionDB::customEvent( QEvent *e )
             debug() << "JobFinishedEventType from ScanController received.\n";
             emit scanDone( s->wasSuccessful() );
         }
-    }
+    }*/
 }
 
 
