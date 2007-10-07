@@ -23,6 +23,7 @@
 #include "debug.h"
 
 #include "lastfm.h"
+#include "meta/LastFmCapability.h"
 
 #include <QPointer>
 
@@ -35,6 +36,25 @@ class LastFmAlbum;
 class LastFmGenre;
 class LastFmComposer;
 class LastFmYear;
+
+class LastFmCapabilityImpl : public Meta::LastFmCapability
+{
+    Q_OBJECT
+    public:
+        LastFmCapabilityImpl( LastFm::Track *track )
+        {
+            m_track = KSharedPtr<LastFm::Track>( track );
+        }
+
+        virtual ~LastFmCapabilityImpl() {};
+
+        virtual void love() { m_track->love(); }
+        virtual void ban() { m_track->ban(); }
+        virtual void skip() { m_track->skip(); }
+
+    private:
+        KSharedPtr<LastFm::Track> m_track;
+};
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -132,12 +152,6 @@ Track::isPlayable() const
     return true;
 }
 
-bool
-Track::isEditable() const
-{
-    return false;
-}
-
 Meta::AlbumPtr
 Track::album() const
 {
@@ -168,52 +182,10 @@ Track::year() const
     return d->yearPtr;
 }
 
-void
-Track::setAlbum( const QString &newAlbum )
-{
-    Q_UNUSED( newAlbum ); //stream
-}
-
-void
-Track::setArtist( const QString &newArtist )
-{
-    Q_UNUSED( newArtist ); //stream
-}
-
-void
-Track::setGenre( const QString &newGenre )
-{
-    Q_UNUSED( newGenre ); //stream
-}
-
-void
-Track::setComposer( const QString &newComposer )
-{
-    Q_UNUSED( newComposer ); //stream
-}
-
-void
-Track::setYear( const QString &newYear )
-{
-    Q_UNUSED( newYear ); //stream
-}
-
-void
-Track::setTitle( const QString &newTitle )
-{
-    Q_UNUSED( newTitle ); //stream
-}
-
 QString
 Track::comment() const
 {
     return QString();
-}
-
-void
-Track::setComment( const QString &newComment )
-{
-    Q_UNUSED( newComment ); //stream
 }
 
 double
@@ -246,22 +218,10 @@ Track::trackNumber() const
     return 0;
 }
 
-void
-Track::setTrackNumber( int newTrackNumber )
-{
-    Q_UNUSED( newTrackNumber ); //stream
-}
-
 int
 Track::discNumber() const
 {
     return 0;
-}
-
-void
-Track::setDiscNumber( int newDiscNumber )
-{
-    Q_UNUSED( newDiscNumber ); //stream
 }
 
 int
@@ -305,25 +265,6 @@ Track::type() const
 {
     return "stream/lastfm";
 }
-
-void
-Track::beginMetaDataUpdate()
-{
-    //not editable
-}
-
-void
-Track::endMetaDataUpdate()
-{
-    //not editable
-}
-
-void
-Track::abortMetaDataUpdate()
-{
-    //not editable
-}
-
 void
 Track::finishedPlaying( double playedFraction )
 {
@@ -373,6 +314,22 @@ void
 Track::skip()
 {
     //TODO
+}
+
+bool
+Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return type == Meta::Capability::LastFm;
+}
+
+Meta::Capability*
+Track::asCapabilityInterface( Meta::Capability::Type type )
+{
+    if( type == Meta::Capability::LastFm )
+        return new LastFmCapabilityImpl( this );
+    else
+        return 0;
+
 }
 
 #include "LastFmMeta.moc"
