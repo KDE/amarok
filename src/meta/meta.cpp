@@ -132,6 +132,18 @@ Meta::Track::notifyObservers() const
         observer->metadataChanged( const_cast<Meta::Track*>( this ) );
 }
 
+bool
+Meta::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return false;
+}
+
+Meta::Capability*
+Meta::Track::asCapabilityInterface( Meta::Capability::Type type )
+{
+    return 0;
+}
+
 //Meta::Artist
 
 void

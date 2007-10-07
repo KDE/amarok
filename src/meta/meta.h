@@ -21,6 +21,8 @@
 
 #include "amarok_export.h"
 
+#include "meta/Capability.h"
+
 #include <QList>
 #include <QMetaType>
 #include <QPixmap>
@@ -110,33 +112,19 @@ namespace Meta
 
             /** Returns whether playableUrl() will return a playable Url */
             virtual bool isPlayable() const = 0;
-            /** Returns true if the tags of this track are editable */
-            virtual bool isEditable() const = 0;
-
             /** Returns the album this track belongs to */
             virtual AlbumPtr album() const = 0;
-            /** Update the album of this track. */
-            virtual void setAlbum( const QString &newAlbum ) = 0;
-            //TODO: add overloaded methods which take a AlbumPtr if necessary
             /** Returns the artist of this track */
             virtual ArtistPtr artist() const = 0;
-            /** Change the artist of this track */
-            virtual void setArtist( const QString &newArtist ) = 0;
             /** Returns the composer of this track */
             virtual ComposerPtr composer() const = 0;
-            virtual void setComposer( const QString &newComposer ) = 0;
             /** Returns the genre of this track */
             virtual GenrePtr genre() const = 0;
-            virtual void setGenre( const QString &newGenre ) = 0;
             /** Returns the year of this track */
             virtual YearPtr year() const = 0;
-            virtual void setYear( const QString &newYear ) = 0;
-
-            virtual void setTitle( const QString &newTitle ) = 0;
 
             /** Returns the comment of this track */
             virtual QString comment() const = 0;
-            virtual void setComment( const QString &newComment ) = 0;
             /** Returns the score of this track */
             virtual double score() const = 0;
             virtual void setScore( double newScore ) = 0;
@@ -153,10 +141,8 @@ namespace Meta
             virtual int bitrate() const = 0;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
-            virtual void setTrackNumber( int newTrackNumber ) = 0;
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
-            virtual void setDiscNumber( int newDiscNumber ) = 0;
             /** Returns the time the song was last played, or 0 if it has not been played yet */
             virtual uint lastPlayed() const = 0;
             /** Returns the number of times the track was played (what about unknown?)*/
@@ -164,14 +150,6 @@ namespace Meta
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
-
-            /** The track object should not store changed meta data immediately but cache the
-                changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
-            virtual void beginMetaDataUpdate() = 0;
-            /** All meta data has been updated and the object should commit the changed */
-            virtual void endMetaDataUpdate() = 0;
-            /** Abort the meta data update without committing the changes */
-            virtual void abortMetaDataUpdate() = 0;
 
             /** tell the track object that amarok finished playing it.
                 The argument is the percentage of the track which was played, in the range 0 to 1*/
@@ -193,6 +171,41 @@ namespace Meta
                 set the cached lyrics for the track
             */
             virtual void setCachedLyrics( const QString &lyrics );
+
+            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+            virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
+            template <class CapIface> CapIface *as()
+            {
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+                Meta::Capability *iface = asCapabilityInterface(type);
+                return qobject_cast<CapIface *>(iface);
+            }
+
+            /**
+             * Retrieves a specialized interface to interact with the device corresponding
+             * to a given device interface.
+             *
+             * @returns a pointer to the device interface if it exists, 0 otherwise
+             */
+            template <class CapIface> const CapIface *as() const
+            {
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+                const Meta::Capability *iface = asCapabilityInterface(type);
+                return qobject_cast<const CapIface *>(iface);
+            }
+
+            /**
+             * Tests if a track provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+            template <class CapIface> bool is() const
+            {
+                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+            }
+
 
         protected:
             virtual void notifyObservers() const;

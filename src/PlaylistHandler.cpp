@@ -19,6 +19,7 @@
 #include "app.h"
 #include "CollectionManager.h"
 #include "MainWindow.h"
+#include "meta/EditCapability.h"
 #include "PlaylistHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "statusbar.h"
@@ -284,8 +285,13 @@ PlaylistHandler::loadPls( QTextStream &stream )
                 continue;
             tmp = (*i).section('=', 1).trimmed();
 
-            if ( currentTrack.data() != 0 )
-                currentTrack->setTitle( tmp );
+            if ( currentTrack.data() != 0 && currentTrack->is<Meta::EditCapability>() )
+            {
+                Meta::EditCapability *ec = currentTrack->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setTitle( tmp );
+                delete ec;
+            }
             continue;
         }
         if ((*i).contains(regExp_Length)) {
@@ -666,7 +672,10 @@ PlaylistHandler::loadASX( QTextStream &stream )
         if (!url.isNull())
         {
             TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
-            trackPtr->setTitle( title );
+            Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
+            if( ec )
+                ec->setTitle( title );
+            delete ec;
             tracks.append( trackPtr );
         }
         }
@@ -719,10 +728,15 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
             debug() << location << ' ' << artist << ' ' << title << ' ' << album;
 
             TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( location );
-            trackPtr->setTitle( title );
-            trackPtr->setArtist( artist );
-            trackPtr->setAlbum( album );
-            trackPtr->setComment( track.annotation );
+            Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
+            if( ec )
+            {
+                ec->setTitle( title );
+                ec->setArtist( artist );
+                ec->setAlbum( album );
+                ec->setComment( track.annotation );
+            }
+            delete ec;
             tracks.append( trackPtr );
 
         }

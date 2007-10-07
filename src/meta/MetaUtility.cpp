@@ -19,6 +19,8 @@
 #include "MetaUtility.h"
 
 #include "meta.h"
+#include "meta/Capability.h"
+#include "meta/EditCapability.h"
 
 #include <QChar>
 
@@ -70,12 +72,18 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
 void
 Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
 {
-    if( !track )
+    if( !track || !track->hasCapabilityInterface( Meta::Capability::Editable ) )
         return;
 
+    Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+    if( !ec || !ec->isEditable() )
+        return;
+    ec->beginMetaDataUpdate();
     QString title = metadata.contains( Meta::Field::TITLE ) ? 
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
-    track->setTitle( title );
+    ec->setTitle( title );
+
+    ec->endMetaDataUpdate();
 }
 
 
