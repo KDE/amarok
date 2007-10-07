@@ -67,7 +67,7 @@ class TrackNavigator;
     };
     enum DataRoles
     {
-        TrackRole = 0xc0ffee,
+        TrackRole = Qt::UserRole + 1,
         ItemRole,
         ActiveTrackRole,
         GroupRole
