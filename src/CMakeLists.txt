@@ -425,7 +425,6 @@ set(amaroklib_LIB_SRCS
     #MediaItem.cpp
     medium.cpp
     metabundle.cpp
-    metabundlesaver.cpp
     moodbar.cpp
     mountpointmanager.cpp
     mydiroperator.cpp

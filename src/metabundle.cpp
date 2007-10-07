@@ -20,7 +20,6 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
-#include "metabundlesaver.h"
 #include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
@@ -1402,7 +1401,7 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 bool
 MetaBundle::safeSave()
 {
-    bool noproblem;
+    /*bool noproblem;
     MetaBundleSaver mbs( this );
     TagLib::FileRef* fileref = mbs.prepareToSave();
     if( !fileref )
@@ -1436,7 +1435,8 @@ MetaBundle::safeSave()
 
     noproblem = mbs.cleanupSave();
 
-    return noproblem;
+    return noproblem;*/
+    return true;
 }
 
 bool
