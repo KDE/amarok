@@ -26,6 +26,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "statusbar.h"
 
@@ -388,6 +389,28 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     }
 
     else if( localName == "tags") {
+        QHash<QString, QString> data;
+        data.insert( Meta::Field::URL, attrs.value( "path" ) );
+        data.insert( Meta::Field::TITLE, attrs.value( "title" ) );
+        data.insert( Meta::Field::ARTIST, attrs.value( "artist" ) );
+        data.insert( Meta::Field::COMPOSER, attrs.value( "composer" ) );
+        data.insert( Meta::Field::ALBUM, attrs.value( "album" ) );
+        data.insert( Meta::Field::COMMENT, attrs.value( "comment" ) );
+        data.insert( Meta::Field::GENRE, attrs.value( "genre" ) );
+        data.insert( Meta::Field::YEAR, attrs.value( "year" ) );
+        data.insert( Meta::Field::TRACKNUMBER, attrs.value( "track" ) );
+        data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ) );
+        data.insert( Meta::Field::BPM, attrs.value( "bpm" ) );
+        //filetype and uniqueid are missing in the fields, compilation is not used here
+        if( attrs.value( "audioproperties" ) == "true" )
+        {
+            data.insert( Meta::Field::BITRATE, attrs.value( "bitrate" ) );
+            data.insert( Meta::Field::LENGTH, attrs.value( "length" ) );
+            data.insert( Meta::Field::SAMPLERATE, attrs.value( "samplerate" ) );
+        }
+        if( !attrs.value( "filesize" ).isEmpty() )
+            data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ) );
+
         MetaBundle bundle;
         bundle.setPath      ( attrs.value( "path" ) );
         bundle.setTitle     ( attrs.value( "title" ) );
