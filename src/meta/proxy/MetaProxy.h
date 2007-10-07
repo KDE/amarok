@@ -20,6 +20,7 @@
 #define AMAROK_METAPROXY_H
 
 #include "meta.h"
+#include "meta/Capability.h"
 
 #include <QObject>
 
@@ -45,7 +46,6 @@ namespace MetaProxy
             virtual QString url() const;
 
             virtual bool isPlayable() const;
-            virtual bool isEditable() const;
 
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
@@ -53,16 +53,7 @@ namespace MetaProxy
             virtual Meta::ComposerPtr composer() const;
             virtual Meta::YearPtr year() const;
 
-            virtual void setAlbum( const QString &newAlbum );
-            virtual void setArtist( const QString &newArtist );
-            virtual void setGenre( const QString &newGenre );
-            virtual void setComposer( const QString &newComposer );
-            virtual void setYear( const QString &newYear );
-
-            virtual void setTitle( const QString &newTitle );
-
             virtual QString comment() const;
-            virtual void setComment( const QString &newComment );
 
             virtual double score() const;
             virtual void setScore( double newScore );
@@ -71,10 +62,7 @@ namespace MetaProxy
             virtual void setRating( int newRating );
 
             virtual int trackNumber() const;
-            virtual void setTrackNumber( int newTrackNumber );
-
             virtual int discNumber() const;
-            virtual void setDiscNumber( int newDiscNumber );
 
             virtual int length() const;
             virtual int filesize() const;
@@ -85,10 +73,6 @@ namespace MetaProxy
 
             virtual QString type() const;
 
-            virtual void beginMetaDataUpdate();
-            virtual void endMetaDataUpdate();
-            virtual void abortMetaDataUpdate();
-
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
@@ -96,6 +80,9 @@ namespace MetaProxy
 
             virtual void subscribe( Meta::Observer *observer );
             virtual void unsubscribe( Meta::Observer *observer );
+
+            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+            virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         private:
             Private * const d;

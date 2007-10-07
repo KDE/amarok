@@ -131,15 +131,6 @@ MetaProxy::Track::isPlayable() const
         return false;
 }
 
-bool
-MetaProxy::Track::isEditable() const
-{
-    if( d->realTrack )
-        return d->realTrack->isEditable();
-    else
-        return false;
-}
-
 Meta::AlbumPtr
 MetaProxy::Track::album() const
 {
@@ -170,48 +161,6 @@ MetaProxy::Track::year() const
     return d->yearPtr;
 }
 
-void
-MetaProxy::Track::setAlbum( const QString &newAlbum )
-{
-    if( d->realTrack )
-        d->realTrack->setAlbum( newAlbum );
-}
-
-void
-MetaProxy::Track::setArtist( const QString &newArtist )
-{
-    if( d->realTrack )
-        d->realTrack->setArtist( newArtist );
-}
-
-void
-MetaProxy::Track::setGenre( const QString &newGenre )
-{
-    if( d->realTrack )
-        d->realTrack->setGenre( newGenre );
-}
-
-void
-MetaProxy::Track::setComposer( const QString &newComposer )
-{
-    if( d->realTrack )
-        d->realTrack->setComposer( newComposer );
-}
-
-void
-MetaProxy::Track::setYear( const QString &newYear )
-{
-    if( d->realTrack )
-        d->realTrack->setYear( newYear );
-}
-
-void
-MetaProxy::Track::setTitle( const QString &newTitle )
-{
-    if( d->realTrack )
-        d->realTrack->setTitle( newTitle );
-}
-
 QString
 MetaProxy::Track::comment() const
 {
@@ -219,13 +168,6 @@ MetaProxy::Track::comment() const
         return d->realTrack->comment();
     else
         return QString();       //do we cache the comment??
-}
-
-void
-MetaProxy::Track::setComment( const QString &newComment )
-{
-    if( d->realTrack )
-        d->realTrack->setComment( newComment );
 }
 
 double
@@ -269,13 +211,6 @@ MetaProxy::Track::trackNumber() const
         return 0;
 }
 
-void
-MetaProxy::Track::setTrackNumber( int newTrackNumber )
-{
-    if( d->realTrack )
-        d->realTrack->setTrackNumber( newTrackNumber );
-}
-
 int
 MetaProxy::Track::discNumber() const
 {
@@ -283,13 +218,6 @@ MetaProxy::Track::discNumber() const
         return d->realTrack->discNumber();
     else
         return 0;
-}
-
-void
-MetaProxy::Track::setDiscNumber( int newDiscNumber )
-{
-    if( d->realTrack )
-        d->realTrack->setDiscNumber( newDiscNumber );
 }
 
 int
@@ -356,27 +284,6 @@ MetaProxy::Track::type() const
 }
 
 void
-MetaProxy::Track::beginMetaDataUpdate()
-{
-    if( d->realTrack )
-        d->realTrack->beginMetaDataUpdate();
-}
-
-void
-MetaProxy::Track::endMetaDataUpdate()
-{
-    if( d->realTrack )
-        d->realTrack->endMetaDataUpdate();
-}
-
-void
-MetaProxy::Track::abortMetaDataUpdate()
-{
-    if( d->realTrack )
-        d->realTrack->abortMetaDataUpdate();
-}
-
-void
 MetaProxy::Track::finishedPlaying( double playedFraction )
 {
     if( d->realTrack )
@@ -415,4 +322,20 @@ MetaProxy::Track::unsubscribe( Meta::Observer *observer )
         d->observers.removeAll( observer );
 }
 
+bool
+MetaProxy::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    if( d->realTrack )
+        return d->realTrack->hasCapabilityInterface( type );
+    else
+        return false;
+}
 
+Meta::Capability*
+MetaProxy::Track::asCapabilityInterface( Meta::Capability::Type type )
+{
+    if( d->realTrack )
+        return d->realTrack->asCapabilityInterface( type );
+    else
+        return 0;
+}
