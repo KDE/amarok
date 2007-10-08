@@ -532,7 +532,8 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     const int nSelected = selected.count();
 
     QAction* fetchSelectedAction = new QAction( KIcon( Amarok::icon( "download" ) )
-        , i18np( "&Fetch From amazon.%1", "&Fetch Selected Covers", nSelected, CoverManager::amazonTld() )
+        , ( nSelected == 1 ? i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() )
+                           : i18n( "&Fetch Selected Covers" ) )
         , &menu );
     connect( fetchSelectedAction, SIGNAL( triggered() ), this, SLOT( fetchSelectedCovers() ) );
 
