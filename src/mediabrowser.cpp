@@ -176,6 +176,7 @@ class DummyMediaDevice : public MediaDevice
     {
         m_name = i18n( "No Device Available" );
         m_type = "dummy-mediadevice";
+        m_medium = Medium( "DummyDevice", "DummyDevice" );
     }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
@@ -200,7 +201,7 @@ class DummyMediaDevice : public MediaDevice
 
 
 MediaBrowser::MediaBrowser( const char * /*name*/ )
-        : QWidget( 0)
+        : KVBox( 0)
         , m_timer( new QTimer( this ) )
         , m_currentDevice( 0 )
         , m_waitForTranscode( false )
@@ -212,10 +213,6 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
         , m_transferAction( 0 )
 {
     s_instance = this;
-
-    QVBoxLayout *layout = new QVBoxLayout;
-
-    layout->setSpacing( 4 );
 
     m_timer->setSingleShot( true );
 
@@ -260,8 +257,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 //     m_toolbar->getButton(CONFIGURE)->setToolTip( i18n( "Configure device" ) );
 
 
-    m_deviceCombo = new KComboBox();
-    layout->addWidget( m_deviceCombo );
+    m_deviceCombo = new KComboBox( this );
 
     // searching/filtering
     QToolBar* searchToolBar = new Browser::ToolBar( this );
@@ -292,9 +288,9 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
-    m_views = new QWidget( this );
-    m_progressBox  = new KHBox();
-    layout->addWidget( m_progressBox );
+    m_views = new KVBox( this );
+    m_queue = new MediaQueue( this );
+    m_progressBox  = new KHBox( this );
     m_progress     = new QProgressBar( m_progressBox );
     m_cancelButton = new KPushButton( KIcon( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
@@ -308,6 +304,10 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     dev->setUid( "DummyDevice" );
     addDevice( dev );
     activateDevice( 0, false );
+    queue()->load( Amarok::saveLocation() + "transferlist.xml" );
+    queue()->computeSize();
+
+    setFocusProxy( m_queue );
 
     updateStats();
 
@@ -340,8 +340,6 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     }
     */
     emit availabilityChanged( !pmpList.isEmpty() );
-
-    this->setLayout( layout );
 }
 
 bool
@@ -356,6 +354,55 @@ MediaBrowser::blockQuit() const
     }
 
     return false;
+}
+
+void
+MediaBrowser::tagsChanged( const MetaBundle &bundle )
+{
+    m_itemMapMutex.lock();
+    debug() << "tags changed for " << bundle.url().url();
+    ItemMap::iterator it = m_itemMap.find( bundle.url().url() );
+    if( it != m_itemMap.end() )
+    {
+        MediaItem *item = *it;
+        m_itemMapMutex.unlock();
+        if( item->device() )
+        {
+            item->device()->tagsChanged( item, bundle );
+        }
+        else
+        {
+            // it's an item on the transfer queue
+            item->setBundle( new MetaBundle( bundle ) );
+
+            QString text = item->bundle()->prettyTitle();
+            if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
+                text = item->bundle()->url().prettyUrl();
+            if( !item->m_playlistName.isNull() )
+            {
+                text += " (" + item->m_playlistName + ')';
+            }
+            item->setText( 0, text);
+        }
+    }
+    else
+    {
+        m_itemMapMutex.unlock();
+    }
+}
+
+bool
+MediaBrowser::getBundle( const KUrl &url, MetaBundle *bundle ) const
+{
+    QMutexLocker locker( &m_itemMapMutex );
+    ItemMap::const_iterator it = m_itemMap.find( url.url() );
+    if( it == m_itemMap.end() )
+        return false;
+
+    if( bundle )
+        *bundle = *(*it)->bundle();
+
+    return true;
 }
 
 KUrl
@@ -410,12 +457,12 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         m_toolbar->show();
     }
 
-//     foreach( MediaDevice *md, m_devices )
-//     {
-//         if( md && md->view() )
-//             md->view()->hide();
-//     }
-
+    foreach( MediaDevice *md, m_devices )
+    {
+        if( md && md->view() )
+            md->view()->hide();
+    }
+            
     if( index < 0 )
     {
         m_currentDevice = m_devices.last();
@@ -677,8 +724,355 @@ MediaBrowser::~MediaBrowser()
         removeDevice( m_devices.last() );
     }
 
+    queue()->save( Amarok::saveLocation() + "transferlist.xml" );
+
     delete m_deviceCombo;
     delete m_queue;
+}
+
+MediaView::MediaView( QWidget* parent, MediaDevice *device )
+    : K3ListView( parent )
+    , m_parent( parent )
+    , m_device( device )
+{
+    hide();
+    setSelectionMode( Q3ListView::Extended );
+    setItemsMovable( false );
+    setShowSortIndicator( true );
+    setFullWidth( true );
+    setRootIsDecorated( true );
+    setDragEnabled( true );
+    setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
+    setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
+    setDropVisualizerWidth( 3 );
+    setAcceptDrops( true );
+
+    header()->hide();
+    addColumn( i18n( "Remote Media" ) );
+
+    KActionCollection* ac = new KActionCollection( this );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
+
+    connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
+
+    connect( this, SIGNAL( itemRenamed( Q3ListViewItem* ) ),
+             this,   SLOT( renameItem( Q3ListViewItem* ) ) );
+
+    connect( this, SIGNAL( expanded( Q3ListViewItem* ) ),
+             this,   SLOT( slotExpand( Q3ListViewItem* ) ) );
+
+    connect( this, SIGNAL( returnPressed( Q3ListViewItem* ) ),
+             this,   SLOT( invokeItem( Q3ListViewItem* ) ) );
+
+    connect( this, SIGNAL( doubleClicked( Q3ListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( invokeItem( Q3ListViewItem*, const QPoint &, int ) ) );
+}
+
+void
+MediaView::keyPressEvent( QKeyEvent *e )
+{
+    if( e->key() == Qt::Key_Delete )
+        m_device->deleteFromDevice();
+    else
+        K3ListView::keyPressEvent( e );
+}
+
+void
+MediaView::invokeItem( Q3ListViewItem* i, const QPoint& point, int column ) //SLOT
+{
+    if( column == -1 )
+        return;
+
+    QPoint p = mapFromGlobal( point );
+    if ( p.x() > header()->sectionPos( header()->mapToIndex( 0 ) ) + treeStepSize() * ( i->depth() + ( rootIsDecorated() ? 1 : 0) ) + itemMargin()
+            || p.x() < header()->sectionPos( header()->mapToIndex( 0 ) ) )
+        invokeItem( i );
+}
+
+
+void
+MediaView::invokeItem( Q3ListViewItem *i )
+{
+    MediaItem *item = static_cast<MediaItem *>( i );
+    if( !item )
+        return;
+
+    KUrl::List urls = nodeBuildDragList( item );
+    The::playlistModel()->insertMedia( urls, Playlist::AppendAndPlay );
+}
+
+void
+MediaView::renameItem( Q3ListViewItem *item )
+{
+    m_device->renameItem( item );
+}
+
+void
+MediaView::slotExpand( Q3ListViewItem *item )
+{
+    m_device->expandItem( item );
+}
+
+
+MediaView::~MediaView()
+{
+}
+
+
+Q3DragObject *
+MediaView::dragObject()
+{
+    KUrl::List urls = nodeBuildDragList( 0 );
+    K3MultipleDrag *md = new K3MultipleDrag( viewport() );
+    md->addDragObject( K3ListView::dragObject() );
+    K3URLDrag* ud = new K3URLDrag( urls, viewport() );
+    md->addDragObject( ud );
+    md->setPixmap( CollectionDB::createDragPixmap( urls ),
+                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+    return md;
+}
+
+
+KUrl::List
+MediaView::nodeBuildDragList( MediaItem* item, int flags )
+{
+    KUrl::List items;
+    MediaItem* fi;
+
+    if ( !item )
+    {
+        fi = static_cast<MediaItem*>(firstChild());
+    }
+    else
+        fi = item;
+
+    while ( fi )
+    {
+        if( fi->isVisible() )
+        {
+            if ( fi->isSelected() || !(flags & OnlySelected ) )
+            {
+                if( fi->isLeafItem() || fi->type() == MediaItem::DIRECTORY )
+                    items += fi->url();
+                else
+                {
+                    if(fi->childCount() )
+                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), None );
+                }
+            }
+            else
+            {
+                if ( fi->childCount() )
+                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), OnlySelected );
+            }
+        }
+        fi = static_cast<MediaItem*>(fi->nextSibling());
+    }
+    return items;
+}
+
+int
+MediaView::getSelectedLeaves( MediaItem *parent, Q3PtrList<MediaItem> *list, int flags )
+{
+    int numFiles = 0;
+    if( !list )
+        list = new Q3PtrList<MediaItem>;
+
+    MediaItem *it;
+    if( !parent )
+        it = static_cast<MediaItem *>(firstChild());
+    else
+        it = static_cast<MediaItem *>(parent->firstChild());
+
+    for( ; it; it = static_cast<MediaItem*>(it->nextSibling()))
+    {
+        if( it->isVisible() )
+        {
+            if( it->childCount() && !( it->type() == MediaItem::DIRECTORY && it->isSelected() ) )
+            {
+                int f = flags;
+                if( it->isSelected() )
+                    f &= ~OnlySelected;
+                numFiles += getSelectedLeaves(it, list, f );
+            }
+            if( it->isSelected() || !(flags & OnlySelected) )
+            {
+                if( it->type() == MediaItem::TRACK       ||
+                    it->type() == MediaItem::DIRECTORY   ||
+                    it->type() == MediaItem::PODCASTITEM ||
+                    it->type() == MediaItem::PLAYLISTITEM||
+                    it->type() == MediaItem::INVISIBLE   ||
+                    it->type() == MediaItem::ORPHANED     )
+                {
+                    if( flags & OnlyPlayed )
+                    {
+                        if( it->played() > 0 )
+                            numFiles++;
+                    }
+                    else
+                        numFiles++;
+                }
+                if( ( it->isLeafItem() && (!(flags & OnlyPlayed) || it->played()>0) )
+                        || it->type() == MediaItem::DIRECTORY )
+                    list->append( it );
+            }
+        }
+    }
+    return numFiles;
+}
+
+
+bool
+MediaView::acceptDrag( QDropEvent *e ) const
+{
+    if( e->source() == MediaBrowser::queue()->viewport() )
+        return false;
+
+    return e->source() == viewport()
+        || e->mimeData()->hasFormat( "amarok-sql" )
+        || KUrl::List::canDecode( e->mimeData() );
+}
+
+void
+MediaView::contentsDropEvent( QDropEvent *e )
+{
+    cleanDropVisualizer();
+    cleanItemHighlighter();
+
+    if(e->source() == viewport())
+    {
+        const QPoint p = contentsToViewport( e->pos() );
+        MediaItem *item = static_cast<MediaItem *>(itemAt( p ));
+
+        if( !item && MediaBrowser::instance()->currentDevice()->m_type != "generic-mediadevice" )
+            return;
+
+        Q3PtrList<MediaItem> items;
+
+        if( !item || item->type() == MediaItem::DIRECTORY ||
+                    item->type() == MediaItem::TRACK )
+        {
+            Q3PtrList<MediaItem> items;
+            getSelectedLeaves( 0, &items );
+            m_device->addToDirectory( item, items );
+        }
+        else if( item->type() == MediaItem::PLAYLIST )
+        {
+            MediaItem *list = item;
+            MediaItem *after = 0;
+            for(MediaItem *it = static_cast<MediaItem *>(item->firstChild());
+                    it;
+                    it = static_cast<MediaItem *>(it->nextSibling()))
+                after = it;
+
+            getSelectedLeaves( 0, &items );
+            m_device->addToPlaylist( list, after, items );
+        }
+        else if( item->type() == MediaItem::PLAYLISTITEM )
+        {
+            MediaItem *list = static_cast<MediaItem *>(item->parent());
+            MediaItem *after = 0;
+            for(MediaItem *it = static_cast<MediaItem*>(item->parent()->firstChild());
+                    it;
+                    it = static_cast<MediaItem *>(it->nextSibling()))
+            {
+                if(it == item)
+                    break;
+                after = it;
+            }
+
+            getSelectedLeaves( 0, &items );
+            m_device->addToPlaylist( list, after, items );
+        }
+        else if( item->type() == MediaItem::PLAYLISTSROOT )
+        {
+            Q3PtrList<MediaItem> items;
+            getSelectedLeaves( 0, &items );
+            QString base( i18n("New Playlist") );
+            QString name = base;
+            int i=1;
+            while( item->findItem(name) )
+            {
+                QString num;
+                num.setNum(i);
+                name = base + ' ' + num;
+                i++;
+            }
+            MediaItem *pl = m_device->newPlaylist(name, item, items);
+            ensureItemVisible(pl);
+            rename(pl, 0);
+        }
+    }
+    else
+    {
+        if( e->mimeData()->hasFormat( "amarok-sql" ) )
+        {
+            QString data( e->mimeData()->data( "amarok-sql" ) );
+            QString playlist = data.section( "\n", 0, 0 );
+            QString query = data.section( "\n", 1 );
+            QStringList values = CollectionDB::instance()->query( query );
+            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
+            MediaBrowser::queue()->addUrls( list, playlist );
+        }
+        else if ( KUrl::List::canDecode( e->mimeData() ) )
+        {
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            MediaBrowser::queue()->addUrls( list );
+        }
+    }
+}
+
+void
+MediaView::viewportPaintEvent( QPaintEvent *e )
+{
+    K3ListView::viewportPaintEvent( e );
+
+    // Superimpose bubble help:
+
+    if ( !MediaBrowser::instance()->currentDevice() || !MediaBrowser::instance()->currentDevice()->isConnected() )
+    {
+        QPainter p( viewport() );
+
+        Q3SimpleRichText t( i18n(
+                "<div align=center>"
+                  "<h3>Media Device Browser</h3>"
+                  "Configure your media device and then "
+                  "click the Connect button to access your media device. "
+                  "Drag and drop files to enqueue them for transfer."
+                "</div>" ), QApplication::font() );
+
+        t.setWidth( width() - 50 );
+
+        const uint w = t.width() + 20;
+        const uint h = t.height() + 20;
+
+        p.setBrush( palette().background() );
+        p.drawRoundRect( 15, 15, w, h, (8*200)/w, (8*200)/h );
+        t.draw( &p, 20, 20, QRect(), palette() );
+    }
+    MediaBrowser::instance()->updateButtons();
+}
+
+void
+MediaView::rmbPressed( Q3ListViewItem *item, const QPoint &p, int i )
+{
+    if( m_device->isConnected() )
+        m_device->rmbPressed( item, p, i );
+}
+
+MediaItem *
+MediaView::newDirectory( MediaItem *parent )
+{
+    bool ok;
+    const QString name = KInputDialog::getText(i18n("Add Directory"), i18n("Directory Name:"), QString(), &ok, this);
+
+    if( ok && !name.isEmpty() )
+    {
+        m_device->newDirectory( name, parent );
+    }
+
+    return 0;
 }
 
 void
@@ -975,9 +1369,9 @@ MediaDevice::MediaDevice()
 void MediaDevice::init( MediaBrowser* parent )
 {
     m_parent = parent;
-    //if( !m_view )
-    //   m_view = new MediaView( m_parent->m_views, this );
-    //m_view->hide();
+    if( !m_view )
+       m_view = new MediaView( m_parent->m_views, this );
+    m_view->hide();
 }
 
 MediaDevice::~MediaDevice()
@@ -1112,31 +1506,30 @@ BundleList
 MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
 {
     //PORT 2.0
-//     BundleList bundles;
-//     if( !PlaylistFile::isPlaylistFile( url ) )
-//     {
-//         Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
-//                 KDE::StatusBar::Sorry );
-//         return bundles;
-//     }
+//    BundleList bundles;
+//    if( !PlaylistFile::isPlaylistFile( url ) )
+//    {
+//        Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
+//                KDE::StatusBar::Sorry );
+//        return bundles;
+//    }
 // 
-//     PlaylistFile playlist( url.path() );
-//     if( playlist.isError() )
-//     {
-//         Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
-//                 KDE::StatusBar::Sorry );
-//         return bundles;
-//     }
-// 
-//     for( BundleList::iterator it = playlist.bundles().begin();
-//             it != playlist.bundles().end();
-//             ++it )
-//     {
-//         bundles += MetaBundle( (*it).url() );
-//     }
-//     preparePlaylistForSync( name, bundles );
-//     return bundles;
-    return BundleList();
+//    PlaylistFile playlist( url.path() );
+//    if( playlist.isError() )
+//    {
+//        Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
+//                KDE::StatusBar::Sorry );
+//        return bundles;
+//    }
+//
+//    for( BundleList::iterator it = playlist.bundles().begin();
+//            it != playlist.bundles().end();
+//            ++it )
+//    {
+//        bundles += MetaBundle( (*it).url() );
+//    }
+//    preparePlaylistForSync( name, bundles );
+//    return bundles;
 }
 
 BundleList
@@ -1468,9 +1861,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     KIO::FileCopyJob *job = KIO::file_copy( src, dst,
             -1 /* permissions */,
-            false /* overwrite */,
-            false /* resume */,
-            false /* show progress */ );
+            KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KIO::Job * ) ),
             this,  SLOT( fileTransferred( KIO::Job * ) ) );
 
@@ -2591,6 +2982,224 @@ MediaDevice::isPreferredFormat( const MetaBundle &bundle )
     return ( type == supportedFiletypes().first() );
 }
 
+
+MediaQueue::MediaQueue(MediaBrowser *parent)
+    : K3ListView( parent ), m_parent( parent )
+{
+    setFixedHeight( 200 );
+    setSelectionMode( Q3ListView::Extended );
+    setItemsMovable( true );
+    setDragEnabled( true );
+    setShowSortIndicator( false );
+    setSorting( -1 );
+    setFullWidth( true );
+    setRootIsDecorated( false );
+    setDropVisualizer( true );     //the visualizer (a line marker) is drawn when dragging over tracks
+    setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
+    setDropVisualizerWidth( 3 );
+    setAcceptDrops( true );
+    addColumn( i18n( "Transfer Queue" ) );
+
+    itemCountChanged();
+
+    KActionCollection* ac = new KActionCollection( this );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
+
+    connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
+            SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint&, int ) ) );
+    connect( this, SIGNAL( dropped(QDropEvent*, Q3ListViewItem*, Q3ListViewItem*) ),
+            SLOT( slotDropped(QDropEvent*, Q3ListViewItem*, Q3ListViewItem*) ) );
+}
+
+bool
+MediaQueue::acceptDrag( QDropEvent *e ) const
+{
+
+    return e->source() == viewport()
+        || e->mimeData()->hasFormat( "amarok-sql" )
+        || KUrl::List::canDecode( e->mimeData() );
+}
+
+void
+MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* after)
+{
+    if( e->source() != viewport() )
+    {
+        if( e->mimeData()->hasFormat( "amarok-sql" ) )
+        {
+            QString data( e->mimeData()->data( "amarok-sql" ) );
+            QString playlist = data.section( "\n", 0, 0 );
+            QString query = data.section( "\n", 1 );
+            QStringList values = CollectionDB::instance()->query( query );
+            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
+            addUrls( list, playlist );
+        }
+        else if ( KUrl::List::canDecode( e->mimeData() ) )
+        {
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            if (!list.isEmpty() )
+                addUrls( list );
+        }
+    }
+    else if( Q3ListViewItem *i = currentItem() )
+    {
+        moveItem( i, parent, after );
+    }
+}
+
+void
+MediaQueue::dropProxyEvent( QDropEvent *e )
+{
+    slotDropped( e, 0, 0 );
+}
+
+MediaItem*
+MediaQueue::findPath( QString path )
+{
+    for( Q3ListViewItem *item = firstChild();
+            item;
+            item = item->nextSibling())
+    {
+        if(static_cast<MediaItem *>(item)->url().path() == path)
+            return static_cast<MediaItem *>(item);
+    }
+
+    return 0;
+}
+
+void
+MediaQueue::computeSize() const
+{
+    m_totalSize = 0;
+    for( Q3ListViewItem *it = firstChild();
+            it;
+            it = it->nextSibling())
+    {
+        MediaItem *item = static_cast<MediaItem *>(it);
+
+        if( item && item->bundle() &&
+                ( !m_parent->currentDevice()
+                  || !m_parent->currentDevice()->isConnected()
+                  || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+            m_totalSize += ((item->size()+1023)/1024)*1024;
+    }
+}
+
+KIO::filesize_t
+MediaQueue::totalSize() const
+{
+    return m_totalSize;
+}
+
+void
+MediaQueue::addItemToSize( const MediaItem *item ) const
+{
+    if( item && item->bundle() &&
+            ( !m_parent->currentDevice()
+              || !m_parent->currentDevice()->isConnected()
+              || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+        m_totalSize += ((item->size()+1023)/1024)*1024;
+}
+
+void
+MediaQueue::subtractItemFromSize( const MediaItem *item, bool unconditionally ) const
+{
+    if( item && item->bundle() &&
+            ( !m_parent->currentDevice()
+              || !m_parent->currentDevice()->isConnected()
+              || (unconditionally || !m_parent->currentDevice()->trackExists(*item->bundle())) ) )
+        m_totalSize -= ((item->size()+1023)/1024)*1024;
+}
+
+void
+MediaQueue::removeSelected()
+{
+    QList<Q3ListViewItem*>  selected = selectedItems();
+
+    QListIterator<Q3ListViewItem*> iter( selected );
+    while( iter.hasNext() )
+    {
+        Q3ListViewItem *item = iter.next();
+        if( !(static_cast<MediaItem *>(item)->flags() & MediaItem::Transferring) )
+        {
+            subtractItemFromSize( static_cast<MediaItem *>(item) );
+            delete item;
+            if( m_parent->currentDevice() && m_parent->currentDevice()->isTransferring() )
+            {
+                MediaBrowser::instance()->m_progress->setRange( 0, MediaBrowser::instance()->m_progress->maximum() - 1 );
+            }
+        }
+    }
+
+    MediaBrowser::instance()->updateStats();
+    MediaBrowser::instance()->updateButtons();
+    itemCountChanged();
+}
+
+void
+MediaQueue::keyPressEvent( QKeyEvent *e )
+{
+    if( e->key() == Qt::Key_Delete )
+        removeSelected();
+    else
+        K3ListView::keyPressEvent( e );
+}
+
+void
+MediaQueue::itemCountChanged()
+{
+    if( childCount() == 0 )
+        hide();
+    else if( !isShown() )
+        show();
+}
+
+void
+MediaQueue::slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int )
+{
+    if( !childCount() )
+        return;
+
+    Q3PopupMenu menu( this );
+
+    enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
+
+    if( item )
+        menu.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+
+    menu.insertItem( KIcon( Amarok::icon( "playlist_clear" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( KIcon( Amarok::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.setItemEnabled( START_TRANSFER,
+            MediaBrowser::instance()->currentDevice() &&
+            MediaBrowser::instance()->currentDevice()->isConnected() &&
+            MediaBrowser::instance()->currentDevice()->m_transfer );
+
+    switch( menu.exec( point ) )
+    {
+        case REMOVE_SELECTED:
+            removeSelected();
+            break;
+        case CLEAR_ALL:
+            clearItems();
+            break;
+        case START_TRANSFER:
+            MediaBrowser::instance()->transferClicked();
+            break;
+    }
+}
+
+void
+MediaQueue::clearItems()
+{
+    clear();
+    itemCountChanged();
+    if(m_parent)
+    {
+        computeSize();
+        m_parent->updateStats();
+        m_parent->updateButtons();
+    }
+}
 
 
 #include "mediabrowser.moc"

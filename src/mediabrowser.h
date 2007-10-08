@@ -10,7 +10,8 @@
 #include "amarok_export.h"
 #include "amarok.h"
 #include "browserToolBar.h"
-#include "meta/meta.h"
+#include "medium.h"
+#include "metabundle.h"
 #include "pluginmanager.h"
 #include "plugin/plugin.h"   //baseclass
 #include "scrobbler.h"       //SubmitItem
@@ -49,15 +50,68 @@ class Q3DragObject;
 class QLabel;
 class QProgressBar;
 
-class MediaBrowser : public QWidget
+
+
+class MediaQueue : public K3ListView
+{
+    Q_OBJECT
+
+    public:
+        MediaQueue(MediaBrowser *parent);
+        MediaItem *findPath( QString path );
+
+        KIO::filesize_t totalSize() const; // total size of items to transfer in KB
+        void computeSize() const; // compute total size of items to transfer in KB
+        void addItemToSize( const MediaItem *item ) const;
+        void subtractItemFromSize( const MediaItem *item, bool unconditonally=false ) const;
+
+        void removeSelected();
+        void clearItems();
+
+        void load( const QString &path );
+        void save( const QString &path );
+        void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
+        void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
+        void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString() );
+        void addUrl( const KUrl& url, MediaItem *item );
+        void addUrls( const KUrl::List urls, const QString &playlistName=QString() );
+
+        void URLsAdded(); // call after finishing adding single urls
+
+        void dropProxyEvent( QDropEvent *e );
+        // Reimplemented from K3ListView
+        bool acceptDrag( QDropEvent *e ) const;
+        Q3DragObject *dragObject();
+
+    public slots:
+        void itemCountChanged();
+
+    private slots:
+        void selectAll() {Q3ListView::selectAll(true); }
+        void slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int );
+        void slotDropped (QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* after);
+
+    private:
+        void keyPressEvent( QKeyEvent *e );
+        MediaBrowser *m_parent;
+        mutable KIO::filesize_t m_totalSize;
+};
+
+
+class MediaBrowser : public KVBox
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
     friend class MediaDevice;
+    friend class MediaView;
+    friend class MediaQueue;
+    friend class MediumPluginChooser;
+    friend class MediaItem;
 
     public:
         static bool isAvailable();
-        //AMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
+        AMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
+        AMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
@@ -76,7 +130,7 @@ class MediaBrowser : public QWidget
         void updateButtons();
         void updateDevices();
         // return bundle for url if it is known to MediaBrowser
-        //bool getBundle( const KUrl &url, MetaBundle *bundle ) const;
+        bool getBundle( const KUrl &url, MetaBundle *bundle ) const;
         bool isQuitting() const { return m_quitting; }
 
         KUrl getProxyUrl( const KUrl& daapUrl ) const;
@@ -108,7 +162,7 @@ class MediaBrowser : public QWidget
         void customClicked();
         bool config(); // false if canceled by user
         KUrl transcode( const KUrl &src, const QString &filetype );
-        //void tagsChanged( const MetaBundle &bundle );
+        void tagsChanged( const MetaBundle &bundle );
         void prepareToQuit();
 
     private:
@@ -126,6 +180,7 @@ class MediaBrowser : public QWidget
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
 
+        MediaQueue* m_queue;
         bool m_waitForTranscode;
         KUrl m_transcodedUrl;
         QString m_transcodeSrc;
@@ -133,16 +188,16 @@ class MediaBrowser : public QWidget
         SpaceLabel*      m_stats;
         KHBox*           m_progressBox;
         QProgressBar*       m_progress;
-        QWidget*           m_views;
+        KVBox*           m_views;
         KPushButton*     m_cancelButton;
         //KPushButton*     m_playlistButton;
         KVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
         Browser::ToolBar*m_toolbar;
-        //typedef QMap<QString, MediaItem*> ItemMap;
+        typedef QMap<QString, MediaItem*> ItemMap;
         mutable QMutex   m_itemMapMutex;
-        //ItemMap          m_itemMap;
+        ItemMap          m_itemMap;
         KService::List m_plugins;
         bool             m_haveDevices;
         bool             m_quitting;
@@ -154,6 +209,48 @@ class MediaBrowser : public QWidget
         SearchWidget *m_searchWidget;
 };
 
+class MediaView : public K3ListView
+{
+    Q_OBJECT
+    friend class MediaBrowser;
+    friend class MediaDevice;
+
+    public:
+        enum Flags
+        {
+            None = 0,
+            OnlySelected = 1,
+            OnlyPlayed = 2
+        };
+
+        MediaView( QWidget *parent, MediaDevice *device );
+        virtual ~MediaView();
+        AMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
+        int getSelectedLeaves(MediaItem *parent, Q3PtrList<MediaItem> *list, int flags=OnlySelected );
+        AMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
+        bool setFilter( const QString &filter, MediaItem *parent=NULL );
+
+    private slots:
+        void rmbPressed( Q3ListViewItem*, const QPoint&, int );
+        void renameItem( Q3ListViewItem *item );
+        void slotExpand( Q3ListViewItem* );
+        void selectAll() { Q3ListView::selectAll(true); }
+        void invokeItem( Q3ListViewItem*, const QPoint &, int column );
+        void invokeItem( Q3ListViewItem* );
+
+    private:
+        void keyPressEvent( QKeyEvent *e );
+        // Reimplemented from K3ListView
+        void contentsDropEvent( QDropEvent *e );
+        void viewportPaintEvent( QPaintEvent* );
+        bool acceptDrag( QDropEvent *e ) const;
+        Q3DragObject *dragObject();
+
+        QWidget *m_parent;
+        MediaDevice *m_device;
+};
+
+
 /* at least the pure virtual functions have to be implemented by a media device,
    all items are stored in a hierarchy of MediaItems,
    when items are manipulated the MediaItems have to be updated accordingly */
@@ -164,6 +261,8 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
     friend class DeviceConfigureDialog;
     friend class TransferDialog;
     friend class MediaBrowser;
+    friend class MediaView;
+    friend class MediaQueue;
 
     public:
         enum Flags
@@ -178,10 +277,14 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual void init( MediaBrowser* parent );
         virtual ~MediaDevice();
 
+        MediaView *view();
+
         /**
          * @return a KAction that will be plugged into the media device browser toolbar
          */
         virtual KAction *customAction() { return 0; }
+
+        virtual void rmbPressed( Q3ListViewItem *item, const QPoint &point, int ) { (void)item; (void) point; }
 
         /**
          * @return list of filetypes playable on this device
@@ -193,18 +296,82 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @param bundle describes track that should be checked
          * @return true if the device is capable of playing the track referred to by bundle
          */
-        virtual bool isPlayable( const Meta::TrackPtr track );
+        virtual bool isPlayable( const MetaBundle &bundle );
 
         /**
          * @param bundle describes track that should be checked
          * @return true if the track is in the preferred (first in list) format of the device
          */
-        virtual bool isPreferredFormat( const Meta::TrackPtr track );
+        virtual bool isPreferredFormat( const MetaBundle &bundle );
 
         /**
          * @return true if the device is connected
          */
         virtual bool       isConnected() = 0;
+
+        /**
+         * Adds particular tracks to a playlist
+         * @param playlist parent playlist for tracks to be added to
+         * @param after insert following this item
+         * @param items tracks to add to playlist
+         */
+        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, Q3PtrList<MediaItem> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
+
+        /**
+         * Create a new playlist
+         * @param name playlist title
+         * @param parent parent MediaItem of the new playlist
+         * @param items tracks to add to the new playlist
+         * @return the newly created playlist
+         */
+        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
+
+        /**
+         * Move items to a directory
+         * @param directory new parent of dropped items
+         * @param items tracks to add to the directory
+         */
+        virtual void      addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
+
+        /**
+         * Create a new directory
+         * @param name directory title
+         * @param parent parent MediaItem of the new directory
+         * @param items tracks to add to the new directory
+         * @return the newly created directory
+         */
+        virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) { Q_UNUSED(name); Q_UNUSED(parent); return 0; }
+
+        /**
+         * Notify device of changed tags
+         * @param item item to be updated
+         * @param changed bundle containing new tags
+         * @return the changed MediaItem
+         */
+        virtual MediaItem *tagsChanged( MediaItem *item, const MetaBundle &changed ) { Q_UNUSED(item); Q_UNUSED(changed); return 0; }
+
+        /**
+         * Indicate whether the device has a custom transfer dialog
+         * @return whether there is a custom dialog
+         */
+        virtual bool hasTransferDialog() { return false; }
+
+        /**
+         * Run the transfer dialog to be used when Transfer is clicked
+         */
+        virtual void runTransferDialog() {}
+
+        /**
+         * Get the transfer dialog, if any
+         * @return the transfer dialog, if any, else NULL;
+         */
+        virtual TransferDialog *getTransferDialog() { return NULL; }
+
+        /**
+         * Can be used to explicitly indicate whether a device needs manual configuration
+         * @return whether manual configuration is needed
+         */
+        virtual bool needsManualConfig() { return true; }
 
         virtual void addConfigElements( QWidget * /*parent*/ ) {}
         virtual void removeConfigElements( QWidget * /*parent*/ ) {}
@@ -232,10 +399,56 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         void         hideProgress();
 
 
+        /**
+         * @return a unique identifier that is constant across sessions
+         */
+        QString uniqueId() const { return m_uid; }
+
+        /**
+         * @return the name for the device that should be presented to the user
+         */
+        QString name() const { return m_name; }
+
+        /**
+         * @return the device node
+         */
+        QString deviceNode() const { return m_medium.deviceNode(); }
+
+        /*
+         * @return the device mount point (or empty if non-applicable or unknown)
+         */
+        QString mountPoint() const { return m_medium.mountPoint(); }
+
         QString           getTransferDir() { return m_transferDir; }
+        Medium           &getMedium() { return m_medium; }
+
+        void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno;
+            setConfigBool( "spacesToUnderscores", yesno); }
+        bool              getSpacesToUnderscores() { return m_spacesToUnderscores; }
+
+        void              setFirstSort( QString text ) { m_firstSort = text;
+            setConfigString( "firstGrouping", text ); }
+        void              setSecondSort( QString text ) { m_secondSort = text;
+            setConfigString( "secondGrouping", text ); }
+        void              setThirdSort( QString text ) { m_thirdSort = text;
+            setConfigString( "thirdGrouping", text ); }
+
+        virtual KUrl getProxyUrl( const KUrl& /*url*/) { return KUrl(); }
+        virtual void customClicked() { return; }
+
+        BundleList bundlesToSync( const QString &playlistName, const QString &sql );
+        BundleList bundlesToSync( const QString &playlistName, const KUrl &url );
+        void preparePlaylistForSync( const QString &playlistName, const BundleList &bundles );
+        bool isOnOtherPlaylist( const QString &playlistToAvoid, const MetaBundle &bundle );
+        bool isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle );
+        bool isInBundleList( const BundleList &bundles, const MetaBundle &bundle );
+        bool bundleMatch( const MetaBundle &b1, const MetaBundle &b2 );
 
     public slots:
         void abortTransfer();
+        void transferFiles();
+        virtual void renameItem( Q3ListViewItem *item ) {(void)item; }
+        virtual void expandItem( Q3ListViewItem *item ) {(void)item; }
         bool connectDevice( bool silent=false );
         bool disconnectDevice( bool postdisconnecthook=true );
         void scheduleDisconnect() { m_scheduledDisconnect = true; }
@@ -259,7 +472,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @return The MediaItem of the item if found, otherwise NULL
          * @note This may not be worth implementing for non database driven devices, as it could be slow
          */
-        //virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
+        virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
         /**
@@ -296,12 +509,27 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual void synchronizeDevice() = 0;
 
         /**
+         * Copy a track to the device
+         * @param bundle The MetaBundle of the item to transfer. Will move the item specified by bundle().url().path()
+         * @return If successful, the created MediaItem in the media device view, else 0
+         */
+        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle) = 0;
+
+        /**
+         * Copy track from device to computer
+         * @param item The MediaItem of the track to transfer.
+         * @param url The URL to transfer the track to.
+         * @return The MediaItem transfered.
+         */
+        virtual void copyTrackFromDevice(MediaItem *item);
+
+        /**
          * Recursively remove MediaItem from the tracklist and the device
          * @param item MediaItem to remove
          * @param onlyPlayed True if item should be deleted only if it has been played
          * @return -1 on failure, number of files deleted otherwise
          */
-        //virtual int deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack ) = 0;
 
         /**
          * Abort the currently active track transfer
@@ -310,9 +538,13 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 
         virtual void updateRootItems();
 
-        //virtual bool isSpecialItem( MediaItem *item );
+        virtual bool isSpecialItem( MediaItem *item );
 
-        //int deleteFromDevice( MediaItem *item=0, int flags=DeleteTrack );
+        int deleteFromDevice( MediaItem *item=0, int flags=DeleteTrack );
+
+        void purgeEmptyItems( MediaItem *root=0 );
+        void syncStatsFromDevice( MediaItem *root=0 );
+        void syncStatsToDevice( MediaItem *root=0 );
 
         bool kioCopyTrack( const KUrl &src, const KUrl &dst );
 
@@ -331,6 +563,8 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 
         K3ShellProcess   *sysProc;
         MediaBrowser    *m_parent;
+        MediaView       *m_view;
+        Medium           m_medium;
         QString          m_transferDir;
         QString          m_firstSort;
         QString          m_secondSort;
@@ -353,6 +587,18 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 
         QString          m_type;
 
+        // root listview items
+        MediaItem *m_playlistItem;
+        MediaItem *m_podcastItem;
+        // items not on the master playlist and not on the podcast playlist are not visible on the ipod
+        MediaItem *m_invisibleItem;
+        // items in the database for which the file is missing
+        MediaItem *m_staleItem;
+        // files without database entry
+        MediaItem *m_orphanedItem;
+
+        // stow away all items below m_rootItems when device is not current
+        Q3PtrList<Q3ListViewItem> m_rootItems;
 };
 
 

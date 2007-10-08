@@ -292,11 +292,11 @@ void MainWindow::init()
         //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
         //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
 
-//          new MediaBrowser( "MediaBrowser" );
-//          if( MediaBrowser::isAvailable() )
-//          {
-//              addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
-//          }
+        new MediaBrowser( "MediaBrowser" );
+        if( MediaBrowser::isAvailable() )
+        {
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
+        }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }

@@ -405,7 +405,7 @@ set(amaroklib_LIB_SRCS
     cuefile.cpp
     dbsetup.ui.h
     deletedialog.cpp
-    #deviceconfiguredialog.cpp
+    deviceconfiguredialog.cpp
     directorylist.cpp
     editfilterdialog.cpp
     enginebase.cpp
@@ -424,8 +424,8 @@ set(amaroklib_LIB_SRCS
     ktrm.cpp
     lastfm.cpp
     MainWindow.cpp
-    #mediabrowser.cpp
-    #MediaItem.cpp
+    mediabrowser.cpp
+    MediaItem.cpp
     medium.cpp
     metabundle.cpp
     moodbar.cpp
@@ -454,7 +454,7 @@ set(amaroklib_LIB_SRCS
     tooltip.cpp
     trackpickerdialog.cpp
     tracktooltip.cpp
-    #transferdialog.cpp
+    transferdialog.cpp
     widgets/analyzerwidget.cpp
     widgets/progressslider.cpp
     widgets/searchwidget.cpp

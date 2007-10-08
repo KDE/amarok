@@ -108,8 +108,7 @@ PodcastSettingsDialog::init()
         setMainWidget(m_ps);
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
 
-        //PORT 2.0
-        //m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
+        m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
 
         enableButtonOk( false );
 
