@@ -133,7 +133,7 @@ App::App()
 
 
     //make sure we have enough cache space for all our crazy svg stuff
-    QPixmapCache::setCacheLimit ( 20 * 1024 ); 
+    QPixmapCache::setCacheLimit ( 20 * 1024 );
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
@@ -230,7 +230,7 @@ App::~App()
 
     ThreadManager::deleteInstance(); //waits for jobs to finish
 
-    delete mainWindow();
+//     delete mainWindow();
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
@@ -371,8 +371,8 @@ void App::handleCliArgs() //static
         pApp->mainWindow()->showHide();
     }
 
-    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) ); 
-      
+    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+
     static bool firstTime = true;
     if( !firstTime && !haveArgs )
         pApp->mainWindow()->activate();
@@ -1084,7 +1084,7 @@ namespace Amarok
     bool invokeBrowser( const QString& url )
     {
         //URL can be in whatever forms KUrl understands - ie most.
-        const QString cmd = KShell::quoteArg(AmarokConfig::externalBrowser()) 
+        const QString cmd = KShell::quoteArg(AmarokConfig::externalBrowser())
             + ' ' + KShell::quoteArg(KUrl( url ).url());
         return KRun::runCommand( cmd, 0L ) > 0;
     }
