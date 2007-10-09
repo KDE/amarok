@@ -36,8 +36,7 @@ class MediaDeviceCache : public QObject
 
         enum DeviceType { SolidType, ManualType, InvalidType };
 
-        static MediaDeviceCache* s_instance;
-        static MediaDeviceCache* instance();
+        static MediaDeviceCache* instance() { return s_instance ? s_instance : new MediaDeviceCache(); }
         
         /**
         * Creates a new MediaDeviceCache.
@@ -51,15 +50,16 @@ class MediaDeviceCache : public QObject
         QStringList getAll() { return m_type.keys(); }
 
     signals:
-        void addDevice( const QString &udi );
-        void removeDevice( const QString &udi );
-
-    public slots:
         void deviceAdded( const QString &udi );
         void deviceRemoved( const QString &udi );
 
-    public:
+    public slots:
+        void addDevice( const QString &udi );
+        void removeDevice( const QString &udi );
+
+    private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;
+        static MediaDeviceCache* s_instance;
 };
 
 #endif /* AMAROK_MEDIADEVICECACHE_H */

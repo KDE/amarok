@@ -41,10 +41,17 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     KVBox *vbox = new KVBox( mediaBox );
     vbox->setSpacing( KDialog::spacingHint() );
+    //m_deviceManager = new MediumPluginManager( vbox );
 
     KHBox *hbox = new KHBox( topbox );
     hbox->setSpacing( KDialog::spacingHint() );
     hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    KPushButton *autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
+    autodetect->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( autodetect, SIGNAL(clicked()), m_deviceManager, SLOT(redetectDevices()) );
+    KPushButton *add = new KPushButton( i18n( "Add Device..." ), hbox );
+    add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
 
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );

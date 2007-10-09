@@ -31,32 +31,27 @@
 
 MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 
-MediaDeviceCache*
-MediaDeviceCache::instance()
-{
-    static MediaDeviceCache sh;
-    return &sh;
-}
-
 MediaDeviceCache::MediaDeviceCache() : QObject()
                              , m_type()
 {
     DEBUG_BLOCK
     s_instance = this;
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
+             this, SLOT( addDevice( const QString & ) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
+             this, SLOT( removeDevice( const QString & ) ) );
 }
 
 MediaDeviceCache::~MediaDeviceCache()
 {
+    s_instance = 0;
 }
 
 void
 MediaDeviceCache::refreshCache()
 {
     DEBUG_BLOCK
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-             this, SLOT( deviceAdded( const QString & ) ) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-             this, SLOT( deviceRemoved( const QString & ) ) );
+    m_type.clear();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
     Solid::Device temp;
     foreach( Solid::Device device, deviceList )
@@ -72,11 +67,11 @@ MediaDeviceCache::refreshCache()
             m_type[udi] = MediaDeviceCache::ManualType;
     }
     foreach( QString udi, m_type.keys() )
-        emit addDevice( udi );
+        emit deviceAdded( udi );
 }
 
 void
-MediaDeviceCache::deviceAdded( const QString &udi )
+MediaDeviceCache::addDevice( const QString &udi )
 {
     DEBUG_BLOCK
     if( m_type.contains( udi ) )
@@ -84,16 +79,16 @@ MediaDeviceCache::deviceAdded( const QString &udi )
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-    emit addDevice( udi );
+    emit deviceAdded( udi );
 }
 
 void
-MediaDeviceCache::deviceRemoved( const QString &udi )
+MediaDeviceCache::removeDevice( const QString &udi )
 {
     DEBUG_BLOCK
     if( m_type.contains( udi ) )
     {
-        emit removeDevice( udi );
+        emit deviceRemoved( udi );
         return;
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it didn't seem to exist in the first place...";

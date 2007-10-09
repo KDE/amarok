@@ -237,8 +237,10 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_progressBox->hide();
 
     MediaDevice *dev = new DummyMediaDevice();
+    dev->init( this );
     addDevice( dev );
     activateDevice( 0, false );
+    updateDevices();
     queue()->load( Amarok::saveLocation() + "transferlist.xml" );
     queue()->computeSize();
 
@@ -247,6 +249,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     updateStats();
 
     MediaDeviceCache::instance()->refreshCache();
+    foreach( QString udi, MediaDeviceCache::instance()->getAll() )
+        deviceAdded( udi );
 
     //TODO: Take generic storage devices into account too -- or do we rely on the
     //Solid backend to tell us if it's a PMP with "storage" type?
