@@ -192,7 +192,7 @@ public:
      * allows calling code to access the ids of all active devices
      * @return the ids of all devices which are currently mounted or otherwise accessible
      */
-    IdList getMountedDeviceIds() const;
+    AMAROK_EXPORT IdList getMountedDeviceIds() const;
 
     AMAROK_EXPORT QStringList collectionFolders();
     void setCollectionFolders( const QStringList &folders );
