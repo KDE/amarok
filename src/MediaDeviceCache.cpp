@@ -37,9 +37,9 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
     DEBUG_BLOCK
     s_instance = this;
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-             this, SLOT( addDevice( const QString & ) ) );
+             this, SLOT( addSolidDevice( const QString & ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-             this, SLOT( removeDevice( const QString & ) ) );
+             this, SLOT( removeSolidDevice( const QString & ) ) );
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -64,30 +64,37 @@ MediaDeviceCache::refreshCache()
     foreach( QString udi, manualDevices.keys() )
     {
         if( udi.startsWith( "manual" ) )
+        {
+            debug() << "Found manual device with udi = " << udi;
             m_type[udi] = MediaDeviceCache::ManualType;
+        }
     }
-    foreach( QString udi, m_type.keys() )
-        emit deviceAdded( udi );
 }
 
 void
-MediaDeviceCache::addDevice( const QString &udi )
+MediaDeviceCache::addSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
+    Solid::Device device( udi );
+    debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
+    debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
+    m_type[udi] = MediaDeviceCache::SolidType;
     emit deviceAdded( udi );
 }
 
 void
-MediaDeviceCache::removeDevice( const QString &udi )
+MediaDeviceCache::removeSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
+    debug() << "udi is: " << udi;
     if( m_type.contains( udi ) )
     {
+        m_type.remove( udi );
         emit deviceRemoved( udi );
         return;
     }

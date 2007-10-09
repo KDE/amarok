@@ -54,8 +54,8 @@ class MediaDeviceCache : public QObject
         void deviceRemoved( const QString &udi );
 
     public slots:
-        void addDevice( const QString &udi );
-        void removeDevice( const QString &udi );
+        void addSolidDevice( const QString &udi );
+        void removeSolidDevice( const QString &udi );
 
     private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;

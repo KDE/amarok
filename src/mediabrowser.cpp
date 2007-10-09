@@ -1061,6 +1061,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
 
     if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidType )
     {
+        debug() << "udi " << udi << " detected as a Solid device";
         Solid::Device solidDevice( udi );
 
         Solid::PortableMediaPlayer* pmp = solidDevice.as<Solid::PortableMediaPlayer>();
@@ -1076,6 +1077,9 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
             debug() << "Portable Media Player " << udi << " does not support any protocols";
             return 0;
         }
+
+        foreach( QString supported, pmp->supportedProtocols() )
+            debug() << "Device supports protocol " << supported;
 
         protocol = pmp->supportedProtocols()[0];
         if( protocol == "storage" )
