@@ -158,7 +158,7 @@ set(libmp3tunesservice_SRCS
     servicebrowser/mp3tunes/mp3tunesservice.cpp
     servicebrowser/mp3tunes/Mp3tunesServiceCollection.cpp
     servicebrowser/mp3tunes/Mp3tunesServiceQueryMaker.cpp
-    
+
 )
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
@@ -417,6 +417,7 @@ set(amaroklib_LIB_SRCS
     expression.cpp
     fht.cpp
     #filebrowser.cpp
+    filebrowserwidget.cpp
     hintlineedit.cpp
     iconloader.cpp
     k3bexporter.cpp
