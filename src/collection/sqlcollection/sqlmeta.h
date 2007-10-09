@@ -108,6 +108,10 @@ class SqlTrack : public Meta::Track
         virtual QString cachedLyrics() const;
         virtual void setCachedLyrics( const QString &lyrics );
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
         //SqlTrack specific methods
         int deviceid() const { return m_deviceid; }
         QString rpath() const { return m_rpath; }

@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 #include "BlockingQuery.h"
+#include "meta/EditCapability.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
 
@@ -32,8 +33,35 @@
 #include <QPointer>
 
 #include <klocale.h>
+#include <KSharedPtr>
 
 using namespace Meta;
+
+class EditCapabilityImpl : public Meta::EditCapability
+{
+    Q_OBJECT
+    public:
+        EditCapabilityImpl( SqlTrack *track )
+            : Meta::EditCapability()
+            , m_track( track ) {}
+
+        virtual bool isEditable() const { return m_track->isEditable(); }
+        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
+        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
+        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
+        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
+        virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
+        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
+        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
+        virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
+        virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
+        virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
 
 struct SqlTrack::MetaCache
 {
@@ -508,6 +536,31 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     }
 }
 
+bool
+SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Meta::Capability::Editable:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::Editable:
+            return new EditCapabilityImpl( this );
+
+        default:
+            return 0;
+    }
+}
 
 //---------------------- class Artist --------------------------
 
@@ -754,3 +807,4 @@ SqlYear::tracks()
         return TrackList();
 }
 
+#include "sqlmeta.moc"
