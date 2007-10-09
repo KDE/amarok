@@ -431,7 +431,6 @@ set(amaroklib_LIB_SRCS
     metabundle.cpp
     moodbar.cpp
     mountpointmanager.cpp
-    mydiroperator.cpp
     osd.cpp
     pixmapviewer.cpp
     PlaylistHandler.cpp
