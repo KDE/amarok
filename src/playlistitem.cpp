@@ -417,7 +417,8 @@ PlaylistItem::nextInAlbum() const
         return m_album->tracks.at( index + 1 );
     if( track() )
         for( int i = 0, n = m_album->tracks.count(); i < n; ++i )
-            if( m_album->tracks.at( i )->track() > track() )
+	  if( m_album->tracks.at( i )->discNumber() > discNumber() || 
+	      ( m_album->tracks.at( i )->discNumber() == discNumber() && m_album->tracks.at( i )->track() > track() ) )
                 return m_album->tracks.at( i );
     else
         for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; ++it )
@@ -440,7 +441,9 @@ PlaylistItem::prevInAlbum() const
         return m_album->tracks.at( index - 1 );
     if( track() )
         for( int i = m_album->tracks.count() - 1; i >= 0; --i )
-            if( m_album->tracks.at( i )->track() && m_album->tracks.at( i )->track() < track() )
+            if( m_album->tracks.at( i )->track() && 
+		( m_album->tracks.at( i )->discNumber() < discNumber() || 
+		  ( m_album->tracks.at( i )->discNumber() == discNumber() && m_album->tracks.at( i )->track() < track() ) ) )
                 return m_album->tracks.at( i );
     else
         for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; --it )
@@ -1028,11 +1031,20 @@ void PlaylistItem::incrementTotals()
     if( Amarok::entireAlbums() && m_album )
     {
         const uint prevCount = m_album->tracks.count();
-        if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
+        // Multiple tracks with same track number are possible; 
+        // e.g. with "various_artist" albums or albums with multiple disks.
+        // We are trying to keep m_album->tracks sorted first by discNumber() and then by track().
+        // It seems that the following assumption is made for the following: 
+        // ``Either all the tracks in an album have their track()'s set (to nonzero) or none of them have.''
+        if( !track() || !m_album->tracks.count() ||
+	    ( m_album->tracks.getLast()->track() &&
+	      ( ( m_album->tracks.getLast()->discNumber() < discNumber() ) || 
+		( m_album->tracks.getLast()->discNumber() == discNumber() && m_album->tracks.getLast()->track() < track() ) ) ) )
             m_album->tracks.append( this );
         else
             for( int i = 0, n = m_album->tracks.count(); i < n; ++i )
-                if( m_album->tracks.at(i)->track() > track() || !m_album->tracks.at(i)->track() )
+                if(!m_album->tracks.at(i)->track() || m_album->tracks.at(i)->discNumber() > discNumber() ||
+		   ( m_album->tracks.at(i)->discNumber() == discNumber() && m_album->tracks.at(i)->track() > track() ) )
                 {
                     m_album->tracks.insert( i, this );
                     break;
