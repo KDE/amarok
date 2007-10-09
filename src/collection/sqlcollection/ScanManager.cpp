@@ -46,14 +46,36 @@ ScanManager::ScanManager( SqlCollection *parent )
 void
 ScanManager::startFullScan()
 {
+    DEBUG_BLOCK
+    m_scanner = new KProcess( this );
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
+    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    *m_scanner << MountPointManager::instance()->collectionFolders();
+    m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+    connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( slotFinished( int, QProcess::ExitStatus ) ) );
+    m_scanner->start();
+    if( m_parser )
+    {
+        //TODO remove old parser, make sure this code actually works
+        m_parser->requestAbort();
+        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
+        m_parser->deleteLater();
+    }
+    m_parser = new XmlParseJob( this );
+    ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
 void ScanManager::startIncrementalScan()
 {
+    DEBUG_BLOCK
     m_scanner = new KProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << getDirsToScan();
+    m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+    connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( slotFinished( int, QProcess::ExitStatus ) ) );
     m_scanner->start();
     if( m_parser )
     {
@@ -69,7 +91,6 @@ void ScanManager::startIncrementalScan()
 void
 ScanManager::slotReadReady()
 {
-    DEBUG_BLOCK
     QByteArray line;
     QString newData;
     line = m_scanner->readLine();
@@ -163,6 +184,7 @@ XmlParseJob::~XmlParseJob()
 void
 XmlParseJob::run()
 {
+    DEBUG_BLOCK
     QMap<QString, QHash<QString, QString> > audioFileData;
     do
     {
