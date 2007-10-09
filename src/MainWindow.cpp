@@ -898,7 +898,7 @@ void MainWindow::createActions()
     ac->addAction( "statistics", statistics );
 
     KAction *update = new KAction( KIcon(Amarok::icon( "refresh")), i18n( "Update Collection" ), this );
-    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
+    connect(update, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", update );
 
     KAction *rescan = new KAction( KIcon(Amarok::icon( "rescan")), i18n( "Rescan Collection" ), this );

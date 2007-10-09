@@ -60,6 +60,7 @@ class CollectionManager : public QObject
 
     public slots:
         void startFullScan();
+        void checkCollectionChanges();
 
     signals:
         void collectionAdded( Collection *newCollection );

@@ -119,6 +119,12 @@ CollectionManager::startFullScan()
     }
 }
 
+void
+CollectionManager::checkCollectionChanges()
+{
+    //TODO implement me
+}
+
 QueryMaker*
 CollectionManager::queryMaker()
 {
