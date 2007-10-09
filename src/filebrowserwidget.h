@@ -20,13 +20,14 @@
 #ifndef FILEBROWSERWIDGET_H
 #define FILEBROWSERWIDGET_H
 
-#include <KVBox>
+#include <KVBox> //Base Class
 
-#include <QModelIndex>
+#include <QModelIndex> //Stack Allocated
 
-class QDirModel;
 class QListView;
 
+class KDirModel;
+class KDirSortFilterProxyModel;
 class KUrlComboBox;
 
 class FileBrowserWidget : public KVBox
@@ -41,7 +42,8 @@ class FileBrowserWidget : public KVBox
         void setRootDirectory( const QString &text );
         void setRootDirectory( const QModelIndex &index );
     private:
-        QDirModel *m_model;
+        KDirModel *m_model;
+//         KDirSortFilterProxyModel *m_sortModel;
         QListView *m_view;
         KUrlComboBox *m_combo;
 };

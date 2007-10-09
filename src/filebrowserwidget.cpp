@@ -21,14 +21,17 @@
 #include "collection/CollectionManager.h"
 #include "filebrowserwidget.h"
 #include "meta/meta.h"
+#include "mydirlister.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
 
 #include <QDir>
-#include <QDirModel>
 #include <QListView>
 #include <QVBoxLayout>
 
+#include <KActionCollection>
+#include <KDirModel>
+#include <kdirsortfilterproxymodel.h>
 #include <KUrlComboBox>
 #include <KUrlCompletion>
 
@@ -46,18 +49,25 @@ FileBrowserWidget::FileBrowserWidget( const char *name )
     m_combo->setUrl( KUrl(QDir::home().path()) );
     setObjectName( name );
 
-    m_model = new QDirModel;
-//     m_model->setNameFilters( QStringList() << "mp3" << "ogg" << "flac" );
-    m_model->setFilter( QDir::AllDirs | QDir::AllEntries );
-    m_model->setSorting( QDir::Name | QDir::DirsFirst | QDir::IgnoreCase );
+    m_model = new KDirModel( this );
+    m_model->setDirLister( new MyDirLister( true ) );
+    m_model->dirLister()->setShowingDotFiles( false );
+
+//     KDirSortFilterProxyModel *m_sortModel = new KDirSortFilterProxyModel( this );
+//     m_sortModel->setSourceModel( m_model );
 
     m_view = new QListView( this );
-    connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
-                     SLOT(setRootDirectory(QModelIndex)));
 
+//     m_view->setModel( m_sortModel );
     m_view->setModel( m_model );
 
-    m_view->setRootIndex(m_model->index(QDir::home().path()));
+    connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
+             SLOT(setRootDirectory(QModelIndex)));
+
+//     m_view->setRootIndex(m_model->indexForUrl( KUrl( QDir::home().path() ) ) );;
+    m_model->dirLister()->openUrl( KUrl( "~" ) );
+
+    setFocusProxy( m_view );
 }
 
 
@@ -69,22 +79,30 @@ FileBrowserWidget::~FileBrowserWidget()
 void
 FileBrowserWidget::setRootDirectory( const QString &path )
 {
-    m_view->setRootIndex(m_model->index(path));
+//     m_view->setRootIndex(m_model->indexForUrl( KUrl(path ) ) );
+    m_model->dirLister()->openUrl( KUrl( path ) );
 }
 
 void
 FileBrowserWidget::setRootDirectory( const QModelIndex &index )
 {
-    QString url = m_model->filePath( index );
-    if( m_model->isDir( index ) )
+    if( index.isValid() )
     {
-        m_view->setRootIndex( index );
-        m_combo->setUrl( KUrl(url) );
+//     QModelIndex sourceIndex = m_sortModel->mapToSource( index );
+//     debug() << "INDEX: " << index << "SOURCE INDEX: " << sourceIndex;
+//     QString url = m_model->filePath( index );
+    KFileItem fi = m_model->itemForIndex( index );
+
+    if( fi.isDir() )
+    {
+        m_model->dirLister()->openUrl( fi.url() );
+        m_combo->setUrl( fi.url() );
     }
     else
     {
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( fi.url() );
         The::playlistModel()->insertOptioned( track, Playlist::Append );
+    }
     }
 }
 
