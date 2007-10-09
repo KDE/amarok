@@ -18,6 +18,7 @@
 
 #include "DatabaseUpdater.h"
 
+#include "debug.h"
 #include "sqlcollection.h"
 
 static const int DB_VERSION = 1;
@@ -43,6 +44,85 @@ void
 DatabaseUpdater::update()
 {
     //setup database
+}
+
+void
+DatabaseUpdater::createTemporaryTables()
+{
+    //TODO
+}
+
+void
+DatabaseUpdater::prepareTemporaryTables()
+{
+    //TODO
+}
+
+void
+DatabaseUpdater::removeTemporaryTables()
+{
+    //TODO
+}
+
+void
+DatabaseUpdater::copyToPermanentTables()
+{
+    DEBUG_BLOCK
+
+    m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
+
+    //handle artists before albums
+    QStringList artistIdList = m_collection->query( "SELECT artist.id FROM artist;" );
+    QString artistIds = "-1";
+    foreach( QString artistId, artistIdList )
+    {
+        artistIds += ',';
+        artistIds += artistId;
+    }
+    m_collection->insert( QString ( "INSERT INTO artist SELECT * FROM artist_temp WHERE artist_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
+
+    QStringList albumIdList = m_collection->query( "SELECT album.id FROM album;" );
+    //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
+    //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
+    QString albumIds = "-1";
+    foreach( QString albumId, albumIdList )
+    {
+        albumIds += ',';
+        albumIds += albumId;
+    }
+    m_collection->insert( QString ( "INSERT INTO album SELECT * FROM album_temp WHERE album_temp.id NOT IN ( %1 );" ).arg( albumIds ), QString() );
+
+    QStringList composerIdList = m_collection->query( "SELECT composer.id FROM composer;" );
+    QString composerIds = "-1";
+    foreach( QString composerId, composerIdList )
+    {
+        composerIds += ',';
+        composerIds += composerId;
+    }
+    m_collection->insert( QString ( "INSERT INTO composer SELECT * FROM composer_temp WHERE composer_temp.id NOT IN ( %1 );" ).arg( composerIds ), QString() );
+
+    QStringList genreIdList = m_collection->query( "SELECT genre.id FROM genre;" );
+    QString genreIds = "-1";
+    foreach( QString genreId, genreIdList )
+    {
+        genreIds += ',';
+        genreIds += genreId;
+    }
+    m_collection->insert( QString ( "INSERT INTO genre SELECT * FROM genre_temp WHERE genre_temp.id NOT IN ( %1 );" ).arg( genreIds ), QString() );
+
+    QStringList yearIdList = m_collection->query( "SELECT year.id FROM year;" );
+    QString yearIds = "-1";
+    foreach( QString yearId, yearIdList )
+    {
+        yearIds += ',';
+        yearIds += yearId;
+    }
+    m_collection->insert( QString ( "INSERT INTO year SELECT * FROM year_temp WHERE year_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
+
+    //insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
+    //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
+    m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
+    //insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
 }
 
 void
@@ -185,5 +265,11 @@ DatabaseUpdater::createTables() const
     }
     m_collection->query( "INSERT INTO admin(key,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
+}
+
+void
+DatabaseUpdater::deleteAllRedundant( const QString &table )
+{
+    m_collection->query( QString( "DELETE FROM %1 WHERE id NOT IN ( SELECT %2 FROM tracks )" ).arg( table, table ) );
 }
 

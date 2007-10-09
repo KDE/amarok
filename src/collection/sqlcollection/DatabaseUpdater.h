@@ -19,6 +19,8 @@
 #ifndef AMAROK_DATABASEUPDATER_H
 #define AMAROK_DATABASEUPDATER_H
 
+#include <QString>
+
 class SqlCollection;
 
 class DatabaseUpdater {
@@ -28,6 +30,13 @@ public:
 
     bool needsUpdate() const;
     void update();
+
+    void createTemporaryTables();
+    void prepareTemporaryTables(); //copies data into temporary tables
+    void removeTemporaryTables();
+    void copyToPermanentTables();
+
+    void deleteAllRedundant( const QString &name );
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */
