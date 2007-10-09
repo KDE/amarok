@@ -1320,7 +1320,7 @@ MtpMediaDevice::setDisconnected()
 //                 {
 //                     int button = KMessageBox::warningContinueCancel( m_parent,
 //                             i18np( "<p>You are updating cover art for 1 track. This may take some time.",
-//                                 "<p>You are updating cover art for %n tracks. This may take some time.",
+//                                 "<p>You are updating cover art for %1 tracks. This may take some time.",
 //                                 items->count()
 //                                 ),
 //                             QString() );

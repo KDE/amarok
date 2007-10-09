@@ -1135,9 +1135,13 @@ MetaBundle::veryPrettyTime( int time )
 
     switch( s.count() )
     {
+        // xgettext: no-c-format
         case 1: return i18nc( "seconds", "%1s", s[0] );
+        // xgettext: no-c-format
         case 2: return i18nc( "minutes, seconds", "%2m %1s", s[0], s[1] );
+        // xgettext: no-c-format
         case 3: return i18nc( "hours, minutes, seconds", "%3h %2m %1s", s[0], s[1], s[2] );
+        // xgettext: no-c-format
         case 4: return i18nc( "days, hours, minutes, seconds", "%4d %3h %2m %1s", s[0], s[1], s[2], s[3] );
         default: return "omg bug!";
     }
