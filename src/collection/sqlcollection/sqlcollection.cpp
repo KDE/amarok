@@ -59,14 +59,14 @@ SqlCollectionFactory::init()
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )
+    , m_updater( new DatabaseUpdater( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
 {
     QTimer::singleShot( 0, this, SLOT( initXesam() ) );
-    DatabaseUpdater updater( this );
-    if( updater.needsUpdate() )
-        updater.update();
+    if( m_updater->needsUpdate() )
+        m_updater->update();
 }
 
 SqlCollection::~SqlCollection()
@@ -96,6 +96,12 @@ SqlRegistry*
 SqlCollection::registry() const
 {
     return m_registry;
+}
+
+DatabaseUpdater*
+SqlCollection::dbUpdater() const
+{
+    return m_updater;
 }
 
 void
@@ -181,6 +187,12 @@ QString
 SqlCollection::randomFunc() const
 {
     return "RAND()";
+}
+
+void
+SqlCollection::vacuum() const
+{
+    //implement in subclasses if necessary
 }
 
 void

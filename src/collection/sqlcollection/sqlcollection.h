@@ -20,6 +20,7 @@
 
 #include "amarok_export.h"
 #include "Collection.h"
+#include "DatabaseUpdater.h"
 #include "sqlregistry.h"
 #include "SqlStorage.h"
 
@@ -52,6 +53,7 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
         virtual QString prettyName() const;
 
         SqlRegistry* registry() const;
+        DatabaseUpdater* dbUpdater() const;
 
         void removeCollection();    //testing, remove later
 
@@ -78,12 +80,15 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
         virtual QString longTextColumnType() const;
         virtual QString randomFunc() const;
 
+        virtual void vacuum() const;
+
     private slots:
         void initXesam();
 
     private:
 
         SqlRegistry* const m_registry;
+        DatabaseUpdater * const m_updater;
 
         QString m_collectionId;
         QString m_prettyName;
