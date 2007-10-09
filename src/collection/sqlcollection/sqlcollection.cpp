@@ -19,6 +19,7 @@
 #include "sqlcollection.h"
 
 #include "DatabaseUpdater.h"
+#include "ScanManager.h"
 #include "sqlquerybuilder.h"
 #include "sqlitecollection.h"
 //#include "mysqlcollection.h"
@@ -60,6 +61,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )
     , m_updater( new DatabaseUpdater( this ) )
+    , m_scanManager( new ScanManager( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
@@ -72,6 +74,12 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
 SqlCollection::~SqlCollection()
 {
     delete m_registry;
+}
+
+void
+SqlCollection::startFullScan()
+{
+    m_scanManager->startFullScan();
 }
 
 QString

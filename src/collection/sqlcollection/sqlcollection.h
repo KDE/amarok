@@ -38,6 +38,7 @@ class SqlCollectionFactory : public CollectionFactory
 class CollectionDB;
 class CollectionLocation;
 class XesamCollectionBuilder;
+class ScanManager;
 
 class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 {
@@ -46,7 +47,7 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
         SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();
 
-        virtual void startFullScan() {} //TODO
+        virtual void startFullScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
@@ -89,6 +90,7 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 
         SqlRegistry* const m_registry;
         DatabaseUpdater * const m_updater;
+        ScanManager * const m_scanManager;
 
         QString m_collectionId;
         QString m_prettyName;
