@@ -38,7 +38,6 @@ class CollectionManager : public QObject
         ~CollectionManager();
 
         QueryMaker * queryMaker();
-        void startFullScan();
 
         QList<Collection*> collections();
 
@@ -58,6 +57,9 @@ class CollectionManager : public QObject
 
         void addUnmanagedCollection( Collection *newCollection );
         void removeUnmanagedCollection( Collection *collection );
+
+    public slots:
+        void startFullScan();
 
     signals:
         void collectionAdded( Collection *newCollection );

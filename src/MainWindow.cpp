@@ -902,7 +902,7 @@ void MainWindow::createActions()
     ac->addAction( "update_collection", update );
 
     KAction *rescan = new KAction( KIcon(Amarok::icon( "rescan")), i18n( "Rescan Collection" ), this );
-    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(startScan()));
+    connect(rescan, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
     rescan->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
     ac->addAction( "rescan_collection", rescan );
 
