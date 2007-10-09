@@ -87,7 +87,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @param after insert following this item
          * @param items tracks to add to playlist
          */
-        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, Q3PtrList<MediaItem> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
+        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, QList<MediaItem*> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
 
         /**
          * Create a new playlist
@@ -96,14 +96,14 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @param items tracks to add to the new playlist
          * @return the newly created playlist
          */
-        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
+        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QList<MediaItem*> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
 
         /**
          * Move items to a directory
          * @param directory new parent of dropped items
          * @param items tracks to add to the directory
          */
-        virtual void      addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
+        virtual void      addToDirectory( MediaItem *directory, QList<MediaItem*> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
 
         /**
          * Create a new directory
@@ -370,7 +370,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         MediaItem *m_orphanedItem;
 
         // stow away all items below m_rootItems when device is not current
-        Q3PtrList<Q3ListViewItem> m_rootItems;
+        QList<Q3ListViewItem*> m_rootItems;
 };
 
 

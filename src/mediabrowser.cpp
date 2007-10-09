@@ -40,7 +40,6 @@
 
 #include <q3header.h>
 #include <Q3PopupMenu>
-#include <Q3PtrList>
 #include <q3simplerichtext.h>
 #include <QByteArray>
 #include <QCheckBox>
@@ -808,11 +807,11 @@ MediaView::nodeBuildDragList( MediaItem* item, int flags )
 }
 
 int
-MediaView::getSelectedLeaves( MediaItem *parent, Q3PtrList<MediaItem> *list, int flags )
+MediaView::getSelectedLeaves( MediaItem *parent, QList<MediaItem*> *list, int flags )
 {
     int numFiles = 0;
     if( !list )
-        list = new Q3PtrList<MediaItem>;
+        list = new QList<MediaItem*>;
 
     MediaItem *it;
     if( !parent )
@@ -883,12 +882,12 @@ MediaView::contentsDropEvent( QDropEvent *e )
         if( !item && MediaBrowser::instance()->currentDevice()->m_type != "generic-mediadevice" )
             return;
 
-        Q3PtrList<MediaItem> items;
+        QList<MediaItem*> items;
 
         if( !item || item->type() == MediaItem::DIRECTORY ||
                     item->type() == MediaItem::TRACK )
         {
-            Q3PtrList<MediaItem> items;
+            QList<MediaItem*> items;
             getSelectedLeaves( 0, &items );
             m_device->addToDirectory( item, items );
         }
@@ -922,7 +921,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
         }
         else if( item->type() == MediaItem::PLAYLISTSROOT )
         {
-            Q3PtrList<MediaItem> items;
+            QList<MediaItem*> items;
             getSelectedLeaves( 0, &items );
             QString base( i18n("New Playlist") );
             QString name = base;

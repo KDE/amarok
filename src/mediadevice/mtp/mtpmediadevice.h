@@ -26,8 +26,9 @@
 #define AMAROK_MTPMEDIADEVICE_H
 
 #include "mediabrowser.h"
+#include "MediaItem.h"
+#include "MediaDevice.h"
 
-#include <q3ptrlist.h>
 #include <QMutex>
 //Added by qt3to4:
 #include <QLabel>
@@ -160,8 +161,8 @@ class MtpMediaDevice : public MediaDevice
 
         void                    synchronizeDevice();
         int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
-        void                    addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
-        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
+        void                    addToPlaylist( MediaItem *list, MediaItem *after, QList<MediaItem*> items );
+        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, QList<MediaItem*> items );
         bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         virtual void            updateRootItems() {};
 
@@ -184,9 +185,9 @@ class MtpMediaDevice : public MediaDevice
         void                    readAlbums( void );
         void                    playlistFromItem( MtpMediaItem *item);
         QByteArray              *getSupportedImage( QString path );
-        void                    sendAlbumArt( Q3PtrList<MediaItem> *items );
-        void                    updateAlbumArt( Q3PtrList<MediaItem> *items );
-        LIBMTP_album_t          *getOrCreateAlbum( Q3PtrList<MediaItem> *items );
+        void                    sendAlbumArt( QList<MediaItem*> *items );
+        void                    updateAlbumArt( QList<MediaItem*> *items );
+        LIBMTP_album_t          *getOrCreateAlbum( QList<MediaItem*> *items );
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
         QMutex                  m_critical_mutex;
@@ -196,7 +197,7 @@ class MtpMediaDevice : public MediaDevice
         QLineEdit               *m_folderStructureBox;
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
-        Q3PtrList<MediaItem>     *m_newTracks;
+        QList<MediaItem*>       *m_newTracks;
         QMap<int,QString>       mtpFileTypes;
         QMap<uint32_t,MtpTrack*> m_idToTrack;
         QMap<QString,MtpMediaItem*> m_fileNameToItem;

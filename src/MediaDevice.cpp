@@ -475,7 +475,7 @@ MediaDevice::connectDevice( bool silent )
     // delete podcasts already played
     if( m_autoDeletePodcasts && m_podcastItem )
     {
-        Q3PtrList<MediaItem> list;
+        QList<MediaItem*> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves( m_podcastItem, &list, MediaView::OnlyPlayed );
 
@@ -874,12 +874,12 @@ MediaDevice::transferFiles()
                 MediaItem *pl = m_playlistItem->findItem( playlist );
                 if( !pl )
                 {
-                    Q3PtrList<MediaItem> items;
+                    QList<MediaItem*> items;
                     pl = newPlaylist( playlist, m_playlistItem, items );
                 }
                 if( pl )
                 {
-                    Q3PtrList<MediaItem> items;
+                    QList<MediaItem*> items;
                     items.append( item );
                     addToPlaylist( pl, pl->lastChild(), items );
                 }
@@ -1017,7 +1017,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
 
         m_deleting = true;
 
-        Q3PtrList<MediaItem> list;
+        QList<MediaItem*> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves(item, &list, MediaView::OnlySelected | ((flags & OnlyPlayed) ? MediaView::OnlyPlayed : MediaView::None) );
 

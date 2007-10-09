@@ -22,7 +22,6 @@
 #include <KUrl>            //stack allocated
 #include <KVBox>           //baseclass
 
-#include <Q3PtrList>
 #include <QDateTime>
 #include <QLabel>
 #include <QMutex>
@@ -292,7 +291,7 @@ class MediaView : public K3ListView
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
         AMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
-        int getSelectedLeaves(MediaItem *parent, Q3PtrList<MediaItem> *list, int flags=OnlySelected );
+        int getSelectedLeaves(MediaItem *parent, QList<MediaItem*> *list, int flags=OnlySelected );
         AMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
