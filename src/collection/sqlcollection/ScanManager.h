@@ -59,7 +59,7 @@ class XmlParseJob : public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        XmlParseJob( ScanManager *parent );
+        XmlParseJob( ScanManager *parent, SqlCollection *collection );
         ~XmlParseJob();
 
         void run();
@@ -67,6 +67,7 @@ class XmlParseJob : public ThreadWeaver::Job
         void addNewXmlData( const QString &data );
 
     private:
+        SqlCollection *m_collection;
         QXmlStreamReader m_reader;
         QString m_nextData;
         QWaitCondition m_wait;

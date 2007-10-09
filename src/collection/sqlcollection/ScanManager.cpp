@@ -23,6 +23,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
+#include "ScanResultProcessor.h"
 #include "sqlcollection.h"
 
 #include <QFileInfo>
@@ -62,7 +63,7 @@ ScanManager::startFullScan()
         ThreadWeaver::Weaver::instance()->dequeue( m_parser );
         m_parser->deleteLater();
     }
-    m_parser = new XmlParseJob( this );
+    m_parser = new XmlParseJob( this, m_collection );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
@@ -84,7 +85,7 @@ void ScanManager::startIncrementalScan()
         ThreadWeaver::Weaver::instance()->dequeue( m_parser );
         m_parser->deleteLater();
     }
-    m_parser = new XmlParseJob( this );
+    m_parser = new XmlParseJob( this, m_collection );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
@@ -171,8 +172,9 @@ ScanManager::getDirsToScan() const
 
 //XmlParseJob
 
-XmlParseJob::XmlParseJob( ScanManager *parent )
+XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
+    , m_collection( collection )
 {
 }
 
@@ -266,6 +268,11 @@ XmlParseJob::run()
         //the error cannot be PrematureEndOfDocumentError, so handle
         //an unrecoverable error here
         //TODO implement
+    }
+    else
+    {
+        ScanResultProcessor processor( m_collection );
+        //processor.processScanResult( audioFileData );
     }
 }
 
