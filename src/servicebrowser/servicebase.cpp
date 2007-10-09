@@ -122,6 +122,10 @@ ServiceBase::ServiceBase( const QString &name )
 
 }
 
+ServiceBase::~ServiceBase()
+{
+}
+
 
 void ServiceBase::showInfo( bool show )
 {

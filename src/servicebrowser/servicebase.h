@@ -62,7 +62,7 @@ public:
     /**
      * Destructor
      */
-    ~ServiceBase() { }
+    ~ServiceBase();
 
 
     QString getName();

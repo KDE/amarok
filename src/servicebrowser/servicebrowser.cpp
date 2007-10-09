@@ -48,6 +48,12 @@ ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
     m_scriptableServiceManager = 0;
 }
 
+ServiceBrowser::~ServiceBrowser()
+{
+    DEBUG_BLOCK
+    qDeleteAll( m_services.values() );
+}
+
 //TODO: Thsi should be moved to the ScriptableServiceManager instead
 void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
     m_scriptableServiceManager = scriptableServiceManager;

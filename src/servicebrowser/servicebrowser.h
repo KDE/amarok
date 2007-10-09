@@ -48,7 +48,7 @@ public:
     /**
      * Destructor
      */
-    ~ServiceBrowser() { }
+    ~ServiceBrowser();
 
 
 public slots:
