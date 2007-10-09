@@ -24,6 +24,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "Collection.h"
+#include "CollectionManager.h"
 #include "lastfm.h"
 #include "meta.h"
 
@@ -86,8 +87,18 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                     track->subscribe( this );
                     realTrack = track;
                     notifyObservers();
+                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
                 }
             }
+        }
+
+        void slotCheckCollectionManager()
+        {
+            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+            if( track )
+                realTrack = track;
+            notifyObservers();
+            disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
         }
 };
 

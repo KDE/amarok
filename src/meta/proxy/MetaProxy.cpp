@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QTimer>
 
 #include <KSharedPtr>
 
@@ -52,6 +53,8 @@ MetaProxy::Track::Track( const KUrl &url )
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
+
+    QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
 
 MetaProxy::Track::~Track()
