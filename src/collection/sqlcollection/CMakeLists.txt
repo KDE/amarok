@@ -19,6 +19,8 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 set(amarok_collection-sqlcollection_PART_SRCS
 	DatabaseUpdater.cpp
+	ScanManager.cpp
+    ScanResultProcessor.cpp
 	sqlcollection.cpp
 	SqlCollectionLocation.cpp
 	sqlquerybuilder.cpp
