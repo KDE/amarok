@@ -20,6 +20,7 @@
 #include "CollectionManager.h"
 #include "MainWindow.h"
 #include "meta/EditCapability.h"
+#include "meta/proxy/MetaProxy.h"
 #include "PlaylistHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "statusbar.h"
@@ -274,7 +275,7 @@ PlaylistHandler::loadPls( QTextStream &stream )
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', 1).trimmed();
-            currentTrack = CollectionManager::instance()->trackForUrl( KUrl(tmp) );
+            currentTrack = Meta::TrackPtr( new MetaProxy::Track( KUrl( tmp ) ) );
             tracks.append( currentTrack );
             continue;
         }
@@ -413,10 +414,10 @@ PlaylistHandler::loadM3u( QTextStream &stream )
                 KUrl kurl( KUrl( directory + line ) );
                 kurl.cleanPath();
                 debug() << "found track: " << kurl.path();
-                tracks.append( CollectionManager::instance()->trackForUrl( kurl ) );
+                tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
             }
             else {
-                tracks.append( CollectionManager::instance()->trackForUrl( KUrl( line ) ) );
+                tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( line ) ) ) );
                 debug() << "found track: " << line;
             }
 
@@ -516,7 +517,7 @@ PlaylistHandler::loadRealAudioRam( QTextStream &stream )
         if (url == "--stop--") break; /* stop line */
         if ((url.left(7) == "rtsp://") || (url.left(6) == "pnm://") || (url.left(7) == "http://"))
         {
-            tracks.append( CollectionManager::instance()->trackForUrl( url ) );
+            tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( url ) ) ) );
         }
     }
 
@@ -570,7 +571,7 @@ PlaylistHandler::loadSMIL( QTextStream &stream )
             }
             if( !url.isNull() )
             {
-                tracks.append( CollectionManager::instance()->trackForUrl( url ) );
+                tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( url ) ) ) );
             }
     }
 
@@ -669,9 +670,9 @@ PlaylistHandler::loadASX( QTextStream &stream )
                 }
                 subNode = subNode.nextSibling();
         }
-        if (!url.isNull())
+        if (!url.isEmpty())
         {
-            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
+            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( url ) ) );
             Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
             if( ec )
                 ec->setTitle( title );
@@ -720,14 +721,14 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
         if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.url() ) ) )
         {
 
-            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( location );
+            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
             tracks.append( trackPtr );
         }
         else
         {
             debug() << location << ' ' << artist << ' ' << title << ' ' << album;
 
-            TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( location );
+            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
             Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
             if( ec )
             {
