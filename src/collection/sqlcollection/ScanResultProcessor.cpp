@@ -18,6 +18,7 @@
 
 #include "ScanResultProcessor.h"
 
+#include "debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
@@ -41,6 +42,7 @@ ScanResultProcessor::~ScanResultProcessor()
 void
 ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult )
 {
+    DEBUG_BLOCK
     QList<QHash<QString, QString> > dirData;
     bool firstTrack = true;
     QString dir;
@@ -101,12 +103,27 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
     }
     else
     {
+        QString albumArtist = findAlbumArtist( artists );
+        //an empty string means that no albumartist was found
+        int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
+        QHash<QString, QString> row;
+        foreach( row, data )
+        {
+            addTrack( row, artist );
+        }
     }
+}
+
+QString
+ScanResultProcessor::findAlbumArtist( const QSet<QString> &artist ) const
+{
+    return QString();
 }
 
 void
 ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
 {
+    DEBUG_BLOCK
     int album = albumId( trackData.value( Field::ALBUM ), albumArtistId );
     int artist = artistId( trackData.value( Field::ARTIST ) );
     int genre = genreId( trackData.value( Field::GENRE ) );
@@ -114,7 +131,7 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     int year = yearId( trackData.value( Field::YEAR ) );
     int url = urlId( trackData.value( Field::URL ) );
 
-    QString insert = "INSERT INTO tracks(url,artist,album,genre,composer,year,title,comment,"
+    QString insert = "INSERT INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
                      "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm"
                      "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8'"; //goes up to comment
     insert = insert.arg( url ).arg( artist ).arg( album ).arg( genre ).arg( composer ).arg( year );
@@ -126,7 +143,8 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     insert2 = insert2.arg( "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
     insert += insert2;
 
-    m_collection->insert( insert, "tracks" );
+    //m_collection->insert( insert, "tracks" );
+    debug() << insert;
 }
 
 int
@@ -134,12 +152,12 @@ ScanResultProcessor::artistId( const QString &artist )
 {
     if( m_artists.contains( artist ) )
         return m_artists.value( artist );
-    QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->escape( artist ) );
+    QString query = QString( "SELECT id FROM artists_temp WHERE name = '%1';" ).arg( m_collection->escape( artist ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO albums( name ) VALUES ('%1');" ).arg( m_collection->escape( artist ) );
-        int id = m_collection->insert( insert, "albums" );
+        QString insert = QString( "INSERT INTO albums_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( artist ) );
+        int id = m_collection->insert( insert, "albums_temp" );
         m_artists.insert( artist, id );
         return id;
     }
@@ -156,12 +174,12 @@ ScanResultProcessor::genreId( const QString &genre )
 {
     if( m_genre.contains( genre ) )
         return m_genre.value( genre );
-    QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->escape( genre ) );
+    QString query = QString( "SELECT id FROM genres_temp WHERE name = '%1';" ).arg( m_collection->escape( genre ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->escape( genre ) );
-        int id = m_collection->insert( insert, "genre" );
+        QString insert = QString( "INSERT INTO genres_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( genre ) );
+        int id = m_collection->insert( insert, "genres_temp" );
         m_genre.insert( genre, id );
         return id;
     }
@@ -178,12 +196,12 @@ ScanResultProcessor::composerId( const QString &composer )
 {
     if( m_composer.contains( composer ) )
         return m_composer.value( composer );
-    QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->escape( composer ) );
+    QString query = QString( "SELECT id FROM composers_temp WHERE name = '%1';" ).arg( m_collection->escape( composer ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->escape( composer ) );
-        int id = m_collection->insert( insert, "composers" );
+        QString insert = QString( "INSERT INTO composers_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( composer ) );
+        int id = m_collection->insert( insert, "composers_temp" );
         m_composer.insert( composer, id );
         return id;
     }
@@ -200,12 +218,12 @@ ScanResultProcessor::yearId( const QString &year )
 {
     if( m_year.contains( year ) )
         return m_year.value( year );
-    QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+    QString query = QString( "SELECT id FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->escape( year ) );
-        int id = m_collection->insert( insert, "years" );
+        QString insert = QString( "INSERT INTO years_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( year ) );
+        int id = m_collection->insert( insert, "years_temp" );
         m_year.insert( year, id );
         return id;
     }
@@ -220,18 +238,29 @@ ScanResultProcessor::yearId( const QString &year )
 int 
 ScanResultProcessor::albumId( const QString &album, int artistId )
 {
+    //artistId == 0 means no albumartist
     QPair<QString, int> key( album, artistId );
     if( m_albums.contains( key ) )
         return m_albums.value( key );
 
-    QString query = QString( "SELECT id FROM albums WHERE artist = %1 AND name = '%2';" )
+    QString query;
+    if( artistId == 0 ) 
+    {
+        query = QString( "SELECT if FROM albums_temp WHERE artist IS NULL AND name = '%1';" )
+                    .arg( m_collection->escape( album ) );
+    }
+    else
+    {
+        query = QString( "SELECT id FROM albums_temp WHERE artist = %1 AND name = '%2';" )
                         .arg( QString::number( artistId ), m_collection->escape( album ) );
+    }
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO albums(artist, name) VALUES( %1, '%2' );" )
-                    .arg( QString::number( artistId ), m_collection->escape( album ) );
-        int id = m_collection->insert( insert, "albums" );
+        QString insert = QString( "INSERT INTO albums_temp(artist, name) VALUES( %1, '%2' );" )
+                    .arg( artistId ? QString::number( artistId ) : "NULL" )
+                    .arg( m_collection->escape( album ) );
+        int id = m_collection->insert( insert, "albums_temp" );
         m_albums.insert( key, id );
         return id;
     }
@@ -249,14 +278,14 @@ ScanResultProcessor::urlId( const QString &url )
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
     //don't bother caching the data, we only call this method for each url once
-    QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
+    QString query = QString( "SELECT id FROM urls_temp WHERE deviceid = %1 AND rpath = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO urls(deviceid, rpath) VALUES ( %1, '%2' );" )
+        QString insert = QString( "INSERT INTO urls_temp(deviceid, rpath) VALUES ( %1, '%2' );" )
                             .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-        return m_collection->insert( insert, "urls" );
+        return m_collection->insert( insert, "urls_temp" );
     }
     else
     {

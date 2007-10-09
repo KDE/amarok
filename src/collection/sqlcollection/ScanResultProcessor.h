@@ -46,6 +46,8 @@ class ScanResultProcessor
         int albumId( const QString &album, int artistId );
         int urlId( const QString &url );
 
+        QString findAlbumArtist( const QSet<QString> &artists ) const;
+
     private:
         SqlCollection *m_collection;
 
