@@ -36,6 +36,7 @@
 
 namespace KIO { class Job; }
 
+class MediaDevice;
 class QStringList;
 class SubmitItem;
 class SubmitQueue;

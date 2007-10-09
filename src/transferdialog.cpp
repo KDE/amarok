@@ -15,6 +15,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "mediabrowser.h"
+#include "MediaDevice.h"
 
 #include <KApplication>
 #include <KComboBox>

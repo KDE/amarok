@@ -14,6 +14,7 @@
 #define DEVICECONFIGUREDIALOG_H
 
 #include "hintlineedit.h"
+#include "MediaDevice.h"
 
 #include <kdialog.h>
 
@@ -31,7 +32,7 @@ class DeviceConfigureDialog : public KDialog
     Q_OBJECT
 
     public:
-        DeviceConfigureDialog( const Medium &medium );
+        DeviceConfigureDialog( MediaDevice *device );
         ~DeviceConfigureDialog();
         bool successful() { return m_accepted; }
 
@@ -40,7 +41,7 @@ class DeviceConfigureDialog : public KDialog
 
     private:
         bool            m_accepted;
-        Medium*         m_medium;
+        MediaDevice     *m_device;
 
         HintLineEdit    *m_connectEdit;
         HintLineEdit    *m_disconnectEdit;

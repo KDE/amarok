@@ -427,6 +427,8 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     mediabrowser.cpp
     MediaItem.cpp
+    MediaDevice.cpp
+    MediaDeviceCache.cpp
     medium.cpp
     metabundle.cpp
     moodbar.cpp
