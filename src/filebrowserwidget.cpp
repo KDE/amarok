@@ -29,20 +29,27 @@
 #include <QListView>
 #include <QVBoxLayout>
 
-#include <KLineEdit>
+#include <KUrlComboBox>
+#include <KUrlCompletion>
 
 
 FileBrowserWidget::FileBrowserWidget( const char *name )
 {
-    m_edit = new KLineEdit( this );
-    connect( m_edit, SIGNAL(returnPressed(QString)),
+    m_combo = new KUrlComboBox( KUrlComboBox::Directories, true, this );
+
+    m_combo->setCompletionObject( new KUrlCompletion( KUrlCompletion::DirCompletion ) );
+    m_combo->setAutoDeleteCompletionObject( true );
+    m_combo->setMaxItems( 9 );
+
+    connect( m_combo, SIGNAL(returnPressed(QString)),
                    SLOT(setRootDirectory(QString)));
-    m_edit->setText( QDir::home().path() );
+    m_combo->setUrl( KUrl(QDir::home().path()) );
     setObjectName( name );
 
     m_model = new QDirModel;
 //     m_model->setNameFilters( QStringList() << "mp3" << "ogg" << "flac" );
     m_model->setFilter( QDir::AllDirs | QDir::AllEntries );
+    m_model->setSorting( QDir::Name | QDir::DirsFirst | QDir::IgnoreCase );
 
     m_view = new QListView( this );
     connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
@@ -69,13 +76,12 @@ void
 FileBrowserWidget::setRootDirectory( const QModelIndex &index )
 {
     QString url = m_model->filePath( index );
-    QFileInfo *fileInfo = new QFileInfo( url );
-    if( fileInfo->isDir() )
+    if( m_model->isDir( index ) )
     {
         m_view->setRootIndex( index );
-        m_edit->setText( url );
+        m_combo->setUrl( KUrl(url) );
     }
-    else if( fileInfo->isFile() )
+    else
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
         The::playlistModel()->insertOptioned( track, Playlist::Append );

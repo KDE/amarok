@@ -27,7 +27,7 @@
 class QDirModel;
 class QListView;
 
-class KLineEdit;
+class KUrlComboBox;
 
 class FileBrowserWidget : public KVBox
 {
@@ -43,7 +43,7 @@ class FileBrowserWidget : public KVBox
     private:
         QDirModel *m_model;
         QListView *m_view;
-        KLineEdit *m_edit;
+        KUrlComboBox *m_combo;
 };
 
 #endif
