@@ -53,18 +53,16 @@ FileBrowserWidget::FileBrowserWidget( const char *name )
     m_model->setDirLister( new MyDirLister( true ) );
     m_model->dirLister()->setShowingDotFiles( false );
 
-//     KDirSortFilterProxyModel *m_sortModel = new KDirSortFilterProxyModel( this );
-//     m_sortModel->setSourceModel( m_model );
+    m_sortModel = new KDirSortFilterProxyModel( this );
+    m_sortModel->setSourceModel( m_model );
 
     m_view = new QListView( this );
 
-//     m_view->setModel( m_sortModel );
-    m_view->setModel( m_model );
+    m_view->setModel( m_sortModel );
 
     connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
              SLOT(setRootDirectory(QModelIndex)));
 
-//     m_view->setRootIndex(m_model->indexForUrl( KUrl( QDir::home().path() ) ) );;
     m_model->dirLister()->openUrl( KUrl( "~" ) );
 
     setFocusProxy( m_view );
@@ -79,19 +77,14 @@ FileBrowserWidget::~FileBrowserWidget()
 void
 FileBrowserWidget::setRootDirectory( const QString &path )
 {
-//     m_view->setRootIndex(m_model->indexForUrl( KUrl(path ) ) );
     m_model->dirLister()->openUrl( KUrl( path ) );
 }
 
 void
 FileBrowserWidget::setRootDirectory( const QModelIndex &index )
 {
-    if( index.isValid() )
-    {
-//     QModelIndex sourceIndex = m_sortModel->mapToSource( index );
-//     debug() << "INDEX: " << index << "SOURCE INDEX: " << sourceIndex;
-//     QString url = m_model->filePath( index );
-    KFileItem fi = m_model->itemForIndex( index );
+    QModelIndex sourceIndex = m_sortModel->mapToSource( index );
+    KFileItem fi = m_model->itemForIndex( sourceIndex );
 
     if( fi.isDir() )
     {
@@ -102,7 +95,6 @@ FileBrowserWidget::setRootDirectory( const QModelIndex &index )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( fi.url() );
         The::playlistModel()->insertOptioned( track, Playlist::Append );
-    }
     }
 }
 

@@ -43,7 +43,7 @@ class FileBrowserWidget : public KVBox
         void setRootDirectory( const QModelIndex &index );
     private:
         KDirModel *m_model;
-//         KDirSortFilterProxyModel *m_sortModel;
+        KDirSortFilterProxyModel *m_sortModel;
         QListView *m_view;
         KUrlComboBox *m_combo;
 };
