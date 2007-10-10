@@ -9,6 +9,7 @@
 #include "app.h"
 #include "actionclasses.h"
 #include "MainWindow.h" 
+#include "PlaylistClassicView.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
@@ -50,7 +51,8 @@ Widget::Widget( QWidget* parent )
     Playlist::GraphicsView* playView = The::playlistView();
     playView->setModel( playModel );
 
-    QTreeView * clasicalPlaylistView = new QTreeView( this );
+
+    Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
     clasicalPlaylistView->setRootIsDecorated( false );
     clasicalPlaylistView->setAlternatingRowColors ( true );
     clasicalPlaylistView->setSelectionMode( QAbstractItemView::ExtendedSelection );
