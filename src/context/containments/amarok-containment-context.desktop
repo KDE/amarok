@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Context
+Comment=A containment for the Amarok Context
+Icon=
+Type=Service
+ServiceTypes=Plasma/Applet,Plasma/Containment
+
+X-KDE-Library=amarok_containment_context
+X-KDE-PluginInfo-Author=Leo Franchi
+X-KDE-PluginInfo-Email=amarok@kde.org
+X-KDE-PluginInfo-Name=context
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=http://amarok.kde.org/
+X-KDE-PluginInfo-Category=Miscellaneous
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
