@@ -21,6 +21,8 @@
 #include <QGraphicsTextItem>
 #include <QPoint>
 
+#include <KGlobalSettings>
+
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_header( 0 )
@@ -76,6 +78,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     m_siteLabel->setText( i18n( "Site" ) + ':' );
 
     m_lyrics->setDefaultTextColor( Qt::white );
+    m_lyrics->setFont( KGlobalSettings::smallestReadableFont() );
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
     m_site->setBrush( QBrush( Qt::white ) );
@@ -148,7 +151,9 @@ void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data&
         m_site->setText( lyrics[ 2 ].toString() );
 
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
-//         calculateHeight();
+        m_lyrics->adjustSize();
+        update();
+        calculateHeight();
     }
     update();
 }
@@ -181,6 +186,8 @@ void LyricsApplet::calculateHeight()
     {
         qreal expandBy = lyricsheight - m_header->elementRect( "lyrics" ).height();
         m_size.setHeight( m_size.height() + expandBy );
+        resize( m_size.height() + expandBy );
+        update();
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
         qreal shrinkBy = m_theme->elementRect( "lyrics" ).height() - lyricsheight;

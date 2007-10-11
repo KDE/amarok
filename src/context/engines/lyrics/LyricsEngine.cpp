@@ -17,7 +17,6 @@
 #include "debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "scriptmanager.h"
 

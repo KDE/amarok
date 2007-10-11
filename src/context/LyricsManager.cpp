@@ -14,8 +14,6 @@
 #include "LyricsManager.h"
 
 #include "debug.h"
-// TODO port to new collection architecture
-#include "collectiondb.h"
 #include "enginecontroller.h"
 
 #include <QDomDocument>
