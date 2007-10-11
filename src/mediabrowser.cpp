@@ -157,6 +157,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     //TODO: how to fix getButton
+    // perhaps the action can be referenced instead?
     m_connectAction = new KAction(KIcon("connect_creating"), i18n("Connect"), this);
     connect(m_connectAction, SIGNAL(triggered()), this, SLOT(connectClicked()));
     m_toolbar->addAction(m_connectAction);
@@ -179,7 +180,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
     m_customAction = new KAction(KIcon( "add_playlist" ), i18n("custom"), this);
-    connect(m_customAction, SIGNAL(triggered()), this, SLOT(custom()));
+    connect(m_customAction, SIGNAL(triggered()), this, SLOT(customClicked()));
     m_customAction->setText( i18n("Special Device Functions") );
     m_customAction->setToolTip( i18n("Device-specific special functions or information") );
     m_toolbar->addAction(m_customAction);

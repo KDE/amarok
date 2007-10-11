@@ -185,10 +185,10 @@ MediaItem
 
         const QString extension = bundle.url().path().section( ".", -1 ).toLower();
 
-        int libmtp_type = m_supportedFiles.findIndex( extension );
+        int libmtp_type = m_supportedFiles.indexOf( extension );
         if( libmtp_type >= 0 )
         {
-            int keyIndex = mtpFileTypes.values().findIndex( extension );
+            int keyIndex = mtpFileTypes.values().indexOf( extension );
             libmtp_type = mtpFileTypes.keys()[keyIndex];
             trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
             debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
@@ -1160,11 +1160,11 @@ MtpMediaDevice::openDevice( bool silent )
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
     }
     // find supported image types (for album art).
-    if( m_supportedFiles.findIndex( "jpg" ) )
+    if( m_supportedFiles.indexOf( "jpg" ) )
         m_format = "JPEG";
-    else if( m_supportedFiles.findIndex( "png" ) )
+    else if( m_supportedFiles.indexOf( "png" ) )
         m_format = "PNG";
-    else if( m_supportedFiles.findIndex( "gif" ) )
+    else if( m_supportedFiles.indexOf( "gif" ) )
         m_format = "GIF";
     free( filetypes );
     m_critical_mutex.unlock();
@@ -1251,31 +1251,32 @@ MtpMediaDevice::customClicked()
     if( isConnected() )
     {
         QString batteryLevel;
-        QString secureTime;
+        QString serialNumber;
         QString supportedFiles;
 
         uint8_t maxbattlevel;
         uint8_t currbattlevel;
-        char *sectime;
 
 
         m_critical_mutex.lock();
         LIBMTP_Get_Batterylevel( m_device, &maxbattlevel, &currbattlevel );
-        LIBMTP_Get_Secure_Time( m_device, &sectime );
+        char *serialnum = LIBMTP_Get_Serialnumber( m_device );
         m_critical_mutex.unlock();
 
         batteryLevel = i18n("Battery level: ")
             + QString::number( (int) ( (float) currbattlevel / (float) maxbattlevel * 100.0 ) )
             + '%';
-        secureTime = i18n("Secure time: ") + sectime;
+        serialNumber = i18n("Serial number: ") + QString::fromUtf8( serialnum );
+        if( m_supportedFiles.at( m_supportedFiles.size()-1 ).isEmpty() )
+            m_supportedFiles.removeLast();
         supportedFiles = i18n("Supported file types: ")
             + m_supportedFiles.join( ", " );
 
         Information = ( i18n( "Player Information for " )
-                        + m_name + '\n' + batteryLevel
-                        + '\n' + secureTime + '\n'
+                        + m_name + ":\n" + batteryLevel
+                        + '\n' + serialNumber + '\n'
                         + supportedFiles );
-        free(sectime);
+        free( serialnum );
     }
     else
     {
