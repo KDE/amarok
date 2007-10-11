@@ -38,6 +38,11 @@ public:
     virtual QRectF boundingRect() const;
     
     Applet* addApplet( Applet* applet );
+    // we reimplement this from Containment as we want this to trigger
+    // our own addApplet as well. 
+    Applet* addApplet(const QString& name, const QVariantList& args = QVariantList(),
+                      uint id = 0, const QRectF &geometry = QRectF(-1, -1, -1, -1),
+                      bool delayedInit = false);
     
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
