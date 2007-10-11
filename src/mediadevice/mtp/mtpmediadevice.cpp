@@ -73,12 +73,6 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     m_customButton = true;
     m_transfer = true;
 
-    //PORT 2.0
-    //KToolBarButton *customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
-    //customButton->setText( i18n("Special device functions") );
-    //QToolTip::remove( customButton );
-    //customButton->setToolTip( i18n( "Special functions of your device" ) );
-
     mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
     mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
     mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
@@ -979,7 +973,8 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
 int
 MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
-
+    //PORT 2.0
+    //If nothing is left in a folder, delete the folder
     int result = 0;
     if( isCanceled() || !item )
     {
@@ -1048,7 +1043,8 @@ int
 MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
 {
     DEBUG_BLOCK
-
+    //PORT 2.0
+    //If nothing is left in a folder, delete the folder
     u_int32_t object_id;
     if( deleteItem->type() == MediaItem::PLAYLIST )
         object_id = deleteItem->playlist()->id();
@@ -1250,6 +1246,7 @@ MtpMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available 
 void
 MtpMediaDevice::customClicked()
 {
+    DEBUG_BLOCK
     QString Information;
     if( isConnected() )
     {

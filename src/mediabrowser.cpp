@@ -180,6 +180,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
     m_customAction = new KAction(KIcon( "add_playlist" ), i18n("custom"), this);
     connect(m_customAction, SIGNAL(triggered()), this, SLOT(custom()));
+    m_customAction->setText( i18n("Special Device Functions") );
+    m_customAction->setToolTip( i18n("Device-specific special functions or information") );
     m_toolbar->addAction(m_customAction);
 //     m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
 //     m_toolbar->getButton(TRANSFER)->setToolTip( i18n( "Transfer tracks to media device" ) );
@@ -201,8 +203,6 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_searchWidget = new SearchWidget( searchToolBar, this );
     searchToolBar->addWidget( m_searchWidget );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-//     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-//     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // connect to device cache
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded(const QString&) ),
@@ -1086,7 +1086,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
         if( protocol == "pde" )
             protocol == "njb";
 
-        name = solidDevice.product();
+        name = solidDevice.vendor() + " - " + solidDevice.product();
     }
     else if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::ManualType )
     {
@@ -1198,7 +1198,7 @@ MediaBrowser::updateStats()
 
     KIO::filesize_t queued = m_queue->totalSize();
 
-    QString text = i18np( "1 track in queue", "%1 tracks in queue", m_queue->childCount() );
+    QString text = i18np( "  1 track in queue", "  %1 tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
         text += i18n(" (%1)", KIO::convertSize( queued ) );
