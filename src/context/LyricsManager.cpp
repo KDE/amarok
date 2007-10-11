@@ -91,7 +91,7 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( cached );
-        
+
     QDomDocument doc;
     QString xmldoc = QString::fromUtf8( cXmlDoc );
     if( !doc.setContent( xmldoc ) )
@@ -100,16 +100,16 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
         sendLyricsMessage( QString( "error" ) );
         return;
     }
-    
+
     QString lyrics;
-    
+
     QDomElement el = doc.documentElement();
-    
+
     if ( el.tagName() == "suggestions" )
     {
-        
+
         const QDomNodeList l = doc.elementsByTagName( "suggestion" );
-        
+
         if( l.length() ==0 )
         {
 //             setData( "lyrics", "not found" );
@@ -122,7 +122,7 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
                 const QString url    = l.item( i ).toElement().attribute( "url" );
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
                 const QString title  = l.item( i ).toElement().attribute( "title" );
-                
+
                 suggested << QString( "%1 - %2 %3" ).arg( title, artist, url );
             }
 //             setData( "lyrics", "suggested", suggested );
@@ -131,20 +131,20 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     } else
     {
         lyrics = el.text();
-        CollectionDB::instance()->setLyrics( EngineController::instance()->currentTrack()->url(), xmldoc, EngineController::instance()->currentTrack()->prettyUrl() ); // TODO port to new Meta:: api
-        
+        EngineController::instance()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
+
         const QString title      = el.attribute( "title" );
-        
+
         QStringList lyricsData;
-        lyricsData << title 
+        lyricsData << title
             << EngineController::instance()->currentTrack()->artist()->name()
             << QString() // TODO lyrics site
             << lyrics;
-        
+
         debug() << "sending lyrics data:" << lyricsData;
 //         setData( "lyrics", "lyrics", lyricsData );
         sendNewLyrics( lyricsData );
-        
+
     }
 }
 

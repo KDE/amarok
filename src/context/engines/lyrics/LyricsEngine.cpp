@@ -58,20 +58,20 @@ void LyricsEngine::message( const ContextState& state )
 void LyricsEngine::update()
 {
     DEBUG_BLOCK
-    
-    QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->currentTrack()->url() );
+
+    QString lyrics = EngineController::instance()->currentTrack()->cachedLyrics();
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
-    
+
     QString title  = EngineController::instance()->currentTrack()->name();
     QString artist = EngineController::instance()->currentTrack()->artist()->name();
-    
+
     if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
         title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
     if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
         artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    
-    if ( title.isEmpty() ) 
+
+    if ( title.isEmpty() )
     {
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has "artist name" together, can be bad,
@@ -88,17 +88,17 @@ void LyricsEngine::update()
                 if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
                     artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
             }
-            
+
         }
     }
-    
+
     if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
-    {   
+    {
         clearData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         return;
     }
-    
+
     if( cached )
         LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
     else
@@ -109,7 +109,7 @@ void LyricsEngine::update()
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
-    
+
 }
 
 void LyricsEngine::newLyrics( QStringList& lyrics )
