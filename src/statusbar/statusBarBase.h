@@ -129,7 +129,7 @@ namespace KDE
          * Shows a short message, with a button that can be pushed to show a long
          * message
          */
-        void shortLongMessage( const QString &_short, const QString &_long, int type = Information );
+        AMAROK_EXPORT void shortLongMessage( const QString &_short, const QString &_long, int type = Information );
 
         /**
          * Set a temporary message over the mainText label, for 5 seconds.
@@ -185,7 +185,7 @@ namespace KDE
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
-        
+
         QLabel *m_mainTextLabel;
 
     private:

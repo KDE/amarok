@@ -1,6 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// (c) 2005 Seb Ruiz <ruiz@kde.org>  
+// (c) 2005 Seb Ruiz <ruiz@kde.org>
 // (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // See COPYING file for licensing information
 
@@ -291,7 +291,7 @@ class MediaView : public K3ListView
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
         AMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
-        int getSelectedLeaves(MediaItem *parent, QList<MediaItem*> *list, int flags=OnlySelected );
+        AMAROK_EXPORT int getSelectedLeaves(MediaItem *parent, QList<MediaItem*> *list, int flags=OnlySelected );
         AMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
