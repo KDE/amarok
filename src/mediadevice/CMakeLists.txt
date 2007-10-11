@@ -10,6 +10,7 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 #endif(NJB_FOUND)
 
 #if(MTP_FOUND)
+#    MESSAGE(STATUS "Reading MTP device plugin directory")
 #    add_subdirectory(mtp)
 #endif(MTP_FOUND)
 

@@ -55,10 +55,10 @@ endif (USE_SYSTEM_SQLITE)
 include_directories(
     amarokcore
     analyzers
-        context
-        context/widgets
-        configdialog
-        configdialog/dialogs
+    context
+    context/widgets
+    configdialog
+    configdialog/dialogs
     plugin
     statusbar
     mediadevice
@@ -439,7 +439,6 @@ set(amaroklib_LIB_SRCS
     PlaylistHandler.cpp
     pluginmanager.cpp
     podcastsettings.cpp
-    portabledevices/SolidHandler.cpp
     prettypopupmenu.cpp
     querybuilder.cpp
     refreshimages.cpp

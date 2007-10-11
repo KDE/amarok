@@ -1693,3 +1693,6 @@ MtpAlbum::MtpAlbum( LIBMTP_album_t *album )
     m_id = album->album_id;
     m_album = QString::fromUtf8( album->name );
 }
+
+#include "mtpmediadevice.moc"
+

@@ -153,7 +153,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     if ( m_groupMode == None ) {
 
         QString key = QString("track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-        QPixmap background(trackRect.width(), trackRect.height() );
+        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
 
@@ -178,7 +178,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     } else  if ( m_groupMode == Body ) {
 
         QString key = QString("body:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-        QPixmap background(trackRect.width(), trackRect.height() );
+        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
         if (!QPixmapCache::find(key, background)) {
@@ -190,7 +190,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     } else  if ( m_groupMode == End ) {
 
         QString key = QString( "tail:%1x%2" ).arg( trackRect.width() ).arg(trackRect.height()) ;
-        QPixmap background(trackRect.width(), trackRect.height() );
+        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
         if (!QPixmapCache::find(key, background)) {
@@ -208,7 +208,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         if( m_currentRow % 2 ) {
 
             QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 16 ).arg(trackRect.height() );
-            QPixmap background(trackRect.width() - 16, trackRect.height() );
+            QPixmap background( (int)( trackRect.width() - 16 ), (int)( trackRect.height() ) );
 
             QRectF tempRect = trackRect;
             tempRect.setWidth( tempRect.width() - 16 );
@@ -223,7 +223,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             }
 
              if ( m_groupMode == Head )
-                painter->drawPixmap( 8, MARGIN + ALBUM_WIDTH + 2, background );
+                painter->drawPixmap( 8, (int)( MARGIN + ALBUM_WIDTH + 2 ), background );
              else
                 painter->drawPixmap( 8, 0, background );
         }
@@ -237,7 +237,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
          QPixmap albumPixmap;
          if( m_items->track->album() )
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-         painter->drawPixmap( MARGIN, MARGIN, albumPixmap );
+         painter->drawPixmap( (int)( MARGIN ), (int)( MARGIN ), albumPixmap );
          //and make sure the top text elements are shown
         if( !m_items->topRightText->isVisible() )
             m_items->topRightText->show();
@@ -290,7 +290,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 void
 Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
-
+    Q_UNUSED( track );
     QFont font;
     font.setPointSize( font.pointSize() - 1 );
     #define NewText( X ) \
@@ -331,7 +331,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     }
 
     //lets use all the horizontal space we can get for now..
-    int lengthStringWidth = s_fm->width( prettyLength );
+    int lengthStringWidth = (int)(s_fm->width( prettyLength ));
     bottomRightAlignX = ( totalWidth - 4 * MARGIN ) - lengthStringWidth ;
 
 
@@ -359,7 +359,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoY );
     } else if ( m_groupMode == Head ) {
 
-        int headingCenter = MARGIN + ( ALBUM_WIDTH - s_fm->height() ) / 2;
+        int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
 
         m_items->topRightText->setPos( topRightAlignX, headingCenter );
         m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
@@ -380,7 +380,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
 
-        int underImageY = MARGIN + ALBUM_WIDTH + 2;
+        int underImageY = (int)( MARGIN + ALBUM_WIDTH + 2 );
 
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );

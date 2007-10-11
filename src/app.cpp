@@ -37,7 +37,6 @@ email                : markey@web.de
 #include "playlist/PlaylistModel.h"
 
 #include "pluginmanager.h"
-#include "portabledevices/SolidHandler.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
@@ -692,7 +691,6 @@ App::continueInit()
 
     CollectionDB::instance()->checkDatabase();
 
-    The::SolidHandler()->Initialize();
     m_mainWindow = new MainWindow();
 #ifndef Q_WS_MAC
     m_tray           = new Amarok::TrayIcon( mainWindow() );
