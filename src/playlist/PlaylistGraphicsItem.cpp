@@ -145,7 +145,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     } else {
         trackRect = option->rect;
 
-        if ( m_groupMode != Body )
+        if ( ( m_groupMode != Body) && ( m_groupMode != Head ) )
             trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
     }
 
@@ -207,11 +207,11 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     if ( ( m_groupMode == Head ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
         if( m_currentRow % 2 ) {
 
-            QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 16 ).arg(trackRect.height() );
-            QPixmap background( (int)( trackRect.width() - 16 ), (int)( trackRect.height() ) );
+            QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 10 ).arg(trackRect.height() );
+            QPixmap background( (int)( trackRect.width() - 10 ), (int)( trackRect.height() ) );
 
             QRectF tempRect = trackRect;
-            tempRect.setWidth( tempRect.width() - 16 );
+            tempRect.setWidth( tempRect.width() - 10 );
             if ( m_groupMode == End )
                 tempRect.setHeight( tempRect.height() - 4 );
 
@@ -223,9 +223,9 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             }
 
              if ( m_groupMode == Head )
-                painter->drawPixmap( 8, (int)( MARGIN + ALBUM_WIDTH + 2 ), background );
+                painter->drawPixmap( 5, (int)( MARGIN + ALBUM_WIDTH + 2 ), background );
              else
-                painter->drawPixmap( 8, 0, background );
+                painter->drawPixmap( 5, 0, background );
         }
 
     }
