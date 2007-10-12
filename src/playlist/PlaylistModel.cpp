@@ -53,11 +53,7 @@ Model::Model( QObject* parent )
 void
 Model::init()
 {
-    if( AmarokConfig::savePlaylist() )
-    {
-        debug() << "Loading Previous Playlist";
-        m_playlistHandler->load( defaultPlaylistPath() );
-    }
+
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
     undoButton->setIcon( KIcon( Amarok::icon( "undo" ) ) );
