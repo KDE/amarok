@@ -132,12 +132,12 @@ Model::data( const QModelIndex& index, int role ) const
             case 1:
                 if ( m_items.at( row )->track()->album() )
                     return m_items.at( row )->track()->album()->name();
-                else 
+                else
                     return "";
             case 2:
                 if ( m_items.at( row )->track()->artist() )
-                    return m_items.at( row )->track()->artist()->name(); 
-                else 
+                    return m_items.at( row )->track()->artist()->name();
+                else
                     return "";
         }
     }
@@ -458,6 +458,8 @@ Model::insertOptioned( Meta::TrackList list, int options )
         else
            firstItemAdded = rowCount();
            insertTracks( firstItemAdded, list );
+           if( orgCount == 0 && (EngineController::engine()->state() != Engine::Playing ) )
+               play( firstItemAdded );
     }
     else if( options & Queue )
     {
