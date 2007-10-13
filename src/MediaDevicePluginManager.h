@@ -1,5 +1,5 @@
 //
-// C++ Interface: mediumpluginmanager
+// C++ Interface: mediadevicepluginmanager
 //
 // Description:
 //
@@ -32,9 +32,9 @@ class QLabel;
 class KVBox;
 class KComboBox;
 class Medium;
-class MediumPluginManager;
+class MediaDevicePluginManager;
 
-typedef QMap<QString, Medium*> DeletedMap;
+typedef QMap<QString, bool> DeletedMap;
 
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -46,28 +46,27 @@ class MediaDeviceConfig : public KHBox
     Q_OBJECT
 
     public:
-        MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics=false, QWidget *parent=0, const char *name=0 );
+        MediaDeviceConfig( QString id, MediaDevicePluginManager *mgr, const bool nographics=false, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
-        QString oldPlugin();
-        void setOldPlugin( const QString &oldPlugin );
-        QString plugin();
-        KComboBox *pluginCombo();
-        QAbstractButton *configButton();
-        QAbstractButton *removeButton();
-        Medium *medium();
-        bool isNew();
+        QString oldPlugin() { return m_oldPlugin; }
+        void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }
+        inline QString plugin() { return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() ); }
+        KComboBox *pluginCombo() { return m_pluginCombo; }
+        QAbstractButton *configButton() { return m_configButton; }
+        QAbstractButton *removeButton() { return m_removeButton; }
+        QString uid() { return m_uid; }
+        bool isNew() { return m_new; }
 
     public slots:
         void configureDevice();
         void deleteDevice();
 
     signals:
-        void deleteMedium( Medium *medium );
         void changed();
 
     protected:
-        MediumPluginManager *m_manager;
-        Medium *m_medium;
+        MediaDevicePluginManager *m_manager;
+        QString m_uid;
         QString m_oldPlugin;
         KComboBox * m_pluginCombo;
         QAbstractButton *m_configButton;
@@ -75,9 +74,9 @@ class MediaDeviceConfig : public KHBox
         bool m_new;
 };
 
-typedef Q3ValueList<MediaDeviceConfig *> DeviceList;
+typedef QList<MediaDeviceConfig *> DeviceList;
 
-class MediumPluginManager : public QObject
+class MediaDevicePluginManager : public QObject
 {
     Q_OBJECT
 
@@ -86,8 +85,8 @@ class MediumPluginManager : public QObject
     public:
         //nographics only for the initial run of detectDevices...pass in
         //directly to detectDevices after
-        explicit MediumPluginManager( QWidget *widget, const bool nographics=false );
-        ~MediumPluginManager();
+        explicit MediaDevicePluginManager( QWidget *widget, const bool nographics=false );
+        ~MediaDevicePluginManager();
         void finished();
         bool hasChanged();
 
@@ -110,13 +109,13 @@ class MediumPluginManager : public QObject
 
 };
 
-class MediumPluginManagerDialog : public KPageDialog
+class MediaDevicePluginManagerDialog : public KPageDialog
 {
     Q_OBJECT
 
     public:
-        MediumPluginManagerDialog();
-        ~MediumPluginManagerDialog();
+        MediaDevicePluginManagerDialog();
+        ~MediaDevicePluginManagerDialog();
 
     private slots:
         void slotOk();
@@ -125,7 +124,7 @@ class MediumPluginManagerDialog : public KPageDialog
 
         KVBox *m_devicesBox;
         Q3GroupBox *m_location;
-        MediumPluginManager *m_manager;
+        MediaDevicePluginManager *m_manager;
 };
 
 class ManualDeviceAdder : public KPageDialog
@@ -133,7 +132,7 @@ class ManualDeviceAdder : public KPageDialog
     Q_OBJECT
 
     public:
-        ManualDeviceAdder( MediumPluginManager* mdm );
+        ManualDeviceAdder( MediaDevicePluginManager* mdm );
         ~ManualDeviceAdder();
         bool successful() const { return m_successful; }
         Medium* getMedium( bool recreate = false );
@@ -144,7 +143,7 @@ class ManualDeviceAdder : public KPageDialog
         void comboChanged( const QString & );
 
     private:
-        MediumPluginManager* m_mpm;
+        MediaDevicePluginManager* m_mpm;
         bool m_successful;
         QString m_comboOldText;
         QString m_selectedPlugin;
