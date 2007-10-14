@@ -47,7 +47,6 @@ set(plasma_LIB_SRCS
     plasma/scriptengine.cpp
     plasma/svg.cpp
     plasma/theme.cpp
-    plasma/karambamanager.cpp
     plasma/widgets/boxlayout.cpp
     plasma/widgets/checkbox.cpp
     plasma/widgets/freelayout.cpp
@@ -59,6 +58,7 @@ set(plasma_LIB_SRCS
     plasma/widgets/layoutanimator.cpp
     plasma/widgets/layoutitem.cpp
     plasma/widgets/lineedit.cpp
+    plasma/widgets/nodelayout.cpp
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
     plasma/widgets/widget.cpp
