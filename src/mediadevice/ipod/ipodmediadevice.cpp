@@ -1996,7 +1996,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     }
 
     QString local = bundle.filename();
-    QString type = local.section('.', -1);
+    QString type = local.section('.', -1).lower();
 
     QString trackpath;
     QString realpath;
