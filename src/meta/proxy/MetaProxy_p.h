@@ -122,9 +122,11 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->name();
-        else if( d )
+        if( d && d->realTrack ) {
+            if ( d->realTrack->artist() )
+                return d->realTrack->artist()->name();
+            return QString();
+        } else if( d )
             return d->cachedArtist;
         return QString();
     }
@@ -183,9 +185,11 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack )
-            return d->realTrack->album()->name();
-        else
+        if( d && d->realTrack ) {
+            if ( d->realTrack->album() )
+                return d->realTrack->album()->name();
+            return QString();
+        } else
             return QString();
     }
 
@@ -199,9 +203,11 @@ public:
 
     QPixmap image( int size, bool withShadow ) const
     {
-        if( d && d->realTrack )
-            return d->realTrack->album()->image( size, withShadow );
-        else
+        if( d && d->realTrack ) {
+            if ( d->realTrack->album() )
+                return d->realTrack->album()->image( size, withShadow );
+            return Meta::Album::image( size, withShadow );
+        } else
             return Meta::Album::image( size, withShadow );
     }
 
