@@ -173,7 +173,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/EngineConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/LastfmConfig.cpp
-    configdialog/dialogs/MediadeviceConfig.cpp
+    #configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
 )

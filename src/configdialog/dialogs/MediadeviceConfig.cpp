@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "MediadeviceConfig.h"
-#include "mediumpluginmanager.h"
+#include "MediaDevicePluginManager.h"
 
 #include <Q3GroupBox>
 #include <QVBoxLayout>

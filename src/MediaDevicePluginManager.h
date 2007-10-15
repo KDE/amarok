@@ -16,6 +16,7 @@
 #include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
 
+
 #include <KHBox>
 #include <KConfig>
 #include <KPageDialog>
@@ -50,7 +51,7 @@ class MediaDeviceConfig : public KHBox
         ~MediaDeviceConfig();
         QString oldPlugin() { return m_oldPlugin; }
         void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }
-        inline QString plugin() { return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() ); }
+        inline QString plugin() { return MediaDevicePluginManager::instance()->getInternalPluginName( m_pluginCombo->currentText() ); }
         KComboBox *pluginCombo() { return m_pluginCombo; }
         QAbstractButton *configButton() { return m_configButton; }
         QAbstractButton *removeButton() { return m_removeButton; }

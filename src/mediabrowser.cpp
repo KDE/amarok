@@ -25,7 +25,7 @@
 #include "MediaDevice.h"
 #include "MediaDeviceCache.h"
 #include "medium.h"
-#include "mediumpluginmanager.h"
+//#include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
