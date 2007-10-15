@@ -174,6 +174,8 @@ private:
 
     ServiceSqlCollection * m_collection;
 
+    QString m_tempFileName;
+
 };
 
 

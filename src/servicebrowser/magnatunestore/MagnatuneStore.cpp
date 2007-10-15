@@ -37,6 +37,7 @@
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
 #include <kiconloader.h>   //multiTabBar icons
+#include <KTemporaryFile>
 
 #include <QGraphicsScene>
 #include <QSplitter>
@@ -203,7 +204,18 @@ bool MagnatuneStore::updateMagnatuneList()
 
      debug() << "MagnatuneStore: start downloading xml file";
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ), KUrl("/tmp/album_info.xml"), 0774 , KIO::Overwrite );
+
+    KTemporaryFile tempFile;
+    tempFile.setSuffix( ".xml" );
+    tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
+    if( !tempFile.open() )
+    {
+        return false; //error
+    }
+
+    m_tempFileName = tempFile.fileName();
+
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
     Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -233,7 +245,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 
 
     debug() << "MagnatuneStore: create xml parser";
-    MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
+    MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
