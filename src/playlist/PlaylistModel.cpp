@@ -119,8 +119,14 @@ Model::data( const QModelIndex& index, int role ) const
         AlbumGroup albumGroup = m_albumGroups.value( track->album() );
         return albumGroup.groupMode( row );
 
-    }
-    else if( role == Qt::DisplayRole && row != -1 )
+    } else if ( role == GroupedTracksRole ) {
+        //get the track
+        TrackPtr track = m_items.at( row )->track();
+
+        AlbumGroup albumGroup = m_albumGroups.value( track->album() );
+        return albumGroup.elementsInGroup( row );
+    
+    } else if( role == Qt::DisplayRole && row != -1 )
     {
         switch ( index.column() ) {
             case 0:
@@ -231,6 +237,14 @@ Model::play( const QModelIndex& index )
 void
 Model::play( int row )
 {
+
+    //make sure that a group containg this track is expanded
+    if ( m_albumGroups.contains( m_items[ row ]->track()->album() ) ) {
+        m_albumGroups[ m_items[ row ]->track()->album() ].setCollapsed( row,  false );
+        debug() << "Here";
+    }
+
+
     setActiveRow( row );
     EngineController::instance()->play( m_items[ m_activeRow ]->track() );
 }
@@ -752,6 +766,7 @@ void Model::moveRow(int row, int to)
 
 void Model::regroupAlbums()
 {
+    DEBUG_BLOCK
 
     m_albumGroups.clear();
     //m_lastAddedTrackAlbum = AlbumPtr();
@@ -783,6 +798,14 @@ void Model::regroupAlbums()
        }
 
 
+    }
+
+    //make sure that a group containg playing track is expanded
+    if ( m_activeRow != -1 ){ 
+        if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album() ) ) {
+            m_albumGroups[ m_items[ m_activeRow ]->track()->album() ].setCollapsed( m_activeRow,  false );
+            debug() << "Here";
+      }
     }
 
     //reset();

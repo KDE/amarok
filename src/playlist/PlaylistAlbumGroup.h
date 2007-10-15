@@ -30,9 +30,20 @@ enum GroupMode
 {
     None = 1,
     Head,
+    Head_Collapsed,
     Body,
-    End
+    End,
+    Collapsed
 };
+
+struct Group {
+
+    QList < int > rows;
+    bool collapsed;
+
+};
+
+
 
 /**
 A helper class representing the group(s) of tracks for a specific album. For each album, the rows
@@ -49,9 +60,12 @@ public:
     void addRow( int row );
     int groupMode( int row );
 
+    void setCollapsed( int row, bool collapsed );
+    int elementsInGroup( int row );
+
 private:
 
-    QList< QList < int > > m_groups;
+    QList< Group > m_groups;
 
 };
 

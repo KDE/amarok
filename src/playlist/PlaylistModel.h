@@ -70,7 +70,8 @@ class TrackNavigator;
         TrackRole = Qt::UserRole + 1,
         ItemRole,
         ActiveTrackRole,
-        GroupRole
+        GroupRole,
+        GroupedTracksRole
     };
     ///Options for insertTracks
     enum AddOptions
@@ -216,7 +217,7 @@ class TrackNavigator;
 
             PlaylistHandler * m_playlistHandler;
 
-            QMap< Meta::AlbumPtr, AlbumGroup > m_albumGroups;
+            mutable QMap< Meta::AlbumPtr, AlbumGroup > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
 
     };

@@ -45,6 +45,7 @@ struct Playlist::GraphicsItem::ActiveItems
     , topLeftText( 0 )
     , topRightText( 0 )
     , lastWidth( -5 )
+    , groupedTracks ( 0 )
      { }
      ~ActiveItems()
      {
@@ -63,6 +64,7 @@ struct Playlist::GraphicsItem::ActiveItems
      Playlist::TextItem* topRightText;
 
      int lastWidth;
+     int groupedTracks;
 
      QRectF preDragLocation;
      Meta::TrackPtr track;
@@ -119,6 +121,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     //debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
+    if ( m_groupMode == Collapsed ) {
+        //dont even bother!
+        return;
+    }
 
     if( !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
@@ -136,7 +142,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     // paint item background:
     QRectF trackRect;
-        if ( m_groupMode == Head ) {
+        if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
         //make the album group header stand out
         //painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
@@ -145,7 +151,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     } else {
         trackRect = option->rect;
 
-        if ( ( m_groupMode != Body) && ( m_groupMode != Head ) )
+        if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
             trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
     }
 
@@ -163,7 +169,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             QPixmapCache::insert(key, background);
         }
         painter->drawPixmap( 0, 0, background );
-    } else  if ( m_groupMode == Head ) {
+    } else  if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
         QString key = QString("head:%1x%2").arg(trackRect.width()).arg(trackRect.height());
         QPixmap background(option->rect.width(), option->rect.height() );
@@ -204,7 +210,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 
 
-    if ( ( m_groupMode == Head ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
+    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
         if( m_currentRow % 2 ) {
 
             QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 10 ).arg(trackRect.height() );
@@ -222,7 +228,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
                 QPixmapCache::insert( key, background );
             }
 
-             if ( m_groupMode == Head )
+             if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ))
                 painter->drawPixmap( 5, (int)( MARGIN + ALBUM_WIDTH + 2 ), background );
              else
                 painter->drawPixmap( 5, 0, background );
@@ -339,9 +345,17 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
     qreal spaceForTopLeft = totalWidth - ( totalWidth - topRightAlignX ) - leftAlignX;
     qreal spaceForBottomLeft = totalWidth - ( totalWidth - bottomRightAlignX ) - leftAlignX;
-    m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
-    m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
 
+    if ( m_groupMode == Head_Collapsed ) {
+
+        m_items->bottomLeftText->setEditableText( QString("%1 tracks").arg( QString::number( m_items->groupedTracks ) ) , spaceForBottomLeft );
+        m_items->bottomRightText->setEditableText( "", totalWidth - bottomRightAlignX );
+        
+
+    } else {
+        m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+        m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
+    }
     if ( m_groupMode == None ) {
 
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
@@ -357,7 +371,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
         m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoY );
-    } else if ( m_groupMode == Head ) {
+    } else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
         int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
 
@@ -396,11 +410,11 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 QString
 Playlist::GraphicsItem::findArtistForCurrentAlbum() const
 {
-    if( m_groupMode != Head )
+    if( !( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) )
         return QString();
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
-    if( index.data( GroupRole ).toInt() != Head )
+    if( !( index.data( GroupRole ).toInt() == Head ) || ( index.data( GroupRole ).toInt() == Head_Collapsed ) ) 
     {
         return QString();
     }
@@ -626,7 +640,7 @@ void Playlist::GraphicsItem::setRow(int row)
     //figure out our group state and set height accordingly
     int currentGroupState = index.data( GroupRole ).toInt();
 
-    if ( currentGroupState != m_groupMode ) {
+    //if ( currentGroupState != m_groupMode ) {
 
         debug() << "Group changed for row " << row;
 
@@ -639,17 +653,38 @@ void Playlist::GraphicsItem::setRow(int row)
         switch ( m_groupMode ) {
 
             case None:
+                debug() << "None";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
                 break;
             case Head:
+                debug() << "Head";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height();
                 break;
+            case Head_Collapsed:
+                debug() << "Collapsed head";
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height();
+                if ( !m_items ) {
+                    const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
+                    m_items = new Playlist::GraphicsItem::ActiveItems();
+                    m_items->track = track;
+                    init( track );
+                }
+                    m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
+                break;
             case Body:
+                debug() << "Body";
                 m_height =  s_fm->height()/*+ 2 * MARGIN*/;
                 break;
             case End:
+                debug() << "End";
                 m_height =  s_fm->height() + 6 /*+ 2 * MARGIN*/;
                 break;
+            case Collapsed:
+                debug() << "Collapsed";
+                m_height =  0;
+                break;
+            default:
+                debug() << "ERROR!!??";
         }
-    }
+    //}
 }

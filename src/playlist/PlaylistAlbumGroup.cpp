@@ -25,24 +25,27 @@ namespace Playlist {
 
 AlbumGroup::AlbumGroup()
 {
+    DEBUG_BLOCK
 }
 
 
 AlbumGroup::~AlbumGroup()
 {
+    DEBUG_BLOCK
 }
 
 }
 
 void Playlist::AlbumGroup::addRow(int row)
 {
+    DEBUG_BLOCK
 
     //Does this row fit in any of our existing groups?
     bool inGroup = false;
     for ( int i = 0; i < m_groups.count(); i++ ) {
 
-        if ( m_groups[i].last() == row - 1 ) {
-            m_groups[i].append( row );
+        if ( m_groups[i].rows.last() == row - 1 ) {
+            m_groups[i].rows.append( row );
             inGroup = true;
             break;
         }
@@ -50,28 +53,66 @@ void Playlist::AlbumGroup::addRow(int row)
 
     //no group found, create new one:
     if ( !inGroup ) {
-        QList< int > newGroup;
-        newGroup.append( row );
+        Group newGroup;
+        newGroup.collapsed = false;
+        newGroup.rows.append( row );
         m_groups.append( newGroup );
     }
 }
 
 int Playlist::AlbumGroup::groupMode( int row )
 {
+    DEBUG_BLOCK
 
-    foreach( QList< int > group, m_groups ) {
-        if ( group.contains( row ) ) {
-            if ( group.count() < 2 )
+    foreach( Group group, m_groups ) {
+        if ( group.rows.contains( row ) ) {
+
+            debug() << "row " << row << " is collapsed= " << group.collapsed;
+
+            if ( group.rows.count() < 2 )
                 return None;
-            else if ( group.first() == row )
-                return Head;
-            else if ( group.last() == row )
-                return End;
-            else
-                return Body;
+            else if ( group.rows.first() == row ) {
+                if ( !group.collapsed )
+                    return Head;
+                else 
+                    return Head_Collapsed;
+            } else if ( group.rows.last() == row ) {
+                if ( !group.collapsed )
+                    return End;
+                else
+                return Collapsed;
+            } else {
+                if ( !group.collapsed )
+                    return Body;
+                else
+                    return Collapsed;
+            }
         }
     }
 
     return None;
 
+}
+
+void Playlist::AlbumGroup::setCollapsed(int row, bool collapsed)
+{
+    DEBUG_BLOCK
+    foreach( Group group, m_groups ) {
+        if ( group.rows.contains( row ) ) {
+            group.collapsed = collapsed;
+            debug() << "row " << row << " collapsed = " << group.collapsed;
+        }
+    }
+}
+
+int Playlist::AlbumGroup::elementsInGroup(int row)
+{
+    DEBUG_BLOCK
+    foreach( Group group, m_groups ) {
+        if ( group.rows.contains( row ) ) {
+            return group.rows.count();
+        }
+    }
+
+    return 0;
 }
