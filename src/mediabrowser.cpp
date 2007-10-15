@@ -1101,8 +1101,8 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
         QStringList sl = handler.split( "|" );
         if( sl[0] != "manual" )
             return 0;
-        name = sl[2];
         protocol = sl[1];
+        name = sl[2];
         mountPoint = sl[3];
     }
 

@@ -81,8 +81,6 @@ class MediaDevicePluginManager : public QObject
 {
     Q_OBJECT
 
-    friend class DeviceManager;
-
     public:
         //nographics only for the initial run of detectDevices...pass in
         //directly to detectDevices after
@@ -136,7 +134,7 @@ class ManualDeviceAdder : public KPageDialog
         ManualDeviceAdder( MediaDevicePluginManager* mdm );
         ~ManualDeviceAdder();
         bool successful() const { return m_successful; }
-        Medium* getMedium( bool recreate = false );
+        QString getId( bool recreate = false );
         QString getPlugin() const { return m_selectedPlugin; }
 
     private slots:
@@ -148,7 +146,7 @@ class ManualDeviceAdder : public KPageDialog
         bool m_successful;
         QString m_comboOldText;
         QString m_selectedPlugin;
-        Medium *m_newMed;
+        QString m_newId;
 
         KComboBox* m_mdaCombo;
         HintLineEdit* m_mdaName;

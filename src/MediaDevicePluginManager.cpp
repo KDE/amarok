@@ -336,8 +336,8 @@ ManualDeviceAdder::slotButtonClicked( KDialog::ButtonCode button)
 {
     if( button != KDialog::Ok )
         KDialog::slotButtonClicked( button );
-    if( getMedium( true ) && !getMedium()->name().isEmpty() &&
-            MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
+    if( !getId( true ).isEmpty() &&
+            MediaDeviceCache::instance()->deviceType( m_newId ) == MediaDeviceCache::InvalidType )
     {
         m_successful = true;
         slotButtonClicked( Ok );
@@ -374,32 +374,29 @@ ManualDeviceAdder::comboChanged( const QString &string )
     m_selectedPlugin = MediaBrowser::instance()->getInternalPluginName( string );
 }
 
-Medium*
-ManualDeviceAdder::getMedium( bool recreate )
+QString
+ManualDeviceAdder::getId( bool recreate )
 {
     if( !recreate )
-        return m_newMed;
+        return m_newId;
 
-    if( m_newMed && recreate )
+    if( !m_newMed.isEmpty() && recreate )
     {
-        delete m_newMed;
-        m_newMed = 0;
+        m_newId = QString();
     }
 
     if( m_mdaMountPoint->isEnabled() == false &&
             m_mdaName->text().isNull() )
-        return NULL;
+        return QString();
     if( m_mdaMountPoint->text().isNull() &&
             m_mdaName->text().isNull() )
-        return NULL;
-    QString id = "manual|" + m_mdaName->text() + '|' +
+        return QString();
+    m_newId = "manual|" + m_selectedPlugin + '|' +
+            m_mdaName->text() + '|' +
             ( m_mdaMountPoint->text().isNull() ||
                 m_mdaMountPoint->isEnabled() == false ?
                 "(null)" : m_mdaMountPoint->text() );
-    m_newMed = new Medium( id, m_mdaName->text() );
-    m_newMed->setAutodetected( false );
-    m_newMed->setMountPoint( m_mdaMountPoint->text() );
-    return m_newMed;
+    return m_newId;
 }
 
 MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
