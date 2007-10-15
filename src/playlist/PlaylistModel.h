@@ -172,6 +172,7 @@ class TrackNavigator;
 
         signals:
             void playlistCountChanged( int newCount );
+            void playlistGroupingChanged();
 
         private slots:
             void trackFinished(); //! what to do when a track finishes

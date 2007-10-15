@@ -640,7 +640,7 @@ void Playlist::GraphicsItem::setRow(int row)
     //figure out our group state and set height accordingly
     int currentGroupState = index.data( GroupRole ).toInt();
 
-    //if ( currentGroupState != m_groupMode ) {
+    if ( currentGroupState != m_groupMode ) {
 
         debug() << "Group changed for row " << row;
 
@@ -686,5 +686,5 @@ void Playlist::GraphicsItem::setRow(int row)
             default:
                 debug() << "ERROR!!??";
         }
-    //}
+    }
 }

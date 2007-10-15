@@ -238,13 +238,6 @@ void
 Model::play( int row )
 {
 
-    //make sure that a group containg this track is expanded
-    if ( m_albumGroups.contains( m_items[ row ]->track()->album() ) ) {
-        m_albumGroups[ m_items[ row ]->track()->album() ].setCollapsed( row,  false );
-        debug() << "Here";
-    }
-
-
     setActiveRow( row );
     EngineController::instance()->play( m_items[ m_activeRow ]->track() );
 }
@@ -357,6 +350,15 @@ Model::setActiveRow( int row )
         emit dataChanged( createIndex( max, 0 ), createIndex( max, 0 ) );
     }
     debug() << "between " << min << " and " << max;
+
+/*
+    //make sure that a group containg this track is expanded
+    if ( m_albumGroups.contains( m_items[ row ]->track()->album() ) ) {
+        m_albumGroups[ m_items[ row ]->track()->album() ].setCollapsed( row,  false );
+        debug() << "Here";
+        emit( playlistGroupingChanged() );
+    }*/
+
     m_activeRow = row;
 }
 
@@ -799,14 +801,15 @@ void Model::regroupAlbums()
 
 
     }
-
+/*
     //make sure that a group containg playing track is expanded
     if ( m_activeRow != -1 ){ 
         if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album() ) ) {
             m_albumGroups[ m_items[ m_activeRow ]->track()->album() ].setCollapsed( m_activeRow,  false );
             debug() << "Here";
+            emit( playlistGroupingChanged() );
       }
-    }
+   }*/
 
     //reset();
 

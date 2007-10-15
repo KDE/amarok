@@ -53,6 +53,9 @@ Playlist::GraphicsView::setModel( Playlist::Model *model )
     connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( dataChanged( const QModelIndex& ) ) );
+    connect( m_model, SIGNAL( playlistGroupingChanged( ) ), this, SLOT( groupingChanged() ) );
+
+
     show();
 }
 
@@ -318,6 +321,20 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 
 namespace The {
     Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
+}
+
+void Playlist::GraphicsView::groupingChanged()
+{
+
+    DEBUG_BLOCK
+
+    int i;
+    for ( i = 0; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
+
+
+    shuffleTracks( 0, -1 );
+   // update();
 }
 
 

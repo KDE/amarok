@@ -97,10 +97,10 @@ int Playlist::AlbumGroup::groupMode( int row )
 void Playlist::AlbumGroup::setCollapsed(int row, bool collapsed)
 {
     DEBUG_BLOCK
-    foreach( Group group, m_groups ) {
-        if ( group.rows.contains( row ) ) {
-            group.collapsed = collapsed;
-            debug() << "row " << row << " collapsed = " << group.collapsed;
+    for (int i = 0; i < m_groups.count(); i++ ) {
+        if ( m_groups[ i ].rows.contains( row ) ) {
+            m_groups[ i ].collapsed = collapsed;
+            debug() << "row " << row << " collapsed = " << m_groups[ i ].collapsed;
         }
     }
 }
