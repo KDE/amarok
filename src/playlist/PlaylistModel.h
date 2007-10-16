@@ -162,6 +162,8 @@ class TrackNavigator;
             const QString &playlistName() const { return m_playlistName; }
             bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
 
+            void setCollapsed( int row, bool collapsed );
+
             static Model* s_instance; //! instance variable
 
         public slots:

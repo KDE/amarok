@@ -969,10 +969,18 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
 }
 
+void Playlist::Model::setCollapsed(int row, bool collapsed)
+{
+    m_albumGroups[ m_items[ row ]->track()->album() ]->setCollapsed( row,  collapsed );
+    emit( playlistGroupingChanged() );
+}
+
+
 
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
 
 
 

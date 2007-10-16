@@ -51,6 +51,9 @@ namespace Playlist
             void mousePressEvent( QGraphicsSceneMouseEvent* event );
             void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
             void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+            void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ); 
+
+
         
         private:
             void init( Meta::TrackPtr track );
@@ -68,7 +71,6 @@ namespace Playlist
             static QFontMetricsF* s_fm;
             static QSvgRenderer * s_svgRenderer;
 
-            
     };
 
 }

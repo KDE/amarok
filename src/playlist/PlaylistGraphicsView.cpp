@@ -325,7 +325,7 @@ namespace The {
 
 void Playlist::GraphicsView::groupingChanged()
 {
-
+    // ouch!!! this is expesive!!
     DEBUG_BLOCK
 
     int i;

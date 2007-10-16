@@ -122,7 +122,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
     if ( m_groupMode == Collapsed ) {
-        //dont even bother!
+        // just make sure text items are hidden and then get the heck out of here...
+        if( m_items->topRightText->isVisible() )
+            m_items->topRightText->hide();
+        if( m_items->topLeftText->isVisible() )
+            m_items->topLeftText->hide();
+        if( m_items->bottomRightText->isVisible() )
+            m_items->bottomRightText->hide();
+        if( m_items->bottomLeftText->isVisible() )
+            m_items->bottomLeftText->hide();
+
         return;
     }
 
@@ -142,11 +151,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     // paint item background:
     QRectF trackRect;
-        if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
+    QRectF headRect;
+    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
         //make the album group header stand out
         //painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
         trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+        if (m_groupMode == Head )
+            headRect = option->rect;
+        else
+            headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
 
     } else {
         trackRect = option->rect;
@@ -171,16 +185,46 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         painter->drawPixmap( 0, 0, background );
     } else  if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
-        QString key = QString("head:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-        QPixmap background(option->rect.width(), option->rect.height() );
+       QString svgName;
+       if ( m_groupMode == Head )
+           svgName = "head";
+       else 
+           svgName = "collapsed_head";
+
+        QString key = QString("%1:%2x%3").arg( svgName ).arg( trackRect.width() ).arg( trackRect.height() );
+        QPixmap background( headRect.width(), headRect.height() );
         background.fill( Qt::transparent );
 
-        if (!QPixmapCache::find(key, background)) {
+        if ( !QPixmapCache::find( key, background ) ) {
             QPainter pt( &background );
-            s_svgRenderer->render( &pt, "head",  option->rect );
-            QPixmapCache::insert(key, background);
+            s_svgRenderer->render( &pt, svgName,  headRect );
+            QPixmapCache::insert( key, background );
         }
         painter->drawPixmap( 0, 0, background );
+
+        //"Just for fun" stuff below this point 
+
+        QString collapseString; 
+        if ( m_groupMode == Head )
+           collapseString = "collapse_button";
+       else 
+           collapseString = "expand_button";
+          
+
+        key = QString("%1:%2x%3").arg( collapseString ).arg( 16 ).arg( 16 );
+        QPixmap collapsePixmap( 16, 16 );
+        collapsePixmap.fill( Qt::transparent );
+
+        if (!QPixmapCache::find(key, collapsePixmap)) {
+            QPainter pt2( &collapsePixmap );
+            s_svgRenderer->render( &pt2, collapseString,  QRectF( 0, 0, 16, 16 ) );
+            QPixmapCache::insert(key, collapsePixmap);
+        }
+
+        painter->drawPixmap( option->rect.width() - ( 16 + MARGIN ) , MARGIN, collapsePixmap );
+       
+
+
     } else  if ( m_groupMode == Body ) {
 
         QString key = QString("body:%1x%2").arg(trackRect.width()).arg(trackRect.height());
@@ -256,6 +300,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->topRightText->hide();
         if( m_items->topLeftText->isVisible() )
             m_items->topLeftText->hide();
+        if( !m_items->bottomRightText->isVisible() )
+            m_items->bottomRightText->show();
+        if( !m_items->bottomLeftText->isVisible() )
+            m_items->bottomLeftText->show();
     }
 
     //set selection marker if needed
@@ -484,6 +532,18 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
         return;
     }
     m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
+
+    //did we hit the collapse / expand button?
+
+    QRectF rect( boundingRect().width() - ( 16 + MARGIN ), MARGIN, 16, 16 );
+    if ( rect.contains( event->pos() ) ) {
+        if ( m_groupMode == Head_Collapsed )
+            The::playlistModel()->setCollapsed( m_currentRow, false );
+        else if ( m_groupMode == Head )
+            The::playlistModel()->setCollapsed( m_currentRow, true );
+    }
+
+
     QGraphicsItem::mousePressEvent( event );
 }
 
@@ -662,7 +722,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height();
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 10;
                 if ( !m_items ) {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
                     m_items = new Playlist::GraphicsItem::ActiveItems();
@@ -688,3 +748,14 @@ void Playlist::GraphicsItem::setRow(int row)
         }
     }
 }
+
+void Playlist::GraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+{
+    //DEBUG_BLOCK
+
+    /*if ( m_groupMode == Head_Collapsed )
+       The::playlistModel()->setCollapsed( m_currentRow, false ); */
+}
+
+
+
