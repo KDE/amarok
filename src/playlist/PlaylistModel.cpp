@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>              *
+ *             : (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License version 2        *
@@ -116,15 +117,15 @@ Model::data( const QModelIndex& index, int role ) const
         else if ( !m_albumGroups.contains( track->album() ) )
             return None;  // no group for this album, should never happen...
 
-        AlbumGroup albumGroup = m_albumGroups.value( track->album() );
-        return albumGroup.groupMode( row );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        return albumGroup->groupMode( row );
 
     } else if ( role == GroupedTracksRole ) {
         //get the track
         TrackPtr track = m_items.at( row )->track();
 
-        AlbumGroup albumGroup = m_albumGroups.value( track->album() );
-        return albumGroup.elementsInGroup( row );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        return albumGroup->elementsInGroup( row );
     
     } else if( role == Qt::DisplayRole && row != -1 )
     {
@@ -642,7 +643,7 @@ Model::insertTracksCommand( int row, TrackList list )
         }
     }
 
-    regroupAlbums();
+    regroupAlbums( row, row + list.count() - 1 );
 
     endInsertRows();
     //push up the active row if needed
@@ -701,7 +702,7 @@ Model::removeRowsCommand( int position, int rows )
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
 
-    regroupAlbums();
+    regroupAlbums( position, position + rows-1 );
 
     emit playlistCountChanged( rowCount() );
     return ret;
@@ -761,30 +762,151 @@ void Model::moveRow(int row, int to)
 
     m_items.move( row, to );
 
-    regroupAlbums();
+    regroupAlbums( QMIN( row, to) , QMAX( row, to ) );
 
 }
 
 
-void Model::regroupAlbums()
+void Model::regroupAlbums( int firstRow, int lastRow )
 {
     DEBUG_BLOCK
 
-    m_albumGroups.clear();
-    //m_lastAddedTrackAlbum = AlbumPtr();
+     //debug() << "first row: " << firstRow << ", last row: " << lastRow;
 
-    //TrackPtr lastTrack;
 
-    debug() << "number of rows: " << m_items.count();
+    int aboveFirst = firstRow - 1;
+    if ( aboveFirst < 0 ) aboveFirst = 0;
+
+    int belowLast = lastRow + 1;
+    if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
+
+     //debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
+
+    int area1Start = -1;
+    int area1End = -1;
+    int area2Start = -1;
+    int area2End = -1;
+    //delete affected groups
+
+     QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+     while (itt.hasNext()) {
+
+        itt.next();
+        AlbumGroup * group = itt.value();
+
+        bool removeGroupAboveFirstRow = false;
+        bool removeGroupBelowFirstRow = false;
+        bool removeGroupAboveLastRow = false;
+        bool removeGroupBelowLastRow = false;
+
+        int temp = group->firstInGroup( aboveFirst );
+        if ( temp != -1 ) { 
+            //debug() << "--3";
+            area1Start = temp;
+            removeGroupAboveFirstRow = true;
+        }
+
+        temp = group->lastInGroup( firstRow + 1 );
+        if ( temp != -1 ) { 
+            //debug() << "--4";
+            area1End = temp;
+            removeGroupBelowFirstRow = true;
+        }
+
+        temp = group->firstInGroup( lastRow - 1 );
+        if ( temp != -1 ) { 
+            //debug() << "--5";
+            area2Start = temp;
+            removeGroupAboveLastRow = true;
+        }
+
+        temp = group->lastInGroup( belowLast );
+        if ( temp != -1 ) { 
+            //debug() << "--6";
+            area2End = temp;
+            removeGroupBelowLastRow = true;
+        }
+
+        if ( removeGroupAboveFirstRow ) 
+           { group->removeGroup( aboveFirst ); /*debug() << "removing group at row: " <<  aboveFirst;*/ }
+        
+        if ( removeGroupBelowFirstRow )
+            { group->removeGroup( firstRow + 1 ); /*debug() << "removing group at row: " <<  firstRow + 1;*/ }
+
+        if ( removeGroupAboveLastRow ) 
+            { group->removeGroup( lastRow -1 ); /*debug() << "removing group at row: " <<  lastRow - 1;*/ }
+        if ( removeGroupBelowLastRow )
+           { group->removeGroup( belowLast );  /*debug() << "removing group at row: " <<  belowLast;*/ }
+
+        group->removeGroup( firstRow );
+        group->removeGroup( lastRow );
+
+        //if there is nothing left in album group, discard it.
+
+        if ( group->subgroupCount() == 0 ) {
+            //debug() << "empty...";
+            delete m_albumGroups.take( itt.key() );
+            
+        }
+
+   
+
+    }
+
+    if ( m_albumGroups.count() == 0 ) { // start from scratch
+        //debug() << "--1";
+        area1Start = 0;
+        area1End = m_items.count();
+        area2Start = area1Start; // just to skip second pass
+        
+    }
+
+
+    if ( area1Start == -1 ) {
+        //debug() << "--2";
+        area1Start = firstRow;
+        area1End = lastRow;
+        area2Start = area1Start;
+    }
+
+    if ( area1End == -1 )
+        area1End = lastRow;
+
+    if ( area1Start < 0 )
+        area1Start = 0;
+    if ( area1End > ( m_items.count() - 1 ) )
+        area1End = m_items.count() - 1;
+
+    if ( area2Start < 0 )
+        area2Start = 0;
+    if ( area2End > ( m_items.count() - 1 ) )
+        area2End = m_items.count() - 1;
+
+
+    // regroup the two affected areas
+
+    if ( area1Start == area2Start ) //merge areas
+        area1End = QMAX( area1End, area2End );
+    else if ( area1End == area2End ) {//merge areas
+        area1Start = QMIN( area1Start, area2Start );
+        area2Start = area1Start;
+    }
+     
+
+    //debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+    //debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+
+    //debug stuff
+    //debug() << "Groups before:";
+    //foreach( AlbumGroup * ag, m_albumGroups)
+    //   ag->printGroupRows();
+
 
     int i;
-    for (  i = 0; i < m_items.count(); i++ )
+    for (  i = area1Start; i <= area1End; i++ )
     {
 
-
-
-       debug() << "i: " << i;
-
+       //debug() << "i: " << i;
 
        TrackPtr track = m_items.at( i )->track();
 
@@ -792,15 +914,47 @@ void Model::regroupAlbums()
            continue;
 
        if ( m_albumGroups.contains( track->album() ) ) {
-            m_albumGroups[ track->album() ].addRow( i );
+            m_albumGroups[ track->album() ]->addRow( i );
        } else {
-            AlbumGroup newGroup;
-            newGroup.addRow( i );
+            //debug() << "Create new group for album " << track->album()->name() ;
+            AlbumGroup * newGroup = new AlbumGroup();
+            newGroup->addRow( i );
             m_albumGroups.insert( track->album(), newGroup );
        }
-
-
     }
+
+    if ( ( area1Start == area2Start ) || area2Start == -1 ) {
+
+        //debug() << "Groups after:";
+        //foreach( AlbumGroup * ag, m_albumGroups)
+        //    ag->printGroupRows();
+        return;
+    }
+
+    for (  i = area2Start; i <= area2End; i++ )
+    {
+
+       //debug() << "i: " << i;
+
+       TrackPtr track = m_items.at( i )->track();
+
+       if ( !track->album() )
+           continue;
+
+       if ( m_albumGroups.contains( track->album() ) ) {
+            m_albumGroups[ track->album() ]->addRow( i );
+       } else {
+            AlbumGroup * newGroup = new AlbumGroup();
+            newGroup->addRow( i );
+            m_albumGroups.insert( track->album(), newGroup );
+       }
+    }
+
+    //debug() << "Groups after:";
+    //foreach( AlbumGroup *ag, m_albumGroups)
+    //   ag->printGroupRows();
+
+
 /*
     //make sure that a group containg playing track is expanded
     if ( m_activeRow != -1 ){ 

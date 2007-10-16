@@ -25,20 +25,20 @@ namespace Playlist {
 
 AlbumGroup::AlbumGroup()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 }
 
 
 AlbumGroup::~AlbumGroup()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 }
 
 }
 
 void Playlist::AlbumGroup::addRow(int row)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     //Does this row fit in any of our existing groups?
     bool inGroup = false;
@@ -62,12 +62,12 @@ void Playlist::AlbumGroup::addRow(int row)
 
 int Playlist::AlbumGroup::groupMode( int row )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     foreach( Group group, m_groups ) {
         if ( group.rows.contains( row ) ) {
 
-            debug() << "row " << row << " is collapsed= " << group.collapsed;
+            //debug() << "row " << row << " is collapsed= " << group.collapsed;
 
             if ( group.rows.count() < 2 )
                 return None;
@@ -96,18 +96,18 @@ int Playlist::AlbumGroup::groupMode( int row )
 
 void Playlist::AlbumGroup::setCollapsed(int row, bool collapsed)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     for (int i = 0; i < m_groups.count(); i++ ) {
         if ( m_groups[ i ].rows.contains( row ) ) {
             m_groups[ i ].collapsed = collapsed;
-            debug() << "row " << row << " collapsed = " << m_groups[ i ].collapsed;
+            //debug() << "row " << row << " collapsed = " << m_groups[ i ].collapsed;
         }
     }
 }
 
 int Playlist::AlbumGroup::elementsInGroup(int row)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     foreach( Group group, m_groups ) {
         if ( group.rows.contains( row ) ) {
             return group.rows.count();
@@ -127,6 +127,8 @@ int Playlist::AlbumGroup::firstInGroup(int row)
         }
     }
 
+    return -1;
+
 }
 
 int Playlist::AlbumGroup::lastInGroup(int row)
@@ -137,6 +139,8 @@ int Playlist::AlbumGroup::lastInGroup(int row)
             return group.rows.last();
         }
     }
+
+    return -1;
 }
 
 void Playlist::AlbumGroup::removeGroup(int row)
@@ -149,5 +153,18 @@ void Playlist::AlbumGroup::removeGroup(int row)
         }
     }
 
+
+}
+
+int Playlist::AlbumGroup::subgroupCount()
+{
+    return m_groups.count();
+}
+
+void Playlist::AlbumGroup::printGroupRows()
+{
+   foreach( Group group, m_groups ) {
+        debug() << "Subgroup: " << group.rows;
+  }
 
 }

@@ -67,6 +67,10 @@ public:
     int lastInGroup( int row );
     void removeGroup( int row );
 
+    int subgroupCount();
+
+    void printGroupRows();
+
 private:
 
     QList< Group > m_groups;

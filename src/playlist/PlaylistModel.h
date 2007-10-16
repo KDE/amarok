@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>              *
+ *             : (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License version 2        *
@@ -196,11 +197,10 @@ class TrackNavigator;
             Meta::TrackList removeRowsCommand( int position, int rows );
 
              /**
-             * This Method naively deletes all grouping information adn regroups all items from scratch. This is an O(n) opperation,
-             * but it is very simple and handles pretty much all nasty corner cases without involving the black arts or the sacrifice of
-             * of chickens under a full moon.
+             * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha 
+             * actual affected area can be somewhat larger than that specified by the two rows.
              */
-            void regroupAlbums();
+            void regroupAlbums( int firstRow, int lastRow );
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
@@ -218,7 +218,7 @@ class TrackNavigator;
 
             PlaylistHandler * m_playlistHandler;
 
-            mutable QMap< Meta::AlbumPtr, AlbumGroup > m_albumGroups;
+            mutable QMap< Meta::AlbumPtr, AlbumGroup * > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
 
     };

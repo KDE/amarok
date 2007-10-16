@@ -632,7 +632,7 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 
 void Playlist::GraphicsItem::setRow(int row)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     m_currentRow = row;
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
