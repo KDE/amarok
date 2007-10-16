@@ -63,6 +63,10 @@ public:
     void setCollapsed( int row, bool collapsed );
     int elementsInGroup( int row );
 
+    int firstInGroup( int row );
+    int lastInGroup( int row );
+    void removeGroup( int row );
+
 private:
 
     QList< Group > m_groups;

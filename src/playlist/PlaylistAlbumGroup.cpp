@@ -116,3 +116,38 @@ int Playlist::AlbumGroup::elementsInGroup(int row)
 
     return 0;
 }
+
+
+int Playlist::AlbumGroup::firstInGroup(int row)
+{
+
+    foreach( Group group, m_groups ) {
+        if ( group.rows.contains( row ) ) {
+            return group.rows.first();
+        }
+    }
+
+}
+
+int Playlist::AlbumGroup::lastInGroup(int row)
+{
+
+    foreach( Group group, m_groups ) {
+        if ( group.rows.contains( row ) ) {
+            return group.rows.last();
+        }
+    }
+}
+
+void Playlist::AlbumGroup::removeGroup(int row)
+{
+
+    for (int i = 0; i < m_groups.count(); i++ ) {
+        if ( m_groups[ i ].rows.contains( row ) ) {
+            m_groups.removeAt( i );
+            return;
+        }
+    }
+
+
+}
