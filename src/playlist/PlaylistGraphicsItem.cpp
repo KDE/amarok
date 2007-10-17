@@ -121,20 +121,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     //debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
-    if ( m_groupMode == Collapsed ) {
-        // just make sure text items are hidden and then get the heck out of here...
-        if( m_items->topRightText->isVisible() )
-            m_items->topRightText->hide();
-        if( m_items->topLeftText->isVisible() )
-            m_items->topLeftText->hide();
-        if( m_items->bottomRightText->isVisible() )
-            m_items->bottomRightText->hide();
-        if( m_items->bottomLeftText->isVisible() )
-            m_items->bottomLeftText->hide();
-
-        return;
-    }
-
     if( !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
 
@@ -148,6 +134,24 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         m_groupModeChanged = false;
         resize( m_items->track, option->rect.width() );
     }
+
+
+    if ( m_groupMode == Collapsed ) {
+        // just make sure text items are hidden and then get the heck out of here...
+        // whoops... this has got to be moved here below the check for (!m_items) or
+        // it will evetually crasah....
+        if( m_items->topRightText->isVisible() )
+            m_items->topRightText->hide();
+        if( m_items->topLeftText->isVisible() )
+            m_items->topLeftText->hide();
+        if( m_items->bottomRightText->isVisible() )
+            m_items->bottomRightText->hide();
+        if( m_items->bottomLeftText->isVisible() )
+            m_items->bottomLeftText->hide();
+
+        return;
+    }
+
 
     // paint item background:
     QRectF trackRect;

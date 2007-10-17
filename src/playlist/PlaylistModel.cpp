@@ -971,6 +971,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
 void Playlist::Model::setCollapsed(int row, bool collapsed)
 {
+    //DEBUG_BLOCK
     m_albumGroups[ m_items[ row ]->track()->album() ]->setCollapsed( row,  collapsed );
     emit( playlistGroupingChanged() );
 }

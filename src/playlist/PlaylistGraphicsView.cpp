@@ -250,6 +250,7 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 {
+    DEBUG_BLOCK
     if( startPosition < 0 )
         return;
 
@@ -274,15 +275,21 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 
 
         qreal desiredY = cumulativeHeight;
-        cumulativeHeight += item->boundingRect().height();
 
-
+        int itemHeight = item->boundingRect().height();
+        cumulativeHeight += itemHeight;
 
 
         int visibleTop = mapToScene( 0,0 ).y();
         int visibleBottom = mapToScene( 0, height() ).y();
 
-        if ( ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) || ( ( desiredY >= visibleTop ) && ( desiredY <= visibleBottom ) ) ) {
+        /*if ( ( ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) || 
+             ( ( desiredY >= visibleTop ) && ( desiredY <= visibleBottom ) ) ) && 
+               ( itemHeight != 0 ) ) {*/
+
+        if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) && 
+              ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
+               ( itemHeight != 0 ) ) {
 
             bool moveUp = false;
             if( desiredY > currentY )
@@ -340,7 +347,7 @@ namespace The {
 void Playlist::GraphicsView::groupingChanged()
 {
     // ouch!!! this is expesive!!
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     int i;
     for ( i = 0; i < m_tracks.count(); i++ )
