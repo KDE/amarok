@@ -1393,7 +1393,7 @@ QueryBuilder::getField(const QString &tableValue, int *table, qint64 *value)
     }
     else
     {
-        qFatal("invalid table.value: %s", tableValue.toAscii());
+        qFatal("invalid table.value: %s", qPrintable(tableValue));
         return false;
     }
 }
