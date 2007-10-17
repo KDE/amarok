@@ -276,23 +276,37 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         qreal desiredY = cumulativeHeight;
         cumulativeHeight += item->boundingRect().height();
 
-        bool moveUp = false;
-        if( desiredY > currentY )
-            moveUp = true;
 
-        qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
 
-        QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
-        animator->setItem( item );
-        animator->setTimeLine( timer );
 
-        // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
-        for( qreal i = 0; i < distanceMoved; ++i )
-        {
-            qreal newY = moveUp ? ( currentY + i ) : ( currentY - i );
-            animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
+        int visibleTop = mapToScene( 0,0 ).y();
+        int visibleBottom = mapToScene( 0, height() ).y();
+
+        if ( ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) || ( ( desiredY >= visibleTop ) && ( desiredY <= visibleBottom ) ) ) {
+
+            bool moveUp = false;
+            if( desiredY > currentY )
+                moveUp = true;
+    
+            qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
+    
+            QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
+            animator->setItem( item );
+            animator->setTimeLine( timer );
+    
+            // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
+            for( qreal i = 0; i < distanceMoved; ++i )
+            {
+                qreal newY = moveUp ? ( currentY + i ) : ( currentY - i );
+                animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
+            }
+            animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
+
+        } else {
+            //don't animate items if both currentY and desiredY are outside the visible area!
+            //We still do need to update their position though
+            m_tracks.at( i )->setPos( 0.0, desiredY );
         }
-        animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
 
     }
     timer->start();
