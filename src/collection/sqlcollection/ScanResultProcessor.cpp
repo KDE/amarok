@@ -115,9 +115,78 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
 }
 
 QString
-ScanResultProcessor::findAlbumArtist( const QSet<QString> &artist ) const
+ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 {
-    return QString();
+    QMap<QString, int> artistCount;
+    foreach( QString artist, artists )
+    {
+        //this needs to be improved
+        if( artist.contains( "featuring" ) )
+        {
+            QStringList trackArtists = artist.split( "featuring" );
+            //always use the first artist
+            QString tmp = trackArtists[0].simplified();
+            if( tmp.isEmpty() )
+            {
+                //TODO error handling
+            }
+            else
+            {
+                if( artistCount.contains( tmp ) )
+                {
+                    artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
+                }
+                else
+                {
+                    artistCount.insert( tmp, 1 );
+                }
+            }
+        }
+        else if( artist.contains( "feat." ) )
+        {
+            //FIXME code duplication, refactor!
+            QStringList trackArtists = artist.split( "feat." );
+            //always use the first artist
+            QString tmp = trackArtists[0].simplified();
+            if( tmp.isEmpty() )
+            {
+                //TODO error handling
+            }
+            else
+            {
+                if( artistCount.contains( tmp ) )
+                {
+                    artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
+                }
+                else
+                {
+                    artistCount.insert( tmp, 1 );
+                }
+            }
+        }
+        else
+        {
+            if( artistCount.contains( artist ) )
+            {
+                artistCount.insert( artist, artistCount.value( artist ) + 1 );
+            }
+            else
+            {
+                artistCount.insert( artist, 1 );
+            }
+        }
+    }
+    QString albumArtist;
+    int count = 0;
+    foreach( QString key, artistCount.keys() )
+    {
+        if( artistCount.value( key ) > count )
+        {
+            albumArtist = key;
+            count = artistCount.value( key );
+        }
+    }
+    return albumArtist;
 }
 
 void
