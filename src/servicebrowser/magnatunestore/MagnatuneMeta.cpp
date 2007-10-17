@@ -27,8 +27,19 @@ using namespace Meta;
 
 MagnatuneMetaFactory::MagnatuneMetaFactory(const QString & dbPrefix)
     : ServiceMetaFactory( dbPrefix )
+    , m_membershipPrefix( QString() )
+    , m_userName( QString() )
+    , m_password( QString() )
 {
 }
+
+void MagnatuneMetaFactory::setMembershipInfo(QString prefix, QString userName, QString password)
+{
+    m_membershipPrefix = prefix;
+    m_userName = userName;
+    m_password = password;
+}
+
 
 int MagnatuneMetaFactory::getTrackSqlRowCount()
 {
@@ -49,7 +60,16 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
 
 TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
 {
-    return TrackPtr( new MagnatuneTrack( rows ) );
+
+    MagnatuneTrack * track = new MagnatuneTrack( rows );
+
+    if ( !m_membershipPrefix.isEmpty() ) {
+        QString url = track->url();
+        url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
+        track->setUrl( url );
+    }
+
+    return TrackPtr( track );
 }
 
 int MagnatuneMetaFactory::getAlbumSqlRowCount()
@@ -241,7 +261,6 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
-
 
 
 

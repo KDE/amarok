@@ -393,7 +393,11 @@ void MagnatuneStore::polish( )
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-        ServiceMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
+        MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
+
+        //metaFactory->setMembershipInfo( "stream", "user", "pass" );
+
+
         ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
         m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
 

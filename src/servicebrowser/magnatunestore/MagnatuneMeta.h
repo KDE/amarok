@@ -132,6 +132,17 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
     //virtual QString getGenreSqlRows();
         virtual Meta::GenrePtr createGenre( const QStringList &rows );
 
+        //stuff for supporting the new membership services at Magnatune.com
+
+        void setMembershipInfo ( QString prefix, QString userName, QString password );
+
+
+    private:
+
+        QString m_membershipPrefix;
+        QString m_userName;
+        QString m_password;
+
 };
 
 
