@@ -195,7 +195,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
        else 
            svgName = "collapsed_head";
 
-        QString key = QString("%1:%2x%3").arg( svgName ).arg( trackRect.width() ).arg( trackRect.height() );
+        QString key = QString("%1:%2x%3").arg( svgName ).arg( headRect.width() ).arg( headRect.height() );
         QPixmap background( headRect.width(), headRect.height() );
         background.fill( Qt::transparent );
 
@@ -324,7 +324,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     {
         if( !m_items->foreground )
         {
-            m_items->foreground = new QGraphicsRectItem( trackRect, this );
+            m_items->foreground = new QGraphicsRectItem( QRectF( 0.0, 0.0, trackRect.width(), trackRect.height() ) , this );
             m_items->foreground->setPos( 0.0, trackRect.top() );
             m_items->foreground->setZValue( 10.0 );
             QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
