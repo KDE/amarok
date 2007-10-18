@@ -326,12 +326,12 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         {
             m_items->foreground = new QGraphicsRectItem( trackRect, this );
             m_items->foreground->setPos( 0.0, trackRect.top() );
-            m_items->foreground->setZValue( 5.0 );
+            m_items->foreground->setZValue( 10.0 );
             QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
-            QColor start = option->palette.highlight().color().light();
-            start.setAlpha( 51 );
-            QColor end = option->palette.highlight().color().dark();
-            end.setAlpha( 51 );
+            QColor start = option->palette.highlightedText().color().light();
+            start.setAlpha( 80 );
+            QColor end = option->palette.highlightedText().color().dark();
+            end.setAlpha( 80 );
             gradient.setColorAt( 0.0, start );
             gradient.setColorAt( 1.0, end );
             QBrush brush( gradient );

@@ -336,8 +336,10 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
      if ( !index.isValid() )
         return;
 
-     if ( m_tracks.count() > index.row() )
-         m_tracks.at( index.row() )->refresh();
+     if ( m_tracks.count() > index.row() ) {
+        debug() << "Refreshing item..."; 
+        m_tracks.at( index.row() )->update();
+     }
 }
 
 namespace The {
