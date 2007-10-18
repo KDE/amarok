@@ -18,10 +18,12 @@
  ***************************************************************************/
 
 #include "CollectionSortFilterProxyModel.h"
+#include "CollectionTreeItem.h"
 
 CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * parent )
  : QSortFilterProxyModel( parent )
 {
+    setDynamicSortFilter( true );
 }
 
 
@@ -34,6 +36,22 @@ CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
 {
     QModelIndex sourceParent = mapToSource(parent);
     return sourceModel()->hasChildren(sourceParent);
+}
+
+bool
+CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+    CollectionTreeItem *leftItem = static_cast<CollectionTreeItem*>( left.internalPointer() );
+    CollectionTreeItem *rightItem = static_cast<CollectionTreeItem*>( right.internalPointer() );
+
+    if( leftItem->level() == rightItem->level() )
+    {
+        const Meta::TrackPtr leftTrack = Meta::TrackPtr::dynamicCast( leftItem->data() );
+        const Meta::TrackPtr rightTrack = Meta::TrackPtr::dynamicCast( rightItem->data() );
+        if( !leftTrack.isNull()  && !rightTrack.isNull() )
+            return leftTrack->trackNumber() < rightTrack->trackNumber();
+    }
+    return QSortFilterProxyModel::lessThan( left, right ); //Bad idea fallthrough
 }
 
 

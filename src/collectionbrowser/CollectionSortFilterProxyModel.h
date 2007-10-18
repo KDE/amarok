@@ -29,12 +29,15 @@ This is a custom QSortFilterProxyModel that solves some issues with sorting a mo
 */
 class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 {
-public:
-    CollectionSortFilterProxyModel( QObject * parent = 0 );
+    public:
+        CollectionSortFilterProxyModel( QObject * parent = 0 );
 
-    virtual ~CollectionSortFilterProxyModel();
+        virtual ~CollectionSortFilterProxyModel();
 
-    bool hasChildren(const QModelIndex &parent) const;
+        bool hasChildren(const QModelIndex &parent) const;
+
+    protected:
+        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 
 };
