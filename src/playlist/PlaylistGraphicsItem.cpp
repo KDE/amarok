@@ -722,7 +722,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Head:
                 debug() << "Head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height();
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 4;
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";
