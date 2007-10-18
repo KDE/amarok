@@ -17,8 +17,11 @@
 #include <KMenuBar>
 #include "searchwidget.h"
 
+CollectionWidget *CollectionWidget::s_instance = 0;
+
 CollectionWidget::CollectionWidget( const char* name )
 {
+    s_instance = this;
     setObjectName( name );
     QVBoxLayout* layout = new QVBoxLayout;
 
@@ -38,7 +41,7 @@ CollectionWidget::CollectionWidget( const char* name )
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
     filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Artist / Year / Album" ), menubar ); // This was Artist / Year - Album, but would require more logic to make it work so keep it like this for now
+    action = new QAction( i18n( "Artist / Year - Album" ), menubar ); // This was Artist / Year - Album, but would require more logic to make it work so keep it like this for now
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistYearAlbum() ) );
     filterMenu->addAction( action );
 
@@ -59,41 +62,48 @@ CollectionWidget::CollectionWidget( const char* name )
     layout->addWidget( new SearchWidget( this, m_treeView ) );
     layout->addWidget( m_treeView );
     setLayout( layout );
+    m_treeView->setShowTrackNumbers( true );
 }
 
 void
 CollectionWidget::sortByArtist()
 {
+    m_treeView->setShowYears( false );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist );
 }
 
 void
 CollectionWidget::sortByArtistAlbum()
 {
+    m_treeView->setShowYears( false );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist << QueryBuilder::tabAlbum );
 }
 
 void
 CollectionWidget::sortByArtistYearAlbum()
 {
+    m_treeView->setShowYears( true );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist << QueryBuilder::tabYear << QueryBuilder::tabAlbum );
 }
 
 void
 CollectionWidget::sortByAlbum()
 {
+    m_treeView->setShowYears( false );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabAlbum );
 }
 
 void
 CollectionWidget::sortByGenreArtist()
 {
+    m_treeView->setShowYears( false );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabGenre << QueryBuilder::tabArtist );
 }
 
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
+    m_treeView->setShowYears( false );
     m_treeView->setLevels( QList<int>() << QueryBuilder::tabGenre << QueryBuilder::tabArtist << QueryBuilder::tabAlbum );
 }
 

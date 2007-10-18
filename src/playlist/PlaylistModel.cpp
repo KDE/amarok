@@ -425,10 +425,10 @@ Model::insertOptioned( Meta::TrackList list, int options )
     DEBUG_BLOCK
 
 //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
-//     if( list.isEmpty() ) {
+    if( list.isEmpty() ) {
 //         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
-//         return; // don't add empty items
-//     }
+        return; // don't add empty items
+    }
 
 
     if( options & Unique )
@@ -542,6 +542,7 @@ Model::saveM3U( const QString &path ) const
         tl << item->track();
     if( m_playlistHandler->save( tl, path ) )
         return true;
+    return false;
 }
 
 Qt::ItemFlags

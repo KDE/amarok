@@ -8,6 +8,8 @@
 
 
 #include "CollectionTreeItem.h"
+#include "CollectionTreeView.h"
+#include "CollectionWidget.h"
 
 #include <KLocale>
 
@@ -63,6 +65,22 @@ CollectionTreeItem::data( int role ) const {
     if ( !m_data.isNull() ) {
         if ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) {
             QString name = m_data->prettyName();
+            if ( CollectionWidget::instance()->view()->showTrackNumbers() )
+            {
+                if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(m_data ) )
+                {
+                    if( !track.isNull() )
+                        name = QString::number( track->trackNumber() ) + " - " + track->prettyName();
+                }
+            }
+//             else if ( CollectionWidget::instance()->view()->showYears() )
+//             {
+//                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
+//                 {
+//                     if( !album.isNull() )
+//                         name = QString::number( Meta::TrackPtr::dynamicCast(m_childItems[0]->data())->year() ) + " - " + album->prettyName();
+//                 }
+//             }
             if ( name.isEmpty() )
                 return i18n( "Unknown" );
             return name;

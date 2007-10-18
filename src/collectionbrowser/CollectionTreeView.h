@@ -36,6 +36,12 @@ class CollectionTreeView: public QTreeView {
         void setModel ( QAbstractItemModel * model );
 	    void contextMenuEvent(QContextMenuEvent* event);
 
+        void setShowYears( bool show ) { m_showYears = show; }
+        const bool showYears() const { return m_showYears; }
+
+        void setShowTrackNumbers( bool show ) { m_showTrackNumbers = show; }
+        const bool showTrackNumbers() const { return m_showTrackNumbers; }
+
     public slots:
         void slotSetFilterTimeout();
 
@@ -59,6 +65,8 @@ class CollectionTreeView: public QTreeView {
         CollectionTreeItemModel *m_treeModel;
         QTimer m_filterTimer;
         QPoint m_dragStartPosition;
+        bool m_showTrackNumbers;
+        bool m_showYears;
 
     signals:
 

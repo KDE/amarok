@@ -18,6 +18,8 @@ class CollectionWidget : public QWidget
     Q_OBJECT
     public:
         CollectionWidget( const char* name );
+        static CollectionWidget *instance() { return s_instance; }
+        CollectionTreeView *view() const { return m_treeView; }
     public slots:
         //void slotSetFilter();
 
@@ -32,6 +34,7 @@ class CollectionWidget : public QWidget
     private:
         SearchWidget           *m_searchWidget;
         CollectionTreeView* m_treeView;
+        static CollectionWidget *s_instance;
 };
 
 #endif
