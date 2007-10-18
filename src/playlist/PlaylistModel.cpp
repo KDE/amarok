@@ -37,6 +37,15 @@
 using namespace Playlist;
 using namespace Meta;
 
+namespace Amarok
+{
+    // Sorting of a tracklist.
+    bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right )
+    {
+        return left->trackNumber() < right->trackNumber();
+    }
+}
+
 Model *Model::s_instance = 0;
 
 Model::Model( QObject* parent )
@@ -126,7 +135,7 @@ Model::data( const QModelIndex& index, int role ) const
 
         AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
         return albumGroup->elementsInGroup( row );
-    
+
     } else if( role == Qt::DisplayRole && row != -1 )
     {
         switch ( index.column() ) {
@@ -722,15 +731,17 @@ Model::queryDone() //Slot
 void
 Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks ) //Slot
 {
+    Meta::TrackList ourTracks = tracks;
+    qStableSort( ourTracks.begin(), ourTracks.end(), Amarok::trackNumberLessThan );
     Q_UNUSED( collectionId )
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
     {
         //requires better handling of queries which return multiple results
         if( m_queryMap.contains( qm ) )
-            insertTracks( m_queryMap.value( qm ), tracks );
+            insertTracks( m_queryMap.value( qm ), ourTracks );
         else if( m_optionedQueryMap.contains( qm ) )
-            insertOptioned( tracks, m_optionedQueryMap.value( qm ) );
+            insertOptioned( ourTracks, m_optionedQueryMap.value( qm ) );
     }
 }
 
@@ -800,40 +811,40 @@ void Model::regroupAlbums( int firstRow, int lastRow )
         bool removeGroupBelowLastRow = false;
 
         int temp = group->firstInGroup( aboveFirst );
-        if ( temp != -1 ) { 
+        if ( temp != -1 ) {
             //debug() << "--3";
             area1Start = temp;
             removeGroupAboveFirstRow = true;
         }
 
         temp = group->lastInGroup( firstRow + 1 );
-        if ( temp != -1 ) { 
+        if ( temp != -1 ) {
             //debug() << "--4";
             area1End = temp;
             removeGroupBelowFirstRow = true;
         }
 
         temp = group->firstInGroup( lastRow - 1 );
-        if ( temp != -1 ) { 
+        if ( temp != -1 ) {
             //debug() << "--5";
             area2Start = temp;
             removeGroupAboveLastRow = true;
         }
 
         temp = group->lastInGroup( belowLast );
-        if ( temp != -1 ) { 
+        if ( temp != -1 ) {
             //debug() << "--6";
             area2End = temp;
             removeGroupBelowLastRow = true;
         }
 
-        if ( removeGroupAboveFirstRow ) 
+        if ( removeGroupAboveFirstRow )
            { group->removeGroup( aboveFirst ); /*debug() << "removing group at row: " <<  aboveFirst;*/ }
-        
+
         if ( removeGroupBelowFirstRow )
             { group->removeGroup( firstRow + 1 ); /*debug() << "removing group at row: " <<  firstRow + 1;*/ }
 
-        if ( removeGroupAboveLastRow ) 
+        if ( removeGroupAboveLastRow )
             { group->removeGroup( lastRow -1 ); /*debug() << "removing group at row: " <<  lastRow - 1;*/ }
         if ( removeGroupBelowLastRow )
            { group->removeGroup( belowLast );  /*debug() << "removing group at row: " <<  belowLast;*/ }
@@ -846,10 +857,10 @@ void Model::regroupAlbums( int firstRow, int lastRow )
         if ( group->subgroupCount() == 0 ) {
             //debug() << "empty...";
             delete m_albumGroups.take( itt.key() );
-            
+
         }
 
-   
+
 
     }
 
@@ -858,7 +869,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
         area1Start = 0;
         area1End = m_items.count();
         area2Start = area1Start; // just to skip second pass
-        
+
     }
 
 
@@ -891,7 +902,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
         area1Start = QMIN( area1Start, area2Start );
         area2Start = area1Start;
     }
-     
+
 
     //debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
     //debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
@@ -957,7 +968,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
 
     //make sure that a group containg playing track is expanded
-    if ( m_activeRow != -1 ){ 
+    if ( m_activeRow != -1 ){
         if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album() ) ) {
             m_albumGroups[ m_items[ m_activeRow ]->track()->album() ]->setCollapsed( m_activeRow,  false );
             debug() << "Here";

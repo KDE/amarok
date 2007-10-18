@@ -29,6 +29,13 @@ class QModelIndex;
 class QueryMaker;
 class QUndoStack;
 
+namespace Amarok
+{
+    // Sorting of a tracklist.
+    bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
+}
+
+
 namespace Playlist {
 
 class TrackNavigator;
@@ -199,7 +206,7 @@ class TrackNavigator;
             Meta::TrackList removeRowsCommand( int position, int rows );
 
              /**
-             * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha 
+             * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha
              * actual affected area can be somewhat larger than that specified by the two rows.
              */
             void regroupAlbums( int firstRow, int lastRow );

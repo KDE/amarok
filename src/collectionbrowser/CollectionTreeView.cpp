@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
+#include "playlist/PlaylistModel.h"
 #include "querybuilder.h"
 #include "TheInstances.h"
 
@@ -250,6 +251,7 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
     else
     {
         Meta::TrackList tracks = item->descendentTracks();
+        qStableSort( tracks.begin(), tracks.end(), Amarok::trackNumberLessThan);
         The::playlistModel()->insertOptioned( tracks, insertMode );
     }
 }

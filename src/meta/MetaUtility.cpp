@@ -79,7 +79,7 @@ Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();
-    QString title = metadata.contains( Meta::Field::TITLE ) ? 
+    QString title = metadata.contains( Meta::Field::TITLE ) ?
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
     ec->setTitle( title );
 
