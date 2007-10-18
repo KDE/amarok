@@ -21,6 +21,7 @@
 */
 
 #include "amarok.h"
+#include "collectiondb.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
 
@@ -202,6 +203,24 @@ MediaItem::isFileBacked() const
     }
 
     return false;
+}
+
+void
+MediaItem::syncStatsFromPath( const QString &url )
+{
+    if( url.isEmpty() )
+        return;
+
+    // copy Amarok rating, play count and last played time to device
+    int rating = CollectionDB::instance()->getSongRating( url )*10;
+    if( rating )
+        setRating( rating );
+    int playcount = CollectionDB::instance()->getPlayCount( url );
+    if( playcount > played() )
+        setPlayCount( playcount );
+    QDateTime lastplay = CollectionDB::instance()->getLastPlay( url );
+    if( lastplay > playTime() )
+        setLastPlayed( lastplay.toTime_t() );
 }
 
 long

@@ -165,11 +165,9 @@ class MediaQueue : public K3ListView
 class MediaBrowser : public KVBox
 {
     Q_OBJECT
-    friend class DeviceConfigureDialog;
     friend class MediaDevice;
     friend class MediaView;
     friend class MediaQueue;
-    friend class MediumPluginChooser;
     friend class MediaItem;
 
     public:
@@ -213,13 +211,13 @@ class MediaBrowser : public KVBox
         void slotSetFilter();
         void slotSetFilter( const QString &filter );
         void slotEditFilter();
-        void deviceAdded( const QString &udi );
-        void deviceRemoved( const QString &udi );
+        void deviceAdded( const QString &uid );
+        void deviceRemoved( const QString &uid );
         void activateDevice( const MediaDevice *device );
         void activateDevice( int index, bool skipDummy = true );
         //TODO Put these back!
-        //void pluginSelected( const Medium *, const QString );
-        //void showPluginManager();
+        void pluginSelected( const QString &, const QString & );
+        void showPluginManager();
         //void configSelectPlugin( int index );
         void cancelClicked();
         void connectClicked();
@@ -231,7 +229,7 @@ class MediaBrowser : public KVBox
         void prepareToQuit();
 
     private:
-        MediaDevice *loadDevicePlugin( const QString &udi );
+        MediaDevice *loadDevicePlugin( const QString &uid );
         void         unloadDevicePlugin( MediaDevice *device );
 
         QTimer *m_timer;

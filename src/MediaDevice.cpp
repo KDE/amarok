@@ -17,7 +17,6 @@
 #include "debug.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
-//#include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"

@@ -31,10 +31,11 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
-    friend class TransferDialog;
     friend class MediaBrowser;
+    friend class MediaDeviceConfig;
     friend class MediaView;
     friend class MediaQueue;
+    friend class TransferDialog;
 
     public:
         enum Flags
@@ -234,7 +235,6 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         int  runPostDisconnectCommand();
         QString replaceVariables( const QString &cmd ); // replace %m with mount point and %d with device node
 
-        QString uid() { return m_uid; }
         void setUid( const QString &uid ) { m_uid = uid; }
 
         /**

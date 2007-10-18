@@ -22,7 +22,7 @@
 
 #include "ConfigDialogBase.h"
 
-class MediumPluginManager;
+class MediaDevicePluginManager;
 
 
 class MediadeviceConfig : public ConfigDialogBase
@@ -38,7 +38,7 @@ class MediadeviceConfig : public ConfigDialogBase
         virtual void updateSettings();
 
     private:
-        MediumPluginManager *m_deviceManager;
+        MediaDevicePluginManager *m_pluginManager;
 };
 
 

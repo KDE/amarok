@@ -44,9 +44,10 @@
 
 namespace Amarok {
 
-    /*
+    /*    
      * Transform to be usable within HTML/HTML attributes
      */
+    /*
     QString escapeHTMLAttr( const QString &s )
     {
         return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).
@@ -57,7 +58,7 @@ namespace Amarok {
         return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
             replace( "%27", "'" ).replace( "%25", "%" );
     }
-
+*/
     /**
     * Function that must be used when separating contextBrowser escaped urls
     * detail can contain track/discnumber

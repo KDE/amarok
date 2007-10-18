@@ -24,8 +24,7 @@
 #include "MediaItem.h"
 #include "MediaDevice.h"
 #include "MediaDeviceCache.h"
-#include "medium.h"
-//#include "mediumpluginmanager.h"
+#include "MediaDevicePluginManager.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
@@ -249,8 +248,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     updateStats();
 
     MediaDeviceCache::instance()->refreshCache();
-    foreach( QString udi, MediaDeviceCache::instance()->getAll() )
-        deviceAdded( udi );
+    foreach( QString uid, MediaDeviceCache::instance()->getAll() )
+        deviceAdded( uid );
 
     //TODO: Take generic storage devices into account too -- or do we rely on the
     //Solid backend to tell us if it's a PMP with "storage" type?
@@ -356,7 +355,7 @@ MediaDevice *
 MediaBrowser::deviceFromId( const QString &id ) const
 {
     for( QList<MediaDevice *>::const_iterator it = m_devices.constBegin();
-                it != m_devices.end();
+                it != m_devices.constEnd();
                 it++ )
         {
             if( (*it)->uid() == id )
@@ -1011,11 +1010,11 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::deviceAdded( const QString &udi )
+MediaBrowser::deviceAdded( const QString &uid )
 {
     DEBUG_BLOCK
-    debug() << "deviceAdded called with a udi of: " << udi;
-    MediaDevice *md = loadDevicePlugin( udi );
+    debug() << "deviceAdded called with a uid of: " << uid;
+    MediaDevice *md = loadDevicePlugin( uid );
     if( md )
     {
         addDevice( md );
@@ -1025,13 +1024,13 @@ MediaBrowser::deviceAdded( const QString &udi )
 }
 
 void
-MediaBrowser::deviceRemoved( const QString &udi )
+MediaBrowser::deviceRemoved( const QString &uid )
 {
     for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
-        if( (*it)->m_uid == udi )
+        if( (*it)->m_uid == uid )
         {
             if( (*it)->isConnected() )
             {
@@ -1051,7 +1050,7 @@ MediaBrowser::deviceRemoved( const QString &udi )
 }
 
 MediaDevice *
-MediaBrowser::loadDevicePlugin( const QString &udi )
+MediaBrowser::loadDevicePlugin( const QString &uid )
 {
     DEBUG_BLOCK
 
@@ -1059,10 +1058,10 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
     QString mountPoint;
     QString protocol;
 
-    if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidType )
+    if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::SolidType )
     {
-        debug() << "udi " << udi << " detected as a Solid device";
-        Solid::Device solidDevice( udi );
+        debug() << "uid " << uid << " detected as a Solid device";
+        Solid::Device solidDevice( uid );
 
         Solid::PortableMediaPlayer* pmp = solidDevice.as<Solid::PortableMediaPlayer>();
 
@@ -1074,7 +1073,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
         }
         if( pmp->supportedProtocols().size() == 0 )
         {
-            debug() << "Portable Media Player " << udi << " does not support any protocols";
+            debug() << "Portable Media Player " << uid << " does not support any protocols";
             return 0;
         }
 
@@ -1089,9 +1088,9 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
 
         name = solidDevice.vendor() + " - " + solidDevice.product();
     }
-    else if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::ManualType )
+    else if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::ManualType )
     {
-        QString handler = Amarok::config( "PortableDevices" ).readEntry( udi, QString() );
+        QString handler = Amarok::config( "PortableDevices" ).readEntry( uid, QString() );
         if( handler.isEmpty() || !handler.startsWith( "manual" ) )
         {
             //this shouldn't happen, as manually adding the device should create the necessary entry
@@ -1115,7 +1114,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
         debug() << "Returning plugin!";
         MediaDevice *device = static_cast<MediaDevice *>( plugin );
         device->init( this );
-        device->m_uid = udi;
+        device->m_uid = uid;
         device->m_name = name;
         device->m_type = protocol;
         device->m_mountPoint = mountPoint;
@@ -1125,6 +1124,118 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
     debug() << "no plugin for " << protocol;
     return 0;
 }
+
+void
+MediaBrowser::pluginSelected( const QString &uid, const QString &plugin )
+{
+    DEBUG_BLOCK
+    if( !plugin.isEmpty() )
+    {
+        debug() << "Device uid is " << uid << " and plugin selected is: " << plugin;
+        Amarok::config( "PortableDevices" ).writeEntry( uid, plugin );
+
+        bool success = true;
+        foreach( MediaDevice* device, m_devices )
+        {
+            if( device->uid() == uid )
+            {
+                debug() << "removing matching device";
+                if( device->isConnected() )
+                {
+                    if( device->disconnectDevice( false ) )
+                        removeDevice( device );
+                    else
+                        success = false;
+                }
+                else
+                    removeDevice( device );
+                break;
+            }
+        }
+
+        if( success )
+        {
+            deviceAdded( uid );
+        }
+        else
+        {
+            debug() << "Cannot change plugin while operation is in progress" << endl;
+            Amarok::StatusBar::instance()->longMessage(
+                    i18n( "Cannot change plugin while operation is in progress" ),
+                    KDE::StatusBar::Warning );
+        }
+    }
+    else
+        debug() << "Device uid is " << uid << " and you opted not to use a plugin";
+}
+
+void
+MediaBrowser::showPluginManager()
+{
+    MediaDevicePluginManagerDialog* mpm = new MediaDevicePluginManagerDialog();
+    mpm->exec();
+    delete mpm;
+}
+
+/*
+MediaBrowser::configSelectPlugin( int index )
+{
+    Q_UNUSED( index );
+
+    if( m_currentDevice == m_devices.begin() )
+    {
+        AmarokConfig::setDeviceType( m_pluginName[m_configPluginCombo->currentText()] );
+    }
+    else if( currentDevice() )
+    {
+        KConfig *config = Amarok::config( "MediaBrowser" );
+        config->writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
+    }
+
+    if( !currentDevice() )
+        activateDevice( 0, false );
+
+    if( !currentDevice() )
+        return;
+
+    if( m_pluginName[m_configPluginCombo->currentText()] != currentDevice()->deviceType() )
+    {
+        MediaDevice *dev = currentDevice();
+        dev->removeConfigElements( m_configBox );
+        if( dev->isConnected() )
+        {
+            dev->disconnectDevice( false );
+        }
+        unloadDevicePlugin( dev );
+        *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
+        if( !*m_currentDevice )
+        {
+            *m_currentDevice = new DummyMediaDevice();
+            if( AmarokConfig::deviceType() != "dummy-mediadevice" )
+            {
+                QString msg = i18n( "The requested media device could not be loaded" );
+                Amarok::StatusBar::instance()->shortMessage( msg );
+            }
+        }
+        dev = currentDevice();
+        dev->init( this );
+        dev->loadConfig();
+
+        m_configBox->hide();
+        dev->addConfigElements( m_configBox );
+        m_configBox->show();
+
+        dev->view()->show();
+
+        if( dev->autoConnect() )
+        {
+            dev->connectDevice( true );
+            updateButtons();
+        }
+
+        updateDevices();
+    }
+}*/
 
 void
 MediaBrowser::unloadDevicePlugin( MediaDevice *device )
@@ -1151,8 +1262,9 @@ MediaBrowser::config()
 {
     if( m_deviceCombo->currentText() == "No Device Selected" )
     {
-        Amarok::StatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
-                                                       KDE::StatusBar::Sorry );
+        //Amarok::StatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
+        //                                               KDE::StatusBar::Sorry );
+        showPluginManager();
         return true;
     }
 
@@ -1547,7 +1659,6 @@ MediaBrowser::connectClicked()
     updateStats();
 }
 
-
 void
 MediaBrowser::disconnectClicked()
 {
@@ -1587,24 +1698,6 @@ MediaBrowser::customClicked()
 {
     if( m_currentDevice )
         m_currentDevice->customClicked();
-}
-
-void
-MediaItem::syncStatsFromPath( const QString &url )
-{
-    if( url.isEmpty() )
-        return;
-
-    // copy Amarok rating, play count and last played time to device
-    int rating = CollectionDB::instance()->getSongRating( url )*10;
-    if( rating )
-        setRating( rating );
-    int playcount = CollectionDB::instance()->getPlayCount( url );
-    if( playcount > played() )
-        setPlayCount( playcount );
-    QDateTime lastplay = CollectionDB::instance()->getLastPlay( url );
-    if( lastplay > playTime() )
-        setLastPlayed( lastplay.toTime_t() );
 }
 
 void

@@ -10,16 +10,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "mediadevicepluginmanager.h"
+#include "MediaDevicePluginManager.h"
 
 #include "amarok.h"
 #include "debug.h"
 #include "deviceconfiguredialog.h"
-#include "mediadevicemanager.h"
-#include "devicemanager.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
-#include "medium.h"
+#include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
@@ -33,6 +31,7 @@
 #include <KLocale>
 #include <KPushButton>
 #include <KVBox>
+#include <Solid/Device>
 
 #include <QAbstractButton>
 #include <q3groupbox.h>
@@ -111,26 +110,11 @@ MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget, const bool 
 {
     detectDevices( false, nographics );
 
-    connect( this, SIGNAL( selectedPlugin( const QString &, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const QString &, const QString ) ) );
+    connect( this, SIGNAL( selectedPlugin( const QString &, const QString & ) ), MediaBrowser::instance(), SLOT( pluginSelected( const QString &, const QString & ) ) );
 }
 
 MediaDevicePluginManager::~MediaDevicePluginManager()
 {
-}
-
-bool
-MediaDevicePluginManager::hasChanged()
-{
-    bool temp = m_hasChanged;
-    m_hasChanged = false;
-    return temp;
-}
-
-void
-MediaDevicePluginManager::slotChanged()//slot
-{
-    m_hasChanged = true;
-    emit changed();
 }
 
 bool
@@ -152,18 +136,17 @@ MediaDevicePluginManager::detectDevices( const bool redetect, const bool nograph
 
         bool skipflag = false;
 
-        for( DeviceList::Iterator dit = m_deviceList.begin();
-                dit != m_deviceList.end();
-                dit++ )
+        foreach( MediaDeviceConfig* mediadevice, m_deviceList )
         {
-            if( device == (*dit)->uid() )
+            if( device == mediadevice->uid() )
             {
                 skipflag = true;
                 debug() << "skipping: already listed";
             }
         }
 
-        if( m_deletedMap.contains( device ) && !(*it)->isAutodetected() )
+        if( m_deletedMap.contains( device ) &&
+                !MediaDeviceCache::instance()->deviceType( device ) == MediaDeviceCache::SolidType )
         {
             skipflag = true;
             debug() << "skipping: deleted & not autodetect";
@@ -197,40 +180,29 @@ MediaDevicePluginManager::redetectDevices()
                                                                    "     \"qdbus org.kde.kded /modules/mediamanager fullList\"\n"
                                                                    "in a Konsole window.") );
     }
-    else
-        slotChanged();
 }
 
 void
 MediaDevicePluginManager::deleteDevice( const QString &uid  )
 {
-    for( DeviceList::Iterator it = m_deviceList.begin();
-            it != m_deviceList.end();
-            it++ )
+    for( int i = 0; i < m_deviceList.size(); ++i )
     {
-        if( (*it)->uid() == uid )
-        {
-            m_deletedMap[uid] = true;
-            m_deviceList.remove( *it );
-            break;
-        }
+        if( m_deviceList[i]->uid() == uid )
+        m_deletedMap[uid] = true;
     }
-    slotChanged();
 }
 
 void
 MediaDevicePluginManager::finished()
 {
-    for( DeviceList::Iterator it = m_deviceList.begin();
-            it != m_deviceList.end();
-            it++ )
+    foreach( MediaDeviceConfig* mediadevice, m_deviceList )
     {
-        if( (*it)->plugin() != (*it)->oldPlugin() )
+        if( mediadevice->plugin() != mediadevice->oldPlugin() )
         {
-            (*it)->setOldPlugin( (*it)->plugin() );
-            emit selectedPlugin( (*it)->uid(), (*it)->plugin() );
+            mediadevice->setOldPlugin( mediadevice->plugin() );
+            emit selectedPlugin( mediadevice->uid(), mediadevice->plugin() );
         }
-        (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
+        mediadevice->configButton()->setEnabled( mediadevice->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
 
     KConfigGroup config = Amarok::config( "MediaBrowser" );
@@ -238,7 +210,7 @@ MediaDevicePluginManager::finished()
             dit != m_deletedMap.end();
             ++dit )
     {
-        if( MediaDeviceCache::instance()->getType( dit.key() ) == MediaDeviceCache::SolidType )
+        if( MediaDeviceCache::instance()->deviceType( dit.key() ) == MediaDeviceCache::SolidType )
             config.writeEntry( dit.key(), "deleted" );
         else
             config.deleteEntry( dit.key() );
@@ -254,7 +226,7 @@ MediaDevicePluginManager::newDevice()
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     if( mda->exec() == QDialog::Accepted && mda->successful() )
     {
-        if( !Amarok::config( "PortableDevices" ).readEntry( mda->id(), QString() ).isNull() )
+        if( !Amarok::config( "PortableDevices" ).readEntry( mda->getId(), QString() ).isNull() )
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
@@ -263,13 +235,12 @@ MediaDevicePluginManager::newDevice()
         }
         else
         {
-            Amarok::config( "PortableDevices" ).writeEntry( mda->uid(), mda->getPlugin() );
+            Amarok::config( "PortableDevices" ).writeEntry( mda->getId(), mda->getPlugin() );
             MediaDeviceCache::instance()->refreshCache();
             detectDevices();
         }
     }
     delete mda;
-    slotChanged();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -285,7 +256,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
 
     m_mpm = mpm;
     m_successful = false;
-    m_newMed = 0;
+    m_newId = QString();
 
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Add New Device") ) );
@@ -326,7 +297,6 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
 
 ManualDeviceAdder::~ManualDeviceAdder()
 {
-    delete m_newMed;
     delete m_mdaName;
     delete m_mdaMountPoint;
 }
@@ -380,7 +350,7 @@ ManualDeviceAdder::getId( bool recreate )
     if( !recreate )
         return m_newId;
 
-    if( !m_newMed.isEmpty() && recreate )
+    if( !m_newId.isEmpty() && recreate )
     {
         m_newId = QString();
     }
@@ -434,7 +404,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
                     Qt::escape( device.vendor() ) );
             if( !device.product().isEmpty() )
                 table += row.arg( Qt::escape( i18n( "Product:" ) ),
-                    Qt::escape( medium->label().isEmpty() ? labelTextNone : medium->label() ) );
+                    Qt::escape( device.product() ) );
         }
     }
 
@@ -467,9 +437,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
     m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
 
-    connect( m_pluginCombo, SIGNAL(activated(const QString&)), m_manager, SLOT(slotChanged()) );
-    connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );
-
     if( !nographics )
         show();
 }
@@ -481,16 +448,29 @@ MediaDeviceConfig::~MediaDeviceConfig()
 void
 MediaDeviceConfig::configureDevice() //slot
 {
-    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( m_uid );
-    dcd->exec();
-    delete dcd;
+    MediaDevice *device = MediaBrowser::instance()->deviceFromId( m_uid );
+    if( device )
+    {
+        DeviceConfigureDialog* dcd = new DeviceConfigureDialog( device );
+        dcd->exec();
+        delete dcd;
+    }
+    else
+        debug() << "Could not show the configuration dialog because the device could not be found.";
 }
 
 void
 MediaDeviceConfig::deleteDevice() //slot
 {
-    emit deleteMedium( medium() );
+    emit deleteDevice( m_uid );
     delete this;
 }
 
-#include "mediadevicepluginmanager.moc"
+QString
+MediaDeviceConfig::plugin()
+{
+    return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() );
+}
+
+
+#include "MediaDevicePluginManager.moc"

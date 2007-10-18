@@ -18,9 +18,9 @@
 
 
 #include <KHBox>
-#include <KConfig>
-#include <KPageDialog>
+#include <KComboBox>
 #include <KLocale>
+#include <KPageDialog>
 
 #include <QLayout>
 #include <QMap>
@@ -31,8 +31,7 @@ class QAbstractButton;
 class Q3GroupBox;
 class QLabel;
 class KVBox;
-class KComboBox;
-class Medium;
+class MediaDevice;
 class MediaDevicePluginManager;
 
 typedef QMap<QString, bool> DeletedMap;
@@ -51,8 +50,8 @@ class MediaDeviceConfig : public KHBox
         ~MediaDeviceConfig();
         QString oldPlugin() { return m_oldPlugin; }
         void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }
-        inline QString plugin() { return MediaDevicePluginManager::instance()->getInternalPluginName( m_pluginCombo->currentText() ); }
-        KComboBox *pluginCombo() { return m_pluginCombo; }
+        QString plugin();
+        KComboBox* pluginCombo() { return m_pluginCombo; }
         QAbstractButton *configButton() { return m_configButton; }
         QAbstractButton *removeButton() { return m_removeButton; }
         QString uid() { return m_uid; }
@@ -64,18 +63,17 @@ class MediaDeviceConfig : public KHBox
 
     signals:
         void changed();
+        void deleteDevice( const QString & );
 
     protected:
         MediaDevicePluginManager *m_manager;
         QString m_uid;
         QString m_oldPlugin;
-        KComboBox * m_pluginCombo;
+        KComboBox* m_pluginCombo;
         QAbstractButton *m_configButton;
         QAbstractButton *m_removeButton;
         bool m_new;
 };
-
-typedef QList<MediaDeviceConfig *> DeviceList;
 
 class MediaDevicePluginManager : public QObject
 {
@@ -87,24 +85,20 @@ class MediaDevicePluginManager : public QObject
         explicit MediaDevicePluginManager( QWidget *widget, const bool nographics=false );
         ~MediaDevicePluginManager();
         void finished();
-        bool hasChanged();
 
     signals:
-        void selectedPlugin( const Medium*, const QString );
-        void changed();
+        void selectedPlugin( const QString &, const QString & );
 
     public slots:
         void redetectDevices();
         void newDevice();
-        void deleteMedium( Medium *medium );
-        void slotChanged();
+        void deleteDevice( const QString &uid );
 
     private:
         bool detectDevices( bool redetect=false, bool nographics=false );
         DeletedMap m_deletedMap;
-        DeviceList m_deviceList;
+        QList<MediaDeviceConfig *> m_deviceList;
         QWidget *m_widget;
-        bool m_hasChanged;
 
 };
 

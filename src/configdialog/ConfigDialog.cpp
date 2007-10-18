@@ -50,7 +50,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* engine      = new EngineConfig( this );
     ConfigDialogBase* general     = new GeneralConfig( this );
     ConfigDialogBase* lastfm      = new LastfmConfig( this );
-    //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
+    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
 
@@ -61,7 +61,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( osd,         i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
     addPage( lastfm,      i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
     addPage( collection,  i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
-    //addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
+    addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
 }
