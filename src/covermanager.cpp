@@ -149,7 +149,7 @@ CoverManager::CoverManager()
         KHBox *searchBox = new KHBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
         QToolButton *button = new QToolButton( searchToolBar );
-        button->setIcon( KIcon( "locationbar-erase") );
+        button->setIcon( KIcon( "edit-clear-locationbar") );
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( QFrame::Sunken );
