@@ -83,7 +83,6 @@
 #include <kmessagebox.h>      //savePlaylist()
 #include <kmenu.h>
 #include <kpushbutton.h>
-#include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <kstatusbar.h>
 #include <ktoolbar.h>
 #include <fixx11h.h>
@@ -250,8 +249,6 @@ void MainWindow::init()
              m_browserNames.append( name ); }
 
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
-        //FIXME: figure this out
-        //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
 
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "NeoPlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
@@ -266,15 +263,8 @@ void MainWindow::init()
 
         //FIXME:
         //addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
-        //Add Magnatune browser
-        //addInstBrowserMacro( MagnatuneStore, "MagnatuneStore", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
-
 
         //cant use macros here since we need access to the browsers directly
-       // ServiceBrowser * storeServiceBrowser = new ServiceBrowser(this, "Stores" );;
-        //m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Stores"), storeServiceBrowser );
-        //m_browserNames.append( "Stores" );
-
 
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
@@ -290,12 +280,6 @@ void MainWindow::init()
         internetContentServiceBrowser->addService( new ShoutcastService( "Shoutcasst Directory" ) );
 
         internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
-
-
-        //internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3tunes.com" ) );
-
-        //addInstBrowserMacro( ServiceBrowser, "Stores", i18n("Stores"), Amarok::icon( "magnatune" ) )  //FIXME: icon
-        //addInstBrowserMacro( ServiceBrowser, "Internet Content", i18n("Internet Content"), Amarok::icon( "magnatune" ) )  //FIXME: icon
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
@@ -534,7 +518,6 @@ void MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
     KUrl::List files;
-    //files = KFileDialog::getOpenUrls( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
     KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
@@ -684,8 +667,6 @@ void MainWindow::playAudioCD() //SLOT
     else
     { // Default behaviour
         showBrowser( "FileBrowser" );
-      //FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
-      //fb->setUrl( KUrl("audiocd:/Wav/") );
     }
 }
 
