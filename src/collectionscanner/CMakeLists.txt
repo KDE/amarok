@@ -1,5 +1,5 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. 
+include_directories( ../
                     ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 add_definitions(${TAGLIB_CFLAGS})
@@ -8,12 +8,12 @@ add_definitions(${TAGLIB_CFLAGS})
 
 set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp)
 
-set(amarok_collection_xml  ${CMAKE_CURRENT_SOURCE_DIR}/../amarokcore/org.kde.amarok.collection.xml)
+set(amarok_collection_xml  ../amarokcore/org.kde.amarok.collection.xml)
 QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} amarok_collection_interface )
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner   amarok_taglib amaroklib ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
+target_link_libraries(amarokcollectionscanner amarok_taglib amaroklib )
 
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 

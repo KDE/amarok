@@ -1,108 +1,108 @@
 if(MP4V2_FOUND)
 include_directories( ${MP4V2_INCLUDE_DIR} )
 set(libtagmp4_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/mp4/mp4file.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/mp4/mp4tag.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/mp4/mp4properties.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/mp4/taglib_mp4filetyperesolver.cpp
+        mp4/mp4file.cpp
+        mp4/mp4tag.cpp
+        mp4/mp4properties.cpp
+        mp4/taglib_mp4filetyperesolver.cpp
 )
 else(MP4V2_FOUND)
 set(libtagmp4_SRCS
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/taglib_mp4filetyperesolver.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4file.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4itunestag.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4isobox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4isofullbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4skipbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4moovbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4mvhdbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4ilstbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/boxfactory.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4fourcc.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4udtabox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4metabox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4tagsproxy.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4mdiabox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4minfbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4audioproperties.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4hdlrbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4stblbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4audiosampleentry.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4stsdbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4sampleentry.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4trakbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/mp4propsproxy.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesnambox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesartbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesalbbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunescvrbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesgenbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunestrknbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesdaybox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunescmtbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesgrpbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/ituneswrtbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesdiskbox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunestmpobox.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/m4a/itunesdatabox.cpp
+	m4a/taglib_mp4filetyperesolver.cpp
+	m4a/mp4file.cpp
+	m4a/mp4itunestag.cpp
+	m4a/mp4isobox.cpp
+	m4a/mp4isofullbox.cpp
+	m4a/mp4skipbox.cpp
+	m4a/mp4moovbox.cpp
+	m4a/mp4mvhdbox.cpp
+	m4a/mp4ilstbox.cpp
+	m4a/boxfactory.cpp
+	m4a/mp4fourcc.cpp
+	m4a/mp4udtabox.cpp
+	m4a/mp4metabox.cpp
+	m4a/mp4tagsproxy.cpp
+	m4a/mp4mdiabox.cpp
+	m4a/mp4minfbox.cpp
+	m4a/mp4audioproperties.cpp
+	m4a/mp4hdlrbox.cpp
+	m4a/mp4stblbox.cpp
+	m4a/mp4audiosampleentry.cpp
+	m4a/mp4stsdbox.cpp
+	m4a/mp4sampleentry.cpp
+	m4a/mp4trakbox.cpp
+	m4a/mp4propsproxy.cpp
+	m4a/itunesnambox.cpp
+	m4a/itunesartbox.cpp
+	m4a/itunesalbbox.cpp
+	m4a/itunescvrbox.cpp
+	m4a/itunesgenbox.cpp
+	m4a/itunestrknbox.cpp
+	m4a/itunesdaybox.cpp
+	m4a/itunescmtbox.cpp
+	m4a/itunesgrpbox.cpp
+	m4a/ituneswrtbox.cpp
+	m4a/itunesdiskbox.cpp
+	m4a/itunestmpobox.cpp
+	m4a/itunesdatabox.cpp
 )
 endif(MP4V2_FOUND)
 
 set(libtagwav_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/wav/wavfile.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/wav/wavproperties.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/wav/wavfiletyperesolver.cpp
+        wav/wavfile.cpp
+        wav/wavproperties.cpp
+        wav/wavfiletyperesolver.cpp
 )
 
 set(libtagtrueaudio_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio/taglib_trueaudiofiletyperesolver.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio/ttafile.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio/ttaproperties.cpp
+        trueaudio/taglib_trueaudiofiletyperesolver.cpp
+        trueaudio/ttafile.cpp
+        trueaudio/ttaproperties.cpp
 )
 
 set(libtagwavpack_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/wavpack/taglib_wavpackfiletyperesolver.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/wavpack/wvfile.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/wavpack/wvproperties.cpp
+        wavpack/taglib_wavpackfiletyperesolver.cpp
+        wavpack/wvfile.cpp
+        wavpack/wvproperties.cpp
 )
 
 set(libtagspeex_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/speex/speexfile.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/speex/taglib_speexfiletyperesolver.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/speex/speexproperties.cpp
+        speex/speexfile.cpp
+        speex/taglib_speexfiletyperesolver.cpp
+        speex/speexproperties.cpp
 )
 
 set(libtagwma_SRCS
-	${CMAKE_CURRENT_SOURCE_DIR}/wma/wmaattribute.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/wma/wmaproperties.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/wma/wmatag.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/wma/wmafile.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/wma/taglib_wmafiletyperesolver.cpp
+	wma/wmaattribute.cpp
+	wma/wmaproperties.cpp
+	wma/wmatag.cpp
+	wma/wmafile.cpp
+	wma/taglib_wmafiletyperesolver.cpp
 )
 
 set(libtagaac_SRCS
-	${CMAKE_CURRENT_SOURCE_DIR}/aac/aacfiletyperesolver.cpp
+	aac/aacfiletyperesolver.cpp
 )
 
 set(libtagrealmedia_SRCS
-	${CMAKE_CURRENT_SOURCE_DIR}/rmff/rmff.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/rmff/taglib_realmediafile.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/rmff/taglib_realmediafiletyperesolver.cpp
+	rmff/rmff.cpp
+	rmff/taglib_realmediafile.cpp
+	rmff/taglib_realmediafiletyperesolver.cpp
 )
 
 
 set(libtagaudible_SRCS
-	${CMAKE_CURRENT_SOURCE_DIR}/audible/audibleproperties.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/audible/audibletag.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/audible/taglib_audiblefile.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/audible/taglib_audiblefiletyperesolver.cpp
+	audible/audibleproperties.cpp
+	audible/audibletag.cpp
+	audible/taglib_audiblefile.cpp
+	audible/taglib_audiblefiletyperesolver.cpp
 	)
-	
+
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ../
     ${CMAKE_CURRENT_BINARY_DIR}
     ${KDE3_INCLUDE_DIR}
     ${QT_INCLUDE_DIR}

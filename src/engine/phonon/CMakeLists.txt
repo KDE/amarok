@@ -1,9 +1,9 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
-	${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-	${CMAKE_CURRENT_BINARY_DIR}/../.. ${KDE4_INCLUDE_DIR}
-    ${TAGLIB_INCLUDE_DIR}    ${QT_INCLUDES} )
+include_directories( ../..
+	../../plugin
+	../../amarokcore
+	../.. ${KDE4_INCLUDE_DIR}
+     ${QT_INCLUDES} )
 
 
 ########### next target ###############
@@ -12,7 +12,7 @@ set(amarok_phonon-engine_SRCS phonon-engine.cpp )
 
 kde4_add_plugin(amarok_phonon-engine WITH_PREFIX ${amarok_phonon-engine_SRCS})
 
-target_link_libraries(amarok_phonon-engine  ${KDE4_KDECORE_LIBS} 
+target_link_libraries(amarok_phonon-engine  ${KDE4_KDECORE_LIBS}
         amaroklib ${KDE4_PHONON_LIBS} )
 
 install(TARGETS amarok_phonon-engine DESTINATION ${PLUGIN_INSTALL_DIR} )
