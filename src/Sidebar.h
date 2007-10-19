@@ -20,6 +20,7 @@
 #ifndef AMAROK_SIDEBAR_H
 #define AMAROK_SIDEBAR_H
 
+#include "debug.h"
 #include "SidebarWidget.h"
 
 #include <KHBox>
@@ -52,6 +53,12 @@ class SideBar: public KHBox
             m_widgets->setParent( m_frame );
             setContentsWidget( contentsWidget );
             layout()->setContentsMargins( 0, 0, 0, 0 );
+        }
+
+        ~SideBar()
+        {
+            DEBUG_BLOCK
+            delete m_widgets;
         }
 
         void setContentsWidget( QWidget *w )

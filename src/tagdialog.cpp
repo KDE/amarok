@@ -112,6 +112,7 @@ TagDialog::~TagDialog()
     DEBUG_BLOCK
 
     Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", kTabWidget->currentIndex() );
+    delete m_labelCloud;
 }
 
 void

@@ -125,8 +125,10 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    DEBUG_BLOCK
     AmarokConfig::setMainWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setMainWindowSize( size() ); //TODO de XT?
+    delete m_browsers;
 }
 
 
