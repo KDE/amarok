@@ -1,7 +1,6 @@
 
 include_directories(
     ../..
-    ../../klegendary
     ../../amarokcore
     ../../engine
     ../../mediadevice

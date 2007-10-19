@@ -1,9 +1,8 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../klegendary
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../mediadevice
+include_directories( ../..
+    ../../amarokcore
+    ../../engine
+    ../../mediadevice
     ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
