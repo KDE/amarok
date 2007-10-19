@@ -14,7 +14,7 @@ set(amarok_generic-mediadevice_PART_SRCS
     genericmediadevice.cpp
     genericmediadeviceconfigdialog.ui.h )
 
-kde4_add_ui_files(amarok_generic-mediadevice_PART_SRCS
+kde4_add_ui3_files(amarok_generic-mediadevice_PART_SRCS
     genericmediadeviceconfigdialog.ui )
 
 kde4_add_plugin(amarok_generic-mediadevice WITH_PREFIX ${amarok_generic-mediadevice_PART_SRCS})

@@ -98,7 +98,7 @@ namespace Amarok
     /**
      * The mainWindow is the playlistWindow
      */
-    QWidget *mainWindow(); //defined in app.cpp
+    AMAROK_EXPORT QWidget *mainWindow(); //defined in app.cpp
 
     /**
      * Allocate one on the stack, and it'll set the busy cursor for you until it
@@ -255,7 +255,7 @@ namespace Amarok
      * @param str the string to manipulate
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
-    void manipulateThe( QString &str, bool reverse );
+    AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
 
     ////////////////////////////////////////////////////////////////////////////////
     // class Amarok::ProcIO

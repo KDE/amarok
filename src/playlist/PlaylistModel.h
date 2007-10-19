@@ -155,7 +155,7 @@ class TrackNavigator;
             void moveRow( int row, int to );
 
             ///deprecated function to ease porting to Meta::Track from URLs
-            KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
+            AMAROK_EXPORT KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
             virtual void metadataChanged( Meta::Album *album );
 

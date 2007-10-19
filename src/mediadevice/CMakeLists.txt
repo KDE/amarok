@@ -14,8 +14,8 @@ if(MTP_FOUND)
     add_subdirectory(mtp)
 endif(MTP_FOUND)
 
-#MESSAGE(STATUS "Including generic device plugin")
-#add_subdirectory(generic)
+MESSAGE(STATUS "Including generic device plugin")
+add_subdirectory(generic)
 
 #MESSAGE(STATUS "Read ipod directory")
 #add_subdirectory(ipod)

@@ -8,13 +8,11 @@
 #ifndef AMAROK_THE_INSTANCES
 #define AMAROK_THE_INSTANCES
 
+#include "amarok_export.h"
+
 namespace Playlist {
     class Model;
     class GraphicsView;
-}
-
-namespace PopupDropperNS {
-    class PopupDropper;
 }
 
 class PlaylistManager;
@@ -26,9 +24,8 @@ namespace QueueManagerNS {
 class ServiceInfoProxy;
 
 namespace The {
-    Playlist::Model*                 playlistModel();       //defined in playlist/PlaylistModel.cpp
+    AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
     Playlist::GraphicsView*          playlistView();
-    PopupDropperNS::PopupDropper*    PopupDropper();
     PlaylistManager*                 playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
     ServiceInfoProxy *               serviceInfoProxy();

@@ -390,7 +390,6 @@
         </widget>
     </grid>
 </widget>
-<!--
 <customwidgets>
     <customwidget>
         <class>Q3ComboBox</class>
@@ -398,7 +397,6 @@
         <header>q3combobox.h</header>
     </customwidget>
 </customwidgets>
--->
 <connections>
     <connection>
         <sender>m_removeSupportedButton</sender>
@@ -440,7 +438,6 @@
 <includes>
     <include location="global" impldecl="in implementation">metabundle.h</include>
     <include location="global" impldecl="in implementation">qstringx.h</include>
-    <include location="global" impldecl="in implementation">collectionbrowser.h</include>
     <include location="local" impldecl="in declaration">genericmediadevice.h</include>
     <include location="global" impldecl="in declaration">qpopupmenu.h</include>
     <include location="global" impldecl="in declaration">q3combobox.h</include>

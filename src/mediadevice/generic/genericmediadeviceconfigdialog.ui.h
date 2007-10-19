@@ -52,7 +52,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
 {
     QStringList unsupported;
 
-    QComboBox *convert     = m_convertComboBox;
+    Q3ComboBox *convert     = m_convertComboBox;
     Q3ListBox  *supported   = m_supportedListBox;
 
     for( uint i = 0; i < m_addSupportedButton->popup()->count(); i++ )
@@ -74,7 +74,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
             temp = convert->currentText();
 
             convert->setCurrentText( item->text() );
-            convert->removeItem( convert->currentIndex() );
+            convert->removeItem( convert->currentItem() );
 
             if( temp == item->text() )
                 convert->setCurrentItem( 0 );
@@ -126,7 +126,7 @@ GenericMediaDeviceConfigDialog::updateConfigDialogLists( const QStringList & sup
     allTypes << "aa" << "3gp" << "mp2" << "ape" << "mpc";
 
     QStringList unsupported;
-    QComboBox *convert      = m_convertComboBox;
+    Q3ComboBox *convert      = m_convertComboBox;
     Q3ListBox  *supported    = m_supportedListBox;
 
     for( QStringList::Iterator it = allTypes.begin(); it != allTypes.end(); it++ )
@@ -167,10 +167,10 @@ GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const M
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if( m_ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
-        Amarok::manipulateThe(( artist, true );
+        Amarok::manipulateThe( artist, true );
     artist = cleanPath( artist );
     if( m_ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
-        Amarok::manipulateThe(( albumartist, true );
+        Amarok::manipulateThe( albumartist, true );
 
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
@@ -300,7 +300,7 @@ GenericMediaDeviceConfigDialog::init()
     m_previewBundle->setScore( 3.f );
     m_previewBundle->setTitle( AtomicString( "Some Title" ) );
     m_previewBundle->setTrack( 7 );
-    m_previewBundle->setUrl( "/some%20directory/some%20file.mp3" );
+    m_previewBundle->setUrl( KUrl( "/some%20directory/some%20file.mp3" ) );
     m_previewBundle->setYear( 2006 );
 
     m_formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).

@@ -124,6 +124,7 @@ ServiceBase::ServiceBase( const QString &name )
 
 ServiceBase::~ServiceBase()
 {
+    delete m_infoBox;
 }
 
 
