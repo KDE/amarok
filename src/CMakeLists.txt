@@ -35,7 +35,6 @@ add_subdirectory( engine )
 add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
-add_subdirectory( portabledevices )
 add_subdirectory( strigi )
 add_subdirectory( context )
 add_subdirectory( playlistmanager )
@@ -61,7 +60,6 @@ include_directories(
     plugin
     statusbar
     mediadevice
-    portabledevices
     servicebrowser
     #servicebrowser/magnatunestore
     ${CMAKE_CURRENT_SOURCE_DIR}

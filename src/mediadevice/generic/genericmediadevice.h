@@ -21,12 +21,12 @@
 #define AMAROK_GENERICMEDIADEVICE_H
 
 #include "mediabrowser.h"
+#include "MediaDevice.h"
+#include "MediaItem.h"
 #include "transferdialog.h"
 
 #include <kdirlister.h>
 #include <kurl.h>
-
-#include <q3ptrlist.h>
 
 class GenericMediaItem;
 class GenericMediaFile;
@@ -75,7 +75,7 @@ class GenericMediaDevice : public MediaDevice
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
-        void              addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items );
+        void              addToDirectory( MediaItem *directory, QList<MediaItem*> items );
 
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         QString           fileName( const MetaBundle & );
@@ -84,8 +84,8 @@ class GenericMediaDevice : public MediaDevice
         bool              lockDevice( bool ) { return true; }
         void              unlockDevice() {}
         void              synchronizeDevice() {}
-        void              addToPlaylist( MediaItem *, MediaItem *, Q3PtrList<MediaItem> ) {}
-        MediaItem        *newPlaylist( const QString &, MediaItem *, Q3PtrList<MediaItem> ) { return 0; }
+        void              addToPlaylist( MediaItem *, MediaItem *, QList<MediaItem*> ) {}
+        MediaItem        *newPlaylist( const QString &, MediaItem *, QList<MediaItem*> ) { return 0; }
 
 
     signals:

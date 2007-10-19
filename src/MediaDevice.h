@@ -183,6 +183,11 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         QString name() const { return m_name; }
 
         /**
+         * @return the filesystem type
+         */
+        QString fsType() const { return m_fsType; }
+
+        /**
          * @return the device node
          */
         QString deviceNode() const { return m_deviceNode; }
@@ -342,6 +347,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         QString          m_uid;
         QString          m_deviceNode;
         QString          m_mountPoint;
+        QString          m_fsType;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;

@@ -21,27 +21,28 @@
 
 #include "genericmediadevice.h"
 //Added by qt3to4:
-#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include "amarok.h"
 #include "debug.h"
-#include "medium.h"
 #include "metabundle.h"
 #include "collectiondb.h"
-#include "collectiontreeitemmodel.h"
+#include "collectionbrowser/CollectionTreeItemModel.h"
 #include "k3bexporter.h"
-
+#include "playlist/PlaylistModel.h"
 #include "podcastbundle.h"
 #include "statusbar/statusbar.h"
+#include "TheInstances.h"
 #include "transferdialog.h"
 #include "genericmediadeviceconfigdialog.h"
 
+#include <k3popupmenu.h>
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
 #include <kdiskfreespace.h>
 #include <kiconloader.h>       //smallIcon
+#include <kio/copyjob.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
@@ -62,9 +63,6 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <QComboBox>
 #include <q3listbox.h>
 #include <QLineEdit>
-
-typedef Q3PtrList<GenericMediaFile> MediaFileList;
-typedef Q3PtrListIterator<GenericMediaFile> MediaFileListIterator;
 
 /**
  * GenericMediaItem Class
@@ -114,7 +112,6 @@ class GenericMediaFile
         , m_device( device )
         {
             m_listed = false;
-            m_children = new MediaFileList();
 
             if( m_parent )
             {
@@ -124,7 +121,7 @@ class GenericMediaFile
                     m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_baseName );
-                m_parent->getChildren()->append( this );
+                m_parent->getChildren().append( this );
             }
             else
             {
@@ -151,10 +148,8 @@ class GenericMediaFile
         {
             if( m_parent )
                 m_parent->removeChild( this );
-            m_device->getItemMap().erase( m_viewItem );
-            m_device->getFileMap().erase( m_fullName );
-            if ( m_children )
-                delete m_children;
+            m_device->getItemMap().remove( m_viewItem );
+            m_device->getFileMap().remove( m_fullName );
             if ( m_viewItem )
                 delete m_viewItem;
         }
@@ -165,17 +160,17 @@ class GenericMediaFile
         void
         setParent( GenericMediaFile* parent )
         {
-            m_device->getFileMap().erase( m_fullName );
-            m_parent->getChildren()->remove( this );
+            m_device->getFileMap().remove( m_fullName );
+            m_parent->getChildren().removeAll( this );
             m_parent = parent;
             if( m_parent )
-                m_parent->getChildren()->append( this );
+                m_parent->getChildren().append( this );
             setNamesFromBase( m_baseName );
             m_device->getFileMap()[m_fullName] = this;
         }
 
         void
-        removeChild( GenericMediaFile* childToDelete ) { m_children->remove( childToDelete ); }
+        removeChild( GenericMediaFile* childToDelete ) { m_children.removeAll( childToDelete ); }
 
         GenericMediaItem*
         getViewItem() { return m_viewItem; }
@@ -206,25 +201,17 @@ class GenericMediaFile
             else
                 m_fullName = m_baseName;
             if( m_viewItem )
-                m_viewItem->setBundle( new MetaBundle( KUrl::fromPathOrUrl( m_fullName ), true, TagLib::AudioProperties::Fast ) );
+                m_viewItem->setBundle( new MetaBundle( KUrl( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
 
-        MediaFileList*
+        QList<GenericMediaFile*>
         getChildren() { return m_children; }
 
         void
         deleteAll( bool onlyChildren )
         {
-            GenericMediaFile *vmf;
-            if( m_children && !m_children->isEmpty() )
-            {
-                MediaFileListIterator it( *m_children );
-                while( ( vmf = it.current() ) != 0 )
-                {
-                    ++it;
+            foreach( GenericMediaFile *vmf, m_children )
                     vmf->deleteAll( true );
-                }
-            }
             if( onlyChildren )
                 delete this;
         }
@@ -232,12 +219,8 @@ class GenericMediaFile
         void
         renameAllChildren()
         {
-            GenericMediaFile *vmf;
-            if( m_children && !m_children->isEmpty() )
-            {
-                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
-                    vmf->renameAllChildren();
-            }
+            foreach( GenericMediaFile *vmf, m_children )
+                vmf->renameAllChildren();
             setNamesFromBase();
         }
 
@@ -245,7 +228,7 @@ class GenericMediaFile
         QString m_fullName;
         QString m_baseName;
         GenericMediaFile *m_parent;
-        MediaFileList *m_children;
+        QList<GenericMediaFile*> m_children;
         GenericMediaItem *m_viewItem;
         GenericMediaDevice* m_device;
         bool m_listed;
@@ -374,14 +357,14 @@ GenericMediaDevice::loadConfig()
     m_songLocation = configString( "songLocation", "/%artist/%album/%title.%filetype" );
     m_podcastLocation = configString( "podcastLocation", "/podcasts/" );
 
-    m_supportedFileTypes = QStringList::split( ", ", configString( "supportedFiletypes", "mp3"), true);
+    m_supportedFileTypes = configString( "supportedFiletypes", "mp3" ).split( ", " );
 }
 
 bool
 GenericMediaDevice::openDevice( bool /*silent*/ )
 {
     DEBUG_BLOCK
-    if( !m_medium.mountPoint() )
+    if( m_mountPoint.isEmpty() )
     {
         Amarok::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
                                                           "Please mount the device and click \"Connect\" again." ),
@@ -393,14 +376,14 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
     for(; mountiter != currentmountpoints.end(); ++mountiter)
     {
-        if( m_medium.mountPoint() == (*mountiter)->mountPoint() )
-            m_medium.setFsType( (*mountiter)->mountType() );
+        if( m_mountPoint == (*mountiter)->mountPoint() )
+            m_fsType = (*mountiter)->mountType();
     }
-    m_actuallyVfat = ( m_medium.fsType() == "msdosfs" || m_medium.fsType() =="vfat" )
+    m_actuallyVfat = ( m_fsType == "msdosfs" || m_fsType =="vfat" )
         ? true : false;
     m_connected = true;
-    KUrl tempurl = KUrl::fromPathOrUrl( m_medium.mountPoint() );
-    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyUrl( -1 ); //no trailing slash
+    KUrl tempurl = KUrl( m_mountPoint );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( KUrl::RemoveTrailingSlash ) : tempurl.prettyUrl( KUrl::RemoveTrailingSlash ); //no trailing slash
     m_transferDir = newMountPoint;
     m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
     listDir( newMountPoint );
@@ -440,10 +423,10 @@ GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
 
     debug() << "Renaming: " << src << " to: " << dst;
 
-    //do we want a progress dialog?  If so, set last false to true
-    if( KIO::NetAccess::file_move( KUrl::fromPathOrUrl(src), KUrl::fromPathOrUrl(dst), -1, false, false, false ) )
+    KIO::CopyJob* job = KIO::move( KUrl(src), KUrl(dst), KIO::HideProgressInfo );
+    if( KIO::NetAccess::synchronousRun( job, Amarok::mainWindow() ) )
     {
-        m_mfm.erase( m_mim[item]->getFullName() );
+        m_mfm.remove( m_mim[item]->getFullName() );
         m_mim[item]->setNamesFromBase( item->text(0) );
         m_mfm[m_mim[item]->getFullName()] = m_mim[item];
     }
@@ -492,7 +475,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 }
 
 void
-GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items )
+GenericMediaDevice::addToDirectory( MediaItem *directory, QList<MediaItem*> items )
 {
     if( items.isEmpty() ) return;
 
@@ -508,18 +491,16 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> i
             dropDir = m_mim[directory];
     }
 
-    for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
+    foreach( MediaItem* item, items )
     {
-        GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
+        GenericMediaItem *currItem = static_cast<GenericMediaItem *>(item);
         QString src  = m_mim[currItem]->getFullName();
         QString dst = dropDir->getFullName() + '/' + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst;
 
-        const KUrl srcurl(src);
-        const KUrl dsturl(dst);
-
-        if ( !KIO::NetAccess::file_move( srcurl, dsturl, -1, false, false, m_parent ) )
-            debug() << "Failed moving " << src << " to " << dst;
+        KIO::CopyJob* job = KIO::move( KUrl( src ), KUrl( dst ), KIO::HideProgressInfo );
+        if( !KIO::NetAccess::synchronousRun( job, Amarok::mainWindow() ) )
+             debug() << "Failed moving " << src << " to " << dst;
         else
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
@@ -544,7 +525,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if( m_ignoreThePrefix && artist.startsWith( "The " ) )
-        ( artist, true );
+        Amarok::manipulateThe( artist, true );
     artist = cleanPath( artist );
     if( m_ignoreThePrefix && albumartist.startsWith( "The " ) )
         Amarok::manipulateThe( albumartist, true );
@@ -578,10 +559,10 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 {
     // check for every directory from the mount point to the location
     // whether they exist or not.
-    int mountPointDepth = m_medium.mountPoint().contains( '/', false );
-    int locationDepth = location.contains( '/', false );
+    int mountPointDepth = m_mountPoint.count( '/' );
+    int locationDepth = location.count( '/' );
 
-    if( m_medium.mountPoint().endsWith( '/' ) )
+    if( m_mountPoint.endsWith( '/' ) )
         mountPointDepth--;
 
     if( location.endsWith( '/' ) )
@@ -597,9 +578,10 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         QString firstpart = location.section( '/', 0, i-1 );
         QString secondpart = cleanPath( location.section( '/', i, i ) );
-        KUrl url = KUrl::fromPathOrUrl( QFile::encodeName( firstpart + '/' + secondpart ) );
+        KUrl url = KUrl( QFile::encodeName( firstpart + '/' + secondpart ) );
 
-        if( !KIO::NetAccess::exists( url, false, m_parent ) )
+        KIO::UDSEntry udsentry;
+        if( !KIO::NetAccess::stat( url, udsentry, Amarok::mainWindow() ) )
         {
             debug() << "directory does not exist, creating..." << url;
             if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
@@ -633,7 +615,7 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
         parent  =   values.last().toInt();
         location += cleanPath( name ) + '/';
     }
-    location += cleanPath( channelTitle ) + '/' + cleanPath( bundle->localUrl().filename() );
+    location += cleanPath( channelTitle ) + '/' + cleanPath( bundle->localUrl().fileName() );
     return location;
 }
 
@@ -653,9 +635,9 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     checkAndBuildLocation( path );
 
-    const KUrl desturl = KUrl::fromPathOrUrl( path );
+    const KUrl desturl = KUrl( path );
 
-    //kapp->processEvents( 100 );
+    //kapp->processEvents();
 
     if( !kioCopyTrack( bundle.url(), desturl ) )
     {
@@ -669,7 +651,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     //other than to see if it is NULL or not
     //if we're here the transfer shouldn't have failed, so we shouldn't get into a loop by waiting...
     while( !m_view->firstChild() )
-        kapp->processEvents( 100 );
+        kapp->processEvents();
     return static_cast<MediaItem*>(m_view->firstChild());
 }
 
@@ -681,7 +663,8 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
     QString key;
     QString path = buildDestination( m_songLocation, bundle);
     KUrl url( path );
-    QStringList directories = QStringList::split( "/", url.directory(1,1), false );
+    url.adjustPath( KUrl::RemoveTrailingSlash );
+    QStringList directories = url.directory().split( "/", QString::SkipEmptyParts );
 
     Q3ListViewItem *it = view()->firstChild();
     for( QStringList::Iterator directory = directories.begin();
@@ -698,7 +681,7 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
         it = it->firstChild();
     }
 
-    key = url.fileName( true );
+    key = url.fileName();
     key = key.isEmpty() ? fileName( bundle ) : key;
     while( it && it->text( 0 ) != key )
         it = it->nextSibling();
@@ -737,7 +720,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     QString path = m_mim[item]->getFullName();
     debug() << "Deleting path: " << path;
 
-    if ( !KIO::NetAccess::del( KUrl::fromPathOrUrl(path), m_view ))
+    if ( !KIO::NetAccess::del( KUrl(path), m_view ))
     {
         debug() << "Could not delete!";
         return -1;
@@ -776,7 +759,7 @@ GenericMediaDevice::expandItem( Q3ListViewItem *item ) // SLOT
 
     while( !m_dirListerComplete )
     {
-        kapp->processEvents( 100 );
+        kapp->processEvents();
         usleep(10000);
     }
 }
@@ -786,10 +769,10 @@ GenericMediaDevice::listDir( const QString &dir )
 {
     m_dirListerComplete = false;
     if( m_mfm[dir]->getListed() )
-        m_dirLister->updateDirectory( KUrl::fromPathOrUrl(dir) );
+        m_dirLister->updateDirectory( KUrl(dir) );
     else
     {
-        m_dirLister->openUrl( KUrl::fromPathOrUrl(dir), true, true );
+        m_dirLister->openUrl( KUrl(dir), KDirLister::Keep | KDirLister::Reload );
         m_mfm[dir]->setListed( true );
     }
 }
@@ -798,18 +781,14 @@ void
 GenericMediaDevice::refreshDir( const QString &dir )
 {
     m_dirListerComplete = false;
-    m_dirLister->updateDirectory( KUrl::fromPathOrUrl(dir) );
+    m_dirLister->updateDirectory( KUrl(dir) );
 }
 
 void
 GenericMediaDevice::newItems( const KFileItemList &items )
 {
-    Q3PtrListIterator<KFileItem> it( items );
-    KFileItem *kfi;
-    while ( (kfi = it.current()) != 0 ) {
-        ++it;
-        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url(), 0 );
-    }
+    foreach( KFileItem kfi, items )
+        addTrackToList( kfi.isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi.url(), 0 );
 }
 
 void
@@ -827,8 +806,8 @@ GenericMediaDevice::dirListerClear()
     m_mfm.clear();
     m_mim.clear();
 
-    KUrl tempurl = KUrl::fromPathOrUrl( m_medium.mountPoint() );
-    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( -1 ) : tempurl.prettyUrl( -1 ); //no trailing slash
+    KUrl tempurl = KUrl( m_mountPoint );
+    QString newMountPoint = tempurl.isLocalFile() ? tempurl.path( KUrl::RemoveTrailingSlash ) : tempurl.prettyUrl( KUrl::RemoveTrailingSlash  ); //no trailing slash
     m_initialFile = new GenericMediaFile( 0, newMountPoint, this );
 }
 
@@ -853,7 +832,7 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 {
-    QString path = url.isLocalFile() ? url.path( -1 ) : url.prettyUrl( -1 ); //no trailing slash
+    QString path = url.isLocalFile() ? url.path( KUrl::RemoveTrailingSlash ) : url.prettyUrl( KUrl::RemoveTrailingSlash ); //no trailing slash
     int index = path.lastIndexOf( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );
@@ -889,10 +868,10 @@ GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 bool
 GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
-    if( !m_connected || !KUrl::fromPathOrUrl( m_medium.mountPoint() ).isLocalFile() ) return false;
+    if( !m_connected || !KUrl( m_mountPoint ).isLocalFile() ) return false;
 
-    KDiskFreeSpace* kdf = new KDiskFreeSpace( m_parent, "generic_kdf" );
-    kdf->readDF( m_medium.mountPoint() );
+    KDiskFreeSpace* kdf = new KDiskFreeSpace( m_parent );
+    kdf->readDF( m_mountPoint );
     connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
                  SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
 
@@ -900,7 +879,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 
     while( m_kBSize == 0 && m_kBAvail == 0){
         usleep( 10000 );
-        kapp->processEvents( 100 );
+        kapp->processEvents();
         count++;
         if (count > 120){
             debug() << "KDiskFreeSpace taking too long.  Returning false from getCapacity()";
@@ -920,7 +899,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 void
 GenericMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
 {
-    if ( mountPoint == m_medium.mountPoint() ){
+    if ( mountPoint == m_mountPoint ){
         m_kBSize = kBSize;
         m_kBAvail = kBAvail;
     }
@@ -940,36 +919,36 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
-        KMenu menu( m_view );
-        menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        K3PopupMenu menu( m_view );
+        menu.insertItem( KIcon( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( KIcon( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( KIcon( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
-        menu.insertItem( SmallIconSet( Amarok::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+        menu.insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
+        menu.insertItem( KIcon( Amarok::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-        menu.insertItem( SmallIconSet( Amarok::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+        menu.insertItem( KIcon( Amarok::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( KIcon( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
+        menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
         // NOTE: need better icon
-        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
+        menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
         menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
         switch( id )
         {
             case LOAD:
-                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Replace );
+                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Replace );
                 break;
             case APPEND:
-                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Append );
+                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Append );
                 break;
             case QUEUE:
-                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Queue );
+                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Queue );
                 break;
             case DOWNLOAD:
                 downloadSelectedItems();
@@ -1011,12 +990,12 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
 
     if( isConnected() )
     {
-        KMenu menu( m_view );
-        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        K3PopupMenu menu( m_view );
+        menu.insertItem( KIcon( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         if ( MediaBrowser::queue()->childCount())
         {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+            menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
         }
         int id =  menu.exec( point );
         switch( id )
@@ -1026,7 +1005,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
                 break;
 
             case TRANSFER_HERE:
-                m_transferDir = m_medium.mountPoint();
+                m_transferDir = m_mountPoint;
                 emit startTransfer();
                 break;
 

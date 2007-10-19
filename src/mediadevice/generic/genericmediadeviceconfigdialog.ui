@@ -178,7 +178,7 @@
                                                 </size>
                                             </property>
                                         </spacer>
-                                        <widget class="QComboBox">
+                                        <widget class="Q3ComboBox">
                                             <property name="name">
                                                 <cstring>m_convertComboBox</cstring>
                                             </property>
@@ -390,6 +390,15 @@
         </widget>
     </grid>
 </widget>
+<!--
+<customwidgets>
+    <customwidget>
+        <class>Q3ComboBox</class>
+        <extends>QWidget</extends>
+        <header>q3combobox.h</header>
+    </customwidget>
+</customwidgets>
+-->
 <connections>
     <connection>
         <sender>m_removeSupportedButton</sender>
@@ -434,6 +443,7 @@
     <include location="global" impldecl="in implementation">collectionbrowser.h</include>
     <include location="local" impldecl="in declaration">genericmediadevice.h</include>
     <include location="global" impldecl="in declaration">qpopupmenu.h</include>
+    <include location="global" impldecl="in declaration">q3combobox.h</include>
 </includes>
 <variables>
     <variable access="private">QPopupMenu *m_unsupportedMenu;</variable>

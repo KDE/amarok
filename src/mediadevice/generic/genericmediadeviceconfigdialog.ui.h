@@ -1,4 +1,5 @@
 //Added by qt3to4:
+#include <Q3ComboBox>
 #include <Q3PopupMenu>
 /*
   (c) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com>
@@ -28,8 +29,8 @@
 void
 GenericMediaDeviceConfigDialog::addSupportedButtonClicked( int id )
 {
-    Q3PopupMenu *unsupported = m_addSupportedButton->popup();
-    QComboBox *convert     = m_convertComboBox;
+    Q3PopupMenu *unsupported = dynamic_cast<Q3PopupMenu*>( m_addSupportedButton->popup() );
+    Q3ComboBox *convert     = m_convertComboBox;
     Q3ListBox  *supported   = m_supportedListBox;
 
     supported->insertItem( unsupported->text( id ) );
