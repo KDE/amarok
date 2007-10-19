@@ -166,7 +166,7 @@ ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 ServiceSqlQueryMaker::startTrackQuery()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
     if( d->queryType == Private::NONE )
     {
@@ -181,6 +181,11 @@ ServiceSqlQueryMaker::startTrackQuery()
         m_metaFactory->getArtistSqlRows() + ',' +
         m_metaFactory->getGenreSqlRows();
 
+        if ( d->linkedTables & Private::ARTISTS_TABLE ) {
+            d->linkedTables |= Private::ALBUMS_TABLE;
+            d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //ake sure items are added as album groups
+        }
+
     }
     return this;
 }
@@ -188,7 +193,7 @@ ServiceSqlQueryMaker::startTrackQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startArtistQuery()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
@@ -203,7 +208,7 @@ ServiceSqlQueryMaker::startArtistQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startAlbumQuery()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
@@ -233,7 +238,7 @@ ServiceSqlQueryMaker::startComposerQuery()
 QueryMaker*
 ServiceSqlQueryMaker::startGenreQuery()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
@@ -307,13 +312,14 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
     if( !d || !serviceArtist )
         return this;
+
     d->linkedTables |= Private::ARTISTS_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
     return this;
@@ -322,7 +328,7 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
     
     //this should NOT be made into a static cast as this might get called with an incompatible type!
@@ -338,7 +344,7 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!

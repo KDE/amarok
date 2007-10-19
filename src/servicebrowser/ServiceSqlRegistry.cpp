@@ -77,9 +77,10 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
             albumPtr = m_albumMap.value( track->albumId() );
         else {
 
-            QStringList subRows = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
+            //QStringList subRows = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
 
-            albumPtr = m_metaFactory->createAlbum( subRows );
+            //albumPtr = m_metaFactory->createAlbum( subRows );
+            albumPtr = getAlbum( rowData.mid( index, rowData.count() -1 ) );
         }
 
         index += m_metaFactory->getAlbumSqlRowCount();
@@ -206,7 +207,6 @@ ServiceSqlRegistry::getYear( const QString &name, int id )
 AlbumPtr
 ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
 {
-
     int id = rowData[0].toInt();
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( id ) )
