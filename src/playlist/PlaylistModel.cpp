@@ -510,6 +510,7 @@ Model::insertOptioned( Meta::TrackPtr track, int options )
 void
 Model::insertOptioned( QueryMaker *qm, int options )
 {
+    DEBUG_BLOCK
     qm->startTrackQuery();
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );

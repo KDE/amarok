@@ -236,8 +236,10 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
 void
 CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode) const
 {
+    DEBUG_BLOCK
     if( !item->allDescendentTracksLoaded() )
     {
+        debug() << "needs to load child elements";
         QueryMaker *qm = item->queryMaker();
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
@@ -250,6 +252,7 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
     }
     else
     {
+         debug() << "we're cool!";
         Meta::TrackList tracks = item->descendentTracks();
         qStableSort( tracks.begin(), tracks.end(), Amarok::trackNumberLessThan);
         The::playlistModel()->insertOptioned( tracks, insertMode );
