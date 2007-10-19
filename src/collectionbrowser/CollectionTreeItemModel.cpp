@@ -103,6 +103,7 @@ void
 CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
     if ( !item->childrenLoaded() ) {
         listForLevel( item->level() /* +1 -1 */, item->queryMaker(), item );
+        item->setChildrenLoaded( true );
     }
 }
 
