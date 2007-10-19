@@ -8,12 +8,12 @@
 #ifndef AMAROK_COLLECTION_WIDGET
 #define AMAROK_COLLECTION_WIDGET
 
-#include <QWidget>
+#include <KVBox>
 
 class SearchWidget;
 class CollectionTreeView;
 
-class CollectionWidget : public QWidget
+class CollectionWidget : public KVBox
 {
     Q_OBJECT
     public:

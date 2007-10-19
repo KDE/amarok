@@ -23,15 +23,11 @@ CollectionWidget::CollectionWidget( const char* name )
 {
     s_instance = this;
     setObjectName( name );
-    QVBoxLayout* layout = new QVBoxLayout;
 
-//     KActionMenu *menubar = new KActionMenu( i18n( "Group By" ), this );
-    KMenuBar *menubar = new KMenuBar;
+    KMenuBar *menubar = new KMenuBar( this );
     QMenu *filterMenu = menubar->addMenu( i18n( "Group By" ) );
-    layout->addWidget( menubar );
 
     m_treeView = new CollectionTreeView( this );
-//     menubar->setDelayed( false );
 
     QAction *action = new QAction( i18n("Artist"), menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
@@ -57,11 +53,7 @@ CollectionWidget::CollectionWidget( const char* name )
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
 
-    //layout->addWidget( new KLineEdit( this ) );
-    layout->setContentsMargins(0,0,0,0);
-    layout->addWidget( new SearchWidget( this, m_treeView ) );
-    layout->addWidget( m_treeView );
-    setLayout( layout );
+    new SearchWidget( this, m_treeView );
     m_treeView->setShowTrackNumbers( true );
 }
 
