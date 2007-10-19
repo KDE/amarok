@@ -280,10 +280,12 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
             }
         }
     }
+    bool first = true;
     foreach( CollectionTreeItem *item, parents )
     {
         //FIXME:we are ignoring the order of the sleected items
-        playChildTracks( item, insertMode );
+        playChildTracks( item, first ? insertMode : Playlist::Append );
+        first = false;
     }
 }
 
