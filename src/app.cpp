@@ -428,77 +428,65 @@ void App::initGlobalShortcuts()
     EngineController* const ec = EngineController::instance();
     KAction* action;
 
-//    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0, ec, SLOT( play() ), true, true );
     action = new KAction( i18n( "Play" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( play() ) );
 
 //    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, 0, 0, ec, SLOT( pause() ), true, true );
     action = new KAction( i18n( "Pause" ), mainWindow() );
     connect( action, SIGNAL( triggered() ), ec, SLOT( pause() ) );
 
-//    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, KKey("WIN+c"), 0, ec, SLOT( playPause() ), true, true );
     action = new KAction( i18n( "Play/Pause" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( playPause() ) );
 
-//    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0, ec, SLOT( stop() ), true, true );
     action = new KAction( i18n( "Stop" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( stop() ) );
 
 //    m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0, Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
-    action = new KAction( i18n( "Stop Playing After Current Track" ), mainWindow() );
+//     action = new KAction( i18n( "Stop Playing After Current Track" ), mainWindow() );
 //    action->setGlobalShortcut( KShortcut( Qt::META + Qt::CTRL + Qt::Key_V ) );
     //Port 2.0
 //     connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
 
-//    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0, ec, SLOT( next() ), true, true );
     action = new KAction( i18n( "Next Track" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( next() ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    connect( action, SIGNAL( triggered() ), The::playlistModel(), SLOT( next() ) );
 
-//    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0, ec, SLOT( previous() ), true, true );
     action = new KAction( i18n( "Previous Track" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( previous() ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
+    connect( action, SIGNAL( triggered() ), The::playlistModel(), SLOT( previous() ) );
 
-//    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0, ec, SLOT( increaseVolume() ), true, true );
     action = new KAction( i18n( "Increase Volume" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
 
-//    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0, ec, SLOT( decreaseVolume() ), true, true );
     action = new KAction( i18n( "Decrease Volume" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
 
 
-//    m_pGlobalAccel->insert( "seekforward", i18n( "Seek Forward" ), 0, KKey("WIN+Shift+KP_Add"), 0, ec, SLOT( seekForward() ), true, true );
     action = new KAction( i18n( "Seek Forward" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( seekForward() ) );
 
 
-//    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0, ec, SLOT( seekBackward() ), true, true );
     action = new KAction( i18n( "Seek Backward" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( seekBackward() ) );
 
-//    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0, mainWindow(), SLOT( slotAddLocation() ), true, true );
     action = new KAction( i18n( "Add Media..." ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
     connect( action, SIGNAL( triggered() ), mainWindow(), SLOT( slotAddLocation() ) );
 
-//    m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0, mainWindow(), SLOT( showHide() ), true, true );
     action = new KAction( i18n( "Toggle Playlist Window" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), mainWindow(), SLOT( showHide() ) );
 
 
-//    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0, Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
     action = new KAction( i18n( "Show OSD" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
 #if 0
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
@@ -698,7 +686,7 @@ App::continueInit()
     mainWindow()->init(); //creates the playlist, browsers, etc.
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), mainWindow(), SLOT( init() ) );
-    //initGlobalShortcuts();
+    initGlobalShortcuts();
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
     {
