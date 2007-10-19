@@ -42,7 +42,13 @@ namespace Amarok
     // Sorting of a tracklist.
     bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right )
     {
-        return left->trackNumber() < right->trackNumber();
+        if( left->album() == right->album() )
+            return left->trackNumber() < right->trackNumber();
+
+        else if( left->artist() == right->artist() )
+            return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
+        else // compare artists alphabetically
+            return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
     }
 }
 
@@ -510,7 +516,6 @@ Model::insertOptioned( Meta::TrackPtr track, int options )
 void
 Model::insertOptioned( QueryMaker *qm, int options )
 {
-    DEBUG_BLOCK
     qm->startTrackQuery();
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
