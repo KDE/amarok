@@ -20,13 +20,13 @@
 #ifndef AMAROK_SIDEBAR_H
 #define AMAROK_SIDEBAR_H
 
-#include "debug.h"
-#include "SidebarWidget.h"
+#include "widgets/SidebarWidget.h"
 
 #include <KHBox>
 
 #include <QIcon>
 #include <QFrame>
+#include <QLayout>
 #include <QStackedWidget>
 
 
@@ -55,10 +55,18 @@ class SideBar: public KHBox
             layout()->setContentsMargins( 0, 0, 0, 0 );
         }
 
-        ~SideBar()
+        ~SideBar() {}
+
+        void deleteBrowsers()
         {
-            DEBUG_BLOCK
-            delete m_widgets;
+            int count = m_widgets->count();
+            QWidget * widget = m_widgets->widget( 0 );
+            while( widget )
+            {
+                m_widgets->removeWidget( widget );
+                delete widget;
+                widget = m_widgets->widget( 0 );
+            }
         }
 
         void setContentsWidget( QWidget *w )

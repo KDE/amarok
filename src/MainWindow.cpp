@@ -127,7 +127,6 @@ MainWindow::~MainWindow()
     DEBUG_BLOCK
     AmarokConfig::setMainWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setMainWindowSize( size() ); //TODO de XT?
-    delete m_browsers;
 }
 
 
@@ -295,6 +294,11 @@ void MainWindow::init()
     kapp->installEventFilter( this ); // keyboards shortcuts for the browsers
 
     Amarok::MessageQueue::instance()->sendMessages();
+}
+
+void MainWindow::deleteBrowsers()
+{
+    m_browsers->deleteBrowsers();
 }
 
 void MainWindow::slotSetFilter( const QString &filter ) //SLOT

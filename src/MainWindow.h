@@ -62,6 +62,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void activate();
 
         SideBar *sideBar() const { return m_browsers; }
+        void deleteBrowsers();
 
     public slots:
         void showHide();
