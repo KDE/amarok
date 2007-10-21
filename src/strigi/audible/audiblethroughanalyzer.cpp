@@ -93,7 +93,7 @@ AudibleThroughAnalyzer::connectInputStream(InputStream* in) {
     }
 
     // all the audible file I examined have these 4 bytes starting at an offset of 4
-    const unsigned char sign[] = { 0x57, 0x90, 0x75, 0x36 };
+    const char sign[] = { 0x57, 0x90, 0x75, 0x36 };
     if (strncmp(sign, buf+4, 4)) {
         return in;
     }
