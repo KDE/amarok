@@ -144,6 +144,12 @@ Meta::Track::asCapabilityInterface( Meta::Capability::Type type )
     return 0;
 }
 
+bool
+Meta::Track::operator==( const Meta::Track &track ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &track );
+}
+
 //Meta::Artist
 
 void
@@ -157,6 +163,12 @@ Meta::Artist::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
         observer->metadataChanged( const_cast<Meta::Artist*>( this ) );
+}
+
+bool
+Meta::Artist::operator==( const Meta::Artist &artist ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &artist );
 }
 
 //Meta::Album
@@ -201,6 +213,12 @@ Meta::Album::image( int size, bool withShadow ) const
     return QPixmap::fromImage( img );
 }
 
+bool
+Meta::Album::operator==( const Meta::Album &album ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &album );
+}
+
 //Meta::Genre
 
 void
@@ -214,6 +232,12 @@ Meta::Genre::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
         observer->metadataChanged( const_cast<Meta::Genre*>( this ) );
+}
+
+bool
+Meta::Genre::operator==( const Meta::Genre &genre ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &genre );
 }
 
 //Meta::Composer
@@ -231,6 +255,12 @@ Meta::Composer::notifyObservers() const
         observer->metadataChanged( const_cast<Meta::Composer*>( this ) );
 }
 
+bool
+Meta::Composer::operator==( const Meta::Composer &composer ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &composer );
+}
+
 //Meta::Year
 
 void
@@ -244,5 +274,11 @@ Meta::Year::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
         observer->metadataChanged( const_cast<Meta::Year*>( this ) );
+}
+
+bool
+Meta::Year::operator==( const Meta::Year &year ) const
+{
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &year );
 }
 

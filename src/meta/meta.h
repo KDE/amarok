@@ -212,6 +212,7 @@ namespace Meta
                 return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
             }
 
+            virtual bool operator==( const Meta::Track &track ) const;
 
         protected:
             virtual void notifyObservers() const;
@@ -227,6 +228,8 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+            virtual bool operator==( const Meta::Artist &artist ) const;
 
         protected:
             virtual void notifyObservers() const;
@@ -255,6 +258,8 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker* qm );
 
+            virtual bool operator==( const Meta::Album &album ) const;
+
         protected:
             virtual void notifyObservers() const;
     };
@@ -268,6 +273,8 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+            virtual bool operator==( const Meta::Composer &composer ) const;
 
         protected:
             virtual void notifyObservers() const;
@@ -283,6 +290,8 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker* qm );
 
+            virtual bool operator==( const Meta::Genre &genre ) const;
+
         protected:
             virtual void notifyObservers() const;
     };
@@ -296,6 +305,8 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             virtual void addMatchTo( QueryMaker* qm );
+
+            virtual bool operator==( const Meta::Year &year ) const;
 
         protected:
             virtual void notifyObservers() const;
@@ -316,5 +327,7 @@ Q_DECLARE_METATYPE( Meta::GenrePtr )
 Q_DECLARE_METATYPE( Meta::GenreList )
 Q_DECLARE_METATYPE( Meta::YearPtr )
 Q_DECLARE_METATYPE( Meta::YearList )
+
+
 
 #endif /* AMAROK_META_H */
