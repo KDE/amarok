@@ -24,6 +24,7 @@ MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
 {
     //nothing to do
+    init();
 }
 
 MySqlCollection::~MySqlCollection()

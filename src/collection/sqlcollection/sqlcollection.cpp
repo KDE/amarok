@@ -66,14 +66,19 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
 {
-    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
-    if( m_updater->needsUpdate() )
-        m_updater->update();
 }
 
 SqlCollection::~SqlCollection()
 {
     delete m_registry;
+}
+
+void
+SqlCollection::init()
+{
+    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
+    if( m_updater->needsUpdate() )
+        m_updater->update();
 }
 
 void

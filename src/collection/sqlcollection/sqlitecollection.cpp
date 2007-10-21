@@ -83,6 +83,7 @@ SqliteCollection::SqliteCollection( const QString &id, const QString &prettyName
 
     //optimization for speeding up SQLite
     query( "PRAGMA default_synchronous = OFF;" );
+    init();
 }
 
 SqliteCollection::~SqliteCollection()

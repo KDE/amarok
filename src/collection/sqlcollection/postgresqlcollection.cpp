@@ -67,6 +67,7 @@ PostgreSqlCollection::PostgreSqlCollection( const QString &id, const QString &pr
 
     m_initialized = true;
     m_connected = true;
+    init();
 }
 
 PostgreSqlCollection::~PostgreSqlCollection()

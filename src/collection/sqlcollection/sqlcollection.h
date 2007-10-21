@@ -83,6 +83,10 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 
         virtual void vacuum() const;
 
+    protected:
+        //this method MUST be called from subclass constructors
+        void init();
+
     private slots:
         void initXesam();
 
