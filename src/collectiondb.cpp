@@ -270,7 +270,7 @@ CollectionDB::CollectionDB()
     //checkDatabase has to be able to access MountPointManager
 
     //<OPEN DATABASE>
-    initialize();
+//    initialize();
     //</OPEN DATABASE>
 
     // Remove cached "nocover" images, so that a new version actually gets shown
