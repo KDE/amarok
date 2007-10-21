@@ -37,7 +37,7 @@ TrackPtr JamendoMetaFactory::createTrack(const QStringList & rows)
 
 int JamendoMetaFactory::getAlbumSqlRowCount()
 {
-    return ServiceMetaFactory::getAlbumSqlRowCount() + 4;
+    return ServiceMetaFactory::getAlbumSqlRowCount() + 6;
 }
 
 QString JamendoMetaFactory::getAlbumSqlRows()
@@ -48,7 +48,9 @@ QString JamendoMetaFactory::getAlbumSqlRows()
     sqlRows += tablePrefix() + "_albums.popularity, ";
     sqlRows += tablePrefix() + "_albums.cover_url, ";
     sqlRows += tablePrefix() + "_albums.launch_year, ";
-    sqlRows += tablePrefix() + "_albums.genre ";
+    sqlRows += tablePrefix() + "_albums.genre, ";
+    sqlRows += tablePrefix() + "_albums.mp3_torrent_url, ";
+    sqlRows += tablePrefix() + "_albums.ogg_torrent_url ";
 
     return sqlRows;
 }
@@ -180,7 +182,8 @@ JamendoAlbum::JamendoAlbum(const QStringList & resultRow)
     m_coverURL = resultRow[5];
     m_launchYear = resultRow[6].toInt();
     m_genre = resultRow[7];
-
+    m_mp3TorrentUrl = resultRow[8];
+    m_oggTorrentUrl = resultRow[9];
 }
 
 void JamendoAlbum::setCoverUrl( const QString &coverURL )
