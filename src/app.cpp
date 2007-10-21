@@ -239,8 +239,6 @@ App::~App()
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::self()->writeConfig();
 
-    mainWindow()->deleteBrowsers();
-
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
 }
@@ -490,45 +488,34 @@ void App::initGlobalShortcuts()
     action = new KAction( i18n( "Show OSD" ), mainWindow() );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
-#if 0
-    m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
-                            ec, SLOT( mute() ), true, true );
-    m_pGlobalAccel->insert( "rating1", i18n( "Rate Current Track: 1" ), 0, KKey("WIN+1"), 0,
-                            this, SLOT( setRating1() ), true, true );
-    m_pGlobalAccel->insert( "rating2", i18n( "Rate Current Track: 2" ), 0, KKey("WIN+2"), 0,
-                            this, SLOT( setRating2() ), true, true );
-    m_pGlobalAccel->insert( "rating3", i18n( "Rate Current Track: 3" ), 0, KKey("WIN+3"), 0,
-                            this, SLOT( setRating3() ), true, true );
-    m_pGlobalAccel->insert( "rating4", i18n( "Rate Current Track: 4" ), 0, KKey("WIN+4"), 0,
-                            this, SLOT( setRating4() ), true, true );
-    m_pGlobalAccel->insert( "rating5", i18n( "Rate Current Track: 5" ), 0, KKey("WIN+5"), 0,
-                            this, SLOT( setRating5() ), true, true );
-#endif
+
+    action = new KAction( i18n( "Mute Volume" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 1" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating1() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 2" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating2() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 3" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating3() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 4" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating4() ) );
+    action = new KAction( i18n( "Rate Current Track: 5" ), mainWindow() );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
+
 
 //    KGlobalAccel::self()->setConfigGroup( "Shortcuts" );
 //    KGlobalAccel::self()->readSettings( KGlobal::config().data() );
 
-
-// FIXME Is this still needed with KDE4?
-#if 0
-    //TODO fix kde accel system so that kactions find appropriate global shortcuts
-    //     and there is only one configure shortcuts dialog
-
-    KActionCollection* const ac = Amarok::actionCollection();
-    KAccelShortcutList list( m_pGlobalAccel );
-
-    for( uint i = 0; i < list.count(); ++i )
-    {
-        KAction *action = ac->action( list.name( i ).toLatin1() );
-
-        if( action )
-        {
-            //this is a hack really, also it means there may be two calls to the slot for the shortcut
-            action->setShortcutConfigurable( false );
-            action->setShortcut( list.shortcut( i ) );
-        }
-    }
-#endif
 }
 
 
@@ -1034,22 +1021,6 @@ void App::quit()
 namespace Amarok
 {
     /// @see amarok.h
-
-    //TODO remove these, they suck, do a generic getImage
-
-    QPixmap getPNG( const QString &filename )
-    {
-        QString file = !filename.endsWith( ".png", Qt::CaseInsensitive ) ? "amarok/images/%1.png" : "amarok/images/%1";
-
-        return QPixmap( KStandardDirs::locate( "data", file.arg( filename ) ), "PNG" );
-    }
-
-    QPixmap getJPG( const QString &filename )
-    {
-        QString file = !filename.endsWith( ".jpg", Qt::CaseInsensitive ) ? "amarok/images/%1.jpg" : "amarok/images/%1";
-
-        return QPixmap( KStandardDirs::locate( "data", QString( "amarok/images/%1.jpg" ).arg( filename ) ), "JPEG" );
-    }
 
     QWidget *mainWindow()
     {

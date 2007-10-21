@@ -17,7 +17,6 @@ class QEvent;
 class QMutex;
 class QPixmap;
 class QWidget;
-class DynamicMode;
 class Q3ListView;
 class Q3ListViewItem;
 namespace KIO { class Job; }
@@ -86,16 +85,6 @@ namespace Amarok
     bool invokeBrowser( const QString& url ); //defined in app.cpp
 
     /**
-     * Obtain an Amarok PNG image as a QPixmap
-     */
-    QPixmap getPNG( const QString& /*fileName*/ ); //defined in app.cpp
-
-    /**
-     * Obtain an Amarok JPG image as a QPixmap
-     */
-    QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
-
-    /**
      * The mainWindow is the playlistWindow
      */
     AMAROK_EXPORT QWidget *mainWindow(); //defined in app.cpp
@@ -127,14 +116,14 @@ namespace Amarok
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
-    QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
+    QString verboseTimeSince( const QDateTime &datetime ); //defined in tracktooltip.cpp
 
-    QString verboseTimeSince( uint time_t ); //defined in contextbrowser.cpp
+    QString verboseTimeSince( uint time_t ); //defined in tracktooltip.cpp
 
     /**
      * Function that must be used when separating contextBrowser escaped urls
      */
-    // defined in contextbrowser.cpp
+    // defined in Statistics.cpp
     void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail );
 
     /**
@@ -189,9 +178,9 @@ namespace Amarok
     bool favorLastPlay();
     bool entireAlbums(); //repeatAlbum() || randomAlbums()
 
-    const DynamicMode *dynamicMode(); //defined in playlist.cpp
+// Port 2.0: Reenable when we have a new dynamic mode
+//     const DynamicMode *dynamicMode(); //defined in playlist.cpp
 
-    Q3ListViewItem* findItemByPath( Q3ListView *view, QString path ); //defined in playlistbrowser.cpp
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
