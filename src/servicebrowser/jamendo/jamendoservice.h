@@ -52,19 +52,31 @@ public:
 private slots:
 
     void updateButtonClicked();
-    void listDownloadComplete( KJob* downLoadJob);
+    void downloadButtonClicked();
+    void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
+    void torrentDownloadComplete( KJob* downloadJob);
     void doneParsing();
+
+    /**
+    * Checks if purchase button should be enabled
+    * @param selection the new selection
+    */
+    void itemSelected( CollectionTreeItem * selectedItem );
 
 
 private:
 
     //DatabaseDrivenContentModel * m_model;
     QPushButton *m_updateListButton;
+    QPushButton *m_downloadButton;
     KIO::FileCopyJob * m_listDownloadJob;
+    KIO::FileCopyJob *m_torrentDownloadJob;
     JamendoDatabaseHandler * m_dbHandler;
     QString m_tempFileName;
+    QString m_torrentFileName;
     ServiceSqlCollection * m_collection;
+    Meta::JamendoAlbum * m_currentAlbum;
 };
 
 #endif

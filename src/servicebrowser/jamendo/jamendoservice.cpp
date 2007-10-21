@@ -25,11 +25,14 @@
 #include "ServiceSqlRegistry.h"
 
 #include <KTemporaryFile>
+#include <KRun>
+#include <KShell>
 
 using namespace Meta;
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
+ , m_currentAlbum( 0 )
 {
 
     setShortDescription("A site where artists can showcase their creations to the world");
@@ -54,7 +57,17 @@ void JamendoService::polish()
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
 
+
+    m_downloadButton = new QPushButton;
+    m_downloadButton->setParent( m_bottomPanel );
+    m_downloadButton->setText( i18n( "Download" ) );
+    m_downloadButton->setObjectName( "downloadButton" );
+    m_downloadButton->setIcon( KIcon( Amarok::icon( "download" ) ) );
+
+    m_downloadButton->setEnabled( false );
+
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
+    connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( downloadButtonClicked() ) );
 
 
     m_infoParser = new JamendoInfoParser();
@@ -76,6 +89,8 @@ void JamendoService::polish()
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+
+    connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
     m_polished = true;
 
@@ -166,6 +181,84 @@ void JamendoService::doneParsing()
     //delete sender
     sender()->deleteLater();
     m_collection->emitUpdated();
+}
+
+void JamendoService::itemSelected( CollectionTreeItem * selectedItem ){
+
+    DEBUG_BLOCK
+
+    //we only enable the download button if there is only one item selected and it happens to
+    //be an album or a track
+    DataPtr dataPtr = selectedItem->data();
+
+    if ( typeid( * dataPtr.data() ) == typeid( JamendoTrack ) )  {
+
+        debug() << "is right type (track)";
+        JamendoTrack * track = static_cast<JamendoTrack *> ( dataPtr.data() );
+        m_currentAlbum = static_cast<JamendoAlbum *> ( track->album().data() );
+        m_downloadButton->setEnabled( true );
+
+    } else if ( typeid( * dataPtr.data() ) == typeid( JamendoAlbum ) ) {
+
+        m_currentAlbum = static_cast<JamendoAlbum *> ( dataPtr.data() );
+        debug() << "is right type (album) named " << m_currentAlbum->name();
+
+        m_downloadButton->setEnabled( true );
+    } else {
+
+        debug() << "is wrong type";
+        m_downloadButton->setEnabled( false );
+
+    }
+
+    return;
+}
+
+void JamendoService::downloadButtonClicked()
+{
+
+    if ( m_currentAlbum ){
+
+        m_downloadButton->setEnabled( false );
+
+        KTemporaryFile tempFile;
+        tempFile.setSuffix( ".torrent" );
+        tempFile.setAutoRemove( false );  
+        if( !tempFile.open() )
+        {
+            return;
+        }
+
+
+        m_torrentFileName = tempFile.fileName();
+        m_torrentDownloadJob = KIO::file_copy( KUrl( m_currentAlbum->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
+        connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
+                this, SLOT( torrentDownloadComplete( KJob * ) ) );
+
+
+    }
+
+}
+
+void JamendoService::torrentDownloadComplete(KJob * downloadJob)
+{
+
+
+    if ( downloadJob != m_torrentDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    if ( !downloadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+
+    debug() << "Torrent downloaded";
+
+    KRun::runUrl( KShell::quoteArg( m_torrentFileName ), "application/x-bittorrent", 0, true );
+
+    downloadJob->deleteLater();
+    m_torrentDownloadJob = 0;
 }
 
 #include "jamendoservice.moc"
