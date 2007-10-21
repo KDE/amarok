@@ -76,7 +76,9 @@ JamendoDatabaseHandler::createDatabase( )
                   "cover_url " + db->exactTextColumnType() + ',' +
                   "launch_year Integer, "
                   "genre " + db->exactTextColumnType() + ',' +
-                  "artist_id INTEGER );";
+                  "artist_id INTEGER, "
+                  "mp3_torrent_url " + db->exactTextColumnType() + ',' +
+                  "ogg_torrent_url " + db->exactTextColumnType() + " );";
 
     debug() << "Creating jamendo_albums: " << queryString;
 
@@ -206,7 +208,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
                   "popularity, cover_url, launch_year, genre, "
-                  "artist_id ) VALUES ( "
+                  "artist_id, mp3_torrent_url, ogg_torrent_url ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
                   + sqlDb->escape(  jAlbum->name() ) + "', '"
                   + sqlDb->escape( jAlbum->description() )+ "', "
@@ -214,7 +216,9 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + sqlDb->escape( jAlbum->coverUrl() )+ "', "
                   + QString::number( jAlbum->launchYear() ) + ", '"
                   + sqlDb->escape( jAlbum->genre() )+ "', "
-                  + QString::number( jAlbum->artistId() ) + " );";
+                  + QString::number( jAlbum->artistId() ) + ", '"
+                  + sqlDb->escape( jAlbum->mp3TorrentUrl() ) + "', '"
+                  + sqlDb->escape( jAlbum->oggTorrentUrl() ) + "' );";
 
     //debug() << "Adding Jamendo album " << queryString;
 
