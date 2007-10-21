@@ -64,7 +64,8 @@ QueryMaker * Mp3tunesServiceQueryMaker::reset()
     d->type = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
-    m_parentId = QString();
+    m_parentArtistId = QString();
+    m_parentAlbumId = QString();
 
     return this;
 }
@@ -133,11 +134,13 @@ QueryMaker * Mp3tunesServiceQueryMaker::startTrackQuery()
 QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
 {
     DEBUG_BLOCK
-    if ( d->type == Private::ALBUM ) {
+
+    if ( m_parentAlbumId.isEmpty() ) {
         const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
-        m_parentId = QString::number( serviceArtist->id() );
-        debug() << "parent id set to: " << m_parentId;
+        m_parentArtistId = QString::number( serviceArtist->id() );
+        debug() << "parent id set to: " << m_parentArtistId;
     }
+
 
     return this;
 }
@@ -145,11 +148,11 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
 QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
     DEBUG_BLOCK
-    if ( d->type == Private::TRACK ) {
-        const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
-        m_parentId = QString::number( serviceAlbum->id() );
-        debug() << "parent id set to: " << m_parentId;
-    }
+    const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
+    m_parentAlbumId = QString::number( serviceAlbum->id() );
+    debug() << "parent id set to: " << m_parentAlbumId;
+    m_parentArtistId = QString();
+
 
     return this;
 }
@@ -242,12 +245,13 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
     AlbumList albums;
 
 
-    debug() << "parent id: " << m_parentId;
+    //debug() << "parent id: " << m_parentId;
 
-    if ( !m_parentId.isEmpty() ) {
-        ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentId ] );
+    if ( !m_parentArtistId.isEmpty() ) {
+        ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentArtistId ] );
         albums = artistMatcher.matchAlbums( m_collection );
-    }
+    } else 
+        return;
 
     if ( albums.count() > 0 ) {
         handleResult( albums );
@@ -257,7 +261,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
 
         urlString.replace( "<SESSION_ID>", m_sessionId );
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
-        urlString.replace( "<ARTIST_ID>", m_parentId );
+        urlString.replace( "<ARTIST_ID>", m_parentArtistId );
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
@@ -271,12 +275,13 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
     TrackList tracks;
 
-    debug() << "parent id: " << m_parentId;
+    //debug() << "parent id: " << m_parentId;
 
-    if ( !m_parentId.isEmpty() ) {
-        AlbumMatcher albumMatcher( m_collection->albumMap()[ m_parentId ] );
+    if ( !m_parentAlbumId.isEmpty() ) {
+        AlbumMatcher albumMatcher( m_collection->albumMap()[ m_parentAlbumId ] );
         tracks = albumMatcher.match( m_collection );
-    }
+    } else
+        return;
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
@@ -286,7 +291,10 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
         urlString.replace( "<SESSION_ID>", m_sessionId );
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
-        urlString.replace( "<ALBUM_ID>", m_parentId );
+        if(  !m_parentAlbumId.isEmpty() )
+            urlString.replace( "<ALBUM_ID>", m_parentAlbumId );
+        else 
+            urlString.replace( "<ALBUM_ID>", m_parentArtistId );
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )

@@ -78,7 +78,8 @@ protected:
     Private * const d;
 
     QString m_sessionId;
-    QString m_parentId;
+    QString m_parentAlbumId;
+    QString m_parentArtistId;
 
 public slots:
 
