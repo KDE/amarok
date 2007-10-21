@@ -43,6 +43,8 @@ void
 ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult )
 {
     DEBUG_BLOCK
+    m_collection->dbUpdater()->createTemporaryTables();
+    m_collection->dbUpdater()->prepareTemporaryTables();
     QList<QHash<QString, QString> > dirData;
     bool firstTrack = true;
     QString dir;
@@ -68,12 +70,14 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
             dir = url.directory();
         }
     }
+    m_collection->dbUpdater()->copyToPermanentTables();
+    m_collection->dbUpdater()->removeTemporaryTables();
 }
 
 void
 ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &data )
 {
-
+    DEBUG_BLOCK
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
     //if more than 60 files are in the dir, use the artist of each track as albumartist
