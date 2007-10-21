@@ -290,7 +290,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );
 
     // Draw percentage number
-    p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
+    p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
     QFont font;
     font.setPixelSize( 9 );
     p.setFont( font );
