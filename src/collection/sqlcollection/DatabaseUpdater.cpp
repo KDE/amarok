@@ -37,7 +37,7 @@ DatabaseUpdater::~DatabaseUpdater()
 bool
 DatabaseUpdater::needsUpdate() const
 {
-    return false;
+    return adminValue( "DB_VERSION" ) != DB_VERSION;
 }
 
 void
@@ -366,6 +366,14 @@ DatabaseUpdater::createTables() const
     }
     m_collection->query( "INSERT INTO admin(key,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
+}
+
+int
+DatabaseUpdater::adminValue( const QString &key ) const
+{
+    QStringList values;
+    values = m_collection->query ( QString( "SELECT version FROM admin WHERE key = '%1';").arg(m_collection->escape( key ) ) );
+    return values.isEmpty() ? 0 : values.first().toInt();
 }
 
 void
