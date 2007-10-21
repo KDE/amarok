@@ -56,14 +56,6 @@ void JamendoService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
 
-    m_debugButton = new QPushButton;
-    m_debugButton->setParent( m_bottomPanel );
-    m_debugButton->setText( "Debug"  );
-    m_debugButton->setObjectName( "debugButton" );
-    m_debugButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
-
-    connect( m_debugButton, SIGNAL( clicked() ), this, SLOT( debugSlot() ) );
-
 
     m_infoParser = new JamendoInfoParser();
 
@@ -174,18 +166,6 @@ void JamendoService::doneParsing()
     //delete sender
     sender()->deleteLater();
     m_collection->emitUpdated();
-}
-
-void JamendoService::debugSlot()
-{
-
-    debug() << "JamendoService: create xml parser";
-    JamendoXmlParser * parser = new JamendoXmlParser( "/tmp/dbdump.en.xml" );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
-
-    ThreadManager::instance()->queueJob( parser );
-    //downloadJob->deleteLater();
-   // m_listDownloadJob = 0;
 }
 
 #include "jamendoservice.moc"
