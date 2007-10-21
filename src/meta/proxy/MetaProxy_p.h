@@ -140,6 +140,19 @@ public:
         return QString();
     }
 
+    virtual bool operator==( const Meta::Artist &artist ) const
+    {
+        const ProxyArtist *proxy = dynamic_cast<const ProxyArtist*>( &artist );
+        if( proxy )
+        {
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->artist() && d->realTrack->artist() == proxy->d->realTrack->artist();
+        }
+        else
+        {
+            return d && d->realTrack && d->realTrack->artist() && d->realTrack->artist().data() == &artist;
+        }
+    }
+
     MetaProxy::Track::Private * const d;
 };
 
@@ -211,6 +224,19 @@ public:
             return Meta::Album::image( size, withShadow );
     }
 
+    virtual bool operator==( const Meta::Album &album ) const
+    {
+        const ProxyAlbum *proxy = dynamic_cast<const ProxyAlbum*>( &album );
+        if( proxy )
+        {
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->album() && d->realTrack->album() == proxy->d->realTrack->album();
+        }
+        else
+        {
+            return d && d->realTrack && d->realTrack->album() && d->realTrack->album().data() == &album;
+        }
+    }
+
     MetaProxy::Track::Private * const d;
 };
 
@@ -244,6 +270,19 @@ public:
             return d->realTrack->genre()->tracks();
         else
             return Meta::TrackList();
+    }
+
+    virtual bool operator==( const Meta::Genre &genre ) const
+    {
+        const ProxyGenre *proxy = dynamic_cast<const ProxyGenre*>( &genre );
+        if( proxy )
+        {
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->genre() && d->realTrack->genre() == proxy->d->realTrack->genre();
+        }
+        else
+        {
+            return d && d->realTrack && d->realTrack->genre() && d->realTrack->genre().data() == &genre;
+        }
     }
 
     MetaProxy::Track::Private * const d;
@@ -281,6 +320,19 @@ public:
             return Meta::TrackList();
     }
 
+    virtual bool operator==( const Meta::Composer &composer ) const
+    {
+        const ProxyComposer *proxy = dynamic_cast<const ProxyComposer*>( &composer );
+        if( proxy )
+        {
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->composer() && d->realTrack->composer() == proxy->d->realTrack->composer();
+        }
+        else
+        {
+            return d && d->realTrack && d->realTrack->composer() && d->realTrack->composer().data() == &composer;
+        }
+    }
+
     MetaProxy::Track::Private * const d;
 };
 
@@ -314,6 +366,19 @@ public:
             return d->realTrack->year()->tracks();
         else
             return Meta::TrackList();
+    }
+
+    virtual bool operator==( const Meta::Year &year ) const
+    {
+        const ProxyYear *proxy = dynamic_cast<const ProxyYear*>( &year );
+        if( proxy )
+        {
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->year() && d->realTrack->year() == proxy->d->realTrack->year();
+        }
+        else
+        {
+            return d && d->realTrack && d->realTrack->year() && d->realTrack->year().data() == &year;
+        }
     }
 
     MetaProxy::Track::Private * const d;

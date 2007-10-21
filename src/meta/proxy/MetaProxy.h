@@ -84,6 +84,8 @@ namespace MetaProxy
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
+            virtual bool operator==( const Meta::Track &track ) const;
+
         private:
             Private * const d;
     };

@@ -342,3 +342,21 @@ MetaProxy::Track::asCapabilityInterface( Meta::Capability::Type type )
     else
         return 0;
 }
+
+bool
+MetaProxy::Track::operator==( const Meta::Track &track ) const
+{
+    const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track*>( &track );
+    if( proxy && d->realTrack )
+    {
+        return d->realTrack == proxy->d->realTrack;
+    }
+    else if( proxy )
+    {
+        return d->url == proxy->d->url;
+    }
+    else
+    {
+        return d->realTrack && d->realTrack.data() == &track;
+    }
+}
