@@ -49,19 +49,108 @@ DatabaseUpdater::update()
 void
 DatabaseUpdater::createTemporaryTables()
 {
-    //TODO
+    DEBUG_BLOCK
+    //this is a copy of the relevant code in createTables()
+    //TODO refactor this to make it easier to keep the tables created by those methods in sync
+    {
+        QString create = "CREATE TEMPORARY TABLE urls_temp "
+                         "(id " + m_collection->idType() +
+                         ",deviceid INTEGER"
+                         ",rpath " + m_collection->exactTextColumnType() + ");";
+        m_collection->query( create );
+        m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
+    }
+    {
+        QString create = "CREATE TEMPORARY TABLE artists_temp "
+                         "(id " + m_collection->idType() +
+                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+        m_collection->query( create );
+        m_collection->query( "CREATE UNIQUE INDEX artists_temp_name ON artists_temp(name);" );
+    }
+    {
+        QString c = "CREATE TEMPORARY TABLE albums_temp "
+                    "(id " + m_collection->idType() +
+                    ",name " + m_collection->textColumnType() + " NOT NULL"
+                    ",artist INTEGER);";
+        m_collection->query( c );
+        m_collection->query( "CREATE INDEX albums_temp_name ON albums_temp(name);" );
+        m_collection->query( "CREATE INDEX albums_temp_artist ON albums_temp(artist);" );
+        m_collection->query( "CREATE UNIQUE INDEX albums_temp_name_artist ON albums_temp(name,artist);" );
+        //the index below should not be necessary. uncomment if a query plan shows it is
+        //m_collection->query( "CREATE UNIQUE INDEX albums_artist_name ON albums(artist,name);" );
+    }
+    {
+        QString create = "CREATE TEMPORARY TABLE genres_temp "
+                         "(id " + m_collection->idType() +
+                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+        m_collection->query( create );
+        m_collection->query( "CREATE UNIQUE INDEX genres_temp_name ON genres_temp(name);" );
+    }
+    {
+        QString create = "CREATE TEMPORARY TABLE composers_temp "
+                         "(id " + m_collection->idType() +
+                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+        m_collection->query( create );
+        m_collection->query( "CREATE UNIQUE INDEX composers_temp_name ON composers_temp(name);" );
+    }
+    {
+        QString create = "CREATE TEMPORARY TABLE years_temp "
+                         "(id " + m_collection->idType() +
+                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+        m_collection->query( create );
+        m_collection->query( "CREATE UNIQUE INDEX years_temp_name ON years_temp(name);" );
+    }
+    {
+        QString c = "CREATE TEMPORARY TABLE tracks_temp "
+                    "(id " + m_collection->idType() +
+                    ",url INTEGER"
+                    ",artist INTEGER"
+                    ",album INTEGER"
+                    ",genre INTEGER"
+                    ",composer INTEGER"
+                    ",year INTEGER"
+                    ",title " + m_collection->textColumnType() +
+                    ",comment " + m_collection->longTextColumnType() +
+                    ",tracknumber INTEGER"
+                    ",discnumber INTEGER"
+                    ",bitrate INTEGER"
+                    ",length INTEGER"
+                    ",samplerate INTEGER"
+                    ",filesize INTEGER"
+                    ",filetype INTEGER"     //does this still make sense?
+                    ",bpm FLOAT"
+                    ",createdate INTEGER"   //are the two dates needed?
+                    ",modifydate INTEGER"
+                    ");";
+
+        m_collection->query( c );
+        m_collection->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
+    }
 }
 
 void
 DatabaseUpdater::prepareTemporaryTables()
 {
-    //TODO
+    DEBUG_BLOCK
+    m_collection->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+    m_collection->query( "INSERT INTO artists_temp SELECT * FROM artists;" );
+    m_collection->query( "INSERT INTO years_temp SELECT * FROM years;" );
+    m_collection->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
+    m_collection->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
+    m_collection->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
 }
 
 void
 DatabaseUpdater::removeTemporaryTables()
 {
-    //TODO
+    DEBUG_BLOCK
+    m_collection->query( "DROP TABLE tracks_temp;" );
+    m_collection->query( "DROP TABLE albums_temp;" );
+    m_collection->query( "DROP TABLE genres_temp;" );
+    m_collection->query( "DROP TABLE years_temp;" );
+    m_collection->query( "DROP TABLE composers_temp;" );
+    m_collection->query( "DROP TABLE artists_temp;" );
+    m_collection->query( "DROP TABLE urls_temp;" );
 }
 
 void
@@ -69,19 +158,17 @@ DatabaseUpdater::copyToPermanentTables()
 {
     DEBUG_BLOCK
 
-    m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
-
     //handle artists before albums
-    QStringList artistIdList = m_collection->query( "SELECT artist.id FROM artist;" );
+    QStringList artistIdList = m_collection->query( "SELECT artists.id FROM artists;" );
     QString artistIds = "-1";
     foreach( QString artistId, artistIdList )
     {
         artistIds += ',';
         artistIds += artistId;
     }
-    m_collection->insert( QString ( "INSERT INTO artist SELECT * FROM artist_temp WHERE artist_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
 
-    QStringList albumIdList = m_collection->query( "SELECT album.id FROM album;" );
+    QStringList albumIdList = m_collection->query( "SELECT albums.id FROM albums;" );
     //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
     //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
     QString albumIds = "-1";
@@ -90,39 +177,44 @@ DatabaseUpdater::copyToPermanentTables()
         albumIds += ',';
         albumIds += albumId;
     }
-    m_collection->insert( QString ( "INSERT INTO album SELECT * FROM album_temp WHERE album_temp.id NOT IN ( %1 );" ).arg( albumIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN ( %1 );" ).arg( albumIds ), QString() );
 
-    QStringList composerIdList = m_collection->query( "SELECT composer.id FROM composer;" );
+    QStringList composerIdList = m_collection->query( "SELECT composers.id FROM composers;" );
     QString composerIds = "-1";
     foreach( QString composerId, composerIdList )
     {
         composerIds += ',';
         composerIds += composerId;
     }
-    m_collection->insert( QString ( "INSERT INTO composer SELECT * FROM composer_temp WHERE composer_temp.id NOT IN ( %1 );" ).arg( composerIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO composers SELECT * FROM composers_temp WHERE composers_temp.id NOT IN ( %1 );" ).arg( composerIds ), QString() );
 
-    QStringList genreIdList = m_collection->query( "SELECT genre.id FROM genre;" );
+    QStringList genreIdList = m_collection->query( "SELECT genres.id FROM genres;" );
     QString genreIds = "-1";
     foreach( QString genreId, genreIdList )
     {
         genreIds += ',';
         genreIds += genreId;
     }
-    m_collection->insert( QString ( "INSERT INTO genre SELECT * FROM genre_temp WHERE genre_temp.id NOT IN ( %1 );" ).arg( genreIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO genres SELECT * FROM genres_temp WHERE genres_temp.id NOT IN ( %1 );" ).arg( genreIds ), QString() );
 
-    QStringList yearIdList = m_collection->query( "SELECT year.id FROM year;" );
+    QStringList yearIdList = m_collection->query( "SELECT years.id FROM years;" );
     QString yearIds = "-1";
     foreach( QString yearId, yearIdList )
     {
         yearIds += ',';
         yearIds += yearId;
     }
-    m_collection->insert( QString ( "INSERT INTO year SELECT * FROM year_temp WHERE year_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM year_temp WHERE years_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
 
     //insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
     //insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
+
+    m_collection->insert( "INSERT INTO urls SELECT * FROM urls_temp WHERE urls_temp.id NOT IN ( SELECT id FROM urls );", QString() );
+
+    //copy tracks last so that we don't get problems with foreign key constraints
+    m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
 }
 
 void
@@ -154,6 +246,15 @@ DatabaseUpdater::createTables() const
                          ",rpath " + m_collection->exactTextColumnType() + ");";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
+    }
+    {
+        QString create = "CREATE TABLE directories "
+                         "(id " + m_collection->idType() +
+                         ",deviceid INTEGER"
+                         ",dir " + m_collection->exactTextColumnType() + 
+                         ",changedate INTEGER);";
+        m_collection->query( create );
+        m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
     }
     {
         QString create = "CREATE TABLE artists "
