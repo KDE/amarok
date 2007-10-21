@@ -212,6 +212,9 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
     QString description;
     QStringList tags;
     QString coverUrl;
+    QString mp3TorrentUrl;
+    QString oggTorrentUrl;
+    
 
     QDomNode n = e.firstChild();
 
@@ -235,6 +238,28 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
             else if ( currentChildElement.tagName() == "Covers" ) {
                 coverUrl = getCoverUrl( currentChildElement, 100 );
 
+
+            } else if ( currentChildElement.tagName() == "P2PLinks" ) {
+
+                QDomNode m = currentChildElement.firstChild();
+                while ( !m.isNull() )
+                {
+                    if ( m.isElement() ) {
+                        QDomElement p2pElement = m.toElement();
+                        
+                        if ( p2pElement.tagName() == "p2plink" ) {
+                            if ( p2pElement.attribute( "network", "" ) == "bittorrent" ) {  //ignore edonkey stuff
+                                if ( p2pElement.attribute( "audioEncoding", "" ) == "ogg3" ) { 
+                                    oggTorrentUrl = p2pElement.text();
+                                } else if ( p2pElement.attribute( "audioEncoding", "" ) == "mp32" ) { 
+                                    mp3TorrentUrl = p2pElement.text();
+                                }
+            
+                            }
+                        }
+                    }
+                    m = m.nextSibling();
+                }
             }
 
             n = n.nextSibling();
@@ -253,6 +278,9 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
     currentAlbum.setLaunchYear( 1000 );
 
     currentAlbum.setCoverUrl( coverUrl );
+
+    currentAlbum.setMp3TorrentUrl( mp3TorrentUrl );
+    currentAlbum.setOggTorrentUrl( oggTorrentUrl );
 
     m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
