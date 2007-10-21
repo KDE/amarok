@@ -222,6 +222,26 @@ float JamendoAlbum::popularity() const
     return m_popularity;
 }
 
+void JamendoAlbum::setMp3TorrentUrl(QString url)
+{
+    m_mp3TorrentUrl = url;
+}
+
+QString JamendoAlbum::mp3TorrentUrl()
+{
+    return m_mp3TorrentUrl;
+}
+
+void JamendoAlbum::setOggTorrentUrl(QString url)
+{
+   m_oggTorrentUrl = url;
+}
+
+QString JamendoAlbum::oggTorrentUrl()
+{
+    return m_oggTorrentUrl;
+}
+
 
 
 
@@ -237,6 +257,8 @@ JamendoGenre::JamendoGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 
