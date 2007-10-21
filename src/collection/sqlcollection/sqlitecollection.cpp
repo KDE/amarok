@@ -190,6 +190,12 @@ QStringList SqliteCollection::query( const QString& statement )
     return values;
 }
 
+QString
+SqliteCollection::idType() const
+{
+    return " INTEGER PRIMARY KEY AUTOINCREMENT";
+}
+
 
 int SqliteCollection::insert( const QString& statement, const QString& /* table */ )
 {

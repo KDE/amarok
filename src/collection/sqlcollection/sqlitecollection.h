@@ -39,6 +39,8 @@ class SqliteCollection : public SqlCollection
 
         virtual QString type() const;
 
+        virtual QString idType() const;
+
     private:
         static void sqlite_rand( sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/ );
         static void sqlite_power( sqlite3_context *context, int argc, sqlite3_value **argv );
