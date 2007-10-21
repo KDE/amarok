@@ -272,7 +272,7 @@ XmlParseJob::run()
     else
     {
         ScanResultProcessor processor( m_collection );
-        //processor.processScanResult( audioFileData );
+        processor.processScanResult( audioFileData );
     }
 }
 
