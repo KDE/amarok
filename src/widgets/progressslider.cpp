@@ -29,95 +29,6 @@
 #include <klocale.h>
 #include <kpassivepopup.h>
 
-
-// Class ProgressSlider
-ProgressSlider *ProgressSlider::s_instance = 0;
-ProgressSlider::ProgressSlider( QWidget *parent ) :
-        Amarok::Slider( Qt::Horizontal, parent )
-{
-    s_instance = this;
-    setMouseTracking( true );
-}
-
-// Add A bookmark to the slider at given second
-void
-ProgressSlider::addBookmark( uint second )
-{
-    if( !m_bookmarks.contains(second) )
-        m_bookmarks << second;
-    update();
-}
-
-
-void
-ProgressSlider::addBookmarks( QList<uint> seconds )
-{
-    foreach( uint it, seconds )
-        addBookmark( it );
-}
-
-void
-ProgressSlider::paintEvent( QPaintEvent *e )
-{
-    Amarok::Slider::paintEvent( e );
-
-    if( isEnabled() )
-    {
-        QPainter p( this );
-        foreach( uint it, m_bookmarks )
-        {
-            const int pos = int( double( width() ) / maximum() * ( it * 1000 ) );
-            Bookmark pa( 3, it );
-            pa.setPoint( 0, pos - 5, 1 );
-            pa.setPoint( 1, pos + 5, 1 );
-            pa.setPoint( 2, pos,     9 );
-            p.setBrush( Qt::red );
-            m_polygons << pa;
-            p.drawConvexPolygon( pa );
-        }
-    }
-}
-
-void
-ProgressSlider::mouseMoveEvent( QMouseEvent *e )
-{
-    foreach( Bookmark p, m_polygons )
-    {
-        //only create a popup if the mouse enters a bookmark, not if it moves inside of one.
-        if( p.containsPoint( e->pos(), Qt::OddEvenFill ) && !p.containsPoint( oldpoint, Qt::OddEvenFill ) )
-        {
-            m_popup = new KPassivePopup( parentWidget() );
-            KHBox *khb = new KHBox( m_popup );
-            new QLabel( p.time(), khb );
-            m_popup->setView( khb );
-            m_popup->setAutoDelete( false );
-            m_popup->show( mapToGlobal( e->pos() ) );
-            oldpoint = e->pos();
-        }
-        //If the mouse moves outside of the bookmark, hide the popup
-        else if ( p.containsPoint( oldpoint, Qt::OddEvenFill) && !p.containsPoint( e->pos(), Qt::OddEvenFill ) )
-        {
-            if( m_popup->isVisible() )
-                m_popup->deleteLater();
-        }
-    }
-    oldpoint = e->pos();
-
-    Amarok::Slider::mouseMoveEvent( e );
-}
-
-void
-ProgressSlider::mousePressEvent( QMouseEvent *e )
-{
-    EngineController *ec = EngineController::instance();
-    foreach( Bookmark p, m_polygons )
-        if( p.containsPoint( e->pos(), Qt::OddEvenFill ) )
-            ec->seek( p.seconds() * 1000 );
-
-    Amarok::Slider::mousePressEvent( e );
-}
-// END Class ProgressSlider
-
 //Class ProgressWidget
 ProgressWidget *ProgressWidget::s_instance = 0;
 ProgressWidget::ProgressWidget( QWidget *parent )
@@ -132,8 +43,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     box->setMargin( 1 );
     box->setSpacing( 3 );
 
-    m_slider = new ProgressSlider( this );
-
+    m_slider = new Amarok::Slider( Qt::Horizontal, this );
+    m_slider->setMouseTracking( true );
     // the two time labels. m_timeLabel is the left one,
     // m_timeLabel2 the right one.
     m_timeLabel = new TimeLabel( this );

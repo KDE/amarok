@@ -26,68 +26,6 @@
 
 class QLabel;
 
-class Bookmark : public QPolygon
-{
-    public:
-        Bookmark( int size, int seconds ) : QPolygon( size ),
-                 m_seconds( seconds)
-        {}
-        inline const QString time() { return prettyTime( m_seconds ); }
-        inline const int seconds() { return m_seconds; }
-        inline const void setTime( int seconds ) { m_seconds = seconds; }
-
-    private:
-        QString prettyTime( int seconds )
-        {
-            int hours = 0;
-            int minutes = 0;
-            while( seconds >= 3600 )
-            {
-                hours++;
-                seconds -= 3600;
-            }
-            while( seconds >= 60 )
-            {
-                minutes++;
-                seconds -= 60;
-            }
-            QString sHours, sMinutes, sSeconds;
-            sHours = sMinutes = sSeconds = QString();
-            if( hours > 0 )
-                sHours = QString("%1 Hours").arg( hours );
-            if( minutes > 0)
-                sMinutes = QString("%1 Minutes").arg( minutes );
-            if( seconds > 0 )
-                sSeconds = QString("%1 Seconds").arg( seconds );
-            return QString( "%1\n%2\n%3" ).arg( sHours, sMinutes, sSeconds );
-        }
-        int m_seconds;
-};
-
-class ProgressSlider : public Amarok::Slider
-{
-    Q_OBJECT
-    static ProgressSlider *s_instance;
-
-    public:
-        ProgressSlider( QWidget *parent );
-        AMAROK_EXPORT static ProgressSlider *instance() { return s_instance; }
-        void addBookmark( uint second );
-        void addBookmarks( QList<uint> seconds );
-        AMAROK_EXPORT QList<uint> bookmarks() { return m_bookmarks; }
-
-    protected:
-        virtual void paintEvent( QPaintEvent *e );
-        virtual void mouseMoveEvent( QMouseEvent *e );
-        virtual void mousePressEvent( QMouseEvent *e );
-
-    private:
-        QList<uint> m_bookmarks;
-        QList<Bookmark> m_polygons;
-        QPoint oldpoint;
-        KPassivePopup *m_popup;
-};
-
 class ProgressWidget : public QWidget, public EngineObserver
 {
     Q_OBJECT
@@ -111,6 +49,6 @@ class ProgressWidget : public QWidget, public EngineObserver
         QLabel *m_timeLabel;
         QLabel *m_timeLabel2;
         int m_timeLength;
-        ProgressSlider *m_slider;
+        Amarok::Slider *m_slider;
 };
 #endif

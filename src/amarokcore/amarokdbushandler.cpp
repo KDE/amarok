@@ -302,11 +302,6 @@ namespace Amarok
         return track ? track->year()->prettyName() : QString();
     }
 
-    void DbusPlayerHandler::addBookmark( uint second )
-    {
-        ProgressSlider::instance()->addBookmark( second );
-    }
-
     void DbusPlayerHandler::configEqualizer()
     {
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
