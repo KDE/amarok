@@ -170,7 +170,7 @@ void ContextView::loadConfig()
     cur += "rc";
 
     contextScene()->clearApplets();
-    KConfig appletConfig( cur, KConfig::OnlyLocal );
+    KConfig appletConfig( cur, KConfig::SimpleConfig );
     if( contextScene()->containments().size() > 0 ) 
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
