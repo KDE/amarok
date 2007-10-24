@@ -1035,9 +1035,7 @@ namespace Amarok
     KConfigGroup config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
-//         KGlobal::config()->setGroup( group );
-        KConfigGroup configGroup = KGlobal::config()->group( group );
-        return configGroup;
+        return KGlobal::config()->group( group );
     }
 
     bool invokeBrowser( const QString& url )
