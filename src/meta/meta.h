@@ -190,19 +190,6 @@ namespace Meta
             }
 
             /**
-             * Retrieves a specialized interface which represents a capability of this
-             * track.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> const CapIface *as() const
-            {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                const Meta::Capability *iface = asCapabilityInterface(type);
-                return qobject_cast<const CapIface *>(iface);
-            }
-
-            /**
              * Tests if a track provides a given capability interface.
              *
              * @returns true if the interface is available, false otherwise

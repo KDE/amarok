@@ -28,6 +28,8 @@
 #include <KRun>
 #include <KShell>
 
+#include <typeinfo>
+
 using namespace Meta;
 
 JamendoService::JamendoService(const QString & name)
