@@ -139,14 +139,14 @@ SqlRegistry::getYear( const QString &name, int id )
 }
 
 AlbumPtr
-SqlRegistry::getAlbum( const QString &name, int id )
+SqlRegistry::getAlbum( const QString &name, int id, int artist )
 {
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( name ) )
         return m_albumMap.value( name );
     else
     {
-        AlbumPtr album( new SqlAlbum( m_collection, id, name ) );
+        AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
         m_albumMap.insert( name, album );
         return album;
     }

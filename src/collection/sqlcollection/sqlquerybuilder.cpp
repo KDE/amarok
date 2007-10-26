@@ -66,7 +66,7 @@ class SqlWorkerThread : public ThreadWeaver::Job
 struct SqlQueryBuilder::Private
 {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
-    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64 };
+    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
     int linkedTables;
     QueryType queryType;
     QString query;
@@ -173,6 +173,7 @@ SqlQueryBuilder::startTrackQuery()
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::TRACK;
+        d->linkedTables |= Private::URLS_TAB;
         d->linkedTables |= Private::TAGS_TAB;
         d->linkedTables |= Private::GENRE_TAB;
         d->linkedTables |= Private::ARTIST_TAB;
@@ -194,7 +195,7 @@ SqlQueryBuilder::startArtistQuery()
         d->withoutDuplicates = true;
         d->linkedTables |= Private::ARTIST_TAB;
         //reading the ids from the database means we don't have to query for them later
-        d->queryReturnValues = "artist.name, artist.id";
+        d->queryReturnValues = "artists.name, artists.id";
     }
     return this;
 }
@@ -208,7 +209,7 @@ SqlQueryBuilder::startAlbumQuery()
         d->withoutDuplicates = true;
         d->linkedTables |= Private::ALBUM_TAB;
         //add whatever is necessary to identify compilations
-        d->queryReturnValues = "album.name, album.id, tags.sampler";
+        d->queryReturnValues = "albums.name, albums.id, albums.artist";
     }
     return this;
 }
@@ -297,7 +298,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
-    d->queryMatch += QString( " AND artist.name = '%1'" ).arg( escape( artist->name() ) );
+    d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
     return this;
 }
 
@@ -306,7 +307,17 @@ SqlQueryBuilder::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
-    d->queryMatch += QString( " AND album.name = '%1'" ).arg( escape( album->name() ) );
+    d->queryMatch += QString( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
+    ArtistPtr albumArtist = album->albumArtist();
+    if( albumArtist )
+    {
+        d->linkedTables |= Private::ALBUMARTIST_TAB;
+        d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( albumArtist->name() ) );
+    }
+    else
+    {
+        d->queryMatch += " AND albums.artist IS NULL";
+    }
     return this;
 }
 
@@ -314,7 +325,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
-    d->queryMatch += QString( " AND genre.name = '%1'" ).arg( escape( genre->name() ) );
+    d->queryMatch += QString( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
     return this;
 }
 
@@ -322,7 +333,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
-    d->queryMatch += QString( " AND composer.name = '%1'" ).arg( escape( composer->name() ) );
+    d->queryMatch += QString( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
     return this;
 }
 
@@ -330,7 +341,7 @@ QueryMaker*
 SqlQueryBuilder::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
-    d->queryMatch += QString( " AND year.name = '%1'" ).arg( escape( year->name() ) );
+    d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
     return this;
 }
 
@@ -420,20 +431,29 @@ SqlQueryBuilder::linkTables()
     if( !d->linkedTables )
         return;
 
+    if( d->linkedTables & Private::URLS_TAB )
+        d->queryFrom += " urls";
     if( d->linkedTables & Private::TAGS_TAB )
-        d->queryFrom += " tags";
+    {
+        if( d->linkedTables & Private::URLS_TAB )
+            d->queryFrom += " LEFT JOIN tracks ON urls.id = tracks.url";
+        else
+            d->queryFrom += " tracks";
+    }
     if( d->linkedTables & Private::ARTIST_TAB )
-        d->queryFrom += " LEFT JOIN artist ON tags.artist = artist.id";
+        d->queryFrom += " LEFT JOIN artists ON tracks.artist = artists.id";
     if( d->linkedTables & Private::ALBUM_TAB )
-        d->queryFrom += " LEFT JOIN album ON tags.album = album.id";
+        d->queryFrom += " LEFT JOIN albums ON tracks.album = albums.id";
+    if( d->linkedTables & Private::ALBUMARTIST_TAB )
+        d->queryFrom += " LEFT JOIN artists AS albumartists ON albums.artist = albumartists.id";
     if( d->linkedTables & Private::GENRE_TAB )
-        d->queryFrom += " LEFT JOIN genre ON tags.genre = genre.id";
+        d->queryFrom += " LEFT JOIN genres ON tracks.genre = genres.id";
     if( d->linkedTables & Private::COMPOSER_TAB )
-        d->queryFrom += " LEFT JOIN composer ON tags.composer = composer.id";
+        d->queryFrom += " LEFT JOIN composers ON tracks.composer = composers.id";
     if( d->linkedTables & Private::YEAR_TAB )
-        d->queryFrom += " LEFT JOIN year ON tags.year = year.id";
+        d->queryFrom += " LEFT JOIN years ON tracks.year = years.id";
     if( d->linkedTables & Private::STATISTICS_TAB )
-        d->queryFrom += " LEFT JOIN statistics ON tags.deviceid = statistics.deviceid AND tags.url = statistics.url";
+        d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
 }
 
 void
@@ -472,6 +492,7 @@ SqlQueryBuilder::query()
 QStringList
 SqlQueryBuilder::runQuery( const QString &query )
 {
+    debug() << "running query: " << query;
     return m_collection->query( query );
 }
 
@@ -643,8 +664,8 @@ SqlQueryBuilder::handleAlbums( const QStringList &result )
     {
         QString name = iter.next();
         QString id = iter.next();
-        albums.append( reg->getAlbum( name, id.toInt() ) );
-        iter.next(); //contains tags.isCompilation, not handled at the moment
+        QString artist = iter.next();
+        albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
     emitProperResult( AlbumPtr, albums );
 }

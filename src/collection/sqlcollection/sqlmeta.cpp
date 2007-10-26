@@ -27,11 +27,13 @@
 #include "mountpointmanager.h"
 
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QListIterator>
 #include <QMutexLocker>
 #include <QPointer>
 
+#include <kcodecs.h>
 #include <klocale.h>
 #include <KSharedPtr>
 
@@ -81,32 +83,33 @@ struct SqlTrack::MetaCache
 QString
 SqlTrack::getTrackReturnValues()
 {
-    return "tags.deviceid, tags.url, "
-           "tags.title, tags.comment, "
-           "tags.track, tags.discnumber, "
-           "statistics.percentage, statistics.rating, "
-           "tags.bitrate, tags.length, "
-           "tags.filesize, tags.samplerate, "
+    return "urls.deviceid, urls.rpath, "
+           "tracks.title, tracks.comment, "
+           "tracks.tracknumber, tracks.discnumber, "
+           "statistics.score, statistics.rating, "
+           "tracks.bitrate, tracks.length, "
+           "tracks.filesize, tracks.samplerate, "
            "statistics.createdate, statistics.accessdate, "
-           "statistics.playcounter, tags.filetype, tags.bpm, "
-           "artist.name, artist.id, "
-           "album.name, album.id, tags.sampler, "
-           "genre.name, genre.id, "
-           "composer.name, composer.id, "
-           "year.name, year.id";
+           "statistics.playcount, tracks.filetype, tracks.bpm, "
+           "artists.name, artists.id, "
+           "albums.name, albums.id, albums.artist, "
+           "genres.name, genres.id, "
+           "composers.name, composers.id, "
+           "years.name, years.id";
 }
 
 TrackPtr
 SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
 {
-    QString query = "SELECT %1 FROM tags "
-                    "LEFT JOIN statistics ON tags.deviceid = statistics.deviceid AND tags.url = statistics.url "
-                    "LEFT JOIN artist ON tags.artist = artist.id "
-                    "LEFT JOIN album ON tags.album = album.id "
-                    "LEFT JOIN genre ON tags.genre = genre.id "
-                    "LEFT JOIN composer ON tags.composer = composer.id "
-                    "LEFT JOIN year ON tags.year = year.id "
-                    "WHERE tags.deviceid = %2 AND tags.url = '%3';";
+    QString query = "SELECT %1 FROM urls "
+                    "LEFT JOIN tracks ON urls.id = tracks.url "
+                    "LEFT JOIN statistics ON urls.id = statistics.url "
+                    "LEFT JOIN artists ON tracks.artist = artists.id "
+                    "LEFT JOIN albums ON tracks.album = albums.id "
+                    "LEFT JOIN genres ON tracks.genre = genres.id "
+                    "LEFT JOIN composers ON tracks.composer = composers.id "
+                    "LEFT JOIN years ON tracks.year = years.id "
+                    "WHERE urls.deviceid = %2 AND urls.rpath = '%3';";
     query = query.arg( SqlTrack::getTrackReturnValues(), QString::number( deviceid ), collection->escape( rpath ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
@@ -142,9 +145,8 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
 
     SqlRegistry* registry = m_collection->registry();
     m_artist = registry->getArtist( result[17], result[18].toInt() );
-    m_album = registry->getAlbum( result[19], result[20].toInt() );
-    //isCompilation
-    m_genre = registry->getGenre( result[21], result[22].toInt() );
+    m_album = registry->getAlbum( result[19], result[20].toInt(), result[21].toInt() );
+    m_genre = registry->getGenre( result[22], result[23].toInt() );
     m_composer = registry->getComposer( result[24], result[25].toInt() );
     m_year = registry->getYear( result[26], result[27].toInt() );
 }
@@ -630,10 +632,12 @@ SqlArtist::addToQueryResult( QueryBuilder &qb ) {
 
 //---------------SqlAlbum---------------------------------
 
-SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name ) : Album()
+SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
     ,m_collection( QPointer<SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
+    ,m_artistId( artist )
+    ,m_artist()
     ,m_tracksLoaded( false )
 {
     //nothing to do
@@ -674,8 +678,77 @@ SqlAlbum::tracks()
 QPixmap
 SqlAlbum::image( int size, bool withShadow ) const
 {
-    //TODO implement this
-    return Meta::Album::image( size, withShadow );
+    QString amazonImage = findAmazonImage( size );
+    if( !amazonImage.isEmpty() )
+    {
+        return QPixmap( amazonImage );
+    }
+    else
+        return Meta::Album::image( size, withShadow );
+}
+
+bool
+SqlAlbum::hasAlbumArtist() const
+{
+    return m_artistId != 0;
+}
+
+Meta::ArtistPtr
+SqlAlbum::albumArtist() const
+{
+    if( m_artistId != 0 && !m_artist )
+    {
+        QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
+        QStringList result = m_collection->query( query );
+        if( result.isEmpty() )
+            return Meta::ArtistPtr();
+        const_cast<SqlAlbum*>( this )->m_artist =
+            m_collection->registry()->getArtist( result.first(), m_artistId );
+    }
+    return m_artist;
+}
+
+QByteArray
+SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
+{
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
+    return context.hexDigest();
+}
+
+QString
+SqlAlbum::findAmazonImage( int size ) const
+{
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if ( artist.isEmpty() && album.isEmpty() )
+        return QString();
+
+    QByteArray key = md5sum( artist, album, QString() );
+
+
+    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    // check cache for existing cover
+    if ( cacheCoverDir.exists( widthKey + key ) )
+        return cacheCoverDir.filePath( widthKey + key );
+
+    // we need to create a scaled version of this cover
+    QDir imageDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    if ( imageDir.exists( key ) )
+    {
+        if ( size > 1 )
+        {
+            QImage img( imageDir.filePath( key ) );
+            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cacheCoverDir.filePath( widthKey + key ), "PNG" );
+
+            return cacheCoverDir.filePath( widthKey + key );
+        }
+        else
+            return imageDir.filePath( key );
+    }
+
+    return QString();
 }
 
 //---------------SqlComposer---------------------------------

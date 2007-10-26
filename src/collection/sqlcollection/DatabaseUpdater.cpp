@@ -258,7 +258,8 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE urls "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactTextColumnType() + ");";
+                         ",rpath " + m_collection->exactTextColumnType() + 
+                         ",directory INTEGER);";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
     }
@@ -378,6 +379,23 @@ DatabaseUpdater::createTables() const
         m_collection->query( r );
         m_collection->query( "CREATE INDEX urlslabels_url ON urls_labels(url);" );
         m_collection->query( "CREATE INDEX urlslabels_label ON urls_labels(label);" );
+    }
+    {
+        QString q = "CREATE TABLE amazon ("
+                    "asin " + m_collection->textColumnType( 20 ) +
+                    ",locale " + m_collection->textColumnType( 2 ) +
+                    ",filename " + m_collection->textColumnType( 33 ) +
+                    ",refetchdate INTEGER );";
+        m_collection->query( q );
+        m_collection->query( "CREATE INDEX amazon_date ON amazon(refetchdate);" );
+    }
+    {
+        QString q = "CREATE TABLE lyrics ("
+                    "id " + m_collection->idType() +
+                    ",url INTEGER"
+                    ",lyrics " + m_collection->longTextColumnType() + ");";
+        m_collection->query( q );
+        m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
     m_collection->query( "INSERT INTO admin(key,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );

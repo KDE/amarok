@@ -22,6 +22,7 @@
 
 #include "meta.h"
 
+#include <QByteArray>
 #include <QMutex>
 #include <QStringList>
 
@@ -189,7 +190,7 @@ class SqlArtist : public Meta::Artist
 class SqlAlbum : public Meta::Album
 {
     public:
-        SqlAlbum( SqlCollection* collection, int id, const QString &name );
+        SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -200,8 +201,8 @@ class SqlAlbum : public Meta::Album
 
         virtual bool isCompilation() const { return false; } //TODO: fixme
 
-        virtual bool hasAlbumArtist() const { return false; } //TODO: fixme
-        virtual Meta::ArtistPtr albumArtist() const { return ArtistPtr(); }
+        virtual bool hasAlbumArtist() const;
+        virtual Meta::ArtistPtr albumArtist() const;
 
         //updating album images is possible or local tracks, but let's ignore it for now
         virtual bool canUpdateImage() const { return false; }
@@ -212,10 +213,16 @@ class SqlAlbum : public Meta::Album
         int id() const { return m_id; }
 
     private:
+        QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
+        QString findAmazonImage( int size ) const;
+
+    private:
         SqlCollection* m_collection;
         QString m_name;
         int m_id;
+        int m_artistId;
         bool m_tracksLoaded;
+        Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880

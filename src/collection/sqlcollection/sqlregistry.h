@@ -47,7 +47,7 @@ class SqlRegistry : public QObject
         Meta::GenrePtr getGenre( const QString &name, int id = -1 );
         Meta::ComposerPtr getComposer( const QString &name, int id = -1 );
         Meta::YearPtr getYear( const QString &year, int id = -1 );
-        Meta::AlbumPtr getAlbum( const QString &album, int id = -1 ); //TODO fix this
+        Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1 ); //TODO fix this
 
 
     private slots:
