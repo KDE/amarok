@@ -44,9 +44,12 @@ void
 DatabaseUpdater::update()
 {
     DEBUG_BLOCK
-    const int dbVersion = adminValue( "DB_VERION" );
+    const int dbVersion = adminValue( "DB_VERSION" );
     if( dbVersion == 0 )
+    {
         createTables();
+        m_collection->query( "INSERT INTO admin(key, version) VALUES ('DB_VERSION', 1);" );
+    }
 }
 
 void
@@ -62,6 +65,14 @@ DatabaseUpdater::createTemporaryTables()
                          ",rpath " + m_collection->exactTextColumnType() + ");";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
+    }
+    {
+        QString create = "CREATE TEMPORARY TABLE directories_temp "
+                         "(id " + m_collection->idType() +
+                         ",deviceid INTEGER"
+                         ",dir " + m_collection->exactTextColumnType() + 
+                         ",changedate INTEGER);";
+        m_collection->query( create );
     }
     {
         QString create = "CREATE TEMPORARY TABLE artists_temp "
@@ -207,7 +218,7 @@ DatabaseUpdater::copyToPermanentTables()
         yearIds += ',';
         yearIds += yearId;
     }
-    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM year_temp WHERE years_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM years_temp WHERE years_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
 
     //insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
