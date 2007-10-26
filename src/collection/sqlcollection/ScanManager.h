@@ -42,6 +42,7 @@ class ScanManager : public QObject
     private slots:
         void slotReadReady();
         void slotFinished( int exitCode, QProcess::ExitStatus exitStatus );
+        void slotJobDone();
 
     private:
         QStringList getDirsToScan() const;

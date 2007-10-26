@@ -48,6 +48,11 @@ void
 ScanManager::startFullScan()
 {
     DEBUG_BLOCK
+    if( m_parser )
+    {
+        debug() << "scanner already running";
+        return;
+    }
     m_scanner = new KProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
@@ -64,12 +69,18 @@ ScanManager::startFullScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
 void ScanManager::startIncrementalScan()
 {
     DEBUG_BLOCK
+    if( m_parser )
+    {
+        debug() << "scanner already running";
+        return;
+    }
     m_scanner = new KProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
@@ -86,6 +97,7 @@ void ScanManager::startIncrementalScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
@@ -169,6 +181,12 @@ ScanManager::getDirsToScan() const
     return result;
 }
 
+void
+ScanManager::slotJobDone()
+{
+    m_parser->deleteLater();
+    m_parser = 0;
+}
 
 //XmlParseJob
 
@@ -239,7 +257,7 @@ XmlParseJob::run()
                     }
                     if( !attrs.value( "filesize" ).isEmpty() )
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
-                    audioFileData.insert( attrs.value( "url" ).toString(), data );
+                    audioFileData.insert( attrs.value( "path" ).toString(), data );
                 }
                 else if( localname == "folder" )
                 {
