@@ -668,7 +668,7 @@ App::continueInit()
         Amarok::config().sync();
     }
 
-    CollectionDB::instance()->checkDatabase();
+    //CollectionDB::instance()->checkDatabase();
 
     m_mainWindow = new MainWindow();
 #ifndef Q_WS_MAC
