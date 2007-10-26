@@ -43,7 +43,10 @@ DatabaseUpdater::needsUpdate() const
 void
 DatabaseUpdater::update()
 {
-    //setup database
+    DEBUG_BLOCK
+    const int dbVersion = adminValue( "DB_VERION" );
+    if( dbVersion == 0 )
+        createTables();
 }
 
 void
@@ -220,6 +223,7 @@ DatabaseUpdater::copyToPermanentTables()
 void
 DatabaseUpdater::createTables() const
 {
+    DEBUG_BLOCK
     // see docs/database/amarokTables.svg for documentation about database layout
     {
         QString c = "CREATE TABLE admin (key " + m_collection->textColumnType() + ", version INTEGER);";
@@ -372,7 +376,7 @@ int
 DatabaseUpdater::adminValue( const QString &key ) const
 {
     QStringList values;
-    values = m_collection->query ( QString( "SELECT version FROM admin WHERE key = '%1';").arg(m_collection->escape( key ) ) );
+    values = m_collection->query( QString( "SELECT version FROM admin WHERE key = '%1';").arg(m_collection->escape( key ) ) );
     return values.isEmpty() ? 0 : values.first().toInt();
 }
 
