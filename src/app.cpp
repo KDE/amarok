@@ -239,6 +239,8 @@ App::~App()
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::self()->writeConfig();
 
+    mainWindow()->deleteBrowsers();
+
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
 }
