@@ -83,14 +83,16 @@ MediaDeviceCache::addSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
     Solid::Device device( udi );
-    debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
+    debug() << "Found new Solid device with udi = " << device.udi();
     debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+    Solid::PortableMediaPlayer* pmp = dynamic_cast<Solid::PortableMediaPlayer*>( device.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-    if( !device.isDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
+//    if( !device.isDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
+    if( !pmp )
     {
         debug() << "udi " << udi << " does not describe a portable media player";
         return;
