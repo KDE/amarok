@@ -215,6 +215,7 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     insert = insert.arg( trackData[Field::TRACKNUMBER].toInt() );
 
     QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
+    insert2 = insert2.arg( trackData[Field::DISCNUMBER].toInt() );
     insert2 = insert2.arg( trackData[Field::BITRATE].toInt() ).arg( trackData[Field::LENGTH].toInt() );
     insert2 = insert2.arg( trackData[Field::SAMPLERATE].toInt() ).arg( trackData[Field::FILESIZE].toInt() );
     insert2 = insert2.arg( "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
