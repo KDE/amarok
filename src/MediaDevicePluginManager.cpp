@@ -442,8 +442,8 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         }
     }
 
-    QString title = Qt::escape( i18n( "Device information for %1", m_name ) );
-    m_details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
+    QString title = Qt::escape( i18n( "Device information for " ) ) + "<b>" + m_uid + "</b>";
+    QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
 
     QLabel* label_name = new QLabel( i18n("Name: "), this );
     Q_UNUSED( label_name );
