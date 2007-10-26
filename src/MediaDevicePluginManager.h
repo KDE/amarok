@@ -60,6 +60,7 @@ class MediaDeviceConfig : public KHBox
     public slots:
         void configureDevice();
         void deleteDevice();
+        void detailsActivated( const QString & link );
 
     signals:
         void changed();
@@ -70,6 +71,7 @@ class MediaDeviceConfig : public KHBox
         QString m_uid;
         QString m_name;
         QString m_oldPlugin;
+        QString m_details;
         KComboBox* m_pluginCombo;
         QAbstractButton *m_configButton;
         QAbstractButton *m_removeButton;

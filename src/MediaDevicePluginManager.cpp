@@ -37,24 +37,9 @@
 #include <QLayout>
 #include <QTextDocument>
 #include <QToolTip>
-
-
-using Amarok::escapeHTMLAttr;
+#include <QWhatsThis>
 
 typedef QMap<QString, Medium*> MediumMap;
-
-namespace Amarok
-{
-    QString escapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" );
-    }
-
-    QString unescapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).replace( "%27", "'" ).replace( "%25", "%" );
-    }
-}
 
 MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
         : KDialog( Amarok::mainWindow() )
@@ -457,17 +442,16 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         }
     }
 
-    QString title = Qt::escape( i18n( "Device information for %1").arg( m_name ) );
-    QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
+    QString title = Qt::escape( i18n( "Device information for %1", m_name ) );
+    m_details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
 
     QLabel* label_name = new QLabel( i18n("Name: "), this );
     Q_UNUSED( label_name );
     QLabel* label_devicename = new QLabel( m_name, this );
     Q_UNUSED( label_devicename );
-    QLabel* label_details = new QLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
-                            .arg( Amarok::escapeHTMLAttr( details ) ), this );
-    label_details->setOpenExternalLinks( true );
+    QLabel* label_details = new QLabel( "<qt>(<a href='details'>" + i18n( "Details" ) + "</a>)</qt>", this );
     label_details->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard );
+    connect( label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( detailsActivated( const QString & ) ) );
 
     QLabel* label_plugin = new QLabel( i18n("Plugin:"), this );
     Q_UNUSED( label_plugin );
@@ -535,6 +519,13 @@ MediaDeviceConfig::deleteDevice() //slot
 {
     emit deleteDevice( m_uid );
     delete this;
+}
+
+void
+MediaDeviceConfig::detailsActivated( const QString &link ) //slot
+{
+    Q_UNUSED( link );
+    QWhatsThis::showText( QCursor::pos(), "<qt>" + m_details + "</qt>", Amarok::mainWindow() );
 }
 
 QString
