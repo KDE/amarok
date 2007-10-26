@@ -18,6 +18,7 @@
 
 #define DEBUG_PREFIX "MediaDeviceCache"
 
+#include <KConfig>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
@@ -25,6 +26,7 @@
 
 #include <QList>
 
+#include "amarok.h"
 #include "debug.h"
 #include "MediaDeviceCache.h"
 
@@ -33,6 +35,7 @@ MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 
 MediaDeviceCache::MediaDeviceCache() : QObject()
                              , m_type()
+                             , m_name()
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -52,6 +55,7 @@ MediaDeviceCache::refreshCache()
 {
     DEBUG_BLOCK
     m_type.clear();
+    m_name.clear();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
     Solid::Device temp;
     foreach( Solid::Device device, deviceList )
@@ -59,14 +63,17 @@ MediaDeviceCache::refreshCache()
         debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
         m_type[device.udi()] = MediaDeviceCache::SolidType;
+        m_name[device.udi()] = device.vendor() + " - " + device.product();
     }
-    QMap<QString, QString> manualDevices = KGlobal::config()->entryMap( "PortableDevices" );
+    KConfigGroup config = Amarok::config( "PortableDevices" );
+    QMap<QString, QString> manualDevices = config.entryMap();
     foreach( QString udi, manualDevices.keys() )
     {
         if( udi.startsWith( "manual" ) )
         {
             debug() << "Found manual device with udi = " << udi;
             m_type[udi] = MediaDeviceCache::ManualType;
+            m_name[udi] = udi.split( '|' )[2];
         }
     }
 }
@@ -83,7 +90,13 @@ MediaDeviceCache::addSolidDevice( const QString &udi )
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
+    if( !device.isDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
+    {
+        debug() << "udi " << udi << " does not describe a portable media player";
+        return;
+    }
     m_type[udi] = MediaDeviceCache::SolidType;
+    m_name[udi] = device.vendor() + " - " + device.product();
     emit deviceAdded( udi );
 }
 
@@ -95,6 +108,7 @@ MediaDeviceCache::removeSolidDevice( const QString &udi )
     if( m_type.contains( udi ) )
     {
         m_type.remove( udi );
+        m_name.remove( udi );
         emit deviceRemoved( udi );
         return;
     }
@@ -110,6 +124,17 @@ MediaDeviceCache::deviceType( const QString &udi )
         return m_type[udi];
     }
     return MediaDeviceCache::InvalidType;
+}
+
+QString
+MediaDeviceCache::deviceName( const QString &udi )
+{
+    DEBUG_BLOCK
+    if( m_name.contains( udi ) )
+    {
+        return m_name[udi];
+    }
+    return "ERR_NO_NAME"; //Should never happen!
 }
 
 #include "MediaDeviceCache.moc"

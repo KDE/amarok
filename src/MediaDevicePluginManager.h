@@ -20,7 +20,7 @@
 #include <KHBox>
 #include <KComboBox>
 #include <KLocale>
-#include <KPageDialog>
+#include <KDialog>
 
 #include <QLayout>
 #include <QMap>
@@ -68,6 +68,7 @@ class MediaDeviceConfig : public KHBox
     protected:
         MediaDevicePluginManager *m_manager;
         QString m_uid;
+        QString m_name;
         QString m_oldPlugin;
         KComboBox* m_pluginCombo;
         QAbstractButton *m_configButton;
@@ -93,6 +94,8 @@ class MediaDevicePluginManager : public QObject
         void redetectDevices();
         void newDevice();
         void deleteDevice( const QString &uid );
+        void slotSolidDeviceAdded( const QString &uid );
+        void slotSolidDeviceRemoved( const QString &uid );
 
     private:
         bool detectDevices( bool redetect=false, bool nographics=false );
@@ -102,7 +105,7 @@ class MediaDevicePluginManager : public QObject
 
 };
 
-class MediaDevicePluginManagerDialog : public KPageDialog
+class MediaDevicePluginManagerDialog : public KDialog
 {
     Q_OBJECT
 
@@ -120,7 +123,7 @@ class MediaDevicePluginManagerDialog : public KPageDialog
         MediaDevicePluginManager *m_manager;
 };
 
-class ManualDeviceAdder : public KPageDialog
+class ManualDeviceAdder : public KDialog
 {
     Q_OBJECT
 
@@ -132,13 +135,13 @@ class ManualDeviceAdder : public KPageDialog
         QString getPlugin() const { return m_selectedPlugin; }
 
     private slots:
-        void slotButtonClicked( KDialog::ButtonCode);
+        void slotButtonClicked( int button );
         void comboChanged( const QString & );
 
     private:
         MediaDevicePluginManager* m_mpm;
         bool m_successful;
-        QString m_comboOldText;
+        QString m_mountPointOldText;
         QString m_selectedPlugin;
         QString m_newId;
 

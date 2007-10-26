@@ -22,7 +22,6 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
-#include <k3activelabel.h>
 #include <KApplication>
 #include <KComboBox>
 #include <KConfig>
@@ -33,11 +32,10 @@
 #include <KVBox>
 #include <Solid/Device>
 
-#include <QAbstractButton>
 #include <q3groupbox.h>
 #include <QLabel>
 #include <QLayout>
-#include <QSignalMapper>
+#include <QTextDocument>
 #include <QToolTip>
 
 
@@ -59,7 +57,7 @@ namespace Amarok
 }
 
 MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
-        : KPageDialog( Amarok::mainWindow() )
+        : KDialog( Amarok::mainWindow() )
 {
     setObjectName( "mediadevicepluginmanagerdialog" );
     setModal( false );
@@ -90,7 +88,7 @@ MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
     KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
     addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
-    connect( this,SIGNAL(okClicked()),this,SLOT(slotOk()));
+    connect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
 }
 
 MediaDevicePluginManagerDialog::~MediaDevicePluginManagerDialog()
@@ -111,6 +109,8 @@ MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget, const bool 
     detectDevices( false, nographics );
 
     connect( this, SIGNAL( selectedPlugin( const QString &, const QString & ) ), MediaBrowser::instance(), SLOT( pluginSelected( const QString &, const QString & ) ) );
+    connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded(const QString &) ), this, SLOT( slotSolidDeviceAdded(const QString &) ) );
+    connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved(const QString &) ), this, SLOT( slotSolidDeviceRemoved(const QString &) ) );
 }
 
 MediaDevicePluginManager::~MediaDevicePluginManager()
@@ -169,6 +169,31 @@ MediaDevicePluginManager::detectDevices( const bool redetect, const bool nograph
 }
 
 void
+MediaDevicePluginManager::slotSolidDeviceAdded( const QString &uid )
+{   
+    MediaDeviceConfig *dev = new MediaDeviceConfig( uid, this, false, m_widget );
+    m_deviceList.append( dev );
+    //deleteDevice not needed...
+}
+
+void
+MediaDevicePluginManager::slotSolidDeviceRemoved( const QString &uid )
+{
+    DEBUG_BLOCK
+    debug() << "Trying to remove uid " << uid;
+    for( int i = 0; i < m_deviceList.size(); ++i )
+    {
+        if( i < m_deviceList.size() && m_deviceList[i]->uid() == uid )
+        {
+            MediaDeviceConfig* config = m_deviceList[i];
+            m_deviceList.removeAt( i );
+            delete config;
+            --i;
+        }
+    }
+}
+
+void
 MediaDevicePluginManager::redetectDevices()
 {
     if( !detectDevices( true ) )
@@ -224,7 +249,8 @@ MediaDevicePluginManager::newDevice()
 {
     DEBUG_BLOCK
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
-    if( mda->exec() == QDialog::Accepted && mda->successful() )
+    int accepted = mda->exec();
+    if( accepted == QDialog::Accepted && mda->successful() )
     {
         if( !Amarok::config( "PortableDevices" ).readEntry( mda->getId(), QString() ).isNull() )
         {
@@ -246,7 +272,7 @@ MediaDevicePluginManager::newDevice()
 /////////////////////////////////////////////////////////////////////
 
 ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
-: KPageDialog( Amarok::mainWindow() )
+: KDialog( Amarok::mainWindow() )
 {
     setObjectName( "manualdeviceadder" );
     setModal( true );
@@ -282,7 +308,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
     m_mdaName = new HintLineEdit( QString(), vbox1);
     nameLabel->setBuddy( m_mdaName );
     m_mdaName->setHint( i18n( "Example: My_Ipod" ) );
-    m_mdaName->setToolTip( i18n( "Enter a name for the device.  The name must be unique across all devices, including autodetected devices.  It must not contain the pipe ( | ) character." ) );
+    m_mdaName->setToolTip( i18n( "Enter a name for the device.  The name must be unique across all manually added devices.  It must not contain the pipe ( | ) character." ) );
 
     new QLabel( "", vbox1 );
     QLabel* mpLabel = new QLabel( vbox1 );
@@ -302,15 +328,20 @@ ManualDeviceAdder::~ManualDeviceAdder()
 }
 
 void
-ManualDeviceAdder::slotButtonClicked( KDialog::ButtonCode button)
+ManualDeviceAdder::slotButtonClicked( int button )
 {
+    DEBUG_BLOCK
     if( button != KDialog::Ok )
+    {
+        debug() << "mda dialog canceled";
         KDialog::slotButtonClicked( button );
+    }
     if( !getId( true ).isEmpty() &&
             MediaDeviceCache::instance()->deviceType( m_newId ) == MediaDeviceCache::InvalidType )
     {
+        debug() << "returning with m_successful = true";
         m_successful = true;
-        slotButtonClicked( Ok );
+        KDialog::slotButtonClicked( button );
     }
     else
     {
@@ -324,6 +355,7 @@ ManualDeviceAdder::slotButtonClicked( KDialog::ButtonCode button)
 void
 ManualDeviceAdder::comboChanged( const QString &string )
 {
+    DEBUG_BLOCK
     //best thing to do here would be to find out if the plugin selected
     //has m_hasMountPoint set to false...but any way to do this
     //without instantiating it?  This way will suffice for now...
@@ -332,40 +364,55 @@ ManualDeviceAdder::comboChanged( const QString &string )
             MediaBrowser::instance()->getInternalPluginName( string ) == "mtp-mediadevice" ||
             MediaBrowser::instance()->getInternalPluginName( string ) == "njb-mediadevice" )
     {
-        m_comboOldText = m_mdaMountPoint->text();
-        m_mdaMountPoint->setText( QString() );
+        m_mountPointOldText = m_mdaMountPoint->text();
+        m_mdaMountPoint->setText( "No mount point needed" );
         m_mdaMountPoint->setEnabled(false);
     }
     else if( m_mdaMountPoint->isEnabled() == false )
     {
-        m_mdaMountPoint->setText( m_comboOldText );
+        m_mdaMountPoint->setText( m_mountPointOldText );
         m_mdaMountPoint->setEnabled(true);
     }
     m_selectedPlugin = MediaBrowser::instance()->getInternalPluginName( string );
+    debug() << "Selected plugin = " << m_selectedPlugin;
 }
 
 QString
 ManualDeviceAdder::getId( bool recreate )
 {
+    DEBUG_BLOCK
     if( !recreate )
+    {
+        debug() << "No recreate, returning " << m_newId;
         return m_newId;
+    }
 
     if( !m_newId.isEmpty() && recreate )
     {
         m_newId = QString();
     }
 
-    if( m_mdaMountPoint->isEnabled() == false &&
-            m_mdaName->text().isNull() )
+    if( m_mdaMountPoint->isEnabled() == false && m_mdaName->text().isNull() )
+    {
+        debug() << "Mount point not enabled, device name is null";
         return QString();
-    if( m_mdaMountPoint->text().isNull() &&
-            m_mdaName->text().isNull() )
+    }
+    if( m_mdaMountPoint->text().isNull() && m_mdaName->text().isNull() )
+    {
+        debug() << "Mount point text is null and device name is null";
         return QString();
+    }
+    if( m_mdaName->text().count( '|' ) )
+    {
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
+        return QString();
+    }
     m_newId = "manual|" + m_selectedPlugin + '|' +
             m_mdaName->text() + '|' +
             ( m_mdaMountPoint->text().isNull() ||
                 m_mdaMountPoint->isEnabled() == false ?
                 "(null)" : m_mdaMountPoint->text() );
+    debug() << "returning id = " << m_newId;
     return m_newId;
 }
 
@@ -373,10 +420,12 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     : KHBox( parent )
     , m_manager( mgr )
     , m_uid( uid )
+    , m_name( MediaDeviceCache::instance()->deviceName( uid ) )
     , m_configButton( 0 )
     , m_removeButton( 0 )
     , m_new( true )
 {
+    DEBUG_BLOCK
     setObjectName( name );
 
     KConfigGroup config = Amarok::config( "PortableDevices" );
@@ -408,18 +457,38 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         }
     }
 
-    QString title = Qt::escape( i18n( "Device information for %1").arg( m_uid ) );
+    QString title = Qt::escape( i18n( "Device information for %1").arg( m_name ) );
     QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
 
-    (void)new QLabel( i18n("Name: "), this );
-    (void)new QLabel( m_uid, this );
-    (void)new K3ActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
+    QLabel* label_name = new QLabel( i18n("Name: "), this );
+    Q_UNUSED( label_name );
+    QLabel* label_devicename = new QLabel( m_name, this );
+    Q_UNUSED( label_devicename );
+    QLabel* label_details = new QLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
                             .arg( Amarok::escapeHTMLAttr( details ) ), this );
+    label_details->setOpenExternalLinks( true );
+    label_details->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard );
 
-    (void)new QLabel( i18n("Plugin:"), this );
+    QLabel* label_plugin = new QLabel( i18n("Plugin:"), this );
+    Q_UNUSED( label_plugin );
     m_pluginCombo = new KComboBox( false, this );
     m_pluginCombo->addItem( i18n( "Do not handle" ) );
 
+    if( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::SolidType )
+    {
+        QString name = MediaBrowser::instance()->getDisplayPluginName( QString( MediaBrowser::instance()->deviceFromId( m_uid )->deviceType() + "-mediadevice" ) );
+        debug() << "name of protocol from Solid is: " << name;
+        if( name.isEmpty() )
+        {
+            m_pluginCombo->addItem( i18n( "Unknown" ) );
+            m_pluginCombo->setCurrentIndex( m_pluginCombo->count() );
+        }
+        else
+        {
+            m_pluginCombo->addItem( name );
+            m_pluginCombo->setCurrentIndex( m_pluginCombo->count() );
+        }
+    }
     for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
             it != MediaBrowser::instance()->getPlugins().end();
             ++it ){
@@ -427,6 +496,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config.readEntry( m_uid, QString() ) )
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
+    m_pluginCombo->setEnabled( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::ManualType );
 
     m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString(), this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
@@ -436,6 +506,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
     connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
     m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
+    m_removeButton->setEnabled( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::ManualType );
 
     if( !nographics )
         show();

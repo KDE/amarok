@@ -46,8 +46,9 @@ class MediaDeviceCache : public QObject
         ~MediaDeviceCache();
 
         void refreshCache();
-        MediaDeviceCache::DeviceType deviceType( const QString &udi );
         QStringList getAll() { return m_type.keys(); }
+        MediaDeviceCache::DeviceType deviceType( const QString &udi );
+        QString deviceName( const QString &udi );
 
     signals:
         void deviceAdded( const QString &udi );
@@ -59,6 +60,7 @@ class MediaDeviceCache : public QObject
 
     private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;
+        QMap<QString, QString> m_name;
         static MediaDeviceCache* s_instance;
 };
 

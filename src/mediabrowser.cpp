@@ -1063,7 +1063,7 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
         debug() << "uid " << uid << " detected as a Solid device";
         Solid::Device solidDevice( uid );
 
-        Solid::PortableMediaPlayer* pmp = solidDevice.as<Solid::PortableMediaPlayer>();
+        Solid::PortableMediaPlayer* pmp = dynamic_cast<Solid::PortableMediaPlayer*>( solidDevice.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
 
         //TODO: Generic storage? need to set mount point if so...
         if( !pmp )
