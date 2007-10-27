@@ -209,7 +209,7 @@ class TrackNavigator;
              * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha
              * actual affected area can be somewhat larger than that specified by the two rows.
              */
-            void regroupAlbums( int firstRow, int lastRow );
+            void regroupAlbums( int firstRow, int lastRow, bool deleteGroupsBetween = false );
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 

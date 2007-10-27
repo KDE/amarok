@@ -659,7 +659,8 @@ Model::insertTracksCommand( int row, TrackList list )
         }
     }
 
-    regroupAlbums( row, row + list.count() - 1 );
+    //we need to regroup everything below this point as all the index changes
+    regroupAlbums( row, m_items.count() );
 
     endInsertRows();
     //push up the active row if needed
@@ -698,7 +699,7 @@ Model::removeRowsCommand( int position, int rows )
         ret.push_back( item->track() );
         delete item;
     }
-    endRemoveRows();
+    
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
@@ -718,7 +719,11 @@ Model::removeRowsCommand( int position, int rows )
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
 
-    regroupAlbums( position, position + rows-1 );
+    //we need to regroup everything below this point as all the index changes
+    //also, use the count before the rows was removed to make sure all groups are deleted
+    regroupAlbums( position, m_items.count() + rows, true );
+
+    endRemoveRows();
 
     emit playlistCountChanged( rowCount() );
     return ret;
@@ -785,90 +790,117 @@ void Model::moveRow(int row, int to)
 }
 
 
-void Model::regroupAlbums( int firstRow, int lastRow )
+void Model::regroupAlbums( int firstRow, int lastRow, bool deleteGroupsBetween )
 {
     DEBUG_BLOCK
 
      //debug() << "first row: " << firstRow << ", last row: " << lastRow;
 
 
-    int aboveFirst = firstRow - 1;
-    if ( aboveFirst < 0 ) aboveFirst = 0;
-
-    int belowLast = lastRow + 1;
-    if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
-
-     debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
-
     int area1Start = -1;
     int area1End = -1;
     int area2Start = -1;
     int area2End = -1;
-    //delete affected groups
 
-     QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
-     while (itt.hasNext()) {
+    int aboveFirst;
+    int belowLast;
 
-        itt.next();
-        AlbumGroup * group = itt.value();
+    if ( deleteGroupsBetween ) {
 
-        bool removeGroupAboveFirstRow = false;
-        bool removeGroupBelowFirstRow = false;
-        bool removeGroupAboveLastRow = false;
-        bool removeGroupBelowLastRow = false;
+        area1Start = firstRow;
+        area1End = lastRow;
 
-        int temp = group->firstInGroup( aboveFirst );
-        if ( temp != -1 ) {
-            debug() << "--3";
-            area1Start = temp;
-            removeGroupAboveFirstRow = true;
+        aboveFirst = firstRow;
+        belowLast = lastRow;
+
+        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+        while (itt.hasNext()) {
+
+           itt.next();
+           AlbumGroup * group = itt.value();
+           group->removeBetween( firstRow, lastRow );
+
+
+           if ( group->subgroupCount() == 0 )
+               delete m_albumGroups.take( itt.key() );
         }
+        
 
-        temp = group->lastInGroup( firstRow + 1 );
-        if ( temp != -1 ) {
-            debug() << "--4";
-            area1End = temp;
-            removeGroupBelowFirstRow = true;
+    } else { 
+        aboveFirst = firstRow - 1;
+        if ( aboveFirst < 0 ) aboveFirst = 0;
+    
+        belowLast = lastRow + 1;
+        if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
+    
+        debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
+    
+        //delete affected groups
+    
+        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+        while (itt.hasNext()) {
+    
+            itt.next();
+            AlbumGroup * group = itt.value();
+    
+            bool removeGroupAboveFirstRow = false;
+            bool removeGroupBelowFirstRow = false;
+            bool removeGroupAboveLastRow = false;
+            bool removeGroupBelowLastRow = false;
+    
+            int temp = group->firstInGroup( aboveFirst );
+            if ( temp != -1 ) {
+                debug() << "--3";
+                area1Start = temp;
+                removeGroupAboveFirstRow = true;
+            }
+    
+            temp = group->lastInGroup( firstRow + 1 );
+            if ( temp != -1 ) {
+                debug() << "--4";
+                area1End = temp;
+                removeGroupBelowFirstRow = true;
+            }
+    
+            temp = group->firstInGroup( lastRow - 1 );
+            if ( temp != -1 ) {
+                debug() << "--5";
+                area2Start = temp;
+                removeGroupAboveLastRow = true;
+            }
+    
+            temp = group->lastInGroup( belowLast );
+            if ( temp != -1 ) {
+                debug() << "--6";
+                area2End = temp;
+                removeGroupBelowLastRow = true;
+            }
+    
+            if ( removeGroupAboveFirstRow )
+            { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
+    
+            if ( removeGroupBelowFirstRow )
+                { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
+    
+            if ( removeGroupAboveLastRow )
+                { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
+            if ( removeGroupBelowLastRow )
+            { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
+    
+            group->removeGroup( firstRow );
+            group->removeGroup( lastRow );
+    
+            //if there is nothing left in album group, discard it.
+    
+            if ( group->subgroupCount() == 0 ) {
+                //debug() << "empty...";
+                delete m_albumGroups.take( itt.key() );
+    
+            }
+    
+    
+    
         }
-
-        temp = group->firstInGroup( lastRow - 1 );
-        if ( temp != -1 ) {
-            debug() << "--5";
-            area2Start = temp;
-            removeGroupAboveLastRow = true;
-        }
-
-        temp = group->lastInGroup( belowLast );
-        if ( temp != -1 ) {
-            debug() << "--6";
-            area2End = temp;
-            removeGroupBelowLastRow = true;
-        }
-
-        if ( removeGroupAboveFirstRow )
-           { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
-
-        if ( removeGroupBelowFirstRow )
-            { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
-
-        if ( removeGroupAboveLastRow )
-            { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
-        if ( removeGroupBelowLastRow )
-           { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
-
-        group->removeGroup( firstRow );
-        group->removeGroup( lastRow );
-
-        //if there is nothing left in album group, discard it.
-
-        if ( group->subgroupCount() == 0 ) {
-            //debug() << "empty...";
-            delete m_albumGroups.take( itt.key() );
-
-        }
-
-
-
     }
 
     if ( m_albumGroups.count() == 0 ) { // start from scratch
@@ -921,7 +953,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
 
     int i;
-    for (  i = area1Start; i <= area1End; i++ )
+    for (  i = area1Start; ( i <= area1End ) && ( i < m_items.count() ); i++ )
     {
 
        //debug() << "i: " << i;

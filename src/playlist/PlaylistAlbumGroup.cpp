@@ -168,3 +168,17 @@ void Playlist::AlbumGroup::printGroupRows()
   }
 
 }
+
+void Playlist::AlbumGroup::removeBetween(int first, int last)
+{
+    DEBUG_BLOCK
+    debug() << "first: " << first << ", last: " << last;
+    for ( int i = first; i <= last; i++ ) {
+        for (int j = 0; j < m_groups.count(); j++ ) {
+            if ( m_groups[ j ].rows.contains( i ) ) {
+                    m_groups.removeAt( j );
+            }
+        }
+    }
+
+}

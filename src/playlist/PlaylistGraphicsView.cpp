@@ -257,6 +257,9 @@ void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 {
     DEBUG_BLOCK
+
+
+    debug() << "number if items: " << m_tracks.count();
     if( startPosition < 0 )
         return;
 

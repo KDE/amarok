@@ -67,6 +67,8 @@ public:
     int lastInGroup( int row );
     void removeGroup( int row );
 
+    void removeBetween( int first, int last );
+
     int subgroupCount();
 
     void printGroupRows();
