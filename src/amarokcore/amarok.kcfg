@@ -275,7 +275,7 @@
     </entry>
     <entry key="Use CoverBling" type="Bool">
         <label>Whether to use the CoverBling album art visualization.</label>
-        <default>true</default>
+        <default>false</default>
     </entry>
 </group>
 
