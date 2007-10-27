@@ -75,6 +75,7 @@ class MediaDeviceConfig : public KHBox
         KComboBox* m_pluginCombo;
         QAbstractButton *m_configButton;
         QAbstractButton *m_removeButton;
+        QLabel* m_label_details;
         bool m_new;
 };
 
@@ -102,7 +103,7 @@ class MediaDevicePluginManager : public QObject
     private:
         bool detectDevices( bool redetect=false, bool nographics=false );
         DeletedMap m_deletedMap;
-        QList<MediaDeviceConfig *> m_deviceList;
+        QList<MediaDeviceConfig*> m_deviceList;
         QWidget *m_widget;
 
 };
@@ -119,7 +120,8 @@ class MediaDevicePluginManagerDialog : public KDialog
         void slotOk();
 
     private:
-
+        KPushButton* m_detectDevices;
+        KPushButton* m_addButton;
         KVBox *m_devicesBox;
         Q3GroupBox *m_location;
         MediaDevicePluginManager *m_manager;

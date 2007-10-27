@@ -22,6 +22,7 @@
 
 #include "ConfigDialogBase.h"
 
+class KPushButton;
 class MediaDevicePluginManager;
 
 
@@ -38,6 +39,8 @@ class MediadeviceConfig : public ConfigDialogBase
         virtual void updateSettings();
 
     private:
+        KPushButton* m_autodetect;
+        KPushButton* m_add;
         MediaDevicePluginManager *m_pluginManager;
 };
 

@@ -43,6 +43,11 @@ typedef QMap<QString, Medium*> MediumMap;
 
 MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
         : KDialog( Amarok::mainWindow() )
+        , m_detectDevices( 0 )
+        , m_addButton( 0 )
+        , m_devicesBox( 0 )
+        , m_location( 0 )
+        , m_manager( 0 )
 {
     setObjectName( "mediadevicepluginmanagerdialog" );
     setModal( false );
@@ -66,18 +71,21 @@ MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
     m_manager = new MediaDevicePluginManager( m_devicesBox );
 
     KHBox *hbox = new KHBox( vbox );
-    KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
-    detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
+    m_detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
+    m_detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( m_detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
 
-    KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
-    addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
+    m_addButton = new KPushButton( i18n( "Add Device..." ), hbox );
+    m_addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( m_addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
     connect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
 }
 
 MediaDevicePluginManagerDialog::~MediaDevicePluginManagerDialog()
 {
+    disconnect( m_detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
+    disconnect( m_addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
+    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
     delete m_manager;
 }
 
@@ -100,6 +108,11 @@ MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget, const bool 
 
 MediaDevicePluginManager::~MediaDevicePluginManager()
 {
+    foreach( MediaDeviceConfig* mdc, m_deviceList )
+        disconnect( mdc, SIGNAL(deleteDevice(QString &)), this, SLOT(deleteDevice(QString &)) );
+    disconnect( this, SIGNAL( selectedPlugin( const QString &, const QString & ) ), MediaBrowser::instance(), SLOT( pluginSelected( const QString &, const QString & ) ) );
+    disconnect( MediaDeviceCache::instance(), SIGNAL( deviceAdded(const QString &) ), this, SLOT( slotSolidDeviceAdded(const QString &) ) );
+    disconnect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved(const QString &) ), this, SLOT( slotSolidDeviceRemoved(const QString &) ) );
 }
 
 bool
@@ -145,7 +158,7 @@ MediaDevicePluginManager::detectDevices( const bool redetect, const bool nograph
 
         MediaDeviceConfig *dev = new MediaDeviceConfig( device, this, nographics, m_widget );
         m_deviceList.append( dev );
-        connect( dev, SIGNAL(deleteDevice(QString &)), SLOT(deleteDevice(QString &)) );
+        connect( dev, SIGNAL(deleteDevice(QString &)), this, SLOT(deleteDevice(QString &)) );
 
         foundNew = true;
     }
@@ -168,7 +181,7 @@ MediaDevicePluginManager::slotSolidDeviceRemoved( const QString &uid )
     debug() << "Trying to remove uid " << uid;
     for( int i = 0; i < m_deviceList.size(); ++i )
     {
-        if( i < m_deviceList.size() && m_deviceList[i]->uid() == uid )
+        if( i < m_deviceList.size() && m_deviceList[i] && m_deviceList[i]->uid() == uid )
         {
             MediaDeviceConfig* config = m_deviceList[i];
             m_deviceList.removeAt( i );
@@ -310,6 +323,7 @@ ManualDeviceAdder::~ManualDeviceAdder()
 {
     delete m_mdaName;
     delete m_mdaMountPoint;
+    disconnect( m_mdaCombo, SIGNAL( activated(const QString&) ), this, SLOT( comboChanged(const QString&) ) );
 }
 
 void
@@ -406,8 +420,10 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     , m_manager( mgr )
     , m_uid( uid )
     , m_name( MediaDeviceCache::instance()->deviceName( uid ) )
+    , m_pluginCombo( 0 )
     , m_configButton( 0 )
     , m_removeButton( 0 )
+    , m_label_details( 0 )
     , m_new( true )
 {
     DEBUG_BLOCK
@@ -449,9 +465,9 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     Q_UNUSED( label_name );
     QLabel* label_devicename = new QLabel( m_name, this );
     Q_UNUSED( label_devicename );
-    QLabel* label_details = new QLabel( "<qt>(<a href='details'>" + i18n( "Details" ) + "</a>)</qt>", this );
-    label_details->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard );
-    connect( label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( detailsActivated( const QString & ) ) );
+    QLabel* m_label_details = new QLabel( "<qt>(<a href='details'>" + i18n( "Details" ) + "</a>)</qt>", this );
+    m_label_details->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard );
+    connect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( detailsActivated( const QString & ) ) );
 
     QLabel* label_plugin = new QLabel( i18n("Plugin:"), this );
     Q_UNUSED( label_plugin );
@@ -483,12 +499,12 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     m_pluginCombo->setEnabled( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::ManualType );
 
     m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString(), this );
-    connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
+    connect( m_configButton, SIGNAL(clicked()), this, SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     m_configButton->setToolTip( i18n( "Configure device settings" ) );
 
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
-    connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
+    connect( m_removeButton, SIGNAL(clicked()), this, SLOT(deleteDevice()) );
     m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
     m_removeButton->setEnabled( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::ManualType );
 
@@ -498,6 +514,9 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
 
 MediaDeviceConfig::~MediaDeviceConfig()
 {
+    disconnect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( detailsActivated( const QString & ) ) );
+    disconnect( m_configButton, SIGNAL(clicked()), this, SLOT(configureDevice()) );
+    disconnect( m_removeButton, SIGNAL(clicked()), this, SLOT(deleteDevice()) );
 }
 
 void

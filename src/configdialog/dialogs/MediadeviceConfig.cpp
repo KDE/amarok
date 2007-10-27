@@ -31,6 +31,9 @@
 
 MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     : ConfigDialogBase( parent )
+    , m_autodetect( 0 )
+    , m_add( 0 )
+    , m_pluginManager( 0 )
 {
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->setSpacing( KDialog::spacingHint() );
@@ -46,12 +49,12 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     KHBox *hbox = new KHBox( topbox );
     hbox->setSpacing( KDialog::spacingHint() );
     hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    KPushButton *autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
-    autodetect->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( autodetect, SIGNAL(clicked()), m_pluginManager, SLOT(redetectDevices()) );
-    KPushButton *add = new KPushButton( i18n( "Add Device..." ), hbox );
-    add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( add, SIGNAL(clicked()), m_pluginManager, SLOT(newDevice()) );
+    m_autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
+    m_autodetect->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( m_autodetect, SIGNAL(clicked()), m_pluginManager, SLOT(redetectDevices()) );
+    m_add = new KPushButton( i18n( "Add Device..." ), hbox );
+    m_add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(newDevice()) );
 
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -59,7 +62,12 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
 }
 
 MediadeviceConfig::~MediadeviceConfig()
-{}
+{
+    disconnect( m_autodetect, SIGNAL(clicked()), m_pluginManager, SLOT(redetectDevices()) );        
+    disconnect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(newDevice()) );       
+    m_pluginManager->finished();
+    delete m_pluginManager;
+}
 
 
 ///////////////////////////////////////////////////////////////
