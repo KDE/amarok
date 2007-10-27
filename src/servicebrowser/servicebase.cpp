@@ -90,8 +90,8 @@ ServiceBase::ServiceBase( const QString &name )
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" " 
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
     infoHtml += "<div align=\"center\"><strong>";
-    infoHtml += "Hello there";
-    infoHtml += "</strong><br><br>I am ";
+    infoHtml += "Welcome to";
+    infoHtml += "</strong><br><br>";
     infoHtml += m_name;
     infoHtml += "</div></BODY></HTML>";
 
