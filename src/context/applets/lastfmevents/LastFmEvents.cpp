@@ -240,12 +240,12 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 }
 
-
+/*
 QSizeF LastFmEvents::contentSize() const
 {
     return m_size;
 }
-
+*/
 void LastFmEvents::showConfigurationInterface()
 {
     DEBUG_BLOCK

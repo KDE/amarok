@@ -32,7 +32,7 @@ public:
     LastFmEvents( QObject* parent, const QVariantList& args );
     ~LastFmEvents();
 
-    QSizeF contentSize() const;
+    //QSizeF contentSize() const;
 
     void constraintsUpdated();
     //void setRect( const QRectF& rect );

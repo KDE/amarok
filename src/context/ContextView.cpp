@@ -125,7 +125,7 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
     DEBUG_BLOCK
     Q_UNUSED( oldState ); Q_UNUSED( state );
 
-   /* switch( state )
+   switch( state )
     {
     case Engine::Playing:
         showCurrentTrack();
@@ -137,7 +137,7 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 
     default:
         ;
-    }*/
+    }
 }
 
 void ContextView::showHome()

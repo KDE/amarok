@@ -43,9 +43,9 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
-//    m_appletBrowser = new Plasma::AppletBrowser( this, "amarok" );
-//    m_appletBrowser->setParentApp( "amarok" );
- //   m_appletBrowser->hide();
+    m_appletBrowser = new Plasma::AppletBrowser( this, "amarok" );
+    m_appletBrowser->setParentApp( "amarok" );
+    m_appletBrowser->hide();
 }
 
 // fetches size from scene and creates columns according.
@@ -71,9 +71,11 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 void ColumnApplet::saveToConfig( KConfig& conf )
 {
     DEBUG_BLOCK
+        debug() << "number of m_columns:" << m_columns->count();
         for( int i = 0; i < m_columns->count(); i++ )
     {
         Applet* applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
+        debug() << "trying to save an applet";
         if( applet != 0 )
         {
             KConfigGroup cg( &conf, QString::number( applet->id() ) );
@@ -108,9 +110,11 @@ void ColumnApplet::loadConfig( KConfig& conf )
     foreach( const QString& group, conf.groupList() )
     {
         KConfigGroup cg( &conf, group );
-        debug() << "loading applet:" << cg.readEntry( "plugin", QString() )
+        QString plugin = cg.readEntry( "plugin", QString() );
+        debug() << "loading applet:" << plugin
             << QStringList() << group.toUInt();
-        addApplet( cg.readEntry( "plugin", QString() ) );
+        if( plugin != QString() )
+            addApplet( plugin );
     }
         // TODO port
     /*
