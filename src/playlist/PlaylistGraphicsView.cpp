@@ -217,6 +217,9 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     //call set row on all items below the first one potentially modified to
     //make sure that all items have correct background color and group info
 
+    int firstIndex = QMIN ( aboveIndex, moveMeIndex ) -1;
+    if ( firstIndex < 0 ) firstIndex = 0;
+
     if( moveMeIndex < aboveIndex )
     {
         m_model->moveRow( moveMeIndex, aboveIndex -1 );
@@ -224,7 +227,7 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 
 
         int i;
-        for ( i = moveMeIndex; i < m_tracks.count(); i++ )
+        for ( i = firstIndex; i < m_tracks.count(); i++ )
             m_tracks.at( i )->setRow( i );
 
 
@@ -236,8 +239,11 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         m_model->moveRow( moveMeIndex, aboveIndex );
         m_tracks.move( moveMeIndex, aboveIndex );
 
-        int i;
-        for ( i = aboveIndex; i < m_tracks.count(); i++ )
+
+      
+        debug() << "First index: " << firstIndex;
+
+        for ( int i = firstIndex; i < m_tracks.count(); i++ )
             m_tracks.at( i )->setRow( i );
 
         //shuffleTracks( aboveIndex, moveMeIndex + 1);

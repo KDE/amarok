@@ -798,7 +798,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
     int belowLast = lastRow + 1;
     if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
 
-     //debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
+     debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
 
     int area1Start = -1;
     int area1End = -1;
@@ -819,42 +819,42 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
         int temp = group->firstInGroup( aboveFirst );
         if ( temp != -1 ) {
-            //debug() << "--3";
+            debug() << "--3";
             area1Start = temp;
             removeGroupAboveFirstRow = true;
         }
 
         temp = group->lastInGroup( firstRow + 1 );
         if ( temp != -1 ) {
-            //debug() << "--4";
+            debug() << "--4";
             area1End = temp;
             removeGroupBelowFirstRow = true;
         }
 
         temp = group->firstInGroup( lastRow - 1 );
         if ( temp != -1 ) {
-            //debug() << "--5";
+            debug() << "--5";
             area2Start = temp;
             removeGroupAboveLastRow = true;
         }
 
         temp = group->lastInGroup( belowLast );
         if ( temp != -1 ) {
-            //debug() << "--6";
+            debug() << "--6";
             area2End = temp;
             removeGroupBelowLastRow = true;
         }
 
         if ( removeGroupAboveFirstRow )
-           { group->removeGroup( aboveFirst ); /*debug() << "removing group at row: " <<  aboveFirst;*/ }
+           { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
 
         if ( removeGroupBelowFirstRow )
-            { group->removeGroup( firstRow + 1 ); /*debug() << "removing group at row: " <<  firstRow + 1;*/ }
+            { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
 
         if ( removeGroupAboveLastRow )
-            { group->removeGroup( lastRow -1 ); /*debug() << "removing group at row: " <<  lastRow - 1;*/ }
+            { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
         if ( removeGroupBelowLastRow )
-           { group->removeGroup( belowLast );  /*debug() << "removing group at row: " <<  belowLast;*/ }
+           { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
 
         group->removeGroup( firstRow );
         group->removeGroup( lastRow );
@@ -872,7 +872,7 @@ void Model::regroupAlbums( int firstRow, int lastRow )
     }
 
     if ( m_albumGroups.count() == 0 ) { // start from scratch
-        //debug() << "--1";
+        debug() << "--1";
         area1Start = 0;
         area1End = m_items.count();
         area2Start = area1Start; // just to skip second pass
@@ -882,13 +882,13 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
     if ( area1Start == -1 ) {
         //debug() << "--2";
-        area1Start = firstRow;
-        area1End = lastRow;
+        area1Start = aboveFirst;
+        area1End = belowLast;
         area2Start = area1Start;
     }
 
     if ( area1End == -1 )
-        area1End = lastRow;
+        area1End = belowLast;
 
     if ( area1Start < 0 )
         area1Start = 0;
@@ -911,13 +911,13 @@ void Model::regroupAlbums( int firstRow, int lastRow )
     }
 
 
-    //debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
-    //debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+    debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+    debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
 
     //debug stuff
-    //debug() << "Groups before:";
-    //foreach( AlbumGroup * ag, m_albumGroups)
-    //   ag->printGroupRows();
+    debug() << "Groups before:";
+    foreach( AlbumGroup * ag, m_albumGroups)
+       ag->printGroupRows();
 
 
     int i;
@@ -943,9 +943,9 @@ void Model::regroupAlbums( int firstRow, int lastRow )
 
     if ( ( area1Start == area2Start ) || area2Start == -1 ) {
 
-        //debug() << "Groups after:";
-        //foreach( AlbumGroup * ag, m_albumGroups)
-        //    ag->printGroupRows();
+        debug() << "Groups after:";
+        foreach( AlbumGroup * ag, m_albumGroups)
+            ag->printGroupRows();
         return;
     }
 
@@ -968,9 +968,9 @@ void Model::regroupAlbums( int firstRow, int lastRow )
        }
     }
 
-    //debug() << "Groups after:";
-    //foreach( AlbumGroup *ag, m_albumGroups)
-    //   ag->printGroupRows();
+    debug() << "Groups after:";
+    foreach( AlbumGroup *ag, m_albumGroups)
+       ag->printGroupRows();
 
 
 
