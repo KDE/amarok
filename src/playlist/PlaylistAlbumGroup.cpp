@@ -44,11 +44,16 @@ void Playlist::AlbumGroup::addRow(int row)
     bool inGroup = false;
     for ( int i = 0; i < m_groups.count(); i++ ) {
 
-        if ( m_groups[i].rows.last() == row - 1 ) {
+        if ( m_groups[i].rows.contains( row ) ) {
+            inGroup = true;
+            break;
+        }
+        else if ( m_groups[i].rows.last() == row - 1 ) {
             m_groups[i].rows.append( row );
             inGroup = true;
             break;
         }
+
     }
 
     //no group found, create new one:
@@ -177,6 +182,27 @@ void Playlist::AlbumGroup::removeBetween(int first, int last)
         for (int j = 0; j < m_groups.count(); j++ ) {
             if ( m_groups[ j ].rows.contains( i ) ) {
                     m_groups.removeAt( j );
+            }
+        }
+    }
+
+}
+
+
+//when something is inserted or removed, all following indexes must be moved to match their actual new position.
+void Playlist::AlbumGroup::offsetBetween(int first, int last, int offset)
+{
+
+    DEBUG_BLOCK
+    debug() << "first: " << first << ", last: " << last;
+    for (int j = 0; j < m_groups.count(); j++ ) {
+        for ( int i = first; i <= last; i++ ) {
+            if ( m_groups[ j ].rows.contains( i ) ) {
+                //offset all in this group (so we dont break any groups)
+                for ( int k = 0; k < m_groups[ j ].rows.count(); k++ ) {
+                    m_groups[ j ].rows.append( m_groups[ j ].rows.takeFirst() + offset );
+                }
+                break;
             }
         }
     }

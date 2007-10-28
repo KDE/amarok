@@ -721,7 +721,7 @@ Model::removeRowsCommand( int position, int rows )
 
     //we need to regroup everything below this point as all the index changes
     //also, use the count before the rows was removed to make sure all groups are deleted
-    regroupAlbums( position, m_items.count() + rows, true );
+    regroupAlbums( position, rows, OffsetAfter, 0 - rows );
 
     endRemoveRows();
 
@@ -785,12 +785,16 @@ void Model::moveRow(int row, int to)
 
     m_items.move( row, to );
 
-    regroupAlbums( QMIN( row, to) , QMAX( row, to ) );
+    int offset = -1;
+    if ( to < row )
+        offset = 1;
+
+    regroupAlbums( QMIN( row, to) , QMAX( row, to ), OffsetBetween, offset );
 
 }
 
 
-void Model::regroupAlbums( int firstRow, int lastRow, bool deleteGroupsBetween )
+void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
 {
     DEBUG_BLOCK
 
@@ -805,103 +809,83 @@ void Model::regroupAlbums( int firstRow, int lastRow, bool deleteGroupsBetween )
     int aboveFirst;
     int belowLast;
 
-    if ( deleteGroupsBetween ) {
+    aboveFirst = firstRow - 1;
+    if ( aboveFirst < 0 ) aboveFirst = 0;
 
-        area1Start = firstRow;
-        area1End = lastRow;
+    belowLast = lastRow + 1;
+    if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
 
-        aboveFirst = firstRow;
-        belowLast = lastRow;
+    debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
 
-        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
-        while (itt.hasNext()) {
+    //delete affected groups
 
-           itt.next();
-           AlbumGroup * group = itt.value();
-           group->removeBetween( firstRow, lastRow );
+    QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+    while (itt.hasNext()) {
 
+        itt.next();
+        AlbumGroup * group = itt.value();
 
-           if ( group->subgroupCount() == 0 )
-               delete m_albumGroups.take( itt.key() );
+        bool removeGroupAboveFirstRow = false;
+        bool removeGroupBelowFirstRow = false;
+        bool removeGroupAboveLastRow = false;
+        bool removeGroupBelowLastRow = false;
+
+        int temp = group->firstInGroup( aboveFirst );
+        if ( temp != -1 ) {
+            debug() << "--3";
+            area1Start = temp;
+            removeGroupAboveFirstRow = true;
         }
-        
 
-    } else { 
-        aboveFirst = firstRow - 1;
-        if ( aboveFirst < 0 ) aboveFirst = 0;
-    
-        belowLast = lastRow + 1;
-        if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
-    
-        debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
-    
-        //delete affected groups
-    
-        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
-        while (itt.hasNext()) {
-    
-            itt.next();
-            AlbumGroup * group = itt.value();
-    
-            bool removeGroupAboveFirstRow = false;
-            bool removeGroupBelowFirstRow = false;
-            bool removeGroupAboveLastRow = false;
-            bool removeGroupBelowLastRow = false;
-    
-            int temp = group->firstInGroup( aboveFirst );
-            if ( temp != -1 ) {
-                debug() << "--3";
-                area1Start = temp;
-                removeGroupAboveFirstRow = true;
-            }
-    
-            temp = group->lastInGroup( firstRow + 1 );
-            if ( temp != -1 ) {
-                debug() << "--4";
-                area1End = temp;
-                removeGroupBelowFirstRow = true;
-            }
-    
-            temp = group->firstInGroup( lastRow - 1 );
-            if ( temp != -1 ) {
-                debug() << "--5";
-                area2Start = temp;
-                removeGroupAboveLastRow = true;
-            }
-    
-            temp = group->lastInGroup( belowLast );
-            if ( temp != -1 ) {
-                debug() << "--6";
-                area2End = temp;
-                removeGroupBelowLastRow = true;
-            }
-    
-            if ( removeGroupAboveFirstRow )
-            { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
-    
-            if ( removeGroupBelowFirstRow )
-                { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
-    
-            if ( removeGroupAboveLastRow )
-                { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
-            if ( removeGroupBelowLastRow )
-            { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
-    
-            group->removeGroup( firstRow );
-            group->removeGroup( lastRow );
-    
-            //if there is nothing left in album group, discard it.
-    
-            if ( group->subgroupCount() == 0 ) {
-                //debug() << "empty...";
-                delete m_albumGroups.take( itt.key() );
-    
-            }
-    
-    
-    
+        temp = group->lastInGroup( firstRow + 1 );
+        if ( temp != -1 ) {
+            debug() << "--4";
+            area1End = temp;
+            removeGroupBelowFirstRow = true;
         }
+
+        temp = group->firstInGroup( lastRow - 1 );
+        if ( temp != -1 ) {
+            debug() << "--5";
+            area2Start = temp;
+            removeGroupAboveLastRow = true;
+        }
+
+        temp = group->lastInGroup( belowLast );
+        if ( temp != -1 ) {
+            debug() << "--6";
+            area2End = temp;
+            removeGroupBelowLastRow = true;
+        }
+
+        if ( removeGroupAboveFirstRow )
+        { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
+
+        if ( removeGroupBelowFirstRow )
+            { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
+
+        if ( removeGroupAboveLastRow )
+            { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
+        if ( removeGroupBelowLastRow )
+        { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
+
+        group->removeGroup( firstRow );
+        group->removeGroup( lastRow );
+
+        //if there is nothing left in album group, discard it.
+
+        if ( group->subgroupCount() == 0 ) {
+            //debug() << "empty...";
+            delete m_albumGroups.take( itt.key() );
+
+        }
+
+
+
     }
+
+
+
 
     if ( m_albumGroups.count() == 0 ) { // start from scratch
         debug() << "--1";
@@ -948,6 +932,45 @@ void Model::regroupAlbums( int firstRow, int lastRow, bool deleteGroupsBetween )
 
     //debug stuff
     debug() << "Groups before:";
+    foreach( AlbumGroup * ag, m_albumGroups)
+       ag->printGroupRows();
+
+
+
+    if ( offsetMode != OffsetNone ) {
+
+        int offsetFrom;
+        int offsetTo;
+
+        if ( offsetMode == OffsetBetween ) {
+            offsetFrom = area1End + 1;
+            offsetTo = area2Start - 1;
+            // last but not least, change area1end and area2start to match new offsets
+             if ( area1End != area2End ) {
+                area1End += offset;
+                area2Start += offset;
+                debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+                debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+             }
+        } else {
+            offsetFrom = lastRow;
+            offsetTo = ( m_items.count() - offset ) + 1;
+        }
+
+        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+        while (itt.hasNext()) {
+
+           itt.next();
+           AlbumGroup * group = itt.value();
+           group->offsetBetween( offsetFrom, offsetTo, offset);
+
+        }
+
+
+    } 
+
+    //debug stuff
+    debug() << "Groups after offsetting:";
     foreach( AlbumGroup * ag, m_albumGroups)
        ag->printGroupRows();
 

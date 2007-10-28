@@ -43,6 +43,13 @@ struct Group {
 
 };
 
+enum OffsetMode
+{
+    OffsetNone = 0,
+    OffsetBetween,
+    OffsetAfter
+};
+
 
 
 /**
@@ -68,6 +75,7 @@ public:
     void removeGroup( int row );
 
     void removeBetween( int first, int last );
+    void offsetBetween( int first, int last, int offset );
 
     int subgroupCount();
 
