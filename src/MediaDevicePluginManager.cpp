@@ -125,8 +125,14 @@ MediaDevicePluginManager::detectDevices( const bool redetect, const bool nograph
     QStringList deviceList = MediaDeviceCache::instance()->getAll();
     foreach( QString device, deviceList )
     {
-        if( m_deletedMap.contains( device ) && redetect )
-            m_deletedMap.remove( device );
+        debug() << "Checking device uid " << device;
+        if( m_deletedMap.contains( device ) )
+        {
+            if( redetect )
+                m_deletedMap.remove( device );
+            else
+                continue;
+        }
 
         if( config.readEntry( device, QString() ) == "deleted" && !redetect)
         {
@@ -205,6 +211,7 @@ MediaDevicePluginManager::deleteDevice( const QString &uid  )
     {
         if( m_deviceList[i]->uid() == uid )
         {
+            debug() << "putting device " << uid << " on deleted map";
             m_deletedMap[uid] = m_deviceList[i];
             m_deviceList.removeAt( i );
         }
