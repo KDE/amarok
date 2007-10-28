@@ -459,7 +459,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
 {
     DEBUG_BLOCK
 
-    debug() << "remove device: type=" << device->deviceType();
+    debug() << "remove device: type=" << device->type();
 
     for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
@@ -1090,11 +1090,18 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
     else if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::ManualType )
     {
         debug() << "uid " << uid << " detected as manual device";
+        KConfigGroup config = Amarok::config( "PortableDevices" );
+        protocol = config.readEntry( uid, QString() );
+
+        if( protocol.isEmpty() )
+        {
+            debug() << "Found no plugin in amarokrc for " << uid;
+            return 0;
+        }
+
         QStringList sl = uid.split( "|" );
-        debug() << "stringlist for uid = " << sl;
-        protocol = sl[1];
-        name = sl[2];
-        mountPoint = sl[3];
+        name = sl[1];
+        mountPoint = sl[2];
     }
 
     QString query = "[X-KDE-Amarok-plugintype] == 'mediadevice' and [X-KDE-Amarok-name] == '%1'";
@@ -1129,8 +1136,11 @@ MediaBrowser::pluginSelected( const QString &uid, const QString &plugin )
         bool success = true;
         foreach( MediaDevice* device, m_devices )
         {
+            debug() << "plugin = " << plugin << ", device->type() = " << device->type();
             if( device->uid() == uid )
             {
+                if( device->type() == plugin )
+                    return;
                 debug() << "removing matching device";
                 if( device->isConnected() )
                 {
@@ -1168,66 +1178,6 @@ MediaBrowser::showPluginManager()
     mpm->exec();
     delete mpm;
 }
-
-/*
-MediaBrowser::configSelectPlugin( int index )
-{
-    Q_UNUSED( index );
-
-    if( m_currentDevice == m_devices.begin() )
-    {
-        AmarokConfig::setDeviceType( m_pluginName[m_configPluginCombo->currentText()] );
-    }
-    else if( currentDevice() )
-    {
-        KConfig *config = Amarok::config( "MediaBrowser" );
-        config->writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
-    }
-
-    if( !currentDevice() )
-        activateDevice( 0, false );
-
-    if( !currentDevice() )
-        return;
-
-    if( m_pluginName[m_configPluginCombo->currentText()] != currentDevice()->deviceType() )
-    {
-        MediaDevice *dev = currentDevice();
-        dev->removeConfigElements( m_configBox );
-        if( dev->isConnected() )
-        {
-            dev->disconnectDevice( false );
-        }
-        unloadDevicePlugin( dev );
-        *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
-        if( !*m_currentDevice )
-        {
-            *m_currentDevice = new DummyMediaDevice();
-            if( AmarokConfig::deviceType() != "dummy-mediadevice" )
-            {
-                QString msg = i18n( "The requested media device could not be loaded" );
-                Amarok::StatusBar::instance()->shortMessage( msg );
-            }
-        }
-        dev = currentDevice();
-        dev->init( this );
-        dev->loadConfig();
-
-        m_configBox->hide();
-        dev->addConfigElements( m_configBox );
-        m_configBox->show();
-
-        dev->view()->show();
-
-        if( dev->autoConnect() )
-        {
-            dev->connectDevice( true );
-            updateButtons();
-        }
-
-        updateDevices();
-    }
-}*/
 
 void
 MediaBrowser::unloadDevicePlugin( MediaDevice *device )

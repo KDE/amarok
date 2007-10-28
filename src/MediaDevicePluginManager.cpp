@@ -219,25 +219,22 @@ MediaDevicePluginManager::finished()
     DEBUG_BLOCK
     foreach( MediaDeviceConfig* device, m_deviceList )
     {
+        if( MediaDeviceCache::instance()->deviceType( device->uid() ) == MediaDeviceCache::SolidType )
+            continue;
         debug() << "checking device " << device->uid();
         debug() << "plugin = " << device->plugin();
         debug() << "oldPlugin = " << device->oldPlugin();
-        if( device->plugin() != device->oldPlugin() )
-        {
-            device->setOldPlugin( device->plugin() );
-            emit selectedPlugin( device->uid(), device->plugin() );
-        }
+        device->setOldPlugin( device->plugin() );
         device->configButton()->setEnabled( device->pluginCombo()->currentText() != i18n( "Do not handle" ) );
+        emit selectedPlugin( device->uid(), device->plugin() );
     }
 
     KConfigGroup config = Amarok::config( "PortableDevices" );
     foreach( QString uid, m_deletedMap.keys() )
     {
-        if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::SolidType )
-            config.writeEntry( uid, "deleted" );
-        else
-            config.deleteEntry( uid );
+        config.deleteEntry( uid );
         MediaDeviceCache::instance()->refreshCache();
+        MediaBrowser::instance()->deviceRemoved( uid );
     }
     m_deletedMap.clear();
 }
@@ -407,11 +404,10 @@ ManualDeviceAdder::getId( bool recreate )
         Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
         return QString();
     }
-    m_newId = "manual|" + m_selectedPlugin + '|' +
-            m_mdaName->text() + '|' +
-            ( m_mdaMountPoint->text().isNull() ||
-                m_mdaMountPoint->isEnabled() == false ?
-                "(null)" : m_mdaMountPoint->text() );
+    m_newId = "manual|" + m_mdaName->text() + '|' +
+        ( m_mdaMountPoint->text().isNull() ||
+        m_mdaMountPoint->isEnabled() == false ?
+            "(null)" : m_mdaMountPoint->text() );
     debug() << "returning id = " << m_newId;
     return m_newId;
 }
@@ -476,11 +472,11 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
     QLabel* label_plugin = new QLabel( i18n("Plugin:"), this );
     Q_UNUSED( label_plugin );
     m_pluginCombo = new KComboBox( false, this );
-    m_pluginCombo->addItem( i18n( "Do not handle" ) );
 
     if( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::SolidType )
     {
-        QString name = MediaBrowser::instance()->getDisplayPluginName( QString( MediaBrowser::instance()->deviceFromId( m_uid )->deviceType() ) );
+        debug() << "sending to getDisplayPluginName: " << MediaBrowser::instance()->deviceFromId( m_uid )->type();
+        QString name = MediaBrowser::instance()->getDisplayPluginName( MediaBrowser::instance()->deviceFromId( m_uid )->type() );
         debug() << "name of protocol from Solid is: " << name;
         if( name.isEmpty() )
         {
@@ -489,12 +485,13 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         }
         else
         {
+            debug() << "Adding " << name << " to pluginCombo";
             m_pluginCombo->addItem( name );
-            m_pluginCombo->setCurrentIndex( m_pluginCombo->count() );
         }
     }
     else
     {
+        m_pluginCombo->addItem( i18n( "Do not handle" ) );
         for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
                 it != MediaBrowser::instance()->getPlugins().end();
                 ++it ){
@@ -504,7 +501,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString uid, MediaDevicePluginManager *mgr
         }
     }
     m_pluginCombo->setEnabled( MediaDeviceCache::instance()->deviceType( m_uid ) == MediaDeviceCache::ManualType );
-    connect( m_pluginCombo, SIGNAL( activated(const QString &) ), this, SLOT( slotRecreateId(const QString &) ) );
 
     m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString(), this );
     connect( m_configButton, SIGNAL(clicked()), this, SLOT(configureDevice()) );
@@ -525,15 +521,6 @@ MediaDeviceConfig::~MediaDeviceConfig()
     disconnect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( detailsActivated( const QString & ) ) );
     disconnect( m_configButton, SIGNAL(clicked()), this, SLOT(configureDevice()) );
     disconnect( m_removeButton, SIGNAL(clicked()), this, SLOT(deleteDevice()) );
-}
-
-void
-MediaDeviceConfig::slotRecreateId( const QString & plugin ) //slot
-{
-    DEBUG_BLOCK
-    QStringList sl = m_uid.split( "|" );
-    m_uid = "manual|" + MediaBrowser::instance()->getInternalPluginName( plugin ) + '|' + sl[2] + '|' + sl[3];
-    debug() << "new id = " << m_uid;
 }
 
 void

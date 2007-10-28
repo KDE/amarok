@@ -73,7 +73,7 @@ MediaDeviceCache::refreshCache()
         {
             debug() << "Found manual device with udi = " << udi;
             m_type[udi] = MediaDeviceCache::ManualType;
-            m_name[udi] = udi.split( '|' )[2];
+            m_name[udi] = udi.split( '|' )[1];
         }
     }
 }

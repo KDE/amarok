@@ -59,7 +59,6 @@ class MediaDeviceConfig : public KHBox
         void configureDevice();
         void deleteDevice();
         void detailsActivated( const QString & link );
-        void slotRecreateId( const QString & plugin );
 
     signals:
         void changed();

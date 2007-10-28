@@ -159,7 +159,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         void         setRequireMount( const bool b ) { m_requireMount = b; }
         bool         hasMountPoint() { return m_hasMountPoint; }
         void         setDeviceType( const QString &type ) { m_type = type; }
-        QString      deviceType() { return m_type; }
+        QString      type() { return m_type; }
         virtual bool autoConnect() { return false; }
         virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }

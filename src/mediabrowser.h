@@ -169,6 +169,7 @@ class MediaBrowser : public KVBox
     friend class MediaView;
     friend class MediaQueue;
     friend class MediaItem;
+    friend class MediaDevicePluginManager;
 
     public:
         static bool isAvailable();
@@ -215,10 +216,8 @@ class MediaBrowser : public KVBox
         void deviceRemoved( const QString &uid );
         void activateDevice( const MediaDevice *device );
         void activateDevice( int index, bool skipDummy = true );
-        //TODO Put these back!
         void pluginSelected( const QString &, const QString & );
         void showPluginManager();
-        //void configSelectPlugin( int index );
         void cancelClicked();
         void connectClicked();
         void disconnectClicked();
