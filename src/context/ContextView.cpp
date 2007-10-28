@@ -71,7 +71,7 @@ ContextView::ContextView( QWidget* parent )
     Theme::self()->setApplication( "amarok" );
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
-    //contextScene()->loadDefaultSetup();
+    contextScene()->loadDefaultSetup();
     
     createContainment();
 

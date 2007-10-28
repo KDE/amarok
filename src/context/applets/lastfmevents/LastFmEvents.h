@@ -32,15 +32,13 @@ public:
     LastFmEvents( QObject* parent, const QVariantList& args );
     ~LastFmEvents();
 
-    //QSizeF contentSize() const;
 
     void constraintsUpdated();
-    //void setRect( const QRectF& rect );
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
-    QSizeF contentSizeHint() const { return boundingRect().size(); }
+    QSizeF contentSizeHint() const;
 
     // from LayoutItem
-    //void setGeometry( const QRectF& rect ) { setRect( rect ); }
+    void setGeometry( QRectF rect );
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:

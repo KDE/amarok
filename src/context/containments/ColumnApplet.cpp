@@ -32,7 +32,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 {
     DEBUG_BLOCK
     m_columns = new Plasma::FlowLayout( this );
-   // m_columns->setColumnWidth( m_defaultColumnSize );
+    m_columns->setColumnWidth( m_defaultColumnSize );
     
     m_background = new Svg( "widgets/amarok-wallpaper", this );
     m_logo = new Svg( "widgets/amarok-logo", this );
@@ -43,6 +43,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
+
     m_appletBrowser = new Plasma::AppletBrowser( this, "amarok" );
     m_appletBrowser->setParentApp( "amarok" );
     m_appletBrowser->hide();
@@ -268,7 +269,7 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 Applet* ColumnApplet::addApplet( const QString& name, const QVariantList& args, uint id, const QRectF &geometry, bool delayedInit )
 {
     Applet* applet = Plasma::Containment::addApplet( name, args, id, geometry, delayedInit );
-    addApplet( applet );
+    return addApplet( applet );
 }
 
 Applet* ColumnApplet::addApplet( Applet* applet )
