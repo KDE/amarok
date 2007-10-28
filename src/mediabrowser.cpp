@@ -496,29 +496,27 @@ MediaBrowser::removeDevice( MediaDevice *device )
 void
 MediaBrowser::updateDevices()
 {
+    DEBUG_BLOCK
     m_deviceCombo->clear();
     uint i = 0;
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
-            it++ )
+    foreach( MediaDevice* device, m_devices )
     {
-        if( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) )
+        if( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(device) )
             continue;
-        QString name = (*it)->name();
-        if( !(*it)->deviceNode().isEmpty() )
+        QString name = device->name();
+        if( !device->deviceNode().isEmpty() )
         {
-            name = i18n( "%1 at %2", name, (*it)->deviceNode() );
+            name = i18n( "%1 at %2", name, device->deviceNode() );
         }
-        if( (*it)->hasMountPoint() && !(*it)->mountPoint().isEmpty() )
+        if( device->hasMountPoint() && !device->mountPoint().isEmpty() )
         {
-            name += i18n( " (mounted at %1)", (*it)->mountPoint() );
+            name += i18n( " (mounted at %1)", device->mountPoint() );
         }
         m_deviceCombo->addItem( name, i );
-        if( !m_currentDevice || (*it)->uid() == m_currentDevice->uid() )
+        if( !m_currentDevice || device->uid() == m_currentDevice->uid() )
         {
             m_deviceCombo->setCurrentItem( name );
         }
-        i++;
     }
     m_deviceCombo->setEnabled( m_devices.count() > 1 );
     m_haveDevices = m_devices.count() > 1;
@@ -1086,27 +1084,21 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
         if( protocol == "pde" )
             protocol == "njb";
 
+        protocol += "-mediadevice";
         name = solidDevice.vendor() + " - " + solidDevice.product();
     }
     else if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::ManualType )
     {
-        QString handler = Amarok::config( "PortableDevices" ).readEntry( uid, QString() );
-        if( handler.isEmpty() || !handler.startsWith( "manual" ) )
-        {
-            //this shouldn't happen, as manually adding the device should create the necessary entry
-            debug() << "Something's wrong, trying to manually load a non-existant or non-manual manual device";
-            return 0;
-        }
-        QStringList sl = handler.split( "|" );
-        if( sl[0] != "manual" )
-            return 0;
+        debug() << "uid " << uid << " detected as manual device";
+        QStringList sl = uid.split( "|" );
+        debug() << "stringlist for uid = " << sl;
         protocol = sl[1];
         name = sl[2];
         mountPoint = sl[3];
     }
 
-    protocol += "-mediadevice";
     QString query = "[X-KDE-Amarok-plugintype] == 'mediadevice' and [X-KDE-Amarok-name] == '%1'";
+    debug() << "query is " << query;
     Amarok::Plugin *plugin = PluginManager::createFromQuery( query.arg( protocol ) );
 
     if( plugin )

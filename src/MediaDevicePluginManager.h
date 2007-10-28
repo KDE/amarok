@@ -34,8 +34,6 @@ class KVBox;
 class MediaDevice;
 class MediaDevicePluginManager;
 
-typedef QMap<QString, bool> DeletedMap;
-
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
     @author Martin Aumueller <aumuell@reserv.at>
@@ -61,6 +59,7 @@ class MediaDeviceConfig : public KHBox
         void configureDevice();
         void deleteDevice();
         void detailsActivated( const QString & link );
+        void slotRecreateId( const QString & plugin );
 
     signals:
         void changed();
@@ -102,7 +101,7 @@ class MediaDevicePluginManager : public QObject
 
     private:
         bool detectDevices( bool redetect=false, bool nographics=false );
-        DeletedMap m_deletedMap;
+        QMap<QString, MediaDeviceConfig*> m_deletedMap;
         QList<MediaDeviceConfig*> m_deviceList;
         QWidget *m_widget;
 
