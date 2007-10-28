@@ -50,6 +50,8 @@ private slots:
     void configAccepted();
 
 private:
+    QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
     void resize( qreal newWidth, qreal aspectRatio );
 
     KDialog* m_config;

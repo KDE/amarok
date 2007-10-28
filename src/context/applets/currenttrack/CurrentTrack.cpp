@@ -94,6 +94,13 @@ void CurrentTrack::constraintsUpdated()
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
+    m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
+    m_artist->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artist" ) ) );
+    m_album->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "album" ) ) );
+    m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
+    m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
+    m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
+    
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
@@ -223,5 +230,41 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
     Applet::setGeometry( QRectF( geometry().topLeft(), m_size ) );
     constraintsUpdated();
 }
+
+// TODO abstract code into superclass so this is not duplicated in LastFmEvents, this is useful code for many applets
+
+QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
+{
+    Q_UNUSED( text );
+    int size = 12; // start here, shrink if needed
+//     QString font = "Arial";
+    QFontMetrics fm( QFont( QString(), size ) );
+    while( fm.height() > bounds.height() + 4 )
+    {
+//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
+        size--;
+        fm = QFontMetrics( QFont( QString(), size ) );
+    }
+    
+    // for aesthetics, we make it one smaller
+    size--;
+    
+//     debug() << "resulting after shrink: " << ":" << size;
+    return QFont( QString(), size );
+}
+
+// returns truncated text with ... appended.
+QString CurrentTrack::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
+{
+    QFontMetrics fm( font );
+    while( fm.width( text) > bounds.width() )
+    {
+        text.chop( 4 );
+        text += "...";
+    }
+    return text;
+}
+
+
 
 #include "CurrentTrack.moc"
