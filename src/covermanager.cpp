@@ -215,7 +215,7 @@ CoverManager::CoverManager()
 //TODO port to kde4
 //    toolBar->setFrameShape( QFrame::NoFrame );
     {
-        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18n( "View" ), this );
+        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
         viewMenuAction->setMenu( m_viewMenu );
         toolBar->addAction( viewMenuAction );
     }
@@ -884,7 +884,7 @@ void CoverManager::updateStatusBar()
         }
 
         if( !m_filter.isEmpty() )
-            text = i18np( "1 result for \"%1\"", "%1 results for \"%1\"", totalCounter, m_filter );
+            text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
         else if( m_artistView->selectedItem() ) {
             text = i18np( "1 album", "%1 albums", totalCounter );
             if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
