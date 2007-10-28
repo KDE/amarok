@@ -42,7 +42,7 @@ Widget::Widget( QWidget* parent )
     mainPlaylistlayout->setContentsMargins(0,0,0,0);
 
 
-    Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
+    //Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
 
     Playlist::Model* playModel = The::playlistModel();
     playModel->init();
@@ -60,7 +60,7 @@ Widget::Widget( QWidget* parent )
 
 
     mainPlaylistlayout->setSpacing( 0 );
-    mainPlaylistlayout->addWidget( header );
+    //mainPlaylistlayout->addWidget( header );
     mainPlaylistlayout->addWidget( playView );
 
     m_stackedWidget = new QStackedWidget( this );
