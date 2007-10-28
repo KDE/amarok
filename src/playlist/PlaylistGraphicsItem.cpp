@@ -466,7 +466,7 @@ Playlist::GraphicsItem::findArtistForCurrentAlbum() const
         return QString();
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
-    if( !( index.data( GroupRole ).toInt() == Head ) || ( index.data( GroupRole ).toInt() == Head_Collapsed ) ) 
+    if( ! ( ( index.data( GroupRole ).toInt() == Head ) || ( index.data( GroupRole ).toInt() == Head_Collapsed ) ) ) 
     {
         return QString();
     }
