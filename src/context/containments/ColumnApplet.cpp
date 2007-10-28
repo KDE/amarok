@@ -278,6 +278,7 @@ Applet* ColumnApplet::addApplet( Applet* applet )
     m_columns->addItem( applet );
 
     connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
+    recalculate();
     return applet;
 }
 
