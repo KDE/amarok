@@ -97,12 +97,13 @@ LastFmEvents::~LastFmEvents()
 {
 }
 
-void LastFmEvents::setGeometry( QRectF rect )
+void LastFmEvents::setGeometry( const QRectF& rect )
 {
     DEBUG_BLOCK
     debug() << "setting geometry to" << rect;
     setPos( rect.topLeft() );
     resize( rect.width(), m_aspectRatio );
+    Applet::setGeometry( rect );
 }
 
 QSizeF LastFmEvents::contentSizeHint() const 

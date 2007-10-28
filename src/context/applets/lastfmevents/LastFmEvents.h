@@ -38,7 +38,7 @@ public:
     QSizeF contentSizeHint() const;
 
     // from LayoutItem
-    void setGeometry( QRectF rect );
+    void setGeometry( const QRectF& rect );
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:

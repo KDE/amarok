@@ -181,8 +181,7 @@ void ColumnApplet::paintInterface(QPainter *painter,
                     const QStyleOptionGraphicsItem *option,
                     const QRect& rect)
 {
-    DEBUG_BLOCK
-    debug() << "painting in:" << rect;
+/*    debug() << "painting in:" << rect;*/
     painter->save();
     m_background->paint( painter, rect );
     painter->restore();
@@ -192,7 +191,7 @@ void ColumnApplet::paintInterface(QPainter *painter,
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
     painter->save();
-    debug() << "painting logo:" << QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() );
+/*    debug() << "painting logo:" << QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() );*/
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
     

@@ -158,6 +158,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->restore();
 
     // TODO get, and then paint, album pixmap
+    constraintsUpdated();
 
 }
 
@@ -200,8 +201,9 @@ void CurrentTrack::configAccepted() // SLOT
     constraintsUpdated();
 }
 
-void CurrentTrack::setGeometry( QRectF geometry )
+void CurrentTrack::setGeometry( const QRectF& geometry )
 {
+    debug() << "current track told new geometry:" << geometry;
     resize( geometry.width(), m_aspectRatio );
     setPos( geometry.topLeft() );
 }
@@ -218,6 +220,7 @@ void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
     
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
+    Applet::setGeometry( QRectF( geometry().topLeft(), m_size ) );
     constraintsUpdated();
 }
 

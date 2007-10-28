@@ -153,6 +153,7 @@ void LastFmEngine::updateEvents()
     
     if( m_friendevents )
     {
+        debug() << "getting friend events";
        // do friends
        QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/friendevents.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week? 
@@ -175,6 +176,8 @@ void LastFmEngine::updateEvents()
     
     if( m_sysevents )
     {
+        debug() << "getting sys events";
+        
         // do systems recs
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/eventsysrecs.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week? 
@@ -197,6 +200,8 @@ void LastFmEngine::updateEvents()
     
     if( m_userevents )
     {
+        debug() << "getting user events";
+        
         // do user events
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/events.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week? 
