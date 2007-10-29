@@ -970,7 +970,7 @@ void MainWindow::createActions()
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
 
-    ac->setAssociatedWidget( this );
+    ac->associateWidget( this );
 }
 
 void MainWindow::createMenus()
