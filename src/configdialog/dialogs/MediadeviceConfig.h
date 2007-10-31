@@ -39,7 +39,7 @@ class MediadeviceConfig : public ConfigDialogBase
         virtual void updateSettings();
 
     private:
-        KPushButton* m_autodetect;
+        KPushButton* m_genericDevices;
         KPushButton* m_add;
         MediaDevicePluginManager *m_pluginManager;
 };

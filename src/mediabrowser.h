@@ -180,7 +180,8 @@ class MediaBrowser : public KVBox
         virtual ~MediaBrowser();
         bool blockQuit() const;
         MediaDevice *currentDevice() const { return m_currentDevice; }
-        MediaDevice *deviceFromId( const QString &id ) const;
+        MediaDevice *deviceFromId( const QString &udi ) const;
+        bool checkVolumeUsage( const QString &udi );
         QStringList deviceNames() const;
         bool deviceSwitch( const QString &name );
 
@@ -212,8 +213,8 @@ class MediaBrowser : public KVBox
         void slotSetFilter();
         void slotSetFilter( const QString &filter );
         void slotEditFilter();
-        void deviceAdded( const QString &uid );
-        void deviceRemoved( const QString &uid );
+        void deviceAdded( const QString &udi );
+        void deviceRemoved( const QString &udi );
         void activateDevice( const MediaDevice *device );
         void activateDevice( int index, bool skipDummy = true );
         void pluginSelected( const QString &, const QString & );
@@ -228,7 +229,7 @@ class MediaBrowser : public KVBox
         void prepareToQuit();
 
     private:
-        MediaDevice *loadDevicePlugin( const QString &uid );
+        MediaDevice *loadDevicePlugin( const QString &udi );
         void         unloadDevicePlugin( MediaDevice *device );
 
         QTimer *m_timer;

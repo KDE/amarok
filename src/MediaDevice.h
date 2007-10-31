@@ -175,7 +175,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         /**
          * @return a unique identifier that is constant across sessions
          */
-        QString uid() const { return m_uid; }
+        QString udi() const { return m_udi; }
 
         /**
          * @return the name for the device that should be presented to the user
@@ -240,7 +240,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         int  runPostDisconnectCommand();
         QString replaceVariables( const QString &cmd ); // replace %m with mount point and %d with device node
 
-        void setUid( const QString &uid ) { m_uid = uid; }
+        void setUid( const QString &udi ) { m_udi = udi; }
 
         /**
          * Find a particular track
@@ -344,7 +344,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         QString          m_firstSort;
         QString          m_secondSort;
         QString          m_thirdSort;
-        QString          m_uid;
+        QString          m_udi;
         QString          m_deviceNode;
         QString          m_mountPoint;
         QString          m_fsType;

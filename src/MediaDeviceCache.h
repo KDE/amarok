@@ -34,7 +34,7 @@ class MediaDeviceCache : public QObject
 
     public:
 
-        enum DeviceType { SolidType, ManualType, InvalidType };
+        enum DeviceType { SolidPMPType, SolidVolumeType, ManualType, InvalidType };
 
         static MediaDeviceCache* instance() { return s_instance ? s_instance : new MediaDeviceCache(); }
         

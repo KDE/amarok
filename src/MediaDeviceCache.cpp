@@ -23,6 +23,7 @@
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
 #include <solid/portablemediaplayer.h>
+#include <solid/storagevolume.h>
 
 #include <QList>
 
@@ -62,7 +63,15 @@ MediaDeviceCache::refreshCache()
     {
         debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
-        m_type[device.udi()] = MediaDeviceCache::SolidType;
+        m_type[device.udi()] = MediaDeviceCache::SolidPMPType;
+        m_name[device.udi()] = device.vendor() + " - " + device.product();
+    }
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageVolume );
+    foreach( Solid::Device device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::StorageVolume with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+        m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
         m_name[device.udi()] = device.vendor() + " - " + device.product();
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
@@ -85,19 +94,20 @@ MediaDeviceCache::addSolidDevice( const QString &udi )
     Solid::Device device( udi );
     debug() << "Found new Solid device with udi = " << device.udi();
     debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
-    Solid::PortableMediaPlayer* pmp = dynamic_cast<Solid::PortableMediaPlayer*>( device.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-//    if( !device.isDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
-    if( !pmp )
+    if( dynamic_cast<Solid::PortableMediaPlayer*>( device.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) ) )
+        m_type[udi] = MediaDeviceCache::SolidPMPType;
+    else if( dynamic_cast<Solid::StorageVolume*>( device.asDeviceInterface( Solid::DeviceInterface::StorageVolume ) ) )
+        m_type[udi] = MediaDeviceCache::SolidVolumeType;
+    else
     {
-        debug() << "udi " << udi << " does not describe a portable media player";
+        debug() << "udi " << udi << " does not describe a portable media player or storage volume";
         return;
     }
-    m_type[udi] = MediaDeviceCache::SolidType;
     m_name[udi] = device.vendor() + " - " + device.product();
     emit deviceAdded( udi );
 }

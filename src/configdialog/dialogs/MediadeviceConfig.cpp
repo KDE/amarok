@@ -31,7 +31,7 @@
 
 MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     : ConfigDialogBase( parent )
-    , m_autodetect( 0 )
+    , m_genericDevices( 0 )
     , m_add( 0 )
     , m_pluginManager( 0 )
 {
@@ -49,12 +49,12 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     KHBox *hbox = new KHBox( topbox );
     hbox->setSpacing( KDialog::spacingHint() );
     hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    m_autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
-    m_autodetect->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( m_autodetect, SIGNAL(clicked()), m_pluginManager, SLOT(redetectDevices()) );
+    m_genericDevices = new KPushButton( i18n( "Generic Devices and Volumes..." ), hbox );
+    m_genericDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( m_genericDevices, SIGNAL(clicked()), m_pluginManager, SLOT(slotGenericVolumes()) );
     m_add = new KPushButton( i18n( "Add Device..." ), hbox );
     m_add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(newDevice()) );
+    connect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(slotNewDevice()) );
 
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -63,8 +63,8 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
 
 MediadeviceConfig::~MediadeviceConfig()
 {
-    disconnect( m_autodetect, SIGNAL(clicked()), m_pluginManager, SLOT(redetectDevices()) );        
-    disconnect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(newDevice()) );       
+    disconnect( m_genericDevices, SIGNAL(clicked()), m_pluginManager, SLOT(slotGenericVolumes()) );
+    disconnect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(slotNewDevice()) );
     m_pluginManager->finished();
     delete m_pluginManager;
 }

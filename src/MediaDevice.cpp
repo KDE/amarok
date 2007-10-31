@@ -39,7 +39,7 @@ MediaDevice::MediaDevice()
     , sysProc ( 0 )
     , m_parent( 0 )
     , m_view( 0 )
-    , m_uid( QString() )
+    , m_udi( QString() )
     , m_deviceNode( QString() )
     , m_mountPoint( QString() )
     , m_fsType( QString() )
@@ -106,8 +106,8 @@ QString
 MediaDevice::configString( const QString &name, const QString &defValue )
 {
     QString configName = "MediaDevice";
-    if( !uid().isEmpty() )
-        configName += '_' + uid();
+    if( !udi().isEmpty() )
+        configName += '_' + udi();
     KConfigGroup config = Amarok::config( configName );
     return config.readEntry( name, defValue );
 }
@@ -116,8 +116,8 @@ void
 MediaDevice::setConfigString( const QString &name, const QString &value )
 {
     QString configName = "MediaDevice";
-    if( !uid().isEmpty() )
-        configName += '_' + uid();
+    if( !udi().isEmpty() )
+        configName += '_' + udi();
     KConfigGroup config = Amarok::config( configName );
     config.writeEntry( name, value );
 }
@@ -126,8 +126,8 @@ bool
 MediaDevice::configBool( const QString &name, bool defValue )
 {
     QString configName = "MediaDevice";
-    if( !uid().isEmpty() )
-        configName += '_' + uid();
+    if( !udi().isEmpty() )
+        configName += '_' + udi();
     KConfigGroup config = Amarok::config( configName );
     return config.readEntry( name, defValue );
 }
@@ -136,8 +136,8 @@ void
 MediaDevice::setConfigBool( const QString &name, bool value )
 {
     QString configName = "MediaDevice";
-    if( !uid().isEmpty() )
-        configName += '_' + uid();
+    if( !udi().isEmpty() )
+        configName += '_' + udi();
     KConfigGroup config = Amarok::config( configName );
     config.writeEntry( name, value );
 }

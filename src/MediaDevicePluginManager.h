@@ -52,13 +52,13 @@ class MediaDeviceConfig : public KHBox
         KComboBox* pluginCombo() { return m_pluginCombo; }
         QAbstractButton *configButton() { return m_configButton; }
         QAbstractButton *removeButton() { return m_removeButton; }
-        QString uid() { return m_uid; }
+        QString udi() { return m_udi; }
         bool isNew() { return m_new; }
 
     public slots:
-        void configureDevice();
-        void deleteDevice();
-        void detailsActivated( const QString & link );
+        void slotConfigureDevice();
+        void slotDeleteDevice();
+        void slotDetailsActivated( const QString & link );
 
     signals:
         void changed();
@@ -66,7 +66,7 @@ class MediaDeviceConfig : public KHBox
 
     protected:
         MediaDevicePluginManager *m_manager;
-        QString m_uid;
+        QString m_udi;
         QString m_name;
         QString m_oldPlugin;
         QString m_details;
@@ -92,14 +92,14 @@ class MediaDevicePluginManager : public QObject
         void selectedPlugin( const QString &, const QString & );
 
     public slots:
-        void redetectDevices();
-        void newDevice();
-        void deleteDevice( const QString &uid );
-        void slotSolidDeviceAdded( const QString &uid );
-        void slotSolidDeviceRemoved( const QString &uid );
+        void slotDeleteDevice( const QString &udi );
+        void slotGenericVolumes();
+        void slotNewDevice();
+        void slotSolidDeviceAdded( const QString &udi );
+        void slotSolidDeviceRemoved( const QString &udi );
 
     private:
-        bool detectDevices( bool redetect=false, bool nographics=false );
+        bool detectDevices( bool nographics=false );
         QMap<QString, MediaDeviceConfig*> m_deletedMap;
         QList<MediaDeviceConfig*> m_deviceList;
         QWidget *m_widget;
@@ -118,7 +118,7 @@ class MediaDevicePluginManagerDialog : public KDialog
         void slotOk();
 
     private:
-        KPushButton* m_detectDevices;
+        KPushButton* m_genericDevices;
         KPushButton* m_addButton;
         KVBox *m_devicesBox;
         Q3GroupBox *m_location;
@@ -138,7 +138,7 @@ class ManualDeviceAdder : public KDialog
 
     private slots:
         void slotButtonClicked( int button );
-        void comboChanged( const QString & );
+        void slotComboChanged( const QString & );
 
     private:
         MediaDevicePluginManager* m_mpm;

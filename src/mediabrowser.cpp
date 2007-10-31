@@ -89,6 +89,7 @@
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
 #include <solid/portablemediaplayer.h>
+#include <solid/storageaccess.h>
 
 
 MediaBrowser *MediaBrowser::s_instance = 0;
@@ -111,7 +112,7 @@ class DummyMediaDevice : public MediaDevice
     {
         m_name = i18n( "No Device Available" );
         m_type = "dummy-mediadevice";
-        m_uid = "manual|DummyDevice|none|none";
+        m_udi = "manual|DummyDevice|none|none";
     }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
@@ -248,8 +249,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     updateStats();
 
     MediaDeviceCache::instance()->refreshCache();
-    foreach( QString uid, MediaDeviceCache::instance()->getAll() )
-        deviceAdded( uid );
+    foreach( QString udi, MediaDeviceCache::instance()->getAll() )
+        deviceAdded( udi );
 
     //TODO: Take generic storage devices into account too -- or do we rely on the
     //Solid backend to tell us if it's a PMP with "storage" type?
@@ -358,7 +359,7 @@ MediaBrowser::deviceFromId( const QString &id ) const
                 it != m_devices.constEnd();
                 it++ )
         {
-            if( (*it)->uid() == id )
+            if( (*it)->udi() == id )
                 return (*it);
         }
 
@@ -467,7 +468,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
     {
         if( *it == device )
         {
-            bool current = ( (*it)->uid() == m_currentDevice->uid() );
+            bool current = ( (*it)->udi() == m_currentDevice->udi() );
             m_devices.erase( it );
             if( current )
                 activateDevice( 0, false );
@@ -513,7 +514,7 @@ MediaBrowser::updateDevices()
             name += i18n( " (mounted at %1)", device->mountPoint() );
         }
         m_deviceCombo->addItem( name, i );
-        if( !m_currentDevice || device->uid() == m_currentDevice->uid() )
+        if( !m_currentDevice || device->udi() == m_currentDevice->udi() )
         {
             m_deviceCombo->setCurrentItem( name );
         }
@@ -1008,11 +1009,11 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::deviceAdded( const QString &uid )
+MediaBrowser::deviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
-    debug() << "deviceAdded called with a uid of: " << uid;
-    MediaDevice *md = loadDevicePlugin( uid );
+    debug() << "deviceAdded called with a udi of: " << udi;
+    MediaDevice *md = loadDevicePlugin( udi );
     if( md )
     {
         addDevice( md );
@@ -1022,13 +1023,13 @@ MediaBrowser::deviceAdded( const QString &uid )
 }
 
 void
-MediaBrowser::deviceRemoved( const QString &uid )
+MediaBrowser::deviceRemoved( const QString &udi )
 {
     for( QList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
-        if( (*it)->m_uid == uid )
+        if( (*it)->m_udi == udi )
         {
             if( (*it)->isConnected() )
             {
@@ -1048,7 +1049,7 @@ MediaBrowser::deviceRemoved( const QString &uid )
 }
 
 MediaDevice *
-MediaBrowser::loadDevicePlugin( const QString &uid )
+MediaBrowser::loadDevicePlugin( const QString &udi )
 {
     DEBUG_BLOCK
 
@@ -1056,10 +1057,10 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
     QString mountPoint;
     QString protocol;
 
-    if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::SolidType )
+    if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidPMPType )
     {
-        debug() << "uid " << uid << " detected as a Solid device";
-        Solid::Device solidDevice( uid );
+        debug() << "udi " << udi << " detected as a Solid device";
+        Solid::Device solidDevice( udi );
 
         Solid::PortableMediaPlayer* pmp = dynamic_cast<Solid::PortableMediaPlayer*>( solidDevice.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
 
@@ -1071,7 +1072,7 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
         }
         if( pmp->supportedProtocols().size() == 0 )
         {
-            debug() << "Portable Media Player " << uid << " does not support any protocols";
+            debug() << "Portable Media Player " << udi << " does not support any protocols";
             return 0;
         }
 
@@ -1087,19 +1088,19 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
         protocol += "-mediadevice";
         name = solidDevice.vendor() + " - " + solidDevice.product();
     }
-    else if( MediaDeviceCache::instance()->deviceType( uid ) == MediaDeviceCache::ManualType )
+    else if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::ManualType )
     {
-        debug() << "uid " << uid << " detected as manual device";
+        debug() << "udi " << udi << " detected as manual device";
         KConfigGroup config = Amarok::config( "PortableDevices" );
-        protocol = config.readEntry( uid, QString() );
+        protocol = config.readEntry( udi, QString() );
 
         if( protocol.isEmpty() )
         {
-            debug() << "Found no plugin in amarokrc for " << uid;
+            debug() << "Found no plugin in amarokrc for " << udi;
             return 0;
         }
 
-        QStringList sl = uid.split( "|" );
+        QStringList sl = udi.split( "|" );
         name = sl[1];
         mountPoint = sl[2];
     }
@@ -1113,7 +1114,7 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
         debug() << "Returning plugin!";
         MediaDevice *device = static_cast<MediaDevice *>( plugin );
         device->init( this );
-        device->m_uid = uid;
+        device->m_udi = udi;
         device->m_name = name;
         device->m_type = protocol;
         device->m_mountPoint = mountPoint;
@@ -1125,19 +1126,19 @@ MediaBrowser::loadDevicePlugin( const QString &uid )
 }
 
 void
-MediaBrowser::pluginSelected( const QString &uid, const QString &plugin )
+MediaBrowser::pluginSelected( const QString &udi, const QString &plugin )
 {
     DEBUG_BLOCK
     if( !plugin.isEmpty() )
     {
-        debug() << "Device uid is " << uid << " and plugin selected is: " << plugin;
-        Amarok::config( "PortableDevices" ).writeEntry( uid, plugin );
+        debug() << "Device udi is " << udi << " and plugin selected is: " << plugin;
+        Amarok::config( "PortableDevices" ).writeEntry( udi, plugin );
 
         bool success = true;
         foreach( MediaDevice* device, m_devices )
         {
             debug() << "plugin = " << plugin << ", device->type() = " << device->type();
-            if( device->uid() == uid )
+            if( device->udi() == udi )
             {
                 if( device->type() == plugin )
                     return;
@@ -1157,7 +1158,7 @@ MediaBrowser::pluginSelected( const QString &uid, const QString &plugin )
 
         if( success )
         {
-            deviceAdded( uid );
+            deviceAdded( udi );
         }
         else
         {
@@ -1168,7 +1169,7 @@ MediaBrowser::pluginSelected( const QString &uid, const QString &plugin )
         }
     }
     else
-        debug() << "Device uid is " << uid << " and you opted not to use a plugin";
+        debug() << "Device udi is " << udi << " and you opted not to use a plugin";
 }
 
 void
@@ -1177,6 +1178,27 @@ MediaBrowser::showPluginManager()
     MediaDevicePluginManagerDialog* mpm = new MediaDevicePluginManagerDialog();
     mpm->exec();
     delete mpm;
+}
+
+bool
+MediaBrowser::checkVolumeUsage( const QString &udi )
+{
+    Solid::Device device( udi );
+    Solid::StorageAccess* ssa = dynamic_cast<Solid::StorageAccess*>( device.asDeviceInterface( Solid::DeviceInterface::StorageAccess ) );
+    if( !ssa )
+    {
+        debug() << "Volume identified by " << udi << " cannot be accessed as a Solid::StorageAccess";
+        return false;
+    }
+    if( !ssa->isAccessible() )
+    {
+        debug() << "Volume identified by " << udi << " is not mounted or otherwise accessible.";
+        return false;
+    }
+    KIO::UDSEntry udsentry;
+    if( !KIO::NetAccess::stat( ssa->filePath() + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+        return false;
+    return true;
 }
 
 void
