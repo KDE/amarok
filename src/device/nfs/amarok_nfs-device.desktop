@@ -37,7 +37,7 @@ Comment=Device plugin for Amarok which supports NFS
 Comment[af]=Toestel inprop module vir Amarok wat NFS ondersteuning bied
 Comment[bg]=Приставка за устройство за Amarok, поддържаща NFS
 Comment[ca]=Connector de dispositiu per a l'Amarok que suporta NFS
-Comment[cs]=Modul zařízení pro AmaroK, které podporuje NFS
+Comment[cs]=Modul zařízení pro Amarok, které podporuje NFS
 Comment[da]=Enhedsplugin for Amarok som understøtter NFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für NFS
 Comment[el]=Πρόσθετο συσκευής για το Amarok με υποστήριξη NFS
@@ -64,7 +64,7 @@ Comment[th]=โปรแกรมเสริมจัดการอุปก�
 Comment[tr]=Amarok için NFS destekleyen aygıt eklentisi
 Comment[uk]=Втулок пристрою для Amarok, який підтримує NFS
 Comment[zh_CN]=Amarok 支持 NFS 的设备插件
-Comment[zh_TW]=支援 NFS 的 amaroK 裝置插件
+Comment[zh_TW]=支援 NFS 的 Amarok 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_nfs-device

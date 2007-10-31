@@ -37,7 +37,7 @@ Comment=Device plugin for Amarok which supports SMBFS
 Comment[af]=Toestel inprop module vir Amarok wat SMBFS ondersteuning bied
 Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
 Comment[ca]=Connector de dispositiu per a l'Amarok que suporta SMBFS
-Comment[cs]=Modul zařízení pro AmaroK, které podporuje SMBFS
+Comment[cs]=Modul zařízení pro Amarok, které podporuje SMBFS
 Comment[da]=Enhedsplugin for Amarok som understøtter SMBFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für SMB-Dateisystem
 Comment[el]=Πρόσθετο συσκευής για το Amarok με υποστήριξη SMBFS
@@ -64,7 +64,7 @@ Comment[th]=โปรแกรมเสริมจัดการอุปก�
 Comment[tr]=Amarok için SMBFS destekleyen aygıt eklentisi
 Comment[uk]=Втулок пристрою для Amarok, який підтримує SMBFS
 Comment[zh_CN]=Amarok 支持 SMBFS 的设备插件
-Comment[zh_TW]=支援 SMBFS 的 amaroK 裝置插件
+Comment[zh_TW]=支援 SMBFS 的 Amarok 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device
