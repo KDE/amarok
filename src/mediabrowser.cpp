@@ -252,9 +252,6 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     foreach( QString udi, MediaDeviceCache::instance()->getAll() )
         deviceAdded( udi );
 
-    //TODO: Take generic storage devices into account too -- or do we rely on the
-    //Solid backend to tell us if it's a PMP with "storage" type?
-
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
@@ -1013,6 +1010,12 @@ MediaBrowser::deviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
     debug() << "deviceAdded called with a udi of: " << udi;
+    if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType &&
+            !MediaDeviceCache::instance()->isGenericEnabled( udi ) )
+    {
+        debug() << "device is a generic volume but not enabled for use";
+        return;
+    }
     MediaDevice *md = loadDevicePlugin( udi );
     if( md )
     {
@@ -1059,12 +1062,11 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
 
     if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidPMPType )
     {
-        debug() << "udi " << udi << " detected as a Solid device";
+        debug() << "udi " << udi << " detected as a Solid PMP device";
         Solid::Device solidDevice( udi );
 
-        Solid::PortableMediaPlayer* pmp = dynamic_cast<Solid::PortableMediaPlayer*>( solidDevice.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) );
+        Solid::PortableMediaPlayer* pmp = solidDevice.as<Solid::PortableMediaPlayer>();
 
-        //TODO: Generic storage? need to set mount point if so...
         if( !pmp )
         {
             debug() << "Failed to convert Solid device to PortableMediaPlayer";
@@ -1087,6 +1089,22 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
 
         protocol += "-mediadevice";
         name = solidDevice.vendor() + " - " + solidDevice.product();
+    }
+    else if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType )
+    {
+        debug() << "udi " << " detected as Solid volume device";
+        Solid::Device solidDevice( udi );
+
+        Solid::StorageAccess* ssa = solidDevice.as<Solid::StorageAccess>();
+        if( !ssa )
+        {
+            debug() << "Failed to convert Solid device to StorageAccess";
+            return 0;
+        }
+
+        protocol = "generic-mediadevice";
+        name = solidDevice.parent().vendor() + " - " + solidDevice.parent().product();
+        mountPoint = ssa->filePath();
     }
     else if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::ManualType )
     {
@@ -1132,7 +1150,8 @@ MediaBrowser::pluginSelected( const QString &udi, const QString &plugin )
     if( !plugin.isEmpty() )
     {
         debug() << "Device udi is " << udi << " and plugin selected is: " << plugin;
-        Amarok::config( "PortableDevices" ).writeEntry( udi, plugin );
+        if( MediaDeviceCache::instance()->deviceType( udi )  == MediaDeviceCache::ManualType )
+            Amarok::config( "PortableDevices" ).writeEntry( udi, plugin );
 
         bool success = true;
         foreach( MediaDevice* device, m_devices )
@@ -1178,27 +1197,6 @@ MediaBrowser::showPluginManager()
     MediaDevicePluginManagerDialog* mpm = new MediaDevicePluginManagerDialog();
     mpm->exec();
     delete mpm;
-}
-
-bool
-MediaBrowser::checkVolumeUsage( const QString &udi )
-{
-    Solid::Device device( udi );
-    Solid::StorageAccess* ssa = dynamic_cast<Solid::StorageAccess*>( device.asDeviceInterface( Solid::DeviceInterface::StorageAccess ) );
-    if( !ssa )
-    {
-        debug() << "Volume identified by " << udi << " cannot be accessed as a Solid::StorageAccess";
-        return false;
-    }
-    if( !ssa->isAccessible() )
-    {
-        debug() << "Volume identified by " << udi << " is not mounted or otherwise accessible.";
-        return false;
-    }
-    KIO::UDSEntry udsentry;
-    if( !KIO::NetAccess::stat( ssa->filePath() + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
-        return false;
-    return true;
 }
 
 void

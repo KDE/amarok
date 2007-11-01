@@ -181,7 +181,6 @@ class MediaBrowser : public KVBox
         bool blockQuit() const;
         MediaDevice *currentDevice() const { return m_currentDevice; }
         MediaDevice *deviceFromId( const QString &udi ) const;
-        bool checkVolumeUsage( const QString &udi );
         QStringList deviceNames() const;
         bool deviceSwitch( const QString &name );
 

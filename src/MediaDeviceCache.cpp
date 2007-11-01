@@ -23,6 +23,7 @@
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
 #include <solid/portablemediaplayer.h>
+#include <solid/storageaccess.h>
 #include <solid/storagevolume.h>
 
 #include <QList>
@@ -37,13 +38,14 @@ MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 MediaDeviceCache::MediaDeviceCache() : QObject()
                              , m_type()
                              , m_name()
+                             , m_volumes()
 {
     DEBUG_BLOCK
     s_instance = this;
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-             this, SLOT( addSolidDevice( const QString & ) ) );
+             this, SLOT( slotAddSolidDevice( const QString & ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-             this, SLOT( removeSolidDevice( const QString & ) ) );
+             this, SLOT( slotRemoveSolidDevice( const QString & ) ) );
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -66,13 +68,30 @@ MediaDeviceCache::refreshCache()
         m_type[device.udi()] = MediaDeviceCache::SolidPMPType;
         m_name[device.udi()] = device.vendor() + " - " + device.product();
     }
-    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageVolume );
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
     foreach( Solid::Device device, deviceList )
     {
-        debug() << "Found Solid::DeviceInterface::StorageVolume with udi = " << device.udi();
+        debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
-        m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
-        m_name[device.udi()] = device.vendor() + " - " + device.product();
+        Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+        if( ssa )
+        {
+            if( !m_volumes.contains( device.udi() ) )
+            {
+                connect( ssa, SIGNAL( accessibilityChanged(bool, const QString&) ),
+                    this, SLOT( slotAccessibilityChanged(bool, const QString&) ) );
+                m_volumes.append( device.udi() );
+            }
+            if( ssa->isAccessible() )
+            {
+                m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
+                m_name[device.udi()] = device.parent().vendor() + " - " + device.parent().product();
+            }
+            else
+            {
+                debug() << "Solid device is not accessible, will wait until it is to consider it added.";
+            }
+        }
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     QMap<QString, QString> manualDevices = config.entryMap();
@@ -88,7 +107,7 @@ MediaDeviceCache::refreshCache()
 }
 
 void
-MediaDeviceCache::addSolidDevice( const QString &udi )
+MediaDeviceCache::slotAddSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
     Solid::Device device( udi );
@@ -100,23 +119,50 @@ MediaDeviceCache::addSolidDevice( const QString &udi )
         return;
     }
     if( dynamic_cast<Solid::PortableMediaPlayer*>( device.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) ) )
+    {
         m_type[udi] = MediaDeviceCache::SolidPMPType;
-    else if( dynamic_cast<Solid::StorageVolume*>( device.asDeviceInterface( Solid::DeviceInterface::StorageVolume ) ) )
-        m_type[udi] = MediaDeviceCache::SolidVolumeType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
+    else if( device.as<Solid::StorageAccess>() )
+    {
+        debug() << "volume is generic storage";
+        if( !m_volumes.contains( device.udi() ) )
+        {
+            connect( device.as<Solid::StorageAccess>(), SIGNAL( accessibilityChanged(bool, const QString&) ),
+                this, SLOT( slotAccessibilityChanged(bool, const QString&) ) );
+            m_volumes.append( device.udi() );
+        }
+        if( device.as<Solid::StorageAccess>()->isAccessible() )
+        {
+            m_type[udi] = MediaDeviceCache::SolidVolumeType;
+            m_name[udi] = device.parent().vendor() + " - " + device.parent().product();
+        }
+        else
+        {
+            debug() << "storage volume is not accessible right now, not adding.";
+            return;
+        }
+    }
     else
     {
         debug() << "udi " << udi << " does not describe a portable media player or storage volume";
         return;
     }
-    m_name[udi] = device.vendor() + " - " + device.product();
     emit deviceAdded( udi );
 }
 
 void
-MediaDeviceCache::removeSolidDevice( const QString &udi )
+MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
     debug() << "udi is: " << udi;
+    Solid::Device device( udi );
+    if( m_volumes.contains( udi ) )
+    {
+        disconnect( device.as<Solid::StorageAccess>(), SIGNAL( accessibilityChanged(bool, const QString&) ),
+                    this, SLOT( slotAccessibilityChanged(bool, const QString&) ) );
+        m_volumes.removeAll( udi );
+    }
     if( m_type.contains( udi ) )
     {
         m_type.remove( udi );
@@ -125,6 +171,32 @@ MediaDeviceCache::removeSolidDevice( const QString &udi )
         return;
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it didn't seem to exist in the first place...";
+}
+
+void
+MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi )
+{
+    DEBUG_BLOCK
+    debug() << "accessibility of device " << udi << " has changed to accessible = " << (accessible ? "true":"false");
+    if( accessible )
+    {
+        Solid::Device device( udi );
+        m_type[udi] = MediaDeviceCache::SolidVolumeType;
+        m_name[udi] = device.parent().vendor() + " - " + device.parent().product();
+        emit deviceAdded( udi );
+        return;
+    }
+    else
+    {
+        if( m_type.contains( udi ) )
+        {
+            m_type.remove( udi );
+            m_name.remove( udi );
+            emit deviceRemoved( udi );
+            return;
+        }
+        debug() << "Got accessibility changed to false but wasn't there in the first place...";
+    }            
 }
 
 MediaDeviceCache::DeviceType
@@ -147,6 +219,22 @@ MediaDeviceCache::deviceName( const QString &udi )
         return m_name[udi];
     }
     return "ERR_NO_NAME"; //Should never happen!
+}
+
+bool
+MediaDeviceCache::isGenericEnabled( const QString &udi )
+{
+    DEBUG_BLOCK
+    if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
+        return false;
+    Solid::Device device( udi );
+    Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+    if( !ssa || !ssa->isAccessible() )
+        return false;
+    KIO::UDSEntry udsentry;
+    if( !KIO::NetAccess::stat( ssa->filePath() + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+        return false;
+    return true;
 }
 
 #include "MediaDeviceCache.moc"

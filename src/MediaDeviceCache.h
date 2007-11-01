@@ -49,18 +49,21 @@ class MediaDeviceCache : public QObject
         QStringList getAll() { return m_type.keys(); }
         MediaDeviceCache::DeviceType deviceType( const QString &udi );
         QString deviceName( const QString &udi );
+        bool isGenericEnabled( const QString &udi );
 
     signals:
         void deviceAdded( const QString &udi );
         void deviceRemoved( const QString &udi );
 
     public slots:
-        void addSolidDevice( const QString &udi );
-        void removeSolidDevice( const QString &udi );
+        void slotAddSolidDevice( const QString &udi );
+        void slotRemoveSolidDevice( const QString &udi );
+        void slotAccessibilityChanged( bool accessible, const QString &udi );
 
     private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;
         QMap<QString, QString> m_name;
+        QStringList m_volumes;
         static MediaDeviceCache* s_instance;
 };
 

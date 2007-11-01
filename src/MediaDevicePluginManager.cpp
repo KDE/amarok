@@ -128,16 +128,16 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
     bool foundNew = false;
     KConfigGroup config = Amarok::config( "PortableDevices" );
     MediaDeviceCache::instance()->refreshCache();
-    QStringList deviceList = MediaDeviceCache::instance()->getAll();
-    foreach( QString device, deviceList )
+    QStringList udiList = MediaDeviceCache::instance()->getAll();
+    foreach( QString udi, udiList )
     {
-        debug() << "Checking device udi " << device;
+        debug() << "Checking device udi " << udi;
 
         bool skipflag = false;
 
         foreach( MediaDeviceConfig* mediadevice, m_deviceList )
         {
-            if( device == mediadevice->udi() )
+            if( udi == mediadevice->udi() )
             {
                 skipflag = true;
                 debug() << "skipping: already listed";
@@ -147,11 +147,15 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
         if( skipflag )
             continue;
 
-        int type = MediaDeviceCache::instance()->deviceType( device );
-        if( type == MediaDeviceCache::SolidPMPType ||
-                ( type == MediaDeviceCache::SolidVolumeType && MediaBrowser::instance()->checkVolumeUsage( device ) ) )
+        if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType &&
+                !MediaDeviceCache::instance()->isGenericEnabled( udi ) )
         {
-            MediaDeviceConfig *dev = new MediaDeviceConfig( device, this, nographics, m_widget );
+            debug() << "Device generic but not enabled, skipping.";
+            continue;
+        }
+        else
+        {
+            MediaDeviceConfig *dev = new MediaDeviceConfig( udi, this, nographics, m_widget );
             m_deviceList.append( dev );
             connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString &)) );
             foundNew = true;
@@ -215,7 +219,6 @@ MediaDevicePluginManager::finished()
         debug() << "plugin = " << device->plugin();
         debug() << "oldPlugin = " << device->oldPlugin();
         device->setOldPlugin( device->plugin() );
-        //device->configButton()->setEnabled( device->pluginCombo()->currentText() != i18n( "Do not handle" ) );
         emit selectedPlugin( device->udi(), device->plugin() );
     }
 
@@ -410,7 +413,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
     , m_oldPlugin( QString() )
     , m_details( QString() )
     , m_pluginCombo( 0 )
-    , m_configButton( 0 )
     , m_removeButton( 0 )
     , m_label_details( 0 )
     , m_new( true )
@@ -434,17 +436,30 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
             Qt::escape( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::SolidPMPType ? i18n("Yes") : i18n("No") ) );
     table += row.arg( Qt::escape( i18n( "Unique ID:" ) ),
             Qt::escape( m_udi ) );
-    if( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::SolidPMPType )
+    int deviceType = MediaDeviceCache::instance()->deviceType( m_udi );
+    if( deviceType == MediaDeviceCache::SolidPMPType || deviceType == MediaDeviceCache::SolidVolumeType )
     {
         Solid::Device device( m_udi );
         if( device.isValid() )
         {
-            if( !device.vendor().isEmpty() )
-                table += row.arg( Qt::escape( i18n( "Vendor:" ) ),
-                    Qt::escape( device.vendor() ) );
-            if( !device.product().isEmpty() )
-                table += row.arg( Qt::escape( i18n( "Product:" ) ),
-                    Qt::escape( device.product() ) );
+            if( deviceType == MediaDeviceCache::SolidPMPType )
+            {
+                if( !device.vendor().isEmpty() )
+                    table += row.arg( Qt::escape( i18n( "Vendor:" ) ),
+                        Qt::escape( device.vendor() ) );
+                if( !device.product().isEmpty() )
+                    table += row.arg( Qt::escape( i18n( "Product:" ) ),
+                        Qt::escape( device.product() ) );
+            }
+            else if( deviceType == MediaDeviceCache::SolidVolumeType )
+            {
+                if( !device.parent().vendor().isEmpty() )
+                    table += row.arg( Qt::escape( i18n( "Vendor:" ) ),
+                        Qt::escape( device.parent().vendor() ) );
+                if( !device.parent().product().isEmpty() )
+                    table += row.arg( Qt::escape( i18n( "Product:" ) ),
+                        Qt::escape( device.parent().product() ) );
+            } 
         }
     }
 
@@ -463,7 +478,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
     Q_UNUSED( label_plugin );
     m_pluginCombo = new KComboBox( false, this );
 
-    if( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::SolidPMPType )
+    if( deviceType == MediaDeviceCache::SolidPMPType )
     {
         debug() << "sending to getDisplayPluginName: " << MediaBrowser::instance()->deviceFromId( m_udi )->type();
         QString name = MediaBrowser::instance()->getDisplayPluginName( MediaBrowser::instance()->deviceFromId( m_udi )->type() );
@@ -478,7 +493,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
             m_pluginCombo->addItem( name );
         }
     }
-    else if( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::SolidVolumeType )
+    else if( deviceType == MediaDeviceCache::SolidVolumeType )
     {
         m_pluginCombo->addItem( i18n( "Generic Audio Player" ) );
     }
@@ -493,17 +508,12 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
                 m_pluginCombo->setCurrentItem( (*it)->name() );
         }
     }
-    m_pluginCombo->setEnabled( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::ManualType );
-
-//    m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString(), this );
-//    connect( m_configButton, SIGNAL(clicked()), this, SLOT(slotConfigureDevice()) );
-//    m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
-//    m_configButton->setToolTip( i18n( "Configure device settings" ) );
+    m_pluginCombo->setEnabled( deviceType == MediaDeviceCache::ManualType );
 
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
     connect( m_removeButton, SIGNAL(clicked()), this, SLOT(slotDeleteDevice()) );
     m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
-    m_removeButton->setEnabled( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::ManualType );
+    m_removeButton->setEnabled( deviceType == MediaDeviceCache::ManualType );
 
     if( !nographics )
         show();
@@ -512,7 +522,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
 MediaDeviceConfig::~MediaDeviceConfig()
 {
     disconnect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( slotDetailsActivated( const QString & ) ) );
-//    disconnect( m_configButton, SIGNAL(clicked()), this, SLOT(slotConfigureDevice()) );
     disconnect( m_removeButton, SIGNAL(clicked()), this, SLOT(slotDeleteDevice()) );
 }
 

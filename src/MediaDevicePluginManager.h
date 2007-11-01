@@ -50,7 +50,6 @@ class MediaDeviceConfig : public KHBox
         void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }
         QString plugin();
         KComboBox* pluginCombo() { return m_pluginCombo; }
-        QAbstractButton *configButton() { return m_configButton; }
         QAbstractButton *removeButton() { return m_removeButton; }
         QString udi() { return m_udi; }
         bool isNew() { return m_new; }
@@ -71,7 +70,6 @@ class MediaDeviceConfig : public KHBox
         QString m_oldPlugin;
         QString m_details;
         KComboBox* m_pluginCombo;
-        QAbstractButton *m_configButton;
         QAbstractButton *m_removeButton;
         QLabel* m_label_details;
         bool m_new;
