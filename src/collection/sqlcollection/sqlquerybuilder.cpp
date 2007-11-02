@@ -289,7 +289,7 @@ SqlQueryBuilder::addMatch( const TrackPtr &track )
     QString url = track->url();
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    d->queryMatch += QString( " AND tags.deviceid = %1 AND tags.url = '%2'" )
+    d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
     return this;
 }
@@ -427,7 +427,7 @@ void
 SqlQueryBuilder::linkTables()
 {
     d->linkedTables |= Private::TAGS_TAB; //HACK!!!
-    //assuming that tags is always included for now
+    //assuming that tracks is always included for now
     if( !d->linkedTables )
         return;
 
@@ -542,46 +542,46 @@ SqlQueryBuilder::nameForValue( qint64 value )
             return "tags.url";  //TODO figure out how to handle deviceid
         case valTitle:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.title";
+            return "tracks.title";
         case valArtist:
             d->linkedTables |= Private::ARTIST_TAB;
-            return "artist.name";
+            return "artists.name";
         case valAlbum:
             d->linkedTables |= Private::ALBUM_TAB;
-            return "album.name";
+            return "albums.name";
         case valGenre:
             d->linkedTables |= Private::GENRE_TAB;
-            return "genre.name";
+            return "genres.name";
         case valComposer:
             d->linkedTables |= Private::COMPOSER_TAB;
-            return "composer.name";
+            return "composers.name";
         case valYear:
             d->linkedTables |= Private::YEAR_TAB;
-            return "year.name";
+            return "years.name";
         case valComment:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.comment";
+            return "tracks.comment";
         case valTrackNr:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.track";
+            return "tracks.tracknumber";
         case valDiscNr:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.discnumber";
+            return "tracks.discnumber";
         case valLength:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.length";
+            return "tracks.length";
         case valBitrate:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.bitrate";
+            return "tracks.bitrate";
         case valSamplerate:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.samplerate";
+            return "tracks.samplerate";
         case valFilesize:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.filesize";
+            return "tracks.filesize";
         case valFormat:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tags.filetype";
+            return "tracks.filetype";
         case valScore:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.percentage";

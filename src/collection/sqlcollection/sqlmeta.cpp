@@ -637,8 +637,8 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     ,m_name( name )
     ,m_id( id )
     ,m_artistId( artist )
-    ,m_artist()
     ,m_tracksLoaded( false )
+    ,m_artist()
 {
     //nothing to do
 }

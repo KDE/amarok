@@ -29,11 +29,21 @@ class SqlCollection;
 
 class ScanResultProcessor
 {
+
     public:
+        enum ScanType
+        {
+            FullScan = 0,
+            IncrementalScan = 1
+        };
+
         ScanResultProcessor( SqlCollection *collection );
         ~ScanResultProcessor();
 
         void processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult );
+
+        void addDirectory( const QString &dir, uint mtime );
+        void setScanType( ScanType type );
 
     private:
         void processDirectory( const QList<QHash<QString, QString> > &data );
@@ -45,6 +55,7 @@ class ScanResultProcessor
         int yearId( const QString &year );
         int albumId( const QString &album, int artistId );
         int urlId( const QString &url );
+        int directoryId( const QString &dir );
 
         QString findAlbumArtist( const QSet<QString> &artists ) const;
 
@@ -56,6 +67,9 @@ class ScanResultProcessor
         QMap<QString, int> m_year;
         QMap<QString, int> m_composer;
         QMap<QPair<QString, int>, int> m_albums;
+        QMap<QString, int> m_directories;
+
+        ScanType m_type;
 };
 
 #endif

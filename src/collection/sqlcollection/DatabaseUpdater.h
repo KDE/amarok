@@ -33,8 +33,10 @@ public:
 
     void createTemporaryTables();
     void prepareTemporaryTables(); //copies data into temporary tables
+    void prepareTemporaryTablesForFullScan(); //copies data to temporary urls table
     void removeTemporaryTables();
     void copyToPermanentTables();
+    void cleanPermanentTables();
 
     void deleteAllRedundant( const QString &name );
 

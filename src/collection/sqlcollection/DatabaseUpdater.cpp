@@ -62,7 +62,8 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE urls_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactTextColumnType() + ");";
+                         ",rpath " + m_collection->exactTextColumnType() +
+                         ",directory INTEGER);";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
     }
@@ -146,12 +147,34 @@ void
 DatabaseUpdater::prepareTemporaryTables()
 {
     DEBUG_BLOCK
+    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
     m_collection->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
     m_collection->query( "INSERT INTO artists_temp SELECT * FROM artists;" );
     m_collection->query( "INSERT INTO years_temp SELECT * FROM years;" );
     m_collection->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
     m_collection->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
     m_collection->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
+    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+}
+
+void
+DatabaseUpdater::prepareTemporaryTablesForFullScan()
+{
+    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+    m_collection->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+}
+
+void
+DatabaseUpdater::cleanPermanentTables()
+{
+    m_collection->query( "DELETE FROM composers;" );
+    m_collection->query( "DELETE FROM genres;" );
+    m_collection->query( "DELETE FROM albums;" );
+    m_collection->query( "DELETE FROM years;" );
+    m_collection->query( "DELETE FROM artists;" );
+    m_collection->query( "DELETE FROM tracks;" );
+    m_collection->query( "DELETE FROM urls;" );
+    m_collection->query( "DELETE FROM directories" );
 }
 
 void
@@ -225,7 +248,20 @@ DatabaseUpdater::copyToPermanentTables()
     m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
     //insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
 
-    m_collection->insert( "INSERT INTO urls SELECT * FROM urls_temp WHERE urls_temp.id NOT IN ( SELECT id FROM urls );", QString() );
+    QStringList urlIdList = m_collection->query( "SELECT urls.id FROM urls;" );
+    QString urlIds = "-1";
+    foreach( QString urlId, urlIdList )
+    {
+        urlIds += ',';
+        urlIds += urlId;
+    }
+    m_collection->insert( QString( "INSERT INTO urls SELECT * FROM urls_temp WHERE urls_temp.id NOT IN (%1);" ).arg( urlIds ), QString() );
+
+    //update the directories table
+    //we don't know in which rows the changedate was updated, so we simply copy the whole
+    //temporary table. We need a transaction here if we start to use foreign keys
+    m_collection->query( "DELETE FROM directories;" );
+    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
 
     //copy tracks last so that we don't get problems with foreign key constraints
     m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );

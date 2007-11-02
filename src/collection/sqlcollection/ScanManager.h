@@ -67,8 +67,11 @@ class XmlParseJob : public ThreadWeaver::Job
 
         void addNewXmlData( const QString &data );
 
+        void setIsIncremental( bool incremental );
+
     private:
         SqlCollection *m_collection;
+        bool m_isIncremental;
         QXmlStreamReader m_reader;
         QString m_nextData;
         QWaitCondition m_wait;

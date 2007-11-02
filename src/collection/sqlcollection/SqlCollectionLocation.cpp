@@ -18,6 +18,7 @@
 
 #include "SqlCollectionLocation.h"
 
+#include "debug.h"
 #include "sqlcollection.h"
 #include "sqlmeta.h"
 
@@ -61,9 +62,20 @@ SqlCollectionLocation::remove( Meta::TrackPtr track )
         bool removed = QFile::remove( sqlTrack->playableUrl().path() );
         if( removed )
         {
-            QString query = QString( "DELETE FROM tags WHERE deviceid = %1 AND url = '%2';" )
+            
+            QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
                                 .arg( QString::number( sqlTrack->deviceid() ), m_collection->escape( sqlTrack->rpath() ) );
-            m_collection->query( query );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                warning() << "Tried to remove a track from SqlCollection which is not in the collection";
+            }
+            else
+            {
+                int id = res[0].toInt();
+                QString query = QString( "DELETE FROM tracks where id = %1;" ).arg( id );
+                m_collection->query( query );
+            }
         }
         return removed;
     }

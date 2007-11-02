@@ -24,12 +24,16 @@
 #include "mountpointmanager.h"
 #include "sqlcollection.h"
 
+#include <QDir>
+#include <QFileInfo>
+
 #include <KUrl>
 
 using namespace Meta;
 
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
+    , m_type( FullScan )
 {
     //nothing to do
 }
@@ -40,11 +44,61 @@ ScanResultProcessor::~ScanResultProcessor()
 }
 
 void
+ScanResultProcessor::setScanType( ScanType type )
+{
+    m_type = type;
+}
+
+void
+ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
+{
+    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
+    QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    QString query = QString( "SELECT id, changedate FROM directories WHERE deviceid = %1 AND dir = '%2';" )
+                        .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
+    QStringList res = m_collection->query( query );
+    if( res.isEmpty() )
+    {
+        QString insert = QString( "INSERT INTO directories_temp(deviceid,changedate,dir) VALUES (%1,%2,'%3');" )
+                        .arg( QString::number( deviceId ), QString::number( mtime ),
+                                m_collection->escape( rdir ) );
+        int id = m_collection->insert( insert, "directories_temp" );
+        m_directories.insert( dir, id );
+    }
+    else
+    {
+        if( res[1].toUInt() != mtime )
+        {
+            QString update = QString( "UPDATE directories SET changedate = %1 WHERE id = %2;" )
+                                .arg( QString::number( mtime ), res[0] );
+            m_collection->query( update );
+        }
+        m_directories.insert( dir, res[0].toInt() );
+    }
+}
+
+void
 ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult )
 {
     DEBUG_BLOCK
     m_collection->dbUpdater()->createTemporaryTables();
-    m_collection->dbUpdater()->prepareTemporaryTables();
+    if( m_type == IncrementalScan )
+    {
+        m_collection->dbUpdater()->prepareTemporaryTables();
+    }
+    else
+    {
+        m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
+    }
+
+    {
+        //init directory list
+        QStringList result = m_collection->query( "SELECT id,deviceid,dir,changedate FROM directories_temp" );
+        foreach( QString s, result )
+        {
+            
+        }
+    }
     QList<QHash<QString, QString> > dirData;
     bool firstTrack = true;
     QString dir;
@@ -73,6 +127,10 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
             dir = url.directory();
         }
     }
+    if( m_type == FullScan )
+    {
+        //TODO clean permanent tables
+    }
     m_collection->dbUpdater()->copyToPermanentTables();
     m_collection->dbUpdater()->removeTemporaryTables();
 }
@@ -99,7 +157,7 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
         if( row.value( Field::ALBUM ) != album )
             multipleAlbums = true;
     }
-    if( multipleAlbums || data.count() > 60 || artists.size() == 1 )
+    if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
     {
         QHash<QString, QString> row;
         foreach( row, data )
@@ -360,12 +418,37 @@ ScanResultProcessor::urlId( const QString &url )
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO urls_temp(deviceid, rpath) VALUES ( %1, '%2' );" )
-                            .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
+        QFileInfo fileInfo( url );
+        const QString dir = fileInfo.absoluteDir().dirName();
+        int dirId = directoryId( dir );
+        QString insert = QString( "INSERT INTO urls_temp(directory,deviceid, rpath) VALUES ( %1, %2, '%3' );" )
+                            .arg( QString::number( deviceId ), QString::number( dirId ), m_collection->escape( rpath ) );
         return m_collection->insert( insert, "urls_temp" );
     }
     else
     {
         return res[0].toInt();
+    }
+}
+
+int
+ScanResultProcessor::directoryId( const QString &dir )
+{
+    if( m_directories.contains( dir ) )
+        return m_directories.value( dir );
+
+    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
+                        .arg( deviceId ).arg( m_collection->escape( rpath ) );
+    QStringList result = m_collection->query( query );
+    if( result.isEmpty() )
+    {
+        return 0;
+    }
+    else
+    {
+        m_directories.insert( dir, result[0].toInt() );
+        return result[0].toInt();
     }
 }

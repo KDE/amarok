@@ -69,6 +69,7 @@ ScanManager::startFullScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    m_parser->setIsIncremental( false );
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
@@ -97,6 +98,7 @@ void ScanManager::startIncrementalScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    m_parser->setIsIncremental( true );
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
@@ -193,6 +195,7 @@ ScanManager::slotJobDone()
 XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
+    , m_isIncremental( false )
 {
 }
 
@@ -202,10 +205,17 @@ XmlParseJob::~XmlParseJob()
 }
 
 void
+XmlParseJob::setIsIncremental( bool incremental )
+{
+    m_isIncremental = incremental;
+}
+
+void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
     QMap<QString, QHash<QString, QString> > audioFileData;
+    QMap<QString, uint> directories;
     do
     {
         //get new xml data or wait till new xml data is available
@@ -264,6 +274,7 @@ XmlParseJob::run()
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     const QString folder = attrs.value( "path" ).toString();
                     const QFileInfo info( folder );
+                    directories.insert( folder, info.lastModified().toTime_t() );
 
                     /*// Update dir statistics for rescanning purposes
                     if( info.exists() )
@@ -290,6 +301,18 @@ XmlParseJob::run()
     else
     {
         ScanResultProcessor processor( m_collection );
+        if( m_isIncremental )
+        {
+            processor.setScanType( ScanResultProcessor::IncrementalScan );
+        }
+        else
+        {
+            processor.setScanType( ScanResultProcessor::FullScan );
+        }
+        foreach( QString dir, directories.keys() )
+        {
+            processor.addDirectory( dir, directories.value( dir ) );
+        }
         processor.processScanResult( audioFileData );
     }
 }
