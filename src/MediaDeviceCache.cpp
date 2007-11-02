@@ -24,6 +24,7 @@
 #include <solid/devicenotifier.h>
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
+#include <solid/storagedrive.h>
 #include <solid/storagevolume.h>
 
 #include <QList>
@@ -63,6 +64,11 @@ MediaDeviceCache::refreshCache()
     Solid::Device temp;
     foreach( Solid::Device device, deviceList )
     {
+        if( device.as<Solid::StorageDrive>() )
+        {
+            debug() << "Found Solid PMP that is also a StorageDrive, skipping";
+            continue;
+        }
         debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
         m_type[device.udi()] = MediaDeviceCache::SolidPMPType;
@@ -118,10 +124,10 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-    if( dynamic_cast<Solid::PortableMediaPlayer*>( device.asDeviceInterface( Solid::DeviceInterface::PortableMediaPlayer ) ) )
+    if( device.as<Solid::StorageDrive>() )
     {
-        m_type[udi] = MediaDeviceCache::SolidPMPType;
-        m_name[udi] = device.vendor() + " - " + device.product();
+        debug() << "Storage drive found, will wait for the volume";
+        return;
     }
     else if( device.as<Solid::StorageAccess>() )
     {
@@ -142,6 +148,12 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
             debug() << "storage volume is not accessible right now, not adding.";
             return;
         }
+    }
+    else if( device.as<Solid::PortableMediaPlayer>() )
+    {
+        debug() << "device is a PMP";
+        m_type[udi] = MediaDeviceCache::SolidPMPType;
+        m_name[udi] = device.vendor() + " - " + device.product();
     }
     else
     {
@@ -226,14 +238,29 @@ MediaDeviceCache::isGenericEnabled( const QString &udi )
 {
     DEBUG_BLOCK
     if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
+    {
+        debug() << "Not SolidVolumeType, returning false";
         return false;
+    }
     Solid::Device device( udi );
     Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
     if( !ssa || !ssa->isAccessible() )
+    {
+        debug() << "Not able to convert to StorageAccess or not accessible, returning false";
         return false;
+    }
+    if( device.parent().as<Solid::PortableMediaPlayer>() )
+    {
+        debug() << "Could convert parent to PortableMediaPlayer, returning true";
+        return true;
+    }
     KIO::UDSEntry udsentry;
     if( !KIO::NetAccess::stat( ssa->filePath() + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+    {
+        debug() << "Did not stat .is_audio_player successfully, returning false";
         return false;
+    }
+    debug() << "Returning true";
     return true;
 }
 

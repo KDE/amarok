@@ -167,9 +167,28 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
 
 void
 MediaDevicePluginManager::slotSolidDeviceAdded( const QString &udi )
-{   
-    MediaDeviceConfig *dev = new MediaDeviceConfig( udi, this, false, m_widget );
-    m_deviceList.append( dev );
+{
+    foreach( MediaDeviceConfig* mediadevice, m_deviceList )
+    {
+        if( udi == mediadevice->udi() )
+        {
+            debug() << "skipping: already listed";
+            return;
+        }
+    }
+    int deviceType = MediaDeviceCache::instance()->deviceType( udi );
+    if( deviceType == MediaDeviceCache::SolidPMPType ||
+            ( deviceType == MediaDeviceCache::SolidVolumeType &&
+              MediaDeviceCache::instance()->isGenericEnabled( udi ) ) )
+    {
+        MediaDeviceConfig *dev = new MediaDeviceConfig( udi, this, false, m_widget );
+        m_deviceList.append( dev );
+        connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString&)) );
+    }
+    else
+    {
+        debug() << "device wasn't PMP, or was volume but not enabled" << endl;
+    }
 }
 
 void
@@ -213,7 +232,8 @@ MediaDevicePluginManager::finished()
     DEBUG_BLOCK
     foreach( MediaDeviceConfig* device, m_deviceList )
     {
-        if( MediaDeviceCache::instance()->deviceType( device->udi() ) == MediaDeviceCache::SolidPMPType )
+        int deviceType = MediaDeviceCache::instance()->deviceType( device->udi() );
+        if( deviceType == MediaDeviceCache::SolidPMPType || deviceType == MediaDeviceCache::SolidVolumeType )
             continue;
         debug() << "checking device " << device->udi();
         debug() << "plugin = " << device->plugin();
@@ -432,11 +452,11 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
     const QString labelTextNone = i18n( "(none)" );
     QString row = "<tr><td>%1</td><td>%2</td></tr>";
     QString table;
+    int deviceType = MediaDeviceCache::instance()->deviceType( m_udi );
     table += row.arg( Qt::escape( i18n( "Autodetected:" ) ),
-            Qt::escape( MediaDeviceCache::instance()->deviceType( m_udi ) == MediaDeviceCache::SolidPMPType ? i18n("Yes") : i18n("No") ) );
+            Qt::escape( deviceType == MediaDeviceCache::SolidPMPType || deviceType == MediaDeviceCache::SolidVolumeType ? i18n("Yes") : i18n("No") ) );
     table += row.arg( Qt::escape( i18n( "Unique ID:" ) ),
             Qt::escape( m_udi ) );
-    int deviceType = MediaDeviceCache::instance()->deviceType( m_udi );
     if( deviceType == MediaDeviceCache::SolidPMPType || deviceType == MediaDeviceCache::SolidVolumeType )
     {
         Solid::Device device( m_udi );
