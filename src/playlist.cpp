@@ -902,6 +902,8 @@ Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqu
     if( m_uniqueMap.contains( uniqueid ) )
     {
         list = m_uniqueMap[uniqueid];
+        if( !list )
+            return;
         PlaylistItem *item;
         for( item = list->first(); item; item = list->next() )
         {
