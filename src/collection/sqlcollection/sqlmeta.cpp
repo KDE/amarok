@@ -446,9 +446,12 @@ SqlTrack::commitMetaDataChanges()
 void
 SqlTrack::writeMetaDataToDb()
 {
-    // TODO use (numeric) track id for accessing rows in a table instead of string
-    // comparison; is probably much faster
-    QString update = "UPDATE tags SET %1 WHERE deviceid = %2 AND url ='%3';";
+    //TODO store the tracks id in SqlTrack
+    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
+    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    QStringList res = m_collection->query( query );
+    int id = res[0].toInt();
+    QString update = "UPDATE tracks SET %1 WHERE id = %2;";
     QString tags = "title='%1',comment='%2',tracknumber=%3,discnumber=%4, artist=%5,album=%6,genre=%7,composer=%8,year=%9";
     QString artist = QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() );
     QString album = QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() );
@@ -458,22 +461,35 @@ SqlTrack::writeMetaDataToDb()
     tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
               QString::number( m_trackNumber ), QString::number( m_discNumber ),
               artist, album, genre, composer, year );
-    update.arg( tags, QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    update.arg( tags, QString::number( id ) );
     m_collection->query( update );
 }
 
 void
 SqlTrack::updateStatisticsInDb()
 {
-    QString update = "UPDATE statistics SET %1 WHERE deviceid = %2 AND url ='%3';";
-    QString data = "rating=%1, percentage=%2, playcounter=%3, accessdate=%4, createdate=%5";
-    data.arg( m_rating );
-    data.arg( m_score );
-    data.arg( m_playCount );
-    data.arg( m_lastPlayed );
-    data.arg( m_firstPlayed );
-    update.arg( data, QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
-    m_collection->query( update );
+    QString query = "SELECT urls.id FROM urls WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
+    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    QStringList res = m_collection->query( query );
+    int urlId = res[0].toInt();
+    QStringList count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
+    if( count[0].toInt() == 0 )
+    {
+        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
+        QString data = "%1,%2,%3,%4,%5,%6";
+        data = data.arg( count[0] ).arg( m_rating ).arg( m_score );
+        data = data.arg( m_playCount ).arg( m_lastPlayed ).arg( m_firstPlayed );
+        insert = insert.arg( data );
+    }
+    else
+    {
+        QString update = "UPDATE statistics SET %1 WHERE url = %2;";
+        QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4, createdate=%5";
+        data = data.arg( m_rating ).arg( m_score ).arg( m_playCount );
+        data = data.arg( m_lastPlayed ).arg( m_firstPlayed );
+        update = update.arg( data, count[0] );
+        m_collection->query( update );
+    }
 }
 
 void
@@ -483,11 +499,8 @@ SqlTrack::finishedPlaying( double playedFraction )
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
     m_playCount++;
     //TODO get new rating
-    QString update = "UPDATE statistics SET playcounter = %1, accessdate = %2, rating = %3 "
-                     "WHERE deviceid = %4 AND url = '%5';";
-    update = update.arg( m_playCount ).arg( m_lastPlayed ).arg( m_rating ).arg( m_deviceid );
-    update = update.arg( m_collection->escape( m_rpath ) );
-    m_collection->query( update );
+    updateStatisticsInDb();
+    notifyObservers();
 }
 
 bool
