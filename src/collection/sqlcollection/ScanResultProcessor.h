@@ -58,9 +58,11 @@ class ScanResultProcessor
         int directoryId( const QString &dir );
 
         QString findAlbumArtist( const QSet<QString> &artists ) const;
+        void setupDatabase();
 
     private:
         SqlCollection *m_collection;
+        bool m_setupComplete;
 
         QMap<QString, int> m_artists;
         QMap<QString, int> m_genre;

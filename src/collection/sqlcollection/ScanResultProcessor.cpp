@@ -33,6 +33,7 @@ using namespace Meta;
 
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
+    , m_setupComplete( false )
     , m_type( FullScan )
 {
     //nothing to do
@@ -52,9 +53,11 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
+    DEBUG_BLOCK
+    setupDatabase();
     int deviceId = MountPointManager::instance()->getIdForUrl( dir );
     QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
-    QString query = QString( "SELECT id, changedate FROM directories WHERE deviceid = %1 AND dir = '%2';" )
+    QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
@@ -63,13 +66,14 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
                                 m_collection->escape( rdir ) );
         int id = m_collection->insert( insert, "directories_temp" );
+        debug() << "Inserting " << dir << " with id " << id;
         m_directories.insert( dir, id );
     }
     else
     {
         if( res[1].toUInt() != mtime )
         {
-            QString update = QString( "UPDATE directories SET changedate = %1 WHERE id = %2;" )
+            QString update = QString( "UPDATE directories_temp SET changedate = %1 WHERE id = %2;" )
                                 .arg( QString::number( mtime ), res[0] );
             m_collection->query( update );
         }
@@ -81,24 +85,8 @@ void
 ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult )
 {
     DEBUG_BLOCK
-    m_collection->dbUpdater()->createTemporaryTables();
-    if( m_type == IncrementalScan )
-    {
-        m_collection->dbUpdater()->prepareTemporaryTables();
-    }
-    else
-    {
-        m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
-    }
+    setupDatabase();
 
-    {
-        //init directory list
-        QStringList result = m_collection->query( "SELECT id,deviceid,dir,changedate FROM directories_temp" );
-        foreach( QString s, result )
-        {
-            
-        }
-    }
     QList<QHash<QString, QString> > dirData;
     bool firstTrack = true;
     QString dir;
@@ -111,11 +99,9 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
             KUrl url( track.value( Field::URL ) );
             dir = url.directory();
             firstTrack = false;
-            debug() << "first dir " << url.directory();
         }
 
         KUrl url( track.value( Field::URL ) );
-        debug() << "current dir" << url.directory();
         if( url.directory() == dir )
         {
             dirData.append( track );
@@ -257,7 +243,6 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 void
 ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
 {
-    DEBUG_BLOCK
     int album = albumId( trackData.value( Field::ALBUM ), albumArtistId );
     int artist = artistId( trackData.value( Field::ARTIST ) );
     int genre = genreId( trackData.value( Field::GENRE ) );
@@ -450,5 +435,23 @@ ScanResultProcessor::directoryId( const QString &dir )
     {
         m_directories.insert( dir, result[0].toInt() );
         return result[0].toInt();
+    }
+}
+
+void
+ScanResultProcessor::setupDatabase()
+{
+    if( !m_setupComplete )
+    {
+        m_collection->dbUpdater()->createTemporaryTables();
+        if( m_type == IncrementalScan )
+        {
+            m_collection->dbUpdater()->prepareTemporaryTables();
+        }
+        else
+        {
+            m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
+        }
+        m_setupComplete = true;
     }
 }
