@@ -61,17 +61,14 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
-        debug() << "Inserting " << dir << " with mtime " << mtime;
         QString insert = QString( "INSERT INTO directories_temp(deviceid,changedate,dir) VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
                                 m_collection->escape( rdir ) );
         int id = m_collection->insert( insert, "directories_temp" );
-        debug() << "Inserting " << dir << " with id " << id;
         m_directories.insert( dir, id );
     }
     else
     {
-        debug() << "Updating " << dir;
         if( res[1].toUInt() != mtime )
         {
             QString update = QString( "UPDATE directories_temp SET changedate = %1 WHERE id = %2;" )
@@ -419,12 +416,15 @@ ScanResultProcessor::urlId( const QString &url )
 int
 ScanResultProcessor::directoryId( const QString &dir )
 {
-    debug() << "checking directorId for " << dir;
     if( m_directories.contains( dir ) )
         return m_directories.value( dir );
 
     int deviceId = MountPointManager::instance()->getIdForUrl( dir );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    if( !rpath.endsWith( '/' ) )
+    {
+        rpath += '/';
+    }
     QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
                         .arg( deviceId ).arg( m_collection->escape( rpath ) );
     QStringList result = m_collection->query( query );
