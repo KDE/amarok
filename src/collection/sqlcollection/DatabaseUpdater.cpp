@@ -261,7 +261,7 @@ DatabaseUpdater::copyToPermanentTables()
     //we don't know in which rows the changedate was updated, so we simply copy the whole
     //temporary table. We need a transaction here if we start to use foreign keys
     m_collection->query( "DELETE FROM directories;" );
-    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+    m_collection->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 
     //copy tracks last so that we don't get problems with foreign key constraints
     m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
