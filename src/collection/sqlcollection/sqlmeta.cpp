@@ -475,6 +475,7 @@ SqlTrack::updateStatisticsInDb()
     QStringList count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
     if( count[0].toInt() == 0 )
     {
+        m_firstPlayed = QDateTime::currentDateTime().toTime_t();
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
         data = data.arg( count[0] ).arg( m_rating ).arg( m_score );
@@ -484,9 +485,8 @@ SqlTrack::updateStatisticsInDb()
     else
     {
         QString update = "UPDATE statistics SET %1 WHERE url = %2;";
-        QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4, createdate=%5";
-        data = data.arg( m_rating ).arg( m_score ).arg( m_playCount );
-        data = data.arg( m_lastPlayed ).arg( m_firstPlayed );
+        QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4";
+        data = data.arg( m_rating ).arg( m_score ).arg( m_playCount ).arg( m_lastPlayed );
         update = update.arg( data, count[0] );
         m_collection->query( update );
     }
