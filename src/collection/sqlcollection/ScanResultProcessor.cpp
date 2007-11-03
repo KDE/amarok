@@ -53,7 +53,6 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
-    DEBUG_BLOCK
     setupDatabase();
     int deviceId = MountPointManager::instance()->getIdForUrl( dir );
     QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
@@ -62,6 +61,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {
+        debug() << "Inserting " << dir << " with mtime " << mtime;
         QString insert = QString( "INSERT INTO directories_temp(deviceid,changedate,dir) VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
                                 m_collection->escape( rdir ) );
@@ -71,6 +71,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     }
     else
     {
+        debug() << "Updating " << dir;
         if( res[1].toUInt() != mtime )
         {
             QString update = QString( "UPDATE directories_temp SET changedate = %1 WHERE id = %2;" )
@@ -124,7 +125,6 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
 void
 ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &data )
 {
-    DEBUG_BLOCK
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
     //if more than 60 files are in the dir, use the artist of each track as albumartist
@@ -404,10 +404,10 @@ ScanResultProcessor::urlId( const QString &url )
     if( res.isEmpty() )
     {
         QFileInfo fileInfo( url );
-        const QString dir = fileInfo.absoluteDir().dirName();
+        const QString dir = fileInfo.absoluteDir().absolutePath();
         int dirId = directoryId( dir );
         QString insert = QString( "INSERT INTO urls_temp(directory,deviceid, rpath) VALUES ( %1, %2, '%3' );" )
-                            .arg( QString::number( deviceId ), QString::number( dirId ), m_collection->escape( rpath ) );
+                            .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ) );
         return m_collection->insert( insert, "urls_temp" );
     }
     else
@@ -419,6 +419,7 @@ ScanResultProcessor::urlId( const QString &url )
 int
 ScanResultProcessor::directoryId( const QString &dir )
 {
+    debug() << "checking directorId for " << dir;
     if( m_directories.contains( dir ) )
         return m_directories.value( dir );
 
