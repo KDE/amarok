@@ -30,7 +30,11 @@ GenericMediaDeviceConfigDialog::addSupportedButtonClicked( int id )
     QComboBox *convert     = m_convertComboBox;
     QListBox  *supported   = m_supportedListBox;
 
-    supported->insertItem( unsupported->text( id ) );
+    QString text = unsupported->text( id );
+    if( text.startsWith( "&" ) )
+        supported->insertItem( text.right( text.length() - 1 ) );
+    else
+        supported->insertItem( text );
 
     QString temp = convert->currentText();
     convert->insertItem( unsupported->text( id ) );
