@@ -59,6 +59,11 @@ public:
     void handleResult();
 
 
+protected slots:
+
+    void slotScriptComplete( );
+
+
 protected:
 
     void fetchGenres();

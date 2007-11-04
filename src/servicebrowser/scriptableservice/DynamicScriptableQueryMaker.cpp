@@ -26,6 +26,7 @@
 
 #include <KRun>
 #include <KShell>
+#include <KProcess>
 
 
 struct DynamicScriptableQueryMaker::Private {
@@ -37,6 +38,7 @@ struct DynamicScriptableQueryMaker::Private {
     bool returnDataPtrs;
     QString callbackString;
     int parentId;
+    KProcess * scriptProcess;
 };
 
 
@@ -61,10 +63,11 @@ QueryMaker * DynamicScriptableQueryMaker::reset()
 {
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
-    d->maxsize = 0;
+    d->maxsize = -1;
     d->returnDataPtrs = false;
     d->callbackString = QString();
     d->parentId = -1;
+    d->scriptProcess = 0;
 
     return this;
 }
@@ -152,6 +155,7 @@ QueryMaker * DynamicScriptableQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
     DEBUG_BLOCK
     if ( d->closestParent > Private::ALBUM ) {
+        debug() << "Here!";
         const Meta::DynamicScriptableAlbum * dynamicAlbum = static_cast< const Meta::DynamicScriptableAlbum * >( album.data() );
         d->callbackString = dynamicAlbum->callbackString();
         d->parentId = dynamicAlbum->id();
@@ -256,10 +260,19 @@ void DynamicScriptableQueryMaker::fetchAlbums()
     } else {
         //this is where we call the script to get it to add more stuff!
         debug() << "running: " <<  m_script + " --populate_root";
-        KRun::runCommand( KShell::quoteArg( m_script ) + " --populate_root", 0 );
-        //system( KShell::quoteArg( m_script  + " --populate_root" ).toAscii() );
+
+        QStringList args;
+        args << "--populate";
+        args << "-1";
+
+        d->scriptProcess = new KProcess();
+        d->scriptProcess->setProgram( m_script, args );
+        connect ( d->scriptProcess, SIGNAL( finished ( int, QProcess::ExitStatus ) ), this, SLOT( slotScriptComplete() ) );
+        d->scriptProcess->start();
+
 
     }
+
 }
 
 void DynamicScriptableQueryMaker::fetchTracks()
@@ -268,10 +281,10 @@ void DynamicScriptableQueryMaker::fetchTracks()
 
     TrackList tracks;
 
-    //debug() << "parent id: " << m_parentId;
+    debug() << "parent id: " << d->parentId;
 
     if ( d->parentId != -1 ) {
-        AlbumMatcher albumMatcher( m_collection->albumMap()[ m_parentAlbumId ] );
+        AlbumMatcher albumMatcher( m_collection->albumMap()[ QString::number( d->parentId ) ] );
         tracks = albumMatcher.match( m_collection );
     } else
         return;
@@ -279,6 +292,26 @@ void DynamicScriptableQueryMaker::fetchTracks()
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
     }
+}
+
+void DynamicScriptableQueryMaker::slotScriptComplete()
+{
+     DEBUG_BLOCK
+
+     AlbumList albums;
+
+       if ( d->parentId != -1 ) {
+            ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentArtistId ] );
+            albums = artistMatcher.matchAlbums( m_collection );
+        } else
+            albums = m_collection->albumMap().values();
+
+        debug() << "there are " << albums.count() << " albums";
+
+        if ( albums.count() > 0 ) {
+            
+            handleResult( albums );
+        }
 }
 
 

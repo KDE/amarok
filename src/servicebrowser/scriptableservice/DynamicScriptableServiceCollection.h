@@ -38,6 +38,8 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
+    void donePopulating( int parentId );
+
 private:
 
     QString m_script;

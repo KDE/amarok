@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "ScriptableServiceCollection.h"
 #include "DynamicScriptableServiceCollection.h"
+#include "DynamicScriptableServiceMeta.h"
 #include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"
 
@@ -136,7 +137,7 @@ int ScriptableServiceManager::insertTrack(const QString &serviceName, const QStr
 }
 
 
-int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QString & name, const QString & infoHtml/*, int parentId*/)
+int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QString & name, const QString & infoHtml, const QString &callbackString)
 {
 
      debug() << "ScriptableServiceManager::insertElement, name: " << name  << ", info: " << infoHtml << /*", parentId: " << parentId <<*/ ", Service name: " << serviceName;
@@ -147,10 +148,12 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
         //invalid service name
         return -1;
     }
-    ServiceAlbum * album = new ServiceAlbum( name );
+    DynamicScriptableAlbum * album = new DynamicScriptableAlbum( name );
     album->setDescription( infoHtml );
+    album->setCallbackString( callbackString );
 
     int newId = m_serviceMap[serviceName]->addAlbum( album);
+    album->setId( newId );
 
      QList<int> levels;
     //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
@@ -202,3 +205,16 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
 
 
 
+
+
+void ScriptableServiceManager::donePopulating(const QString & serviceName, int parentId)
+{
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return;
+    }
+
+    m_serviceMap[serviceName]->donePopulating( parentId );
+
+
+}

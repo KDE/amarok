@@ -9,7 +9,7 @@ class DirWalker
         puts "Fired up and ready to go! \n\n"
     end
 
-    def ParseLevel( rootFolder )
+    def ParseLevel( rootFolder, parent )
 
         level = 0;
         Find.find( rootFolder ) do |path|
@@ -17,24 +17,24 @@ class DirWalker
             if FileTest.directory?(path)
                 puts "// DIRECTORY: " << path << ", level: " << level.to_s << "\n"
 
-                if level > 1
-                    Find.prune
-                    puts "prune"
-		end
+
                 
                 if level == 1
-    
 			#We only want to handle one level at a time
 			puts "... inserting!"
-			
-			system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertAlbum", "Scripted Files", path, "A directory" )
-		end
-                    
-                level = level +1
-               next
+			system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertAlbum", "Scripted Files", path, "A directory", path )
+                        Find.prune
+		else 
+                    level = level +1
+                end
+
+                next
+
             else #we have a file
                 if level == 1
                 	puts "// FILE: " << path << "\n"
+                        puts "... inserting!"
+                        system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertTrack", "Scripted Files", path, "A track", path, parent )
 		end 
             end
 
@@ -52,8 +52,12 @@ if $*.empty?()
 
 else
 	case $*[0]
-		when "--populate_root"
-			DirWalker.new.ParseLevel( "/home/amarok-dev/music/Brad Sucks" )
+		when "--populate"
+                        if $*[1] = -1
+			     DirWalker.new.ParseLevel( "/home/amarok-dev/media/jamendo/", -1 )
+                        else
+                            DirWalker.new.ParseLevel( "/home/amarok-dev/media/jamendo/"+ $*[2], $*[1] )
+                        end;
 	end
 end
 

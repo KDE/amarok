@@ -45,7 +45,10 @@ class ScriptableServiceManager : public QObject
 
 
         Q_SCRIPTABLE int insertTrack( const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int albumId );
-        Q_SCRIPTABLE int insertAlbum( const QString &serviceName, const QString &name, const QString &infoHtml/*, int parentId */);
+        Q_SCRIPTABLE int insertAlbum( const QString &serviceName, const QString &name, const QString &infoHtml, const QString &callbackData);
+
+
+        Q_SCRIPTABLE void donePopulating( const QString &serviceName, int parentId );
 
 
         /*Q_SCRIPTABLE int insertDynamicElement( const QString &name, const QString &callbackScript, 

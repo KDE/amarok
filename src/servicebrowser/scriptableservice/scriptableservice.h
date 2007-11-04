@@ -60,6 +60,8 @@ public:
     int addAlbum( Meta::ServiceAlbum * album );
     int addArtist( Meta::ServiceArtist * artist );
 
+    void donePopulating( int parentId );
+
 private slots:
 
 

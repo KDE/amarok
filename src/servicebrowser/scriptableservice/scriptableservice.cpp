@@ -79,11 +79,12 @@ int ScriptableService::addAlbum(ServiceAlbum * album)
 {
     AlbumPtr albumPtr = AlbumPtr( album );
     m_albumIdCounter++;
+    album->setId( m_albumIdCounter );
     albumIdMap.insert( m_albumIdCounter, albumPtr );
     m_collection->acquireWriteLock();
     m_collection->addAlbum( album->name(), albumPtr );
     m_collection->releaseLock();
-    m_collection->emitUpdated();
+    //m_collection->emitUpdated();
     return m_albumIdCounter;
 }
 
@@ -91,6 +92,12 @@ int ScriptableService::addArtist(ServiceArtist * artist)
 {
     Q_UNUSED( artist );
     return -1;
+}
+
+void ScriptableService::donePopulating( int parentId )
+{
+    DEBUG_BLOCK
+    //m_collection->donePopulating( parentId );
 }
 
 

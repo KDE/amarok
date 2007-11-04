@@ -49,3 +49,10 @@ QString DynamicScriptableServiceCollection::prettyName() const
 }
 
 
+
+
+void DynamicScriptableServiceCollection::donePopulating(int parentId)
+{
+
+    //wth do we do here...
+}
