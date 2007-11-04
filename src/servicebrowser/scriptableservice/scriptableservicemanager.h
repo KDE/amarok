@@ -40,6 +40,10 @@ class ScriptableServiceManager : public QObject
     public Q_SLOTS:
 
         Q_SCRIPTABLE bool createService( const QString &name, const QString &listHeader, const QString &rootHtml);
+
+        Q_SCRIPTABLE bool createDynamicService( const QString &name, const QString &listHeader, const QString &rootHtml, QString callbackScript );
+
+
         Q_SCRIPTABLE int insertTrack( const QString &serviceName, const QString &name, const QString &url, const QString &infoHtml, int albumId );
         Q_SCRIPTABLE int insertAlbum( const QString &serviceName, const QString &name, const QString &infoHtml/*, int parentId */);
 

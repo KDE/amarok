@@ -40,6 +40,7 @@ class ServiceCollection : public Collection, public MemoryCollection
         virtual QString prettyName() const;
 
         void forceUpdate();
+        void emitUpdated(); 
 
 };
 

@@ -711,6 +711,17 @@ ServiceGenre::~ServiceGenre()
     //nothing to do
 }
 
+
+void ServiceGenre::setId(int id)
+{
+    m_id = id;
+}
+
+int ServiceGenre::id() const
+{
+    return m_id;
+}
+
 QString
 ServiceGenre::name() const
 {
@@ -850,5 +861,6 @@ void ServiceYear::processInfoOf(InfoParserBase * infoParser)
     Q_UNUSED( infoParser );
     return; // do nothing
 }
+
 
 

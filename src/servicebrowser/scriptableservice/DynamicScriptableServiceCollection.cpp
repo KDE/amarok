@@ -17,67 +17,35 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROKSCRIPTABLESERVICE_H
-#define AMAROKSCRIPTABLESERVICE_H
+#include "DynamicScriptableServiceCollection.h"
 
+#include "DynamicScriptableQueryMaker.h"
 
-#include "amarok.h"
-#include "../servicebase.h"
-#include "servicemetabase.h"
-#include "ScriptableServiceCollection.h"
-
-
-typedef QMap<int, Meta::TrackPtr> TrackIdMap;
-typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
-typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
-typedef QMap<int, Meta::GenrePtr> GenreIdMap;
-typedef QMap<int, Meta::ComposerPtr> ComposerIdMap;
-typedef QMap<int, Meta::YearPtr> YearIdMap;
-
-
-class ScriptableService : public ServiceBase
+DynamicScriptableServiceCollection::DynamicScriptableServiceCollection( const QString &name,  const QString &script )
+ : ServiceCollection()
+ , m_script( script )
+ , m_name( name )
 {
-    Q_OBJECT
-
-public:
-
-     /**
-     * Constructor
-     */
-    ScriptableService( const QString &name );
-    /**
-     * Destructor
-     */
-    ~ScriptableService() { }
-
-    void polish() {}
-
-    ServiceCollection * collection();
-    void setCollection( ServiceCollection * collection );
+}
 
 
-    int addTrack( Meta::ServiceTrack * track, int albumId );
-    int addAlbum( Meta::ServiceAlbum * album );
-    int addArtist( Meta::ServiceArtist * artist );
+DynamicScriptableServiceCollection::~DynamicScriptableServiceCollection()
+{
+}
 
-private slots:
+QueryMaker * DynamicScriptableServiceCollection::queryMaker()
+{
+    return new DynamicScriptableQueryMaker( this, m_script );
+}
 
+QString DynamicScriptableServiceCollection::collectionId() const
+{
+    return "Dynamic Scriptable Service collection";
+}
 
-    //void treeItemSelected( const QModelIndex & index );
-    //void infoChanged ( QString infoHtml );
-
-
-private:
-
-    ServiceCollection * m_collection;
-    int m_trackIdCounter;
-    int m_albumIdCounter;
-    int m_artistIdCounter;
-
-    TrackIdMap trackIdMap;
-    AlbumIdMap albumIdMap;
-    ArtistIdMap artistIdMap;
-};
+QString DynamicScriptableServiceCollection::prettyName() const
+{
+    return collectionId();
+}
 
 
-#endif

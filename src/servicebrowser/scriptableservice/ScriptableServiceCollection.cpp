@@ -22,8 +22,7 @@
 
 
 ScriptableServiceCollection::ScriptableServiceCollection(const QString & name)
-    : Collection()
-    , MemoryCollection()
+    : ServiceCollection()
 {
     m_name = name;
 }
@@ -67,8 +66,4 @@ CollectionLocation * ScriptableServiceCollection::ScriptableServiceCollection::l
     return 0;
 }
 
-void ScriptableServiceCollection::emitUpdated()
-{
-    emit( updated() );
 
-}

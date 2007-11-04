@@ -23,6 +23,7 @@
 #include "collection/support/MemoryCollection.h"
 #include "debug.h"
 #include "ScriptableServiceCollection.h"
+#include "DynamicScriptableServiceCollection.h"
 #include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"
 
@@ -62,6 +63,41 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
 
     ScriptableServiceCollection * collection = new ScriptableServiceCollection( name + "_collection" );
+    service->setCollection( collection );
+
+     QList<int> levels;
+    //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
+    levels << CategoryId::Album;
+
+    SingleCollectionTreeItemModel * model = new SingleCollectionTreeItemModel( collection, levels );
+
+    service->setModel( model );
+    emit( addService ( service ) );
+
+    return true;
+}
+
+
+bool ScriptableServiceManager::createDynamicService(const QString & name, const QString & listHeader, const QString & rootHtml, QString callbackScript)
+{
+
+   debug() << "ScriptableServiceManager::CreateDynamicService, name: " << name << ", header: "<< listHeader << ", script: " << callbackScript;
+
+    if ( m_serviceMap.contains( name ) ) {
+        //service name taken
+        return false;
+    }
+
+    m_rootHtml = rootHtml;
+    ScriptableService * service = new ScriptableService ( name );
+    service->setIcon( KIcon( Amarok::icon( "download" ) ) );
+
+    service->infoChanged( m_rootHtml );
+
+    m_serviceMap[name] = service;
+
+
+    DynamicScriptableServiceCollection * collection = new DynamicScriptableServiceCollection( name + "_collection", callbackScript );
     service->setCollection( collection );
 
      QList<int> levels;
@@ -162,5 +198,7 @@ int ScriptableServiceManager::insertAlbum(const QString & serviceName, const QSt
 
 
 #include "scriptableservicemanager.moc"
+
+
 
 

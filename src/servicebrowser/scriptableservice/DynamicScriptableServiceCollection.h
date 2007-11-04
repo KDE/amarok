@@ -16,68 +16,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02111-1307, USA.         *
  ***************************************************************************/
+#ifndef DYNAMICSCRIPTABLESERVICECOLLECTION_H
+#define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
-#ifndef AMAROKSCRIPTABLESERVICE_H
-#define AMAROKSCRIPTABLESERVICE_H
+#include <servicecollection.h>
 
+/**
+A collection that can call back a script to populate items as needed.
 
-#include "amarok.h"
-#include "../servicebase.h"
-#include "servicemetabase.h"
-#include "ScriptableServiceCollection.h"
-
-
-typedef QMap<int, Meta::TrackPtr> TrackIdMap;
-typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
-typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
-typedef QMap<int, Meta::GenrePtr> GenreIdMap;
-typedef QMap<int, Meta::ComposerPtr> ComposerIdMap;
-typedef QMap<int, Meta::YearPtr> YearIdMap;
-
-
-class ScriptableService : public ServiceBase
+	@author 
+*/
+class DynamicScriptableServiceCollection : public ServiceCollection
 {
-    Q_OBJECT
-
 public:
+    DynamicScriptableServiceCollection( const QString &name, const QString &script );
 
-     /**
-     * Constructor
-     */
-    ScriptableService( const QString &name );
-    /**
-     * Destructor
-     */
-    ~ScriptableService() { }
+    ~DynamicScriptableServiceCollection();
 
-    void polish() {}
+    virtual QueryMaker* queryMaker();
 
-    ServiceCollection * collection();
-    void setCollection( ServiceCollection * collection );
-
-
-    int addTrack( Meta::ServiceTrack * track, int albumId );
-    int addAlbum( Meta::ServiceAlbum * album );
-    int addArtist( Meta::ServiceArtist * artist );
-
-private slots:
-
-
-    //void treeItemSelected( const QModelIndex & index );
-    //void infoChanged ( QString infoHtml );
-
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
 
 private:
 
-    ServiceCollection * m_collection;
-    int m_trackIdCounter;
-    int m_albumIdCounter;
-    int m_artistIdCounter;
+    QString m_script;
+    QString m_name;
 
-    TrackIdMap trackIdMap;
-    AlbumIdMap albumIdMap;
-    ArtistIdMap artistIdMap;
 };
-
 
 #endif

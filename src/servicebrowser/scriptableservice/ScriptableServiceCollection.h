@@ -20,15 +20,14 @@
 #ifndef SCRIPTABLESERVICECOLLECTION_H
 #define SCRIPTABLESERVICECOLLECTION_H
 
-#include "Collection.h"
-#include "support/MemoryCollection.h"
+#include "servicecollection.h"
 
 /**
 A collection for use by the scriptable service. Stores everything in memory
 
 	@author 
 */
-class ScriptableServiceCollection : public Collection, public MemoryCollection
+class ScriptableServiceCollection : public ServiceCollection
 {
 public:
     ScriptableServiceCollection( const QString &name );
@@ -46,7 +45,7 @@ public:
 
     virtual CollectionLocation* location() const;
 
-    void emitUpdated(); 
+
 
     
 

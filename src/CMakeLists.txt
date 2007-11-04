@@ -124,6 +124,9 @@ set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
     servicebrowser/scriptableservice/scriptableservice.cpp
     servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
+    servicebrowser/scriptableservice/DynamicScriptableServiceMeta.cpp
+    servicebrowser/scriptableservice/DynamicScriptableServiceCollection.cpp
+    servicebrowser/scriptableservice/DynamicScriptableQueryMaker.cpp
 )
 
 #####################################################################
@@ -194,8 +197,7 @@ set(libmagnatunestore_SRCS
     servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
     servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
     servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
-    #servicebrowser/magnatunestore/magnatunetypes.cpp
-        servicebrowser/magnatunestore/MagnatuneMeta.cpp
+    servicebrowser/magnatunestore/MagnatuneMeta.cpp
     servicebrowser/magnatunestore/magnatunexmlparser.cpp
     servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
     servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp

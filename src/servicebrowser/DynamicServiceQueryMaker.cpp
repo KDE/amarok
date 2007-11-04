@@ -58,42 +58,49 @@ QueryMaker * DynamicServiceQueryMaker::excludeCollection(const QString & collect
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::TrackPtr & track)
 {
+    DEBUG_BLOCK
     Q_UNUSED( track );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ArtistPtr & artist)
 {
+    DEBUG_BLOCK
     Q_UNUSED( artist );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
+    DEBUG_BLOCK
     Q_UNUSED( album );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 {
+    DEBUG_BLOCK
     Q_UNUSED( genre );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ComposerPtr & composer)
 { 
+    DEBUG_BLOCK
     Q_UNUSED( composer );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::YearPtr & year)
-{
+{   
+    DEBUG_BLOCK
     Q_UNUSED( year );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
 {
+    DEBUG_BLOCK
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }

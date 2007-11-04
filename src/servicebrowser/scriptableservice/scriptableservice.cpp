@@ -36,12 +36,12 @@ ScriptableService::ScriptableService( const QString &name )
 
 }
 
-ScriptableServiceCollection * ScriptableService::collection()
+ServiceCollection * ScriptableService::collection()
 {
     return m_collection;
 }
 
-void ScriptableService::setCollection(ScriptableServiceCollection * collection)
+void ScriptableService::setCollection( ServiceCollection * collection )
 {
     m_collection = collection;
 
@@ -83,7 +83,7 @@ int ScriptableService::addAlbum(ServiceAlbum * album)
     m_collection->acquireWriteLock();
     m_collection->addAlbum( album->name(), albumPtr );
     m_collection->releaseLock();
-     m_collection->emitUpdated();
+    m_collection->emitUpdated();
     return m_albumIdCounter;
 }
 

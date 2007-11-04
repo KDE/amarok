@@ -75,9 +75,17 @@ ServiceCollection::prettyName() const
     return "service collection";
 }
 
+//the two following functions are brought to you by the department of redundancy department
+
 void ServiceCollection::forceUpdate()
 {
     emit ( updated() );
+}
+
+void ServiceCollection::emitUpdated()
+{
+    emit( updated() );
+
 }
 
 

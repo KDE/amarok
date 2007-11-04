@@ -293,12 +293,16 @@ class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider
         virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceGenre specific methods
+        void setId( int id );
+        int id( ) const;
+
         void addTrack( TrackPtr track );
         void setName( const QString &name );
         int albumId();
         void setAlbumId( int albumId );
 
     private:
+        int m_id;
         int m_albumId;
         QString m_name;
         TrackList m_tracks;
