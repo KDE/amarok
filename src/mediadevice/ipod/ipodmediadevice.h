@@ -142,6 +142,7 @@ class IpodMediaDevice : public MediaDevice
 
         bool              m_isShuffle;
         bool              m_isMobile;
+        bool              m_isIPhone;
         bool              m_supportsArtwork;
         bool              m_supportsVideo;
         bool              m_rockboxFirmware;

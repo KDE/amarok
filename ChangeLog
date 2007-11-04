@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   CHANGES:
+    * Better support for iPhone/iPod Touch mounted via fuse/sshfs.
     * Only re-render the context view when visible if changing ratings, scores
       or labels for songs.
 

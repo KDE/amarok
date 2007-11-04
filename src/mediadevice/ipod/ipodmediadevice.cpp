@@ -269,6 +269,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_rockboxFirmware = false;
     m_isShuffle = true;
     m_isMobile = false;
+    m_isIPhone = false;
 
     m_requireMount = true;
     m_name = "iPod";
@@ -359,7 +360,7 @@ IpodMediaDevice::slotIpodAction( int id )
 
                     GError *err = 0; 
                     gboolean success = itdb_device_write_sysinfo(m_itdb->device, &err);
-                    debug() << "success writing sysinfo to ipod?: " << success << endl;
+                    debug() << "success writing sysinfo to ipod? (return value " << success << ")" << endl;
                     if( !success && err )
                     {
                         g_error_free(err);
@@ -1063,6 +1064,7 @@ IpodMediaDevice::openDevice( bool silent )
 {
     m_isShuffle = true;
     m_isMobile = false;
+    m_isIPhone = false;
     m_supportsArtwork = false;
     m_supportsVideo = false;
     m_rockboxFirmware = false;
@@ -1182,7 +1184,6 @@ IpodMediaDevice::openDevice( bool silent )
     }
 
     m_isShuffle = true;
-    m_supportsArtwork = true;
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
@@ -1242,6 +1243,8 @@ IpodMediaDevice::detectModel()
     {
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         const gchar *modelString = 0;
+
+        m_supportsArtwork = true;
         if( ipodInfo )
         {
             modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
@@ -1251,12 +1254,20 @@ IpodMediaDevice::detectModel()
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
+            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
+            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
+                break;
+            case ITDB_IPOD_MODEL_IPHONE_1:
+            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+                m_isIPhone = true;
+                m_supportsArtwork = false;
+                debug() << "detected iPhone/iPod Touch" << endl;
                 break;
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
@@ -1266,11 +1277,18 @@ IpodMediaDevice::detectModel()
                     debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
                     m_isMobile = true;
                 }
+                else if( pathExists( ":iTunes_Control" ) )
+                {
+                    debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
+                    m_isIPhone = true;
+                }
                 break;
             default:
                 break;
             }
         }
+        if(m_isIPhone)
+           m_supportsVideo = true;
 
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
@@ -1682,6 +1700,8 @@ IpodMediaDevice::itunesDir(const QString &p) const
     QString base( ":iPod_Control" );
     if( m_isMobile )
         base = ":iTunes:iTunes_Control";
+    else if( m_isIPhone )
+        base = ":iTunes_Control";
 
     if( !p.startsWith( ":" ) )
         base += ':';
