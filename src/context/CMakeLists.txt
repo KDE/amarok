@@ -5,8 +5,8 @@ find_package(OpenGL)
 
 add_subdirectory( applets )
 add_subdirectory( engines )
-message(STATUS "TODO: port the amarok containments to the new plasma API")
-#add_subdirectory( containments )
+#message(STATUS "TODO: port the amarok containments to the new plasma API")
+add_subdirectory( containments )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
