@@ -81,7 +81,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::ARTIST );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -131,7 +131,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::ALBUM );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -171,7 +171,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::GENRE );
+            KFileMetaInfoItem item = d->metaInfo.item(Meta::Field::xesamPrettyToFullFieldName(  Meta::Field::GENRE ) );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -206,7 +206,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::COMPOSER );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) );
             if( item.isValid() )
                 return item.value().toString();
             else
@@ -241,7 +241,7 @@ public:
     {
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::YEAR );
+            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) );
             if( item.isValid() )
                 return item.value().toString();
             else

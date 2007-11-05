@@ -53,7 +53,7 @@ Track::~Track()
 QString
 Track::name() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::TITLE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) );
     if( item.isValid() )
         return item.value().toString();
     else
@@ -144,7 +144,7 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    d->metaInfo.item( Meta::Field::ALBUM ).setValue( newAlbum );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) ).setValue( newAlbum );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -155,7 +155,7 @@ Track::setAlbum( const QString &newAlbum )
 void
 Track::setArtist( const QString& newArtist )
 {
-    d->metaInfo.item( Meta::Field::ARTIST ).setValue( newArtist );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) ).setValue( newArtist );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -166,7 +166,7 @@ Track::setArtist( const QString& newArtist )
 void
 Track::setGenre( const QString& newGenre )
 {
-    d->metaInfo.item( Meta::Field::GENRE ).setValue( newGenre );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::GENRE ) ).setValue( newGenre );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -177,7 +177,7 @@ Track::setGenre( const QString& newGenre )
 void
 Track::setComposer( const QString& newComposer )
 {
-    d->metaInfo.item( Meta::Field::COMPOSER ).setValue( newComposer );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( newComposer );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -188,7 +188,7 @@ Track::setComposer( const QString& newComposer )
 void
 Track::setYear( const QString& newYear )
 {
-    d->metaInfo.item( Meta::Field::YEAR ).setValue( newYear );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) ).setValue( newYear );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -199,7 +199,7 @@ Track::setYear( const QString& newYear )
 void
 Track::setTitle( const QString &newTitle )
 {
-    d->metaInfo.item( Meta::Field::TITLE ).setValue( newTitle );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) ).setValue( newTitle );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -210,7 +210,7 @@ Track::setTitle( const QString &newTitle )
 QString
 Track::comment() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::COMMENT );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) );
     if( item.isValid() )
         return item.value().toString();
     else
@@ -220,7 +220,7 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
-    d->metaInfo.item( Meta::Field::COMMENT ).setValue( newComment );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) ).setValue( newComment );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -255,7 +255,7 @@ Track::setRating( int newRating )
 int
 Track::trackNumber() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::TRACKNUMBER );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -265,7 +265,7 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    d->metaInfo.item( Meta::Field::TRACKNUMBER ).setValue( newTrackNumber );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) ).setValue( newTrackNumber );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -276,7 +276,7 @@ Track::setTrackNumber( int newTrackNumber )
 int
 Track::discNumber() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::DISCNUMBER );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -286,7 +286,7 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    d->metaInfo.item( Meta::Field::DISCNUMBER ).setValue( newDiscNumber );
+    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( newDiscNumber );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
@@ -297,7 +297,7 @@ Track::setDiscNumber( int newDiscNumber )
 int
 Track::length() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::LENGTH );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::LENGTH ) );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -307,7 +307,7 @@ Track::length() const
 int
 Track::filesize() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::FILESIZE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::FILESIZE ) );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -317,7 +317,7 @@ Track::filesize() const
 int
 Track::sampleRate() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::SAMPLERATE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::SAMPLERATE ) );
     if( item.isValid() )
         return item.value().toInt();
     else
@@ -327,7 +327,7 @@ Track::sampleRate() const
 int
 Track::bitrate() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::BITRATE );
+    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::BITRATE ) );
     if( item.isValid() )
         return item.value().toInt();
     else
