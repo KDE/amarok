@@ -116,9 +116,9 @@ namespace Amarok
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
-    QString verboseTimeSince( const QDateTime &datetime ); //defined in tracktooltip.cpp
+    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); //defined in tracktooltip.cpp
 
-    QString verboseTimeSince( uint time_t ); //defined in tracktooltip.cpp
+    AMAROK_EXPORT QString verboseTimeSince( uint time_t ); //defined in tracktooltip.cpp
 
     /**
      * Function that must be used when separating contextBrowser escaped urls
