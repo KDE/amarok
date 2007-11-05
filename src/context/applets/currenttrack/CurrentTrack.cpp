@@ -121,13 +121,12 @@ void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data&
     m_title->setText( currentInfo[ Meta::Field::TITLE ].toString() );
     m_artist->setText( currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString() );
     m_album->setText( currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString() );
-//     m_rating = currentInfo[ 3 ].toInt();
     // TODO i can't add ratings... so hardcoding to test
     m_rating = 7;
     //m_rating = currentInfo[ Meta::Field::RATING ].toInt();
     m_score->setText( currentInfo[ Meta::Field::SCORE ].toString() );
     m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
-//     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toInt() ) );
+    m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
 
     // scale pixmap on demand
     QPixmap cover = m_albumCover->pixmap();
