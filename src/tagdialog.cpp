@@ -9,7 +9,6 @@
 #include "amarokconfig.h"
 #include "coverfetcher.h"
 #include "debug.h"
-#include "metabundle.h"
 #include "querybuilder.h"
 #include "statusbar.h"       //for status messages
 #include "tagguesser.h"
@@ -681,43 +680,44 @@ const QStringList TagDialog::statisticsData() {
 
 void TagDialog::readTags()
 {
-    bool local = m_bundle.url().isLocalFile();
+    bool local = m_currentTrack->playableUrl().isLocalFile();
 
     setWindowTitle( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2",
-                    m_bundle.title(),  m_bundle.artist() ) ) );
+                    m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
     QString niceTitle;
-    if ( m_bundle.album().isEmpty() ) {
-        if( !m_bundle.title().isEmpty() ) {
-            if( !m_bundle.artist().isEmpty() )
-                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", m_bundle.title(),  m_bundle.artist() );
+    if ( m_currentTrack->album()->name().isEmpty() ) {
+        if( !m_currentTrack->name().isEmpty() ) {
+            if( !m_currentTrack->artist()->name().isEmpty() )
+                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", m_currentTrack->name(),  m_currentTrack->artist()->name() );
             else
-                niceTitle = QString( "<b>%1</b>").arg( m_bundle.title() );
+                niceTitle = QString( "<b>%1</b>").arg( m_currentTrack->name() );
         }
-        else niceTitle = m_bundle.prettyTitle();
+        else niceTitle = m_currentTrack->prettyName();
     }
     else {
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
-            m_bundle.title(), m_bundle.artist(), m_bundle.album() );
+            m_currentTrack->name(), m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
     }
     trackArtistAlbumLabel->setText( niceTitle );
     trackArtistAlbumLabel2->setText( niceTitle );
 
-    kLineEdit_title->setText( m_bundle.title() );
-    kComboBox_artist->setItemText( kComboBox_artist->currentIndex(), m_bundle.artist() );
-    kComboBox_album->setItemText( kComboBox_album->currentIndex(), m_bundle.album() );
-    kComboBox_genre->setItemText( kComboBox_genre->currentIndex(), m_bundle.genre() );
-    kComboBox_rating->setCurrentIndex( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
-    qSpinBox_track->setValue( m_bundle.track() );
-    kComboBox_composer->setItemText( kComboBox_composer->currentIndex(), m_bundle.composer() );
-    qSpinBox_year->setValue( m_bundle.year() );
-    qSpinBox_score->setValue( static_cast<int>(m_bundle.score()) );
-    qSpinBox_discNumber->setValue( m_bundle.discNumber() );
-    kTextEdit_comment->setText( m_bundle.comment() );
+    kLineEdit_title->setText( m_currentTrack->name() );
+    kComboBox_artist->setItemText( kComboBox_artist->currentIndex(), m_currentTrack->artist()->name() );
+    kComboBox_album->setItemText( kComboBox_album->currentIndex(), m_currentTrack->album()->name() );
+    kComboBox_genre->setItemText( kComboBox_genre->currentIndex(), m_currentTrack->genre()->name() );
+    kComboBox_rating->setCurrentIndex( m_currentTrack->rating() ? m_currentTrack->rating() - 1 : 0 );
+    qSpinBox_track->setValue( m_currentTrack->trackNumber() );
+    kComboBox_composer->setItemText( kComboBox_composer->currentIndex(), m_currentTrack->composer()->name() );
+    qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
+    qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
+    qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
+    kTextEdit_comment->setText( m_currentTrack->comment() );
 
-    bool extended = m_bundle.hasExtendedMetaInformation();
-    qSpinBox_discNumber->setEnabled( extended );
-    kComboBox_composer->setEnabled( extended );
+    //TODO Port 2.0
+    //bool extended = m_bundle.hasExtendedMetaInformation();
+    //qSpinBox_discNumber->setEnabled( extended );
+    //kComboBox_composer->setEnabled( extended );
 
 
     QString summaryText, statisticsText;
@@ -730,19 +730,21 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Bitrate:"), unknownSafe( m_bundle.prettyBitrate() ) );
     summaryText += body2cols.arg( i18n("Samplerate:"), unknownSafe( m_bundle.prettySampleRate() ) );
     summaryText += body2cols.arg( i18n("Size:"), unknownSafe( m_bundle.prettyFilesize()  ) );
-    summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_bundle.type() ) );
+    summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_currentTrack->type() ) );
 
     summaryText += "</table></td><td width=50%><table>";
     if( AmarokConfig::useScores() )
-        summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_bundle.score() ) ) );
+        summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
     if( AmarokConfig::useRatings() )
         summaryText += body2cols.arg( i18n("Rating:"), m_bundle.prettyRating() );
 
-    summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_bundle.playCount() ) );
+    summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_currentTrack->playCount() ) );
+    QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
+    QDate lastPlayed = QDateTime::fromTime_t( m_currentTrack->lastPlayed() ).date();
     summaryText += body2cols.arg( i18n("First Played:"),
-                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getFirstPlay( m_bundle.url().path() ).date() , KLocale::ShortDate ) : i18n("Never") );
+                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18n("Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
-                   m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getLastPlay( m_bundle.url().path() ).date() , KLocale::ShortDate ) : i18n("Never") );
+                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) : i18n("Never") );
 
     summaryText += "</table></td></tr></table>";
     summaryLabel->setText( summaryText );
@@ -758,12 +760,16 @@ void TagDialog::readTags()
 
     statisticsLabel->setText( statisticsText );
 
-    kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
+    kLineEdit_location->setText( local ? m_currentTrack->playableUrl().path() : m_currentTrack->playableUrl().url() );
 
     //lyrics
     kTextEdit_lyrics->setText( m_lyrics );
 
-    loadCover( m_bundle.artist(), m_bundle.album() );
+    pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize(), false ) );
+    pixmap_cover->setInformation( m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
+    const int s = AmarokConfig::coverPreviewSize();
+    pixmap_cover->setMinimumSize( s, s );
+    pixmap_cover->setMaximumSize( s, s );
 
 
     // enable only for local files
@@ -794,7 +800,7 @@ void TagDialog::readTags()
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( local )
-        m_path = m_bundle.url().directory();
+        m_path = m_currentTrack->playableUrl().directory();
     else
         pushButton_open->setEnabled( false );
 
