@@ -145,6 +145,8 @@ namespace Meta
             virtual int discNumber() const = 0;
             /** Returns the time the song was last played, or 0 if it has not been played yet */
             virtual uint lastPlayed() const = 0;
+            /** Returns the time the song was first played, or 0 if it has not been played yet */
+            virtual uint firstPlayed() const;
             /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
 

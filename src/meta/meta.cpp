@@ -132,6 +132,12 @@ Meta::Track::notifyObservers() const
         observer->metadataChanged( const_cast<Meta::Track*>( this ) );
 }
 
+uint
+Meta::Track::firstPlayed() const
+{
+    return 0;
+}
+
 bool
 Meta::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
