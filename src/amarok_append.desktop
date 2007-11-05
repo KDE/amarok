@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-ServiceTypes=audio/*
+ServiceTypes=KonqPopupMenu/Plugin,audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 Type=Service
 X-KDE-Submenu=Amarok
