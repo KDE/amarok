@@ -24,6 +24,31 @@
 
 #include <QChar>
 
+        static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
+        static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#author";
+        static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
+        static const QString XESAM_BPM            = "http://freedesktop.org/standards/xesam/1.0/core#audioBPM";
+        static const QString XESAM_CODEC          = "http://freedesktop.org/standards/xesam/1.0/core#audioCodec";
+        static const QString XESAM_COMMENT        = "http://freedesktop.org/standards/xesam/1.0/core#comment";
+        static const QString XESAM_COMPOSER       = "http://freedesktop.org/standards/xesam/1.0/core#composer";
+        static const QString XESAM_DISCNUMBER     = "http://freedesktop.org/standards/xesam/1.0/core#discNumber";
+        static const QString XESAM_FILESIZE       = "http://freedesktop.org/standards/xesam/1.0/core#size";
+        static const QString XESAM_GENRE          = "http://freedesktop.org/standards/xesam/1.0/core#genre";
+        static const QString XESAM_LENGTH         = "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration";
+        static const QString XESAM_RATING         = "http://freedesktop.org/standards/xesam/1.0/core#userRating";
+        static const QString XESAM_SAMPLERATE     = "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate";
+        static const QString XESAM_TITLE          = "http://freedesktop.org/standards/xesam/1.0/core#title";
+        static const QString XESAM_TRACKNUMBER    = "http://freedesktop.org/standards/xesam/1.0/core#trackNumber";
+        static const QString XESAM_URL            = "http://freedesktop.org/standards/xesam/1.0/core#url";
+        static const QString XESAM_YEAR           = "http://freedesktop.org/standards/xesam/1.0/core#contentCreated";
+
+        static const QString XESAM_SCORE          = "http://freedesktop.org/standards/xesam/1.0/core#autoRating";
+        static const QString XESAM_PLAYCOUNT      = "http://freedesktop.org/standards/xesam/1.0/core#useCount";
+        static const QString XESAM_FIRST_PLAYED   = "http://freedesktop.org/standards/xesam/1.0/core#firstUsed";
+        static const QString XESAM_LAST_PLAYED    = "http://freedesktop.org/standards/xesam/1.0/core#lastUsed";
+
+static bool conversionMapsInitialised = false;
+
 QVariantMap
 Meta::Field::mapFromTrack( const Meta::Track *track )
 {
@@ -84,6 +109,104 @@ Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
     ec->setTitle( title );
 
     ec->endMetaDataUpdate();
+}
+
+QString
+Meta::Field::xesamPrettyToFullFieldName( const QString &name )
+{
+    if( name == Meta::Field::ARTIST )
+        return XESAM_ARTIST;
+    else if( name == Meta::Field::ALBUM )
+        return XESAM_ALBUM;
+    else if( name == Meta::Field::BITRATE )
+        return XESAM_BITRATE;
+    else if( name == Meta::Field::BPM )
+        return XESAM_BPM;
+    else if( name == Meta::Field::CODEC )
+        return XESAM_CODEC;
+    else if( name == Meta::Field::COMMENT )
+        return XESAM_COMMENT;
+    else if( name == Meta::Field::COMPOSER )
+        return XESAM_COMPOSER;
+    else if( name == Meta::Field::DISCNUMBER )
+        return XESAM_DISCNUMBER;
+    else if( name == Meta::Field::FILESIZE )
+        return XESAM_FILESIZE;
+    else if( name == Meta::Field::GENRE )
+        return XESAM_GENRE;
+    else if( name == Meta::Field::LENGTH )
+        return XESAM_LENGTH;
+    else if( name == Meta::Field::RATING )
+        return XESAM_RATING;
+    else if( name == Meta::Field::SAMPLERATE )
+        return XESAM_SAMPLERATE;
+    else if( name == Meta::Field::TITLE )
+        return XESAM_TITLE;
+    else if( name == Meta::Field::TRACKNUMBER )
+        return XESAM_TRACKNUMBER;
+    else if( name == Meta::Field::URL )
+        return XESAM_URL;
+    else if( name == Meta::Field::YEAR )
+        return XESAM_YEAR;
+    else if( name==Meta::Field::SCORE )
+        return XESAM_SCORE;
+    else if( name==Meta::Field::PLAYCOUNT )
+        return XESAM_PLAYCOUNT;
+    else if( name==Meta::Field::FIRST_PLAYED )
+        return XESAM_FIRST_PLAYED;
+    else if( name==Meta::Field::LAST_PLAYED )
+        return XESAM_LAST_PLAYED;
+    else
+        return "xesamPrettyToFullName: unknown name " + name;
+}
+
+QString
+Meta::Field::xesamFullToPrettyFieldName( const QString &name )
+{
+    if( name == XESAM_ARTIST )
+        return Meta::Field::ARTIST;
+    else if( name == XESAM_ALBUM )
+        return Meta::Field::ALBUM;
+    else if( name == XESAM_BITRATE )
+        return Meta::Field::BITRATE;
+    else if( name == XESAM_BPM )
+        return Meta::Field::BPM;
+    else if( name == XESAM_CODEC )
+        return Meta::Field::CODEC;
+    else if( name == XESAM_COMMENT )
+        return Meta::Field::COMMENT;
+    else if( name == XESAM_COMPOSER )
+        return Meta::Field::COMPOSER;
+    else if( name == XESAM_DISCNUMBER )
+        return Meta::Field::DISCNUMBER;
+    else if( name == XESAM_FILESIZE )
+        return Meta::Field::FILESIZE;
+    else if( name == XESAM_GENRE )
+        return Meta::Field::GENRE;
+    else if( name == XESAM_LENGTH )
+        return Meta::Field::LENGTH;
+    else if( name == XESAM_RATING )
+        return Meta::Field::RATING;
+    else if( name == XESAM_SAMPLERATE )
+        return Meta::Field::SAMPLERATE;
+    else if( name == XESAM_TITLE )
+        return Meta::Field::TITLE;
+    else if( name == XESAM_TRACKNUMBER )
+        return Meta::Field::TRACKNUMBER;
+    else if( name == XESAM_URL )
+        return Meta::Field::URL;
+    else if( name == XESAM_YEAR )
+        return Meta::Field::YEAR;
+    else if( name == XESAM_SCORE )
+        return Meta::Field::SCORE;
+    else if( name == XESAM_PLAYCOUNT )
+        return Meta::Field::PLAYCOUNT;
+    else if( name == XESAM_FIRST_PLAYED )
+        return Meta::Field::FIRST_PLAYED;
+    else if( name == XESAM_LAST_PLAYED )
+        return Meta::Field::LAST_PLAYED;
+    else
+        return "xesamFullToPrettyName: unknown name " + name;
 }
 
 

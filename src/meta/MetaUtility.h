@@ -41,25 +41,27 @@ namespace Meta
         static const QString CODEC          = "xesam:audioCodec";
         static const QString COMMENT        = "xesam:comment";
         static const QString COMPOSER       = "xesam:composer";
-        static const QString DISCNUMBER     = "xesam:cdNumber";
+        static const QString DISCNUMBER     = "xesam:discNumber";
         static const QString FILESIZE       = "xesam:size";
         static const QString GENRE          = "xesam:genre";
-        static const QString LENGTH         = "xesam:duration";
-        static const QString RATING         = "xesam:rating";
+        static const QString LENGTH         = "xesam:mediaDuration";
+        static const QString RATING         = "xesam:userRating";
         static const QString SAMPLERATE     = "xesam:audioSampleRate";
         static const QString TITLE          = "xesam:title";
         static const QString TRACKNUMBER    = "xesam:trackNumber";
         static const QString URL            = "xesam:url";
         static const QString YEAR           = "xesam:contentCreated";
 
-        static const QString SCORE          = "amarok:score";
-        static const QString PLAYCOUNT      = "amarok:playcount";
-        static const QString FIRST_PLAYED   = "amarok:firstPlayed";
-        static const QString LAST_PLAYED    = "amarok:lastPlayed";
+        static const QString SCORE          = "xesam:autoRating";
+        static const QString PLAYCOUNT      = "xesam:useCount";
+        static const QString FIRST_PLAYED   = "xesam:firstUsed";
+        static const QString LAST_PLAYED    = "xesam:lastUsed";
 
 
         AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::Track *track );
         AMAROK_EXPORT void updateTrack( Meta::Track *track, const QVariantMap &metadata );
+        AMAROK_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
+        AMAROK_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
     }
 
 
