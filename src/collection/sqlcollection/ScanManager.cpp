@@ -154,14 +154,17 @@ ScanManager::getDirsToScan() const
     }
 
     const QStringList values = m_collection->query(
-            QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
+            QString( "SELECT id, deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
             .arg( deviceIds ) );
+
+    QList<int> changedFolderIds;
 
     QStringList result;
     for( QListIterator<QString> iter( values ); iter.hasNext(); )
     {
         int id = iter.next().toInt();
-        const QString folder = MountPointManager::instance()->getAbsolutePath( id, iter.next() );
+        int deviceid = iter.next().toInt();
+        const QString folder = MountPointManager::instance()->getAbsolutePath( deviceid, iter.next() );
         const uint mtime = iter.next().toUInt();
 
         QFileInfo info( folder );
@@ -170,6 +173,7 @@ ScanManager::getDirsToScan() const
             if( info.lastModified().toTime_t() != mtime )
             {
                 result << folder;
+                changedFolderIds << id;
                 debug() << "Collection dir changed: " << folder;
             }
         }
@@ -177,8 +181,29 @@ ScanManager::getDirsToScan() const
         {
             // this folder has been removed
             result << folder;
+            changedFolderIds << id;
             debug() << "Collection dir removed: " << folder;
         }
+    }
+    {
+        QString ids;
+        foreach( int id, changedFolderIds )
+        {
+            if( !ids.isEmpty() )
+                ids += ',';
+            ids += id;
+        }
+        QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
+        QStringList urlIds = m_collection->query( query );
+        ids.clear();
+        foreach( QString id, urlIds )
+        {
+            if( !ids.isEmpty() )
+                ids += ',';
+            ids += id;
+        }
+        QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
+        m_collection->query( sql );
     }
     return result;
 }
