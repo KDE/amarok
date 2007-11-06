@@ -229,8 +229,6 @@ App::~App()
 
     ThreadManager::deleteInstance(); //waits for jobs to finish
 
-//     delete mainWindow();
-
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
@@ -240,6 +238,7 @@ App::~App()
     AmarokConfig::self()->writeConfig();
 
     mainWindow()->deleteBrowsers();
+//     delete mainWindow(); //not needed?
 
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
@@ -675,6 +674,11 @@ App::continueInit()
     m_tray           = new Amarok::TrayIcon( mainWindow() );
 #endif
     mainWindow()->init(); //creates the playlist, browsers, etc.
+    //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
+    //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
+    //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
+    //for us as default (bad KMainWindow)
+    mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), mainWindow(), SLOT( init() ) );
     initGlobalShortcuts();
