@@ -44,7 +44,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
 
-    m_appletBrowser = new Plasma::AppletBrowser( this, "amarok" );
+    m_appletBrowser = new Plasma::AppletBrowser( this );
     m_appletBrowser->setApplication( "amarok" );
     m_appletBrowser->hide();
 }
