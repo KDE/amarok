@@ -401,10 +401,13 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if ( m_groupMode == Head_Collapsed ) {
 
         m_items->bottomLeftText->setEditableText( QString("%1 tracks").arg( QString::number( m_items->groupedTracks ) ) , spaceForBottomLeft );
+        QFont f = m_items->bottomLeftText->font();
+        f.setItalic( true );
+        m_items->bottomLeftText->setFont( f );
         m_items->bottomRightText->setEditableText( "", totalWidth - bottomRightAlignX );
-        
 
     } else {
+        m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
         m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
         m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
     }
