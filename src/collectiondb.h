@@ -251,8 +251,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
                   string.replace( '\'', "''" );
         }
 
-        QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "true"; else return "1"; }
-        QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "false"; else return "0"; }
+        QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "t"; else return "1"; }
+        QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "f"; else return "0"; }
         //textColumnType should be used for normal strings, which need to be compared
         //either case-sensitively or -insensitively
         QString textColumnType( int length=255 ) const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
