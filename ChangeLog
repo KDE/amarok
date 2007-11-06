@@ -10,7 +10,9 @@ VERSION 1.4.8
       or labels for songs.
 
   BUGFIXES:
-	* When adding file types with the Generic Media Device sometimes the
+    * Amarok would forget podcast channel and episode settings when using the
+      postgresql backend.
+    * When adding file types with the Generic Media Device sometimes the
       extensions would be prepended with & and would not save. (BR 151806)
     * For improved compatibility with newer iPods, convert file extensions to
       lower case during transfer.
