@@ -87,7 +87,7 @@ void PlayistInfo::constraintsUpdated()
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
-void PlayistInfo::updated( const QString& name, const Plasma::DataEngine::Data& data )
+void PlayistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );

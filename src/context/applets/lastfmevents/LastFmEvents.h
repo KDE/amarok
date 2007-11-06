@@ -42,7 +42,7 @@ public:
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
-    void updated( const QString& name, const Plasma::DataEngine::Data& data );
+    void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
     void showConfigurationInterface();
 
 private slots:

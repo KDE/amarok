@@ -98,7 +98,7 @@ void WikipediaApplet::constraintsUpdated()
     updateGeometry();
 }
 
-void WikipediaApplet::updated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( name )

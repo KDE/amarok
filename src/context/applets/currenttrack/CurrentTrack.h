@@ -42,7 +42,7 @@ public:
     void setGeometry( const QRectF& geometry );
     
 public slots:
-    void updated( const QString& name, const Plasma::DataEngine::Data &data );
+    void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
 

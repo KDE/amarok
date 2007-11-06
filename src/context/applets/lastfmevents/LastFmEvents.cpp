@@ -84,9 +84,9 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "friendevents" ), this );
 
-    updated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
-    updated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
-    updated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
+    dataUpdated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
+    dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
+    dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
 
     constraintsUpdated();
     updateGeometry();
@@ -132,7 +132,7 @@ void LastFmEvents::constraintsUpdated()
     }
 }
 
-void LastFmEvents::updated( const QString& name, const Context::DataEngine::Data& data )
+void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::Data& data )
 {
     DEBUG_BLOCK
 //         debug() << "got data from engine: " << data;

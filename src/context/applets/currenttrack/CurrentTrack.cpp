@@ -109,7 +109,7 @@ void CurrentTrack::constraintsUpdated()
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
-void CurrentTrack::updated( const QString& name, const Plasma::DataEngine::Data& data )
+void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );

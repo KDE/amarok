@@ -127,7 +127,7 @@ void LyricsApplet::constraintsUpdated()
     updateGeometry();
 }
 
-void LyricsApplet::updated( const QString& name, const Plasma::DataEngine::Data& data )
+void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK;
     Q_UNUSED( name )

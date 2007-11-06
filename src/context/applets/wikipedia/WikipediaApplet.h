@@ -33,7 +33,7 @@ public:
     void constraintsUpdated();
 
 public slots:
-    void updated( const QString& name, const Plasma::DataEngine::Data& data );
+    void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
     void calculateHeight();

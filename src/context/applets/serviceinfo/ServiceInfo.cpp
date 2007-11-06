@@ -72,7 +72,7 @@ void ServiceInfo::constraintsUpdated()
     updateGeometry();
 }
 
-void ServiceInfo::updated( const QString& name, const Plasma::DataEngine::Data& data )
+void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
