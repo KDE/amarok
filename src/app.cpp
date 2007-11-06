@@ -240,8 +240,6 @@ App::~App()
     mainWindow()->deleteBrowsers();
 //     delete mainWindow(); //not needed?
 
-    //need to unload the engine before the kapplication is destroyed
-    PluginManager::unload( engine );
 }
 
 
