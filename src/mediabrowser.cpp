@@ -1535,11 +1535,13 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id() );
         if( handler.isEmpty() )
         {
-            if( !constructing && medium->isAutodetected() )
+            //Some people complained about the dialog, boohoo
+            //Just disable it for now I guess
+            /*if( !constructing && medium->isAutodetected() )
             {
                 MediumPluginManagerDialog *mpm = new MediumPluginManagerDialog();
                 mpm->exec();
-            }
+            }*/
         }
         //debug() << "id=" << medium->id() << ", handler=" << handler << endl;
         MediaDevice *device = loadDevicePlugin( handler );
