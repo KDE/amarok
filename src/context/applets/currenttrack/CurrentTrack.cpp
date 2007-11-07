@@ -39,7 +39,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
 
     setHasConfigurationInterface( true );
-    setDrawStandardBackground( true );
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
 

@@ -46,7 +46,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     debug() << "Loading LastFmEvents applet";
 
     setHasConfigurationInterface( true );
-    setDrawStandardBackground( true );
 
     KConfigGroup conf = globalConfig();
     m_userEnabled = conf.readEntry( "user", false );

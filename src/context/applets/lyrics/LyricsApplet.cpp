@@ -39,7 +39,6 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
 {
 
     setHasConfigurationInterface( false );
-    setDrawStandardBackground( true );
 
     dataEngine( "amarok-lyrics" )->connectSource( "lyrics", this );
 

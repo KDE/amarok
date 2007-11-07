@@ -36,7 +36,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
 
     setHasConfigurationInterface( false );
-    setDrawStandardBackground( true );
 
     dataEngine( "amarok-service" )->connectSource( "service", this );
 

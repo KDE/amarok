@@ -33,7 +33,6 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 {
 
     setHasConfigurationInterface( false );
-    setDrawStandardBackground( true );
 
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
 

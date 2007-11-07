@@ -38,7 +38,6 @@ PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
     DEBUG_BLOCK
         
     setHasConfigurationInterface( true );
-    setDrawStandardBackground( true );
     
     dataEngine( "amarok-current" )->connectSource( "current", this );
     
