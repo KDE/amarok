@@ -20,31 +20,39 @@
 require 'fileutils'
 require './lib/librelease.rb'
 
-# ask for checkout location
-# CheckoutLocation()
+NAME      = "amarok"
+COMPONENT = "extragear"
+SECTION   = "multimedia"
 
-# Information()
+def Amarok()
+  # Change version
+  Dir.chdir("src")
+  file = File.new( "#{NAME}.h", File::RDWR )
+  str = file.read()
+  file.rewind()
+  file.truncate( 0 )
+  str.sub!( /APP_version \".*\"/, "APP_version \"#{@version}\"" )
+  file << str
+  file.close()
+  Dir.chdir("..") #amarok
 
-# ask for version number
-# ReleaseVersion()
+  # Remove crap
+  toberemoved = ["release_scripts","supplementary_scripts"]
+  for file in toberemoved
+    FileUtils.rm_rf(file)
+  end
 
-# 
-branch   = "trunk"
-name     = "amarok"
-folder   = "#{name}-#{version}"
+  Dir.chdir("..") #exec path
+end
 
-user     = "sitter"
-protocol = "svn+ssh"
-version  = "2.0.0"
+InformationQuery()
 
-repo     = "#{protocol}://#{user}@svn.kde.org/home/kde/#{branch}"
+@folder = "#{NAME}-#{@version}" #create folder constant
 
-# fetch sources
-FetchSource( folder, name, repo )
+FetchSource()
 
+FetchTranslations()
 
-FetchTranslations( folder, name, repo )
+Amarok()
 
-
-# create the tar archive
-CreateTar( folder )
+CreateTar()
