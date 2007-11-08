@@ -14,6 +14,7 @@ VERSION 1.4.8
       or labels for songs.
 
   BUGFIXES:
+    * Last.fm metadata would not update with xine 1.1.8. (BR 150429)
     * Amarok would forget podcast channel and episode settings when using the
       postgresql backend.
     * When adding file types with the Generic Media Device sometimes the
