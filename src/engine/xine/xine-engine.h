@@ -63,8 +63,6 @@ class XineEngine : public Engine::Base
 
     Engine::SimpleMetaBundle fetchMetaData() const;
 
-    virtual bool lastFmProxyRequired();
-
     bool makeNewStream();
     bool ensureStream();
 
