@@ -2648,10 +2648,10 @@ CollectionDB::getPodcastChannels()
         pcb.setCopyright   ( *++it );
         pcb.setParentId    ( (*++it).toInt() );
         pcb.setSaveLocation( *++it );
-        pcb.setAutoScan    ( *++it == boolT() ? true : false );
+        pcb.setAutoScan    ( boolFromSql( *++it ) );
         pcb.setFetchType   ( (*++it).toInt() );
-        pcb.setAutoTransfer( *++it == boolT() ? true : false  );
-        pcb.setPurge       ( *++it == boolT() ? true : false  );
+        pcb.setAutoTransfer( boolFromSql( *++it ) );
+        pcb.setPurge       ( boolFromSql( *++it ) );
         pcb.setPurgeCount  ( (*++it).toInt() );
 
         bundles.append( pcb );
@@ -2695,7 +2695,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
             peb.setSize        ( 0 );
         else
             peb.setSize        ( (*it).toInt() );
-        peb.setNew         ( (*++it) == boolT() ? true : false  );
+        peb.setNew         ( boolFromSql( *++it ) );
 
         bundles.append( peb );
     }
@@ -2729,7 +2729,7 @@ CollectionDB::getPodcastEpisodeById( int id )
             peb.setSize    ( 0 );
         else
             peb.setSize    ( (*it).toInt() );
-        peb.setNew         ( (*++it) == boolT() ? true : false  );
+        peb.setNew         ( boolFromSql( *++it ) );
     }
 
     return peb;
@@ -2784,10 +2784,10 @@ CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pc
         pcb->setCopyright   ( *++it );
         pcb->setParentId    ( (*++it).toInt() );
         pcb->setSaveLocation( *++it );
-        pcb->setAutoScan    ( *++it == boolT() ? true : false );
+        pcb->setAutoScan    ( boolFromSql( *++it ) );
         pcb->setFetchType   ( (*++it).toInt() );
-        pcb->setAutoTransfer( *++it == boolT() ? true : false  );
-        pcb->setPurge       ( *++it == boolT() ? true : false  );
+        pcb->setAutoTransfer( boolFromSql( *++it ) );
+        pcb->setPurge       ( boolFromSql( *++it ) );
         pcb->setPurgeCount  ( (*++it).toInt() );
     }
 
@@ -2800,7 +2800,7 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
 {
     QString command = QString( "INSERT INTO podcastfolders ( name, parent, isOpen ) VALUES ('" );
     command += escapeString( name )   + "',";
-    command += QString::number( parent_id ) + ',';
+    command += QString::number( parent_id ) + ",";
     command += isOpen ? boolT() + ");" : boolF() + ");";
 
     insert( command, NULL );
