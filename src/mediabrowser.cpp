@@ -1527,7 +1527,7 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
+MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool /*constructing*/ )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
