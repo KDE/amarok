@@ -304,7 +304,6 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
     m_mdaCombo = new KComboBox( false, vbox1 );
     m_mdaCombo->setObjectName( "m_mdacombo" );
-    m_mdaCombo->addItem( i18n( "Do not handle" ) );
     for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
             it != MediaBrowser::instance()->getPlugins().end();
             ++it )
