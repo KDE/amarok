@@ -1254,8 +1254,8 @@ IpodMediaDevice::detectModel()
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
-            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
-            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
+            //case ITDB_IPOD_MODEL_CLASSIC_SILVER:
+            //case ITDB_IPOD_MODEL_CLASSIC_BLACK:
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
@@ -1263,12 +1263,12 @@ IpodMediaDevice::detectModel()
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
                 break;
-            case ITDB_IPOD_MODEL_IPHONE_1:
-            case ITDB_IPOD_MODEL_TOUCH_BLACK:
-                m_isIPhone = true;
-                m_supportsArtwork = false;
-                debug() << "detected iPhone/iPod Touch" << endl;
-                break;
+            //case ITDB_IPOD_MODEL_IPHONE_1:
+            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //    m_isIPhone = true;
+            //    m_supportsArtwork = false;
+            //    debug() << "detected iPhone/iPod Touch" << endl;
+            //    break;
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
