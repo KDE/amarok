@@ -94,6 +94,7 @@ void ContextView::clear()
 
 void ContextView::clear( const ContextState& state )
 {
+    DEBUG_BLOCK
     QString name = "amarok_";
 
     if( state == Home )

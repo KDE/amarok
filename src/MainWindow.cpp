@@ -205,15 +205,6 @@ void MainWindow::init()
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( contextWidget );
-
-//         ControlBox* controlBox = new ControlBox( contextWidget );
-//         controlBox->show();
-        // TODO fix the location of the controlbox so its not a few pixels out of the
-        // context view
-//         connect( controlBox, SIGNAL(zoomIn()),                  Context::ContextView::self(), SLOT(zoomIn()) );
-//         connect( controlBox, SIGNAL(zoomOut()),                 Context::ContextView::self(), SLOT(zoomOut()) );
-//         connect( controlBox, SIGNAL(addApplet(const QString&)), Context::ContextView::self(), SLOT(addApplet(const QString&)) );
-//         connect( controlBox, SIGNAL(lockInterface(bool)),       Context::ContextView::self()->contextScene(), SLOT(setImmutable(bool)) );
     }
 
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );

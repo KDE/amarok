@@ -74,8 +74,8 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 void ColumnApplet::saveToConfig( KConfig& conf )
 {
     DEBUG_BLOCK
-        debug() << "number of m_columns:" << m_columns->count();
-        for( int i = 0; i < m_columns->count(); i++ )
+    debug() << "number of m_columns:" << m_columns->count();
+    for( int i = 0; i < m_columns->count(); i++ )
     {
         Applet* applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
         debug() << "trying to save an applet";
