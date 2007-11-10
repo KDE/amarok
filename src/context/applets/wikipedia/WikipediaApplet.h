@@ -29,7 +29,6 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
-    QSizeF contentSizeHint() const { return m_size; } 
     void constraintsUpdated();
 
 public slots:
@@ -37,13 +36,11 @@ public slots:
 
 private:
     void calculateHeight();
-    void resize( qreal newWidth, qreal aspectRatio );
+    void resizeApplet( qreal newWidth, qreal aspectRatio );
 
     Context::Svg* m_theme;
     Context::Svg* m_header;
-    qreal m_aspectRatio;
     qreal m_headerAspectRatio;
-    QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_wikipediaLabel;
     QGraphicsSimpleTextItem* m_currentLabel;

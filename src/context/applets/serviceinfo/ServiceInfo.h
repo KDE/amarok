@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CURRENT_TRACK_APPLET_H
-#define CURRENT_TRACK_APPLET_H
+#ifndef SERVICE_INFO_APPLET_H
+#define SERVICE_INFO_APPLET_H
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
@@ -37,8 +37,6 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     void constraintsUpdated();
-    QSizeF contentSizeHint() const { return m_size; }
-
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
@@ -47,17 +45,14 @@ private slots:
     void configAccepted();
 
 private:
-    void resize( qreal newWidth, qreal aspectRatio );
+    void resizeApplet( qreal newWidth, qreal aspectRatio );
 
     KDialog* m_config;
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
 
-    qreal m_aspectRatio;
-
     Context::Svg* m_theme;
-    QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_serviceName;
     QGraphicsTextItem* m_serviceMainInfo;

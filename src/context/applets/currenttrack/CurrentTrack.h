@@ -36,10 +36,7 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    QSizeF contentSizeHint() const;
     void constraintsUpdated();
-
-    void setGeometry( const QRectF& geometry );
     
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -52,17 +49,14 @@ private slots:
 private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
-    void resize( qreal newWidth, qreal aspectRatio );
+    void resizeApplet( qreal newWidth, qreal aspectRatio );
 
     KDialog* m_config;
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
 
-    qreal m_aspectRatio;
-
     Context::Svg* m_theme;
-    QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;

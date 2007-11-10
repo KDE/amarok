@@ -268,7 +268,7 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 */
 
 
-Applet* ColumnApplet::addApplet( Applet* applet )
+Plasma::Applet* ColumnApplet::addApplet( Plasma::Applet* applet )
 {
     DEBUG_BLOCK
     debug() << "m_columns:" << m_columns;

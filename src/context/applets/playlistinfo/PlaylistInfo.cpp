@@ -26,12 +26,10 @@
 #include <QLabel>
 
 PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
-    : Plasma::Applet( parent, args )
+    : Context::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
-    , m_aspectRatio( 0.0 )
-    , m_size( QSizeF() )
     , m_rating( -1 )
     , m_trackLength( 0 )
 {
@@ -180,12 +178,9 @@ void PlayistInfo::configAccepted() // SLOT
     constraintsUpdated();
 }
 
-void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
+void PlayistInfo::resizeApplet( qreal newWidth, qreal aspectRatio )
 {
-    qreal height = aspectRatio * newWidth;
-    m_size.setWidth( newWidth );
-    m_size.setHeight( height );
-    
+    DEBUG_BLOCK
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
     constraintsUpdated();

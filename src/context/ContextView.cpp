@@ -94,7 +94,6 @@ void ContextView::clear()
 
 void ContextView::clear( const ContextState& state )
 {
-    DEBUG_BLOCK
     QString name = "amarok_";
 
     if( state == Home )
@@ -194,11 +193,11 @@ Applet* ContextView::addApplet(const QString& name, const QStringList& args)
         argList << QVariant( i.next() );
 
     if( m_columns )
-        return m_columns->addApplet( name, argList );
+        return qobject_cast<Applet*>( m_columns->addApplet( name, argList ) );
     else
     {
         createContainment();
-        return m_columns->addApplet( name, argList );
+        return qobject_cast<Applet*>( m_columns->addApplet( name, argList ) );
     }
 }
 
