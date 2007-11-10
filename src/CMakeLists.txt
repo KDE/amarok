@@ -307,7 +307,6 @@ set( libcontextview_SRCS
     context/ContextView.cpp
     context/ContextObserver.cpp
     context/ContextScene.cpp
-    context/ControlBox.cpp
     context/CoverBling.cpp
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
