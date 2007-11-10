@@ -63,6 +63,9 @@ struct Playlist::GraphicsItem::ActiveItems
      Playlist::TextItem* topLeftText;
      Playlist::TextItem* topRightText;
 
+     QColor overlayGradientStart;
+     QColor overlayGradientEnd;
+
      int lastWidth;
      int groupedTracks;
 
@@ -328,12 +331,12 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->foreground->setPos( 0.0, trackRect.top() );
             m_items->foreground->setZValue( 10.0 );
             QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
-            QColor start = option->palette.highlightedText().color().light();
-            start.setAlpha( 80 );
-            QColor end = option->palette.highlightedText().color().dark();
-            end.setAlpha( 80 );
-            gradient.setColorAt( 0.0, start );
-            gradient.setColorAt( 1.0, end );
+            m_items->overlayGradientStart = option->palette.highlightedText().color().light();
+            m_items->overlayGradientStart.setAlpha( 80 );
+            m_items->overlayGradientEnd = option->palette.highlightedText().color().dark();
+            m_items->overlayGradientEnd.setAlpha( 80 );
+            gradient.setColorAt( 0.0, m_items->overlayGradientStart );
+            gradient.setColorAt( 1.0, m_items->overlayGradientEnd );
             QBrush brush( gradient );
             m_items->foreground->setBrush( brush );
             m_items->foreground->setPen( QPen( Qt::NoPen ) );
@@ -457,6 +460,31 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     } else {
         m_items->bottomLeftText->setPos( MARGIN * 3, 0 );
         m_items->bottomRightText->setPos( bottomRightAlignX, 0 );
+    }
+
+    //make sure the activ eitem overlay has the correct width
+
+
+
+    if( m_items->foreground )
+    {
+
+        QRectF trackRect;
+        if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
+            trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_fm->height() /*+ MARGIN*/ );
+        } else {
+            trackRect = QRectF( 0, 0, totalWidth, m_height );
+            if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
+                trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
+        }
+        
+        QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
+        gradient.setColorAt( 0.0, m_items->overlayGradientStart );
+        gradient.setColorAt( 1.0, m_items->overlayGradientEnd );
+        QBrush brush( gradient );
+        m_items->foreground->setRect( 0, 0, totalWidth, trackRect.height() );
+        m_items->foreground->setBrush( brush );
+        m_items->foreground->setPen( QPen( Qt::NoPen ) );
     }
 
     m_items->lastWidth = totalWidth;
