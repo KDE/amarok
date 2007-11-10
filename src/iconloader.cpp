@@ -52,7 +52,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["edit"]                 = "edit";
         iconMap["editcopy"]             = "editcopy";
         iconMap["equalizer"]            = "media-equalizer";
-        iconMap["external"]             = "exec";
+        iconMap["external"]             = "system-run";
         iconMap["fastforward"]          = "2rightarrow";
         iconMap["favourite_genres"]     = "kfm";
         iconMap["files"]                = "folder";
