@@ -40,6 +40,8 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
+
+    connect( this, SIGNAL( appletAdded( Plasma::Applet* ) ), this, SLOT( addApplet( Plasma::Applet* ) ) );
     
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
@@ -115,7 +117,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
         debug() << "loading applet:" << plugin
             << QStringList() << group.toUInt();
         if( plugin != QString() )
-            addApplet( plugin );
+            Plasma::Containment::addApplet( plugin );
     }
         // TODO port
     /*
@@ -265,19 +267,15 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 
 */
 
-Applet* ColumnApplet::addApplet( const QString& name, const QVariantList& args, uint id, const QRectF &geometry, bool delayedInit )
-{
-    Applet* applet = Plasma::Containment::addApplet( name, args, id, geometry, delayedInit );
-    return addApplet( applet );
-}
 
 Applet* ColumnApplet::addApplet( Applet* applet )
 {
     DEBUG_BLOCK
     debug() << "m_columns:" << m_columns;
-    m_columns->addItem( applet );
+     m_columns->addItem( applet );
 
     connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
+    
     recalculate();
     return applet;
 }

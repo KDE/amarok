@@ -163,7 +163,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->restore();
 
     // TODO get, and then paint, album pixmap
-    constraintsUpdated();
+//     constraintsUpdated();
 
 }
 
