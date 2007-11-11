@@ -5,14 +5,14 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_builddir)/amarok/src/amarokcore \
-    $(CFLAGS_XINE) \
+    $(XINE_CFLAGS) \
     $(all_includes)
 
 libamarok_xine_engine_la_LIBADD = \
     $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     -lkdeui -lkdecore \
-    $(LIBS_XINE)
+    $(XINE_LIBS)
 
 libamarok_xine_engine_la_SOURCES = \
     xine-scope.c \

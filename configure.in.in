@@ -104,45 +104,12 @@ AC_ARG_WITH(xine,
 )
 
 if test "$build_xine" != "no"; then
-
-    AC_CHECK_PROG(XINE_CONFIG, xine-config, yes)
-
-    if test x$XINE_CONFIG = xyes ; then
-        AC_DEFINE(HAVE_XINE, 1, [have Xine])
-        CFLAGS_XINE=[`xine-config --cflags`]
-        LIBS_XINE=[`xine-config --libs`]
-
-        xine_version=`xine-config --version`
-        xine_version=VERSION_TO_NUMBER(echo $xine_version)
-        xine_version_min="1.0.2"
-        xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
-
-        xine_include=`xine-config --cflags | sed -e 's|.*-I/|/|;s/ .*//'`
-        xine_rc_version=`sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h`
-        : ${xine_rc_version:=4} # if this is no rc version, it fulfills the requirements
-
-        AC_MSG_CHECKING([for xine-lib version >= 1.0.2])
-
-        if test $xine_version -eq $xine_version_min \
-             -a $xine_rc_version -gt 3 \
-             -o $xine_version -gt $xine_version_min; then
-
-            echo "yes"
-
-        else
-            echo "no"
-
-            amarok_warning_xineold=yes
-            build_xine=no
-        fi
-    else
-        build_xine=no
-    fi
+    PKG_CHECK_MODULES([XINE], [libxine >= 1.0.2], , [build_xine=no])
 fi
 
 AM_CONDITIONAL(with_xine, test x$build_xine = xyes)
-AC_SUBST(CFLAGS_XINE)
-AC_SUBST(LIBS_XINE)
+AC_SUBST(XINE_CFLAGS)
+AC_SUBST(XINE_LIBS)
 
 ###############################################################################
 # END XINE CHECK
