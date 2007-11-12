@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'fileutils'
-require './lib/librelease.rb'
-
 NAME      = "amarok"
 COMPONENT = "extragear"
 SECTION   = "multimedia"
+
+require 'fileutils'
+require './lib/librelease.rb'
 
 def Amarok()
   # Change version
@@ -38,8 +38,8 @@ def Amarok()
 
   # Remove crap
   toberemoved = ["release_scripts","supplementary_scripts"]
-  for file in toberemoved
-    FileUtils.rm_rf(file)
+  for object in toberemoved
+    FileUtils.rm_rf(object)
   end
 
   Dir.chdir("..") #exec path

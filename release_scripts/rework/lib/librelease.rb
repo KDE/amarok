@@ -20,55 +20,58 @@
 require './lib/libkdialog.rb'
 require 'fileutils'
 
+@dlg = KDialog.new("#{NAME} release script","cookie")
+
 def InformationQuery()
-  def CheckoutLocation(dlg)
-    location = dlg.combobox("Select checkout\\'s place:", "Trunk Stable Tag")
+  def CheckoutLocation()
+    location = @dlg.combobox("Select checkout\\'s place:", "Trunk Stable Tag")
     puts location #DEBUG
     if location == "Stable"
       @useStable = true
     elsif location == "Tag"
-      @tag = dlg.inputbox("Enter the tag name:")
+      @tag = @dlg.inputbox("Enter the tag name:")
       puts @tag #DEBUG
     end
   end
 
-  def ReleaseVersion(dlg)
+  def ReleaseVersion()
     if @tag and not @tag.empty?()
       @version = @tag
     else
-      @version = dlg.inputbox("Enter the release version:")
+      @version = @dlg.inputbox("Enter the release version:")
     end
     puts @version #DEBUG
   end
 
-  def SvnProtcol(dlg)
-    @protocol = dlg.radiolist("Do you use svn+ssh, https or anonsvn :",["svn+ssh","https","anonsvn"],1)
+  def SvnProtcol()
+    @protocol = @dlg.radiolist("Do you use svn+ssh, https or anonsvn :",["svn+ssh","https","anonsvn"],1)
     puts @protocol #DEBUG
   end
 
-  def SvnUsername(dlg)
+  def SvnUsername()
     if @protocol == "anonsvn"
       @protocol = "svn"
       @user = "anonsvn"
     else
-      @user = dlg.inputbox("Your SVN user:")
+      @user = @dlg.inputbox("Your SVN user:")
       @user += "@svn"
     end
     puts @user #DEBUG
   end
 
-  dlg = KDialog.new("#{NAME} release script","cookie")
-
-  CheckoutLocation(dlg)
-  ReleaseVersion(dlg)
-  SvnProtcol(dlg)
-  SvnUsername(dlg)
+@version  = "2.0.0" #DEBUG
+@protocol = "anonsvn" #DEBUG
+#   CheckoutLocation()
+#   ReleaseVersion()
+#   SvnProtcol()
+  SvnUsername()
 end
 
 
 def FetchSource()
+bar  = @dlg.progressbar("fetching source code",1)
   FileUtils.rm_rf( @folder )
-  FileUtils.rm_rf( "#{@folder}.tar.gz" )
+  FileUtils.rm_rf( "#{@folder}.tar.bz2" )
 
   branch = "trunk"
 
@@ -84,23 +87,32 @@ def FetchSource()
   puts "Fetching source from #{branch}...\n\n"
   # TODO: ruby-svn
   `svn co #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@folder}`
+
+  bar.progress = 1
+  bar.close
 end
 
 
+# TODO: docs
 def FetchTranslations()
+  bar  = @dlg.progressbar("preparing l10n processing",1)
   Dir.chdir(@folder)
-  puts "\n"
-  puts "**** l10n ****"
-  puts "\n"
 
   # TODO: ruby-svn
-  i18nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`
+  i18nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
   subdirs   = false
   Dir.mkdir("l10n")
   Dir.mkdir("po")
 
+  bar.maxvalue = i18nlangs.count("\n")
+  step         = 0
+
   for lang in i18nlangs
     lang.chomp!()
+    bar.label    = "processing po/#{lang}"
+    bar.progress = step
+    step        += 1
+
     pofilename = "l10n-kde4/#{lang}/messages/#{COMPONENT}-#{SECTION}/#{NAME}.po"
     # TODO: ruby-svn
     `svn cat #{@repo}/#{pofilename} 2> /dev/null | tee l10n/#{NAME}.po`
@@ -108,9 +120,9 @@ def FetchTranslations()
 
     dest = "po/#{lang}"
     Dir.mkdir( dest )
-    puts "Copying #{lang}'s #{NAME}.po over ..."
+#     puts "Copying #{lang}'s #{NAME}.po over ..."
     FileUtils.mv( "l10n/#{NAME}.po", dest )
-    puts "done.\n"
+#     puts "done.\n"
 
     # create lang's cmake files
     cmakefile = File.new( "#{dest}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
@@ -120,6 +132,7 @@ def FetchTranslations()
 
     subdirs = true
   end
+  bar.close
 
   if subdirs
     # Remove x-test language
@@ -127,6 +140,13 @@ def FetchTranslations()
 
     # create po's cmake file
     cmakefile = File.new( "po/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
+    cmakefile << "find_package(Gettext REQUIRED)\n"
+    cmakefile << "if (NOT GETTEXT_MSGMERGE_EXECUTABLE)\n"
+    cmakefile << "MESSAGE(FATAL_ERROR \"Please install msgmerge binary\")\n"
+    cmakefile << "endif (NOT GETTEXT_MSGMERGE_EXECUTABLE)\n"
+    cmakefile << "if (NOT GETTEXT_MSGFMT_EXECUTABLE)\n"
+    cmakefile << "MESSAGE(FATAL_ERROR \"Please install msgmerge binary\")\n"
+    cmakefile << "endif (NOT GETTEXT_MSGFMT_EXECUTABLE)\n"
     Dir.foreach( "po" ) {|lang|
       unless lang == ".." or lang == "." or lang == "CMakeLists.txt"
         cmakefile << "add_subdirectory(#{lang})\n"
@@ -135,12 +155,10 @@ def FetchTranslations()
     cmakefile.close()
 
     # adapt cmake file
+    # TODO: make translations optional
     cmakefile = File.new( "CMakeLists.txt", File::APPEND | File::RDWR )
-    cmakefile << "find_package(Gettext)\n"
-    cmakefile << "if(Gettext_FOUND AND GETTEXT_MSGMERGE_EXECUTABLE AND GETTEXT_MSGFMT_EXECUTABLE)\n"
-    cmakefile << "macro_optional_add_subdirectory(po)\n"
-    cmakefile << "MESSAGE(STATUS \"Gettext is missing or not properly installed. The translations will not be compiled.\")\n"
-    cmakefile << "endif(Gettext_FOUND AND GETTEXT_MSGMERGE_EXECUTABLE AND GETTEXT_MSGFMT_EXECUTABLE)\n"
+    cmakefile << "include(MacroOptionalAddSubdirectory)\n"
+    cmakefile << "macro_optional_add_subdirectory( po )\n"
     cmakefile.close()
   else
     FileUtils.rm_rf( "po" )
@@ -149,10 +167,14 @@ def FetchTranslations()
   FileUtils.rm_rf( "l10n" )
 end
 
-
 def CreateTar()
+  bar  = @dlg.progressbar("creating tarball",4)
   `find -name ".svn" | xargs rm -rf`
+  bar.progress = 1
   `tar -cf #{@folder}.tar #{@folder}`
+  bar.progress = 2
   `bzip2 #{@folder}.tar`
+  bar.progress = 3
   FileUtils.rm_rf(@folder)
+  bar.close
 end

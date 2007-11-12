@@ -9,11 +9,6 @@
 # License::
 #   This software is distributed under the terms of the GPL.
 # Revision:: kdialog.rb 0.3
-#
-# See KDialog for Documentation.
-#
-# For further information, please refer to
-# http://developer.kde.org/documentation/tutorials/kdialog/x85.html
 
 class KDialog
 
@@ -98,6 +93,11 @@ class KDialog
     @selection = @@exit_status[exit]
   end
 
+  def progressbar(text, steps)
+    dbus_ref = perform('--progressbar', text, steps)[0]
+    bar = ProgressBar.new(dbus_ref)
+  end
+
   def perform(cmd, cmd_text, args='')
     dlg_cmd = @dialog
     dlg_cmd += " --title #{@backtitle} " unless @backtitle.empty?
@@ -108,6 +108,28 @@ class KDialog
     [selection, $?.to_i]
   end
   private :perform
+end
+
+class ProgressBar
+  def initialize(dbus_ref)
+    @dbus_ref = dbus_ref.chop!
+  end
+
+  def maxvalue=(maxvalue)
+    `qdbus #{@dbus_ref} Set org.kde.kdialog.ProgressDialog maximum #{maxvalue}`
+  end
+
+  def progress=(value)
+    `qdbus #{@dbus_ref} Set org.kde.kdialog.ProgressDialog value #{value}`
+  end
+
+  def label=(label)
+    `qdbus #{@dbus_ref} setLabelText #{label.gsub(/\s/, '\ ')}`
+  end
+
+  def close
+    `qdbus #{@dbus_ref} org.kde.kdialog.ProgressDialog.close`
+  end
 end
 
 class IconGroup
