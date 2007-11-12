@@ -69,8 +69,12 @@ CollectionTreeItem::data( int role ) const {
             {
                 if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(m_data ) )
                 {
-                    if( !track.isNull() )
-                        name = QString::number( track->trackNumber() ) + " - " + track->prettyName();
+                    if( !track.isNull() ) {
+                        if ( track->trackNumber() > 0 )
+                            name = QString::number( track->trackNumber() ) + " - " + track->prettyName();
+                        else
+                            name = track->prettyName();
+                    }
                 }
             }
 //             else if ( CollectionWidget::instance()->view()->showYears() )
