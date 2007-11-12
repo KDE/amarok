@@ -67,6 +67,8 @@ public:
     void addRow( int row );
     int groupMode( int row );
 
+    bool alternate( int row );
+
     void setCollapsed( int row, bool collapsed );
     int elementsInGroup( int row );
 

@@ -99,6 +99,19 @@ int Playlist::AlbumGroup::groupMode( int row )
 
 }
 
+
+bool Playlist::AlbumGroup::alternate( int row )
+{
+    foreach( Group group, m_groups ) {
+        int index = group.rows.indexOf( row );
+        if ( index != -1 ) {
+            return ( index % 2 ) == 1;
+        }
+    }
+
+    return false;
+}
+
 void Playlist::AlbumGroup::setCollapsed(int row, bool collapsed)
 {
     //DEBUG_BLOCK
@@ -206,5 +219,7 @@ void Playlist::AlbumGroup::offsetBetween(int first, int last, int offset)
             }
         }
     }
-
 }
+
+
+

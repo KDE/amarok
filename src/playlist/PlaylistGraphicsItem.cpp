@@ -262,7 +262,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 
     if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
-        if( m_currentRow % 2 ) {
+        if ( index.data( GroupedAlternateRole ).toBool() ) {
 
             QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 10 ).arg(trackRect.height() );
             QPixmap background( (int)( trackRect.width() - 10 ), (int)( trackRect.height() ) );

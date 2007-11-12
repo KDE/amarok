@@ -122,8 +122,6 @@ Model::data( const QModelIndex& index, int role ) const
         return QVariant::fromValue( m_items.at( row )->track() );
     }
     else if ( role == GroupRole ) {
-
-
         //get the track
         TrackPtr track = m_items.at( row )->track();
 
@@ -141,7 +139,11 @@ Model::data( const QModelIndex& index, int role ) const
 
         AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
         return albumGroup->elementsInGroup( row );
-
+    } else if ( role == GroupedAlternateRole ) {
+         //get the track
+        TrackPtr track = m_items.at( row )->track();
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        return albumGroup->alternate( row );
     } else if( role == Qt::DisplayRole && row != -1 )
     {
         switch ( index.column() ) {
