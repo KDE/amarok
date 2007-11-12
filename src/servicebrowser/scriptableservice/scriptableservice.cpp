@@ -41,7 +41,7 @@ ServiceCollection * ScriptableService::collection()
     return m_collection;
 }
 
-void ScriptableService::setCollection( ServiceCollection * collection )
+void ScriptableService::setCollection( DynamicScriptableServiceCollection * collection )
 {
     m_collection = collection;
 

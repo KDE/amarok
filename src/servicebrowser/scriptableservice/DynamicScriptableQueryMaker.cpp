@@ -56,6 +56,7 @@ DynamicScriptableQueryMaker::DynamicScriptableQueryMaker( DynamicScriptableServi
 
 DynamicScriptableQueryMaker::~DynamicScriptableQueryMaker()
 {
+    delete d->scriptProcess;
     delete d;
 }
 
@@ -205,6 +206,7 @@ void DynamicScriptableQueryMaker::handleResult(const Meta::AlbumList & albums)
         emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) );
     } else 
         emitProperResult( AlbumPtr, albums );
+
 }
 
 void DynamicScriptableQueryMaker::handleResult(const Meta::ArtistList & artists)
@@ -222,9 +224,13 @@ void DynamicScriptableQueryMaker::handleResult(const Meta::TrackList & tracks)
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
+        debug() << "Emitting " << tracks.count() << " tracks";
         emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
-    } else 
-        emitProperResult( TrackPtr, tracks ); 
+    } else {
+        debug() << "Emitting " << tracks.count() << " tracks";
+        emitProperResult( TrackPtr, tracks );
+    }
+        
 }
 
 
@@ -250,7 +256,7 @@ void DynamicScriptableQueryMaker::fetchAlbums()
     AlbumList albums;
 
     if ( d->parentId != -1 ) {
-       ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentArtistId ] );
+       ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId ) );
        albums = artistMatcher.matchAlbums( m_collection );
     } //else 
     //    return;
@@ -259,18 +265,16 @@ void DynamicScriptableQueryMaker::fetchAlbums()
         handleResult( albums );
     } else {
         //this is where we call the script to get it to add more stuff!
-        debug() << "running: " <<  m_script + " --populate_root";
+        debug() << "running: " <<  m_script + " --populate -1";
 
         QStringList args;
-        args << "--populate";
+        args << "--populate ";
         args << "-1";
 
         d->scriptProcess = new KProcess();
         d->scriptProcess->setProgram( m_script, args );
         connect ( d->scriptProcess, SIGNAL( finished ( int, QProcess::ExitStatus ) ), this, SLOT( slotScriptComplete() ) );
         d->scriptProcess->start();
-
-
     }
 
 }
@@ -284,34 +288,66 @@ void DynamicScriptableQueryMaker::fetchTracks()
     debug() << "parent id: " << d->parentId;
 
     if ( d->parentId != -1 ) {
-        AlbumMatcher albumMatcher( m_collection->albumMap()[ QString::number( d->parentId ) ] );
+        AlbumMatcher albumMatcher( m_collection->albumById( d->parentId ) );
         tracks = albumMatcher.match( m_collection );
     } else
         return;
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
+    } else {
+        //this is where we call the script to get it to add more stuff!
+        debug() << "running: " <<  m_script + " --populate " + QString::number( d->parentId );
+
+        QStringList args;
+        args << "--populate ";
+        args << QString::number( d->parentId ) + " ";
+        args << d->callbackString;
+
+        d->scriptProcess = new KProcess();
+        d->scriptProcess->setProgram( m_script, args );
+        connect ( d->scriptProcess, SIGNAL( finished ( int, QProcess::ExitStatus ) ), this, SLOT( slotScriptComplete() ) );
+        d->scriptProcess->start();
+        
     }
+
 }
 
 void DynamicScriptableQueryMaker::slotScriptComplete()
 {
      DEBUG_BLOCK
 
-     AlbumList albums;
+     
+     if ( d->type == Private::ALBUM ) {
 
+       AlbumList albums;
+     
        if ( d->parentId != -1 ) {
-            ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentArtistId ] );
+           ArtistMatcher artistMatcher( m_collection->artistById( d->parentId ) );
             albums = artistMatcher.matchAlbums( m_collection );
         } else
             albums = m_collection->albumMap().values();
 
         debug() << "there are " << albums.count() << " albums";
 
-        if ( albums.count() > 0 ) {
-            
-            handleResult( albums );
-        }
+         handleResult( albums );
+
+        
+     } else if ( d->type == Private::TRACK ) {
+
+         TrackList tracks;
+         
+         if ( d->parentId != -1 ) {
+             AlbumMatcher albumMatcher( m_collection->albumById( d->parentId ) );
+             tracks = albumMatcher.match( m_collection );
+         } 
+
+         debug() << "there are " << tracks.count() << " tracks";
+         handleResult( tracks );
+
+     }
+
+     emit( queryDone() );
 }
 
 

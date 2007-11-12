@@ -24,7 +24,7 @@
 #include "amarok.h"
 #include "../servicebase.h"
 #include "servicemetabase.h"
-#include "ScriptableServiceCollection.h"
+#include "DynamicScriptableServiceCollection.h"
 
 
 typedef QMap<int, Meta::TrackPtr> TrackIdMap;
@@ -53,7 +53,7 @@ public:
     void polish() {}
 
     ServiceCollection * collection();
-    void setCollection( ServiceCollection * collection );
+    void setCollection( DynamicScriptableServiceCollection * collection );
 
 
     int addTrack( Meta::ServiceTrack * track, int albumId );
@@ -71,7 +71,7 @@ private slots:
 
 private:
 
-    ServiceCollection * m_collection;
+    DynamicScriptableServiceCollection * m_collection;
     int m_trackIdCounter;
     int m_albumIdCounter;
     int m_artistIdCounter;

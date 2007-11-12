@@ -19,14 +19,14 @@
 #ifndef DYNAMICSCRIPTABLESERVICECOLLECTION_H
 #define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
-#include <servicecollection.h>
+#include <ServiceDynamicCollection.h>
 
 /**
 A collection that can call back a script to populate items as needed.
 
 	@author 
 */
-class DynamicScriptableServiceCollection : public ServiceCollection
+class DynamicScriptableServiceCollection : public ServiceDynamicCollection
 {
 public:
     DynamicScriptableServiceCollection( const QString &name, const QString &script );
@@ -43,7 +43,6 @@ public:
 private:
 
     QString m_script;
-    QString m_name;
 
 };
 

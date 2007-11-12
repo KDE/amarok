@@ -22,9 +22,8 @@
 #include "DynamicScriptableQueryMaker.h"
 
 DynamicScriptableServiceCollection::DynamicScriptableServiceCollection( const QString &name,  const QString &script )
- : ServiceCollection()
+    : ServiceDynamicCollection( name, name) 
  , m_script( script )
- , m_name( name )
 {
 }
 
@@ -55,4 +54,5 @@ void DynamicScriptableServiceCollection::donePopulating(int parentId)
 {
 
     //wth do we do here...
+
 }

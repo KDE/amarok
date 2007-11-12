@@ -63,7 +63,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
     m_serviceMap[name] = service;
 
 
-    ScriptableServiceCollection * collection = new ScriptableServiceCollection( name + "_collection" );
+    DynamicScriptableServiceCollection * collection = new DynamicScriptableServiceCollection( name + "_collection", name + "_collection" );
     service->setCollection( collection );
 
      QList<int> levels;
