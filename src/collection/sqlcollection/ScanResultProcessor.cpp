@@ -108,6 +108,7 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
         {
             processDirectory( dirData );
             dirData.clear();
+            dirData.append( track );
             dir = url.directory();
         }
     }
