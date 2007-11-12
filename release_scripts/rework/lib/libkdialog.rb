@@ -15,42 +15,6 @@
 # For further information, please refer to
 # http://developer.kde.org/documentation/tutorials/kdialog/x85.html
 
-#
-# == Description
-#
-# KDialog is a wrapper class for KDE kdialog application.
-# kdialog is a simple (easy to use) program which lets you build GUIs for
-# your apps and scripts.
-# The KDialog class tries to bring that simplicity into your Ruby programs.
-#
-# == Synopsis
-#  require 'kdialog'
-#
-#  dlg = Kdialog.new "KDialog Test"
-#  dlg.yesno 'Do you like this class?'
-#  if dlg.selection
-#    dlg.msgbox 'You picked YES'
-#  else
-#    dlg.msgbox 'You picked NO'
-#  end
-#
-#
-#  An example by Gabriele Renzi
-#
-#  dlg = Kdialog.new "KDialog Test"
-#  dlg.yesnocancel 'Save and Quit?'
-#  if dlg.selection
-#    save and quit
-#  else
-#    resume_main_loop if dlg.selection.nil?
-#  end
-#
-#
-# == Todo
-# * Handle older versions of kdialog (< 1.0). Might need to handle exceptions. 
-# * Complete documentation
-#
-
 class KDialog
 
   YES    = 0 
@@ -60,12 +24,12 @@ class KDialog
   @@exit_status = { YES => true, NO => false, CANCEL => nil}
 
   attr_reader :selection
-  attr_writer :miniicon
+  attr_writer :icon
 
   def initialize(title='', icon='')
     @dialog = 'kdialog '
     self.backtitle = title
-    self.miniicon = icon
+    self.icon = icon
     self
   end
 
@@ -137,7 +101,7 @@ class KDialog
   def perform(cmd, cmd_text, args='')
     dlg_cmd = @dialog
     dlg_cmd += " --title #{@backtitle} " unless @backtitle.empty?
-    dlg_cmd += " --miniicon #{@miniicon} " unless @miniicon.empty?
+    dlg_cmd += " --icon #{@icon} " unless @icon.empty?
     dlg_cmd += " #{cmd} #{cmd_text.gsub(/\s/, '\ ')} #{args}"
 #     puts "Executing: '#{dlg_cmd}'"
     selection = `#{dlg_cmd}`
