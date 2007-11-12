@@ -107,6 +107,30 @@ Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
     QString title = metadata.contains( Meta::Field::TITLE ) ?
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
     ec->setTitle( title );
+    QString comment = metadata.contains( Meta::Field::COMMENT ) ?
+                            metadata.value( Meta::Field::COMMENT ).toString() : QString();
+    ec->setComment( comment );
+    int tracknr = metadata.contains( Meta::Field::TRACKNUMBER ) ?
+                            metadata.value( Meta::Field::TRACKNUMBER ).toInt() : 0;
+    ec->setTrackNumber( tracknr );
+    int discnr = metadata.contains( Meta::Field::DISCNUMBER ) ?
+                            metadata.value( Meta::Field::DISCNUMBER ).toInt() : 0;
+    ec->setDiscNumber( discnr );
+    QString artist = metadata.contains( Meta::Field::ARTIST ) ?
+                            metadata.value( Meta::Field::ARTIST ).toString() : QString();
+    ec->setArtist( artist );
+    QString album = metadata.contains( Meta::Field::ALBUM ) ?
+                            metadata.value( Meta::Field::ALBUM ).toString() : QString();
+    ec->setAlbum( album );
+    QString genre = metadata.contains( Meta::Field::GENRE ) ?
+                            metadata.value( Meta::Field::GENRE ).toString() : QString();
+    ec->setGenre( genre );
+    QString composer = metadata.contains( Meta::Field::COMPOSER ) ?
+                            metadata.value( Meta::Field::COMPOSER ).toString() : QString();
+    ec->setComposer( composer );
+    QString year = metadata.contains( Meta::Field::YEAR ) ?
+                            metadata.value( Meta::Field::YEAR ).toString() : QString();
+    ec->setYear( year );
 
     ec->endMetaDataUpdate();
 }
