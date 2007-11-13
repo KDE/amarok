@@ -59,17 +59,17 @@ def InformationQuery()
     puts @user #DEBUG
   end
 
-@version  = "2.0.0" #DEBUG
-@protocol = "anonsvn" #DEBUG
-#   CheckoutLocation()
-#   ReleaseVersion()
-#   SvnProtcol()
+  @version  = "2.0.0" #DEBUG
+  @protocol = "anonsvn" #DEBUG
+  #   CheckoutLocation()
+  #   ReleaseVersion()
+  #   SvnProtcol()
   SvnUsername()
 end
 
 
 def FetchSource()
-bar  = @dlg.progressbar("fetching source code",1)
+  bar  = @dlg.progressbar("fetching source code",1)
   FileUtils.rm_rf( @folder )
   FileUtils.rm_rf( "#{@folder}.tar.bz2" )
 
@@ -92,80 +92,6 @@ bar  = @dlg.progressbar("fetching source code",1)
   bar.close
 end
 
-
-# TODO: docs
-def FetchTranslations()
-  bar  = @dlg.progressbar("preparing l10n processing",1)
-  Dir.chdir(@folder)
-
-  # TODO: ruby-svn
-  i18nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
-  subdirs   = false
-  Dir.mkdir("l10n")
-  Dir.mkdir("po")
-
-  bar.maxvalue = i18nlangs.count("\n")
-  step         = 0
-
-  for lang in i18nlangs
-    lang.chomp!()
-    bar.label    = "processing po/#{lang}"
-    bar.progress = step
-    step        += 1
-
-    pofilename = "l10n-kde4/#{lang}/messages/#{COMPONENT}-#{SECTION}/#{NAME}.po"
-    # TODO: ruby-svn
-    `svn cat #{@repo}/#{pofilename} 2> /dev/null | tee l10n/#{NAME}.po`
-    next if FileTest.size( "l10n/#{NAME}.po" ) == 0
-
-    dest = "po/#{lang}"
-    Dir.mkdir( dest )
-#     puts "Copying #{lang}'s #{NAME}.po over ..."
-    FileUtils.mv( "l10n/#{NAME}.po", dest )
-#     puts "done.\n"
-
-    # create lang's cmake files
-    cmakefile = File.new( "#{dest}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
-    cmakefile << "file(GLOB _po_files *.po)\n"
-    cmakefile << "GETTEXT_PROCESS_PO_FILES(${CURRENT_LANG} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR} ${_po_files} )\n"
-    cmakefile.close()
-
-    subdirs = true
-  end
-  bar.close
-
-  if subdirs
-    # Remove x-test language
-    FileUtils.rm_rf( "po/x-test" )
-
-    # create po's cmake file
-    cmakefile = File.new( "po/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
-    cmakefile << "find_package(Gettext REQUIRED)\n"
-    cmakefile << "if (NOT GETTEXT_MSGMERGE_EXECUTABLE)\n"
-    cmakefile << "MESSAGE(FATAL_ERROR \"Please install msgmerge binary\")\n"
-    cmakefile << "endif (NOT GETTEXT_MSGMERGE_EXECUTABLE)\n"
-    cmakefile << "if (NOT GETTEXT_MSGFMT_EXECUTABLE)\n"
-    cmakefile << "MESSAGE(FATAL_ERROR \"Please install msgmerge binary\")\n"
-    cmakefile << "endif (NOT GETTEXT_MSGFMT_EXECUTABLE)\n"
-    Dir.foreach( "po" ) {|lang|
-      unless lang == ".." or lang == "." or lang == "CMakeLists.txt"
-        cmakefile << "add_subdirectory(#{lang})\n"
-      end
-    }
-    cmakefile.close()
-
-    # adapt cmake file
-    # TODO: make translations optional
-    cmakefile = File.new( "CMakeLists.txt", File::APPEND | File::RDWR )
-    cmakefile << "include(MacroOptionalAddSubdirectory)\n"
-    cmakefile << "macro_optional_add_subdirectory( po )\n"
-    cmakefile.close()
-  else
-    FileUtils.rm_rf( "po" )
-  end
-
-  FileUtils.rm_rf( "l10n" )
-end
 
 def CreateTar()
   bar  = @dlg.progressbar("creating tarball",4)

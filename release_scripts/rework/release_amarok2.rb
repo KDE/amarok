@@ -20,9 +20,11 @@
 NAME      = "amarok"
 COMPONENT = "extragear"
 SECTION   = "multimedia"
+BASEPATH  = Dir.getwd()
 
 require 'fileutils'
 require './lib/librelease.rb'
+require './lib/libl10n.rb'
 
 def Amarok()
   # Change version
@@ -42,7 +44,7 @@ def Amarok()
     FileUtils.rm_rf(object)
   end
 
-  Dir.chdir("..") #exec path
+  Dir.chdir(BASEPATH)
 end
 
 InformationQuery()
@@ -52,6 +54,8 @@ InformationQuery()
 FetchSource()
 
 FetchTranslations()
+
+FetchDocumentation()
 
 Amarok()
 

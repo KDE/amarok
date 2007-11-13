@@ -12,7 +12,7 @@
 
 class KDialog
 
-  YES    = 0 
+  YES    = 0
   NO     = 256
   CANCEL = 512
 
@@ -103,7 +103,7 @@ class KDialog
     dlg_cmd += " --title #{@backtitle} " unless @backtitle.empty?
     dlg_cmd += " --icon #{@icon} " unless @icon.empty?
     dlg_cmd += " #{cmd} #{cmd_text.gsub(/\s/, '\ ')} #{args}"
-#     puts "Executing: '#{dlg_cmd}'"
+    #     puts "Executing: '#{dlg_cmd}'"
     selection = `#{dlg_cmd}`
     [selection, $?.to_i]
   end
