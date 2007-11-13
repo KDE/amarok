@@ -141,9 +141,9 @@ class TrackNavigator;
              * @param list tracks to add
              * @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
              **/
-            void insertOptioned( Meta::TrackList list, int options );
-            void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
-            void insertOptioned( QueryMaker *qm, int options );
+            AMAROK_EXPORT void insertOptioned( Meta::TrackList list, int options );
+            AMAROK_EXPORT void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
+            AMAROK_EXPORT void insertOptioned( QueryMaker *qm, int options );
             void insertTrack( int row, Meta::TrackPtr track ); //convenience method
             void insertTracks( int row, Meta::TrackList list );
             void insertTracks( int row, QueryMaker *qm );
@@ -155,8 +155,6 @@ class TrackNavigator;
 
             void moveRow( int row, int to );
 
-            ///deprecated function to ease porting to Meta::Track from URLs
-            AMAROK_EXPORT KDE_DEPRECATED void insertMedia( KUrl::List list, int options = Append );
             virtual void metadataChanged( Meta::Track *track );
             virtual void metadataChanged( Meta::Album *album );
 

@@ -16,6 +16,7 @@
 #include "app.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
+#include "collection/CollectionManager.h"
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
@@ -728,8 +729,9 @@ MediaView::invokeItem( Q3ListViewItem *i )
     if( !item )
         return;
 
-    KUrl::List urls = nodeBuildDragList( item );
-    The::playlistModel()->insertMedia( urls, Playlist::AppendAndPlay );
+    Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls(
+                                                nodeBuildDragList( item ) );
+    The::playlistModel()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
 void

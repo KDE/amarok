@@ -806,8 +806,9 @@ MediaView::invokeItem( Q3ListViewItem *i )
     if( !item )
         return;
 
-    KUrl::List urls = nodeBuildDragList( item );
-    The::playlistModel()->insertMedia( urls, Playlist::AppendAndPlay );
+    Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls(
+                                                nodeBuildDragList( item ) );
+    The::playlistModel()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
 void

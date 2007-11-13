@@ -525,23 +525,6 @@ Model::insertOptioned( QueryMaker *qm, int options )
     qm->run();
 }
 
-void
-Model::insertMedia( KUrl::List list, int options )
-{
-    KUrl url;
-    Meta::TrackList trackList;
-    foreach( url, list )
-    {
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        if( track )
-            trackList.push_back( track );
-    }
-    if( trackList.isEmpty() )
-        debug() << "Attempted to insert nothing into the playlist!";
-
-    insertOptioned( trackList, options );
-}
-
 bool
 Model::saveM3U( const QString &path ) const
 {

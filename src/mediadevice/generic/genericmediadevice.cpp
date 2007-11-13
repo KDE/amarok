@@ -29,6 +29,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
+#include "collection/CollectionManager.h"
 #include "k3bexporter.h"
 #include "playlist/PlaylistModel.h"
 #include "podcastbundle.h"
@@ -939,16 +940,17 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
         menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( getSelectedItems() );
         switch( id )
         {
             case LOAD:
-                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Replace );
+                The::playlistModel()->insertOptioned( tracks, Playlist::Replace );
                 break;
             case APPEND:
-                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Append );
+                The::playlistModel()->insertOptioned( tracks, Playlist::Append );
                 break;
             case QUEUE:
-                The::playlistModel()->insertMedia( getSelectedItems(), Playlist::Queue );
+                The::playlistModel()->insertOptioned( tracks, Playlist::Queue );
                 break;
             case DOWNLOAD:
                 downloadSelectedItems();

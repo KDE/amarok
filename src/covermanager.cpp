@@ -805,7 +805,8 @@ void CoverManager::playSelectedAlbums()
     {
         artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
         album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
-        The::playlistModel()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
+        //TODO: Port 2.0
+//         The::playlistModel()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
     }
 }
 

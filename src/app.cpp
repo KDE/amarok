@@ -309,7 +309,8 @@ void App::handleCliArgs() //static
         if( args->isSet( "play" ) )
             options |= Playlist::DirectPlay;
 
-        The::playlistModel()->insertMedia( list, options );
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
+        The::playlistModel()->insertOptioned( tracks, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -781,7 +782,10 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
 
             if ( id > 0 )
-                The::playlistModel()->insertMedia( list, id );
+            {
+                Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
+                The::playlistModel()->insertOptioned( tracks, id );
+            }
         }
         else return false;
         #undef e

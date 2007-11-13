@@ -1,10 +1,10 @@
 
 include_directories(
     ../..
-	../../klegendary
 	../../amarokcore 
 	../../engine
-	../../mediadevice 
+	../../mediadevice
+    ../../meta
 	${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 

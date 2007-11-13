@@ -33,7 +33,7 @@ class CollectionManager : public QObject
     Q_OBJECT
 
     public:
-        static CollectionManager * instance();
+        AMAROK_EXPORT static CollectionManager * instance();
 
         ~CollectionManager();
 
@@ -46,7 +46,7 @@ class CollectionManager : public QObject
             could be created for the url.
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
-        Meta::TrackList tracksForUrls( const KUrl::List &urls );
+        AMAROK_EXPORT Meta::TrackList tracksForUrls( const KUrl::List &urls );
         Meta::ArtistList relatedArtists( Meta::ArtistPtr artist, int maxArtists );
 
         /**
