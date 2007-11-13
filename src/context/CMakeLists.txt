@@ -35,6 +35,7 @@ set(plasma_LIB_SRCS
     plasma/appletbrowser/kcategorizeditemsviewmodels.cpp
     plasma/appletbrowser/plasmaappletitemmodel.cpp
     plasma/appletbrowser/customdragtreeview.cpp
+    plasma/applethandle.cpp
     plasma/configxml.cpp
     plasma/corona.cpp
     plasma/containment.cpp
