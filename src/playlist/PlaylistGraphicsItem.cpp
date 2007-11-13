@@ -46,6 +46,7 @@ struct Playlist::GraphicsItem::ActiveItems
     , topRightText( 0 )
     , lastWidth( -5 )
     , groupedTracks ( 0 )
+    , collapsible( true )
      { }
      ~ActiveItems()
      {
@@ -68,6 +69,7 @@ struct Playlist::GraphicsItem::ActiveItems
 
      int lastWidth;
      int groupedTracks;
+     bool collapsible;
 
      QRectF preDragLocation;
      Meta::TrackPtr track;
@@ -85,6 +87,7 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_height( -1 )
     , m_groupMode( -1 )
     , m_groupModeChanged ( false )
+    , m_collapsible ( true )
 {
     setZValue( 1.0 );
     if( !s_fm )
@@ -211,10 +214,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
         //"Just for fun" stuff below this point 
 
+        //ask if we are allowed to collapse thid group:
+        //m_collapsible = index.data( GroupedCollapsibleRole ).toBool();
+        
         QString collapseString; 
-        if ( m_groupMode == Head )
-           collapseString = "collapse_button";
-       else 
+        if ( m_groupMode == Head ) {
+           if ( m_collapsible )
+             collapseString = "collapse_button";
+           else
+             collapseString = "collapse_button_grayed_out";
+        } else
            collapseString = "expand_button";
           
 
@@ -373,7 +382,17 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
         prepareGeometryChange();
     m_items->lastWidth = totalWidth;
-    QString prettyLength = Meta::secToPrettyTime( track->length() );
+
+    QString prettyLength;
+
+    if ( m_groupMode == Head_Collapsed ) {
+        uint seconds = 0;
+        for( uint i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
+            seconds += The::playlistModel()->itemList()[ i ]->track()->length();
+        prettyLength = Meta::secToPrettyTime( seconds );
+    } else
+        prettyLength = Meta::secToPrettyTime( track->length() );
+        
     QString album;
     if( track->album() )
         album = track->album()->name();
@@ -407,10 +426,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         QFont f = m_items->bottomLeftText->font();
         f.setItalic( true );
         m_items->bottomLeftText->setFont( f );
-        uint seconds = 0;
-        for( uint i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
-            seconds += The::playlistModel()->itemList()[ i ]->track()->length();
-        m_items->bottomRightText->setEditableText( Meta::secToPrettyTime( seconds ), totalWidth - bottomRightAlignX );
+        m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
 
     } else {
         m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
@@ -572,13 +588,14 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
 
     //did we hit the collapse / expand button?
-
-    QRectF rect( boundingRect().width() - ( 16 + MARGIN ), MARGIN, 16, 16 );
-    if ( rect.contains( event->pos() ) ) {
-        if ( m_groupMode == Head_Collapsed )
-            The::playlistModel()->setCollapsed( m_currentRow, false );
-        else if ( m_groupMode == Head )
-            The::playlistModel()->setCollapsed( m_currentRow, true );
+    if ( m_collapsible ) {
+        QRectF rect( boundingRect().width() - ( 16 + MARGIN ), MARGIN, 16, 16 );
+        if ( rect.contains( event->pos() ) ) {
+            if ( m_groupMode == Head_Collapsed )
+                The::playlistModel()->setCollapsed( m_currentRow, false );
+            else if ( m_groupMode == Head )
+                The::playlistModel()->setCollapsed( m_currentRow, true );
+        }
     }
 
 

@@ -144,6 +144,13 @@ Model::data( const QModelIndex& index, int role ) const
         TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
         return albumGroup->alternate( row );
+    } else if ( role == GroupedCollapsibleRole ) {
+        //get the track
+        TrackPtr track = m_items.at( row )->track();
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        //we cannot collapse the group that contains the currently selected track.
+        return ( albumGroup->firstInGroup( m_activeRow ) == -1 );
+
     } else if( role == Qt::DisplayRole && row != -1 )
     {
         switch ( index.column() ) {
@@ -370,14 +377,16 @@ Model::setActiveRow( int row )
     debug() << "between " << min << " and " << max;
 
 
+    int oldActive = m_activeRow;
+    m_activeRow = row;
+
     //make sure that the group containg this track is expanded
     if ( m_albumGroups.contains( m_items[ row ]->track()->album() ) ) {
         m_albumGroups[ m_items[ row ]->track()->album() ]->setCollapsed( row,  false );
         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
-
-    m_activeRow = row;
+    
 }
 
 void

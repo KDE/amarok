@@ -80,7 +80,8 @@ class TrackNavigator;
         ActiveTrackRole,
         GroupRole,
         GroupedTracksRole,
-        GroupedAlternateRole
+        GroupedAlternateRole,
+        GroupedCollapsibleRole
     };
     ///Options for insertTracks
     enum AddOptions

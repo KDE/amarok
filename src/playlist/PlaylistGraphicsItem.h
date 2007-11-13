@@ -65,6 +65,7 @@ namespace Playlist
             int m_groupMode;
             int m_currentRow;
             bool m_groupModeChanged;
+            bool m_collapsible;
 
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;
