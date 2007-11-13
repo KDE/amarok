@@ -73,9 +73,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #endif
 
 
-// disable if it takes too long for you
-#define CHECK_FOR_INTEGRITY 1
-
 #include "metadata/audible/taglib_audiblefile.h"
 
 struct PodcastInfo
@@ -451,7 +448,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->artist = g_strdup( metaBundle.artist()->utf8() );
     track->genre = g_strdup( metaBundle.genre()->utf8() );
 
-    track->mediatype = 0x01; // for audio
+    track->mediatype = ITDB_MEDIATYPE_AUDIO;
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -468,19 +465,19 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     {
         track->filetype = g_strdup( "mp4" );
         track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = 0x08; // for audiobooks
+        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
         track->filetype = g_strdup( "m4v video" );
         track->movie_flag = 0x01; // for videos
-        track->mediatype = 0x02; // for videos
+        track->mediatype = ITDB_MEDIATYPE_MOVIE;
     }
     else if(type=="aa")
     {
         track->filetype = g_strdup( "audible" );
         track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = 0x08; // for audiobooks
+        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
 
         TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -529,7 +526,10 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         track->remember_playback_position = 0x01; // remember playback position
         // FIXME: track->unk176 = 0x00020000; // for podcasts
         track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
-        track->mediatype = track->mediatype==0x02 ? 0x06 : 0x04; // video or audio podcast
+        track->mediatype =
+           track->mediatype==ITDB_MEDIATYPE_MOVIE
+           ?  ITDB_MEDIATYPE_PODCAST | ITDB_MEDIATYPE_MOVIE
+           : ITDB_MEDIATYPE_PODCAST;
 
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
@@ -544,8 +544,6 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else
     {
-        // FIXME: track->unk176 = 0x00010000; // for non-podcasts
-
         if( metaBundle.compilation() == MetaBundle::CompilationYes )
         {
             track->compilation = 0x01;
@@ -1015,6 +1013,9 @@ IpodMediaDevice::initializeIpod()
     if( m_itdb == 0 )
         return false;
 
+    // in order to get directories right
+    detectModel();
+
     itdb_set_mountpoint(m_itdb, QFile::encodeName(mountPoint()));
 
     Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
@@ -1239,71 +1240,83 @@ void
 IpodMediaDevice::detectModel()
 {
     // needs recent libgpod-0.3.3 from cvs
+    bool guess = false;
     if( m_itdb && m_itdb->device )
     {
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         const gchar *modelString = 0;
 
-        m_supportsArtwork = true;
+        m_supportsArtwork = false;
         if( ipodInfo )
         {
             modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
 
             switch( ipodInfo->ipod_model )
             {
+#ifdef HAVE_LIBGPOD_060
+            case ITDB_IPOD_MODEL_IPHONE_1:
+            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+                m_isIPhone = true;
+                m_supportsArtwork = false;
+                debug() << "detected iPhone/iPod Touch" << endl;
+                break;
+            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
+            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
+#endif
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
-            //case ITDB_IPOD_MODEL_CLASSIC_SILVER:
-            //case ITDB_IPOD_MODEL_CLASSIC_BLACK:
                 m_supportsVideo = true;
+                m_supportsArtwork = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
+                m_supportsArtwork = true;
                 debug() << "detected iTunes phone" << endl;
                 break;
-            //case ITDB_IPOD_MODEL_IPHONE_1:
-            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
-            //    m_isIPhone = true;
-            //    m_supportsArtwork = false;
-            //    debug() << "detected iPhone/iPod Touch" << endl;
-            //    break;
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
-                if( pathExists( ":iTunes:iTunes_Control" ) )
-                {
-                    debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
-                    m_isMobile = true;
-                }
-                else if( pathExists( ":iTunes_Control" ) )
-                {
-                    debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
-                    m_isIPhone = true;
-                }
+                guess = true;
                 break;
             default:
                 break;
             }
         }
-        if(m_isIPhone)
-           m_supportsVideo = true;
-
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
 
-        if( pathExists( ":.rockbox" ) )
-        {
-            debug() << "RockBox firmware detected" << endl;
-            m_rockboxFirmware = true;
-        }
     }
     else
     {
         debug() << "iPod type detection failed, no video support" << endl;
         Amarok::StatusBar::instance()->longMessage(
                 i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
+        guess = true;
+    }
+
+    if( guess )
+    {
+        if( pathExists( ":iTunes:iTunes_Control" ) )
+        {
+            debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
+            m_isMobile = true;
+        }
+        else if( pathExists( ":iTunes_Control" ) )
+        {
+            debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
+            m_isIPhone = true;
+        }
+    }
+
+    if(m_isIPhone)
+        m_supportsVideo = true;
+
+    if( pathExists( ":.rockbox" ) )
+    {
+        debug() << "RockBox firmware detected" << endl;
+        m_rockboxFirmware = true;
     }
 }
 

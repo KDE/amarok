@@ -919,6 +919,11 @@ if test "$build_libgpod" != "no"; then
                   have_libgpod_042=no,
                   [#include <gpod/itdb.h>])
 
+            AC_CHECK_DECL(ITDB_IPOD_MODEL_TOUCH_BLACK,
+                  [AC_DEFINE(HAVE_LIBGPOD_060, 1, [have at least libgpod 0.6.0])],
+                  have_libgpod_060=no,
+                  [#include <gpod/itdb.h>])
+
             CPPFLAGS=$ac_cppflags_save
             CFLAGS=$ac_cflags_save
             LIBS=$ac_libs_save

@@ -9,7 +9,8 @@ VERSION 1.4.8
       Apparently it's not obvious that you have to hit OK after selecting "Do
       not handle" if you don't want it handled, so disabling it prevents it
       from being shown repeatedly.
-    * Better support for iPhone/iPod Touch mounted via fuse/sshfs.
+    * Better support for iPhone/iPod Touch mounted via fuse/sshfs (libgpod 0.6.0
+      or newer required).
     * Only re-render the context view when visible if changing ratings, scores
       or labels for songs.
 
