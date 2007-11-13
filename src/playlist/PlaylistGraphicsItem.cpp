@@ -407,8 +407,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         QFont f = m_items->bottomLeftText->font();
         f.setItalic( true );
         m_items->bottomLeftText->setFont( f );
-        int seconds = 0;
-        for( int i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
+        uint seconds = 0;
+        for( uint i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
             seconds += The::playlistModel()->itemList()[ i ]->track()->length();
         m_items->bottomRightText->setEditableText( Meta::secToPrettyTime( seconds ), totalWidth - bottomRightAlignX );
 
