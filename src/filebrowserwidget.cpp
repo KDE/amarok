@@ -63,7 +63,7 @@ FileBrowserWidget::FileBrowserWidget( const char *name )
     connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
              SLOT(setRootDirectory(QModelIndex)));
 
-    m_model->dirLister()->openUrl( KUrl( "~" ) );
+    m_model->dirLister()->openUrl( KUrl( QDir::home().path() ) );
 
     setFocusProxy( m_view );
 }
