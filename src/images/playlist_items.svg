@@ -20,6 +20,17 @@
   <defs
      id="defs2467">
     <linearGradient
+       id="linearGradient4456">
+      <stop
+         style="stop-color:#fffffd;stop-opacity:0.58431375;"
+         offset="0"
+         id="stop4458" />
+      <stop
+         style="stop-color:#91cbff;stop-opacity:0;"
+         offset="1"
+         id="stop4460" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient4598">
       <stop
          id="stop4600"
@@ -1154,6 +1165,17 @@
        y1="428.13889"
        x2="291.55783"
        y2="414.13889" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4456"
+       id="radialGradient7665"
+       cx="249.25244"
+       cy="278.90845"
+       fx="249.25244"
+       fy="278.90845"
+       r="144.25244"
+       gradientTransform="matrix(1,0,0,6.9322916e-2,-18.504883,168.02742)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1165,16 +1187,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6568548"
-     inkscape:cx="124.64088"
-     inkscape:cy="816.34809"
+     inkscape:zoom="2.8284274"
+     inkscape:cx="262.37915"
+     inkscape:cy="872.91663"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1175"
      inkscape:window-height="959"
      inkscape:window-x="322"
-     inkscape:window-y="14" />
+     inkscape:window-y="14"
+     showguides="false" />
   <metadata
      id="metadata2470">
     <rdf:RDF>
@@ -1423,5 +1446,26 @@
            style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.21765792;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
     </g>
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect5705"
+       width="340.99997"
+       height="35.000084"
+       x="60"
+       y="172.36218" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6686"
+       width="28.672035"
+       height="0.66789734"
+       x="261.32797"
+       y="282.36218" />
+    <rect
+       style="fill:url(#radialGradient7665);fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="active_overlay"
+       width="288.50488"
+       height="20"
+       x="86.495117"
+       y="177.36218" />
   </g>
 </svg>

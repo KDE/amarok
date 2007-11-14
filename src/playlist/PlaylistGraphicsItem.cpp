@@ -58,7 +58,7 @@ struct Playlist::GraphicsItem::ActiveItems
 
       }
 
-     QGraphicsRectItem* foreground;
+     QGraphicsPixmapItem* foreground;
      Playlist::TextItem* bottomLeftText;
      Playlist::TextItem* bottomRightText;
      Playlist::TextItem* topLeftText;
@@ -336,10 +336,30 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     {
         if( !m_items->foreground )
         {
-            m_items->foreground = new QGraphicsRectItem( QRectF( 0.0, 0.0, trackRect.width(), trackRect.height() ) , this );
+
+            debug() << "Creating active track overlay";
+            m_items->foreground = new QGraphicsPixmapItem( this );
             m_items->foreground->setPos( 0.0, trackRect.top() );
             m_items->foreground->setZValue( 10.0 );
-            QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
+
+
+            QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+            QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
+            background.fill( Qt::transparent );
+
+            debug() << "Key string: " << key;
+
+            if (!QPixmapCache::find(key, background)) {
+                QPainter pt( &background );
+                s_svgRenderer->render( &pt, "active_overlay",  QRectF( 0, 0, trackRect.width(), trackRect.height() ) );
+                QPixmapCache::insert(key, background);
+            }
+            m_items->foreground->setPixmap( background );
+            m_items->foreground->show();
+            debug() << "Done";
+
+            
+            /*QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
             m_items->overlayGradientStart = option->palette.highlightedText().color().light();
             m_items->overlayGradientStart.setAlpha( 80 );
             m_items->overlayGradientEnd = option->palette.highlightedText().color().dark();
@@ -348,12 +368,11 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             gradient.setColorAt( 1.0, m_items->overlayGradientEnd );
             QBrush brush( gradient );
             m_items->foreground->setBrush( brush );
-            m_items->foreground->setPen( QPen( Qt::NoPen ) );
+            m_items->foreground->setPen( QPen( Qt::NoPen ) );*/
         }
         if( !m_items->foreground->isVisible() )
             m_items->foreground->show();
-    }
-    else if( m_items->foreground && m_items->foreground->isVisible() )
+    } else if( m_items->foreground && m_items->foreground->isVisible() )
         m_items->foreground->hide();
 }
 
@@ -496,14 +515,26 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
                 trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
         }
-        
-        QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
-        gradient.setColorAt( 0.0, m_items->overlayGradientStart );
-        gradient.setColorAt( 1.0, m_items->overlayGradientEnd );
-        QBrush brush( gradient );
-        m_items->foreground->setRect( 0, 0, totalWidth, trackRect.height() );
-        m_items->foreground->setBrush( brush );
-        m_items->foreground->setPen( QPen( Qt::NoPen ) );
+
+        debug() << "Resizing active track overlay";
+
+        QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
+
+        debug() << "Key string: " << key;
+        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
+        background.fill( Qt::transparent );
+
+
+        if (!QPixmapCache::find(key, background)) {
+            QPainter pt( &background );
+            s_svgRenderer->render( &pt, "active_overlay",  trackRect );
+            QPixmapCache::insert(key, background);
+        }
+        m_items->foreground->setPixmap( background );
+        m_items->foreground->setZValue( 10.0 );
+
+        debug() << "Done";
+
     }
 
     m_items->lastWidth = totalWidth;
