@@ -527,7 +527,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         if (!QPixmapCache::find(key, background)) {
             QPainter pt( &background );
-            s_svgRenderer->render( &pt, "active_overlay",  trackRect );
+            s_svgRenderer->render( &pt, "active_overlay",   QRectF( 0, 0, trackRect.width(), trackRect.height() ) );
             QPixmapCache::insert(key, background);
         }
         m_items->foreground->setPixmap( background );
