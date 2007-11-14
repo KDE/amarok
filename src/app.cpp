@@ -238,7 +238,7 @@ App::~App()
     AmarokConfig::self()->writeConfig();
 
     mainWindow()->deleteBrowsers();
-//     delete mainWindow(); //not needed?
+    delete mainWindow();
 
 }
 
