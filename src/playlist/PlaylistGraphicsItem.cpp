@@ -322,13 +322,44 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->bottomLeftText->show();
     }
 
+    
     //set selection marker if needed
-
     if( option->state & QStyle::State_Selected )
     {
-        painter->fillRect( trackRect, QBrush( QColor( 0, 0, 255, 128 ) ) );
+        //painter->fillRect( trackRect, QBrush( QColor( 0, 0, 255, 128 ) ) );
 
-    }
+        QString key = QString("selection_left:%1x%2").arg( 40 ).arg(trackRect.height());
+        
+        QPixmap leftMarker( 40 , (int)( trackRect.height() ) );
+        leftMarker.fill( Qt::transparent );
+
+        debug() << "Key string: " << key;
+
+        if (!QPixmapCache::find(key, leftMarker)) {
+            QPainter pt( &leftMarker );
+            s_svgRenderer->render( &pt, "selection_left"/*,  QRectF( 0, 0, 40, trackRect.height() )*/ );
+            QPixmapCache::insert(key, leftMarker);
+        }
+
+        painter->drawPixmap( 2, trackRect.top(), leftMarker );
+
+
+        key = QString("selection_right:%1x%2").arg( 40 ).arg(trackRect.height());
+        QPixmap rightMarker( 40 , (int)( trackRect.height() ) );
+        rightMarker.fill( Qt::transparent );
+
+        debug() << "Key string: " << key;
+
+        if (!QPixmapCache::find(key, rightMarker)) {
+            QPainter pt( &rightMarker );
+            s_svgRenderer->render( &pt, "selection_right",  QRectF( 0, 0, 40, trackRect.height() ) );
+            QPixmapCache::insert(key, rightMarker);
+        }
+
+        painter->drawPixmap( trackRect.width() - 42, trackRect.top(), rightMarker );
+
+}
+
 
 
     //set overlay if item is active:
