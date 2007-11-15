@@ -67,6 +67,7 @@
 
 #include <cmath>                 //DbConnection::sqlite_power()
 #include <ctime>                 //query()
+#include <cstdlib>               //exit()
 #include <unistd.h>              //usleep()
 
 #include <taglib/audioproperties.h>

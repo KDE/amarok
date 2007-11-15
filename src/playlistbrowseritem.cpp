@@ -52,6 +52,8 @@
 #include <ktrader.h>
 #include <kurlrequester.h>
 
+#include <cstdio>             //rename
+
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistReader

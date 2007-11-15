@@ -82,6 +82,8 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
+#include <cstdlib> // abs
+
 extern "C"
 {
     #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)

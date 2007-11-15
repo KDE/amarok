@@ -24,6 +24,7 @@
 #include "magnatunetypes.h"
 #include "statusbar.h"
 
+#include <stdlib.h>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
 {}
