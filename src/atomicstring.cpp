@@ -27,68 +27,6 @@
 
 #include "atomicstring.h"
 
-#if __GNUC__ >= 3
-
-    // Golden ratio - arbitrary start value to avoid mapping all 0's to all 0's
-    // or anything like that.
-    const unsigned PHI = 0x9e3779b9U;
-    // Copyright (c) Paul Hsieh
-    // http://www.azillionmonkeys.com/qed/hash.html
-    struct AtomicString::SuperFastHash
-    {
-        uint32_t operator()( const QString *string ) const
-        {
-            unsigned l = string->length();
-            const QChar *s = string->unicode();
-            uint32_t hash = PHI;
-            uint32_t tmp;
-
-            int rem = l & 1;
-            l >>= 1;
-
-            // Main loop
-            for (; l > 0; l--) {
-                hash += s[0].unicode();
-                tmp = (s[1].unicode() << 11) ^ hash;
-                hash = (hash << 16) ^ tmp;
-                s += 2;
-                hash += hash >> 11;
-            }
-
-            // Handle end case
-            if (rem) {
-                hash += s[0].unicode();
-                hash ^= hash << 11;
-                hash += hash >> 17;
-            }
-
-            // Force "avalanching" of final 127 bits
-            hash ^= hash << 3;
-            hash += hash >> 5;
-            hash ^= hash << 2;
-            hash += hash >> 15;
-            hash ^= hash << 10;
-
-            // this avoids ever returning a hash code of 0, since that is used to
-            // signal "hash not computed yet", using a value that is likely to be
-            // effectively the same as 0 when the low bits are masked
-            if (hash == 0)
-                hash = 0x80000000;
-
-            return hash;
-        }
-    };
-
-    struct AtomicString::equal
-    {
-        bool operator()( const QString *a, const QString *b ) const
-        {
-            return *a == *b;
-        }
-    };
-
-#endif
-
 class AtomicString::Data: public QString
 {
 public:

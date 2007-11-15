@@ -45,11 +45,7 @@
 #define AMAROK_ATOMICSTRING_H
 
 #include "config.h"
-#if __GNUC__ >= 3
-    #include <ext/hash_set>
-#else
-    #include <set>
-#endif
+#include <set>
 #include "amarok_export.h"
 
 #include <qstring.h>
@@ -168,18 +164,12 @@ public:
 
 
 private:
-    #if __GNUC__ >= 3
-        struct SuperFastHash;
-        struct equal;
-        typedef __gnu_cxx::hash_set<QString*, SuperFastHash, equal> set_type;
-    #else
         struct less
         {
              bool operator()( const QString *a, const QString *b ) const
              { return *a < *b; }
         };
         typedef std::set<QString*, less> set_type;
-    #endif
 
     class Data;
     friend class Data;
