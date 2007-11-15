@@ -49,6 +49,7 @@ set(plasma_LIB_SRCS
     plasma/scriptengine.cpp
     plasma/svg.cpp
     plasma/theme.cpp
+    plasma/view.cpp
     plasma/widgets/boxlayout.cpp
     plasma/widgets/checkbox.cpp
     plasma/widgets/freelayout.cpp
