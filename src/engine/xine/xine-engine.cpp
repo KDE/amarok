@@ -26,6 +26,7 @@
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
 #include <climits>
+#include <cstdlib>
 #include <cmath>
 #include "debug.h"
 
