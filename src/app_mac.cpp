@@ -1,6 +1,5 @@
 #include <Carbon/Carbon.h>
 #include <QStringList>
-#include "dynamicmode.h"
 
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 
