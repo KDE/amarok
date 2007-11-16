@@ -37,7 +37,6 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     scene()->addItem( Playlist::DropVis::instance() );
 
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-
 }
 
 void
@@ -55,7 +54,6 @@ Playlist::GraphicsView::setModel( Playlist::Model *model )
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( dataChanged( const QModelIndex& ) ) );
     connect( m_model, SIGNAL( playlistGroupingChanged( ) ), this, SLOT( groupingChanged() ) );
 
-
     show();
 }
 
@@ -66,7 +64,6 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     QGraphicsItem *topItem = scene()->itemAt( sceneClickPos );
     if( !topItem )
         return;
-
 
     Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( topItem );
     if( !item )
@@ -147,8 +144,6 @@ Playlist::GraphicsView::removeSelection()
         m_model->removeRows( index, count );
     }
 
-
-
     for ( int i = firstIndex ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 }
@@ -198,21 +193,18 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
     for ( int i = start; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-
     shuffleTracks( start );
 }
 
 void
 Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::GraphicsItem *above )
 {
-
     int moveMeIndex = m_tracks.indexOf( moveMe );
     int aboveIndex;
     if ( above )
         aboveIndex  = m_tracks.indexOf( above  );
     else
         aboveIndex = m_tracks.count();
-
 
     //call set row on all items below the first one potentially modified to
     //make sure that all items have correct background color and group info
@@ -239,8 +231,6 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         m_model->moveRow( moveMeIndex, aboveIndex );
         m_tracks.move( moveMeIndex, aboveIndex );
 
-
-      
         debug() << "First index: " << firstIndex;
 
         for ( int i = firstIndex; i < m_tracks.count(); i++ )
@@ -258,7 +248,6 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 {
     DEBUG_BLOCK
 
-
     debug() << "number if items: " << m_tracks.count();
     if( startPosition < 0 )
         return;
@@ -271,7 +260,6 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
                                     //that results in items not moving all the way
 
-
     int cumulativeHeight = 0;
 
     for ( int j = 0; j < startPosition; j++ )
@@ -282,12 +270,10 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         Playlist::GraphicsItem *item = m_tracks.at( i );
         qreal currentY = item->pos().y();
 
-
         qreal desiredY = cumulativeHeight;
 
         int itemHeight = item->boundingRect().height();
         cumulativeHeight += itemHeight;
-
 
         int visibleTop = mapToScene( 0,0 ).y();
         int visibleBottom = mapToScene( 0, height() ).y();
@@ -298,8 +284,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 
         if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) && 
               ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
-               ( itemHeight != 0 ) ) {
-
+               ( itemHeight != 0 ) )
+        {
             bool moveUp = false;
             if( desiredY > currentY )
                 moveUp = true;
@@ -318,7 +304,9 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
             }
             animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
 
-        } else {
+        }
+        else
+        {
             //don't animate items if both currentY and desiredY are outside the visible area!
             //We still do need to update their position though
             m_tracks.at( i )->setPos( 0.0, desiredY );
@@ -342,22 +330,19 @@ void
 Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 {
      DEBUG_BLOCK
-     if ( !index.isValid() )
+     if( !index.isValid() )
         return;
 
-     if ( m_tracks.count() > index.row() ) {
+     if( m_tracks.count() > index.row() )
+     {
         debug() << "Refreshing item..."; 
         m_tracks.at( index.row() )->update();
      }
 }
 
-namespace The {
-    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
-}
-
 void Playlist::GraphicsView::groupingChanged()
 {
-    // ouch!!! this is expesive!!
+    // ouch!!! this is expensive!!
     //DEBUG_BLOCK
 
     int i;
@@ -369,5 +354,8 @@ void Playlist::GraphicsView::groupingChanged()
    // update();
 }
 
+namespace The {
+    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
+}
 
 #include "PlaylistGraphicsView.moc"
