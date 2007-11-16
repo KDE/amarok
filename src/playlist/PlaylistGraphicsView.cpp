@@ -278,10 +278,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         int visibleTop = mapToScene( 0,0 ).y();
         int visibleBottom = mapToScene( 0, height() ).y();
 
-        /*if ( ( ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) || 
-             ( ( desiredY >= visibleTop ) && ( desiredY <= visibleBottom ) ) ) && 
-               ( itemHeight != 0 ) ) {*/
-
+        // Animate the repositioning of the item if it is within the viewable area
         if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) && 
               ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
                ( itemHeight != 0 ) )
@@ -303,7 +300,6 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
                 animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
             }
             animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
-
         }
         else
         {
