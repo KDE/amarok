@@ -28,7 +28,7 @@
 #include <Q3ValueList>
 
 class QAbstractButton;
-class Q3GroupBox;
+class QGroupBox;
 class QLabel;
 class KVBox;
 class MediaDevice;
@@ -119,7 +119,7 @@ class MediaDevicePluginManagerDialog : public KDialog
         KPushButton* m_genericDevices;
         KPushButton* m_addButton;
         KVBox *m_devicesBox;
-        Q3GroupBox *m_location;
+        QGroupBox *m_location;
         MediaDevicePluginManager *m_manager;
 };
 
@@ -148,6 +148,23 @@ class ManualDeviceAdder : public KDialog
         KComboBox* m_mdaCombo;
         HintLineEdit* m_mdaName;
         HintLineEdit* m_mdaMountPoint;
+};
+
+class MediaDeviceVolumeMarkerDialog : public KDialog
+{
+    Q_OBJECT
+
+    public:
+        MediaDeviceVolumeMarkerDialog( MediaDevicePluginManager* mpm );
+        ~MediaDeviceVolumeMarkerDialog();
+
+    private slots:
+        void slotOk();
+
+    private:
+        KVBox *m_mountPointBox;
+        QGroupBox *m_location;
+        MediaDevicePluginManager* m_mpm;
 };
 
 #endif

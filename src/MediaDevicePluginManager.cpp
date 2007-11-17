@@ -32,14 +32,12 @@
 #include <KVBox>
 #include <Solid/Device>
 
-#include <q3groupbox.h>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QTextDocument>
 #include <QToolTip>
 #include <QWhatsThis>
-
-typedef QMap<QString, Medium*> MediumMap;
 
 MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
         : KDialog( Amarok::mainWindow() )
@@ -63,7 +61,7 @@ MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    m_location = new Q3GroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
+    m_location = new QGroupBox( i18n( "Devices" ), vbox );
     m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     m_devicesBox = new KVBox( m_location );
     m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
@@ -93,7 +91,7 @@ void
 MediaDevicePluginManagerDialog::slotOk()
 {
     m_manager->finished();
-    slotButtonClicked( Ok );
+    KDialog::slotButtonClicked( Ok );
 }
 
 MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget, const bool nographics )
@@ -118,7 +116,9 @@ MediaDevicePluginManager::~MediaDevicePluginManager()
 void
 MediaDevicePluginManager::slotGenericVolumes()
 {
-
+    MediaDeviceVolumeMarkerDialog *mdvmd = new MediaDeviceVolumeMarkerDialog( this );
+    mdvmd->exec();
+    delete mdvmd;
 }
 
 bool
@@ -579,5 +579,46 @@ MediaDeviceConfig::plugin()
     return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() );
 }
 
+MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginManager *mpm )
+        : KDialog( Amarok::mainWindow() )
+        , m_mountPointBox( 0 )
+        , m_location( 0 )
+        , m_mpm( mpm )
+{
+    setObjectName( "mediadevicevolumemarkerdialog" );
+    setModal( true );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+
+    kapp->setTopWidget( this );
+    setCaption( KDialog::makeStandardCaption( i18n( "Mark Volumes as Media Devices" ) ) );
+
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+
+    vbox->setSpacing( KDialog::spacingHint() );
+    vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+
+    m_location = new QGroupBox( i18n( "Volumes" ), vbox );
+    m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
+    m_mountPointBox = new KVBox( m_location );
+    m_mountPointBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+
+    KHBox *hbox = new KHBox( vbox );
+
+    connect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
+}
+
+MediaDeviceVolumeMarkerDialog::~MediaDeviceVolumeMarkerDialog()
+{
+    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
+}
+
+void
+MediaDeviceVolumeMarkerDialog::slotOk()
+{
+    //Voodoo here, and tell mpm to update its list
+    KDialog::slotButtonClicked( Ok );
+}
 
 #include "MediaDevicePluginManager.moc"
