@@ -18,6 +18,10 @@
 #include "Svg.h"
 
 #include "plasma/widgets/layoutanimator.h"
+#include "plasma/phase.h"
+
+#include <KAuthorized>
+#include <KMenu>
 
 #include <QAction>
 #include <QGraphicsScene>
@@ -29,6 +33,7 @@ namespace Context
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_defaultColumnSize( 450 )
+    , m_actions( 0 )
 {
     DEBUG_BLOCK
     m_columns = new Plasma::FlowLayout( this );
@@ -42,9 +47,13 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet* ) ), this, SLOT( addApplet( Plasma::Applet* ) ) );
-    
+
+
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
+    // set up default context menu actions
+    m_actions = new QList<QAction*>();
+    m_actions->append( m_appletBrowserAction );
 
     m_appletBrowser = new Plasma::AppletBrowser( this );
     m_appletBrowser->setApplication( "amarok" );
@@ -290,17 +299,142 @@ void ColumnApplet::recalculate()
 QList<QAction*> ColumnApplet::contextActions()
 {
     DEBUG_BLOCK
-
-    QList<QAction*> actions;
-    actions.append(m_appletBrowserAction);
-    debug() << "returning actions:" << actions;
-    return actions;
+    return *m_actions;
 }
 
 void ColumnApplet::launchAppletBrowser() // SLOT
 {
     DEBUG_BLOCK
     m_appletBrowser->show();
+}
+
+void ColumnApplet::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
+{
+    //kDebug() << "let's see if we manage to get a context menu here, huh";
+    if (!scene() || !KAuthorized::authorizeKAction("desktop_contextmenu")) {
+        QGraphicsItem::contextMenuEvent(event);
+        return;
+    }
+
+    QPointF point = event->scenePos();
+    QGraphicsItem* item = scene()->itemAt(point);
+    if (item == this) {
+        item = 0;
+    }
+
+    Applet* applet = 0;
+
+    while (item) {
+        applet = qgraphicsitem_cast<Applet*>(item);
+        if (applet) {
+            break;
+        }
+
+        item = item->parentItem();
+    }
+
+    KMenu desktopMenu;
+    //kDebug() << "context menu event " << immutable;
+    if (!applet) {
+        if (!scene() || static_cast<ContextScene*>(scene())->isImmutable()) {
+            kDebug() << "immutability";
+            QGraphicsItem::contextMenuEvent(event);
+            return;
+        }
+
+        //FIXME: change this to show this only in debug mode (or not at all?)
+        //       before final release
+        QList<QAction*> actions = contextActions();
+
+        if (actions.count() < 1) {
+            kDebug() << "no applet, but no actions";
+            QGraphicsItem::contextMenuEvent(event);
+            return;
+        }
+
+        foreach(QAction* action, actions) {
+            desktopMenu.addAction(action);
+        }
+    } else if (applet->isImmutable()) {
+        kDebug() << "immutable applet";
+        QGraphicsItem::contextMenuEvent(event);
+        return;
+    } else {
+        bool hasEntries = false;
+        if (applet->hasConfigurationInterface()) {
+            QAction* configureApplet = new QAction(i18n("%1 Settings...", applet->name()), &desktopMenu);
+            connect(configureApplet, SIGNAL(triggered(bool)),
+                    applet, SLOT(showConfigurationInterface()));
+            desktopMenu.addAction(configureApplet);
+            hasEntries = true;
+        }
+
+        if (scene() && !static_cast<ContextScene*>(scene())->isImmutable()) {
+            QAction* closeApplet = new QAction(i18n("Remove this %1", applet->name()), &desktopMenu);
+            QVariant appletV;
+            appletV.setValue((QObject*)applet);
+            closeApplet->setData(appletV);
+            connect(closeApplet, SIGNAL(triggered(bool)),
+                    this, SLOT(destroyApplet()));
+            desktopMenu.addAction(closeApplet);
+            hasEntries = true;
+        }
+
+        QList<QAction*> actions = applet->contextActions();
+        if (!actions.isEmpty()) {
+            desktopMenu.addSeparator();
+            foreach(QAction* action, actions) {
+                desktopMenu.addAction(action);
+            }
+            hasEntries = true;
+        }
+
+        if (!hasEntries) {
+            QGraphicsItem::contextMenuEvent(event);
+            kDebug() << "no entries";
+            return;
+        }
+    }
+
+    event->accept();
+    kDebug() << "executing at" << event->screenPos();
+    desktopMenu.exec(event->screenPos());
+}
+
+
+bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
+{
+    Applet *applet = qgraphicsitem_cast<Applet*>(watched);
+    //QEvent::GraphicsSceneHoverEnter
+
+    // Otherwise we're watching something we shouldn't be...
+    Q_ASSERT(applet!=0);
+
+    return false;
+}
+void ColumnApplet::destroyApplet()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+
+    if (!action) {
+        return;
+    }
+
+    Applet *applet = qobject_cast<Applet*>(action->data().value<QObject*>());
+    Plasma::Phase::self()->animateItem(applet, Plasma::Phase::Disappear);
+}
+
+void ColumnApplet::appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim)
+{
+    if (anim == Plasma::Phase::Disappear) {
+        if (item->parentItem() == this) {
+            Applet *applet = qgraphicsitem_cast<Applet*>(item);
+
+            if (applet) {
+                applet->destroy();
+            }
+        }
+    }
 }
 
 

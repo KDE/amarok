@@ -24,6 +24,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+#include <QList>
 
 namespace Context
 {
@@ -58,18 +59,25 @@ public slots:
 protected:
 //     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-//     
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
+    bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
+
 protected slots:
     void launchAppletBrowser();
     
     void recalculate();
     
+private slots:
+    void destroyApplet();
+    void appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim);
 private:
     QAction* m_appletBrowserAction;
     Plasma::AppletBrowser* m_appletBrowser;
     
     QRectF m_geometry;
-    
+
+    QList<QAction*> *m_actions;
+
     Plasma::FlowLayout* m_columns;
     int m_defaultColumnSize;
     Plasma::Svg* m_background;
