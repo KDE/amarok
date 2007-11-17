@@ -25,10 +25,12 @@
 #include <QLabel>
 
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
-    : Context::Applet( parent, args )
+    : Plasma::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
+    , m_aspectRatio( 0.0 )
+    , m_size( QSizeF() )
 
 {
     DEBUG_BLOCK
@@ -107,9 +109,12 @@ void ServiceInfo::configAccepted() // SLOT
 
 }
 
-void ServiceInfo::resizeApplet( qreal newWidth, qreal aspectRatio )
+void ServiceInfo::resize( qreal newWidth, qreal aspectRatio )
 {
-    DEBUG_BLOCK
+    qreal height = aspectRatio * newWidth;
+    m_size.setWidth( newWidth );
+    m_size.setHeight( height );
+
     m_serviceMainInfo->setTextWidth ( newWidth - 20 );
 
     m_theme->resize( m_size );

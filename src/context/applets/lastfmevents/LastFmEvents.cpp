@@ -92,6 +92,25 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 
 }
 
+LastFmEvents::~LastFmEvents()
+{
+}
+
+void LastFmEvents::setGeometry( const QRectF& rect )
+{
+    DEBUG_BLOCK
+    debug() << "setting geometry to" << rect;
+    setPos( rect.topLeft() );
+    resize( rect.width(), m_aspectRatio );
+    Applet::setGeometry( rect );
+}
+
+QSizeF LastFmEvents::contentSizeHint() const 
+{
+    debug() << "returning size:" << m_size; 
+    return m_size;
+}
+
 void LastFmEvents::constraintsUpdated()
 {
     prepareGeometryChange();
@@ -310,9 +329,15 @@ QString LastFmEvents::truncateTextToFit( QString text, const QFont& font, const 
     return text;
 }
 
-void LastFmEvents::resizeApplet( qreal newWidth, qreal aspectRatio )
+void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )
 {
     DEBUG_BLOCK
+    debug() << "aspectRatio:" << aspectRatio;
+    debug() << "resizing to:" << newWidth;
+    qreal height = aspectRatio * newWidth;
+    debug() << "setting size:" << m_size;
+    m_size.setWidth( newWidth );
+    m_size.setHeight( height );
 
     m_theme->resize( m_size );
     debug() << "set new size: " << m_size;

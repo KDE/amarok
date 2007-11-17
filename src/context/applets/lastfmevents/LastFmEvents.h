@@ -30,9 +30,16 @@ class LastFmEvents : public Context::Applet
     Q_OBJECT
 public:
     LastFmEvents( QObject* parent, const QVariantList& args );
+    ~LastFmEvents();
+
 
     void constraintsUpdated();
+    // for compatibility with Plasma::Widget and Plasma::LayoutItem
+    QSizeF contentSizeHint() const;
 
+    // from LayoutItem
+    void setGeometry( const QRectF& rect );
+    
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -45,7 +52,7 @@ private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
-    void resizeApplet( qreal oldWidth, qreal aspectRatio );
+    void resize( qreal oldWidth, qreal aspectRatio );
 
     KDialog* m_config;
     QVBoxLayout* m_configLayout;
@@ -53,10 +60,16 @@ private:
     QCheckBox* m_sysBox;
     QCheckBox* m_userBox;
 
+    qreal m_aspectRatio;
     qreal m_width;
+    QSizeF m_size;
 
     Context::Svg* m_theme;
 
+    // stored data
+//     QList< QVariantList > m_friendData;
+//     QList< QVariantList > m_userData;
+//     QList< QVariantList > m_sysData;
     // items that go inside the svg
     QList< QGraphicsSimpleTextItem* > m_titles;
     QList< QGraphicsSimpleTextItem* > m_dates;

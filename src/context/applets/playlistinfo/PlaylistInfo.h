@@ -38,6 +38,7 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     
     void constraintsUpdated();
+    QSizeF contentSizeHint() const { return m_size; }
         
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -54,8 +55,11 @@ private:
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
-        
+    
+    qreal m_aspectRatio;
+    
     Context::Svg* m_theme;
+    QSizeF m_size;
     
     QGraphicsSimpleTextItem* m_totalTracks;
     QGraphicsSimpleTextItem* m_totalTime;

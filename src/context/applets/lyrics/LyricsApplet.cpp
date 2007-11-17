@@ -24,8 +24,10 @@
 #include <KGlobalSettings>
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
-    : Context::Applet( parent, args )
+    : Plasma::Applet( parent, args )
     , m_header( 0 )
+    , m_headerAspectRatio( 0.0 )
+    , m_size( QSizeF() )
     , m_lyricsLabel( 0 )
     , m_titleLabel( 0 )
     , m_artistLabel( 0 )
@@ -43,7 +45,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     m_header = new Context::Svg( "widgets/amarok-lyrics", this );
     m_header->setContentType( Context::Svg::SingleImage );
     m_header->resize();
-    m_aspectRatio = (qreal)m_header->size().height()
+    m_headerAspectRatio = (qreal)m_header->size().height()
         / (qreal)m_header->size().width();
 
     m_lyricsLabel = new QGraphicsSimpleTextItem( this );
@@ -93,6 +95,15 @@ void LyricsApplet::setRect( const QRectF& rect )
     resize( rect.width() );
 }
 #endif
+
+QSizeF LyricsApplet::contentSizeHint() const
+{
+//     return m_size;
+    qreal height = m_header->size().width() * m_headerAspectRatio;
+//     debug() << "returning size( height ):" << height << "+" << m_lyrics->boundingRect().height();
+    return QSizeF( m_header->size().width(),
+                   height + m_lyrics->boundingRect().height() );
+}
 
 void LyricsApplet::constraintsUpdated()
 {
@@ -151,7 +162,7 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     Q_UNUSED( option ); Q_UNUSED( contentsRect );
 
     QRectF tmp( 0, 0, m_header->size().width(), 0 );
-    tmp.setHeight( m_header->size().width() * m_aspectRatio );
+    tmp.setHeight( m_header->size().width() * m_headerAspectRatio );
     m_header->paint( p, tmp, "lyricsheader" );
 
     // align items
@@ -174,7 +185,7 @@ void LyricsApplet::calculateHeight()
     {
         qreal expandBy = lyricsheight - m_header->elementRect( "lyrics" ).height();
         m_size.setHeight( m_size.height() + expandBy );
-        resize( m_size.height() + expandBy, m_aspectRatio );
+        resize( m_size.height() + expandBy );
         update();
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
@@ -188,12 +199,13 @@ void LyricsApplet::calculateHeight()
 //     emit changed();
 }
 
-void LyricsApplet::resizeApplet( qreal newWidth, qreal aspectRatio )
+void LyricsApplet::resize( qreal newWidth )
 {
     m_size.setWidth( newWidth );
     m_size.setHeight( m_header->size().height() );
+//     m_size.setHeight( height );
 
-    calculateHeight();
+//     calculateHeight();
 
     debug() << "set size to:" << m_size;
     m_header->resize( m_size );

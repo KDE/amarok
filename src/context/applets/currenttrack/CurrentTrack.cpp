@@ -27,10 +27,12 @@
 #include <QMap>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
-    : Context::Applet( parent, args )
+    : Plasma::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
+    , m_aspectRatio( 0.0 )
+    , m_size( QSizeF() )
     , m_rating( -1 )
     , m_trackLength( 0 )
 {
@@ -71,6 +73,11 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 CurrentTrack::~CurrentTrack()
 {
     DEBUG_BLOCK
+}
+
+QSizeF CurrentTrack::contentSizeHint() const
+{
+    return m_size;
 }
 
 void CurrentTrack::constraintsUpdated()
@@ -199,12 +206,26 @@ void CurrentTrack::configAccepted() // SLOT
     constraintsUpdated();
 }
 
-void CurrentTrack::resizeApplet( qreal newWidth, qreal aspectRatio )
+void CurrentTrack::setGeometry( const QRectF& geometry )
+{
+    debug() << "current track told new geometry:" << geometry;
+    resize( geometry.width(), m_aspectRatio );
+    setPos( geometry.topLeft() );
+}
+
+void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
 {
     DEBUG_BLOCK
-
+    debug() << "aspectRatio:" << aspectRatio;
+    debug() << "resizing to:" << newWidth;
+    qreal height = aspectRatio * newWidth;
+    debug() << "setting size:" << m_size;
+    m_size.setWidth( newWidth );
+    m_size.setHeight( height );
+    
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
+    Applet::setGeometry( QRectF( geometry().topLeft(), m_size ) );
     constraintsUpdated();
 }
 

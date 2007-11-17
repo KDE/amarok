@@ -21,10 +21,12 @@
 #include <QGraphicsSimpleTextItem>
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
-    : Context::Applet( parent, args )
+    : Plasma::Applet( parent, args )
     , m_theme( 0 )
     , m_header( 0 )
+    , m_aspectRatio( 0 )
     , m_headerAspectRatio( 0.0 )
+    , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_currentLabel( 0 )
     , m_wikiPage( 0 )
@@ -67,6 +69,22 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 
     constraintsUpdated();
 }
+
+#if 0
+void WikipediaApplet::setRect( const QRectF& rect )
+{
+    setPos( rect.topLeft() );
+    m_size = rect.size();
+    resize( rect.width(), m_aspectRatio );
+}
+#endif
+
+#if 0
+QSizeF WikipediaApplet::contentSize() const
+{
+    return m_size;
+}
+#endif
 
 void WikipediaApplet::constraintsUpdated()
 {
@@ -132,9 +150,12 @@ void WikipediaApplet::calculateHeight()
 //     debug() << "newheight:" << m_size.height();
 }
 
-void WikipediaApplet::resizeApplet( qreal newWidth, qreal aspectRatio )
+void WikipediaApplet::resize( qreal newWidth, qreal aspectRatio )
 {
-    DEBUG_BLOCK
+    qreal height = aspectRatio * newWidth;
+    m_size.setWidth( newWidth );
+    m_size.setHeight( height );
+
     calculateHeight();
 
     debug() << "setting size to:" << m_size;

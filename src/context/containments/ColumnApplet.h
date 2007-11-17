@@ -52,7 +52,7 @@ public:
     
 public slots:
     void appletRemoved( QObject* object );
-    Plasma::Applet* addApplet( Plasma::Applet* applet );
+    Applet* addApplet( Plasma::Applet* applet );
     
     
 protected:
