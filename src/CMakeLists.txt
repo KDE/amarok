@@ -159,6 +159,7 @@ set(libmp3tunesservice_SRCS
     servicebrowser/mp3tunes/mp3tunesservice.cpp
     servicebrowser/mp3tunes/Mp3tunesServiceCollection.cpp
     servicebrowser/mp3tunes/Mp3tunesServiceQueryMaker.cpp
+    servicebrowser/mp3tunes/Mp3tunesMeta.cpp
 
 )
 

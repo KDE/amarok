@@ -22,7 +22,7 @@
 
 #include "DynamicServiceQueryMaker.h"
 
-#include "meta.h"
+//#include "Mp3TunesMeta.h"
 
 #include "Mp3tunesServiceCollection.h"
 

@@ -1,9 +1,10 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007 Adam Pigg <adam@piggz.co.uk>                       *
+ *             (c) 2007  Adam Pigg <adam@piggz.co.uk>                      *
+ *             (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *   This program i s free software; you can redistribute it and/or modify *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -23,13 +24,14 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "servicemetabase.h"
+//#include "servicemetabase.h"
+#include "Mp3tunesMeta.h"
 #include "collection/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
- #include <QDomDocument>
+#include <QDomDocument>
 
 using namespace Meta;
 
@@ -379,14 +381,27 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         QString title = element.text();
         if ( title.isEmpty() ) title = "Unknown";
 
-        ServiceAlbum * album = new ServiceAlbum( title  );
+        element = n.firstChildElement("albumId");
+        QString albumIdStr = element.text();
+        int albumId = element.text().toInt();
+          
+        QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
+
+        coverUrl.replace( "<SESSION_ID>", m_sessionId );
+        coverUrl.replace( "<PARTNER_TOKEN>", "7359149936" );
+        coverUrl.replace( "<ALBUM_ID>", albumIdStr );
+
+        Mp3TunesAlbum * album = new Mp3TunesAlbum( title  );
+        
+        
+        album->setCoverUrl(coverUrl);
+
         AlbumPtr albumPtr( album );
 
         debug() << "Adding album: " <<  title;
 
-        element = n.firstChildElement("albumId");
-        album->setId( element.text().toInt() );
-
+        album->setId( albumId );
+        
         m_collection->addAlbum( element.text(),  albumPtr );
 
 
