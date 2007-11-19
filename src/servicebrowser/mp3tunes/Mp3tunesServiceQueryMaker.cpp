@@ -4,7 +4,7 @@
  *             (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *                                                                         *
- *   This program i s free software; you can redistribute it and/or modify *
+ *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -24,7 +24,6 @@
 
 #include "amarok.h"
 #include "debug.h"
-//#include "servicemetabase.h"
 #include "Mp3tunesMeta.h"
 #include "collection/support/MemoryMatcher.h"
 
@@ -250,7 +249,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
     //debug() << "parent id: " << m_parentId;
 
     if ( !m_parentArtistId.isEmpty() ) {
-        ArtistMatcher artistMatcher( m_collection->artistMap()[ m_parentArtistId ] );
+        ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
     } else 
         return;
@@ -280,7 +279,7 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
     //debug() << "parent id: " << m_parentId;
 
     if ( !m_parentAlbumId.isEmpty() ) {
-        AlbumMatcher albumMatcher( m_collection->albumMap()[ m_parentAlbumId ] );
+        AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
         tracks = albumMatcher.match( m_collection );
     } else
         return;
@@ -341,7 +340,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 
         artists.push_back( artistPtr );
 
-        m_collection->addArtist( element.text(),  artistPtr );
+        m_collection->addArtist( artist->name(),  artistPtr );
 
         n = n.nextSibling();
     }
@@ -384,17 +383,23 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         element = n.firstChildElement("albumId");
         QString albumIdStr = element.text();
         int albumId = element.text().toInt();
-          
-        QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
 
-        coverUrl.replace( "<SESSION_ID>", m_sessionId );
-        coverUrl.replace( "<PARTNER_TOKEN>", "7359149936" );
-        coverUrl.replace( "<ALBUM_ID>", albumIdStr );
+        element = n.firstChildElement("hasArt");
+        int hasArt = element.text().toInt();
 
-        Mp3TunesAlbum * album = new Mp3TunesAlbum( title  );
+        Mp3TunesAlbum * album = new Mp3TunesAlbum( title );
         
+        if ( hasArt > 0 )
+        {
         
-        album->setCoverUrl(coverUrl);
+            QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
+
+            coverUrl.replace( "<SESSION_ID>", m_sessionId );
+            coverUrl.replace( "<PARTNER_TOKEN>", "7359149936" );
+            coverUrl.replace( "<ALBUM_ID>", albumIdStr );
+        
+            album->setCoverUrl(coverUrl);
+        }
 
         AlbumPtr albumPtr( album );
 
@@ -402,13 +407,12 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
 
         album->setId( albumId );
         
-        m_collection->addAlbum( element.text(),  albumPtr );
+        m_collection->addAlbum( title,  albumPtr );
 
 
         element = n.firstChildElement("artistId");
 
-        ArtistPtr artistPtr = m_collection->artistMap() [ element.text() ];
-
+        ArtistPtr artistPtr = m_collection->artistById( element.text().toInt() );
         if ( artistPtr.data() != 0 ) { 
            debug() << "Found parent artist";
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
@@ -487,7 +491,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         track->setTrackNumber( element.text().toInt() );
 
 
-        ArtistPtr artistPtr = m_collection->artistMap() [ artistId ];
+        ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) { 
            debug() << "Found parent artist";
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
@@ -495,7 +499,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
            artist->addTrack( trackPtr );
         }
 
-        AlbumPtr albumPtr = m_collection->albumMap() [ albumId ];
+        AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
         if ( albumPtr.data() != 0 ) { 
            debug() << "Found parent album";
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );

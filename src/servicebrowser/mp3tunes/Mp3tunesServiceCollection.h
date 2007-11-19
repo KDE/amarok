@@ -19,14 +19,14 @@
 #ifndef MP3TUNESSERVICECOLLECTION_H
 #define MP3TUNESSERVICECOLLECTION_H
 
-#include <servicecollection.h>
+#include <ServiceDynamicCollection.h>
 
 /**
 A collection that dynamically fetches data from a remote location as needed
 
 	@author 
 */
-class Mp3tunesServiceCollection : public ServiceCollection
+class Mp3tunesServiceCollection : public ServiceDynamicCollection
 {
 public:
     Mp3tunesServiceCollection( const QString &sessionId );

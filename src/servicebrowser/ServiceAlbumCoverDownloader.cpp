@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                       Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -152,8 +153,17 @@ void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    m_album->setImage( QImage( m_coverDownloadPath ) );
+    QImage cover = QImage( m_coverDownloadPath );
+    if ( cover.isNull() ) {
+        debug() << "file not a valid image";
+        //the file wasn't an image, so inform album
+        m_album->imageDownloadCanceled();
 
+        return ;
+    }
+    
+    m_album->setImage( cover );
+    
     downloadJob->deleteLater();
 
     m_tempDir->unlink();
