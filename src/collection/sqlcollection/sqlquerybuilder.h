@@ -68,6 +68,8 @@ class AMAROK_EXPORT SqlQueryBuilder : public QueryMaker
 
         virtual QueryMaker* limitMaxResultSize( int size );
 
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
         virtual QueryMaker* beginAnd();
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();

@@ -55,6 +55,10 @@ class AMAROK_EXPORT QueryMaker : public QObject
         static const qint64 valLastPlayed   = 1LL << 19;
         static const qint64 valPlaycount    = 1LL << 20;
 
+        enum AlbumQueryMode { AllAlbums = 0
+                              , OnlyCompilations = 1
+                              , OnlyNormalAlbums = 2 };
+
         QueryMaker();
         virtual ~QueryMaker();
 
@@ -178,6 +182,12 @@ class AMAROK_EXPORT QueryMaker : public QObject
             is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if the newResultReady signal is emitted multiple times, each result may have up to @p size items.
         */
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
+
+        /**
+         * select the mode for querying albums. If this method is not called,
+         * QueryMaker defaults to AlbumQueryMode::AllAlbums.
+         */
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
         virtual QueryMaker* beginAnd() = 0;
         virtual QueryMaker* beginOr() = 0;

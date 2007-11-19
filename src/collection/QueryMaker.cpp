@@ -32,5 +32,12 @@ QueryMaker::resultCount() const
     return 1;
 }
 
+QueryMaker*
+QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+{
+    Q_UNUSED( mode )
+    return this;
+}
+
 #include "QueryMaker.moc"
 

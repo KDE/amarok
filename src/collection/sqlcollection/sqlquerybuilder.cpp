@@ -80,6 +80,7 @@ struct SqlQueryBuilder::Private
     bool resultAsDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
+    AlbumQueryMode albumMode;
     SqlWorkerThread *worker;
 
     QStack<bool> andStack;
@@ -116,6 +117,7 @@ SqlQueryBuilder::reset()
         delete d->worker;   //TODO error handling
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
+    d->albumMode = AlbumMatchMode::AllAlbums;
     d->maxResultSize = -1;
     d->andStack.clear();
     d->andStack.push( true );   //and is default
@@ -394,6 +396,13 @@ QueryMaker*
 SqlQueryBuilder::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;
+    return this;
+}
+
+QueryMaker*
+SqlQueryBuilder::setAlbumQueryMode( AlbumQueryMode mode )
+{
+    d->albumMode = mode;
     return this;
 }
 
