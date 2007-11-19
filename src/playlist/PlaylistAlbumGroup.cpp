@@ -102,13 +102,14 @@ int Playlist::AlbumGroup::groupMode( int row )
 
 bool Playlist::AlbumGroup::alternate( int row )
 {
-    foreach( const Group &group, m_groups ) {
-        int index = group.rows.indexOf( row );
-        if ( index != -1 ) {
-            return ( index % 2 ) == 1;
+    if( m_groups.count() > 0) {
+        foreach( const Group &group, m_groups ) {
+            int index = group.rows.indexOf( row );
+         if ( index != -1 ) {
+                return ( index % 2 ) == 1;
+            }
         }
     }
-
     return false;
 }
 

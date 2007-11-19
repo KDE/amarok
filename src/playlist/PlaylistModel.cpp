@@ -127,27 +127,29 @@ Model::data( const QModelIndex& index, int role ) const
 
         if ( !track->album() )
             return None;  // no albm set
-        else if ( !m_albumGroups.contains( track->album() ) )
+        else if ( !m_albumGroups.contains( track->album()->prettyName() ) )
             return None;  // no group for this album, should never happen...
 
-        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         return albumGroup->groupMode( row );
 
     } else if ( role == GroupedTracksRole ) {
         //get the track
         TrackPtr track = m_items.at( row )->track();
 
-        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         return albumGroup->elementsInGroup( row );
     } else if ( role == GroupedAlternateRole ) {
          //get the track
         TrackPtr track = m_items.at( row )->track();
-        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
-        return albumGroup->alternate( row );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
+        if( albumGroup )
+            return albumGroup->alternate( row );
+        return true;
     } else if ( role == GroupedCollapsibleRole ) {
         //get the track
         TrackPtr track = m_items.at( row )->track();
-        AlbumGroup * albumGroup = m_albumGroups.value( track->album() );
+        AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         //we cannot collapse the group that contains the currently selected track.
         return ( albumGroup->firstInGroup( m_activeRow ) == -1 );
 
@@ -381,8 +383,8 @@ Model::setActiveRow( int row )
     m_activeRow = row;
 
     //make sure that the group containg this track is expanded
-    if ( m_albumGroups.contains( m_items[ row ]->track()->album() ) ) {
-        m_albumGroups[ m_items[ row ]->track()->album() ]->setCollapsed( row,  false );
+    if ( m_albumGroups.contains( m_items[ row ]->track()->album()->prettyName() ) ) {
+        m_albumGroups[ m_items[ row ]->track()->album()->prettyName() ]->setCollapsed( row,  false );
         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
@@ -813,7 +815,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
     //delete affected groups
 
-    QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+    QMapIterator< QString, AlbumGroup *> itt(m_albumGroups);
     while (itt.hasNext()) {
 
         itt.next();
@@ -951,7 +953,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
             offsetTo = ( m_items.count() - offset ) + 1;
         }
 
-        QMapIterator< Meta::AlbumPtr, AlbumGroup *> itt(m_albumGroups);
+        QMapIterator< QString, AlbumGroup *> itt(m_albumGroups);
         while (itt.hasNext()) {
 
            itt.next();
@@ -980,13 +982,13 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
        if ( !track->album() )
            continue;
 
-       if ( m_albumGroups.contains( track->album() ) ) {
-            m_albumGroups[ track->album() ]->addRow( i );
+       if ( m_albumGroups.contains( track->album()->prettyName() ) ) {
+            m_albumGroups[ track->album()->prettyName() ]->addRow( i );
        } else {
             //debug() << "Create new group for album " << track->album()->name() ;
             AlbumGroup * newGroup = new AlbumGroup();
             newGroup->addRow( i );
-            m_albumGroups.insert( track->album(), newGroup );
+            m_albumGroups.insert( track->album()->prettyName(), newGroup );
        }
     }
 
@@ -1008,12 +1010,12 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
        if ( !track->album() )
            continue;
 
-       if ( m_albumGroups.contains( track->album() ) ) {
-            m_albumGroups[ track->album() ]->addRow( i );
+       if ( m_albumGroups.contains( track->album()->prettyName() ) ) {
+            m_albumGroups[ track->album()->prettyName() ]->addRow( i );
        } else {
             AlbumGroup * newGroup = new AlbumGroup();
             newGroup->addRow( i );
-            m_albumGroups.insert( track->album(), newGroup );
+            m_albumGroups.insert( track->album()->prettyName(), newGroup );
        }
     }
 
@@ -1025,8 +1027,8 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
     //make sure that a group containg playing track is expanded
     if ( m_activeRow != -1 ){
-        if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album() ) ) {
-            m_albumGroups[ m_items[ m_activeRow ]->track()->album() ]->setCollapsed( m_activeRow,  false );
+        if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album()->prettyName() ) ) {
+            m_albumGroups[ m_items[ m_activeRow ]->track()->album()->prettyName() ]->setCollapsed( m_activeRow,  false );
             debug() << "Here";
             emit( playlistGroupingChanged() );
       }
@@ -1039,7 +1041,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 void Playlist::Model::setCollapsed(int row, bool collapsed)
 {
     //DEBUG_BLOCK
-    m_albumGroups[ m_items[ row ]->track()->album() ]->setCollapsed( row,  collapsed );
+    m_albumGroups[ m_items[ row ]->track()->album()->prettyName() ]->setCollapsed( row,  collapsed );
     emit( playlistGroupingChanged() );
 }
 

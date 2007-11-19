@@ -706,6 +706,7 @@ QTime PlaylistHandler::stringToTime(const QString& timeString)
 bool
 PlaylistHandler::loadXSPF( QTextStream &stream )
 {
+    DEBUG_BLOCK
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
     XSPFtrackList trackList = doc->trackList();
@@ -715,12 +716,13 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
     {
         KUrl location = track.location;
         QString artist = track.creator;
+        debug() << "TRACK CREATOR IS: " << track.creator;
         QString title  = track.title;
         QString album  = track.album;
 
-        if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.url() ) ) )
-        {
 
+        if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.path() ) ) )
+        {
             TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
             tracks.append( trackPtr );
         }
@@ -732,6 +734,7 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
             Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
             if( ec )
             {
+                debug() << "Have EditCapability";
                 ec->setTitle( title );
                 ec->setArtist( artist );
                 ec->setAlbum( album );

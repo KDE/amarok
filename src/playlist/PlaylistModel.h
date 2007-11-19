@@ -227,7 +227,7 @@ class TrackNavigator;
 
             PlaylistHandler * m_playlistHandler;
 
-            mutable QMap< Meta::AlbumPtr, AlbumGroup * > m_albumGroups;
+            mutable QMap< QString, AlbumGroup * > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
 
     };

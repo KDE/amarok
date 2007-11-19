@@ -397,7 +397,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
             APPENDNODE(location, track->playableUrl().url() )
         if ( !track->name().isEmpty() )
             APPENDNODE(title, track->name() )
-        if ( track->artist() && track->artist()->name().isEmpty() )
+        if ( track->artist() && !track->artist()->name().isEmpty() )
             APPENDNODE(creator, track->artist()->name() );
         if ( !track->comment().isEmpty() )
             APPENDNODE(annotation, track->comment() );
