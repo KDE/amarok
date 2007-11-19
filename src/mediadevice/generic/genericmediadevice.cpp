@@ -788,7 +788,7 @@ GenericMediaDevice::refreshDir( const QString &dir )
 void
 GenericMediaDevice::newItems( const KFileItemList &items )
 {
-    foreach( KFileItem kfi, items )
+    foreach( const KFileItem &kfi, items )
         addTrackToList( kfi.isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi.url(), 0 );
 }
 

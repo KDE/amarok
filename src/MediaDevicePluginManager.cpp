@@ -129,7 +129,7 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
     KConfigGroup config = Amarok::config( "PortableDevices" );
     MediaDeviceCache::instance()->refreshCache();
     QStringList udiList = MediaDeviceCache::instance()->getAll();
-    foreach( QString udi, udiList )
+    foreach( const QString &udi, udiList )
     {
         debug() << "Checking device udi " << udi;
 
@@ -243,7 +243,7 @@ MediaDevicePluginManager::finished()
     }
 
     KConfigGroup config = Amarok::config( "PortableDevices" );
-    foreach( QString udi, m_deletedMap.keys() )
+    foreach( const QString &udi, m_deletedMap.keys() )
     {
         config.deleteEntry( udi );
         MediaBrowser::instance()->deviceRemoved( udi );

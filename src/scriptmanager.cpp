@@ -230,7 +230,7 @@ ScriptManager::~ScriptManager()
     DEBUG_BLOCK
 
     QStringList runningScripts;
-    foreach( QString key, m_scripts.keys() ) {
+    foreach( const QString &key, m_scripts.keys() ) {
         if( m_scripts[key].process ) {
             terminateProcess( &m_scripts[key].process );
             runningScripts << key;
@@ -283,7 +283,7 @@ QStringList
 ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
-    foreach( QString key, m_scripts.keys() )
+    foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].process )
             runningScripts << key;
 
@@ -363,7 +363,7 @@ ScriptManager::findScripts() //SLOT
     const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*",KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
-    foreach( QString str, allFiles )
+    foreach( const QString &str, allFiles )
         if( QFileInfo( str ).isExecutable() )
             loadScript( str );
 
@@ -372,7 +372,7 @@ ScriptManager::findScripts() //SLOT
     KConfigGroup config = Amarok::config( "ScriptManager" );
     const QStringList runningScripts = config.readEntry( "Running Scripts", QStringList() );
 
-    foreach( QString str, runningScripts )
+    foreach( const QString &str, runningScripts )
         if( m_scripts.contains( str ) ) {
             debug() << "Auto-running script: " << str;
             m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
@@ -466,7 +466,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 {
     const QStringList entries = archiveDir->entries();
 
-    foreach( QString entry, entries ) {
+    foreach( const QString &entry, entries ) {
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
         if( archEntry->isDirectory() ) {
@@ -532,12 +532,12 @@ ScriptManager::slotUninstallScript()
     QStringList keys;
 
     // Find all scripts that were in the uninstalled folder
-    foreach( QString key, m_scripts.keys() )
+    foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].url.directory() == directory )
             keys << key;
 
     // Terminate script processes, remove entries from script list
-    foreach( QString key, keys ) {
+    foreach( const QString &key, keys ) {
         delete m_scripts[key].li;
         terminateProcess( &m_scripts[key].process );
         m_scripts.remove( key );
@@ -784,7 +784,7 @@ QStringList
 ScriptManager::scriptsOfType( const QString &type ) const
 {
     QStringList scripts;
-    foreach( QString key, m_scripts.keys() )
+    foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].type == type )
             scripts += key;
 
@@ -795,7 +795,7 @@ ScriptManager::scriptsOfType( const QString &type ) const
 QString
 ScriptManager::scriptRunningOfType( const QString &type ) const
 {
-    foreach( QString key, m_scripts.keys() )
+    foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].process && m_scripts[key].type == type )
             return key;
 
@@ -842,7 +842,7 @@ ScriptManager::terminateProcess( K3ProcIO** proc )
 void
 ScriptManager::notifyScripts( const QString& message )
 {
-    foreach( ScriptItem item, m_scripts ) {
+    foreach( const ScriptItem &item, m_scripts ) {
         K3ProcIO* const proc = item.process;
         if( proc ) proc->writeStdin( message );
     }

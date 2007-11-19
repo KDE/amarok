@@ -246,7 +246,7 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    foreach( QString mood, moods ) {
+    foreach( const QString &mood, moods ) {
         queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
                       + QString::number( trackId ) + ", '"
                       + sqlDb->escape( mood ) +  "' );";

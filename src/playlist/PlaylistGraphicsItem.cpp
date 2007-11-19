@@ -731,7 +731,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
-    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {

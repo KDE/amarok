@@ -711,7 +711,7 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
     XSPFtrackList trackList = doc->trackList();
 
     TrackList tracks;
-    foreach( XSPFtrack track, trackList )
+    foreach( const XSPFtrack &track, trackList )
     {
         KUrl location = track.location;
         QString artist = track.creator;

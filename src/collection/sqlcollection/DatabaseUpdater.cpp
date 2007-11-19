@@ -198,7 +198,7 @@ DatabaseUpdater::copyToPermanentTables()
     //handle artists before albums
     QStringList artistIdList = m_collection->query( "SELECT artists.id FROM artists;" );
     QString artistIds = "-1";
-    foreach( QString artistId, artistIdList )
+    foreach( const QString &artistId, artistIdList )
     {
         artistIds += ',';
         artistIds += artistId;
@@ -209,7 +209,7 @@ DatabaseUpdater::copyToPermanentTables()
     //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
     //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
     QString albumIds = "-1";
-    foreach( QString albumId, albumIdList )
+    foreach( const QString &albumId, albumIdList )
     {
         albumIds += ',';
         albumIds += albumId;
@@ -218,7 +218,7 @@ DatabaseUpdater::copyToPermanentTables()
 
     QStringList composerIdList = m_collection->query( "SELECT composers.id FROM composers;" );
     QString composerIds = "-1";
-    foreach( QString composerId, composerIdList )
+    foreach( const QString &composerId, composerIdList )
     {
         composerIds += ',';
         composerIds += composerId;
@@ -227,7 +227,7 @@ DatabaseUpdater::copyToPermanentTables()
 
     QStringList genreIdList = m_collection->query( "SELECT genres.id FROM genres;" );
     QString genreIds = "-1";
-    foreach( QString genreId, genreIdList )
+    foreach( const QString &genreId, genreIdList )
     {
         genreIds += ',';
         genreIds += genreId;
@@ -236,7 +236,7 @@ DatabaseUpdater::copyToPermanentTables()
 
     QStringList yearIdList = m_collection->query( "SELECT years.id FROM years;" );
     QString yearIds = "-1";
-    foreach( QString yearId, yearIdList )
+    foreach( const QString &yearId, yearIdList )
     {
         yearIds += ',';
         yearIds += yearId;
@@ -250,7 +250,7 @@ DatabaseUpdater::copyToPermanentTables()
 
     QStringList urlIdList = m_collection->query( "SELECT urls.id FROM urls;" );
     QString urlIds = "-1";
-    foreach( QString urlId, urlIdList )
+    foreach( const QString &urlId, urlIdList )
     {
         urlIds += ',';
         urlIds += urlId;
@@ -377,7 +377,7 @@ DatabaseUpdater::createTables() const
         QStringList indices;
         indices << "artist" << "album" << "genre" << "composer" << "year" << "title";
         indices << "track" << "discnumber" << "createdate" << "length" << "bitrate" << "filesize";
-        foreach( QString index, indices )
+        foreach( const QString &index, indices )
         {
             QString query = QString( "CREATE INDEX tracks_%1 ON tracks(%2);" ).arg( index, index );
             m_collection->query( query );
@@ -397,7 +397,7 @@ DatabaseUpdater::createTables() const
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
         indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
-        foreach( QString index, indices )
+        foreach( const QString &index, indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
             m_collection->query( q );

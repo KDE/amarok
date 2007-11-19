@@ -373,7 +373,7 @@ EqualizerSetup::editPresets()
         if ( presets.find( currentTitle ) == presets.end() || currentGains != presets[ currentTitle ] ) {
 
             // Find the new name
-            foreach( QString key, presets.keys() ) {
+            foreach( const QString &key, presets.keys() ) {
                 if ( presets[key] == currentGains ) {
                     newTitle = key;
                     break;

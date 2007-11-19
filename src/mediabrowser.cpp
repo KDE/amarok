@@ -1080,7 +1080,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
             return 0;
         }
 
-        foreach( QString supported, pmp->supportedProtocols() )
+        foreach( const QString &supported, pmp->supportedProtocols() )
             debug() << "Device supports protocol " << supported;
 
         protocol = pmp->supportedProtocols()[0];

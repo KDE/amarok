@@ -316,10 +316,10 @@ Controller::stationDescription( QString url )
         QString artists = elements[2];
         artists.replace( ",", ", " );
         const QStringList words = QString( artists ).remove( "," ).split( " " );
-        oldForeach( words ) {
-            QString capitalized = *it;
-            capitalized.replace( 0, 1, (*it)[0].toUpper() );
-            artists.replace( *it, capitalized );
+        foreach( const QString &word, words ) {
+            QString capitalized = word;
+            capitalized.replace( 0, 1, word[0].toUpper() );
+            artists.replace( word, capitalized );
         }
 
         return i18n( "Custom Station: %1", artists );

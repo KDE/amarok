@@ -117,7 +117,7 @@ CoverManager::CoverManager()
 
     //load artists from the collection db
     const QStringList artists = CollectionDB::instance()->artistList( false, false );
-    foreach( QString artist, artists )
+    foreach( const QString &artist, artists )
     {
         item = new ArtistItem( m_artistView, item, artist );
         item->setPixmap( 0, SmallIcon( Amarok::icon( "artist" ) ) );

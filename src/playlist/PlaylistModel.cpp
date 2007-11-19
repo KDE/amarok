@@ -570,7 +570,7 @@ Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
     AmarokMimeData* mime = new AmarokMimeData();
     Meta::TrackList selectedTracks;
 
-    foreach( QModelIndex it, indexes )
+    foreach( const QModelIndex &it, indexes )
         selectedTracks << m_items.at( it.row() )->track();
 
     mime->setTracks( selectedTracks );
@@ -612,7 +612,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         debug() << "Drop from external source";
         QList<QUrl> urls = data->urls();
         Meta::TrackList tracks;
-        foreach( QUrl url, urls )
+        foreach( const QUrl &url, urls )
         {
             Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
             if( track )

@@ -69,7 +69,7 @@ int Playlist::AlbumGroup::groupMode( int row )
 {
     //DEBUG_BLOCK
 
-    foreach( Group group, m_groups ) {
+    foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
 
             //debug() << "row " << row << " is collapsed= " << group.collapsed;
@@ -102,7 +102,7 @@ int Playlist::AlbumGroup::groupMode( int row )
 
 bool Playlist::AlbumGroup::alternate( int row )
 {
-    foreach( Group group, m_groups ) {
+    foreach( const Group &group, m_groups ) {
         int index = group.rows.indexOf( row );
         if ( index != -1 ) {
             return ( index % 2 ) == 1;
@@ -126,7 +126,7 @@ void Playlist::AlbumGroup::setCollapsed(int row, bool collapsed)
 int Playlist::AlbumGroup::elementsInGroup(int row)
 {
     //DEBUG_BLOCK
-    foreach( Group group, m_groups ) {
+    foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
             return group.rows.count();
         }
@@ -139,7 +139,7 @@ int Playlist::AlbumGroup::elementsInGroup(int row)
 int Playlist::AlbumGroup::firstInGroup(int row)
 {
 
-    foreach( Group group, m_groups ) {
+    foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
             return group.rows.first();
         }
@@ -152,7 +152,7 @@ int Playlist::AlbumGroup::firstInGroup(int row)
 int Playlist::AlbumGroup::lastInGroup(int row)
 {
 
-    foreach( Group group, m_groups ) {
+    foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
             return group.rows.last();
         }
@@ -181,7 +181,7 @@ int Playlist::AlbumGroup::subgroupCount()
 
 void Playlist::AlbumGroup::printGroupRows()
 {
-   foreach( Group group, m_groups ) {
+   foreach( const Group &group, m_groups ) {
         debug() << "Subgroup: " << group.rows;
   }
 

@@ -112,7 +112,7 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     if( m_filterModel )
     {
         QModelIndexList tmp;
-        foreach( QModelIndex idx, indices )
+        foreach( const QModelIndex &idx, indices )
         {
             tmp.append( m_filterModel->mapToSource( idx ) );
         }
@@ -131,7 +131,7 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction( appendAction );
         QAction* result =  menu.exec( event->globalPos() );
         QSet<CollectionTreeItem*> items;
-        foreach( QModelIndex index, indices )
+        foreach( const QModelIndex &index, indices )
         {
             if( index.isValid() && index.internalPointer() )
                 items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );

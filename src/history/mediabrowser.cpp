@@ -318,7 +318,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     updateStats();
 
     QList<Solid::Device> pmpList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
-    foreach( Solid::Device device, pmpList )
+    foreach( const Solid::Device &device, pmpList )
         deviceAdded( device.udi() );
 
     //TODO: Take generic storage devices into account too -- or do we rely on the

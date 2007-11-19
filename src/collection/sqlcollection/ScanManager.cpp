@@ -196,7 +196,7 @@ ScanManager::getDirsToScan() const
         QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
         QStringList urlIds = m_collection->query( query );
         ids.clear();
-        foreach( QString id, urlIds )
+        foreach( const QString &id, urlIds )
         {
             if( !ids.isEmpty() )
                 ids += ',';
@@ -334,7 +334,7 @@ XmlParseJob::run()
         {
             processor.setScanType( ScanResultProcessor::FullScan );
         }
-        foreach( QString dir, directories.keys() )
+        foreach( const QString &dir, directories.keys() )
         {
             processor.addDirectory( dir, directories.value( dir ) );
         }

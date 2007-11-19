@@ -632,7 +632,7 @@ void App::applySettings( bool firstTime )
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
         const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
         const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
-        foreach( QString it, obsoleteCovers )
+        foreach( const QString &it, obsoleteCovers )
             if ( !it.startsWith( size  ) && !it.startsWith( "50@" ) )
                 QFile( cacheDir.filePath( it ) ).remove();
     }

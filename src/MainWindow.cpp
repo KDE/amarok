@@ -891,7 +891,7 @@ void MainWindow::createActions()
 
     KMenu* playTagRadioMenu = new KMenu( this );
     playTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
-    foreach( QString lastfmTag, m_lastfmTags )
+    foreach( const QString &lastfmTag, m_lastfmTags )
     {
         KAction *lastfmAction = new KAction( lastfmTag, this );
         connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( playLastfmGlobaltag() ) );
@@ -900,7 +900,7 @@ void MainWindow::createActions()
 
     KMenu* addTagRadioMenu = new KMenu( this );
     addTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
-    foreach( QString lastfmTag, m_lastfmTags )
+    foreach( const QString &lastfmTag, m_lastfmTags )
     {
         KAction *lastfmAction = new KAction( lastfmTag, this );
         connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( addLastfmGlobaltag() ) );

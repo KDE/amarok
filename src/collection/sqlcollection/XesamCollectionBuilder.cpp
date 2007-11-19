@@ -186,7 +186,7 @@ XesamCollectionBuilder::generateXesamQuery() const
     else
     {
         writer.writeStartElement( XESAM_NS, "or" );
-        foreach( QString folder, collectionFolders )
+        foreach( const QString &folder, collectionFolders )
         {
             writer.writeStartElement( XESAM_NS, "startsWith" );
             writer.writeTextElement( XESAM_NS, "field", "dc:uri" );

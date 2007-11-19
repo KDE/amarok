@@ -160,7 +160,7 @@ QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indice
     Meta::TrackList tracks;
     QList<QueryMaker*> queries;
 
-    foreach( QModelIndex index, indices ) {
+    foreach( const QModelIndex &index, indices ) {
         if (index.isValid()) {
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
             if( item->allDescendentTracksLoaded() )

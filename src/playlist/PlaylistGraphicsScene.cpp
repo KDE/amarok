@@ -32,7 +32,7 @@ void
 GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
-    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {

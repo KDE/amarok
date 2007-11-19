@@ -66,7 +66,7 @@ PMPProtocol::PMPProtocol( const QByteArray &protocol, const QByteArray &pool,
 
 PMPProtocol::~PMPProtocol()
 {
-    foreach( QString udi, m_devices.keys() )
+    foreach( const QString &udi, m_devices.keys() )
         delete m_devices[udi];
 }
 
@@ -190,7 +190,7 @@ PMPProtocol::rename( const KUrl &src, const KUrl &dest, KIO::JobFlags flags )
         QString dstName = udiFromUrl( dest );
         kDebug() << "srcName = " << srcName << ", dstName (friendly name) = " << dstName;
         kDebug() << "m_devices keys: ";
-        foreach( QString key, m_devices.keys() )
+        foreach( const QString &key, m_devices.keys() )
             kDebug() << "key = " << key;
         if( m_devices.contains( dstName ) )
             warning( i18n( "Destination name cannot be the same as a Solid UDI!" ) );
@@ -257,7 +257,7 @@ PMPProtocol::getSolidFriendlyName( const Solid::Device & device ) const
     if( !possibleLibraries.isValid() || possibleLibraries.isNull() || !possibleLibraries.canConvert( QVariant::StringList ) )
         return QString();
     QStringList libraries = possibleLibraries.toStringList();
-    foreach( QString library, libraries )
+    foreach( const QString &library, libraries )
     {
         QVariant possibleName = gi->property( "portable_audio_player." + library + ".name" );
         if( possibleName.isValid() && !possibleName.isNull() && possibleName.canConvert( QVariant::String ) )

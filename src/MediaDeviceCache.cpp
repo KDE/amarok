@@ -101,7 +101,7 @@ MediaDeviceCache::refreshCache()
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     QMap<QString, QString> manualDevices = config.entryMap();
-    foreach( QString udi, manualDevices.keys() )
+    foreach( const QString &udi, manualDevices.keys() )
     {
         if( udi.startsWith( "manual" ) )
         {

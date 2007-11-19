@@ -391,7 +391,7 @@ MountPointManager::collectionFolders( )
     foreach( int id, ids )
     {
         QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
-        foreach( QString strIt, rpaths )
+        foreach( const QString &strIt, rpaths )
         {
             QString absPath;
             if ( strIt == "./" )
@@ -417,7 +417,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
     
-    foreach( QString folder, folders )
+    foreach( const QString &folder, folders )
     {
         int id = getIdForUrl( folder );
         QString rpath = getRelativePath( id, folder );
@@ -449,7 +449,7 @@ void
 MountPointManager::migrateStatistics()
 {
     QStringList urls = CollectionDB::instance()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
-    foreach( QString url, urls )
+    foreach( const QString &url, urls )
     {
         if ( QFile::exists( url ) )
         {

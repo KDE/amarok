@@ -286,7 +286,7 @@ main_loop:
             CollectionDB::instance()->sanitizeCompilations();
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
-                foreach( QString str, m_foldersToRemove ) {
+                foreach( const QString &str, m_foldersToRemove ) {
                     m_fileMapsMutex.lock();
                     CollectionDB::instance()->removeSongsInDir( str, &m_filesDeleted );
                     m_fileMapsMutex.unlock();

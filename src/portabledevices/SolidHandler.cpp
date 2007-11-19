@@ -57,7 +57,7 @@ SolidHandler::Initialize()
              this, SLOT( deviceRemoved( const QString & ) ) );
     QList<Solid::Device> deviceList = Solid::Device::listFromQuery( "is PortableMediaPlayer" );
     Solid::Device temp;
-    foreach( Solid::Device device, deviceList )
+    foreach( const Solid::Device &device, deviceList )
     {
         debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();

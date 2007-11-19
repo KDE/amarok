@@ -287,7 +287,7 @@ void JamendoXmlParser::parseAlbum( const  QDomElement &e)
    int newId = m_dbHandler->insertAlbum( &currentAlbum );
    countTransaction();
 
-   foreach( QString genreName, tags ) {
+   foreach( const QString &genreName, tags ) {
 
         //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
 

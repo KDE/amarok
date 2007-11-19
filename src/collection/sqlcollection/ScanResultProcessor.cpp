@@ -227,7 +227,7 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
     }
     QString albumArtist;
     int count = 0;
-    foreach( QString key, artistCount.keys() )
+    foreach( const QString &key, artistCount.keys() )
     {
         if( artistCount.value( key ) > count )
         {

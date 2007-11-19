@@ -94,12 +94,12 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     QStringList imageSizes;
     imageSizes << "LargeImage" << "MediumImage" << "SmallImage";
     QString imageUrl;
-    oldForeach( imageSizes )
+    foreach( const QString &size, imageSizes )
     {
         QDomNode imageNode = doc.documentElement()
             .namedItem( "Items" )
             .namedItem( "Item" )
-            .namedItem( *it );
+            .namedItem( size );
         if ( !imageNode.isNull() )
         {
             imageUrl = imageNode.namedItem( "URL" ).firstChild().toText().data();

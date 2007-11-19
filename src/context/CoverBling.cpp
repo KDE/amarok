@@ -60,7 +60,7 @@ CoverBling::initializeGL() //reimplemented
     DEBUG_BLOCK
 
     //generate all textures
-    foreach( QString path, m_coverPaths ) {
+    foreach( const QString &path, m_coverPaths ) {
         QImage image( KStandardDirs().findResource( "data", path ) );
         image = image.scaled( TEXTURE_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         m_textureIds << bindTexture( image );

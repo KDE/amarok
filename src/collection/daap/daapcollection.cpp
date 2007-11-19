@@ -69,7 +69,7 @@ DaapCollectionFactory::connectToManualServers()
 {
     DEBUG_BLOCK
     QStringList sl = AmarokConfig::manuallyAddedServers();
-    foreach( QString server, sl )
+    foreach( const QString &server, sl )
     {
         debug() << "Adding server " << server;
         QStringList current = server.split( ':', QString::KeepEmptyParts );
@@ -175,7 +175,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
     if( !collection )
         return;
-    foreach( QString key, m_collectionMap.keys() )
+    foreach( const QString &key, m_collectionMap.keys() )
     {
         if( m_collectionMap.value( key ) == collection )
         {
