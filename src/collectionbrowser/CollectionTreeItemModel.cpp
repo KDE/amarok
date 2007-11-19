@@ -79,8 +79,14 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     return m_currentAnimPixmap;
             }
 
-            if ( level < m_levelType.count() )
-                return iconForLevel( level );
+            if ( level < m_levelType.count() ) {
+                if (  m_levelType[level] == CategoryId::Album ) {
+                    const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
+                    return album->image( 32, false );
+                } else {
+                    return iconForLevel( level );
+                }
+            }
         }
     }
 

@@ -77,7 +77,13 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
 
             if ( level < m_levelType.count() )
-                return iconForLevel( level );
+
+                if (  m_levelType[level] == CategoryId::Album ) {
+                    const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
+                    return album->image( 32, false );
+                } else {
+                    return iconForLevel( level );
+                }
         }
     }
 
