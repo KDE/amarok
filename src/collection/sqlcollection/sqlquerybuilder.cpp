@@ -117,7 +117,7 @@ SqlQueryBuilder::reset()
         delete d->worker;   //TODO error handling
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
-    d->albumMode = AlbumMatchMode::AllAlbums;
+    d->albumMode = AllAlbums;
     d->maxResultSize = -1;
     d->andStack.clear();
     d->andStack.push( true );   //and is default
