@@ -143,6 +143,8 @@ class DaapArtist : public Meta::Artist
 
         virtual TrackList tracks();
 
+        virtual AlbumList albums();
+
         //DaapArtist specific methods
         void addTrack( DaapTrackPtr track );
 
@@ -167,7 +169,7 @@ class DaapAlbum : public Meta::Album
 
         virtual void image() const;
         virtual bool canUpdateImage() const;
-        virtual void updateImage();
+        virtual void setImage();
 
         //DaapAlbum specific methods
         void addTrack( DaapTrackPtr track );

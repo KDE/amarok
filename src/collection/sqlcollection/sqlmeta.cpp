@@ -620,6 +620,30 @@ SqlArtist::tracks()
         return TrackList();
 }
 
+AlbumList
+SqlArtist::albums()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_albumsLoaded )
+    {
+        return m_albums;
+    }
+    else if( m_collection )
+    {
+        QueryMaker *qm = m_collection->queryMaker();
+        qm->startAlbumQuery();
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_albums = bq.albums( m_collection->collectionId() );
+        m_albumsLoaded = true;
+        return m_albums;
+    }
+    else
+    {
+        return AlbumList();
+    }
+}
 
 QString
 SqlArtist::sortableName() const
@@ -698,6 +722,19 @@ SqlAlbum::image( int size, bool withShadow ) const
     }
     else
         return Meta::Album::image( size, withShadow );
+}
+
+void
+SqlAlbum::setImage( QImage image )
+{
+    QByteArray widthKey = QString::number( image.width() ).toLocal8Bit() + '@';
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return;
+    QByteArray key = md5sum( artist, album, QString() );
+    image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
 }
 
 bool

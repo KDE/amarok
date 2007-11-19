@@ -216,6 +216,9 @@ namespace Meta
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
+            /** returns all albums by this artist */
+            virtual AlbumList albums() = 0;
+
             virtual void addMatchTo( QueryMaker* qm );
 
             virtual bool operator==( const Meta::Artist &artist ) const;
@@ -243,7 +246,7 @@ namespace Meta
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */
-            virtual void updateImage() {} //TODO: choose parameter
+            virtual void setImage( QImage image) {} //TODO: choose parameter
 
             virtual void addMatchTo( QueryMaker* qm );
 

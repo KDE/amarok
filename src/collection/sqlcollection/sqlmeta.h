@@ -170,6 +170,8 @@ class SqlArtist : public Meta::Artist
 
         virtual Meta::TrackList tracks();
 
+        virtual Meta::AlbumList albums();
+
         //SQL specific methods
         int id() const { return m_id; }
 
@@ -180,6 +182,8 @@ class SqlArtist : public Meta::Artist
         mutable QString m_modifiedName;
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
+        bool m_albumsLoaded;
+        Meta::AlbumList m_albums;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
@@ -205,9 +209,9 @@ class SqlAlbum : public Meta::Album
         virtual Meta::ArtistPtr albumArtist() const;
 
         //updating album images is possible or local tracks, but let's ignore it for now
-        virtual bool canUpdateImage() const { return false; }
+        virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1, bool withShadow = false ) const;
-        virtual void updateImage() { }
+        virtual void setImage( QImage image );
 
         //SQL specific methods
         int id() const { return m_id; }

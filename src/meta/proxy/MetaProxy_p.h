@@ -120,6 +120,14 @@ public:
             return Meta::TrackList();
     }
 
+    Meta::AlbumList albums()
+    {
+        if( d && d->realTrack )
+            return d->realTrack->artist()->albums();
+        else
+            return Meta::AlbumList();
+    }
+
     QString name() const
     {
         if( d && d->realTrack ) {

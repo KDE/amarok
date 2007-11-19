@@ -352,6 +352,13 @@ DaapArtist::tracks()
     return m_tracks;
 }
 
+AlbumList
+DaapArtist::albums()
+{
+    //TODO
+    return AlbumList();
+}
+
 void
 DaapArtist::addTrack( DaapTrackPtr track )
 {
@@ -422,7 +429,7 @@ DaapAlbum::canUpdateImage() const
 }
 
 void
-DaapAlbum::updateImage()
+DaapAlbum::setImage()
 {
     //TODO
 }

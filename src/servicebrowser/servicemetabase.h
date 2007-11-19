@@ -211,6 +211,8 @@ class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider
 
         virtual TrackList tracks();
 
+        virtual AlbumList albums();
+
         virtual void processInfoOf( InfoParserBase * infoParser );
 
         //ServiceArtist specific methods
