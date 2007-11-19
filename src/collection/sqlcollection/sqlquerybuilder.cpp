@@ -476,6 +476,21 @@ SqlQueryBuilder::buildQuery()
     query += " FROM ";
     query += d->queryFrom;
     query += " WHERE 1 ";
+    if( d->queryType == Private::ALBUM )
+    {
+        switch( d->albumMode )
+        {
+            case OnlyNormalAlbums:
+                query += " AND albums.artist IS NOT NULL ";
+                break;
+            case OnlyCompilations:
+                query += " AND albums.artist IS NULL ";
+                break;
+            case AllAlbums:
+                //do nothing
+                break;
+        }
+    }
     query += d->queryMatch;
     if ( !d->queryFilter.isEmpty() )
     {
