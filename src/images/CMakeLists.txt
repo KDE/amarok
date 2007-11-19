@@ -17,9 +17,6 @@ install(
         album_cover_10.jpg
         amarok_icon.svg
         back_stars_grey.png
-        currenttrack_bar_left.png
-        currenttrack_bar_mid.png
-        currenttrack_bar_right.png
         currenttrack_play.png
         currenttrack_pause.png
         currenttrack_stop.png
@@ -44,8 +41,6 @@ install(
         volumeslider-handle.png
         volumeslider-handle_glow.png
         volumeslider-inset.png
-        wizard_compact.png
-        wizard_xmms.png
         xine_logo.png
         toolbar-background.svg
         playlist_items.svg
