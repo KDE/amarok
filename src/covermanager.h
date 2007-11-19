@@ -7,11 +7,9 @@
 
 #include "coverfetcher.h"
 
-#include <q3ptrlist.h>
 #include <QSplitter>
 //Added by qt3to4:
 #include <QDropEvent>
-#include <Q3ValueList>
 #include <QLabel>
 #include <k3iconview.h>
 #include <QDialog>
@@ -44,7 +42,7 @@ class CoverManager : public QSplitter
         static CoverManager *instance() { return s_instance; }
 
         static void showOnce( const QString &artist = QString() );
-        static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
+        static void viewCover( Meta::AlbumPtr album, QWidget *parent=0 );
 
         void setStatusText( QString text );
 
@@ -77,7 +75,6 @@ class CoverManager : public QSplitter
         void slotSetLocaleUk()   { changeLocale( CoverFetcher::UK );            }
         
         void fetchMissingCovers();
-        void fetchCoversLoop();
         void coverFetched( const QString&, const QString& );
         void coverRemoved( const QString&, const QString& );
         void coverFetcherError();
@@ -94,7 +91,7 @@ class CoverManager : public QSplitter
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
         void loadCover( const QString &, const QString & );
-        Q3PtrList<CoverViewItem> selectedItems();
+        QList<CoverViewItem*> selectedItems();
 
         K3ListView     *m_artistView;
         CoverView      *m_coverView;
@@ -107,6 +104,8 @@ class CoverManager : public QSplitter
         int             m_currentLocale;
         int             m_currentView;
 
+        CoverFetcher   *m_fetcher;
+
         QAction        *m_selectAllAlbums;
         QAction        *m_selectAlbumsWithCover;
         QAction        *m_selectAlbumsWithoutCover;
@@ -118,13 +117,12 @@ class CoverManager : public QSplitter
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
-        Q3PtrList<Q3IconViewItem> m_coverItems; //used for filtering
+        QList<Q3IconViewItem*> m_coverItems; //used for filtering
         QString         m_filter;
 
 
         // Used by fetchCoversLoop() for temporary storage
-        QStringList m_fetchCovers;
-        uint m_fetchCounter;
+        Meta::AlbumList m_fetchCovers;
 
         //used to display information about cover fetching in the status bar
         int m_fetchingCovers;
@@ -149,13 +147,14 @@ class CoverView : public K3IconView
 class CoverViewItem : public K3IconViewItem
 {
     public:
-        CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album );
+        CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, Meta::AlbumPtr album );
 
         void loadCover();
         bool hasCover() const;
         bool canRemoveCover() const { return !m_embedded && hasCover(); }
         QString artist() const { return m_artist; }
         QString album() const { return m_album; }
+        Meta::AlbumPtr albumPtr() const { return m_albumPtr; }
         QPixmap coverPixmap() const { return m_coverPixmap; }
 
     protected:
@@ -167,6 +166,7 @@ class CoverViewItem : public K3IconViewItem
         void calcRect( const QString& text_ = QString() );
 
     private:
+        Meta::AlbumPtr m_albumPtr;
         QString m_artist;
         QString m_album;
         QString m_coverImagePath;
@@ -179,7 +179,7 @@ class CoverViewDialog : public QDialog {
         Q_OBJECT
 
     public:
-        CoverViewDialog(const QString& artist, const QString& album, QWidget *parent);
+        CoverViewDialog(Meta::AlbumPtr album, QWidget *parent);
 
     private:
         QHBoxLayout *m_layout;

@@ -4861,28 +4861,28 @@ CollectionDB::timerEvent( QTimerEvent* )
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void
-CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item ) //SLOT
-{
-    debug() << "Fetching cover for " << artist << " - " << album;
-
-    const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
-    CoverFetcher* fetcher;
-    if( isCompilation )
-        // avoid putting various artists in front of album title. this causes problems for locales other than US.
-        fetcher = new CoverFetcher( parent, "", album );
-    else
-        fetcher = new CoverFetcher( parent, artist, album );
-    if( item )
-    {
-        itemCoverMapMutex->lock();
-        itemCoverMap->insert( item, fetcher );
-        itemCoverMapMutex->unlock();
-    }
-    connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
-    fetcher->setUserCanEditQuery( !noedit );
-    fetcher->startFetch();
-}
+// void
+// CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item ) //SLOT
+// {
+//     debug() << "Fetching cover for " << artist << " - " << album;
+// 
+//     const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
+//     CoverFetcher* fetcher;
+//     if( isCompilation )
+//         // avoid putting various artists in front of album title. this causes problems for locales other than US.
+//         fetcher = new CoverFetcher( parent, "", album );
+//     else
+//         fetcher = new CoverFetcher( parent, artist, album );
+//     if( item )
+//     {
+//         itemCoverMapMutex->lock();
+//         itemCoverMap->insert( item, fetcher );
+//         itemCoverMapMutex->unlock();
+//     }
+//     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
+//     fetcher->setUserCanEditQuery( !noedit );
+//     fetcher->startFetch();
+// }
 
 void
 CollectionDB::scanMonitor()  //SLOT
@@ -4935,34 +4935,34 @@ CollectionDB::dirDirty( const QString& path )
 }
 
 
-void
-CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
-{
-    if( fetcher->wasError() ) {
-        error() << fetcher->errors();
-        emit coverFetcherError( fetcher->errors().front() );
-    }
-
-    else {
-        setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL(), fetcher->asin() );
-        emit coverFetched( fetcher->artist(), fetcher->album() );
-    }
-
-    //check the validity of the CollectionItem as it may have been deleted e.g. by a
-    //collection scan while fetching the cover
-/* PORT 2.0    itemCoverMapMutex->lock();
-    QMap<Q3ListViewItem*, CoverFetcher*>::Iterator it;
-    for( it = itemCoverMap->begin(); it != itemCoverMap->end(); ++it )
-    {
-        if( it.data() == fetcher )
-        {
-            if( it.key()->isOpen() )
-                static_cast<CollectionItem*>(it.key())->setPixmap( 0, QPixmap() );
-            itemCoverMap->erase( it );
-        }
-    } */
-    itemCoverMapMutex->unlock();
-}
+// void
+// CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
+// {
+//     if( fetcher->wasError() ) {
+//         error() << fetcher->errors();
+//         emit coverFetcherError( fetcher->errors().front() );
+//     }
+// 
+//     else {
+//         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL(), fetcher->asin() );
+//         emit coverFetched( fetcher->artist(), fetcher->album() );
+//     }
+// 
+//     //check the validity of the CollectionItem as it may have been deleted e.g. by a
+//     //collection scan while fetching the cover
+// /* PORT 2.0    itemCoverMapMutex->lock();
+//     QMap<Q3ListViewItem*, CoverFetcher*>::Iterator it;
+//     for( it = itemCoverMap->begin(); it != itemCoverMap->end(); ++it )
+//     {
+//         if( it.data() == fetcher )
+//         {
+//             if( it.key()->isOpen() )
+//                 static_cast<CollectionItem*>(it.key())->setPixmap( 0, QPixmap() );
+//             itemCoverMap->erase( it );
+//         }
+//     } */
+//     itemCoverMapMutex->unlock();
+// }
 
 /**
  * This query is fairly slow with sqlite, and often happens just

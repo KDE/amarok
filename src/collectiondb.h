@@ -512,7 +512,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void timerEvent( QTimerEvent* e );
 
     public slots:
-        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item = 0 );
+//         void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item = 0 );
         void scanMonitor();
         void startScan();
         void stopScan();
@@ -523,7 +523,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
     private slots:
         void dirDirty( const QString& path );
-        void coverFetcherResult( CoverFetcher* );
+//         void coverFetcherResult( CoverFetcher* );
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images

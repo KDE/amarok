@@ -7,7 +7,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "querybuilder.h"
 #include "covermanager.h"
 #include "debug.h"
 #include "statusbar.h"
@@ -39,7 +38,7 @@
 
 
 void
-Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager )
+Amarok::coverContextMenu( QWidget *parent, QPoint point, Meta::AlbumPtr album, bool showCoverManager )
 {
         Q3PopupMenu menu;
         enum { ACTIONS_SHOW, ACTIONS_FETCH, 
@@ -50,7 +49,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         menu.insertItem( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), ACTIONS_SHOW );
         menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), ACTIONS_FETCH );
         menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), ACTIONS_CUSTOM );
-        bool disable = !album.isEmpty(); // disable setting covers for unknown albums
+        bool disable = !album->prettyName().isEmpty(); // disable setting covers for unknown albums
         menu.setItemEnabled( ACTIONS_FETCH, disable );
         menu.setItemEnabled( ACTIONS_CUSTOM, disable );
         menu.addSeparator();
@@ -61,14 +60,17 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
             menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), ACTIONS_MANAGER );
         }
 
-        disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
+        //TODO: Port 2.0
+//         disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
         menu.setItemEnabled( ACTIONS_SHOW, disable );
         menu.setItemEnabled( ACTIONS_DELETE, disable );
+
+        CoverFetcher *f = new CoverFetcher( parent );
 
         switch( menu.exec( point ) )
         {
         case ACTIONS_SHOW:
-            CoverManager::viewCover( artist, album, parent );
+            CoverManager::viewCover( album, parent );
             break;
 
         case ACTIONS_DELETE:
@@ -79,35 +81,35 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
                 KStandardGuiItem::del() );
 
             if ( button == KMessageBox::Continue )
-                CollectionDB::instance()->removeAlbumImage( artist, album );
+                album->setImage( QImage() );
             break;
         }
 
         case ACTIONS_FETCH:
-            CollectionDB::instance()->fetchCover( parent, artist, album, false );
+            f->queueAlbum( album );
+            f->startFetchLoop();
             break;
 
         case ACTIONS_CUSTOM:
         {
-            QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( artist ) );
-            QString album_id; album_id.setNum( CollectionDB::instance()->albumID( album ) );
-            QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
+            Meta::TrackPtr track = album->tracks().first();
             QString startPath = ":homedir";
 
-            if ( !values.isEmpty() ) {
+            if( track )
+            {
                 KUrl url;
-                url.setPath( values.first() );
+                url = track->playableUrl();
                 startPath = url.directory();
             }
 
             KUrl file = KFileDialog::getImageOpenUrl( startPath, parent, i18n("Select Cover Image File") );
-            if ( !file.isEmpty() )
-                CollectionDB::instance()->setAlbumImage( artist, album, file );
+            if ( !file.url().isEmpty() )
+                album->setImage( QImage( file.fileName() ) );
             break;
         }
 
         case ACTIONS_MANAGER:
-            CoverManager::showOnce( album );
+            CoverManager::showOnce( album->albumArtist()->prettyName() );
             break;
         }
 }
@@ -122,66 +124,19 @@ CoverLabel::CoverLabel ( QWidget * parent, Qt::WindowFlags f )
 void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     if (pEvent->button() == Qt::LeftButton || pEvent->button() == Qt::RightButton)
     {
-        Amarok::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
+//         Amarok::coverContextMenu( this, pEvent->globalPos(), m_albumPtr, false );
     }
 }
 
 
-CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString album )
+CoverFetcher::CoverFetcher( QWidget *parent )
         : QObject( parent )
-        , m_artist( artist )
-        , m_album( album )
         , m_size( 2 )
         , m_success( true )
+        , m_isFetching( false )
 {
     DEBUG_FUNC_INFO
-
     setObjectName( "CoverFetcher" );
-
-    QStringList extensions;
-    extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
-               << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "part" << "cds" /*cd single*/;
-
-    //we do several queries, one raw ie, without the following modifications
-    //the others have the above strings removed with the following regex, as this can increase hit-rate
-    const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
-    foreach( const QString &extension, extensions ) {
-        QRegExp regexp( template1.arg( extension ) );
-        regexp.setCaseSensitivity( Qt::CaseInsensitive );
-        album.remove( regexp );
-    }
-
-    //TODO try queries that remove anything in album after a " - " eg Les Mis. - Excerpts
-
-    /**
-     * We search for artist - album, and just album, using the exact album text and the
-     * manipulated album text.
-     */
-
-    //search on our modified term, then the original
-    if ( !m_artist.isEmpty() )
-        m_userQuery = m_artist + " - ";
-    m_userQuery += m_album;
-
-    m_queries += m_artist + " - " + album;
-    m_queries += m_userQuery;
-    m_queries += album;
-    m_queries += m_album;
-
-    //don't do the same searches twice in a row
-    if( m_album == album )  {
-        m_queries.pop_front();
-        m_queries.pop_back();
-    }
-
-    /**
-     * Finally we do a search for just the artist, just in case as this often
-     * turns up a cover, and it might just be the right one! Also it would be
-     * the only valid search if m_album.isEmpty()
-     */
-    m_queries += m_artist;
-
-    QApplication::setOverrideCursor( Qt::BusyCursor );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -192,9 +147,68 @@ CoverFetcher::~CoverFetcher()
 }
 
 void
-CoverFetcher::startFetch()
+CoverFetcher::startFetchLoop()
 {
-    DEBUG_FUNC_INFO
+    if( !m_albums.isEmpty() )
+        startFetch( m_albums.takeFirst() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+void
+CoverFetcher::startFetch( Meta::AlbumPtr album )
+{
+    m_albumPtr = m_albums.takeFirst();
+    QString albumName = album->albumArtist()->prettyName();
+    QString artistName = album->prettyName();
+
+    QStringList extensions;
+    extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
+            << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "part" << "cds" /*cd single*/;
+
+
+    m_queries.clear();
+    m_userQueries.clear();
+
+    //we do several queries, one raw ie, without the following modifications
+    //the others have the above strings removed with the following regex, as this can increase hit-rate
+    const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
+    foreach( const QString &extension, extensions ) {
+        QRegExp regexp( template1.arg( extension ) );
+        regexp.setCaseSensitivity( Qt::CaseInsensitive );
+        albumName.remove( regexp );
+    }
+
+    //TODO try queries that remove anything in album after a " - " eg Les Mis. - Excerpts
+
+    /**
+        * We search for artist - album, and just album, using the exact album text and the
+        * manipulated album text.
+        */
+
+    //search on our modified term, then the original
+    if ( !artistName.isEmpty() )
+        m_userQuery = artistName + " - ";
+    m_userQuery += albumName;
+
+    m_queries += artistName + " - " + albumName;
+    m_queries += m_userQuery;
+    m_queries += albumName;
+
+    //don't do the same searches twice in a row
+    m_queries.pop_front();
+    m_queries.pop_back();
+
+    /**
+        * Finally we do a search for just the artist, just in case as this often
+        * turns up a cover, and it might just be the right one! Also it would be
+        * the only valid search if m_album.isEmpty()
+        */
+    m_queries += artistName;
+
 
     // Static license Key. Thanks muesli ;-)
     const QString LICENSE( "D1URM11J3F2CEH" );
@@ -237,11 +251,11 @@ CoverFetcher::startFetch()
     QString url;
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
-        + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KUrl::toPercentEncoding( query, "/" ) // FIXME: we will have to find something else
-        + "&mode=" + musicMode
-        + "&type=lite&locale=" + AmarokConfig::amazonLocale()
-        + "&page=1&f=xml";
+            + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
+            + "&KeywordSearch=" + KUrl::toPercentEncoding( query, "/" ) // FIXME: we will have to find something else
+            + "&mode=" + musicMode
+            + "&type=lite&locale=" + AmarokConfig::amazonLocale()
+            + "&page=1&f=xml";
     debug() << url;
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
@@ -249,11 +263,6 @@ CoverFetcher::startFetch()
 
     Amarok::StatusBar::instance()->newProgressOperation( job );
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE SLOTS
-//////////////////////////////////////////////////////////////////////////////////////////
 
 void
 CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
@@ -274,7 +283,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     QDomDocument doc;
     if( !doc.setContent( m_xml ) ) {
         m_errors += i18n("The XML obtained from Amazon is invalid.");
-        startFetch();
+        startFetchLoop();
         return;
     }
 
@@ -403,7 +412,7 @@ CoverFetcher::attemptAnotherFetch()
 
     else if( !m_queries.isEmpty() ) {
         // we have some queries left in the pot
-        startFetch();
+        startFetchLoop();
     }
 
     else if( m_userCanEditQuery ) {
@@ -542,7 +551,7 @@ CoverFetcher::getUserQuery( QString explanation )
         m_userQuery = dialog.query();
         m_queries.clear();
         m_queries << m_userQuery;
-        startFetch();
+        startFetchLoop();
         break;
     default:
         finishWithError( i18n( "Aborted." ) );
@@ -631,9 +640,9 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    emit result( this );
-
-    deleteLater();
+    m_albumPtr->setImage( image() );
+    if( !m_albums.isEmpty() )
+        startFetch( m_albums.takeFirst() );
 }
 
 void
@@ -644,10 +653,6 @@ CoverFetcher::finishWithError( const QString &message, KJob *job )
 
     m_errors += message;
     m_success = false;
-
-    emit result( this );
-
-    deleteLater();
 }
 
 #include "coverfetcher.moc"

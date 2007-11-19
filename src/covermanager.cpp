@@ -6,9 +6,14 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "collection/BlockingQuery.h"
+#include "collection/Collection.h"
+#include "CollectionManager.h"
 #include "browserToolBar.h"
 #include "debug.h"
+#include "meta/meta.h"
 #include "querybuilder.h"
+#include "QueryMaker.h"
 #include "config-amarok.h"
 #include "pixmapviewer.h"
 #include "playlist/PlaylistModel.h"
@@ -67,8 +72,16 @@ CoverManager *CoverManager::s_instance = 0;
 class ArtistItem : public K3ListViewItem
 {
     public:
-    ArtistItem(Q3ListView *view, Q3ListViewItem *item, const QString &text)
-        : K3ListViewItem(view, item, text) {}
+    ArtistItem(Q3ListView *view, Q3ListViewItem *item, Meta::ArtistPtr artist)
+        : K3ListViewItem(view, item )
+        , m_artist( artist )
+        { setText( 0, artist->prettyName() ); }
+    ArtistItem(Q3ListView *view, Q3ListViewItem *item, const QString &name )
+        : K3ListViewItem( view, item, name )
+        , m_artist( 0 ) {} 
+
+        Meta::ArtistPtr artist() const { return m_artist; }
+
     protected:
     int compare( Q3ListViewItem* i, int col, bool ascending ) const
     {
@@ -85,12 +98,13 @@ class ArtistItem : public K3ListViewItem
 
         return QString::localeAwareCompare( a.toLower(), b.toLower() );
     }
+    private:
+        Meta::ArtistPtr m_artist;
 };
 
 CoverManager::CoverManager()
         : QSplitter( 0 )
         , m_timer( new QTimer( this ) )    //search filter timer
-        , m_fetchCounter( 0 )
         , m_fetchingCovers( 0 )
         , m_coversFetched( 0 )
         , m_coverErrors( 0 )
@@ -115,9 +129,16 @@ CoverManager::CoverManager()
     m_artistView->setMinimumWidth( 180 );
     ArtistItem *item = 0;
 
-    //load artists from the collection db
-    const QStringList artists = CollectionDB::instance()->artistList( false, false );
-    foreach( const QString &artist, artists )
+    Collection *coll;
+    foreach( coll, CollectionManager::instance()->collections() )
+        if( coll->collectionId() == "localCollection" )
+            break;
+    QueryMaker *qm = coll->queryMaker();
+    qm->startArtistQuery();
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    Meta::ArtistList artists = bq.artists( coll->collectionId() );
+    foreach( Meta::ArtistPtr artist, artists )
     {
         item = new ArtistItem( m_artistView, item, artist );
         item->setPixmap( 0, SmallIcon( Amarok::icon( "artist" ) ) );
@@ -129,6 +150,7 @@ CoverManager::CoverManager()
     item = new ArtistItem( m_artistView, 0, i18n( "All Albums" ) );
     item->setPixmap( 0, SmallIcon( Amarok::icon( "album" ) ) );
 
+    //TODO: Port
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -266,13 +288,6 @@ CoverManager::CoverManager()
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
                            SLOT(slotSetFilterTimeout()) );
 
-    connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )),
-                                       SLOT(coverFetched( const QString&, const QString& )) );
-    connect( CollectionDB::instance(), SIGNAL(coverRemoved( const QString&, const QString& )),
-                                       SLOT(coverRemoved( const QString&, const QString& )) );
-    connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )),
-                                       SLOT(coverFetcherError()) );
-
     m_currentView = AllAlbums;
 
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
@@ -280,6 +295,8 @@ CoverManager::CoverManager()
     resize( sz.width(), sz.height() );
 
     show();
+
+    m_fetcher = new CoverFetcher( this );
 
     QTimer::singleShot( 0, this, SLOT(init()) );
 }
@@ -313,16 +330,17 @@ void CoverManager::init()
 }
 
 
-CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, QWidget *parent )
+CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent, 0, false, Qt::WType_TopLevel | Qt::WNoAutoErase )
-    , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
+    m_pixmap = album->image();
     setAttribute( Qt::WA_DeleteOnClose );
 #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Utility );
 #endif
     kapp->setTopWidget( this );
-    setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2",
+                    album->albumArtist()->prettyName(), album->prettyName() ) ) );
 
     m_layout = new QHBoxLayout( this );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
@@ -332,10 +350,10 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
 }
 
 
-void CoverManager::viewCover( const QString& artist, const QString& album, QWidget *parent ) //static
+void CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
 {
     //QDialog means "escape" works as expected
-    QDialog *dialog = new CoverViewDialog( artist, album, parent );
+    QDialog *dialog = new CoverViewDialog( album, parent );
     dialog->show();
 }
 
@@ -362,42 +380,17 @@ void CoverManager::fetchMissingCovers() //SLOT
     for ( Q3IconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
         if( !coverItem->hasCover() ) {
-            m_fetchCovers += coverItem->artist() + " @@@ " + coverItem->album();
-            m_fetchingCovers++;
+            m_fetchCovers += coverItem->albumPtr();
         }
     }
 
-    if( !m_fetchCounter )    //loop isn't started yet
-        fetchCoversLoop();
+    m_fetcher->queueAlbums( m_fetchCovers );
+    m_fetcher->startFetchLoop();
 
     updateStatusBar();
     m_fetchButton->setEnabled( false );
 
 }
-
-
-void CoverManager::fetchCoversLoop() //SLOT
-{
-    if( (int)m_fetchCounter < m_fetchCovers.count() )
-    {
-        //get artist and album from keyword
-        const QStringList values = m_fetchCovers[m_fetchCounter].split( " @@@ ", QString::KeepEmptyParts );
-
-        if( values.count() > 1 )
-           CollectionDB::instance()->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
-
-        m_fetchCounter++;
-
-        // Wait 1 second, since amazon caps the number of accesses per client
-        QTimer::singleShot( 1000, this, SLOT( fetchCoversLoop() ) );
-    }
-    else {
-        m_fetchCovers.clear();
-        m_fetchCounter = 0;
-    }
-
-}
-
 
 void CoverManager::showOnce( const QString &artist )
 {
@@ -413,13 +406,14 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
 {
+    ArtistItem *artistItem = static_cast<ArtistItem*>(item);
+    Meta::ArtistPtr artist = artistItem->artist();
     if( item->depth() ) //album item
         return;
 
-    QString artist = item->text(0);
-
-    if( artist.endsWith( ", The" ) )
-       Amarok::manipulateThe( artist, false );
+    //TODO: port?
+//     if( artist->prettyName().endsWith( ", The" ) )
+//        Amarok::manipulateThe( artist->prettyName(), false );
 
     m_coverView->clear();
     m_coverItems.clear();
@@ -444,42 +438,44 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
 
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    QueryBuilder qb;
-    QStringList albums;
 
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
+    Meta::AlbumList albums;
 
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.setOptions( QueryBuilder::optNoCompilations );
-
+    Collection *coll;
+    foreach( coll, CollectionManager::instance()->collections() )
+        if( coll->collectionId() == "localCollection" )
+            break;
+    QueryMaker *qm = coll->queryMaker();
     if ( item != m_artistView->firstChild() )
-        qb.addMatch( QueryBuilder::tabArtist, artist );
+        qm->addMatch( artist );
 
-    albums = qb.run();
+    qm->startAlbumQuery();
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    albums = bq.albums( coll->collectionId() );
 
+
+    //TODO: Port 2.0
     //also retrieve compilations when we're showing all items (first treenode) or
     //"Various Artists" (last treenode)
-    if ( item == m_artistView->firstChild() || item == m_artistView->lastChild() )
-    {
-        QStringList cl;
-
-        qb.clear();
-        qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
-
-        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-        qb.setOptions( QueryBuilder::optRemoveDuplicates );
-        qb.setOptions( QueryBuilder::optOnlyCompilations );
-        cl = qb.run();
-
-        for( int i = 0; i < cl.count(); i++ ) {
-            albums.append( i18n( "Various Artists" ) );
-            albums.append( cl[ i ] );
-        }
-    }
+//     if ( item == m_artistView->firstChild() || item == m_artistView->lastChild() )
+//     {
+//         QStringList cl;
+// 
+//         qb.clear();
+//         qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
+// 
+//         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+//         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+//         qb.setOptions( QueryBuilder::optRemoveDuplicates );
+//         qb.setOptions( QueryBuilder::optOnlyCompilations );
+//         cl = qb.run();
+// 
+//         for( int i = 0; i < cl.count(); i++ ) {
+//             albums.append( i18n( "Various Artists" ) );
+//             albums.append( cl[ i ] );
+//         }
+//     }
 
     QApplication::restoreOverrideCursor();
 
@@ -489,11 +485,9 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
     uint x = 0;
-    oldForeach( albums )
+    foreach( Meta::AlbumPtr album, albums )
     {
-        const QString artist = *it;
-        const QString album = *(++it);
-        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), album ) );
 
         if ( ++x % 50 == 0 ) {
             progress.setProgress( x / 5 ); // we do it less often due to bug in Qt, ask Max
@@ -528,7 +522,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 
     menu.addTitle( i18n( "Cover Image" ) );
 
-    Q3PtrList<CoverViewItem> selected = selectedItems();
+    QList<CoverViewItem*> selected = selectedItems();
     const int nSelected = selected.count();
 
     QAction* fetchSelectedAction = new QAction( KIcon( Amarok::icon( "download" ) )
@@ -578,7 +572,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 void CoverManager::viewSelectedCover()
 {
     CoverViewItem* item = selectedItems().first();
-    viewCover( item->artist(), item->album(), this );
+    viewCover( item->albumPtr(), this );
 }
 
 void CoverManager::coverItemExecuted( Q3IconViewItem *item ) //SLOT
@@ -589,7 +583,7 @@ void CoverManager::coverItemExecuted( Q3IconViewItem *item ) //SLOT
 
     item->setSelected( true );
     if ( item->hasCover() )
-        viewCover( item->artist(), item->album(), this );
+        viewCover( item->albumPtr(), this );
     else
         fetchSelectedCovers();
 
@@ -611,7 +605,7 @@ void CoverManager::slotSetFilter() //SLOT
     }
 
     m_coverView->setAutoArrange( false );
-    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
+    foreach( Q3IconViewItem *item, m_coverItems )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, Qt::CaseInsensitive ) || coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
@@ -645,7 +639,8 @@ void CoverManager::changeView( int id  ) //SLOT
     }
 
     m_coverView->setAutoArrange(false );
-    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
+    foreach( Q3IconViewItem *item, m_coverItems )
+    {
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !m_filter.isEmpty() ) {
@@ -704,16 +699,6 @@ void CoverManager::coverFetcherError()
 void CoverManager::stopFetching()
 {
     Debug::Block block( __PRETTY_FUNCTION__ );
-
-    m_fetchCovers.clear();
-    m_fetchCounter = 0;
-
-    //delete all cover fetchers
-    QList<CoverFetcher *> list = qFindChildren<CoverFetcher*>(this);
-    foreach( CoverFetcher *cf, list )
-        cf->deleteLater();
-
-    m_fetchingCovers = 0;
     updateStatusBar();
 }
 
@@ -721,7 +706,7 @@ void CoverManager::stopFetching()
 
 void CoverManager::loadCover( const QString &artist, const QString &album )
 {
-    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
+    foreach( Q3IconViewItem *item, m_coverItems )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if ( album == coverItem->album() && ( artist == coverItem->artist() || ( artist.isEmpty() && coverItem->artist().isEmpty() ) ) )
@@ -735,26 +720,33 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 void CoverManager::setCustomSelectedCovers()
 {
     //function assumes something is selected
-    Q3PtrList<CoverViewItem> selected = selectedItems();
-    CoverViewItem* first = selected.getFirst();
+    QList<CoverViewItem*> selected = selectedItems();
+    CoverViewItem* first = selected.first();
 
-    QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( first->artist() ) );
-    QString album_id; album_id.setNum( CollectionDB::instance()->albumID( first->album() ) );
-    QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
-
-    QString startPath = ":homedir";
-    if ( !values.isEmpty() ) {
-        KUrl url;
-        url.setPath( values.first() );
+    Collection *coll;
+    foreach( coll, CollectionManager::instance()->collections() )
+        if( coll->collectionId() == "localCollection" )
+            break;
+    QueryMaker *qm = coll->queryMaker();
+    qm->addMatch( first->albumPtr() );
+    qm->startTrackQuery();
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    Meta::TrackPtr track = bq.tracks( coll->collectionId() ).first();
+    KUrl startPath;
+    if( track )
+    {
+        KUrl url = track->playableUrl();
         startPath = url.directory();
     }
     KUrl file = KFileDialog::getImageOpenUrl( startPath, this, i18n( "Select Cover Image File" ) );
     if ( !file.isEmpty() ) {
         kapp->processEvents();    //it may takes a while so process pending events
         QString tmpFile;
-        QImage image = CollectionDB::fetchImage(file, tmpFile);
-        for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
-            CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), image );
+        QImage image( file.fileName() );
+        foreach( CoverViewItem *item, selected )
+        {
+            item->albumPtr()->setImage( image );
             item->loadCover();
         }
         KIO::NetAccess::removeTempFile( tmpFile );
@@ -763,22 +755,22 @@ void CoverManager::setCustomSelectedCovers()
 
 void CoverManager::fetchSelectedCovers()
 {
-    Q3PtrList<CoverViewItem> selected = selectedItems();
-    for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
-        m_fetchCovers += item->artist() + " @@@ " + item->album();
+    QList<CoverViewItem*> selected = selectedItems();
+    foreach( CoverViewItem *item, selected )
+        m_fetchCovers += item->albumPtr();
 
     m_fetchingCovers += selected.count();
 
-    if( !m_fetchCounter )    //loop isn't started yet
-        fetchCoversLoop();
-
+    m_fetcher->queueAlbums( m_fetchCovers );
+    m_fetcher->startFetchLoop();
+    
     updateStatusBar();
 }
 
 
 void CoverManager::deleteSelectedCovers()
 {
-    Q3PtrList<CoverViewItem> selected = selectedItems();
+    QList<CoverViewItem*> selected = selectedItems();
 
     int button = KMessageBox::warningContinueCancel( this,
                             i18np( "Are you sure you want to remove this cover from the Collection?",
@@ -788,7 +780,7 @@ void CoverManager::deleteSelectedCovers()
                             KStandardGuiItem::del() );
 
     if ( button == KMessageBox::Continue ) {
-        for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
+        foreach( CoverViewItem *item, selected ) {
             kapp->processEvents();
             if ( CollectionDB::instance()->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
                   coverRemoved( item->artist(), item->album() );
@@ -799,20 +791,21 @@ void CoverManager::deleteSelectedCovers()
 
 void CoverManager::playSelectedAlbums()
 {
-    Q3PtrList<CoverViewItem> selected = selectedItems();
-    QString artist_id, album_id;
-    for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
+    Collection *coll;
+    foreach( coll, CollectionManager::instance()->collections() )
+        if( coll->collectionId() == "localCollection" )
+            break;
+    QueryMaker *qm = coll->queryMaker();
+    foreach( CoverViewItem *item, selectedItems() )
     {
-        artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
-        album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
-        //TODO: Port 2.0
-//         The::playlistModel()->insertMedia( CollectionDB::instance()->albumTracks( artist_id, album_id ), Playlist::Append );
+        qm->addMatch( item->albumPtr() );
     }
+    The::playlistModel()->insertOptioned( qm, Playlist::Append );
 }
 
-Q3PtrList<CoverViewItem> CoverManager::selectedItems()
+QList<CoverViewItem*> CoverManager::selectedItems()
 {
-    Q3PtrList<CoverViewItem> selectedItems;
+    QList<CoverViewItem*> selectedItems;
     for ( Q3IconViewItem* item = m_coverView->firstItem(); item; item = item->nextItem() )
         if ( item->isSelected() )
               selectedItems.append( static_cast<CoverViewItem*>(item) );
@@ -847,13 +840,14 @@ void CoverManager::updateStatusBar()
         }
 
         if( m_fetchingCovers == 1 ) {
-            QStringList values = m_fetchCovers[0].split( " @@@ ", QString::KeepEmptyParts ); //get artist and album name
-            if ( values.count() >= 2 )
+            foreach( Meta::AlbumPtr album, m_fetchCovers )
             {
-                if( values[0].isEmpty() )
-                    text = i18n( "Fetching cover for %1..." , values[1] );
+                if( album->albumArtist()->prettyName().isEmpty() )
+                    text = i18n( "Fetching cover for %1..." , album->prettyName() );
                 else
-                    text = i18n( "Fetching cover for %1 - %2...", values[0], values[1] );
+                    text = i18n( "Fetching cover for %1 - %2...",
+                                 album->albumArtist()->prettyName(),
+                                 album->prettyName() );
             }
         }
         else if( m_fetchingCovers ) {
@@ -982,13 +976,15 @@ void CoverView::setStatusText( Q3IconViewItem *item )
 //    CLASS CoverViewItem
 /////////////////////////////////////////////////////////////////////
 
-CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album )
-    : K3IconViewItem( parent, after, album )
-    , m_artist( artist )
-    , m_album( album )
+CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, Meta::AlbumPtr album )
+    : K3IconViewItem( parent, after )
+    , m_albumPtr( album)
     , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, false, 0, &m_embedded ) )
     , m_coverPixmap( )
 {
+    m_album = album->prettyName();
+    m_artist = album->albumArtist()->prettyName();
+    setText( album->prettyName() );
     setDragEnabled( true );
     setDropEnabled( true );
     calcRect();
@@ -996,13 +992,14 @@ CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const Q
 
 bool CoverViewItem::hasCover() const
 {
-    return !m_coverImagePath.endsWith( "nocover.png" ) && QFile::exists( m_coverImagePath );
+    //TODO: Port
+//     return !m_coverImagePath.endsWith( "nocover.png" ) && QFile::exists( m_coverImagePath );
+    return false;
 }
 
 void CoverViewItem::loadCover()
 {
-    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, false, 1, &m_embedded );
-    m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
+    m_coverPixmap = m_albumPtr->image();  //create the scaled cover
 
     repaint();
 }
@@ -1078,8 +1075,7 @@ void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & 
 
        QImage img;
        Q3ImageDrag::decode( e, img );
-       CollectionDB::instance()->setAlbumImage( artist(), album(), img );
-       m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, false, 0 );
+       m_albumPtr->setImage( img );
        loadCover();
     }
 }

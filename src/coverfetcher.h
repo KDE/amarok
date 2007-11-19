@@ -5,14 +5,15 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
+#include "meta/meta.h"
+
 #include <QImage>       //stack allocated
 #include <QLabel>       //baseclass
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 
-
 namespace Amarok {
-    void coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
+    void coverContextMenu( QWidget *parent, QPoint point, Meta::AlbumPtr album, bool showCoverManager = true );
 }
 
 class KJob;
@@ -46,20 +47,21 @@ class CoverFetcher : public QObject
     static const uint MAX_COVERS_CHOICE = 10;
 
 public:
-    CoverFetcher( QWidget *parent, const QString &artist, QString album );
+    CoverFetcher( QWidget *parent );
    ~CoverFetcher();
 
     /// allow the user to edit the query?
     void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
-    /// starts the fetch
-    void startFetch();
+    /// Main Fetch loop
+    void startFetchLoop();
 
-    QString artist() const { return m_artist; }
-    QString album() const { return m_album; }
     QString amazonURL() const { return m_amazonURL; }
     QString asin() const { return m_asin; }
     QImage image() const { return m_image; }
+
+    void queueAlbum( Meta::AlbumPtr album ) { m_albums << album; }
+    void queueAlbums( Meta::AlbumList albums ) { m_albums << albums; }
 
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
@@ -68,18 +70,14 @@ public:
     static QString localeIDToString( int id );
     static int localeStringToID( const QString &locale );
 
-signals:
-    /// The CollectionDB can get the cover information using the pointer
-    void result( CoverFetcher* );
-
 private slots:
     void finishedXmlFetch( KJob * job );
     void finishedImageFetch( KJob * job );
     void changeLocale( int id );
 
 private:
-    const QString m_artist;
-    const QString m_album;
+    Meta::AlbumList m_albums;
+    Meta::AlbumPtr m_albumPtr;
 
     bool    m_userCanEditQuery;
     QString m_userQuery; /// the query from the query edit dialog
@@ -90,6 +88,7 @@ private:
     int     m_size;
 
     QStringList m_queries;
+    QStringList m_userQueries;
     QStringList m_coverAsins;
     QStringList m_coverAmazonUrls;
     QStringList m_coverUrls;
@@ -98,8 +97,13 @@ private:
     QStringList m_errors;
 
     bool m_success;
+    bool m_isFetching;
 
 private:
+
+    /// Fetch a cover
+    void startFetch( Meta::AlbumPtr album );
+
     /// The fetch was successful!
     void finish();
 
