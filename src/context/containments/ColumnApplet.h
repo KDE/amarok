@@ -50,7 +50,8 @@ public:
                                 const QRect& contentsRect);
     
     QList<QAction*> contextActions();
-    
+    virtual Type containmentType() const;
+
 public slots:
     void appletRemoved( QObject* object );
     Applet* addApplet( Plasma::Applet* applet );
@@ -59,7 +60,6 @@ public slots:
 protected:
 //     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 
 protected slots:
