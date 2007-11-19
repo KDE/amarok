@@ -99,6 +99,7 @@ Optional
 
     * libgpod 0.4.2 (or newer)
       (iPod support)
+      Note: libgpod 0.6.0 is required for the newest Apple iPods.
       http://www.gtkpod.org/libgpod.html
 
     * libifp 1.0.0.2
