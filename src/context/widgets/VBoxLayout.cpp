@@ -62,7 +62,9 @@ void VBoxLayout::setGeometry(QRectF geometry)
     kDebug() << this << " Geometry process " << geometry << " for " << count() << " children";
 
     QList<QSizeF> sizes;
-    QSizeF available = geometry.size() - QSizeF(2 * margin( LeftMargin), 2 * margin( RightMargin ));
+    qreal widthMargin = margin( LeftMargin ) + margin( RightMargin );
+    qreal heightMargin = margin( TopMargin ) + margin( BottomMargin );
+    QSizeF available = geometry.size() - QSizeF( widthMargin, heightMargin );
 
     // we assume all children are fixed
 
