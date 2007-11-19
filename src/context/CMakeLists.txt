@@ -46,6 +46,7 @@ set(plasma_LIB_SRCS
     plasma/phase.cpp
     plasma/plasma.cpp
     plasma/plasma_export.h
+    plasma/toolbox.cpp
     plasma/scriptengine.cpp
     plasma/svg.cpp
     plasma/theme.cpp
