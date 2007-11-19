@@ -37,7 +37,6 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
 
 AMAROK_EXPORT_PLUGIN( yauapEngine )
 
-
 /* signal handler for DBus signals */
 static DBusHandlerResult 
 signal_handler( DBusConnection * /*con*/, DBusMessage *msg, void *data )
@@ -51,10 +50,10 @@ signal_handler( DBusConnection * /*con*/, DBusMessage *msg, void *data )
     debug() << "SIGNAL member " << member << " interface " << interface  << " objpath " << objectpath << endl;
 
     if (dbus_message_is_signal( msg, "org.yauap.CommandInterface", "MetadataSignal")) 
-        engine->update_metadata();
+       QApplication::postEvent(engine, new QCustomEvent(3004));
     else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "EosSignal")) {
-        QApplication::postEvent(engine, new QCustomEvent(3000));
-        engine->m_state = Engine::Idle;
+        if (engine->m_state == Engine::Playing)
+            QApplication::postEvent(engine, new QCustomEvent(3000));
     }
     else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "ErrorSignal"))
     {
@@ -110,7 +109,7 @@ DBusConnection::open()
     qt_connection = new DBusQt::Connection( this );
     qt_connection->dbus_connection_setup_with_qt_main( dbus_connection );
 
-    if ( !dbus_connection_add_filter(dbus_connection, signal_handler, context, NULL) ) 
+    if ( !dbus_connection_add_filter(dbus_connection, signal_handler, context, NULL) )
     {
         debug() << "Failed to add filter function." << endl;
         return false;
@@ -237,6 +236,9 @@ DBusConnection::send_with_reply(const char* method, int first_arg_type, va_list 
 
         DBusMessage* oldmsg = msg;
         msg = dbus_connection_send_with_reply_and_block(dbus_connection, oldmsg, -1, &error);
+        DBusDispatchStatus status;
+        while ((status = dbus_connection_get_dispatch_status(dbus_connection)) == DBUS_DISPATCH_DATA_REMAINS)
+            dbus_connection_dispatch (dbus_connection);
         dbus_message_unref (oldmsg);
 
         if (!msg)
@@ -441,6 +443,7 @@ yauapEngine::customEvent(QCustomEvent *e)
 
     switch (e->type()) {
     case 3000:
+        m_state = Engine::Idle;
         emit trackEnded();
         break;
     case 3002:
@@ -454,6 +457,9 @@ yauapEngine::customEvent(QCustomEvent *e)
             delete bundle;
             break;
         }
+    case 3004:
+        update_metadata();
+        break;
     default:
         ;
     }
@@ -514,11 +520,9 @@ yauapEngine::setVolumeSW( uint volume )
 
     debug() << "In setVolumeSW " << volume << endl;
 
-    ret = con->call("set_volume", DBUS_TYPE_UINT32, &dbus_volume, DBUS_TYPE_INVALID);
+    ret = con->send("set_volume", DBUS_TYPE_UINT32, &dbus_volume, DBUS_TYPE_INVALID);
     debug() << "=> " << ret << endl;
 }
-
-#include <assert.h>
 
 /* start playback */
 bool 
@@ -528,7 +532,7 @@ yauapEngine::play( uint offset )
 
     debug() << "In play" << endl;
 
-    if (con->call("start", DBUS_TYPE_UINT32, &dbus_offset, DBUS_TYPE_INVALID) > 0)
+    if (con->send("start", DBUS_TYPE_UINT32, &dbus_offset, DBUS_TYPE_INVALID) > 0)
     {
         change_state( Engine::Playing );
         return true;
