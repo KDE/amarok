@@ -292,7 +292,7 @@ void ColumnApplet::launchAppletBrowser() // SLOT
     DEBUG_BLOCK
     m_appletBrowser->show();
 }
-
+/*
 bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 {
     Applet *applet = qgraphicsitem_cast<Applet*>(watched);
@@ -302,7 +302,8 @@ bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
     Q_ASSERT(applet!=0);
 
     return false;
-}
+}*/
+
 void ColumnApplet::destroyApplet()
 {
     QAction *action = qobject_cast<QAction*>(sender());

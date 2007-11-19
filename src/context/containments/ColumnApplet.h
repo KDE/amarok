@@ -15,9 +15,9 @@
 #define COLUMN_APPLET_H
 
 #include "context/Applet.h"
-#include "Containment.h"
+#include "context/Containment.h"
 #include "amarok_export.h"
-#include "Svg.h"
+#include "context/Svg.h"
 
 #include "plasma/widgets/flowlayout.h"
 #include "plasma/appletbrowser.h"
@@ -60,7 +60,7 @@ public slots:
 protected:
 //     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-    bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
+//     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 
 protected slots:
     void launchAppletBrowser();
