@@ -22,8 +22,12 @@
 
 #include "infoparserbase.h"
 #include "meta.h"
+#include "meta/CustomActionsCapability.h"
+#include "ServiceCustomActionsCapability.h"
 
+#include <QAction>
 #include <QStringList>
+
 
 class ServiceMetaFactory
 {
@@ -68,6 +72,33 @@ class ServiceDisplayInfoProvider
 
 };
 
+
+class CustomActionsProvider
+{
+
+    public:
+        CustomActionsProvider() {}
+        virtual ~CustomActionsProvider() {}
+
+        virtual QList< QAction *> customActions() { return QList< QAction *>(); }
+
+        bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
+
+};
+
+
+
 namespace Meta
 {
 
@@ -93,7 +124,7 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
+class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -198,7 +229,7 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider
         QString m_type;
 };
 
-class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider
+class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
 
@@ -233,7 +264,7 @@ class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider
 
 };
 
-class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
+class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -280,7 +311,7 @@ class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider
         QString m_artistName;
 };
 
-class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider
+class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -310,7 +341,7 @@ class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider
         TrackList m_tracks;
 };
 
-class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider
+class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -331,7 +362,7 @@ class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider
         TrackList m_tracks;
 };
 
-class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider
+class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceYear( const QString &name );
