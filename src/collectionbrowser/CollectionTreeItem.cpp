@@ -20,6 +20,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_parent( parent )
     , m_parentCollection( 0 )
     , m_childrenLoaded( false )
+    , m_isVariousArtistsNode( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -30,9 +31,26 @@ CollectionTreeItem::CollectionTreeItem( Collection *parentCollection, Collection
     , m_parent( parent )
     , m_parentCollection( parentCollection )
     , m_childrenLoaded( false )
+    , m_isVariousArtistsNode( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
+}
+
+CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent )
+    : m_data( 0 )
+    , m_parent( parent )
+    , m_parentCollection( 0 )
+    , m_childrenLoaded( true )
+    , m_isVariousArtistsNode( true )
+{
+    if( m_parent )
+        m_parent->m_childItems.insert( 0, this );
+
+    foreach( Meta::DataPtr data, data )
+    {
+        new CollectionTreeItem( data, this );
+    }
 }
 
 CollectionTreeItem::~CollectionTreeItem() {
@@ -94,6 +112,16 @@ CollectionTreeItem::data( int role ) const {
 
         return QVariant();
     }
+    else if( m_isVariousArtistsNode )
+    {
+        if ( role == Qt::DisplayRole ) {
+            return i18n( "Various Artists" );
+        }
+        if(  role == CustomRoles::FilterRole )
+        {
+            return QString();
+        }
+    }
     else {
         if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
             return m_parentCollection->prettyName();
@@ -122,6 +150,7 @@ bool
 CollectionTreeItem::isDataItem() const
 {
     //return !m_data.isNull();
+    //note a various artists node is also a special data node!
     return !m_parentCollection;
 }
 
@@ -154,7 +183,10 @@ CollectionTreeItem::urls() const {
 
 bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
-    return m_data->sortableName() < other.m_data->sortableName();
+    if( m_isVariousArtistsNode )
+        return true;
+    else
+        return m_data->sortableName() < other.m_data->sortableName();
 }
 
 QList<Meta::TrackPtr>

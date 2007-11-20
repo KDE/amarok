@@ -26,6 +26,8 @@ class CollectionTreeItem {
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
         CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent );
+        //this ctor creates a "Various Artists" node. do not use it for anything else
+        CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent );
 
         ~CollectionTreeItem();
 
@@ -68,6 +70,7 @@ class CollectionTreeItem {
 
         QList<CollectionTreeItem*> m_childItems;
         bool m_childrenLoaded;
+        bool m_isVariousArtistsNode;
 };
 
 #endif

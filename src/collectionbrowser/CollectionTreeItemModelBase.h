@@ -94,6 +94,8 @@ Q_OBJECT
 
         virtual void filterChildren() = 0;
 
+        void handleCompilations( CollectionTreeItem *parent ) const;
+
         QString m_headerText;
         CollectionTreeItem *m_rootItem;
         QList<int> m_levelType;
@@ -120,6 +122,7 @@ struct CollectionTreeItemModelBase::Private
 {
     QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
     QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
+    QMap<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
 };
 
 #endif

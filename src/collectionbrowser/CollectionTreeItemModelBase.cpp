@@ -232,9 +232,11 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             switch( m_levelType[level] ) {
                 case CategoryId::Album :
                     qm->startAlbumQuery();
+                    qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
                     break;
                 case CategoryId::Artist :
                     qm->startArtistQuery();
+                    handleCompilations( parent );
                     break;
                 case CategoryId::Composer :
                     qm->startComposerQuery();
@@ -251,7 +253,11 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         }
         CollectionTreeItem *tmpItem = parent;
         while ( tmpItem->isDataItem()  ) {
-            qm->addMatch( tmpItem->data() );
+            //ignore Various artists node (whichh will not have a data pointer
+            if( tmpItem->data() )
+            {
+                qm->addMatch( tmpItem->data() );
+            }
             tmpItem = tmpItem->parent();
         }
         addFilters( qm );
@@ -318,14 +324,14 @@ CollectionTreeItemModelBase::queryDone()
 {
     //DEBUG_BLOCK
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
-    CollectionTreeItem* item = d->m_childQueries.take( qm );
+    CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
     //reset icon for this item
     if ( item != m_rootItem )
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
 
     //stop timer if there are no more animations active
-    if (d->m_childQueries.count() == 0 )
+    if (d->m_childQueries.count() == 0 && d->m_compilationQueries.count() == 0 )
         m_timeLine->stop();
 
     QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );
@@ -352,7 +358,9 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             parentIndex = createIndex( parent->row(), 0, parent );
         }
 
-        beginInsertRows( parentIndex, 0, data.count()-1 );
+        //add new rows after existing ones here (which means all artists nodes
+        //will be inserted after the "Various Artists" node
+        beginInsertRows( parentIndex, parent->childCount(), parent->childCount() + data.count()-1 );
         populateChildren( data, parent );
         endInsertRows();
 
@@ -381,6 +389,23 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         {
             m_expandedCollections.insert( parent->parentCollection() );
         }
+    } else if( d->m_compilationQueries.contains( qm ) )
+    {
+        debug() << "received result of compilation query";
+        CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
+        QModelIndex parentIndex;
+        if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
+        {
+            parentIndex = QModelIndex();
+        }
+        else
+        {
+            parentIndex = createIndex( parent->row(), 0, parent );
+        }
+        //we only insert the "Various Artists" node
+        beginInsertRows( parentIndex, 0, 0 );
+        new CollectionTreeItem( data, parent );
+        endInsertRows();
     }
 }
 
@@ -414,6 +439,33 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
         case CategoryId::Year : return i18n( "Year" );
         default: return QString();
     }
+}
+
+void
+CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) const
+{
+    DEBUG_BLOCK
+    //this method will be called when we retrieve a list of artists from the database.
+    //we have to query for all compilations, and then add a "Various Artists" node if at least
+    //one compilation exists
+    QueryMaker *qm = parent->queryMaker();
+    qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+    qm->startAlbumQuery();
+    CollectionTreeItem *tmpItem = parent;
+    while ( tmpItem->isDataItem()  ) {
+        //ignore Various artists node (which will not have a data pointer)
+        if( tmpItem->data() )
+        {
+            qm->addMatch( tmpItem->data() );
+        }
+        tmpItem = tmpItem->parent();
+    }
+    addFilters( qm );
+    qm->returnResultAsDataPtrs( true );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    d->m_compilationQueries.insert( qm, parent );
+    qm->run();
 }
 
 void CollectionTreeItemModelBase::loadingAnimationTick()
