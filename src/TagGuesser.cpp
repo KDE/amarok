@@ -10,7 +10,7 @@
 
 #define DEBUG_PREFIX "TagGuesser"
 
-#include "tagguesser.h"
+#include "TagGuesser.h"
 
 #include "amarok.h"
 #include "debug.h"

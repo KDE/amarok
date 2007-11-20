@@ -452,7 +452,7 @@ set(amaroklib_LIB_SRCS
     Statistics.cpp
     systray.cpp
     tagdialog.cpp
-    tagguesser.cpp
+    TagGuesser.cpp
     threadmanager.cpp
     tooltip.cpp
     trackpickerdialog.cpp

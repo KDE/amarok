@@ -21,7 +21,7 @@
 ** place of a destructor.
 *****************************************************************************/
 
-#include "tagguesser.h"
+#include "TagGuesser.h"
 
 #include <QEvent>
 //Added by qt3to4:

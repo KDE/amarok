@@ -11,7 +11,7 @@
 #include "debug.h"
 #include "querybuilder.h"
 #include "statusbar.h"       //for status messages
-#include "tagguesser.h"
+#include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagguesserconfigdialog.h"
 
