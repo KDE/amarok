@@ -436,7 +436,7 @@ set(amaroklib_LIB_SRCS
     moodbar.cpp
     mountpointmanager.cpp
     osd.cpp
-    pixmapviewer.cpp
+    PixmapViewer.cpp
     PlaylistHandler.cpp
     pluginmanager.cpp
     podcastsettings.cpp
