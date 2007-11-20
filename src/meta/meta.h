@@ -242,13 +242,13 @@ namespace Meta
             virtual TrackList tracks() = 0;
 
             /** returns true if the album has a cover set */
-            virtual bool hasImage( int size = 1) const { return false; }
+            virtual bool hasImage( int size = 1) const { Q_UNUSED( size ); return false; }
             /** returns the cover of the album */
             virtual QPixmap image( int size = 1, bool withShadow = false ) const;
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */
-            virtual void setImage( const QImage &image) {} //TODO: choose parameter
+            virtual void setImage( const QImage &image) { Q_UNUSED( image ); } //TODO: choose parameter
 
             virtual void addMatchTo( QueryMaker* qm );
 
