@@ -87,6 +87,20 @@ Meta::MetaBase::unsubscribe( Observer *observer )
     m_observers.remove( observer );
 }
 
+
+bool
+Meta::MetaBase::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return false;
+}
+
+Meta::Capability*
+Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
+{
+    return 0;
+}
+
+
 //Meta::Track
 
 bool
@@ -134,18 +148,6 @@ Meta::Track::notifyObservers() const
 
 uint
 Meta::Track::firstPlayed() const
-{
-    return 0;
-}
-
-bool
-Meta::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
-{
-    return false;
-}
-
-Meta::Capability*
-Meta::Track::asCapabilityInterface( Meta::Capability::Type type )
 {
     return 0;
 }

@@ -91,6 +91,33 @@ namespace Meta
             virtual void subscribe( Observer *observer );
             virtual void unsubscribe( Observer *observer );
 
+            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+            virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
+            /**
+             * Retrieves a specialized interface which represents a capability of this
+             * MetaBase object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+            template <class CapIface> CapIface *as()
+            {
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+                Meta::Capability *iface = asCapabilityInterface(type);
+                return qobject_cast<CapIface *>(iface);
+            }
+
+            /**
+             * Tests if a MetaBase object provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+            template <class CapIface> bool is() const
+            {
+                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+            }
+
         protected:
             virtual void notifyObservers() const = 0;
 
@@ -173,33 +200,6 @@ namespace Meta
                 set the cached lyrics for the track
             */
             virtual void setCachedLyrics( const QString &lyrics );
-
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-
-            virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
-
-            /**
-             * Retrieves a specialized interface which represents a capability of this
-             * track.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *as()
-            {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = asCapabilityInterface(type);
-                return qobject_cast<CapIface *>(iface);
-            }
-
-            /**
-             * Tests if a track provides a given capability interface.
-             *
-             * @returns true if the interface is available, false otherwise
-             */
-            template <class CapIface> bool is() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
 
             virtual bool operator==( const Meta::Track &track ) const;
 
