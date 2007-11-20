@@ -117,10 +117,7 @@ CollectionTreeItem::data( int role ) const {
         if ( role == Qt::DisplayRole ) {
             return i18n( "Various Artists" );
         }
-        if(  role == CustomRoles::FilterRole )
-        {
-            return QString();
-        }
+        return QVariant();
     }
     else {
         if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
