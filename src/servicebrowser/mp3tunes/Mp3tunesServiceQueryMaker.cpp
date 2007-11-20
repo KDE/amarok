@@ -481,7 +481,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         m_collection->addTrack( element.text(),  trackPtr );
 
 
-        element = n.firstChildElement("downloadURL");
+        element = n.firstChildElement("playURL");
         track->setUrl( element.text() );
 
         element = n.firstChildElement("trackLength");
