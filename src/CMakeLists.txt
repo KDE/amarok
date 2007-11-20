@@ -446,7 +446,7 @@ set(amaroklib_LIB_SRCS
     scriptmanager.cpp
     scrobbler.cpp
     Sidebar.h
-    smartplaylisteditor.cpp
+    SmartPlaylistEditor.cpp
     socketserver.cpp
     StarManager.cpp
     Statistics.cpp

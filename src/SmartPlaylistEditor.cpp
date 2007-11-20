@@ -7,7 +7,7 @@
 
 #define DEBUG_PREFIX "SmartPlaylistEditor"
 
-#include "smartplaylisteditor.h"
+#include "SmartPlaylistEditor.h"
 
 #include "debug.h"
 #include "querybuilder.h"
@@ -1095,4 +1095,4 @@ int CriteriaEditor::getValueType( int index )
 }
 
 
-#include "smartplaylisteditor.moc"
+#include "SmartPlaylistEditor.moc"
