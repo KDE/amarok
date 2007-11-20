@@ -42,7 +42,7 @@
     -remove( Meta::Track )
     -copyUrlsToCollection( KUrl::List )
 
-    Implementations which are only readable can reimplment getKIOCopyableUrls( Meta::TrackList )
+    Implementations which are only readable can reimplement getKIOCopyableUrls( Meta::TrackList )
     if it is necessary, but can use the default implementations if possible
 */
 class AMAROK_EXPORT CollectionLocation : public QObject
@@ -89,7 +89,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
     protected:
         /**
-            this method is called on te source location, and should return a list of urls which the destination
+            this method is called on the source location, and should return a list of urls which the destination
             location can copy using KIO.
         */
         virtual KUrl::List getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -98,8 +98,8 @@ class AMAROK_EXPORT CollectionLocation : public QObject
             is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
 
-            Note: if you need additional inforamtion from the user, e.g. which directory structure to use, call
-            the necessary code from this method. 
+            Note: if you need additional information from the user, e.g. which directory
+            structure to use, call the necessary code from this method.
         */
         virtual void copyUrlsToCollection( const KUrl::List &sources );
 
