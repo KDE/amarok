@@ -35,7 +35,8 @@ namespace Meta
             enum Type { Unknown = 0
                         , Editable = 1
                         , LastFm = 2
-                        , Buyable = 3 };
+                        , Buyable = 3
+                        , CustomActions = 4};
 
             virtual ~Capability();
 
