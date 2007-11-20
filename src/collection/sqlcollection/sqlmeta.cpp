@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "BlockingQuery.h"
-#include "debug.h"
 #include "meta/EditCapability.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
@@ -715,8 +714,6 @@ SqlAlbum::tracks()
 bool
 SqlAlbum::hasImage( int size ) const
 {
-    DEBUG_BLOCK
-
     QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
     QString album = m_name;
     QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
