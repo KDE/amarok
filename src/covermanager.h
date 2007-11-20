@@ -11,7 +11,8 @@
 //Added by qt3to4:
 #include <QDropEvent>
 #include <QLabel>
-#include <k3iconview.h>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QDialog>
 #include <QPixmap>
 
@@ -29,7 +30,7 @@ class QProgressBar;
 class QHBoxLayout;
 class PixmapViewer;
 
-class CoverManager : public QSplitter
+class CoverManager : public QSplitter, public Meta::Observer
 {
         Q_OBJECT
 
@@ -48,7 +49,10 @@ class CoverManager : public QSplitter
 
         // Return the top level domain for the current locale
         static QString amazonTld();
-    
+
+        // Reimplemented from Meta::Observer
+        void metadataChanged( Meta::Album* album );
+
     public slots:
         void updateStatusBar();
         void changeLocale( int id );
@@ -56,9 +60,9 @@ class CoverManager : public QSplitter
     private slots:
         void init();
         
-        void slotArtistSelected( Q3ListViewItem* );
-        void coverItemExecuted( Q3IconViewItem *item );
-        void showCoverMenu( Q3IconViewItem *item, const QPoint& );
+        void slotArtistSelected();
+        void coverItemExecuted( QListWidgetItem *item );
+        void showCoverMenu( QListWidgetItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
         
@@ -93,7 +97,7 @@ class CoverManager : public QSplitter
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
-        K3ListView     *m_artistView;
+        QListWidget     *m_artistView;
         CoverView      *m_coverView;
         KLineEdit      *m_searchEdit;
         KPushButton    *m_fetchButton;
@@ -117,7 +121,7 @@ class CoverManager : public QSplitter
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
-        QList<Q3IconViewItem*> m_coverItems; //used for filtering
+        QList<CoverViewItem*> m_coverItems; //used for filtering
         QString         m_filter;
 
 
@@ -130,24 +134,24 @@ class CoverManager : public QSplitter
         int m_coverErrors;
 };
 
-class CoverView : public K3IconView
+class CoverView : public QListWidget
 {
         Q_OBJECT
 
     public:
         explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
 
-    protected:
-        Q3DragObject *dragObject();
+//     protected:
+//         Q3DragObject *dragObject();
 
     private slots:
-        void setStatusText( Q3IconViewItem *item );
+        void setStatusText( QListWidgetItem *item );
 };
 
-class CoverViewItem : public K3IconViewItem
+class CoverViewItem : public QListWidgetItem
 {
     public:
-        CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, Meta::AlbumPtr album );
+        CoverViewItem( QListWidget *parent, Meta::AlbumPtr album );
 
         void loadCover();
         bool hasCover() const;
@@ -160,7 +164,7 @@ class CoverViewItem : public K3IconViewItem
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
         void paintFocus(QPainter *, const QColorGroup &) { }
-        void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
+//         void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
         void dragEntered();
         void dragLeft();
         void calcRect( const QString& text_ = QString() );
