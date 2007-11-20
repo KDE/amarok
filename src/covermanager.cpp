@@ -799,8 +799,11 @@ void CoverManager::deleteSelectedCovers()
     if ( button == KMessageBox::Continue ) {
         foreach( CoverViewItem *item, selected ) {
             kapp->processEvents();
-            if ( CollectionDB::instance()->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
-                  coverRemoved( item->artist(), item->album() );
+            if( item->albumPtr()->canUpdateImage() )
+            {
+                item->albumPtr()->setImage( QImage() );
+                coverRemoved( item->artist(), item->album() );
+            }
         }
     }
 }
