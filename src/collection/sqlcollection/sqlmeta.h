@@ -209,6 +209,7 @@ class SqlAlbum : public Meta::Album
         virtual Meta::ArtistPtr albumArtist() const;
 
         //updating album images is possible or local tracks, but let's ignore it for now
+        virtual bool hasImage( int size = 1) const;
         virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1, bool withShadow = false ) const;
         virtual void setImage( const QImage &image );
