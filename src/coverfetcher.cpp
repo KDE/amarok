@@ -147,8 +147,15 @@ CoverFetcher::~CoverFetcher()
 }
 
 void
+CoverFetcher::manualFetch( Meta::AlbumPtr album )
+{
+    m_userCanEditQuery = true;
+    startFetch( album );
+}
+void
 CoverFetcher::startFetchLoop()
 {
+    m_userCanEditQuery = false;
     if( !m_albums.isEmpty() )
         startFetch( m_albums.takeFirst() );
 }
@@ -161,7 +168,7 @@ CoverFetcher::startFetchLoop()
 void
 CoverFetcher::startFetch( Meta::AlbumPtr album )
 {
-    m_albumPtr = m_albums.takeFirst();
+    m_albumPtr = album;
     QString albumName = album->albumArtist()->prettyName();
     QString artistName = album->prettyName();
 

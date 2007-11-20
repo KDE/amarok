@@ -56,6 +56,8 @@ public:
     /// Main Fetch loop
     void startFetchLoop();
 
+    void manualFetch( Meta::AlbumPtr album );
+
     QString amazonURL() const { return m_amazonURL; }
     QString asin() const { return m_asin; }
     QImage image() const { return m_image; }
