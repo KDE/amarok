@@ -227,16 +227,24 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         if ( level == m_levelType.count() ) {
             qm->startTrackQuery();
         }
-
         else {
             switch( m_levelType[level] ) {
                 case CategoryId::Album :
                     qm->startAlbumQuery();
-                    qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                    //restrict query to normal albums if the previous level
+                    //was the artist category. in that case we handle compilations below
+                    if( level > 0 && m_levelType[level-1] == CategoryId::Artist )
+                    {
+                        qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                    }
                     break;
                 case CategoryId::Artist :
                     qm->startArtistQuery();
-                    handleCompilations( parent );
+                    //handle compilations only if the next level ist CategoryId::Album
+                    if( level + 1 < m_levelType.count() && m_levelType[level+1] == CategoryId::Album )
+                    {
+                        handleCompilations( parent );
+                    }
                     break;
                 case CategoryId::Composer :
                     qm->startComposerQuery();
@@ -389,7 +397,8 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         {
             m_expandedCollections.insert( parent->parentCollection() );
         }
-    } else if( d->m_compilationQueries.contains( qm ) )
+    }
+    else if( d->m_compilationQueries.contains( qm ) )
     {
         debug() << "received result of compilation query";
         CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
