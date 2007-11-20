@@ -40,5 +40,5 @@ class ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
         CustomActionsProvider * m_customActionsProvider;
 };
 
-
 #endif
+
