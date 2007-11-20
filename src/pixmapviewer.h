@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 Eyal Lotem <eyal.lotem@gmail.com>                  *
+ *             (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,29 +20,28 @@
 #ifndef PIXMAPVIEWER_H
 #define PIXMAPVIEWER_H
 
-#include <q3scrollview.h>
+#include <QScrollArea>
 #include <QPixmap>
 
 class QMouseEvent;
 
-class PixmapViewer : public Q3ScrollView {
+class PixmapViewer : public QScrollArea
+{
     Q_OBJECT
 
 public:
-    PixmapViewer(QWidget *widget, const QPixmap &pixmap);
+    PixmapViewer( QWidget *widget, const QPixmap &pixmap );
 
     // The size of this widget that requires no scrollbars
     QSize maximalSize();
 
-    void drawContents( QPainter * p, int clipx, int clipy, int clipw, int cliph );
-
-    void contentsMousePressEvent(QMouseEvent *event);
-    void contentsMouseReleaseEvent(QMouseEvent *event);
-    void contentsMouseMoveEvent(QMouseEvent *event);
+    void contentsMousePressEvent( QMouseEvent *event );
+    void contentsMouseReleaseEvent( QMouseEvent *event );
+    void contentsMouseMoveEvent( QMouseEvent *event );
 
 private:
-    bool m_isDragging;
-    QPoint m_currentPos;
+    bool           m_isDragging;
+    QPoint         m_currentPos;
     const QPixmap &m_pixmap;
 };
 

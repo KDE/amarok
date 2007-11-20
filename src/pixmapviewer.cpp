@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2005 Eyal Lotem <eyal.lotem@gmail.com>                  *
  *   Copyright (C) 2005 Alexandre Oliveira <aleprj@gmail.com>              *
+ *   Copyright (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,47 +24,56 @@
 
 #include <QDesktopWidget>
 #include <QMouseEvent>
-#include <QPainter>
+#include <QLabel>
 #include <QPixmap>
 
 
-PixmapViewer::PixmapViewer(QWidget *widget, const QPixmap &pixmap)
-    : Q3ScrollView(widget, 0, Qt::WNoAutoErase)
-    , m_isDragging(false)
-    , m_pixmap(pixmap)
+PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
+    : QScrollArea( widget )
+    , m_isDragging( false )
+    , m_pixmap( pixmap )
 {
-    resizeContents( m_pixmap.width(), m_pixmap.height() );
+    resize( m_pixmap.width(), m_pixmap.height() );
+
+    QLabel *imageLabel = new QLabel();
+    imageLabel->setBackgroundRole( QPalette::Base );
+    imageLabel->setScaledContents( true );
+    imageLabel->setPixmap( pixmap );
+    
+    setBackgroundRole( QPalette::Dark );
+    setWidget( imageLabel );
 }
 
-void PixmapViewer::drawContents( QPainter * p, int clipx, int clipy, int clipw, int cliph ) {
-    p->drawPixmap(QPoint(clipx, clipy),
-                  m_pixmap,
-                  QRect(clipx, clipy, clipw, cliph));
-}
-
-void PixmapViewer::contentsMousePressEvent(QMouseEvent *event) {
-    if(Qt::LeftButton == event->button()) {
+void PixmapViewer::contentsMousePressEvent(QMouseEvent *event)
+{
+    if( Qt::LeftButton == event->button())  
+    {
         m_currentPos = event->globalPos();
         m_isDragging = true;
     }
 }
 
-void PixmapViewer::contentsMouseReleaseEvent(QMouseEvent *event) {
-    if(Qt::LeftButton == event->button()) {
+void PixmapViewer::contentsMouseReleaseEvent(QMouseEvent *event)
+{
+    if( Qt::LeftButton == event->button() )
+    {
         m_currentPos = event->globalPos();
         m_isDragging = false;
     }
 }
 
-void PixmapViewer::contentsMouseMoveEvent(QMouseEvent *event) {
-    if(m_isDragging) {
+void PixmapViewer::contentsMouseMoveEvent(QMouseEvent *event)
+{
+    if( m_isDragging )
+    {
         QPoint delta = m_currentPos - event->globalPos();
-        scrollBy(delta.x(), delta.y());
+        scroll(delta.x(), delta.y());
         m_currentPos = event->globalPos();
     }
 }
 
-QSize PixmapViewer::maximalSize() {
+QSize PixmapViewer::maximalSize()
+{
     return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + size() - viewport()->size();
 }
 
