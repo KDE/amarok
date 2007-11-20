@@ -16,7 +16,7 @@
 
 #include "amarok_export.h"
 
-#include "plasma/widgets/layoutitem.h"
+#include "plasma/layouts/layoutitem.h"
 
 #include <QGraphicsRectItem>
 

@@ -19,7 +19,7 @@
 #include "amarok_export.h"
 #include "context/Svg.h"
 
-#include "plasma/widgets/flowlayout.h"
+#include "plasma/layouts/flowlayout.h"
 #include "plasma/appletbrowser.h"
 
 #include <QGraphicsSceneMouseEvent>

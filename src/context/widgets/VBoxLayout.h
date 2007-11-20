@@ -20,7 +20,7 @@
 #define AMAROK_VBOXLAYOUT
 
 #include "amarok_export.h"
-#include "plasma/widgets/boxlayout.h"
+#include "plasma/layouts/boxlayout.h"
 
 namespace Context
 {

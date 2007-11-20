@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "Svg.h"
 
-#include "plasma/widgets/layoutanimator.h"
+#include "plasma/layouts/layoutanimator.h"
 #include "plasma/phase.h"
 
 #include <KAuthorized>

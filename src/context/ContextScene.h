@@ -18,7 +18,7 @@
 #include "Applet.h"
 #include "Context.h"
 #include <plasma/corona.h>
-#include <plasma/widgets/vboxlayout.h>
+#include <plasma/layouts/vboxlayout.h>
 
 namespace Context
 {

@@ -51,18 +51,18 @@ set(plasma_LIB_SRCS
     plasma/svg.cpp
     plasma/theme.cpp
     plasma/view.cpp
-    plasma/widgets/boxlayout.cpp
+    plasma/layouts/boxlayout.cpp
     plasma/widgets/checkbox.cpp
-    plasma/widgets/freelayout.cpp
-    plasma/widgets/flowlayout.cpp
+    plasma/layouts/freelayout.cpp
+    plasma/layouts/flowlayout.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
     plasma/widgets/label.cpp
-    plasma/widgets/layout.cpp
-    plasma/widgets/layoutanimator.cpp
-    plasma/widgets/layoutitem.cpp
+    plasma/layouts/layout.cpp
+    plasma/layouts/layoutanimator.cpp
+    plasma/layouts/layoutitem.cpp
     plasma/widgets/lineedit.cpp
-    plasma/widgets/nodelayout.cpp
+    plasma/layouts/nodelayout.cpp
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
     plasma/widgets/widget.cpp
@@ -115,13 +115,13 @@ install(TARGETS amarokplasma DESTINATION ${LIB_INSTALL_DIR})
 
 #install(FILES
 #    widgets/icon.h
-#    widgets/layout.h
-#    widgets/layoutitem.h
+#    layouts/layout.h
+#    layouts/layoutitem.h
 #    widgets/lineedit.h
 #    widgets/pushbutton.h
 #    widgets/checkbox.h
 #    widgets/radiobutton.h
-#    widgets/vboxlayout.h
+#    layouts/vboxlayout.h
 #    widgets/widget.h
 #    DESTINATION ${INCLUDE_INSTALL_DIR}/plasma/widgets)
 
