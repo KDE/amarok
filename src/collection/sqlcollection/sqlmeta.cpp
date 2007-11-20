@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 #include "BlockingQuery.h"
+#include "debug.h"
 #include "meta/EditCapability.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
@@ -711,7 +712,26 @@ SqlAlbum::tracks()
     else
         return TrackList();
 }
+bool
+SqlAlbum::hasImage( int size ) const
+{
+    DEBUG_BLOCK
 
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if ( artist.isEmpty() && album.isEmpty() )
+        return false;
+
+    QByteArray key = md5sum( artist, album, QString() );
+
+    QDir imageDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    if ( imageDir.exists( key ) ) {
+        return true;
+    }
+    return false;
+}
 QPixmap
 SqlAlbum::image( int size, bool withShadow ) const
 {
@@ -735,6 +755,7 @@ SqlAlbum::setImage( QImage image )
         return;
     QByteArray key = md5sum( artist, album, QString() );
     image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
+    notifyObservers();
 }
 
 bool
