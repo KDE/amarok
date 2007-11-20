@@ -37,6 +37,9 @@ namespace Playlist
 
         protected:
             virtual void contextMenuEvent( QContextMenuEvent *event );
+            virtual void dragEnterEvent( QDragEnterEvent *event );
+            virtual void dragLeaveEvent( QDragLeaveEvent *event );
+            virtual void dropEvent( QDropEvent *event );
             virtual void keyPressEvent( QKeyEvent *event );
 
         private slots:

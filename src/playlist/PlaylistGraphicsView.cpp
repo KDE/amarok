@@ -30,6 +30,7 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
     , m_model( 0 )
 {
+    setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
     setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
 
@@ -83,6 +84,46 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     menu->addSeparator();
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
     menu->exec( event->globalPos() );
+}
+
+void
+Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
+{
+    DEBUG_BLOCK
+    debug() << "[GV] drag enter event: " << event->mimeData()->formats();
+    debug() << "  accepts drops? " << acceptDrops();
+    event->accept();
+    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    {
+        if( event->mimeData()->hasFormat( mime ) )
+        {
+            debug() << "[GV] contains mime " << mime;
+            QGraphicsView::dragEnterEvent( event );
+            event->acceptProposedAction();
+            Playlist::DropVis::instance()->show();
+            return;
+        }
+    }
+    debug() << "[GV] passing on enter event";
+    QGraphicsView::dragEnterEvent( event );
+}
+
+void
+Playlist::GraphicsView::dragLeaveEvent( QDragLeaveEvent *event )
+{
+    debug() << "[GV] drag leave event";
+    Playlist::DropVis::instance()->hide();
+    QGraphicsView::dragLeaveEvent( event );
+}
+
+void
+Playlist::GraphicsView::dropEvent( QDropEvent *event )
+{
+    DEBUG_BLOCK
+    event->accept();
+    debug() << "[GV] drop event";
+    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
+    Playlist::DropVis::instance()->hide();
 }
 
 void

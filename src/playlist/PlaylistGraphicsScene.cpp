@@ -24,24 +24,13 @@ GraphicsScene::GraphicsScene( QObject* parent )
 void
 GraphicsScene::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
 {
-    DropVis::instance()->hide();
     QGraphicsScene::dragLeaveEvent( event );
 }
 
 void
 GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
-    DEBUG_BLOCK
-    foreach( const QString &mime, The::playlistModel()->mimeTypes() )
-    {
-        if( event->mimeData()->hasFormat( mime ) )
-        {
-            debug() << "Accepting!";
-            event->accept();
-            DropVis::instance()->show();
-            break;
-        }
-    }
+    debug() << "[GS] drag enter event";
     QGraphicsScene::dragEnterEvent( event );
 }
 
@@ -49,16 +38,22 @@ void
 GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
+    debug() << "[GS] dropping";
+    QGraphicsScene::dropEvent( event );
+#if 0
     if( itemAt( event->pos() ) )
     {
+        debug() << "[GS] ignoring";
         event->ignore();
         QGraphicsScene::dropEvent( event );
     }
     else
     {
+        debug() << "[GS] accepting drop";
         event->accept();
         The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
         DropVis::instance()->hide();
     }
+#endif
 }
 

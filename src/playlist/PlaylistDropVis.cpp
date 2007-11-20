@@ -24,6 +24,7 @@ Playlist::DropVis::DropVis( QGraphicsItem *parent )
 {
     debug() << "Creating Playlist Drop Indicator";
     QPen pen( Qt::green, 3, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
+    setAcceptDrops( true );
     setPen( pen );
     setZValue( 1000 );
 }
