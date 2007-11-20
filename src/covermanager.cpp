@@ -14,7 +14,7 @@
 #include "meta/meta.h"
 #include "QueryMaker.h"
 #include "config-amarok.h"
-#include "pixmapviewer.h"
+#include "PixmapViewer.h"
 #include "playlist/PlaylistModel.h"
 
 #include "TheInstances.h"

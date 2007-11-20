@@ -18,7 +18,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
-#include "pixmapviewer.h"
+#include "PixmapViewer.h"
 
 #include <KApplication>
 
@@ -77,4 +77,4 @@ QSize PixmapViewer::maximalSize()
     return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + size() - viewport()->size();
 }
 
-#include "pixmapviewer.moc"
+#include "PixmapViewer.moc"
