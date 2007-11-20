@@ -2,13 +2,13 @@
 // (c) Alexandre Pereira de Oliveira 2005
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
+// (c) 2007 Seb Ruiz <ruiz@kde.org>
 // See COPYING file for licensing information
 
 #define DEBUG_PREFIX "SmartPlaylistEditor"
 
 #include "smartplaylisteditor.h"
 
-#include "amarok.h" //oldForeach
 #include "debug.h"
 #include "querybuilder.h"
 #include "metabundle.h"
@@ -23,7 +23,6 @@
 
 #include <QCheckBox>
 #include <QDateTime>
-#include <q3datetimeedit.h>    //loadEditWidgets()
 #include <QFrame>
 #include <QLabel>
 #include <QLayout>
@@ -206,7 +205,9 @@ void SmartPlaylistEditor::init(QString defaultName)
     matchAnyBox->setStretchFactor( new QWidget( matchAnyBox ), 1 );
 
     //criteria box
-    m_criteriaAnyGroupBox = new Q3VGroupBox( QString(), mainWidget() );
+    m_criteriaAnyGroupBox = new QGroupBox( QString(), mainWidget() );
+    QVBoxLayout *anyBoxLayout = new QVBoxLayout();
+    m_criteriaAnyGroupBox->setLayout( anyBoxLayout );
 
     //match box (all)
     KHBox *matchAllBox = new KHBox( mainWidget() );
@@ -214,7 +215,9 @@ void SmartPlaylistEditor::init(QString defaultName)
     matchAllBox->setStretchFactor( new QWidget( matchAllBox ), 1 );
 
     //criteria box
-    m_criteriaAllGroupBox = new Q3VGroupBox( QString(), mainWidget() );
+    m_criteriaAllGroupBox = new QGroupBox( QString(), mainWidget() );
+    QVBoxLayout *allBoxLayout = new QVBoxLayout();
+    m_criteriaAllGroupBox->setLayout( allBoxLayout );
 
     //order box
     KHBox *hbox2 = new KHBox( mainWidget() );
@@ -277,6 +280,7 @@ void SmartPlaylistEditor::init(QString defaultName)
 void SmartPlaylistEditor::addCriteriaAny()
 {
     CriteriaEditor *criteria= new CriteriaEditor( this, m_criteriaAnyGroupBox, criteriaAny );
+    m_criteriaAnyGroupBox->layout()->addWidget( criteria );
     m_criteriaEditorAnyList.append( criteria );
     m_criteriaEditorAnyList.first()->enableRemove( m_criteriaEditorAnyList.count() > 1 );
 }
@@ -284,6 +288,7 @@ void SmartPlaylistEditor::addCriteriaAny()
 void SmartPlaylistEditor::addCriteriaAll()
 {
     CriteriaEditor *criteria= new CriteriaEditor( this, m_criteriaAllGroupBox, criteriaAll );
+    m_criteriaAllGroupBox->layout()->addWidget( criteria );
     m_criteriaEditorAllList.append( criteria );
     m_criteriaEditorAllList.first()->enableRemove( m_criteriaEditorAllList.count() > 1 );
 }
@@ -291,6 +296,7 @@ void SmartPlaylistEditor::addCriteriaAll()
 void SmartPlaylistEditor::addCriteriaAny( QDomElement &xml )
 {
     CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaAnyGroupBox, criteriaAny, xml );
+    m_criteriaAnyGroupBox->layout()->addWidget( criteria );
     m_criteriaEditorAnyList.append( criteria );
     m_criteriaEditorAnyList.first()->enableRemove( m_criteriaEditorAnyList.count() > 1 );
 }
@@ -298,13 +304,14 @@ void SmartPlaylistEditor::addCriteriaAny( QDomElement &xml )
 void SmartPlaylistEditor::addCriteriaAll( QDomElement &xml )
 {
     CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaAllGroupBox, criteriaAll, xml );
+    m_criteriaAllGroupBox->layout()->addWidget( criteria );
     m_criteriaEditorAllList.append( criteria );
     m_criteriaEditorAllList.first()->enableRemove( m_criteriaEditorAllList.count() > 1 );
 }
 
 void SmartPlaylistEditor::removeCriteriaAny( CriteriaEditor *criteria )
 {
-    m_criteriaEditorAnyList.remove( criteria );
+    m_criteriaEditorAnyList.removeAll( criteria );
     criteria->deleteLater();
     resize( size().width(), sizeHint().height() );
 
@@ -314,7 +321,7 @@ void SmartPlaylistEditor::removeCriteriaAny( CriteriaEditor *criteria )
 
 void SmartPlaylistEditor::removeCriteriaAll( CriteriaEditor *criteria )
 {
-    m_criteriaEditorAllList.remove( criteria );
+    m_criteriaEditorAllList.removeAll( criteria );
     criteria->deleteLater();
     resize( size().width(), sizeHint().height() );
 
@@ -364,8 +371,7 @@ QDomElement SmartPlaylistEditor::result()
         QDomElement matches = doc.createElement("matches");
         smartplaylist.appendChild( matches );
         // Iterate through all criteria list
-        CriteriaEditor *criteriaeditor = m_criteriaEditorAnyList.first();
-        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAnyList.next(), ++i )
+        foreach( CriteriaEditor *criteriaeditor, m_criteriaEditorAnyList )
             matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
 
         matches.setAttribute( "glue",  "OR" );
@@ -377,8 +383,7 @@ QDomElement SmartPlaylistEditor::result()
         QDomElement matches = doc.createElement("matches");
         smartplaylist.appendChild( matches );
         // Iterate through all criteria list
-        CriteriaEditor *criteriaeditor = m_criteriaEditorAllList.first();
-        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAllList.next(), ++i )
+        foreach( CriteriaEditor *criteriaeditor, m_criteriaEditorAllList )
             matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
 
         matches.setAttribute( "glue",  "AND" );
@@ -964,14 +969,14 @@ void CriteriaEditor::loadEditWidgets()
                 m_dateCombo->show();
             }
             else {
-                m_dateEdit1 = new Q3DateEdit( QDate::currentDate(), m_editBox);
+                m_dateEdit1 = new QDateEdit( QDate::currentDate(), m_editBox);
                 m_dateEdit1->setFocus();
                 m_dateEdit1->show();
                 if( m_criteriaCombo->currentText() == i18n("is between") ) {
                     m_rangeLabel = new QLabel( i18n("and"), m_editBox );
                     m_rangeLabel->setAlignment( Qt::AlignHCenter );
                     m_rangeLabel->show();
-                    m_dateEdit2 = new Q3DateEdit( QDate::currentDate(), m_editBox);
+                    m_dateEdit2 = new QDateEdit( QDate::currentDate(), m_editBox);
                     m_dateEdit2->show();
                 }
             }

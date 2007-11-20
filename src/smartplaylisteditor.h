@@ -1,6 +1,7 @@
 // (c) Pierpaolo Di Panfilo 2004
 // (c) Alexandre Pereira de Oliveira 2005
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
+// (c) 2007 Seb Ruiz <ruiz@kde.org>
 // See COPYING file for licensing information
 
 #ifndef SMARTPLAYLISTEDITOR_H
@@ -10,22 +11,20 @@
 #include <klineedit.h>   //inline function
 #include <KHBox>       //baseclass
 
+#include <QDateEdit>
 #include <QDomDocument>
 #include <QDomElement>
-#include <q3ptrlist.h>    //definition required
 
 class CriteriaEditor;
 
 class KComboBox;
 class KLineEdit;
 
-class Q3DateEdit;
-class Q3VGroupBox;
+class QGroupBox;
 class QCheckBox;
 class QLabel;
 class QSpinBox;
 class QToolButton;
-
 
 class SmartPlaylistEditor : public KDialog
 {
@@ -64,8 +63,8 @@ Q_OBJECT
         QCheckBox *m_matchAllCheck;
 
         // matching boxes
-        Q3VGroupBox *m_criteriaAnyGroupBox;
-        Q3VGroupBox *m_criteriaAllGroupBox;
+        QGroupBox *m_criteriaAnyGroupBox;
+        QGroupBox *m_criteriaAllGroupBox;
 
         //limit widgets
         QCheckBox *m_limitCheck;
@@ -78,8 +77,8 @@ Q_OBJECT
         QCheckBox *m_expandCheck;
         KComboBox *m_expandCombo;
 
-        Q3PtrList<CriteriaEditor> m_criteriaEditorAnyList;
-        Q3PtrList<CriteriaEditor> m_criteriaEditorAllList;
+        QList<CriteriaEditor*> m_criteriaEditorAnyList;
+        QList<CriteriaEditor*> m_criteriaEditorAllList;
 };
 
 
@@ -127,8 +126,8 @@ Q_OBJECT
         KComboBox *m_comboBox2;
         QSpinBox *m_intSpinBox1;
         QSpinBox *m_intSpinBox2;
-        Q3DateEdit *m_dateEdit1;
-        Q3DateEdit *m_dateEdit2;
+        QDateEdit *m_dateEdit1;
+        QDateEdit *m_dateEdit2;
         KComboBox *m_dateCombo;
         QLabel *m_rangeLabel;
 	KComboBox *m_lengthCombo;
