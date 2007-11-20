@@ -61,7 +61,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 
     m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
-    m_theme->resize( m_size );
 
     for( int i = 0; i < 14; i++ ) // create all the items
     {
@@ -95,23 +94,24 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 LastFmEvents::~LastFmEvents()
 {
 }
-
+/*
 void LastFmEvents::setGeometry( const QRectF& rect )
 {
     DEBUG_BLOCK
     debug() << "setting geometry to" << rect;
     setPos( rect.topLeft() );
-    resize( rect.width(), m_aspectRatio );
+//     resize( rect.width(), m_aspectRatio );
+    setSize( rect.size() );
     Applet::setGeometry( rect );
-}
+}*/
 
 QSizeF LastFmEvents::contentSizeHint() const 
 {
-    debug() << "returning size:" << m_size; 
-    return m_size;
+    debug() << "returning size:" << size();
+    return size();
 }
 
-void LastFmEvents::constraintsUpdated()
+void LastFmEvents::constraintsUpdated( Plasma::Constraints constr )
 {
     prepareGeometryChange();
 
@@ -332,15 +332,12 @@ QString LastFmEvents::truncateTextToFit( QString text, const QFont& font, const 
 void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )
 {
     DEBUG_BLOCK
-    debug() << "aspectRatio:" << aspectRatio;
-    debug() << "resizing to:" << newWidth;
+//     debug() << "aspectRatio:" << aspectRatio;
+//     debug() << "resizing to:" << newWidth;
     qreal height = aspectRatio * newWidth;
-    debug() << "setting size:" << m_size;
-    m_size.setWidth( newWidth );
-    m_size.setHeight( height );
-
-    m_theme->resize( m_size );
-    debug() << "set new size: " << m_size;
+    setSize( QSizeF( newWidth, height ) );
+//     m_theme->resize( size() );
+    debug() << "set new size: " << size();
     constraintsUpdated();
 }
 

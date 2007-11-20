@@ -33,12 +33,12 @@ public:
     ~LastFmEvents();
 
 
-    void constraintsUpdated();
+    void constraintsUpdated( Plasma::Constraints );
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF contentSizeHint() const;
 
     // from LayoutItem
-    void setGeometry( const QRectF& rect );
+//     void setGeometry( const QRectF& rect );
     
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
@@ -62,14 +62,9 @@ private:
 
     qreal m_aspectRatio;
     qreal m_width;
-    QSizeF m_size;
 
     Context::Svg* m_theme;
 
-    // stored data
-//     QList< QVariantList > m_friendData;
-//     QList< QVariantList > m_userData;
-//     QList< QVariantList > m_sysData;
     // items that go inside the svg
     QList< QGraphicsSimpleTextItem* > m_titles;
     QList< QGraphicsSimpleTextItem* > m_dates;
