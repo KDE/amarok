@@ -224,7 +224,7 @@ SqlQueryBuilder::startComposerQuery()
         d->queryType = Private::COMPOSER;
         d->withoutDuplicates = true;
         d->linkedTables |= Private::COMPOSER_TAB;
-        d->queryReturnValues = "composer.name, composer.id";
+        d->queryReturnValues = "composers.name, composers.id";
     }
     return this;
 }
@@ -237,7 +237,7 @@ SqlQueryBuilder::startGenreQuery()
         d->queryType = Private::GENRE;
         d->withoutDuplicates = true;
         d->linkedTables |= Private::GENRE_TAB;
-        d->queryReturnValues = "genre.name, genre.id";
+        d->queryReturnValues = "genres.name, genres.id";
     }
     return this;
 }
@@ -250,7 +250,7 @@ SqlQueryBuilder::startYearQuery()
         d->queryType = Private::YEAR;
         d->withoutDuplicates = true;
         d->linkedTables |= Private::YEAR_TAB;
-        d->queryReturnValues = "year.name, year.id";
+        d->queryReturnValues = "years.name, years.id";
     }
     return this;
 }
