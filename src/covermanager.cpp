@@ -12,7 +12,6 @@
 #include "browserToolBar.h"
 #include "debug.h"
 #include "meta/meta.h"
-#include "querybuilder.h"
 #include "QueryMaker.h"
 #include "config-amarok.h"
 #include "pixmapviewer.h"
