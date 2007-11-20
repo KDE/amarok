@@ -167,9 +167,9 @@ class DaapAlbum : public Meta::Album
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
-        virtual void image() const;
+        virtual QPixmap image( int size = 1, bool withShadow = false ) const;
         virtual bool canUpdateImage() const;
-        virtual void setImage();
+        virtual void setImage( const QImage &image);
 
         //DaapAlbum specific methods
         void addTrack( DaapTrackPtr track );

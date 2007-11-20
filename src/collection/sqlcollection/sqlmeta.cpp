@@ -711,24 +711,7 @@ SqlAlbum::tracks()
     else
         return TrackList();
 }
-bool
-SqlAlbum::hasImage( int size ) const
-{
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
 
-    if ( artist.isEmpty() && album.isEmpty() )
-        return false;
-
-    QByteArray key = md5sum( artist, album, QString() );
-
-    QDir imageDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    if ( imageDir.exists( key ) ) {
-        return true;
-    }
-    return false;
-}
 QPixmap
 SqlAlbum::image( int size, bool withShadow ) const
 {
@@ -742,7 +725,7 @@ SqlAlbum::image( int size, bool withShadow ) const
 }
 
 void
-SqlAlbum::setImage( QImage image )
+SqlAlbum::setImage( const QImage &image )
 {
     QByteArray widthKey = QString::number( image.width() ).toLocal8Bit() + '@';
     QString album = m_name;
@@ -752,7 +735,6 @@ SqlAlbum::setImage( QImage image )
         return;
     QByteArray key = md5sum( artist, album, QString() );
     image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
-    notifyObservers();
 }
 
 bool

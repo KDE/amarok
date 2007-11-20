@@ -416,10 +416,10 @@ DaapAlbum::tracks()
     return m_tracks;
 }
 
-void
-DaapAlbum::image() const
+QPixmap
+DaapAlbum::image( int size, bool withShadow ) const
 {
-    //TODO
+    return Meta::Album::image( size, withShadow );
 }
 
 bool
@@ -429,7 +429,7 @@ DaapAlbum::canUpdateImage() const
 }
 
 void
-DaapAlbum::setImage()
+DaapAlbum::setImage( const QImage &image )
 {
     //TODO
 }
