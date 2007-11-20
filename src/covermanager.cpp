@@ -123,8 +123,11 @@ CoverManager::CoverManager()
     m_artistView = new QListWidget( this );
 //     m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setSortingEnabled( false );
-    m_artistView->setMinimumWidth( 180 );
+    m_artistView->setTextElideMode( Qt::ElideRight );
+    m_artistView->setMinimumWidth( 140 );
     ArtistItem *item = 0;
+
+    setSizes( QList<int>() << 120 << width() - 120 );
 
     item = new ArtistItem( i18n( "All Albums" ) );
     m_artistView->addItem( item );
@@ -169,16 +172,13 @@ CoverManager::CoverManager()
     { //<Search LineEdit>
         KHBox *searchBox = new KHBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
-        QToolButton *button = new QToolButton( searchToolBar );
-        button->setIcon( KIcon( "edit-clear-locationbar") );
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( QFrame::Sunken );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
+        m_searchEdit->setClearButtonShown( true );
 
-        button->setToolTip( i18n( "Clear search field" ) );
         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
 
         hbox->setStretchFactor( searchBox, 1 );
@@ -234,12 +234,12 @@ CoverManager::CoverManager()
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     {
-        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
+        QAction* viewMenuAction = new QAction( KIcon( Amarok::icon( "view_choose" ) ), i18nc( "@title buttontext for popup-menu", "View" ), this );
         viewMenuAction->setMenu( m_viewMenu );
         toolBar->addAction( viewMenuAction );
     }
     {
-        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this );
+        QAction* localeMenuAction = new QAction( KIcon( Amarok::icon( "babelfish" ) ),  i18n( "Amazon Locale" ), this );
         localeMenuAction->setMenu( m_amazonLocaleMenu );
         toolBar->addAction( localeMenuAction );
     }
@@ -331,7 +331,7 @@ void CoverManager::init()
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent, 0, false, Qt::WType_TopLevel | Qt::WNoAutoErase )
 {
-    m_pixmap = album->image( 64 );
+    m_pixmap = album->image( 100 );
     setAttribute( Qt::WA_DeleteOnClose );
 #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Utility );
@@ -941,9 +941,15 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setObjectName( name );
     setWindowFlags( f );
     setViewMode( QListView::IconMode );
-//     setArrangement( Q3IconView::LeftToRight );
+    setMovement( QListView::Static );
     setResizeMode( QListView::Adjust );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setWrapping( true );
+    setGridSize( QSize(108, 125) );
+    setSpacing( 4 );
+    setWordWrap( true );
+    setIconSize( QSize(100,100) );
+    setAlternatingRowColors( true );
 //     arrangeItemsInGrid();
 //     setAutoArrange( true );
 //     setItemsMovable( false );
@@ -1011,7 +1017,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     m_album = album->prettyName();
     m_artist = album->albumArtist()->prettyName();
     setText( album->prettyName() );
-    setIcon( album->image( 64 ) );
+    setIcon( album->image( 100 ) );
 //     setDragEnabled( true );
 //     setDropEnabled( true );
     calcRect();
