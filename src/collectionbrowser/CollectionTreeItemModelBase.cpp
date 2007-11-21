@@ -244,6 +244,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                     if( level + 1 < m_levelType.count() && m_levelType[level+1] == CategoryId::Album )
                     {
                         handleCompilations( parent );
+                        qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
                     }
                     break;
                 case CategoryId::Composer :
