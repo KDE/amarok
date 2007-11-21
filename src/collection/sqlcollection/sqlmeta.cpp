@@ -873,6 +873,7 @@ SqlAlbum::findAmazonImage( int size ) const
 void
 SqlAlbum::setCompilation( bool compilation )
 {
+    DEBUG_BLOCK
     if( isCompilation() == compilation )
     {
         return;
@@ -881,13 +882,17 @@ SqlAlbum::setCompilation( bool compilation )
     {
         if( compilation )
         {
-            //TODO find album artist
+            debug() << "User selected album as compilation";
+            m_artistId = 0;
+            m_artist = Meta::ArtistPtr();
+            
+            QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
+            m_collection->query( update.arg( m_id ) );
         }
         else
         {
-            m_artistId = 0;
-            QString update = "UPDATE albums SET artistid = NULL WHERE id = %1;";
-            m_collection->query( update.arg( m_id ) );
+            debug() << "User selected album as non-compilation";
+            //TODO find album artist
         }
         notifyObservers();
         m_collection->sendChangedSignal();
