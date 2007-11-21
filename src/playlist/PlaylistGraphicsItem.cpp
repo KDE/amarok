@@ -640,10 +640,17 @@ Playlist::GraphicsItem::play()
     The::playlistModel()->play( m_currentRow );
 }
 
-const void
+void
 Playlist::GraphicsItem::showImage() const
 {
     ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show(); 
+}
+
+void
+Playlist::GraphicsItem::fetchImage()
+{
+    CoverFetcher *fetcher = new CoverFetcher( The::playlistView() );
+    fetcher->manualFetch( m_items->track->album() );
 }
 
 const bool

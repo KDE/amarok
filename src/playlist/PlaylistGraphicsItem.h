@@ -46,7 +46,8 @@ namespace Playlist
             const QRectF imageLocation() const { return QRectF( MARGIN, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
 
             const bool hasImage() const;
-            const void showImage() const;
+            void showImage() const;
+            void fetchImage();
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
