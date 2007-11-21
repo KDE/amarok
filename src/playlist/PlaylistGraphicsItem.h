@@ -43,6 +43,9 @@ namespace Playlist
             void play();
 
             void setRow( int row );
+            const QRectF imageLocation() const { return QRectF( MARGIN, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
+
+            const void showImage() const;
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
@@ -52,8 +55,6 @@ namespace Playlist
             void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
             void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
             void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ); 
-
-
         
         private:
             void init( Meta::TrackPtr track );
@@ -71,7 +72,6 @@ namespace Playlist
             static const qreal MARGIN;
             static QFontMetricsF* s_fm;
             static QSvgRenderer * s_svgRenderer;
-
     };
 
 }

@@ -29,6 +29,7 @@ Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
 Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
     , m_model( 0 )
+    , m_contextMenuItem( 0 )
 {
     setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -80,10 +81,30 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     connect( playAction, SIGNAL( triggered() ), this, SLOT( playTrack() ) );
 
     KMenu *menu = new KMenu( this );
+    
+    QPointF itemClickPos = item->mapFromScene( sceneClickPos );
+    if( item->imageLocation().contains( itemClickPos ) )
+    {
+        menu->addAction( i18n( "Show Cover" ), this, SLOT( showItemImage() ) );
+        menu->addSeparator();
+    }
+
     menu->addAction( playAction );
     menu->addSeparator();
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
+
+    m_contextMenuItem = item;
+
     menu->exec( event->globalPos() );
+}
+
+void
+Playlist::GraphicsView::showItemImage()
+{
+    if( !m_contextMenuItem )
+        return;
+    m_contextMenuItem->showImage();
+    m_contextMenuItem = 0;
 }
 
 void

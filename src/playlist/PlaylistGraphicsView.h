@@ -53,6 +53,7 @@ namespace Playlist
             void playTrack();
             void removeSelection();
             void shuffleTracks( int startPosition, int stopPosition = -1 ); // -1: end of playlist
+            void showItemImage();
         
         private:
             GraphicsView( QWidget *parent = 0 );
@@ -60,6 +61,7 @@ namespace Playlist
 
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
+            Playlist::GraphicsItem *m_contextMenuItem;
     };
 
 }

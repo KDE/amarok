@@ -15,6 +15,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
 #include "TheInstances.h"
+#include "covermanager.h"
 
 #include "KStandardDirs"
 
@@ -48,38 +49,40 @@ struct Playlist::GraphicsItem::ActiveItems
     , groupedTracks ( 0 )
     , collapsible( true )
      { }
-     ~ActiveItems()
-     {
+
+    ~ActiveItems()
+    {
         delete bottomLeftText;
         delete bottomRightText;
-         delete foreground;
+        delete foreground;
         delete topLeftText;
         delete topRightText;
 
-      }
+    }
 
-     QGraphicsPixmapItem* foreground;
-     Playlist::TextItem* bottomLeftText;
-     Playlist::TextItem* bottomRightText;
-     Playlist::TextItem* topLeftText;
-     Playlist::TextItem* topRightText;
+    QGraphicsPixmapItem* foreground;
+    Playlist::TextItem* bottomLeftText;
+    Playlist::TextItem* bottomRightText;
+    Playlist::TextItem* topLeftText;
+    Playlist::TextItem* topRightText;
 
-     QColor overlayGradientStart;
-     QColor overlayGradientEnd;
+    QColor overlayGradientStart;
+    QColor overlayGradientEnd;
 
-     int lastWidth;
-     int groupedTracks;
-     bool collapsible;
+    int lastWidth;
+    int groupedTracks;
+    bool collapsible;
 
-     QRectF preDragLocation;
-     Meta::TrackPtr track;
- };
+    QRectF preDragLocation;
+    Meta::TrackPtr track;
+};
 
 
 const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
 const qreal Playlist::GraphicsItem::MARGIN = 4.0;
 QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
 QSvgRenderer * Playlist::GraphicsItem::s_svgRenderer = 0;
+
 
 Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
@@ -111,6 +114,12 @@ Playlist::GraphicsItem::GraphicsItem()
 Playlist::GraphicsItem::~GraphicsItem()
 {
     delete m_items;
+}
+
+const void
+Playlist::GraphicsItem::showImage() const
+{
+    ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show(); 
 }
 
 void
@@ -307,7 +316,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         QPixmap albumPixmap;
         if( m_items->track->album() )
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-        painter->drawPixmap( (int)( MARGIN ), (int)( MARGIN ), albumPixmap );
+        painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
         //and make sure the top text elements are shown
         if( !m_items->topRightText->isVisible() )
             m_items->topRightText->show();
@@ -660,16 +669,17 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
 
     //did we hit the collapse / expand button?
-    if ( m_collapsible ) {
+    if( m_collapsible )
+    {
         QRectF rect( boundingRect().width() - ( 16 + MARGIN ), MARGIN, 16, 16 );
-        if ( rect.contains( event->pos() ) ) {
+        if( rect.contains( event->pos() ) )
+        {
             if ( m_groupMode == Head_Collapsed )
                 The::playlistModel()->setCollapsed( m_currentRow, false );
             else if ( m_groupMode == Head )
                 The::playlistModel()->setCollapsed( m_currentRow, true );
         }
     }
-
 
     QGraphicsItem::mousePressEvent( event );
 }
@@ -885,5 +895,5 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
        The::playlistModel()->setCollapsed( m_currentRow, false ); */
 }
 
-
+#include "PlaylistGraphicsItem.moc"
 
