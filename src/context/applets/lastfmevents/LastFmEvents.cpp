@@ -86,7 +86,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
     dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
 
-    constraintsUpdated();
+    //constraintsUpdated();
     updateGeometry();
 
 }
@@ -294,7 +294,7 @@ void LastFmEvents::configAccepted() // SLOT
 
     cg.sync();
 
-    constraintsUpdated();
+    //constraintsUpdated();
 }
 
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
@@ -338,7 +338,7 @@ void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )
     setSize( QSizeF( newWidth, height ) );
 //     m_theme->resize( size() );
     debug() << "set new size: " << size();
-    constraintsUpdated();
+    //constraintsUpdated();
 }
 
 #include "LastFmEvents.moc"
