@@ -16,14 +16,14 @@
 #include <QDialog>
 #include <QPixmap>
 
-class Q3ListViewItem;
 class CoverViewItem;
+class QTreeWidget;
+class QTreeWidgetItem;
 class KLineEdit;
 class KPushButton;
 class KMenu;
 class QToolButton;
 class QLabel;
-class K3ListView;
 class CoverView;
 class KHBox;
 class QProgressBar;
@@ -97,7 +97,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
-        QListWidget     *m_artistView;
+        QTreeWidget     *m_artistView;
         CoverView      *m_coverView;
         KLineEdit      *m_searchEdit;
         KPushButton    *m_fetchButton;

@@ -60,21 +60,22 @@
 //Added by qt3to4:
 #include <QDropEvent>
 #include <QToolButton>
-
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
 
-class ArtistItem : public QListWidgetItem
+class ArtistItem : public QTreeWidgetItem
 {
     public:
-    ArtistItem(QListWidget *parent, Meta::ArtistPtr artist )
-        : QListWidgetItem( parent )
+    ArtistItem(QTreeWidget *parent, Meta::ArtistPtr artist )
+        : QTreeWidgetItem( parent )
         , m_artist( artist )
-        { setText( artist->prettyName() ); }
-    ArtistItem(const QString &text, QListWidget *parent = 0 )
-        : QListWidgetItem( text, parent )
-        , m_artist( 0 ) {} 
+        { setText( 0, artist->prettyName() ); }
+    ArtistItem(const QString &text, QTreeWidget *parent = 0 )
+        : QTreeWidgetItem( parent )
+        , m_artist( 0 ) { setText( 0, text ); }
 
         Meta::ArtistPtr artist() const { return m_artist; }
 
@@ -119,18 +120,19 @@ CoverManager::CoverManager()
     setContentsMargins( 4, 4, 4, 4 );
 
     //artist listview
-    m_artistView = new QListWidget( this );
-//     m_artistView->addColumn(i18n( "Albums By" ));
+    m_artistView = new QTreeWidget( this );
+    m_artistView->setHeaderLabel( i18n( "Albums By" ) );
     m_artistView->setSortingEnabled( false );
     m_artistView->setTextElideMode( Qt::ElideRight );
     m_artistView->setMinimumWidth( 140 );
-    ArtistItem *item = 0;
+    m_artistView->setColumnCount( 1 );
 
     setSizes( QList<int>() << 120 << width() - 120 );
 
-    item = new ArtistItem( i18n( "All Albums" ) );
-    m_artistView->addItem( item );
-    item->setIcon( SmallIcon( Amarok::icon( "album" ) ) );
+    QList<QTreeWidgetItem*> items;
+    items.append( new ArtistItem( i18n( "All Artists" ) ) );
+//     m_artistView->addItem( item );
+//     item->setIcon( SmallIcon( Amarok::icon( "album" ) ) );
 
     Collection *coll;
     foreach( coll, CollectionManager::instance()->collections() )
@@ -143,10 +145,11 @@ CoverManager::CoverManager()
     Meta::ArtistList artists = bq.artists( coll->collectionId() );
     foreach( Meta::ArtistPtr artist, artists )
     {
-        item = new ArtistItem( m_artistView, artist );
-        item->setIcon( SmallIcon( Amarok::icon( "artist" ) ) );
+        items.append( new ArtistItem( m_artistView, artist ) );
+//         item->setIcon( SmallIcon( Amarok::icon( "artist" ) ) );
     }
 //     m_artistView->sort();
+    m_artistView->insertTopLevelItems( 0, items );
 
 
 
@@ -312,16 +315,18 @@ void CoverManager::init()
 {
     DEBUG_BLOCK
 
-    QListWidgetItem *item = 0;
+    QTreeWidgetItem *item = 0;
 
     int i = 0;
     if ( !artistToSelectInInitFunction.isEmpty() )
-        for ( item = m_artistView->item( i ); item; item = m_artistView->item( i++ ) )
-            if ( item->text() == artistToSelectInInitFunction )
+        for( item = m_artistView->invisibleRootItem()->child( 0 );
+           i < m_artistView->invisibleRootItem()->childCount();
+           item = m_artistView->invisibleRootItem()->child( i++ ) )
+            if ( item->text( 0 ) == artistToSelectInInitFunction )
                 break;
 
     if ( item == 0 )
-        item = m_artistView->item( 0 );
+        item = m_artistView->invisibleRootItem()->child( 0 );
 
     item->setSelected( true );
 }
@@ -376,7 +381,7 @@ CoverManager::metadataChanged( Meta::Album* album )
     DEBUG_BLOCK
 
     ArtistItem *selectedItem = static_cast<ArtistItem*>(m_artistView->selectedItems().first());
-    if( album->albumArtist() != selectedItem->artist() || selectedItem->text() == i18n( "All Albums" ) )
+    if( album->albumArtist() != selectedItem->artist() || selectedItem->text( 0 ) == i18n( "All Albums" ) )
     {
         debug() << "Album isn't shown";
         return;
@@ -431,7 +436,7 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected() //SLOT
 {
-    QListWidgetItem *item = m_artistView->selectedItems().first();
+    QTreeWidgetItem *item = m_artistView->selectedItems().first();
     ArtistItem *artistItem = static_cast< ArtistItem* >(item);
     Meta::ArtistPtr artist = artistItem->artist();
 
@@ -465,7 +470,7 @@ void CoverManager::slotArtistSelected() //SLOT
         if( coll->collectionId() == "localCollection" )
             break;
     QueryMaker *qm = coll->queryMaker();
-    if ( item != m_artistView->item( 0 ) )
+    if ( item != m_artistView->invisibleRootItem()->child( 0 ) )
         qm->addMatch( artist );
 
     qm->startAlbumQuery();
@@ -908,9 +913,9 @@ void CoverManager::updateStatusBar()
             text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
         else if( m_artistView->selectedItems().count() > 0 ) {
             text = i18np( "1 album", "%1 albums", totalCounter );
-            if( m_artistView->selectedItems().first() != m_artistView->item( 0 ) ) //showing albums by an artist
+            if( m_artistView->selectedItems().first() != m_artistView->invisibleRootItem()->child( 0 ) ) //showing albums by an artist
             {
-                QString artist = m_artistView->selectedItems().first()->text();
+                QString artist = m_artistView->selectedItems().first()->text(0);
                 if( artist.endsWith( ", The" ) )
                     Amarok::manipulateThe( artist, false );
                 text += i18n( " by " ) + artist;
