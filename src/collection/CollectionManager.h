@@ -65,10 +65,16 @@ class CollectionManager : public QObject
     signals:
         void collectionAdded( Collection *newCollection );
         void collectionRemoved( QString collectionId );
+        //this signal will be emitted after major changes to the collection
+        //e.g. new songs where added, or an album changed
+        //from compilation to non-compilation (and vice versa)
+        //it will not be emitted on minor changes (e.g. the tags of a song were changed)
+        void collectionDataChanged( Collection *changedCollection );
 
     private slots:
         void slotNewCollection( Collection *newCollection );
         void slotRemoveCollection();
+        void slotCollectionChanged();
 
     private:
         friend class CollectionManagerSingleton;

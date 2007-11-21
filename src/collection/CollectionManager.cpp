@@ -143,6 +143,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     d->collections.append( newCollection );
     d->managedCollections.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL( changed() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
     SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
     if( sqlCollection )
     {
@@ -187,6 +188,16 @@ CollectionManager::slotRemoveCollection()
         }
         emit collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
+    }
+}
+
+void
+CollectionManager::slotCollectionChanged()
+{
+    Collection *collection = dynamic_cast<Collection*>( sender() );
+    if( collection )
+    {
+        emit collectionDataChanged( collection );
     }
 }
 
