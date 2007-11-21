@@ -19,6 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 #include "PixmapViewer.h"
+#include "debug.h"
 
 #include <KApplication>
 
@@ -44,17 +45,19 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
     setWidget( imageLabel );
 }
 
-void PixmapViewer::contentsMousePressEvent(QMouseEvent *event)
+void PixmapViewer::mousePressEvent(QMouseEvent *event)
 {
-    if( Qt::LeftButton == event->button())  
+    debug() << "mouse pressed!";
+    if( Qt::LeftButton == event->button() )
     {
         m_currentPos = event->globalPos();
         m_isDragging = true;
     }
 }
 
-void PixmapViewer::contentsMouseReleaseEvent(QMouseEvent *event)
+void PixmapViewer::mouseReleaseEvent(QMouseEvent *event)
 {
+    debug() << "mouse released!";
     if( Qt::LeftButton == event->button() )
     {
         m_currentPos = event->globalPos();
@@ -62,19 +65,25 @@ void PixmapViewer::contentsMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void PixmapViewer::contentsMouseMoveEvent(QMouseEvent *event)
+void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
 {
     if( m_isDragging )
     {
+        debug() << "dragging";
         QPoint delta = m_currentPos - event->globalPos();
-        scroll(delta.x(), delta.y());
+        scroll( delta.x(), delta.y() );
         m_currentPos = event->globalPos();
     }
 }
 
 QSize PixmapViewer::maximalSize()
 {
-    return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + size() - viewport()->size();
+    debug() << "Desktop  size: " << KApplication::desktop()->size();
+    debug() << "Pixmap   size: " << m_pixmap.size();
+    debug() << "Widget   size: " << size();
+    debug() << "Viewport size: " << viewport()->size();
+    //return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + viewport()->size();
+    return size().boundedTo( KApplication::desktop()->size() );
 }
 
 #include "PixmapViewer.moc"

@@ -112,17 +112,16 @@ Model::data( const QModelIndex& index, int role ) const
     }
     else*/
     if( role == ItemRole && ( row != -1 ) )
-    {
         return QVariant::fromValue( m_items.at( row ) );
-    }
+    
     else if( role == ActiveTrackRole )
         return ( row == m_activeRow );
+    
     else if( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
-    {
         return QVariant::fromValue( m_items.at( row )->track() );
-    }
-    else if ( role == GroupRole ) {
-        //get the track
+    
+    else if ( role == GroupRole )
+    {
         TrackPtr track = m_items.at( row )->track();
 
         if ( !track->album() )
@@ -133,29 +132,37 @@ Model::data( const QModelIndex& index, int role ) const
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         return albumGroup->groupMode( row );
 
-    } else if ( role == GroupedTracksRole ) {
-        //get the track
+    }
+    
+    else if ( role == GroupedTracksRole )
+    {
         TrackPtr track = m_items.at( row )->track();
-
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         return albumGroup->elementsInGroup( row );
-    } else if ( role == GroupedAlternateRole ) {
-         //get the track
+    }
+    
+    else if ( role == GroupedAlternateRole )
+    {
         TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         if( albumGroup )
             return albumGroup->alternate( row );
         return true;
-    } else if ( role == GroupedCollapsibleRole ) {
-        //get the track
+    }
+    
+    else if ( role == GroupedCollapsibleRole )
+    {
         TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         //we cannot collapse the group that contains the currently selected track.
         return ( albumGroup->firstInGroup( m_activeRow ) == -1 );
 
-    } else if( role == Qt::DisplayRole && row != -1 )
+    }
+    
+    else if( role == Qt::DisplayRole && row != -1 )
     {
-        switch ( index.column() ) {
+        switch( index.column() )
+        {
             case 0:
                 return m_items.at( row )->track()->name();
             case 1:
@@ -170,10 +177,8 @@ Model::data( const QModelIndex& index, int role ) const
                     return "";
         }
     }
-    else
-    {
-        return QVariant();
-    }
+    // else
+    return QVariant();
 /*        switch( role )
         {
             case AlbumArtist: return track->album()->albumArtist()->name();
@@ -378,12 +383,11 @@ Model::setActiveRow( int row )
     }
     debug() << "between " << min << " and " << max;
 
-
-    int oldActive = m_activeRow;
     m_activeRow = row;
 
     //make sure that the group containg this track is expanded
-    if ( m_albumGroups.contains( m_items[ row ]->track()->album()->prettyName() ) ) {
+    if( m_albumGroups.contains( m_items[ row ]->track()->album()->prettyName() ) )
+    {
         m_albumGroups[ m_items[ row ]->track()->album()->prettyName() ]->setCollapsed( row,  false );
         debug() << "Here";
         emit( playlistGroupingChanged() );

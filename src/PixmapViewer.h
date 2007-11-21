@@ -35,9 +35,9 @@ public:
     // The size of this widget that requires no scrollbars
     QSize maximalSize();
 
-    void contentsMousePressEvent( QMouseEvent *event );
-    void contentsMouseReleaseEvent( QMouseEvent *event );
-    void contentsMouseMoveEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
+    void mouseMoveEvent( QMouseEvent *event );
 
 private:
     bool           m_isDragging;

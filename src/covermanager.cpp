@@ -332,18 +332,19 @@ CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
 {
     m_pixmap = album->image( 0 ); // full sized image
     setAttribute( Qt::WA_DeleteOnClose );
+
 #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Utility );
 #endif
+
     kapp->setTopWidget( this );
     setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2",
                     album->albumArtist()->prettyName(), album->prettyName() ) ) );
 
     m_layout = new QHBoxLayout( this );
+    m_layout->setSizeConstraint( QLayout::SetFixedSize );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
     m_layout->addWidget( m_pixmapViewer );
-
-    setFixedSize( m_pixmapViewer->maximalSize() );
 }
 
 
