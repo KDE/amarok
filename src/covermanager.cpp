@@ -112,10 +112,11 @@ CoverManager::CoverManager()
 
     setSizes( QList<int>() << 120 << width() - 120 );
 
+    ArtistItem *item = 0;
     QList<QTreeWidgetItem*> items;
-    items.append( new ArtistItem( i18n( "All Artists" ) ) );
-//     m_artistView->addItem( item );
-//     item->setIcon( SmallIcon( Amarok::icon( "album" ) ) );
+    item = new ArtistItem( i18n( "All Artists" ) );
+    item->setIcon(0, SmallIcon( Amarok::icon( "album" ) ) );
+    items.append( item );
 
     Collection *coll;
     foreach( coll, CollectionManager::instance()->collections() )
@@ -128,8 +129,9 @@ CoverManager::CoverManager()
     Meta::ArtistList artists = bq.artists( coll->collectionId() );
     foreach( Meta::ArtistPtr artist, artists )
     {
-        items.append( new ArtistItem( m_artistView, artist ) );
-//         item->setIcon( SmallIcon( Amarok::icon( "artist" ) ) );
+        item = new ArtistItem( m_artistView, artist );
+        item->setIcon( 0, SmallIcon( Amarok::icon( "artist" ) ) );
+        items.append( item );
     }
     m_artistView->insertTopLevelItems( 0, items );
 
