@@ -12,6 +12,8 @@
 #include "debug.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
+#include "meta.h"
+#include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"
 #include "TheInstances.h"
@@ -129,6 +131,26 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         QAction* appendAction = new QAction( KIcon( Amarok::icon( "add_playlist") ), i18n( "&Append to Playlist" ), &menu);
         menu.addAction( loadAction );
         menu.addAction( appendAction );
+        if( indices.count() == 1 )
+        {
+            if( indices.first().isValid() && indices.first().internalPointer() )
+            {
+                Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
+                if( data )
+                {
+                    Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
+                    if( cac )
+                    {
+                        QList<QAction*> actions = cac->customActions();
+                        if( actions.count() )
+                            menu.addSeparator();
+                        foreach( QAction *action, actions )
+                            menu.addAction( action );
+                        delete cac;
+                    }
+                }
+            }
+        }
         QAction* result =  menu.exec( event->globalPos() );
         QSet<CollectionTreeItem*> items;
         foreach( const QModelIndex &index, indices )
