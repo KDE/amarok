@@ -34,7 +34,7 @@ class ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
 
         virtual ~ServiceCustomActionsCapability();
 
-        virtual QList< QAction * > customActions();
+        virtual QList< QAction * > customActions() const;
 
     private:
         CustomActionsProvider * m_customActionsProvider;

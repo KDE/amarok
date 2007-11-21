@@ -39,11 +39,16 @@ namespace Meta
     {
         Q_OBJECT
         public:
+            CustomActionsCapability();
+            CustomActionsCapability( const QList< QAction* > &actions );
             virtual ~CustomActionsCapability();
 
-            virtual QList< QAction * > customActions() = 0;
+            virtual QList< QAction * > customActions() const;
             
             static Type capabilityInterfaceType() { return Meta::Capability::CustomActions; }
+
+        protected:
+            QList< QAction* > m_actions;
     };
 }
 

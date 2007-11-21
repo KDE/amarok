@@ -30,7 +30,7 @@ ServiceCustomActionsCapability::~ServiceCustomActionsCapability()
 {
 }
 
-QList< QAction * > ServiceCustomActionsCapability::customActions()
+QList< QAction * > ServiceCustomActionsCapability::customActions() const
 {
         return m_customActionsProvider->customActions();
 }
