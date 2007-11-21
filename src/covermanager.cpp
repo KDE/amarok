@@ -330,7 +330,7 @@ void CoverManager::init()
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent, 0, false, Qt::WType_TopLevel | Qt::WNoAutoErase )
 {
-    m_pixmap = album->image( 100 );
+    m_pixmap = album->image( 0 ); // full sized image
     setAttribute( Qt::WA_DeleteOnClose );
 #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Utility );

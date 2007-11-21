@@ -91,12 +91,14 @@ Meta::MetaBase::unsubscribe( Observer *observer )
 bool
 Meta::MetaBase::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
+    Q_UNUSED( type );
     return false;
 }
 
 Meta::Capability*
 Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
 {
+    Q_UNUSED( type );
     return 0;
 }
 
