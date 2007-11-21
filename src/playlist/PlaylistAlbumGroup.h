@@ -23,69 +23,65 @@
 #include <QList>
 
 
-namespace Playlist {
-
-
-enum GroupMode
+namespace Playlist
 {
-    None = 1,
-    Head,
-    Head_Collapsed,
-    Body,
-    End,
-    Collapsed
-};
+    // The Order of this enum is important, do not change it.
+    enum GroupMode
+    {
+        None = 1,
+        Head,
+        Head_Collapsed,
+        Body,
+        End,
+        Collapsed
+    };
 
-struct Group {
+    struct Group
+    {
+        QList < int > rows;
+        bool collapsed;
+    };
 
-    QList < int > rows;
-    bool collapsed;
+    enum OffsetMode
+    {
+        OffsetNone = 0,
+        OffsetBetween,
+        OffsetAfter
+    };
 
-};
+    /**
+        A helper class representing the group(s) of tracks for a specific album. For each album, the rows
+        of all tracks are added and this class keeps tracks of what kind of GroupMode each row should use
+        @author 
+    */
+    class AlbumGroup
+    {
+    public:
+        AlbumGroup( );
 
-enum OffsetMode
-{
-    OffsetNone = 0,
-    OffsetBetween,
-    OffsetAfter
-};
+        ~AlbumGroup();
 
+        void addRow( int row );
+        int groupMode( int row );
 
+        bool alternate( int row );
 
-/**
-A helper class representing the group(s) of tracks for a specific album. For each album, the rows
-of all tracks are added and this class keeps tracks of what kind of GroupMode each row should use
+        void setCollapsed( int row, bool collapsed );
+        int elementsInGroup( int row );
 
-	@author 
-*/
-class AlbumGroup{
-public:
-    AlbumGroup( );
+        int firstInGroup( int row );
+        int lastInGroup( int row );
+        void removeGroup( int row );
 
-    ~AlbumGroup();
+        void removeBetween( int first, int last );
+        void offsetBetween( int first, int last, int offset );
 
-    void addRow( int row );
-    int groupMode( int row );
+        int subgroupCount();
 
-    bool alternate( int row );
+        void printGroupRows();
 
-    void setCollapsed( int row, bool collapsed );
-    int elementsInGroup( int row );
-
-    int firstInGroup( int row );
-    int lastInGroup( int row );
-    void removeGroup( int row );
-
-    void removeBetween( int first, int last );
-    void offsetBetween( int first, int last, int offset );
-
-    int subgroupCount();
-
-    void printGroupRows();
-
-private:
-
-    QList< Group > m_groups;
+    private:
+        QList<Group> m_groups;
 
 };
 
