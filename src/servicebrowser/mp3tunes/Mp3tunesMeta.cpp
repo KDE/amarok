@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
+ *                 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,8 +18,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "debug.h"
 #include "Mp3tunesMeta.h"
+
+#include <KIcon>
+#include <KLocale>
 using namespace Meta;
 
 //// Mp3TunesAlbum ////
@@ -45,6 +50,17 @@ void Mp3TunesAlbum::setCoverUrl( const QString &coverURL )
 QString Mp3TunesAlbum::coverUrl( ) const
 {
     return m_coverURL;
+}
+
+QList< QAction * > Meta::Mp3TunesAlbum::customActions()
+{
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Download" ), 0 );
+
+    //TODO connect some slot to the action, also, give the damn action a parent please
+    actions.append( action );
+    return actions;
 }
 
 

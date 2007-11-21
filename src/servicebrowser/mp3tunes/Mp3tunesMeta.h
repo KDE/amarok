@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
+ *                 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -50,6 +51,8 @@ public:
     
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
+
+    virtual QList< QAction *> customActions();
 
 
 };

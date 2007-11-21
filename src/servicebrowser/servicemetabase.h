@@ -20,6 +20,7 @@
 #ifndef SERVICEMETABASE_H
 #define SERVICEMETABASE_H
 
+#include "debug.h"
 #include "infoparserbase.h"
 #include "meta.h"
 #include "meta/CustomActionsCapability.h"
@@ -80,20 +81,7 @@ class CustomActionsProvider
         CustomActionsProvider() {}
         virtual ~CustomActionsProvider() {}
 
-        virtual QList< QAction *> customActions() { return QList< QAction *>(); }
-
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const
-        {
-            return type == Meta::Capability::CustomActions;
-        }
-
-        Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
-        {
-            if( type == Meta::Capability::CustomActions )
-                return new ServiceCustomActionsCapability( this );
-            else
-                return 0;
-        }
+        virtual QList< QAction *> customActions() { DEBUG_BLOCK return QList< QAction *>(); }
 
 };
 
@@ -190,6 +178,21 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, publ
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
+
         //ServiceTrack specific methods
 
         void setAlbum( Meta::AlbumPtr album );
@@ -246,6 +249,21 @@ class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, pu
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
+        
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
+
         //ServiceArtist specific methods
 
         void addTrack( TrackPtr track );
@@ -280,6 +298,21 @@ class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, publ
         virtual TrackList tracks();
 
         virtual void processInfoOf( InfoParserBase * infoParser );
+
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
 
 
 
@@ -325,6 +358,20 @@ class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, publ
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
+
         //ServiceGenre specific methods
         void setId( int id );
         int id( ) const;
@@ -354,6 +401,20 @@ class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
+
         //ServiceComposer specific methods
         void addTrack( ServiceTrackPtr track );
 
@@ -374,6 +435,20 @@ class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public
         virtual TrackList tracks();
 
         virtual void processInfoOf( InfoParserBase * infoParser );
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return type == Meta::Capability::CustomActions;
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            DEBUG_BLOCK
+                    if( type == Meta::Capability::CustomActions )
+                    return new ServiceCustomActionsCapability( this );
+            else
+                return 0;
+        }
 
         //ServiceYear specific methods
         void addTrack( ServiceTrackPtr track );
