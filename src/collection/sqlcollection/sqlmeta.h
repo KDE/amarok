@@ -203,7 +203,7 @@ class SqlAlbum : public Meta::Album
 
         virtual Meta::TrackList tracks();
 
-        virtual bool isCompilation() const { return false; } //TODO: fixme
+        virtual bool isCompilation() const;
 
         virtual bool hasAlbumArtist() const;
         virtual Meta::ArtistPtr albumArtist() const;
@@ -214,8 +214,14 @@ class SqlAlbum : public Meta::Album
         virtual QPixmap image( int size = 1, bool withShadow = false ) const;
         virtual void setImage( const QImage &image );
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
         //SQL specific methods
         int id() const { return m_id; }
+
+        void setCompilation( bool compilation );
 
     private:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;

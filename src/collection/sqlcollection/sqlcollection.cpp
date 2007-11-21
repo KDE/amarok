@@ -141,6 +141,12 @@ SqlCollection::location() const
     return new SqlCollectionLocation( this );
 }
 
+void
+SqlCollection::sendChangedSignal()
+{
+    emit changed();
+}
+
 QString
 SqlCollection::escape( QString text ) const           //krazy:exclude=constref
 {

@@ -63,6 +63,9 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 
         virtual CollectionLocation* location() const;
 
+        //sqlcollection internal methods
+        void sendChangedSignal();
+
         //methods defined in SqlStorage
         virtual int sqlDatabasePriority() const;
         virtual QString type() const;

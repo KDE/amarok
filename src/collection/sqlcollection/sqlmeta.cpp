@@ -21,6 +21,7 @@
 #include "amarok.h"
 #include "BlockingQuery.h"
 #include "debug.h"
+#include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "sqlregistry.h"
 #include "sqlcollection.h"
@@ -34,6 +35,7 @@
 #include <QMutexLocker>
 #include <QPointer>
 
+#include <KAction>
 #include <kcodecs.h>
 #include <klocale.h>
 #include <KSharedPtr>
@@ -668,6 +670,39 @@ SqlArtist::addToQueryResult( QueryBuilder &qb ) {
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
 }*/
 
+//---------------Album compilation management actions-----
+
+class CompilationAction : public KAction
+{
+    Q_OBJECT
+    public:
+        CompilationAction( QObject* parent, SqlAlbum *album )
+            : KAction( parent )
+            , m_album( album )
+            , m_isCompilation( album->isCompilation() )
+            {
+                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+                if( m_isCompilation )
+                {
+                    setText( i18n( "Do not show under Various Artists" ) );
+                }
+                else
+                {
+                    setText( i18n( "Show under Various Artists" ) );
+                }
+            }
+
+    private slots:
+        void slotTriggered()
+        {
+            m_album->setCompilation( !m_isCompilation );
+        }
+    private:
+        KSharedPtr<SqlAlbum> m_album;
+        bool m_isCompilation;
+};
+
+
 //---------------SqlAlbum---------------------------------
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
@@ -766,6 +801,12 @@ SqlAlbum::setImage( const QImage &image )
 }
 
 bool
+SqlAlbum::isCompilation() const
+{
+    return !hasAlbumArtist();
+}
+
+bool
 SqlAlbum::hasAlbumArtist() const
 {
     return m_artistId != 0;
@@ -827,6 +868,60 @@ SqlAlbum::findAmazonImage( int size ) const
     }
 
     return QString();
+}
+
+void
+SqlAlbum::setCompilation( bool compilation )
+{
+    if( isCompilation() == compilation )
+    {
+        return;
+    }
+    else
+    {
+        if( compilation )
+        {
+            //TODO find album artist
+        }
+        else
+        {
+            m_artistId = 0;
+            QString update = "UPDATE albums SET artistid = NULL WHERE id = %1;";
+            m_collection->query( update.arg( m_id ) );
+        }
+        notifyObservers();
+        m_collection->sendChangedSignal();
+    }
+}
+
+bool
+SqlAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+        {
+            QList<QAction*> actions;
+            actions.append( new CompilationAction( m_collection, this ) );
+            return new CustomActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
 }
 
 //---------------SqlComposer---------------------------------
