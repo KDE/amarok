@@ -32,8 +32,7 @@ class PixmapViewer : public QScrollArea
 public:
     PixmapViewer( QWidget *widget, const QPixmap &pixmap );
 
-    // The size of this widget that requires no scrollbars
-    QSize maximalSize();
+    virtual QSize sizeHint() const;
 
     void mousePressEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );

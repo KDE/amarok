@@ -27,7 +27,7 @@
 #include <QMouseEvent>
 #include <QLabel>
 #include <QPixmap>
-
+#include <QScrollBar>
 
 PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
     : QScrollArea( widget )
@@ -47,7 +47,6 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
 
 void PixmapViewer::mousePressEvent(QMouseEvent *event)
 {
-    debug() << "mouse pressed!";
     if( Qt::LeftButton == event->button() )
     {
         m_currentPos = event->globalPos();
@@ -57,7 +56,6 @@ void PixmapViewer::mousePressEvent(QMouseEvent *event)
 
 void PixmapViewer::mouseReleaseEvent(QMouseEvent *event)
 {
-    debug() << "mouse released!";
     if( Qt::LeftButton == event->button() )
     {
         m_currentPos = event->globalPos();
@@ -69,19 +67,15 @@ void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
 {
     if( m_isDragging )
     {
-        debug() << "dragging";
         QPoint delta = m_currentPos - event->globalPos();
-        scroll( delta.x(), delta.y() );
+        horizontalScrollBar()->setValue( horizontalScrollBar()->value() + delta.x() );
+        verticalScrollBar()->setValue( verticalScrollBar()->value() + delta.y() );
         m_currentPos = event->globalPos();
     }
 }
 
-QSize PixmapViewer::maximalSize()
+QSize PixmapViewer::sizeHint() const
 {
-    debug() << "Desktop  size: " << KApplication::desktop()->size();
-    debug() << "Pixmap   size: " << m_pixmap.size();
-    debug() << "Widget   size: " << size();
-    debug() << "Viewport size: " << viewport()->size();
     //return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + viewport()->size();
     return size().boundedTo( KApplication::desktop()->size() );
 }

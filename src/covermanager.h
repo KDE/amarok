@@ -141,9 +141,6 @@ class CoverView : public QListWidget
     public:
         explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
 
-//     protected:
-//         Q3DragObject *dragObject();
-
     private slots:
         void setStatusText( QListWidgetItem *item );
 };
@@ -162,7 +159,6 @@ class CoverViewItem : public QListWidgetItem
         QPixmap coverPixmap() const { return m_coverPixmap; }
 
     protected:
-        void paintItem(QPainter* painter, const QColorGroup& colorGroup);
         void paintFocus(QPainter *, const QColorGroup &) { }
 //         void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
         void dragEntered();
@@ -179,7 +175,8 @@ class CoverViewItem : public QListWidgetItem
 };
 
 
-class CoverViewDialog : public QDialog {
+class CoverViewDialog : public QDialog
+{
         Q_OBJECT
 
     public:

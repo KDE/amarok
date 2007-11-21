@@ -1060,46 +1060,6 @@ void CoverViewItem::calcRect( const QString& )
 }
 
 
-void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
-{
-    //TODO: port?
-#if 0 
-    Q_UNUSED( cg ); // FIXME is this correct (cg replaced by palette() )?
-    QPalette palette = KApplication::palette();
-    QRect itemRect = rect();
-
-    p->save();
-    p->translate( itemRect.x(), itemRect.y() );
-
-    // draw the border
-    p->setPen( palette.mid().color() );
-    p->drawRect( 0, 0, itemRect.width(), pixmapRect().height()+2 );
-
-    // draw the cover image
-    if( !m_coverPixmap.isNull() )
-        p->drawPixmap( pixmapRect().x() + (pixmapRect().width() - m_coverPixmap.width())/2,
-            pixmapRect().y() + (pixmapRect().height() - m_coverPixmap.height())/2, m_coverPixmap );
-
-    //justify the album name
-    QString str = text();
-    QFontMetrics fm = p->fontMetrics();
-    str = fm.elidedText( str, Qt::ElideRight, textRect().width() );
-
-    p->setPen( palette.text().color() );
-    p->drawText( textRect(), Qt::AlignCenter, str );
-
-    if( isSelected() ) {
-       p->setPen( palette.highlight().color() );
-       p->drawRect( pixmapRect() );
-       p->drawRect( pixmapRect().left()+1, pixmapRect().top()+1, pixmapRect().width()-2, pixmapRect().height()-2);
-       p->drawRect( pixmapRect().left()+2, pixmapRect().top()+2, pixmapRect().width()-4, pixmapRect().height()-4);
-    }
-
-    p->restore();
-#endif
-}
-
-
 //TODO: Port
 // void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & )
 // {
