@@ -34,7 +34,8 @@ ServiceListModel::~ServiceListModel()
 
 int ServiceListModel::rowCount(const QModelIndex & parent) const
 {
-   // DEBUG_BLOCK
+    Q_UNUSED( parent );
+    // DEBUG_BLOCK
     /*if ( !parent.isValid() )
         return 0;*/
 

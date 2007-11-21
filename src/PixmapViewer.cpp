@@ -40,7 +40,7 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
     imageLabel->setBackgroundRole( QPalette::Base );
     imageLabel->setScaledContents( true );
     imageLabel->setPixmap( pixmap );
-    
+
     setBackgroundRole( QPalette::Dark );
     setWidget( imageLabel );
 }
@@ -76,7 +76,6 @@ void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
 
 QSize PixmapViewer::sizeHint() const
 {
-    //return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + viewport()->size();
     return size().boundedTo( KApplication::desktop()->size() );
 }
 

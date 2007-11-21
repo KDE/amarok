@@ -383,6 +383,7 @@ namespace Amarok
 
     void DbusPlayerHandler::queueForTransfer( KUrl url )
     {
+        Q_UNUSED( url );
         //MediaBrowser::queue()->addUrl( url );
         //MediaBrowser::queue()->URLsAdded();
     }
@@ -664,6 +665,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
     {
+        Q_UNUSED( relativePaths );
         The::playlistModel()->saveM3U( path );
     }
 

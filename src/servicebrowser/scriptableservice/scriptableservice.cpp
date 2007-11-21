@@ -96,6 +96,7 @@ int ScriptableService::addArtist(ServiceArtist * artist)
 
 void ScriptableService::donePopulating( int parentId )
 {
+    Q_UNUSED( parentId );
     DEBUG_BLOCK
     //m_collection->donePopulating( parentId );
 }
