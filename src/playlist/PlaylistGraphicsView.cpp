@@ -199,7 +199,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     if ( start > 0 )
         m_tracks[ start-1]->setRow( start-1 );
 
-    int cumulativeHeight = 0;
+    double cumulativeHeight = 0;
     for ( int j = 0; j < start; j++ )
         cumulativeHeight += m_tracks.at( j )->boundingRect().height();
 
@@ -301,7 +301,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
                                     //that results in items not moving all the way
 
-    int cumulativeHeight = 0;
+    double cumulativeHeight = 0;
 
     for ( int j = 0; j < startPosition; j++ )
         cumulativeHeight += m_tracks.at( j )->boundingRect().height();
@@ -313,11 +313,11 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 
         qreal desiredY = cumulativeHeight;
 
-        int itemHeight = item->boundingRect().height();
+        double itemHeight = item->boundingRect().height();
         cumulativeHeight += itemHeight;
 
-        int visibleTop = mapToScene( 0,0 ).y();
-        int visibleBottom = mapToScene( 0, height() ).y();
+        double visibleTop = mapToScene( 0,0 ).y();
+        double visibleBottom = mapToScene( 0, height() ).y();
 
         // Animate the repositioning of the item if it is within the viewable area
         if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) && 

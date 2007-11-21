@@ -158,7 +158,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         return;
     }
 
-
     // paint item background:
     QRectF trackRect;
     QRectF headRect;
@@ -171,8 +170,9 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             headRect = option->rect;
         else
             headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
-
-    } else {
+    }
+    else
+    {
         trackRect = option->rect;
 
         if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
@@ -180,8 +180,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     }
 
 
-    if ( m_groupMode == None ) {
-
+    if ( m_groupMode == None )
+    {
         QString key = QString("track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
         QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
@@ -193,8 +193,9 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             QPixmapCache::insert(key, background);
         }
         painter->drawPixmap( 0, 0, background );
-    } else  if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
-
+    }
+    else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
+    {
        QString svgName;
        if ( m_groupMode == Head )
            svgName = "head";
@@ -202,10 +203,11 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
            svgName = "collapsed_head";
 
         QString key = QString("%1:%2x%3").arg( svgName ).arg( headRect.width() ).arg( headRect.height() );
-        QPixmap background( headRect.width(), headRect.height() );
+        QPixmap background( (int)headRect.width(), (int)headRect.height() );
         background.fill( Qt::transparent );
 
-        if ( !QPixmapCache::find( key, background ) ) {
+        if ( !QPixmapCache::find( key, background ) )
+        {
             QPainter pt( &background );
             s_svgRenderer->render( &pt, svgName,  headRect );
             QPixmapCache::insert( key, background );
@@ -218,12 +220,14 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         //m_collapsible = index.data( GroupedCollapsibleRole ).toBool();
         
         QString collapseString; 
-        if ( m_groupMode == Head ) {
+        if ( m_groupMode == Head )
+        {
            if ( m_collapsible )
              collapseString = "collapse_button";
            else
              collapseString = "collapse_button_grayed_out";
-        } else
+        }
+        else
            collapseString = "expand_button";
           
 
@@ -231,35 +235,37 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         QPixmap collapsePixmap( 16, 16 );
         collapsePixmap.fill( Qt::transparent );
 
-        if (!QPixmapCache::find(key, collapsePixmap)) {
+        if( !QPixmapCache::find(key, collapsePixmap) )
+        {
             QPainter pt2( &collapsePixmap );
             s_svgRenderer->render( &pt2, collapseString,  QRectF( 0, 0, 16, 16 ) );
             QPixmapCache::insert(key, collapsePixmap);
         }
 
-        painter->drawPixmap( option->rect.width() - ( 16 + MARGIN ) , MARGIN, collapsePixmap );
-       
-
-
-    } else  if ( m_groupMode == Body ) {
-
+        painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, collapsePixmap );
+    }
+    else if( m_groupMode == Body )
+    {
         QString key = QString("body:%1x%2").arg(trackRect.width()).arg(trackRect.height());
         QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
-        if (!QPixmapCache::find(key, background)) {
+        if(!QPixmapCache::find(key, background))
+        {
             QPainter pt( &background );
             s_svgRenderer->render( &pt, "body",  trackRect );
             QPixmapCache::insert(key, background);
         }
         painter->drawPixmap( 0, 0, background );
-    } else  if ( m_groupMode == End ) {
-
+    }
+    else if ( m_groupMode == End )
+    {
         QString key = QString( "tail:%1x%2" ).arg( trackRect.width() ).arg(trackRect.height()) ;
         QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
-        if (!QPixmapCache::find(key, background)) {
+        if( !QPixmapCache::find(key, background) )
+        {
             QPainter pt( &background );
             s_svgRenderer->render( &pt, "tail",  trackRect );
             QPixmapCache::insert(key, background);
@@ -267,12 +273,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         painter->drawPixmap( 0, 0, background );
     }
 
-
-
-
-    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) || ( m_groupMode == Body ) || ( m_groupMode == End ) ) {
-        if ( index.data( GroupedAlternateRole ).toBool() ) {
-
+    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) || ( m_groupMode == Body ) || ( m_groupMode == End ) )
+    {
+        if ( index.data( GroupedAlternateRole ).toBool() )
+        {
             QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 10 ).arg(trackRect.height() );
             QPixmap background( (int)( trackRect.width() - 10 ), (int)( trackRect.height() ) );
 
@@ -281,7 +285,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             if ( m_groupMode == End )
                 tempRect.setHeight( tempRect.height() - 4 );
 
-            if (!QPixmapCache::find( key, background ) ) {
+            if (!QPixmapCache::find( key, background ) )
+            {
                 background.fill( Qt::transparent );
                 QPainter pt( &background );
                 s_svgRenderer->render( &pt, "body_background",  tempRect );
@@ -296,21 +301,22 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     }
 
-
-
-     if ( m_groupMode < Body ) {
-          //if we are not grouped, or are the head of a group, paint cover:
-         QPixmap albumPixmap;
-         if( m_items->track->album() )
+    if ( m_groupMode < Body )
+    {
+        //if we are not grouped, or are the head of a group, paint cover:
+        QPixmap albumPixmap;
+        if( m_items->track->album() )
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-         painter->drawPixmap( (int)( MARGIN ), (int)( MARGIN ), albumPixmap );
-         //and make sure the top text elements are shown
+        painter->drawPixmap( (int)( MARGIN ), (int)( MARGIN ), albumPixmap );
+        //and make sure the top text elements are shown
         if( !m_items->topRightText->isVisible() )
             m_items->topRightText->show();
         if( !m_items->topLeftText->isVisible() )
             m_items->topLeftText->show();
 
-    } else {
+    }
+    else
+    {
         //if not, make sure that the top text items are not shown
         if( m_items->topRightText->isVisible() )
             m_items->topRightText->hide();
@@ -335,13 +341,14 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
         debug() << "Key string: " << key;
 
-        if (!QPixmapCache::find(key, leftMarker)) {
+        if( !QPixmapCache::find(key, leftMarker) )
+        {
             QPainter pt( &leftMarker );
             s_svgRenderer->render( &pt, "selection_left"/*,  QRectF( 0, 0, 40, trackRect.height() )*/ );
             QPixmapCache::insert(key, leftMarker);
         }
 
-        painter->drawPixmap( 2, trackRect.top(), leftMarker );
+        painter->drawPixmap( 2, (int)trackRect.top(), leftMarker );
 
 
         key = QString("selection_right:%1x%2").arg( 40 ).arg(trackRect.height());
@@ -350,15 +357,15 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
         debug() << "Key string: " << key;
 
-        if (!QPixmapCache::find(key, rightMarker)) {
+        if( !QPixmapCache::find(key, rightMarker) )
+        {
             QPainter pt( &rightMarker );
             s_svgRenderer->render( &pt, "selection_right",  QRectF( 0, 0, 40, trackRect.height() ) );
             QPixmapCache::insert(key, rightMarker);
         }
 
-        painter->drawPixmap( trackRect.width() - 42, trackRect.top(), rightMarker );
-
-}
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), rightMarker );
+    }
 
 
 
@@ -403,7 +410,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         }
         if( !m_items->foreground->isVisible() )
             m_items->foreground->show();
-    } else if( m_items->foreground && m_items->foreground->isVisible() )
+    }
+    else if( m_items->foreground && m_items->foreground->isVisible() )
         m_items->foreground->hide();
 }
 
@@ -435,12 +443,14 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
     QString prettyLength;
 
-    if ( m_groupMode == Head_Collapsed ) {
+    if ( m_groupMode == Head_Collapsed )
+    {
         uint seconds = 0;
-        for( uint i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
+        for( int i = m_currentRow; i < m_currentRow + m_items->groupedTracks; i++ )
             seconds += The::playlistModel()->itemList()[ i ]->track()->length();
         prettyLength = Meta::secToPrettyTime( seconds );
-    } else
+    }
+    else
         prettyLength = Meta::secToPrettyTime( track->length() );
         
     QString album;
@@ -866,8 +876,9 @@ void Playlist::GraphicsItem::setRow(int row)
     }
 }
 
-void Playlist::GraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
+    Q_UNUSED( event );
     //DEBUG_BLOCK
 
     /*if ( m_groupMode == Head_Collapsed )
