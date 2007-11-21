@@ -408,7 +408,6 @@ void CoverManager::fetchMissingCovers() //SLOT
           item =  m_coverView->item( i++ ) )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
-        debug() << "FETCHING COVER FOR: " << coverItem->albumPtr()->prettyName();
         if( !coverItem->hasCover() ) {
             m_fetchCovers += coverItem->albumPtr();
         }
@@ -478,7 +477,6 @@ void CoverManager::slotArtistSelected() //SLOT
     bq.startQuery();
     albums = bq.albums( coll->collectionId() );
 
-    debug() << "WE HAVE: " << albums.count() << " ALBUMS TO ADD";
 
     //TODO: Port 2.0
     //also retrieve compilations when we're showing all items (first treenode) or
@@ -1038,8 +1036,6 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    if( m_albumPtr->hasImage() )
-        debug() << "HAVE IMAGE FOR: " << m_albumPtr->prettyName();
     m_coverPixmap = m_albumPtr->image();  //create the scaled cover
 
 //     repaint();
