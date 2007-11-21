@@ -163,6 +163,17 @@ set(libmp3tunesservice_SRCS
 
 )
 
+#####################################################################
+# AMPACHESERVICE
+#####################################################################
+        set(libampacheservice_SRCS
+        servicebrowser/ampache/AmpacheService.cpp
+        servicebrowser/ampache/AmpacheServiceCollection.cpp
+        servicebrowser/ampache/AmpacheServiceQueryMaker.cpp
+        servicebrowser/ampache/AmpacheMeta.cpp
+
+)
+
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
 #####################################################################
@@ -275,6 +286,7 @@ set(meta_SRCS
     meta/Capability.cpp
     meta/EditCapability.cpp
     meta/LastFmCapability.cpp
+    meta/CustomActionsCapability.cpp
     meta/meta.cpp
     meta/proxy/MetaProxy.cpp
     meta/file/File.cpp
@@ -376,6 +388,7 @@ set(amaroklib_LIB_SRCS
     ${libmagnatunestore_SRCS}
     ${libshoutcastservice_SRCS}
     ${libmp3tunesservice_SRCS}
+    ${libampacheservice_SRCS}
     ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}
