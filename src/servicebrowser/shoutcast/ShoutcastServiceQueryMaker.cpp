@@ -156,7 +156,8 @@ QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
         }
 
 
-void ShoutcastServiceQueryMaker::handleResult() {
+void ShoutcastServiceQueryMaker::handleResult()
+{
     DEBUG_BLOCK
     switch( d->type )
     {
@@ -176,24 +177,24 @@ void ShoutcastServiceQueryMaker::handleResult() {
             emitProperResult( TrackPtr, tracks );
             break;
         }
+        default:
+            break;
     }
 }
-
-
-
 
 void ShoutcastServiceQueryMaker::fetchGenres()
 {
     DEBUG_BLOCK
     //check if we already have the genres
-    if ( m_collection->genreMap().values().count() != 0 ) {
+    if ( m_collection->genreMap().values().count() != 0 )
+    {
         handleResult();
         debug() << "no need to fetch genres again! ";
     }
-    else {
+    else
+    {
         m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( genreDownloadComplete(KJob *) ) );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( genreDownloadComplete(KJob *) ) );
     }
 }
 
@@ -204,20 +205,28 @@ void ShoutcastServiceQueryMaker::fetchStations()
 
     GenreMatcher genreMatcher( m_collection->genreMap()[m_genreMatch] );
     m_currentTrackQueryResults = genreMatcher.match( m_collection );
-    if ( m_currentTrackQueryResults.count() > 0 ) {
+    if( m_currentTrackQueryResults.count() > 0 )
+    {
         handleResult();
-    } else {
+    }
+    else
+    {
         m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( stationDownloadComplete(KJob *) ) );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
     }
 }
 
 
 void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 {
-
     DEBUG_BLOCK
+    
+    if ( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     QDomDocument doc( "genres" );
 
@@ -270,10 +279,17 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
 }
 
-void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job ) {
-
-
+void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job )
+{
     DEBUG_BLOCK
+    
+    if ( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
+    
     m_currentTrackQueryResults.clear();
 
     QDomDocument doc( "list" );

@@ -307,9 +307,14 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
 void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 {
-
     DEBUG_BLOCK
 
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     ArtistList artists;
 
@@ -355,6 +360,13 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
+
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     debug() << "Recieved response: " << m_storedTransferJob->data();
 
@@ -413,11 +425,10 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         element = n.firstChildElement("artistId");
 
         ArtistPtr artistPtr = m_collection->artistById( element.text().toInt() );
-        if ( artistPtr.data() != 0 ) { 
+        if ( artistPtr.data() != 0 )
+        {
            debug() << "Found parent artist";
-           ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            album->setAlbumArtist( artistPtr );
-
         }
 
         albums.push_back( albumPtr );
@@ -435,6 +446,13 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
 void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
+
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     debug() << "Recieved response: " << m_storedTransferJob->data();
 
@@ -485,7 +503,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         track->setUrl( element.text() );
 
         element = n.firstChildElement("trackLength");
-        track->setLength( element.text().toFloat() / 1000 );
+        track->setLength( (int)( element.text().toFloat() / 1000 ) );
 
         element = n.firstChildElement("trackNumber");
         track->setTrackNumber( element.text().toInt() );
@@ -519,22 +537,6 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 #include "Mp3tunesServiceQueryMaker.moc"
-
-
-
-
 
 

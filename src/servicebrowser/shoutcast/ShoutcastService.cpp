@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>     *
  *             (c) 2007 Adam Pigg <adam@piggz.co.uk>                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,11 +33,10 @@ using namespace Meta;
 ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
 {
-
+    setObjectName( name );
     setShortDescription("The biggest damn list of online radio stations on the net :-)");
     setIcon( KIcon( Amarok::icon( "network-wireless" ) ) );
     showInfo( false );
-
 }
 
 
@@ -60,10 +59,5 @@ void ShoutcastService::polish()
 
 }
 
-
 #include "ShoutcastService.moc"
-
-
-
-
 
