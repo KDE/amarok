@@ -424,7 +424,6 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 
         }
 
-
         album->setCoverUrl( coverUrl );
 
         albums.push_back( albumPtr );
@@ -492,13 +491,13 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         QDomElement albumElement = n.firstChildElement("album");
         int albumId = albumElement.attribute( "id", "0").toInt();
 
-        QDomElement aartistElement = n.firstChildElement("artist");
-        int artistId = albumElement.attribute( "id", "0").toInt();
+        QDomElement artistElement = n.firstChildElement("artist");
+        int artistId = artistElement.attribute( "id", "0").toInt();
 
 
         ArtistPtr artistPtr = m_collection->artistById( artistId );
         if ( artistPtr.data() != 0 ) {
-           debug() << "Found parent artist";
+            debug() << "Found parent artist " << artistPtr->name();
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
            artist->addTrack( trackPtr );
@@ -506,7 +505,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         AlbumPtr albumPtr = m_collection->albumById( albumId );
         if ( albumPtr.data() != 0 ) {
-           debug() << "Found parent album";
+            debug() << "Found parent album " << albumPtr->name() ;
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
            track->setAlbum( albumPtr );
            album->addTrack( trackPtr );

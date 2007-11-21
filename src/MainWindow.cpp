@@ -272,7 +272,7 @@ void MainWindow::init()
 
         internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
 
-        internetContentServiceBrowser->addService( new AmpacheService( "Amapche test" ) );
+        internetContentServiceBrowser->addService( new AmpacheService( "Ampache" ) );
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
