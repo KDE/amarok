@@ -92,7 +92,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     menu->addSeparator();
     
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
-    if( item->imageLocation().contains( itemClickPos ) )
+    if( item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ) )
     {
         bool hasCover = item->hasImage();
 

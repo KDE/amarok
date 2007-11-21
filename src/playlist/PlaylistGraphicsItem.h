@@ -48,6 +48,8 @@ namespace Playlist
             const bool hasImage() const;
             void showImage() const;
             void fetchImage();
+
+            const int groupMode() const { return m_groupMode; }
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
