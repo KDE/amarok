@@ -79,23 +79,6 @@ class ArtistItem : public QTreeWidgetItem
 
         Meta::ArtistPtr artist() const { return m_artist; }
 
-        //TODO: PORT
-//     protected:
-//     int compare( Q3ListViewItem* i, int col, bool ascending ) const
-//     {
-//         Q_UNUSED(col);
-//         Q_UNUSED(ascending);
-// 
-//         QString a = text(0);
-//         QString b = i->text(0);
-// 
-//         if ( a.startsWith( "the ", Qt::CaseInsensitive ) )
-//             Amarok::manipulateThe(a, true );
-//         if ( b.startsWith( "the ", Qt::CaseInsensitive ) )
-//             Amarok::manipulateThe( b, true );
-// 
-//         return QString::localeAwareCompare( a.toLower(), b.toLower() );
-//     }
     private:
         Meta::ArtistPtr m_artist;
 };
@@ -148,7 +131,6 @@ CoverManager::CoverManager()
         items.append( new ArtistItem( m_artistView, artist ) );
 //         item->setIcon( SmallIcon( Amarok::icon( "artist" ) ) );
     }
-//     m_artistView->sort();
     m_artistView->insertTopLevelItems( 0, items );
 
 
