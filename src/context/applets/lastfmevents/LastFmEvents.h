@@ -33,7 +33,7 @@ public:
     ~LastFmEvents();
 
 
-    void constraintsUpdated( Plasma::Constraints );
+    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints);
     // for compatibility with Plasma::Widget and Plasma::LayoutItem
     QSizeF contentSizeHint() const;
 
