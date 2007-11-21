@@ -116,12 +116,6 @@ Playlist::GraphicsItem::~GraphicsItem()
     delete m_items;
 }
 
-const void
-Playlist::GraphicsItem::showImage() const
-{
-    ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show(); 
-}
-
 void
 Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
@@ -646,6 +640,18 @@ Playlist::GraphicsItem::play()
     The::playlistModel()->play( m_currentRow );
 }
 
+const void
+Playlist::GraphicsItem::showImage() const
+{
+    ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show(); 
+}
+
+const bool
+Playlist::GraphicsItem::hasImage() const
+{
+    return m_items->track->album()->hasImage();
+}
+
 void
 Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
@@ -894,6 +900,4 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     /*if ( m_groupMode == Head_Collapsed )
        The::playlistModel()->setCollapsed( m_currentRow, false ); */
 }
-
-#include "PlaylistGraphicsItem.moc"
 

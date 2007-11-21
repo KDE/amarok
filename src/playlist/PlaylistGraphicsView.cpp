@@ -82,15 +82,25 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 
     KMenu *menu = new KMenu( this );
     
+    menu->addAction( playAction );
+    menu->addSeparator();
+    
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
     if( item->imageLocation().contains( itemClickPos ) )
     {
-        menu->addAction( i18n( "Show Cover" ), this, SLOT( showItemImage() ) );
+        bool hasCover = item->hasImage();
+
+        QAction *showCoverAction  = menu->addAction( i18n( "Show Cover" ), this, SLOT( showItemImage() ) );
+        QAction *fetchCoverAction = menu->addAction( i18n( "Fetch Cover" ), this, SLOT( fetchItemImage() ) );
+        QAction *unsetCoverAction = menu->addAction( i18n( "Unset Cover" ), this, SLOT( unsetItemImage() ) );
+
+        showCoverAction->setEnabled( hasCover );
+        fetchCoverAction->setEnabled( true );
+        unsetCoverAction->setEnabled( hasCover );
+
         menu->addSeparator();
     }
 
-    menu->addAction( playAction );
-    menu->addSeparator();
     menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) );
 
     m_contextMenuItem = item;
