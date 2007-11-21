@@ -162,6 +162,10 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
             playChildTracks( items, Playlist::Replace );
         else if( result == appendAction )
             playChildTracks( items, Playlist::Append );
+        else if( result )
+        {
+            result->trigger();
+        }
     }
     else
         debug() << "invalid index or null internalPointer";
