@@ -50,8 +50,15 @@ class AMAROK_EXPORT CollectionLocation : public QObject
     Q_OBJECT
     public:
         CollectionLocation();
+        CollectionLocation( Collection* parentCollection );
         virtual  ~CollectionLocation();
 
+        /**
+            Returns a pointer to the collection location's corresponding collection.
+            @return a pointer to the collection location's corresponding collection
+         */
+        Collection* collection() const;
+        
         /**
             a displayable string representation of the collection location. use the return value
             of this method to display the collection location to the user.
@@ -120,6 +127,8 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         //only used in the destination CollectionLocation
         bool m_removeSources;
+
+        Collection* m_parentCollection;
 };
 
 #endif 

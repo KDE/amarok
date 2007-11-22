@@ -25,9 +25,21 @@ CollectionLocation::CollectionLocation()
     //nothing to do
 }
 
+CollectionLocation::CollectionLocation( Collection* parentCollection)
+    :QObject()
+{
+    m_parentCollection = parentCollection;
+}
+
 CollectionLocation::~CollectionLocation()
 {
     //nothing to do
+}
+
+Collection*
+CollectionLocation::collection() const
+{
+    return m_parentCollection;
 }
 
 QString
