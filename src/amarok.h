@@ -116,6 +116,11 @@ namespace Amarok
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
 //     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
+    //New in Amarok2 -> recursiveUrlExpand has been replaced
+    //existing code depending on this port need to be changed (max urls is removed)
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
+
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); //defined in tracktooltip.cpp
 
     AMAROK_EXPORT QString verboseTimeSince( uint time_t ); //defined in tracktooltip.cpp

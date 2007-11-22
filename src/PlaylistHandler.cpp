@@ -1,6 +1,7 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // Author: Nikolaj Hald Nielsen (C) Copyright 2007
+// Author: Casey Link (C) Copyright 2007    
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
 // .asx file support added by Michael Seiwert Copyright (C) 2006
 // .asx file support from Kaffeine, Copyright (C) 2004-2005 by Jürgen Kofler (GPL 2 or later)
@@ -16,6 +17,7 @@
 #define DEBUG_PREFIX "PlaylistHandler"
 
 #include "amarokconfig.h"
+#include "amarok.h"
 #include "app.h"
 #include "CollectionManager.h"
 #include "MainWindow.h"
@@ -27,11 +29,14 @@
 #include "TheInstances.h"
 #include "xspfplaylist.h"
 
+#include <kdirlister.h>
 #include <KMessageBox>
 #include <KUrl>
 
+#include <QEventLoop>
 #include <QFile>
 #include <QtXml>
+
 
 
 using namespace Meta;
@@ -46,7 +51,17 @@ PlaylistHandler::PlaylistHandler()
 
 bool PlaylistHandler::isPlaylist(const KUrl & path)
 {
-    return getFormat( path ) != Unknown;
+    const QString ext = Amarok::extension( path.fileName() );
+
+    if( ext == "m3u" ) return true;
+    if( ext == "pls" ) return true;
+    if( ext == "ram" ) return true;
+    if( ext == "smil") return true;
+    if( ext == "asx" || ext == "wax" ) return true;
+    if( ext == "xml" ) return true;
+    if( ext == "xspf" ) return true;
+
+    return false;
 }
 
 void PlaylistHandler::load(const QString & path)
@@ -780,39 +795,58 @@ PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
     return true;
 }
 
-#include <kdirlister.h>
-#include <QEventLoop>
-//this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
 KUrl::List
-PlaylistHandler::recurse( const KUrl &url )
+recurse( const KUrl &url )
 {
-    typedef QMap<QString, KUrl> FileMap;
+    return Amarok::recursiveUrlExpand( url );
+}
 
-    KDirLister lister( false );
-    lister.setAutoUpdate( false );
-    lister.setAutoErrorHandlingEnabled( false, 0 );
-    lister.openUrl( url );
-
-    while( !lister.isFinished() )
-        kapp->processEvents( QEventLoop::ExcludeUserInput );
-
-    KFileItemList items = lister.items();
-    KUrl::List urls;
-    FileMap files;
-    foreach( const KFileItem& it, items ) {
-        if( it.isFile() ) { files[it.name()] = it.url(); continue; }
-        if( it.isDir() ) urls += recurse( it.url() );
-    }
-
-    oldForeachType( FileMap, files )
+namespace Amarok
+{
+    
+    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+    KUrl::List
+    recursiveUrlExpand ( const KUrl &url )
+    {
+        typedef QMap<QString, KUrl> FileMap;
+    
+        KDirLister lister ( false );
+        lister.setAutoUpdate ( false );
+        lister.setAutoErrorHandlingEnabled ( false, 0 );
+        lister.openUrl ( url );
+    
+        while ( !lister.isFinished() )
+            kapp->processEvents ( QEventLoop::ExcludeUserInput );
+    
+        KFileItemList items = lister.items();
+        KUrl::List urls;
+        FileMap files;
+        foreach ( const KFileItem& it, items )
+        {
+            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
+            if ( it.isDir() ) urls += recurse ( it.url() );
+        }
+    
+        oldForeachType ( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
-            if( !isPlaylist( (*it).fileName() ) )
+        if ( !PlaylistHandler::isPlaylist( ( *it ).fileName() ) )
             urls += *it;
-
-    return urls;
+        return urls;
+    }
+    
+        KUrl::List
+    recursiveUrlExpand ( const KUrl::List &list )
+    {
+        KUrl::List urls;
+        oldForeachType ( KUrl::List, list )
+        {
+            urls += recursiveUrlExpand ( *it );
+        }
+    
+        return urls;
+    }
 }
-
 #include "PlaylistHandler.moc"
 

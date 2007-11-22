@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -45,7 +46,7 @@ public:
 
     PlaylistHandler();
 
-    bool isPlaylist( const KUrl &path );
+    static bool isPlaylist( const KUrl &path );
     void load( const QString &path );
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
