@@ -20,6 +20,7 @@
 #include "AmpacheService.h"
 
 #include "amarok.h"
+#include "collection/CollectionManager.h"
 #include "debug.h"
 #include "statusbar.h"
 
@@ -36,6 +37,7 @@ AmpacheService::AmpacheService(const QString & name)
  , m_authenticated( false )
  , m_server ( QString() )
  , m_sessionId ( QString() )
+ , m_collection( 0 )
 {
 
     setShortDescription("The Mp3Tunes Locker service. Access your stored music!");
@@ -47,6 +49,8 @@ AmpacheService::AmpacheService(const QString & name)
 
 AmpacheService::~AmpacheService()
 {
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    delete m_collection;
 }
 
 void AmpacheService::polish()
@@ -143,6 +147,7 @@ void AmpacheService::authenticationComplete(KJob * job)
         m_authenticated = true;
 
         m_collection = new AmpacheServiceCollection( m_server, m_sessionId );
+        CollectionManager::instance()->addUnmanagedCollection( m_collection );
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
