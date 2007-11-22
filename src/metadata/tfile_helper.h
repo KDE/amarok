@@ -28,9 +28,9 @@
 // need to make everything compile against old versions of taglib
 // where TagLib::FileName wasn't typedef'd to const char *
 #ifdef HAVE_TAGLIB_FILENAME
-#define TAGLIB_FILENAME TagLib::FileName
+#define TagLibFileName TagLib::FileName
 #else
-#define TAGLIB_FILENAME const char *
+#define TagLibFileName const char *
 #endif
 
 #endif // TFILE_HELPER_H

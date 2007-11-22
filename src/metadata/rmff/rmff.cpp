@@ -47,7 +47,7 @@
 using namespace TagLib;
 using namespace TagLib::RealMedia;
 
-RMFFile::RMFFile(TAGLIB_FILENAME filename) : File(filename), m_id3tag(0) 
+RMFFile::RMFFile(TagLibFileName filename) : File(filename), m_id3tag(0) 
 { 
    if (isOpen()) 
       m_id3tag = new ID3v1::Tag(this, length() - 128); 
@@ -122,7 +122,7 @@ int RealMediaFF::channels () const
 }
 
 
-RealMediaFF::RealMediaFF(TAGLIB_FILENAME file, bool readProperties, AudioProperties::ReadStyle /*propertiesStyle*/)
+RealMediaFF::RealMediaFF(TagLibFileName file, bool readProperties, AudioProperties::ReadStyle /*propertiesStyle*/)
 : m_filename(0)
 , m_head(0)
 , m_tail(0)

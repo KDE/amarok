@@ -177,7 +177,7 @@ int RealMedia::Properties::channels () const
 }
 
 
-RealMedia::File::File(TAGLIB_FILENAME file, bool readProperties, Properties::ReadStyle propertiesStyle) 
+RealMedia::File::File(TagLibFileName file, bool readProperties, Properties::ReadStyle propertiesStyle) 
    : TagLib::File(file), m_rmfile(0), m_tag(0), m_props(0)
 {
    m_rmfile = new RealMediaFF(file, readProperties, propertiesStyle);

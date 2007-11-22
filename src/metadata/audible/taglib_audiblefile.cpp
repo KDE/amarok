@@ -35,7 +35,7 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Audible::File::File(TAGLIB_FILENAME file,
+Audible::File::File(TagLibFileName file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
         FILE *fp)

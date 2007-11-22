@@ -85,7 +85,7 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-TTA::File::File(TAGLIB_FILENAME file, bool readProperties,
+TTA::File::File(TagLibFileName file, bool readProperties,
                  Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
   d = new FilePrivate;
@@ -93,7 +93,7 @@ TTA::File::File(TAGLIB_FILENAME file, bool readProperties,
     read(readProperties, propertiesStyle);
 }
 
-TTA::File::File(TAGLIB_FILENAME file, ID3v2::FrameFactory *frameFactory,
+TTA::File::File(TagLibFileName file, ID3v2::FrameFactory *frameFactory,
                  bool readProperties, Properties::ReadStyle propertiesStyle) :
   TagLib::File(file)
 {

@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *MP4FileTypeResolver::createFile(TAGLIB_FILENAME fileName,
+TagLib::File *MP4FileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

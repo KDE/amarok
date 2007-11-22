@@ -85,7 +85,7 @@ WMA::GUID WMA::GUID::audioMedia = {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-WMA::File::File(TAGLIB_FILENAME file, bool readProperties, Properties::ReadStyle propertiesStyle) 
+WMA::File::File(TagLibFileName file, bool readProperties, Properties::ReadStyle propertiesStyle) 
   : TagLib::File(file)
 {
   d = new FilePrivate;

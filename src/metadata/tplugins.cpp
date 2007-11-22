@@ -66,12 +66,12 @@
 #ifdef KMIMETYPE_RESOLVER
 class MimeTypeFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(TAGLIB_FILENAME fileName,
+    TagLib::File *createFile(TagLibFileName fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
 };
 
-TagLib::File *MimeTypeFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
+TagLib::File *MimeTypeFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

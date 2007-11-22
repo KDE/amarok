@@ -34,7 +34,7 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Wav::File::File(TAGLIB_FILENAME file,
+Wav::File::File(TagLibFileName file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
         FILE *fp)

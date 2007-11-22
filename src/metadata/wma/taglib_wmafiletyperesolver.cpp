@@ -27,7 +27,7 @@
 
 #include <string.h>
 
-TagLib::File *WMAFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
+TagLib::File *WMAFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

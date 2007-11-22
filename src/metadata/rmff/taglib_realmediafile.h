@@ -91,7 +91,7 @@ namespace TagLib {
       {
       public:
 
-         explicit File(TAGLIB_FILENAME file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+         explicit File(TagLibFileName file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
 
          virtual ~File();
 

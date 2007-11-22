@@ -80,7 +80,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      explicit File(TAGLIB_FILENAME file, bool readProperties = true,
+      explicit File(TagLibFileName file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
