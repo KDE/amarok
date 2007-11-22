@@ -25,7 +25,7 @@
 
 #include "wavfile.h"
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <tag.h>
 
@@ -34,7 +34,7 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Wav::File::File(const char *file,
+Wav::File::File(TAGLIB_FILENAME file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
         FILE *fp)

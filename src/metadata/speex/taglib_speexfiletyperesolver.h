@@ -22,13 +22,13 @@
 #ifndef TAGLIB_SPEEXFILETYPERESOLVER_H
 #define TAGLIB_SPEEXFILETYPERESOLVER_H
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <fileref.h>
 
 
 class SpeexFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(const char *fileName,
+    TagLib::File *createFile(TAGLIB_FILENAME fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
     ~SpeexFileTypeResolver() {}

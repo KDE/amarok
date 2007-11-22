@@ -23,7 +23,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <id3v1tag.h>
 #include "taglib_realmediafiletyperesolver.h"
@@ -32,7 +32,7 @@
 
 #include <string.h>
 
-TagLib::File *RealMediaFileTypeResolver::createFile(const char *fileName,
+TagLib::File *RealMediaFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
                                                     bool readProperties,
                                                     TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

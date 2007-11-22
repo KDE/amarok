@@ -34,7 +34,7 @@
 #include <taglib.h>
 #include <id3v1tag.h>
 #include <id3v2tag.h>
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <fileref.h>
 #include <iostream>
 #include <string.h>
@@ -47,7 +47,7 @@
 using namespace TagLib;
 using namespace TagLib::RealMedia;
 
-RMFFile::RMFFile(const char *filename) : File(filename), m_id3tag(0) 
+RMFFile::RMFFile(TAGLIB_FILENAME filename) : File(filename), m_id3tag(0) 
 { 
    if (isOpen()) 
       m_id3tag = new ID3v1::Tag(this, length() - 128); 
@@ -122,7 +122,7 @@ int RealMediaFF::channels () const
 }
 
 
-RealMediaFF::RealMediaFF(const char *file, bool readProperties, AudioProperties::ReadStyle /*propertiesStyle*/)
+RealMediaFF::RealMediaFF(TAGLIB_FILENAME file, bool readProperties, AudioProperties::ReadStyle /*propertiesStyle*/)
 : m_filename(0)
 , m_head(0)
 , m_tail(0)

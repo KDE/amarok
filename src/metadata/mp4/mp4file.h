@@ -22,7 +22,7 @@ email                : andrew.leadbetter@gmail.com
 #ifndef TAGLIB_MP4FILE_H
 #define TAGLIB_MP4FILE_H
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include "mp4properties.h"
 #include <amarok_libs_export.h>
 namespace TagLib {
@@ -39,7 +39,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                explicit File(const char *file, bool readProperties = true,
+                explicit File(TAGLIB_FILENAME file, bool readProperties = true,
                         TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average,
                         MP4FileHandle handle=MP4_INVALID_FILE_HANDLE);
 

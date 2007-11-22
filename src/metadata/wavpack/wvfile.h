@@ -26,7 +26,7 @@
 #ifndef TAGLIB_WVFILE_H
 #define TAGLIB_WVFILE_H
 
-#include "tfile.h"
+#include "../tfile_helper.h"
 
 #include "wvproperties.h"
 
@@ -80,7 +80,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      explicit File(const char *file, bool readProperties = true,
+      explicit File(TAGLIB_FILENAME file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!

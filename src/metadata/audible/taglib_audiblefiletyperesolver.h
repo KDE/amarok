@@ -22,13 +22,13 @@
 #ifndef TAGLIB_AUDIBLEFILETYPERESOLVER_H
 #define TAGLIB_AUDIBLEFILETYPERESOLVER_H
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <fileref.h>
 
 
 class AudibleFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(const char *fileName,
+    TagLib::File *createFile(TAGLIB_FILENAME fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
     ~AudibleFileTypeResolver() {}

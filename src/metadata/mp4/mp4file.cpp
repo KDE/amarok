@@ -26,7 +26,7 @@ email                : aumuell@reserv.at
 #include "mp4file.h"
 
 #include "mp4tag.h"
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <audioproperties.h>
 
 #include <stdint.h>
@@ -38,7 +38,7 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-MP4::File::File(const char *file,
+MP4::File::File(TAGLIB_FILENAME file,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle,
         MP4FileHandle handle) : TagLib::File(file),

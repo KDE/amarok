@@ -84,7 +84,7 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-WavPack::File::File(const char *file, bool readProperties,
+WavPack::File::File(TAGLIB_FILENAME file, bool readProperties,
                 Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
   d = new FilePrivate;

@@ -31,9 +31,11 @@
 
 #include <netinet/in.h> // ntohl
 
+#include <QtGlobal>
+
 using namespace TagLib;
 
-Audible::Tag::Tag() : TagLib::Tag::Tag() {
+Audible::Tag::Tag() {
     m_title = String::null;
     m_artist = String::null;
     m_album = String::null;
@@ -61,7 +63,7 @@ bool Audible::Tag::isEmpty() const {
 
 void Audible::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
     // No nonstandard information stored yet
-    Tag::duplicate(source, target, overwrite);
+    TagLib::Tag::duplicate(source, target, overwrite);
 }
 
 #define OFF_PRODUCT_ID 197
@@ -130,14 +132,14 @@ void Audible::Tag::readTags( FILE *fp )
 
 bool Audible::Tag::readTag( FILE *fp, char **name, char **value)
 {
-    uint32_t nlen;
+    quint32 nlen;
     fread(&nlen, sizeof(nlen), 1, fp);
     nlen = ntohl(nlen);
     //fprintf(stderr, "tagname len=%x\n", (unsigned)nlen);
     *name = new char[nlen+1];
     (*name)[nlen] = '\0';
 
-    uint32_t vlen;
+    quint32 vlen;
     fread(&vlen, sizeof(vlen), 1, fp);
     vlen = ntohl(vlen);
     //fprintf(stderr, "tag len=%x\n", (unsigned)vlen);

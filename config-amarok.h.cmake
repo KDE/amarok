@@ -45,3 +45,9 @@
 /* Postgresql database support enabled */
 #cmakedefine USE_POSTGRESQL 1
 
+/* Whether taglib exposes filenames as TagLib::FileName type */
+#cmakedefine HAVE_TAGLIB_FILENAME 1
+
+/* Whether TagLib::FileName is a struct supporting wide characters or just a typedef */
+#cmakedefine COMPLEX_TAGLIB_FILENAME 1
+

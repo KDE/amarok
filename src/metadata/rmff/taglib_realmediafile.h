@@ -32,7 +32,7 @@
 #ifndef _TAGLIB_REALMEDIAFILE_H_
 #define _TAGLIB_REALMEDIAFILE_H_
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <tag.h>
 
@@ -91,7 +91,7 @@ namespace TagLib {
       {
       public:
 
-         explicit File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+         explicit File(TAGLIB_FILENAME file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
 
          virtual ~File();
 

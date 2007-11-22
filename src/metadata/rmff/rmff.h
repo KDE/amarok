@@ -240,7 +240,7 @@ namespace TagLib
       class RMFFile : public TagLib::File
       {
       public:
-         RMFFile(const char *filename);
+         RMFFile(TAGLIB_FILENAME filename);
          virtual ~RMFFile();
          bool save();
          TagLib::Tag *tag() const { return m_id3tag; }
@@ -255,7 +255,7 @@ namespace TagLib
       class RealMediaFF
       {
       public:
-         explicit RealMediaFF(const char *file, bool readProperties = true,
+         explicit RealMediaFF(TAGLIB_FILENAME file, bool readProperties = true,
                      TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average);
          RealMediaFF(RealMediaFF &src);
          ~RealMediaFF();

@@ -24,7 +24,7 @@
 #include "itunesdatabox.h"
 #include "mp4isobox.h"
 #include "mp4file.h"
-#include "tfile.h"
+#include "../tfile_helper.h"
 #include "mp4tagsproxy.h"
 
 using namespace TagLib;

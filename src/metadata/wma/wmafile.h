@@ -22,7 +22,7 @@
 #ifndef TAGLIB_WMAFILE_H
 #define TAGLIB_WMAFILE_H
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <tag.h>
 #include "wmaproperties.h"
 #include "wmatag.h"
@@ -45,7 +45,7 @@ namespace TagLib {
 
     public:
 
-      explicit File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+      explicit File(TAGLIB_FILENAME file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
 
       virtual ~File();
 

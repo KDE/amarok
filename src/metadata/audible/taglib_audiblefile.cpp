@@ -26,7 +26,7 @@
 #include "taglib_audiblefile.h"
 
 #include "audibletag.h"
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <string.h>
 
@@ -35,7 +35,7 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Audible::File::File(const char *file,
+Audible::File::File(TAGLIB_FILENAME file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
         FILE *fp)

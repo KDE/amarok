@@ -26,6 +26,8 @@
 #ifndef TAGLIB_SPEEXFILE_H
 #define TAGLIB_SPEEXFILE_H
 
+#include "../tfile_helper.h"
+
 #include <oggfile.h>
 #include <xiphcomment.h>
 
@@ -54,7 +56,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      explicit File(const char *file, bool readProperties = true,
+      explicit File(TAGLIB_FILENAME file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!

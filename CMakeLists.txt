@@ -23,6 +23,7 @@ find_package(RUBY REQUIRED)
 
 add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+include(CheckTagLibFileName)
 
 macro_optional_find_package(Njb)
 macro_optional_find_package(Ifp)
@@ -41,6 +42,8 @@ macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)
+
+check_taglib_filename(HAVE_TAGLIB_FILENAME COMPLEX_TAGLIB_FILENAME)
 
 configure_file (config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 

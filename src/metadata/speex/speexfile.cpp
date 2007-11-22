@@ -55,7 +55,7 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Speex::File::File(const char *file, bool readProperties,
+Speex::File::File(TAGLIB_FILENAME file, bool readProperties,
                    Properties::ReadStyle propertiesStyle) : Ogg::File(file)
 {
   d = new FilePrivate;

@@ -29,7 +29,7 @@
 #endif
 
 #include <fileref.h>
-#include <tfile.h>
+#include "tfile_helper.h"
 
 #ifdef HAVE_MP4V2
 #include "mp4/taglib_mp4filetyperesolver.h"
@@ -66,12 +66,12 @@
 #ifdef KMIMETYPE_RESOLVER
 class MimeTypeFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(const char *fileName,
+    TagLib::File *createFile(TAGLIB_FILENAME fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
 };
 
-TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
+TagLib::File *MimeTypeFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *AACFileTypeResolver::createFile(const char *fileName,
+TagLib::File *AACFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

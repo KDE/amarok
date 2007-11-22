@@ -26,7 +26,7 @@
 #ifndef TAGLIB_AUDIBLEFILE_H
 #define TAGLIB_AUDIBLEFILE_H
 
-#include <tfile.h>
+#include "../tfile_helper.h"
 #include "audibleproperties.h"
 #include "audibletag.h"
 
@@ -44,7 +44,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                explicit File(const char *file, bool readProperties = true,
+                explicit File(TAGLIB_FILENAME file, bool readProperties = true,
                         Properties::ReadStyle propertiesStyle = Properties::Average,
                         FILE *fp=NULL);
 

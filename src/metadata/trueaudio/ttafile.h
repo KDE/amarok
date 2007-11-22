@@ -26,7 +26,7 @@
 #ifndef TAGLIB_TTAFILE_H
 #define TAGLIB_TTAFILE_H
 
-#include "tfile.h"
+#include "../tfile_helper.h"
 
 #include "ttaproperties.h"
 
@@ -80,7 +80,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      explicit File(const char *file, bool readProperties = true,
+      explicit File(TAGLIB_FILENAME file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
@@ -89,7 +89,7 @@ namespace TagLib {
        * false, \a propertiesStyle is ignored. The frames will be created using
        * \a frameFactory.
        */
-      File(const char *file, ID3v2::FrameFactory *frameFactory,
+      File(TAGLIB_FILENAME file, ID3v2::FrameFactory *frameFactory,
            bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 

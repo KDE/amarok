@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *TTAFileTypeResolver::createFile(const char *fileName,
+TagLib::File *TTAFileTypeResolver::createFile(TAGLIB_FILENAME fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
