@@ -118,6 +118,7 @@ ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QStri
     }
     m_collection->dbUpdater()->copyToPermanentTables();
     m_collection->dbUpdater()->removeTemporaryTables();
+    m_collection->sendChangedSignal();
 }
 
 void
