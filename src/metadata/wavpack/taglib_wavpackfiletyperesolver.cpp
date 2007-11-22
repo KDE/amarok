@@ -28,8 +28,7 @@ TagLib::File *WavPackFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && !strcasecmp(ext, ".wv"))
+    if(CheckExtension(fileName, ".wv"))
     {
         TagLib::WavPack::File *f = new TagLib::WavPack::File(fileName, readProperties, propertiesStyle);
         if(f->isValid())

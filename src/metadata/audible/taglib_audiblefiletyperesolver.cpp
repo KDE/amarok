@@ -28,10 +28,9 @@ TagLib::File *AudibleFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && !strcasecmp(ext, ".aa"))
+    if(CheckExtension(fileName, ".aa"))
     {
-        FILE *fp = fopen(fileName, "rb");
+        FILE *fp = TagLibOpenFile(fileName, "rb");
         if(!fp)
             return 0;
 

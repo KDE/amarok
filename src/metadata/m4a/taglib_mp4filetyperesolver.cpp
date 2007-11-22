@@ -29,11 +29,10 @@ TagLib::File *MP4FileTypeResolver::createFile(TagLibFileName fileName,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
 //     fprintf(stderr, "mp4?: %s\n", fileName);
-    const char *ext = strrchr(fileName, '.');
-    if(ext && (!strcasecmp(ext, ".m4a")
-                || !strcasecmp(ext, ".m4b") || !strcasecmp(ext, ".m4p")
-                || !strcasecmp(ext, ".mp4")
-                || !strcasecmp(ext, ".m4v") || !strcasecmp(ext, ".mp4v")))
+    if(CheckExtension(fileName, ".m4a")
+                || CheckExtension(fileName, ".m4b") || !CheckExtension(fileName, ".m4p")
+                || CheckExtension(fileName, ".mp4")
+                || CheckExtension(fileName, ".m4v") || CheckExtension(fileName, ".mp4v"))
     {
         return new TagLib::MP4::File(fileName, readProperties, propertiesStyle);
     }

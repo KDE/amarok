@@ -28,10 +28,9 @@ TagLib::File *WavFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && !strcasecmp(ext, ".wav"))
+    if(CheckExtension(fileName, ".wav"))
     {
-        FILE *fp = fopen(fileName, "rb");
+        FILE *fp = TagLibOpenFile(fileName, "rb");
         if(!fp)
             return 0;
 

@@ -54,7 +54,7 @@ Audible::File::File(TagLibFileName file,
     if(fp)
         audiblefile = fp;
     else
-        audiblefile = fopen(file, "rb");
+        audiblefile = TagLibOpenFile(file, "rb");
 
     if( isOpen() )
     {

@@ -1,6 +1,6 @@
 /***************************************************************************
-    copyright            : (C) 2005 by Martin Aumueller
-    email                : aumuell@reserv.at
+    copyright            : (C) 2007 by Shane King
+    email                : kde@dontletsstart.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,29 +19,18 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// See COPYING file for licensing information
+#include "tfile_helper.h"
 
-#include "taglib_mp4filetyperesolver.h"
-#include "mp4file.h"
+#include <wchar.h>
 
-TagLib::File *MP4FileTypeResolver::createFile(TagLibFileName fileName,
-        bool readProperties,
-        TagLib::AudioProperties::ReadStyle propertiesStyle) const
+bool CheckExtensionImpl(const char *fileName, const char *extension)
 {
-    if(CheckExtension(fileName, ".m4a")
-                || CheckExtension(fileName, ".m4b") || CheckExtension(fileName, ".m4p")
-                || CheckExtension(fileName, ".mp4")
-                || CheckExtension(fileName, ".m4v") || CheckExtension(fileName, ".mp4v"))
-    {
-        MP4FileHandle h = MP4Read(fileName, 0);
-        if(MP4_INVALID_FILE_HANDLE == h)
-        {
-            return 0;
-        }
+    const char *ext = strrchr(fileName, '.');
+    return ext && !strcasecmp(ext, extension);
+}
 
-        return new TagLib::MP4::File(fileName, readProperties, propertiesStyle, h);
-    }
-
-    return 0;
+bool CheckExtensionImpl(const wchar_t *fileName, const wchar_t *extension)
+{
+    const wchar_t *ext = wcsrchr(fileName, L'.');
+    return ext && !wcscasecmp(ext, extension);
 }

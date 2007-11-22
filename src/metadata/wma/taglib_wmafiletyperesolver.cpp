@@ -31,8 +31,7 @@ TagLib::File *WMAFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && (!strcasecmp(ext, ".wma") || !strcasecmp(ext, ".asf")))
+    if(CheckExtension(fileName, ".wma") || CheckExtension(fileName, ".asf"))
     {
         TagLib::WMA::File *f = new TagLib::WMA::File(fileName, readProperties, propertiesStyle);
         if(f->isValid())

@@ -53,7 +53,7 @@ Wav::File::File(TagLibFileName file,
     if(fp)
         wavfile = fp;
     else
-        wavfile = fopen(file, "rb");
+        wavfile = TagLibOpenFile(file, "rb");
 
     if( isOpen() )
     {

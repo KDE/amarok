@@ -33,4 +33,17 @@
 #define TagLibFileName const char *
 #endif
 
+// need to be able to deal with either the straight forward char version
+// or a char/wchar hybrid version of the filename
+#ifdef COMPLEX_TAGLIB_FILENAME
+#define CheckExtension(filename, extension) ((const char *)filename == 0 ? CheckExtensionImpl((const wchar_t *)filename, L##extension) : CheckExtensionImpl((const char *)filename, extension))
+#define TagLibOpenFile(filename, mode) ((const char *)filename == 0 ? _wfopen(filename, L##mode) : fopen(filename, mode))
+#else
+#define CheckExtension(filename, extension) CheckExtensionImpl(filename, extension)
+#define TagLibOpenFile(filename, mode) fopen(filename, mode)
+#endif
+
+bool CheckExtensionImpl(const char *fileName, const char *extension);
+bool CheckExtensionImpl(const wchar_t *fileName, const wchar_t *extension);
+
 #endif // TFILE_HELPER_H

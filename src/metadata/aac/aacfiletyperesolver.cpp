@@ -28,8 +28,7 @@ TagLib::File *AACFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && !strcasecmp(ext, ".aac"))
+    if(CheckExtension(fileName, ".aac"))
     {
         return new TagLib::MPEG::File(fileName, readProperties, propertiesStyle);
     }

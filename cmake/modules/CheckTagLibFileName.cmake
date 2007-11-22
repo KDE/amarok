@@ -8,7 +8,7 @@ macro (CHECK_TAGLIB_FILENAME TAGLIB_FILENAME_EXISTS TAGLIB_FILENAME_COMPLEX)
 	"#include <tfile.h>
 	int main()
 	{
-		TagLib::FileName fileName;
+		TagLib::FileName fileName = \"char\";
 		return 0;
 	}" ${TAGLIB_FILENAME_EXISTS})
 	if (${TAGLIB_FILENAME_EXISTS})

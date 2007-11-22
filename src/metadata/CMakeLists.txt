@@ -113,6 +113,7 @@ INCLUDE_DIRECTORIES(
 
 SET(amarok_taglib_SRCS
         tplugins.cpp
+		tfile_helper.cpp
         ${libtagmp4_SRCS}
         ${libtagaudible_SRCS}
         ${libtagrealmedia_SRCS}
