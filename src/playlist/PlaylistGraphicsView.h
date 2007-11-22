@@ -9,7 +9,7 @@
 #ifndef AMAROK_PLAYLISTGRAPHICSVIEW_H
 #define AMAROK_PLAYLISTGRAPHICSVIEW_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QGraphicsView>
 
@@ -55,6 +55,7 @@ namespace Playlist
             void shuffleTracks( int startPosition, int stopPosition = -1 ); // -1: end of playlist
             void showItemImage();
             void fetchItemImage();
+            void unsetItemImage();
         
         private:
             GraphicsView( QWidget *parent = 0 );

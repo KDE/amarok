@@ -20,7 +20,7 @@
 #ifndef SQLMETA_H
 #define SQLMETA_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QByteArray>
 #include <QMutex>

@@ -18,7 +18,7 @@
 
 #include "MetaUtility.h"
 
-#include "meta.h"
+#include "Meta.h"
 #include "meta/Capability.h"
 #include "meta/EditCapability.h"
 

@@ -20,7 +20,7 @@
 #include "File_p.h"
 
 #include "debug.h"
-#include "meta.h"
+#include "Meta.h"
 #include "meta/EditCapability.h"
 #include "MetaUtility.h"
 

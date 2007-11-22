@@ -24,7 +24,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
 #include "statusbar.h"

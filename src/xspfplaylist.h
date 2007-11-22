@@ -12,7 +12,7 @@ class KUrl;
 
 #include <QDomDocument>
 
-#include "meta.h"
+#include "Meta.h"
 
 typedef struct {
     KUrl location;

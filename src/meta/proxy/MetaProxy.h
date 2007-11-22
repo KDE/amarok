@@ -19,7 +19,7 @@
 #ifndef AMAROK_METAPROXY_H
 #define AMAROK_METAPROXY_H
 
-#include "meta.h"
+#include "Meta.h"
 #include "meta/Capability.h"
 
 #include <QObject>

@@ -22,7 +22,7 @@
 #define MEMORYMATCHER_H
 
 #include "MemoryCollection.h"
-#include "meta.h"
+#include "Meta.h"
 
 /**
 A helper class for finding items in a MemoryCollection

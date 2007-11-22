@@ -16,7 +16,7 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "meta/meta.h" // album observer
+#include "meta/Meta.h" // album observer
 /**
     This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
 

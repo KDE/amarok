@@ -9,7 +9,7 @@
 #ifndef AMAROKPLAYLISTITEM_H
 #define AMAROKPLAYLISTITEM_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 namespace Playlist {
 

@@ -22,7 +22,7 @@
 
 #include "DynamicServiceQueryMaker.h"
 
-#include "meta.h"
+#include "Meta.h"
 
 #include "DynamicScriptableServiceCollection.h"
 

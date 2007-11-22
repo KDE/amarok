@@ -20,7 +20,7 @@
 #define AMAROK_AMAROKMIMEDATA_H
 
 #include "amarok_export.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "collection/QueryMaker.h"
 
 #include <QList>

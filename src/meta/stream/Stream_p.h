@@ -19,7 +19,7 @@
 #ifndef AMAROK_STREAM_P_H
 #define AMAROK_STREAM_P_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QList>
 

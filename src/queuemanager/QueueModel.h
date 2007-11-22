@@ -14,7 +14,7 @@
 #ifndef AMAROK_QUEUEMODEL_H
 #define AMAROK_QUEUEMODEL_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QAbstractListModel>
 

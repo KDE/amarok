@@ -24,7 +24,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "lastfm.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <QImage>
 #include <QList>

@@ -18,7 +18,7 @@
 #include "Collection.h"
 
 #include "CollectionLocation.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 CollectionFactory::CollectionFactory() : Amarok::Plugin()
 {

@@ -11,7 +11,7 @@
 
 #include "atomicstring.h"
 #include "debug.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <QDateTime>
 

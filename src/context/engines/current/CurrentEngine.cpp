@@ -18,7 +18,7 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "enginecontroller.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 
 #include <QVariant>

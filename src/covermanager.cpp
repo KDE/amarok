@@ -11,7 +11,7 @@
 #include "CollectionManager.h"
 #include "browserToolBar.h"
 #include "debug.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "QueryMaker.h"
 #include "config-amarok.h"
 #include "PixmapViewer.h"

@@ -9,7 +9,7 @@
 #ifndef AMAROK_UNDOCOMMANDS_H
 #define AMAROK_UNDOCOMMANDS_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "PlaylistModel.h"
 
 

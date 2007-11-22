@@ -10,7 +10,7 @@
 #define AMAROK_META_PLAYLIST_H
 
 #include "amarok_export.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <QList>
 #include <QMetaType>

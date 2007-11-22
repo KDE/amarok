@@ -13,7 +13,7 @@
 #include "playlist/PlaylistItem.h"
 #include "tagdialogbase.h"    //baseclass
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 #include <khtml_part.h>
 #include <KUrl>             //stack alloc

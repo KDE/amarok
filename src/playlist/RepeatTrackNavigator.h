@@ -9,7 +9,7 @@
 #ifndef AMAROK_REPEATTRACKADVANCER_H
 #define AMAROK_REPEATTRACKADVANCER_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "playlist/TrackNavigator.h"
 
 

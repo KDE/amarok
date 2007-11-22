@@ -9,7 +9,7 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "Collection.h"
 
 #include <QList>

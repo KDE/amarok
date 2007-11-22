@@ -24,7 +24,7 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <KDirOperator> //some inline functions
 #include <KToolBar>     //baseclass

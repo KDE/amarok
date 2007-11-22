@@ -22,7 +22,7 @@
 
 #include "amarok.h"
 #include "debug.h"        //stack allocated
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTIONMANAGER_H
 
 #include "Collection.h"
-#include "meta.h"
+#include "Meta.h"
 #include "QueryMaker.h"
 
 #include <QList>

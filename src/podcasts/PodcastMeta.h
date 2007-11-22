@@ -19,7 +19,7 @@
 #ifndef PODCASTMETA_H
 #define PODCASTMETA_H
 
-#include "meta.h"
+#include "Meta.h"
 #include "Playlist.h"
 
 #include <kurl.h>

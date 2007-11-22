@@ -10,7 +10,7 @@
 #define AMAROK_PLAYLISTGRAPHICSITEM_H
 
 
-#include "meta.h"
+#include "Meta.h"
 #include <QGraphicsItem>
 #include <QSvgRenderer>
 
@@ -48,6 +48,7 @@ namespace Playlist
             const bool hasImage() const;
             void showImage() const;
             void fetchImage();
+            void unsetImage();
 
             const int groupMode() const { return m_groupMode; }
        

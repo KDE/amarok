@@ -20,7 +20,7 @@
 #define AMAROK_MEMORYQUERYMAKERFILTERS_P_H
 
 #include "debug.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "collection/QueryMaker.h"
 
 #include <QList>

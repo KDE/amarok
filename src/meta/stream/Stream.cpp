@@ -21,7 +21,7 @@
 
 #include "enginecontroller.h"
 #include "engineobserver.h"
-#include "meta.h"
+#include "Meta.h"
 #include "meta/MetaConstants.h"
 
 #include <QSet>

@@ -653,6 +653,12 @@ Playlist::GraphicsItem::fetchImage()
     fetcher->manualFetch( m_items->track->album() );
 }
 
+void
+Playlist::GraphicsItem::unsetImage()
+{
+//    m_items->track->album()->removeImage();
+}
+
 const bool
 Playlist::GraphicsItem::hasImage() const
 {

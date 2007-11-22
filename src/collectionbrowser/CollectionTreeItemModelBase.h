@@ -12,7 +12,7 @@
 #define COLLECTIONTREEITEMMODELBASE_H
 
 #include "../querybuilder.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 
 #include <QAbstractItemModel>

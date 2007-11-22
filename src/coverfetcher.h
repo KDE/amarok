@@ -5,7 +5,7 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 #include <QImage>       //stack allocated
 #include <QLabel>       //baseclass

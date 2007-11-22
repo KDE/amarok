@@ -20,7 +20,7 @@
 
 #include "collection/CollectionManager.h"
 #include "filebrowserwidget.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "mydirlister.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"

@@ -22,7 +22,7 @@
 
 #include "debug.h"
 #include "infoparserbase.h"
-#include "meta.h"
+#include "Meta.h"
 #include "meta/CustomActionsCapability.h"
 #include "ServiceCustomActionsCapability.h"
 

@@ -13,7 +13,7 @@
 
 #include "AmarokMimeData.h"
 #include "debug.h"
-#include "meta.h"
+#include "Meta.h"
 #include "QueueModel.h"
 #include "TheInstances.h"
 

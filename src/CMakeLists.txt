@@ -288,7 +288,7 @@ set(meta_SRCS
     meta/EditCapability.cpp
     meta/LastFmCapability.cpp
     meta/CustomActionsCapability.cpp
-    meta/meta.cpp
+    meta/Meta.cpp
     meta/proxy/MetaProxy.cpp
     meta/file/File.cpp
     meta/stream/Stream.cpp

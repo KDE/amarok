@@ -19,7 +19,7 @@
 #ifndef AMAROK_STREAM_H
 #define AMAROK_STREAM_H
 
-#include "meta.h"
+#include "Meta.h"
 
 namespace MetaStream
 {

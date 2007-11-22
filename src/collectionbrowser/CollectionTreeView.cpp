@@ -12,7 +12,7 @@
 #include "debug.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
-#include "meta.h"
+#include "Meta.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"

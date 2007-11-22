@@ -35,7 +35,7 @@
 #include "lastfm.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "osd.h"

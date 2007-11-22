@@ -26,7 +26,7 @@
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "lastfm.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <QImage>
 #include <QList>

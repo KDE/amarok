@@ -20,7 +20,7 @@
 #ifndef INFOPARSERBASE_H
 #define INFOPARSERBASE_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QObject>
 

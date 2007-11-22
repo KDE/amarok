@@ -130,6 +130,15 @@ Playlist::GraphicsView::fetchItemImage()
 }
 
 void
+Playlist::GraphicsView::unsetItemImage()
+{
+    if( !m_contextMenuItem )
+        return;
+    m_contextMenuItem->unsetImage();
+    m_contextMenuItem = 0;
+}
+
+void
 Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
     DEBUG_BLOCK

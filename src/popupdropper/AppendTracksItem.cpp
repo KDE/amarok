@@ -20,7 +20,7 @@
 
 #include "AmarokMimeData.h"
 #include "debug.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
 

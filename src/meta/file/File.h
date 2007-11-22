@@ -19,7 +19,7 @@
 #ifndef AMAROK_META_FILE_H
 #define AMAROK_META_FILE_H
 
-#include "meta.h"
+#include "Meta.h"
 
 namespace MetaFile
 {

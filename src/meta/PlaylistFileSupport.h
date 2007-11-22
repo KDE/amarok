@@ -9,7 +9,7 @@
 #ifndef AMAROK_META_PLAYLISTFILESUPPORT_H
 #define AMAROK_META_PLAYLISTFILESUPPORT_H
 
-#include "meta.h"
+#include "Meta.h"
 
 #include <QString>
 #include <QTextStream>

@@ -22,7 +22,7 @@
 
 #include "QueryMaker.h"
 
-#include "meta.h"
+#include "Meta.h"
 
 #include "servicecollection.h"
 

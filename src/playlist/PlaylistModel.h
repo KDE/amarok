@@ -10,7 +10,7 @@
 #ifndef AMAROK_PLAYLISTMODEL_H
 #define AMAROK_PLAYLISTMODEL_H
 
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "PlaylistAlbumGroup.h"
 #include "PlaylistHandler.h"
 

@@ -30,7 +30,7 @@ email                : markey@web.de
 #include "equalizersetup.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
-#include "meta.h"
+#include "Meta.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"

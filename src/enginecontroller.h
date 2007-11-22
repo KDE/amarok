@@ -15,7 +15,7 @@
 
 #include "enginebase.h"
 #include "engineobserver.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 #include <QHash>
 #include <QMap>

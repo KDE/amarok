@@ -186,7 +186,6 @@ ThreadManager::event( QEvent *e )
 
         d << ": " << name;
         d << ". Jobs pending: " << jobCount( name );
-        d;
 
         for( JobList::ConstIterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
             if ( name == (*it)->name() ) {

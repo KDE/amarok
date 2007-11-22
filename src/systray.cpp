@@ -12,7 +12,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "enginecontroller.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 
 #include <KAction>
 #include <KApplication>

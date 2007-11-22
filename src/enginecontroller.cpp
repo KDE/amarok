@@ -23,7 +23,7 @@
 #include "lastfm.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
-#include "meta/meta.h"
+#include "meta/Meta.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 #include "TheInstances.h"

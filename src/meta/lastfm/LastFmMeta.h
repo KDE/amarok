@@ -19,7 +19,7 @@
 #ifndef AMAROK_LASTFMMETA_H
 #define AMAROK_LASTFMMETA_H
 
-#include "meta.h"
+#include "Meta.h"
 #include "meta/Capability.h"
 
 #include <QObject>
