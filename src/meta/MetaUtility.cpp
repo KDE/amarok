@@ -47,7 +47,7 @@
         static const QString XESAM_FIRST_PLAYED   = "http://freedesktop.org/standards/xesam/1.0/core#firstUsed";
         static const QString XESAM_LAST_PLAYED    = "http://freedesktop.org/standards/xesam/1.0/core#lastUsed";
 
-static bool conversionMapsInitialised = false;
+        //static bool conversionMapsInitialised = false;
 
 QVariantMap
 Meta::Field::mapFromTrack( const Meta::Track *track )
@@ -62,17 +62,17 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     else
         map.insert( Meta::Field::TITLE, QVariant( track->name() ) );
     if( !track->artist()->name().isEmpty() )
-    map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
+        map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
     if( !track->album()->name().isEmpty() )
-    map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
+        map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, QVariant( track->filesize() ) );
     if( !track->genre()->name().isEmpty() )
-    map.insert( Meta::Field::GENRE, QVariant( track->genre()->name() ) );
+        map.insert( Meta::Field::GENRE, QVariant( track->genre()->name() ) );
     if( !track->composer()->name().isEmpty() )
-    map.insert( Meta::Field::COMPOSER, QVariant( track->composer()->name() ) );
+        map.insert( Meta::Field::COMPOSER, QVariant( track->composer()->name() ) );
     if( !track->year()->name().isEmpty() )
-    map.insert( Meta::Field::YEAR, QVariant( track->year()->name() ) );
+        map.insert( Meta::Field::YEAR, QVariant( track->year()->name() ) );
     if( !track->comment().isEmpty() )
         map.insert( Meta::Field::COMMENT, QVariant( track->comment() ) );
     if( track->trackNumber() )
@@ -85,11 +85,13 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
         map.insert( Meta::Field::LENGTH, QVariant( track->length() ) );
     if( track->sampleRate() )
         map.insert( Meta::Field::SAMPLERATE, QVariant( track->sampleRate() ) );
+
     map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );
     map.insert( Meta::Field::RATING, QVariant( track->rating() ) );
     map.insert( Meta::Field::SCORE, QVariant( track->score() ) );
     map.insert( Meta::Field::PLAYCOUNT, QVariant( track->playCount() ) );
     map.insert( Meta::Field::LAST_PLAYED, QVariant( track->lastPlayed() ) );
+    
     return map;
 }
 

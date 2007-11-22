@@ -249,6 +249,8 @@ namespace Meta
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */
             virtual void setImage( const QImage &image) { Q_UNUSED( image ); } //TODO: choose parameter
+            /** removes the album art */
+            virtual void removeImage() { }
 
             virtual void addMatchTo( QueryMaker* qm );
 

@@ -780,21 +780,49 @@ SqlAlbum::image( int size, bool withShadow ) const
 void
 SqlAlbum::setImage( const QImage &image )
 {
+    if( image.isNull() )
+        return;
+
     QByteArray widthKey = QString::number( image.width() ).toLocal8Bit() + '@';
     QString album = m_name;
     QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
 
     if( artist.isEmpty() && album.isEmpty() )
         return;
+
     QByteArray key = md5sum( artist, album, QString() );
-    if( image.isNull() )
+    image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
+    
+    notifyObservers();
+}
+void
+SqlAlbum::removeImage()
+{
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return;
+
+    QByteArray key = md5sum( artist, album, QString() );
+    
+    // remove the large covers
+    QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
+
+    // remove all cache images
+    QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    QStringList cacheFilter;
+    cacheFilter << QString( "*" + key );
+    QStringList cachedImages = cacheDir.entryList( cacheFilter );
+
+    foreach( QString image, cachedImages )
     {
-        QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
+        bool r = QFile::remove( cacheDir.filePath( image ) );
+        debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
     }
-    else
-    {
-        image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
-    }
+
+    // TODO: remove directory image ??
+    
     notifyObservers();
 }
 

@@ -656,7 +656,7 @@ Playlist::GraphicsItem::fetchImage()
 void
 Playlist::GraphicsItem::unsetImage()
 {
-//    m_items->track->album()->removeImage();
+    m_items->track->album()->removeImage();
 }
 
 const bool
