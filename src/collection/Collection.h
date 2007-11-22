@@ -67,7 +67,6 @@ class AMAROK_EXPORT Collection : public QObject
     signals:
         void remove();
         void updated();
-        void changed();
 };
 
 #endif /* AMAROK_COLLECTION_H */

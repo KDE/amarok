@@ -143,7 +143,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     d->collections.append( newCollection );
     d->managedCollections.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
-    connect( newCollection, SIGNAL( changed() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
     SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
     if( sqlCollection )
     {

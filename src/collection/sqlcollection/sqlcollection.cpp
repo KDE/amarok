@@ -144,7 +144,7 @@ SqlCollection::location() const
 void
 SqlCollection::sendChangedSignal()
 {
-    emit changed();
+    emit updated();
 }
 
 QString
