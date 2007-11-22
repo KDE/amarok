@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
-#include "sqlregistry.h"
+#include "SqlRegistry.h"
 #include "SqlCollection.h"
 
 #include "mountpointmanager.h"

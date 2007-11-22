@@ -18,7 +18,7 @@
 
 #define DEBUG_PREFIX "SqlRegistry"
 
-#include "sqlregistry.h"
+#include "SqlRegistry.h"
 
 #include "debug.h"
 
@@ -210,4 +210,4 @@ SqlRegistry::emptyCache()
     if( hasComposer ) m_composerMutex.unlock();
 }
 
-#include "sqlregistry.moc"
+#include "SqlRegistry.moc"

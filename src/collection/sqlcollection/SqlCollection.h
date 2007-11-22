@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 #include "Collection.h"
 #include "DatabaseUpdater.h"
-#include "sqlregistry.h"
+#include "SqlRegistry.h"
 #include "SqlStorage.h"
 
 class SqlCollectionFactory : public CollectionFactory

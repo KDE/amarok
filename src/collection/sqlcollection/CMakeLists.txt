@@ -23,8 +23,8 @@ set(amarok_collection-sqlcollection_PART_SRCS
     ScanResultProcessor.cpp
     SqlCollection.cpp
     SqlCollectionLocation.cpp
-    sqlquerybuilder.cpp
-    sqlregistry.cpp
+    SqlQueryBuilder.cpp
+    SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp
     XesamDbus.cpp

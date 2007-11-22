@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "sqlquerybuilder.h"
+#include "SqlQueryBuilder.h"
 
 #define DEBUG_PREFIX "SqlQueryBuilder"
 
@@ -766,5 +766,5 @@ SqlQueryBuilder::likeCondition( const QString &text, bool anyBegin, bool anyEnd 
     return ret;
 }
 
-#include "sqlquerybuilder.moc"
+#include "SqlQueryBuilder.moc"
 

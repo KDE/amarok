@@ -20,7 +20,7 @@
 
 #include "DatabaseUpdater.h"
 #include "ScanManager.h"
-#include "sqlquerybuilder.h"
+#include "SqlQueryBuilder.h"
 #include "SqliteCollection.h"
 //#include "mysqlcollection.h"
 //#include "postgresqlcollection.h"
