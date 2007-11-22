@@ -40,7 +40,7 @@ AmpacheService::AmpacheService(const QString & name)
  , m_collection( 0 )
 {
 
-    setShortDescription("Use Amarok as a seamless frontend to your Ampache server!");
+    setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
     setIcon( KIcon( Amarok::icon( "download" ) ) );
     showInfo( false );
 
@@ -136,7 +136,7 @@ void AmpacheService::authenticationComplete(KJob * job)
     QDomElement error = root.firstChildElement("error");
 
     if ( !error.isNull() ) {
-        KMessageBox::error ( this, error.text(), "Authentication Error!" );
+        KMessageBox::error ( this, error.text(), i18n( "Authentication Error!" ) );
     } else {
     
         //find status code:

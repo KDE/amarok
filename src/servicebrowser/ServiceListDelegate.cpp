@@ -132,7 +132,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
-    painter->setFont(QFont("Arial", 10));
+    painter->setFont(QFont("Arial", 9));
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );

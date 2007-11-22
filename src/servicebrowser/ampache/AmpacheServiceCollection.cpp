@@ -40,7 +40,7 @@ QueryMaker * AmpacheServiceCollection::queryMaker()
 
 QString AmpacheServiceCollection::collectionId() const
 {
-    return "Mp3Tunes collection";
+    return "Ampache collection";
 }
 
 QString AmpacheServiceCollection::prettyName() const

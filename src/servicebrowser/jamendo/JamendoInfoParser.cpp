@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "JamendoMeta.h"
 
+#include <KLocale>
+
 using namespace Meta;
 
 JamendoInfoParser::JamendoInfoParser()
@@ -43,7 +45,7 @@ void JamendoInfoParser::getInfo(ArtistPtr artist)
     QString description = jamendoArtist->description();
 
     if ( description.isEmpty() )
-        description = "No description available...";  //FIXME: needs i18n
+        description = i18n( "No description available..." );
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
@@ -73,7 +75,7 @@ void JamendoInfoParser::getInfo(AlbumPtr album)
     QString description = jamendoAlbum->description();
 
     if ( description.isEmpty() )
-        description = "No description available...";  //FIXME: needs i18n
+        description = i18n( "No description available..." );
 
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "

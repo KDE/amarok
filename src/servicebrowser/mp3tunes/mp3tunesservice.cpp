@@ -36,7 +36,7 @@ Mp3tunesService::Mp3tunesService(const QString & name)
  , m_sessionId ( QString() )
 {
 
-    setShortDescription("The Mp3Tunes Locker service. Access your stored music!");
+    setShortDescription( i18n( "The Mp3Tunes Locker service. Access your stored music!" ) );
     setIcon( KIcon( Amarok::icon( "download" ) ) );
     showInfo( false );
 
@@ -133,7 +133,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
     } else {
 
         element = root.firstChildElement("errorMessage");
-        KMessageBox::error ( this, element.text(), "Authentication Error!" );	
+        KMessageBox::error ( this, element.text(), i18n( "Authentication Error!" ) );	
 
     }
 

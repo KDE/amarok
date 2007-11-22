@@ -37,7 +37,7 @@ JamendoService::JamendoService(const QString & name)
  , m_currentAlbum( 0 )
 {
 
-    setShortDescription("A site where artists can showcase their creations to the world");
+    setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( Amarok::icon( "amarok_jamendo" ) ) );
 
 }

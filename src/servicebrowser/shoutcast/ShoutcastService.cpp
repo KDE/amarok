@@ -34,7 +34,7 @@ ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
 {
     setObjectName( name );
-    setShortDescription("The biggest damn list of online radio stations on the net :-)");
+    setShortDescription( i18n( "The biggest damn list of online radio stations on the net :-)" ) );
     setIcon( KIcon( Amarok::icon( "network-wireless" ) ) );
     showInfo( false );
 }
