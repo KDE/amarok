@@ -38,6 +38,17 @@
 #ifdef COMPLEX_TAGLIB_FILENAME
 #define CheckExtension(filename, extension) ((const char *)filename == 0 ? CheckExtensionImpl((const wchar_t *)filename, L##extension) : CheckExtensionImpl((const char *)filename, extension))
 #define TagLibOpenFile(filename, mode) ((const char *)filename == 0 ? _wfopen(filename, L##mode) : fopen(filename, mode))
+
+#include <iostream>
+inline std::basic_ostream<char> &operator<<(std::basic_ostream<char> &stream, TagLibFileName fileName)
+{
+    if ((const char *)fileName == 0) 
+        stream << (const wchar_t *)fileName;
+    else
+        stream << (const char *)fileName;
+    return stream;
+}
+
 #else
 #define CheckExtension(filename, extension) CheckExtensionImpl(filename, extension)
 #define TagLibOpenFile(filename, mode) fopen(filename, mode)
