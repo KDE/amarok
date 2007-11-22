@@ -317,7 +317,7 @@ void CoverManager::init()
 
 
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
-    : QDialog( parent, 0, false, Qt::WType_TopLevel | Qt::WNoAutoErase )
+    : QDialog( parent, Qt::WType_TopLevel | Qt::WNoAutoErase )
 {
     m_pixmap = album->image( 0 ); // full sized image
     setAttribute( Qt::WA_DeleteOnClose );
@@ -508,7 +508,7 @@ void CoverManager::slotArtistSelected() //SLOT
 
     //now, load the thumbnails
     QList<QListWidgetItem*> items;
-    uint i = 1;
+    int i = 1;
     for ( QListWidgetItem *item = m_coverView->item( i );
           i < m_coverView->count();
           item = m_coverView->item( i++ ) )
@@ -527,6 +527,8 @@ void CoverManager::slotArtistSelected() //SLOT
 
 void CoverManager::showCoverMenu( QListWidgetItem *item, const QPoint &p ) //SLOT
 {
+    Q_UNUSED( item );
+    Q_UNUSED( p );
     //TODO: PORT
 #if 0
     #define item static_cast<CoverViewItem*>(item)
@@ -879,7 +881,7 @@ void CoverManager::updateStatusBar()
             m_progressBox->hide();
 
         //album info
-        uint i = 1;
+        int i = 1;
         for( QListWidgetItem *item = m_coverView->item( i );
              i < m_coverView->count();
              item = m_coverView->item( i++ ) )
