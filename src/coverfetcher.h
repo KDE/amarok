@@ -12,10 +12,6 @@
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 
-namespace Amarok {
-    void coverContextMenu( QWidget *parent, QPoint point, Meta::AlbumPtr album, bool showCoverManager = true );
-}
-
 class KJob;
 
 class CoverLabel : public QLabel {

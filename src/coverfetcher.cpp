@@ -31,89 +31,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
-#include <q3popupmenu.h>
 #include <QLabel>
 #include <QLayout>
 #include <QRegExp>
-
-
-void
-Amarok::coverContextMenu( QWidget *parent, QPoint point, Meta::AlbumPtr album, bool showCoverManager )
-{
-        Q3PopupMenu menu;
-        enum { ACTIONS_SHOW, ACTIONS_FETCH, 
-            ACTIONS_CUSTOM, ACTIONS_DELETE, ACTIONS_MANAGER };
-
-        menu.setTitle( i18n( "Cover Image" ) );
-
-        menu.insertItem( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), ACTIONS_SHOW );
-        menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), ACTIONS_FETCH );
-        menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), ACTIONS_CUSTOM );
-        bool disable = !album->prettyName().isEmpty(); // disable setting covers for unknown albums
-        menu.setItemEnabled( ACTIONS_FETCH, disable );
-        menu.setItemEnabled( ACTIONS_CUSTOM, disable );
-        menu.addSeparator();
-
-        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), ACTIONS_DELETE );
-        if ( showCoverManager ) {
-            menu.addSeparator();
-            menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), ACTIONS_MANAGER );
-        }
-
-        //TODO: Port 2.0
-//         disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
-        menu.setItemEnabled( ACTIONS_SHOW, disable );
-        menu.setItemEnabled( ACTIONS_DELETE, disable );
-
-        CoverFetcher *f = new CoverFetcher( parent );
-
-        switch( menu.exec( point ) )
-        {
-        case ACTIONS_SHOW:
-            CoverManager::viewCover( album, parent );
-            break;
-
-        case ACTIONS_DELETE:
-        {
-            const int button = KMessageBox::warningContinueCancel( parent,
-                i18nc( "[only-singular]", "Are you sure you want to remove this cover from the Collection?" ),
-                QString(),
-                KStandardGuiItem::del() );
-
-            if ( button == KMessageBox::Continue )
-                album->setImage( QImage() );
-            break;
-        }
-
-        case ACTIONS_FETCH:
-            f->queueAlbum( album );
-            f->startFetchLoop();
-            break;
-
-        case ACTIONS_CUSTOM:
-        {
-            Meta::TrackPtr track = album->tracks().first();
-            QString startPath = ":homedir";
-
-            if( track )
-            {
-                KUrl url;
-                url = track->playableUrl();
-                startPath = url.directory();
-            }
-
-            KUrl file = KFileDialog::getImageOpenUrl( startPath, parent, i18n("Select Cover Image File") );
-            if ( !file.url().isEmpty() )
-                album->setImage( QImage( file.fileName() ) );
-            break;
-        }
-
-        case ACTIONS_MANAGER:
-            CoverManager::showOnce( album->albumArtist()->prettyName() );
-            break;
-        }
-}
-
 
 
 CoverLabel::CoverLabel ( QWidget * parent, Qt::WindowFlags f )
