@@ -18,17 +18,17 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 ########### next target ###############
 
 set(amarok_collection-sqlcollection_PART_SRCS
-	DatabaseUpdater.cpp
-	ScanManager.cpp
+    DatabaseUpdater.cpp
+    ScanManager.cpp
     ScanResultProcessor.cpp
-	sqlcollection.cpp
-	SqlCollectionLocation.cpp
-	sqlquerybuilder.cpp
-	sqlregistry.cpp
-	sqlmeta.cpp 
-    sqlitecollection.cpp
+    SqlCollection.cpp
+    SqlCollectionLocation.cpp
+    sqlquerybuilder.cpp
+    sqlregistry.cpp
+    SqlMeta.cpp 
+    SqliteCollection.cpp
     XesamDbus.cpp
-	XesamCollectionBuilder.cpp )
+    XesamCollectionBuilder.cpp )
 
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})

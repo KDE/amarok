@@ -21,7 +21,7 @@
 #include "debug.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 #include "XesamDbus.h"
 
 #include <QBuffer>

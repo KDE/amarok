@@ -16,7 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "sqlmeta.h"
+#include "SqlMeta.h"
 
 #include "amarok.h"
 #include "BlockingQuery.h"
@@ -24,7 +24,7 @@
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "sqlregistry.h"
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include "mountpointmanager.h"
 

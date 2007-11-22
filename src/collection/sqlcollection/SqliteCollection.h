@@ -19,7 +19,7 @@
 #ifndef AMAROK_COLLECTION_SQLITECOLLECTION_H
 #define AMAROK_COLLECTION_SQLITECOLLECTION_H
 
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include <QMutex>
 

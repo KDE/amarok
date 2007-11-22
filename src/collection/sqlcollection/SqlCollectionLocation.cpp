@@ -19,8 +19,8 @@
 #include "SqlCollectionLocation.h"
 
 #include "debug.h"
-#include "sqlcollection.h"
-#include "sqlmeta.h"
+#include "SqlCollection.h"
+#include "SqlMeta.h"
 
 #include <QFile>
 

@@ -16,12 +16,12 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include "DatabaseUpdater.h"
 #include "ScanManager.h"
 #include "sqlquerybuilder.h"
-#include "sqlitecollection.h"
+#include "SqliteCollection.h"
 //#include "mysqlcollection.h"
 //#include "postgresqlcollection.h"
 #include "SqlCollectionLocation.h"
@@ -220,5 +220,5 @@ SqlCollection::initXesam()
     m_xesamBuilder = new XesamCollectionBuilder( this );
 }
 
-#include "sqlcollection.moc"
+#include "SqlCollection.moc"
 

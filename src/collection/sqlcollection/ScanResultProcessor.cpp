@@ -22,7 +22,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include <QDir>
 #include <QFileInfo>

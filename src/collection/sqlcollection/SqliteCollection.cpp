@@ -17,7 +17,7 @@
  */
 
 
-#include "sqlitecollection.h"
+#include "SqliteCollection.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -326,4 +326,4 @@ void SqliteCollection::sqlite_like_new( sqlite3_context *context, int argc, sqli
     sqlite3_result_int( context, result );
 }
 
-#include "sqlitecollection.moc"
+#include "SqliteCollection.moc"

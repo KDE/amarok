@@ -24,7 +24,7 @@
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "ScanResultProcessor.h"
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include <QFileInfo>
 #include <QHash>

@@ -22,7 +22,7 @@
 #include "debug.h"
 
 #include "mountpointmanager.h"
-#include "sqlcollection.h"
+#include "SqlCollection.h"
 
 #include <QStack>
 

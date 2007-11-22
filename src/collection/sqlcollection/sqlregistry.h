@@ -19,7 +19,7 @@
 #ifndef SQLREGISTRY_H
 #define SQLREGISTRY_H
 
-#include "sqlmeta.h"
+#include "SqlMeta.h"
 
 #include <QHash>
 #include <QMutex>
