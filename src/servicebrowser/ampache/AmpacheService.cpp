@@ -40,7 +40,7 @@ AmpacheService::AmpacheService(const QString & name)
  , m_collection( 0 )
 {
 
-    setShortDescription("The Mp3Tunes Locker service. Access your stored music!");
+    setShortDescription("Use Amarok as a seamless frontend to your Ampache server!");
     setIcon( KIcon( Amarok::icon( "download" ) ) );
     showInfo( false );
 
