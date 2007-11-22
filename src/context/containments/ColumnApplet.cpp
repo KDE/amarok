@@ -32,8 +32,8 @@ namespace Context
 
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
-    , m_defaultColumnSize( 450 )
     , m_actions( 0 )
+    , m_defaultColumnSize( 450 )
 {
     DEBUG_BLOCK
     m_columns = new Plasma::FlowLayout( this );
@@ -173,11 +173,9 @@ void ColumnApplet::updateSize() // SLOT
     setGeometry( scene()->sceneRect() );
 }
 
-void ColumnApplet::paintInterface(QPainter *painter,
-                    const QStyleOptionGraphicsItem *option,
-                    const QRect& rect)
+void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
 {
-/*    debug() << "painting in:" << rect;*/
+    Q_UNUSED( option );
     painter->save();
     m_background->paint( painter, rect );
     painter->restore();
@@ -187,7 +185,6 @@ void ColumnApplet::paintInterface(QPainter *painter,
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
     painter->save();
-/*    debug() << "painting logo:" << QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() );*/
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
     

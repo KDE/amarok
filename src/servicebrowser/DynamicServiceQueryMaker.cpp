@@ -41,6 +41,7 @@ QueryMaker * DynamicServiceQueryMaker::addReturnValue(qint64 value)
 QueryMaker * DynamicServiceQueryMaker::orderBy(qint64 value, bool descending)
 {
     Q_UNUSED( value );
+    Q_UNUSED( descending );
     return this;
 }
 

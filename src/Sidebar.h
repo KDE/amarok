@@ -59,7 +59,6 @@ class SideBar: public KHBox
 
         void deleteBrowsers()
         {
-            int count = m_widgets->count();
             QWidget * widget = m_widgets->widget( 0 );
             while( widget )
             {

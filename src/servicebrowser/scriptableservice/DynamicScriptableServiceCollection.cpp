@@ -47,12 +47,9 @@ QString DynamicScriptableServiceCollection::prettyName() const
     return collectionId();
 }
 
-
-
-
 void DynamicScriptableServiceCollection::donePopulating(int parentId)
 {
-
+    Q_UNUSED( parentId );
     //wth do we do here...
-
 }
+

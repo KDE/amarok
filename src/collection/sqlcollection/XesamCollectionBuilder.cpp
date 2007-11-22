@@ -145,6 +145,7 @@ void
 XesamCollectionBuilder::slotHitsModified( const QString &search, const QList<int> &hit_ids )
 {
     DEBUG_BLOCK
+    Q_UNUSED( hit_ids );
     if( m_search != search )
         return;
 }
@@ -153,6 +154,7 @@ void
 XesamCollectionBuilder::slotHitsRemoved( const QString &search, const QList<int> &hit_ids )
 {
     DEBUG_BLOCK
+    Q_UNUSED( hit_ids );
     if( m_search != search )
         return;
 }

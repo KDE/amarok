@@ -187,15 +187,16 @@ QueryMaker * DynamicScriptableQueryMaker::addMatch(const Meta::AlbumPtr & album)
         }
 
 
-void DynamicScriptableQueryMaker::handleResult() {
+void DynamicScriptableQueryMaker::handleResult()
+{
     DEBUG_BLOCK
-
 }
 
 
 void DynamicScriptableQueryMaker::handleResult(const Meta::GenreList & genres)
 {
     DEBUG_BLOCK
+    Q_UNUSED( genres );
 }
 
 void DynamicScriptableQueryMaker::handleResult(const Meta::AlbumList & albums)

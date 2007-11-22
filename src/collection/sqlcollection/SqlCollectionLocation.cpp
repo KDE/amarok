@@ -88,6 +88,7 @@ SqlCollectionLocation::remove( Meta::TrackPtr track )
 void
 SqlCollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
 {
+    Q_UNUSED( sources );
     //TODO
     slotCopyOperationFinished();
 }

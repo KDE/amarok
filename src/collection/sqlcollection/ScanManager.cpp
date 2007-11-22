@@ -127,6 +127,8 @@ void
 ScanManager::slotFinished( int exitCode, QProcess::ExitStatus exitStatus )
 {
     DEBUG_BLOCK
+    Q_UNUSED( exitCode );
+
     if( exitStatus == QProcess::CrashExit )
     {
         //TODO handle collection scanner crash
