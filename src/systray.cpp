@@ -77,16 +77,21 @@ bool
 Amarok::TrayIcon::event( QEvent *e )
 {
     DEBUG_BLOCK
+        debug() << "Event type: " << e->type();
     switch( e->type() )
     {
     case QEvent::DragEnter:
         debug() << "QEvent::DragEnter";
-        #define e static_cast<QDropEvent*>(e)
-        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
-        break;
+        #define e static_cast<QDragEnterEvent*>(e)
+        {
+            e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
+            break;
+        }
+        #undef e
         
     case QEvent::Drop:
         debug() << "QEvent::Drop";
+        #define e static_cast<QDropEvent*>(e)
         {
             KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
             if( !list.isEmpty() )
