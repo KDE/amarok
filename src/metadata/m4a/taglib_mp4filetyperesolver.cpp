@@ -30,7 +30,7 @@ TagLib::File *MP4FileTypeResolver::createFile(TagLibFileName fileName,
 {
 //     fprintf(stderr, "mp4?: %s\n", fileName);
     if(CheckExtension(fileName, ".m4a")
-                || CheckExtension(fileName, ".m4b") || !CheckExtension(fileName, ".m4p")
+                || CheckExtension(fileName, ".m4b") || CheckExtension(fileName, ".m4p")
                 || CheckExtension(fileName, ".mp4")
                 || CheckExtension(fileName, ".m4v") || CheckExtension(fileName, ".mp4v"))
     {
