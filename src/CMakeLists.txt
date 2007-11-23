@@ -434,7 +434,7 @@ set(amaroklib_LIB_SRCS
     #filebrowser.cpp
     filebrowserwidget.cpp
     hintlineedit.cpp
-    iconloader.cpp
+    IconLoader.cpp
     k3bexporter.cpp
     kbookmarkhandler.cpp
     ktrm.cpp

@@ -114,7 +114,8 @@ MainWindow::MainWindow()
 
     //new K3bExporter();
 
-    if( AmarokConfig::mainWindowSize().isValid() ) {
+    if( AmarokConfig::mainWindowSize().isValid() )
+    {
         // if first ever run, use sizeHint(), and let
         // KWindowSystem place us otherwise use the stored values
         resize( AmarokConfig::mainWindowSize() );
