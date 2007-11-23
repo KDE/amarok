@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -87,6 +88,12 @@ SqlCollection::startFullScan()
     m_scanManager->startFullScan();
 }
 
+void
+SqlCollection::startIncrementalScan()
+{
+    m_scanManager->startIncrementalScan();
+}
+
 QString
 SqlCollection::collectionId() const
 {
@@ -121,6 +128,18 @@ void
 SqlCollection::removeCollection()
 {
     emit remove();
+}
+
+bool
+SqlCollection::isDirInCollection( QString path )
+{
+    return m_scanManager->isDirInCollection( path );
+}
+
+bool
+SqlCollection::isFileInCollection( const QString &url )
+{
+    return m_scanManager->isFileInCollection( url );
 }
 
 bool

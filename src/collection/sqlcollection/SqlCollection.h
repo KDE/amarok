@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,6 +49,7 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
         virtual ~SqlCollection();
 
         virtual void startFullScan();
+        virtual void startIncrementalScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
@@ -55,13 +57,16 @@ class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
 
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
-
+        
         void removeCollection();    //testing, remove later
 
+        virtual bool isDirInCollection( QString path );
+        virtual bool isFileInCollection( const QString &url );
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        virtual CollectionLocation* location() const;
+        virtual CollectionLocation* location() const;        
+
 
         //sqlcollection internal methods
         void sendChangedSignal();
