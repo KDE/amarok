@@ -11,12 +11,16 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "enginecontroller.h"
+#include "playlist/PlaylistModel.h"
 #include "meta/Meta.h"
+#include "TheInstances.h"
 
 #include <KAction>
 #include <KApplication>
 #include <KIconEffect>
+#include <KLocale>
 #include <KMenu>
 #include <KStandardDirs>
 
@@ -50,8 +54,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 {
     KActionCollection* const ac = Amarok::actionCollection();
 
-    //setAcceptDrops( true );
-
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
@@ -74,14 +76,59 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 bool
 Amarok::TrayIcon::event( QEvent *e )
 {
+    DEBUG_BLOCK
     switch( e->type() )
     {
-    case QEvent::Drop:
-    case QEvent::Wheel:
     case QEvent::DragEnter:
-        //return Amarok::genericEventHandler( this, e );
-        ;
+        debug() << "QEvent::DragEnter";
+        #define e static_cast<QDropEvent*>(e)
+        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
+        break;
+        
+    case QEvent::Drop:
+        debug() << "QEvent::Drop";
+        {
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            if( !list.isEmpty() )
+            {
+                KMenu *popup = new KMenu;
+                popup->addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), this, SLOT( appendDrops() ) );
+                popup->addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ), this, SLOT( appendAndPlayDrops() ) );
+                if( The::playlistModel()->activeRow() >= 0 )
+                    popup->addAction( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
+
+                popup->addSeparator();
+                popup->addAction( i18n( "&Cancel" ) );
+                popup->exec( e->pos() );
+            }
+            break;
+        }
+        #undef e
+
+    case QEvent::Wheel:
+        debug() << "QEvent::Wheel";
+        #define e static_cast<QWheelEvent*>(e)
+        if( e->modifiers() == Qt::ControlModifier )
+        {
+            const bool up = e->delta() > 0;
+            if( up ) EngineController::instance()->previous();
+            else     EngineController::instance()->next();
+            break;
+        }
+        else if( e->modifiers() == Qt::ShiftModifier )
+        {
+            EngineController::instance()->seekRelative( (e->delta() / 120) * 5000 ); // 5 seconds for keyboard seeking
+            break;
+        }
+        else
+            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
+        
+        e->accept();
+        #undef e
+        break;
+
     case QEvent::Timer:
+        debug() << "QEvent::Timer";
         if( static_cast<QTimerEvent*>(e)->timerId() != blinkTimerID )
             return KSystemTrayIcon::event( e );
 
@@ -92,9 +139,10 @@ Amarok::TrayIcon::event( QEvent *e )
             paintIcon( mergeLevel, true );
         }
 
-        return true;
+        break;
 
     case QEvent::MouseButtonPress:
+        debug() << "QEvent::MouseButtonPress";
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
             EngineController::instance()->playPause();
@@ -105,8 +153,10 @@ Amarok::TrayIcon::event( QEvent *e )
         //else FALL THROUGH
 
     default:
+        debug() << "QEvent:: fall through";
         return KSystemTrayIcon::event( e );
     }
+    return true;
 }
 
 void

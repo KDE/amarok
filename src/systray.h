@@ -36,7 +36,7 @@ protected:
     virtual void paletteChange( const QPalette & oldPalette );
 
 private:
-    bool event( QEvent* );
+    virtual bool event( QEvent *e );
     void setLastFm( bool );
 
     // repaints trayIcon showing progress (and overlay if present)
