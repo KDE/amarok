@@ -31,7 +31,7 @@ class AmpacheServiceCollection : public ServiceDynamicCollection
 public:
     AmpacheServiceCollection( const QString &server, const QString &sessionId );
 
-    ~AmpacheServiceCollection();
+    virtual ~AmpacheServiceCollection();
 
     virtual QueryMaker* queryMaker();
 
