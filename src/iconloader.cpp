@@ -43,7 +43,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["love"]                 = "love";
         iconMap["back"]                 = "media-skip-backward";
-        iconMap["burn"]                 = "media-optical-recordable-burn";
+        iconMap["burn"]                 = "tools-media-optical-burn";
         iconMap["change_language"]      = "preferences-desktop-locale";
         iconMap["clock"]                = "view-history";
         iconMap["collection"]           = "collection";
