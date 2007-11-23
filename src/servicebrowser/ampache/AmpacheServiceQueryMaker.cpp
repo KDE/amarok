@@ -311,21 +311,23 @@ void AmpacheServiceQueryMaker::fetchTracks()
 
 void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
 {
-
     DEBUG_BLOCK
 
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     ArtistList artists;
 
     debug() << "recieved artists: " <<  m_storedTransferJob->data();
 
-
-
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
-
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
@@ -362,6 +364,13 @@ void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
 void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
+
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
 
     debug() << "Recieved response: " << m_storedTransferJob->data();
 
@@ -417,11 +426,11 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 
 
         ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
-        if ( artistPtr.data() != 0 ) {
+        if ( artistPtr.data() != 0 )
+        {
            debug() << "Found parent artist";
-           ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
+           //ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            album->setAlbumArtist( artistPtr );
-
         }
 
         album->setCoverUrl( coverUrl );
@@ -442,16 +451,21 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
 
+    if( job->error() )
+    {
+        error() << job->error();
+        m_storedTransferJob->deleteLater();
+        return;
+    }
+
     debug() << "Recieved response: " << m_storedTransferJob->data();
 
     TrackList tracks;
-
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
-
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
@@ -523,22 +537,6 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 #include "AmpacheServiceQueryMaker.moc"
-
-
-
-
 
 
