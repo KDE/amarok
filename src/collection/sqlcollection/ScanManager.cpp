@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -104,6 +105,22 @@ void ScanManager::startIncrementalScan()
     m_parser->setIsIncremental( true );
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
+}
+
+bool
+ScanManager::isDirInCollection( QString path )
+{
+    if ( path.endsWith( "/" ) )
+        path = path.left( path.length() - 1 );
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+
+    QStringList values =
+            m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
+            .arg( deviceid )
+            .arg( m_collection->escape( rpath ) ) );
+
+    return !values.isEmpty();
 }
 
 void

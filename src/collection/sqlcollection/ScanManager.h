@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +39,7 @@ class ScanManager : public QObject
 
         void startFullScan();
         void startIncrementalScan();
+        bool isDirInCollection( QString path );
 
     private slots:
         void slotReadReady();
