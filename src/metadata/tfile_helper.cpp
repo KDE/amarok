@@ -23,6 +23,7 @@
 #include "tfile_helper.h"
 
 #include <string.h>
+#include <strings.h>
 #include <wchar.h>
 
 bool CheckExtensionImpl(const char *fileName, const char *extension)
