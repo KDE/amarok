@@ -34,6 +34,9 @@
 
 #include <threadweaver/ThreadWeaver.h>
 
+static const int MAX_RESTARTS = 80;
+static const int MAX_FAILURE_PERCENTAGE = 5;
+
 ScanManager::ScanManager( SqlCollection *parent )
     :QObject( parent )
     , m_collection( parent )
@@ -131,8 +134,7 @@ ScanManager::slotFinished( int exitCode, QProcess::ExitStatus exitStatus )
 
     if( exitStatus == QProcess::CrashExit )
     {
-        //TODO handle collection scanner crash
-        m_restartCount++;
+        handleRestart();
     }
     else
     {
@@ -215,6 +217,21 @@ ScanManager::slotJobDone()
 {
     m_parser->deleteLater();
     m_parser = 0;
+}
+
+void
+ScanManager::handleRestart()
+{
+    //TODO handle collection scanner crash
+    m_restartCount++;
+    if( m_restartCount >= MAX_RESTARTS )
+    {
+        //TODO:abort scan, inform user
+    }
+    else
+    {
+        
+    }
 }
 
 //XmlParseJob
