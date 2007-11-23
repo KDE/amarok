@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <k3process.h>         //Vis::Selector
 #include <KDialog>

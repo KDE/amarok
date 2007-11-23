@@ -29,7 +29,7 @@
 #include <QDesktopWidget>
 #include <Q3PtrList>
 #include <QEvent>
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <QApplication>
 #include <QLabel>

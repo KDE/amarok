@@ -32,7 +32,7 @@
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "searchwidget.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "transferdialog.h"
 #include "TheInstances.h"
 

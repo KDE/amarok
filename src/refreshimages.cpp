@@ -8,7 +8,7 @@
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <kio/jobclasses.h>

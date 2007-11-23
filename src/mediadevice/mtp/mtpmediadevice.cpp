@@ -34,7 +34,7 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 // Amarok
 #include <debug.h>
 #include <metabundle.h>
-#include <statusbar/statusbar.h>
+#include <statusbar/StatusBar.h>
 #include <statusbar/popupMessage.h>
 
 // KDE

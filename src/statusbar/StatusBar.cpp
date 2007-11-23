@@ -27,7 +27,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 
 #include <khbox.h>

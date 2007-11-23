@@ -25,7 +25,7 @@
 #include "config-amarok.h"
 
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <KProtocolManager>

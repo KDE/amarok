@@ -9,7 +9,7 @@
 #include "amarokconfig.h"
 #include "covermanager.h"
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>

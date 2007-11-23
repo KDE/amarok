@@ -10,7 +10,7 @@
 #include "coverfetcher.h"
 #include "debug.h"
 #include "querybuilder.h"
-#include "statusbar.h"       //for status messages
+#include "StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagguesserconfigdialog.h"

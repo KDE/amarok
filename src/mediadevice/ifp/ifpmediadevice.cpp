@@ -32,7 +32,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
-#include "statusbar/statusbar.h"
+#include "statusbar/StatusBar.h"
 #include "transferdialog.h"
 
 #include <kapplication.h>

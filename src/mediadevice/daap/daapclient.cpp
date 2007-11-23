@@ -26,7 +26,7 @@
 #include "mediabrowser.h"
 
 #include "proxy.h"
-#include "statusbar/statusbar.h"
+#include "statusbar/StatusBar.h"
 #include "tagdialog.h"
 
 #include <QCheckBox>

@@ -22,7 +22,7 @@
 #include "amarok.h"
 #include "collection/CollectionManager.h"
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 
 #include <KMessageBox>

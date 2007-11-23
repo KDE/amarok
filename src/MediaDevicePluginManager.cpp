@@ -20,7 +20,7 @@
 #include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>

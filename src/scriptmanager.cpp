@@ -30,7 +30,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <k3procio.h>
 #include <KAboutApplicationDialog>

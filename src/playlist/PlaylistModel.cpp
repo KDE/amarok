@@ -17,7 +17,7 @@
 #include "PlaylistItem.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
 

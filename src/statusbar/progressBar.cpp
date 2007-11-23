@@ -19,7 +19,7 @@
 
 #include "debug.h"
 #include "progressBar.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <klocale.h>
 #include <kpushbutton.h>

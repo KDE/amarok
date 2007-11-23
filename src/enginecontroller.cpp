@@ -25,7 +25,7 @@
 #include "mediabrowser.h"
 #include "meta/Meta.h"
 #include "pluginmanager.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "playlist/PlaylistModel.h"
 

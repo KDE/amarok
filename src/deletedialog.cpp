@@ -17,7 +17,7 @@
 
 #include "amarok.h"
 
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KConfigGroup>
 #include <KDialog>

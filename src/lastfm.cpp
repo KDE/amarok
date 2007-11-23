@@ -23,7 +23,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "statusbar.h"      //showError()
+#include "StatusBar.h"      //showError()
 
 #include <q3http.h>
 #include <Q3ValueList>

@@ -23,7 +23,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "MagnatuneMeta.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KLocale>
 #include <kshell.h>

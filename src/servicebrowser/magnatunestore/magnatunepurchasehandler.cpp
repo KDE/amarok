@@ -23,7 +23,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KMessageBox>
 #include <ktempdir.h>

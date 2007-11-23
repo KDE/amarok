@@ -287,7 +287,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KStandardDirs>
 

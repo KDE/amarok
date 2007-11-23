@@ -38,7 +38,7 @@
 #include "mydiroperator.h"
 
 #include "playlist/PlaylistModel.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "tagdialog.h"
 #include "TheInstances.h"
 

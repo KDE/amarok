@@ -34,7 +34,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <debug.h>
 #include <metabundle.h>
 #include <collectiondb.h>
-#include <statusbar/statusbar.h>
+#include <statusbar/StatusBar.h>
 #include <k3bexporter.h>
 #include <playlist.h>
 #include <playlistbrowser.h>

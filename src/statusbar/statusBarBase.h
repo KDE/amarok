@@ -47,7 +47,7 @@ namespace KDE
      *
      *    new QLabel( text, statusbar );
      *
-     * The statusbar has some handy progress monitoring behaviour, use like so:
+     * The StatusBar.has some handy progress monitoring behaviour, use like so:
      *
      *    statusbar->newProgressOperation( myObject )
      *          .setDescription( i18n("MyProgressOperation") )
@@ -106,7 +106,7 @@ namespace KDE
 
     public slots:
         /**
-         * The statusbar has a region where you can display a mainMessage.
+         * The StatusBar.has a region where you can display a mainMessage.
          * It persists after all other message-types are displayed
          */
         void setMainText( const QString &text );

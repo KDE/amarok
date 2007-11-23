@@ -317,7 +317,7 @@ XineEngine::play( uint offset )
     return false;
 }
 
-#include "statusbar/statusbar.h"
+#include "statusbar/StatusBar.h"
 
 void
 XineEngine::determineAndShowErrorMessage()

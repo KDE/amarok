@@ -50,7 +50,7 @@
 #include "Sidebar.moc"
 #include "socketserver.h"
 #include "Statistics.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "threadmanager.h"
 #include "volumewidget.h"
@@ -84,7 +84,6 @@
 #include <kmessagebox.h>      //savePlaylist()
 #include <kmenu.h>
 #include <kpushbutton.h>
-#include <kstatusbar.h>
 #include <ktoolbar.h>
 #include <fixx11h.h>
 

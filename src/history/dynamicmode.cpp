@@ -25,7 +25,7 @@
 
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include "dynamicmode.h"
 

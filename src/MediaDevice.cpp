@@ -22,7 +22,7 @@
 #include "pluginmanager.h"
 #include "podcastbundle.h"
 #include "scriptmanager.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <KMessageBox>

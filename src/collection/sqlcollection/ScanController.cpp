@@ -28,7 +28,7 @@
 #include "metabundle.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KApplication>
 #include <KLocale>

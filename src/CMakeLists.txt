@@ -264,7 +264,7 @@ set(libanalyzers_SRCS
 #####################################################################
 set(libstatusbar_SRCS
     statusbar/statusBarBase.cpp
-    statusbar/statusbar.cpp
+    statusbar/StatusBar.cpp
     statusbar/overlayWidget.cpp
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp

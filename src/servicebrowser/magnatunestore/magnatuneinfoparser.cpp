@@ -20,7 +20,7 @@
 #include "magnatuneinfoparser.h"
 
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KLocale>
 

@@ -23,7 +23,7 @@
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include "ServiceSqlRegistry.h"
 

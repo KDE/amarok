@@ -12,7 +12,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 
 #include <KCursor>
 

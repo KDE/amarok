@@ -25,7 +25,7 @@
 #include "meta/proxy/MetaProxy.h"
 #include "PlaylistHandler.h"
 #include "playlist/PlaylistModel.h"
-#include "statusbar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "xspfplaylist.h"
 
