@@ -66,18 +66,6 @@ namespace Amarok
     KActionCollection *actionCollection(); //defined in app.cpp
 
     /**
-     * An event handler that handles events in a generic Amarok fashion. Mainly
-     * useful for drops, ie offers the Amarok popup for adding tracks to the
-     * playlist. You shouldn't pass every event here, ie closeEvents will not be
-     * handled as expected! Check the source in app.cpp if you want to see what
-     * it can do.
-     * @param recipient The object that received the event.
-     * @param e The event you want handled in a generic fashion.
-     * @return true if the event was handled.
-     */
-    bool genericEventHandler( QWidget *recipient, QEvent *e ); //defined in app.cpp
-
-    /**
      * Invoke the external web browser set in Amarok's configuration.
      * @param url The URL to be opened in the browser.
      * @return True if the browser could be started.

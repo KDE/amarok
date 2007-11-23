@@ -62,21 +62,17 @@ email                : markey@web.de
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KMessageBox>         //applySettings(), genericEventHandler()
 #include <KRun>                //Amarok::invokeBrowser()
 #include <kshell.h>
 #include <KShortcutsDialog>     //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
 
-#include <QCloseEvent>
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <QEvent>              //genericEventHandler()
 #include <QEventLoop>          //applySettings()
 #include <QFile>
 #include <QPixmapCache>
-#include <Q3PopupMenu>          //genericEventHandler
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
 
@@ -744,105 +740,6 @@ App::continueInit()
     delete m_splash;
     m_splash = 0;
 }
-
-bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
-{
-    //this is used as a generic event handler for widgets that want to handle
-    //typical events in an Amarok fashion
-
-    //to use it just pass the event eg:
-    //
-    // void Foo::barEvent( QBarEvent *e )
-    // {
-    //     Amarok::genericEventHandler( this, e );
-    // }
-
-    switch( e->type() )
-    {
-    case QEvent::DragEnter:
-        #define e static_cast<QDropEvent*>(e)
-        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
-        break;
-
-    case QEvent::Drop:
-    {
-        KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
-        if( !list.isEmpty() )
-        {
-            Q3PopupMenu popup;
-            //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
-            const bool b = EngineController::engine()->loaded();
-
-            popup.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
-                              Playlist::Append );
-            popup.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
-                              Playlist::DirectPlay | Playlist::Append );
-            if( b )
-                popup.insertItem( KIcon( Amarok::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
-                              Playlist::Queue );
-            popup.addSeparator();
-            popup.insertItem( i18n( "&Cancel" ), 0 );
-
-            const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
-
-            if ( id > 0 )
-            {
-                Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-                The::playlistModel()->insertOptioned( tracks, id );
-            }
-        }
-        else return false;
-        #undef e
-
-        break;
-    }
-
-    //this like every entry in the generic event handler is used by more than one widget
-    //please don't remove!
-    case QEvent::Wheel:
-    {
-        #define e static_cast<QWheelEvent*>(e)
-
-        //this behaviour happens for the systray
-        //to override one, override it in that class
-
-        switch( e->state() )
-        {
-        case Qt::ControlModifier:
-        {
-            const bool up = e->delta() > 0;
-
-            //if this seems strange to you, please bring it up on #amarok
-            //for discussion as we can't decide which way is best!
-            if( up ) EngineController::instance()->previous();
-            else     EngineController::instance()->next();
-            break;
-        }
-        case Qt::ShiftModifier:
-        {
-            EngineController::instance()->seekRelative( ( e->delta() / 120 ) * 5000 ); //5 seconds for keyboard seeking.
-            break;
-        }
-        default:
-            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
-        }
-
-        e->accept();
-        #undef e
-
-        break;
-    }
-
-    case QEvent::Close:
-
-
-    default:
-        return false;
-    }
-
-    return true;
-}
-
 
 void App::engineStateChanged( Engine::State state, Engine::State oldState )
 {
