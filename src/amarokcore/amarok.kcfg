@@ -683,6 +683,11 @@
         <label>Sync stats</label>
         <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
     </entry>
+    <entry key="AutoConnect" type="Bool">
+        <label>Connect automatically</label>
+        <whatsthis>Whether to automatically try to connect media device when starting Amarok.</whatsthis>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Daap">

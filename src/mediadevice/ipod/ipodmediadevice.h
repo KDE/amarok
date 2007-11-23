@@ -57,7 +57,7 @@ class IpodMediaDevice : public MediaDevice
         IpodMediaDevice();
         void              init( MediaBrowser* parent );
         virtual           ~IpodMediaDevice();
-        virtual bool      autoConnect()          { return true; }
+        virtual bool      autoConnect()          { return m_autoConnect; }
         virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze Amarok */ }
         QStringList       supportedFiletypes();
 
@@ -147,6 +147,7 @@ class IpodMediaDevice : public MediaDevice
         bool              m_supportsVideo;
         bool              m_rockboxFirmware;
         bool              m_needsFirewireGuid;
+        bool              m_autoConnect;
 
         IpodMediaItem    *getArtist( const QString &artist );
         IpodMediaItem    *getAlbum( const QString &artist, const QString &album );

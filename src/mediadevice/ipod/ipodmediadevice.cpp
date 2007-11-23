@@ -273,6 +273,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_name = "iPod";
 
     // config stuff
+    m_autoConnect = true;
     m_syncStatsCheck = 0;
     m_autoDeletePodcastsCheck = 0;
 
@@ -355,6 +356,12 @@ IpodMediaDevice::slotIpodAction( int id )
 
                     itdb_device_set_sysinfo( m_itdb->device, "ModelNumStr", model );
                     detectModel();
+
+                    if( m_isIPhone )
+                    {
+                       m_autoConnect = false;
+                       setConfigBool( "AutoConnect", m_autoConnect );
+                    }
 
                     // try to make sure that the Device directory exists
                     QDir dir;
@@ -2570,6 +2577,7 @@ IpodMediaDevice::loadConfig()
 
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
+    m_autoConnect = configBool( "AutoConnect", true );
 }
 
 bool
