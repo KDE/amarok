@@ -21,6 +21,8 @@
 
 #include "AmpacheServiceQueryMaker.h"
 
+#include <KLocale>
+
 AmpacheServiceCollection::AmpacheServiceCollection( const QString &server, const QString &sessionId )
     : ServiceDynamicCollection( "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
@@ -40,12 +42,12 @@ QueryMaker * AmpacheServiceCollection::queryMaker()
 
 QString AmpacheServiceCollection::collectionId() const
 {
-    return "Ampache collection";
+    return "Ampache: " + m_server;
 }
 
 QString AmpacheServiceCollection::prettyName() const
 {
-    return collectionId();
+    return i18n( "Ampache Server %1", m_server );
 }
 
 
