@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
+ *   Copyright (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,49 +34,48 @@ class QTimer;
 
 namespace Amarok
 {
-        
-    class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT ContextStatusBar : public KDE::StatusBar, public EngineObserver
     {
         Q_OBJECT
 
         static StatusBar* s_instance;
 
-    public:
-        explicit StatusBar( QWidget *parent, const char *name = 0 );
+        public:
+            explicit StatusBar( QWidget *parent, const char *name = 0 );
+            static   StatusBar* instance() { return s_instance; }
 
-        static StatusBar* instance() { return s_instance; }
+        public slots:
+            /** update total song count */
+            void slotItemCountChanged( int newCount ); //TODO improve
+            //FIXME: PORT
+            // void updateQueueLabel() { m_queueLabel->update(); }
 
-    public slots:
-        /** update total song count */
-        void slotItemCountChanged( int newCount ); //TODO improve
-        //FIXME: PORT
-//         void updateQueueLabel() { m_queueLabel->update(); }
-    protected:  /* reimpl from engineobserver */
-       virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-       virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+        protected:  /* reimpl from engineobserver */
+            virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+            virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
-    private:
-        QLabel *m_itemCountLabel;
-        //FIXME: Port
-//         QueueLabel *m_queueLabel;
+        private:
+            QLabel *m_itemCountLabel;
+            //FIXME: Port
+            // QueueLabel *m_queueLabel;
     };
+    
     /**
      * Is used to queue up longMessages for the StatusBar before the StatusBar
      * is created.
      */
     class MessageQueue
     {
-    public:
-        static MessageQueue* instance();
-        void addMessage ( const QString & );
-        void sendMessages();
-    private:
-        MessageQueue();
-        Q3ValueStack<QString> m_messages;
-        bool m_queueMessages;
+        public:
+            static MessageQueue* instance();
+            void addMessage ( const QString & );
+            void sendMessages();
+        private:
+            MessageQueue();
+            Q3ValueStack<QString> m_messages;
+            bool m_queueMessages;
     };
-
-} //namespace Amarok
+}
 
 namespace The
 {
