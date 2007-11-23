@@ -835,21 +835,6 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
 
     case QEvent::Close:
 
-        //KDE policy states we should hide to tray and not quit() when the
-        //close window button is pushed for the main widget
-
-        static_cast<QCloseEvent*>(e)->accept(); //if we don't do this the info box appears on quit()!
-
-        if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
-        {
-            KMessageBox::information( recipient,
-                i18n( "<qt>Closing the main-window will keep Amarok running in the System Tray. "
-                      "Use <B>Quit</B> from the menu, or the Amarok tray-icon to exit the application.</qt>" ),
-                i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
-        }
-        else pApp->quit();
-
-        break;
 
     default:
         return false;
