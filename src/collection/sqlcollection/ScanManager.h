@@ -40,6 +40,7 @@ class ScanManager : public QObject
         void startFullScan();
         void startIncrementalScan();
         bool isDirInCollection( QString path );
+        bool isFileInCollection( const QString &url );
 
     private slots:
         void slotReadReady();

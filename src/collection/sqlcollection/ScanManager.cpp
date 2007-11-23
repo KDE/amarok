@@ -123,6 +123,30 @@ ScanManager::isDirInCollection( QString path )
     return !values.isEmpty();
 }
 
+bool
+ScanManager::isFileInCollection( const QString &url  )
+{
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+
+    QString sql = QString( "SELECT id FROM urls WHERE rpath = '%2' AND deviceid = %1" )
+            .arg( deviceid )
+            .arg( m_collection->escape( rpath ) );
+    if ( deviceid == -1 )
+    {
+        sql += ';';
+    }
+    else
+    {
+        QString rpath2 = '.' + url;
+        sql += QString( " OR rpath = '%1' AND deviceid = -1;" )
+                .arg( m_collection->escape( rpath2 ) );
+    }
+    QStringList values = m_collection->query( sql );
+
+    return !values.isEmpty();
+}
+
 void
 ScanManager::slotReadReady()
 {
