@@ -55,7 +55,7 @@ Collection::trackForUrl( const KUrl &url )
 CollectionLocation*
 Collection::location() const
 {
-    return new CollectionLocation();
+    return new CollectionLocation( this );
 }
 
 #include "Collection.moc"
