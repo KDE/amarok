@@ -386,9 +386,16 @@ Model::setActiveRow( int row )
     m_activeRow = row;
 
     //make sure that the group containg this track is expanded
-    if( m_albumGroups.contains( m_items[ row ]->track()->album()->prettyName() ) )
+
+    //not all tracks have a valid album ( radio stations for instance... )
+    QString albumName;
+    if ( !m_items[ row ]->track()->album().isNull() ) {
+        albumName = m_items[ row ]->track()->album()->prettyName();
+    }
+    
+    if( m_albumGroups.contains( albumName ) && !albumName.isEmpty() )
     {
-        m_albumGroups[ m_items[ row ]->track()->album()->prettyName() ]->setCollapsed( row,  false );
+        m_albumGroups[ albumName ]->setCollapsed( row,  false );
         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
@@ -986,13 +993,20 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
        if ( !track->album() )
            continue;
 
-       if ( m_albumGroups.contains( track->album()->prettyName() ) ) {
-            m_albumGroups[ track->album()->prettyName() ]->addRow( i );
+       QString albumName;
+
+       //not all tracks have a valid album ( radio stations for instance... )
+       if ( !track->album().isNull() ) {
+           albumName = track->album()->prettyName();
+       }
+       
+       if ( m_albumGroups.contains( albumName ) && !albumName.isEmpty() ) {
+           m_albumGroups[ albumName ]->addRow( i );
        } else {
             //debug() << "Create new group for album " << track->album()->name() ;
             AlbumGroup * newGroup = new AlbumGroup();
             newGroup->addRow( i );
-            m_albumGroups.insert( track->album()->prettyName(), newGroup );
+            m_albumGroups.insert( albumName, newGroup );
        }
     }
 
