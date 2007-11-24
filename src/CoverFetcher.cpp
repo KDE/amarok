@@ -116,8 +116,8 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 {
     m_isFetching = true;
     m_albumPtr = album;
-    QString albumName = album->albumArtist()->prettyName();
-    QString artistName = album->prettyName();
+    QString albumName = album->name();
+    QString artistName = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
 
     QStringList extensions;
     extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
@@ -594,7 +594,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    The::contextStatusBar()->longMessage( "Retreived cover successfully" );
+    The::contextStatusBar()->longMessage( "Retrieved cover successfully" );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
     if( !m_albums.isEmpty() )

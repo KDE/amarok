@@ -777,8 +777,8 @@ SqlAlbum::image( int size, bool withShadow )
     }
     else
     {
-        //CoverFetcher *c = The::coverFetcher();
-        //c->queueAlbum( Meta::AlbumPtr(this) );
+        CoverFetcher *c = The::coverFetcher();
+        c->queueAlbum( Meta::AlbumPtr(this) );
         return Meta::Album::image( size, withShadow );
     }
 }
