@@ -41,9 +41,13 @@ class CoverFetcher : public QObject
     Q_OBJECT
 
     static const uint MAX_COVERS_CHOICE = 10;
+    AMAROK_EXPORT static CoverFetcher* s_instance;
 
 public:
     AMAROK_EXPORT CoverFetcher( QWidget *parent );
+
+    AMAROK_EXPORT static CoverFetcher* instance() { return s_instance; }
+
    ~CoverFetcher();
 
     /// allow the user to edit the query?
@@ -117,5 +121,10 @@ private:
     /// Show the cover that has been found
     void showCover();
 };
+
+namespace The
+{
+    inline CoverFetcher *coverFetcher() { return CoverFetcher::instance(); }
+}
 
 #endif /* AMAROK_COVERFETCHER_H */

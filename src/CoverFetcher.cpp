@@ -49,6 +49,7 @@ void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
 }
 
 
+CoverFetcher *CoverFetcher::s_instance = 0;
 CoverFetcher::CoverFetcher( QWidget *parent )
         : QObject( parent )
         , m_size( 2 )
@@ -56,6 +57,7 @@ CoverFetcher::CoverFetcher( QWidget *parent )
         , m_isFetching( false )
 {
     DEBUG_FUNC_INFO
+    s_instance = this;
     setObjectName( "CoverFetcher" );
 }
 

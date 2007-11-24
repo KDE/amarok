@@ -279,7 +279,7 @@ CoverManager::CoverManager()
 
     show();
 
-    m_fetcher = new CoverFetcher( this );
+    m_fetcher = The::coverFetcher();
 
     QTimer::singleShot( 0, this, SLOT(init()) );
 }
