@@ -20,6 +20,7 @@
 #define SQLREGISTRY_H
 
 //#include "servicesqlcollection.h"
+#include "amarok_export.h"
 #include "servicemetabase.h"
 
 #include <QHash>
@@ -33,7 +34,7 @@ class SqlCollection;
 
 typedef QPair<int, QString> TrackId;
 
-class ServiceSqlRegistry : public QObject
+class AMAROK_EXPORT ServiceSqlRegistry : public QObject
 {
     Q_OBJECT
 

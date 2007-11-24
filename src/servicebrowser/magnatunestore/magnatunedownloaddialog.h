@@ -32,7 +32,7 @@
  
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneDownloadDialog : public MagnatuneDownloadDialogBase
+class MagnatuneDownloadDialog : public QDialog, public Ui::MagnatuneDownloadDialogBase
 {
     Q_OBJECT
 

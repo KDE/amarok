@@ -27,7 +27,7 @@
 #include <k3listview.h>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-: magnatuneReDownloadDialogBase(parent,name, modal,fl)
+: QDialog(parent, fl)
 {
     redownloadButton->setEnabled ( false );
 

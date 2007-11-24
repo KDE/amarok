@@ -26,7 +26,7 @@
 
 #include <QStringList>
 
-class MagnatuneRedownloadDialog : public magnatuneReDownloadDialogBase
+class MagnatuneRedownloadDialog : public QDialog, public Ui::magnatuneReDownloadDialogBase
 {
     Q_OBJECT
 

@@ -24,6 +24,7 @@
 #ifndef KDE_PROGRESSBAR_H
 #define KDE_PROGRESSBAR_H
 
+#include "amarok_export.h"
 #include <QProgressBar>
 
 class QLabel;
@@ -35,7 +36,7 @@ namespace KDE
      * @class KDE::ProgressBar
      * @short ProgressBar class with some useful additions
      */
-    class ProgressBar : public QProgressBar
+    class AMAROK_EXPORT ProgressBar : public QProgressBar
     {
         friend class StatusBar;
 

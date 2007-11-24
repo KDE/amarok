@@ -19,12 +19,13 @@
 #ifndef AMAROK_SERVICESQLCOLLECTION_H
 #define AMAROK_SERVICESQLCOLLECTION_H
 
+#include "amarok_export.h"
 #include "Collection.h"
 #include "servicemetabase.h"
 #include "ServiceSqlRegistry.h"
 
 
-class ServiceSqlCollection : public Collection
+class AMAROK_EXPORT ServiceSqlCollection : public Collection
 {
     Q_OBJECT
     public:

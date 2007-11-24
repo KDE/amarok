@@ -20,6 +20,7 @@
 #ifndef INFOPARSERBASE_H
 #define INFOPARSERBASE_H
 
+#include "amarok_export.h"
 #include "Meta.h"
 
 #include <QObject>
@@ -29,7 +30,7 @@ Abstract base class for info parsers
 
 	@author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class InfoParserBase  : public QObject{
+class AMAROK_EXPORT InfoParserBase  : public QObject{
 Q_OBJECT
 
 public:

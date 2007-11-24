@@ -27,9 +27,11 @@
 
 #include "infoparserbase.h"
 
+#include "amarok_export.h"
 #include "../collectionbrowser/SingleCollectionTreeItemModel.h"
 #include "../collectionbrowser/CollectionTreeItem.h"
 #include "../collectionbrowser/CollectionTreeView.h"
+#include "plugin/plugin.h"
 
 #include <khtml_part.h>
 //#include <klistwidget.h>
@@ -40,6 +42,20 @@
 #include <QSplitter>
 //#include <QTreeView>
 
+class ServiceBase;
+
+class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
+{
+    Q_OBJECT
+    public:
+        ServiceFactory();
+        virtual ~ServiceFactory();
+
+        virtual void init() = 0;
+
+    signals:
+        void newService( class ServiceBase *newService );
+};
 
 
 /**
@@ -47,7 +63,7 @@ A very basic composite widget used as a base for building service browsers.
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class ServiceBase : public KVBox
+class AMAROK_EXPORT ServiceBase : public KVBox
 {
     Q_OBJECT
 

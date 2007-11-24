@@ -35,6 +35,15 @@
 
 #include <QDirModel>
 
+ServiceFactory::ServiceFactory()
+{
+}
+
+ServiceFactory::~ ServiceFactory()
+{
+}
+
+
 
 ServiceBase *ServiceBase::s_instance = 0;
 
@@ -246,6 +255,9 @@ void ServiceBase::generateWidgetInfo() const
     map["service_name"] = m_name;
     The::serviceInfoProxy()->setInfo( map );
 }
+
+
+
 
 
 

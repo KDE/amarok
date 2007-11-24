@@ -38,6 +38,7 @@ add_subdirectory( collection )
 add_subdirectory( strigi )
 add_subdirectory( context )
 add_subdirectory( playlistmanager )
+add_subdirectory( servicebrowser )
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
 
@@ -200,30 +201,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/LastfmConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
-)
-
-#####################################################################
-# MAGNATUNESTORE
-#####################################################################
-set(libmagnatunestore_SRCS
-    servicebrowser/magnatunestore/magnatuneinfoparser.cpp
-    servicebrowser/magnatunestore/MagnatuneStore.cpp
-    servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
-    servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
-    servicebrowser/magnatunestore/magnatunepurchasehandler.cpp
-    servicebrowser/magnatunestore/MagnatuneMeta.cpp
-    servicebrowser/magnatunestore/magnatunexmlparser.cpp
-    servicebrowser/magnatunestore/magnatunedatabasehandler.cpp
-    servicebrowser/magnatunestore/magnatuneredownloaddialog.cpp
-    servicebrowser/magnatunestore/magnatuneredownloadhandler.cpp
-    servicebrowser/magnatunestore/magnatunedownloadinfo.cpp
-    servicebrowser/magnatunestore/magnatunealbumdownloader.cpp
-)
-
-kde4_add_ui3_files(libmagnatunestore_SRCS
-    servicebrowser/magnatunestore/magnatunedownloaddialogbase.ui
-    #servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
-    servicebrowser/magnatunestore/magnatuneredownloaddialogbase.ui
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS

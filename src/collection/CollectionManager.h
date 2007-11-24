@@ -18,6 +18,7 @@
 #ifndef AMAROK_COLLECTIONMANAGER_H
 #define AMAROK_COLLECTIONMANAGER_H
 
+#include "amarok_export.h"
 #include "Collection.h"
 #include "Meta.h"
 #include "QueryMaker.h"
@@ -28,7 +29,7 @@
 class SqlStorage;
 class CollectionManagerSingleton;
 
-class CollectionManager : public QObject
+class AMAROK_EXPORT CollectionManager : public QObject
 {
     Q_OBJECT
 

@@ -33,7 +33,7 @@
 
 
 MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, Qt::WFlags fl )
-        : MagnatuneDownloadDialogBase( parent, name, modal, fl )
+    : QDialog( parent, fl )
 {
     downloadTargetURLRequester->fileDialog() ->setMode( KFile::Directory );
     m_currentDownloadInfo = 0;
@@ -59,7 +59,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
-    close();
+    close( 0 );
 
 }
 

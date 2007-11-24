@@ -20,6 +20,7 @@
 #ifndef SERVICEMETABASE_H
 #define SERVICEMETABASE_H
 
+#include "amarok_export.h"
 #include "debug.h"
 #include "infoparserbase.h"
 #include "Meta.h"
@@ -30,7 +31,7 @@
 #include <QStringList>
 
 
-class ServiceMetaFactory
+class AMAROK_EXPORT ServiceMetaFactory
 {
 
     public:
@@ -62,7 +63,7 @@ class ServiceMetaFactory
 
 };
 
-class ServiceDisplayInfoProvider
+class AMAROK_EXPORT ServiceDisplayInfoProvider
 {
 
     public:
@@ -74,7 +75,7 @@ class ServiceDisplayInfoProvider
 };
 
 
-class CustomActionsProvider
+class AMAROK_EXPORT CustomActionsProvider
 {
 
     public:
@@ -112,7 +113,7 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -232,7 +233,7 @@ class ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, publ
         QString m_type;
 };
 
-class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
 
@@ -282,7 +283,7 @@ class ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, pu
 
 };
 
-class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -344,7 +345,7 @@ class ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, publ
         QString m_artistName;
 };
 
-class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -388,7 +389,7 @@ class ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, publ
         TrackList m_tracks;
 };
 
-class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -423,7 +424,7 @@ class ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider
         TrackList m_tracks;
 };
 
-class ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider
 {
     public:
         ServiceYear( const QString &name );

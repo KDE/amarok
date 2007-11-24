@@ -43,6 +43,17 @@
 #include <kvbox.h>
 
 
+class MagnatuneServiceFactory: public ServiceFactory
+{
+    Q_OBJECT
+
+    public:
+        MagnatuneServiceFactory() {}
+        virtual ~MagnatuneServiceFactory() {}
+
+        virtual void init();
+};
+
 
 /**
 Amarok browser that displays all the music available at magnatune.com and makes it available for previewing and purchasing.
@@ -150,7 +161,7 @@ private:
      * Adds a magnatune preview track to the playlist.
      * @param item The track to add
      */
-    void addTrackToPlaylist ( Meta::MagnatuneTrack  *item );
+    //void addTrackToPlaylist ( Meta::MagnatuneTrack  *item );
 
     static MagnatuneStore *s_instance;
 

@@ -54,6 +54,15 @@
 
 using namespace Meta;
 
+
+
+void MagnatuneServiceFactory::init()
+{
+    ServiceBase* service = new MagnatuneStore( "Magnatune" );
+    emit newService( service );
+}
+
+
 MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( name )
         , m_currentAlbum( 0 )
@@ -90,7 +99,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 }
 
-void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
+/*void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
 {
     if ( !item ) return ; // sanity check
 
@@ -98,7 +107,7 @@ void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
     QString url = item->url();
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
     The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
+}*/
 
 
 
@@ -492,7 +501,5 @@ void MagnatuneStore::polish( )
 
 
 
-
-
-
 #include "MagnatuneStore.moc"
+

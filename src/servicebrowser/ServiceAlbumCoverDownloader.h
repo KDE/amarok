@@ -23,6 +23,7 @@
 
 #include "servicemetabase.h"
 
+#include "amarok_export.h"
 #include <kio/jobclasses.h>
 #include <kio/job.h>
 #include <KTempDir>
@@ -36,7 +37,7 @@ namespace Meta
 //forward declaration
 class ServiceAlbumCoverDownloader;
 
-class ServiceAlbumWithCover : public ServiceAlbum
+class AMAROK_EXPORT ServiceAlbumWithCover : public ServiceAlbum
 {
 private:
 

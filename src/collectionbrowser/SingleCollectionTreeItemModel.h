@@ -10,6 +10,7 @@
 #ifndef SINGLECOLLECTIONTREEITEMMODEL_H
 #define SINGLECOLLECTIONTREEITEMMODEL_H
 
+#include "amarok_export.h"
 #include "CollectionTreeItemModelBase.h"
 #include "meta/Meta.h"
 
@@ -22,7 +23,7 @@ class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
-class SingleCollectionTreeItemModel: public CollectionTreeItemModelBase {
+class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemModelBase {
 Q_OBJECT
 
     public:

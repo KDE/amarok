@@ -20,6 +20,7 @@
 #ifndef SERVICECUSTOMACTIONSCAPABILITY_H
 #define SERVICECUSTOMACTIONSCAPABILITY_H
 
+#include "amarok_export.h"
 #include "meta/CustomActionsCapability.h"
 
 class CustomActionsProvider;
@@ -27,7 +28,7 @@ class CustomActionsProvider;
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
+class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
     Q_OBJECT
     public:
         ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
