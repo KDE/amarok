@@ -567,6 +567,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
+    The::contextStatusBar()->longMessage( "Retreived cover successfully" );
     m_albumPtr->setImage( image() );
     if( !m_albums.isEmpty() )
         startFetch( m_albums.takeFirst() );

@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
  *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>                      *
+ *   Copyright (C) 2007 by Seb Ruiz <ruiz@kde.org>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,13 +16,14 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #define DEBUG_PREFIX "StatusBar"
 
 #include "amarok.h"
 #include "debug.h"
+#include "StatusBarMessageLabel.h"
 #include "statusBarBase.h"
 #include "threadmanager.h"
 
@@ -128,6 +130,16 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QGridLayout *gl = new QGridLayout( m_popupProgress );
     gl->setMargin( 6 );
     gl->setSpacing( 3 );
+
+    m_messageLabel = new StatusBarMessageLabel( this );
+
+    const int contentHeight = QFontMetrics( m_messageLabel->font() ).height();
+    const int barHeight = contentHeight + 8;
+
+    setMinimumHeight( barHeight );
+
+    m_messageLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_messageLabel->setMinimumTextHeight( barHeight );
 }
 
 /// reimplemented functions
@@ -146,8 +158,6 @@ StatusBar::polish()
         int _h = o->minimumSizeHint().height();
         if ( _h > h )
             h = _h;
-
-//         debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight();
 
         if ( o->inherits( "QLabel" ) )
             static_cast<QLabel*>(o)->setIndent( 4 );
@@ -221,9 +231,6 @@ StatusBar::shortMessage( const QString &text, bool longShort )
 void
 StatusBar::resetMainText()
 {
-//     if( sender() )
-//         debug() << sender()->name();
-
     // don't reset if we are showing a shortMessage
     if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
         return;
@@ -233,12 +240,12 @@ StatusBar::resetMainText()
 
     if( allDone() )
     {
-        debug() << "All done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
         m_mainTextLabel->setText( m_mainText );
         m_mainTextLabel->show();
     }
 
-    else {
+    else
+    {
         ProgressBar *bar = 0;
         uint count = 0;
         oldForeachType( ProgressMap, m_progressMap )
@@ -255,7 +262,7 @@ StatusBar::resetMainText()
 }
 
 void
-StatusBar::shortLongMessage( const QString &_short, const QString &_long, int type )
+StatusBar::shortLongMessage( const QString &_short, const QString &_long, MessageType type )
 {
     SHOULD_BE_GUI
 
@@ -272,50 +279,11 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long, int ty
 }
 
 void
-StatusBar::longMessage( const QString &text, int type )
+StatusBar::longMessage( const QString &text, MessageType type )
 {
     SHOULD_BE_GUI
 
-    if( text.isEmpty() )
-        return;
-
-    PopupMessage *message;
-    message = new PopupMessage( this, m_mainTextLabel );
-    connect( message, SIGNAL(destroyed(QObject *)), this, SLOT(popupDeleted(QObject *)) );
-    message->setText( text );
-
-    QString image;
-
-    switch( type )
-    {
-        case Information:
-        case Question:
-            image = KIconLoader::global()->iconPath( "messagebox_info", -KIconLoader::SizeHuge );
-            break;
-
-        case Sorry:
-        case Warning:
-            image = KIconLoader::global()->iconPath( "messagebox_warning", -KIconLoader::SizeHuge );
-            break;
-
-        case Error:
-            image = KIconLoader::global()->iconPath( "messagebox_critical", -KIconLoader::SizeHuge );
-            // don't hide error messages.
-//             message->setTimeout( 0 );
-            break;
-    }
-
-    if( !image.isEmpty() )
-        message->setImage( image );
-
-    if ( !m_messageQueue.isEmpty() )
-         message->stackUnder( m_messageQueue.last() );
-
-    message->display();
-
-    raise();
-
-    m_messageQueue += message;
+    m_messageLabel->setMessage( text, type );
 
     writeLogFile( text );
 }
@@ -327,7 +295,7 @@ StatusBar::popupDeleted( QObject *obj )
 }
 
 void
-StatusBar::longMessageThreadSafe( const QString &text, int /*type*/ )
+StatusBar::longMessageThreadSafe( const QString &text, MessageType /*type*/ )
 {
     QCustomEvent * e = new QCustomEvent( 1000 );
     e->setData( new QString( text ) );

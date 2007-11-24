@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #ifndef KDE_STATUSBAR_H
@@ -26,12 +26,11 @@
 #include <QWidget>     //baseclass
 #include <QMap>        //stack allocated
 #include <QStatusBar>
+
+class StatusBarMessageLabel;
 class QLabel;
 class QProgressBar;
 class KJob;
-
-//TODO
-// * concept of a temporary message that is removed when a qobject parent is deleted
 
 namespace KDE
 {
@@ -82,7 +81,7 @@ namespace KDE
     public:
         explicit StatusBar( QWidget *parent, const char *name = "mainStatusBar" );
 
-        enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None };
+        enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None, OperationCompleted };
 
         /**
          * Start a progress operation, if owner is 0, the return value is
@@ -120,16 +119,16 @@ namespace KDE
          * Generally you should use these, as it is very easy for a user to not notice
          * statusBar messages.
          */
-        AMAROK_EXPORT void longMessage( const QString &text, int type = Information );
+        AMAROK_EXPORT void longMessage( const QString &text, MessageType type = Information );
 
-        void longMessageThreadSafe( const QString &text, int type = Information );
+        void longMessageThreadSafe( const QString &text, MessageType type = Information );
 
 
         /**
          * Shows a short message, with a button that can be pushed to show a long
          * message
          */
-        AMAROK_EXPORT void shortLongMessage( const QString &_short, const QString &_long, int type = Information );
+        AMAROK_EXPORT void shortLongMessage( const QString &_short, const QString &_long, MessageType type = Information );
 
         /**
          * Set a temporary message over the mainText label, for 5 seconds.
@@ -220,7 +219,9 @@ namespace KDE
         Q3ValueList<QWidget*> m_messageQueue;
         QString              m_mainText;
         QString              m_shortLongText;
-        int                  m_shortLongType;
+        MessageType          m_shortLongType;
+
+        StatusBarMessageLabel* m_messageLabel;
 
         QLayout *m_otherWidgetLayout;
 

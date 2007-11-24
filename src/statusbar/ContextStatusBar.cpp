@@ -57,34 +57,6 @@ ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
 {
     s_instance = this; //static member
     setSizeGripEnabled( false );
-    
-    // total songs count
-    QWidget *lengthBox = new QWidget( this );
-    addPermanentWidget( lengthBox );
-    QHBoxLayout *lengthLayout = new QHBoxLayout( lengthBox );
-    lengthLayout->setMargin(1);
-    lengthLayout->setSpacing(2);
-    lengthLayout->addSpacing(3);
-    lengthBox->setLayout( lengthLayout );
-
-    QWidget *hbox = new QWidget( this );
-    addPermanentWidget(hbox);
-    QHBoxLayout *layout = new QHBoxLayout( hbox );
-    layout->setMargin(0);
-    layout->setSpacing(2);
-
-    layout->addSpacing( 3 );
-    //PORT 2.0
-    // layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
-    layout->addSpacing( 3 );
-
-    //TODO reimplement insertChild() instead
-    addPermanentWidget( hbox );
-
-    // set us up the bomb
-    engineStateChanged( Engine::Empty );
-
-    //setShown( AmarokConfig::showStatusBar() );
 }
 
 void

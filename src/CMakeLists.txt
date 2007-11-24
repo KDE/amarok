@@ -269,6 +269,7 @@ set(libstatusbar_SRCS
     statusbar/overlayWidget.cpp
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
+    statusbar/StatusBarMessageLabel.cpp
 #TODO: Port to new playlist
 #    statusbar/queueLabel.cpp
     statusbar/selectLabel.cpp
