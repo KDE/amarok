@@ -21,13 +21,12 @@
 #define AMAROK_TIMELABEL_H
 
 #include "actionclasses.h"
+#include "enginecontroller.h"
 #include "progressslider.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>
-//Added by qt3to4:
 #include <QMouseEvent>
-
 
 
 class TimeLabel : public QLabel

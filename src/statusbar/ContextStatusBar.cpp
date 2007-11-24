@@ -49,9 +49,9 @@ namespace Amarok {
 
 KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
 
-StatusBar* StatusBar::s_instance = 0;
+ContextStatusBar* ContextStatusBar::s_instance = 0;
 
-ContextStatusBar::StatusBar( QWidget *parent, const char *name )
+ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
         , EngineObserver( EngineController::instance() )
 {

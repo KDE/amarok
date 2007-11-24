@@ -23,8 +23,6 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 #include "debug.h"
-#include "enginecontroller.h"
-#include "metabundle.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
@@ -58,7 +56,6 @@ PlaylistStatusBar* PlaylistStatusBar::s_instance = 0;
 
 PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
-        , EngineObserver( EngineController::instance() )
 {
     s_instance = this; //static member
     setSizeGripEnabled( false );
@@ -93,23 +90,16 @@ PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
     addPermanentWidget( m_itemCountLabel );
     addPermanentWidget( hbox );
 
-    // set us up the bomb
-    engineStateChanged( Engine::Empty );
-
     // for great justice!
-
     connect( The::playlistModel(), SIGNAL(playlistCountChanged(int)),
                                     SLOT(slotItemCountChanged(int)) );
-
-    //see statupTips.h
-    //KDE::showNextTip( this );
 
     //session stuff
     //setShown( AmarokConfig::showStatusBar() );
 }
 
 void
-StatusBar::slotItemCountChanged( int newCount )
+PlaylistStatusBar::slotItemCountChanged( int newCount )
 {
 //     const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
 // 

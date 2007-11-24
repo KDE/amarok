@@ -21,20 +21,15 @@
 #ifndef AMAROK_PLAYLISTSTATUSBAR_H
 #define AMAROK_PLAYLISTSTATUSBAR_H
 
-#include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
 //TODO:PORT to new playlist
 // #include "queueLabel.h"
 
-#include <Q3ValueStack>
-//Added by qt3to4:
 #include <QLabel>
-
-class QTimer;
 
 namespace Amarok
 {
-    class AMAROK_EXPORT PlaylistStatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT PlaylistStatusBar : public KDE::StatusBar
     {
         Q_OBJECT
 
