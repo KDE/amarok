@@ -29,6 +29,14 @@
 #include <kpassworddialog.h>
 #include <KMD5>
 
+AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
+
+void AmpacheServiceFactory::init()
+{
+    ServiceBase* service = new AmpacheService( "Ampache" );
+    emit newService( service );
+}
+
 
 AmpacheService::AmpacheService(const QString & name)
  : ServiceBase( name )

@@ -155,16 +155,6 @@ set(libmp3tunesservice_SRCS
 
 )
 
-#####################################################################
-# AMPACHESERVICE
-#####################################################################
-        set(libampacheservice_SRCS
-        servicebrowser/ampache/AmpacheService.cpp
-        servicebrowser/ampache/AmpacheServiceCollection.cpp
-        servicebrowser/ampache/AmpacheServiceQueryMaker.cpp
-        servicebrowser/ampache/AmpacheMeta.cpp
-
-)
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 

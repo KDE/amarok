@@ -20,6 +20,7 @@
 #ifndef DYNAMICSERVICEQUERYMAKER_H
 #define DYNAMICSERVICEQUERYMAKER_H
 
+#include "amarok_export.h"
 #include "QueryMaker.h"
 
 #include "Meta.h"
@@ -40,7 +41,7 @@ Basically just stubs out the stuff that not every dynamic querymaker will need
 
 	@author
 */
-class DynamicServiceQueryMaker : public QueryMaker
+class AMAROK_EXPORT DynamicServiceQueryMaker : public QueryMaker
 {
 Q_OBJECT
 public:

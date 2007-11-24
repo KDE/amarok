@@ -44,7 +44,6 @@
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/shoutcast/ShoutcastService.h"
 #include "servicebrowser/mp3tunes/mp3tunesservice.h"
-#include "servicebrowser/ampache/AmpacheService.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
 #include "socketserver.h"
@@ -277,7 +276,7 @@ void MainWindow::init()
 
         internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
 
-        internetContentServiceBrowser->addService( new AmpacheService( "Ampache" ) );
+        //internetContentServiceBrowser->addService( new AmpacheService( "Ampache" ) );
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )

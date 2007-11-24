@@ -12,6 +12,7 @@
 #ifndef SERVICEDYNAMICCOLLECTION_H
 #define SERVICEDYNAMICCOLLECTION_H
 
+#include "amarok_export.h"
 #include <servicecollection.h>
 
 typedef QMap<int, Meta::TrackPtr> TrackIdMap;
@@ -25,7 +26,7 @@ A specialised collection used for services that dynamically fetch their data fro
 
 	@author 
 */
-class ServiceDynamicCollection : public ServiceCollection
+class AMAROK_EXPORT ServiceDynamicCollection : public ServiceCollection
 {
 public:
 

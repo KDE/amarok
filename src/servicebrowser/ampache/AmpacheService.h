@@ -29,7 +29,16 @@
 #include <kio/job.h>
 
 
+class AmpacheServiceFactory: public ServiceFactory
+{
+    Q_OBJECT
 
+    public:
+        AmpacheServiceFactory() {}
+        virtual ~AmpacheServiceFactory() {}
+
+        virtual void init();
+};
 
 
 /**

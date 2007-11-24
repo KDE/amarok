@@ -21,6 +21,7 @@
 #ifndef MEMORYMATCHER_H
 #define MEMORYMATCHER_H
 
+#include "amarok_export.h"
 #include "MemoryCollection.h"
 #include "Meta.h"
 
@@ -29,7 +30,7 @@ A helper class for finding items in a MemoryCollection
 
 	@author 
 */
-class MemoryMatcher{
+class AMAROK_EXPORT MemoryMatcher{
     public:
         MemoryMatcher();
         virtual ~MemoryMatcher();
@@ -45,7 +46,7 @@ class MemoryMatcher{
 };
 
 
-class TrackMatcher : public MemoryMatcher
+class AMAROK_EXPORT TrackMatcher : public MemoryMatcher
 {
     public:
         TrackMatcher( Meta::TrackPtr track );
@@ -57,7 +58,7 @@ class TrackMatcher : public MemoryMatcher
 };
 
 
-class ArtistMatcher : public MemoryMatcher
+class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
 {
     public:
         ArtistMatcher( Meta::ArtistPtr artist );
@@ -70,7 +71,7 @@ class ArtistMatcher : public MemoryMatcher
         Meta::ArtistPtr m_artist;
 };
 
-class AlbumMatcher : public MemoryMatcher
+class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher
 {
     public:
         AlbumMatcher( Meta::AlbumPtr album );
@@ -81,7 +82,7 @@ class AlbumMatcher : public MemoryMatcher
         Meta::AlbumPtr m_album;
 };
 
-class GenreMatcher : public MemoryMatcher
+class AMAROK_EXPORT GenreMatcher : public MemoryMatcher
 {
     public:
         GenreMatcher( Meta::GenrePtr genre );
@@ -92,7 +93,7 @@ class GenreMatcher : public MemoryMatcher
         Meta::GenrePtr m_genre;
 };
 
-class ComposerMatcher : public MemoryMatcher
+class AMAROK_EXPORT ComposerMatcher : public MemoryMatcher
 {
     public:
         ComposerMatcher( Meta::ComposerPtr composer );
@@ -103,7 +104,7 @@ class ComposerMatcher : public MemoryMatcher
         Meta::ComposerPtr m_composer;
 };
 
-class YearMatcher : public MemoryMatcher
+class AMAROK_EXPORT YearMatcher : public MemoryMatcher
 {
     public:
         YearMatcher( Meta::YearPtr year );
