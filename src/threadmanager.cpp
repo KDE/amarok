@@ -364,18 +364,18 @@ ThreadManager::Job::customEvent( QEvent *e )
     switch( progress )
     {
     case -2:
-        StatusBar::instance()->setProgressStatus( this, m_status );
+        ContextStatusBar::instance()->setProgressStatus( this, m_status );
         break;
 
     case -1:
-        StatusBar::instance()->newProgressOperation( this )
+        ContextStatusBar::instance()->newProgressOperation( this )
                 .setDescription( m_description )
                 .setAbortSlot( this, SLOT(abort()) )
                 .setMaximum( 100 );
         break;
 
     default:
-        StatusBar::instance()->setProgress( this, progress );
+        ContextStatusBar::instance()->setProgress( this, progress );
     }
 }
 

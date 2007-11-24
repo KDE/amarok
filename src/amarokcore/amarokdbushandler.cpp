@@ -631,7 +631,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::popupMessage( const QString& msg )
     {
-        StatusBar::instance()->longMessageThreadSafe( msg );
+        ContextStatusBar::instance()->longMessageThreadSafe( msg );
     }
 
     void DbusPlaylistHandler::removeCurrentTrack()
@@ -678,7 +678,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::shortStatusMessage(const QString& msg)
     {
-        StatusBar::instance()->shortMessage( msg );
+        ContextStatusBar::instance()->shortMessage( msg );
     }
 
     void DbusPlaylistHandler::shufflePlaylist()
