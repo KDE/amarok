@@ -9,7 +9,7 @@
 #include "amarokconfig.h"
 #include "covermanager.h"
 #include "debug.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -188,7 +188,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
 
-    Amarok::StatusBar::instance()->newProgressOperation( job );
+    Amarok::ContextStatusBar::instance()->newProgressOperation( job );
 }
 
 void
@@ -315,7 +315,7 @@ CoverFetcher::attemptAnotherFetch()
         KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
-        Amarok::StatusBar::instance()->newProgressOperation( job );
+        Amarok::ContextStatusBar::instance()->newProgressOperation( job );
 
         m_coverUrls.pop_front();
 

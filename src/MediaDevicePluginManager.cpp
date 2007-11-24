@@ -20,7 +20,7 @@
 #include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -264,7 +264,7 @@ MediaDevicePluginManager::slotNewDevice()
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
-            Amarok::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
+            Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
                                                                        "with the same name and mountpoint!") );
         }
         else
@@ -354,7 +354,7 @@ ManualDeviceAdder::slotButtonClicked( int button )
     }
     else
     {
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
                                                                    "you cannot define two devices with the\n"
                                                                    "same name. These names must be unique\n"
                                                                    "across autodetected devices as well.\n") );
@@ -413,7 +413,7 @@ ManualDeviceAdder::getId( bool recreate )
     }
     if( m_mdaName->text().count( '|' ) )
     {
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
         return QString();
     }
     m_newId = "manual|" + m_mdaName->text() + '|' +

@@ -28,7 +28,7 @@
 #include "metabundle.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KApplication>
 #include <KLocale>
@@ -215,7 +215,7 @@ ScanController::initIncremental()
     {
         debug() << "Collection was modified.";
         m_hasChanged = true;
-        Amarok::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+        Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
 
         // Start scanner process
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";

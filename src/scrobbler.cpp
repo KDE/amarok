@@ -31,7 +31,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KApplication>
 #include <KCodecs>
@@ -600,7 +600,7 @@ void ScrobblerSubmitter::performSubmit()
         if ( items[submitCounter] != 0 )
             m_ongoingSubmits.insert( job, items[submitCounter] );
 
-    Amarok::StatusBar::instance()->newProgressOperation( job )
+    Amarok::ContextStatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n( "Submitting to last.fm" ) );
 
     connect( job, SIGNAL( result( KIO::Job* ) ),
@@ -1040,7 +1040,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
                 m_submitQueue.count() + m_fakeQueue.count() );
     }
 
-    Amarok::StatusBar::instance()->shortLongMessage( _short, _long );
+    Amarok::ContextStatusBar::instance()->shortLongMessage( _short, _long );
 }
 
 

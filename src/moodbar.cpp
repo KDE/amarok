@@ -287,7 +287,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KStandardDirs>
 
@@ -655,7 +655,7 @@ MoodServer::setMoodbarBroken( void )
     warning() << "Uh oh, it looks like the moodbar analyzer is not going to work"
              ;
 
-    Amarok::StatusBar::instance()->longMessage( i18n(
+    Amarok::ContextStatusBar::instance()->longMessage( i18n(
         "The Amarok moodbar analyzer program seems to be broken. "
         "This is probably because the moodbar package is not installed "
         "correctly.  The moodbar package, installation instructions, and "

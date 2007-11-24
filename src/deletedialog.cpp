@@ -17,7 +17,7 @@
 
 #include "amarok.h"
 
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KConfigGroup>
 #include <KDialog>
@@ -153,7 +153,7 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
              ( job = Amarok::trashFiles( files )   ) )
         {
             if(shouldDelete) //amarok::trashFiles already does the progress operation
-                Amarok::StatusBar::instance()->newProgressOperation( job )
+                Amarok::ContextStatusBar::instance()->newProgressOperation( job )
                     .setDescription( i18n("Deleting files") );
         }
 

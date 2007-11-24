@@ -30,7 +30,7 @@ AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 // Amarok
 #include <debug.h>
 #include <metabundle.h>
-#include <statusbar/StatusBar.h>
+#include <statusbar/ContextStatusBar.h>
 #include <statusbar/popupMessage.h>
 
 // KDE
@@ -102,7 +102,7 @@ MediaItem
     {
         // track already exists. don't do anything (for now).
         debug() << "Track already exists on device.";
-        Amarok::StatusBar::instance()->shortLongMessage(
+        Amarok::ContextStatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Track already exists on device" ),
             KDE::StatusBar::Error
@@ -290,7 +290,7 @@ RioKarmaMediaDevice::openDevice( bool silent )
     QDir dir( mountPoint() );
     if( !dir.exists() )
     {
-        Amarok::StatusBar::instance()->longMessage(
+        Amarok::ContextStatusBar::instance()->longMessage(
                 i18n( "Media device: Mount point %1 does not exist", mountPoint() ),
                 KDE::StatusBar::Error );
         return false;
@@ -309,7 +309,7 @@ RioKarmaMediaDevice::openDevice( bool silent )
     if( m_rio < 0 )
     {
         debug()<< "Error connecting";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Rio Karma could not be opened" ), KDE::StatusBar::Error );
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError, i18n( "Rio Karma could not be opened" ), KDE::StatusBar::Error );
         setDisconnected();
         return false;
     }
@@ -485,7 +485,7 @@ RioKarmaMediaDevice::readKarmaMusic()
     if( ret == 0 )
     {
         debug()<< "Error reading tracks. NULL returned.";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Could not read Rio Karma tracks" ), KDE::StatusBar::Error );
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError, i18n( "Could not read Rio Karma tracks" ), KDE::StatusBar::Error );
         setDisconnected();
         hideProgress();
         return -1;

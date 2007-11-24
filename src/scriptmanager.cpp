@@ -30,7 +30,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <k3procio.h>
 #include <KAboutApplicationDialog>
@@ -337,7 +337,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )
     {
-        Amarok::StatusBar::instance()->longMessage(
+        Amarok::ContextStatusBar::instance()->longMessage(
             i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
             KDE::StatusBar::Sorry );
         return;

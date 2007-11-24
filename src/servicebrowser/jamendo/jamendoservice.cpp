@@ -116,7 +116,7 @@ void JamendoService::updateButtonClicked()
 
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Jamendo.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
@@ -125,7 +125,7 @@ void JamendoService::updateButtonClicked()
 
  
   /* KIO::StoredTransferJob * job =  KIO::storedGet(  KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ) );
-    Amarok::StatusBar::instance() ->newProgressOperation( job )
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( job )
     .setDescription( i18n( "Downloading Jamendo.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 */
@@ -166,7 +166,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
 void JamendoService::listDownloadCancelled()
 {
 
-    Amarok::StatusBar::instance()->endProgressOperation( m_listDownloadJob );
+    Amarok::ContextStatusBar::instance()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;

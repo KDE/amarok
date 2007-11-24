@@ -34,7 +34,7 @@
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "searchwidget.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "transferdialog.h"
 #include "TheInstances.h"
 
@@ -126,7 +126,7 @@ class DummyMediaDevice : public MediaDevice
         if( !silent )
         {
             //QString msg = i18n( "Sorry, you do not have a supported portable music player." );
-            //Amarok::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
+            //Amarok::ContextStatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
         }
         return false;
     }
@@ -481,7 +481,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
         else
         {
             debug() << "Cannot remove device because disconnect failed";
-            Amarok::StatusBar::instance()->longMessage(
+            Amarok::ContextStatusBar::instance()->longMessage(
                     i18n( "Cannot remove device because disconnect failed" ),
                     KDE::StatusBar::Warning );
         }
@@ -1040,7 +1040,7 @@ MediaBrowser::deviceRemoved( const QString &udi )
             {
                 if( (*it)->disconnectDevice() )
                     removeDevice( *it );
-                Amarok::StatusBar::instance()->longMessage(
+                Amarok::ContextStatusBar::instance()->longMessage(
                         i18n( "The device %1 was removed before it was disconnected. "
                             "In order to avoid possible data loss, press the \"Disconnect\" "
                             "button before disconnecting the device.", (*it)->name() ),
@@ -1184,7 +1184,7 @@ MediaBrowser::pluginSelected( const QString &udi, const QString &plugin )
         else
         {
             debug() << "Cannot change plugin while operation is in progress" << endl;
-            Amarok::StatusBar::instance()->longMessage(
+            Amarok::ContextStatusBar::instance()->longMessage(
                     i18n( "Cannot change plugin while operation is in progress" ),
                     KDE::StatusBar::Warning );
         }
@@ -1226,7 +1226,7 @@ MediaBrowser::config()
 {
     if( m_deviceCombo->currentText() == "No Device Selected" )
     {
-        //Amarok::StatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
+        //Amarok::ContextStatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
         //                                               KDE::StatusBar::Sorry );
         showPluginManager();
         return true;
@@ -1421,7 +1421,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
 // 
 //         if( playlist.isError() )
 //         {
-//             Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
+//             Amarok::ContextStatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
 //                     KDE::StatusBar::Sorry );
 //             return;
 //         }
@@ -1451,7 +1451,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
         {
             if( it->url() == url )
             {
-                Amarok::StatusBar::instance()->shortMessage(
+                Amarok::ContextStatusBar::instance()->shortMessage(
                         i18n( "Track already queued for transfer: %1", url.url() ) );
                 return;
             }
@@ -1793,7 +1793,7 @@ MediaQueue::load( const QString& filename )
     QString er;
     int l, c;
     if( !d.setContent( stream.readAll(), &er, &l, &c ) ) { // return error values
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the transferlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );

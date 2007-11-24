@@ -26,7 +26,7 @@
 #include "mediabrowser.h"
 
 #include "proxy.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 #include "tagdialog.h"
 
 #include <QCheckBox>
@@ -472,7 +472,7 @@ DaapClient::customClicked()
     if( dialog.exec() == QDialog::Accepted ) {
         QString ip = resolve( dialog.m_base->m_hostName->text() );
         if( ip == "0" )
-            Amarok::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.", dialog.m_base->m_hostName->text() ) );
+            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Could not resolve %1.", dialog.m_base->m_hostName->text() ) );
         else
         {
             QString key = ServerItem::key( dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
@@ -776,7 +776,7 @@ ServerItem::httpError( const QString& errorString )
 {
     stopAnimation();
     resetTitle();
-    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1", errorString ) );
+    Amarok::ContextStatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1", errorString ) );
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;
@@ -864,7 +864,7 @@ DaapDownloader::dataReadProgress( int done, int total )
 void
 DaapDownloader::downloadFailed( const QString & error )
 {
- //   Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "An error occurred while downloading from remote music server." ), Amarok::StatusBar::Error );
+ //   Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "An error occurred while downloading from remote music server." ), Amarok::ContextStatusBar::Error );
     DEBUG_BLOCK
     debug() << "failed on " << error;
     m_successful = false;

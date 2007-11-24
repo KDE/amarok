@@ -10,7 +10,7 @@
 #include "coverfetcher.h"
 #include "debug.h"
 #include "querybuilder.h"
-#include "StatusBar.h"       //for status messages
+#include "ContextStatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagguesserconfigdialog.h"
@@ -1505,7 +1505,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
     QByteArray path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
-        Amarok::StatusBar::instance()->longMessage( i18n(
+        Amarok::ContextStatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
         return false;
     }
@@ -1544,7 +1544,7 @@ TagDialogWriter::doJob()
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
         QByteArray path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
-            Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
+            Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );
             m_failed += true;
             continue;
@@ -1577,7 +1577,7 @@ TagDialogWriter::completeJob()
 //PORT 2.0     if ( m_successCount )
 //PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
-        Amarok::StatusBar::instance()->longMessage( i18n(
+        Amarok::ContextStatusBar::instance()->longMessage( i18n(
                         "Sorry, the tag for the following files could not be changed:\n", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }
 

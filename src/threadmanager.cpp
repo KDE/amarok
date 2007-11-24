@@ -12,7 +12,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KCursor>
 
@@ -20,7 +20,7 @@
 #include <QByteArray>
 #include <QEvent>
 
-using Amarok::StatusBar;
+using Amarok::ContextStatusBar;
 
 
 class ThreadManager::JobCompletedEvent: public QEvent

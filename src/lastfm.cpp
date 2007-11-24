@@ -23,7 +23,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "StatusBar.h"      //showError()
+#include "ContextStatusBar.h"      //showError()
 
 #include <q3http.h>
 #include <Q3ValueList>
@@ -438,7 +438,7 @@ WebService::handshake( const QString& username, const QString& password )
 //     bool banned = parameter( "banned", result ) == "1";
 
     if ( m_session.toLower() == "failed" ) {
-        Amarok::StatusBar::instance()->longMessage( i18n(
+        Amarok::ContextStatusBar::instance()->longMessage( i18n(
         "Amarok failed to establish a session with last.fm. <br>"
         "Check if your last.fm user and password are correctly set."
         ) );
@@ -646,7 +646,7 @@ WebService::love() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    Amarok::StatusBar::instance()->shortMessage( i18nc("love, as in affection", "Loving song...") );
+    Amarok::ContextStatusBar::instance()->shortMessage( i18nc("love, as in affection", "Loving song...") );
 }
 
 
@@ -659,7 +659,7 @@ WebService::skip() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=skip&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    Amarok::StatusBar::instance()->shortMessage( i18n("Skipping song...") );
+    Amarok::ContextStatusBar::instance()->shortMessage( i18n("Skipping song...") );
 }
 
 
@@ -672,7 +672,7 @@ WebService::ban() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    Amarok::StatusBar::instance()->shortMessage( i18nc("Ban, as in dislike", "Banning song...") );
+    Amarok::ContextStatusBar::instance()->shortMessage( i18nc("Ban, as in dislike", "Banning song...") );
 }
 
 
@@ -1034,7 +1034,7 @@ WebService::showError( int code, QString message )
                 message = i18n( "Failed to play this last.fm stream." );
     }
 
-    Amarok::StatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
+    Amarok::ContextStatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

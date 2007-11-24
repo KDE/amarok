@@ -25,7 +25,7 @@
 #include "mediabrowser.h"
 #include "meta/Meta.h"
 #include "pluginmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "playlist/PlaylistModel.h"
 
@@ -121,7 +121,7 @@ EngineController::loadEngine() //static
     if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
         //AmarokConfig::soundSystem() is empty on the first-ever-run
 
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
                 "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'.", AmarokConfig::soundSystem(), engineName ),
                 KDE::StatusBar::Sorry );
 
@@ -162,7 +162,7 @@ EngineController::loadEngine( const QString &engineName )
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
 
         if( plugin ) {
-            QObject *bar = Amarok::StatusBar::instance();
+            QObject *bar = Amarok::ContextStatusBar::instance();
             EngineBase *engine = static_cast<EngineBase*>( plugin );
 
             connect( engine, SIGNAL(stateChanged( Engine::State )),
@@ -244,7 +244,7 @@ bool EngineController::canDecode( const KUrl &url ) //static
     {
         //we special case this as otherwise users hate us
         if ( !valid && ext.toLower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
-            Amarok::StatusBar::instance()->longMessageThreadSafe(
+            Amarok::ContextStatusBar::instance()->longMessageThreadSafe(
                     i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                         "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
                         "the installation of the multimedia-framework that the current engine uses. "
@@ -388,16 +388,16 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         // does the file really exist? the playlist entry might be old
         if ( ! QFile::exists( url.path()) ) {
             //debug() << "  file >" << url.path() << "< does not exist!";
-            Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
+            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
             goto some_kind_of_failure;
         }
     }
     else
     {
         if( url.protocol() == "cdda" )
-            Amarok::StatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
+            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
         else
-            Amarok::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
         debug() << "Connecting to protocol: " << url.protocol();
     }
 

@@ -9,7 +9,7 @@
 #include "PlaylistFileSupport.h"
 
 #include "collection/CollectionManager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "xspfplaylist.h"
 
 
@@ -30,7 +30,7 @@ saveM3u( const TrackList &tracks, const KUrl &path, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "Cannot write playlist (%1).", path.url() ) );
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot write playlist (%1).", path.url() ) );
         return false;
     }
 

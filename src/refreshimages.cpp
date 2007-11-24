@@ -8,7 +8,7 @@
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KIO/Job>
 #include <kio/jobclasses.h>
@@ -63,7 +63,7 @@ RefreshImages::RefreshImages()
         KIO::TransferJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         KIO::Scheduler::scheduleJob( job );
 
-        //Amarok::StatusBar::instance()->newProgressOperation( job );
+        //Amarok::ContextStatusBar::instance()->newProgressOperation( job );
         job->setObjectName( md5sum );
         it++; //iterate to the next set
 
@@ -77,7 +77,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 {
     if ( xmlJob->error() )
     {
-        Amarok::StatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
+        Amarok::ContextStatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
         if ( m_jobInfo[ xmlJob->objectName() ].m_last )
             deleteLater();
 
@@ -118,7 +118,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, KIO::NoReload, KIO::HideProgressInfo );
     KIO::Scheduler::scheduleJob(imageJob);
-    //Amarok::StatusBar::instance()->newProgressOperation( imageJob );
+    //Amarok::ContextStatusBar::instance()->newProgressOperation( imageJob );
     imageJob->setObjectName(xmlJob->objectName());
     //get the URL of the detail page
     m_jobInfo[xmlJob->objectName()].m_detailUrl = doc.documentElement()
@@ -131,7 +131,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
 {
    if( imageJob->error() ) {
-        Amarok::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
+        Amarok::ContextStatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
         if(m_jobInfo[imageJob->objectName()].m_last)
             deleteLater();
 

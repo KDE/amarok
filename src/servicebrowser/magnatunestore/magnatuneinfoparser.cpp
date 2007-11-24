@@ -20,7 +20,7 @@
 #include "magnatuneinfoparser.h"
 
 #include "debug.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KLocale>
 
@@ -41,10 +41,10 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     QString orgHtml;*/
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl() );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
-    Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob )
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_infoDownloadJob )
     .setDescription( i18n( "Fetching artist info..." ) );
 }
 

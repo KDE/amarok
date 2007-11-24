@@ -42,7 +42,7 @@
 #include "playlist/PlaylistModel.h"
 #include "progressslider.h"
 #include "scriptmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 
 #include <QFile>

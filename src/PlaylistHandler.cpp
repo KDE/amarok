@@ -25,7 +25,7 @@
 #include "meta/proxy/MetaProxy.h"
 #include "PlaylistHandler.h"
 #include "playlist/PlaylistModel.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "xspfplaylist.h"
 
@@ -178,7 +178,7 @@ void PlaylistHandler::downloadPlaylist(const KUrl & path)
     connect( m_downloadJob, SIGNAL( result( KJob * ) ),
         this, SLOT( downloadComplete( KJob * ) ) );
 
-    Amarok::StatusBar::instance() ->newProgressOperation( m_downloadJob )
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_downloadJob )
     .setDescription( i18n( "Downloading Playlist" ) );
 
 }

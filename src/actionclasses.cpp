@@ -17,7 +17,7 @@
 //#include "mediumpluginmanager.h"
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "threadmanager.h"
 #include "timeLabel.h"
 

@@ -50,7 +50,7 @@
 #include "Sidebar.moc"
 #include "socketserver.h"
 #include "Statistics.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "threadmanager.h"
 #include "volumewidget.h"
@@ -202,7 +202,7 @@ void MainWindow::init()
     contextWidget->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
     new Context::ContextView( contextWidget );
     {
-        new Amarok::StatusBar( contextWidget );
+        new Amarok::ContextStatusBar( contextWidget );
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( contextWidget );

@@ -17,7 +17,7 @@
 #include "PlaylistItem.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
 
@@ -449,7 +449,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
 
 //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() ) {
-//         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+//         Amarok::ContextStatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
         return; // don't add empty items
     }
 
@@ -473,7 +473,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
 
         }
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+            Amarok::ContextStatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
    int orgCount = rowCount(); //needed because recursion messes up counting

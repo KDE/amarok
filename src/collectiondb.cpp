@@ -41,7 +41,7 @@
 
 #include "scriptmanager.h"
 #include "scrobbler.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "threadmanager.h"
 
 //queries moved to sqlcollection, CollectionDB is still being used by legacy stuff

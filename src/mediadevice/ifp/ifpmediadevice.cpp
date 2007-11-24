@@ -32,7 +32,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 #include "transferdialog.h"
 
 #include <kapplication.h>
@@ -169,7 +169,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );
         return false;
@@ -179,7 +179,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dev == NULL )
     {
         error() << "Could not get usb_device()";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not get a USB device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed.";
@@ -190,7 +190,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed.";
@@ -201,7 +201,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( i )
     {
         error() << "iFP device: Device cannot be opened.";
-        Amarok::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;

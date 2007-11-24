@@ -317,7 +317,7 @@ XineEngine::play( uint offset )
     return false;
 }
 
-#include "statusbar/StatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 
 void
 XineEngine::determineAndShowErrorMessage()
@@ -367,7 +367,7 @@ XineEngine::determineAndShowErrorMessage()
         break;
     }
 
-    Amarok::StatusBar::instance()->longMessage(
+    Amarok::ContextStatusBar::instance()->longMessage(
             "<b>" + i18n("Error Loading Media") + "</b><p>" + body + "<p>" + m_url.prettyUrl(),
             KDE::StatusBar::Error );
 }

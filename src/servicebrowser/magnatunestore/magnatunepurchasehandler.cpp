@@ -23,7 +23,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KMessageBox>
 #include <ktempdir.h>
@@ -104,7 +104,7 @@ void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QS
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
-    Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
@@ -126,7 +126,7 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
-    Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 

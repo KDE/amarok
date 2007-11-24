@@ -20,7 +20,7 @@
 AMAROK_EXPORT_PLUGIN( PhononEngine )
 
 #include "debug.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 
 #include <kmimetype.h>
 

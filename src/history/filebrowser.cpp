@@ -38,7 +38,7 @@
 #include "mydiroperator.h"
 
 #include "playlist/PlaylistModel.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "tagdialog.h"
 #include "TheInstances.h"
 
@@ -359,7 +359,7 @@ void FileBrowser::playlistFromURLs( const KUrl::List &urls )
 
 //PORT 2.0     if( PlaylistBrowser::savePlaylist( path, urls ) )
 //     {
-//         Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
+//         Amarok::ContextStatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
 //     }
 }
 

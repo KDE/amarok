@@ -33,7 +33,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "k3bexporter.h"
 #include "playlist/PlaylistModel.h"
 #include "podcastbundle.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 #include "TheInstances.h"
 #include "transferdialog.h"
 #include "genericmediadeviceconfigdialog.h"
@@ -367,7 +367,7 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     DEBUG_BLOCK
     if( m_mountPoint.isEmpty() )
     {
-        Amarok::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
+        Amarok::ContextStatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
                                                           "Please mount the device and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;

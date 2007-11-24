@@ -40,7 +40,7 @@ email                : markey@web.de
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "systray.h"
 #include "threadmanager.h"
 #include "tracktooltip.h"        //engineNewMetaData()
@@ -871,7 +871,7 @@ void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
-    Amarok::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
+    Amarok::ContextStatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
 }

@@ -24,7 +24,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "pluginmanager.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 //solid stuff
 #include <solid/predicate.h>

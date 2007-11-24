@@ -21,7 +21,7 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 
 #include <KMessageBox>
@@ -86,7 +86,7 @@ QString username, password;
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_xmlDownloadJob )
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_xmlDownloadJob )
     .setDescription( i18n( "Authenticating" ) );
 
 }

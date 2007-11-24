@@ -22,7 +22,7 @@
 
 #include "debug.h"
 #include "amarok.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <KTemporaryFile>
 
