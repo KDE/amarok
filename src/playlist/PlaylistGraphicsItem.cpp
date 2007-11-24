@@ -15,7 +15,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
 #include "TheInstances.h"
-#include "covermanager.h"
+#include "CoverManager.h"
 
 #include "KStandardDirs"
 

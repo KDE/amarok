@@ -25,7 +25,7 @@
 #include "context/CoverBling.h"
 #include "context/ContextView.h"
 #include "context/DataEngineManager.h"
-#include "covermanager.h" // for actions
+#include "CoverManager.h" // for actions
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor

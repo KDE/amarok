@@ -22,7 +22,7 @@
 #include "amarokconfig.h"
 #include "config-amarok.h"
 #include "debug.h"
-#include "coverfetcher.h"
+#include "CoverFetcher.h"
 #include "enginecontroller.h"
 #include "expression.h"
 #include "mediabrowser.h"

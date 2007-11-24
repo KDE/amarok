@@ -5,7 +5,7 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
-#include "coverfetcher.h"
+#include "CoverFetcher.h"
 
 #include <QSplitter>
 //Added by qt3to4:

@@ -3,11 +3,11 @@
 // (C) 2004 Max Howell
 // See COPYING file for licensing information.
 
-#include "coverfetcher.h"
+#include "CoverFetcher.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "covermanager.h"
+#include "CoverManager.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
 
@@ -583,4 +583,4 @@ CoverFetcher::finishWithError( const QString &message, KJob *job )
     m_success = false;
 }
 
-#include "coverfetcher.moc"
+#include "CoverFetcher.moc"

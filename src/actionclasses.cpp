@@ -10,7 +10,7 @@
 #include "app.h"
 #include "debug.h"
 #include "collectiondb.h"
-#include "covermanager.h"
+#include "CoverManager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "MainWindow.h"

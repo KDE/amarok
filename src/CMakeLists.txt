@@ -347,8 +347,8 @@ set(amaroklib_LIB_SRCS
     app.cpp
     atomicstring.cpp
     collectiondb.cpp
-    coverfetcher.cpp
-    covermanager.cpp
+    CoverFetcher.cpp
+    CoverManager.cpp
     cuefile.cpp
     dbsetup.ui.h
     deletedialog.cpp

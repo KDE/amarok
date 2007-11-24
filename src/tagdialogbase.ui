@@ -776,7 +776,7 @@
 <customwidgets>
     <customwidget>
         <class>CoverLabel</class>
-        <header location="local">coverfetcher.h</header>
+        <header location="local">CoverFetcher.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -821,7 +821,7 @@
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>ktabwidget.h</includehint>
-    <includehint>coverfetcher.h</includehint>
+    <includehint>CoverFetcher.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>

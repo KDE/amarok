@@ -7,7 +7,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "coverfetcher.h"
+#include "CoverFetcher.h"
 #include "debug.h"
 #include "querybuilder.h"
 #include "ContextStatusBar.h"       //for status messages

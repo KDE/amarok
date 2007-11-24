@@ -2,7 +2,7 @@
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
 
-#include "covermanager.h"
+#include "CoverManager.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -1081,4 +1081,4 @@ void CoverViewItem::dragLeft()
     setSelected( false );
 }
 
-#include "covermanager.moc"
+#include "CoverManager.moc"
