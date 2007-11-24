@@ -51,18 +51,22 @@ PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
 {
     s_instance = this; //static member
+
     setSizeGripEnabled( false );
-    setMainText( "Test 1 two three four" );
+    
     // total songs count
-    QWidget *lengthBox = new QWidget( this );
+    QWidget     *lengthBox = new QWidget( this );
     addPermanentWidget( lengthBox );
+
     QHBoxLayout *lengthLayout = new QHBoxLayout( lengthBox );
     lengthLayout->setMargin(1);
     lengthLayout->setSpacing(2);
     lengthLayout->addSpacing(3);
+
     m_itemCountLabel = new QLabel( lengthBox );
     lengthLayout->addWidget( m_itemCountLabel );
     lengthLayout->addSpacing( 3 );
+
     lengthBox->setLayout( lengthLayout );
 
     m_itemCountLabel->setAlignment( Qt::AlignCenter );
@@ -76,7 +80,7 @@ PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
 
     layout->addSpacing( 3 );
     //PORT 2.0
-//     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
+    // layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead
@@ -86,9 +90,6 @@ PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
     // for great justice!
     connect( The::playlistModel(), SIGNAL(playlistCountChanged(int)),
                                     SLOT(slotItemCountChanged(int)) );
-
-    //session stuff
-    //setShown( AmarokConfig::showStatusBar() );
 }
 
 void

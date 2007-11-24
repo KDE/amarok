@@ -13,8 +13,8 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-//#include "PlaylistView.h"
 #include "PlaylistWidget.h"
+#include "statusbar/PlaylistStatusBar.h"
 #include "statusbar/selectLabel.h"
 #include "TheInstances.h"
 #include "toolbar.h"
@@ -99,6 +99,8 @@ Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
     } //END Playlist Toolbar
+
+    layout->addWidget( new Amarok::PlaylistStatusBar( this ) );
 }
 
 void Widget::switchView()
