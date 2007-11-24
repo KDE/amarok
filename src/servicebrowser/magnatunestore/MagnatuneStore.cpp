@@ -58,7 +58,7 @@ AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 
 void MagnatuneServiceFactory::init()
 {
-    ServiceBase* service = new MagnatuneStore( "Magnatune" );
+    ServiceBase* service = new MagnatuneStore( "Magnatune.com" );
     emit newService( service );
 }
 

@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+Name=Jamendo Service
+Comment=Service plugin for Amarok
+
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=libamarok_service-jamendo
+
+X-KDE-Amarok-authors=Nikolaj Hald Niensel
+X-KDE-Amarok-email=nhnFreespirit@gmail.com
+X-KDE-Amarok-framework-version=30
+X-KDE-Amarok-name=JamendoService
+X-KDE-Amarok-plugintype=service
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1

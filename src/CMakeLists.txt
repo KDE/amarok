@@ -145,17 +145,6 @@ set(libshoutcastservice_SRCS
 
 
 #####################################################################
-# JAMENDOSERVICE
-#####################################################################
-set(libjamendoservice_SRCS
-    servicebrowser/jamendo/jamendoservice.cpp
-    servicebrowser/jamendo/JamendoMeta.cpp
-    servicebrowser/jamendo/jamendodatabasehandler.cpp
-    servicebrowser/jamendo/jamendoxmlparser.cpp
-    servicebrowser/jamendo/JamendoInfoParser.cpp
-)
-
-#####################################################################
 # MP3TUNESERVICE
 #####################################################################
 set(libmp3tunesservice_SRCS
@@ -366,7 +355,6 @@ set(libplaylist_SRCS
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
-    ${libmagnatunestore_SRCS}
     ${libshoutcastservice_SRCS}
     ${libmp3tunesservice_SRCS}
     ${libampacheservice_SRCS}
@@ -376,7 +364,6 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
-    ${libjamendoservice_SRCS}
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}

@@ -40,10 +40,8 @@
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "servicebrowser/ServicePluginManager.h"
-//#include "servicebrowser/magnatunestore/MagnatuneStore.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
-#include "servicebrowser/jamendo/jamendoservice.h"
 #include "servicebrowser/shoutcast/ShoutcastService.h"
 #include "servicebrowser/mp3tunes/mp3tunesservice.h"
 #include "servicebrowser/ampache/AmpacheService.h"
@@ -273,7 +271,7 @@ void MainWindow::init()
 
         //internetContentServiceBrowser->addService( new MagnatuneStore( "Magnatune Store" ) );
 
-        internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
+        //internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
 
         internetContentServiceBrowser->addService( new ShoutcastService( "Shoutcasst Directory" ) );
 

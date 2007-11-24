@@ -32,6 +32,14 @@
 
 using namespace Meta;
 
+AMAROK_EXPORT_PLUGIN( JamendoServiceFactory )
+
+void JamendoServiceFactory::init()
+{
+    ServiceBase* service = new JamendoService( "Jamendo.com" );
+    emit newService( service );
+}
+
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
  , m_currentAlbum( 0 )
@@ -264,5 +272,7 @@ void JamendoService::torrentDownloadComplete(KJob * downloadJob)
 }
 
 #include "jamendoservice.moc"
+
+
 
 

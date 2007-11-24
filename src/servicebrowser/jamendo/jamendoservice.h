@@ -33,6 +33,17 @@
 #include <kio/jobclasses.h>
 
 
+class JamendoServiceFactory: public ServiceFactory
+{
+    Q_OBJECT
+
+    public:
+        JamendoServiceFactory() {}
+        virtual ~JamendoServiceFactory() {}
+
+        virtual void init();
+};
+
 /**
 A service for displaying, previewing and downloading music from Jamendo.com
 
