@@ -57,7 +57,7 @@ Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 }
 
 
-QPixmap ServiceAlbumWithCover::image(int size, bool withShadow) const
+QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
 {
     QString coverName = downloadPrefix() + '_' + albumArtist()->name() + '_' + name() + "_cover.png";
 

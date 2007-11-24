@@ -43,14 +43,13 @@ class CoverFetcher : public QObject
     static const uint MAX_COVERS_CHOICE = 10;
 
 public:
-    CoverFetcher( QWidget *parent );
+    AMAROK_EXPORT CoverFetcher( QWidget *parent );
    ~CoverFetcher();
 
     /// allow the user to edit the query?
     void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
     /// Main Fetch loop
-    void startFetchLoop();
 
     void manualFetch( Meta::AlbumPtr album );
 
@@ -58,8 +57,8 @@ public:
     QString asin() const { return m_asin; }
     QImage image() const { return m_image; }
 
-    void queueAlbum( Meta::AlbumPtr album );
-    void queueAlbums( Meta::AlbumList albums );
+    AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
+    AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
 
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
@@ -74,6 +73,7 @@ private slots:
     void changeLocale( int id );
 
 private:
+    void startFetchLoop();
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
 

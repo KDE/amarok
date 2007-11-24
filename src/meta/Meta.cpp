@@ -197,7 +197,7 @@ Meta::Album::notifyObservers() const
 }
 
 QPixmap
-Meta::Album::image( int size, bool withShadow ) const
+Meta::Album::image( int size, bool withShadow )
 {
     Q_UNUSED( withShadow );
 

@@ -81,8 +81,12 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
             if ( level < m_levelType.count() ) {
                 if (  m_levelType[level] == CategoryId::Album ) {
-                    const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
-                    return album->image( 32, false );
+//                     const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
+                    Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                    if( album )
+                        return album->image( 32, false );
+                    else
+                        return iconForLevel( level  );
                 } else {
                     return iconForLevel( level );
                 }

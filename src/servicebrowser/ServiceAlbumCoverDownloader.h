@@ -62,7 +62,7 @@ public:
     void setImage( const QImage & image ) const;
     void imageDownloadCanceled() const;
 
-    virtual QPixmap image( int size, bool withShadow ) const; //overridden from Meta::Album
+    virtual QPixmap image( int size, bool withShadow ); //overridden from Meta::Album
 };
 
 

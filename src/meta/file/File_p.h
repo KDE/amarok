@@ -151,7 +151,7 @@ public:
         return name();
     }
 
-    QPixmap image( int size, bool withShadow ) const
+    QPixmap image( int size, bool withShadow )
     {
         return Meta::Album::image( size, withShadow );
     }
