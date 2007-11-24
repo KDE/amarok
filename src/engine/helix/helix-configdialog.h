@@ -82,7 +82,6 @@ public:
    HelixConfigDialogBase( HelixEngine *engine, Amarok::PluginConfig *config, QWidget *parent = 0 );
    ~HelixConfigDialogBase();
 
-   virtual QWidget *view() { return this; }
    virtual bool hasChanged() const;
    virtual bool isDefault() const;
 
@@ -107,15 +106,15 @@ public:
    explicit HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
    ~HelixConfigDialog();
 
-   virtual QWidget *view() { return instance->view(); }
-   virtual bool hasChanged() const { return instance->hasChanged(); }
-   virtual bool isDefault() const { return instance->isDefault(); }
+   virtual QWidget *view() { return m_view; }
+   virtual bool hasChanged() const { return m_view->hasChanged(); }
+   virtual bool isDefault() const { return m_view->isDefault(); }
 
-   virtual void save() { instance->save(); }
-   static int setSoundSystem( int api );
+   virtual void save() { m_view->save(); }
+   int setSoundSystem( int api );
 
 private:
-   static HelixConfigDialogBase *instance;
+   HelixConfigDialogBase *m_view;
 };
 
 

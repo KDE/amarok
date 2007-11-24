@@ -174,7 +174,11 @@ int HelixEngine::fallbackToOSS()
 {
    KMessageBox::information( 0, i18n("The helix library you have configured does not support ALSA, the helix-engine has fallen back to OSS") );
    debug() << "Falling back to OSS\n";
-   return (HelixConfigDialog::setSoundSystem( (int) HelixSimplePlayer::OSS ));
+
+
+   HelixConfig::setOutputplugin("oss");
+   HelixConfig::self()->writeConfig();
+   return 1;
 }
 
 bool

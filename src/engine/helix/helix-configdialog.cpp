@@ -46,8 +46,6 @@
 
 using namespace std;
 
-HelixConfigDialogBase *HelixConfigDialog::instance = NULL;
-
 HelixConfigEntry::HelixConfigEntry( QWidget *parent,
                                     Amarok::PluginConfig *pluginConfig,
                                     int row,
@@ -459,30 +457,21 @@ HelixConfigDialogBase::save()
 }
 
 HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p ) : Amarok::PluginConfig()
+                                                                          , m_view(0)
 {
-   if (!instance)
-      instance = new HelixConfigDialogBase( engine, this, p );
+   m_view = new HelixConfigDialogBase( engine, this, p );
 }
 
 HelixConfigDialog::~HelixConfigDialog()
 {
-   delete instance;
-   instance = 0;
+   HelixConfig::self()->writeConfig();
+   delete m_view;
 }
 
 int HelixConfigDialog::setSoundSystem( int api )
 {
-   if (instance)
-   {
-      instance->setSoundSystem(api);
-      return 0;
-   }
-   else
-   {
-      HelixConfig::setOutputplugin(api ? "alsa" : "oss");
-      HelixConfig::self()->writeConfig();
-      return 1;
-   }
+   m_view->setSoundSystem(api);
+   return 0;
 }
 
 #include "helix-configdialog.moc"
