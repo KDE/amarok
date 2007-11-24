@@ -45,14 +45,7 @@
 
 namespace Amarok {
 
-
-KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
-
-//TODO disable hide statusbar? or show when required? that sucks though.
-
-
 PlaylistStatusBar* PlaylistStatusBar::s_instance = 0;
-
 
 PlaylistStatusBar::PlaylistStatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
