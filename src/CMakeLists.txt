@@ -103,6 +103,7 @@ set(libplugin_SRCS
 set(libservicebrowser_SRCS
     servicebrowser/servicebrowser.cpp
     servicebrowser/servicebase.cpp
+    servicebrowser/ServicePluginManager.cpp
     servicebrowser/servicemetabase.cpp
     servicebrowser/servicecollection.cpp
     servicebrowser/servicesqlquerymaker.cpp

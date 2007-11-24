@@ -54,7 +54,7 @@
 
 using namespace Meta;
 
-
+AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 
 void MagnatuneServiceFactory::init()
 {

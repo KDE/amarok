@@ -39,7 +39,8 @@
 #include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
-#include "servicebrowser/magnatunestore/MagnatuneStore.h"
+#include "servicebrowser/ServicePluginManager.h"
+//#include "servicebrowser/magnatunestore/MagnatuneStore.h"
 #include "servicebrowser/scriptableservice/scriptableservice.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/jamendo/jamendoservice.h"
@@ -260,6 +261,12 @@ void MainWindow::init()
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
+
+
+        //create a plugin manager
+
+        ServicePluginManager * servicePluginManager = new ServicePluginManager( internetContentServiceBrowser );
+        servicePluginManager->init();
 
         debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
