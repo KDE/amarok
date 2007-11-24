@@ -398,7 +398,6 @@ void CoverManager::fetchMissingCovers() //SLOT
     }
 
     m_fetcher->queueAlbums( m_fetchCovers );
-    m_fetcher->startFetchLoop();
 
     updateStatusBar();
     m_fetchButton->setEnabled( false );
@@ -769,7 +768,6 @@ void CoverManager::fetchSelectedCovers()
     m_fetchingCovers += selectedItems().count();
 
     m_fetcher->queueAlbums( m_fetchCovers );
-    m_fetcher->startFetchLoop();
 
     updateStatusBar();
 }

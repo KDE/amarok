@@ -72,6 +72,21 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
     m_userCanEditQuery = true;
     startFetch( album );
 }
+
+void
+CoverFetcher::queueAlbum( Meta::AlbumPtr album )
+{
+    m_albums << album;
+    if( !m_isFetching )
+        startFetchLoop();
+}
+void
+CoverFetcher::queueAlbums( Meta::AlbumList albums )
+{
+    m_albums << albums;
+    if( !m_isFetching )
+        startFetchLoop();
+}
 void
 CoverFetcher::startFetchLoop()
 {
@@ -88,6 +103,7 @@ CoverFetcher::startFetchLoop()
 void
 CoverFetcher::startFetch( Meta::AlbumPtr album )
 {
+    m_isFetching = true;
     m_albumPtr = album;
     QString albumName = album->albumArtist()->prettyName();
     QString artistName = album->prettyName();
@@ -569,6 +585,7 @@ CoverFetcher::finish()
 {
     The::contextStatusBar()->longMessage( "Retreived cover successfully" );
     m_albumPtr->setImage( image() );
+    m_isFetching = false;
     if( !m_albums.isEmpty() )
         startFetch( m_albums.takeFirst() );
 }

@@ -58,8 +58,8 @@ public:
     QString asin() const { return m_asin; }
     QImage image() const { return m_image; }
 
-    void queueAlbum( Meta::AlbumPtr album ) { m_albums << album; }
-    void queueAlbums( Meta::AlbumList albums ) { m_albums << albums; }
+    void queueAlbum( Meta::AlbumPtr album );
+    void queueAlbums( Meta::AlbumList albums );
 
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
