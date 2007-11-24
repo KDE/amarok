@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#ifndef AMAROK_STATUSBAR_H
-#define AMAROK_STATUSBAR_H
+#ifndef AMAROK_PLAYLISTSTATUSBAR_H
+#define AMAROK_PLAYLISTSTATUSBAR_H
 
 #include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
@@ -34,15 +34,15 @@ class QTimer;
 
 namespace Amarok
 {
-    class AMAROK_EXPORT ContextStatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT PlaylistStatusBar : public KDE::StatusBar, public EngineObserver
     {
         Q_OBJECT
 
-        static StatusBar* s_instance;
+        static PlaylistStatusBar* s_instance;
 
         public:
-            explicit StatusBar( QWidget *parent, const char *name = 0 );
-            static   StatusBar* instance() { return s_instance; }
+            explicit PlaylistStatusBar( QWidget *parent, const char *name = 0 );
+            static   PlaylistStatusBar* instance() { return s_instance; }
 
         public slots:
             /** update total song count */
@@ -50,36 +50,16 @@ namespace Amarok
             //FIXME: PORT
             // void updateQueueLabel() { m_queueLabel->update(); }
 
-        protected:  /* reimpl from engineobserver */
-            virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-            virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
-
         private:
             QLabel *m_itemCountLabel;
             //FIXME: Port
             // QueueLabel *m_queueLabel;
     };
-    
-    /**
-     * Is used to queue up longMessages for the StatusBar before the StatusBar
-     * is created.
-     */
-    class MessageQueue
-    {
-        public:
-            static MessageQueue* instance();
-            void addMessage ( const QString & );
-            void sendMessages();
-        private:
-            MessageQueue();
-            Q3ValueStack<QString> m_messages;
-            bool m_queueMessages;
-    };
 }
 
 namespace The
 {
-    inline Amarok::StatusBar *statusbar() { return Amarok::StatusBar::instance(); }
+    inline Amarok::PlaylistStatusBar *playlistStatusBar() { return Amarok::PlaylistStatusBar::instance(); }
 }
 
 #endif

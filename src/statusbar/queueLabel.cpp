@@ -29,7 +29,7 @@
 #include <QDesktopWidget>
 #include <Q3PtrList>
 #include <QEvent>
-#include "StatusBar.h"
+#include "PlaylistStatusBar.h"
 
 #include <QApplication>
 #include <QLabel>
@@ -178,7 +178,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         if( s > 0 ) length += s;
     }
 
-    Q3PtrList<KMenu> menus;
+    QList<KMenu*> menus;
     menus.setAutoDelete( true );
     KMenu *menu = new KMenu;
     menus.append( menu );
@@ -219,8 +219,8 @@ Debug::stamp();
     int mx, my;
     const int   mw      = menu->sizeHint().width(),
                 mh      = menu->sizeHint().height(),
-                sy      = mapFrom( Amarok::StatusBar::instance(), QPoint( 0, 0 ) ).y(),
-                sheight = Amarok::StatusBar::instance()->height();
+                sy      = mapFrom( Amarok::PlaylistStatusBar::instance(), QPoint( 0, 0 ) ).y(),
+                sheight = Amarok::PlaylistStatusBar::instance()->height();
     const QRect dr      = QApplication::desktop()->availableGeometry( this );
 Debug::stamp();
     if( mapYToGlobal( sy ) - mh > dr.y() )

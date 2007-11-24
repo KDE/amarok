@@ -19,7 +19,7 @@
 
 #include "debug.h"
 #include "progressBar.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <klocale.h>
 #include <kpushbutton.h>
@@ -91,7 +91,7 @@ ProgressBar&
 ProgressBar::setProgressSignal( QObject *sender, const char *signal )
 {
     setMaximum( 100 );
-    connect( sender, signal, Amarok::StatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
+    connect( sender, signal, Amarok::ContextStatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
     return *this;
 }
 

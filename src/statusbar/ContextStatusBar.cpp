@@ -2,6 +2,7 @@
  *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
  *             (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2005 Gábor Lehel <illissius@gmail.com>                  *
+ *             (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,8 +27,7 @@
 #include "metabundle.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
-#include "playlist/PlaylistModel.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 #include "TheInstances.h"
 
 #include <khbox.h>
@@ -49,19 +49,15 @@ namespace Amarok {
 
 KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
 
-//TODO disable hide statusbar? or show when required? that sucks though.
-
-
 StatusBar* StatusBar::s_instance = 0;
 
-
-StatusBar::StatusBar( QWidget *parent, const char *name )
+ContextStatusBar::StatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
         , EngineObserver( EngineController::instance() )
 {
     s_instance = this; //static member
     setSizeGripEnabled( false );
-    setMainText( "Test 1 two three four" );
+    
     // total songs count
     QWidget *lengthBox = new QWidget( this );
     addPermanentWidget( lengthBox );
@@ -69,13 +65,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     lengthLayout->setMargin(1);
     lengthLayout->setSpacing(2);
     lengthLayout->addSpacing(3);
-    m_itemCountLabel = new QLabel( lengthBox );
-    lengthLayout->addWidget( m_itemCountLabel );
-    lengthLayout->addSpacing( 3 );
     lengthBox->setLayout( lengthLayout );
-
-    m_itemCountLabel->setAlignment( Qt::AlignCenter );
-    m_itemCountLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
     QWidget *hbox = new QWidget( this );
     addPermanentWidget(hbox);
@@ -85,30 +75,20 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     layout->addSpacing( 3 );
     //PORT 2.0
-//     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
+    // layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead
-    addPermanentWidget( m_itemCountLabel );
     addPermanentWidget( hbox );
 
     // set us up the bomb
     engineStateChanged( Engine::Empty );
 
-    // for great justice!
-
-    connect( The::playlistModel(), SIGNAL(playlistCountChanged(int)),
-                                    SLOT(slotItemCountChanged(int)) );
-
-    //see statupTips.h
-    //KDE::showNextTip( this );
-
-    //session stuff
     //setShown( AmarokConfig::showStatusBar() );
 }
 
 void
-StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ContextStatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     switch ( state ) {
     case Engine::Empty:
@@ -130,7 +110,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 }
 
 void
-StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+ContextStatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     QString title       = Qt::escape( bundle.title() );
     QString prettyTitle = Qt::escape( bundle.prettyTitle() );
@@ -172,45 +152,6 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     setMainText( i18n( "Playing: %1", title ) );
 }
 
-void
-StatusBar::slotItemCountChanged( int newCount )
-{
-//     const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
-// 
-//     QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks",selCount, visCount )
-//                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
-//                  : ( hasVis ) ? i18n( "%1 visible of %2 tracks", visCount, newCount )
-//                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks", selCount, newCount )
-//                  : i18np( "1 track", "%1 tracks", newCount );
-// 
-//     int getValue = 0;
-// 
-//     if( hasSel )
-//         getValue = selLength;
-// 
-//     else if( hasVis )
-//         getValue = visLength;
-// 
-//     else
-//         getValue = newLength;
-// 
-//     if( getValue )
-//         m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)", text, MetaBundle::fuzzyTime( getValue ) ) );
-//     else
-//         m_itemCountLabel->setText( text );
-// 
-//     m_itemCountLabel->setToolTip(  i18n( "Play-time: %1", MetaBundle::veryPrettyTime( getValue ) ) );
-    uint totalSeconds = 0;
-    QList<Playlist::Item*> items;
-    items = The::playlistModel()->itemList();
-    foreach( Playlist::Item* item, items )
-    {
-        totalSeconds += item->track()->length();
-    }
-    m_itemCountLabel->setText( i18n( "%1 Tracks (%2)", newCount, Meta::secToPrettyTime(totalSeconds) ) );
-    m_itemCountLabel->setToolTip( i18n( "Play-time: %1", Meta::secToPrettyTime( totalSeconds ) ) );
-}
-
 ///////////////////
 //MessageQueue
 ///////////////////
@@ -231,7 +172,7 @@ MessageQueue::addMessage(const QString& message)
     if(m_queueMessages)
         m_messages.push(message);
     else
-        StatusBar::instance()->longMessage(message);
+        ContextStatusBar::instance()->longMessage(message);
 }
 
 void
@@ -240,10 +181,10 @@ MessageQueue::sendMessages()
      m_queueMessages = false;
      while(! m_messages.isEmpty())
      {
-        StatusBar::instance()->longMessage(m_messages.pop());
+        ContextStatusBar::instance()->longMessage(m_messages.pop());
      }
 }
 
 } //namespace Amarok
 
-#include "statusbar.moc"
+#include "ContextStatusBar.moc"

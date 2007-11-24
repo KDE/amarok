@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "overlayWidget.h"
-#include "StatusBar.h"
+#include "ContextStatusBar.h"
 
 #include <qpoint.h>
 //Added by qt3to4:

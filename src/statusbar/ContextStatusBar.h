@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#ifndef AMAROK_STATUSBAR_H
-#define AMAROK_STATUSBAR_H
+#ifndef AMAROK_CONTEXTSTATUSBAR_H
+#define AMAROK_CONTEXTSTATUSBAR_H
 
 #include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
@@ -38,26 +38,15 @@ namespace Amarok
     {
         Q_OBJECT
 
-        static StatusBar* s_instance;
+        static ContextStatusBar* s_instance;
 
         public:
-            explicit StatusBar( QWidget *parent, const char *name = 0 );
-            static   StatusBar* instance() { return s_instance; }
-
-        public slots:
-            /** update total song count */
-            void slotItemCountChanged( int newCount ); //TODO improve
-            //FIXME: PORT
-            // void updateQueueLabel() { m_queueLabel->update(); }
+            explicit ContextStatusBar( QWidget *parent, const char *name = 0 );
+            static   ContextStatusBar* instance() { return s_instance; }
 
         protected:  /* reimpl from engineobserver */
             virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
             virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
-
-        private:
-            QLabel *m_itemCountLabel;
-            //FIXME: Port
-            // QueueLabel *m_queueLabel;
     };
     
     /**
@@ -79,7 +68,7 @@ namespace Amarok
 
 namespace The
 {
-    inline Amarok::StatusBar *statusbar() { return Amarok::StatusBar::instance(); }
+    inline Amarok::ContextStatusBar *contextStatusBar() { return Amarok::ContextStatusBar::instance(); }
 }
 
 #endif
