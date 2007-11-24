@@ -48,24 +48,33 @@ void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     }
 }
 
+class CoverFetcherSingleton
+{
+    public:
+        CoverFetcher instance;
+};
 
-CoverFetcher *CoverFetcher::s_instance = 0;
-CoverFetcher::CoverFetcher( QWidget *parent )
-        : QObject( parent )
+K_GLOBAL_STATIC( CoverFetcherSingleton, privateInstance )
+
+CoverFetcher*
+CoverFetcher::instance()
+{
+    return &privateInstance->instance;
+}
+
+CoverFetcher::CoverFetcher()
+        : QObject()
         , m_size( 2 )
         , m_success( true )
         , m_isFetching( false )
 {
     DEBUG_FUNC_INFO
-    s_instance = this;
     setObjectName( "CoverFetcher" );
 }
 
 CoverFetcher::~CoverFetcher()
 {
     DEBUG_FUNC_INFO
-
-    QApplication::restoreOverrideCursor();
 }
 
 void

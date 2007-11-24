@@ -31,7 +31,7 @@ class CoverLabel : public QLabel {
     QString m_album;
 };
 
-
+class CoverFetcherSingleton;
 
 namespace KIO { class Job; }
 
@@ -41,12 +41,10 @@ class CoverFetcher : public QObject
     Q_OBJECT
 
     static const uint MAX_COVERS_CHOICE = 10;
-    AMAROK_EXPORT static CoverFetcher* s_instance;
 
 public:
-    AMAROK_EXPORT CoverFetcher( QWidget *parent );
 
-    AMAROK_EXPORT static CoverFetcher* instance() { return s_instance; }
+    AMAROK_EXPORT static CoverFetcher* instance();
 
    ~CoverFetcher();
 
@@ -77,6 +75,8 @@ private slots:
     void changeLocale( int id );
 
 private:
+    friend class CoverFetcherSingleton;
+    CoverFetcher();
     void startFetchLoop();
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;

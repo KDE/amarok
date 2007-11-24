@@ -674,8 +674,6 @@ App::continueInit()
     mainWindow()->init(); //creates the playlist, browsers, etc.
     //FIXME: we shouldn't have to do this.
     pApp->mainWindow()->show();
-    //must be created after the main window
-    new CoverFetcher( mainWindow() );
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
