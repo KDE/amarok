@@ -268,15 +268,9 @@ void MainWindow::init()
         debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
-        //internetContentServiceBrowser->addService( new MagnatuneStore( "Magnatune Store" ) );
-
-        //internetContentServiceBrowser->addService( new JamendoService( "Jamendo.com" ) );
 
         internetContentServiceBrowser->addService( new ShoutcastService( "Shoutcasst Directory" ) );
 
-        internetContentServiceBrowser->addService( new Mp3tunesService( "Mp3Tunes Locker" ) );
-
-        //internetContentServiceBrowser->addService( new AmpacheService( "Ampache" ) );
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )

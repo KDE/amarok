@@ -29,7 +29,16 @@
 #include <kio/job.h>
 
 
+class Mp3tunesServiceFactory: public ServiceFactory
+{
+    Q_OBJECT
 
+    public:
+        Mp3tunesServiceFactory() {}
+        virtual ~Mp3tunesServiceFactory() {}
+
+        virtual void init();
+};
 
 
 /**

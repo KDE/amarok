@@ -27,6 +27,13 @@
 #include <KMessageBox>
 #include <kpassworddialog.h>
 
+AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
+
+void Mp3tunesServiceFactory::init()
+{
+    ServiceBase* service = new Mp3tunesService( "Mp3tunes.com" );
+    emit newService( service );
+}
 
 Mp3tunesService::Mp3tunesService(const QString & name)
  : ServiceBase( name )

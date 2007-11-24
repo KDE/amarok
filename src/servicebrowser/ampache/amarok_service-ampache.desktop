@@ -9,7 +9,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_service-ampache
 
-X-KDE-Amarok-authors=Nikolaj Hald Niensen
+X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
 X-KDE-Amarok-framework-version=30
 X-KDE-Amarok-name=AmpacheService
