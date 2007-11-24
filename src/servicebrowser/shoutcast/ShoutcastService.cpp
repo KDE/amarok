@@ -30,6 +30,15 @@
 
 using namespace Meta;
 
+AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
+
+void ShoutcastServiceFactory::init()
+{
+    ServiceBase* service = new ShoutcastService( "Shoutcast.com" );
+    emit newService( service );
+}
+
+
 ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
 {
@@ -60,4 +69,6 @@ void ShoutcastService::polish()
 }
 
 #include "ShoutcastService.moc"
+
+
 

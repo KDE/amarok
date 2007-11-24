@@ -133,16 +133,6 @@ set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/DynamicScriptableQueryMaker.cpp
 )
 
-#####################################################################
-# SHOUTCASTSERVICE
-#####################################################################
-set(libshoutcastservice_SRCS
-    servicebrowser/shoutcast/ShoutcastService.cpp
-    servicebrowser/shoutcast/ShoutcastServiceCollection.cpp
-    servicebrowser/shoutcast/ShoutcastServiceQueryMaker.cpp
-
-)
-
 
 qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
 
@@ -333,7 +323,6 @@ set(libplaylist_SRCS
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
-    ${libshoutcastservice_SRCS}
     ${libscriptableservice_SRCS}
     ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}

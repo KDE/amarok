@@ -269,9 +269,6 @@ void MainWindow::init()
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
 
 
-        internetContentServiceBrowser->addService( new ShoutcastService( "Shoutcasst Directory" ) );
-
-
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {

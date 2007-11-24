@@ -22,7 +22,7 @@
 #include "ShoutcastServiceQueryMaker.h"
 
 ShoutcastServiceCollection::ShoutcastServiceCollection()
- : ServiceCollection()
+    : ServiceDynamicCollection( "Shoutcast.com", "Shoutcast.com" )
 {
 }
 

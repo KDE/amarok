@@ -26,6 +26,17 @@
 #include "servicemetabase.h"
 
 
+class ShoutcastServiceFactory: public ServiceFactory
+{
+    Q_OBJECT
+
+    public:
+        ShoutcastServiceFactory() {}
+        virtual ~ShoutcastServiceFactory() {}
+
+        virtual void init();
+};
+
 /**
 A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
 

@@ -19,14 +19,14 @@
 #ifndef DYNAMICSERVICECOLLECTION_H
 #define DYNAMICSERVICECOLLECTION_H
 
-#include <servicecollection.h>
+#include <ServiceDynamicCollection.h>
 
 /**
 A collection that dynamically fetches data from a remote location as needed
 
 	@author 
 */
-class ShoutcastServiceCollection : public ServiceCollection
+class ShoutcastServiceCollection : public ServiceDynamicCollection
 {
 public:
     ShoutcastServiceCollection();
