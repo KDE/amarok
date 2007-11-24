@@ -75,12 +75,9 @@ MagnatuneStore::MagnatuneStore( const char *name )
     setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
     setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
 
-    //QSplitter *spliter = new QSplitter( Qt::Vertical, this );
 
     debug() << "Magnatune browser starting...";
 
-    //m_popupMenu = new QMenu( spliter);
-    //m_infoBox = new MagnatuneArtistInfoBox( spliter, "ArtistInfoBox" );
 
 
     //initBottomPanel();
@@ -99,15 +96,6 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 }
 
-/*void MagnatuneStore::addTrackToPlaylist( MagnatuneTrack *item )
-{
-    if ( !item ) return ; // sanity check
-
-    debug() << "Magnatune browser: adding single track";
-    QString url = item->url();
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}*/
 
 
 
@@ -136,15 +124,6 @@ void MagnatuneStore::initTopPanel( )
 {
 
     KHBox *hBox = new KHBox( m_topPanel);
-    //m_topPanel->setMaximumHeight( 24 );
-    //QLabel *label = new QLabel ( i18n( "Genre: " ), hBox );
-    //label->setObjectName( "genreLabel" );
-
-   // m_genreComboBox = new QComboBox;
-   // m_genreComboBox->setParent( hBox );
-   // m_genreComboBox->setObjectName( "genreComboBox" );
-
-//    updateGenreBox();
 
     m_advancedFeaturesButton = new QPushButton;
     m_advancedFeaturesButton->setParent( hBox );
@@ -199,13 +178,6 @@ void MagnatuneStore::updateButtonClicked()
     updateMagnatuneList();
 
 
-    //HACK for testing
-    /*debug() << "MagnatuneStore: create xml parser";
-    MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
-    parser->setDbHandler( new MagnatuneDatabaseHandler() );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
-
-    ThreadManager::instance() ->queueJob( parser );*/
 }
 bool MagnatuneStore::updateMagnatuneList()
 {
