@@ -36,8 +36,6 @@ namespace Amarok
 {
     class AMAROK_EXPORT ContextStatusBar : public KDE::StatusBar, public EngineObserver
     {
-        Q_OBJECT
-
         static ContextStatusBar* s_instance;
 
         public:

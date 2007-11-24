@@ -187,4 +187,3 @@ MessageQueue::sendMessages()
 
 } //namespace Amarok
 
-#include "ContextStatusBar.moc"
