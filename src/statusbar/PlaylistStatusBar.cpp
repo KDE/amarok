@@ -137,4 +137,6 @@ PlaylistStatusBar::slotItemCountChanged( int newCount )
     m_itemCountLabel->setToolTip( i18n( "Play-time: %1", Meta::secToPrettyTime( totalSeconds ) ) );
 }
 
+}
+
 #include "PlaylistStatusBar.moc"
