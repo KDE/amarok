@@ -285,6 +285,7 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
         m_tracks.at( i )->setRow( i );
 
     shuffleTracks( start );
+    scene()->setSceneRect( scene()->itemsBoundingRect() );
 }
 
 void

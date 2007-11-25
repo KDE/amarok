@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "PlaylistItem.h"
+#include "PlaylistGraphicsView.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
 #include "ContextStatusBar.h"
@@ -445,6 +446,7 @@ Model::clear()
     removeRows( 0, m_items.size() );
     m_albumGroups.clear();
     m_lastAddedTrackAlbum = AlbumPtr();
+    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 //    m_activeRow = -1;
 }
 
@@ -527,6 +529,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
         play( firstItemAdded );
     }
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 }
 
 void
