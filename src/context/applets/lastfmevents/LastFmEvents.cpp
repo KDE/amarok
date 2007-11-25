@@ -98,17 +98,6 @@ void LastFmEvents::init()
 
 }
 
-/*
-void LastFmEvents::setGeometry( const QRectF& rect )
-{
-    DEBUG_BLOCK
-    debug() << "setting geometry to" << rect;
-    setPos( rect.topLeft() );
-//     resize( rect.width(), m_aspectRatio );
-    setSize( rect.size() );
-    Applet::setGeometry( rect );
-}*/
-
 void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
@@ -334,18 +323,6 @@ QString LastFmEvents::truncateTextToFit( QString text, const QFont& font, const 
         text += "...";
     }
     return text;
-}
-
-void LastFmEvents::resize( qreal newWidth, qreal aspectRatio )
-{
-    DEBUG_BLOCK
-//     debug() << "aspectRatio:" << aspectRatio;
-//     debug() << "resizing to:" << newWidth;
-    qreal height = aspectRatio * newWidth;
-    setSize( QSizeF( newWidth, height ) );
-//     m_theme->resize( size() );
-    debug() << "set new size: " << size();
-    constraintsUpdated();
 }
 
 #include "LastFmEvents.moc"

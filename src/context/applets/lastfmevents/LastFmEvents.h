@@ -48,8 +48,6 @@ private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
-    void resize( qreal oldWidth, qreal aspectRatio );
-
     KDialog* m_config;
     QVBoxLayout* m_configLayout;
     QCheckBox* m_friendBox;
