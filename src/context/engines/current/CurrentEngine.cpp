@@ -34,6 +34,20 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     DEBUG_BLOCK
     m_sources = QStringList();
     m_sources << "current";
+    EngineController::instance()->attach( this );
+}
+
+CurrentEngine::~CurrentEngine()
+{
+    EngineController::instance()->detach( this );
+    if( m_currentTrack )
+    {
+        m_currentTrack->unsubscribe( this );
+        if( m_currentTrack->album() )
+        {
+            m_currentTrack->album()->unsubscribe( this );
+        }
+    }
 }
 
 QStringList CurrentEngine::sources() const
@@ -63,21 +77,38 @@ void CurrentEngine::metadataChanged( Meta::Album* album )
     setData( "albumart", album->image( coverWidth() ) );
 }
 
+void
+CurrentEngine::metadataChanged( Meta::Track *track )
+{
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
+    setData( "current", "current", trackInfo );
+}
+
+void
+CurrentEngine::engineNewTrackPlaying()
+{
+    m_currentTrack->unsubscribe( this );
+    if( m_currentTrack->album() )
+    {
+        m_currentTrack->album()->unsubscribe( this );
+    }
+    update();
+}
+
 void CurrentEngine::update()
 {
     DEBUG_BLOCK
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    //uint length = EngineController::instance()->trackLength();
-    
-    QVariantMap trackInfo = Meta::Field::mapFromTrack( track.data() );
+    m_currentTrack = EngineController::instance()->currentTrack();
+    m_currentTrack->subscribe( this );
+
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
 
     int width = coverWidth();
-    track->album()->subscribe( this );
+    m_currentTrack->album()->subscribe( this );
     clearData( "current" );
-    setData( "current", "albumart",  QVariant( track->album()->image( width ) ) );
-    
+    setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
+
     setData( "current", "current", trackInfo );
-    
 }
 
 #include "CurrentEngine.moc"
