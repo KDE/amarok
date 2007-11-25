@@ -65,8 +65,6 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     int iconPadX = 8;
     int iconPadY = 4;
 
-    debug() << "Look ma' I am painting!";
-
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
@@ -94,14 +92,11 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     QPixmap background( width - 4, height - 4 );
 
     if (!QPixmapCache::find(key, background)) {
-        //debug() << QString("item %1 not in cache...").arg(key);
 
         background.fill( Qt::transparent );
         QPainter pt( &background );
         svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 4, height - 4 ) );
         QPixmapCache::insert(key, background);
-    } else {
-        //debug() << QString("item %1 retrieved from cache :-D").arg(key);
     }
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
@@ -141,9 +136,6 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
     painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
-
-    debug() << "Short description: " << index.data( ShortDescriptionRole ).toString() ;
-
 
     painter->restore();
 

@@ -181,8 +181,6 @@ Playlist::GraphicsView::dropEvent( QDropEvent *event )
 void
 Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
 {
-    DEBUG_BLOCK
-    debug() << "Pressed: " << event;
     if( event->matches( QKeySequence::Delete ) )
     {
         if( !scene()->selectedItems().isEmpty() )
