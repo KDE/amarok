@@ -16,7 +16,6 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "engineobserver.h"
 #include "meta/Meta.h" // album observer
 /**
     This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
@@ -40,7 +39,6 @@
 
 class CurrentEngine : public Context::DataEngine, 
                       public ContextObserver,
-                      public EngineObserver,
                       public Meta::Observer
 {
     Q_OBJECT
@@ -61,9 +59,7 @@ public:
     // reimplemented from Meta::Observer
     void metadataChanged( Meta::Album* album );
     void metadataChanged( Meta::Track *track );
-
-    //reimplemented from EngineObserver
-    void engineNewTrackPlaying();
+    
 protected:
     bool sourceRequested( const QString& name );
     

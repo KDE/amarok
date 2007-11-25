@@ -34,12 +34,10 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     DEBUG_BLOCK
     m_sources = QStringList();
     m_sources << "current";
-    EngineController::instance()->attach( this );
 }
 
 CurrentEngine::~CurrentEngine()
 {
-    EngineController::instance()->detach( this );
     if( m_currentTrack )
     {
         m_currentTrack->unsubscribe( this );
@@ -69,7 +67,17 @@ void CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
     if( state == Current && m_requested )
+    {
+        if( m_currentTrack )
+        {
+            m_currentTrack->unsubscribe( this );
+            if( m_currentTrack->album() )
+            {
+                m_currentTrack->album()->unsubscribe( this );
+            }
+        }
         update();
+    }
 }
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
@@ -82,17 +90,6 @@ CurrentEngine::metadataChanged( Meta::Track *track )
 {
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
-}
-
-void
-CurrentEngine::engineNewTrackPlaying()
-{
-    m_currentTrack->unsubscribe( this );
-    if( m_currentTrack->album() )
-    {
-        m_currentTrack->album()->unsubscribe( this );
-    }
-    update();
 }
 
 void CurrentEngine::update()
