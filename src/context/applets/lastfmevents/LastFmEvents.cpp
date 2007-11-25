@@ -47,17 +47,22 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 
     setHasConfigurationInterface( true );
 
+    if( args.size() > 0 ) // we are being told what position to start at
+        setPos( (qreal)args[0].toInt(), (qreal)args[1].toInt() );
+}
+
+LastFmEvents::~LastFmEvents()
+{
+}
+
+void LastFmEvents::init()
+{
+    DEBUG_BLOCK
     KConfigGroup conf = globalConfig();
     m_userEnabled = conf.readEntry( "user", false );
     m_sysEnabled = conf.readEntry( "sys", false );
     m_friendEnabled = conf.readEntry( "friend", false );
     m_width = conf.readEntry( "width" , 400 );
-
-    if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
-        showConfigurationInterface();
-
-    if( args.size() > 0 ) // we are being told what position to start at
-        setPos( (qreal)args[0].toInt(), (qreal)args[1].toInt() );
 
     m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContentType( Plasma::Svg::SingleImage );
@@ -72,12 +77,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
         m_dates[ i ]->setBrush( Qt::white );
         m_cities[ i ]->setBrush( Qt::white );
     }
-
-    // calculate aspect ratio, and resize to desired width
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
-
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "sysevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "friendevents" ), this );
@@ -85,15 +84,20 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     dataUpdated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
     dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
     dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
+    
+    if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
+        showConfigurationInterface();
 
-    constraintsUpdated();
-    updateGeometry();
+    // calculate aspect ratio, and resize to desired width
+//     m_theme->resize();
+//     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
+
+    debug() << "setting size to " << m_width;
+    m_theme->resize( m_width, m_width );
+    setSize( m_width, m_width );
 
 }
 
-LastFmEvents::~LastFmEvents()
-{
-}
 /*
 void LastFmEvents::setGeometry( const QRectF& rect )
 {
@@ -105,16 +109,16 @@ void LastFmEvents::setGeometry( const QRectF& rect )
     Applet::setGeometry( rect );
 }*/
 
-QSizeF LastFmEvents::contentSizeHint() const 
+void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
 {
-    debug() << "returning size:" << size();
-    return size();
-}
-
-void LastFmEvents::constraintsUpdated( Plasma::Constraints constr )
-{
+    DEBUG_BLOCK
     prepareGeometryChange();
 
+    if (constraints & Plasma::SizeConstraint && m_theme) {
+        m_theme->resize(contentSize().toSize());
+    }
+
+    debug() << "resized svg to " << contentSize().toSize() << ", now re-laying out";
     for( int i = 0; i < 14; i++ ) // go through each row
     {
         QString titleElement = QString( "title%1" ).arg( i );
@@ -299,9 +303,13 @@ void LastFmEvents::configAccepted() // SLOT
 
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
+    DEBUG_BLOCK
     Q_UNUSED( text );
+
+    if( bounds.width() < 1 || bounds.height() < 1 )
+        return QFont( QString(), 12 );
+    
     int size = 12; // start here, shrink if needed
-//     QString font = "Arial";
     QFontMetrics fm( QFont( QString(), size ) );
     while( fm.height() > bounds.height() + 4 )
     {
@@ -309,7 +317,6 @@ QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& boun
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
     }
-
     // for aesthetics, we make it one smaller
     size--;
 

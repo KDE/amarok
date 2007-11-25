@@ -149,7 +149,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
 
 QSizeF ColumnApplet::sizeHint() const
 {
-    debug() << "returning size hint:" << m_geometry.size();
+    debug() << "column applet returning size hint:" << m_geometry.size();
     return m_geometry.size();
 }
 
