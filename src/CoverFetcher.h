@@ -9,6 +9,7 @@
 
 #include <QImage>       //stack allocated
 #include <QLabel>       //baseclass
+#include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 
@@ -80,6 +81,8 @@ private:
     void startFetchLoop();
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
+    QMutex m_albumsMutex;
+    QMutex m_fetchMutex;
 
     bool    m_userCanEditQuery;
     QString m_userQuery; /// the query from the query edit dialog
