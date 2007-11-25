@@ -103,8 +103,11 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
     
     QPixmap cover = m_albumCover->pixmap();
-    cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
-    m_albumCover->setPixmap( cover );
+    if( !cover.isNull() )
+    {
+        cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
+        m_albumCover->setPixmap( cover );
+    }
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
@@ -122,22 +125,27 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_title->setText( currentInfo[ Meta::Field::TITLE ].toString() );
     m_artist->setText( currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString() );
     m_album->setText( currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString() );
-    // TODO i can't add ratings... so hardcoding to test
-    m_rating = 7;
-    //m_rating = currentInfo[ Meta::Field::RATING ].toInt();
+    m_rating = currentInfo[ Meta::Field::RATING ].toInt();
     m_score->setText( currentInfo[ Meta::Field::SCORE ].toString() );
     m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
+    m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
     // scale pixmap on demand
-    QPixmap cover = m_albumCover->pixmap();
-    cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
-    m_albumCover->setPixmap( cover );
-    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-
-    m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
-    m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
-
+    QPixmap cover = data[ "albumart" ].value<QPixmap>();
+    if( !cover.isNull() )
+    {
+        QSize rectSize = m_theme->elementRect( "albumart" ).size();
+        //for some reason the rectangle is not square
+        int size = qMin( rectSize.width(), rectSize.height() );
+        debug() << "changing pixmap size from " << cover.width() << " to " << size;
+        cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
+        m_albumCover->setPixmap( cover );
+    }
+    else
+    {
+        warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
+    }
 }
 
 bool CurrentTrack::hasHeightForWidth() const
