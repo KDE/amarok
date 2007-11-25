@@ -208,8 +208,6 @@ Applet* ColumnApplet::addApplet( Applet* applet )
     DEBUG_BLOCK
     debug() << "m_columns:" << m_columns;
      m_columns->addItem( applet );
-
-    connect( applet, SIGNAL( geometryChanged() ), this, SLOT( recalculate() ) );
     
     recalculate();
     return applet;
