@@ -209,7 +209,7 @@ Applet* ColumnApplet::addApplet( Applet* applet )
     debug() << "m_columns:" << m_columns;
      m_columns->addItem( applet );
 
-    connect( applet, SIGNAL( changed() ), this, SLOT( recalculate() ) );
+    connect( applet, SIGNAL( geometryChanged() ), this, SLOT( recalculate() ) );
     
     recalculate();
     return applet;
