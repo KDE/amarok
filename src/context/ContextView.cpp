@@ -180,12 +180,6 @@ void ContextView::loadConfig()
     }
 }
 
-void ContextView::engineNewMetaData( const MetaBundle&, bool )
-{
-    ; //clear();
-}
-
-
 Applet* ContextView::addApplet(const QString& name, const QStringList& args)
 {
     QVariantList argList;

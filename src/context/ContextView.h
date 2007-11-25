@@ -70,8 +70,7 @@ public slots:
     void zoomOut();
     
     Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-protected:        
-    void engineNewMetaData( const MetaBundle&, bool );
+protected:
     void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     
     void resizeEvent(QResizeEvent *event);
