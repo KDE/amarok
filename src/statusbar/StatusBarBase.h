@@ -97,7 +97,7 @@ namespace KDE
         /**
          * Monitor progress for a KIO::Job, very handy.
          */
-        ProgressBar &newProgressOperation( KJob* );
+        AMAROK_EXPORT ProgressBar &newProgressOperation( KJob* );
 
         void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
         void incrementProgress( const QObject *owner );
@@ -142,7 +142,7 @@ namespace KDE
         void endProgressOperation();
 
         /** Stop anticipating progress from @param owner */
-        void endProgressOperation( QObject *owner );
+        AMAROK_EXPORT void endProgressOperation( QObject *owner );
 
         /**
          * Convenience function works like setProgress( QObject*, int )
