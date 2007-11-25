@@ -264,7 +264,7 @@ set( libcontextview_SRCS
     context/LyricsManager.cpp
     context/Svg.cpp
     context/widgets/TextWidget.cpp
-    context/widgets/VBoxLayout.cpp
+    context/layouts/ContextLayout.cpp
 )
 
 #####################################################################
