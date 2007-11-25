@@ -534,7 +534,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( leftAlignX, headingCenter );
         }
 
-        int underImageY = (int)( MARGIN + ALBUM_WIDTH + 2 );
+        int underImageY = (int)( MARGIN + ALBUM_WIDTH + 6 );
 
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
@@ -874,7 +874,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Head:
                 debug() << "Head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 4;
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 6;
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";

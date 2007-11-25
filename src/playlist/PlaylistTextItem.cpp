@@ -20,7 +20,7 @@ Playlist::TextItem::TextItem( QGraphicsItem* parent )
     {
         s_fm = new QFontMetricsF( QFont() );
     }
-    setDefaultTextColor( Qt::white );
+    //setDefaultTextColor( Qt::white );
 
 }
 
