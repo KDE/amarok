@@ -34,13 +34,14 @@ public:
     CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
 
+    void init();
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    QSizeF contentSizeHint() const;
-    void constraintsUpdated();
+    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints);
+    bool hasHeightForWidth() const;
+    qreal heightForWidth( qreal width ) const;
 
-    void setGeometry( const QRectF& geometry );
-    
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
@@ -52,7 +53,6 @@ private slots:
 private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
-    void resize( qreal newWidth, qreal aspectRatio );
 
     KDialog* m_config;
     QHBoxLayout* m_configLayout;
@@ -62,7 +62,6 @@ private:
     qreal m_aspectRatio;
 
     Context::Svg* m_theme;
-    QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;

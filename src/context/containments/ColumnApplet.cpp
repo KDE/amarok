@@ -36,7 +36,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     , m_defaultColumnSize( 450 )
 {
     DEBUG_BLOCK
-    m_columns = new Plasma::FlowLayout( this );
+    m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
     
     m_background = new Svg( "widgets/amarok-wallpaper", this );
@@ -81,24 +81,6 @@ void ColumnApplet::saveToConfig( KConfig& conf )
         }
     }
     conf.sync();
-    
-        // TODO port
-//     for( int i = 0; i < m_layout.size(); i++ )
-//     {
-//         for( int k = 0; k < m_layout[ i ]->count() ; k++ )
-//         {
-//             Applet* applet = dynamic_cast< Applet* >( m_layout[ i ]->itemAt( k ) );
-//             if( applet != 0 )
-//             {
-//                 KConfigGroup cg( &conf, QString::number( applet->id() ) );
-//                 debug() << "saving applet" << applet->name();
-//                 cg.writeEntry( "plugin", applet->pluginName() );
-//                 cg.writeEntry( "column", QString::number( i ) );
-//                 cg.writeEntry( "position", QString::number( k ) );
-//             }
-//         }
-//     }
-//     conf.sync();
 }
 
 void ColumnApplet::loadConfig( KConfig& conf )
@@ -113,38 +95,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
         if( plugin != QString() )
             Plasma::Containment::addApplet( plugin );
     }
-        // TODO port
-    /*
-    m_layout.clear();
-    init();
-    foreach( const QString& group, conf.groupList() )
-    {
-        KConfigGroup cg( &conf, group );
-        debug() << "loading applet:" << cg.readEntry( "plugin", QString() )
-            << QStringList() << group.toUInt() << cg.readEntry( "column", QString() ) << cg.readEntry( "position", QString() );
-
-        ContextScene* scene = qobject_cast< ContextScene* >( this->scene() );
-        if( scene != 0 )
-        {
-            Applet* applet = scene->addApplet( cg.readEntry( "plugin", QString() ),
-                              QVariantList(),
-                              group.toUInt(),
-                              QRectF() );
-            int column = cg.readEntry( "column", 1000 );
-            int pos = cg.readEntry( "position", 1000 );
-            debug() << "restoring applet to column:" << column << "and position:" << pos;
-            if( column >= m_layout.size() ) // was saved in a column that is not available now
-                addApplet( applet );
-            else
-            {
-                if( pos < m_layout[ column ]->count() ) // there is a position for it
-                    m_layout[ column ]->insertItem( pos, applet );
-                else // just append it, there is no position for it
-                    m_layout[ column ]->addItem( applet );
-            }
-        }
-    }
-    resizeColumns();*/
+    recalculate();
 }
 
 QSizeF ColumnApplet::sizeHint() const
@@ -155,12 +106,6 @@ QSizeF ColumnApplet::sizeHint() const
 
 QRectF ColumnApplet::boundingRect() const 
 {
-//     qreal width = 2*m_padding;
-//     qreal height = 0;
-//     foreach( Plasma::VBoxLayout* column, m_layout )
-//     {
-//         width += column->sizeHint().width();
-
     return m_geometry;
 }
 // call this when the view changes size: e.g. layout needs to be recalculated
@@ -193,8 +138,7 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
 {
     Q_UNUSED( object )
-    // basically we want to reshuffle the columns since we know something is gone
-//     resizeColumns();
+    recalculate();
 }
 /*
 // parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
@@ -273,9 +217,8 @@ Applet* ColumnApplet::addApplet( Applet* applet )
 
 void ColumnApplet::recalculate()
 {
-    DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
-    m_columns->setGeometry( m_columns->geometry() );
+    m_columns->invalidate();
 }
 
 QList<QAction*> ColumnApplet::contextActions()

@@ -32,13 +32,21 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_configLayout( 0 )
     , m_width( 0 )
     , m_aspectRatio( 0.0 )
-    , m_size( QSizeF() )
     , m_rating( -1 )
     , m_trackLength( 0 )
 {
     DEBUG_BLOCK
 
     setHasConfigurationInterface( true );
+}
+
+CurrentTrack::~CurrentTrack()
+{
+    DEBUG_BLOCK
+}
+
+void CurrentTrack::init()
+{
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
@@ -66,24 +74,18 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
-    constraintsUpdated();
-    updateGeometry();
 }
 
-CurrentTrack::~CurrentTrack()
+void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
-}
 
-QSizeF CurrentTrack::contentSizeHint() const
-{
-    return m_size;
-}
-
-void CurrentTrack::constraintsUpdated()
-{
-    DEBUG_BLOCK
     prepareGeometryChange();
+
+    if (constraints & Plasma::SizeConstraint && m_theme) {
+        m_theme->resize(contentSize().toSize());
+    }
+
     // here we put all of the text items into the correct locations
     m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
     m_artist->setPos( m_theme->elementRect( "artist" ).topLeft() );
@@ -136,6 +138,16 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
     m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
 
+}
+
+bool CurrentTrack::hasHeightForWidth() const
+{
+    return true;
+}
+
+qreal CurrentTrack::heightForWidth( qreal width ) const
+{
+    return width * m_aspectRatio;
 }
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -203,29 +215,6 @@ void CurrentTrack::configAccepted() // SLOT
     cg.writeEntry( "width", m_width );
 
     cg.sync();
-    constraintsUpdated();
-}
-
-void CurrentTrack::setGeometry( const QRectF& geometry )
-{
-    debug() << "current track told new geometry:" << geometry;
-    resize( geometry.width(), m_aspectRatio );
-    setPos( geometry.topLeft() );
-}
-
-void CurrentTrack::resize( qreal newWidth, qreal aspectRatio )
-{
-    DEBUG_BLOCK
-    debug() << "aspectRatio:" << aspectRatio;
-    debug() << "resizing to:" << newWidth;
-    qreal height = aspectRatio * newWidth;
-    debug() << "setting size:" << m_size;
-    m_size.setWidth( newWidth );
-    m_size.setHeight( height );
-    
-    m_theme->resize( m_size );
-    kDebug() << "set new size: " << m_size;
-    Applet::setGeometry( QRectF( geometry().topLeft(), m_size ) );
     constraintsUpdated();
 }
 

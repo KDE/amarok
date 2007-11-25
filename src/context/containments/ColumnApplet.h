@@ -14,12 +14,12 @@
 #ifndef COLUMN_APPLET_H
 #define COLUMN_APPLET_H
 
+#include "amarok_export.h"
 #include "context/Applet.h"
 #include "context/Containment.h"
-#include "amarok_export.h"
+#include "context/layouts/ContextLayout.h"
 #include "context/Svg.h"
 
-#include "plasma/layouts/flowlayout.h"
 #include "plasma/appletbrowser.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -78,7 +78,7 @@ private:
 
     QList<QAction*> *m_actions;
 
-    Plasma::FlowLayout* m_columns;
+    ContextLayout* m_columns;
     int m_defaultColumnSize;
     Plasma::Svg* m_background;
     Plasma::Svg* m_logo;

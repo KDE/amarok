@@ -35,6 +35,8 @@ public:
     void init();
 
     void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints);
+    bool hasHeightForWidth() const;
+    qreal heightForWidth( qreal width ) const;
 
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:

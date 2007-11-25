@@ -89,8 +89,8 @@ void LastFmEvents::init()
         showConfigurationInterface();
 
     // calculate aspect ratio, and resize to desired width
-//     m_theme->resize();
-//     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
+    m_theme->resize();
+    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
 
     debug() << "setting size to " << m_width;
     m_theme->resize( m_width, m_width );
@@ -212,6 +212,16 @@ void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::
     update();
 }
 
+bool LastFmEvents::hasHeightForWidth() const
+{
+    return true;
+}
+
+qreal LastFmEvents::heightForWidth( qreal width ) const
+{
+    return width * m_aspectRatio;
+}
+
 void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect& contentsRect )
 {
     DEBUG_BLOCK
@@ -292,7 +302,6 @@ void LastFmEvents::configAccepted() // SLOT
 
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
-    DEBUG_BLOCK
     Q_UNUSED( text );
 
     if( bounds.width() < 1 || bounds.height() < 1 )
