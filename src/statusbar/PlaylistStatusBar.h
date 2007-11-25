@@ -21,7 +21,7 @@
 #ifndef AMAROK_PLAYLISTSTATUSBAR_H
 #define AMAROK_PLAYLISTSTATUSBAR_H
 
-#include "statusBarBase.h"  //baseclass
+#include "StatusBarBase.h"  //baseclass
 //TODO:PORT to new playlist
 // #include "queueLabel.h"
 

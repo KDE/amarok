@@ -74,7 +74,7 @@ namespace KDE
      * @see KDE::ProgressBar
      */
 
-    class AMAROK_EXPORT StatusBar : public QStatusBar
+    class StatusBar : public QStatusBar
     {
         Q_OBJECT
 

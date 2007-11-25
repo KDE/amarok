@@ -24,7 +24,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "StatusBarMessageLabel.h"
-#include "statusBarBase.h"
+#include "StatusBarBase.h"
 #include "threadmanager.h"
 
 #include <kicon.h>
@@ -653,4 +653,4 @@ StatusBar::writeLogFile( const QString &text )
 } //namespace KDE
 
 
-#include "statusBarBase.moc"
+#include "StatusBarBase.moc"
