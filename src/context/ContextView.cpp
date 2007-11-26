@@ -52,6 +52,7 @@ ContextView::ContextView( QWidget* parent )
 
     s_self = this;
 
+
 //     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
 
