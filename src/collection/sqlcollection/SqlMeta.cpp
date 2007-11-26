@@ -20,7 +20,6 @@
 
 #include "amarok.h"
 #include "BlockingQuery.h"
-#include "CoverFetcher.h"
 #include "debug.h"
 #include "MainWindow.h"
 #include "meta/CustomActionsCapability.h"
@@ -771,16 +770,12 @@ QPixmap
 SqlAlbum::image( int size, bool withShadow )
 {
     QString amazonImage = findAmazonImage( size );
-    if( !amazonImage.isEmpty() )
+    if( !amazonImage.isEmpty() && size < 1000 )
     {
         return QPixmap( amazonImage );
     }
     else
-    {
-        CoverFetcher *c = The::coverFetcher();
-        c->queueAlbum( Meta::AlbumPtr(this) );
         return Meta::Album::image( size, withShadow );
-    }
 }
 
 void
