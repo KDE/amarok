@@ -5,3 +5,4 @@ Type=Service
 Icon=amarok
 X-KDE-Library=amarok_data_engine_current
 X-EngineName=amarok-current
+
