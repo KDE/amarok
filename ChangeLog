@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.8
   CHANGES:
+    * Optimise some database queries with the mysql backend. Patch by Alf
+      Eaton <sites@hubmed.org> (BR 152749).
     * Don't show the device plugin dialog when a new device is plugged in.
       Apparently it's not obvious that you have to hit OK after selecting "Do
       not handle" if you don't want it handled, so disabling it prevents it
