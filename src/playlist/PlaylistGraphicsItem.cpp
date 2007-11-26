@@ -331,18 +331,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             m_items->bottomLeftText->show();
     }
 
-    
+
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
         //painter->fillRect( trackRect, QBrush( QColor( 0, 0, 255, 128 ) ) );
 
         QString key = QString("selection_left:%1x%2").arg( 40 ).arg(trackRect.height());
-        
+
         QPixmap leftMarker( 40 , (int)( trackRect.height() ) );
         leftMarker.fill( Qt::transparent );
-
-        debug() << "Key string: " << key;
 
         if( !QPixmapCache::find(key, leftMarker) )
         {
@@ -357,8 +355,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         key = QString("selection_right:%1x%2").arg( 40 ).arg(trackRect.height());
         QPixmap rightMarker( 40 , (int)( trackRect.height() ) );
         rightMarker.fill( Qt::transparent );
-
-        debug() << "Key string: " << key;
 
         if( !QPixmapCache::find(key, rightMarker) )
         {
@@ -387,8 +383,6 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
             QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
             background.fill( Qt::transparent );
-
-            debug() << "Key string: " << key;
 
             if (!QPixmapCache::find(key, background)) {
                 QPainter pt( &background );
@@ -564,7 +558,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
 
-        debug() << "Key string: " << key;
         QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
         background.fill( Qt::transparent );
 
