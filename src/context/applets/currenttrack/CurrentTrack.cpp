@@ -108,7 +108,7 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
         cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
         m_albumCover->setPixmap( cover );
     }
-//     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
+    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }

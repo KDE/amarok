@@ -29,6 +29,7 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_requested( true )
+    , m_coverWidth( 0 )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK
@@ -104,7 +105,6 @@ void CurrentEngine::update()
     m_currentTrack->album()->subscribe( this );
     clearData( "current" );
     setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
-
     setData( "current", "current", trackInfo );
 }
 
