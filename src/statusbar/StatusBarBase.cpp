@@ -266,6 +266,8 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long, Messag
 {
     SHOULD_BE_GUI
 
+    //TODO: Remove after porting statusbar
+    debug() << "Short Message: " << _short << "\nLong Message: " << _long;
     m_shortLongType = type;
 
     if( !_short.isEmpty() )
@@ -282,6 +284,9 @@ void
 StatusBar::longMessage( const QString &text, MessageType type )
 {
     SHOULD_BE_GUI
+
+    //TODO: Remove before release
+    debug() << "Long Message: " << text;
 
     m_messageLabel->setMessage( text, type );
 
