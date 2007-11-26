@@ -365,21 +365,19 @@ CoverManager::metadataChanged( Meta::Album* album )
     DEBUG_BLOCK
 
     ArtistItem *selectedItem = static_cast<ArtistItem*>(m_artistView->selectedItems().first());
-    if( album->albumArtist() != selectedItem->artist() || selectedItem->text( 0 ) == i18n( "All Albums" ) )
+    if( selectedItem->text( 0 ) != i18n( "All Artists" ) )
     {
-        debug() << "Album isn't shown";
-        return;
+        if ( album->albumArtist() != selectedItem->artist() )
+            return;
     }
     else
     {
         foreach( CoverViewItem *item, m_coverItems )
         {
-            debug() << "Checking if " << album->name() << "Is equal to " << item->albumPtr()->name();
             if( album->name() == item->albumPtr()->name() )
                 item->loadCover();
         }
     }
-    
 }
 
 void CoverManager::fetchMissingCovers() //SLOT
@@ -935,11 +933,11 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setResizeMode( QListView::Adjust );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setWrapping( true );
-    setGridSize( QSize(108, 125) );
+//     setGridSize( QSize(108, 125) );
     setSpacing( 4 );
     setWordWrap( true );
     setIconSize( QSize(100,100) );
-    setAlternatingRowColors( true );
+    setTextElideMode( Qt::ElideRight );
 //     arrangeItemsInGrid();
 //     setAutoArrange( true );
 //     setItemsMovable( false );
@@ -1001,6 +999,7 @@ void CoverView::setStatusText( QListWidgetItem *item )
 
 CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     : QListWidgetItem( parent )
+    , m_parent( parent )
     , m_albumPtr( album)
     , m_coverPixmap( )
 {
@@ -1008,11 +1007,16 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     m_artist = album->albumArtist()->prettyName();
     setText( album->prettyName() );
     setIcon( album->image( 100 ) );
+    album->subscribe( qobject_cast<CoverManager*>(parent->parent()->parent()) );
 //     setDragEnabled( true );
 //     setDropEnabled( true );
     calcRect();
 }
 
+CoverViewItem::~CoverViewItem()
+{
+    m_albumPtr->unsubscribe(  qobject_cast<CoverManager*>( m_parent->parent()->parent()) );
+}
 bool CoverViewItem::hasCover() const
 {
     return albumPtr()->hasImage();
@@ -1021,6 +1025,7 @@ bool CoverViewItem::hasCover() const
 void CoverViewItem::loadCover()
 {
     m_coverPixmap = m_albumPtr->image();  //create the scaled cover
+    setIcon( m_coverPixmap );
 
 //     repaint();
 }

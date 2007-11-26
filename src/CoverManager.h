@@ -149,6 +149,7 @@ class CoverViewItem : public QListWidgetItem
 {
     public:
         CoverViewItem( QListWidget *parent, Meta::AlbumPtr album );
+        ~CoverViewItem();
 
         void loadCover();
         bool hasCover() const;
@@ -172,6 +173,7 @@ class CoverViewItem : public QListWidgetItem
         QString m_coverImagePath;
         QPixmap m_coverPixmap;
         bool    m_embedded;
+        QListWidget *m_parent;
 };
 
 

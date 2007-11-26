@@ -60,7 +60,6 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
-
 QVariant
 CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
