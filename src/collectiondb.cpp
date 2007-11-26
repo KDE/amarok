@@ -2493,7 +2493,17 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
                       ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
-    else
+    // mysql is case insensitive and lower() is very slow
+    else if (getDbConnectionType() == DbConnection::mysql)
+    {
+        return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
+                      "tags.album = album.id AND tags.artist = artist.id "
+                      "AND artist.name = '" + escapeString( artist ) + "' " +
+                      ( withUnknown ? QString::null : "AND album.name <> '' " ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
+                      " ORDER BY album.name;" );
+    }
+    else // sqlite
     {
         return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
