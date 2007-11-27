@@ -18,41 +18,36 @@
  ***************************************************************************/
 
 
+#include "context/ContextView.h"
 #include "debug.h"
 #include "servicebrowser.h"
-#include "context/ContextView.h"
 #include "ServiceListDelegate.h"
 
 #include <KIconLoader>
 
-ServiceBrowser::ServiceBrowser(QWidget * parent, const QString& name )
+ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     : KVBox( parent )
     , m_currentService( 0 )
     , m_usingContextView( false )
     , m_serviceListModel( new ServiceListModel() )
 {
     setObjectName( name );
-
     debug() << "ServiceBrowser starting...";
-
     m_serviceListView = new QListView( this );
     ServiceListDelegate * delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( delegate );
-
     m_serviceListView->setModel( m_serviceListModel );
-
     connect(m_serviceListView, SIGNAL( doubleClicked ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
-
-
-
     m_scriptableServiceManager = 0;
 }
+
 
 ServiceBrowser::~ServiceBrowser()
 {
     DEBUG_BLOCK
     qDeleteAll( m_services.values() );
 }
+
 
 //TODO: Thsi should be moved to the ScriptableServiceManager instead
 void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
@@ -61,33 +56,29 @@ void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scr
     connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
 }
 
+
 void ServiceBrowser::addService( ServiceBase * service ) {
 
     //insert service into service map
     m_services[service->getName()] = service;
-
     m_serviceListModel->addService( service );
-
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
 }
 
 
-
-
-void ServiceBrowser::serviceActivated(const QModelIndex & index)
+void ServiceBrowser::serviceActivated( const QModelIndex & index )
 {
-     DEBUG_BLOCK
-     ServiceBase * service = 0;
+    DEBUG_BLOCK
+    ServiceBase * service = 0;
 
     if ( index.data( ServiceRole ).canConvert<ServiceBase *>() )
         service = index.data( ServiceRole ).value<ServiceBase *>();
     else
         return;
 
-
     if ( service ) {
         debug() << "Show service: " <<  service->getName();
-        showService(  service->getName() );
+        showService( service->getName() );
     }
 
 
@@ -101,10 +92,9 @@ void ServiceBrowser::showService( const QString &name )
        service = m_services.value( name );
 
     if ( service != 0 ) {
-
         m_serviceListView->setParent( 0 );
         service->setParent ( this );
-        service->move( QPoint( 0,0 ) );
+        service->move( QPoint( 0, 0 ) );
         service->show();
         service->polish();
         m_usingContextView = service->updateContextView();
@@ -126,8 +116,6 @@ void ServiceBrowser::home()
             Context::ContextView::self()->clear();
     }
 }
-
-
 
 
 #include "servicebrowser.moc"
