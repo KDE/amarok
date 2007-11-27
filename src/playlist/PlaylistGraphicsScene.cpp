@@ -30,7 +30,6 @@ GraphicsScene::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
 void
 GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
-    debug() << "[GS] drag enter event";
     QGraphicsScene::dragEnterEvent( event );
 }
 
@@ -38,9 +37,8 @@ void
 GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
-    debug() << "[GS] dropping";
     QGraphicsScene::dropEvent( event );
-#if 0
+
     if( itemAt( event->pos() ) )
     {
         debug() << "[GS] ignoring";
@@ -54,6 +52,5 @@ GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
         The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
         DropVis::instance()->hide();
     }
-#endif
 }
 

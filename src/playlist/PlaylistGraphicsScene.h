@@ -18,7 +18,7 @@ namespace Playlist
     {
         public:
             GraphicsScene( QObject *parent = 0 );
-        
+
         protected:
             virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
             virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );

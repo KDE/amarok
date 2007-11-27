@@ -142,28 +142,37 @@ void
 Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
     DEBUG_BLOCK
-    debug() << "[GV] drag enter event: " << event->mimeData()->formats();
-    debug() << "  accepts drops? " << acceptDrops();
     event->accept();
     foreach( QString mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
-            debug() << "[GV] contains mime " << mime;
             QGraphicsView::dragEnterEvent( event );
             event->acceptProposedAction();
             Playlist::DropVis::instance()->show();
             return;
         }
     }
-    debug() << "[GV] passing on enter event";
     QGraphicsView::dragEnterEvent( event );
 }
-
+void
+Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
+{
+    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    {
+        if( event->mimeData()->hasFormat( mime ) )
+        {
+            QGraphicsView::dragMoveEvent( event );
+            Playlist::DropVis::instance()->show();
+            event->acceptProposedAction();
+            return;
+        }
+    }
+    QGraphicsView::dragMoveEvent( event );
+}
 void
 Playlist::GraphicsView::dragLeaveEvent( QDragLeaveEvent *event )
 {
-    debug() << "[GV] drag leave event";
     Playlist::DropVis::instance()->hide();
     QGraphicsView::dragLeaveEvent( event );
 }
@@ -171,9 +180,7 @@ Playlist::GraphicsView::dragLeaveEvent( QDragLeaveEvent *event )
 void
 Playlist::GraphicsView::dropEvent( QDropEvent *event )
 {
-    DEBUG_BLOCK
     event->accept();
-    debug() << "[GV] drop event";
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
