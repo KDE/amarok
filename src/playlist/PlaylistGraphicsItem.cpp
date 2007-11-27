@@ -348,8 +348,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             s_svgRenderer->render( &pt, "selection_left"/*,  QRectF( 0, 0, 40, trackRect.height() )*/ );
             QPixmapCache::insert(key, leftMarker);
         }
-
-        painter->drawPixmap( 2, (int)trackRect.top(), leftMarker );
+        if ( m_groupMode == Head ) 
+            painter->drawPixmap( 2, (int)trackRect.top() + 2, leftMarker );
+        else
+            painter->drawPixmap( 2, (int)trackRect.top(), leftMarker );
 
 
         key = QString("selection_right:%1x%2").arg( 40 ).arg(trackRect.height());
@@ -363,7 +365,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             QPixmapCache::insert(key, rightMarker);
         }
 
-        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), rightMarker );
+        if ( m_groupMode == Head )
+            painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top() + 2, rightMarker );
+        else
+            painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), rightMarker );
     }
 
 
