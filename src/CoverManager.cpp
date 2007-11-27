@@ -156,9 +156,8 @@ CoverManager::CoverManager()
     hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-        KHBox *searchBox = new KHBox( hbox );
-        KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
-        m_searchEdit = new KLineEdit( searchToolBar );
+//         KHBox *searchBox = new KHBox( hbox );
+        m_searchEdit = new KLineEdit( hbox );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( QFrame::Sunken );
 
@@ -167,7 +166,7 @@ CoverManager::CoverManager()
 
         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
 
-        hbox->setStretchFactor( searchBox, 1 );
+        hbox->setStretchFactor( m_searchEdit, 1 );
     } //</Search LineEdit>
 
     // view menu
@@ -505,7 +504,7 @@ void CoverManager::slotArtistSelected() //SLOT
 
     //now, load the thumbnails
     QList<QListWidgetItem*> items;
-    int i = 1;
+    int i = 0;
     for ( QListWidgetItem *item = m_coverView->item( i );
           i < m_coverView->count();
           item = m_coverView->item( i++ ) )
@@ -610,7 +609,7 @@ void CoverManager::slotSetFilter() //SLOT
     m_filter = m_searchEdit->text();
 
     m_coverView->clearSelection();
-    uint i = 1;
+    uint i = 0;
     QListWidgetItem *item = m_coverView->item( i );
     while ( item )
     {
@@ -647,7 +646,7 @@ void CoverManager::changeView( int id  ) //SLOT
     //clear the iconview without deleting items
     m_coverView->clearSelection();
     QListWidgetItem *item = m_coverView->item( 0 );
-    uint i = 1;
+    uint i = 0;
     while ( item ) {
         m_coverView->takeItem( i );
         i++;
@@ -877,7 +876,7 @@ void CoverManager::updateStatusBar()
             m_progressBox->hide();
 
         //album info
-        int i = 1;
+        int i = 0;
         for( QListWidgetItem *item = m_coverView->item( i );
              i < m_coverView->count();
              item = m_coverView->item( i++ ) )
@@ -916,7 +915,6 @@ void CoverManager::setStatusText( QString text )
     m_oldStatusText = m_statusLabel->text();
     m_statusLabel->setText( text );
 }
-
 //////////////////////////////////////////////////////////////////////
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
@@ -933,21 +931,18 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setResizeMode( QListView::Adjust );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setWrapping( true );
-//     setGridSize( QSize(108, 125) );
     setSpacing( 4 );
     setWordWrap( true );
     setIconSize( QSize(100,100) );
     setTextElideMode( Qt::ElideRight );
-//     arrangeItemsInGrid();
-//     setAutoArrange( true );
-//     setItemsMovable( false );
+    setMouseTracking( true );
 
     // as long as QIconView only shows tooltips when the cursor is over the
     // icon (and not the text), we have to create our own tooltips
 //     setShowToolTips( false );
 
-//     connect( this, SIGNAL( itemEntered( QListViewItem * ) ), SLOT( setStatusText( QListViewItem * ) ) );
-//     connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
+    connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
+    connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
 }
 
 
@@ -980,7 +975,7 @@ void CoverView::setStatusText( QListWidgetItem *item )
     #define item static_cast<CoverViewItem *>( item )
     if ( !item )
         return;
-
+    
     bool sampler = false;
     //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
     //FIXME: Don't rely on other independent code, use an sql query
