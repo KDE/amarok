@@ -1,7 +1,26 @@
 /*
+ *  Copyright (c) 2007 Jamie Faris <farisj@gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+/*
  * MediaDeviceMeta.h
  *
- * Jamie Faris, 2007
+ * This file contains definitions of Meta classes used by media device plugins.
+ *
  */
 
 
@@ -12,6 +31,52 @@
 #include "Meta.h"
 
 class MediaDevice;
+
+class MediaDeviceAlbum : public Meta::Album
+{
+    public:
+        MediaDeviceAlbum( QString name )
+            : m_name( name )
+        {
+        }
+
+        virtual ~MediaDeviceAlbum() {}
+
+        // from Meta::MetaBase
+        QString name() const { return m_name; }
+        QString prettyName() const { return name(); }
+
+        // from Meta::Album
+        bool isCompilation() const { return false; }
+        bool hasAlbumArtist() const { return false; }
+        Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
+        Meta::TrackList tracks() { return Meta::TrackList(); }
+
+    private:
+        QString m_name;
+};
+
+
+class MediaDeviceGenre : public Meta::Genre
+{
+    public:
+        MediaDeviceGenre( QString name )
+            : m_name( name )
+        {
+        }
+
+        virtual ~MediaDeviceGenre() {}
+
+        // from Meta::MetaBase
+        QString name() const { return m_name; }
+        QString prettyName() const { return name(); }
+
+        // from Meta::Genre
+        Meta::TrackList tracks() { return Meta::TrackList(); }
+
+    private:
+        QString m_name;
+};
 
 
 /**
@@ -26,23 +91,24 @@ class MediaDeviceArtist : public Meta::Artist
 {
     public:
         MediaDeviceArtist( QString name )
-            : m_name( name ),
-              m_trackList()
+            : m_name( name )
         {
         }
+
+        virtual ~MediaDeviceArtist() {}
 
         //from Meta::MetaBase
         QString name() const { return m_name; }
         QString prettyName() const { return name(); }
 
         //from Meta::Artist
-        Meta::TrackList tracks() { return m_trackList; }
+        Meta::TrackList tracks() { return Meta::TrackList(); }
         Meta::AlbumList albums() { return Meta::AlbumList(); }
 
     private:
         QString m_name;
-        Meta::TrackList m_trackList;
 };
+
 
 /**
  * A simple implementation of Meta::Track for media devices.
@@ -60,6 +126,8 @@ class MediaDeviceTrack : public Meta::Track
               m_name( title )
         {
         }
+
+        virtual ~MediaDeviceTrack() {}
 
         //from Meta::MetaBase
         virtual QString name() const { return m_name; }

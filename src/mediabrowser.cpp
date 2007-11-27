@@ -26,13 +26,10 @@
 #include "MediaDevice.h"
 #include "MediaDeviceCache.h"
 #include "MediaDevicePluginManager.h"
-#include "metabundle.h"
-#include "Meta.h"
 #include "meta/file/File.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
 #include "pluginmanager.h"
-#include "podcastbundle.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "searchwidget.h"
@@ -120,7 +117,7 @@ class DummyMediaDevice : public MediaDevice
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
-    virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
+    virtual MediaItem* trackExists(const Meta::TrackPtr) { return 0; }
     virtual bool lockDevice(bool) { return true; }
     virtual void unlockDevice() {}
     virtual bool openDevice( bool silent )
@@ -259,8 +256,9 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
     connect( pApp,               SIGNAL( prepareToQuit() ),  SLOT( prepareToQuit() ) );
-    connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
-            SLOT( tagsChanged( const MetaBundle& ) ) );
+    //TODO port to meta & new collection interface
+    //connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
+    //        SLOT( tagsChanged( const MetaBundle& ) ) );
 
     //TODO: If we will be supporting manually adding devices, probably need the following section
     /*m_haveDevices = false;

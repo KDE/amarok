@@ -17,7 +17,6 @@
 #include "debug.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
-#include "metabundle.h"
 #include "meta/file/File.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
@@ -208,6 +207,7 @@ MediaDevice::tracksToSync( const QString &name, const KUrl &url )
     return Meta::TrackList();
 }
 
+//TODO port to meta
 //BundleList
 //MediaDevice::bundlesToSync( const QString &name, const QString &query )
 //{
@@ -415,8 +415,8 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
         }
         else
         {
-            MetaBundle bundle2(dst);
-            if(!bundle2.isValidMedia() && bundle2.filesize()==MetaBundle::Undetermined)
+            MetaFile::Track track2(dst);
+            if( !track2.isPlayable() && track2.filesize()==0 )
             {
                 tryToRemove = true;
                 // probably s.th. went wrong
