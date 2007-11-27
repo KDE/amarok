@@ -27,6 +27,8 @@
 #include "MediaDeviceCache.h"
 #include "MediaDevicePluginManager.h"
 #include "metabundle.h"
+#include "meta.h"
+#include "meta/file/File.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
 #include "pluginmanager.h"
@@ -132,7 +134,7 @@ class DummyMediaDevice : public MediaDevice
     }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
-    virtual MediaItem* copyTrackToDevice(const MetaBundle&) { return 0; }
+    virtual MediaItem* copyTrackToDevice(const Meta::TrackPtr track) { return 0; }
     virtual int deleteItemFromDevice(MediaItem*, int) { return -1; }
 };
 
@@ -291,27 +293,28 @@ MediaBrowser::blockQuit() const
 }
 
 void
-MediaBrowser::tagsChanged( const MetaBundle &bundle )
+MediaBrowser::tagsChanged( const Meta::TrackPtr newTrack )
 {
+    if (newTrack.isNull())
+        return;
+
     m_itemMapMutex.lock();
-    debug() << "tags changed for " << bundle.url().url();
-    ItemMap::iterator it = m_itemMap.find( bundle.url().url() );
+    debug() << "tags changed for " << newTrack->url();
+    ItemMap::iterator it = m_itemMap.find( newTrack->url() );
     if( it != m_itemMap.end() )
     {
         MediaItem *item = *it;
         m_itemMapMutex.unlock();
         if( item->device() )
         {
-            item->device()->tagsChanged( item, bundle );
+            item->device()->tagsChanged( item, newTrack );
         }
         else
         {
             // it's an item on the transfer queue
-            item->setBundle( new MetaBundle( bundle ) );
+            item->setMeta( Meta::DataPtr::staticCast(newTrack) );
 
-            QString text = item->bundle()->prettyTitle();
-            if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-                text = item->bundle()->url().prettyUrl();
+            QString text = item->meta()->prettyName();
             if( !item->m_playlistName.isNull() )
             {
                 text += " (" + item->m_playlistName + ')';
@@ -325,18 +328,16 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
     }
 }
 
-bool
-MediaBrowser::getBundle( const KUrl &url, MetaBundle *bundle ) const
+Meta::TrackPtr
+MediaBrowser::getMeta( const KUrl &url ) const
 {
     QMutexLocker locker( &m_itemMapMutex );
+
     ItemMap::const_iterator it = m_itemMap.find( url.url() );
     if( it == m_itemMap.end() )
-        return false;
+        return Meta::TrackPtr();
 
-    if( bundle )
-        *bundle = *(*it)->bundle();
-
-    return true;
+    return Meta::TrackPtr::dynamicCast( (*it)->meta() );
 }
 
 KUrl
@@ -1224,7 +1225,7 @@ MediaBrowser::unloadDevicePlugin( MediaDevice *device )
 bool
 MediaBrowser::config()
 {
-    if( m_deviceCombo->currentText() == "No Device Selected" )
+    if( m_deviceCombo->currentText() == "No Device Available" )
     {
         //Amarok::ContextStatusBar::instance()->longMessage( i18n( "No device selected to configure." ),
         //                                               KDE::StatusBar::Sorry );
@@ -1305,6 +1306,9 @@ MediaBrowser::updateStats()
 bool
 MediaView::setFilter( const QString &filter, MediaItem *parent )
 {
+    //TODO port to meta, for now never filter.
+    return true;
+/*
     bool advanced = ExpressionParser::isAdvancedExpression( filter );
     QList<int> defaultColumns;
     defaultColumns << MetaBundle::Album;
@@ -1375,6 +1379,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
         m_device->updateRootItems();
 
     return childrenVisible;
+*/
 }
 
 void
@@ -1409,7 +1414,7 @@ MediaQueue::syncPlaylist( const QString &name, const KUrl &url, bool loading )
 }
 
 void
-MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlistName )
+MediaQueue::addUrl( const KUrl& url2, Meta::TrackPtr meta, const QString &playlistName )
 {
     KUrl url = Amarok::mostLocalURL( url2 );
 
@@ -1458,22 +1463,21 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
         }
     }
 
-    if(!bundle)
-        bundle = new MetaBundle( url );
+    if(!meta)
+        meta = Meta::TrackPtr( new MetaFile::Track( url ) );
 
     MediaItem* item = new MediaItem( this, lastItem() );
     item->setExpandable( false );
     item->setDropEnabled( true );
-    item->setBundle( bundle );
-    if(bundle->podcastBundle() )
-    {
-        item->setType( MediaItem::PODCASTITEM );
-    }
+    item->setMeta( Meta::DataPtr::staticCast(meta) );
+    //TODO: podcast meta
+    //if(bundle->podcastBundle() )
+    //{
+    //    item->setType( MediaItem::PODCASTITEM );
+    //}
     item->m_playlistName = playlistName;
 
-    QString text = item->bundle()->prettyTitle();
-    if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-        text = item->bundle()->url().prettyUrl();
+    QString text = item->meta()->prettyName();
     if( !item->m_playlistName.isNull() )
     {
         text += " (" + item->m_playlistName + ')';
@@ -1493,24 +1497,23 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
     MediaItem *newitem = new MediaItem( this, lastItem() );
     newitem->setExpandable( false );
     newitem->setDropEnabled( true );
-    MetaBundle *bundle = new MetaBundle( *item->bundle() );
-    KUrl filepath(url);
-    filepath.addPath( bundle->filename() );
-    bundle->setUrl( filepath );
+    Meta::TrackPtr meta = Meta::TrackPtr::dynamicCast(item->meta());
+    //TODO port to meta
+    //KUrl filepath(url);
+    //filepath.addPath( meta->filename() );
+    //bundle->setUrl( filepath );
     newitem->m_device = item->m_device;
-    if(bundle->podcastBundle() )
-    {
-        item->setType( MediaItem::PODCASTITEM );
-    }
-    QString text = item->bundle()->prettyTitle();
-    if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-        text = item->bundle()->url().prettyUrl();
+    //if(bundle->podcastBundle() )
+    //{
+    //    item->setType( MediaItem::PODCASTITEM );
+    //}
+    QString text = item->meta()->prettyName();
     if( !item->m_playlistName.isEmpty() )
     {
         text += " (" + item->m_playlistName + ')';
     }
     newitem->setText( 0, text);
-    newitem->setBundle( bundle );
+    newitem->setMeta( Meta::DataPtr::staticCast(meta) );
     m_parent->updateButtons();
     m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
     addItemToSize( item );
@@ -1523,7 +1526,7 @@ MediaQueue::addUrls( const KUrl::List urls, const QString &playlistName )
 {
     KUrl::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
-        addUrl( *it, 0, playlistName );
+        addUrl( *it, Meta::TrackPtr(), playlistName );
 
     URLsAdded();
 }
@@ -1684,13 +1687,13 @@ MediaQueue::save( const QString &path )
         QDomElement i = newdoc.createElement("item");
         i.setAttribute("url", item->url().url());
 
-        if( item->bundle() )
+        if( item->meta() )
         {
             QDomElement attr = newdoc.createElement( "Title" );
-            QDomText t = newdoc.createTextNode( item->bundle()->title() );
+            QDomText t = newdoc.createTextNode( item->meta()->name() );
             attr.appendChild( t );
             i.appendChild( attr );
-
+/* TODO port to meta
             attr = newdoc.createElement( "Artist" );
             t = newdoc.createTextNode( item->bundle()->artist() );
             attr.appendChild( t );
@@ -1720,6 +1723,7 @@ MediaQueue::save( const QString &path )
             t = newdoc.createTextNode( QString::number( item->bundle()->track() ) );
             attr.appendChild( t );
             i.appendChild( attr );
+*/
         }
 
         if(item->type() == MediaItem::PODCASTITEM)
@@ -1727,7 +1731,7 @@ MediaQueue::save( const QString &path )
             i.setAttribute( "podcast", "1" );
         }
 
-        if(item->type() == MediaItem::PODCASTITEM
+/*TODO        if(item->type() == MediaItem::PODCASTITEM
                 && item->bundle()->podcastBundle())
         {
             PodcastEpisodeBundle *peb = item->bundle()->podcastBundle();
@@ -1750,7 +1754,7 @@ MediaQueue::save( const QString &path )
             t = newdoc.createTextNode( peb->url().url() );
             attr.appendChild( t );
             i.appendChild( attr );
-        }
+        }*/
 
         if( !item->m_playlistName.isEmpty() )
         {
@@ -1818,11 +1822,13 @@ MediaQueue::load( const QString& filename )
         }
         KUrl url(elem.attribute("url"));
 
-        bool podcast = elem.hasAttribute( "podcast" );
-        PodcastEpisodeBundle peb;
-        if( url.isLocalFile() )
-            peb.setLocalURL( url );
-        MetaBundle *bundle = new MetaBundle( url );
+        //TODO port to meta
+        //bool podcast = elem.hasAttribute( "podcast" );
+        //PodcastEpisodeBundle peb;
+        //if( url.isLocalFile() )
+        //    peb.setLocalURL( url );
+        Meta::TrackPtr track = Meta::TrackPtr( new MetaFile::Track( url ) );
+
         for(QDomNode node = elem.firstChild();
                 !node.isNull();
                 node = node.nextSibling())
@@ -1830,32 +1836,34 @@ MediaQueue::load( const QString& filename )
             if(node.firstChild().isNull())
                 continue;
 
-            if(node.nodeName() == "Title" )
-                bundle->setTitle(node.firstChild().toText().nodeValue());
-            else if(node.nodeName() == "Artist" )
-                bundle->setArtist(node.firstChild().toText().nodeValue());
-            else if(node.nodeName() == "Album" )
-                bundle->setAlbum(node.firstChild().toText().nodeValue());
-            else if(node.nodeName() == "Year" )
-                bundle->setYear(node.firstChild().toText().nodeValue().toUInt());
-            else if(node.nodeName() == "Genre" )
-                bundle->setGenre(node.firstChild().toText().nodeValue());
-            else if(node.nodeName() == "Comment" )
-                bundle->setComment(node.firstChild().toText().nodeValue());
-            else if(node.nodeName() == "PodcastDescription" )
-                peb.setDescription( node.firstChild().toText().nodeValue() );
-            else if(node.nodeName() == "PodcastAuthor" )
-                peb.setAuthor( node.firstChild().toText().nodeValue() );
-            else if(node.nodeName() == "PodcastRSS" )
-                peb.setParent( KUrl( node.firstChild().toText().nodeValue() ) );
-            else if(node.nodeName() == "PodcastURL" )
-                peb.setUrl( KUrl( node.firstChild().toText().nodeValue() ) );
+            //TODO port to meta
+            //if(node.nodeName() == "Title" )
+            //    bundle->setTitle(node.firstChild().toText().nodeValue());
+            //else if(node.nodeName() == "Artist" )
+            //    bundle->setArtist(node.firstChild().toText().nodeValue());
+            //else if(node.nodeName() == "Album" )
+            //    bundle->setAlbum(node.firstChild().toText().nodeValue());
+            //else if(node.nodeName() == "Year" )
+            //    bundle->setYear(node.firstChild().toText().nodeValue().toUInt());
+            //else if(node.nodeName() == "Genre" )
+            //    bundle->setGenre(node.firstChild().toText().nodeValue());
+            //else if(node.nodeName() == "Comment" )
+            //    bundle->setComment(node.firstChild().toText().nodeValue());
+            //else if(node.nodeName() == "PodcastDescription" )
+            //    peb.setDescription( node.firstChild().toText().nodeValue() );
+            //else if(node.nodeName() == "PodcastAuthor" )
+            //    peb.setAuthor( node.firstChild().toText().nodeValue() );
+            //else if(node.nodeName() == "PodcastRSS" )
+            //    peb.setParent( KUrl( node.firstChild().toText().nodeValue() ) );
+            //else if(node.nodeName() == "PodcastURL" )
+            //    peb.setUrl( KUrl( node.firstChild().toText().nodeValue() ) );
         }
 
-        if( podcast )
-        {
-            bundle->setPodcastBundle( peb );
-        }
+        //TODO port to meta
+        //if( podcast )
+        //{
+        //    bundle->setPodcastBundle( peb );
+        //}
 
         QString playlist = elem.attribute( "playlist" );
         QString playlistdata = elem.attribute( "playlistdata" );
@@ -1868,7 +1876,7 @@ MediaQueue::load( const QString& filename )
                 syncPlaylist( playlist, playlistdata, true );
         }
         else
-            addUrl( url, bundle, playlist );
+            addUrl( url, track, playlist );
     }
 
     URLsAdded();
@@ -1968,10 +1976,10 @@ MediaQueue::computeSize() const
     {
         MediaItem *item = static_cast<MediaItem *>(it);
 
-        if( item && item->bundle() &&
+        if( item && item->meta() &&
                 ( !m_parent->currentDevice()
                   || !m_parent->currentDevice()->isConnected()
-                  || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+                  || !m_parent->currentDevice()->trackExists(Meta::TrackPtr::dynamicCast(item->meta())) ) )
             m_totalSize += ((item->size()+1023)/1024)*1024;
     }
 }
@@ -1985,20 +1993,20 @@ MediaQueue::totalSize() const
 void
 MediaQueue::addItemToSize( const MediaItem *item ) const
 {
-    if( item && item->bundle() &&
+    if( item && item->meta() &&
             ( !m_parent->currentDevice()
               || !m_parent->currentDevice()->isConnected()
-              || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+              || !m_parent->currentDevice()->trackExists(Meta::TrackPtr::dynamicCast(item->meta())) ) )
         m_totalSize += ((item->size()+1023)/1024)*1024;
 }
 
 void
 MediaQueue::subtractItemFromSize( const MediaItem *item, bool unconditionally ) const
 {
-    if( item && item->bundle() &&
+    if( item && item->meta() &&
             ( !m_parent->currentDevice()
               || !m_parent->currentDevice()->isConnected()
-              || (unconditionally || !m_parent->currentDevice()->trackExists(*item->bundle())) ) )
+              || (unconditionally || !m_parent->currentDevice()->trackExists(Meta::TrackPtr::dynamicCast(item->meta()))) ) )
         m_totalSize -= ((item->size()+1023)/1024)*1024;
 }
 

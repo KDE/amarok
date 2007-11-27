@@ -24,6 +24,7 @@
 #include "collectiondb.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
+#include "MetaUtility.h"  //Meta::secToPrettyTime
 
 #include <kiconloader.h>
 
@@ -71,7 +72,8 @@ MediaItem::MediaItem( Q3ListViewItem* parent, Q3ListViewItem* after )
 
 MediaItem::~MediaItem()
 {
-    setBundle( 0 );
+    // remove this MediaItem from the MediaBrowser's ItemMap
+    setMeta( Meta::DataPtr() );
 }
 
 void
@@ -103,7 +105,7 @@ MediaItem::init()
     MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "process-stop" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
     MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
     
-    m_bundle=0;
+    m_meta = Meta::DataPtr();
     m_order=0;
     m_type=UNKNOWN;
     m_playlistName.clear();
@@ -114,28 +116,32 @@ MediaItem::init()
     setDropEnabled( true );
 }
 
+
 void
-MediaItem::setBundle( MetaBundle *bundle )
+MediaItem::setMeta( Meta::DataPtr meta )
 {
+    //remove from MediaBrowser::ItemMap
     MediaBrowser::instance()->m_itemMapMutex.lock();
-    if( m_bundle )
+    if( m_meta )
     {
-    QString itemUrl = url().url();
+        QString itemUrl = url().url();
         MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( itemUrl );
         if( it != MediaBrowser::instance()->m_itemMap.end() && *it == this )
             MediaBrowser::instance()->m_itemMap.remove( itemUrl );
     }
-    delete m_bundle;
-    m_bundle = bundle;
 
-    if( m_bundle )
+    m_meta = meta;
+
+    //add to MediaBrowser::ItemMap
+    if( m_meta )
     {
-    QString itemUrl = url().url();
+        QString itemUrl = url().url();
         MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( itemUrl );
         if( it == MediaBrowser::instance()->m_itemMap.end() )
             MediaBrowser::instance()->m_itemMap[itemUrl] = this;
     }
     MediaBrowser::instance()->m_itemMapMutex.unlock();
+
     createToolTip();
 }
 
@@ -160,19 +166,22 @@ void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     K3ListViewItem::paintCell( p, cg, column, width, align );
 }
 
-const MetaBundle *
-MediaItem::bundle() const
+
+const Meta::DataPtr
+MediaItem::meta() const
 {
-    return m_bundle;
+    return m_meta;
 }
 
 KUrl
 MediaItem::url() const
 {
-    if( bundle() )
-        return bundle()->url();
-    else
-        return KUrl();
+    Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( meta() );
+
+    if ( track )
+        return track->url();
+
+    return KUrl();
 }
 
 bool
@@ -226,11 +235,10 @@ MediaItem::syncStatsFromPath( const QString &url )
 long
 MediaItem::size() const
 {
-    if( !isFileBacked() )
-        return 0;
+    Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( meta() );
 
-    if( bundle() )
-        return bundle()->filesize();
+    if ( track )
+        return track->filesize();
 
     return 0;
 }
@@ -412,18 +420,18 @@ MediaItem::createToolTip()
     {
         case MediaItem::TRACK:
             {
-                const MetaBundle *b = bundle();
-                if( b )
+                Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(meta());
+                if (track)
                 {
-                    if( b->track() )
+                    if ( track->trackNumber() )
                         text = QString( "%1 - %2 (%3)" )
-                            .arg( QString::number(b->track()), b->title(), b->prettyLength() );
-                    if( !b->genre().isEmpty() )
+                                .arg( QString::number(track->trackNumber()), track->name(), Meta::secToPrettyTime(track->length()) );
+                    if( track->genre() )
                     {
                         if( !text.isEmpty() )
                             text += "<br>";
                         text += QString( "<i>Genre: %1</i>" )
-                            .arg( b->genre() );
+                                .arg( track->genre()->name() );
                     }
                 }
             }

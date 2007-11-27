@@ -34,7 +34,6 @@
 
 #include <QGroupBox>
 #include <QLabel>
-#include <QLayout>
 #include <QTextDocument>
 #include <QToolTip>
 #include <QWhatsThis>
@@ -83,7 +82,6 @@ MediaDevicePluginManagerDialog::~MediaDevicePluginManagerDialog()
 {
     disconnect( m_genericDevices, SIGNAL( clicked() ), m_manager, SLOT( slotGenericVolumes() ) );
     disconnect( m_addButton, SIGNAL( clicked() ), m_manager, SLOT( slotNewDevice() ) );
-    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
     delete m_manager;
 }
 
@@ -91,6 +89,7 @@ void
 MediaDevicePluginManagerDialog::slotOk()
 {
     m_manager->finished();
+    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
     KDialog::slotButtonClicked( Ok );
 }
 
@@ -419,7 +418,7 @@ ManualDeviceAdder::getId( bool recreate )
     m_newId = "manual|" + m_mdaName->text() + '|' +
         ( m_mdaMountPoint->text().isNull() ||
         m_mdaMountPoint->isEnabled() == false ?
-            "(null)" : m_mdaMountPoint->text() );
+            "(none)" : m_mdaMountPoint->text() );
     debug() << "returning id = " << m_newId;
     return m_newId;
 }
@@ -611,13 +610,13 @@ MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginM
 
 MediaDeviceVolumeMarkerDialog::~MediaDeviceVolumeMarkerDialog()
 {
-    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
 }
 
 void
 MediaDeviceVolumeMarkerDialog::slotOk()
 {
     //Voodoo here, and tell mpm to update its list
+    disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
     KDialog::slotButtonClicked( Ok );
 }
 

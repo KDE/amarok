@@ -23,7 +23,7 @@
 
 namespace MetaFile
 {
-    class Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track
     {
         public:
             Track( const KUrl &url );

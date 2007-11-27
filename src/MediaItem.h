@@ -24,12 +24,16 @@
 #ifndef AMAROK_MEDIAITEM_H
 #define AMAROK_MEDIAITEM_H
 
+#include <QDateTime>
+
 #include <k3listview.h>
+#include <kurl.h>
 
 #include "amarok_export.h"
+#include "meta.h"
 
 class MediaDevice;
-class MetaBundle;
+//class MetaBundle;
 
 class AMAROK_EXPORT MediaItem : public K3ListViewItem
 {
@@ -44,8 +48,8 @@ class AMAROK_EXPORT MediaItem : public K3ListViewItem
         MediaItem *lastChild() const;
 
         virtual KUrl url() const;
-        const MetaBundle *bundle() const;
-        void setBundle( MetaBundle *bundle );
+        const Meta::DataPtr meta() const;
+        void setMeta( Meta::DataPtr meta );
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
@@ -108,7 +112,7 @@ class AMAROK_EXPORT MediaItem : public K3ListViewItem
         static QPixmap *s_pixTransferEnd;
 
     private:
-        mutable MetaBundle *m_bundle;
+        mutable Meta::DataPtr m_meta;
 };
 
 #endif /*AMAROK_MEDIAITEM_H*/

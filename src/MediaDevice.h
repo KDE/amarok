@@ -11,7 +11,7 @@
 #include "amarok_export.h"
 #include "amarok.h"
 #include "mediabrowser.h"
-#include "metabundle.h"
+#include "meta.h"
 
 #include <QObject>
 
@@ -66,16 +66,16 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual QStringList supportedFiletypes() { return QStringList(); }
 
         /**
-         * @param bundle describes track that should be checked
-         * @return true if the device is capable of playing the track referred to by bundle
+         * @param track describes track that should be checked
+         * @return true if the device is capable of playing the track referred to by track
          */
-        virtual bool isPlayable( const MetaBundle &bundle );
+        virtual bool isPlayable( const Meta::TrackPtr track );
 
         /**
-         * @param bundle describes track that should be checked
+         * @param track describes track that should be checked
          * @return true if the track is in the preferred (first in list) format of the device
          */
-        virtual bool isPreferredFormat( const MetaBundle &bundle );
+        virtual bool isPreferredFormat( const Meta::TrackPtr track );
 
         /**
          * @return true if the device is connected
@@ -118,10 +118,10 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         /**
          * Notify device of changed tags
          * @param item item to be updated
-         * @param changed bundle containing new tags
+         * @param changed meta containing new tags
          * @return the changed MediaItem
          */
-        virtual MediaItem *tagsChanged( MediaItem *item, const MetaBundle &changed ) { Q_UNUSED(item); Q_UNUSED(changed); return 0; }
+        virtual MediaItem *tagsChanged( MediaItem *item, const Meta::TrackPtr changed ) { Q_UNUSED(item); Q_UNUSED(changed); return 0; }
 
         /**
          * Indicate whether the device has a custom transfer dialog
@@ -213,13 +213,16 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual KUrl getProxyUrl( const KUrl& /*url*/) { return KUrl(); }
         virtual void customClicked() { return; }
 
-        BundleList bundlesToSync( const QString &playlistName, const QString &sql );
-        BundleList bundlesToSync( const QString &playlistName, const KUrl &url );
-        void preparePlaylistForSync( const QString &playlistName, const BundleList &bundles );
-        bool isOnOtherPlaylist( const QString &playlistToAvoid, const MetaBundle &bundle );
-        bool isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle );
-        bool isInBundleList( const BundleList &bundles, const MetaBundle &bundle );
-        bool bundleMatch( const MetaBundle &b1, const MetaBundle &b2 );
+        //BundleList bundlesToSync( const QString &playlistName, const QString &sql );
+        Meta::TrackList tracksToSync( const QString &playlistName, const KUrl &url );
+        void preparePlaylistForSync( const QString &playlistName, const Meta::TrackList &list );
+        /**
+        * @return true if track is on any playlist other than playlistToAvoid
+        */
+        bool isOnOtherPlaylist( const QString &playlistToAvoid, const Meta::TrackPtr track );
+        bool isOnPlaylist( const MediaItem &playlist, const Meta::TrackPtr track );
+        bool isInTrackList( const Meta::TrackList &list, const Meta::TrackPtr track );
+        bool trackMatch( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
     public slots:
         void abortTransfer();
@@ -244,11 +247,11 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 
         /**
          * Find a particular track
-         * @param bundle The metabundle of the requested media item
+         * @param track The meta::track of the requested media item
          * @return The MediaItem of the item if found, otherwise NULL
          * @note This may not be worth implementing for non database driven devices, as it could be slow
          */
-        virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
+        virtual MediaItem *trackExists( Meta::TrackPtr track ) { Q_UNUSED(track); return 0; }
 
     protected:
         /**
@@ -286,10 +289,10 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 
         /**
          * Copy a track to the device
-         * @param bundle The MetaBundle of the item to transfer. Will move the item specified by bundle().url().path()
+         * @param track The Meta::TrackPtr of the item to transfer. Will move the item specified by track->url()
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle) = 0;
+        virtual MediaItem *copyTrackToDevice(const Meta::TrackPtr track) = 0;
 
         /**
          * Copy track from device to computer

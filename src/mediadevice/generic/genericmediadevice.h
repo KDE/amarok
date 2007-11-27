@@ -24,6 +24,7 @@
 #include "MediaDevice.h"
 #include "MediaItem.h"
 #include "transferdialog.h"
+#include "meta.h"
 
 #include <kdirlister.h>
 #include <kurl.h>
@@ -54,8 +55,6 @@ class GenericMediaDevice : public MediaDevice
         void              rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int );
 
         QStringList       supportedFiletypes() { return m_supportedFileTypes; }
-        bool              isPlayable( const MetaBundle& bundle );
-        bool              isPreferredFormat( const MetaBundle &bundle );
 
         bool              needsManualConfig() { return false; }
         void              addConfigElements( QWidget * parent );
@@ -72,13 +71,13 @@ class GenericMediaDevice : public MediaDevice
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
-        MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
+        MediaItem        *copyTrackToDevice( const Meta::TrackPtr track );
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QList<MediaItem*> items );
 
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
-        QString           fileName( const MetaBundle & );
+        QString           fileName( const Meta::TrackPtr track );
 
         //methods not implemented/needed
         bool              lockDevice( bool ) { return true; }
@@ -95,7 +94,7 @@ class GenericMediaDevice : public MediaDevice
     protected slots:
         void              renameItem( Q3ListViewItem *item );
         void              expandItem( Q3ListViewItem *item );
-        void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
+        void              foundMountPoint( const QString & mountPoint, quint64 kBSize, quint64 kBUsed, quint64 kBAvail );
         void              refreshDir( const QString &dir );
 
         void              newItems( const KFileItemList &items );
@@ -108,9 +107,9 @@ class GenericMediaDevice : public MediaDevice
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
-        MediaItem        *trackExists( const MetaBundle& );
+        MediaItem        *trackExists( const Meta::TrackPtr track );
 
-        QString           buildDestination( const QString &format, const MetaBundle &mb );
+        QString           buildDestination( const QString &format, const Meta::TrackPtr track );
         QString           buildPodcastDestination( const PodcastEpisodeBundle *bundle );
         void              checkAndBuildLocation( const QString& location );
 

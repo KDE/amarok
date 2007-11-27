@@ -11,7 +11,7 @@
 #include "amarok.h"
 #include "browserToolBar.h"
 #include "medium.h"
-#include "metabundle.h"
+#include "meta.h"
 #include "pluginmanager.h"
 #include "plugin/plugin.h"   //baseclass
 #include "scrobbler.h"       //SubmitItem
@@ -136,7 +136,7 @@ class MediaQueue : public K3ListView
         void save( const QString &path );
         void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
         void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
-        void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString() );
+        void addUrl( const KUrl& url, Meta::TrackPtr=Meta::TrackPtr(), const QString &playlistName=QString() );
         void addUrl( const KUrl& url, MediaItem *item );
         void addUrls( const KUrl::List urls, const QString &playlistName=QString() );
 
@@ -192,8 +192,8 @@ class MediaBrowser : public KVBox
         void updateStats();
         void updateButtons();
         void updateDevices();
-        // return bundle for url if it is known to MediaBrowser
-        bool getBundle( const KUrl &url, MetaBundle *bundle ) const;
+        // return meta for url if it is known to MediaBrowser
+        Meta::TrackPtr getMeta( const KUrl &url ) const;
         bool isQuitting() const { return m_quitting; }
 
         KUrl getProxyUrl( const KUrl& daapUrl ) const;
@@ -224,7 +224,7 @@ class MediaBrowser : public KVBox
         void customClicked();
         bool config(); // false if canceled by user
         KUrl transcode( const KUrl &src, const QString &filetype );
-        void tagsChanged( const MetaBundle &bundle );
+        void tagsChanged( const Meta::TrackPtr newTrack );
         void prepareToQuit();
 
     private:

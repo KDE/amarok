@@ -26,7 +26,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include "amarok.h"
 #include "debug.h"
-#include "metabundle.h"
+#include "meta/file/File.h"
 #include "collectiondb.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
@@ -202,7 +202,7 @@ class GenericMediaFile
             else
                 m_fullName = m_baseName;
             if( m_viewItem )
-                m_viewItem->setBundle( new MetaBundle( KUrl( m_fullName ), true, TagLib::AudioProperties::Fast ) );
+                m_viewItem->setMeta( Meta::DataPtr(new MetaFile::Track( KUrl( m_fullName ))) );
         }
 
         QList<GenericMediaFile*>
@@ -236,9 +236,9 @@ class GenericMediaFile
 };
 
 QString
-GenericMediaDevice::fileName( const MetaBundle &bundle )
+GenericMediaDevice::fileName( const Meta::TrackPtr track )
 {
-    QString result = cleanPath( bundle.artist() );
+    QString result = cleanPath( track->artist()->name() );
 
     if( !result.isEmpty() )
     {
@@ -248,9 +248,9 @@ GenericMediaDevice::fileName( const MetaBundle &bundle )
             result += " - ";
     }
 
-    if( bundle.track() )
+    if( track->trackNumber() )
     {
-        result.sprintf( "%02d", bundle.track() );
+        result += QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
 
         if( m_spacesToUnderscores )
             result += '_';
@@ -258,7 +258,7 @@ GenericMediaDevice::fileName( const MetaBundle &bundle )
             result += ' ';
     }
 
-    result += cleanPath( bundle.title() + '.' + bundle.type() );
+    result += cleanPath( track->name() + '.' + track->type() );
 
     return result;
 }
@@ -515,11 +515,11 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QList<MediaItem*> item
 /// Uploading
 
 QString
-GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &mb )
+GenericMediaDevice::buildDestination( const QString &format, const Meta::TrackPtr track )
 {
-    bool isCompilation = mb.compilation() == MetaBundle::CompilationYes;
+    bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
-    QString artist = mb.artist();
+    QString artist = track->artist()->name();
     QString albumartist = artist;
     if( isCompilation )
         albumartist = i18n( "Various Artists" );
@@ -532,20 +532,25 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
         Amarok::manipulateThe( albumartist, true );
 
     albumartist = cleanPath( albumartist );
-    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
-    {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
-            continue;
-        args[mb.exactColumnName( i ).toLower()] = cleanPath( mb.prettyText( i ) );
-    }
+
+    //these additional columns from MetaBundle were used before but haven't
+    //been ported yet. Do they need to be?
+    //Bpm,Directory,Type,Length,Bitrate,SampleRate,Rating,Mood,Filesize
+    args["title"] = cleanPath( track->prettyName() );
+    args["composer"] = cleanPath( track->composer()->prettyName() );
+    args["year"] = cleanPath( track->year()->prettyName() );
+    args["album"] = cleanPath( track->album()->prettyName() );
+    args["discnumber"] = QString::number( track->discNumber() );
+    args["genre"] = cleanPath( track->genre()->prettyName() );
+    args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();
-    args["filetype"] = mb.url().pathOrUrl().section( ".", -1 ).toLower();
-    QString track;
-    if ( mb.track() )
-        track.sprintf( "%02d", mb.track() );
-    args["track"] = track;
+    args["filetype"] = track->url().section( ".", -1 ).toLower();
+    QString trackNum;
+    if ( track->trackNumber() )
+        trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
+    args["track"] = trackNum;
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
@@ -622,17 +627,18 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
 
 
 MediaItem *
-GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
+GenericMediaDevice::copyTrackToDevice( const Meta::TrackPtr track )
 {
     if( !m_connected ) return 0;
 
     // use different naming schemes for differen kinds of tracks
     QString path = m_transferDir;
-    debug() << "bundle exists: " << bundle.podcastBundle();
-    if( bundle.podcastBundle() )
-        path += buildPodcastDestination( bundle.podcastBundle() );
-    else
-        path += buildDestination( m_songLocation, bundle );
+    //TODO podcast port to meta
+    //debug() << "bundle exists: " << bundle.podcastBundle();
+    //if( bundle.podcastBundle() )
+    //    path += buildPodcastDestination( bundle.podcastBundle() );
+    //else
+        path += buildDestination( m_songLocation, track );
 
     checkAndBuildLocation( path );
 
@@ -640,9 +646,9 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     //kapp->processEvents();
 
-    if( !kioCopyTrack( bundle.url(), desturl ) )
+    if( !kioCopyTrack( track->url(), desturl ) )
     {
-        debug() << "Failed to copy track: " << bundle.url().pathOrUrl() << " to " << desturl.pathOrUrl();
+        debug() << "Failed to copy track: " << track->url() << " to " << desturl.pathOrUrl();
         return 0;
     }
 
@@ -659,10 +665,10 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 //Somewhat related...
 
 MediaItem *
-GenericMediaDevice::trackExists( const MetaBundle& bundle )
+GenericMediaDevice::trackExists( const Meta::TrackPtr track )
 {
     QString key;
-    QString path = buildDestination( m_songLocation, bundle);
+    QString path = buildDestination( m_songLocation, track);
     KUrl url( path );
     url.adjustPath( KUrl::RemoveTrailingSlash );
     QStringList directories = url.directory().split( "/", QString::SkipEmptyParts );
@@ -683,7 +689,7 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
     }
 
     key = url.fileName();
-    key = key.isEmpty() ? fileName( bundle ) : key;
+    key = key.isEmpty() ? fileName( track ) : key;
     while( it && it->text( 0 ) != key )
         it = it->nextSibling();
 
@@ -873,8 +879,8 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 
     KDiskFreeSpace* kdf = new KDiskFreeSpace( m_parent );
     kdf->readDF( m_mountPoint );
-    connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
-                 SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
+    connect(kdf, SIGNAL(foundMountPoint( const QString &, quint64, quint64, quint64 )),
+                 SLOT(foundMountPoint( const QString &, quint64, quint64, quint64 )));
 
     int count = 0;
 
@@ -890,7 +896,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 
     *total = m_kBSize*1024;
     *available = m_kBAvail*1024;
-    unsigned long localsize = m_kBSize;
+    quint64 localsize = m_kBSize;
     m_kBSize = 0;
     m_kBAvail = 0;
 
@@ -898,7 +904,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 }
 
 void
-GenericMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
+GenericMediaDevice::foundMountPoint( const QString & mountPoint, quint64 kBSize, quint64 /*kBUsed*/, quint64 kBAvail )
 {
     if ( mountPoint == m_mountPoint ){
         m_kBSize = kBSize;
@@ -1032,25 +1038,6 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     result.replace( "/", "-" );
 
     return result;
-}
-
-/// File Information functions
-
-bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
-{
-    for( QStringList::Iterator it = m_supportedFileTypes.begin(); it != m_supportedFileTypes.end() ; it++ )
-    {
-        if( bundle.type().toLower() == (*it).toLower() )
-            return true;
-    }
-
-    return false;
-}
-
-
-bool GenericMediaDevice::isPreferredFormat( const MetaBundle &bundle )
-{
-    return m_supportedFileTypes.first().toLower() == bundle.type().toLower();
 }
 
 /// Configuration Dialog Extension
