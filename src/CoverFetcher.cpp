@@ -82,7 +82,7 @@ void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     m_userCanEditQuery = true;
-    startFetch( album );
+    buildQueries( album );
 }
 
 void
@@ -128,7 +128,7 @@ CoverFetcher::startFetchLoop()
     {
         Meta::AlbumPtr album = m_albums.takeFirst();
         m_albumsMutex.unlock();
-        startFetch( album );
+        buildQueries( album );
     }
     else
     {
@@ -141,8 +141,7 @@ CoverFetcher::startFetchLoop()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-void
-CoverFetcher::startFetch( Meta::AlbumPtr album )
+void CoverFetcher::buildQueries( Meta::AlbumPtr album )
 {
     m_fetchMutex.lock();
     m_isFetching = true;
@@ -171,9 +170,9 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     //TODO try queries that remove anything in album after a " - " eg Les Mis. - Excerpts
 
     /**
-        * We search for artist - album, and just album, using the exact album text and the
-        * manipulated album text.
-        */
+     * We search for artist - album, and just album, using the exact album text and the
+     * manipulated album text.
+     */
 
     //search on our modified term, then the original
     if ( !artistName.isEmpty() )
@@ -189,12 +188,21 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     m_queries.pop_back();
 
     /**
-        * Finally we do a search for just the artist, just in case as this often
-        * turns up a cover, and it might just be the right one! Also it would be
-        * the only valid search if m_album.isEmpty()
-        */
+     * Finally we do a search for just the artist, just in case as this often
+     * turns up a cover, and it might just be the right one! Also it would be
+     * the only valid search if m_album.isEmpty()
+     */
     m_queries += artistName;
-
+    debug() << m_queries;
+    startFetch( album );
+}
+void
+CoverFetcher::startFetch( Meta::AlbumPtr album )
+{
+    m_fetchMutex.lock();
+    m_isFetching = true;
+    m_fetchMutex.unlock();
+    m_albumPtr = album;
 
     // Static license Key. Thanks muesli ;-)
     const QString LICENSE( "D1URM11J3F2CEH" );
@@ -398,7 +406,7 @@ CoverFetcher::attemptAnotherFetch()
 
     else if( !m_queries.isEmpty() ) {
         // we have some queries left in the pot
-        startFetchLoop();
+        startFetch( m_albumPtr );
     }
 
     else if( m_userCanEditQuery ) {
@@ -630,7 +638,7 @@ CoverFetcher::finish()
     m_albumPtr->setImage( image() );
     m_isFetching = false;
     if( !m_albums.isEmpty() )
-        startFetch( m_albums.takeFirst() );
+        buildQueries( m_albums.takeFirst() );
 }
 
 void

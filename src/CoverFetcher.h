@@ -105,6 +105,7 @@ private:
     bool m_isFetching;
 
 private:
+    void buildQueries( Meta::AlbumPtr album );
 
     /// Fetch a cover
     void startFetch( Meta::AlbumPtr album );
