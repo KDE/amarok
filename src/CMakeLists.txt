@@ -117,6 +117,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceListDelegate.cpp
     servicebrowser/DynamicServiceQueryMaker.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
+    servicebrowser/ServiceConfigScreen.cpp
 
 )
 

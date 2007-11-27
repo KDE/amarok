@@ -52,6 +52,7 @@ class MagnatuneServiceFactory: public ServiceFactory
         virtual ~MagnatuneServiceFactory() {}
 
         virtual void init();
+        virtual QString name();
 };
 
 

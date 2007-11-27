@@ -52,6 +52,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
         virtual ~ServiceFactory();
 
         virtual void init() = 0;
+        virtual QString name() = 0;
 
     signals:
         void newService( class ServiceBase *newService );

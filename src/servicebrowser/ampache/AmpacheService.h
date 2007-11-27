@@ -38,6 +38,7 @@ class AmpacheServiceFactory: public ServiceFactory
         virtual ~AmpacheServiceFactory() {}
 
         virtual void init();
+        virtual QString name();
 };
 
 

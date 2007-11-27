@@ -260,10 +260,9 @@ void MainWindow::init()
         m_browserNames.append( "Internet" );
 
 
-        //create a plugin manager
-
-        ServicePluginManager * servicePluginManager = new ServicePluginManager( internetContentServiceBrowser );
-        servicePluginManager->init();
+        //get the plugin manager
+        ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
+        ServicePluginManager::instance()->init();
 
         debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );

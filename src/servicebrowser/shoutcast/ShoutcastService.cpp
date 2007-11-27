@@ -38,6 +38,11 @@ void ShoutcastServiceFactory::init()
     emit newService( service );
 }
 
+QString ShoutcastServiceFactory::name()
+{
+    return "Shoutcast.com";
+}
+
 
 ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
@@ -67,6 +72,7 @@ void ShoutcastService::polish()
     m_polished = true;
 
 }
+
 
 #include "ShoutcastService.moc"
 

@@ -16,52 +16,70 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "ServiceConfigScreen.h"
 
-#ifndef SHOUTCASTSERVICE_H
-#define SHOUTCASTSERVICE_H
+#include <QCheckBox>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
 
-#include "servicebase.h"
-
-#include "ShoutcastServiceCollection.h"
-#include "servicemetabase.h"
-
-
-class ShoutcastServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        ShoutcastServiceFactory() {}
-        virtual ~ShoutcastServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-};
-
-/**
-A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class ShoutcastService : public ServiceBase
+ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
+ : ConfigDialogBase( parent )
 {
 
-Q_OBJECT
+    QList<QString> serviceNames = ServicePluginManager::instance()->factories().keys();
 
-public:
-    ShoutcastService( const char *name );
+    //add a layout
+    QVBoxLayout *layout = new QVBoxLayout;
 
-    ~ShoutcastService();
+    //setup a config item for each service
 
-    void polish();
+    int runningY = 0;
+    foreach ( QString serviceName, serviceNames ) {
+
+        QFrame * serviceItem = new QFrame( this );
+
+        serviceItem->setFrameStyle(QFrame::Panel | QFrame::Raised);
+        serviceItem->setLineWidth(2);
+
+        QHBoxLayout *itemLayout = new QHBoxLayout;
+
+        itemLayout->addWidget( new QLabel( serviceName ) );
+        itemLayout->addWidget( new QCheckBox("Enable", this) );
+        itemLayout->addWidget( new QCheckBox("Add to collection", this) );
+        itemLayout->addWidget( new QPushButton("Configure", this) );
+
+        serviceItem->setLayout( itemLayout );
+        layout->addWidget( serviceItem );
+
+    }
+
+    setLayout(layout);
+
+}
 
 
-private:
+ServiceConfigScreen::~ServiceConfigScreen()
+{
+}
 
-    ShoutcastServiceCollection * m_collection;
-    QString m_tempFileName;
-    KIO::StoredTransferJob * m_storedTransferJob;
 
-};
+void ServiceConfigScreen::updateSettings()
+{
+}
 
-#endif
+
+bool ServiceConfigScreen::hasChanged()
+{
+    return false;
+}
+
+
+bool ServiceConfigScreen::isDefault()
+{
+    return true;
+}
+
+

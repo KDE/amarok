@@ -62,6 +62,12 @@ void MagnatuneServiceFactory::init()
     emit newService( service );
 }
 
+QString MagnatuneServiceFactory::name()
+{
+    return "Magnatune.com";
+}
+
+
 
 MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( name )
@@ -470,6 +476,7 @@ void MagnatuneStore::polish( )
 
     return true;
 }*/
+
 
 
 

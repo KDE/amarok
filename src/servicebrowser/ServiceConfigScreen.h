@@ -16,51 +16,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef SERVICECONFIGSCREEN_H
+#define SERVICECONFIGSCREEN_H
 
-#ifndef SHOUTCASTSERVICE_H
-#define SHOUTCASTSERVICE_H
-
-#include "servicebase.h"
-
-#include "ShoutcastServiceCollection.h"
-#include "servicemetabase.h"
+#include "ConfigDialogBase.h"
+#include "ServicePluginManager.h"
 
 
-class ShoutcastServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        ShoutcastServiceFactory() {}
-        virtual ~ShoutcastServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-};
 
 /**
-A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
+A widget that allows configuration of services
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author 
 */
-class ShoutcastService : public ServiceBase
+class ServiceConfigScreen : public ConfigDialogBase
 {
-
-Q_OBJECT
-
 public:
-    ShoutcastService( const char *name );
+    ServiceConfigScreen( QWidget * parent );
 
-    ~ShoutcastService();
+    ~ServiceConfigScreen();
 
-    void polish();
-
+    virtual void updateSettings();
+    virtual bool hasChanged();
+    virtual bool isDefault();
 
 private:
+    ServicePluginManager * m_servicePluginManager;
 
-    ShoutcastServiceCollection * m_collection;
-    QString m_tempFileName;
-    KIO::StoredTransferJob * m_storedTransferJob;
+
 
 };
 

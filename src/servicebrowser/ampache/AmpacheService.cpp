@@ -37,6 +37,11 @@ void AmpacheServiceFactory::init()
     emit newService( service );
 }
 
+QString AmpacheServiceFactory::name()
+{
+    return "Ampache";
+}
+
 
 AmpacheService::AmpacheService(const QString & name)
  : ServiceBase( name )
@@ -164,6 +169,8 @@ void AmpacheService::authenticationComplete(KJob * job)
 
     m_xmlDownloadJob->deleteLater();
 }
+
+
 
 #include "AmpacheService.moc"
 

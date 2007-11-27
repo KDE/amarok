@@ -22,10 +22,23 @@
 
 #include <kservice.h>
 
-ServicePluginManager::ServicePluginManager( ServiceBrowser * browser )
-    : QObject()
-    , m_serviceBrowser( browser )
+ServicePluginManager * ServicePluginManager::m_instance = 0;
+
+ServicePluginManager * ServicePluginManager::instance()
 {
+    if ( m_instance == 0 )
+        m_instance = new ServicePluginManager();
+
+    return m_instance;
+}
+
+
+
+ServicePluginManager::ServicePluginManager( )
+    : QObject()
+    , m_serviceBrowser( 0 )
+{
+    collect();
 }
 
 
@@ -33,9 +46,12 @@ ServicePluginManager::~ServicePluginManager()
 {
 }
 
-void ServicePluginManager::init()
-{
+void ServicePluginManager::setBrowser( ServiceBrowser * browser ) {
+    m_serviceBrowser = browser;
+}
 
+void ServicePluginManager::collect()
+{
     DEBUG_BLOCK
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
@@ -49,8 +65,8 @@ void ServicePluginManager::init()
             if ( factory )
             {
                 debug() << "Got hold of a valid factory";
+                m_factories.insert( factory->name(), factory );
                 connect( factory, SIGNAL( newService( ServiceBase * ) ), this, SLOT( slotNewService( ServiceBase * ) ) );
-                factory->init();
             }
             else
             {
@@ -64,11 +80,28 @@ void ServicePluginManager::init()
     }
 }
 
+void ServicePluginManager::init()
+{
+
+    foreach( ServiceFactory* factory,  m_factories.values() ) {
+        factory->init();
+    }
+
+}
+
 void ServicePluginManager::slotNewService(ServiceBase * newService)
 {
     DEBUG_BLOCK
     m_serviceBrowser->addService( newService );
 }
+
+QMap< QString, ServiceFactory * > ServicePluginManager::factories()
+{
+    return m_factories;
+}
+
+
+
 
 #include "ServicePluginManager.moc"
 

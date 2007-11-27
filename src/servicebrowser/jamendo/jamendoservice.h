@@ -42,6 +42,7 @@ class JamendoServiceFactory: public ServiceFactory
         virtual ~JamendoServiceFactory() {}
 
         virtual void init();
+        virtual QString name();
 };
 
 /**

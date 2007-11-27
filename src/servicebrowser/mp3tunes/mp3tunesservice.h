@@ -38,6 +38,7 @@ class Mp3tunesServiceFactory: public ServiceFactory
         virtual ~Mp3tunesServiceFactory() {}
 
         virtual void init();
+        virtual QString name();
 };
 
 

@@ -35,6 +35,11 @@ void Mp3tunesServiceFactory::init()
     emit newService( service );
 }
 
+QString Mp3tunesServiceFactory::name()
+{
+    return "Mp3tunes.com";
+}
+
 Mp3tunesService::Mp3tunesService(const QString & name)
  : ServiceBase( name )
  , m_partnerToken( "7359149936" )
@@ -148,6 +153,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
 
     m_xmlDownloadJob->deleteLater();
 }
+
 
 #include "mp3tunesservice.moc"
 

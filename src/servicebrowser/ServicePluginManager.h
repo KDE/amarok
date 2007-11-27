@@ -33,18 +33,36 @@ A class to keep track of available service plugins and load them as needed
 class ServicePluginManager : public QObject {
     Q_OBJECT
 public:
-    ServicePluginManager( ServiceBrowser * browser );
+
+    static ServicePluginManager * instance();
 
     ~ServicePluginManager();
 
+    void setBrowser( ServiceBrowser * browser );
+
+    /**
+     * Collects the factories of all services that can be loaded
+     */
+    void collect();
+
+    /**
+     * Load any services that are configured to be loaded
+     */
     void init();
 
-private:
+    QMap< QString, ServiceFactory* > factories();
 
+private:
+    ServicePluginManager();
+
+    static ServicePluginManager * m_instance;
     ServiceBrowser * m_serviceBrowser;
+    QMap< QString, ServiceFactory* > m_factories;
     
 private slots:
     void slotNewService( ServiceBase *newService);
+
+   
 
 };
 

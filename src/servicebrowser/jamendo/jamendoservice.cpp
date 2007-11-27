@@ -40,6 +40,13 @@ void JamendoServiceFactory::init()
     emit newService( service );
 }
 
+
+QString JamendoServiceFactory::name()
+{
+    return "Jamendo.com";
+}
+
+
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
  , m_currentAlbum( 0 )
