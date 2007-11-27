@@ -11,7 +11,7 @@
 #include "amarok.h"
 #include "browserToolBar.h"
 #include "medium.h"
-#include "meta.h"
+#include "Meta.h"
 #include "pluginmanager.h"
 #include "plugin/plugin.h"   //baseclass
 #include "scrobbler.h"       //SubmitItem
