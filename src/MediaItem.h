@@ -30,7 +30,7 @@
 #include <kurl.h>
 
 #include "amarok_export.h"
-#include "meta.h"
+#include "Meta.h"
 
 class MediaDevice;
 //class MetaBundle;

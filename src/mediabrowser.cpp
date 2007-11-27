@@ -27,7 +27,7 @@
 #include "MediaDeviceCache.h"
 #include "MediaDevicePluginManager.h"
 #include "metabundle.h"
-#include "meta.h"
+#include "Meta.h"
 #include "meta/file/File.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
