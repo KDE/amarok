@@ -11,7 +11,7 @@
 #include "amarok_export.h"
 #include "amarok.h"
 #include "mediabrowser.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <QObject>
 
