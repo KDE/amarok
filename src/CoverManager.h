@@ -59,13 +59,13 @@ class CoverManager : public QSplitter, public Meta::Observer
 
     private slots:
         void init();
-        
+
         void slotArtistSelected();
         void coverItemExecuted( QListWidgetItem *item );
         void showCoverMenu( QListWidgetItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
-        
+
         void slotShowAllAlbums()          { changeView( AllAlbums );          }
         void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
         void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
