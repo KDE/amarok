@@ -19,8 +19,8 @@
 #include "amarok.h"
 
 #include "querybuilder.h"
+#include "Process.h"
 
-#include <k3process.h>
 #include <KLocale>
 #include <KMessageBox>
 #include <KStandardDirs>

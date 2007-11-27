@@ -21,11 +21,14 @@
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
 #include "podcastbundle.h"
+#include "Process.h"
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 
 #include <KIO/Job>
 #include <KMessageBox>
+
+#include <unistd.h>
 
 MediaDevice::MediaDevice()
     : Amarok::Plugin()
@@ -59,7 +62,7 @@ MediaDevice::MediaDevice()
     , m_staleItem( 0 )
     , m_orphanedItem( 0 )
 {
-    sysProc = new K3ShellProcess(); Q_CHECK_PTR(sysProc);
+    sysProc = new ShellProcess(); Q_CHECK_PTR(sysProc);
 }
 
 void MediaDevice::init( MediaBrowser* parent )
@@ -359,11 +362,12 @@ int MediaDevice::runPostDisconnectCommand()
 
 int MediaDevice::sysCall( const QString &command )
 {
-    if ( sysProc->isRunning() )  return -1;
+    if( sysProc->state() != ShellProcess::NotRunning )  return -1;
 
-    sysProc->clearArguments();
+    sysProc->clearProgram();
     (*sysProc) << command;
-    if (!sysProc->start( K3Process::Block, K3Process::AllOutput ))
+    sysProc->setOutputChannelMode( ShellProcess::MergedChannels );
+    if( sysProc->execute( ) != 0 )
         kFatal() << i18n("could not execute %1", command.toLocal8Bit().data());
 
     return (sysProc->exitStatus());

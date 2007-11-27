@@ -12,6 +12,7 @@ set(amarok_phonon-engine_SRCS phonon-engine.cpp )
 
 kde4_add_plugin(amarok_phonon-engine WITH_PREFIX ${amarok_phonon-engine_SRCS})
 
+add_definitions(-DMAKE_AMAROK_PHONON-ENGINE_PART)
 target_link_libraries(amarok_phonon-engine  ${KDE4_KDECORE_LIBS}
         amaroklib ${KDE4_PHONON_LIBS} )
 

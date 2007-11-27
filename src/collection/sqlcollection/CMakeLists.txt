@@ -17,6 +17,20 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
+# win32 can't compile these due to missing dependency
+# msvc requires sqlite compiled in due to not being able to link it (not dllexported)
+if (WIN32)
+if (MSVC)
+set (extra_src ../../sqlite/sqlite3.c)
+else (MSVC)
+set (extra_src)
+endif (MSVC)
+else (WIN32)
+set (extra_src     
+	XesamDbus.cpp
+    XesamCollectionBuilder.cpp)
+endif (WIN32)
+	
 set(amarok_collection-sqlcollection_PART_SRCS
     DatabaseUpdater.cpp
     ScanManager.cpp
@@ -27,8 +41,8 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp
-    XesamDbus.cpp
-    XesamCollectionBuilder.cpp )
+	${extra_src}
+ )
 
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})

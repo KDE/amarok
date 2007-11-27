@@ -35,14 +35,14 @@ A proxy class for relaying information from the currently active service to the 
 class AMAROK_EXPORT ServiceInfoProxy{
 public:
 
-    static AMAROK_EXPORT ServiceInfoProxy * instance();
+    static /*AMAROK_EXPORT*/ ServiceInfoProxy * instance();
     ~ServiceInfoProxy();
 
-    void AMAROK_EXPORT subscribe( ServiceInfoObserver *observer );
-    void AMAROK_EXPORT unsubscribe( ServiceInfoObserver *observer );
+    void /*AMAROK_EXPORT*/ subscribe( ServiceInfoObserver *observer );
+    void /*AMAROK_EXPORT*/ unsubscribe( ServiceInfoObserver *observer );
 
     void setInfo( QVariantMap infoMap );
-    QVariantMap AMAROK_EXPORT info();
+    QVariantMap /*AMAROK_EXPORT*/ info();
 
 private:
 

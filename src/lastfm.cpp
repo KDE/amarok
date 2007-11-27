@@ -23,6 +23,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "Process.h"
 #include "ContextStatusBar.h"      //showError()
 
 #include <q3http.h>
@@ -455,8 +456,8 @@ WebService::handshake( const QString& username, const QString& password )
 
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
-    m_server = new Amarok::ProcIO();
-    m_server->setComm( K3Process::Communication( K3Process::AllOutput ) );
+    m_server = new ProcIO();
+    m_server->setOutputChannelMode( ProcIO::MergedChannels );
     *m_server << "amarok_proxy.rb";
     *m_server << "--lastfm";
     *m_server << QString::number( port );
@@ -464,20 +465,18 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << AmarokConfig::soundSystem();
     *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
 
-    if( !m_server->start( K3ProcIO::NotifyOnExit, true ) ) {
-        error() << "Failed to start amarok_proxy.rb";
-        return false;
-    }
-
+    m_server->start();
     QString line;
     while( true ) {
+        if( m_server->error() != QProcess::UnknownError ) return false;
+
         kapp->processEvents();
         m_server->readln( line );
         if( line == "AMAROK_PROXY: startup" ) break;
     }
 
-    connect( m_server, SIGNAL( readReady( K3ProcIO* ) ), this, SLOT( readProxy() ) );
-    connect( m_server, SIGNAL( processExited( K3Process* ) ), Controller::instance(), SLOT( playbackStopped() ) );
+    connect( m_server, SIGNAL( readReady( ProcIO* ) ), this, SLOT( readProxy() ) );
+    connect( m_server, SIGNAL( finished( int ) ), Controller::instance(), SLOT( playbackStopped() ) );
 
     return true;
 }

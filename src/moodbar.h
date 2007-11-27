@@ -110,7 +110,7 @@ private:
 };
 
 
-class K3Process;
+class Process;
 
 // For internal use only (well, mostly)
 class MoodServer : public QObject
@@ -130,7 +130,7 @@ signals:
   void jobEvent( KUrl url, int newState );
 
 private slots:
-  void slotJobCompleted( K3Process *proc );
+  void slotJobCompleted( int );
   void slotNewJob( void );
   void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
 
@@ -172,7 +172,7 @@ private:
 
   Q3ValueList<ProcData> m_jobQueue;
   bool m_moodbarBroken;
-  K3Process *m_currentProcess;
+  Process *m_currentProcess;
   ProcData m_currentData;
   mutable QMutex m_mutex;
 };

@@ -27,7 +27,7 @@
 
 class SqlCollection;
 
-class AMAROK_EXPORT SqlQueryBuilder : public QueryMaker
+class /*AMAROK_EXPORT*/ SqlQueryBuilder : public QueryMaker
 {
     Q_OBJECT
 

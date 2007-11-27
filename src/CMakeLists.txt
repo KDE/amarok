@@ -387,6 +387,7 @@ set(amaroklib_LIB_SRCS
     pluginmanager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
+	Process.cpp
     querybuilder.cpp
     refreshimages.cpp
     scriptmanager.cpp

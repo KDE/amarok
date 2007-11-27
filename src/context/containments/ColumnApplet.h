@@ -29,7 +29,7 @@
 namespace Context
 {
 
-class AMAROK_EXPORT ColumnApplet : public Containment
+class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
 {
     Q_OBJECT
 public:

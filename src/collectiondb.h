@@ -235,7 +235,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         CollectionDB();
         ~CollectionDB();
 
-        AMAROK_EXPORT static CollectionDB *instance();
+        /*AMAROK_EXPORT*/ static CollectionDB *instance();
 
         /**
          * performs all initializations which require directory or URL data stored in the
@@ -276,8 +276,8 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         int getType() { return getDbConnectionType(); }
 
         //sql helper methods
-        AMAROK_EXPORT QStringList query( const QString& statement, bool suppressDebug = false );
-        AMAROK_EXPORT int insert( const QString& statement, const QString& table );
+        /*AMAROK_EXPORT*/ QStringList query( const QString& statement, bool suppressDebug = false );
+        /*AMAROK_EXPORT*/ int insert( const QString& statement, const QString& table );
 
         /**
          * TODO: write doc
@@ -493,7 +493,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
 
-        AMAROK_EXPORT DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
+        /*AMAROK_EXPORT*/ DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 

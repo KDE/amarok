@@ -917,6 +917,9 @@ GenericMediaDevice::foundMountPoint( const QString & mountPoint, quint64 kBSize,
 void
 GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 {
+#ifdef DELETE
+#undef DELETE
+#endif
     enum Actions { APPEND, LOAD, QUEUE,
         DOWNLOAD,
         BURN_DATACD, BURN_AUDIOCD,

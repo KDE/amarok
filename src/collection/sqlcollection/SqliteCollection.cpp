@@ -30,6 +30,7 @@
 #include "sqlite/sqlite3.h"
 
 #include <cmath>
+#include <unistd.h>
 
 SqliteCollection::SqliteCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )

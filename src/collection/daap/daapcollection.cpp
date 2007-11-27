@@ -197,7 +197,7 @@ DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 
     , m_reader( 0 )
 {
     debug() << "Host: " << host << " port: " << port;
-    m_reader = new Reader( this, host, port, QString(), this, "DaapReader" );
+    m_reader = new Daap::Reader( this, host, port, QString(), this, "DaapReader" );
     connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
     connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
     m_reader->loginRequest();
@@ -238,7 +238,7 @@ DaapCollection::passwordRequired()
     //get password
     QString password;
     delete m_reader;
-    m_reader = new Reader( this, m_host, m_port, password, this, "DaapReader" );
+    m_reader = new Daap::Reader( this, m_host, m_port, password, this, "DaapReader" );
     connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
     connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
     m_reader->loginRequest();

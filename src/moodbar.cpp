@@ -287,6 +287,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
+#include "Process.h"
 #include "ContextStatusBar.h"
 
 #include <KStandardDirs>
@@ -474,20 +475,22 @@ MoodServer::slotNewJob( void )
   // Write to outfile.mood.tmp so that new Moodbar instances
   // don't think the mood data exists while the analyzer is
   // running.  Then rename the file later.
-  m_currentProcess = new K3Process( this );
-  m_currentProcess->setPriority( 19 );  // Nice the process
+  m_currentProcess = new Process( this );
+  m_currentProcess->setLowPriority( true );  // Nice the process
   *m_currentProcess << KStandardDirs::findExe( "moodbar" ) << "-o"
                     << (m_currentData.m_outfile + ".tmp")
                     << m_currentData.m_infile;
 
-  connect( m_currentProcess, SIGNAL( processExited( K3Process* ) ),
-           SLOT( slotJobCompleted( K3Process* ) ) );
+  connect( m_currentProcess, SIGNAL( finished( int ) ),
+           SLOT( slotJobCompleted( int ) ) );
 
   // We have to enable K3Process::Stdout (even though we don't monitor
   // it) since otherwise the child process crashes every time in
   // K3Process::start() (but only when started from the loader!).  I
   // have no idea why, but I imagine it's a bug in KDE.
-  if( !m_currentProcess->start( K3Process::NotifyOnExit, K3Process::AllOutput ) )
+  m_currentProcess->setOutputChannelMode( ProcIO::MergedChannels );
+  m_currentProcess->start( );
+  if( m_currentProcess->error() ==  Process::FailedToStart )
     {
       // If we have an error starting the process, it's never
       // going to work, so call moodbarBroken()
@@ -510,16 +513,12 @@ MoodServer::slotNewJob( void )
 // This always run in the GUI thread.  It is called
 // when an analyzer process terminates
 void
-MoodServer::slotJobCompleted( K3Process *proc )
+MoodServer::slotJobCompleted( int )
 {
     m_mutex.lock();
 
-    // Pedantry
-    if( proc != m_currentProcess )
-      warning() << "MoodServer::slotJobCompleted: proc != m_currentProcess!";
-
     ReturnStatus returnval;
-    if( !m_currentProcess->normalExit() )
+    if( m_currentProcess->error() == Process::Crashed )
       returnval = Crash;
     else
       returnval = (ReturnStatus) m_currentProcess->exitStatus();

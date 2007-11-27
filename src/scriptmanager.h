@@ -33,8 +33,8 @@
 
 class MetaBundle;
 class KArchiveDirectory;
-class K3Process;
-class K3ProcIO;
+class Process;
+class ProcIO;
 
 
 /**
@@ -135,9 +135,9 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void slotAboutScript();
         void slotShowContextMenu( const QPoint& );
 
-        void slotReceivedStdout( K3Process*, char*, int );
-        void slotReceivedStderr( K3Process*, char*, int );
-        void scriptFinished( K3Process* process );
+        void slotReceivedStdout( Process* );
+        void slotReceivedStderr( Process* );
+        void scriptFinished( Process* process );
 
     private:
         /** Returns all scripts of the given \p type */
@@ -148,8 +148,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         QString ensureScoreScriptRunning();
 
-        /** Terminates a process with SIGTERM and deletes the K3ProcIO object */
-        void terminateProcess( K3ProcIO** proc );
+        /** Terminates a process with SIGTERM and deletes the ProcIO object */
+        void terminateProcess( ProcIO** proc );
 
         /** Sends a string message to all running scripts */
         void notifyScripts( const QString& message );
@@ -182,7 +182,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         struct ScriptItem {
             KUrl             url;
             QString          type;
-            K3ProcIO*         process;
+            ProcIO*          process;
             QTreeWidgetItem* li;
             QString          log;
             ScriptItem() : process( 0 ), li( 0 ) {}

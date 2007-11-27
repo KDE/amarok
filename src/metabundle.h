@@ -128,25 +128,25 @@ public:
     enum Compilation { CompilationNo = 0, CompilationYes = 1, CompilationUnknown = -1 };
 
     /// Creates an empty MetaBundle
-    AMAROK_EXPORT MetaBundle();
+    /*AMAROK_EXPORT*/ MetaBundle();
 
     /// Creates a MetaBundle for url, tags will be obtained and set
-    AMAROK_EXPORT explicit MetaBundle( const KUrl &url,
+    /*AMAROK_EXPORT*/ explicit MetaBundle( const KUrl &url,
                                           bool noCache = false,
                                           TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast,
                                           EmbeddedImageList* images = 0 );
 
     /** For the StreamProvider */
-    AMAROK_EXPORT MetaBundle( const QString &title,
+    /*AMAROK_EXPORT*/ MetaBundle( const QString &title,
             const QString &streamUrl,
             const int bitrate,
             const QString &genre,
             const QString &streamName,
             const KUrl &url );
 
-    AMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
+    /*AMAROK_EXPORT*/ MetaBundle( const MetaBundle &bundle );
 
-    AMAROK_EXPORT virtual ~MetaBundle();
+    /*AMAROK_EXPORT*/ virtual ~MetaBundle();
 
     MetaBundle& operator=( const MetaBundle& bundle );
     bool operator==( const MetaBundle& bundle ) const;

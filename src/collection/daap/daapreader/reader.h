@@ -29,6 +29,7 @@ namespace Daap
 
     enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 2, LONG = 5, LONGLONG = 7,
                         STRING = 9, DATE = 10, DVERSION = 11, CONTAINER = 12 };
+
     struct Code
     {
         Code() : type(INVALID) { }

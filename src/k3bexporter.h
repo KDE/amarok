@@ -35,7 +35,7 @@ public:
     * @return true if the executable of K3B is found
     */
     // FIXME: implement me!
-    AMAROK_EXPORT static bool isAvailable() { return false; }
+    /*AMAROK_EXPORT*/ static bool isAvailable() { return false; }
 
 
     /**
@@ -44,7 +44,7 @@ public:
     * @param openmode The mode of the album
     */
     // FIXME: implement me!
-    AMAROK_EXPORT void exportTracks( const KUrl::List &/*urls*/, int openmode=-1 ) { Q_UNUSED(openmode) }
+    /*AMAROK_EXPORT*/ void exportTracks( const KUrl::List &/*urls*/, int openmode=-1 ) { Q_UNUSED(openmode) }
 
     /**
     * Exports the current playlist to K3B. The mode @p openmode will be used

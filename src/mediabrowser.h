@@ -173,8 +173,8 @@ class MediaBrowser : public KVBox
 
     public:
         static bool isAvailable();
-        AMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
-        AMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
+        /*AMAROK_EXPORT*/ static MediaBrowser *instance() { return s_instance; }
+        /*AMAROK_EXPORT*/ static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();

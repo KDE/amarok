@@ -22,6 +22,7 @@ class MediaDevice;
 class MediaItem;
 class TransferDialog;
 class MediaView;
+class ShellProcess;
 
 /* at least the pure virtual functions have to be implemented by a media device,
    all items are stored in a hierarchy of MediaItems,
@@ -340,7 +341,7 @@ class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         bool        m_transcodeAlways;
         bool        m_transcodeRemove;
 
-        K3ShellProcess   *sysProc;
+        ShellProcess    *sysProc;
         MediaBrowser    *m_parent;
         MediaView       *m_view;
         QString          m_transferDir;

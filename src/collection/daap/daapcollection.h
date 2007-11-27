@@ -30,8 +30,6 @@
 
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
 
-using namespace Daap;
-
 namespace DNSSD {
     class ServiceBrowser;
 }
@@ -96,7 +94,7 @@ class DaapCollection : public Collection, public MemoryCollection
         quint16 m_port;
         QString m_ip;
 
-        Reader *m_reader;
+        Daap::Reader *m_reader;
 
 };
 

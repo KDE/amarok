@@ -26,7 +26,16 @@
 //#include "mysqlcollection.h"
 //#include "postgresqlcollection.h"
 #include "SqlCollectionLocation.h"
+
+#ifdef Q_OS_WIN32
+class XesamCollectionBuilder
+{
+public:
+    XesamCollectionBuilder(SqlCollection *collection) {}
+};
+#else
 #include "XesamCollectionBuilder.h"
+#endif
 
 #include <klocale.h>
 

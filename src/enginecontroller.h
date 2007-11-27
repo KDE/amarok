@@ -66,7 +66,7 @@ public:
     static const int MAIN_TIMER = 150;
 
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
-    AMAROK_EXPORT static bool installDistroCodec(const QString& engine /*Filetype type*/);
+    /*AMAROK_EXPORT*/ static bool installDistroCodec(const QString& engine /*Filetype type*/);
 
 public slots:
     void previous();

@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "daapserver.h"
 #include "collectiondb.h"
+#include "Process.h"
 
 #include <kstandarddirs.h>
 #include <kuser.h>
@@ -29,18 +30,19 @@ DaapServer::DaapServer(QObject* parent, char* name)
 {
     DEBUG_BLOCK
 
-    m_server = new K3ProcIO();
-    m_server->setComm( K3Process::All );
+    m_server = new ProcIO();
+    m_server->setOutputChannelMode( ProcIO::MergedChannels );
     *m_server << "amarok_daapserver.rb";
     *m_server << KStandardDirs::locate( "data", "amarok/ruby_lib/" );
     *m_server << KStandardDirs::locate( "lib", "ruby_lib/" );
     *m_server << KStandardDirs::locate( "data", "amarok/scripts/ruby_debug/debug.rb" );
-    if( !m_server->start( K3ProcIO::NotifyOnExit, true ) ) {
+    m_server->start();
+    if( m_server->error() == ProcIO::FailedToStart ) {
         error() << "Failed to start amarok_daapserver.rb";
         return;
     }
 
-    connect( m_server, SIGNAL( readReady( K3ProcIO* ) ), this, SLOT( readSql() ) );
+    connect( m_server, SIGNAL( readReady( ProcIO* ) ), this, SLOT( readSql() ) );
 }
 
 DaapServer::~DaapServer()

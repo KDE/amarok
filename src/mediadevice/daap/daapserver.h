@@ -15,6 +15,8 @@
 
 #include <daapclient.h>
 
+class ProcIO;
+
 namespace DNSSD {
     class PublicService;
 }
@@ -29,7 +31,7 @@ class DaapServer : public QObject
     public slots:
         void readSql();
     private:
-        K3ProcIO* m_server;
+        ProcIO* m_server;
         #ifdef DNSSD_SUPPORT
             DNSSD::PublicService* m_service;
         #endif

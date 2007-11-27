@@ -30,9 +30,9 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
+#include "Process.h"
 #include "ContextStatusBar.h"
 
-#include <k3procio.h>
 #include <KAboutApplicationDialog>
 #include <KAboutData>
 #include <KApplication>
@@ -64,17 +64,6 @@
 #include <sys/types.h>
 
 namespace Amarok {
-    void closeOpenFiles(int out, int in, int err) {
-        for(int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
-            if(i!=out && i!=in && i!=err)
-                close(i);
-    }
-
-     /**
-    * This constructor is needed so that the correct codec is used. K3ProcIO defaults
-    * to latin1, while the scanner uses UTF-8.
-    */
-    ProcIO::ProcIO() : K3ProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
 
     QString
     proxyForUrl(const QString& url)
@@ -570,17 +559,18 @@ ScriptManager::slotRunScript( bool silent )
     // Don't start a script twice
     if( m_scripts[name].process ) return false;
 
-    Amarok::ProcIO* script = new Amarok::ProcIO();
-    script->setComm( static_cast<K3Process::Communication>( K3Process::All ) );
+    ProcIO* script = new ProcIO();
+    script->setOutputChannelMode( ProcIO::SeparateChannels );
     const KUrl url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
-    connect( script, SIGNAL( receivedStderr( K3Process*, char*, int ) ), SLOT( slotReceivedStderr( K3Process*, char*, int ) ) );
-    connect( script, SIGNAL( receivedStdout( K3Process*, char*, int ) ), SLOT( slotReceivedStdout( K3Process*, char*, int ) ) );
-    connect( script, SIGNAL( processExited( K3Process* ) ), SLOT( scriptFinished( K3Process* ) ) );
+    connect( script, SIGNAL( receivedStderr( Process* ) ), SLOT( slotReceivedStderr( Process* ) ) );
+    connect( script, SIGNAL( receivedStdout( Process* ) ), SLOT( slotReceivedStdout( Process* ) ) );
+    connect( script, SIGNAL( processExited( Process* ) ), SLOT( scriptFinished( Process* ) ) );
 
-    if( script->start( K3Process::NotifyOnExit ) )
+    script->start( );
+    if( script->error() != ProcIO::FailedToStart )
     {
         if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
         {
@@ -729,14 +719,14 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
 /* This is just a workaround, some scripts crash for some people if stdout is not handled. */
 void
-ScriptManager::slotReceivedStdout( K3Process*, char* buf, int len )
+ScriptManager::slotReceivedStdout( Process *process )
 {
-    debug() << QString::fromLatin1( buf, len );
+    debug() << QString::fromLatin1( process->readAllStandardOutput() );
 }
 
 
 void
-ScriptManager::slotReceivedStderr( K3Process* process, char* buf, int len )
+ScriptManager::slotReceivedStderr( Process* process )
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;
@@ -744,7 +734,7 @@ ScriptManager::slotReceivedStderr( K3Process* process, char* buf, int len )
     for( it = m_scripts.begin(); it != end; ++it )
         if( it.value().process == process ) break;
 
-    const QString text = QString::fromLatin1( buf, len );
+    const QString text = QString::fromLatin1( process->readAllStandardError() );
     error() << it.key() << ":\n" << text;
 
     if( it.value().log.length() > 20000 )
@@ -754,7 +744,7 @@ ScriptManager::slotReceivedStderr( K3Process* process, char* buf, int len )
 
 
 void
-ScriptManager::scriptFinished( K3Process* process ) //SLOT
+ScriptManager::scriptFinished( Process* process ) //SLOT
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;
@@ -763,7 +753,7 @@ ScriptManager::scriptFinished( K3Process* process ) //SLOT
         if( it.value().process == process ) break;
 
     // Check if there was an error on exit
-    if( process->normalExit() && process->exitStatus() != 0 )
+    if( process->error() != Process::Crashed && process->exitStatus() != 0 )
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() )
                                            ,it.value().log );
 
@@ -827,11 +817,10 @@ ScriptManager::ensureScoreScriptRunning()
 
 
 void
-ScriptManager::terminateProcess( K3ProcIO** proc )
+ScriptManager::terminateProcess( ProcIO** proc )
 {
     if( *proc ) {
         (*proc)->kill(); // Sends SIGTERM
-        (*proc)->detach();
 
         delete *proc;
         *proc = 0;
@@ -843,7 +832,7 @@ void
 ScriptManager::notifyScripts( const QString& message )
 {
     foreach( const ScriptItem &item, m_scripts ) {
-        K3ProcIO* const proc = item.process;
+        ProcIO* const proc = item.process;
         if( proc ) proc->writeStdin( message );
     }
 }

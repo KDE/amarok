@@ -96,7 +96,7 @@ public:
     friend class Job;
     typedef Q3ValueList<Job*> JobList;
 
-    AMAROK_EXPORT static ThreadManager *instance();
+    /*AMAROK_EXPORT*/ static ThreadManager *instance();
     static void deleteInstance();
 
     /**
@@ -109,7 +109,7 @@ public:
      * @return number of jobs in the queue after the call
      * @see ThreadManager::Job
      */
-    AMAROK_EXPORT int queueJob( Job* );
+    /*AMAROK_EXPORT*/ int queueJob( Job* );
 
     /**
      * Queue multiple jobs simultaneously, you should use this to avoid the race

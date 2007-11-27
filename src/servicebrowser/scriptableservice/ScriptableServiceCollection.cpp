@@ -55,13 +55,13 @@ bool ScriptableServiceCollection::possiblyContainsTrack(const KUrl & url) const
     return false;
 }
 
-Meta::TrackPtr ScriptableServiceCollection::ScriptableServiceCollection::trackForUrl(const KUrl & url)
+Meta::TrackPtr ScriptableServiceCollection::trackForUrl(const KUrl & url)
 {
     Q_UNUSED( url );
     return Meta::TrackPtr();
 }
 
-CollectionLocation * ScriptableServiceCollection::ScriptableServiceCollection::location() const
+CollectionLocation * ScriptableServiceCollection::location() const
 {
     return 0;
 }

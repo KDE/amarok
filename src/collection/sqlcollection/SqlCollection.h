@@ -41,7 +41,7 @@ class CollectionLocation;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class AMAROK_EXPORT SqlCollection : public Collection, public SqlStorage
+class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 {
     Q_OBJECT
     public:

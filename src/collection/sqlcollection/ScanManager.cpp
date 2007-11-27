@@ -57,13 +57,14 @@ ScanManager::startFullScan()
         debug() << "scanner already running";
         return;
     }
-    m_scanner = new KProcess( this );
+    m_scanner = new Process( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( slotFinished( int, QProcess::ExitStatus ) ) );
+    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+    connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
     if( m_parser )
     {
@@ -86,13 +87,14 @@ void ScanManager::startIncrementalScan()
         debug() << "scanner already running";
         return;
     }
-    m_scanner = new KProcess( this );
+    m_scanner = new Process( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << getDirsToScan();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( slotFinished( int, QProcess::ExitStatus ) ) );
+    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+    connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
     if( m_parser )
     {
@@ -168,22 +170,23 @@ ScanManager::slotReadReady()
 }
 
 void
-ScanManager::slotFinished( int exitCode, QProcess::ExitStatus exitStatus )
+ScanManager::slotFinished( )
 {
     DEBUG_BLOCK
-    Q_UNUSED( exitCode );
 
-    if( exitStatus == QProcess::CrashExit )
+    //make sure that we read the complete buffer
+    slotReadReady();
+    m_scanner->deleteLater();
+    m_scanner = 0;
+    m_restartCount = 0;
+}
+
+void
+ScanManager::slotError( QProcess::ProcessError error )
+{
+    if( error == QProcess::Crashed )
     {
         handleRestart();
-    }
-    else
-    {
-        //make sure that we read the complete buffer
-        slotReadReady();
-        m_scanner->deleteLater();
-        m_scanner = 0;
-        m_restartCount = 0;
     }
 }
 

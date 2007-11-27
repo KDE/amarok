@@ -23,7 +23,7 @@
 #include "CoverBling.h"
 
 #include <math.h>
-
+#include <GL/glext.h>
 #include <QtOpenGL>
 #include <KStandardDirs>
 

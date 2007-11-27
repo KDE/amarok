@@ -20,6 +20,8 @@
 #ifndef MEMORYQUERYMAKER_H
 #define MEMORYQUERYMAKER_H
 
+#include "amarok_export.h"
+
 #include "MemoryCollection.h"
 #include "QueryMaker.h"
 
@@ -29,7 +31,7 @@ namespace ThreadWeaver
     class Job;
 }
 
-class MemoryQueryMaker : public QueryMaker
+class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
 {
     Q_OBJECT
     public:

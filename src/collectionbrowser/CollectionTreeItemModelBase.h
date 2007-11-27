@@ -11,6 +11,8 @@
 #ifndef COLLECTIONTREEITEMMODELBASE_H
 #define COLLECTIONTREEITEMMODELBASE_H
 
+#include "amarok_export.h"
+
 #include "../querybuilder.h"
 #include "meta/Meta.h"
 
@@ -42,7 +44,7 @@ namespace CategoryId
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class CollectionTreeItemModelBase : public QAbstractItemModel {
+class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel {
 Q_OBJECT
 
     public:

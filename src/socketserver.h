@@ -18,7 +18,7 @@
 #include <QString>          //stack allocated
 
 
-class K3Process;
+class Process;
 
 class QPaintEvent;
 class QPoint;
@@ -90,7 +90,7 @@ namespace Vis
 
             virtual void stateChange( bool state );
 
-            K3Process   *m_proc;
+            Process    *m_proc;
             int         m_sockfd;
             const char *m_command;
         };
@@ -99,8 +99,8 @@ namespace Vis
         void rightButton( Q3ListViewItem*, const QPoint&, int );
 
     public slots:
-        void processExited( K3Process* );
-        void receivedStdout( K3Process*, char*, int );
+        void processExited( Process* );
+        void receivedStdout( Process* );
     };
 } //namespace VIS
 

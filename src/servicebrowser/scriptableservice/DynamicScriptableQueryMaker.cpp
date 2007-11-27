@@ -21,12 +21,12 @@
 #include "DynamicScriptableServiceMeta.h"
 
 #include "collection/support/MemoryMatcher.h"
+#include "Process.h"
 
 #include "debug.h"
 
 #include <KRun>
 #include <KShell>
-#include <KProcess>
 
 
 struct DynamicScriptableQueryMaker::Private {
@@ -38,7 +38,7 @@ struct DynamicScriptableQueryMaker::Private {
     bool returnDataPtrs;
     QString callbackString;
     int parentId;
-    KProcess * scriptProcess;
+    Process * scriptProcess;
 };
 
 
@@ -272,9 +272,9 @@ void DynamicScriptableQueryMaker::fetchAlbums()
         args << "--populate ";
         args << "-1";
 
-        d->scriptProcess = new KProcess();
+        d->scriptProcess = new Process();
         d->scriptProcess->setProgram( m_script, args );
-        connect ( d->scriptProcess, SIGNAL( finished ( int, QProcess::ExitStatus ) ), this, SLOT( slotScriptComplete() ) );
+        connect ( d->scriptProcess, SIGNAL( finished ( int ) ), this, SLOT( slotScriptComplete() ) );
         d->scriptProcess->start();
     }
 
@@ -305,9 +305,9 @@ void DynamicScriptableQueryMaker::fetchTracks()
         args << QString::number( d->parentId ) + " ";
         args << d->callbackString;
 
-        d->scriptProcess = new KProcess();
+        d->scriptProcess = new Process();
         d->scriptProcess->setProgram( m_script, args );
-        connect ( d->scriptProcess, SIGNAL( finished ( int, QProcess::ExitStatus ) ), this, SLOT( slotScriptComplete() ) );
+        connect ( d->scriptProcess, SIGNAL( finished ( int ) ), this, SLOT( slotScriptComplete() ) );
         d->scriptProcess->start();
         
     }

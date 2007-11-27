@@ -20,12 +20,13 @@
 #ifndef AMAROK_SQL_SCANMANAGER_H
 #define AMAROK_SQL_SCANMANAGER_H
 
+#include "Process.h"
+
 #include <QMutex>
 #include <QObject>
 #include <QWaitCondition>
 #include <QXmlStreamReader>
 
-#include <KProcess>
 #include <threadweaver/Job.h>
 
 class SqlCollection;
@@ -44,7 +45,8 @@ class ScanManager : public QObject
 
     private slots:
         void slotReadReady();
-        void slotFinished( int exitCode, QProcess::ExitStatus exitStatus );
+        void slotFinished();
+        void slotError(QProcess::ProcessError error);
         void slotJobDone();
 
     private:
@@ -54,7 +56,7 @@ class ScanManager : public QObject
     private:
         SqlCollection *m_collection;
 
-        KProcess *m_scanner;
+        Process *m_scanner;
         XmlParseJob *m_parser;
 
         int m_restartCount;

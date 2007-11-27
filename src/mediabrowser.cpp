@@ -30,6 +30,7 @@
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
 #include "pluginmanager.h"
+#include "Process.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "searchwidget.h"
@@ -66,7 +67,6 @@
 #include <QToolTip>       //QToolTip::add()
 
 #include <k3multipledrag.h>
-#include <k3process.h>
 #include <k3tempfile.h>
 #include <k3urldrag.h>       //dragObject()
 #include <KActionCollection>
@@ -91,6 +91,7 @@
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
 
+#include <unistd.h>
 
 MediaBrowser *MediaBrowser::s_instance = 0;
 

@@ -27,6 +27,7 @@
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kcodecs.h>
+#include <KRandom>
 #include <qdom.h>
 #include <QFile> //decodePath()
 //Added by qt3to4:
@@ -462,7 +463,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images ) const
 {
     if ( isFile() )
     {
-        TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ), false );
+        TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ).data(), false );
         if ( !fileref.isNull() ) {
             if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
                 if ( file->ID3v2Tag() )
@@ -490,7 +491,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
+    fileref = TagLib::FileRef( QFile::encodeName( path ).data(), true, readStyle );
 
     if( !fileref.isNull() )
     {
@@ -1459,7 +1460,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     TagLib::FileRef* f;
 
     if( !passedin )
-        f = new TagLib::FileRef( QFile::encodeName( url().path() ), false );
+        f = new TagLib::FileRef( QFile::encodeName( url().path() ).data(), false );
     else
         f = fileref;
 
@@ -1615,7 +1616,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
     {
         const QString path = url().path();
         //Make it get cleaned up at the end of the function automagically
-        tmpfileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+        tmpfileref = TagLib::FileRef( QFile::encodeName( path ).data(), true, TagLib::AudioProperties::Fast );
         fileref = &tmpfileref;
     }
 
@@ -1654,19 +1655,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
 int
 MetaBundle::getRand()
 {
-    //KRandom  supposedly exists in SVN, although it's not checked out on my machine, and it's certainly not in 3.3, so I'm just going to steal its code
-
-    unsigned int seed;
-    int fd = open("/dev/urandom", O_RDONLY);
-    if (fd < 0 || ::read(fd, &seed, sizeof(seed)) != sizeof(seed))
-    {
-            // No /dev/urandom... try something else.
-            srand(getpid());
-            seed = rand()+time(0);
-    }
-    if (fd >= 0) close(fd);
-    srand(seed);
-    return rand();
+    return KRandom::random();
 }
 
 QString

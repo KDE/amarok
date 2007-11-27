@@ -73,7 +73,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
 
     connect( this, SIGNAL( scanDone( bool ) ), MountPointManager::instance(), SLOT( updateStatisticsURLs( bool ) ) );
 
-    connect( m_scanner, SIGNAL( readReady( K3ProcIO* ) ), SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( readReady( ProcIO* ) ), SLOT( slotReadReady() ) );
 
     *m_scanner << "amarokcollectionscanner";
     *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
@@ -341,7 +341,7 @@ ScanController::slotReadReady()
 
     m_dataMutex.lock();
 
-    while( m_scanner->readln( line, true, 0 ) != -1 ) {
+    while( m_scanner->readln( line ) != -1 ) {
         if( !line.startsWith( "exepath=" ) ) // skip binary location info from scanner
             m_xmlData += line;
     }
@@ -522,7 +522,7 @@ ScanController::customEvent( QEvent* e )
 
         delete m_scanner; // Reusing doesn't work, so we have to destroy and reinstantiate
         m_scanner = new Amarok::ProcIO();
-        connect( m_scanner, SIGNAL( readReady( K3ProcIO* ) ), SLOT( slotReadReady() ) );
+        connect( m_scanner, SIGNAL( readReady( ProcIO* ) ), SLOT( slotReadReady() ) );
 
         *m_scanner << "amarokcollectionscanner";
         *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV

@@ -13,6 +13,8 @@
 #ifndef DAAPPROXY_H
 #define DAAPPROXY_H
 
+class ProcIO;
+
 #include <QObject>
 #include <q3serversocket.h>
 class DaapClient;
@@ -35,7 +37,7 @@ namespace Daap {
 
         private:
             KUrl m_proxyUrl;
-            Amarok::ProcIO* m_proxy;
+            ProcIO* m_proxy;
     };
 
     // We must implement this because QServerSocket has one pure virtual method.

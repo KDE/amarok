@@ -47,9 +47,9 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
 
-    foreach( Meta::DataPtr data, data )
+    foreach( Meta::DataPtr datap, data )
     {
-        new CollectionTreeItem( data, this );
+        new CollectionTreeItem( datap, this );
     }
 }
 

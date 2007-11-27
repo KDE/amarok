@@ -3,7 +3,6 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include <K3ProcIO> //Amarok::ProcIO
 #include <KActionCollection>
 #include <KConfig>
 #include <KIO/NetAccess>
@@ -140,13 +139,6 @@ namespace Amarok
     {
         return fileName.section( '/', 0, -2 );
     }
-  /** Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
-  * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
-  * happens to be called in the forked process
-  * See bug #103750 for more information.
-  */
-  //TODO ugly hack, fix K3Process for KDE 4.0
-    void closeOpenFiles(int out, int in, int err); //defined in scriptmanager.cpp
 
     /**
     * Returns internal code for database type, DbConnection::sqlite, DbConnection::mysql, or DbConnection::postgresql
@@ -238,45 +230,6 @@ namespace Amarok
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // class Amarok::ProcIO
-    ////////////////////////////////////////////////////////////////////////////////
-    /**
-    * Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
-    * Used by Amarok::ProcIO and AmarokProcess, exploiting commSetupDoneC(), a virtual method that
-    * happens to be called in the forked process
-    * See bug #103750 for more information.
-    */
-    class AMAROK_EXPORT ProcIO : public K3ProcIO {
-        public:
-        ProcIO(); // ctor sets the textcodec to UTF-8, in scriptmanager.cpp
-        virtual int commSetupDoneC() {
-            const int i = K3ProcIO::commSetupDoneC();
-            Amarok::closeOpenFiles( K3ProcIO::out[0],K3ProcIO::in[0],K3ProcIO::err[0] );
-            return i;
-        }
-    };
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // class Amarok::Process
-    ////////////////////////////////////////////////////////////////////////////////
-    /** Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
-     * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
-     * happens to be called in the forked process
-     * See bug #103750 for more information.
-     */
-    class AMAROK_EXPORT Process : public K3Process {
-        public:
-        Process( QObject *parent = 0 ) : K3Process( parent ) {}
-        virtual int commSetupDoneC() {
-            const int i = K3Process::commSetupDoneC();
-            Amarok::closeOpenFiles(K3Process::out[0],K3Process::in[0], K3Process::err[0]);
-            return i;
-        }
-    };
-
-
 }
 
 
