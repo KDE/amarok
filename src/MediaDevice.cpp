@@ -839,7 +839,7 @@ MediaDevice::transferFiles()
 
                 if( !isPlayable( track ) )
                 {
-                    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1", bundle->url().path() ),
+                    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1", track->prettyUrl() ),
                             KDE::StatusBar::Sorry );
                     unplayable += (*it)->url();
                     transferredItem->setFailed();
