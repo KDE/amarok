@@ -29,7 +29,7 @@
         magnatunedownloadinfo.cpp
         magnatunealbumdownloader.cpp )
 
-        kde4_add_ui3_files(amarok_service-magnatune_PART_SRC
+        kde4_add_ui3_files(amarok_service-magnatune_PART_SRCS
             magnatunedownloaddialogbase.ui
             magnatuneredownloaddialogbase.ui
             magnatunepurchasedialogbase.ui
