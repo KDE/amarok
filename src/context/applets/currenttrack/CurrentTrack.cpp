@@ -80,6 +80,9 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
 
+    // <markey> This code hangs for me on startup with 100% cpu
+
+#if 0
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
@@ -111,6 +114,7 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
+#endif
 }
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
