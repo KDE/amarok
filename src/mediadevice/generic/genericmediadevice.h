@@ -24,7 +24,7 @@
 #include "MediaDevice.h"
 #include "MediaItem.h"
 #include "transferdialog.h"
-#include "meta.h"
+#include "Meta.h"
 
 #include <kdirlister.h>
 #include <kurl.h>

@@ -9,7 +9,7 @@
 #define MEDIADEVICEMETA_H
 
 // Amarok
-#include "meta.h"
+#include "Meta.h"
 
 class MediaDevice;
 
