@@ -18,6 +18,7 @@
 #include "mediabrowser.h"
 #include "MediaItem.h"
 #include "meta/file/File.h"
+#include "meta/PlaylistFileSupport.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
 #include "podcastbundle.h"
@@ -170,47 +171,27 @@ MediaDevice::updateRootItems()
         m_orphanedItem->setVisible(m_orphanedItem->childCount() > 0);
 }
 
-//BundleList
-//MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
-//{
-    //PORT 2.0
-//    BundleList bundles;
-//    if( !PlaylistFile::isPlaylistFile( url ) )
-//    {
-//        Amarok::ContextStatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
-//                KDE::StatusBar::Sorry );
-//        return bundles;
-//    }
-// 
-//    PlaylistFile playlist( url.path() );
-//    if( playlist.isError() )
-//    {
-//        Amarok::ContextStatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
-//                KDE::StatusBar::Sorry );
-//        return bundles;
-//    }
-//
-//    for( BundleList::iterator it = playlist.bundles().begin();
-//            it != playlist.bundles().end();
-//            ++it )
-//    {
-//        bundles += MetaBundle( (*it).url() );
-//    }
-//    preparePlaylistForSync( name, bundles );
-//    return bundles;
-//}
-
 Meta::TrackList
 MediaDevice::tracksToSync( const QString &name, const KUrl &url )
 {
-    //TODO
-    //get list of tracks in the playlist file at url
-    //see comment above for implementation of old bundlesToSync()
+    QFile file( url.url() );
 
-    return Meta::TrackList();
+    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
+        return Meta::TrackList();
+    }
+
+    QTextStream stream( &file );
+
+    Meta::TrackList tracks = Meta::loadM3u( stream, url.directory() );
+
+    preparePlaylistForSync( name, tracks );
+
+    return tracks;
 }
 
-//TODO port to meta
+//TODO port to meta & new collection interface
 //BundleList
 //MediaDevice::bundlesToSync( const QString &name, const QString &query )
 //{
