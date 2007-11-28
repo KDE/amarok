@@ -1,8 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
+ServiceTypes=KPluginInfo
 Name=Mp3tunes Service
-Comment=Service plugin for Amarok
+Comment=Browse and listen to the music stored on your mp3tunes account
 
 
 ServiceTypes=Amarok/Plugin

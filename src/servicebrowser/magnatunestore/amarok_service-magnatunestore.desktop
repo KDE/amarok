@@ -1,8 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
+ServiceTypes=KPluginInfo
 Name=Magnatune Store
-Comment=Service plugin for Amarok
+Comment=Preview and buy music from the non evil Magnatune record label
 
 
 ServiceTypes=Amarok/Plugin

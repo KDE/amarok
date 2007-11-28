@@ -42,6 +42,11 @@ QString AmpacheServiceFactory::name()
     return "Ampache";
 }
 
+KPluginInfo AmpacheServiceFactory::info()
+{
+    return KPluginInfo( "amarok_service-ampache.desktop", "services" );
+}
+
 
 AmpacheService::AmpacheService(const QString & name)
  : ServiceBase( name )

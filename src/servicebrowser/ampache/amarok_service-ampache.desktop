@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
+ServiceTypes=KPluginInfo
 Name=Ampache Service
 Comment=Service plugin for Amarok
 

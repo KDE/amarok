@@ -53,6 +53,7 @@ class MagnatuneServiceFactory: public ServiceFactory
 
         virtual void init();
         virtual QString name();
+        virtual KPluginInfo info();
 };
 
 

@@ -1,8 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
+ServiceTypes=KPluginInfo
 Name=Shoutcast Service
-Comment=Service plugin for Amarok
+Comment=A service that allows browsing of thousands of shoutcast stations
 
 
 ServiceTypes=Amarok/Plugin

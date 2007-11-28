@@ -1,8 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
+ServiceTypes=KPluginInfo
 Name=Jamendo Service
-Comment=Service plugin for Amarok
+Comment=Listen and download music uploaded by independant artist
 
 
 ServiceTypes=Amarok/Plugin

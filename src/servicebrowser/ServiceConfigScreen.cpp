@@ -19,45 +19,35 @@
  
 #include "ServiceConfigScreen.h"
 
+#include <KPluginSelector>
+
 #include <QCheckBox>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
 
+
+
 ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
  : ConfigDialogBase( parent )
 {
 
-    QList<QString> serviceNames = ServicePluginManager::instance()->factories().keys();
+    KPluginSelector * selector = new KPluginSelector( this );
 
-    //add a layout
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout( this );
+    layout->setMargin( 0 );
+    layout->addWidget( selector );
 
-    //setup a config item for each service
+    
+    QList< ServiceFactory * > serviceFactories = ServicePluginManager::instance()->factories().values();
 
-    int runningY = 0;
-    foreach ( QString serviceName, serviceNames ) {
-
-        QFrame * serviceItem = new QFrame( this );
-
-        serviceItem->setFrameStyle(QFrame::Panel | QFrame::Raised);
-        serviceItem->setLineWidth(2);
-
-        QHBoxLayout *itemLayout = new QHBoxLayout;
-
-        itemLayout->addWidget( new QLabel( serviceName ) );
-        itemLayout->addWidget( new QCheckBox("Enable", this) );
-        itemLayout->addWidget( new QCheckBox("Add to collection", this) );
-        itemLayout->addWidget( new QPushButton("Configure", this) );
-
-        serviceItem->setLayout( itemLayout );
-        layout->addWidget( serviceItem );
-
+    QList<KPluginInfo> pluginInfoList;
+    foreach ( ServiceFactory * factory, serviceFactories ) {
+        pluginInfoList.append( factory->info() );
     }
 
-    setLayout(layout);
-
+    selector->addPlugins( pluginInfoList );
 }
 
 

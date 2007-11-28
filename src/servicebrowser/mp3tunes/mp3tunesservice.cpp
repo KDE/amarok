@@ -40,6 +40,11 @@ QString Mp3tunesServiceFactory::name()
     return "Mp3tunes.com";
 }
 
+KPluginInfo Mp3tunesServiceFactory::info()
+{
+    return KPluginInfo( "amarok_service-mp3tunes.desktop", "services" );
+}
+
 Mp3tunesService::Mp3tunesService(const QString & name)
  : ServiceBase( name )
  , m_partnerToken( "7359149936" )
@@ -156,5 +161,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
 
 
 #include "mp3tunesservice.moc"
+
+
 
 

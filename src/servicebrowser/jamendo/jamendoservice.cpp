@@ -46,6 +46,11 @@ QString JamendoServiceFactory::name()
     return "Jamendo.com";
 }
 
+KPluginInfo JamendoServiceFactory::info()
+{
+    return KPluginInfo( "amarok_service-jamendo.desktop", "services" );
+}
+
 
 JamendoService::JamendoService(const QString & name)
  : ServiceBase( name )
@@ -279,6 +284,8 @@ void JamendoService::torrentDownloadComplete(KJob * downloadJob)
 }
 
 #include "jamendoservice.moc"
+
+
 
 
 

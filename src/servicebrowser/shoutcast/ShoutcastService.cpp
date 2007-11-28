@@ -44,6 +44,12 @@ QString ShoutcastServiceFactory::name()
 }
 
 
+KPluginInfo ShoutcastServiceFactory::info()
+{
+    return KPluginInfo( "amarok_service-shoutcast.desktop", "services" );
+}
+
+
 ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
 {
@@ -75,6 +81,8 @@ void ShoutcastService::polish()
 
 
 #include "ShoutcastService.moc"
+
+
 
 
 

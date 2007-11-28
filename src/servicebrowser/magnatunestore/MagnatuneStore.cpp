@@ -67,6 +67,11 @@ QString MagnatuneServiceFactory::name()
     return "Magnatune.com";
 }
 
+KPluginInfo MagnatuneServiceFactory::info()
+{
+    return KPluginInfo( "amarok_service-magnatunestore.desktop", "services" );
+}
+
 
 
 MagnatuneStore::MagnatuneStore( const char *name )
@@ -481,4 +486,6 @@ void MagnatuneStore::polish( )
 
 
 #include "MagnatuneStore.moc"
+
+
 
