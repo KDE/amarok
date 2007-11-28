@@ -95,7 +95,7 @@ SqlCollection::init()
     // (e.g. deleted collection.db)
     if( !result.isEmpty() && result.first().toInt() == 0 )
     {
-        startFullScan();
+        QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }
 }
 

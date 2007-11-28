@@ -38,10 +38,12 @@ class ScanManager : public QObject
     public:
         ScanManager( SqlCollection *parent );
 
-        void startFullScan();
-        void startIncrementalScan();
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
+
+    public slots:
+        void startFullScan();
+        void startIncrementalScan();
 
     private slots:
         void slotReadReady();
