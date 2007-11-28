@@ -89,6 +89,14 @@ SqlCollection::init()
     QTimer::singleShot( 0, this, SLOT( initXesam() ) );
     if( m_updater->needsUpdate() )
         m_updater->update();
+    QStringList result = query( "SELECT count(*) FROM tracks" );
+    // If database version is updated, the collection needs to be rescanned.
+    // Works also if the collection is empty for some other reason
+    // (e.g. deleted collection.db)
+    if( !result.isEmpty() && result.first().toInt() == 0 )
+    {
+        startFullScan();
+    }
 }
 
 void

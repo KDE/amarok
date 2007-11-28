@@ -122,7 +122,10 @@ CollectionManager::startFullScan()
 void
 CollectionManager::checkCollectionChanges()
 {
-    //TODO implement me
+    foreach( Collection *coll, d->collections )
+    {
+        coll->startIncrementalScan();
+    }
 }
 
 QueryMaker*

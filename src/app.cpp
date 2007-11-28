@@ -723,17 +723,9 @@ App::continueInit()
 
     CollectionDB *collDB = CollectionDB::instance();
 
-    // If database version is updated, the collection needs to be rescanned.
-    // Works also if the collection is empty for some other reason
-    // (e.g. deleted collection.db)
-    if ( CollectionDB::instance()->isEmpty() )
-    {
-         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
-        collDB->startScan();
-    }
-    else if ( AmarokConfig::monitorChanges() )
+    if ( AmarokConfig::monitorChanges() )
         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( scanModifiedDirs() ) );
-        collDB->scanModifiedDirs();
+        CollectionManager::instance()->checkCollectionChanges();
 
 
     handleCliArgs();

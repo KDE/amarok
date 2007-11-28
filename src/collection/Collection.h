@@ -55,6 +55,7 @@ class AMAROK_EXPORT Collection : public QObject
 
         virtual QueryMaker * queryMaker() = 0;
         virtual void startFullScan() { }
+        virtual void startIncrementalScan() {}
 
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
