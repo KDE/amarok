@@ -470,6 +470,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->genre = g_strdup( metaBundle.genre()->utf8() );
 
     track->mediatype = ITDB_MEDIATYPE_AUDIO;
+    bool audiobook = false;
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -484,9 +485,8 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else if(type=="m4b")
     {
+        audiobook = true;
         track->filetype = g_strdup( "mp4" );
-        track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
@@ -496,9 +496,8 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else if(type=="aa")
     {
+        audiobook = true;
         track->filetype = g_strdup( "audible" );
-        track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
 
         TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -507,10 +506,22 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         // libgpod also tries to set those, but this won't work
         track->unk126 = 0x01;
         track->unk144 = 0x0029;
+
     }
     else
     {
         track->filetype = g_strdup( type.utf8() );
+    }
+
+
+    QString genre = metaBundle.genre();
+    if( genre.startsWith("audiobook", false) )
+        audiobook = true;
+    if( audiobook )
+    {
+        track->remember_playback_position |= 0x01;
+        track->skip_when_shuffling |= 0x01;
+        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
 
     track->composer = g_strdup( metaBundle.composer()->utf8() );
