@@ -19,7 +19,7 @@
  
 #include "ServiceConfigScreen.h"
 
-#include <KPluginSelector>
+#include <KSharedConfig>
 
 #include <QCheckBox>
 #include <QFrame>
@@ -33,11 +33,11 @@ ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
  : ConfigDialogBase( parent )
 {
 
-    KPluginSelector * selector = new KPluginSelector( this );
+    m_serviceSelector = new KPluginSelector( this );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
-    layout->addWidget( selector );
+    layout->addWidget( m_serviceSelector );
 
     
     QList< ServiceFactory * > serviceFactories = ServicePluginManager::instance()->factories().values();
@@ -47,7 +47,7 @@ ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
         pluginInfoList.append( factory->info() );
     }
 
-    selector->addPlugins( pluginInfoList );
+    m_serviceSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, "Services" );
 }
 
 
@@ -58,6 +58,7 @@ ServiceConfigScreen::~ServiceConfigScreen()
 
 void ServiceConfigScreen::updateSettings()
 {
+    m_serviceSelector->save();
 }
 
 

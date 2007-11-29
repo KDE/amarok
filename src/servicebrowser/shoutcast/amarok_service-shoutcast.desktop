@@ -2,6 +2,7 @@
 Encoding=UTF-8
 Type=Service
 ServiceTypes=KPluginInfo
+Icon=amarok_download
 Name=Shoutcast Service
 Comment=A service that allows browsing of thousands of shoutcast stations
 
@@ -17,3 +18,10 @@ X-KDE-Amarok-name=ShoutcastService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
+X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Service
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true

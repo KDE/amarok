@@ -84,7 +84,11 @@ void ServicePluginManager::init()
 {
 
     foreach( ServiceFactory* factory,  m_factories.values() ) {
-        factory->init();
+
+        //check if this service is enabled
+
+        if ( factory->config().readEntry( "Enabled", true ) ) 
+            factory->init();
     }
 
 }

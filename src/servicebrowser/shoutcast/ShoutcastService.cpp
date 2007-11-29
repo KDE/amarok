@@ -46,8 +46,16 @@ QString ShoutcastServiceFactory::name()
 
 KPluginInfo ShoutcastServiceFactory::info()
 {
-    return KPluginInfo( "amarok_service-shoutcast.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service-shoutcast.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    return pluginInfo;
 }
+
+KConfigGroup ShoutcastServiceFactory::config()
+{
+    return Amarok::config( "Service_Shoutcast" );
+}
+
 
 
 ShoutcastService::ShoutcastService( const char *name )

@@ -35,15 +35,29 @@ void Mp3tunesServiceFactory::init()
     emit newService( service );
 }
 
+
 QString Mp3tunesServiceFactory::name()
 {
     return "Mp3tunes.com";
 }
 
+
 KPluginInfo Mp3tunesServiceFactory::info()
 {
-    return KPluginInfo( "amarok_service-mp3tunes.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service-mp3tunes.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    return pluginInfo;
 }
+
+
+KConfigGroup Mp3tunesServiceFactory::config()
+{
+    return Amarok::config( "Service_Mp3tunes" );
+}
+
+
+
+
 
 Mp3tunesService::Mp3tunesService(const QString & name)
  : ServiceBase( name )
@@ -158,6 +172,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
 
     m_xmlDownloadJob->deleteLater();
 }
+
 
 
 #include "mp3tunesservice.moc"

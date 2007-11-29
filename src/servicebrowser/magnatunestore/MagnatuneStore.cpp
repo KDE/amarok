@@ -69,8 +69,18 @@ QString MagnatuneServiceFactory::name()
 
 KPluginInfo MagnatuneServiceFactory::info()
 {
-    return KPluginInfo( "amarok_service-magnatunestore.desktop", "services" );
+
+    KPluginInfo pluginInfo(  "amarok_service-magnatunestore.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    return pluginInfo;
+    
 }
+
+KConfigGroup MagnatuneServiceFactory::config()
+{
+    return Amarok::config( "Service_Magnatune" );
+}
+
 
 
 
@@ -481,6 +491,7 @@ void MagnatuneStore::polish( )
 
     return true;
 }*/
+
 
 
 

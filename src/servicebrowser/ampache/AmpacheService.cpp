@@ -44,8 +44,18 @@ QString AmpacheServiceFactory::name()
 
 KPluginInfo AmpacheServiceFactory::info()
 {
-    return KPluginInfo( "amarok_service-ampache.desktop", "services" );
+
+    KPluginInfo pluginInfo(  "amarok_service-ampache.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    return pluginInfo;
 }
+
+
+KConfigGroup AmpacheServiceFactory::config()
+{
+    return Amarok::config( "Service_Ampache" );
+}
+
 
 
 AmpacheService::AmpacheService(const QString & name)

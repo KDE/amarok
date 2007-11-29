@@ -48,7 +48,15 @@ QString JamendoServiceFactory::name()
 
 KPluginInfo JamendoServiceFactory::info()
 {
-    return KPluginInfo( "amarok_service-jamendo.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service-jamendo.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    return pluginInfo;
+}
+
+
+KConfigGroup JamendoServiceFactory::config()
+{
+    return Amarok::config( "Service_Jamendo" );
 }
 
 
@@ -282,6 +290,7 @@ void JamendoService::torrentDownloadComplete(KJob * downloadJob)
     downloadJob->deleteLater();
     m_torrentDownloadJob = 0;
 }
+
 
 #include "jamendoservice.moc"
 

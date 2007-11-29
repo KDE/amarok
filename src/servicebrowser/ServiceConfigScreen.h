@@ -23,6 +23,7 @@
 #include "ConfigDialogBase.h"
 #include "ServicePluginManager.h"
 
+#include <KPluginSelector>
 
 
 /**
@@ -43,6 +44,7 @@ public:
 
 private:
     ServicePluginManager * m_servicePluginManager;
+    KPluginSelector * m_serviceSelector;
 
 
 

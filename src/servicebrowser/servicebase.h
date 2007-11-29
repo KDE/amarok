@@ -55,6 +55,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
 
         virtual void init() = 0;
         virtual QString name() = 0;
+        virtual KConfigGroup config() = 0;
         virtual KPluginInfo info() = 0;
 
     signals:
