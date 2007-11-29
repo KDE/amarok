@@ -95,7 +95,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
             || mimetype->is( "video/x-msvideo" )
             || mimetype->is( "video/x-ms-wmv" ) )
     {
-        return new TagLib::WMA::File(fileName, readProperties, propertiesStyle);
+        return new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
     else if( mimetype->is( "audio/vnd.rn-realaudio" )
             || mimetype->is( "audio/x-pn-realaudio" )
@@ -130,7 +130,7 @@ void registerTaglibPlugins()
 {
     //TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AACFileTypeResolver);
