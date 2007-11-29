@@ -202,7 +202,6 @@ set(libstatusbar_SRCS
     statusbar/AmarokStatusBar.cpp
     statusbar/StatusBarBase.cpp
     statusbar/ContextStatusBar.cpp
-    statusbar/PlaylistStatusBar.cpp
     statusbar/overlayWidget.cpp
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
