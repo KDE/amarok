@@ -211,8 +211,8 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
     }            
 }
 
-MediaDeviceCache::DeviceType
-MediaDeviceCache::deviceType( const QString &udi )
+const MediaDeviceCache::DeviceType
+MediaDeviceCache::deviceType( const QString &udi ) const
 {
     DEBUG_BLOCK
     if( m_type.contains( udi ) )
@@ -222,8 +222,8 @@ MediaDeviceCache::deviceType( const QString &udi )
     return MediaDeviceCache::InvalidType;
 }
 
-QString
-MediaDeviceCache::deviceName( const QString &udi )
+const QString
+MediaDeviceCache::deviceName( const QString &udi ) const
 {
     DEBUG_BLOCK
     if( m_name.contains( udi ) )
@@ -234,7 +234,7 @@ MediaDeviceCache::deviceName( const QString &udi )
 }
 
 bool
-MediaDeviceCache::isGenericEnabled( const QString &udi )
+MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 {
     DEBUG_BLOCK
     if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
@@ -262,6 +262,20 @@ MediaDeviceCache::isGenericEnabled( const QString &udi )
     }
     debug() << "Returning true";
     return true;
+}
+
+const QString
+MediaDeviceCache::volumeMountPoint( const QString &udi ) const
+{
+    DEBUG_BLOCK
+    Solid::Device device( udi );
+    Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+    if( !ssa || !ssa->isAccessible() )
+    {
+        debug() << "Not able to convert to StorageAccess or not accessible, returning empty";
+        return QString();
+    }
+    return ssa->filePath();
 }
 
 #include "MediaDeviceCache.moc"

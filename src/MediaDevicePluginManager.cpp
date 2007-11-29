@@ -33,8 +33,10 @@
 #include <Solid/Device>
 
 #include <QGroupBox>
+#include <QHeaderView>
 #include <QLabel>
 #include <QTextDocument>
+#include <QTableWidget>
 #include <QToolTip>
 #include <QWhatsThis>
 
@@ -583,7 +585,7 @@ MediaDeviceConfig::plugin()
 MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginManager *mpm )
         : KDialog( Amarok::mainWindow() )
         , m_mountPointBox( 0 )
-        , m_location( 0 )
+        , m_table( 0 )
         , m_mpm( mpm )
 {
     setObjectName( "mediadevicevolumemarkerdialog" );
@@ -594,20 +596,46 @@ MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginM
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Mark Volumes as Media Devices" ) ) );
 
-    KVBox *vbox = new KVBox( this );
-    setMainWidget( vbox );
-
-    vbox->setSpacing( KDialog::spacingHint() );
-    vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
-
-    m_location = new QGroupBox( i18n( "Volumes" ), vbox );
-    m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    m_mountPointBox = new KVBox( m_location );
+    m_mountPointBox = new KVBox( this );
     m_mountPointBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+    setMainWidget( m_mountPointBox );
 
-    KHBox *hbox = new KHBox( vbox );
+    KHBox *hbox = new KHBox( m_mountPointBox );
+    QTableWidget *m_table = new QTableWidget( 0, 2, hbox );
+    QStringList headerlabels;
+    headerlabels << i18n( "Mount Point:" ) << i18n( "Mark?" );
+    m_table->setHorizontalHeaderLabels( headerlabels );
+    m_table->verticalHeader()->hide();
+    m_table->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+    m_table->setShowGrid( false );
 
     connect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
+
+    MediaDeviceCache::instance()->refreshCache();
+    QStringList udiList = MediaDeviceCache::instance()->getAll();
+    foreach( const QString &udi, udiList )
+    {
+        if( !MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType ||
+                MediaDeviceCache::instance()->volumeMountPoint( udi ).isEmpty() )
+        {
+            debug() << "udi " << udi << " is not a volume, or mount point detected as empty";
+            continue;
+        }
+        int row = m_table->rowCount();
+        m_table->insertRow( row );
+        QString mountPoint = MediaDeviceCache::instance()->volumeMountPoint( udi );
+        QTableWidgetItem *item = new QTableWidgetItem( mountPoint );
+        m_table->setItem( row, 0, item );
+        item = new QTableWidgetItem();
+        item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+        KIO::UDSEntry udsentry;
+        if( KIO::NetAccess::stat( mountPoint + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+            item->setCheckState( Qt::Checked );
+        else
+            item->setCheckState( Qt::Unchecked );
+        m_table->setItem( row, 1, item );
+    }
+    m_table->setSortingEnabled( true );
 }
 
 MediaDeviceVolumeMarkerDialog::~MediaDeviceVolumeMarkerDialog()

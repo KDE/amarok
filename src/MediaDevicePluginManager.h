@@ -30,6 +30,7 @@
 class QAbstractButton;
 class QGroupBox;
 class QLabel;
+class QTableView;
 class KVBox;
 class MediaDevice;
 class MediaDevicePluginManager;
@@ -163,7 +164,7 @@ class MediaDeviceVolumeMarkerDialog : public KDialog
 
     private:
         KVBox *m_mountPointBox;
-        QGroupBox *m_location;
+        QTableView *m_table;
         MediaDevicePluginManager* m_mpm;
 };
 
