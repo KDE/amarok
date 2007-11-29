@@ -688,7 +688,12 @@ App::continueInit()
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), mainWindow(), SLOT( init() ) );
+
+    // FIXME: something is broken with global shortcuts & windows,
+    // dbus call is causing a ~30 second timeout. Disable for now.
+#ifndef Q_WS_WIN
     initGlobalShortcuts();
+#endif
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
     {
