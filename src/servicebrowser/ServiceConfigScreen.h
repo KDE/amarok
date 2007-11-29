@@ -33,6 +33,8 @@ A widget that allows configuration of services
 */
 class ServiceConfigScreen : public ConfigDialogBase
 {
+    Q_OBJECT
+            
 public:
     ServiceConfigScreen( QWidget * parent );
 
@@ -42,9 +44,15 @@ public:
     virtual bool hasChanged();
     virtual bool isDefault();
 
+public slots:
+
+    void slotConfigChanged( bool changed );
+
 private:
     ServicePluginManager * m_servicePluginManager;
     KPluginSelector * m_serviceSelector;
+
+    bool m_configChanged;
 
 
 

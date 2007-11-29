@@ -19,6 +19,8 @@
  
 #include "ServiceConfigScreen.h"
 
+#include "debug.h"
+
 #include <KSharedConfig>
 
 #include <QCheckBox>
@@ -31,6 +33,7 @@
 
 ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
  : ConfigDialogBase( parent )
+ , m_configChanged( false )
 {
 
     m_serviceSelector = new KPluginSelector( this );
@@ -38,6 +41,9 @@ ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     layout->addWidget( m_serviceSelector );
+
+
+    connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
 
     
     QList< ServiceFactory * > serviceFactories = ServicePluginManager::instance()->factories().values();
@@ -64,13 +70,21 @@ void ServiceConfigScreen::updateSettings()
 
 bool ServiceConfigScreen::hasChanged()
 {
-    return false;
+    DEBUG_BLOCK;
+    return m_configChanged;
 }
 
 
 bool ServiceConfigScreen::isDefault()
 {
-    return true;
+    DEBUG_BLOCK;
+    return false;
 }
 
+void ServiceConfigScreen::slotConfigChanged( bool changed )
+{
+    DEBUG_BLOCK
+    m_configChanged = changed;
+}
 
+#include "ServiceConfigScreen.moc"
