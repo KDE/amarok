@@ -307,6 +307,8 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
             it != MediaBrowser::instance()->getPlugins().end();
             ++it )
         m_mdaCombo->addItem( (*it)->name() );
+    if( m_mdaCombo->count() > 0 )
+        m_selectedPlugin = MediaBrowser::instance()->getInternalPluginName( m_mdaCombo->itemText( 0 ) );
 
     new QLabel( "", vbox1 );
     QLabel* nameLabel = new QLabel( vbox1 );
