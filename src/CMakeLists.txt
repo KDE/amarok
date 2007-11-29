@@ -199,6 +199,7 @@ set(libanalyzers_SRCS
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
+    statusbar/AmarokStatusBar.cpp
     statusbar/StatusBarBase.cpp
     statusbar/ContextStatusBar.cpp
     statusbar/PlaylistStatusBar.cpp
@@ -206,9 +207,8 @@ set(libstatusbar_SRCS
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
     statusbar/StatusBarMessageLabel.cpp
-#TODO: Port to new playlist
-#    statusbar/queueLabel.cpp
     statusbar/selectLabel.cpp
+#   statusbar/queueLabel.cpp
 )
 
 #####################################################################

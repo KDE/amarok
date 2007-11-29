@@ -9,7 +9,7 @@
 #include "amarokconfig.h"
 #include "CoverManager.h"
 #include "debug.h"
-#include "ContextStatusBar.h"
+#include "AmarokStatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -255,7 +255,8 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
 
-    Amarok::ContextStatusBar::instance()->newProgressOperation( job );
+    The::amarokStatusBar()->setProgressText( i18n( "Fetching Cover" ) );
+    The::amarokStatusBar()->setProgress( 0 );
 }
 
 void
@@ -382,7 +383,8 @@ CoverFetcher::attemptAnotherFetch()
         KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
-        Amarok::ContextStatusBar::instance()->newProgressOperation( job );
+        The::amarokStatusBar()->setProgressText( i18n( "Fetching Cover" ) );
+        The::amarokStatusBar()->setProgress( 0 );
 
         m_coverUrls.pop_front();
 
@@ -634,7 +636,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    The::contextStatusBar()->longMessage( "Retrieved cover successfully" );
+    The::amarokStatusBar()->setMessage( "Retrieved cover successfully", KDE::StatusBar::None );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
     if( !m_albums.isEmpty() )

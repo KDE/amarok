@@ -27,7 +27,7 @@
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
 #include "PlaylistWidget.h"
-#include "statusbar/PlaylistStatusBar.h"
+#include "statusbar/AmarokStatusBar.h"
 #include "statusbar/selectLabel.h"
 #include "TheInstances.h"
 #include "toolbar.h"
@@ -112,7 +112,7 @@ Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
     } //END Playlist Toolbar
 
-    layout->addWidget( new Amarok::PlaylistStatusBar( this ) );
+    layout->addWidget( new AmarokStatusBar( this ) );
 }
 
 void Widget::switchView()
