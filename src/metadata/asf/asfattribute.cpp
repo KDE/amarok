@@ -1,7 +1,7 @@
-/***************************************************************************
-    copyright            : (C) 2005 by Lukas Lalinsky
+/**************************************************************************
+    copyright            : (C) 2005-2007 by Lukáš Lalinský
     email                : lalinsky@gmail.com
- ***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
@@ -15,217 +15,290 @@
  *                                                                         *
  *   You should have received a copy of the GNU Lesser General Public      *
  *   License along with this library; if not, write to the Free Software   *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
- *   MA  02110-1301  USA                                                   *
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
  ***************************************************************************/
 
-#include <wmaattribute.h>
-#include <wmafile.h>
+#include <taglib.h>
+#include "asfattribute.h"
+#include "asffile.h"
 
 using namespace TagLib;
 
-class WMA::Attribute::AttributePrivate
+class ASF::Attribute::AttributePrivate : public RefCounter
 {
 public:
-  AttributeTypes type;    
-  String name;
-  String value_string;
-  ByteVector value_bytes;
+  AttributePrivate()
+    : stream(0),
+      language(0) {}
+  AttributeTypes type;
+  String stringValue;
+  ByteVector byteVectorValue;
   union {
-    int value_int;
-    long long value_longlong;
+    unsigned int intValue;
+    unsigned short shortValue;
+    unsigned long long longLongValue;
+    bool boolValue;
   };
+  int stream;
+  int language;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-WMA::Attribute::Attribute()
+ASF::Attribute::Attribute()
 {
   d = new AttributePrivate;
-  d->name = String::null;
   d->type = UnicodeType;
 }
 
-WMA::Attribute::Attribute(WMA::File &file)
+ASF::Attribute::Attribute(const ASF::Attribute &other)
+  : d(other.d)
 {
-  d = new AttributePrivate;
-  parse(file);
+  d->ref();
 }
 
-WMA::Attribute::Attribute(const String &name, const String &value)
+ASF::Attribute &
+ASF::Attribute::operator=(const ASF::Attribute &other)
 {
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = UnicodeType;
-  d->value_string = value;
+  if(d->deref())
+    delete d;
+  d = other.d;
+  d->ref();
+  return *this;
 }
 
-WMA::Attribute::Attribute(const String &name, const ByteVector &value)
+ASF::Attribute::~Attribute()
 {
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = BytesType;
-  d->value_bytes = value;
-}
-
-WMA::Attribute::Attribute(const String &name, unsigned int value)
-{
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = DWordType;
-  d->value_int = value;
-}
-
-WMA::Attribute::Attribute(const String &name, unsigned long long value)
-{
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = QWordType;
-  d->value_longlong = value;
-}
-
-WMA::Attribute::Attribute(const String &name, unsigned short value)
-{
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = WordType;
-  d->value_int = value;
-}
-
-WMA::Attribute::Attribute(const String &name, bool value)
-{
-  d = new AttributePrivate;
-  d->name = name;
-  d->type = BoolType;
-  d->value_int = value;
-}
-
-WMA::Attribute::Attribute(const Attribute &attr)
-{
-  d = new AttributePrivate(*attr.d);
-} 
-
-WMA::Attribute::~Attribute()
-{
-  if(d) 
+  if(d->deref())
     delete d;
 }
 
-String WMA::Attribute::name() const
+ASF::Attribute::Attribute(const String &value)
 {
-  return d->name;
+  d = new AttributePrivate;
+  d->type = UnicodeType;
+  d->stringValue = value;
 }
 
-WMA::Attribute::AttributeTypes WMA::Attribute::type() const
+ASF::Attribute::Attribute(const ByteVector &value)
+{
+  d = new AttributePrivate;
+  d->type = BytesType;
+  d->byteVectorValue = value;
+}
+
+ASF::Attribute::Attribute(unsigned int value)
+{
+  d = new AttributePrivate;
+  d->type = DWordType;
+  d->intValue = value;
+}
+
+ASF::Attribute::Attribute(unsigned long long value)
+{
+  d = new AttributePrivate;
+  d->type = QWordType;
+  d->longLongValue = value;
+}
+
+ASF::Attribute::Attribute(unsigned short value)
+{
+  d = new AttributePrivate;
+  d->type = WordType;
+  d->shortValue = value;
+}
+
+ASF::Attribute::Attribute(bool value)
+{
+  d = new AttributePrivate;
+  d->type = BoolType;
+  d->boolValue = value;
+}
+
+ASF::Attribute::AttributeTypes
+ASF::Attribute::type() const
 {
   return d->type;
 }
 
-String WMA::Attribute::toString() const
+String
+ASF::Attribute::toString() const
 {
-  return d->value_string;
+  return d->stringValue;
 }
 
-ByteVector WMA::Attribute::toByteVector() const
+ByteVector
+ASF::Attribute::toByteVector() const
 {
-  return d->value_bytes;
+  return d->byteVectorValue;
 }
 
-int WMA::Attribute::toInt() const
+unsigned short
+ASF::Attribute::toBool() const
 {
-  if (d->type == UnicodeType)
-    return d->value_string.toInt();
-  else
-    return d->value_int;
+  return d->shortValue;
 }
 
-long long WMA::Attribute::toLongLong() const
+unsigned short
+ASF::Attribute::toUShort() const
 {
-  return d->value_longlong;
+  return d->shortValue;
 }
 
-bool WMA::Attribute::parse(WMA::File &f)
+unsigned int
+ASF::Attribute::toUInt() const
 {
-  int size = f.readWORD();
-  f.readString(size, d->name);
-  
-  d->type = (WMA::Attribute::AttributeTypes)f.readWORD();
-  size = f.readWORD();
+  return d->intValue;
+}
+
+unsigned long long
+ASF::Attribute::toULongLong() const
+{
+  return d->longLongValue;
+}
+
+String
+ASF::Attribute::parse(ASF::File &f, int kind)
+{
+  int size, nameLength;
+  String name;
+
+  // extended content descriptor
+  if(kind == 0) {
+    nameLength = f.readWORD();
+    name = f.readString(nameLength);
+    d->type = ASF::Attribute::AttributeTypes(f.readWORD());
+    size = f.readWORD();
+  }
+  // metadata & metadata library
+  else {
+    int temp = f.readWORD();
+    // metadata library
+    if(kind == 2) {
+      d->language = temp;
+    }
+    d->stream = f.readWORD();
+    nameLength = f.readWORD();
+    d->type = ASF::Attribute::AttributeTypes(f.readWORD());
+    size = f.readDWORD();
+    name = f.readString(nameLength);
+  }
 
   switch(d->type) {
   case WordType:
-    d->value_int = f.readWORD();
+    d->shortValue = f.readWORD();
     break;
-    
+
   case BoolType:
+    if(kind == 0) {
+      d->boolValue = f.readDWORD() == 1;
+    }
+    else {
+      d->boolValue = f.readWORD() == 1;
+    }
+    break;
+
   case DWordType:
-    d->value_int = f.readDWORD();
+    d->intValue = f.readDWORD();
     break;
-    
-  case QWordType:  
-    d->value_longlong = f.readQWORD();
+
+  case QWordType:
+    d->longLongValue = f.readQWORD();
     break;
-    
-  case UnicodeType:  
-    f.readString(size, d->value_string);
+
+  case UnicodeType:
+    d->stringValue = f.readString(size);
     break;
-    
-  case BytesType:  
-    d->value_bytes = f.readBlock(size);
+
+  case BytesType:
+  case GuidType:
+    d->byteVectorValue = f.readBlock(size);
     break;
-    
-  default:
-    return false; 
   }
-  
-  return true;
+
+  return name;
 }
 
-ByteVector WMA::Attribute::render() const
+ByteVector
+ASF::Attribute::render(const String &name, int kind) const
 {
   ByteVector data;
 
-  ByteVector v = d->name.data(String::UTF16LE);
-  data.append(ByteVector::fromShort(v.size() + 2, false));
-  data.append(v + ByteVector::fromShort(0, false));
-  
-  data.append(ByteVector::fromShort((int)d->type, false));
-    
   switch (d->type) {
   case WordType:
-    data.append(ByteVector::fromShort(2, false));
-    data.append(ByteVector::fromShort(d->value_int, false));
+    data.append(ByteVector::fromShort(d->shortValue, false));
     break;
-      
+
   case BoolType:
+    if(kind == 0) {
+      data.append(ByteVector::fromUInt(d->boolValue ? 1 : 0, false));
+    }
+    else {
+      data.append(ByteVector::fromShort(d->boolValue ? 1 : 0, false));
+    }
+    break;
+
   case DWordType:
-    data.append(ByteVector::fromShort(4, false));
-    data.append(ByteVector::fromUInt(d->value_int, false));
+    data.append(ByteVector::fromUInt(d->intValue, false));
     break;
-      
+
   case QWordType:
-    data.append(ByteVector::fromShort(8, false));
-    data.append(ByteVector::fromLongLong(d->value_longlong, false));
+    data.append(ByteVector::fromLongLong(d->longLongValue, false));
     break;
-      
+
   case UnicodeType:
-    v = d->value_string.data(String::UTF16LE);
-    data.append(ByteVector::fromShort(v.size() + 2, false));
-    data.append(v + ByteVector::fromShort(0, false));
+    data.append(File::renderString(d->stringValue));
     break;
-    
+
   case BytesType:
-    data.append(ByteVector::fromShort(d->value_bytes.size(), false));
-    data.append(d->value_bytes);
+  case GuidType:
+    data.append(d->byteVectorValue);
     break;
-    
-  default:  
-    return ByteVector::null; 
   }
-  
+
+  if(kind == 0) {
+    data = File::renderString(name, true) +
+           ByteVector::fromShort((int)d->type, false) +
+           ByteVector::fromShort(data.size(), false) +
+           data;
+  }
+  else {
+    ByteVector nameData = File::renderString(name);
+    data = ByteVector::fromShort(kind == 2 ? d->language : 0, false) +
+           ByteVector::fromShort(d->stream, false) +
+           ByteVector::fromShort(nameData.size(), false) +
+           ByteVector::fromShort((int)d->type, false) +
+           ByteVector::fromUInt(data.size(), false) +
+           nameData +
+           data;
+  }
+
   return data;
 }
 
+int
+ASF::Attribute::language() const
+{
+  return d->language;
+}
 
+void
+ASF::Attribute::setLanguage(int value)
+{
+  d->language = value;
+}
+
+int
+ASF::Attribute::stream() const
+{
+  return d->stream;
+}
+
+void
+ASF::Attribute::setStream(int value)
+{
+  d->stream = value;
+}

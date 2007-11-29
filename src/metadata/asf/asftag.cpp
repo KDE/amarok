@@ -1,7 +1,7 @@
-/***************************************************************************
-    copyright            : (C) 2005 by Lukas Lalinsky
+/**************************************************************************
+    copyright            : (C) 2005-2007 by Lukáš Lalinský
     email                : lalinsky@gmail.com
- ***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,15 @@
  *                                                                         *
  *   You should have received a copy of the GNU Lesser General Public      *
  *   License along with this library; if not, write to the Free Software   *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
- *   MA  02110-1301  USA                                                   *
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
  ***************************************************************************/
 
-#include <wmatag.h>
+#include "asftag.h"
 
 using namespace TagLib;
 
-class WMA::Tag::TagPrivate
+class ASF::Tag::TagPrivate
 {
 public:
   String title;
@@ -31,180 +31,172 @@ public:
   String copyright;
   String comment;
   String rating;
-  AttributeMap attributeMap;
+  AttributeListMap attributeListMap;
 };
 
-WMA::Tag::Tag()
+ASF::Tag::Tag()
 : TagLib::Tag()
 {
   d = new TagPrivate;
 }
 
-WMA::Tag::~Tag()
+ASF::Tag::~Tag()
 {
   if(d)
-    delete d;  
+    delete d;
 }
 
 String
-WMA::Tag::title() const
+ASF::Tag::title() const
 {
-  return d->title;  
+  return d->title;
 }
 
 String
-WMA::Tag::artist() const
+ASF::Tag::artist() const
 {
-  return d->artist;  
+  return d->artist;
 }
 
 String
-WMA::Tag::album() const
+ASF::Tag::album() const
 {
-  if(d->attributeMap.contains("WM/AlbumTitle"))
-    return d->attributeMap["WM/AlbumTitle"].toString();
+  if(d->attributeListMap.contains("WM/AlbumTitle"))
+    return d->attributeListMap["WM/AlbumTitle"][0].toString();
   return String::null;
 }
 
 String
-WMA::Tag::copyright() const
+ASF::Tag::copyright() const
 {
   return d->copyright;
 }
 
 String
-WMA::Tag::comment() const
+ASF::Tag::comment() const
 {
   return d->comment;
 }
 
 String
-WMA::Tag::rating() const
+ASF::Tag::rating() const
 {
   return d->rating;
 }
 
 unsigned int
-WMA::Tag::year() const
+ASF::Tag::year() const
 {
-  if(d->attributeMap.contains("WM/Year"))
-    return d->attributeMap["WM/Year"].toInt();
+  if(d->attributeListMap.contains("WM/Year"))
+    return d->attributeListMap["WM/Year"][0].toString().toInt();
   return 0;
 }
 
 unsigned int
-WMA::Tag::track() const
+ASF::Tag::track() const
 {
-  if(d->attributeMap.contains("WM/TrackNumber"))
-    return d->attributeMap["WM/TrackNumber"].toInt();
-  if(d->attributeMap.contains("WM/Track"))
-    return d->attributeMap["WM/Track"].toInt();
+  if(d->attributeListMap.contains("WM/TrackNumber"))
+    return d->attributeListMap["WM/TrackNumber"][0].toString().toInt();
+  if(d->attributeListMap.contains("WM/Track"))
+    return d->attributeListMap["WM/Track"][0].toUInt();
   return 0;
 }
 
 String
-WMA::Tag::genre() const
+ASF::Tag::genre() const
 {
-  if(d->attributeMap.contains("WM/Genre"))
-    return d->attributeMap["WM/Genre"].toString();
+  if(d->attributeListMap.contains("WM/Genre"))
+    return d->attributeListMap["WM/Genre"][0].toString();
   return String::null;
 }
 
-void 
-WMA::Tag::setTitle(const String &value)
+void
+ASF::Tag::setTitle(const String &value)
 {
   d->title = value;
 }
 
-void 
-WMA::Tag::setArtist(const String &value)
+void
+ASF::Tag::setArtist(const String &value)
 {
-  d->artist = value;  
+  d->artist = value;
 }
 
-void 
-WMA::Tag::setCopyright(const String &value)
+void
+ASF::Tag::setCopyright(const String &value)
 {
-  d->copyright = value;  
+  d->copyright = value;
 }
 
-void 
-WMA::Tag::setComment(const String &value)
+void
+ASF::Tag::setComment(const String &value)
 {
   d->comment = value;
 }
 
-void 
-WMA::Tag::setRating(const String &value)
+void
+ASF::Tag::setRating(const String &value)
 {
   d->rating = value;
 }
 
-void 
-WMA::Tag::setAlbum(const String &value)
+void
+ASF::Tag::setAlbum(const String &value)
 {
   setAttribute("WM/AlbumTitle", value);
 }
 
-void 
-WMA::Tag::setGenre(const String &value)
+void
+ASF::Tag::setGenre(const String &value)
 {
   setAttribute("WM/Genre", value);
 }
 
-void 
-WMA::Tag::setYear(uint value)
+void
+ASF::Tag::setYear(uint value)
 {
   setAttribute("WM/Year", String::number(value));
 }
 
-void 
-WMA::Tag::setTrack(uint value)
+void
+ASF::Tag::setTrack(uint value)
 {
   setAttribute("WM/TrackNumber", String::number(value));
 }
 
-const WMA::AttributeMap& WMA::Tag::attributeMap() const
+ASF::AttributeListMap&
+ASF::Tag::attributeListMap()
 {
-  return d->attributeMap;
+  return d->attributeListMap;
 }
 
-void WMA::Tag::removeItem(const ByteVector &key)
+void ASF::Tag::removeItem(const String &key)
 {
-  AttributeMap::Iterator it = d->attributeMap.find(key);
-  if(it != d->attributeMap.end())
-    d->attributeMap.erase(it);
-} 
-
-void WMA::Tag::setAttribute(const ByteVector &key, const String &value)
-{
-  setAttribute(key, WMA::Attribute(key, value));
+  AttributeListMap::Iterator it = d->attributeListMap.find(key);
+  if(it != d->attributeListMap.end())
+    d->attributeListMap.erase(it);
 }
 
-void WMA::Tag::setAttribute(const ByteVector &key, const Attribute &attribute)
+void ASF::Tag::setAttribute(const String &name, const Attribute &attribute)
 {
-  removeItem(key);
-  d->attributeMap.insert(key, attribute);
+  AttributeList value;
+  value.append(attribute);
+  d->attributeListMap.insert(name, value);
 }
 
-bool WMA::Tag::isEmpty() const {
+void ASF::Tag::addAttribute(const String &name, const Attribute &attribute)
+{
+  if(d->attributeListMap.contains(name)) {
+    d->attributeListMap[name].append(attribute);
+  }
+  else {
+    setAttribute(name, attribute);
+  }
+}
+
+bool ASF::Tag::isEmpty() const {
   return TagLib::Tag::isEmpty() &&
          copyright().isEmpty() &&
          rating().isEmpty() &&
-         d->attributeMap.isEmpty();
+         d->attributeListMap.isEmpty();
 }
-
-void WMA::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
-  TagLib::Tag::duplicate(source, target, overwrite);
-  if(overwrite) {
-    target->setCopyright(source->copyright());
-    target->setRating(source->rating());
-  }
-  else {
-    if (target->copyright().isEmpty())                                            
-      target->setCopyright(source->copyright());
-    if (target->rating().isEmpty())                                            
-      target->setRating(source->rating());
-  }
-}
-

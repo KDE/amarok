@@ -1,7 +1,7 @@
-/***************************************************************************
-    copyright            : (C) 2005 by Lukas Lalinsky
+/**************************************************************************
+    copyright            : (C) 2005-2007 by Lukáš Lalinský
     email                : lalinsky@gmail.com
- ***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
@@ -15,16 +15,17 @@
  *                                                                         *
  *   You should have received a copy of the GNU Lesser General Public      *
  *   License along with this library; if not, write to the Free Software   *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
- *   MA  02110-1301  USA                                                   *
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
  ***************************************************************************/
 
+#include <tdebug.h>
 #include <tstring.h>
-#include <wmaproperties.h>
-  
+#include "asfproperties.h"
+
 using namespace TagLib;
 
-class WMA::Properties::PropertiesPrivate
+class ASF::Properties::PropertiesPrivate
 {
 public:
   PropertiesPrivate(): length(0), bitrate(0), sampleRate(0), channels(0) {}
@@ -38,33 +39,33 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-WMA::Properties::Properties() : AudioProperties(AudioProperties::Average)
+ASF::Properties::Properties() : AudioProperties(AudioProperties::Average)
 {
   d = new PropertiesPrivate;
 }
 
-WMA::Properties::~Properties()
+ASF::Properties::~Properties()
 {
   if(d)
     delete d;  
 }
 
-int WMA::Properties::length() const
+int ASF::Properties::length() const
 {
   return d->length;
 }
 
-int WMA::Properties::bitrate() const
+int ASF::Properties::bitrate() const
 {
   return d->bitrate;
 }
 
-int WMA::Properties::sampleRate() const
+int ASF::Properties::sampleRate() const
 {
   return d->sampleRate;
 }
 
-int WMA::Properties::channels() const
+int ASF::Properties::channels() const
 {
   return d->channels;
 } 
@@ -73,11 +74,23 @@ int WMA::Properties::channels() const
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void WMA::Properties::set(int length, int bitrate, int sampleRate, int channels)
+void ASF::Properties::setLength(int length)
 {
   d->length = length;
-  d->bitrate = bitrate;
-  d->sampleRate = sampleRate;
-  d->channels = channels;
+}
+
+void ASF::Properties::setBitrate(int length)
+{
+  d->bitrate = length;
+}
+
+void ASF::Properties::setSampleRate(int length)
+{
+  d->sampleRate = length;
+}
+
+void ASF::Properties::setChannels(int length)
+{
+  d->channels = length;
 }
 

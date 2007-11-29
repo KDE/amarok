@@ -1,7 +1,7 @@
-/***************************************************************************
-    copyright            : (C) 2005 by Lukas Lalinsky
+/**************************************************************************
+    copyright            : (C) 2005-2007 by Lukáš Lalinský
     email                : lalinsky@gmail.com
- ***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
@@ -15,86 +15,100 @@
  *                                                                         *
  *   You should have received a copy of the GNU Lesser General Public      *
  *   License along with this library; if not, write to the Free Software   *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
- *   MA  02110-1301  USA                                                   *
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
  ***************************************************************************/
 
-#ifndef TAGLIB_WMAFILE_H
-#define TAGLIB_WMAFILE_H
+#ifndef TAGLIB_ASFFILE_H
+#define TAGLIB_ASFFILE_H
 
-#include <tfile.h>
 #include <tag.h>
-#include "wmaproperties.h"
-#include "wmatag.h"
+#include <tfile.h>
+#include "asfproperties.h"
+#include "asftag.h"
 
 namespace TagLib {
 
-  namespace WMA {
-  
-    struct GUID;
-    
-    typedef unsigned char BYTE;
-    typedef unsigned short WORD;
-    typedef unsigned int DWORD;
-    typedef unsigned long long QWORD;
-    
-    class File : public TagLib::File
-    {
-        
-      friend class Attribute;
+  //! An implementation of ASF (WMA) metadata
+  namespace ASF {
 
+    /*!
+     * This implements and provides an interface for ASF files to the
+     * TagLib::Tag and TagLib::AudioProperties interfaces by way of implementing
+     * the abstract TagLib::File API as well as providing some additional
+     * information specific to ASF files.
+     */
+    class TAGLIB_EXPORT File : public TagLib::File
+    {
     public:
 
+      /*!
+       * Contructs an ASF file from \a file.  If \a readProperties is true the
+       * file's audio properties will also be read using \a propertiesStyle.  If
+       * false, \a propertiesStyle is ignored.
+       *
+       * \note In the current implementation, both \a readProperties and
+       * \a propertiesStyle are ignored.
+       */
       File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
-      
+
+      /*!
+       * Destroys this instance of the File.
+       */
       virtual ~File();
-    
-      /*!
-       * Returns the TagLib::Tag for this file. 
-       */
-      virtual TagLib::Tag *tag() const;
 
       /*!
-       * Returns the WMA::Tag for this file. 
+       * Returns a pointer to the ASF tag of the file.
+       *
+       * ASF::Tag implements the tag interface, so this serves as the
+       * reimplementation of TagLib::File::tag().
+       *
+       * \note The Tag <b>is still</b> owned by the ASF::File and should not be
+       * deleted by the user.  It will be deleted when the file (object) is
+       * destroyed.
        */
-      virtual Tag *WMATag() const;
+      virtual Tag *tag() const;
 
       /*!
-       * Returns the WMA::Properties for this file. 
+       * Returns the ASF audio properties for this file.
        */
       virtual Properties *audioProperties() const;
 
-
       /*!
-       * Save the file. 
+       * Save the file.
        *
        * This returns true if the save was successful.
        */
       virtual bool save();
-    
-    protected:
+
+    private:
 
       int readBYTE();
       int readWORD();
       unsigned int readDWORD();
       long long readQWORD();
-      void readGUID(GUID &g);
-      void readString(int len, String &s);
-
-      ByteVector renderContentDescription();
-      ByteVector renderExtendedContentDescription();
-      
+      static ByteVector renderString(const String &str, bool includeLength = false);
+      String readString(int len);
       void read(bool readProperties, Properties::ReadStyle propertiesStyle);
 
-    private:
-      
+      friend class Attribute;
+
+      class BaseObject;
+      class UnknownObject;
+      class FilePropertiesObject;
+      class StreamPropertiesObject;
+      class ContentDescriptionObject;
+      class ExtendedContentDescriptionObject;
+      class HeaderExtensionObject;
+      class MetadataObject;
+      class MetadataLibraryObject;
+
       class FilePrivate;
       FilePrivate *d;
-      
     };
-  
+
   }
 
-}  
+}
 
 #endif
