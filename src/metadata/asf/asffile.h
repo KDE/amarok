@@ -38,7 +38,7 @@ namespace TagLib {
      * the abstract TagLib::File API as well as providing some additional
      * information specific to ASF files.
      */
-    class TAGLIB_EXPORT File : public TagLib::File
+    class File : public TagLib::File
     {
     public:
 

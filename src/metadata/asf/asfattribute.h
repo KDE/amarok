@@ -33,7 +33,7 @@ namespace TagLib
 
     class File;
 
-    class TAGLIB_EXPORT Attribute
+    class Attribute
     {
     public:
 

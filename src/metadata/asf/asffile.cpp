@@ -19,7 +19,6 @@
  *   USA                                                                   *
  ***************************************************************************/
 
-#include <tdebug.h>
 #include <tbytevectorlist.h>
 #include <tstring.h>
 #include "asffile.h"
@@ -396,7 +395,6 @@ void ASF::File::read(bool /*readProperties*/, Properties::ReadStyle /*properties
 
   ByteVector guid = readBlock(16);
   if(guid != headerGuid) {
-    debug("ASF: Not an ASF file.");
     return;
   }
 
@@ -437,7 +435,6 @@ void ASF::File::read(bool /*readProperties*/, Properties::ReadStyle /*properties
 bool ASF::File::save()
 {
   if(readOnly()) {
-    debug("ASF: File is read-only.");
     return false;
   }
 

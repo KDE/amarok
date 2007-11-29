@@ -19,7 +19,6 @@
  *   USA                                                                   *
  ***************************************************************************/
 
-#include <tdebug.h>
 #include <tstring.h>
 #include "asfproperties.h"
 
