@@ -76,6 +76,7 @@ email                : markey@web.de
 #include <QPixmapCache>
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
+#include <QtDBus/QtDBus>
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -237,6 +238,12 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
+#ifdef Q_WS_WIN
+    // work around for KUniqueApplication being not completely implemented on windows
+    QDBusConnectionInterface* dbusService;
+    if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
+        dbusService->unregisterService("org.kde.amarok");
+#endif
 }
 
 
