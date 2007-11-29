@@ -114,7 +114,7 @@ public:
     static int columnIndex( const QString &name );
 
     // These values are stored on the Database, so, don't change the order. Only append new ones to the end.
-    enum FileType { other, mp3, ogg, wma, mp4, flac, ra, rv, rm, rmj, rmvb };
+    enum FileType { other, mp3, ogg, wma, mp4, flac, ra, rv, rm, rmj, rmvb, asf };
 
     //for the audioproperties
     static const int Undetermined = -2; /// we haven't yet read the tags

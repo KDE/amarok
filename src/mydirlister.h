@@ -28,7 +28,9 @@ protected:
             item->name().endsWith( ".m4b", false ) || //for adding to iPod
             item->name().endsWith( ".ogg", false ) ||
             item->name().endsWith( ".flac", false ) ||
-            item->name().endsWith( ".wma", false );
+            item->name().endsWith( ".wma", false ) ||
+            item->name().endsWith( ".asf", false );
+
     }
 };
 
