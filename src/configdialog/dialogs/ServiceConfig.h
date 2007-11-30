@@ -31,14 +31,14 @@ A widget that allows configuration of services
 
 	@author 
 */
-class ServiceConfigScreen : public ConfigDialogBase
+class ServiceConfig : public ConfigDialogBase
 {
     Q_OBJECT
             
 public:
-    ServiceConfigScreen( QWidget * parent );
+    ServiceConfig( QWidget * parent );
 
-    ~ServiceConfigScreen();
+    ~ServiceConfig();
 
     virtual void updateSettings();
     virtual bool hasChanged();
@@ -53,9 +53,6 @@ private:
     KPluginSelector * m_serviceSelector;
 
     bool m_configChanged;
-
-
-
 };
 
 #endif

@@ -30,7 +30,7 @@
 #include "MediadeviceConfig.h"
 #include "OsdConfig.h"
 #include "PlaybackConfig.h"
-#include "servicebrowser/ServiceConfigScreen.h"
+#include "ServiceConfig.h"
 
 #include <KIconLoader>
 #include <KLocale>
@@ -54,8 +54,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
-    
-    ConfigDialogBase* services    = new ServiceConfigScreen( this );
+    ConfigDialogBase* services    = new ServiceConfig( this );
 
     addPage( general,     i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
     addPage( appearance,  i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
@@ -65,8 +64,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( lastfm,      i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
     addPage( collection,  i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
-
-    addPage( services, i18n( "Services" ), Amarok::icon( "download" ), i18n( "Configure Services" ) );
+    addPage( services,    i18n( "Services" ), Amarok::icon( "download" ), i18n( "Configure Services" ) );
     
 
     setButtons( Help | Ok | Apply | Cancel );

@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "ServiceConfigScreen.h"
+#include "ServiceConfig.h"
 
 #include "debug.h"
 
@@ -30,8 +30,7 @@
 #include <QVBoxLayout>
 
 
-
-ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
+ServiceConfig::ServiceConfig( QWidget * parent )
  : ConfigDialogBase( parent )
  , m_configChanged( false )
 {
@@ -57,34 +56,34 @@ ServiceConfigScreen::ServiceConfigScreen( QWidget * parent )
 }
 
 
-ServiceConfigScreen::~ServiceConfigScreen()
-{
-}
+ServiceConfig::~ServiceConfig()
+{} 
 
 
-void ServiceConfigScreen::updateSettings()
+void ServiceConfig::updateSettings()
 {
     m_serviceSelector->save();
 }
 
 
-bool ServiceConfigScreen::hasChanged()
+bool ServiceConfig::hasChanged()
 {
     DEBUG_BLOCK;
     return m_configChanged;
 }
 
 
-bool ServiceConfigScreen::isDefault()
+bool ServiceConfig::isDefault()
 {
     DEBUG_BLOCK;
     return false;
 }
 
-void ServiceConfigScreen::slotConfigChanged( bool changed )
+
+void ServiceConfig::slotConfigChanged( bool changed )
 {
     DEBUG_BLOCK
     m_configChanged = changed;
 }
 
-#include "ServiceConfigScreen.moc"
+#include "ServiceConfig.moc"

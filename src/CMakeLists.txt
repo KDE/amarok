@@ -117,8 +117,6 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceListDelegate.cpp
     servicebrowser/DynamicServiceQueryMaker.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
-    servicebrowser/ServiceConfigScreen.cpp
-
 )
 
 #####################################################################
@@ -151,6 +149,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
+    configdialog/dialogs/ServiceConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
