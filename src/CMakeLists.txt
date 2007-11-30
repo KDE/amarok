@@ -363,7 +363,7 @@ set(amaroklib_LIB_SRCS
     equalizersetup.cpp
     expression.cpp
     fht.cpp
-    #filebrowser.cpp
+    filebrowser.cpp
     filebrowserwidget.cpp
     hintlineedit.cpp
     IconLoader.cpp
@@ -381,6 +381,7 @@ set(amaroklib_LIB_SRCS
     metabundle.cpp
     moodbar.cpp
     mountpointmanager.cpp
+    mydiroperator.cpp
     osd.cpp
     PixmapViewer.cpp
     PlaylistHandler.cpp
