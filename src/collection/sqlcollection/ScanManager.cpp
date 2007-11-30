@@ -299,7 +299,7 @@ ScanManager::handleRestart()
         connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
         m_scanner->start();
         m_parser = new XmlParseJob( this, m_collection );
-        m_parser->setIsIncremental( true );
+        m_parser->setIsIncremental( m_isIncremental );
         connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
         ThreadWeaver::Weaver::instance()->enqueue( m_parser );
     }
