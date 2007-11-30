@@ -376,6 +376,8 @@ CoverManager::metadataChanged( Meta::Album* album )
             if( album->name() == item->albumPtr()->name() )
                 item->loadCover();
         }
+        // Update have/missing count.
+        updateStatusBar();
     }
 }
 
