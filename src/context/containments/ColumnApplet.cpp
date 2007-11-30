@@ -36,6 +36,9 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     , m_defaultColumnSize( 450 )
 {
     DEBUG_BLOCK
+
+    setContainmentType( CustomContainment );
+    
     m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
     
@@ -58,11 +61,6 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowser = new Plasma::AppletBrowser( this );
     m_appletBrowser->setApplication( "amarok" );
     m_appletBrowser->hide();
-}
-
-Containment::Type ColumnApplet::containmentType() const
-{
-    return CustomContainment;
 }
 
 void ColumnApplet::saveToConfig( KConfig& conf )

@@ -50,7 +50,6 @@ public:
                                 const QRect& contentsRect);
     
     QList<QAction*> contextActions();
-    virtual Type containmentType() const;
 
 public slots:
     void appletRemoved( QObject* object );
