@@ -59,7 +59,7 @@ ScanManager::startFullScan()
         return;
     }
     m_scanner = new Process( this );
-    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
