@@ -5,6 +5,6 @@ X-KDE-ServiceType=AmarokContext/DataEngine
 
 Comment=Amarok Data Engine
 
-[PropertyDef::X-EngineName]
+[PropertyDef::X-Plasma-EngineName]
 Type=QString
 
