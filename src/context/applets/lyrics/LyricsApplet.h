@@ -27,32 +27,21 @@ class LyricsApplet : public Context::Applet
 public:
     LyricsApplet( QObject* parent, const QVariantList& args );
 
+    void init();
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
+    bool hasHeightForWidth() const;
+    qreal heightForWidth( qreal width ) const;
 
-    // reimplemented to tell Plasma our size
-    QSizeF contentSizeHint() const;
-    // reimplemented to help Plasma::Layout deal with us
-//    QSizeF sizeHint() const { return boundingRect().size(); }
-
-    void constraintsUpdated();
-
-   // void setRect( const QRectF& rect );
-    // for use with the Context layout
-   // void setGeometry( const QRectF& rect ) { setRect( rect ); }
-
+    void constraintsUpdated( Plasma::Constraints );
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
-signals:
-    void changed();
-
 private:
     void calculateHeight();
-    void resize( qreal newWidth );
 
     Context::Svg* m_header;
     qreal m_headerAspectRatio;
-    QSizeF m_size;
 
     // labels
     QGraphicsSimpleTextItem* m_lyricsLabel;
