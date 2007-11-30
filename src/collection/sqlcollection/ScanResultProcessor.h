@@ -73,6 +73,8 @@ class ScanResultProcessor
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QString, int> m_directories;
 
+        QHash<QString, uint> m_filesInDirs;
+
         ScanType m_type;
 };
 

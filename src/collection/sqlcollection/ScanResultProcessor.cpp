@@ -26,6 +26,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QListIterator>
 
 #include <KUrl>
 
@@ -253,6 +254,10 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
     //TODO: we should ignore any non-audio files in the directory...
+    if( !m_filesInDirs.contains( dir.absolutePath() ) )
+    {
+        m_filesInDirs.insert( dir.absolutePath(), dir.count() );
+    }
     if( dir.count() == 1 )
     {
         compilationId = checkExistingAlbums( albumName );
@@ -466,6 +471,21 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //TODO: check if this album already exists, ignoring the albumartist
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
+    QString query = "SELECT urls.deviceid,urls.rpath,albums.id,albums.artist FROM urls "
+                    "LEFT JOIN tracks on urls.id = tracks.url LEFT JOIN albums ON "
+                    "tracks.album = albums.id WHERE albums.name = '%1';";
+    query = query.arg( m_collection->escape( album ) );
+    QStringList result = m_collection->query( query );
+    for( QListIterator<QString> iter( result ); iter.hasNext(); )
+    {
+        int deviceid = iter.next().toInt();
+        QString rpath = iter.next();
+        int albumId = iter.next().toInt();
+        QString albumArtist = iter.next();
+        QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
+        QFileInfo info( currentPath );
+        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
+    }
     return 0;
 }
 
