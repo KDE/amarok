@@ -62,6 +62,7 @@ class ScanManager : public QObject
         XmlParseJob *m_parser;
 
         int m_restartCount;
+        bool m_isIncremental;
 };
 
 class XmlParseJob : public ThreadWeaver::Job

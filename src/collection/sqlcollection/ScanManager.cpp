@@ -44,6 +44,7 @@ ScanManager::ScanManager( SqlCollection *parent )
     , m_scanner( 0 )
     , m_parser( 0 )
     , m_restartCount( 0 )
+    , m_isIncremental( false )
 {
     //nothing to do
 }
@@ -75,6 +76,7 @@ ScanManager::startFullScan()
     }
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( false );
+    m_isIncremental = false;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
@@ -105,6 +107,7 @@ void ScanManager::startIncrementalScan()
     }
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( true );
+    m_isIncremental = true;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
@@ -274,7 +277,31 @@ ScanManager::handleRestart()
     }
     else
     {
-        
+        if( m_parser )
+        {
+        //TODO remove old parser, make sure this code actually works
+            m_parser->requestAbort();
+            ThreadWeaver::Weaver::instance()->dequeue( m_parser );
+            m_parser->deleteLater();
+            m_parser = 0;
+        }
+        delete m_scanner;
+        m_scanner = new Process( this );
+        *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
+        if( m_isIncremental )
+        {
+            *m_scanner << "-i";
+        }
+        *m_scanner << "-s";
+        m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+        connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+        connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->start();
+        m_parser = new XmlParseJob( this, m_collection );
+        m_parser->setIsIncremental( true );
+        connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
+        ThreadWeaver::Weaver::instance()->enqueue( m_parser );
     }
 }
 
