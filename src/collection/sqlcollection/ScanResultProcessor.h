@@ -57,6 +57,8 @@ class ScanResultProcessor
         int urlId( const QString &url );
         int directoryId( const QString &dir );
 
+        int checkExistingAlbums( const QString &album );
+
         QString findAlbumArtist( const QSet<QString> &artists ) const;
         void setupDatabase();
 

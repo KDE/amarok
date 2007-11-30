@@ -242,7 +242,25 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 void
 ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
 {
-    int album = albumId( trackData.value( Field::ALBUM ), albumArtistId );
+    //amarok 1 stored all tracks of a compilation in different directories.
+    //try to detect these cases
+    QString albumName = trackData.value( Field::ALBUM );
+    int album = 0;
+    QFileInfo file( trackData.value( Field::URL ) );
+    QDir dir = file.dir();
+    dir.setFilter( QDir::Files );
+    int compilationId = 0;
+    //do not check existing albums if there is more than one file in the directory
+    //see comments in checkExistingAlbums
+    //TODO: we should ignore any non-audio files in the directory...
+    if( dir.count() == 1 )
+    {
+        compilationId = checkExistingAlbums( albumName );
+    }
+    if( 0 == compilationId )
+    {
+        album = albumId( albumName, albumArtistId );
+    }
     int artist = artistId( trackData.value( Field::ARTIST ) );
     int genre = genreId( trackData.value( Field::GENRE ) );
     int composer = composerId( trackData.value( Field::COMPOSER ) );
@@ -252,7 +270,7 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     QString insert = "INSERT INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
                      "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
                      "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
-    insert = insert.arg( url ).arg( artist ).arg( album ).arg( genre ).arg( composer ).arg( year );
+    insert = insert.arg( url ).arg( artist ).arg( compilationId ? compilationId : album ).arg( genre ).arg( composer ).arg( year );
     insert = insert.arg( m_collection->escape( trackData[ Field::TITLE ] ), m_collection->escape( trackData[ Field::COMMENT ] ) );
     insert = insert.arg( trackData[Field::TRACKNUMBER].toInt() );
 
@@ -439,6 +457,16 @@ ScanResultProcessor::directoryId( const QString &dir )
         m_directories.insert( dir, result[0].toInt() );
         return result[0].toInt();
     }
+}
+
+int
+ScanResultProcessor::checkExistingAlbums( const QString &album )
+{
+    AMAROK_NOTIMPLEMENTED
+    //TODO: check if this album already exists, ignoring the albumartist
+    //if it does, and if each file of the album is alone in its directory
+    //it's probably a compilation.
+    return 0;
 }
 
 void
