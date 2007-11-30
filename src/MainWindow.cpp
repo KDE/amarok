@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
+#include "filebrowser.h"
 #include "filebrowserwidget.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
@@ -250,8 +251,8 @@ void MainWindow::init()
 
 
 
-        //FIXME:
-        //addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
+        //uncomment to enable the old file browser
+//         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
 
         //cant use macros here since we need access to the browsers directly
 

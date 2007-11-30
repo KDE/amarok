@@ -10,7 +10,7 @@
 MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent, Medium *medium ) : KDirOperator( url, parent )
 {
     m_medium = medium;
-    setDirLister( new MyDirLister( true ) );
+//     setDirLister( new MyDirLister( true ) );
     reenableDeleteKey();
 }
 

@@ -29,7 +29,6 @@
 #include "collection/CollectionManager.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "k3bexporter.h"
 #include "kbookmarkhandler.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
@@ -195,7 +194,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_moveToCollectionAction = menu->addAction( KIcon( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), this, SLOT( slotMoveToCollection() ) );
         
         QAction *burnAction = menu->addAction( KIcon( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), this, SLOT( slotBurnCd() ) );
-        burnAction->setEnabled( K3bExporter::isAvailable() );
+//         burnAction->setEnabled( K3bExporter::isAvailable() );
 
         menu->addSeparator();
         menu->addAction( i18n( "&Select All Files" ), this, SLOT( selectAll() ) );
@@ -457,7 +456,7 @@ inline void
 FileBrowser::prepareContextMenu()
 {
     const KFileItemList items = m_dir->selectedItems();
-    m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first().isDir() ) );
+//     m_createPlaylistAction->setVisible( items.count() > 1 || ( items.count() == 1 && items.first().isDir() ) );
 
     if( items.count() == 1 )
         m_queueTracksAction->setText( i18n( "Queue Track" ) );
