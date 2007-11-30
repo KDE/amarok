@@ -499,6 +499,7 @@ SqlTrack::updateStatisticsInDb()
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
+    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( playedFraction );
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
     m_playCount++;
@@ -901,6 +902,7 @@ void
 SqlAlbum::setCompilation( bool compilation )
 {
     DEBUG_BLOCK
+    AMAROK_NOTIMPLEMENTED
     if( isCompilation() == compilation )
     {
         return;
