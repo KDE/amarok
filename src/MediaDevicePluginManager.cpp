@@ -32,9 +32,11 @@
 #include <KVBox>
 #include <Solid/Device>
 
+#include <QFile>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
+#include <QMessageBox>
 #include <QTextDocument>
 #include <QTableWidget>
 #include <QToolTip>
@@ -92,13 +94,12 @@ MediaDevicePluginManagerDialog::slotOk()
 {
     m_manager->finished();
     disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
-    KDialog::slotButtonClicked( Ok );
 }
 
-MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget, const bool nographics )
+MediaDevicePluginManager::MediaDevicePluginManager( QWidget *widget )
         : m_widget( widget )
 {
-    detectDevices( nographics );
+    detectDevices();
 
     connect( this, SIGNAL( selectedPlugin( const QString &, const QString & ) ), MediaBrowser::instance(), SLOT( pluginSelected( const QString &, const QString & ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded(const QString &) ), this, SLOT( slotSolidDeviceAdded(const QString &) ) );
@@ -117,13 +118,14 @@ MediaDevicePluginManager::~MediaDevicePluginManager()
 void
 MediaDevicePluginManager::slotGenericVolumes()
 {
-    MediaDeviceVolumeMarkerDialog *mdvmd = new MediaDeviceVolumeMarkerDialog( this );
+    MediaDeviceVolumeMarkerDialog *mdvmd = new MediaDeviceVolumeMarkerDialog();
     mdvmd->exec();
     delete mdvmd;
+    detectDevices();
 }
 
 bool
-MediaDevicePluginManager::detectDevices( const bool nographics )
+MediaDevicePluginManager::detectDevices()
 {
     DEBUG_BLOCK
     bool foundNew = false;
@@ -142,6 +144,7 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
             {
                 skipflag = true;
                 debug() << "skipping: already listed";
+                //TODO: Handle case where no longer has .is_audio_player
             }
         }
 
@@ -156,7 +159,7 @@ MediaDevicePluginManager::detectDevices( const bool nographics )
         }
         else
         {
-            MediaDeviceConfig *dev = new MediaDeviceConfig( udi, this, nographics, m_widget );
+            MediaDeviceConfig *dev = new MediaDeviceConfig( udi, m_widget );
             m_deviceList.append( dev );
             connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString &)) );
             foundNew = true;
@@ -182,7 +185,7 @@ MediaDevicePluginManager::slotSolidDeviceAdded( const QString &udi )
             ( deviceType == MediaDeviceCache::SolidVolumeType &&
               MediaDeviceCache::instance()->isGenericEnabled( udi ) ) )
     {
-        MediaDeviceConfig *dev = new MediaDeviceConfig( udi, this, false, m_widget );
+        MediaDeviceConfig *dev = new MediaDeviceConfig( udi, m_widget );
         m_deviceList.append( dev );
         connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString&)) );
     }
@@ -257,7 +260,7 @@ void
 MediaDevicePluginManager::slotNewDevice()
 {
     DEBUG_BLOCK
-    ManualDeviceAdder* mda = new ManualDeviceAdder( this );
+    ManualDeviceAdder* mda = new ManualDeviceAdder();
     int accepted = mda->exec();
     if( accepted == QDialog::Accepted && mda->successful() )
     {
@@ -280,7 +283,7 @@ MediaDevicePluginManager::slotNewDevice()
 
 /////////////////////////////////////////////////////////////////////
 
-ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
+ManualDeviceAdder::ManualDeviceAdder()
 : KDialog( Amarok::mainWindow() )
 {
     setObjectName( "manualdeviceadder" );
@@ -289,7 +292,6 @@ ManualDeviceAdder::ManualDeviceAdder( MediaDevicePluginManager* mpm )
     setDefaultButton( Ok );
 
 
-    m_mpm = mpm;
     m_successful = false;
     m_newId = QString();
 
@@ -427,9 +429,8 @@ ManualDeviceAdder::getId( bool recreate )
     return m_newId;
 }
 
-MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
+MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *name )
     : KHBox( parent )
-    , m_manager( mgr )
     , m_udi( udi )
     , m_name( MediaDeviceCache::instance()->deviceName( udi ) )
     , m_oldPlugin( QString() )
@@ -536,9 +537,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, MediaDevicePluginManager *mgr
     connect( m_removeButton, SIGNAL(clicked()), this, SLOT(slotDeleteDevice()) );
     m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
     m_removeButton->setEnabled( deviceType == MediaDeviceCache::ManualType );
-
-    if( !nographics )
-        show();
 }
 
 MediaDeviceConfig::~MediaDeviceConfig()
@@ -582,11 +580,10 @@ MediaDeviceConfig::plugin()
     return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() );
 }
 
-MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginManager *mpm )
+MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog()
         : KDialog( Amarok::mainWindow() )
         , m_mountPointBox( 0 )
         , m_table( 0 )
-        , m_mpm( mpm )
 {
     setObjectName( "mediadevicevolumemarkerdialog" );
     setModal( true );
@@ -601,7 +598,7 @@ MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginM
     setMainWidget( m_mountPointBox );
 
     KHBox *hbox = new KHBox( m_mountPointBox );
-    QTableWidget *m_table = new QTableWidget( 0, 2, hbox );
+    m_table = new QTableWidget( 0, 2, hbox );
     QStringList headerlabels;
     headerlabels << i18n( "Mount Point:" ) << i18n( "Mark?" );
     m_table->setHorizontalHeaderLabels( headerlabels );
@@ -628,8 +625,7 @@ MediaDeviceVolumeMarkerDialog::MediaDeviceVolumeMarkerDialog( MediaDevicePluginM
         m_table->setItem( row, 0, item );
         item = new QTableWidgetItem();
         item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-        KIO::UDSEntry udsentry;
-        if( KIO::NetAccess::stat( mountPoint + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+        if( QFile::exists( mountPoint + "/.is_audio_player" ) )
             item->setCheckState( Qt::Checked );
         else
             item->setCheckState( Qt::Unchecked );
@@ -645,9 +641,33 @@ MediaDeviceVolumeMarkerDialog::~MediaDeviceVolumeMarkerDialog()
 void
 MediaDeviceVolumeMarkerDialog::slotOk()
 {
-    //Voodoo here, and tell mpm to update its list
+    for( int row = 0; row < m_table->rowCount(); row++ )
+    {
+        QString mountPoint = m_table->item( row, 0 )->text();
+        bool checkedState = m_table->item( row, 1 )->checkState() == Qt::Checked ? true : false;
+        bool initialState = QFile::exists( mountPoint + "/.is_audio_player" );
+        if( initialState == checkedState )
+            continue;
+        if( initialState == false )
+        {
+            //attempt to write the file
+            
+        }
+        else
+        {
+            //attempt to delete the file
+            bool success = QFile::remove( mountPoint + "/.is_audio_player" );
+            if( !success )
+            {
+                QMessageBox::critical( this, i18n( "Well, we tried..." ),
+                        i18n( "Could not remove the marking file at %1.\n"
+                              "Ensure that you have the correct permissions\n"
+                              "to remove that file." ) );
+            }
+
+        }
+    }
     disconnect( this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
-    KDialog::slotButtonClicked( Ok );
 }
 
 #include "MediaDevicePluginManager.moc"

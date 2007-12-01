@@ -30,10 +30,9 @@
 class QAbstractButton;
 class QGroupBox;
 class QLabel;
-class QTableView;
+class QTableWidget;
 class KVBox;
 class MediaDevice;
-class MediaDevicePluginManager;
 
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -45,7 +44,7 @@ class MediaDeviceConfig : public KHBox
     Q_OBJECT
 
     public:
-        MediaDeviceConfig( QString id, MediaDevicePluginManager *mgr, const bool nographics=false, QWidget *parent=0, const char *name=0 );
+        MediaDeviceConfig( QString id, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
         QString oldPlugin() { return m_oldPlugin; }
         void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }
@@ -65,7 +64,6 @@ class MediaDeviceConfig : public KHBox
         void deleteDevice( const QString & );
 
     protected:
-        MediaDevicePluginManager *m_manager;
         QString m_udi;
         QString m_name;
         QString m_oldPlugin;
@@ -81,9 +79,7 @@ class MediaDevicePluginManager : public QObject
     Q_OBJECT
 
     public:
-        //nographics only for the initial run of detectDevices...pass in
-        //directly to detectDevices after
-        explicit MediaDevicePluginManager( QWidget *widget, const bool nographics=false );
+        explicit MediaDevicePluginManager( QWidget *widget );
         ~MediaDevicePluginManager();
         void finished();
 
@@ -98,7 +94,7 @@ class MediaDevicePluginManager : public QObject
         void slotSolidDeviceRemoved( const QString &udi );
 
     private:
-        bool detectDevices( bool nographics=false );
+        bool detectDevices();
         QMap<QString, MediaDeviceConfig*> m_deletedMap;
         QList<MediaDeviceConfig*> m_deviceList;
         QWidget *m_widget;
@@ -129,7 +125,7 @@ class ManualDeviceAdder : public KDialog
     Q_OBJECT
 
     public:
-        ManualDeviceAdder( MediaDevicePluginManager* mdm );
+        ManualDeviceAdder();
         ~ManualDeviceAdder();
         bool successful() const { return m_successful; }
         QString getId( bool recreate = false );
@@ -140,7 +136,6 @@ class ManualDeviceAdder : public KDialog
         void slotComboChanged( const QString & );
 
     private:
-        MediaDevicePluginManager* m_mpm;
         bool m_successful;
         QString m_mountPointOldText;
         QString m_selectedPlugin;
@@ -156,7 +151,7 @@ class MediaDeviceVolumeMarkerDialog : public KDialog
     Q_OBJECT
 
     public:
-        MediaDeviceVolumeMarkerDialog( MediaDevicePluginManager* mpm );
+        MediaDeviceVolumeMarkerDialog();
         ~MediaDeviceVolumeMarkerDialog();
 
     private slots:
@@ -164,8 +159,7 @@ class MediaDeviceVolumeMarkerDialog : public KDialog
 
     private:
         KVBox *m_mountPointBox;
-        QTableView *m_table;
-        MediaDevicePluginManager* m_mpm;
+        QTableWidget *m_table;
 };
 
 #endif
