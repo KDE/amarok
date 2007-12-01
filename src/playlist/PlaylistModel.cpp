@@ -74,8 +74,8 @@ Model::Model( QObject* parent )
     , m_undoStack( new QUndoStack( this ) )
     , m_playlistHandler ( new PlaylistHandler )
 {
-    connect( EngineController::instance(), SIGNAL( trackFinished() ), this, SLOT( trackFinished() ) );
-    connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ) );
+    connect( EngineController::instance(), SIGNAL( orderNext( bool ) ), this, SLOT( trackFinished() ), Qt::QueuedConnection );
+    connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ), Qt::QueuedConnection );
     s_instance = this;
 }
 
