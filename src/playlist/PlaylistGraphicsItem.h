@@ -62,6 +62,7 @@ namespace Playlist
             void showImage() const;
             void fetchImage();
             void unsetImage();
+            void dataChanged();
 
             const int groupMode() const { return m_groupMode; }
        
@@ -85,6 +86,7 @@ namespace Playlist
             int m_currentRow;
             bool m_groupModeChanged;
             bool m_collapsible;
+            bool m_dataChanged;
 
             static const qreal ALBUM_WIDTH;
             static const qreal MARGIN;

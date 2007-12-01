@@ -104,6 +104,7 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_groupMode( -1 )
     , m_groupModeChanged ( false )
     , m_collapsible ( true )
+    , m_dataChanged( false )
 {
     setZValue( 1.0 );
     if( !s_fm )
@@ -132,6 +133,7 @@ Playlist::GraphicsItem::~GraphicsItem()
 void
 Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
+    DEBUG_BLOCK
 // ::paint RULES:
 // 1) You do not talk about ::paint method
 // 2) You DO NOT talk about ::paint method
@@ -143,7 +145,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     //debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
-    if( !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
+    if( m_dataChanged || !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
 
         if( !m_items )
@@ -668,6 +670,12 @@ void
 Playlist::GraphicsItem::unsetImage()
 {
     m_items->track->album()->removeImage();
+}
+
+void
+Playlist::GraphicsItem::dataChanged()
+{
+    m_dataChanged = true;
 }
 
 const bool
