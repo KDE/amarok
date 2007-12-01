@@ -711,13 +711,14 @@ void EngineController::slotMainTimer() //SLOT
 // Port 2.0              Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
               m_currentTrack->length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
     {
-       m_engine->stop();
+        m_engine->beginFadeOut();
     }
 }
 
 
 void EngineController::slotTrackEnded() //SLOT
 {
+    DEBUG_BLOCK
     if ( AmarokConfig::trackDelayLength() > 0 )
     {
         //FIXME not perfect
@@ -738,8 +739,7 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     switch( newState )
     {
     case Engine::Empty:
-
-        //FALL THROUGH...
+        //FALL THROUGH
 
     case Engine::Paused:
 
