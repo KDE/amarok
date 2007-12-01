@@ -122,8 +122,7 @@ void ContextLayout::relayout()
     QRectF rect = geometry().adjusted(margin(LeftMargin), margin(TopMargin), -margin(RightMargin), -margin(BottomMargin));
 
     qDebug() << "Context layout geometry set to " << geometry() << " using column width: " << d->columnWidth;
-
-    const int columnCount = (int)(rect.width() / d->columnWidth);
+    const int columnCount = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     int insertColumn = 0;
     qreal rowPos = 0;
@@ -155,10 +154,22 @@ void ContextLayout::relayout()
              itemWidth = idealWidth; 
         }
        
-        // calculate offset to horizontally center item 
-        qreal offset = (columnSpan * d->columnWidth) - itemWidth;
-        if ( insertColumn == 0 )
-            offset -= spacing();  
+        // calculate offset to horizontally center item
+        //if there is space for only one column,
+        //center the item relative to the whole available rectangle
+        qreal offset;
+        if( columnCount > 1 ) {
+            offset = (columnSpan * d->columnWidth) - itemWidth;
+        } else {
+            offset = rect.width() - itemWidth;
+        }
+        if( columnCount > 1 ) { //no need for spacing if there is only one column
+            offset -= spacing() / 4;
+        }
+        if( offset < 0 )
+        {
+            offset = 0;
+        }
         offset /= 2;
 
         // try to restrict the item width to the available geometry's
@@ -174,9 +185,9 @@ void ContextLayout::relayout()
             itemHeight = item->heightForWidth( itemWidth );
         else
             itemHeight = itemSize.height(); // this is not good, applets should provide heightForWidth
-            
+
         const QRectF newGeometry(rect.left() + insertColumn * d->columnWidth + offset,
-                                 rect.top() + rowPos,
+                                 rect.top() + margin( TopMargin ) + rowPos,
                                  itemWidth,
                                  itemHeight );
 
