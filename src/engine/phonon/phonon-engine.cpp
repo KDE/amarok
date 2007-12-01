@@ -14,6 +14,8 @@
 
 #include "phonon-engine.h"
 //these files are from libamarok
+#include "amarok.h"
+#include "amarokconfig.h"
 #include "enginecontroller.h"
 #include "meta/MetaConstants.h"
 
@@ -28,6 +30,7 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 #include <phonon/path.h>
 #include <phonon/audiooutput.h>
 #include <phonon/backendcapabilities.h>
+#include <Phonon/VolumeFaderEffect>
 
 #include <QHash>
 
@@ -36,6 +39,7 @@ PhononEngine::PhononEngine()
         : EngineBase()
         , m_mediaObject( 0 )
         , m_audioOutput( 0 )
+        , m_fader( 0 )
 {
     debug() << "Yay for Phonon being constructed";
 }
@@ -57,7 +61,7 @@ PhononEngine::init()
 
     m_mediaObject->setTickInterval( 100 ); // Needed for position() to work
 
-    Phonon::createPath(m_mediaObject, m_audioOutput);
+    m_path = Phonon::createPath(m_mediaObject, m_audioOutput);
 
     connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
     //connect( m_mediaObject, SIGNAL( length(qint64)), SLOT( length() ) );
@@ -83,6 +87,7 @@ PhononEngine::play( uint offset )
     Q_UNUSED( offset );
     DEBUG_BLOCK
 
+    delete m_fader;
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
 
@@ -114,6 +119,22 @@ PhononEngine::unpause()
 
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
+}
+
+void
+PhononEngine::beginFadeOut()
+{
+    if( m_fader )
+    {
+        return;
+    }
+    //this code causes a crash in phonon code in insertEffect
+    //i haven't had time to ask the phonon guys about it yet
+    //but the code *seems* to be right - max
+    /*m_fader = new Phonon::VolumeFaderEffect( this );
+    m_path.insertEffect( m_fader );
+    m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+    m_fader->fadeOut( AmarokConfig::fadeoutLength() );*/
 }
 
 Engine::State
@@ -168,19 +189,13 @@ PhononEngine::position() const
 uint
 PhononEngine::length() const
 {
-    DEBUG_BLOCK
-
     const uint t = ( m_mediaObject->totalTime() == -1 ) ? 0 : m_mediaObject->totalTime();
-    debug() << "Length: " << t;
-
     return t;
 }
 
 void
 PhononEngine::seek( uint ms )
 {
-    DEBUG_BLOCK
-    
     m_mediaObject->seek( ms );
 }
 

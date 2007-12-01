@@ -16,11 +16,12 @@
 #include "enginebase.h"
 
 #include <phonon/phononnamespace.h>
+#include <Phonon/Path>
 
 namespace Phonon {
     class MediaObject;
-    class AudioPath;
     class AudioOutput;
+    class VolumeFaderEffect;
 }
 
 class /*AMAROK_PHONON_ENGINE_EXPORT*/ PhononEngine : public Engine::Base
@@ -36,6 +37,7 @@ class /*AMAROK_PHONON_ENGINE_EXPORT*/ PhononEngine : public Engine::Base
     virtual void stop();
     virtual void pause();
     virtual void unpause();
+    virtual void beginFadeOut();
     virtual uint position() const;
     virtual uint length() const;
     virtual void seek( uint );
@@ -50,6 +52,9 @@ class /*AMAROK_PHONON_ENGINE_EXPORT*/ PhononEngine : public Engine::Base
 
     Phonon::MediaObject *m_mediaObject;
     Phonon::AudioOutput *m_audioOutput;
+    Phonon::Path        m_path;
+
+    Phonon::VolumeFaderEffect *m_fader;
 
 // private slots:
 //     void configChanged();
