@@ -133,7 +133,6 @@ Playlist::GraphicsItem::~GraphicsItem()
 void
 Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
-    DEBUG_BLOCK
 // ::paint RULES:
 // 1) You do not talk about ::paint method
 // 2) You DO NOT talk about ::paint method
