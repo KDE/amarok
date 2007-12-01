@@ -33,6 +33,11 @@ Engine::Base::load( const KUrl &url, bool stream )
     return true;
 }
 
+void
+Engine::Base::beginFadeOut()
+{
+    stop();
+}
 
 void Engine::Base::setVolume( uint value )
 {

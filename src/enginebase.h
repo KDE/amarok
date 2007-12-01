@@ -146,6 +146,8 @@ namespace Engine
         /** Resumes playback if paused */
         virtual void unpause() = 0;
 
+        /**begins to fade out the current song*/
+        virtual void beginFadeOut();
          /**
          * Get current engine status.
          * @return the correct State as described at the enum
