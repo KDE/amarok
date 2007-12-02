@@ -88,6 +88,8 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
+    if( m_albums.contains(album ) )
+        return;
     m_userCanEditQuery = false;
     m_albumsMutex.lock();
     m_albums << album;
@@ -120,7 +122,12 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
     m_userCanEditQuery = false;
     m_albumsMutex.lock();
-    m_albums << albums;
+    foreach( Meta::AlbumPtr album, albums )
+    {
+        if( m_albums.contains( album ) )
+            continue;
+        m_albums << album;
+    }
     m_albumsMutex.unlock();
     m_fetchMutex.lock();
     if( !m_isFetching )
@@ -433,7 +440,10 @@ CoverFetcher::attemptAnotherFetch()
         m_coverNames.clear();
     }
     else
+    {
+        m_isFetching = false;
         finishWithError( i18n("No cover found") );
+    }
 }
 
 
@@ -658,11 +668,23 @@ CoverFetcher::finish()
 void
 CoverFetcher::finishWithError( const QString &message, KJob *job )
 {
+    DEBUG_BLOCK
     if( job )
         warning() << message << " KIO::error(): " << job->errorText();
 
     m_errors += message;
     m_success = false;
+
+    debug() << "Album name" << m_albumPtr->name();
+
+    m_isFetching = false;
+
+    // Time to move on.
+    if( !m_albums.isEmpty() )
+    {
+        debug() << "next album" << m_albums[0]->name();
+        buildQueries( m_albums.takeFirst() );
+    }
 }
 
 #include "CoverFetcher.moc"
