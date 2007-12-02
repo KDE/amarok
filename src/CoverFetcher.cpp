@@ -88,6 +88,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
+    m_userCanEditQuery = false;
     m_albumsMutex.lock();
     m_albums << album;
     m_albumsMutex.unlock();
@@ -95,7 +96,19 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
     if( !m_isFetching )
     {
         m_fetchMutex.unlock();
-        startFetchLoop();
+
+        m_albumsMutex.lock();
+        if( !m_albums.isEmpty() )
+        {
+            m_isFetching = true;
+            Meta::AlbumPtr album = m_albums.takeFirst();
+            m_albumsMutex.unlock();
+            buildQueries( album );
+        }
+        else
+        {
+            m_albumsMutex.unlock();
+        }
     }
     else
     {
@@ -105,6 +118,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
+    m_userCanEditQuery = false;
     m_albumsMutex.lock();
     m_albums << albums;
     m_albumsMutex.unlock();
@@ -112,27 +126,23 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
     if( !m_isFetching )
     {
         m_fetchMutex.unlock();
-        startFetchLoop();
+        m_albumsMutex.lock();
+
+        if( !m_albums.isEmpty() )
+        {
+            Meta::AlbumPtr album = m_albums.takeFirst();
+            m_albumsMutex.unlock();
+            buildQueries( album );
+        }
+        else
+        {
+            m_albumsMutex.unlock();
+        }
+
     }
     else
     {
         m_fetchMutex.unlock();
-    }
-}
-void
-CoverFetcher::startFetchLoop()
-{
-    m_userCanEditQuery = false;
-    m_albumsMutex.lock();
-    if( !m_albums.isEmpty() )
-    {
-        Meta::AlbumPtr album = m_albums.takeFirst();
-        m_albumsMutex.unlock();
-        buildQueries( album );
-    }
-    else
-    {
-        m_albumsMutex.unlock();
     }
 }
 
@@ -143,6 +153,7 @@ CoverFetcher::startFetchLoop()
 
 void CoverFetcher::buildQueries( Meta::AlbumPtr album )
 {
+    DEBUG_BLOCK
     m_fetchMutex.lock();
     m_isFetching = true;
     m_fetchMutex.unlock();
@@ -199,6 +210,7 @@ void CoverFetcher::buildQueries( Meta::AlbumPtr album )
 void
 CoverFetcher::startFetch( Meta::AlbumPtr album )
 {
+    DEBUG_BLOCK
     m_fetchMutex.lock();
     m_isFetching = true;
     m_fetchMutex.unlock();
@@ -278,7 +290,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     QDomDocument doc;
     if( !doc.setContent( m_xml ) ) {
         m_errors += i18n("The XML obtained from Amazon is invalid.");
-        startFetchLoop();
+        buildQueries( m_albums.takeFirst() );
         return;
     }
 
@@ -547,7 +559,7 @@ CoverFetcher::getUserQuery( QString explanation )
         m_userQuery = dialog.query();
         m_queries.clear();
         m_queries << m_userQuery;
-        startFetchLoop();
+        buildQueries( m_albums.takeFirst() );
         break;
     default:
         finishWithError( i18n( "Aborted." ) );
@@ -639,7 +651,7 @@ CoverFetcher::finish()
     The::amarokStatusBar()->setMessage( "Retrieved cover successfully", KDE::StatusBar::None );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
-    if( !m_albums.isEmpty() )
+    if( !m_userCanEditQuery /*manual fetch*/ && !m_albums.isEmpty() )
         buildQueries( m_albums.takeFirst() );
 }
 

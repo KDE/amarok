@@ -78,7 +78,6 @@ private slots:
 private:
     friend class CoverFetcherSingleton;
     CoverFetcher();
-    void startFetchLoop();
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
     QMutex m_albumsMutex;
