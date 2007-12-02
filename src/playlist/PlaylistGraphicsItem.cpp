@@ -323,7 +323,13 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         //if we are not grouped, or are the head of a group, paint cover:
         QPixmap albumPixmap;
         if( m_items->track->album() )
+        {
+            if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
+            {
+                The::coverFetcher()->queueAlbum( m_items->track->album() );
+            }
             albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+        }
         painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
         //and make sure the top text elements are shown
         if( !m_items->topRightText->isVisible() )
@@ -816,7 +822,13 @@ Playlist::GraphicsItem::refresh()
         return;
 
     if( m_items->track->album() )
+    {
+        if( !m_items->track->album()->hasImage( int(ALBUM_WIDTH) ) )
+        {
+            The::coverFetcher()->queueAlbum( m_items->track->album() );
+        }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+    }
 
     //m_items->albumArt->hide();
     //delete ( m_items->albumArt );

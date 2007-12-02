@@ -22,7 +22,6 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "Collection.h"
-#include "CoverFetcher.h"
 #include "debug.h"
 #include "QueryMaker.h"
 
@@ -202,9 +201,6 @@ QPixmap
 Meta::Album::image( int size, bool withShadow )
 {
     Q_UNUSED( withShadow );
-
-    // If none of the sub classes can provide an image, we need to fetch one.
-    The::coverFetcher()->queueAlbum( Meta::AlbumPtr(this) );
 
     // Return "nocover" until it's fetched.
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );

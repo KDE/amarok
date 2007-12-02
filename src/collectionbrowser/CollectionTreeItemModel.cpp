@@ -17,6 +17,7 @@
 #include "amarok.h"
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "CoverFetcher.h"
 #include "QueryMaker.h"
 
 #include <KLocale>
@@ -83,7 +84,13 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 //                     const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album )
+                    {
+                        if( !album->hasImage(32) )
+                        {
+                            The::coverFetcher()->queueAlbum( album );
+                        }
                         return album->image( 32, false );
+                    }
                     else
                         return iconForLevel( level  );
                 } else {
