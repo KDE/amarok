@@ -497,17 +497,21 @@ Model::insertOptioned( Meta::TrackList list, int options )
             Amarok::ContextStatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
-   int orgCount = rowCount(); //needed because recursion messes up counting
-   bool playlistAdded = false;
+    int orgCount = rowCount(); //needed because recursion messes up counting
+    bool playlistAdded = false;
 
-   //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
-   for( int i = 0; i < list.size(); ++i )
-   {
-       if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
-           playlistAdded = true;
-           m_playlistHandler->load( list.takeAt( i )->url() );
-       }
-   }
+    //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
+    for( int i = 0; i < list.size(); ++i )
+    {
+        if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
+            playlistAdded = true;
+            m_playlistHandler->load( list.takeAt( i )->url() );
+        }
+    }
+
+    //fix crash when list is empty
+    if ( list.isEmpty() )
+        return;
 
 
     int firstItemAdded = -1;
