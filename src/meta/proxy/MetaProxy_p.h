@@ -182,7 +182,7 @@ public:
 
     bool hasAlbumArtist() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->hasAlbumArtist();
         else
             return false;
