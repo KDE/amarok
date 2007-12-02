@@ -216,7 +216,7 @@ public:
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->prettyName();
         else
             return QString();
@@ -258,7 +258,7 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->name();
         else
             return QString();
@@ -266,7 +266,7 @@ public:
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->prettyName();
         else
             return QString();
@@ -274,7 +274,7 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->tracks();
         else
             return Meta::TrackList();
@@ -306,7 +306,7 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->composer() )
             return d->realTrack->composer()->name();
         else
             return QString();
@@ -314,7 +314,7 @@ public:
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->composer())
             return d->realTrack->composer()->prettyName();
         else
             return QString();
@@ -322,7 +322,7 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->composer() )
             return d->realTrack->composer()->tracks();
         else
             return Meta::TrackList();
@@ -354,7 +354,7 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->name();
         else
             return QString();
@@ -362,7 +362,7 @@ public:
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->prettyName();
         else
             return QString();
@@ -370,7 +370,7 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->tracks();
         else
             return Meta::TrackList();
