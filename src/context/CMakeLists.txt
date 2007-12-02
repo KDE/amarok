@@ -37,39 +37,44 @@ set(plasma_LIB_SRCS
     plasma/appletbrowser/customdragtreeview.cpp
     plasma/applethandle.cpp
     plasma/configxml.cpp
-    plasma/corona.cpp
     plasma/containment.cpp
+    plasma/corona.cpp
     plasma/datacontainer.cpp
     plasma/dataengine.cpp
     plasma/dataenginemanager.cpp
+    plasma/layouts/boxlayout.cpp
+    plasma/layouts/borderlayout.cpp
+    plasma/layouts/freelayout.cpp
+    plasma/layouts/nodelayout.cpp
+    plasma/layouts/flowlayout.cpp
+    plasma/layouts/layout.cpp
+    plasma/layouts/layoutanimator.cpp
+    plasma/layouts/layoutitem.cpp
     plasma/packages.cpp
     plasma/phase.cpp
     plasma/plasma.cpp
     plasma/plasma_export.h
-    plasma/toolbox.cpp
     plasma/scriptengine.cpp
+    plasma/searchaction.cpp
+    plasma/searchcontext.cpp
+    plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp
+    plasma/toolbox.cpp
+    plasma/uiloader.cpp
     plasma/view.cpp
-    plasma/layouts/boxlayout.cpp
     plasma/widgets/checkbox.cpp
-    plasma/layouts/freelayout.cpp
-    plasma/layouts/flowlayout.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
     plasma/widgets/label.cpp
-    plasma/layouts/layout.cpp
-    plasma/layouts/layoutanimator.cpp
-    plasma/layouts/layoutitem.cpp
     plasma/widgets/lineedit.cpp
-    plasma/layouts/nodelayout.cpp
+    plasma/widgets/progressbar.cpp
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
+#    plasma/widgets/rectangle.cpp
     plasma/widgets/widget.cpp
-    plasma/shadowitem.cpp
     plasma/widgets/signalplotter.cpp
     plasma/widgets/meter.cpp
-
 )
 
 kde4_add_ui_files (
