@@ -80,6 +80,17 @@ namespace Playlist
             void resize( Meta::TrackPtr track, int totalWidth );
             QString findArtistForCurrentAlbum() const;
 
+            
+            void paintSingleTrack ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
+            void paintHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
+            void paintCollapsedHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
+            void paintBody( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate );
+            void paintTail( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
+            void paintCollapsed( );
+
+            QPixmap getCachedSvg( QString name, int width, int height );
+            void handleActiveOverlay( QRectF rect, bool active );
+
             ActiveItems* m_items;
             qreal m_height;
             int m_groupMode;

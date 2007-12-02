@@ -138,7 +138,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 2) You DO NOT talk about ::paint method
 // 3) Do not show or hide item that are already shown or hidden, respectively
 // 4) Do not setBrush without making sure its hasn't already been set to that brush().
-// 5) If this is your first night at ::paint method, you HAVE to paint.
+// 5) ::paint RULES apply to all methods called from ::paint as well ( duh! )
+// 6) If this is your first night at ::paint method, you HAVE to paint.
     Q_UNUSED( painter ); Q_UNUSED( widget );
 
     //debug() << "painting row: " << m_currentRow;
@@ -158,283 +159,26 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         resize( m_items->track, option->rect.width() );
     }
 
+    bool isActiveTrack = index.data( ActiveTrackRole ).toBool();
 
-    if ( m_groupMode == Collapsed ) {
-        // just make sure text items are hidden and then get the heck out of here...
-        // whoops... this has got to be moved here below the check for (!m_items) or
-        // it will evetually crasah....
-        if( m_items->topRightText->isVisible() )
-            m_items->topRightText->hide();
-        if( m_items->topLeftText->isVisible() )
-            m_items->topLeftText->hide();
-        if( m_items->bottomRightText->isVisible() )
-            m_items->bottomRightText->hide();
-        if( m_items->bottomLeftText->isVisible() )
-            m_items->bottomLeftText->hide();
 
-        return;
+    // call paint method based on type
+    if ( m_groupMode == None ) {
+        paintSingleTrack( painter, option, isActiveTrack );
+    } else if ( m_groupMode == Head ) {
+        paintHead( painter, option, isActiveTrack );
+    } else if ( m_groupMode == Head_Collapsed ) {
+        paintCollapsedHead( painter, option, isActiveTrack );
+    } else if ( m_groupMode == Body ) {
+        paintBody( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
+    } else if ( m_groupMode == End ) {
+        paintTail( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
+    } else if ( m_groupMode == Collapsed ) {
+        paintCollapsed( );
     }
 
-    // paint item background:
-    QRectF trackRect;
-    QRectF headRect;
-    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
+    return;
 
-        //make the album group header stand out
-        //painter->fillRect( option->rect, QBrush( Qt::darkCyan ) );
-        trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
-        if (m_groupMode == Head )
-            headRect = option->rect;
-        else
-            headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
-    }
-    else
-    {
-        trackRect = option->rect;
-
-        if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
-            trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
-    }
-
-
-    if ( m_groupMode == None )
-    {
-        QString key = QString("track:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
-        background.fill( Qt::transparent );
-
-
-        if (!QPixmapCache::find(key, background)) {
-            QPainter pt( &background );
-            s_svgRenderer->render( &pt, "track",  trackRect );
-            QPixmapCache::insert(key, background);
-        }
-        painter->drawPixmap( 0, 0, background );
-    }
-    else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
-    {
-       QString svgName;
-       if ( m_groupMode == Head )
-           svgName = "head";
-       else 
-           svgName = "collapsed_head";
-
-        QString key = QString("%1:%2x%3").arg( svgName ).arg( headRect.width() ).arg( headRect.height() );
-        QPixmap background( (int)headRect.width(), (int)headRect.height() );
-        background.fill( Qt::transparent );
-
-        if ( !QPixmapCache::find( key, background ) )
-        {
-            QPainter pt( &background );
-            s_svgRenderer->render( &pt, svgName,  headRect );
-            QPixmapCache::insert( key, background );
-        }
-        painter->drawPixmap( 0, 0, background );
-
-        //"Just for fun" stuff below this point 
-
-        //ask if we are allowed to collapse thid group:
-        //m_collapsible = index.data( GroupedCollapsibleRole ).toBool();
-        
-        QString collapseString; 
-        if ( m_groupMode == Head )
-        {
-           if ( m_collapsible )
-             collapseString = "collapse_button";
-           else
-             collapseString = "collapse_button_grayed_out";
-        }
-        else
-           collapseString = "expand_button";
-          
-
-        key = QString("%1:%2x%3").arg( collapseString ).arg( 16 ).arg( 16 );
-        QPixmap collapsePixmap( 16, 16 );
-        collapsePixmap.fill( Qt::transparent );
-
-        if( !QPixmapCache::find(key, collapsePixmap) )
-        {
-            QPainter pt2( &collapsePixmap );
-            s_svgRenderer->render( &pt2, collapseString,  QRectF( 0, 0, 16, 16 ) );
-            QPixmapCache::insert(key, collapsePixmap);
-        }
-
-        painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, collapsePixmap );
-    }
-    else if( m_groupMode == Body )
-    {
-        QString key = QString("body:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
-        background.fill( Qt::transparent );
-
-        if(!QPixmapCache::find(key, background))
-        {
-            QPainter pt( &background );
-            s_svgRenderer->render( &pt, "body",  trackRect );
-            QPixmapCache::insert(key, background);
-        }
-        painter->drawPixmap( 0, 0, background );
-    }
-    else if ( m_groupMode == End )
-    {
-        QString key = QString( "tail:%1x%2" ).arg( trackRect.width() ).arg(trackRect.height()) ;
-        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
-        background.fill( Qt::transparent );
-
-        if( !QPixmapCache::find(key, background) )
-        {
-            QPainter pt( &background );
-            s_svgRenderer->render( &pt, "tail",  trackRect );
-            QPixmapCache::insert(key, background);
-        }
-        painter->drawPixmap( 0, 0, background );
-    }
-
-    if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) || ( m_groupMode == Body ) || ( m_groupMode == End ) )
-    {
-        if ( index.data( GroupedAlternateRole ).toBool() )
-        {
-            QString key = QString( "alternate:%1x%2" ).arg( trackRect.width() - 10 ).arg(trackRect.height() );
-            QPixmap background( (int)( trackRect.width() - 10 ), (int)( trackRect.height() ) );
-
-            QRectF tempRect = trackRect;
-            tempRect.setWidth( tempRect.width() - 10 );
-            if ( m_groupMode == End )
-                tempRect.setHeight( tempRect.height() - 4 );
-
-            if (!QPixmapCache::find( key, background ) )
-            {
-                background.fill( Qt::transparent );
-                QPainter pt( &background );
-                s_svgRenderer->render( &pt, "body_background",  tempRect );
-                QPixmapCache::insert( key, background );
-            }
-
-             if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ))
-                painter->drawPixmap( 5, (int)( MARGIN + ALBUM_WIDTH + 2 ), background );
-             else
-                painter->drawPixmap( 5, 0, background );
-        }
-
-    }
-
-    if ( m_groupMode < Body )
-    {
-        //if we are not grouped, or are the head of a group, paint cover:
-        QPixmap albumPixmap;
-        if( m_items->track->album() )
-        {
-            if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
-            {
-                The::coverFetcher()->queueAlbum( m_items->track->album() );
-            }
-            albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-        }
-        painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
-        //and make sure the top text elements are shown
-        if( !m_items->topRightText->isVisible() )
-            m_items->topRightText->show();
-        if( !m_items->topLeftText->isVisible() )
-            m_items->topLeftText->show();
-
-    }
-    else
-    {
-        //if not, make sure that the top text items are not shown
-        if( m_items->topRightText->isVisible() )
-            m_items->topRightText->hide();
-        if( m_items->topLeftText->isVisible() )
-            m_items->topLeftText->hide();
-        if( !m_items->bottomRightText->isVisible() )
-            m_items->bottomRightText->show();
-        if( !m_items->bottomLeftText->isVisible() )
-            m_items->bottomLeftText->show();
-    }
-
-
-    //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
-    {
-        //painter->fillRect( trackRect, QBrush( QColor( 0, 0, 255, 128 ) ) );
-
-        QString key = QString("selection_left:%1x%2").arg( 40 ).arg(trackRect.height());
-
-        QPixmap leftMarker( 40 , (int)( trackRect.height() ) );
-        leftMarker.fill( Qt::transparent );
-
-        if( !QPixmapCache::find(key, leftMarker) )
-        {
-            QPainter pt( &leftMarker );
-            s_svgRenderer->render( &pt, "selection_left"/*,  QRectF( 0, 0, 40, trackRect.height() )*/ );
-            QPixmapCache::insert(key, leftMarker);
-        }
-        if ( m_groupMode == Head ) 
-            painter->drawPixmap( 2, (int)trackRect.top() + 2, leftMarker );
-        else
-            painter->drawPixmap( 2, (int)trackRect.top(), leftMarker );
-
-
-        key = QString("selection_right:%1x%2").arg( 40 ).arg(trackRect.height());
-        QPixmap rightMarker( 40 , (int)( trackRect.height() ) );
-        rightMarker.fill( Qt::transparent );
-
-        if( !QPixmapCache::find(key, rightMarker) )
-        {
-            QPainter pt( &rightMarker );
-            s_svgRenderer->render( &pt, "selection_right",  QRectF( 0, 0, 40, trackRect.height() ) );
-            QPixmapCache::insert(key, rightMarker);
-        }
-
-        if ( m_groupMode == Head )
-            painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top() + 2, rightMarker );
-        else
-            painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), rightMarker );
-    }
-
-
-
-    //set overlay if item is active:
-    if( index.data( ActiveTrackRole ).toBool() )
-    {
-        if( !m_items->foreground )
-        {
-
-            debug() << "Creating active track overlay";
-            m_items->foreground = new QGraphicsPixmapItem( this );
-            m_items->foreground->setPos( 0.0, trackRect.top() );
-            m_items->foreground->setZValue( 10.0 );
-
-
-            QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-            QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
-            background.fill( Qt::transparent );
-
-            if (!QPixmapCache::find(key, background)) {
-                QPainter pt( &background );
-                s_svgRenderer->render( &pt, "active_overlay",  QRectF( 0, 0, trackRect.width(), trackRect.height() ) );
-                QPixmapCache::insert(key, background);
-            }
-            m_items->foreground->setPixmap( background );
-            m_items->foreground->show();
-            debug() << "Done";
-
-            
-            /*QRadialGradient gradient(trackRect.width() / 2.0, trackRect.height() / 2.0, trackRect.width() / 2.0, 20 + trackRect.width() / 2.0, trackRect.height() / 2.0 );
-            m_items->overlayGradientStart = option->palette.highlightedText().color().light();
-            m_items->overlayGradientStart.setAlpha( 80 );
-            m_items->overlayGradientEnd = option->palette.highlightedText().color().dark();
-            m_items->overlayGradientEnd.setAlpha( 80 );
-            gradient.setColorAt( 0.0, m_items->overlayGradientStart );
-            gradient.setColorAt( 1.0, m_items->overlayGradientEnd );
-            QBrush brush( gradient );
-            m_items->foreground->setBrush( brush );
-            m_items->foreground->setPen( QPen( Qt::NoPen ) );*/
-        }
-        if( !m_items->foreground->isVisible() )
-            m_items->foreground->show();
-    }
-    else if( m_items->foreground && m_items->foreground->isVisible() )
-        m_items->foreground->hide();
 }
 
 void
@@ -943,4 +687,277 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     /*if ( m_groupMode == Head_Collapsed )
        The::playlistModel()->setCollapsed( m_currentRow, false ); */
 }
+
+void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+{
+    DEBUG_BLOCK
+
+    QRectF trackRect = option->rect;
+    painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
+
+    //paint cover
+    QPixmap albumPixmap;
+    if( m_items->track->album() )
+    {
+        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
+        {
+            The::coverFetcher()->queueAlbum( m_items->track->album() );
+        }
+        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+    }
+    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+        //and make sure the top text elements are shown
+    if( !m_items->topRightText->isVisible() )
+        m_items->topRightText->show();
+    if( !m_items->topLeftText->isVisible() )
+        m_items->topLeftText->show();
+
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }
+
+
+    //set overlay if item is active:
+    handleActiveOverlay( trackRect, active );
+
+}
+
+void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+{
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF headRect = option->rect;
+
+    painter->drawPixmap( 0, 0, getCachedSvg( "head", headRect.width(), headRect.height() ) );
+
+
+    //paint collapse button
+    QString collapseString;
+    if ( m_groupMode == Head )
+    {
+        if ( m_collapsible )
+            collapseString = "collapse_button";
+        else
+            collapseString = "collapse_button_grayed_out";
+    }
+    else
+        collapseString = "expand_button";
+
+    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, getCachedSvg( collapseString, 16, 16 ) );
+
+
+    //paint cover
+    QPixmap albumPixmap;
+    if( m_items->track->album() )
+    {
+        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
+        {
+            The::coverFetcher()->queueAlbum( m_items->track->album() );
+        }
+        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+    }
+    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+        //and make sure the top text elements are shown
+    if( !m_items->topRightText->isVisible() )
+        m_items->topRightText->show();
+    if( !m_items->topLeftText->isVisible() )
+        m_items->topLeftText->show();
+
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( 2, (int)trackRect.top() + 2, getCachedSvg( "selection_left", 40, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top() + 2, getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }
+
+    //set overlay if item is active:
+    handleActiveOverlay( trackRect, active );
+
+}
+
+void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+{
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
+
+    //paint background
+    painter->drawPixmap( 0, 0, getCachedSvg( "collapsed_head", headRect.width(), headRect.height() ) );
+
+    //paint collapse button
+    QString collapseString;
+    if ( m_groupMode == Head )
+    {
+        if ( m_collapsible )
+            collapseString = "collapse_button";
+        else
+            collapseString = "collapse_button_grayed_out";
+    }
+    else
+        collapseString = "expand_button";
+
+    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, getCachedSvg( collapseString, 16, 16 ) );
+
+    //paint cover:
+    QPixmap albumPixmap;
+    if( m_items->track->album() )
+    {
+        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
+        {
+            The::coverFetcher()->queueAlbum( m_items->track->album() );
+        }
+        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+    }
+    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+        //and make sure the top text elements are shown
+    if( !m_items->topRightText->isVisible() )
+        m_items->topRightText->show();
+    if( !m_items->topLeftText->isVisible() )
+        m_items->topLeftText->show();
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }
+
+    //set overlay if item is active
+    handleActiveOverlay( trackRect, active );
+
+}
+
+void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
+{
+    QRectF trackRect = option->rect;
+
+    painter->drawPixmap( 0, 0, getCachedSvg( "body", trackRect.width(), trackRect.height() ) );
+
+
+    //draw alternate background if needed
+    if ( alternate )
+        painter->drawPixmap( 5, 0, getCachedSvg( "body_background", trackRect.width() - 10, trackRect.height() ) );
+
+    //make sure that the top text items are not shown
+    if( m_items->topRightText->isVisible() )
+        m_items->topRightText->hide();
+    if( m_items->topLeftText->isVisible() )
+        m_items->topLeftText->hide();
+    if( !m_items->bottomRightText->isVisible() )
+        m_items->bottomRightText->show();
+    if( !m_items->bottomLeftText->isVisible() )
+        m_items->bottomLeftText->show();
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+
+        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }
+
+    //set overlay if item is active
+    handleActiveOverlay( trackRect, active );
+
+
+}
+
+void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
+{
+   QRectF trackRect = option->rect;
+   trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
+
+   painter->drawPixmap( 0, 0, getCachedSvg( "tail", trackRect.width(), trackRect.height() ) );
+
+    if ( alternate )
+    {
+
+        QRectF tempRect = trackRect;
+        tempRect.setWidth( tempRect.width() - 10 );
+        tempRect.setHeight( tempRect.height() - 4 );
+        painter->drawPixmap( 5, 0, getCachedSvg( "body_background", tempRect.width(), tempRect.height() ) );
+
+    }
+
+    //make sure that the top text items are not shown
+    if( m_items->topRightText->isVisible() )
+        m_items->topRightText->hide();
+    if( m_items->topLeftText->isVisible() )
+        m_items->topLeftText->hide();
+    if( !m_items->bottomRightText->isVisible() )
+        m_items->bottomRightText->show();
+    if( !m_items->bottomLeftText->isVisible() )
+        m_items->bottomLeftText->show();
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+
+        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }
+
+    //set overlay if item is active
+    handleActiveOverlay( trackRect, active );
+
+}
+
+void Playlist::GraphicsItem::paintCollapsed()
+{
+
+    // just make sure text items are hidden and then get the heck out of here...
+    if( m_items->topRightText->isVisible() )
+        m_items->topRightText->hide();
+    if( m_items->topLeftText->isVisible() )
+        m_items->topLeftText->hide();
+    if( m_items->bottomRightText->isVisible() )
+        m_items->bottomRightText->hide();
+    if( m_items->bottomLeftText->isVisible() )
+        m_items->bottomLeftText->hide();
+}
+
+QPixmap Playlist::GraphicsItem::getCachedSvg( QString name, int width, int height )
+{
+    QString key = QString("%1:%2x%3").arg( name ).arg( width ).arg( height );
+    QPixmap pixmap( width, height );
+    pixmap.fill( Qt::transparent );
+
+    if( !QPixmapCache::find(key, pixmap) )
+    {
+        QPainter pt2( &pixmap );
+        s_svgRenderer->render( &pt2, name, QRectF( 0, 0, width, height ) );
+        QPixmapCache::insert(key, pixmap);
+    }
+
+    return pixmap;
+}
+
+void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
+{
+    if( active )
+    {
+        if( !m_items->foreground )
+        {
+
+            debug() << "Creating active track overlay";
+            m_items->foreground = new QGraphicsPixmapItem( this );
+            m_items->foreground->setPos( 0.0, rect.top() );
+            m_items->foreground->setZValue( 10.0 );
+
+            m_items->foreground->setPixmap( getCachedSvg( "active_overlay", rect.width(), rect.height() ) );
+            m_items->foreground->show();
+            debug() << "Done";
+
+        }
+        if( !m_items->foreground->isVisible() )
+            m_items->foreground->show();
+    }
+    else if( m_items->foreground && m_items->foreground->isVisible() )
+        m_items->foreground->hide();
+}
+
+
 

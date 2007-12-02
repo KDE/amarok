@@ -1579,12 +1579,12 @@
      inkscape:cx="337.13986"
      inkscape:cy="237.44667"
      inkscape:document-units="px"
-     inkscape:current-layer="body"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1168"
      inkscape:window-height="953"
-     inkscape:window-x="-8"
-     inkscape:window-y="17"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:showpageshadow="false" />
   <metadata
      id="metadata2470">
@@ -1755,7 +1755,7 @@
        d="M 431.75032,508.51418 L 723.34975,508.51418"
        id="path7534" />
     <g
-       id="collapse_head">
+       id="collapsed_head">
       <path
          clip-rule="evenodd"
          d="M 430.54193,607.10132 C 430.54193,597.22132 431.17193,596.60132 441.11193,596.60132 L 713.97193,596.60132 C 723.91193,596.60132 724.54193,597.22132 724.54193,607.10132 L 724.54193,656.60132 L 430.54193,656.60132 L 430.54193,607.10132 z "
