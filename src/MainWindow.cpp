@@ -84,6 +84,7 @@
 #include <kmenu.h>
 #include <kpushbutton.h>
 #include <ktoolbar.h>
+#include <kdeversion.h>
 #include <fixx11h.h>
 
 class ContextWidget : public KVBox
@@ -973,7 +974,13 @@ void MainWindow::createActions()
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
 
-    ac->associateWidget( this );
+    ac->addAssociatedWidget( this );
+    foreach (QAction* action, ac->actions())
+#if QT_VERSION < KDE_MAKE_VERSION(4,4,0)
+        action->setShortcutContext(Qt::WidgetShortcut); // remove after Qt4.4 becomes mandatory
+#else
+        action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+#endif
 }
 
 void MainWindow::createMenus()
