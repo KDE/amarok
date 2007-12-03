@@ -31,7 +31,7 @@
 #include <klistview.h>
 #include <klocale.h>
 
-PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
+PlaylistSelection::PlaylistSelection( QWidget* parent, const char* name )
     : KListView( parent, name )
 {
     addColumn( i18n("Select Playlists") );

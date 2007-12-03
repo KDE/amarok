@@ -21,7 +21,7 @@ class PlaylistSelection : public KListView
 {
         Q_OBJECT
     public:
-        PlaylistSelection(QWidget* parent, char* name);
+        PlaylistSelection(QWidget* parent, const char* name);
         virtual QSize sizeHint() const
         {
             return minimumSizeHint();
