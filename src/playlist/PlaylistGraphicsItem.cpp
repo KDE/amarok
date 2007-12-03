@@ -690,7 +690,6 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 
 void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
-    DEBUG_BLOCK
 
     QRectF trackRect = option->rect;
     painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
