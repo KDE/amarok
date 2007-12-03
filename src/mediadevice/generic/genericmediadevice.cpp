@@ -941,7 +941,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
         menu.insertItem( KIcon( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
-        menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( KIcon( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
         menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
         // NOTE: need better icon

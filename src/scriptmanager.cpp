@@ -679,7 +679,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     KMenu menu;
     menu.addTitle( i18n( "Debugging" ) );
     QAction* logAction = menu.addAction( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ) );
-    QAction* editAction = menu.addAction( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ) );
+    QAction* editAction = menu.addAction( KIcon( Amarok::icon( "edit_properties" ) ), i18n( "&Edit" ) );
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
 

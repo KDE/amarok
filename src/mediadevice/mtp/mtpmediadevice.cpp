@@ -1328,7 +1328,7 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
             menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), UPDATE_ALBUM_ART );
             break;
         case MediaItem::PLAYLIST:
-            menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+            menu.insertItem( KIcon( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
             break;
         default:
             break;

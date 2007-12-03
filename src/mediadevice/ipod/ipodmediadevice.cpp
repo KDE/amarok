@@ -2177,7 +2177,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                     item->type() == MediaItem::TRACK ||
                     item->type() == MediaItem::ORPHANED )
             {
-                menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ),
+                menu.insertItem( SmallIconSet( Amarok::icon( "edit_properties" ) ),
                         i18np( "Edit &Information...", "Edit &Information for %1 Tracks...", urls.count()),
                         RENAME );
             }
@@ -2185,12 +2185,12 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 
         case MediaItem::ORPHANED:
         case MediaItem::ORPHANEDROOT:
-            menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Add to Database" ), ADD );
+            menu.insertItem( SmallIconSet( Amarok::icon( "add_collection" ) ), i18n( "Add to Database" ), ADD );
             menu.setItemEnabled( ADD, !locked );
             break;
 
         case MediaItem::PLAYLIST:
-            menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+            menu.insertItem( SmallIconSet( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
             menu.setItemEnabled( RENAME, !locked );
             break;
 

@@ -38,6 +38,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
     if( iconMap.empty() ) {
         iconMap["add_lyrics"]           = "list-add";
         iconMap["add_playlist"]         = "list-add";
+        iconMap["add_collection"]       = "list-add";
         iconMap["album"]                = "media-album";
         iconMap["artist"]               = "view-media-artist";
         iconMap["audioscrobbler"]       = "audioscrobbler";
@@ -49,10 +50,10 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["collection"]           = "collection";
         iconMap["configure"]            = "configure";
         iconMap["covermanager"]         = "covermanager";
-        iconMap["device"]               = "multimedia-player-apple-ipod";
+        iconMap["device"]               = "multimedia-player";
         iconMap["download"]             = "get-hot-new-stuff";
         iconMap["dynamic"]              = "dynamic";
-        iconMap["edit"]                 = "object-edit";
+        iconMap["edit_properties"]      = "document-properties";
         iconMap["editcopy"]             = "edit-copy";
         iconMap["equalizer"]            = "view-media-equalizer";
         iconMap["external"]             = "system-run";
@@ -60,7 +61,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["favourite_genres"]     = "system-file-manager";
         iconMap["files"]                = "folder";
         iconMap["files2"]               = "folder-red";
-        iconMap["info"]                 = "document-properties";
+        iconMap["info"]                 = "help-about";
         iconMap["lyrics"]               = "view-media-lyrics";
         iconMap["magnatune"]            = "services";
         iconMap["mostplayed"]           = "favorites";
@@ -82,6 +83,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["refresh"]              = "view-refresh";
         iconMap["remove"]               = "edit-delete";
         iconMap["remove_from_playlist"] = "list-remove";
+        iconMap["rename"]               = "edit-rename";
         iconMap["repeat_album"]         = "media-album-repeat";
         iconMap["repeat_no"]            = "go-down";
         iconMap["repeat_playlist"]      = "media-playlist-repeat";
@@ -96,6 +98,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["settings_indicator"]   = "preferences-desktop-display";
         iconMap["settings_playback"]    = "preferences-desktop-sound";
         iconMap["settings_view"]        = "edit-find";
+        iconMap["statistics"]           = "view-statistics";
         iconMap["stop"]                 = "media-playback-stop";
         iconMap["podcast"]              = "media-podcast";
         iconMap["podcast2"]             = "media-podcast-new";

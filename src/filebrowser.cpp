@@ -205,7 +205,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->addAction( deleteAction );
         
         menu->addSeparator();
-        menu->addAction( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), this, SLOT( slotEditTags() ) );
+        menu->addAction( KIcon( Amarok::icon( "edit_properties" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), this, SLOT( slotEditTags() ) );
         menu->addAction( actionCollection->action( "properties" ) );
 
         connect( menu, SIGNAL(aboutToShow()), SLOT(prepareContextMenu()) );

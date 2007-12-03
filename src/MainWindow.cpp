@@ -883,7 +883,7 @@ void MainWindow::createActions()
     connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
     ac->addAction( "seek_backward", seekBackward );
 
-    KAction *statistics = new KAction( KIcon(Amarok::icon( "info" )), i18n( "Statistics" ), this );
+    KAction *statistics = new KAction( KIcon(Amarok::icon( "statistics" )), i18n( "Statistics" ), this );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
     ac->addAction( "statistics", statistics );
 

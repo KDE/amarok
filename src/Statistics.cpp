@@ -694,7 +694,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 
     menu.addSeparator();
 
-    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( Amarok::icon( "edit_properties" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
 
 
     //PORT 2.0
