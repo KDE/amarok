@@ -132,7 +132,7 @@ class DummyMediaDevice : public MediaDevice
     }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
-    virtual MediaItem* copyTrackToDevice(const Meta::TrackPtr track) { return 0; }
+    virtual MediaItem* copyTrackToDevice(const Meta::TrackPtr) { return 0; }
     virtual int deleteItemFromDevice(MediaItem*, int) { return -1; }
 };
 
@@ -1303,7 +1303,7 @@ MediaBrowser::updateStats()
 
 
 bool
-MediaView::setFilter( const QString &filter, MediaItem *parent )
+MediaView::setFilter( const QString& /* &filter */, MediaItem* /* *parent */ )
 {
     //TODO port to meta, for now never filter.
     return true;
@@ -1422,14 +1422,14 @@ MediaQueue::addUrl( const KUrl& url2, Meta::TrackPtr meta, const QString &playli
 //     {
 //         QString name = url.path().section( "/", -1 ).section( ".", 0, -2 ).replace( "_", " " );
 //      PlaylistFile playlist( url.path() );
-// 
+//
 //         if( playlist.isError() )
 //         {
 //             Amarok::ContextStatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
 //                     KDE::StatusBar::Sorry );
 //             return;
 //         }
-// 
+//
 //         for( BundleList::iterator it = playlist.bundles().begin();
 //                 it != playlist.bundles().end();
 //                 ++it )
@@ -1440,11 +1440,11 @@ MediaQueue::addUrl( const KUrl& url2, Meta::TrackPtr meta, const QString &playli
 //     }
     if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
     {
-        //TODO: PORT
-//         KUrl::List urls = Amarok::recursiveUrlExpand( url );
-//         oldForeachType( KUrl::List, urls )
-//             addUrl( *it );
-//         return;
+        KUrl::List urls = Amarok::recursiveUrlExpand( url );
+        foreach( KUrl u, urls )
+            addUrl( u );
+
+        return;
     }
 
     if( playlistName.isNull() )
@@ -1490,6 +1490,35 @@ MediaQueue::addUrl( const KUrl& url2, Meta::TrackPtr meta, const QString &playli
 }
 
 void
+MediaQueue::addTrack( const Meta::TrackPtr track )
+{
+    if (!track)
+        return;
+
+    //this method does not handle podcast episodes or adding to a playlist
+
+    MediaItem *newItem = new MediaItem( this, lastItem() );
+    newItem->setExpandable( false );
+    newItem->setDropEnabled( true );
+    newItem->setMeta( Meta::DataPtr::staticCast( track ) );
+    newItem->setText( 0, track->prettyName() );
+
+    m_parent->updateButtons();
+    m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
+    addItemToSize( newItem );
+    itemCountChanged();
+}
+
+void
+MediaQueue::addTracks( const Meta::TrackList &tracks )
+{
+    for( uint i = 0, size = tracks.count(); i < size; i++ )
+        addTrack( tracks[i] );
+
+    URLsAdded();
+}
+
+void
 MediaQueue::addUrl( const KUrl &url, MediaItem *item )
 {
     DEBUG_BLOCK
@@ -1502,6 +1531,7 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
     //filepath.addPath( meta->filename() );
     //bundle->setUrl( filepath );
     newitem->m_device = item->m_device;
+    //TODO port to meta
     //if(bundle->podcastBundle() )
     //{
     //    item->setType( MediaItem::PODCASTITEM );

@@ -136,9 +136,37 @@ class MediaQueue : public K3ListView
         void save( const QString &path );
         void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
         void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
-        void addUrl( const KUrl& url, Meta::TrackPtr=Meta::TrackPtr(), const QString &playlistName=QString() );
+        /**
+         * Add url to the transfer queue.  Items will be added to playlist
+         * playlistName if specified.
+         * If url is a directory, all files found in that dir will be added.
+         * If url is a playlist file, that playlist & all files in it will be added.
+         * If url is a track, then it will be added.
+         *
+         * @param url File, playlist, or directory to upload.
+         * @param meta If specified, this meta info will be used for the track.
+         * @param playlistName If specified, the track(s) will be added to this playlist.
+         */
+        void addUrl( const KUrl& url, Meta::TrackPtr meta=Meta::TrackPtr(), const QString &playlistName=QString() );
+        /**
+         * Add the track represented by item to the transfer queue to be
+         * downloaded from the device to the directory specified by url.
+         *
+         * @param url Destination directory for the file
+         * @param item The track to download
+         */
         void addUrl( const KUrl& url, MediaItem *item );
         void addUrls( const KUrl::List urls, const QString &playlistName=QString() );
+
+        /**
+         * Add a track to the transfer queue.
+         *
+         * @param track The track to be copied to the device.
+         */
+        void addTrack( const Meta::TrackPtr track );
+        /// Convenience method, calls addTrack() for each track in the list.
+        /// @param tracks List of tracks to add.
+        void addTracks( const Meta::TrackList &tracks );
 
         void URLsAdded(); // call after finishing adding single urls
 
