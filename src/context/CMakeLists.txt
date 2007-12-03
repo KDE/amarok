@@ -55,8 +55,8 @@ set(plasma_LIB_SRCS
     plasma/plasma.cpp
     plasma/plasma_export.h
     plasma/scriptengine.cpp
-    plasma/searchaction.cpp
     plasma/searchcontext.cpp
+    plasma/searchmatch.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp

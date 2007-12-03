@@ -73,6 +73,10 @@ void ContextLayout::addItem(LayoutItem* item)
 }
 void ContextLayout::removeItem(LayoutItem* item)
 {
+    if(!item) {
+        return;
+    }
+
     item->unsetManagingLayout(this);
     d->items.removeAll(item);
 
