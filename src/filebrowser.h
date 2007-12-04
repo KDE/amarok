@@ -34,7 +34,7 @@
 
 class KLineEdit;
 class KFileItem;
-class KFileView;
+class QAbstractItemView;
 class KUrlComboBox;
 class Medium;
 
@@ -70,7 +70,7 @@ private slots:
     void gotoCurrentFolder();
     void prepareContextMenu();
     void selectAll();
-    void slotViewChanged( KFileView* );
+    void slotViewChanged( QAbstractItemView* );
     void urlChanged( const KUrl& );
 
     void slotCreatePlaylist();

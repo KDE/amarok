@@ -276,7 +276,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );
     connect( m_combo, SIGNAL(urlActivated( const KUrl& )), SLOT(setUrl( const KUrl& )) );
     connect( m_combo, SIGNAL(returnPressed( const QString& )), SLOT(setUrl( const QString& )) );
-    connect( m_dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
+    connect( m_dir, SIGNAL(viewChanged( QAbstractItemView* )), SLOT(slotViewChanged( QAbstractItemView* )) );
     connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activate( const KFileItem* )) );
     connect( m_dir, SIGNAL(urlEntered( const KUrl& )), SLOT(urlChanged( const KUrl& )) );
     connect( m_dir, SIGNAL(urlEntered( const KUrl& )), searchPane, SLOT(urlChanged( const KUrl& )) );
@@ -434,15 +434,17 @@ FileBrowser::urlChanged( const KUrl &u )
     m_combo->setUrls( urls, KUrlComboBox::RemoveBottom );
 }
 
-inline void
-FileBrowser::slotViewChanged( KFileView *view )
+void
+FileBrowser::slotViewChanged( QAbstractItemView *)
 {
+#if 0
     if( view->widget()->inherits( "K3ListView" ) )
     {
         using namespace Amarok::ColorScheme;
 
         static_cast<K3ListView*>(view->widget())->setAlternateBackground( AltBase );
     }
+#endif
 }
 
 inline void
