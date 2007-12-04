@@ -21,6 +21,9 @@
 
 #include "debug.h"
 #include "CoverBling.h"
+#include "collection/CollectionManager.h"
+#include "collection/BlockingQuery.h"
+#include "meta/Meta.h"
 
 #include <math.h>
 #include <GL/glext.h>
@@ -39,16 +42,20 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
-    m_coverPaths << "amarok/images/album_cover_1.jpg";
-    m_coverPaths << "amarok/images/album_cover_2.jpg";
-    m_coverPaths << "amarok/images/album_cover_3.jpg";
-    m_coverPaths << "amarok/images/album_cover_4.jpg";
-    m_coverPaths << "amarok/images/album_cover_5.jpg";
-    m_coverPaths << "amarok/images/album_cover_6.jpg";
-    m_coverPaths << "amarok/images/album_cover_7.jpg";
-    m_coverPaths << "amarok/images/album_cover_8.jpg";
-    m_coverPaths << "amarok/images/album_cover_9.jpg";
-   
+    Collection *coll;
+    foreach( coll, CollectionManager::instance()->collections() )
+        if( coll->collectionId() == "localCollection" )
+            break;
+    QueryMaker *qm = coll->queryMaker();
+    qm->startAlbumQuery();
+    qm->limitMaxResultSize( 10 );
+    BlockingQuery bq( qm );
+    bq.startQuery();
+
+    Meta::AlbumList albums = bq.albums( coll->collectionId() );
+    foreach( Meta::AlbumPtr album, albums )
+        m_covers << album->image();
+
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
     timer->start( 20 ); //50fps
@@ -60,8 +67,8 @@ CoverBling::initializeGL() //reimplemented
     DEBUG_BLOCK
 
     //generate all textures
-    foreach( const QString &path, m_coverPaths ) {
-        QImage image( KStandardDirs().findResource( "data", path ) );
+    foreach( const QPixmap &p, m_covers ) {
+        QImage image = p.toImage();
         image = image.scaled( TEXTURE_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         m_textureIds << bindTexture( image );
     }

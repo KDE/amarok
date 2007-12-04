@@ -39,7 +39,7 @@ class CoverBling : public QGLWidget
         GLuint objectAtPosition( const QPoint& pos );
 
     private:
-        QStringList m_coverPaths;
+        QList<QPixmap> m_covers;
         QList<GLuint> m_textureIds;
         GLuint m_texturedRectList;
         GLuint m_texturedRectReflectedList;
