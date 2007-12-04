@@ -463,7 +463,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images ) const
 {
     if ( isFile() )
     {
-        TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ).data(), false );
+        TagLib::FileRef fileref = TagLib::FileRef( TagLibEncodeName( url().path() ), false );
         if ( !fileref.isNull() ) {
             if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
                 if ( file->ID3v2Tag() )
@@ -491,7 +491,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
-    fileref = TagLib::FileRef( QFile::encodeName( path ).data(), true, readStyle );
+    fileref = TagLib::FileRef( TagLibEncodeName( path ), true, readStyle );
 
     if( !fileref.isNull() )
     {
@@ -1460,7 +1460,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     TagLib::FileRef* f;
 
     if( !passedin )
-        f = new TagLib::FileRef( QFile::encodeName( url().path() ).data(), false );
+        f = new TagLib::FileRef( TagLibEncodeName( url().path() ), false );
     else
         f = fileref;
 
@@ -1616,7 +1616,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
     {
         const QString path = url().path();
         //Make it get cleaned up at the end of the function automagically
-        tmpfileref = TagLib::FileRef( QFile::encodeName( path ).data(), true, TagLib::AudioProperties::Fast );
+        tmpfileref = TagLib::FileRef( TagLibEncodeName( path ), true, TagLib::AudioProperties::Fast );
         fileref = &tmpfileref;
     }
 

@@ -9,6 +9,7 @@
 #include "amarokconfig.h"
 #include "CoverFetcher.h"
 #include "debug.h"
+#include "metabundle.h" // TagLibEncodeName
 #include "querybuilder.h"
 #include "ContextStatusBar.h"       //for status messages
 #include "TagGuesser.h"
@@ -39,7 +40,7 @@
 #include <QPushButton>
 #include <QToolTip>
 
-#include <tfile.h> //TagLib::File::isWritable
+#include "metadata/tfile_helper.h" //TagLib::File::isWritable
 
 class TagDialogWriter : public ThreadManager::Job
 {
@@ -1503,7 +1504,7 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
 bool
 TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
-    QByteArray path = QFile::encodeName( mb.url().path() );
+    TagLibFileName path = TagLibEncodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         Amarok::ContextStatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
@@ -1542,7 +1543,7 @@ bool
 TagDialogWriter::doJob()
 {
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        QByteArray path = QFile::encodeName( m_tags[i].url().path() );
+        TagLibFileName path = TagLibEncodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );

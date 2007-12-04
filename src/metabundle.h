@@ -15,12 +15,14 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QByteArray>
+#include <QFile>     //inline functions
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <audioproperties.h>
 #include "expression.h"
 #include "atomicstring.h"
 #include "moodbar.h"
+#include "metadata/tfile_helper.h" // TagLibFileName
 
 #include "amarok_export.h"
 
@@ -545,5 +547,21 @@ inline bool MetaBundle::hasExtendedMetaInformation() const
              m_type== mp4  || m_type == flac );
 }
 
+
+#ifdef COMPLEX_TAGLIB_FILENAME
+
+inline TagLibFileName TagLibEncodeName(const QString &filename) 
+{ 
+    return reinterpret_cast<const wchar_t *>(filename.utf16()); 
+}
+
+#else
+
+inline TagLibFileName TagLibEncodeName(const QString &filename) 
+{ 
+    return QFile::encodeName( filename ); 
+}
+
+#endif
 
 #endif

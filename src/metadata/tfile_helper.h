@@ -24,6 +24,7 @@
 #define TFILE_HELPER_H
 
 #include "config-amarok.h"
+
 #include <tfile.h>
 
 // need to make everything compile against old versions of taglib
@@ -37,22 +38,32 @@
 // need to be able to deal with either the straight forward char version
 // or a char/wchar hybrid version of the filename
 #ifdef COMPLEX_TAGLIB_FILENAME
-#define CheckExtension(filename, extension) ((const char *)filename == 0 ? CheckExtensionImpl((const wchar_t *)filename, L##extension) : CheckExtensionImpl((const char *)filename, extension))
-#define TagLibOpenFile(filename, mode) ((const char *)filename == 0 ? _wfopen(filename, L##mode) : fopen(filename, mode))
+
+#define CheckExtension(filename, extension) \
+    (static_cast<const char *>(filename) == 0 \
+        ? CheckExtensionImpl(static_cast<const wchar_t *>(filename), L##extension) \
+        : CheckExtensionImpl(static_cast<const char *>(filename), extension))
+
+#define TagLibOpenFile(filename, mode) \
+    (static_cast<const char *>(filename) == 0 \
+        ? _wfopen(filename, L##mode) \
+        : fopen(filename, mode))
 
 #include <iostream>
 inline std::basic_ostream<char> &operator<<(std::basic_ostream<char> &stream, TagLibFileName fileName)
 {
-    if ((const char *)fileName == 0) 
-        stream << (const wchar_t *)fileName;
+    if (static_cast<const char *>(fileName) == 0) 
+        stream << static_cast<const wchar_t *>(fileName);
     else
-        stream << (const char *)fileName;
+        stream << static_cast<const char *>(fileName);
     return stream;
 }
 
 #else
+
 #define CheckExtension(filename, extension) CheckExtensionImpl(filename, extension)
 #define TagLibOpenFile(filename, mode) fopen(filename, mode)
+
 #endif
 
 bool CheckExtensionImpl(const char *fileName, const char *extension);

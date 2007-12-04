@@ -41,6 +41,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <tagdialog.h>
 #include <threadmanager.h>
 #include <metadata/tplugins.h>
+#include <metadata/tfile_helper.h>
 #include <hintlineedit.h>
 
 #include <kactionclasses.h>
@@ -481,7 +482,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         track->remember_playback_position |= 0x01; // remember current position in track
         track->mediatype = 0x08; // for audiobooks
 
-        TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
+        TagLib::Audible::File f( TagLibEncodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
         if( t )
             track->drm_userid = t->userID();

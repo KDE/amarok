@@ -26,13 +26,16 @@
 #include <strings.h>
 #include <wchar.h>
 
-bool CheckExtensionImpl(const char *fileName, const char *extension)
+
+bool
+CheckExtensionImpl(const char *fileName, const char *extension)
 {
     const char *ext = strrchr(fileName, '.');
     return ext && !strcasecmp(ext, extension);
 }
 
-bool CheckExtensionImpl(const wchar_t *fileName, const wchar_t *extension)
+bool
+CheckExtensionImpl(const wchar_t *fileName, const wchar_t *extension)
 {
     const wchar_t *ext = wcsrchr(fileName, L'.');
     return ext && !wcscasecmp(ext, extension);
