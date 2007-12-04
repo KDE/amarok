@@ -73,7 +73,7 @@ class Item : public QObject, public Q3CheckListItem
 {
 Q_OBJECT
 public:
-    Item( Q3ListView *parent );
+    Item( Q3ListView *parent, const QString &root );
     Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable=false );
 
     Q3CheckListItem *parent() const { return static_cast<Q3CheckListItem*>( Q3ListViewItem::parent() ); }

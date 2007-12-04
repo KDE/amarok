@@ -176,8 +176,12 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
     //debug() << "id is " << deviceId << ", relative path is " << relativePath.path();
     if ( deviceId == -1 )
     {
+#ifdef Q_OS_WIN32
+        absolutePath.setPath( relativePath.path() );
+#else
         absolutePath.setPath( "/" );
         absolutePath.addPath( relativePath.path() );
+#endif
         absolutePath.cleanPath();
         //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
         return;
@@ -197,9 +201,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
         if ( lastMountPoint.count() == 0 )
         {
             //hmm, no device with that id in the DB...serious problem
-            absolutePath.setPath( "/" );
-            absolutePath.addPath( relativePath.path() );
-            absolutePath.cleanPath();
+            getAbsolutePath( -1, relativePath, absolutePath );
             warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
         }
         else
@@ -237,7 +239,11 @@ MountPointManager::getRelativePath( const int deviceId, const KUrl& absolutePath
     {
         m_handlerMapMutex.unlock();
         //TODO: better error handling
+#ifdef Q_OS_WIN32
+        QString rpath = absolutePath.path();
+#else
         QString rpath = KUrl::relativePath( "/", absolutePath.path() );
+#endif
         relativePath.setPath( rpath );
     }
 }

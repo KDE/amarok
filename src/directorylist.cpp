@@ -25,6 +25,7 @@
 #include <KLocale>
 #include <KVBox>
 
+#include <QDir>
 #include <QFile>
 #include <QLabel>
 #include <QPainter>
@@ -68,7 +69,19 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setResizeMode( Q3ListView::LastColumn );
 
     reinterpret_cast<QWidget*>(m_view->header())->hide();
-    new CollectionFolder::Item( m_view );
+
+#ifdef Q_OS_WIN32
+    foreach( QFileInfo drive, QDir::drives () )
+    {
+        if ( drive.isReadable() )
+        {
+            // exclude trailing slash on drive letter
+            new CollectionFolder::Item( m_view, drive.filePath().left( 2 ) );
+        }
+    }
+#else
+    new CollectionFolder::Item( m_view, "/" );
+#endif
 
     setSpacing( 6 );
 }
@@ -115,16 +128,16 @@ CollectionSetup::writeConfig()
 
 namespace CollectionFolder {
 
-Item::Item( Q3ListView *parent )
-    : Q3CheckListItem( parent, "/", Q3CheckListItem::CheckBox  )
+Item::Item( Q3ListView *parent, const QString &root )
+    : Q3CheckListItem( parent, root, Q3CheckListItem::CheckBox  )
     , m_lister( this )
-    , m_url( "file:/" )
+    , m_url( KUrl::fromPath( root ) )
     , m_listed( false )
     , m_fullyDisabled( false )
 {
     m_lister.setDelayedMimeTypes( true );
     //Since we create the "/" checklistitem here, we need to enable it if needed
-    if ( CollectionSetup::instance()->m_dirs.contains( "/" ) )
+    if ( CollectionSetup::instance()->m_dirs.contains( root ) )
         static_cast<Q3CheckListItem*>( this )->setOn(true);
     m_lister.setDirOnlyMode( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
@@ -152,15 +165,7 @@ Item::Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable /* defau
 QString
 Item::fullPath() const
 {
-    QString path;
-
-    for( const Q3ListViewItem *item = this; item != listView()->firstChild(); item = item->parent() )
-    {
-        path.prepend( item->text( 0 ) );
-        path.prepend( '/' );
-    }
-
-    return path;
+    return m_url.path();
 }
 
 

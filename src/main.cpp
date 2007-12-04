@@ -98,7 +98,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Roland Gigler"), ki18n(( "MAS engine" )), "rolandg@web.de" );
     aboutData.addCredit( ki18n("Sami Nieminen"), ki18n(( "Audioscrobbler support" )), "sami.nieminen@iki.fi" );
     aboutData.addCredit( ki18n("Scott Wheeler"), ki18n(( "TagLib & ktrm code" )), "wheeler@kde.org" );
-    aboutData.addCredit( ki18n("Shane King"), ki18n(( "Patches" )), "kde@dontletsstart.com" );
+    aboutData.addCredit( ki18n("Shane King"), ki18n(( "Patches & Windows porting (shakes)" )), "kde@dontletsstart.com" );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n(( "Loadsa stuff" )), "bochi@online.ms" );
     aboutData.addCredit( ki18n("Stefan Siegel"), ki18n(( "Patches, Bugfixes" )), "kde@sdas.de" );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "roKymoter (sven423)" )), "sven@asbest-online.de" );
