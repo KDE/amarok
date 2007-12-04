@@ -36,11 +36,12 @@ ServiceConfig::ServiceConfig( QWidget * parent )
 {
 
     m_serviceSelector = new KPluginSelector( this );
+//     m_serviceSelector->setMaximumSize( QSize( 3500000, 600 ) );
+    m_serviceSelector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     layout->addWidget( m_serviceSelector );
-
 
     connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
 

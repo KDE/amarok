@@ -44,6 +44,7 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 #endif
     collectionFoldersBox->setColumns( 1 );
     m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
+    m_collectionSetup->setMaximumSize( QSize( 3500000, 600 ) );
 
     connect( dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
 }
