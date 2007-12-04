@@ -277,12 +277,22 @@ Correct:
  | myWidget->show();
 
 
+Tips & Tricks
+-------------
+A useful service is http://lxr.kde.org. Lxr is a cross reference of the entire
+KDE SVN repository. You can for instance use it to search for example code
+from other applications for a given KDElibs method.
+
+
 Copyright
 ---------
 To comply with the GPL, add your name, email address & the year to the top of any file
 that you edit. If you bring in code or files from elsewhere, make sure its
 GPL-compatible and to put the authors name, email & copyright year to the top of
 those files.
+
+Please note that it is not sufficient to write a pointer to the license (like a URL).
+The complete license header needs to be written everytime.
 
 
 Thanks, now have fun!
