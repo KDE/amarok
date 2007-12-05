@@ -159,6 +159,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/LastfmConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
+    EditCoverSearchDialog.ui
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS

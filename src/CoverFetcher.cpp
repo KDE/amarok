@@ -1,7 +1,16 @@
 // (C) 2004 Mark Kretschmann <markey@web.de>
 // (C) 2004 Stefan Bogner <bochi@online.ms>
 // (C) 2004 Max Howell
-// See COPYING file for licensing information.
+// (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "CoverFetcher.h"
 
@@ -10,6 +19,7 @@
 #include "CoverManager.h"
 #include "debug.h"
 #include "AmarokStatusBar.h"
+#include "ui_EditCoverSearchDialog.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -449,63 +459,32 @@ CoverFetcher::attemptAnotherFetch()
 
 // Moved outside the only function that uses it because
 // gcc 2.95 doesn't like class declarations there.
-    class EditSearchDialog : public KDialog
+    class EditSearchDialog : public QDialog, public Ui::EditCoverSearchDialog
     {
     public:
         EditSearchDialog( QWidget* parent, const QString &text, const QString &keyword, CoverFetcher *fetcher )
-                : KDialog( parent )
+                : QDialog( parent )
         {
+            setupUi( this );
             setCaption( i18n( "Amazon Query Editor" ) );
+            textLabel->setText( text );
+            SearchLineEdit->setText( keyword );
 
-            // amazon combo box
-            KComboBox* amazonLocale = new KComboBox( this );
-            amazonLocale->addItem( i18n("International"), CoverFetcher::International );
-            amazonLocale->addItem( i18n("Canada"), CoverFetcher::Canada );
-            amazonLocale->addItem( i18n("France"), CoverFetcher::France );
-            amazonLocale->addItem( i18n("Germany"), CoverFetcher::Germany );
-            amazonLocale->addItem( i18n("Japan"), CoverFetcher::Japan);
-            amazonLocale->addItem( i18n("United Kingdom"), CoverFetcher::UK );
             if( CoverManager::instance() )
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         CoverManager::instance(), SLOT( changeLocale(int) ) );
             else
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         fetcher, SLOT( changeLocale(int) ) );
-            QHBoxLayout *hbox1 = new QHBoxLayout();
-            hbox1->setSpacing( 8 );
-            hbox1->addWidget( new QLabel( i18n( "Amazon Locale: " ), this ) );
-            hbox1->addWidget( amazonLocale );
 
             int currentLocale = CoverFetcher::localeStringToID( AmarokConfig::amazonLocale() );
             amazonLocale->setCurrentIndex( currentLocale );
 
-            KPushButton* cancelButton = new KPushButton( KStandardGuiItem::cancel(), this );
-            KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
-
-            QHBoxLayout *hbox2 = new QHBoxLayout();
-            hbox2->setSpacing( 8 );
-            hbox2->addItem( new QSpacerItem( 160, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-            hbox2->addWidget( searchButton );
-            hbox2->addWidget( cancelButton );
-
-            QVBoxLayout *vbox = new QVBoxLayout();
-            vbox->setMargin( 8 );
-            vbox->setSpacing( 8 );
-            vbox->addLayout( hbox1 );
-            vbox->addWidget( new QLabel( "<qt>" + text, this ) );
-            vbox->addWidget( new KLineEdit( keyword, this ) );
-            vbox->addLayout( hbox2 );
-
-            searchButton->setDefault( true );
-
             adjustSize();
             setFixedHeight( height() );
-
-            connect( searchButton, SIGNAL(clicked()), SLOT(accept()) );
-            connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
         }
 
-        QString query() { return findChild<KLineEdit*>( "Query" )->text(); }
+        QString query() { return SearchLineEdit->text(); }
     };
 
 QString
@@ -550,7 +529,6 @@ CoverFetcher::changeLocale( int id )//SLOT
     AmarokConfig::setAmazonLocale( locale );
 }
 
-
 void
 CoverFetcher::getUserQuery( QString explanation )
 {
@@ -563,18 +541,22 @@ CoverFetcher::getUserQuery( QString explanation )
             m_userQuery,
             this );
 
+
     switch( dialog.exec() )
     {
-    case QDialog::Accepted:
-        m_userQuery = dialog.query();
-        m_queries.clear();
-        m_queries << m_userQuery;
-        buildQueries( m_albums.takeFirst() );
-        break;
-    default:
-        finishWithError( i18n( "Aborted." ) );
-        break;
+        case QDialog::Accepted:
+            m_userQuery = dialog.query();
+            debug() << m_userQuery;
+            m_queries.clear();
+            m_queries << m_userQuery;
+            buildQueries( m_albumPtr );
+            break;
+        default:
+            finishWithError( i18n( "Aborted." ) );
+            break;
     }
+
+
 }
 
     class CoverFoundDialog : public KDialog
