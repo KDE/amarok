@@ -974,7 +974,7 @@ void MainWindow::createActions()
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
 
-    ac->associateWidget( this );
+    ac->addAssociatedWidget( this );
     foreach (QAction* action, ac->actions())
         action->setShortcutContext(Qt::WindowShortcut);
 }
