@@ -974,7 +974,7 @@ void MainWindow::createActions()
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
 
-    ac->addAssociatedWidget( this );
+    ac->associateWidget( this );
     foreach (QAction* action, ac->actions())
 #if QT_VERSION < KDE_MAKE_VERSION(4,4,0)
         action->setShortcutContext(Qt::WidgetShortcut); // remove after Qt4.4 becomes mandatory
