@@ -381,9 +381,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
         return;
     }
 
-    m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
-
-    if( m_image.width() <= 1 ) {
+    if( !m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) || m_image.width() <= 1 ) {
         //Amazon seems to offer images of size 1x1 sometimes
         //Amazon has nothing to offer us for the requested image size
         m_errors += i18n("The cover-data produced an invalid image.");
