@@ -23,6 +23,7 @@
 #include "FileBrowser.h"
 #include "FileBrowser.moc"
 
+#include "filebrowser/mydiroperator.h"
 #include "filebrowser/kbookmarkhandler.h"
 
 #include <QLayout>
@@ -31,7 +32,6 @@
 #include <kvbox.h>
 #include <QLabel>
 
-#include <QApplication>
 #include <QListWidget>
 #include <QScrollBar>
 #include <QSpinBox>
@@ -50,27 +50,26 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 
-#include <kactioncollection.h>
-#include <kactionmenu.h>
-#include <kactionselector.h>
-#include <kconfig.h>
-#include <kcombobox.h>
-#include <kdebug.h>
-#include <kdialog.h>
-#include <kdiroperator.h>
-#include <kfileitem.h>
-#include <kgenericfactory.h>
-#include <kglobal.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kmenu.h>
-#include <kmessagebox.h>
-#include <kprotocolinfo.h>
-#include <kurlcombobox.h>
-#include <kurlcompletion.h>
-#include <ktexteditor/view.h>
-#include <kconfiggroup.h>
-#include <khistorycombobox.h>
+#include <KActionCollection>
+#include <KActionMenu>
+#include <KActionSelector>
+#include <KApplication>
+#include <KConfig>
+#include <KComboBox>
+#include <KDebug>
+#include <KDialog>
+#include <KFileItem>
+#include <KGenericFactory>
+#include <KGlobal>
+#include <KIconLoader>
+#include <KLocale>
+#include <KMenu>
+#include <KMessageBox>
+#include <KProtocolInfo>
+#include <KUrlComboBox>
+#include <KUrlCompletion>
+#include <KConfigGroup>
+#include <KHistoryComboBox>
 #include <kdeversion.h>
 //END Includes
 
@@ -121,7 +120,7 @@ FileBrowser::Widget::Widget( const char * name )
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
-  m_dir = new KDirOperator(KUrl(), this);
+  m_dir = new MyDirOperator(KUrl(), this);
   m_dir->setView(KFile::/* Simple */Detail);
   m_dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
   connect ( m_dir, SIGNAL( viewChanged(QAbstractItemView *) ),
@@ -132,12 +131,12 @@ FileBrowser::Widget::Widget( const char * name )
   KActionCollection *coll = m_dir->actionCollection();
   // some shortcuts of diroperator that clashes with Kate
   coll->action( "delete" )->setShortcut( Qt::ALT + Qt::Key_Delete );
-  coll->action( "reload" )->setShortcut( Qt::ALT + Qt::Key_F5 );
-  coll->action( "back" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Left );
-  coll->action( "forward" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Right );
+  //coll->action( "reload" )->setShortcut( Qt::ALT + Qt::Key_F5 );
+  //coll->action( "back" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Left );
+  //coll->action( "forward" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Right );
   // some consistency - reset up for dir too
-  coll->action( "up" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Up );
-  coll->action( "home" )->setShortcut( Qt::CTRL + Qt::ALT + Qt::Key_Home );
+  //coll->action( "up" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Up );
+  //coll->action( "home" )->setShortcut( Qt::CTRL + Qt::ALT + Qt::Key_Home );
 
   // bookmarks action!
   KActionMenu *acmBookmarks = new KActionMenu( KIcon("bookmark"), i18n("Bookmarks"), this );
@@ -245,7 +244,7 @@ void FileBrowser::Widget::readSessionConfig(KConfigBase *config, const QString &
 
   KConfigGroup globalConfig( KGlobal::config(), "fileselector" );
 
-  if ( globalConfig.readEntry( "restore location", true) || qApp->isSessionRestored() )
+  if ( globalConfig.readEntry( "restore location", true) || kapp->isSessionRestored() )
   {
     QString loc( cg.readPathEntry( "location", QString() ) );
     if ( ! loc.isEmpty() )
@@ -255,7 +254,7 @@ void FileBrowser::Widget::readSessionConfig(KConfigBase *config, const QString &
   m_filter->setHistoryItems( cg.readEntry("filter history", QStringList()), true );
   lastFilter = cg.readEntry( "last filter" );
   QString flt("");
-  if ( globalConfig.readEntry( "restore last filter", true ) || qApp->isSessionRestored() )
+  if ( globalConfig.readEntry( "restore last filter", true ) || kapp->isSessionRestored() )
     flt = cg.readEntry("current filter");
   m_filter->lineEdit()->setText( flt );
   slotFilterChange( flt );

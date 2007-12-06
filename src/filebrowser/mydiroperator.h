@@ -14,15 +14,7 @@ class MyDirOperator : public KDirOperator {
     Q_OBJECT
 
     public:
-        MyDirOperator( const KUrl &url, QWidget *parent, Medium *medium = 0 );
-
-    public slots:
-        void myHome();
-        void myCdUp();
-
-    private:
-        void reenableDeleteKey();
-    Medium *m_medium;
+        MyDirOperator( const KUrl &url, QWidget *parent );
 
 };
 

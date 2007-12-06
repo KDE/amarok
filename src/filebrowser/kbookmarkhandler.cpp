@@ -33,6 +33,7 @@
 #include <kdebug.h>
 
 #include "FileBrowser.h"
+#include "mydiroperator.h"
 
 #include "kbookmarkhandler.h"
 #include "kbookmarkhandler.moc"

@@ -373,6 +373,8 @@ set(amaroklib_LIB_SRCS
     fht.cpp
     filebrowser/FileBrowser.cpp
     filebrowser/kbookmarkhandler.cpp
+    filebrowser/mydirlister.cpp
+    filebrowser/mydiroperator.cpp
     hintlineedit.cpp
     IconLoader.cpp
     k3bexporter.cpp
