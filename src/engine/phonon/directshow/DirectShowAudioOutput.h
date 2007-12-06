@@ -13,6 +13,11 @@
 
 #include <phonon/audiooutputinterface.h>
 
+class DirectShowBackend;
+class DirectShowGraph;
+
+// Phonon AudioOutput implementation.
+// Mostly just emits signals which attached graphs use.
 class DirectShowAudioOutput : public QObject, public Phonon::AudioOutputInterface
 {
     Q_OBJECT
@@ -27,6 +32,16 @@ class DirectShowAudioOutput : public QObject, public Phonon::AudioOutputInterfac
 
         int outputDevice() const;
         bool setOutputDevice(int);
+
+    signals:
+        void volumeChanged(qreal newVolume);
+        void audioDeviceFailed();
+
+        void outputDeviceChanged( int device );
+
+    private:
+        int m_device;
+        qreal m_volume;
 };
 
 #endif // AMAROK_DIRECTSHOWAUDIOOUTPUT_H

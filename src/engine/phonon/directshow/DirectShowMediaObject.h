@@ -13,6 +13,10 @@
 
 #include <phonon/mediaobjectinterface.h>
 
+class DirectShowGraph;
+
+// Phonon MediaObject implementation.
+// Mostly just forwards everything on to its associated graph object.
 class DirectShowMediaObject : public QObject, public Phonon::MediaObjectInterface
 {
     Q_OBJECT
@@ -49,6 +53,26 @@ class DirectShowMediaObject : public QObject, public Phonon::MediaObjectInterfac
 
         qint32 transitionTime() const;
         void setTransitionTime(qint32);
+
+        void setGraph( DirectShowGraph *graph );
+        DirectShowGraph *getGraph() { return m_graph; }
+
+    signals:
+        void aboutToFinish();
+        void finished();
+        void prefinishMarkReached(qint32 msec);
+        void totalTimeChanged(qint64 length);
+        void currentSourceChanged(const Phonon::MediaSource &);
+
+        void stateChanged(Phonon::State newstate, Phonon::State oldstate);
+        void tick(qint64 time);
+        void metaDataChanged(const QMultiMap<QString, QString> &);
+        void seekableChanged(bool);
+        void hasVideoChanged(bool);
+        void bufferStatus(int);
+
+    private:
+        DirectShowGraph *m_graph;
 };
 
 #endif // AMAROK_DIRECTSHOWMEDIAOBJECT_H

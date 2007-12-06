@@ -14,7 +14,9 @@
 
 
 DirectShowAudioOutput::DirectShowAudioOutput(QObject *parent)
-    : QObject(parent)
+    : QObject( parent ), 
+      m_device( 0 ),
+      m_volume( 0 )
 {
 }
 
@@ -27,25 +29,29 @@ DirectShowAudioOutput::~DirectShowAudioOutput()
 qreal 
 DirectShowAudioOutput::volume() const
 {
-    return 0;
+    return m_volume;
 }
 
 
 void 
-DirectShowAudioOutput::setVolume(qreal)
+DirectShowAudioOutput::setVolume(qreal volume)
 {
+    m_volume = volume;
+    emit volumeChanged(m_volume);
 }
 
 
 int 
 DirectShowAudioOutput::outputDevice() const
 {
-    return 0;
+    return m_device;
 }
 
 
 bool 
-DirectShowAudioOutput::setOutputDevice(int)
+DirectShowAudioOutput::setOutputDevice( int device )
 {
-    return false;
+    m_device = device;
+    emit outputDeviceChanged( device );
+    return true;
 }

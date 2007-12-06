@@ -11,8 +11,19 @@
 #ifndef AMAROK_DIRECTSHOWBACKEND_H
 #define AMAROK_DIRECTSHOWBACKEND_H
 
+#include "ComPtr.h"
+
 #include <phonon/backendinterface.h>
 
+#include <windows.h>
+#include <objidl.h>
+
+class DirectShowGraph;
+
+// Phonon backend class.
+// Does basic initialization of what we need for DirectShow
+// including setup up a (non-UI) "window" to handle events
+// which are dispatched to the appropriate graph object.
 class DirectShowBackend : public QObject, public Phonon::BackendInterface
 {
     Q_OBJECT
@@ -30,6 +41,20 @@ class DirectShowBackend : public QObject, public Phonon::BackendInterface
         bool disconnectNodes(QObject *, QObject *);
         bool endConnectionChange(QSet<QObject *>);
         QStringList availableMimeTypes() const;
+
+        ComPtr< IMoniker > getDevice( int index ) const { return m_audioDevices.at( index ); }
+        HWND window() { return m_window; }
+
+        static const int WM_GRAPH_EVENT;
+
+    private:
+        bool createMessageWindow();
+        void destroyMessageWindow();
+        bool loadAudioDevices();
+
+        bool m_initialized;
+        HWND m_window;
+        QList< ComPtr<IMoniker> > m_audioDevices;
 };
 
 #endif // AMAROK_DIRECTSHOWBACKEND_H
