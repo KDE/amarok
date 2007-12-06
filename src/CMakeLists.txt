@@ -371,11 +371,11 @@ set(amaroklib_LIB_SRCS
     equalizersetup.cpp
     expression.cpp
     fht.cpp
-    filebrowser.cpp
+    filebrowser/FileBrowser.cpp
+    filebrowser/kbookmarkhandler.cpp
     hintlineedit.cpp
     IconLoader.cpp
     k3bexporter.cpp
-    kbookmarkhandler.cpp
     ktrm.cpp
     lastfm.cpp
     MainWindow.cpp
@@ -388,7 +388,6 @@ set(amaroklib_LIB_SRCS
     metabundle.cpp
     moodbar.cpp
     mountpointmanager.cpp
-    mydiroperator.cpp
     osd.cpp
     PixmapViewer.cpp
     PlaylistHandler.cpp

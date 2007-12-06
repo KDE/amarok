@@ -29,7 +29,7 @@
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
-#include "filebrowser.h"
+#include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "MainWindow.h"
@@ -73,16 +73,16 @@
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KActionMenu>
-#include <kapplication.h>     //kapp
-#include <kfiledialog.h>      //savePlaylist(), openPlaylist()
-#include <kglobal.h>
-#include <kinputdialog.h>     //slotAddStream()
-#include <klocale.h>
-#include <kmenubar.h>
-#include <kmessagebox.h>      //savePlaylist()
-#include <kmenu.h>
-#include <kpushbutton.h>
-#include <ktoolbar.h>
+#include <KApplication>     //kapp
+#include <KFileDialog>      //savePlaylist(), openPlaylist()
+#include <KGlobal>
+#include <KInputDialog>     //slotAddStream()
+#include <KLocale>
+#include <KMenuBar>
+#include <KMessageBox>      //savePlaylist()
+#include <KMenu>
+#include <KPushButton>
+#include <KToolBar>
 #include <kdeversion.h>
 #include <fixx11h.h>
 
@@ -245,14 +245,9 @@ void MainWindow::init()
         PodcastCollection *podcastCollection = new PodcastCollection();
         The::playlistManager()->addProvider( podcastCollection->channelProvider(), PlaylistManager::PodcastChannel );
 
-        //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
-
-
-
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
+        addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), Amarok::icon( "files" ) )
 
         //cant use macros here since we need access to the browsers directly
-
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
@@ -262,9 +257,7 @@ void MainWindow::init()
         ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
         ServicePluginManager::instance()->init();
 
-        debug() << "Add me dammit!!!!!";
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
-
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
