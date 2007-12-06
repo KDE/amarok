@@ -115,10 +115,10 @@ namespace Debug
     };
 
         
-    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX ); }
-    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX + " [WARNING!]" ); }
-    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX + " [ERROR!]" ); }
-    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( ind + AMK_PREFIX ); }
+    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
+    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ); }
+    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ); }
+    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
 
     typedef kdbgstream DebugStream;
 
@@ -188,7 +188,7 @@ namespace Debug
             mutex.lock();
             gettimeofday( &m_start, 0 );
 
-            kDebug() << "BEGIN:" << label;
+            dbgstream() << "amarok: BEGIN:" << label;
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -212,8 +212,8 @@ namespace Debug
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-            kDebug() << "END__:" << m_label
-                      << "- Took" << qPrintable( QString::number( duration, 'g', 2 ) + "s" );
+            dbgstream() << "amarok: END__:" << m_label
+                        << "- Took" << qPrintable( QString::number( duration, 'g', 2 ) + "s" );
             mutex.unlock();
         }
     };
