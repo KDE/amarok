@@ -372,7 +372,6 @@ set(amaroklib_LIB_SRCS
     expression.cpp
     fht.cpp
     filebrowser.cpp
-    filebrowserwidget.cpp
     hintlineedit.cpp
     IconLoader.cpp
     k3bexporter.cpp

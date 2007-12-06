@@ -83,11 +83,11 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     if (!medium) {
         m_medium = 0;
         location = KUrl( Amarok::config( "Filebrowser" ).readEntry( "Location", QDir::homePath() ) );
-        KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, location );
+        KFileItem currentFolder( KFileItem::Unknown, KFileItem::Unknown, location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
         //so... setting the diroperator to ~ is the least sucky option
-        if ( !location.isLocalFile() || !currentFolder->isReadable() ) {
+        if ( !location.isLocalFile() || !currentFolder.isReadable() ) {
             location = KUrl( QDir::homePath() ) ;
         }
     }
@@ -277,11 +277,11 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     connect( m_combo, SIGNAL(urlActivated( const KUrl& )), SLOT(setUrl( const KUrl& )) );
     connect( m_combo, SIGNAL(returnPressed( const QString& )), SLOT(setUrl( const QString& )) );
     connect( m_dir, SIGNAL(viewChanged( QAbstractItemView* )), SLOT(slotViewChanged( QAbstractItemView* )) );
-    connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activate( const KFileItem* )) );
+    connect( m_dir, SIGNAL(fileSelected( const KFileItem& )), SLOT(activate( const KFileItem& )) );
     connect( m_dir, SIGNAL(urlEntered( const KUrl& )), SLOT(urlChanged( const KUrl& )) );
     connect( m_dir, SIGNAL(urlEntered( const KUrl& )), searchPane, SLOT(urlChanged( const KUrl& )) );
-    connect( m_dir, SIGNAL(dropped( const KFileItem*, QDropEvent*, const KUrl::List& )),
-                        SLOT(dropped( const KFileItem*, QDropEvent*, const KUrl::List& )) );
+    connect( m_dir, SIGNAL(dropped( const KFileItem&, QDropEvent*, const KUrl::List& )),
+                        SLOT(dropped( const KFileItem&, QDropEvent*, const KUrl::List& )) );
 
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focused when we get focus events
@@ -392,7 +392,7 @@ FileBrowser::setFilter( const QString &text )
 }
 
 void
-FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KUrl::List &urls)
+FileBrowser::dropped( const KFileItem& /*item*/, QDropEvent* event, const KUrl::List &urls)
 {
     //Do nothing right now
     event->ignore();
@@ -448,9 +448,9 @@ FileBrowser::slotViewChanged( QAbstractItemView *)
 }
 
 inline void
-FileBrowser::activate( const KFileItem *item )
+FileBrowser::activate( const KFileItem &item )
 {
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item->url() );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
     The::playlistModel()->insertOptioned( track, Playlist::AppendAndPlay );
 }
 

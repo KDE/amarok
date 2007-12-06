@@ -30,7 +30,6 @@
 #include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
-#include "filebrowserwidget.h"
 #include "k3bexporter.h"
 #include "lastfm.h"           //check credentials when adding lastfm streams
 #include "MainWindow.h"
@@ -246,14 +245,11 @@ void MainWindow::init()
         PodcastCollection *podcastCollection = new PodcastCollection();
         The::playlistManager()->addProvider( podcastCollection->channelProvider(), PlaylistManager::PodcastChannel );
 
-        addBrowserMacro( FileBrowserWidget, "FileBrowserWidget", i18n("Files"), Amarok::icon( "files" ) );
-
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
 
 
-        //uncomment to enable the old file browser
-//         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
 
         //cant use macros here since we need access to the browsers directly
 

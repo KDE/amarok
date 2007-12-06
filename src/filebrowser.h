@@ -63,10 +63,10 @@ public slots:
     void setUrl( const KUrl &url );
     void setUrl( const QString &url );
     void setFilter( const QString& );
-    void dropped( const KFileItem*, QDropEvent*, const KUrl::List& );
+    void dropped( const KFileItem&, QDropEvent*, const KUrl::List& );
 
 private slots:
-    void activate( const KFileItem* );
+    void activate( const KFileItem& );
     void gotoCurrentFolder();
     void prepareContextMenu();
     void selectAll();
