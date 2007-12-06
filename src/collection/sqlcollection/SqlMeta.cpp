@@ -677,6 +677,36 @@ SqlArtist::sortableName() const
     return m_modifiedName;
 }
 
+bool
+SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+        {
+            QList<QAction*> actions;
+            actions.append( new CopyToDeviceAction( m_collection, this ) );
+            return new CustomActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
+}
+
 /*void
 SqlArtist::addToQueryResult( QueryBuilder &qb ) {
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
@@ -960,6 +990,7 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<QAction*> actions;
+            actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
         }

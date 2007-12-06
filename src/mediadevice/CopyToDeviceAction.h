@@ -32,13 +32,17 @@ class AMAROK_EXPORT CopyToDeviceAction : public QAction
 {
     Q_OBJECT
     public:
-        CopyToDeviceAction( QObject* parent, Meta::Track *track );
+        CopyToDeviceAction( QObject *parent, Meta::Track *track );
+        CopyToDeviceAction( QObject *parent, Meta::Album *album );
+        CopyToDeviceAction( QObject *parent, Meta::Artist *artist );
 
     private slots:
         void slotTriggered();
 
     private:
-        Meta::TrackPtr m_track;
+        void init();
+
+        Meta::TrackList m_tracks;
 };
 
 #endif //COPYTODEVICEACTION_H

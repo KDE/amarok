@@ -172,6 +172,10 @@ class SqlArtist : public Meta::Artist
 
         virtual Meta::AlbumList albums();
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
         //SQL specific methods
         int id() const { return m_id; }
 

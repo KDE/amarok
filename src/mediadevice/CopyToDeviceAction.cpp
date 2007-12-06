@@ -21,21 +21,51 @@
 
 #include <QAction>
 
+#include <KIcon>
+
 #include "mediabrowser.h"
 
 
 CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Track *track )
     : QAction( parent )
-    , m_track( track )
+    , m_tracks()
+{
+    init();
+
+    m_tracks.append( Meta::TrackPtr( track ) );
+
+    setToolTip( i18n("Copies the track to a portable media device") );
+}
+
+CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Album *album )
+    : QAction( parent )
+    , m_tracks( album->tracks() )
+{
+    init();
+
+    setToolTip( i18n("Copies all tracks from this album to a portable media device") );
+}
+
+CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Artist *artist )
+    : QAction( parent )
+    , m_tracks( artist->tracks() )
+{
+    init();
+
+    setToolTip( i18n("Copies all tracks by this artist to a portable media device") );
+}
+
+void
+CopyToDeviceAction::init()
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
     setText( i18n("Copy To Media Device") );
-    setToolTip( i18n("Copies the track to a portable media device") );
+    setIcon( KIcon("multimedia-player") );
 }
 
 void
 CopyToDeviceAction::slotTriggered()
 {
-    MediaBrowser::queue()->addTrack( m_track );
+    MediaBrowser::queue()->addTracks( m_tracks );
 }
