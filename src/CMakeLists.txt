@@ -320,6 +320,13 @@ set(libplaylist_SRCS
 )
 
 #####################################################################
+# MEDIADEVICE
+#####################################################################
+set(mediadevice_SRCS
+    mediadevice/CopyToDeviceAction.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -342,6 +349,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
+    ${mediadevice_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
     app.cpp

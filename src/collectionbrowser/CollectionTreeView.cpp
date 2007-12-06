@@ -130,11 +130,8 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         KMenu menu;
         QAction* loadAction = new QAction( KIcon(Amarok::icon( "file_open" ) ), i18n( "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( Amarok::icon( "add_playlist") ), i18n( "&Append to Playlist" ), &menu);
-        QAction* deviceAction = new QAction( KIcon(Amarok::icon("file_open")), i18n( "Copy to Device" ), &menu);
         menu.addAction( loadAction );
         menu.addAction( appendAction );
-        if( MediaBrowser::isAvailable() )
-            menu.addAction( deviceAction );
 
         if( indices.count() == 1 )
         {
@@ -167,12 +164,6 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
             playChildTracks( items, Playlist::Replace );
         else if( result == appendAction )
             playChildTracks( items, Playlist::Append );
-        else if( result == deviceAction )
-            copyToDevice( items );
-        else if( result )
-        {
-            result->trigger();
-        }
     }
     else
         debug() << "invalid index or null internalPointer";
@@ -317,18 +308,6 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
         //FIXME:we are ignoring the order of the sleected items
         playChildTracks( item, first ? insertMode : Playlist::Append );
         first = false;
-    }
-}
-
-void
-CollectionTreeView::copyToDevice( const QSet<CollectionTreeItem*> &items ) const
-{
-    DEBUG_BLOCK
-
-    foreach( CollectionTreeItem *item, items )
-    {
-        Meta::TrackList tracks = item->descendentTracks();
-        MediaBrowser::queue()->addTracks( tracks );
     }
 }
 

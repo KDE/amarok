@@ -22,6 +22,7 @@
 #include "BlockingQuery.h"
 #include "debug.h"
 #include "MainWindow.h"
+#include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "SqlRegistry.h"
@@ -562,6 +563,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     switch( type )
     {
         case Meta::Capability::Editable:
+        case Meta::Capability::CustomActions:
             return true;
 
         default:
@@ -576,6 +578,15 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityImpl( this );
+
+        case Meta::Capability::CustomActions:
+        {
+            QList<QAction*> actions;
+            //TODO These actions will hang around until m_collection is destructed.
+            // Find a better parent to avoid this memory leak.
+            actions.append( new CopyToDeviceAction( m_collection, this ) );
+            return new CustomActionsCapability( actions );
+        }
 
         default:
             return 0;
