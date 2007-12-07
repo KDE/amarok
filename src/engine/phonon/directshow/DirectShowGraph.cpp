@@ -35,6 +35,7 @@ DirectShowGraph::DirectShowGraph( DirectShowBackend *backend, DirectShowMediaObj
     {
         m_mediaObject->setGraph( this );
 
+        // output communicates with graph through signals
         connect( m_audioOutput, SIGNAL( volumeChanged(qreal) ), SLOT( volumeChanged(qreal) ) );
         connect( m_audioOutput, SIGNAL( outputDeviceChanged(int) ), SLOT( outputDeviceChanged(int) ) );
 
@@ -50,8 +51,13 @@ DirectShowGraph::DirectShowGraph( DirectShowBackend *backend, DirectShowMediaObj
 
 DirectShowGraph::~DirectShowGraph()
 {
+    // need to turn off event manually
     if( m_event )
         m_event->SetNotifyWindow( 0, 0, 0 );
+
+    // and remove ourself from the media object (deletion will auto detach us from the audio output signals)
+    if( m_mediaObject )
+        m_mediaObject->setGraph( 0 );
 }
 
 
@@ -66,12 +72,13 @@ DirectShowGraph::onEvent()
 	{
         switch( evCode )
         {
+            // only care about completion of track at this point
             case EC_COMPLETE:
                 emit finished();
                 break;
         }
 
-        // Free the event data.
+        // need to free event data after all events
 		HResult hr = m_event->FreeEventParams(evCode, param1, param2);
 		if (FAILED(hr))
 		{
@@ -89,7 +96,7 @@ DirectShowGraph::stop()
     HResult hr = m_control->Stop();
     if( SUCCEEDED( hr ) )
     {
-        seek( 0 );
+        seek( 0 ); // go back to start, otherwise play will resume at same place
         setState( Phonon::StoppedState );
     }
     else
@@ -142,7 +149,7 @@ DirectShowGraph::play()
 void
 DirectShowGraph::seek( qint64 milliseconds )
 {
-    qint64 pos = milliseconds * 10000;
+    qint64 pos = milliseconds * 10000; // DirectShow uses 100 nanosecond units
     HResult hr = m_seek->SetPositions( &pos, AM_SEEKING_AbsolutePositioning, 0, AM_SEEKING_NoPositioning );
     if( FAILED( hr ) )
         debug() << "Failed to seek: " << hr;
@@ -163,7 +170,7 @@ DirectShowGraph::currentTime() const
     HResult hr = m_seek->GetCurrentPosition( &result );
     if( FAILED( hr ) )
         debug() << "Failed to get current position: " << hr;
-    return result / 10000;
+    return result / 10000; // DirectShow uses 100 nanosecond units
 }
 
 
@@ -174,7 +181,7 @@ DirectShowGraph::totalTime() const
     HResult hr = m_seek->GetDuration( &result );
     if( FAILED( hr ) )
         debug() << "Failed to get total time: " << hr;
-    return result / 10000;
+    return result / 10000; // DirectShow uses 100 nanosecond units
 }
 
 
@@ -211,8 +218,8 @@ DirectShowGraph::volumeChanged( qreal volume )
     const long VOLUME_RANGE = 10000; // DirectShow using -10000 to 0 for volume, equivalent to -100db to 0db gain
 
     // convert from what phonon gives us
-    // probably need to tweak this, since the volume is very quiet at anything below about 80%
-    long dsVolume = long(std::pow(volume, 1 / 1.4925373) * VOLUME_RANGE) - VOLUME_RANGE;
+    // and again to get it into something reasonable for the way DirectShow handles volume
+    long dsVolume = long( std::pow( volume, 1 / ( 1.4925373 * 1.4925373 ) ) * VOLUME_RANGE ) - VOLUME_RANGE;
     
     m_audio->put_Volume( dsVolume );
 }
@@ -221,8 +228,9 @@ DirectShowGraph::volumeChanged( qreal volume )
 void 
 DirectShowGraph::outputDeviceChanged( int device )
 {
-    stop();
+    stop(); // can't do this while playing
 
+    // remove existing device if present
     HResult hr;
     if( m_output )
     {
@@ -231,6 +239,7 @@ DirectShowGraph::outputDeviceChanged( int device )
             debug() << "Failed to remove filter: " << hr;
     }
 
+    // add new device
     ComPtr<IMoniker> moniker = m_backend->getDevice( device );
     hr = moniker->BindToObject( 0, 0, IID_IBaseFilter, reinterpret_cast<void **>( &m_output ) );
     if( SUCCEEDED( hr ) )
@@ -272,6 +281,7 @@ DirectShowGraph::setSource( const Phonon::MediaSource &source )
     {
         debug() << "Setting source to: " << file;
         
+        // remove existing input file if present
         HResult hr;
         if( m_input )
         {
@@ -280,6 +290,7 @@ DirectShowGraph::setSource( const Phonon::MediaSource &source )
                 debug() << "Failed to remove filter: " << hr;
         }
 
+        // add new file
         hr = m_graph->AddSourceFilter( reinterpret_cast<const wchar_t *>( file.utf16() ), L"Input", &m_input );
         if( SUCCEEDED( hr ) )
         {
@@ -310,7 +321,7 @@ DirectShowGraph::newSource()
     render();
 
     emit currentSourceChanged( m_source );
-    emit seekableChanged( isSeekable() );
+    emit seekableChanged( isSeekable() ); // may not have "changed" but this is good enough
     emit totalTimeChanged( totalTime() );
 }
 
@@ -338,6 +349,7 @@ DirectShowGraph::setState( Phonon::State state )
 }
 
 
+// setup the initial filter graph and get required interfaces
 bool
 DirectShowGraph::createGraph()
 {
@@ -392,6 +404,7 @@ DirectShowGraph::createGraph()
 }
 
 
+// connect input pin to output
 void
 DirectShowGraph::render()
 {

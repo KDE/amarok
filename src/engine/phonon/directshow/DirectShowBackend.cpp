@@ -31,7 +31,8 @@ K_EXPORT_PLUGIN(DirectShowBackendFactory("amarokdirectshowbackend"))
 
 
 DirectShowBackend::DirectShowBackend(QObject *parent, const QVariantList &args)
-    : QObject(parent)
+    : QObject( parent ),
+      m_window( 0 )
 {
     m_initialized = createMessageWindow() && loadAudioDevices();
 }
@@ -46,7 +47,7 @@ DirectShowBackend::~DirectShowBackend()
 QObject *
 DirectShowBackend::createObject(BackendInterface::Class objectClass, QObject *parent, const QList<QVariant> &args)
 {
-    if( m_initialized )
+    if( m_initialized ) // unless we could initialize nothing is going to work, so don't bother creating objects
     {
         switch( objectClass )
         {
@@ -102,6 +103,8 @@ DirectShowBackend::objectDescriptionProperties(Phonon::ObjectDescriptionType typ
             {
                 debug() << "Failed to get FriendlyName: " << hr;
             }
+
+            // could get more properties here, although I'm not sure DirectShow has much particuarly useful
         }
         else
         {
@@ -116,6 +119,7 @@ DirectShowBackend::objectDescriptionProperties(Phonon::ObjectDescriptionType typ
 bool 
 DirectShowBackend::startConnectionChange(QSet<QObject *>)
 {
+    // we can't do much about it, so just OK it
     return true;
 }
 
@@ -128,9 +132,22 @@ DirectShowBackend::connectNodes(QObject *source, QObject *sink)
     if( mediaObject && audioOutput )
     {
         if( mediaObject->getGraph() )
+        {
             debug() << "Can't connect multiple outputs to a media object";
+        }
         else
-            return ( new DirectShowGraph( this, mediaObject, audioOutput ) )->initialized();
+        {
+            DirectShowGraph *graph = new DirectShowGraph( this, mediaObject, audioOutput );
+            if( graph->initialized() )
+            {
+                return true; // graph parents to this so will free itself
+            }
+            else
+            {
+                delete graph;
+                return false;
+            }
+        }
     }
     else
     {
@@ -146,8 +163,8 @@ DirectShowBackend::disconnectNodes(QObject *source, QObject *sink)
     DirectShowMediaObject *mediaObject = qobject_cast<DirectShowMediaObject *>( source );
     DirectShowAudioOutput *audioOutput = qobject_cast<DirectShowAudioOutput *>( sink );
     
+    // media object can have a single graph, so we can get and delete it from there
     delete mediaObject->getGraph();
-    mediaObject->setGraph( 0 );
 
     return false;
 }
@@ -156,6 +173,7 @@ DirectShowBackend::disconnectNodes(QObject *source, QObject *sink)
 bool 
 DirectShowBackend::endConnectionChange(QSet<QObject *>)
 {
+    // we can't do much about it, so just OK it
     return true;
 }
 
@@ -168,6 +186,8 @@ DirectShowBackend::availableMimeTypes() const
 }
 
 
+// Windows proc for DirectShow events, we notify the graph when we get an event
+// Graph is passed in through lParam
 extern "C" LRESULT CALLBACK WndProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     if( uMsg == DirectShowBackend::WM_GRAPH_EVENT )
@@ -181,6 +201,9 @@ extern "C" LRESULT CALLBACK WndProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 static const wchar_t * WINDOW_CLASS = L"PhononAmarokDirectShow";
 const int DirectShowBackend::WM_GRAPH_EVENT = WM_APP + 1;
 
+
+// Need to make a window purely for event notifications.
+// We pass HWND_MESSAGE so we don't get an associated UI window.
 bool
 DirectShowBackend::createMessageWindow()
 {
@@ -198,9 +221,8 @@ DirectShowBackend::createMessageWindow()
 
     if( RegisterClass(&cls) )
     {
-        m_window = CreateWindowEx( 0, WINDOW_CLASS, 
-            L"PhononAmarokDirectShowWindow",0 ,0 ,0 ,0 ,0 ,HWND_MESSAGE,0, cls.hInstance, 0);
-        if(m_window)
+        m_window = CreateWindowEx( 0, WINDOW_CLASS, L"PhononAmarokDirectShowWindow", 0, 0, 0, 0, 0, HWND_MESSAGE, 0, cls.hInstance, 0 );
+        if( m_window )
             return true;
         else
             debug() << "Failed to create message window";
@@ -221,10 +243,13 @@ DirectShowBackend::destroyMessageWindow()
 }
 
 
+// Query DirectShow for all audio devices (AudioRendererCategory)
+// With a soundcard typically this returns at a minimum 4 devices:
+// A direct sound device, a wave output device for the soundcard
+// and the default direct sound and wave output devices.
 bool
 DirectShowBackend::loadAudioDevices()
 {
-    // Create the System Device Enumerator.
     HResult hr;
     ComPtr<ICreateDevEnum> sysDevEnum;
     hr = sysDevEnum.CreateInstance(CLSID_SystemDeviceEnum, IID_ICreateDevEnum);

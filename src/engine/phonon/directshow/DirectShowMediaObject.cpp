@@ -60,6 +60,7 @@ DirectShowMediaObject::seek(qint64 milliseconds)
 }
 
 
+// amarok works fine without an implementation of these tick functions
 qint32 
 DirectShowMediaObject::tickInterval() const
 {
@@ -72,6 +73,8 @@ DirectShowMediaObject::setTickInterval(qint32 interval)
 {
 }
 
+
+// don't currently support video
 bool 
 DirectShowMediaObject::hasVideo() const
 {
@@ -136,12 +139,14 @@ DirectShowMediaObject::setSource(const Phonon::MediaSource &source)
 }
 
 
+// don't currently support pre-queueing sources
 void 
 DirectShowMediaObject::setNextSource(const Phonon::MediaSource &source)
 {
 }
 
 
+// amarok doesn't use the prefinish notification, so it's not currently implemented
 qint32 
 DirectShowMediaObject::prefinishMark() const
 {
@@ -155,6 +160,7 @@ DirectShowMediaObject::setPrefinishMark(qint32)
 }
 
 
+// amarok doesn't use the transition, so it's not currently implemented
 qint32 
 DirectShowMediaObject::transitionTime() const
 {
@@ -173,16 +179,20 @@ DirectShowMediaObject::setGraph( DirectShowGraph *graph )
 {
     m_graph = graph;
 
-    connect( m_graph, SIGNAL( aboutToFinish() ), SIGNAL( aboutToFinish() ) );
-    connect( m_graph, SIGNAL( finished() ), SIGNAL( finished() ) );
-    connect( m_graph, SIGNAL( prefinishMarkReached(qint32) ), SIGNAL( prefinishMarkReached(qint32) ) );
-    connect( m_graph, SIGNAL( totalTimeChanged(qint64) ), SIGNAL( prefinishMarkReached(qint32) ) );
-    connect( m_graph, SIGNAL( currentSourceChanged(const Phonon::MediaSource &) ), SIGNAL( currentSourceChanged(const Phonon::MediaSource &) ) );
+    if( m_graph )
+    {
+        // pass through all graph signals
+        connect( m_graph, SIGNAL( aboutToFinish() ), SIGNAL( aboutToFinish() ) );
+        connect( m_graph, SIGNAL( finished() ), SIGNAL( finished() ) );
+        connect( m_graph, SIGNAL( prefinishMarkReached(qint32) ), SIGNAL( prefinishMarkReached(qint32) ) );
+        connect( m_graph, SIGNAL( totalTimeChanged(qint64) ), SIGNAL( prefinishMarkReached(qint32) ) );
+        connect( m_graph, SIGNAL( currentSourceChanged(const Phonon::MediaSource &) ), SIGNAL( currentSourceChanged(const Phonon::MediaSource &) ) );
 
-    connect( m_graph, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SIGNAL( stateChanged( Phonon::State, Phonon::State ) ) );
-    connect( m_graph, SIGNAL( tick(qint64) ), SIGNAL( tick(qint64) ) );
-    connect( m_graph, SIGNAL( metaDataChanged(const QMultiMap<QString, QString> &) ), SIGNAL( metaDataChanged(const QMultiMap<QString, QString> &) ) );
-    connect( m_graph, SIGNAL( seekableChanged(bool) ), SIGNAL( seekableChanged(bool) ) );
-    connect( m_graph, SIGNAL( hasVideoChanged(bool) ), SIGNAL( hasVideoChanged(bool) ) );
-    connect( m_graph, SIGNAL( bufferStatus(int) ), SIGNAL( bufferStatus(int) ) );
+        connect( m_graph, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SIGNAL( stateChanged( Phonon::State, Phonon::State ) ) );
+        connect( m_graph, SIGNAL( tick(qint64) ), SIGNAL( tick(qint64) ) );
+        connect( m_graph, SIGNAL( metaDataChanged(const QMultiMap<QString, QString> &) ), SIGNAL( metaDataChanged(const QMultiMap<QString, QString> &) ) );
+        connect( m_graph, SIGNAL( seekableChanged(bool) ), SIGNAL( seekableChanged(bool) ) );
+        connect( m_graph, SIGNAL( hasVideoChanged(bool) ), SIGNAL( hasVideoChanged(bool) ) );
+        connect( m_graph, SIGNAL( bufferStatus(int) ), SIGNAL( bufferStatus(int) ) );
+    }
 }

@@ -55,12 +55,14 @@ public:
             m_ptr->Release();
     }
 
+    // implement assignment in terms of copy construct
     ComPtr<T> &operator=(ComPtr<T> other)
     {
         std::swap(m_ptr, other.m_ptr);
         return *this;
     }
 
+    // taking the address is usually used for assignment, so we Release any existing ptr
     T **operator&()
     {
         if( m_ptr )
@@ -86,16 +88,18 @@ public:
         return m_ptr != 0;
     }
 
+    // create an instance (will Release any existing instance)
     HResult CreateInstance(CLSID clsid, IID iid)
     {
         return CoCreateInstance( clsid, NULL, CLSCTX_INPROC_SERVER, iid, reinterpret_cast<void **>( &*this ) );
     }
 
+    // query for an interface (will Relase anything in other)
     template <typename U>
     HResult QueryInterface(IID iid, ComPtr<U> &other)
     {
         if( !m_ptr )
-            return E_NOINTERFACE;
+            return E_INVALIDARG;
 
         return m_ptr->QueryInterface( iid, reinterpret_cast<void **>( &other ) );
     }

@@ -36,18 +36,22 @@ public:
         VariantClear( &m_variant );
     }
 
+    // implement assignemnt in terms of copy construct
     ComVariant &operator=(ComVariant other)
     {
         std::swap(m_variant, other.m_variant);
         return *this;
     }
 
+    // taking the address is usually used for assignment, so we clear any existing variant
     VARIANT *operator&()
     {
         VariantClear( &m_variant );
         return &m_variant;
     }
 
+    // convert variant to a utf16 string and then to a QString
+    // returns an empty string on failure
     QString AsString()
     {
         ComVariant result;
