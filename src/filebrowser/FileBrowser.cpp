@@ -23,6 +23,9 @@
 #include "FileBrowser.h"
 #include "FileBrowser.moc"
 
+#include "collection/CollectionManager.h"
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 #include "filebrowser/mydiroperator.h"
 #include "filebrowser/kbookmarkhandler.h"
 
@@ -120,8 +123,9 @@ FileBrowser::Widget::Widget( const char * name )
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
-  m_dir = new MyDirOperator(KUrl(), this);
-  m_dir->setView(KFile::/* Simple */Detail);
+  m_dir = new MyDirOperator(KUrl(QDir::home().path()), this);
+  m_cmbPath->setUrl( KUrl(QDir::home().path()) );
+  m_dir->setView( KFile::Simple );
   m_dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
   connect ( m_dir, SIGNAL( viewChanged(QAbstractItemView *) ),
            this, SLOT( selectorViewChanged(QAbstractItemView *) ) );
@@ -388,11 +392,14 @@ void FileBrowser::Widget::fileSelected(const KFileItem & /*file*/)
 {
   const KFileItemList list = m_dir->selectedItems();
 
+  KUrl::List urlList;
   foreach (const KFileItem& item, list)
   {
-//    mainwin->openUrl(item.url());
+      urlList << item.url();
   }
 
+  Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
+  The::playlistModel()->insertOptioned( trackList, Playlist::Append );
   m_dir->view()->selectionModel()->clear();
 }
 
