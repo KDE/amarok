@@ -163,7 +163,11 @@ ScanManager::slotReadReady()
         //important! see
         //http://www.qtcentre.org/forum/f-general-programming-9/t-passing-to-a-console-application-managed-via-qprocess-utf-8-encoded-parameters-5375.html
         //for an explanation of the QString::fromLocal8Bit call
+#ifdef Q_OS_WIN32
+        QString data = QTextCodec::codecForName( "UTF-8" )->toUnicode( line ); // on windows we're UTF-8 regardless of what the codepage says
+#else
         QString data = QString::fromLocal8Bit( line );
+#endif
         if( !data.startsWith( "exepath=" ) ) // skip binary location info from scanner
             newData += data;
         line = m_scanner->readLine();
