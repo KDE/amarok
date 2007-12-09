@@ -16,69 +16,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "AmpacheSettings.h"
 
-#ifndef AMPACHESERVICE_H
-#define AMPACHESERVICE_H
+#include "ui_AmpacheConfigWidget.h"
 
+#include <kdebug.h>
+#include <kgenericfactory.h>
 
+#include <QVBoxLayout>
 
-#include "../servicebase.h"
-#include "AmpacheServiceCollection.h"
-
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-
-class AmpacheServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        AmpacheServiceFactory() {}
-        virtual ~AmpacheServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-        virtual KPluginInfo info();
-        virtual KConfigGroup config();
-};
+K_PLUGIN_FACTORY(AmpacheSettingsFactory, registerPlugin<AmpacheSettings>();)
+K_EXPORT_PLUGIN(AmpacheSettingsFactory( "kcm_amarok_ampache" ))
 
 
-/**
-A service for displaying, previewing and downloading music from Ampache music servers
-
-	@author 
-*/
-class AmpacheService : public ServiceBase
+AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
+    : KCModule( AmpacheSettingsFactory::componentData(), parent, args )
 {
 
-Q_OBJECT
-public:
-    AmpacheService( const QString &name );
+    kDebug( 14310 ) << "Creating Ampache config object";
 
-    ~AmpacheService();
+    QVBoxLayout* l = new QVBoxLayout( this );
+    QWidget *w = new QWidget;
+    m_configDialog = new Ui::AmpacheConfigWidget;
+    m_configDialog->setupUi( w );
+    l->addWidget( w );
 
-    void polish();
+    load();
+}
 
-private:
+AmpacheSettings::~AmpacheSettings()
+{
+}
 
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
 
-private slots:
+void AmpacheSettings::save()
+{
+    kDebug( 14310 ) << "save";
+}
 
-    void authenticationComplete(  KJob *job );
+void AmpacheSettings::load()
+{
 
-private:
+    kDebug( 14310 ) << "load";
+   // KCModule::load();
+}
 
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
+void AmpacheSettings::defaults()
+{
+    kDebug( 14310 ) << "defaults";
+}
 
-    bool m_authenticated;
-    QString m_server;
-    QString m_sessionId;
 
-    AmpacheServiceCollection *  m_collection;
-};
 
-#endif

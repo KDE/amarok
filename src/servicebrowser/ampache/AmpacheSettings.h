@@ -16,69 +16,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef AMPACHESETTINGS_H
+#define AMPACHESETTINGS_H
 
-#ifndef AMPACHESERVICE_H
-#define AMPACHESERVICE_H
+#include <kcmodule.h>
 
-
-
-#include "../servicebase.h"
-#include "AmpacheServiceCollection.h"
-
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-
-class AmpacheServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        AmpacheServiceFactory() {}
-        virtual ~AmpacheServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-        virtual KPluginInfo info();
-        virtual KConfigGroup config();
-};
-
+namespace Ui { class AmpacheConfigWidget; }
 
 /**
-A service for displaying, previewing and downloading music from Ampache music servers
+Class for handling settings for Ampache services
 
 	@author 
 */
-class AmpacheService : public ServiceBase
+class AmpacheSettings : public KCModule
 {
-
-Q_OBJECT
 public:
-    AmpacheService( const QString &name );
+    AmpacheSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
 
-    ~AmpacheService();
+    ~AmpacheSettings();
 
-    void polish();
-
-private:
-
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
-
-private slots:
-
-    void authenticationComplete(  KJob *job );
+    virtual void save();
+    virtual void load();
+    virtual void defaults();
 
 private:
 
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
+    Ui::AmpacheConfigWidget * m_configDialog;
 
-    bool m_authenticated;
-    QString m_server;
-    QString m_sessionId;
-
-    AmpacheServiceCollection *  m_collection;
 };
 
 #endif

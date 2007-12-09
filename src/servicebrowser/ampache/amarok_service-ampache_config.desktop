@@ -1,0 +1,14 @@
+[Desktop Entry]
+Icon=amarok_download
+Type=Service
+ServiceTypes=Amarok/Plugin
+X-KDE-ServiceTypes=KCModule
+
+X-KDE-Library=kcm_amarok_service-ampache
+X-KDE-ParentApp=libamarok_service-ampache
+X-KDE-ParentComponents=libamarok_service-ampache
+
+Name=Ampache Service Config
+Comment=Sets up the ampache server(s) to connect to
+
+

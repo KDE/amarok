@@ -25,3 +25,5 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-Library=libamarok_service-ampache
+X-KDE-PluginInfo-Name=libamarok_service-ampache

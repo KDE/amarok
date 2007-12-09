@@ -31,6 +31,22 @@
         install(TARGETS amarok_service-ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
+########### next target ###############
+
+        set(kcm_amarok_service-ampache_PART_SRCSS AmpacheSettings.cpp )
+
+        kde4_add_ui_files( kcm_amarok_service-ampache_PART_SRCSS AmpacheConfigWidget.ui )
+
+
+        kde4_add_plugin( kcm_amarok_service-ampache ${kcm_amarok_service-ampache_PART_SRCSS} )
+
+
+        target_link_libraries( kcm_amarok_service-ampache  ${KDE4_KUTILS_LIBS} )
+
+        install(TARGETS kcm_amarok_service-ampache  DESTINATION ${PLUGIN_INSTALL_DIR})
+
+
 ########### install files ###############
 
         install( FILES amarok_service-ampache.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service-ampache_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
