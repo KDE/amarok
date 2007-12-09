@@ -49,7 +49,6 @@ AmpacheSettings::~AmpacheSettings()
 {
 }
 
-
 void AmpacheSettings::save()
 {
     kDebug( 14310 ) << "save";
@@ -66,6 +65,3 @@ void AmpacheSettings::defaults()
 {
     kDebug( 14310 ) << "defaults";
 }
-
-
-

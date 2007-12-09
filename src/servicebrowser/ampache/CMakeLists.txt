@@ -24,7 +24,7 @@
 
 
 
-        kde4_add_plugin(amarok_service-ampache WITH_PREFIX ${amarok_service-ampache_PART_SRCS})
+        kde4_add_plugin(amarok_service-ampache ${amarok_service-ampache_PART_SRCS})
         target_link_libraries(amarok_service-ampache amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
