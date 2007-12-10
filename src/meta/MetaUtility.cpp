@@ -25,7 +25,7 @@
 #include <QChar>
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
-        static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#author";
+        static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
         static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
         static const QString XESAM_BPM            = "http://freedesktop.org/standards/xesam/1.0/core#audioBPM";
         static const QString XESAM_CODEC          = "http://freedesktop.org/standards/xesam/1.0/core#audioCodec";
