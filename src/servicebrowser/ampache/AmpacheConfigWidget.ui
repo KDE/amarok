@@ -14,7 +14,7 @@
   </property>
   <layout class="QGridLayout" >
    <item rowspan="2" row="0" column="0" >
-    <widget class="KListWidget" name="serverList_2" />
+    <widget class="KListWidget" name="serverList" />
    </item>
    <item row="0" column="1" >
     <widget class="QGroupBox" name="groupBox" >
@@ -36,7 +36,7 @@
        </widget>
       </item>
       <item row="0" column="1" >
-       <widget class="KLineEdit" name="nameEdit_2" />
+       <widget class="KLineEdit" name="nameEdit" />
       </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="label_7" >
@@ -46,7 +46,7 @@
        </widget>
       </item>
       <item row="1" column="1" >
-       <widget class="KLineEdit" name="serverEdit_2" />
+       <widget class="KLineEdit" name="serverEdit" />
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="label_6" >
@@ -56,7 +56,7 @@
        </widget>
       </item>
       <item row="2" column="1" >
-       <widget class="KLineEdit" name="userEdit_2" />
+       <widget class="KLineEdit" name="userEdit" />
       </item>
       <item row="3" column="0" >
        <widget class="QLabel" name="label_5" >
@@ -66,10 +66,10 @@
        </widget>
       </item>
       <item row="3" column="1" >
-       <widget class="KLineEdit" name="passEdit_2" />
+       <widget class="KLineEdit" name="passEdit" />
       </item>
       <item row="4" column="0" colspan="2" >
-       <widget class="QCheckBox" name="activeCheckBox_2" >
+       <widget class="QCheckBox" name="activeCheckBox" >
         <property name="text" >
          <string>Active</string>
         </property>
@@ -91,21 +91,21 @@
      </property>
      <layout class="QVBoxLayout" >
       <item>
-       <widget class="KPushButton" name="addButton_2" >
+       <widget class="KPushButton" name="addButton" >
         <property name="text" >
          <string>Add</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KPushButton" name="removeButton_2" >
+       <widget class="KPushButton" name="removeButton" >
         <property name="text" >
          <string>Remove</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KPushButton" name="editButton_2" >
+       <widget class="KPushButton" name="editButton" >
         <property name="text" >
          <string>Save</string>
         </property>

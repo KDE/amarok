@@ -17,42 +17,46 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMPACHESETTINGS_H
-#define AMPACHESETTINGS_H
+#ifndef AMPACHECONFIG_H
+#define AMPACHECONFIG_H
 
-#include "AmpacheConfig.h"
+#include <QMap>
+#include <QStringList>
 
-#include <kcmodule.h>
+class AmpacheServerEntry {
 
-namespace Ui { class AmpacheConfigWidget; }
+public:
+    QString url;
+    QString username;
+    QString password;
+    bool addToCollection;
+};
+
+typedef QMap< QString, AmpacheServerEntry > AmpacheServerMap;
 
 /**
-Class for handling settings for Ampache services
+A class for accessing the Ampache plugin configuration
 
 	@author 
 */
-class AmpacheSettings : public KCModule
-{
-    Q_OBJECT
+class AmpacheConfig{
 public:
-    AmpacheSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    
+    AmpacheConfig();
+    void load();
+    void save();
 
-    ~AmpacheSettings();
+    int serverCount();
+    AmpacheServerMap servers();
 
-    virtual void save();
-    virtual void load();
-    virtual void defaults();
+    void addServer( const QString &name, const AmpacheServerEntry &server );
+    void removeServer( const QString &name );
 
 private:
 
-    AmpacheConfig m_config;
-    Ui::AmpacheConfigWidget * m_configDialog;
-
-private slots:
-
-    void add();
-    void remove();
-    void selectedItemChanged ( const QString & name );
+    bool m_hasChanged;
+    AmpacheServerMap m_serverMap;
+    
 
 };
 

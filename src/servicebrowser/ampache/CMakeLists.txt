@@ -33,7 +33,7 @@
 
 ########### next target ###############
 
-        set(kcm_amarok_service_ampache_PART_SRCSS AmpacheSettings.cpp )
+        set(kcm_amarok_service_ampache_PART_SRCSS AmpacheSettings.cpp AmpacheConfig.cpp )
 
         kde4_add_ui_files( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui )
 
