@@ -4,9 +4,10 @@ Type=Service
 ServiceTypes=Amarok/Plugin
 X-KDE-ServiceTypes=KCModule
 
-X-KDE-Library=kcm_amarok_ampache
-X-KDE-ParentApp=amarok_service-ampache
-X-KDE-ParentComponents=amarok_service-ampache
+X-KDE-Library=kcm_amarok_service_ampache
+X-KDE-ParentApp=libamarok_service-ampache
+X-KDE-ParentComponents=libamarok_service-ampache
+
 Name=Ampache Service Config
 Comment=Sets up the ampache server(s) to connect to
 

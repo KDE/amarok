@@ -49,6 +49,7 @@ AmpacheSettings::~AmpacheSettings()
 {
 }
 
+
 void AmpacheSettings::save()
 {
     kDebug( 14310 ) << "save";
@@ -58,10 +59,13 @@ void AmpacheSettings::load()
 {
 
     kDebug( 14310 ) << "load";
-   // KCModule::load();
+    // KCModule::load();
 }
 
 void AmpacheSettings::defaults()
 {
     kDebug( 14310 ) << "defaults";
 }
+
+
+
