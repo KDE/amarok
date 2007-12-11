@@ -63,11 +63,11 @@ target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_L
 
 #if(MYSQL_FOUND)
 #    set(amarok_mysql_SRCS
-#        mysqlcollection.cpp
-#        mysqlquerymaker.cpp)
-
+#        MySqlCollection.cpp
+#        MySqlQueryMaker.cpp)
+#
 #    kde4_add_plugin(amarok_collection-mysql WITH_PREFIX ${amarok_mysql_SRCS})
-#    target_link_libraries(amarok_collection-mysql amarok_collection-sqlcollection ${KDE4_KDECORE_LIBS} )
+#    target_link_libraries(amarok_collection-mysql amaroklib ${MYSQL_LIBS} ${KDE4_KDECORE_LIBS} )
 #    install(TARGETS amarok_collection-mysql DESTINATION ${PLUGIN_INSTALL_DIR})
 #    install(FILES amarok_collection-mysql.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 #endif(MYSQL_FOUND)

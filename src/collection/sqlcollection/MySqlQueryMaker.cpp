@@ -16,22 +16,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AMAROK_COLLECTION_MYSQLCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLCOLLECTION_H
+#include "MySqlQueryMaker.h"
 
-#include "sqlcollection.h"
-
-class MySqlCollection : public SqlCollection
+MySqlQueryMaker::MySqlQueryMaker( MySqlCollection *collection )
+    : SqlQueryBuilder( collection )
 {
-    public:
-        MySqlCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlCollection();
+    //nothing to do
+}
 
-        virtual QueryMaker* queryMaker();
+MySqlQueryMaker::~MySqlQueryMaker()
+{
+    //nothing to do
+}
 
-        virtual QString type() const;
-
-        virtual QString escape( QString text ) const;
-};
-
-#endif
+QString
+MySqlQueryMaker::escape( QString text ) const               //krazy:exclude=constref
+{
+    return text.replace("\\", "\\\\").replace( '\'', "''" );
+}

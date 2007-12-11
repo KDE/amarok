@@ -16,21 +16,34 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "mysqlquerymaker.h"
+#ifndef AMAROK_COLLECTION_MYSQLCOLLECTION_H
+#define AMAROK_COLLECTION_MYSQLCOLLECTION_H
 
-MySqlQueryMaker::MySqlQueryMaker( MySqlCollection *collection )
-    : SqlQueryBuilder( collection )
-{
-    //nothing to do
-}
+#include "SqlCollection.h"
+#include <mysql/mysql.h>
+#include <mysql/mysql_version.h>
 
-MySqlQueryMaker::~MySqlQueryMaker()
+class MySqlCollection : public SqlCollection
 {
-    //nothing to do
-}
+    public:
+        MySqlCollection( const QString &id, const QString &prettyName );
+        virtual ~MySqlCollection();
 
-QString
-MySqlQueryMaker::escape( QString text ) const               //krazy:exclude=constref
-{
-    return text.replace("\\", "\\\\").replace( '\'', "''" );
-}
+        virtual QueryMaker* queryMaker();
+
+        virtual QStringList query( const QString &query );
+        virtual int insert( const QString &statement, const QString &table );
+
+        virtual QString type() const;
+
+        virtual QString escape( QString text ) const;
+    private:
+        bool m_initialized;
+
+        void setMysqlError();
+        MYSQL* m_db;
+        bool m_connected;
+        QString m_error;
+};
+
+#endif
