@@ -80,7 +80,7 @@ void KBookmarkHandler::openBookmark( const KBookmark & bm, Qt::MouseButtons, Qt:
   emit openUrl(bm.url().url());
 }
 
-void KBookmarkHandler::slotNewBookmark( const QString& /*text*/,
+void KBookmarkHandler::slotNewBookmark( const QString& text,
                                         const QByteArray& url,
                                         const QString& additionalInfo )
 {

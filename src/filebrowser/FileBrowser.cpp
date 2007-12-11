@@ -62,6 +62,7 @@
 #include <KDebug>
 #include <KDialog>
 #include <KFileItem>
+#include <kfileplacesmodel.h>
 #include <KGenericFactory>
 #include <KGlobal>
 #include <KIconLoader>
@@ -69,7 +70,8 @@
 #include <KMenu>
 #include <KMessageBox>
 #include <KProtocolInfo>
-#include <KUrlComboBox>
+// #include <KUrlComboBox>
+#include <KUrlNavigator>
 #include <KUrlCompletion>
 #include <KConfigGroup>
 #include <KHistoryComboBox>
@@ -99,7 +101,9 @@ FileBrowser::Widget::Widget( const char * name )
       m_toolbar( 0 ),
       m_actionCollection( 0 ),
       m_bookmarkHandler( 0 ),
-      m_cmbPath( 0 ),
+      m_filePlacesModel( 0 ),
+//       m_cmbPath( 0 ),
+      m_urlNav( 0 ),
       m_dir( 0 ),
       m_acSyncDir( 0 ),
       m_filter( 0 ),
@@ -114,17 +118,19 @@ FileBrowser::Widget::Widget( const char * name )
   m_toolbar->setMovable(false);
   qInstallMsgHandler( oldHandler );
 
-  m_cmbPath = new KUrlComboBox( KUrlComboBox::Directories, true, this);
-  m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-  KUrlCompletion* cmpl = new KUrlCompletion(KUrlCompletion::DirCompletion);
-  m_cmbPath->setCompletionObject( cmpl );
-  m_cmbPath->setAutoDeleteCompletionObject( true );
+//   m_cmbPath = new KUrlComboBox( KUrlComboBox::Directories, true, this);
+//   m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+//   KUrlCompletion* cmpl = new KUrlCompletion(KUrlCompletion::DirCompletion);
+//   m_cmbPath->setCompletionObject( cmpl );
+//   m_cmbPath->setAutoDeleteCompletionObject( true );
+  m_filePlacesModel = new KFilePlacesModel( this );
+  m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl(QDir::home().path()), this );
 
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
   m_dir = new MyDirOperator(KUrl(QDir::home().path()), this);
-  m_cmbPath->setUrl( KUrl(QDir::home().path()) );
+//   m_cmbPath->setUrl( KUrl(QDir::home().path()) );
   m_dir->setView( KFile::Simple );
   m_dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
   connect ( m_dir, SIGNAL( viewChanged(QAbstractItemView *) ),
@@ -171,10 +177,12 @@ FileBrowser::Widget::Widget( const char * name )
   m_toolbar->setIconDimensions( 16 );
   m_toolbar->setContextMenuPolicy( Qt::NoContextMenu );
 
-  connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )),
+//   connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )),
+//            this, SLOT( cmbPathActivated( const KUrl& ) ));
+  connect( m_urlNav, SIGNAL( urlChanged( const KUrl&  )),
            this, SLOT( cmbPathActivated( const KUrl& ) ));
-  connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )),
-           this, SLOT( cmbPathReturnPressed( const QString& ) ));
+//   connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )),
+//            this, SLOT( cmbPathReturnPressed( const QString& ) ));
   connect(m_dir, SIGNAL(urlEntered(const KUrl&)),
           this, SLOT(dirUrlEntered(const KUrl&)) );
 
@@ -188,7 +196,11 @@ FileBrowser::Widget::Widget( const char * name )
   waitingUrl.clear();
 
   // whatsthis help
-  m_cmbPath->setWhatsThis(       i18n("<p>Here you can enter a path for a folder to display.</p>"
+//   m_cmbPath->setWhatsThis(       i18n("<p>Here you can enter a path for a folder to display.</p>"
+//                                     "<p>To go to a folder previously entered, press the arrow on "
+//                                     "the right and choose one.</p><p>The entry has folder "
+//                                     "completion. Right-click to choose how completion should behave.</p>") );
+  m_urlNav->setWhatsThis(       i18n("<p>Here you can enter a path for a folder to display.</p>"
                                     "<p>To go to a folder previously entered, press the arrow on "
                                     "the right and choose one.</p><p>The entry has folder "
                                     "completion. Right-click to choose how completion should behave.</p>") );
@@ -227,7 +239,7 @@ void FileBrowser::Widget::readConfig()
   KConfigGroup fileselectorConfigGroup(KGlobal::config(), "fileselector");
   setupToolbar( fileselectorConfigGroup.readEntry( "toolbar actions", QStringList() ) );
 
-  m_cmbPath->setMaxItems( fileselectorConfigGroup.readEntry( "pathcombo history len", 9 ) );
+//   m_cmbPath->setMaxItems( fileselectorConfigGroup.readEntry( "pathcombo history len", 9 ) );
   // if we restore history
 
   m_filter->setMaxCount( fileselectorConfigGroup.readEntry( "filter history len", 9 ) );
@@ -244,7 +256,7 @@ void FileBrowser::Widget::readSessionConfig(KConfigBase *config, const QString &
   m_dir->readConfig(cgDir);
 
   KConfigGroup cg (config, name );
-  m_cmbPath->setUrls( cg.readPathEntry( "dir history", QStringList() ) );
+//   m_cmbPath->setUrls( cg.readPathEntry( "dir history", QStringList() ) );
 
   KConfigGroup globalConfig( KGlobal::config(), "fileselector" );
 
@@ -295,7 +307,7 @@ void FileBrowser::Widget::writeConfig()
 {
   KConfigGroup cg = KConfigGroup( KGlobal::config(), "fileselector" );
 
-  cg.writeEntry( "pathcombo history len", m_cmbPath->maxItems() );
+//   cg.writeEntry( "pathcombo history len", m_cmbPath->maxItems() );
   cg.writeEntry( "filter history len", m_filter->maxCount() );
   cg.writeEntry( "filter history", m_filter->historyItems() );
 }
@@ -307,12 +319,12 @@ void FileBrowser::Widget::writeSessionConfig(KConfigBase *config, const QString 
 
   KConfigGroup cg = KConfigGroup( config, name );
   QStringList l;
-  for (int i = 0; i < m_cmbPath->count(); i++)
-  {
-    l.append( m_cmbPath->itemText( i ) );
-  }
-  cg.writePathEntry( "dir history", l );
-  cg.writePathEntry( "location", m_cmbPath->currentText() );
+//   for (int i = 0; i < m_cmbPath->count(); i++)
+//   {
+//     l.append( m_cmbPath->itemText( i ) );
+//   }
+//   cg.writePathEntry( "dir history", l );
+//   cg.writePathEntry( "location", m_cmbPath->currentText() );
   cg.writeEntry( "current filter", m_filter->currentText() );
   cg.writeEntry( "last filter", lastFilter );
 }
@@ -413,21 +425,22 @@ void FileBrowser::Widget::cmbPathActivated( const KUrl& u )
 
 void FileBrowser::Widget::cmbPathReturnPressed( const QString& u )
 {
-  KUrl typedURL( u );
-  if ( typedURL.hasPass() )
-    typedURL.setPass( QString() );
-
-  QStringList urls = m_cmbPath->urls();
-  urls.removeAll( typedURL.url() );
-  urls.prepend( typedURL.url() );
-  m_cmbPath->setUrls( urls, KUrlComboBox::RemoveBottom );
+//   KUrl typedURL( u );
+//   if ( typedURL.hasPass() )
+//     typedURL.setPass( QString() );
+// 
+//   QStringList urls = m_cmbPath->urls();
+//   urls.removeAll( typedURL.url() );
+//   urls.prepend( typedURL.url() );
+//   m_cmbPath->setUrls( urls, KUrlComboBox::RemoveBottom );
   m_dir->setFocus();
   m_dir->setUrl( KUrl(u), true );
 }
 
 void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
 {
-  m_cmbPath->setUrl( u );
+  m_urlNav->setUrl( u );
+//   m_cmbPath->setUrl( u );
 }
 
 void FileBrowser::Widget::dirFinishedLoading()
