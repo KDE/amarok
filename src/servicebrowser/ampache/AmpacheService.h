@@ -54,7 +54,7 @@ class AmpacheService : public ServiceBase
 
 Q_OBJECT
 public:
-    AmpacheService( const QString &name );
+    AmpacheService( const QString &name, const QString &url = QString(), const QString &username = QString(), const QString &password = QString() );
 
     ~AmpacheService();
 
@@ -62,7 +62,7 @@ public:
 
 private:
 
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
+    void authenticate( const QString & server, const QString & username, const QString & password );
 
 private slots:
 
@@ -71,11 +71,11 @@ private slots:
 private:
 
     KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
 
     bool m_authenticated;
     QString m_server;
+    QString m_username;
+    QString m_password;
     QString m_sessionId;
 
     AmpacheServiceCollection *  m_collection;

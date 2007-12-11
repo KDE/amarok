@@ -110,6 +110,30 @@ void AmpacheConfig::addServer( const QString &name, const AmpacheServerEntry &se
 void AmpacheConfig::removeServer(const QString &name )
 {
     m_serverMap.remove( name );
+    KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
+
+    //delete the correct entry...
+
+    int serverIndex = 0;
+    QString serverEntry = "server" + QString::number( serverIndex );
+
+    while ( config.hasKey ( serverEntry ) ) {
+
+        QStringList list = config.readEntry(serverEntry, QStringList() );
+
+        AmpacheServerEntry entry;
+        QString entryName = list.takeFirst();
+
+        if ( entryName == name ) {
+            config.deleteEntry( serverEntry );
+            break;
+        }
+
+        serverIndex++;
+        serverEntry = "server" + QString::number( serverIndex );
+    }
+
+
 }
 
 

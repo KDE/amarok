@@ -20,6 +20,7 @@
 #include "AmpacheService.h"
 
 #include "amarok.h"
+#include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
@@ -33,8 +34,20 @@ AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
 
 void AmpacheServiceFactory::init()
 {
-    ServiceBase* service = new AmpacheService( "Ampache" );
-    emit newService( service );
+
+    //read config and create the needed number of services
+    AmpacheConfig config;
+
+    AmpacheServerMap servers = config.servers();
+
+    foreach( QString name, servers.keys() ) {
+        AmpacheServerEntry server = servers.value( name );
+        ServiceBase* service = new AmpacheService( "Ampache (" + name + ")", server.url, server. username, server.password );
+        debug() << "Emitting service!!!!!!";
+        emit newService( service );
+    }
+
+
 }
 
 QString AmpacheServiceFactory::name()
@@ -58,10 +71,8 @@ KConfigGroup AmpacheServiceFactory::config()
 
 
 
-AmpacheService::AmpacheService(const QString & name)
+AmpacheService::AmpacheService(const QString & name, const QString &url, const QString &username, const QString &password )
  : ServiceBase( name )
- , m_partnerToken( "7359149936" )
- , m_apiOutputFormat( "xml")
  , m_authenticated( false )
  , m_server ( QString() )
  , m_sessionId ( QString() )
@@ -71,6 +82,10 @@ AmpacheService::AmpacheService(const QString & name)
     setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
     setIcon( KIcon( Amarok::icon( "download" ) ) );
     showInfo( false );
+
+    m_server = url;
+    m_username = username;
+    m_password = password;
 
 }
 
@@ -84,27 +99,27 @@ AmpacheService::~AmpacheService()
 void AmpacheService::polish()
 {
     if ( !m_authenticated )
-        authenticate();
+        authenticate( m_server, m_username, m_password );
 
 }
 
-void AmpacheService::authenticate( const QString & serv, const QString & passwd )
+void AmpacheService::authenticate( const QString & server, const QString & username, const QString & password )
 {
 
-QString server, password;
-   
-    if ( server.isEmpty() || passwd.isEmpty() ) {
+    //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
+    if ( server.isEmpty() || password.isEmpty() ) {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
         dlg.setPrompt( i18n( "Enter the server name and a password" ) );
         if( !dlg.exec() )
             return; //the user canceled
 
         m_server = dlg.username();
-        password = dlg.password();
+        m_password = dlg.password();
 
     } else {
-        m_server = serv;
-        password = passwd;
+        m_server = server;
+        m_username = username;
+        m_password = password;
     }
 
     
@@ -116,9 +131,10 @@ QString server, password;
     
     QString passPhrase = context.hexDigest().data();
 
-    QString authenticationString = "<server>/server/xml.server.php?action=handshake&auth=<passphrase>&timestamp=<timestamp>";
+    QString authenticationString = "<server>/server/xml.server.php?action=handshake&user=<username>&auth=<passphrase>&timestamp=<timestamp>";
 
     authenticationString.replace(QString("<server>"), m_server);
+    authenticationString.replace(QString("<username>"), m_username);
     authenticationString.replace(QString("<passphrase>"), passPhrase);
     authenticationString.replace(QString("<timestamp>"), timestamp);
 

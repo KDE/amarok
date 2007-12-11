@@ -20,6 +20,7 @@
             AmpacheServiceCollection.cpp
             AmpacheServiceQueryMaker.cpp
             AmpacheMeta.cpp
+            AmpacheConfig.cpp
         )
 
 
