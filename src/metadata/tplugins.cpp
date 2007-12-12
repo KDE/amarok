@@ -45,8 +45,8 @@
 #include "wavpack/wvfile.h"
 #include "speex/taglib_speexfiletyperesolver.h"
 #include "speex/speexfile.h"
-#include "wma/taglib_wmafiletyperesolver.h"
-#include "wma/wmafile.h"
+#include "asf/taglib_asffiletyperesolver.h"
+#include "asf/asffile.h"
 #include "rmff/taglib_realmediafiletyperesolver.h"
 #include "rmff/taglib_realmediafile.h"
 #include "audible/taglib_audiblefiletyperesolver.h"
@@ -94,7 +94,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(TagLibFileName fileName,
             || mimetype->is( "video/x-msvideo" )
             || mimetype->is( "video/x-ms-wmv" ) )
     {
-        return new TagLib::WMA::File(fileName, readProperties, propertiesStyle);
+        return new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
     else if( mimetype->is( "audio/vnd.rn-realaudio" )
             || mimetype->is( "audio/x-pn-realaudioplugin" )
@@ -131,7 +131,7 @@ AMAROK_TAGLIB_EXPORT void registerTaglibPlugins()
     TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
 #endif
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AACFileTypeResolver);

@@ -72,12 +72,12 @@ set(libtagspeex_SRCS
         speex/speexproperties.cpp
 )
 
-set(libtagwma_SRCS
-	wma/wmaattribute.cpp
-	wma/wmaproperties.cpp
-	wma/wmatag.cpp
-	wma/wmafile.cpp
-	wma/taglib_wmafiletyperesolver.cpp
+set(libtagasf_SRCS
+	asf/asfattribute.cpp
+	asf/asfproperties.cpp
+	asf/asftag.cpp
+	asf/asffile.cpp
+	asf/taglib_asffiletyperesolver.cpp
 )
 
 set(libtagaac_SRCS
@@ -118,7 +118,7 @@ SET(amarok_taglib_SRCS
         ${libtagaudible_SRCS}
         ${libtagrealmedia_SRCS}
         ${libtagaac_SRCS}
-        ${libtagwma_SRCS}
+        ${libtagasf_SRCS}
         ${libtagwav_SRCS}
         ${libtagwavpack_SRCS}
         ${libtagspeex_SRCS}

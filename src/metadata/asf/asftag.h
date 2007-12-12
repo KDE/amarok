@@ -1,7 +1,7 @@
-/***************************************************************************
-    copyright            : (C) 2005 by Lukas Lalinsky
+/**************************************************************************
+    copyright            : (C) 2005-2007 by Lukáš Lalinský
     email                : lalinsky@gmail.com
- ***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
@@ -15,30 +15,31 @@
  *                                                                         *
  *   You should have received a copy of the GNU Lesser General Public      *
  *   License along with this library; if not, write to the Free Software   *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
- *   MA  02110-1301  USA                                                   *
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
  ***************************************************************************/
 
-#ifndef TAGLIB_WMATAG_H
-#define TAGLIB_WMATAG_H
+#ifndef TAGLIB_ASFTAG_H
+#define TAGLIB_ASFTAG_H
 
-#include <tmap.h>
 #include <tag.h>
-#include "wmafile.h"
-#include "wmaattribute.h"
+#include <tlist.h>
+#include <tmap.h>
+#include "asfattribute.h"
 
 namespace TagLib {
 
-  namespace WMA {
-  
-    typedef Map<const ByteVector, Attribute> AttributeMap;
-      
+  namespace ASF {
+
+    typedef List<Attribute> AttributeList;
+    typedef Map<String, AttributeList> AttributeListMap;
+
     class Tag : public TagLib::Tag {
-    
+
       friend class File;
-      
+
     public:
-    
+
       Tag();
 
       virtual ~Tag();
@@ -84,13 +85,13 @@ namespace TagLib {
       /*!
        * Returns the year; if there is no year set, this will return 0.
        */
-      virtual TagLib::uint year() const;
+      virtual uint year() const;
 
       /*!
        * Returns the track number; if there is no track number set, this will
        * return 0.
        */
-      virtual TagLib::uint track() const;
+      virtual uint track() const;
 
       /*!
        * Sets the title to \a s.
@@ -146,42 +147,34 @@ namespace TagLib {
       virtual bool isEmpty() const;
 
       /*!
-       * Copies the generic data from one tag to another.
-       *
-       * If \a overwrite is true then the values will be unconditionally copied.
-       * If false only empty values will be overwritten.
-       */
-      static void duplicate(const Tag *source, Tag *target, bool overwrite = true);
-
-      /*!
-       * Returns a reference to the item list map.  This is an ItemListMap of
+       * Returns a reference to the item list map.  This is an AttributeListMap of
        * all of the items in the tag.
        *
        * This is the most powerfull structure for accessing the items of the tag.
-       *
-       * \warning You should not modify this data structure directly, instead
-       * use setItem() and removeItem().
-       */ 
-       const AttributeMap &attributeMap() const;
-      
+       */
+      AttributeListMap &attributeListMap();
+
       /*!
        * Removes the \a key attribute from the tag
        */
-      void removeItem(const ByteVector &key);       
-      
-      void setAttribute(const ByteVector &key, const String &value);
-      
+      void removeItem(const String &name);
+
       /*!
        * Sets the \a key attribute to the value of \a attribute. If an attribute
        * with the \a key is already present, it will be replaced.
        */
-      void setAttribute(const ByteVector &key, const Attribute &attribute);
+      void setAttribute(const String &name, const Attribute &attribute);
+
+      /*!
+       * Sets the \a key attribute to the value of \a attribute. If an attribute
+       * with the \a key is already present, it will be added to the list.
+       */
+      void addAttribute(const String &name, const Attribute &attribute);
 
     private:
-      
+
       class TagPrivate;
       TagPrivate *d;
-      
     };
   }
 }

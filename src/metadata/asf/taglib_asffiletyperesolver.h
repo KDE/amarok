@@ -22,25 +22,21 @@
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
-#include "taglib_wmafiletyperesolver.h"
-#include "wmafile.h"
+#ifndef TAGLIB_ASFFILETYPERESOLVER_H
+#define TAGLIB_ASFFILETYPERESOLVER_H
 
-#include <string.h>
+#include <taglib/tfile.h>
+#include <taglib/fileref.h>
 
-TagLib::File *WMAFileTypeResolver::createFile(TagLibFileName fileName,
-        bool readProperties,
-        TagLib::AudioProperties::ReadStyle propertiesStyle) const
+
+class ASFFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    if(CheckExtension(fileName, ".wma") || CheckExtension(fileName, ".asf"))
-    {
-        TagLib::WMA::File *f = new TagLib::WMA::File(fileName, readProperties, propertiesStyle);
-        if(f->isValid())
-            return f;
-        else
-        {
-            delete f;
-        }
-    }
+    TagLib::File *createFile(const char *fileName,
+            bool readAudioProperties,
+            TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
 
-    return 0;
-}
+public:
+    virtual ~ASFFileTypeResolver() {}
+};
+
+#endif

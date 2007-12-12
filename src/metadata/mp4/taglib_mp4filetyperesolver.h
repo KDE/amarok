@@ -34,6 +34,9 @@ class MP4FileTypeResolver : public TagLib::FileRef::FileTypeResolver
     TagLib::File *createFile(TagLibFileName fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
+
+public:
+    virtual ~MP4FileTypeResolver() {}
 };
 
 #endif
