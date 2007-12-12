@@ -264,7 +264,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_supportsArtwork = true;
     m_supportsVideo = false;
     m_rockboxFirmware = false;
-    m_isShuffle = true;
+    m_isShuffle = false;
     m_isMobile = false;
     m_isIPhone = false;
     m_needsFirewireGuid = false;
@@ -1095,7 +1095,7 @@ IpodMediaDevice::initializeIpod()
 bool
 IpodMediaDevice::openDevice( bool silent )
 {
-    m_isShuffle = true;
+    m_isShuffle = false;
     m_isMobile = false;
     m_isIPhone = false;
     m_supportsArtwork = false;
@@ -1271,11 +1271,12 @@ void
 IpodMediaDevice::detectModel()
 {
     // set some sane default values
-    m_isShuffle = true;
-    m_supportsArtwork = false;
+    m_isShuffle = false;
+    m_supportsArtwork = true;
     m_supportsVideo = false;
     m_isIPhone = false;
     m_needsFirewireGuid = false;
+    m_rockboxFirmware = false;
     
     // needs recent libgpod-0.3.3 from cvs
     bool guess = false;
@@ -1284,17 +1285,29 @@ IpodMediaDevice::detectModel()
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         const gchar *modelString = 0;
 
+        m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
+
         if( ipodInfo )
         {
             modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
 
             switch( ipodInfo->ipod_model )
             {
+            case ITDB_IPOD_MODEL_SHUFFLE:
+#ifdef HAVE_LIBGPOD_060
+            case ITDB_IPOD_MODEL_SHUFFLE_SILVER:
+            case ITDB_IPOD_MODEL_SHUFFLE_PINK:
+            case ITDB_IPOD_MODEL_SHUFFLE_BLUE:
+            case ITDB_IPOD_MODEL_SHUFFLE_GREEN:
+            case ITDB_IPOD_MODEL_SHUFFLE_ORANGE:
+            case ITDB_IPOD_MODEL_SHUFFLE_PURPLE:
+#endif
+                m_isShuffle = true;
+                break;
 #ifdef HAVE_LIBGPOD_060
             case ITDB_IPOD_MODEL_IPHONE_1:
             case ITDB_IPOD_MODEL_TOUCH_BLACK:
                 m_isIPhone = true;
-                m_supportsArtwork = false;
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
             case ITDB_IPOD_MODEL_CLASSIC_SILVER:
@@ -1304,7 +1317,6 @@ IpodMediaDevice::detectModel()
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
                 m_supportsVideo = true;
-                m_supportsArtwork = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
             case ITDB_IPOD_MODEL_MOBILE_1:
@@ -1328,6 +1340,16 @@ IpodMediaDevice::detectModel()
                case ITDB_IPOD_GENERATION_NANO_3:
                case ITDB_IPOD_GENERATION_TOUCH_1:
                   m_needsFirewireGuid = true;
+                  m_supportsVideo = true;
+                  break;
+               case ITDB_IPOD_GENERATION_VIDEO_1:
+               case ITDB_IPOD_GENERATION_VIDEO_2:
+                  m_supportsVideo = true;
+                  break;
+               case ITDB_IPOD_GENERATION_SHUFFLE_1:
+               case ITDB_IPOD_GENERATION_SHUFFLE_2:
+               case ITDB_IPOD_GENERATION_SHUFFLE_3:
+                  m_isShuffle = true;
                   break;
                default:
                   break;
@@ -1372,7 +1394,10 @@ IpodMediaDevice::detectModel()
     }
 
     if( m_isIPhone )
+    {
         m_supportsVideo = true;
+        m_supportsArtwork = true;
+    }
 
     if( pathExists( ":.rockbox" ) )
     {
