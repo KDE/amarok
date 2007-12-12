@@ -23,6 +23,7 @@
 #include "PodcastCollection.h"
 #include "PodcastMeta.h"
 
+#include <QInputDialog>
 #include <QListIterator>
 #include <typeinfo>
 
@@ -227,6 +228,47 @@ PodcastModel::slotUpdate()
     emit layoutChanged();
 }
 
+void PodcastModel::addPodcast()
+{
+    debug() << "adding Podcast";
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        bool ok;
+        QString url = QInputDialog::getText(
+                            QString("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
+                            QString::null, &ok );
+        if ( ok && !url.isEmpty() ) {
+        // user entered something and pressed OK
+            PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
+            channelProvider->addPodcast( url );
+        } else {
+        // user entered nothing or pressed Cancel
+            debug() << "invalid input or cancel";
+        }
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
+
 }
 
+void PodcastModel::refreshPodcasts()
+{
+    debug() << "refresh Podcasts";
+}
+
+void PodcastModel::configurePodcasts()
+{
+    debug() << "configure Podcasts";
+}
+
+void PodcastModel::setPodcastsInterval()
+{
+    debug() << "set Podcasts update interval";
+}
+
+}
 #include "PodcastModel.moc"

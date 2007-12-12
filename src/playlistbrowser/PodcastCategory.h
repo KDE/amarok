@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@gmail.com>
+   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -16,29 +16,27 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef PLAYLISTBROWSERNSPLAYLISTBROWSER_H
-#define PLAYLISTBROWSERNSPLAYLISTBROWSER_H
+#ifndef PODCASTCATEGORY_H
+#define PODCASTCATEGORY_H
 
-#include <KVBox>
-
-#include <QString>
-
+#include <ui_PodcastCategoryBase.h>
 namespace PlaylistBrowserNS {
 
-class PodcastCategory;
+class PodcastModel;
 
 /**
-	@author Bart Cerneels
+    @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PlaylistBrowser : public KVBox
+class PodcastCategory : public Ui_PodcastCategoryBase, public QWidget
 {
-public:
-    PlaylistBrowser( const char *name );
+    public:
+    PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
 
-    ~PlaylistBrowser();
+    ~PodcastCategory();
 
-private:
-    PodcastCategory * m_podcastCategory;
+    private:
+        PodcastModel *m_podcastModel;
+
 };
 
 }

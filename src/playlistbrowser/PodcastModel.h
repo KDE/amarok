@@ -50,6 +50,10 @@ class PodcastModel : public QAbstractItemModel
 
     public slots:
         void slotUpdate();
+        void addPodcast();
+        void refreshPodcasts();
+        void configurePodcasts();
+        void setPodcastsInterval();
 
     private:
         Meta::PodcastChannelList m_channels;

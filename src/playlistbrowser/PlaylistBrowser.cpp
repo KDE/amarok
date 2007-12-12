@@ -21,6 +21,7 @@
 #include "Playlist.h"
 #include "PodcastMeta.h"
 #include "PodcastModel.h"
+#include "PodcastCategory.h"
 
 #include <kicon.h>
 #include <klocale.h>
@@ -38,13 +39,16 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     QToolBox *toolBox = new QToolBox( this );
     PodcastModel *podcastModel = new PodcastModel();
 
-    QTreeView *podcastTree = new QTreeView( toolBox );
-    podcastTree->setModel( podcastModel );
+    m_podcastCategory = new PodcastCategory( podcastModel );
+//     m_podcastCategory->podcastTreeView->setModel( podcastModel );
+//     QTreeView *podcastTree = new QTreeView( toolBox );
+//     podcastTree->setModel( podcastModel );
 //     podcastTree->header()->hide();
 
     toolBox->addItem( new QTreeView( toolBox ),
             KIcon( Amarok::icon( "playlist" ) ) , QString("Playlists") );
-    toolBox->addItem( podcastTree, KIcon( Amarok::icon( "playlist" ) ) , i18n("Podcasts") );
+//     toolBox->addItem( podcastTree, KIcon( Amarok::icon( "playlist" ) ) , i18n("Podcasts") );
+    toolBox->addItem( m_podcastCategory, KIcon( Amarok::icon( "playlist" ) ) , i18n("Podcasts") );
     toolBox->addItem( new QTreeView( toolBox ),
             KIcon( Amarok::icon( "playlist" ) ) , QString("Streams") );
 }

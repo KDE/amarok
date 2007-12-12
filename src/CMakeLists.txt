@@ -281,6 +281,7 @@ set(libpodcasts_SRCS
 set(libplaylistbrowser_SRCS
     playlistbrowser/PlaylistBrowser.cpp
     playlistbrowser/PodcastModel.cpp
+    playlistbrowser/PodcastCategory.cpp
 )
 
 #####################################################################
@@ -444,6 +445,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     deletedialogbase.ui
     scriptmanagerbase.ui
     tagguesserconfigdialog.ui
+    playlistbrowser/PodcastCategoryBase.ui
 )
 
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
