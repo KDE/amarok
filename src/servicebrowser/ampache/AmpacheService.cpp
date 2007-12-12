@@ -131,10 +131,13 @@ void AmpacheService::authenticate( const QString & server, const QString & usern
     
     QString passPhrase = context.hexDigest().data();
 
-    QString authenticationString = "<server>/server/xml.server.php?action=handshake&user=<username>&auth=<passphrase>&timestamp=<timestamp>";
+    QString authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
 
     authenticationString.replace(QString("<server>"), m_server);
-    authenticationString.replace(QString("<username>"), m_username);
+    if ( !m_username.isEmpty() )
+        authenticationString.replace(QString("<username>"), "&user=" + m_username);
+    else
+        authenticationString.replace(QString("<username>"), "");
     authenticationString.replace(QString("<passphrase>"), passPhrase);
     authenticationString.replace(QString("<timestamp>"), timestamp);
 
