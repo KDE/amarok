@@ -27,6 +27,11 @@
 
 namespace PlaylistBrowserNS {
 
+enum {
+    ShortDescriptionRole = Qt::UserRole + 1,
+    LongDescriptionRole
+};
+
 /**
 	@author Bart Cerneels
 */

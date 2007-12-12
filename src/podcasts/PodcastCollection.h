@@ -88,6 +88,8 @@ class PodcastChannelProvider: public PlaylistProvider
 
         void addPodcast( QString url ) { m_parent->addPodcast( url ); };
 
+        void updateAll() { m_parent->slotUpdateAll() ; };
+
         // PlaylistProvider methods
         virtual QString prettyName() const { return i18n( "Local Podcasts" ); };
         virtual int category() const { return (int)PlaylistManager::PodcastChannel; };

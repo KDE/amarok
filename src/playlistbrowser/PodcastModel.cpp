@@ -24,6 +24,7 @@
 #include "PodcastMeta.h"
 
 #include <QInputDialog>
+#include <KIcon>
 #include <QListIterator>
 #include <typeinfo>
 
@@ -54,19 +55,21 @@ PodcastModel::data(const QModelIndex & index, int role) const
     if ( !index.isValid() )
         return QVariant();
 
-    if ( role == Qt::DisplayRole )
+    if ( role == Qt::DisplayRole || role == Qt::DecorationRole || role == ShortDescriptionRole )
     {
         PodcastMetaCommon* pmc = static_cast<PodcastMetaCommon *>( index.internalPointer() );
 
         bool isChannel = false;
         QString title;
         QString description;
+        KIcon icon;
         if ( typeid( * pmc ) == typeid( PodcastChannel ) )
         {
             PodcastChannel *channel = static_cast<PodcastChannel *>(index.internalPointer());
             title = channel->title();
             description = channel->description();
             isChannel = true;
+            icon = KIcon( Amarok::icon( "podcast" ) );
         }
         else if ( typeid( * pmc ) == typeid( PodcastEpisode ) )
         {
@@ -74,13 +77,21 @@ PodcastModel::data(const QModelIndex & index, int role) const
             title = episode->title();
             description = episode->description();
             isChannel = false;
+            icon = KIcon( Amarok::icon( "podcast_new" ) );
+        }
+        else
+        {
+            debug() << "Model index was neither Channel nor Episode";
+            return QVariant();
         }
 
-        switch( index.column() )
+        debug() << "index " << index.column();
+        debug() << "using role " << role;
+        switch( role )
         {
-            case 0: return isChannel ? QString("Channel") : QString("Episode"); break;
-            case 1: return title; break;
-            case 2: return description; break;
+            case Qt::DisplayRole: return title; break;
+            case Qt::DecorationRole: return QVariant( icon ); break;
+            case ShortDescriptionRole: return description ; break;
             default: return QVariant(); break;
         }
     }
@@ -181,7 +192,7 @@ PodcastModel::rowCount(const QModelIndex & parent) const
 int
 PodcastModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 3;
+    return 1;
 }
 
 Qt::ItemFlags
@@ -231,6 +242,8 @@ PodcastModel::slotUpdate()
 void PodcastModel::addPodcast()
 {
     debug() << "adding Podcast";
+
+    //TODO: allow adding of Podcast to other than the Local Podcasts
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
@@ -241,8 +254,8 @@ void PodcastModel::addPodcast()
                             QString::null, &ok );
         if ( ok && !url.isEmpty() ) {
         // user entered something and pressed OK
-            PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
-            channelProvider->addPodcast( url );
+        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
+        channelProvider->addPodcast( url );
         } else {
         // user entered nothing or pressed Cancel
             debug() << "invalid input or cancel";
@@ -258,6 +271,17 @@ void PodcastModel::addPodcast()
 void PodcastModel::refreshPodcasts()
 {
     debug() << "refresh Podcasts";
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
+        channelProvider->updateAll();
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
 }
 
 void PodcastModel::configurePodcasts()

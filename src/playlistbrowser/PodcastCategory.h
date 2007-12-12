@@ -20,6 +20,10 @@
 #define PODCASTCATEGORY_H
 
 #include <ui_PodcastCategoryBase.h>
+
+#include <QItemDelegate>
+#include <QListView>
+
 namespace PlaylistBrowserNS {
 
 class PodcastModel;
@@ -36,6 +40,26 @@ class PodcastCategory : public Ui_PodcastCategoryBase, public QWidget
 
     private:
         PodcastModel *m_podcastModel;
+
+};
+
+/**
+    A delegate for displaying the Podcast category
+
+    @author Bart Cerneels
+ */
+class PodcastCategoryDelegate : public QItemDelegate
+{
+    public:
+        PodcastCategoryDelegate( QTreeView *view );
+        ~PodcastCategoryDelegate();
+
+        void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
+    private:
+
+        QTreeView *m_view;
 
 };
 
