@@ -25,15 +25,18 @@
 #ifndef TAGLIB_MP4FILETYPERESOLVER_H
 #define TAGLIB_MP4FILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include "../tfile_helper.h"
+#include <fileref.h>
 
 
 class MP4FileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(const char *fileName,
+    TagLib::File *createFile(TagLibFileName fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
+
+public:
+    virtual ~MP4FileTypeResolver() {}
 };
 
 #endif
