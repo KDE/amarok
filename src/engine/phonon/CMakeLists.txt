@@ -1,8 +1,4 @@
 
-if(WIN32)
-	add_subdirectory( directshow )
-endif(WIN32)
-
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
      ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
      ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
