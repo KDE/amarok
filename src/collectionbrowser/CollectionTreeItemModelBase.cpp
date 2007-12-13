@@ -331,7 +331,7 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
@@ -340,7 +340,11 @@ CollectionTreeItemModelBase::queryDone()
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
 
     //stop timer if there are no more animations active
-    if (d->m_childQueries.count() == 0 && d->m_compilationQueries.count() == 0 )
+
+    debug() <<"no more m_childQueries: " << ( d->m_childQueries.count() == 0 );
+    debug() <<"no more m_compilationQueries: " << ( d->m_compilationQueries.count() == 0 );
+    
+    if (d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
         m_timeLine->stop();
 
     QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );
