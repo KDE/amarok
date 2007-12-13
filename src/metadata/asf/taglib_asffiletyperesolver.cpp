@@ -27,12 +27,11 @@
 
 #include <string.h>
 
-TagLib::File *ASFFileTypeResolver::createFile(const char *fileName,
+TagLib::File *ASFFileTypeResolver::createFile(TagLibFileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    const char *ext = strrchr(fileName, '.');
-    if(ext && (!strcasecmp(ext, ".wma") || !strcasecmp(ext, ".asf")))
+    if(CheckExtension(fileName, ".wma") || CheckExtension(fileName, ".asf"))
     {
         TagLib::ASF::File *f = new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
         if(f->isValid())

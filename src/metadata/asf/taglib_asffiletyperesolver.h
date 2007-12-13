@@ -25,13 +25,14 @@
 #ifndef TAGLIB_ASFFILETYPERESOLVER_H
 #define TAGLIB_ASFFILETYPERESOLVER_H
 
+#include "../tfile_helper.h"
 #include <taglib/tfile.h>
 #include <taglib/fileref.h>
 
 
 class ASFFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(const char *fileName,
+    TagLib::File *createFile(TagLibFileName fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
 
