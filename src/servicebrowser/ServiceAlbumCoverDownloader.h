@@ -62,6 +62,10 @@ public:
     void setImage( const QImage & image ) const;
     void imageDownloadCanceled() const;
 
+
+    //always return true to avoid the standard cover fetcher, as we have our own way of getting that stuff...
+    virtual bool hasImage( int size = 1) const { Q_UNUSED( size ); return true; }
+
     virtual QPixmap image( int size = 1, bool withShadow = false); //overridden from Meta::Album
 };
 
