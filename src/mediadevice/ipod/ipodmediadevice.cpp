@@ -1264,6 +1264,8 @@ IpodMediaDevice::openDevice( bool silent )
     updateRootItems();
     m_customAction->setEnabled( true );
 
+    m_dbChanged = true; // write at least once for synchronising new stats
+
     return true;
 }
 
@@ -1478,6 +1480,9 @@ IpodMediaDevice::updateArtwork()
 
     Amarok::StatusBar::instance()->shortMessage(
             i18n( "Updated artwork for one track", "Updated artwork for %n tracks", updateCount ) );
+
+    if(!m_dbChanged)
+       m_dbChanged = updateCount > 0;
 }
 
 
@@ -1640,7 +1645,8 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         }
     }
 
-    if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track))
+    if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track)
+          && (!m_podcastPlaylist || !itdb_playlist_contains_track(m_podcastPlaylist, track)))
     {
         visible = true;
 
@@ -1907,8 +1913,8 @@ class IpodWriteDBJob : public ThreadManager::DependentJob
 bool
 IpodMediaDevice::writeITunesDB( bool threaded )
 {
-    if(m_itdb)
-        m_dbChanged = true; // write unconditionally for resetting recent_playcount
+    if(!m_itdb)
+        return false;
 
     if(m_dbChanged)
     {
