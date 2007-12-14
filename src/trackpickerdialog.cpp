@@ -18,7 +18,6 @@
 #if HAVE_TUNEPIMP
 
 #include "trackpickerdialog.h"
-#include "trackpickerdialogbase.h"
 
 #include <KApplication>
 #include <k3listview.h>

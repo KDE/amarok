@@ -435,10 +435,8 @@ kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   newdynamic.ui
    collectionbrowser/OrganizeCollectionDialog.ui
-   podcastsettingsbase.ui
    tagdialogbase.ui
 #   tagguesserconfigdialog.ui
-   trackpickerdialogbase.ui
 )
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
@@ -446,6 +444,8 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     scriptmanagerbase.ui
     tagguesserconfigdialog.ui
     playlistbrowser/PodcastCategoryBase.ui
+    trackpickerdialogbase.ui
+    podcastsettingsbase.ui
 )
 
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})

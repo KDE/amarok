@@ -5,7 +5,6 @@
 #include "podcastsettings.h"
 
 #include "mediabrowser.h"
-#include "podcastsettingsbase.h"
 
 #include <KLineEdit>
 #include <KLocale>

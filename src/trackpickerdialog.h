@@ -19,13 +19,19 @@
 #include "config-amarok.h"
 
 #if HAVE_TUNEPIMP
-
+#include "ui_trackpickerdialogbase.h"
 #include <KDialog.h>
 
 #include "ktrm.h"
 
-class TrackPickerDialogBase;
 
+class TrackPickerDialogBase : public QWidget, public Ui::TrackPickerDialogBase
+{
+public:
+  TrackPickerDialogBase( QWidget *parent ) : QWidget( parent ) {
+    setupUi( this );
+  }
+};
 
 class TrackPickerDialog : public KDialog
 {

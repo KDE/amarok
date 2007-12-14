@@ -4,15 +4,23 @@
 #ifndef AMAROK_PODCASTSETTINGS_H
 #define AMAROK_PODCASTSETTINGS_H
 
+#include "ui_podcastsettingsbase.h"
 #include <KDialog>    //baseclass
 #include <KUrl>
 
 #include <q3ptrlist.h>
 
-class PodcastSettingsDialogBase;
 class QDomNode;
 
 enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
+
+class PodcastSettingsDialogBase : public QWidget, public Ui::PodcastSettingsDialogBase
+{
+public:
+  PodcastSettingsDialogBase( QWidget *parent ) : QWidget( parent ) {
+    setupUi( this );
+  }
+};
 
 class PodcastSettings
 {
@@ -25,11 +33,11 @@ class PodcastSettings
 
         const QString &saveLocation() { return m_saveLocation; }
         const QString &title() { return m_title; }
-        bool    autoscan()         { return m_autoScan; }
-        int     fetchType()        { return m_fetch; }
-        bool    autoTransfer()     { return m_addToMediaDevice; }
-        bool    hasPurge()         { return m_purge; }
-        int     purgeCount()       { return m_purgeCount; }
+        bool    autoscan()  const       { return m_autoScan; }
+        int     fetchType() const       { return m_fetch; }
+        bool    autoTransfer() const    { return m_addToMediaDevice; }
+        bool    hasPurge()   const      { return m_purge; }
+        int     purgeCount() const      { return m_purgeCount; }
 
         QString m_title;    //the title of the podcast or category these settings belong to
         QString m_saveLocation;
