@@ -27,7 +27,7 @@ class SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
-        SqlCollectionLocation( SqlCollection const *collecton );
+        SqlCollectionLocation( SqlCollection const *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;
