@@ -2,19 +2,19 @@
 Encoding=UTF-8
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_download
-Name=Ampache Service
-Comment=Service plugin for Amarok
+Icon=amarok_jamendo
+Name=Jamendo Service
+Comment=Listen and download music uploaded by independant artist
 
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_service-ampache
+X-KDE-Library=amarok_service_jamendo
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
 X-KDE-Amarok-framework-version=30
-X-KDE-Amarok-name=AmpacheService
+X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
@@ -24,6 +24,4 @@ X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
-X-KDE-PluginInfo-EnabledByDefault=false
-X-KDE-Library=libamarok_service-ampache
-X-KDE-PluginInfo-Name=libamarok_service-ampache
+X-KDE-PluginInfo-EnabledByDefault=true

@@ -9,7 +9,7 @@ Comment=Browse and listen to the music stored on your mp3tunes account
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_service-mp3tunes
+X-KDE-Library=amarok_service_mp3tunes
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com

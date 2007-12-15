@@ -15,7 +15,7 @@
 
 ########### next target ###############
 
-        set(amarok_service-magnatune_PART_SRCS
+        set(amarok_service_magnatune_PART_SRCS
         magnatuneinfoparser.cpp
         MagnatuneStore.cpp
         magnatunedownloaddialog.cpp
@@ -29,19 +29,19 @@
         magnatunedownloadinfo.cpp
         magnatunealbumdownloader.cpp )
 
-        kde4_add_ui3_files(amarok_service-magnatune_PART_SRCS
+        kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
             magnatunedownloaddialogbase.ui
             magnatuneredownloaddialogbase.ui
             magnatunepurchasedialogbase.ui
         )
         
-        kde4_add_plugin(amarok_service-magnatunestore WITH_PREFIX ${amarok_service-magnatune_PART_SRCS})
-        target_link_libraries(amarok_service-magnatunestore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})
+        target_link_libraries(amarok_service_magnatunestore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-        install( FILES amarok_service-magnatunestore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_magnatunestore.desktop DESTINATION ${SERVICES_INSTALL_DIR})

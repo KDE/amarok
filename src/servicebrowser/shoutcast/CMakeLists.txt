@@ -15,20 +15,20 @@
 
 ########### next target ###############
 
-        set(amarok_service-shoutcast_PART_SRCS
+        set(amarok_service_shoutcast_PART_SRCS
             ShoutcastService.cpp
             ShoutcastServiceCollection.cpp
             ShoutcastServiceQueryMaker.cpp
         )
 
 
-        kde4_add_plugin(amarok_service-shoutcast WITH_PREFIX ${amarok_service-shoutcast_PART_SRCS})
-        target_link_libraries(amarok_service-shoutcast amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_shoutcast ${amarok_service_shoutcast_PART_SRCS})
+        target_link_libraries(amarok_service_shoutcast amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-shoutcast DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_shoutcast DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-        install( FILES amarok_service-shoutcast.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_shoutcast.desktop DESTINATION ${SERVICES_INSTALL_DIR})

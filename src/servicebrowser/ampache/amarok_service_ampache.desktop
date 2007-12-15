@@ -2,26 +2,28 @@
 Encoding=UTF-8
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_magnatune
-Name=Magnatune Store
-Comment=Preview and buy music from the non evil Magnatune record label
+Icon=amarok_download
+Name=Ampache Service
+Comment=Service plugin for Amarok
 
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_service-magnatunestore
+#X-KDE-Library=amarok_service_ampache
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
 X-KDE-Amarok-framework-version=30
-X-KDE-Amarok-name=MagnatuneStore
+X-KDE-Amarok-name=AmpacheService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
 
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
 X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
-X-KDE-PluginInfo-Version=2.0
+X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
-X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-Library=amarok_service_ampache
+X-KDE-PluginInfo-Name=amarok_service_ampache

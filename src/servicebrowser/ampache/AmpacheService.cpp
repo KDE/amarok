@@ -58,7 +58,7 @@ QString AmpacheServiceFactory::name()
 KPluginInfo AmpacheServiceFactory::info()
 {
 
-    KPluginInfo pluginInfo(  "amarok_service-ampache.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_ampache.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }

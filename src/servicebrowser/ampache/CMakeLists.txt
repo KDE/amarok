@@ -15,7 +15,7 @@
 
 ########### next target ###############
 
-        set(amarok_service-ampache_PART_SRCS
+        set(amarok_service_ampache_PART_SRCS
             AmpacheService.cpp
             AmpacheServiceCollection.cpp
             AmpacheServiceQueryMaker.cpp
@@ -25,11 +25,11 @@
 
 
 
-        kde4_add_plugin(amarok_service-ampache WITH_PREFIX ${amarok_service-ampache_PART_SRCS})
-        target_link_libraries(amarok_service-ampache amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_ampache ${amarok_service_ampache_PART_SRCS})
+        target_link_libraries(amarok_service_ampache amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### next target ###############
@@ -49,5 +49,5 @@
 
 ########### install files ###############
 
-        install( FILES amarok_service-ampache.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-        install( FILES amarok_service-ampache_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_ampache.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_ampache_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})

@@ -48,7 +48,7 @@ QString JamendoServiceFactory::name()
 
 KPluginInfo JamendoServiceFactory::info()
 {
-    KPluginInfo pluginInfo(  "amarok_service-jamendo.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }

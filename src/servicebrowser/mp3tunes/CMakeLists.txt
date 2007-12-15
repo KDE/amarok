@@ -15,7 +15,7 @@
 
 ########### next target ###############
 
-        set(amarok_service-mp3tunes_PART_SRCS
+        set(amarok_service_mp3tunes_PART_SRCS
             mp3tunesservice.cpp
             Mp3tunesServiceCollection.cpp
             Mp3tunesServiceQueryMaker.cpp
@@ -23,13 +23,13 @@
         )
 
 
-        kde4_add_plugin(amarok_service-mp3tunes WITH_PREFIX ${amarok_service-mp3tunes_PART_SRCS})
-        target_link_libraries(amarok_service-mp3tunes amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
+        target_link_libraries(amarok_service_mp3tunes amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-        install( FILES amarok_service-mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})

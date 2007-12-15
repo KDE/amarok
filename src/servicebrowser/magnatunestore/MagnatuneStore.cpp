@@ -70,7 +70,7 @@ QString MagnatuneServiceFactory::name()
 KPluginInfo MagnatuneServiceFactory::info()
 {
 
-    KPluginInfo pluginInfo(  "amarok_service-magnatunestore.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_magnatunestore.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
     

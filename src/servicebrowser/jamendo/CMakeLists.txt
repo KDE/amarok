@@ -15,7 +15,7 @@
 
 ########### next target ###############
 
-        set(amarok_service-jamendo_PART_SRCS
+        set(amarok_service_jamendo_PART_SRCS
             jamendoservice.cpp
             JamendoMeta.cpp
             jamendodatabasehandler.cpp
@@ -23,13 +23,13 @@
             JamendoInfoParser.cpp
         )
 
-        kde4_add_plugin(amarok_service-jamendo WITH_PREFIX ${amarok_service-jamendo_PART_SRCS})
-        target_link_libraries(amarok_service-jamendo amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_jamendo ${amarok_service_jamendo_PART_SRCS})
+        target_link_libraries(amarok_service_jamendo amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-jamendo DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_jamendo DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-        install( FILES amarok_service-jamendo.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_jamendo.desktop DESTINATION ${SERVICES_INSTALL_DIR})

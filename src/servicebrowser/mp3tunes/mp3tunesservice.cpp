@@ -44,7 +44,7 @@ QString Mp3tunesServiceFactory::name()
 
 KPluginInfo Mp3tunesServiceFactory::info()
 {
-    KPluginInfo pluginInfo(  "amarok_service-mp3tunes.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }
