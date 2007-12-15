@@ -52,6 +52,7 @@ private slots:
 
     void add();
     void remove();
+    void modify();
     void selectedItemChanged ( const QString & name );
 
 };

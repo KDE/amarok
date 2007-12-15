@@ -45,6 +45,7 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
 
     connect ( m_configDialog->addButton, SIGNAL( clicked() ), this, SLOT( add() ) );
     connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
+    connect ( m_configDialog->modifyButton, SIGNAL( clicked() ), this, SLOT( modify() ) );
     connect ( m_configDialog->serverList, SIGNAL ( currentTextChanged ( const QString & ) ), this, SLOT( selectedItemChanged( const QString & ) ) );
 
     load();
@@ -70,8 +71,8 @@ void AmpacheSettings::load()
 
     kDebug( 14310 ) << "load";
 
-    foreach( QString name, m_config.servers().keys() ) {
-        m_configDialog->serverList->addItem( name );
+    for( int i = 0; i < m_config.servers().size(); i++ ) {
+        m_configDialog->serverList->addItem( m_config.servers().at( i ).name );
     }
     
     KCModule::load();
@@ -87,33 +88,35 @@ void AmpacheSettings::add()
 {
     kDebug( 14310 ) << "add";
     
-    QString name = m_configDialog->nameEdit->text();
+    
 
     AmpacheServerEntry server;
 
+    server.name = m_configDialog->nameEdit->text();
     server.url = m_configDialog->serverEdit->text();
     server.username = m_configDialog->userEdit->text();
     server.password = m_configDialog->passEdit->text();
 
-    m_configDialog->serverList->addItem( name );
+    m_configDialog->serverList->addItem( server.name );
 
-    m_config.addServer( name, server );
+    m_config.addServer( server );
 
     emit changed( true );
 }
 
-void AmpacheSettings::selectedItemChanged(const QString & name)
+void AmpacheSettings::selectedItemChanged( const QString & name )
 {
     kDebug( 14310 ) << "Selection changed";
 
     if ( name != "" ) {
-        AmpacheServerEntry server = m_config.servers().value( name );
+
+        int index = m_configDialog->serverList->currentRow();
+        AmpacheServerEntry server = m_config.servers().at( index );
     
-        m_configDialog->nameEdit->setText( name );
+        m_configDialog->nameEdit->setText( server.name );
         m_configDialog->serverEdit->setText( server.url );
         m_configDialog->userEdit->setText( server.username );
         m_configDialog->passEdit->setText( server.password );
-
 
         m_configDialog->removeButton->setEnabled( true );
 
@@ -121,20 +124,41 @@ void AmpacheSettings::selectedItemChanged(const QString & name)
         m_configDialog->removeButton->setEnabled( false );
     }
 
-    
-    
 }
 
 void AmpacheSettings::remove()
 {
-
-    QString selectedName = m_configDialog->serverList->takeItem( m_configDialog->serverList->currentRow() )->text();
-    m_config.removeServer( selectedName );
+    int index = m_configDialog->serverList->currentRow();
+    
+    m_configDialog->serverList->takeItem( index );
+    m_config.removeServer( index );
     m_configDialog->nameEdit->setText( QString() );
     m_configDialog->serverEdit->setText( QString() );
     m_configDialog->userEdit->setText( QString() );
     m_configDialog->passEdit->setText( QString() );
+
+    emit changed( true );
     
+}
+
+void AmpacheSettings::modify()
+{
+    int index = m_configDialog->serverList->currentRow();
+
+    AmpacheServerEntry server;
+    server.name = m_configDialog->nameEdit->text();
+    server.url = m_configDialog->serverEdit->text();
+    server.username = m_configDialog->userEdit->text();
+    server.password = m_configDialog->passEdit->text();
+
+    m_config.updateServer( index, server );
+
+    m_configDialog->serverList->takeItem( index );
+    m_configDialog->serverList->insertItem( index, server.name );
+
+
+
+    emit changed( true );
 }
 
 #include "AmpacheSettings.moc"

@@ -26,13 +26,14 @@
 class AmpacheServerEntry {
 
 public:
+    QString name;
     QString url;
     QString username;
     QString password;
     bool addToCollection;
 };
 
-typedef QMap< QString, AmpacheServerEntry > AmpacheServerMap;
+typedef QList< AmpacheServerEntry > AmpacheServerList;
 
 /**
 A class for accessing the Ampache plugin configuration
@@ -47,15 +48,16 @@ public:
     void save();
 
     int serverCount();
-    AmpacheServerMap servers();
+    AmpacheServerList servers();
 
-    void addServer( const QString &name, const AmpacheServerEntry &server );
-    void removeServer( const QString &name );
+    void addServer( const AmpacheServerEntry &server );
+    void removeServer( int index);
+    void updateServer( int index, const AmpacheServerEntry &server );
 
 private:
 
     bool m_hasChanged;
-    AmpacheServerMap m_serverMap;
+    AmpacheServerList m_servers;
     
 
 };

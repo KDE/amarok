@@ -105,9 +105,9 @@
        </widget>
       </item>
       <item>
-       <widget class="KPushButton" name="editButton" >
+       <widget class="KPushButton" name="modifyButton" >
         <property name="text" >
-         <string>Save</string>
+         <string>Modify</string>
         </property>
        </widget>
       </item>

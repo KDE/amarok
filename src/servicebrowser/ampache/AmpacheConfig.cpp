@@ -37,21 +37,18 @@ void AmpacheConfig::load()
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
 
-
-
-
     while ( config.hasKey ( serverEntry ) ) {
 
         QStringList list = config.readEntry(serverEntry, QStringList() );
 
         AmpacheServerEntry entry;
-        QString name = list.takeFirst();
+        entry.name = list.takeFirst();
         entry.url = list.takeFirst();
         entry.username = list.takeFirst();
         entry.password = list.takeFirst();
         entry.addToCollection = false; //FIXME
 
-        m_serverMap.insert( name, entry );
+        m_servers.append( entry );
 
         serverIndex++;
         serverEntry = "server" + QString::number( serverIndex );
@@ -63,29 +60,38 @@ void AmpacheConfig::load()
 void AmpacheConfig::save()
 {
 
+
+    //delete all entries to make sure the indexes are correct
     KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
     
     kDebug( 14310 ) << "saving to config file " << KGlobal::config()->name() ;
 
-    
+
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
-    
-    foreach( QString name, m_serverMap.keys() ) {
 
-        AmpacheServerEntry entry = m_serverMap.value( name );
-        
+    while ( config.hasKey ( serverEntry ) ) {
+
+        kDebug( 14310 ) << "deleting " << serverEntry;
+        config.deleteEntry( serverEntry );
+        serverIndex++;
+        serverEntry = "server" + QString::number( serverIndex );
+    }
+
+
+    for( int i = 0; i < m_servers.size(); i++ ) {
+
+        AmpacheServerEntry entry = m_servers.at( i );
         QStringList list;
 
-        list << name;
+        list << entry.name;
         list << entry.url;
         list << entry.username;
         list << entry.password;
 
+        serverEntry = "server" + QString::number( i );
+        kDebug( 14310 ) << "adding " << serverEntry;
         config.writeEntry( serverEntry, list );
-
-        serverIndex++;
-        serverEntry = "server" + QString::number( serverIndex );
 
     }
 
@@ -94,46 +100,29 @@ void AmpacheConfig::save()
 
 int AmpacheConfig::serverCount()
 {
-    return m_serverMap.count();
+    return m_servers.size();
 }
 
-AmpacheServerMap AmpacheConfig::servers()
+AmpacheServerList AmpacheConfig::servers()
 {
-    return m_serverMap;
+    return m_servers;
 }
 
-void AmpacheConfig::addServer( const QString &name, const AmpacheServerEntry &server )
+void AmpacheConfig::addServer( const AmpacheServerEntry &server )
 {
-    m_serverMap.insert( name, server );
+    m_servers.append( server );
 }
 
-void AmpacheConfig::removeServer(const QString &name )
+void AmpacheConfig::removeServer( int index )
 {
-    m_serverMap.remove( name );
-    KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
+    m_servers.removeAt( index );
 
-    //delete the correct entry...
+}
 
-    int serverIndex = 0;
-    QString serverEntry = "server" + QString::number( serverIndex );
-
-    while ( config.hasKey ( serverEntry ) ) {
-
-        QStringList list = config.readEntry(serverEntry, QStringList() );
-
-        AmpacheServerEntry entry;
-        QString entryName = list.takeFirst();
-
-        if ( entryName == name ) {
-            config.deleteEntry( serverEntry );
-            break;
-        }
-
-        serverIndex++;
-        serverEntry = "server" + QString::number( serverIndex );
-    }
-
-
+void AmpacheConfig::updateServer( int index, const AmpacheServerEntry & server )
+{
+    m_servers.removeAt( index );
+    m_servers.insert( index, server );
 }
 
 

@@ -38,11 +38,11 @@ void AmpacheServiceFactory::init()
     //read config and create the needed number of services
     AmpacheConfig config;
 
-    AmpacheServerMap servers = config.servers();
+    AmpacheServerList servers = config.servers();
 
-    foreach( QString name, servers.keys() ) {
-        AmpacheServerEntry server = servers.value( name );
-        ServiceBase* service = new AmpacheService( "Ampache (" + name + ")", server.url, server. username, server.password );
+    for( int i = 0; i < servers.size(); i++ ) {
+        AmpacheServerEntry server = servers.at( i );
+        ServiceBase* service = new AmpacheService( "Ampache (" + server.name + ")", server.url, server. username, server.password );
         debug() << "Emitting service!!!!!!";
         emit newService( service );
     }
