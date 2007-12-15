@@ -23,9 +23,9 @@
                 libUnicorn/UnicornCommonMac.cpp)
         endif (APPLE)
         
-        if (UNIX AND GCC)
+        if (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
             add_definitions(-fexceptions)
-        endif (UNIX AND GCC)
+        endif (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
 
         set(amarok_service-lastfm_PART_SRCS
             core/AudioController.cpp
