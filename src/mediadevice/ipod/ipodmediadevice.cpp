@@ -75,9 +75,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #endif
 
 
-// disable if it takes too long for you
-#define CHECK_FOR_INTEGRITY 1
-
 #include "metadata/audible/taglib_audiblefile.h"
 
 struct PodcastInfo
@@ -268,13 +265,15 @@ IpodMediaDevice::IpodMediaDevice()
     m_playlistItem = 0;
     m_supportsArtwork = true;
     m_supportsVideo = false;
-    m_isShuffle = true;
+    m_isShuffle = false;
     m_isMobile = false;
+    m_needsFirewireGuid = false;
 
     m_requireMount = true;
     m_name = "iPod";
 
     // config stuff
+    m_autoConnect = true;
     m_syncStatsCheck = 0;
     m_autoDeletePodcastsCheck = 0;
 
@@ -355,8 +354,28 @@ IpodMediaDevice::slotIpodAction( int id )
                     gchar model[PATH_MAX];
                     g_snprintf (model, PATH_MAX, "x%s", table[index].model_number);
 
-                    itdb_device_set_sysinfo( m_itdb->device,
-                            "ModelNumStr", model );
+                    itdb_device_set_sysinfo( m_itdb->device, "ModelNumStr", model );
+                    detectModel();
+
+                    if( m_isIPhone )
+                    {
+                       m_autoConnect = false;
+                       setConfigBool( "AutoConnect", m_autoConnect );
+                    }
+
+                    // try to make sure that the Device directory exists
+                    QDir dir;
+                    QString realPath;
+                    if(!pathExists( itunesDir(), &realPath) )
+                    {
+                        dir.setPath(realPath);
+                        dir.mkdir(dir.absPath());
+                    }
+                    if(!pathExists( itunesDir( "Device" ), &realPath) )
+                    {
+                        dir.setPath(realPath);
+                        dir.mkdir(dir.absPath());
+                    }
 
                     GError *err = 0; 
                     gboolean success = itdb_device_write_sysinfo(m_itdb->device, &err);
@@ -366,7 +385,7 @@ IpodMediaDevice::slotIpodAction( int id )
                         g_error_free(err);
                         //FIXME: update i18n files for next message
                         Amarok::ContextStatusBar::instance()->longMessage( 
-                                i18n( "Could not write sysinfo file to ipod (check the permissions of the file \"iPod_Control/Device/SysInfo\" on your iPod)" ) );
+                                i18n( "Could not write SysInfo file to iPod (check the permissions of the file \"%1\" on your iPod)" ).arg( itunesDir( "Device:SysInfo" ) ) );
 
                         //FIXME: update i18n files for next message
                         Amarok::ContextStatusBar::instance()->shortMessage(
@@ -383,9 +402,8 @@ IpodMediaDevice::slotIpodAction( int id )
                                     itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
                                     table[index].model_number ) );
                     }
+                    MediaBrowser::instance()->updateDevices();
                 }
-                detectModel();
-                MediaBrowser::instance()->updateDevice();
             }
             break;
     }
@@ -451,7 +469,8 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->artist = g_strdup( metaBundle.artist()->utf8() );
     track->genre = g_strdup( metaBundle.genre()->utf8() );
 
-    track->mediatype = 0x01; // for audio
+    track->mediatype = ITDB_MEDIATYPE_AUDIO;
+    bool audiobook = false;
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -466,21 +485,19 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else if(type=="m4b")
     {
+        audiobook = true;
         track->filetype = g_strdup( "mp4" );
-        track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = 0x08; // for audiobooks
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
         track->filetype = g_strdup( "m4v video" );
         track->movie_flag = 0x01; // for videos
-        track->mediatype = 0x02; // for videos
+        track->mediatype = ITDB_MEDIATYPE_MOVIE;
     }
     else if(type=="aa")
     {
+        audiobook = true;
         track->filetype = g_strdup( "audible" );
-        track->remember_playback_position |= 0x01; // remember current position in track
-        track->mediatype = 0x08; // for audiobooks
 
         TagLib::Audible::File f( TagLibEncodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -489,10 +506,22 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         // libgpod also tries to set those, but this won't work
         track->unk126 = 0x01;
         track->unk144 = 0x0029;
+
     }
     else
     {
         track->filetype = g_strdup( type.toUtf8() );
+    }
+
+
+    QString genre = metaBundle.genre();
+    if( genre.startsWith("audiobook", false) )
+        audiobook = true;
+    if( audiobook )
+    {
+        track->remember_playback_position |= 0x01;
+        track->skip_when_shuffling |= 0x01;
+        track->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
 
     track->composer = g_strdup( metaBundle.composer()->utf8() );
@@ -529,7 +558,10 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         track->remember_playback_position = 0x01; // remember playback position
         // FIXME: track->unk176 = 0x00020000; // for podcasts
         track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
-        track->mediatype = track->mediatype==0x02 ? 0x06 : 0x04; // video or audio podcast
+        track->mediatype =
+           track->mediatype==ITDB_MEDIATYPE_MOVIE
+           ?  ITDB_MEDIATYPE_PODCAST | ITDB_MEDIATYPE_MOVIE
+           : ITDB_MEDIATYPE_PODCAST;
 
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
@@ -544,8 +576,6 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else
     {
-        // FIXME: track->unk176 = 0x00010000; // for non-podcasts
-
         if( metaBundle.compilation() == MetaBundle::CompilationYes )
         {
             track->compilation = 0x01;
@@ -613,7 +643,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
             Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
             if( !mpl )
             {
-                mpl = itdb_playlist_new( "MPL", false );
+                mpl = itdb_playlist_new( "iPod", false );
                 itdb_playlist_add( m_itdb, mpl, -1 );
                 itdb_playlist_set_mpl( mpl );
                 addPlaylistToView( mpl );
@@ -1014,6 +1044,9 @@ IpodMediaDevice::initializeIpod()
     if( m_itdb == 0 )
         return false;
 
+    // in order to get directories right
+    detectModel();
+
     itdb_set_mountpoint(m_itdb, QFile::encodeName(mountPoint()));
 
     Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
@@ -1061,10 +1094,12 @@ IpodMediaDevice::initializeIpod()
 bool
 IpodMediaDevice::openDevice( bool silent )
 {
-    m_isShuffle = true;
+    m_isShuffle = false;
     m_isMobile = false;
     m_supportsArtwork = false;
     m_supportsVideo = false;
+    m_needsFirewireGuid = false;
+    m_rockboxFirmware = false;
     m_dbChanged = false;
     m_files.clear();
 
@@ -1180,9 +1215,6 @@ IpodMediaDevice::openDevice( bool silent )
         return false;
     }
 
-    m_isShuffle = true;
-    m_supportsArtwork = true;
-
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
         QString real;
@@ -1230,23 +1262,56 @@ IpodMediaDevice::openDevice( bool silent )
     updateRootItems();
     m_customAction->setEnabled( true );
 
+    m_dbChanged = true; // write at least once for synchronising new stats
+
     return true;
 }
 
 void
 IpodMediaDevice::detectModel()
 {
+    // set some sane default values
+    m_isShuffle = false;
+    m_supportsArtwork = true;
+    m_supportsVideo = false;
+    m_isIPhone = false;
+    m_needsFirewireGuid = false;
+    m_rockboxFirmware = false;
+    
     // needs recent libgpod-0.3.3 from cvs
+    bool guess = false;
     if( m_itdb && m_itdb->device )
     {
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         const gchar *modelString = 0;
+        m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
+
         if( ipodInfo )
         {
             modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
 
             switch( ipodInfo->ipod_model )
             {
+            case ITDB_IPOD_MODEL_SHUFFLE:
+#ifdef HAVE_LIBGPOD_060
+            case ITDB_IPOD_MODEL_SHUFFLE_SILVER:
+            case ITDB_IPOD_MODEL_SHUFFLE_PINK:
+            case ITDB_IPOD_MODEL_SHUFFLE_BLUE:
+            case ITDB_IPOD_MODEL_SHUFFLE_GREEN:
+            case ITDB_IPOD_MODEL_SHUFFLE_ORANGE:
+            case ITDB_IPOD_MODEL_SHUFFLE_PURPLE:
+#endif
+                m_isShuffle = true;
+                break;
+#ifdef HAVE_LIBGPOD_060
+            case ITDB_IPOD_MODEL_IPHONE_1:
+            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+                m_isIPhone = true;
+                debug() << "detected iPhone/iPod Touch" << endl;
+                break;
+            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
+            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
+#endif
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
@@ -1255,30 +1320,87 @@ IpodMediaDevice::detectModel()
                 break;
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
-                debug() << "detected iTunes phone";
+                debug() << "detected iTunes phone" << endl;
                 break;
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
-                if( pathExists( ":iTunes:iTunes_Control" ) )
-                {
-                    debug() << "iTunes/iTunes_Control found - assuming itunes phone";
-                    m_isMobile = true;
-                }
+                guess = true;
                 break;
             default:
                 break;
             }
-        }
 
+#ifdef HAVE_LIBGPOD_060
+            switch( ipodInfo->ipod_generation )
+            {
+               case ITDB_IPOD_GENERATION_CLASSIC_1:
+               case ITDB_IPOD_GENERATION_NANO_3:
+               case ITDB_IPOD_GENERATION_TOUCH_1:
+                  m_needsFirewireGuid = true;
+                  m_supportsVideo = true;
+                  break;
+               case ITDB_IPOD_GENERATION_VIDEO_1:
+               case ITDB_IPOD_GENERATION_VIDEO_2:
+                  m_supportsVideo = true;
+                  break;
+               case ITDB_IPOD_GENERATION_SHUFFLE_1:
+               case ITDB_IPOD_GENERATION_SHUFFLE_2:
+               case ITDB_IPOD_GENERATION_SHUFFLE_3:
+                  m_isShuffle = true;
+                  break;
+               default:
+                  break;
+            }
+#endif
+        }
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
+
+        if( m_needsFirewireGuid )
+        {
+            gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
+            if( !fwid )
+            {
+                Amarok::StatusBar::instance()->longMessage(
+                        i18n("Your iPod's Firewire GUID is required for correctly updating its music database, but it is not known. See %1 for more information.").arg( "http://amarok.kde.org/wiki/Media_Device:IPod" ) );
+            }
+            else
+               g_free( fwid );
+        }
     }
     else
     {
         debug() << "iPod type detection failed, no video support";
         Amarok::ContextStatusBar::instance()->longMessage(
                 i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
+        guess = true;
+    }
+
+    if( guess )
+    {
+        if( pathExists( ":iTunes:iTunes_Control" ) )
+        {
+            debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
+            m_isMobile = true;
+        }
+        else if( pathExists( ":iTunes_Control" ) )
+        {
+            debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
+            m_isIPhone = true;
+        }
+    }
+
+    if( m_isIPhone )
+    {
+        m_supportsVideo = true;
+        m_supportsArtwork = true;
+    }
+
+    if( pathExists( ":.rockbox" ) )
+    {
+        debug() << "RockBox firmware detected" << endl;
+        m_rockboxFirmware = true;
     }
 }
 
@@ -1354,6 +1476,9 @@ IpodMediaDevice::updateArtwork()
 
     Amarok::ContextStatusBar::instance()->shortMessage(
             i18np( "Updated artwork for one track", "Updated artwork for %1 tracks", updateCount ) );
+
+    if(!m_dbChanged)
+       m_dbChanged = updateCount > 0;
 }
 
 
@@ -1516,7 +1641,8 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         }
     }
 
-    if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track))
+    if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track)
+          && (!m_podcastPlaylist || !itdb_playlist_contains_track(m_podcastPlaylist, track)))
     {
         visible = true;
 
@@ -1781,8 +1907,8 @@ class IpodWriteDBJob : public ThreadManager::DependentJob
 bool
 IpodMediaDevice::writeITunesDB( bool threaded )
 {
-    if(m_itdb)
-        m_dbChanged = true; // write unconditionally for resetting recent_playcount
+    if(!m_itdb)
+        return false;
 
     if(m_dbChanged)
     {
@@ -2471,6 +2597,7 @@ IpodMediaDevice::loadConfig()
 
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
+    m_autoConnect = configBool( "AutoConnect", true );
 }
 
 bool
