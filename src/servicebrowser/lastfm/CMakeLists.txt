@@ -22,6 +22,10 @@
             set(extra_sources
                 libUnicorn/UnicornCommonMac.cpp)
         endif (APPLE)
+        
+        if (UNIX AND GCC)
+            add_definitions(-fexceptions)
+        endif (UNIX AND GCC)
 
         set(amarok_service-lastfm_PART_SRCS
             core/AudioController.cpp
