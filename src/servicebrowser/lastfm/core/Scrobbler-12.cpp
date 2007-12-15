@@ -20,7 +20,8 @@
  ***************************************************************************/
 
 #include "container.h"
-#include "Scrobbler-1.2.h"
+#include "Scrobbler-12.h"
+#include "MooseCommon.h"
 #include "logger.h"
 
 #include <QApplication>

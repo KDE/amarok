@@ -10,6 +10,7 @@
         if (WIN32)
             set(extra_sources
                 libUnicorn/UnicornCommonWin.cpp
+                
                 simple/BlockingClient.cpp
                 simple/EncodingUtils.cpp
                 simple/ScrobSubmitter.cpp)
@@ -23,9 +24,16 @@
         endif (APPLE)
 
         set(amarok_service-lastfm_PART_SRCS
+            core/AudioController.cpp
+            core/LastFmSettings.cpp
+            core/MooseCommon.cpp
+            core/Radio.cpp
+            core/RadioPlaylist.cpp
+            core/Scrobbler-12.cpp
+            core/XspfResolver.cpp
+
             libUnicorn/CachedHttp.cpp
             libUnicorn/CachedHttpJanitor.cpp
-            #libUnicorn/Collection.cpp
             libUnicorn/draglabel.cpp
             libUnicorn/DragMimeData.cpp
             libUnicorn/imagebutton.cpp
@@ -39,7 +47,6 @@
             libUnicorn/TrackInfo.cpp
             libUnicorn/UnicornCommon.cpp
             libUnicorn/URLLabel.cpp
-            #libUnicorn/VersionUpdater/VersionUpdater.cpp
             libUnicorn/watermarkwidget.cpp
             libUnicorn/WebService/ActionRequest.cpp
             libUnicorn/WebService/AlbumTagsRequest.cpp
@@ -54,7 +61,6 @@
             libUnicorn/WebService/Handshake.cpp
             libUnicorn/WebService/NeighboursRequest.cpp
             libUnicorn/WebService/ProxyTestRequest.cpp
-            #libUnicorn/WebService/RadioMetaDataRequest.cpp
             libUnicorn/WebService/RecentTrackRequest.cpp
             libUnicorn/WebService/RecommendRequest.cpp
             libUnicorn/WebService/ReportRebufferingRequest.cpp
@@ -79,7 +85,7 @@
             ${extra_sources}
         )
         
-        add_definitions(-DUNICORN_DLLEXPORT_PRO -DQT_XML_LIB)
+        add_definitions(-DUNICORN_DLLEXPORT_PRO -DMOOSE_DLLEXPORT_PRO -DQT_XML_LIB)
 
         kde4_add_plugin(amarok_service-lastfm WITH_PREFIX ${amarok_service-lastfm_PART_SRCS})
         target_link_libraries(amarok_service-lastfm amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
