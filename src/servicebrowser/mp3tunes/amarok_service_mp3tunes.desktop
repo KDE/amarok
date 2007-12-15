@@ -6,10 +6,7 @@ Icon=amarok_download
 Name=Mp3tunes Service
 Comment=Browse and listen to the music stored on your mp3tunes account
 
-
 ServiceTypes=Amarok/Plugin
-
-X-KDE-Library=amarok_service_mp3tunes
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
@@ -25,3 +22,5 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-Library=amarok_service_mp3tunes
+X-KDE-PluginInfo-Name=amarok_service_mp3tunes

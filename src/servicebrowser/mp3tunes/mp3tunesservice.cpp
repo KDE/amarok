@@ -19,6 +19,8 @@
 
 #include "mp3tunesservice.h"
 
+#include "Mp3tunesConfig.h"
+
 #include "amarok.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
@@ -31,7 +33,10 @@ AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
 void Mp3tunesServiceFactory::init()
 {
-    ServiceBase* service = new Mp3tunesService( "Mp3tunes.com" );
+
+    Mp3tunesConfig config;
+    
+    ServiceBase* service = new Mp3tunesService( "Mp3tunes.com", config.email(), config.password() );
     emit newService( service );
 }
 
@@ -59,8 +64,10 @@ KConfigGroup Mp3tunesServiceFactory::config()
 
 
 
-Mp3tunesService::Mp3tunesService(const QString & name)
+Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password )
  : ServiceBase( name )
+ , m_email( email )
+ , m_password( password )
  , m_partnerToken( "7359149936" )
  , m_apiOutputFormat( "xml")
  , m_authenticated( false )
@@ -81,7 +88,7 @@ Mp3tunesService::~Mp3tunesService()
 void Mp3tunesService::polish()
 {
     if ( !m_authenticated )
-        authenticate();
+        authenticate( m_email, m_password );
 
 }
 

@@ -26,8 +26,8 @@
 
 #include <QVBoxLayout>
 
-K_PLUGIN_FACTORY(AmpacheSettingsFactory, registerPlugin<AmpacheSettings>();)
-K_EXPORT_PLUGIN(AmpacheSettingsFactory( "kcm_amarok_ampache" ))
+K_PLUGIN_FACTORY( AmpacheSettingsFactory, registerPlugin<AmpacheSettings>(); )
+K_EXPORT_PLUGIN( AmpacheSettingsFactory( "kcm_amarok_ampache" ) )
 
 
 AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)

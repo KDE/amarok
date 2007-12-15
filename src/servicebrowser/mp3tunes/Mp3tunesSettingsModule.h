@@ -14,72 +14,45 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef MP3TUNESSETTINGSMODULE_H
+#define MP3TUNESSETTINGSMODULE_H
 
-#ifndef MP3TUNESSERVICE_H
-#define MP3TUNESSERVICE_H
+#include "Mp3tunesConfig.h"
 
+#include <kcmodule.h>
 
-
-#include "../servicebase.h"
-#include "Mp3tunesServiceCollection.h"
-
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-
-class Mp3tunesServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        Mp3tunesServiceFactory() {}
-        virtual ~Mp3tunesServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-        virtual KPluginInfo info();
-        virtual KConfigGroup config();
-};
-
+namespace Ui { class Mp3tunesConfigWidget; }
 
 /**
-A service for displaying, previewing and downloading music from Mp3tunes.com
+A KCM module for configuring the Mp3tunes service
 
 	@author 
 */
-class Mp3tunesService : public ServiceBase
+class Mp3tunesSettingsModule : public KCModule
 {
-
-Q_OBJECT
+    Q_OBJECT
 public:
-    Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString() );
+    Mp3tunesSettingsModule( QWidget *parent = 0, const QVariantList &args = QVariantList() );
 
-    ~Mp3tunesService();
+    ~Mp3tunesSettingsModule();
 
-    void polish();
+    virtual void save();
+    virtual void load();
+    virtual void defaults();
 
-private:
-
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
 
 private slots:
 
-    void authenticationComplete(  KJob *job );
-
+    void settingsChanged();
+    
 private:
 
-    QString m_email;
-    QString m_password;
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
+    Mp3tunesConfig m_config;
+    Ui::Mp3tunesConfigWidget * m_configDialog;
 
-    bool m_authenticated;
-    QString m_sessionId;
-
-    Mp3tunesServiceCollection *  m_collection;
 };
 
 #endif

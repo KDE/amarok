@@ -14,72 +14,41 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef MP3TUNESCONFIG_H
+#define MP3TUNESCONFIG_H
 
-#ifndef MP3TUNESSERVICE_H
-#define MP3TUNESSERVICE_H
-
-
-
-#include "../servicebase.h"
-#include "Mp3tunesServiceCollection.h"
-
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-
-class Mp3tunesServiceFactory: public ServiceFactory
-{
-    Q_OBJECT
-
-    public:
-        Mp3tunesServiceFactory() {}
-        virtual ~Mp3tunesServiceFactory() {}
-
-        virtual void init();
-        virtual QString name();
-        virtual KPluginInfo info();
-        virtual KConfigGroup config();
-};
-
+#include <QString>
 
 /**
-A service for displaying, previewing and downloading music from Mp3tunes.com
+A wrapper class for Mp3tunes service configuration
 
 	@author 
 */
-class Mp3tunesService : public ServiceBase
-{
-
-Q_OBJECT
+class Mp3tunesConfig{
 public:
-    Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString() );
+    
+    Mp3tunesConfig();
 
-    ~Mp3tunesService();
+    ~Mp3tunesConfig();
 
-    void polish();
+    void load();
+    void save();
+
+    QString email();
+    QString password();
+
+    void setEmail( const QString &email );
+    void setPassword( const QString &password );
 
 private:
 
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
-
-private slots:
-
-    void authenticationComplete(  KJob *job );
-
-private:
-
+    bool m_hasChanged;
     QString m_email;
     QString m_password;
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    QString m_partnerToken;
-    QString m_apiOutputFormat;
 
-    bool m_authenticated;
-    QString m_sessionId;
-
-    Mp3tunesServiceCollection *  m_collection;
 };
 
 #endif
