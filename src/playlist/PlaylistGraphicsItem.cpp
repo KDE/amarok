@@ -411,8 +411,8 @@ Playlist::GraphicsItem::showImage() const
 void
 Playlist::GraphicsItem::fetchImage()
 {
-    CoverFetcher *fetcher = The::coverFetcher();
-    fetcher->manualFetch( m_items->track->album() );
+/*    CoverFetcher *fetcher = The::coverFetcher();
+    fetcher->manualFetch( m_items->track->album() );*/
 }
 
 void
@@ -569,7 +569,7 @@ Playlist::GraphicsItem::refresh()
     {
         if( !m_items->track->album()->hasImage( int(ALBUM_WIDTH) ) )
         {
-            The::coverFetcher()->queueAlbum( m_items->track->album() );
+//             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
@@ -700,7 +700,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     {
         if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
         {
-            The::coverFetcher()->queueAlbum( m_items->track->album() );
+//             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
@@ -754,7 +754,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     {
         if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
         {
-            The::coverFetcher()->queueAlbum( m_items->track->album() );
+//             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
@@ -806,7 +806,7 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     {
         if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
         {
-            The::coverFetcher()->queueAlbum( m_items->track->album() );
+//             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
