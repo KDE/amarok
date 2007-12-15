@@ -1,0 +1,93 @@
+
+
+        include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
+        ${KDE4_INCLUDE_DIR}
+        ${STRIGI_INCLUDE_DIR}
+        ${QT_INCLUDES} )
+
+########### next target ###############
+
+        if (WIN32)
+            set(extra_sources
+                libUnicorn/UnicornCommonWin.cpp
+                simple/BlockingClient.cpp
+                simple/EncodingUtils.cpp
+                simple/ScrobSubmitter.cpp)
+                
+            add_definitions(-DUNICODE -D_UNICODE)
+        endif (WIN32)
+        
+        if (APPLE)
+            set(extra_sources
+                libUnicorn/UnicornCommonMac.cpp)
+        endif (APPLE)
+
+        set(amarok_service-lastfm_PART_SRCS
+            libUnicorn/CachedHttp.cpp
+            libUnicorn/CachedHttpJanitor.cpp
+            #libUnicorn/Collection.cpp
+            libUnicorn/draglabel.cpp
+            libUnicorn/DragMimeData.cpp
+            libUnicorn/imagebutton.cpp
+            libUnicorn/LastMessageBox.cpp
+            libUnicorn/logger.cpp
+            libUnicorn/metadata.cpp
+            libUnicorn/RedirectHttp.cpp
+            libUnicorn/Settings.cpp
+            libUnicorn/StationUrl.cpp
+            libUnicorn/StopWatch.cpp
+            libUnicorn/TrackInfo.cpp
+            libUnicorn/UnicornCommon.cpp
+            libUnicorn/URLLabel.cpp
+            #libUnicorn/VersionUpdater/VersionUpdater.cpp
+            libUnicorn/watermarkwidget.cpp
+            libUnicorn/WebService/ActionRequest.cpp
+            libUnicorn/WebService/AlbumTagsRequest.cpp
+            libUnicorn/WebService/ArtistMetaDataRequest.cpp
+            libUnicorn/WebService/ArtistTagsRequest.cpp
+            libUnicorn/WebService/ChangeStationRequest.cpp
+            libUnicorn/WebService/DeleteFriendRequest.cpp
+            libUnicorn/WebService/FingerprintQueryRequest.cpp
+            libUnicorn/WebService/FriendsRequest.cpp
+            libUnicorn/WebService/FrikkinNormanRequest.cpp
+            libUnicorn/WebService/GetXspfPlaylistRequest.cpp
+            libUnicorn/WebService/Handshake.cpp
+            libUnicorn/WebService/NeighboursRequest.cpp
+            libUnicorn/WebService/ProxyTestRequest.cpp
+            #libUnicorn/WebService/RadioMetaDataRequest.cpp
+            libUnicorn/WebService/RecentTrackRequest.cpp
+            libUnicorn/WebService/RecommendRequest.cpp
+            libUnicorn/WebService/ReportRebufferingRequest.cpp
+            libUnicorn/WebService/Request.cpp
+            libUnicorn/WebService/SearchTagsRequest.cpp
+            libUnicorn/WebService/SetTagRequest.cpp
+            libUnicorn/WebService/SimilarArtistsRequest.cpp
+            libUnicorn/WebService/SimilarTagsRequest.cpp
+            libUnicorn/WebService/SubmitFullFingerprintRequest.cpp
+            libUnicorn/WebService/TopTagsRequest.cpp
+            libUnicorn/WebService/TrackMetaDataRequest.cpp
+            libUnicorn/WebService/TrackTagsRequest.cpp
+            libUnicorn/WebService/TrackToIdRequest.cpp
+            libUnicorn/WebService/TrackUploadRequest.cpp
+            libUnicorn/WebService/UserLabelsRequest.cpp
+            libUnicorn/WebService/UserPicturesRequest.cpp
+            libUnicorn/WebService/UserTagsRequest.cpp
+            libUnicorn/WebService/VerifyUserRequest.cpp
+            libUnicorn/WebService/XmlRpc.cpp
+            libUnicorn/WebService.cpp
+            libUnicorn/md5/md5.c
+            ${extra_sources}
+        )
+        
+        add_definitions(-DUNICORN_DLLEXPORT_PRO -DQT_XML_LIB)
+
+        kde4_add_plugin(amarok_service-lastfm WITH_PREFIX ${amarok_service-lastfm_PART_SRCS})
+        target_link_libraries(amarok_service-lastfm amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+
+
+        install(TARGETS amarok_service-lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+
+
+########### install files ###############
+
+        install( FILES amarok_service-lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR})
