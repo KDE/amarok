@@ -1,5 +1,4 @@
 
-
         include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
@@ -8,7 +7,7 @@
 ########### next target ###############
 
         if (WIN32)
-            set(extra_sources
+            set(amarok_service_lastfm_extra_sources
                 libUnicorn/UnicornCommonWin.cpp
                 
                 simple/BlockingClient.cpp
@@ -19,7 +18,7 @@
         endif (WIN32)
         
         if (APPLE)
-            set(extra_sources
+            set(amarok_service_lastfm_extra_sources
                 libUnicorn/UnicornCommonMac.cpp)
         endif (APPLE)
         
@@ -27,7 +26,7 @@
             add_definitions(-fexceptions)
         endif (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
 
-        set(amarok_service-lastfm_PART_SRCS
+        set(amarok_service_lastfm_PART_SRCS
             core/AudioController.cpp
             core/LastFmSettings.cpp
             core/MooseCommon.cpp
@@ -86,18 +85,18 @@
             libUnicorn/WebService/XmlRpc.cpp
             libUnicorn/WebService.cpp
             libUnicorn/md5/md5.c
-            ${extra_sources}
+            ${amarok_service_lastfm_extra_sources}
         )
         
         add_definitions(-DUNICORN_DLLEXPORT_PRO -DMOOSE_DLLEXPORT_PRO -DQT_XML_LIB)
 
-        kde4_add_plugin(amarok_service-lastfm WITH_PREFIX ${amarok_service-lastfm_PART_SRCS})
-        target_link_libraries(amarok_service-lastfm amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        kde4_add_plugin(amarok_service_lastfm WITH_PREFIX ${amarok_service_lastfm_PART_SRCS})
+        target_link_libraries(amarok_service_lastfm amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
 
-        install(TARGETS amarok_service-lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-        install( FILES amarok_service-lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR})
