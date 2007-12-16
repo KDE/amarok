@@ -79,6 +79,8 @@ public:
      */
     ~MagnatuneStore() { }
 
+    void setMembership( const QString &type, const QString &username,  const QString &password );
+    
      /**
      * Do not do expensive initializations before we are actually shown
      */
@@ -189,6 +191,11 @@ private:
     ServiceSqlCollection * m_collection;
 
     QString m_tempFileName;
+
+    bool m_isMember;
+    QString m_membershipType;
+    QString m_username;
+    QString m_password;
 
 };
 

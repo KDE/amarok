@@ -25,3 +25,6 @@ X-KDE-PluginInfo-Version=2.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-Library=amarok_service_magnatunestore
+X-KDE-PluginInfo-Name=amarok_service_magnatunestore
+

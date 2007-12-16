@@ -16,18 +16,20 @@
 ########### next target ###############
 
         set(amarok_service_magnatune_PART_SRCS
-        magnatuneinfoparser.cpp
-        MagnatuneStore.cpp
-        magnatunedownloaddialog.cpp
-        magnatunepurchasedialog.cpp
-        magnatunepurchasehandler.cpp
-        MagnatuneMeta.cpp
-        magnatunexmlparser.cpp
-        magnatunedatabasehandler.cpp
-        magnatuneredownloaddialog.cpp
-        magnatuneredownloadhandler.cpp
-        magnatunedownloadinfo.cpp
-        magnatunealbumdownloader.cpp )
+            magnatuneinfoparser.cpp
+            MagnatuneStore.cpp
+            magnatunedownloaddialog.cpp
+            magnatunepurchasedialog.cpp
+            magnatunepurchasehandler.cpp
+            MagnatuneMeta.cpp
+            magnatunexmlparser.cpp
+            magnatunedatabasehandler.cpp
+            magnatuneredownloaddialog.cpp
+            magnatuneredownloadhandler.cpp
+            magnatunedownloadinfo.cpp
+            magnatunealbumdownloader.cpp
+            MagnatuneConfig.cpp
+        )
 
         kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
             magnatunedownloaddialogbase.ui
@@ -41,7 +43,25 @@
 
         install(TARGETS amarok_service_magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR} )
 
+########### next target ###############
+
+        set(kcm_amarok_service_magnatune_PART_SRCSS
+            MagnatuneSettingsModule.cpp
+            MagnatuneConfig.cpp
+        )
+
+        kde4_add_ui_files( kcm_amarok_service_magnatune_PART_SRCSS MagnatuneConfigWidget.ui )
+
+
+        kde4_add_plugin( kcm_amarok_service_magnatunestore ${kcm_amarok_service_magnatune_PART_SRCSS} )
+
+
+        target_link_libraries( kcm_amarok_service_magnatunestore  ${KDE4_KUTILS_LIBS} )
+
+        install(TARGETS kcm_amarok_service_magnatunestore  DESTINATION ${PLUGIN_INSTALL_DIR})
+
 
 ########### install files ###############
 
         install( FILES amarok_service_magnatunestore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES amarok_service_magnatunestore_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})

@@ -66,6 +66,7 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->url();
         url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
+        url.replace( ".mp3", "_nospeech.mp3" );
         track->setUrl( url );
     }
 

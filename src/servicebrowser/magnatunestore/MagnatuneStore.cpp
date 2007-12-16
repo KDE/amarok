@@ -19,17 +19,17 @@
  ***************************************************************************/
 #include "MagnatuneStore.h"
 
+
 #include "amarok.h"
 #include "collection/CollectionManager.h"
-#include "playlist/PlaylistModel.h"
-#include "TheInstances.h"
 #include "ContextStatusBar.h"
-
-#include "ServiceSqlRegistry.h"
-
-
-#include "magnatuneinfoparser.h"
 #include "debug.h"
+#include "MagnatuneConfig.h"
+#include "magnatuneinfoparser.h"
+#include "playlist/PlaylistModel.h"
+#include "ServiceSqlRegistry.h"
+#include "TheInstances.h"
+
 //#include "../../contextview/contextview.h"
 //#include "../../contextview/cloudbox.h"
 //#include "../../contextview/graphicsitemfader.h"
@@ -58,7 +58,13 @@ AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 
 void MagnatuneServiceFactory::init()
 {
-    ServiceBase* service = new MagnatuneStore( "Magnatune.com" );
+    MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
+
+    MagnatuneConfig config;
+
+    if ( config.isMember() )
+        service->setMembership( config.membershipType(), config.username(), config.password() );
+    
     emit newService( service );
 }
 
@@ -397,7 +403,9 @@ void MagnatuneStore::polish( )
 
         MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
 
-        //metaFactory->setMembershipInfo( "stream", "user", "pass" );
+        if( m_isMember ) {
+            metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );
+        }
 
 
         ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
@@ -491,6 +499,15 @@ void MagnatuneStore::polish( )
 
     return true;
 }*/
+
+void MagnatuneStore::setMembership(const QString & type, const QString & username, const QString & password)
+{
+    m_isMember = true;
+    m_membershipType = type;
+    m_username = username;
+    m_password = password;
+    
+}
 
 
 
