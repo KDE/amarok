@@ -753,7 +753,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     switch( state )
     {
     case Engine::Empty:
-        mainWindow()->setCaption( "Amarok - Alpha Software. Do NOT File bugs." );
+        mainWindow()->setCaption( "Amarok - Pre-Alpha Software. Do NOT File bugs." );
         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
@@ -763,7 +763,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !track->prettyName().isEmpty() )
             //TODO: write a utility function somewhere
-            mainWindow()->setCaption( i18n("Amarok - Alpha Software. Do NOT File bugs. - %1", track->prettyName() ) );
+            mainWindow()->setCaption( i18n("Amarok - Pre-Alpha Software. Do NOT File bugs. - %1", track->prettyName() ) );
         break;
 
     case Engine::Paused:
@@ -771,7 +771,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         break;
 
     case Engine::Idle:
-        mainWindow()->setCaption( "Amarok - Alpha Software. Do NOT File bugs." );
+        mainWindow()->setCaption( "Amarok - Pre-Alpha Software. Do NOT File bugs." );
         break;
 
     default:
