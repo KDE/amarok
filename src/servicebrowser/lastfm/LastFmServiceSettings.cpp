@@ -35,6 +35,13 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( w );
     l->addWidget( w );
+
+    connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->kcfg_RetrieveSimilarArtists, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
+
+    load();
 }
 
 
@@ -46,16 +53,39 @@ LastFmServiceSettings::~LastFmServiceSettings()
 void 
 LastFmServiceSettings::save()
 {
+    m_config.setUsername( m_configDialog->kcfg_ScrobblerUsername->text() );
+    m_config.setPassword( m_configDialog->kcfg_ScrobblerPassword->text() );
+    m_config.setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
+    m_config.setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
+    m_config.save();
+
+    KCModule::save();
 }
 
 
 void 
 LastFmServiceSettings::load()
 {
+    m_config.load();
+    m_configDialog->kcfg_ScrobblerUsername->setText( m_config.username() );
+    m_configDialog->kcfg_ScrobblerPassword->setText( m_config.password() );
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
+
+    KCModule::load();
 }
 
 
 void
 LastFmServiceSettings::defaults()
 {
+    m_config.reset();
+    load();
+}
+
+
+void
+LastFmServiceSettings::settingsChanged()
+{
+    emit changed( true );
 }

@@ -12,8 +12,11 @@
  ***************************************************************************/
 
 #include "LastFmService.h"
+#include "LastFmServiceConfig.h"
+
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
+
 
 void 
 LastFmServiceFactory::init()
@@ -42,7 +45,7 @@ LastFmServiceFactory::info()
 KConfigGroup 
 LastFmServiceFactory::config()
 {
-    return Amarok::config( "Service_LastFm" );
+    return Amarok::config( LastFmServiceConfig::configSectionName() );
 }
 
 

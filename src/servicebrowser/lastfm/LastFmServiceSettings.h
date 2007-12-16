@@ -36,6 +36,10 @@ public:
 private:
     Ui::LastFmConfigWidget *m_configDialog;
     LastFmServiceConfig     m_config;
+
+
+private slots:
+    void settingsChanged();
 };
 
 #endif // LASTFMSERVICESETTINGS_H

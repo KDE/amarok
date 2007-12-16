@@ -252,12 +252,6 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
@@ -267,22 +261,5 @@
   <include location="local" >klineedit.h</include>
  </includes>
  <resources/>
- <connections>
-  <connection>
-   <sender>kcfg_ScrobblerUsername</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>LastfmConfig</receiver>
-   <slot>updateServices(QString)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
