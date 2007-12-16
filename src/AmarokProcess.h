@@ -27,12 +27,12 @@ class QTextCodec;
 // class Process
 ////////////////////////////////////////////////////////////////////////////////
 
-class AMAROK_EXPORT Process : public KProcess
+class AMAROK_EXPORT AmarokProcess : public KProcess
 {
     Q_OBJECT
 
     public:
-        explicit Process(QObject *parent = 0);
+        explicit AmarokProcess(QObject *parent = 0);
 
         void setLowPriority(bool lowPriority) { this->lowPriority = lowPriority; }
 
@@ -40,9 +40,9 @@ class AMAROK_EXPORT Process : public KProcess
 
     // for K3Process compat
     Q_SIGNALS:
-        void processExited(Process *proc);
-        void receivedStdout(Process *proc);
-        void receivedStderr(Process *proc);
+        void processExited(AmarokProcess *proc);
+        void receivedStdout(AmarokProcess *proc);
+        void receivedStderr(AmarokProcess *proc);
 
     protected:
         virtual void setupChildProcess();
@@ -60,12 +60,12 @@ class AMAROK_EXPORT Process : public KProcess
 // class ProcIO
 ////////////////////////////////////////////////////////////////////////////////
 
-class AMAROK_EXPORT ProcIO : public Process
+class AMAROK_EXPORT AmarokProcIO : public AmarokProcess
 {
     Q_OBJECT
 
     public:
-        ProcIO();
+        explicit AmarokProcIO(QObject *parent = 0);
 
         int readln (QString &line);
         bool writeStdin(const QString &line);
@@ -73,7 +73,7 @@ class AMAROK_EXPORT ProcIO : public Process
         void start();
 
     Q_SIGNALS:
-        void readReady(ProcIO *pio);
+        void readReady(AmarokProcIO *pio);
         
     private slots:
         void readyReadStandardOutput();
@@ -86,13 +86,13 @@ class AMAROK_EXPORT ProcIO : public Process
 // class ShellProcess
 ////////////////////////////////////////////////////////////////////////////////
 
-class AMAROK_EXPORT ShellProcess : public Process
+class AMAROK_EXPORT AmarokShellProcess : public AmarokProcess
 {
     public:
-        explicit ShellProcess(QObject *parent = 0) : Process(parent) {}
+        explicit AmarokShellProcess(QObject *parent = 0) : AmarokProcess(parent) {}
 
-        ShellProcess &operator<<(const QString& arg);
-        ShellProcess &operator<<(const QStringList& args);
+        AmarokShellProcess &operator<<(const QString& arg);
+        AmarokShellProcess &operator<<(const QStringList& args);
 };
 
 #endif // AMAROK_PROCESS_H

@@ -30,7 +30,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 
 #include <KAboutApplicationDialog>
@@ -559,18 +559,18 @@ ScriptManager::slotRunScript( bool silent )
     // Don't start a script twice
     if( m_scripts[name].process ) return false;
 
-    ProcIO* script = new ProcIO();
-    script->setOutputChannelMode( ProcIO::SeparateChannels );
+    AmarokProcIO* script = new AmarokProcIO();
+    script->setOutputChannelMode( AmarokProcIO::SeparateChannels );
     const KUrl url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
-    connect( script, SIGNAL( receivedStderr( Process* ) ), SLOT( slotReceivedStderr( Process* ) ) );
-    connect( script, SIGNAL( receivedStdout( Process* ) ), SLOT( slotReceivedStdout( Process* ) ) );
-    connect( script, SIGNAL( processExited( Process* ) ), SLOT( scriptFinished( Process* ) ) );
+    connect( script, SIGNAL( receivedStderr( AmarokProcess* ) ), SLOT( slotReceivedStderr( AmarokProcess* ) ) );
+    connect( script, SIGNAL( receivedStdout( AmarokProcess* ) ), SLOT( slotReceivedStdout( AmarokProcess* ) ) );
+    connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
 
     script->start( );
-    if( script->error() != ProcIO::FailedToStart )
+    if( script->error() != AmarokProcIO::FailedToStart )
     {
         if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
         {
@@ -719,14 +719,14 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
 /* This is just a workaround, some scripts crash for some people if stdout is not handled. */
 void
-ScriptManager::slotReceivedStdout( Process *process )
+ScriptManager::slotReceivedStdout( AmarokProcess *process )
 {
     debug() << QString::fromLatin1( process->readAllStandardOutput() );
 }
 
 
 void
-ScriptManager::slotReceivedStderr( Process* process )
+ScriptManager::slotReceivedStderr( AmarokProcess* process )
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;
@@ -744,7 +744,7 @@ ScriptManager::slotReceivedStderr( Process* process )
 
 
 void
-ScriptManager::scriptFinished( Process* process ) //SLOT
+ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
 {
     // Look up script entry in our map
     ScriptMap::Iterator it;
@@ -753,7 +753,7 @@ ScriptManager::scriptFinished( Process* process ) //SLOT
         if( it.value().process == process ) break;
 
     // Check if there was an error on exit
-    if( process->error() != Process::Crashed && process->exitStatus() != 0 )
+    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 )
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() )
                                            ,it.value().log );
 
@@ -817,7 +817,7 @@ ScriptManager::ensureScoreScriptRunning()
 
 
 void
-ScriptManager::terminateProcess( ProcIO** proc )
+ScriptManager::terminateProcess( AmarokProcIO** proc )
 {
     if( *proc ) {
         (*proc)->kill(); // Sends SIGTERM
@@ -832,7 +832,7 @@ void
 ScriptManager::notifyScripts( const QString& message )
 {
     foreach( const ScriptItem &item, m_scripts ) {
-        ProcIO* const proc = item.process;
+        AmarokProcIO* const proc = item.process;
         if( proc ) proc->writeStdin( message );
     }
 }

@@ -21,7 +21,7 @@
 #include "DynamicScriptableServiceMeta.h"
 
 #include "collection/support/MemoryMatcher.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 
 #include "debug.h"
 
@@ -38,7 +38,7 @@ struct DynamicScriptableQueryMaker::Private {
     bool returnDataPtrs;
     QString callbackString;
     int parentId;
-    Process * scriptProcess;
+    AmarokProcess * scriptProcess;
 };
 
 
@@ -272,7 +272,7 @@ void DynamicScriptableQueryMaker::fetchAlbums()
         args << "--populate ";
         args << "-1";
 
-        d->scriptProcess = new Process();
+        d->scriptProcess = new AmarokProcess();
         d->scriptProcess->setProgram( m_script, args );
         connect ( d->scriptProcess, SIGNAL( finished ( int ) ), this, SLOT( slotScriptComplete() ) );
         d->scriptProcess->start();
@@ -305,7 +305,7 @@ void DynamicScriptableQueryMaker::fetchTracks()
         args << QString::number( d->parentId ) + " ";
         args << d->callbackString;
 
-        d->scriptProcess = new Process();
+        d->scriptProcess = new AmarokProcess();
         d->scriptProcess->setProgram( m_script, args );
         connect ( d->scriptProcess, SIGNAL( finished ( int ) ), this, SLOT( slotScriptComplete() ) );
         d->scriptProcess->start();

@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Process.h"    
+#include "AmarokProcess.h"    
 #include "debug.h"
 
 #include <QTextCodec>
@@ -21,7 +21,7 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
-Process::Process(QObject *parent) 
+AmarokProcess::AmarokProcess(QObject *parent) 
     : KProcess(parent), lowPriority(false) 
 {
     connect( this, SIGNAL( finished( int ) ), this, SLOT( finished() ) );
@@ -36,7 +36,7 @@ Process::Process(QObject *parent)
  * See bug #103750 for more information.
  */
 void
-Process::setupChildProcess()
+AmarokProcess::setupChildProcess()
 {
     KProcess::setupChildProcess();
 
@@ -53,7 +53,7 @@ Process::setupChildProcess()
 }
 
 void
-Process::start()
+AmarokProcess::start()
 {
     KProcess::start();
 
@@ -64,37 +64,37 @@ Process::start()
 }
 
 void
-Process::finished() // SLOT
+AmarokProcess::finished() // SLOT
 {
     emit processExited( this );
 }
 
 void
-Process::readyReadStandardOutput() // SLOT
+AmarokProcess::readyReadStandardOutput() // SLOT
 {
     emit receivedStdout( this );
 }
 
 void
-Process::readyReadStandardError() // SLOT
+AmarokProcess::readyReadStandardError() // SLOT
 {
     emit receivedStderr( this );
 }
 
-// ProcIO
-ProcIO::ProcIO ( )
-    : codec(QTextCodec::codecForName( "UTF-8" ))
+// AmarokProcIO
+AmarokProcIO::AmarokProcIO ( QObject *parent )
+    : AmarokProcess( parent ), codec( QTextCodec::codecForName( "UTF-8" ) )
 {
 }
 
 bool 
-ProcIO::writeStdin (const QString &line)
+AmarokProcIO::writeStdin (const QString &line)
 {
     return write( codec->fromUnicode( line + "\n" ) ) > 0;
 }
 
 int 
-ProcIO::readln (QString &line)
+AmarokProcIO::readln (QString &line)
 {
     QByteArray bytes = readLine();
     if (bytes.length() == 0)
@@ -110,7 +110,7 @@ ProcIO::readln (QString &line)
 }
 
 void
-ProcIO::start()
+AmarokProcIO::start()
 {
     connect (this, SIGNAL (readyReadStandardOutput()), this, SLOT (readyReadStandardOutput()));
 
@@ -118,24 +118,25 @@ ProcIO::start()
 }
 
 void 
-ProcIO::readyReadStandardOutput()
+AmarokProcIO::readyReadStandardOutput()
 {
     if( canReadLine() )
         emit readReady( this );
 }
 
-ShellProcess &
-ShellProcess::operator<<(const QString& arg)
+// AmarokShellProcess
+AmarokShellProcess &
+AmarokShellProcess::operator<<(const QString& arg)
 {
     if( program().isEmpty() )
         setShellCommand( arg );
     else
-        Process::operator<<( arg );
+        AmarokProcess::operator<<( arg );
     return *this;
 }
 
-ShellProcess &
-ShellProcess::operator<<(const QStringList& args)
+AmarokShellProcess &
+AmarokShellProcess::operator<<(const QStringList& args)
 {
     foreach( QString arg, args )
         *this << arg;

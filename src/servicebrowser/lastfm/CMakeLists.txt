@@ -1,5 +1,9 @@
 
-        include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
+        include_directories( 
+        ${CMAKE_CURRENT_SOURCE_DIR}/../..
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
+        ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES} )
@@ -27,6 +31,8 @@
         endif (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
 
         set(amarok_service_lastfm_PART_SRCS
+            LastFmService.cpp
+        
             core/AudioController.cpp
             core/LastFmSettings.cpp
             core/MooseCommon.cpp
@@ -85,6 +91,7 @@
             libUnicorn/WebService/XmlRpc.cpp
             libUnicorn/WebService.cpp
             libUnicorn/md5/md5.c
+            
             ${amarok_service_lastfm_extra_sources}
         )
         

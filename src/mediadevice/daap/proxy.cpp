@@ -22,7 +22,7 @@
 #include "daapclient.h"
 #include "daapreader/authentication/hasher.h"
 #include "debug.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 #include "proxy.h"
 
 #include <kapplication.h>
@@ -41,7 +41,7 @@ using namespace Daap;
 */
 Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     : QObject(client, name)
-    , m_proxy( new Amarok::ProcIO() )
+    , m_proxy( new AmarokProcIO() )
 {
     DEBUG_BLOCK
     //find the request id and increment it
@@ -66,7 +66,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     delete socket;
     m_proxyUrl = KUrl( QString("http://localhost:%1/daap.mp3").arg( port ) );
     //start proxy
-    m_proxy->setOutputChannelMode( ProcIO::MergedChannels );
+    m_proxy->setOutputChannelMode( AmarokProcIO::MergedChannels );
     *m_proxy << "amarok_proxy.rb";
     *m_proxy << "--daap";
     *m_proxy << QString::number( port );
@@ -77,7 +77,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     *m_proxy << Amarok::proxyForUrl( realStream.url() );
 
     m_proxy->start();
-    if( m_proxy->error() == ProcIO::FailedToStart ) {
+    if( m_proxy->error() == AmarokProcIO::FailedToStart ) {
         error() << "Failed to start amarok_proxy.rb";
         return;
     }
@@ -90,7 +90,7 @@ Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     }
     debug() << "started amarok_proxy.rb --daap " << QString::number( port ) << ' ' << realStream.url() << ' ' << AmarokConfig::soundSystem() << ' ' << hash << ' ' << revisionId;
     connect( m_proxy, SIGNAL( finished( int ) ), this, SLOT( playbackStopped() ) );
-    connect( m_proxy, SIGNAL( readReady( ProcIO* ) ), this, SLOT( readProxy() ) );
+    connect( m_proxy, SIGNAL( readReady( AmarokProcIO* ) ), this, SLOT( readProxy() ) );
 }
 
 Proxy::~Proxy()

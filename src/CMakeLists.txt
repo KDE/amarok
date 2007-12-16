@@ -353,6 +353,7 @@ set(amaroklib_LIB_SRCS
     ${mediadevice_SRCS}
     actionclasses.cpp
     AmarokMimeData.cpp
+    AmarokProcess.cpp
     app.cpp
     atomicstring.cpp
     collectiondb.cpp
@@ -397,7 +398,6 @@ set(amaroklib_LIB_SRCS
     pluginmanager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
-	Process.cpp
     querybuilder.cpp
     refreshimages.cpp
     scriptmanager.cpp

@@ -287,7 +287,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 
 #include <KStandardDirs>
@@ -475,7 +475,7 @@ MoodServer::slotNewJob( void )
   // Write to outfile.mood.tmp so that new Moodbar instances
   // don't think the mood data exists while the analyzer is
   // running.  Then rename the file later.
-  m_currentProcess = new Process( this );
+  m_currentProcess = new AmarokProcess( this );
   m_currentProcess->setLowPriority( true );  // Nice the process
   *m_currentProcess << KStandardDirs::findExe( "moodbar" ) << "-o"
                     << (m_currentData.m_outfile + ".tmp")
@@ -488,9 +488,9 @@ MoodServer::slotNewJob( void )
   // it) since otherwise the child process crashes every time in
   // K3Process::start() (but only when started from the loader!).  I
   // have no idea why, but I imagine it's a bug in KDE.
-  m_currentProcess->setOutputChannelMode( ProcIO::MergedChannels );
+  m_currentProcess->setOutputChannelMode( AmarokProcess::MergedChannels );
   m_currentProcess->start( );
-  if( m_currentProcess->error() ==  Process::FailedToStart )
+  if( m_currentProcess->error() == AmarokProcess::FailedToStart )
     {
       // If we have an error starting the process, it's never
       // going to work, so call moodbarBroken()
@@ -518,7 +518,7 @@ MoodServer::slotJobCompleted( int )
     m_mutex.lock();
 
     ReturnStatus returnval;
-    if( m_currentProcess->error() == Process::Crashed )
+    if( m_currentProcess->error() == AmarokProcess::Crashed )
       returnval = Crash;
     else
       returnval = (ReturnStatus) m_currentProcess->exitStatus();

@@ -18,7 +18,7 @@
 #include <QString>          //stack allocated
 
 
-class Process;
+class AmarokProcess;
 
 class QPaintEvent;
 class QPoint;
@@ -90,7 +90,7 @@ namespace Vis
 
             virtual void stateChange( bool state );
 
-            Process    *m_proc;
+            AmarokProcess    *m_proc;
             int         m_sockfd;
             const char *m_command;
         };
@@ -99,8 +99,8 @@ namespace Vis
         void rightButton( Q3ListViewItem*, const QPoint&, int );
 
     public slots:
-        void processExited( Process* );
-        void receivedStdout( Process* );
+        void processExited( AmarokProcess* );
+        void receivedStdout( AmarokProcess* );
     };
 } //namespace VIS
 

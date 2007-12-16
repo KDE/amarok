@@ -20,7 +20,7 @@
 #ifndef AMAROK_SQL_SCANMANAGER_H
 #define AMAROK_SQL_SCANMANAGER_H
 
-#include "Process.h"
+#include "AmarokProcess.h"
 
 #include <QMutex>
 #include <QObject>
@@ -58,7 +58,7 @@ class ScanManager : public QObject
     private:
         SqlCollection *m_collection;
 
-        Process *m_scanner;
+        AmarokProcess *m_scanner;
         XmlParseJob *m_parser;
 
         int m_restartCount;

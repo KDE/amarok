@@ -110,7 +110,7 @@ private:
 };
 
 
-class Process;
+class AmarokProcess;
 
 // For internal use only (well, mostly)
 class MoodServer : public QObject
@@ -172,7 +172,7 @@ private:
 
   Q3ValueList<ProcData> m_jobQueue;
   bool m_moodbarBroken;
-  Process *m_currentProcess;
+  AmarokProcess *m_currentProcess;
   ProcData m_currentData;
   mutable QMutex m_mutex;
 };

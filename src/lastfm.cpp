@@ -23,7 +23,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 #include "ContextStatusBar.h"      //showError()
 
 #include <q3http.h>
@@ -456,8 +456,8 @@ WebService::handshake( const QString& username, const QString& password )
 
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
-    m_server = new ProcIO();
-    m_server->setOutputChannelMode( ProcIO::MergedChannels );
+    m_server = new AmarokProcIO();
+    m_server->setOutputChannelMode( AmarokProcIO::MergedChannels );
     *m_server << "amarok_proxy.rb";
     *m_server << "--lastfm";
     *m_server << QString::number( port );
@@ -475,7 +475,7 @@ WebService::handshake( const QString& username, const QString& password )
         if( line == "AMAROK_PROXY: startup" ) break;
     }
 
-    connect( m_server, SIGNAL( readReady( ProcIO* ) ), this, SLOT( readProxy() ) );
+    connect( m_server, SIGNAL( readReady( AmarokProcIO* ) ), this, SLOT( readProxy() ) );
     connect( m_server, SIGNAL( finished( int ) ), Controller::instance(), SLOT( playbackStopped() ) );
 
     return true;

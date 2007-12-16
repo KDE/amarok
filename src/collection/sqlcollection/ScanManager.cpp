@@ -58,7 +58,7 @@ ScanManager::startFullScan()
         debug() << "scanner already running";
         return;
     }
-    m_scanner = new Process( this );
+    m_scanner = new AmarokProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
@@ -89,7 +89,7 @@ void ScanManager::startIncrementalScan()
         debug() << "scanner already running";
         return;
     }
-    m_scanner = new Process( this );
+    m_scanner = new AmarokProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << getDirsToScan();
@@ -290,7 +290,7 @@ ScanManager::handleRestart()
             m_parser = 0;
         }
         delete m_scanner;
-        m_scanner = new Process( this );
+        m_scanner = new AmarokProcess( this );
         *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
         if( m_isIncremental )
         {

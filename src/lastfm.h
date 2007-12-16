@@ -32,7 +32,7 @@
 
 class KLineEdit;
 class KAction;
-class ProcIO;
+class AmarokProcIO;
 class KUrl;
 
 namespace KIO { class Job; }
@@ -148,7 +148,7 @@ namespace LastFm
             **/
             void verifyUser( const QString& user, const QString& pass );
 
-            ProcIO* getServer() { return m_server; }
+            AmarokProcIO* getServer() { return m_server; }
             QString proxyUrl() { return m_proxyUrl; }
 
             void showError( int code, QString message = QString() );
@@ -203,7 +203,7 @@ namespace LastFm
             bool    m_subscriber;   // self explanatory
 
             QString    m_proxyUrl;
-            ProcIO     *m_server;
+            AmarokProcIO *m_server;
             MetaBundle m_metaBundle;
 
             QList<QObject*> m_metaDataObservers; //temporary hack

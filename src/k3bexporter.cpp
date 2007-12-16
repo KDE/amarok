@@ -19,7 +19,7 @@
 #include "amarok.h"
 
 #include "querybuilder.h"
-#include "Process.h"
+#include "AmarokProcess.h"
 
 #include <KLocale>
 #include <KMessageBox>

@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
-#include "Process.h"
+#include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 
 #include <KDialog>
@@ -202,7 +202,7 @@ Vis::Selector::Selector( QWidget *parent )
 }
 
 void
-Vis::Selector::processExited( Process *proc )
+Vis::Selector::processExited( AmarokProcess *proc )
 {
     for( Item *item = static_cast<Item*>( firstChild() ); item; item = static_cast<Item*>( item->nextSibling() ) )
         if( item->m_proc == proc )
@@ -211,7 +211,7 @@ Vis::Selector::processExited( Process *proc )
 
 // Shouldn't be necessary, but it's part of a fix to make libvisual work again when running with amarok binary
 void
-Vis::Selector::receivedStdout( Process *proc )
+Vis::Selector::receivedStdout( AmarokProcess *proc )
 {
      debug() << QString::fromLatin1( proc->readAllStandardOutput() );
 }
@@ -244,7 +244,7 @@ Vis::Selector::rightButton( Q3ListViewItem* qitem, const QPoint& pos, int )
     Q3PopupMenu menu( this );
     menu.insertItem( i18n( "Fullscreen" ), 0 );
 
-    if( !item->m_proc || item->m_proc->state() == Process::Running )
+    if( !item->m_proc || item->m_proc->state() == AmarokProcess::Running )
         menu.setItemEnabled( 0, false );
 
     switch( menu.exec( pos ) ) {
@@ -290,18 +290,18 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 {
     switch( state() ) {
     case On:
-        m_proc = new Process();
-        m_proc->setOutputChannelMode( Process::MergedChannels );
+        m_proc = new AmarokProcess();
+        m_proc->setOutputChannelMode( AmarokProcess::MergedChannels );
        *m_proc << KStandardDirs::findExe( m_command )
                << Selector::instance()->m_server->path()
                << text( 0 );
 
-        connect( m_proc, SIGNAL(processExited( Process* )), listView(), SLOT(processExited( Process* )) );
+        connect( m_proc, SIGNAL(processExited( AmarokProcess* )), listView(), SLOT(processExited( AmarokProcess* )) );
         // Shouldn't be necessary, but make visualizations work again when running with amarok binary
-        connect( m_proc, SIGNAL(readyReceiveStandardOutput( ) ), listView(), SLOT(receivedStdout ( Process* ) ) );
+        connect( m_proc, SIGNAL(readyReceiveStandardOutput( ) ), listView(), SLOT(receivedStdout ( AmarokProcess* ) ) );
         debug() << "Starting visualization..\n";
         m_proc->start();
-        if( m_proc->error() == Process::UnknownError ) // success
+        if( m_proc->error() == AmarokProcess::UnknownError ) // success
             break;
 
         //ELSE FALL_THROUGH
