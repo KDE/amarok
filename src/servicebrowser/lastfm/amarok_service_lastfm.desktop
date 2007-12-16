@@ -25,3 +25,5 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-Library=amarok_service_lastfm
+X-KDE-PluginInfo-Name=amarok_service_lastfm

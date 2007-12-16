@@ -1,0 +1,12 @@
+[Desktop Entry]
+Icon=amarok_audioscrobbler
+Type=Service
+ServiceTypes=Amarok/Plugin
+X-KDE-ServiceTypes=KCModule
+
+X-KDE-Library=kcm_amarok_service_lastfm
+X-KDE-ParentApp=amarok_service_lastfm
+X-KDE-ParentComponents=amarok_service_lastfm
+
+Name=Last.fm Service Config
+Comment=Sets up Last.fm username and password

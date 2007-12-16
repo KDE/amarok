@@ -28,7 +28,7 @@
     #define LOG(x, y)
 #endif
 
-#ifdef MSVC
+#ifdef __MSVC
 #include <crtdbg.h> // for _ASSERT
 #else
 #include <assert.h>
