@@ -246,7 +246,7 @@ PhononEngine::slotMetaDataChanged()
     {
         QStringList data = m_mediaObject->metaData( "LENGTH" );
         if( !data.isEmpty() )
-            meta.insert( Meta::valArtist, data.first() );
+            meta.insert( Meta::valLength, data.first() );
     }
     emit metaData( meta );
 }
