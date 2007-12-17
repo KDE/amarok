@@ -14,6 +14,16 @@
 #ifndef LASTFMMOOSECOMMON_H
 #define LASTFMMOOSECOMMON_H
 
+// try to convert last.fm's debug output as best we can
+#define DEBUG_PREFIX "lastfm"
+#include <qdebug.h>
+#include "logger.h"
+#include "debug.h"
+#ifdef qDebug
+#undef qDebug
+#endif
+#define qDebug() debug()
+
 #include "amarok.h"
 
 namespace MooseUtils

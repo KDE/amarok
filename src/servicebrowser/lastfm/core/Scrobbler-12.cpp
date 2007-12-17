@@ -832,7 +832,7 @@ ScrobblerHandshakeRequest::request()
     QString query_string = QString() +
                             "?hs=true" +
                             "&p=1.2" + //protocol version
-                            "&c=ass" + //AudioScrobbler Service
+                            "&c=ark" + //Amarok
                             "&v=" + m_init.client_version +
                             "&u=" + QString(QUrl::toPercentEncoding( m_init.username )) +
                             "&t=" + timestamp +

@@ -15,6 +15,7 @@
 #define LASTFMSETTINGS_H
 
 #include "StationUrl.h"
+#include "MooseCommon.h"
 
 #include <KConfigGroup>
 

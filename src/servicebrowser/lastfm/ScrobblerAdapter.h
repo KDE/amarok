@@ -11,39 +11,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFMSERVICE_H
-#define LASTFMSERVICE_H
+#ifndef LASTFMSCROBBLERADAPTER_H
+#define LASTFMSCROBBLERADAPTER_H
 
-#include "../servicebase.h"
+#include "engineobserver.h"
+#include "core/Scrobbler-12.h"
 
-class ScrobblerAdapter;
+#include <QVariant>
 
-class LastFmServiceFactory : public ServiceFactory
+class ScrobblerAdapter : public QObject, public EngineObserver
 {
     Q_OBJECT
 
 public:
-    LastFmServiceFactory() {}
-    virtual ~LastFmServiceFactory() {}
+    ScrobblerAdapter( QObject *parent, const QString &username, const QString &password );
+    virtual ~ScrobblerAdapter();
 
-    virtual void init();
-    virtual QString name();
-    virtual KPluginInfo info();
-    virtual KConfigGroup config();
-};
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+    virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void engineTrackPositionChanged( long position , bool userSeek );
 
-class LastFmService : public ServiceBase
-{
-    Q_OBJECT
-
-public:
-    LastFmService( const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar );
-    virtual ~LastFmService();
-
-    virtual void polish();
+private slots:
+    void statusChanged( int statusCode, QVariant data );
 
 private:
-    ScrobblerAdapter *m_scrobbler;
+    ScrobblerManager *m_manager;
+    TrackInfo m_current;
+    long m_lastPosition;
+    long m_totalPlayed;
+    QString m_username;
 };
 
-#endif // LASTFMSERVICE_H
+#endif // LASTFMSCROBBLERADAPTER_H

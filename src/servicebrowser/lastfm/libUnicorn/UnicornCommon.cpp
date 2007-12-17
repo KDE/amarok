@@ -21,7 +21,7 @@
 #include "UnicornCommon.h"
 
 #include "logger.h"
-#include "md5/md5.h"
+#include <KMD5>
 
 #include <QMap>
 #include <QUrl>
@@ -45,13 +45,8 @@ namespace UnicornUtils
 QString
 md5Digest( const char *token )
 {
-    md5_state_t md5state;
-    unsigned char md5pword[16];
-
-    md5_init( &md5state );
-    md5_append( &md5state, (unsigned const char *)token, (int)strlen( token ) );
-    md5_finish( &md5state, md5pword );
-
+    KMD5 md5( token );
+    const KMD5::Digest &md5pword = md5.rawDigest();
     char tmp[33];
     strncpy( tmp, "\0", sizeof(tmp) );
     for ( int j = 0; j < 16; j++ )

@@ -13,6 +13,7 @@
 
 #include "LastFmService.h"
 #include "LastFmServiceConfig.h"
+#include "ScrobblerAdapter.h"
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -21,7 +22,9 @@ AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
 void 
 LastFmServiceFactory::init()
 {
-    ServiceBase* service = new LastFmService( "Last.fm" );
+    LastFmServiceConfig config;
+
+    ServiceBase* service = new LastFmService( "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
     emit newService( service );
 }
 
@@ -49,11 +52,12 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( const QString &name )
+LastFmService::LastFmService( const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
     : ServiceBase( name )
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( Amarok::icon( "amarok_audioscrobbler" ) ) );
+    m_scrobbler = scrobble ? new ScrobblerAdapter( this, username, password ) : 0;
 }
 
 

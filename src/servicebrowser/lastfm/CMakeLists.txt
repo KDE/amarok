@@ -36,6 +36,7 @@
             LastFmService.cpp
             LastFmServiceConfig.cpp
             LastFmSettings.cpp
+            ScrobblerAdapter.cpp
         
             core/Radio.cpp
             core/RadioPlaylist.cpp
@@ -90,7 +91,6 @@
             libUnicorn/WebService/VerifyUserRequest.cpp
             libUnicorn/WebService/XmlRpc.cpp
             libUnicorn/WebService.cpp
-            libUnicorn/md5/md5.c
             
             ${amarok_service_lastfm_extra_sources}
         )
