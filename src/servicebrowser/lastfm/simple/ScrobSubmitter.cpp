@@ -39,6 +39,8 @@
 #include <sstream>
 #include <string>
 
+#include "amarok.h"
+
 #ifndef _tcsclen
 int _tcsclen(const TCHAR *str)
 {
@@ -411,24 +413,7 @@ ScrobSubmitter::GetVersion()
 string
 ScrobSubmitter::GetLogPath()
 {
-    // This might not work on Win98 and earlier but we're not officially
-    // supporting them anyway. Upgrading to IE5 will solve the problem.
- //   char acPath[MAX_PATH];
- //   HRESULT h = SHGetFolderPathA( NULL, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
- //                                 NULL, 0, acPath );
-	//std::string sPath;
-	//if ( h == S_OK )
- //   {
- //       sPath = acPath;
-	//	sPath += "\\Last.fm\\Client";
- //   }
- //   else
- //   {
-	//	sPath = "C:\\Last.fm\\Client";
- //   }
-
-    // FIXME
-    return ".";
+    return std::string(Amarok::saveLocation("scroblog/").toLocal8Bit());
 }
 
 /******************************************************************************
