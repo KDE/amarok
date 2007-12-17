@@ -32,7 +32,7 @@ protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "sv
 
 name         = "amarok"
 folder       = "amarok-#{version}"
-l10n_branch  = true
+# l10n_branch  = true
 
 
 # Prevent using unsermake
@@ -170,7 +170,7 @@ Dir.chdir( "amarok" )
 FileUtils.mv( "AUTHORS", ".." )
 FileUtils.mv( "ChangeLog", ".." )
 FileUtils.mv( "COPYING", ".." )
-FileUtils.mv( "COPYING.LGPL", ".." )
+FileUtils.mv( "COPYING.LIB", ".." )
 FileUtils.mv( "COPYING-DOCS", ".." )
 FileUtils.mv( "INSTALL", ".." )
 FileUtils.mv( "README", ".." )
