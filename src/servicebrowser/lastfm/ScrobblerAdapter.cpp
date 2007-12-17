@@ -42,7 +42,7 @@ ScrobblerAdapter::~ScrobblerAdapter()
 
 
 void 
-ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData*/, bool trackChanged )
 {
     debug() << "engineNewMetaData: trackChanged=" << trackChanged;
 
@@ -84,6 +84,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 void 
 ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
+    // note: in the 1.2 protocol submits are always done at end of file
     debug() << "engineTrackEnded: reason=" << reason;
     m_totalPlayed += finalPosition - m_lastPosition;
     if( m_totalPlayed >= trackLength / 2 && !m_current.isEmpty() )
@@ -98,16 +99,16 @@ ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QS
 void 
 ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 {
+    // note: in the 1.2 protocol, it's OK to submit if the user seeks
+    // so long as they meet the half file played requirement.
     if( !userSeek )
-    {
         m_totalPlayed += position - m_lastPosition;
-        m_lastPosition = position;
-    }
+    m_lastPosition = position;
 }
 
 
 void
-ScrobblerAdapter::statusChanged( int statusCode, QVariant data )
+ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
 {
     debug() << "statusChanged: statusCode=" << statusCode;
 }
