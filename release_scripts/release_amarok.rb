@@ -32,7 +32,7 @@ protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "sv
 
 name         = "amarok"
 folder       = "amarok-#{version}"
-# l10n_branch  = true
+l10n_branch  = true
 
 
 # Prevent using unsermake
@@ -50,7 +50,7 @@ Dir.chdir( folder )
 branch="trunk"
 
 if useStableBranch
-  branch = "branches/stable/"
+  branch = "branches/stable"
   `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
   Dir.chdir( "multimedia" )
 elsif not tag.empty?()
