@@ -11,37 +11,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFMSERVICE_H
-#define LASTFMSERVICE_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
-#include "../servicebase.h"
+#include "LastFmSettings.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-class LastFmServiceFactory : public ServiceFactory
-{
-    Q_OBJECT
-
-public:
-    LastFmServiceFactory() {}
-    virtual ~LastFmServiceFactory() {}
-
-    virtual void init();
-    virtual QString name();
-    virtual KPluginInfo info();
-    virtual KConfigGroup config();
-};
-
-class LastFmService : public ServiceBase
-{
-    Q_OBJECT
-
-public:
-    LastFmService( const QString &name );
-    virtual ~LastFmService();
-
-    virtual void polish();
-};
-
-#endif // LASTFMSERVICE_H
+#endif // SETTINGS_H

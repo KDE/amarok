@@ -1,5 +1,6 @@
 
         include_directories( 
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../..
         ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
         ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
@@ -31,11 +32,11 @@
         endif (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
 
         set(amarok_service_lastfm_PART_SRCS
+            AudioController.cpp
             LastFmService.cpp
+            LastFmServiceConfig.cpp
+            LastFmSettings.cpp
         
-            core/AudioController.cpp
-            core/LastFmSettings.cpp
-            core/MooseCommon.cpp
             core/Radio.cpp
             core/RadioPlaylist.cpp
             core/Scrobbler-12.cpp
@@ -50,7 +51,6 @@
             libUnicorn/logger.cpp
             libUnicorn/metadata.cpp
             libUnicorn/RedirectHttp.cpp
-            libUnicorn/Settings.cpp
             libUnicorn/StationUrl.cpp
             libUnicorn/StopWatch.cpp
             libUnicorn/TrackInfo.cpp

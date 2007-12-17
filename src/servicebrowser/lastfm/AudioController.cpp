@@ -11,37 +11,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFMSERVICE_H
-#define LASTFMSERVICE_H
+#include "AudioController.h"
+#include "core\Radio.h"
 
-#include "../servicebase.h"
+// TODO: implement
+AudioController::AudioController( QObject *parent ) {}
+AudioController::~AudioController() {}
+void AudioController::setVolume( int vol ) {}
+void AudioController::play() {}
+void AudioController::play( RadioPlaylist& playlist ) {}
+void AudioController::play( const QUrl& trackUrl ) {}
+void AudioController::play( const TrackInfo& track ) {}
+void AudioController::stop() {}
+void AudioController::loadNext() {}
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-class LastFmServiceFactory : public ServiceFactory
+namespace The
 {
-    Q_OBJECT
-
-public:
-    LastFmServiceFactory() {}
-    virtual ~LastFmServiceFactory() {}
-
-    virtual void init();
-    virtual QString name();
-    virtual KPluginInfo info();
-    virtual KConfigGroup config();
-};
-
-class LastFmService : public ServiceBase
-{
-    Q_OBJECT
-
-public:
-    LastFmService( const QString &name );
-    virtual ~LastFmService();
-
-    virtual void polish();
-};
-
-#endif // LASTFMSERVICE_H
+    Radio &radio()
+    {
+        static Radio radio( 0 );
+        return radio;
+    }
+}

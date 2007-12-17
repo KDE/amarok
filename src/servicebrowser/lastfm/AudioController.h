@@ -11,37 +11,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFMSERVICE_H
-#define LASTFMSERVICE_H
+#ifndef LASTFMAUDIOCONTROLLER_H
+#define LASTFMAUDIOCONTROLLER_H
 
-#include "../servicebase.h"
+#include "core/RadioPlaylist.h"
+#include "TrackInfo.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
+#include <QStringList>
 
-class LastFmServiceFactory : public ServiceFactory
+class AudioController : public QObject
 {
     Q_OBJECT
 
 public:
-    LastFmServiceFactory() {}
-    virtual ~LastFmServiceFactory() {}
+    AudioController( QObject *parent = 0 );
+    virtual ~AudioController();
 
-    virtual void init();
-    virtual QString name();
-    virtual KPluginInfo info();
-    virtual KConfigGroup config();
+    void setVolume( int vol );
+    void play();
+    void play( RadioPlaylist& playlist );
+    void play( const QUrl& trackUrl );
+    void play( const TrackInfo& track );
+    void stop();
+    void loadNext();
+
+    const QString& currentTrackUrl() const { return m_currentTrackUrl; }
+
+    QStringList soundSystems();
+    QStringList devices();
+
+private:
+    QString m_currentTrackUrl;
 };
 
-class LastFmService : public ServiceBase
-{
-    Q_OBJECT
-
-public:
-    LastFmService( const QString &name );
-    virtual ~LastFmService();
-
-    virtual void polish();
-};
-
-#endif // LASTFMSERVICE_H
+#endif // LASTFMAUDIOCONTROLLER_H

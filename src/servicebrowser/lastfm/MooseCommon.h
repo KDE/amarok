@@ -11,37 +11,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LASTFMSERVICE_H
-#define LASTFMSERVICE_H
+#ifndef LASTFMMOOSECOMMON_H
+#define LASTFMMOOSECOMMON_H
 
-#include "../servicebase.h"
+#include "Amarok.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
-
-class LastFmServiceFactory : public ServiceFactory
+namespace MooseUtils
 {
-    Q_OBJECT
+    inline QString savePath( const QString &file ) { return Amarok::saveLocation() + file; }
+}
 
-public:
-    LastFmServiceFactory() {}
-    virtual ~LastFmServiceFactory() {}
-
-    virtual void init();
-    virtual QString name();
-    virtual KPluginInfo info();
-    virtual KConfigGroup config();
-};
-
-class LastFmService : public ServiceBase
-{
-    Q_OBJECT
-
-public:
-    LastFmService( const QString &name );
-    virtual ~LastFmService();
-
-    virtual void polish();
-};
-
-#endif // LASTFMSERVICE_H
+#endif // LASTFMMOOSECOMMON_H
