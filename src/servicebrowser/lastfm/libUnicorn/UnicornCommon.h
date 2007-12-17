@@ -183,6 +183,9 @@ namespace UnicornUtils
     UNICORN_DLLEXPORT QString
     appDataPath();
 
+    UNICORN_DLLEXPORT QString
+    getOSVersion();
+
 }
 
 

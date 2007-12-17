@@ -251,30 +251,35 @@ CachedHttp::request( const QHttpRequestHeader& header, const QByteArray& data, Q
 
 
 void
-CachedHttp::headerReceived ( const QHttpResponseHeader & resp )
+CachedHttp::headerReceived( const QHttpResponseHeader& resp )
 {
     m_statuscode = resp.statusCode();
 
     m_expireDate = 0;
-    if (resp.value("expires") != "")
+    if ( !resp.value( "expires" ).isEmpty() )
     {
-        QString expire = resp.value("expires");
-        QStringList datelist = expire.split(" "); //Split the datestring.
-        datelist.pop_back(); //Pop the timezone, always GMT
-        datelist.pop_front(); //Pop the weekday (Mon, Tue...), we relay on the date.
-        QString expdate = datelist.join(" ");
+        QString expire = resp.value( "expires" );
+        QStringList datelist = expire.split( " " ); //Split the datestring
 
-        m_expireDate = QDateTime::fromString(expdate,"dd MMM yyyy hh:mm:ss").toTime_t();
-        if (m_expireDate == -1) //If it's -1 we need to change it to 0 so we can compare it to a time_t (uint)
+        if ( datelist.count() == 6 ) // 6 items in a regular expire-date
+        {
+            datelist.removeLast(); //Pop the timezone, always GMT
+            datelist.removeFirst(); //Pop the weekday (Mon, Tue...), we rely on the date
+            QString expdate = datelist.join( " " );
+
+            m_expireDate = QDateTime::fromString( expdate, "dd MMM yyyy hh:mm:ss" ).toTime_t();
+        }
+
+        if ( m_expireDate == -1 ) //If it's -1 we need to change it to 0 so we can compare it to a time_t (uint)
         {
             m_expireDate = 0;
         }
     }
 
-    if ( (unsigned int)m_expireDate < QDateTime::currentDateTime().toTime_t()) //If the expiredate is not set, or if the expiredate is in the past.
+    if ( (unsigned int)m_expireDate < QDateTime::currentDateTime().toTime_t() ) //If the expiredate is not set, or if the expiredate is in the past.
     {
-        LOG(Severity::Warning, "The webservice " + objectName() + " does not set expiredate or the expiredate is in the past.\n");
-        m_expireDate = QDateTime::currentDateTime().addDays(7).toTime_t();
+        LOG( Severity::Warning, "The webservice " + objectName() + " does not set expiredate or the expiredate is in the past.\n" );
+        m_expireDate = QDateTime::currentDateTime().addDays( 7 ).toTime_t();
     }
 }
 

@@ -80,7 +80,7 @@ class UNICORN_DLLEXPORT CachedHttp : public RedirectHttp
     private slots:
         void requestDone( bool error );
         void dataFinished( int id, bool error );
-        void headerReceived ( const QHttpResponseHeader & resp );
+        void headerReceived( const QHttpResponseHeader & resp );
         void getFromCache();
 
     private:

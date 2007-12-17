@@ -345,4 +345,53 @@ appDataPath()
 }
 
 
+QString
+getOSVersion()
+{
+    QString version;
+
+    #ifdef Q_WS_WIN
+    switch (QSysInfo::WindowsVersion)
+    {
+        case QSysInfo::WV_32s:        version = "Windows 3.1 with Win32s"; break;
+        case QSysInfo::WV_95:         version = "Windows 95"; break;
+        case QSysInfo::WV_98:         version = "Windows 98"; break;
+        case QSysInfo::WV_Me:         version = "Windows Me"; break;
+        case QSysInfo::WV_DOS_based:  version = "MS-DOS-based Windows"; break;
+
+        case QSysInfo::WV_NT:         version = "Windows NT"; break;
+        case QSysInfo::WV_2000:       version = "Windows 2000"; break;
+        case QSysInfo::WV_XP:         version = "Windows XP"; break;
+        case QSysInfo::WV_2003:       version = "Windows Server 2003"; break;
+        case QSysInfo::WV_VISTA:      version = "Windows Vista"; break;
+        case QSysInfo::WV_NT_based:   version = "NT-based Windows"; break;
+
+        case QSysInfo::WV_CE:         version = "Windows CE"; break;
+        case QSysInfo::WV_CENET:      version = "Windows CE.NET"; break;
+        case QSysInfo::WV_CE_based:   version = "CE-based Windows"; break;
+
+        default:                      version = "Qt doesn't know"; break;
+    }
+    #elif defined Q_WS_MAC
+    switch (QSysInfo::MacintoshVersion)
+    {
+        case QSysInfo::MV_Unknown:    version = "Unknown Mac"; break;
+        case QSysInfo::MV_9:          version = "Mac OS 9"; break;
+        case QSysInfo::MV_10_0:       version = "Mac OS X 10.0"; break;
+        case QSysInfo::MV_10_1:       version = "Mac OS X 10.1"; break;
+        case QSysInfo::MV_10_2:       version = "Mac OS X 10.2"; break;
+        case QSysInfo::MV_10_3:       version = "Mac OS X 10.3"; break;
+        case QSysInfo::MV_10_4:       version = "Mac OS X 10.4"; break;
+        case QSysInfo::MV_10_5:       version = "Mac OS X 10.5"; break;
+        
+        default:                      version = "Qt doesn't know"; break;
+    }
+    #else
+    version = "Unix/Linux";
+    #endif // Q_WS_WIN
+
+    return version;
+}
+
+
 } // namespace UnicornUtils

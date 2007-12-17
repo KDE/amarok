@@ -222,6 +222,7 @@ TrackInfo::ratingCharacter() const
 {
     if (isBanned()) return "B";
     if (isLoved()) return "L";
+    if (isScrobbled()) return "";
     if (isSkipped()) return "S";
 
     return "";

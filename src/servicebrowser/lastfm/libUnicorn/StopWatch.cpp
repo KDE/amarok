@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Steeet, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #include "StopWatch.h"
@@ -28,7 +28,6 @@
 StopWatch::StopWatch() :
     QThread(),
     mState(STOPPED),
-    mnSubSecTimer(0),
     mnTimer(0),
     mnTimeout(0),
     mbTimedOut( false )
@@ -120,7 +119,6 @@ void
 StopWatch::reset()
 {
     mMutex.lock();
-    mnSubSecTimer = 0;
     mnTimer = 0;
     mbTimedOut = false;
     mMutex.unlock();
@@ -155,34 +153,46 @@ void
 StopWatch::run()
 {
     bool bStopped = false;
+    mLastTime = QDateTime::currentDateTime();
+
+    int totalMs = 0;
+
     do
     {
         int nSleepInterval = 250;
-
         msleep(nSleepInterval);
 
         mMutex.lock();
 
         // Poll for stop every nSleepInterval
-        mnSubSecTimer++;
         bStopped = mState == STOPPED;
 
-        if (mnSubSecTimer >= (1000 / nSleepInterval))
+        QDateTime currentTime = QDateTime::currentDateTime();
+        int msSpentSleeping = mLastTime.time().msecsTo( currentTime.time() );
+        if ( msSpentSleeping >= 1000 )
         {
+            mLastTime = currentTime;
+
+            totalMs += msSpentSleeping;
+            mnTimer = totalMs / (int)1000;
+
+            /*
+            LOGL( 3, "msSpent: " << msSpentSleeping );
+            LOGL( 3, "ms: " << totalMs );
+            LOGL( 3, "s: " << mnTimer );
+            */
+
             // Poll for timeout every second
-            mnTimer++;
             if (!mbTimedOut && mnTimer >= mnTimeout)
             {
                 emit timeoutReached();
                 mbTimedOut = true;
             }
 
-            mnSubSecTimer = 0;
             emit valueChanged(mnTimer);
         }
 
         mMutex.unlock();
 
-    } while (!bStopped);
-
+    } while( !bStopped );
 }

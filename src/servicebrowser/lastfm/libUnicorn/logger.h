@@ -181,12 +181,6 @@ private:
     Severity mLevel;
     QString mFilePath;
 
-    /*********************************************************************/ /**
-        Returns a formatted string with the OS version.
-    **************************************************************************/
-    QString
-    GetOSVersion();
-
 };
 
 #ifdef WIN32

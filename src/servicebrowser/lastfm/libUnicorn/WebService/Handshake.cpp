@@ -51,6 +51,7 @@ Handshake::start()
     QString path = "/radio/handshake.php"
             "?version=" + m_version +
             "&platform=" + PLATFORM +
+            "&platformversion=" + QString( QUrl::toPercentEncoding( UnicornUtils::getOSVersion() ) ) +
             "&username=" + QString( QUrl::toPercentEncoding( m_username ) ) +
             "&passwordmd5=" + m_password +
             "&language=" + language();
