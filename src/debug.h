@@ -98,7 +98,7 @@ namespace Debug
         return debugEnabled() ? kdbgstream( QtDebugMsg ) : kDebugDevNull();
     }
  
-    #undef qApp
+    #undef qOApp
 
     #ifndef DEBUG_PREFIX
     #define AMK_PREFIX ""
