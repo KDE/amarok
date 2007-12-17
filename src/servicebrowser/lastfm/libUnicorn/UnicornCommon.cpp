@@ -34,6 +34,8 @@
 //    #include "shfolder.h"
 #endif
 
+#include "amarok.h"
+
 using namespace std;
 
 namespace UnicornUtils
@@ -339,40 +341,7 @@ sortCaseInsensitively( QStringList input )
 QString
 appDataPath()
 {
-    QString path;
-
-    #ifdef WIN32
-        //if ((QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) == 0)
-        //{
-        //    // Use this for non-DOS-based Windowses
-        //    char acPath[MAX_PATH];
-        //    HRESULT h = SHGetFolderPathA( NULL, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
-        //                                  NULL, 0, acPath );
-        //    if ( h == S_OK )
-        //    {
-        //        path = QString::fromLocal8Bit( acPath );
-        //    }
-        //    else
-        //    {
-        //        path = "";
-        //    }
-        //}
-
-    #elif defined(Q_WS_MAC)
-        path = UnicornUtils::applicationSupportFolderPath();
-
-    #elif defined(Q_WS_X11)
-        path = QDir::home().filePath( ".local/share" );
-
-    #else
-        path = QApplication::applicationDirPath();
-
-    #endif
-
-    QDir d( path );
-    d.mkpath( path );
-
-    return d.absolutePath();
+    return Amarok::saveLocation();
 }
 
 

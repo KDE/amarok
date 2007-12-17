@@ -14,7 +14,7 @@
 #ifndef LASTFMMOOSECOMMON_H
 #define LASTFMMOOSECOMMON_H
 
-#include "Amarok.h"
+#include "amarok.h"
 
 namespace MooseUtils
 {
