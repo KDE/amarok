@@ -12,7 +12,7 @@
  ***************************************************************************/
 
 #include "AudioController.h"
-#include "core\Radio.h"
+#include "core/Radio.h"
 
 // TODO: implement
 AudioController::AudioController( QObject *parent ) {}
