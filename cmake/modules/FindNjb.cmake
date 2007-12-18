@@ -25,15 +25,11 @@ else (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
 
   FIND_PATH(NJB_INCLUDE_DIR libnjb.h
     ${_NJBIncDir}
-    /usr/include
-    /usr/local/include
   )
   
   FIND_LIBRARY(NJB_LIBRARIES NAMES njb
     PATHS
     ${_NJBLinkDir}
-    /usr/lib
-    /usr/local/lib
   )
   
   if (NJB_INCLUDE_DIR AND NJB_LIBRARIES)

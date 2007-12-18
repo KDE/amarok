@@ -24,15 +24,11 @@ else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
   endif(NOT WIN32)
   FIND_PATH(MTP_INCLUDE_DIR libmtp.h
     ${_MTPIncDir}
-    /usr/include
-    /usr/local/include
   )
   
   FIND_LIBRARY(MTP_LIBRARIES NAMES mtp
     PATHS
     ${_MTPLinkDir}
-    /usr/lib
-    /usr/local/lib
   )
 
   exec_program(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=0.1.1 libmtp OUTPUT_VARIABLE _pkgconfigDevNull RETURN_VALUE MTP_VERSION_OKAY)

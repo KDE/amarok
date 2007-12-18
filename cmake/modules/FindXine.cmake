@@ -11,14 +11,9 @@ if (XINE_INCLUDE_DIR AND XINE_LIBRARY)
 endif (XINE_INCLUDE_DIR AND XINE_LIBRARY)
 
 FIND_PATH(XINE_INCLUDE_DIR xine.h
- /usr/include/
- /usr/local/include/
 )
 
 FIND_LIBRARY(XINE_LIBRARY NAMES xine
- PATHS
- /usr/lib
- /usr/local/lib
 )
 
 if (XINE_INCLUDE_DIR AND XINE_LIBRARY)

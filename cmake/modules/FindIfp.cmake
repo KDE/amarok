@@ -13,14 +13,9 @@ if (IFP_INCLUDE_DIR)
 endif (IFP_INCLUDE_DIR)
 
 FIND_PATH(IFP_INCLUDE_DIR ifp.h
-  /usr/local/include
-  /usr/include
 )
 
 FIND_LIBRARY(IFP_LIBRARY
-  PATHS 
-  /usr/lib 
-  /usr/local/lib
 )
 
 if (IFP_INCLUDE_DIR AND IFP_LIBRARY)
