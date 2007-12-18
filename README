@@ -30,7 +30,6 @@ interface that really makes playlist handling easy.
     * Podcast support
     * Access to iPod, iRiver IFP, USB Mass Storage and many other devices
     * Powerful scripting interface
-    * Complete DCOP Access
     * KDE integration
     * Preview and buy albums from the Magnatune.com music store
 --------------------------------------------------------------------------------
