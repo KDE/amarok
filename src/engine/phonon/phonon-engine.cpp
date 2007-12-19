@@ -84,10 +84,10 @@ PhononEngine::load( const KUrl &url, bool isStream )
 bool
 PhononEngine::play( uint offset )
 {
-    Q_UNUSED( offset );
     DEBUG_BLOCK
 
     delete m_fader;
+    m_mediaObject->seek( offset );
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
 

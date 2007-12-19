@@ -34,5 +34,10 @@ StandardTrackNavigator::advanceTrack()
     {
         setCurrentTrack( updateRow );
     }
+    else
+    {
+        // out of tracks to play
+        EngineController::instance()->stop();
+    }
 }
 

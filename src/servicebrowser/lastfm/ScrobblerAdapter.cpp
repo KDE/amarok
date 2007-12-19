@@ -26,6 +26,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
       m_manager( new ScrobblerManager( this ) ),
       m_username( username )
 {
+    resetVariables();
+
     connect( m_manager, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
 
     Scrobbler::Init init;
@@ -48,35 +50,32 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
 
     if (trackChanged)
     {
-        m_current  = TrackInfo();
-        m_current.timeStampMe();
-
-        // what we get from phonon (at least for ds9) is a pile of doggy doo
-        //m_current.setArtist( newMetaData.value( Meta::valArtist ) );
-        //m_current.setAlbum( newMetaData.value( Meta::valAlbum ) );
-        //m_current.setTrack( newMetaData.value( Meta::valTitle ) );
-        //m_current.setDuration( newMetaData.value( Meta::valLength ) );
+        checkScrobble();
 
         Meta::TrackPtr track = EngineController::instance()->currentTrack();
-        if( track )
+        if( track && track->playableUrl().protocol() == "file" ) // TODO: handle radio
         {
+            m_current.timeStampMe();
+
             m_current.setTrack( track->name() );
             m_current.setDuration( track->length() );
             if( track->artist() )
                 m_current.setArtist( track->artist()->name() );
             if( track->album() )
                 m_current.setAlbum( track->album()->name() );
+
+            // TODO: need to get music brainz id from somewhere
+            // m_current.setMbId( );
+
+            m_current.setSource( TrackInfo::Player ); // TODO: handle radio
+            m_current.setUsername( m_username );
+
+            if( !m_current.isEmpty() )
+            {
+                debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
+                m_manager->nowPlaying( m_current );
+            }
         }
-
-        m_current.setUsername( m_username );
-
-        if( !m_current.isEmpty() )
-        {
-            debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
-            m_manager->nowPlaying( m_current );
-        }
-
-        m_lastPosition = m_totalPlayed = 0;
     }
 }
 
@@ -84,15 +83,12 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
 void 
 ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
-    // note: in the 1.2 protocol submits are always done at end of file
+    Q_UNUSED( trackLength );
+
     debug() << "engineTrackEnded: reason=" << reason;
-    m_totalPlayed += finalPosition - m_lastPosition;
-    if( m_totalPlayed >= trackLength / 2 && !m_current.isEmpty() )
-    {
-        debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
-        m_manager->scrobble( m_current );
-        m_current = TrackInfo();
-    }
+    engineTrackPositionChanged( finalPosition, false );
+    checkScrobble();
+    resetVariables();
 }
 
 
@@ -111,4 +107,25 @@ void
 ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
 {
     debug() << "statusChanged: statusCode=" << statusCode;
+}
+
+
+void
+ScrobblerAdapter::resetVariables()
+{
+    m_current = TrackInfo();
+    m_totalPlayed = m_lastPosition = 0;
+}
+
+
+void
+ScrobblerAdapter::checkScrobble()
+{
+    // note: in the 1.2 protocol submits are always done at end of file
+    if( m_totalPlayed >= m_current.duration() * 1000 / 2 && !m_current.isEmpty() )
+    {
+        debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
+        m_manager->scrobble( m_current );
+    }
+    resetVariables();
 }

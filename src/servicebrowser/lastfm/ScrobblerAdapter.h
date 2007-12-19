@@ -35,6 +35,9 @@ private slots:
     void statusChanged( int statusCode, QVariant data );
 
 private:
+    void resetVariables();
+    void checkScrobble();
+
     ScrobblerManager *m_manager;
     TrackInfo m_current;
     long m_lastPosition;
