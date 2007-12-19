@@ -487,7 +487,15 @@ if(Q_WS_MAC)
     install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
 
 else(Q_WS_MAC)
-
+    set(amarok_icons
+        ${CMAKE_CURRENT_SOURCE_DIR}/images/icons/hi16-app-amarok.png
+        ${CMAKE_CURRENT_SOURCE_DIR}/images/icons/hi32-app-amarok.png
+        ${CMAKE_CURRENT_SOURCE_DIR}/images/icons/hi48-app-amarok.png
+        ${CMAKE_CURRENT_SOURCE_DIR}/images/icons/hi64-app-amarok.png
+        ${CMAKE_CURRENT_SOURCE_DIR}/images/icons/hi128-app-amarok.png
+    )
+    kde4_add_win32_app_icon(amarok_SRCS ${amarok_icons})
+    
     kde4_add_executable(amarok ${amarok_SRCS})
     target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amaroklib )
     install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
