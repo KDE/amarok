@@ -29,19 +29,31 @@ public:
 
     void setVolume( int vol );
     void play();
-    void play( RadioPlaylist& playlist );
-    void play( const QUrl& trackUrl );
-    void play( const TrackInfo& track );
+    void play( RadioPlaylist &playlist );
+    void play( const QUrl &trackUrl );
+    void play( const TrackInfo &track );
     void stop();
     void loadNext();
 
     const QString& currentTrackUrl() const { return m_currentTrackUrl; }
 
-    QStringList soundSystems();
-    QStringList devices();
+    // these are unused, dummy implementations should be OK
+    QStringList soundSystems() { return QStringList(); } 
+    QStringList devices() { return QStringList(); } 
+
+signals:
+    void stateChanged( RadioState );
+    void buffering( int, int );
+    void error( RadioError, const QString & );
+    void trackChanged( TrackInfo &, const TrackInfo & );
+    void trackStarted( const TrackInfo & );
+    void trackEnded( const TrackInfo &, int );
 
 private:
+    void playTrack( const TrackInfo &track );
+
     QString m_currentTrackUrl;
+    RadioPlaylist *m_playlist;
 };
 
 #endif // LASTFMAUDIOCONTROLLER_H

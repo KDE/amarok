@@ -30,7 +30,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
 
     Scrobbler::Init init;
     init.username = username;
-    init.password = UnicornUtils::md5Digest( password.toUtf8() );
+    init.password = password;
     init.client_version = APP_VERSION;
     m_manager->handshake( init );
 }

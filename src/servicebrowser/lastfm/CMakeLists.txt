@@ -36,6 +36,7 @@
             LastFmService.cpp
             LastFmServiceConfig.cpp
             LastFmSettings.cpp
+            RadioAdapter.cpp
             ScrobblerAdapter.cpp
         
             core/Radio.cpp

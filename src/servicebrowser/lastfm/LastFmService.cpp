@@ -13,6 +13,7 @@
 
 #include "LastFmService.h"
 #include "LastFmServiceConfig.h"
+#include "RadioAdapter.h"
 #include "ScrobblerAdapter.h"
 
 
@@ -24,7 +25,7 @@ LastFmServiceFactory::init()
 {
     LastFmServiceConfig config;
 
-    ServiceBase* service = new LastFmService( "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
     emit newService( service );
 }
 
@@ -58,15 +59,32 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( Amarok::icon( "amarok_audioscrobbler" ) ) );
     m_scrobbler = scrobble ? new ScrobblerAdapter( this, username, password ) : 0;
+    m_radio = new RadioAdapter( this, username, password );
+
+    Q_ASSERT( ms_service == 0 );
+    ms_service = this;
 }
 
 
 LastFmService::~LastFmService()
 {
+    ms_service = 0;
 }
 
 
 void
 LastFmService::polish()
 {
+}
+
+
+LastFmService *LastFmService::ms_service = 0;
+
+
+namespace The
+{
+    LastFmService *lastFmService()
+    {
+        return LastFmService::ms_service;
+    }
 }

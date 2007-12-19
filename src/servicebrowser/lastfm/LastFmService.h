@@ -17,6 +17,13 @@
 #include "../servicebase.h"
 
 class ScrobblerAdapter;
+class RadioAdapter;
+class LastFmService;
+
+namespace The
+{
+    LastFmService *lastFmService();
+}
 
 class LastFmServiceFactory : public ServiceFactory
 {
@@ -42,8 +49,16 @@ public:
 
     virtual void polish();
 
+    RadioAdapter *radio() { return m_radio; }
+    ScrobblerAdapter *scrobbler() { return m_scrobbler; }
+
 private:
     ScrobblerAdapter *m_scrobbler;
+    RadioAdapter *m_radio;
+
+    static LastFmService *ms_service;
+
+    friend LastFmService *The::lastFmService();
 };
 
 #endif // LASTFMSERVICE_H
