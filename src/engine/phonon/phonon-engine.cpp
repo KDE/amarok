@@ -87,6 +87,7 @@ PhononEngine::play( uint offset )
     DEBUG_BLOCK
 
     delete m_fader;
+    m_mediaObject->pause();
     m_mediaObject->seek( offset );
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
