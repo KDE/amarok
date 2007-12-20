@@ -20,6 +20,8 @@
 
 #include "ContextLayout.h"
 
+#include "VerticalLayout.h"
+
 #include <limits.h>
 #include <math.h>
 
@@ -31,7 +33,6 @@
 #include <QtDebug>
 
 #include "plasma/layouts/layoutanimator.h"
-#include "plasma/layouts/boxlayout.h"
 
 using namespace Context;
 
@@ -95,7 +96,7 @@ public:
         }
     }
 
-    QList< Plasma::BoxLayout* > columns;
+    QList< VerticalLayout* > columns;
     qreal columnWidth;
 };
 
@@ -121,7 +122,7 @@ int ContextLayout::count() const
 void ContextLayout::addItem(LayoutItem* item)
 {
     if( d->columns.size() == 0 )
-        d->columns << new Plasma::BoxLayout( Plasma::BoxLayout::TopToBottom, this );
+        d->columns << new VerticalLayout( this );
     
     int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
     for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
@@ -174,6 +175,7 @@ int ContextLayout::indexOf(LayoutItem* item) const
             count++;
         }
     }
+    return 0;
 }
 
 Plasma::LayoutItem* ContextLayout::itemAt(int at) const
@@ -188,6 +190,7 @@ Plasma::LayoutItem* ContextLayout::itemAt(int at) const
             count++;
         }
     }
+    return 0;
 }
 
 QSizeF ContextLayout::sizeHint() const
@@ -215,6 +218,7 @@ Plasma::LayoutItem* ContextLayout::takeAt(int at)
             count++;
         }
     }
+    return 0;
 }
 
 template <class T>
@@ -232,20 +236,20 @@ void ContextLayout::relayout()
     QRectF rect = geometry().adjusted(margin(LeftMargin), margin(TopMargin), -margin(RightMargin), -margin(BottomMargin));
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
     
-    foreach( Plasma::BoxLayout* column, d->columns )
+    foreach( VerticalLayout* column, d->columns )
         column->setGeometry( column->geometry() );
     kDebug() << "we have:" << d->columns.size() << "columns:";
-    foreach( Plasma::BoxLayout* column, d->columns )
+    foreach( VerticalLayout* column, d->columns )
         kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         for( int i = d->columns.size(); i < numColumns; i++ )
-            d->columns << new Plasma::BoxLayout( Plasma::BoxLayout::TopToBottom, this );
+            d->columns << new VerticalLayout( this );
     } if( numColumns < d->columns.size() ) // view was shrunk
     {
         kDebug() << "gotta shrink!";
-        Plasma::BoxLayout* column = d->columns[ d->columns.size() - 1 ];
+        VerticalLayout* column = d->columns[ d->columns.size() - 1 ];
         d->columns.removeAt( d->columns.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
@@ -275,100 +279,12 @@ void ContextLayout::relayout()
     }
     kDebug() << "columns laid out, now balancing";
     d->balanceColumns();
-    foreach( Plasma::BoxLayout* column, d->columns )
+    foreach( VerticalLayout* column, d->columns )
         column->setGeometry( column->geometry() );
     kDebug() << "result is we have:" << d->columns.size() << "columns:";
-    foreach( Plasma::BoxLayout* column, d->columns )
+    foreach( VerticalLayout* column, d->columns )
         kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 }
-
-/*
-void ContextLayout::relayout()
-{
-    QRectF rect = geometry().adjusted(margin(LeftMargin), margin(TopMargin), -margin(RightMargin), -margin(BottomMargin));
-
-    const int columnCount = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
-
-    qDebug() << "Context layout geometry set to " << rect << " using column width: " << d->columnWidth << "with " << columnCount << " columns";;
-    int insertColumn = 0;
-    qreal rowPos = 0;
-    qreal rowHeight = 0;
-
-    // lay the items out in left-to-right , top-to-bottom order
-    foreach( LayoutItem *item , d->items ) {
-    
-        const QSizeF& itemSize = item->sizeHint();
-
-        if ( insertColumn > columnCount ) {
-            // start a new row
-            insertColumn = 0;
-            rowPos += rowHeight + spacing();
-        }
-
-       // qDebug() << "Inserting item at column" << insertColumn 
-       //          << "spanning" << columnSpan << "columns"
-       //          << "with offset" << offset;
-
-
-        // try to expand the item to fill its allocated number of columns
-        qreal itemWidth = itemSize.width(); 
-        const qreal idealWidth = d->columnWidth - spacing();
-        if ( itemWidth < idealWidth && 
-             idealWidth < item->maximumSize().width() ) {
-             itemWidth = idealWidth; 
-        }
-       
-        // calculate offset to horizontally center item
-        //if there is space for only one column,
-        //center the item relative to the whole available rectangle
-        qreal offset = 0;
-        if( columnCount > 1 ) {
-            offset = d->columnWidth - itemWidth;
-        } else {
-            offset = rect.width() - itemWidth;
-        }
-        if( columnCount > 1 ) { //no need for spacing if there is only one column
-            offset -= spacing() / 4;
-        }
-        if( offset < 0 )
-        {
-            offset = 0;
-        }
-        offset = offset /= 2;
-
-        // try to restrict the item width to the available geometry's
-        // width
-        if ( itemWidth > rect.width() ) {
-            itemWidth = qMax(rect.width(),item->minimumSize().width());
-            offset = 0;
-        }        
-
-        kDebug() << "calculated offset for child: " << offset;
-        // position the item
-        qreal itemHeight;
-        if( item->hasHeightForWidth() )
-            itemHeight = item->heightForWidth( itemWidth );
-        else
-            itemHeight = itemSize.height(); // this is not good, applets should provide heightForWidth
-
-        const QRectF newGeometry(rect.left() + insertColumn * d->columnWidth + offset,
-                                 rect.top() + margin( TopMargin ) + rowPos,
-                                 itemWidth,
-                                 itemHeight );
-
-        rowHeight = qMax(rowHeight,itemHeight);
-        insertColumn++;
-
-        kDebug() << "Setting a child item geometry to:" << newGeometry;
-        if ( animator() )
-            animator()->setGeometry( item , newGeometry );
-        else
-            item->setGeometry( newGeometry );
-    }
-
-    startAnimation();
-}
-*/
 
 Qt::Orientations ContextLayout::expandingDirections() const
 {
@@ -384,3 +300,4 @@ void ContextLayout::setColumnWidth( const qreal width )
 {
     d->columnWidth = width;
 }
+
