@@ -20,6 +20,7 @@
 
 #include <QPainter>
 #include <QBrush>
+#include <QFont>
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QSpinBox>
@@ -240,7 +241,11 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
     Q_UNUSED( text );
     int size = 12; // start here, shrink if needed
 //     QString font = "Arial";
-    QFontMetrics fm( QFont( QString(), size ) );
+    QFont font( QString(), size, QFont::Bold );
+    font.setStyleHint( QFont::Times );
+    font.setStyleStrategy( QFont::PreferAntialias );
+    
+    QFontMetrics fm( font );
 //     debug() << "called shrinkTextSizeToFit with: " << text << " bounds:" << bounds;
     while( fm.height() > bounds.height() + 4 )
     {
@@ -259,7 +264,10 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
     size--;
     
 //     debug() << "resulting after shrink: " << ":" << size;
-    return QFont( QString(), size );
+    QFont returnFont( QString(), size, QFont::Bold );
+    returnFont.setStyleHint( QFont::Times );
+    returnFont.setStyleStrategy( QFont::PreferAntialias );
+    return QFont( returnFont );
 }
 
 // returns truncated text with ... appended.
