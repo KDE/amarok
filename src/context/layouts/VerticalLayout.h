@@ -43,6 +43,7 @@ public:
     virtual LayoutItem *itemAt(int i) const;
     virtual LayoutItem *takeAt(int i);
     virtual Qt::Orientations expandingDirections() const;
+    virtual void setGeometry(const QRectF &geometry);
     virtual QRectF geometry() const;
     virtual int count() const;
     

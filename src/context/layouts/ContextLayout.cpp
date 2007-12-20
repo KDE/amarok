@@ -235,12 +235,6 @@ void ContextLayout::relayout()
 {
     QRectF rect = geometry().adjusted(margin(LeftMargin), margin(TopMargin), -margin(RightMargin), -margin(BottomMargin));
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
-    
-    foreach( VerticalLayout* column, d->columns )
-        column->setGeometry( column->geometry() );
-    kDebug() << "we have:" << d->columns.size() << "columns:";
-    foreach( VerticalLayout* column, d->columns )
-        kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 
     if( numColumns > d->columns.size() ) // need to make more columns
     {
@@ -267,7 +261,7 @@ void ContextLayout::relayout()
     }
     
     qreal columnWidth = rect.width() / numColumns;
-    columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
+//     columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
 
     for( int i = 0; i < numColumns; i++ ) // lay out columns
     {

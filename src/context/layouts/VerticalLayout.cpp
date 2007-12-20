@@ -26,6 +26,7 @@ class VerticalLayout::Private
 {
 public:
     QList<LayoutItem*> children;
+    QRectF geometry;
 };
 
 VerticalLayout::VerticalLayout(LayoutItem *parent)
@@ -93,6 +94,8 @@ void VerticalLayout::relayout()
     
     QRectF rect = geometry().adjusted(2*margin(Plasma::Layout::LeftMargin), 2*margin(Plasma::Layout::TopMargin), -.38*margin(Plasma::Layout::RightMargin), -.8*margin(Plasma::Layout::BottomMargin));
 
+    debug() << "laying out column in rect::" << rect;
+
     qreal topleft = 0.0;
 
     foreach (LayoutItem *child , d->children) {
@@ -121,24 +124,23 @@ void VerticalLayout::relayout()
 
 }
 
+void VerticalLayout::setGeometry(const QRectF &geometry)
+{
+    d->geometry = geometry;
+    relayout();
+}
+
 QRectF VerticalLayout::geometry() const
 {
-    if (parent()) {
-        return parent()->geometry();
-    }
-
-    return QRectF(QPointF(0, 0), maximumSize());
+    return d->geometry;
 }
 
 QSizeF VerticalLayout::sizeHint() const
 {
-    if (parent()) {
-        //kDebug() << "returning size hint from freelayout of" <<  parent()->geometry().size();
-        return parent()->geometry().size();
-    }
-
-    //kDebug() << "returning size hint from freelayout of" << maximumSize();
-    return maximumSize();
+    qreal height = 0.0;
+    foreach( LayoutItem* child, d->children )
+        height += child->sizeHint().height();
+    return QSizeF( geometry().width(), height );
 }
 
 }
