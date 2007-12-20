@@ -524,8 +524,10 @@ SqlTrack::collection() const
 QString
 SqlTrack::cachedLyrics() const
 {
-    QString query = QString( "SELECT lyrics FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-                        .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+//     QString query = QString( "SELECT lyrics FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
+//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
+                        .arg( m_collection->escape( m_rpath ) );
     QStringList result = m_collection->query( query );
     if( result.isEmpty() )
         return QString();
@@ -536,22 +538,23 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-    QString query = QString( "SELECT count(*) FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-                        .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+//     QString query = QString( "SELECT count(*) FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
+//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
+                        .arg( m_collection->escape(m_rpath) );
     QStringList queryResult = m_collection->query( query );
+    debug() << "SQL RESULT: " << queryResult;
     if( queryResult[0].toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( deviceid, url, lyrics ) VALUES ( %1, '%2', '%3' );" )
-                            .arg( QString::number( m_deviceid ),
-                                  m_collection->escape( m_rpath ),
+        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
+                            .arg( m_collection->escape( m_rpath ),
                                   m_collection->escape( lyrics ) );
         m_collection->insert( insert, "lyrics" );
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%3' WHERE deviceid = %1 AND url = '%2';" )
-                            .arg( QString::number( m_deviceid ),
-                                  m_collection->escape( m_rpath ),
+        QString update = QString( "UPDATE lyrics SET lyrics = '%3' WHERE url = '%1';" )
+                            .arg( m_collection->escape( m_rpath ),
                                   m_collection->escape( lyrics ) );
         m_collection->query( update );
     }
