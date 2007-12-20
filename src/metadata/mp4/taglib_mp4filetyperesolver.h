@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// See COPYING file for licensing information
 
 #ifndef TAGLIB_MP4FILETYPERESOLVER_H
 #define TAGLIB_MP4FILETYPERESOLVER_H

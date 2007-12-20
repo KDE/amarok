@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// See COPYING file for licensing information
 
 #include "taglib_mp4filetyperesolver.h"
 #include "mp4file.h"

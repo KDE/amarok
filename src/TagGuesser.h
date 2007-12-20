@@ -1,7 +1,14 @@
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2003 Frerich Raabe <raabe@kde.org>
-// See COPYING file for licensing information.
-
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ 
 #ifndef TAGGUESSER_H
 #define TAGGUESSER_H
 

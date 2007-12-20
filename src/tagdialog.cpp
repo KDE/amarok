@@ -1,7 +1,14 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
 // (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
-// See COPYING file for licensing information.
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "tagdialog.h"
 

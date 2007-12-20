@@ -19,7 +19,6 @@
  ***************************************************************************/ 
 
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// See COPYING file for licensing information
 
 #include "taglib_asffiletyperesolver.h"
 #include "asffile.h"

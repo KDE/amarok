@@ -2,7 +2,14 @@
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // (c) 2005 Seb Ruiz <ruiz@kde.org>
 // (c) 2006 T.R.Shashwath <trshash84@gmail.com>
-// See COPYING file for licensing information
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H

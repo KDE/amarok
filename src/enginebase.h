@@ -1,6 +1,13 @@
 //Copyright: (C) 2003 Mark Kretschmann
 //           (C) 2004 Max Howell, <max.howell@methylblue.com>
-//License:   See COPYING
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H

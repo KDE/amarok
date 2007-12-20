@@ -1,7 +1,14 @@
 // Author: Max Howell (C) Copyright 2004
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
-// See COPYING file that comes with this distribution
 //
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 // the asserts we use in this module prevent crashes, so best to abort the application if they fail
 #define QT_FATAL_ASSERT
