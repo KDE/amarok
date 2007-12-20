@@ -311,6 +311,11 @@ QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& boun
     QFontMetrics fm( QFont( QString(), size ) );
     while( fm.height() > bounds.height() + 4 )
     {
+        if( size < 0 )
+        {
+            size = 5;
+            break;
+        }
 //         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
