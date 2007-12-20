@@ -785,7 +785,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*t
     Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if ( !currentTrack->prettyName().isEmpty() )
-        mainWindow()->setCaption( i18n("Amarok - %1", currentTrack->prettyName() ) );
+        mainWindow()->setCaption( i18n("Amarok - %1", currentTrack->prettyName() ) + " - Pre-alpha software, do _not_ file bugs" );
 
     TrackToolTip::instance()->setTrack( currentTrack );
 }
