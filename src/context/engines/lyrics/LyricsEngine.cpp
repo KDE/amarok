@@ -44,6 +44,7 @@ bool LyricsEngine::sourceRequested( const QString& name )
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     setData( name, QVariant() );
+    update();
     return true;
 }
 
