@@ -60,6 +60,7 @@ bool CurrentEngine::sourceRequested( const QString& name )
 /*    m_sources << name;    // we are already enabled if we are alive*/
     clearData( name );
     setData( name, QVariant());
+    update();
     m_requested = true;
     return true;
 }
