@@ -87,6 +87,7 @@ bool LastFmEngine::sourceRequested( const QString& name )
     }
     
     setData( name, QVariant());
+    updateCurrent();
     return true;
 }
 
