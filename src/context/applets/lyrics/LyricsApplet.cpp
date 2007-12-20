@@ -67,6 +67,7 @@ void LyricsApplet::init()
     labelFont.setPointSize( labelFont.pointSize()  );
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
+    
     m_lyricsLabel->setBrush( Qt::white );
     m_lyricsLabel->setFont( labelFont );
     m_lyricsLabel->setText( i18n( "Lyrics" ) );
@@ -125,9 +126,9 @@ bool LyricsApplet::hasHeightForWidth() const
 qreal LyricsApplet::heightForWidth( qreal width ) const
 {
     if( m_lyrics )
-        return (width * m_headerAspectRatio) + m_lyrics->boundingRect().height();
+        return (width * m_headerAspectRatio) + m_lyrics->boundingRect().height() + 40;
    else
-        return 0;
+        return 25; // enough for the error text
 
 }
 
