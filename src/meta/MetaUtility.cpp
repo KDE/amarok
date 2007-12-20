@@ -61,17 +61,17 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
         map.insert( Meta::Field::TITLE, QVariant( track->prettyName() ) );
     else
         map.insert( Meta::Field::TITLE, QVariant( track->name() ) );
-    if( !track->artist()->name().isEmpty() )
+    if( track->artist() && !track->artist()->name().isEmpty() )
         map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
-    if( !track->album()->name().isEmpty() )
+    if( track->album() && !track->album()->name().isEmpty() )
         map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, QVariant( track->filesize() ) );
-    if( !track->genre()->name().isEmpty() )
+    if( track->genre() && !track->genre()->name().isEmpty() )
         map.insert( Meta::Field::GENRE, QVariant( track->genre()->name() ) );
-    if( !track->composer()->name().isEmpty() )
+    if( track->composer() && !track->composer()->name().isEmpty() )
         map.insert( Meta::Field::COMPOSER, QVariant( track->composer()->name() ) );
-    if( !track->year()->name().isEmpty() )
+    if( track->year() && !track->year()->name().isEmpty() )
         map.insert( Meta::Field::YEAR, QVariant( track->year()->name() ) );
     if( !track->comment().isEmpty() )
         map.insert( Meta::Field::COMMENT, QVariant( track->comment() ) );
