@@ -60,6 +60,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
+    setWindowOpacity( 0.7 );
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
