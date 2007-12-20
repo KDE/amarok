@@ -134,8 +134,9 @@ void TrackToolTip::removeFromWidget( QWidget *widget )
 
 #define MOODBAR_WIDTH 150
 
-void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
+void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
+#if 0 //TODO PORT
     if( force || m_tags != tags || m_tags.url() != tags.url() )
     {
         m_haspos = false;
@@ -306,6 +307,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         m_tags = tags;
         updateWidgets();
     }
+#endif
 }
 
 void TrackToolTip::setPos( int pos )
@@ -368,8 +370,9 @@ void TrackToolTip::slotImageChanged( const QString &remoteURL )
 
 void TrackToolTip::slotUpdate( const QString &url )
 {
+    //PORT 2.0
     if( url.isNull() || url == m_tags.url().path() )
-        setTrack( m_tags, true );
+        setTrack( Meta::TrackPtr(), true );
 }
 
 void
@@ -380,7 +383,8 @@ TrackToolTip::slotMoodbarEvent( void )
   // Reset the moodbar in case AlterMood has changed
   m_tags.moodbar().reset();
 
-  setTrack( m_tags, true );
+  //TODO: Port 2.0
+  setTrack( Meta::TrackPtr(), true );
 }
 
 

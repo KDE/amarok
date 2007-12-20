@@ -779,13 +779,15 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     }
 }
 
-void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*trackChanged*/ )
 {
-    Amarok::OSD::instance()->show( bundle );
-    if ( !bundle.prettyTitle().isEmpty() )
-        mainWindow()->setCaption( i18n("Amarok - %1", bundle.veryNiceTitle() ) );
+    DEBUG_BLOCK
+    Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
+    Amarok::OSD::instance()->show( currentTrack );
+    if ( !currentTrack->prettyName().isEmpty() )
+        mainWindow()->setCaption( i18n("Amarok - %1", currentTrack->prettyName() ) );
 
-    TrackToolTip::instance()->setTrack( bundle );
+    TrackToolTip::instance()->setTrack( currentTrack );
 }
 
 void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )

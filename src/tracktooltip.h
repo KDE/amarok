@@ -16,6 +16,7 @@
 #define TRACKTOOLTIP_H
 
 #include "metabundle.h"
+#include "meta/Meta.h"
 #include "tooltip.h"
 
 #include <QObject>
@@ -34,7 +35,7 @@ class TrackToolTip: public QObject, public Amarok::ToolTipClient
     void addToWidget( QWidget *widget );
     void removeFromWidget( QWidget *widget );
 
-    void setTrack( const MetaBundle &tags, bool force = false );
+    void setTrack( const Meta::TrackPtr track, bool force = false );
     void setPos( int pos );
     void clear();
 

@@ -16,6 +16,7 @@
 #define AMAROK_OSD_H
 
 #include "metabundle.h"
+#include "meta/Meta.h"
 
 #include <QPixmap>
 #include <QImage>
@@ -159,7 +160,7 @@ namespace Amarok
         }
 
         void applySettings();
-        void show( const MetaBundle &bundle );
+        void show( Meta::TrackPtr track );
 
     public slots:
         /**

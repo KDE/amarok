@@ -20,6 +20,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
         //if osdUsePlaylistColumns()
+#include "meta/MetaUtility.h"
 #include "podcastbundle.h"
 #include "qstringx.h"
 #include "StarManager.h"
@@ -72,6 +73,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {
+    DEBUG_BLOCK
     if ( !newImage.isNull() )
     {
         m_cover = newImage;
@@ -79,7 +81,10 @@ OSDWidget::show( const QString &text, QImage newImage )
         int h = m_scaledCover.height();
         m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
-    if( isShown() )
+
+    m_text = text;
+    debug() << m_text;
+    if( !isShown() )
         show();
 }
 
@@ -119,6 +124,7 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
+    DEBUG_BLOCK
     if ( !isEnabled() || m_text.isEmpty() )
         return;
 
@@ -555,125 +561,26 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 }
 
 void
-Amarok::OSD::show( const MetaBundle &bundle ) //slot
+Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
-#if 0 //TODO:PORT
+    DEBUG_BLOCK
     QString text = "";
-    if( bundle.url().isEmpty() )
+    if( track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
 
     else
     {
-        QVector<QString> tags;
-        tags.append(bundle.prettyTitle());
-        for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
-            tags.append(bundle.prettyText( i ));
-
-        if( bundle.length() <= 0 )
-            tags[PlaylistItem::Length+1].clear();
-
-        if( AmarokConfig::osdUsePlaylistColumns() )
-        {
-            QString tag;
-            QVector<int> availableTags; //eg, ones that aren't empty
-            static const QList<int> parens = //display these in parentheses
-                QList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
-                             << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
-                             << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
-            OSDWidget::setMoodbar();
-            OSDWidget::setRating( 0 );
-            for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )
-            {
-                const int column = Playlist::instance()->mapToLogicalColumn( i );
-                if( !tags.at( column + 1 ).isEmpty() && column != PlaylistItem::Rating )
-                    availableTags.append(column);
-                if( column == PlaylistItem::Rating )
-                    OSDWidget::setRating( bundle.rating() );
-                else if( column == PlaylistItem::Mood )
-                    OSDWidget::setMoodbar( bundle );
-            }
-
-            for( int n = availableTags.count(), i = 0; i < n; ++i )
-            {
-                const int column = availableTags.at( i );
-                QString append = ( i == 0 ) ? ""
-                               : ( n > 1 && i == n / 2 ) ? "\n"
-                               : ( parens.contains( column ) || parens.contains( availableTags.at( i - 1 ) ) ) ? " "
-                               : i18n(" - ");
-                append += ( parens.contains( column ) ? "(%1)" : "%1" );
-                text += append.arg( tags.at( column + 1 ) );
-            }
-        }
-        else
-        {
-            QMap<QString, QString> args;
-            args["prettytitle"] = bundle.prettyTitle();
-            for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
-                args[bundle.exactColumnName( i ).toLower()] = bundle.prettyText( i );
-
-            if( bundle.length() <= 0 )
-                args["length"].clear();
-
-
-	    uint time=EngineController::instance()->engine()->position();
-	    uint sec=(time/1000)%60;	//is there a better way to calculate the time?
-	    time /= 1000;
-	    uint min=(time/60)%60;
-	    time /= 60;
-	    uint hour=(time/60)%60;
-	    QString timeformat="";
-	    if(hour!=0)
-	    {
-		    timeformat += QString::number(hour);
-		    timeformat +=':';
-	    }
-	    timeformat +=QString::number(min);
-	    timeformat +=':';
-	    if(sec<10)
-		    timeformat +='0';
-	    timeformat +=QString::number(sec);
-	    args["elapsed"]=timeformat;
-            QStringx osd = AmarokConfig::osdText();
-
-            // hacky, but works...
-            if( osd.contains( "%rating" ) )
-                OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
-            else
-                OSDWidget::setRating( 0 );
-
-            osd.replace( "%rating", "" );
-
-            if( osd.contains( "%moodbar" )  &&  AmarokConfig::showMoodbar() )
-                OSDWidget::setMoodbar( bundle );
-            osd.replace( "%moodbar", "" );
-
-            text = osd.namedOptArgs( args );
-
-            // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
-            text.replace( "\\n", "\n" );
-        }
-
-        if ( AmarokConfig::osdCover() ) {
-            //avoid showing the generic cover.  we can overwrite this by passing an arg.
-            //get large cover for scaling if big cover needed
-
-            QString location = QString();
-            if( bundle.podcastBundle() )
-                location = CollectionDB::instance()->podcastImage( bundle, false, 0 );
-            else
-                location = CollectionDB::instance()->albumImage( bundle, false, 0 );
-
-            if ( location.find( "nocover" ) != -1 )
-                setImage( Amarok::icon() );
-            else
-                setImage( QImage( location ) );
-        }
-
-        text = text.trimmed();
+        text = track->prettyName();
+        if( track->artist() )
+            text = track->artist()->prettyName() + " - " + text;
+        if( track->album() )
+            text += "\n (" + track->album()->prettyName() + ")";
+        if( track->length() > 0)
+            text += Meta::secToPrettyTime( track->length() );
     }
 
     if( text.isEmpty() )
-        text = MetaBundle::prettyTitle( bundle.url().fileName() ).trimmed();
+        text =  track->playableUrl().fileName();
 
     if( text.startsWith( "- " ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
         text = text.mid( 2 );
@@ -682,7 +589,6 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         text = i18n("No information available for this track");
 
     OSDWidget::show( text );
-#endif
 }
 
 void
@@ -709,8 +615,8 @@ Amarok::OSD::forceToggleOSD()
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        //TODO paort 2.0: fix this
-        //show( EngineController::instance()->bundle() );
+        //TODO port 2.0: fix this
+        show( EngineController::instance()->currentTrack() );
         setEnabled( b );
     }
     else

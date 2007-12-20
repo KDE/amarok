@@ -66,7 +66,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void prepareToQuit();
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-        void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+        void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
         void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         void engineVolumeChanged( int );
 
