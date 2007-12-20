@@ -265,6 +265,7 @@ set( libcontextview_SRCS
     context/Svg.cpp
     context/widgets/TextWidget.cpp
     context/layouts/ContextLayout.cpp
+    context/layouts/VerticalLayout.cpp
 )
 
 #####################################################################
