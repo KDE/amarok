@@ -19,3 +19,4 @@ class MyDirOperator : public KDirOperator {
 };
 
 #endif
+
