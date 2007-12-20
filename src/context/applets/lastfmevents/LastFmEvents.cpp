@@ -303,12 +303,12 @@ void LastFmEvents::configAccepted() // SLOT
 QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
     Q_UNUSED( text );
-
-    if( bounds.width() < 1 || bounds.height() < 1 )
-        return QFont( QString(), 12 );
-    
     int size = 12; // start here, shrink if needed
-    QFontMetrics fm( QFont( QString(), size ) );
+    QFont font( QString(), size, QFont::Bold );
+    font.setStyleHint( QFont::Times );
+    font.setStyleStrategy( QFont::PreferAntialias );
+
+    QFontMetrics fm( font );
     while( fm.height() > bounds.height() + 4 )
     {
         if( size < 0 )
@@ -316,15 +316,17 @@ QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& boun
             size = 5;
             break;
         }
-//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
     }
+
     // for aesthetics, we make it one smaller
     size--;
 
-//     debug() << "resulting after shrink: " << ":" << size;
-    return QFont( QString(), size );
+    QFont returnFont( QString(), size, QFont::Bold );
+    returnFont.setStyleHint( QFont::Times );
+    returnFont.setStyleStrategy( QFont::PreferAntialias );
+    return QFont( returnFont );
 }
 
 // returns truncated text with ... appended.

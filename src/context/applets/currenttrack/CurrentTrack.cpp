@@ -237,16 +237,13 @@ void CurrentTrack::configAccepted() // SLOT
 
 QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
-//     DEBUG_BLOCK
     Q_UNUSED( text );
     int size = 12; // start here, shrink if needed
-//     QString font = "Arial";
     QFont font( QString(), size, QFont::Bold );
     font.setStyleHint( QFont::Times );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     QFontMetrics fm( font );
-//     debug() << "called shrinkTextSizeToFit with: " << text << " bounds:" << bounds;
     while( fm.height() > bounds.height() + 4 )
     {
         if( size < 0 )
@@ -254,16 +251,13 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
             size = 5;
             break;
         }
-//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height() + 4;
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
-//         debug() << "size:" << size <<" newfontsize:" << fm.height();
     }
     
     // for aesthetics, we make it one smaller
     size--;
     
-//     debug() << "resulting after shrink: " << ":" << size;
     QFont returnFont( QString(), size, QFont::Bold );
     returnFont.setStyleHint( QFont::Times );
     returnFont.setStyleStrategy( QFont::PreferAntialias );
