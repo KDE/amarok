@@ -92,7 +92,7 @@ void LastFmEvents::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
 
-    debug() << "setting size to " << m_width;
+//     debug() << "setting size to " << m_width;
     m_theme->resize( m_width, m_width );
     setContentSize( m_width, m_width );
 
@@ -100,14 +100,14 @@ void LastFmEvents::init()
 
 void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
         m_theme->resize(contentSize().toSize());
     }
 
-    debug() << "resized svg to " << contentSize().toSize() << ", now re-laying out";
+//     debug() << "resized svg to " << contentSize().toSize() << ", now re-laying out";
     for( int i = 0; i < 14; i++ ) // go through each row
     {
         QString titleElement = QString( "title%1" ).arg( i );
@@ -126,7 +126,7 @@ void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
 
 void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 //         debug() << "got data from engine: " << data;
     Context::DataEngine::DataIterator iter( data );
     if( m_sysEnabled && name == QString( "sysevents" ) )
@@ -224,12 +224,12 @@ qreal LastFmEvents::heightForWidth( qreal width ) const
 
 void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect& contentsRect )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     Q_UNUSED( option )
 
     p->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    debug() << "painting rect: " << contentsRect << endl;
+//     debug() << "painting rect: " << contentsRect << endl;
     m_theme->paint( p, contentsRect );
 
     for( int i = 0; i < 14; i++ )
