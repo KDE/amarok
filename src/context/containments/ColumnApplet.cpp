@@ -41,7 +41,8 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     
     m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
-    
+    m_columns->setSpacing( 10 );
+
     m_background = new Svg( "widgets/amarok-wallpaper", this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();

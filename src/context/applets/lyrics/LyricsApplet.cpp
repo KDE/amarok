@@ -96,9 +96,10 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     // we changed size, so lets resize the theme
     if (constraints & Plasma::SizeConstraint && m_header)
     {
-        QSizeF newsize( contentSize().toSize() );
-        newsize.setHeight( m_headerAspectRatio * newsize.width() );
-        m_header->resize( newsize );
+//         QSizeF newsize( contentSize().toSize() );
+//         newsize.setHeight( m_headerAspectRatio * newsize.width() );
+        m_header->resize( contentSize().toSize() );
+//         m_header->resize( contentSize().toSize().width(), m_headerAspectRatio * contentSize().toSize().width() );
     }
     
     // align items
@@ -111,10 +112,7 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
     m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
-
-    debug() << "Lyrics applet updating size" << contentSizeHint() << sizeHint()
-             << "parent layout" << managingLayout()
-             << "geometry" << geometry();
+    
 }
 
 bool LyricsApplet::hasHeightForWidth() const
@@ -161,8 +159,8 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED( option ); Q_UNUSED( contentsRect );
 
-    QRectF tmp( 0, 0, m_header->size().width(), 0 );
-    tmp.setHeight( m_header->size().width() * m_headerAspectRatio );
+    QRectF tmp( 0, 0, contentsRect.width(), 0 );
+    tmp.setHeight( contentsRect.width() * m_headerAspectRatio );
     m_header->paint( p, tmp, "lyricsheader" );
 
     // align items

@@ -10,15 +10,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="521.62"
-   height="143.0905"
+   height="99.714859"
    id="svg3486"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.45.1"
    version="1.0"
    sodipodi:docname="amarok-lyrics.svg"
-   sodipodi:docbase="/home/leo/Desktop/amarok/src/context/applets/lyrics"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   sodipodi:docbase="/home/kde-devel/Desktop/amarok/src/context/applets/lyrics"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3488">
     <linearGradient
@@ -54,14 +53,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="298.68397"
+     inkscape:cx="297.49459"
      inkscape:cy="30.527159"
      inkscape:document-units="px"
      inkscape:current-layer="svg3486"
      inkscape:window-width="722"
-     inkscape:window-height="566"
-     inkscape:window-x="710"
-     inkscape:window-y="238"
+     inkscape:window-height="581"
+     inkscape:window-x="547"
+     inkscape:window-y="86"
      width="381.21px"
      height="143.0905px" />
   <metadata
@@ -142,8 +141,8 @@
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="lyrics"
      width="498.9827"
-     height="40.406101"
+     height="3.0304568"
      x="8.2933416"
-     y="102.6844"
+     y="96.684402"
      inkscape:label="#rect2170" />
 </svg>
