@@ -64,7 +64,9 @@ void LyricsApplet::init()
 
     QFont labelFont;
     labelFont.setBold( true );
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
+    labelFont.setPointSize( labelFont.pointSize()  );
+    labelFont.setStyleHint( QFont::Times );
+    labelFont.setStyleStrategy( QFont::PreferAntialias );
     m_lyricsLabel->setBrush( Qt::white );
     m_lyricsLabel->setFont( labelFont );
     m_lyricsLabel->setText( i18n( "Lyrics" ) );
@@ -96,9 +98,9 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     // we changed size, so lets resize the theme
     if (constraints & Plasma::SizeConstraint && m_header)
     {
-//         QSizeF newsize( contentSize().toSize() );
-//         newsize.setHeight( m_headerAspectRatio * newsize.width() );
-        m_header->resize( contentSize().toSize() );
+       QSizeF newsize( contentSize().toSize() );
+       newsize.setHeight( m_headerAspectRatio * newsize.width() );
+       m_header->resize( newsize );
 //         m_header->resize( contentSize().toSize().width(), m_headerAspectRatio * contentSize().toSize().width() );
     }
     
