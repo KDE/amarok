@@ -80,14 +80,13 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
 
-    // <markey> This code hangs for me on startup with 100% cpu
 
-#if 0
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
         m_theme->resize(contentSize().toSize());
     }
+
 
     // here we put all of the text items into the correct locations
     m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
@@ -104,17 +103,20 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
-    
+
     QPixmap cover = m_albumCover->pixmap();
     if( !cover.isNull() )
     {
-        cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
+        debug() << "getting album rect:" <<  m_theme->elementRect( "albumart" ).size();
+        cover = cover.scaledToWidth( qMin( m_theme->elementRect( "albumart" ).size().width(),
+                                                            m_theme->elementRect( "albumart" ).size().height() )
+                                                            , Qt::SmoothTransformation );
         m_albumCover->setPixmap( cover );
     }
     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
-#endif
+
 }
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -234,15 +236,23 @@ void CurrentTrack::configAccepted() // SLOT
 
 QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
+//     DEBUG_BLOCK
     Q_UNUSED( text );
     int size = 12; // start here, shrink if needed
 //     QString font = "Arial";
     QFontMetrics fm( QFont( QString(), size ) );
+//     debug() << "called shrinkTextSizeToFit with: " << text << " bounds:" << bounds;
     while( fm.height() > bounds.height() + 4 )
     {
-//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height();
+        if( size < 0 )
+        {
+            size = 5;
+            break;
+        }
+//         debug() << "trying to get size: " << fm.height() << " less than: " << bounds.height() + 4;
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
+//         debug() << "size:" << size <<" newfontsize:" << fm.height();
     }
     
     // for aesthetics, we make it one smaller

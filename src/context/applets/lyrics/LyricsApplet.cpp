@@ -51,7 +51,7 @@ void LyricsApplet::init()
     m_header->resize();
     m_headerAspectRatio = (qreal)m_header->size().height()
         / (qreal)m_header->size().width();
-    setSize( m_header->size() );
+    setContentSize( m_header->size() );
 
     m_lyricsLabel = new QGraphicsSimpleTextItem( this );
     m_titleLabel = new QGraphicsSimpleTextItem( this );
@@ -122,7 +122,11 @@ bool LyricsApplet::hasHeightForWidth() const
 
 qreal LyricsApplet::heightForWidth( qreal width ) const
 {
-    return (width * m_headerAspectRatio) + m_lyrics->boundingRect().height();
+    if( m_lyrics )
+        return (width * m_headerAspectRatio) + m_lyrics->boundingRect().height();
+   else
+        return 0;
+
 }
 
 
@@ -182,7 +186,7 @@ void LyricsApplet::calculateHeight()
     if( lyricsheight > m_header->elementRect( "lyrics" ).height() ) // too short
     {
         qreal expandBy = lyricsheight - m_header->elementRect( "lyrics" ).height();
-        setSize( size().width(), size().height() + expandBy );
+        setContentSize( size().width(), size().height() + expandBy );
     } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
     { // too long
         qreal shrinkBy = m_theme->elementRect( "lyrics" ).height() - lyricsheight;

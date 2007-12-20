@@ -94,7 +94,7 @@ void LastFmEvents::init()
 
     debug() << "setting size to " << m_width;
     m_theme->resize( m_width, m_width );
-    setSize( m_width, m_width );
+    setContentSize( m_width, m_width );
 
 }
 
