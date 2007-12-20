@@ -17,7 +17,7 @@
    inkscape:version="0.45.1"
    sodipodi:docname="amarok-currenttrack.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:docbase="/home/kde-devel/Desktop/amarok/src/context/applets/currenttrack">
+   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/currenttrack">
   <metadata
      id="metadata138">
     <rdf:RDF>
@@ -30,7 +30,7 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="580"
+     inkscape:window-height="590"
      inkscape:window-width="876"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -44,8 +44,8 @@
      inkscape:zoom="1.247774"
      inkscape:cx="251.9451"
      inkscape:cy="63.196274"
-     inkscape:window-x="553"
-     inkscape:window-y="184"
+     inkscape:window-x="332"
+     inkscape:window-y="160"
      inkscape:current-layer="svg2581" />
   <defs
      id="defs2583">
@@ -806,107 +806,107 @@
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="track"
-         y="29.916864"
-         x="229.66367"
-         height="14.456263"
-         width="279.31619" />
+         y="28.314011"
+         x="242"
+         height="20"
+         width="265.69193" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="artist"
          y="10.064564"
-         x="229.27518"
-         height="16.059116"
-         width="280.09314" />
+         x="242"
+         height="20"
+         width="269.67459" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="album"
-         y="52.451874"
-         x="233.22128"
-         height="12.853409"
+         y="46.841885"
+         x="242"
+         height="20"
          width="270.70819" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="numplayed"
-         y="123.89265"
-         x="269.45197"
-         height="10.752309"
-         width="234.47754" />
+         y="118.28265"
+         x="300"
+         height="20"
+         width="202.42046" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="score"
-         y="104.84178"
-         x="230.05215"
-         height="11.804454"
-         width="273.87732" />
+         y="99.231789"
+         x="300"
+         height="20"
+         width="197.74173" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="playedlast"
-         y="142.94353"
-         x="261.2937"
-         height="9.4677944"
-         width="242.6358" />
+         y="136.53212"
+         x="300"
+         height="20"
+         width="202.56444" />
       <text
-         x="174.7462"
+         x="175"
          y="115.93441"
          transform="scale(1.0247278,0.9758689)"
          id="text3816"
          xml:space="preserve"
-         style="font-size:12.85346985px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="174.7462"
            y="115.93441"
            id="tspan3818">Score: </tspan></text>
       <text
-         x="174.51402"
+         x="175"
          y="134.513"
          transform="scale(1.0277362,0.9730124)"
          id="text3820"
          xml:space="preserve"
-         style="font-size:10.79622936px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="174.51402"
            y="134.513"
            id="tspan3822">Times Played: </tspan></text>
       <text
-         x="172.32352"
+         x="175"
          y="155.09834"
          transform="scale(1.0319621,0.9690278)"
          id="text3824"
          xml:space="preserve"
-         style="font-size:11.3621006px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="172.32352"
            y="155.09834"
            id="tspan3826">Played Last: </tspan></text>
       <text
-         x="174.97635"
+         x="175"
          y="22.507437"
          transform="scale(1.0247278,0.9758689)"
          id="text3828"
          xml:space="preserve"
-         style="font-size:11.85803413px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="174.97635"
            y="22.507437"
            id="tspan3830">Artist: </tspan></text>
       <text
-         x="174.97136"
+         x="175"
          y="42.804947"
          transform="scale(1.0247278,0.9758689)"
          id="text3832"
          xml:space="preserve"
-         style="font-size:12.87862682px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="174.97136"
            y="42.804947"
            id="tspan3834">Track: </tspan></text>
       <text
-         x="174.97481"
+         x="175"
          y="61.793442"
          transform="scale(1.0247278,0.9758689)"
          id="text3836"
          xml:space="preserve"
-         style="font-size:12.17633915px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
          sodipodi:linespacing="125%"><tspan
            x="174.97481"
            y="61.793442"
