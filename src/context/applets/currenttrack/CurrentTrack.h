@@ -42,6 +42,10 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
+    QSizeF minimumSize() const;
+
+    Qt::Orientations expandingDirections() const { return Qt::Horizontal;; }
+
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

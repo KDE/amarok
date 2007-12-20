@@ -165,6 +165,12 @@ qreal CurrentTrack::heightForWidth( qreal width ) const
     return width * m_aspectRatio;
 }
 
+QSizeF CurrentTrack::minimumSize() const
+{
+    return QSizeF( 520, 170 );
+}
+
+
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     DEBUG_BLOCK
