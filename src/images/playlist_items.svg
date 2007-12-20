@@ -152,14 +152,13 @@
          id="stop3435" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient26757">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
          offset="0"
          id="stop26759" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
+         style="stop-color:#83d0f5;stop-opacity:0.36078432;"
          offset="1"
          id="stop26761" />
     </linearGradient>
@@ -1483,7 +1482,7 @@
        x2="230.07457"
        y2="690.19617"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(20,39.999995)" />
+       gradientTransform="translate(20.70713,39.999988)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient26757"
@@ -1577,7 +1576,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
      inkscape:cx="337.13986"
-     inkscape:cy="237.44667"
+     inkscape:cy="96.025318"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1918,8 +1917,8 @@
        id="selection_left1"
        inkscape:label="#selection_left1" />
     <path
-       d="M 115,715.74464 C 115,714.01438 116.55353,712.60686 118.46329,712.60686 L 391.56819,712.60686 C 393.47794,712.60686 395.03147,714.01438 395.03147,715.74464 L 395.03147,722.02024 C 395.03147,723.7505 393.47794,725.15802 391.56819,725.15802 L 118.46329,725.15802 C 116.55353,725.15802 115,723.7505 115,722.02024 L 115,715.74464 z "
-       style="fill:url(#linearGradient4701);fill-opacity:1.0;fill-rule:evenodd"
+       d="M 115.70713,715.74464 C 115.70713,714.01438 117.26066,712.60686 119.17042,712.60686 L 392.27532,712.60686 C 394.18507,712.60686 395.7386,714.01438 395.7386,715.74464 L 395.7386,722.02024 C 395.7386,723.7505 394.18507,725.15802 392.27532,725.15802 L 119.17042,725.15802 C 117.26066,725.15802 115.70713,723.7505 115.70713,722.02024 L 115.70713,715.74464 z "
+       style="fill:url(#linearGradient4701);fill-opacity:1;fill-rule:evenodd"
        id="active_overlay" />
     <g
        id="collapse_button_grayed_out">
