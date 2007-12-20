@@ -33,7 +33,7 @@ namespace Context
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
-    , m_defaultColumnSize( 450 )
+    , m_defaultColumnSize( 350 )
 {
     DEBUG_BLOCK
 
