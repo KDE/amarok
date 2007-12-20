@@ -55,6 +55,7 @@ bool ServiceEngine::sourceRequested( const QString& name )
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
     setData( name, QVariant());
+    update();
     m_requested = true;
     return true;
 }
