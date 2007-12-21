@@ -45,10 +45,13 @@ public:
     QString lofiUrl();
     void setLofiUrl( const QString &url );
 
+    void setDownloadMembership();
+
     virtual QList< QAction *> customActions();
 
 private:
     QString m_lofiUrl;
+    bool m_downloadMembership;
 
 };
 
@@ -78,6 +81,8 @@ private:
     QString m_coverUrl;
     int m_launchYear;
     QString m_albumCode;
+    MagnatuneStore * m_store;
+    bool m_downloadMembership;
 
 
 public:
@@ -102,10 +107,7 @@ public:
     void setStore( MagnatuneStore * store );
     MagnatuneStore * store();
 
-private:
-
-    MagnatuneStore * m_store;
-
+    void setDownloadMembership();
 
 
 };

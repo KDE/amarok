@@ -58,6 +58,7 @@ AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 
 void MagnatuneServiceFactory::init()
 {
+    DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
     MagnatuneConfig config;
 

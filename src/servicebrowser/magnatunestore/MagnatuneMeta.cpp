@@ -79,6 +79,11 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
         url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
         url.replace( ".mp3", "_nospeech.mp3" );
         track->setUrl( url );
+
+        debug()  << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PREFIX: " << m_membershipPrefix;
+        
+        if ( m_membershipPrefix == "download" )
+            track->setDownloadMembership();
     }
 
     return TrackPtr( track );
@@ -107,6 +112,10 @@ AlbumPtr MagnatuneMetaFactory::createAlbum(const QStringList & rows)
 {
     MagnatuneAlbum * album = new MagnatuneAlbum( rows );
     album->setStore( m_store );
+
+    if ( m_membershipPrefix == "download" )
+        album->setDownloadMembership();
+
     return AlbumPtr( album );
 }
 
@@ -143,11 +152,13 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 
 MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
+    , m_downloadMembership ( false )
 {
 }
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
+    , m_downloadMembership ( false )
 {
     DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
@@ -161,6 +172,31 @@ QString MagnatuneTrack::lofiUrl()
 void MagnatuneTrack::setLofiUrl(const QString & url)
 {
     m_lofiUrl = url;
+}
+
+void Meta::MagnatuneTrack::setDownloadMembership()
+{
+    m_downloadMembership = true;
+}
+
+
+QList< QAction * > Meta::MagnatuneTrack::customActions()
+{
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+
+    QString text = i18n( "&Buy" );
+    if ( m_downloadMembership )
+        text = i18n( "&Download" );
+    
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), text, 0 );
+
+    MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
+
+    QObject::connect( action, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
+
+    actions.append( action );
+    return actions;
 }
 
 
@@ -200,23 +236,6 @@ QString MagnatuneArtist::magnatuneUrl() const
     return m_magnatuneUrl;
 }
 
-QList< QAction * > Meta::MagnatuneTrack::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
-
-    MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
-
-    QObject::connect( action, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
-
-    actions.append( action );
-    return actions;
-}
-
-
-
-
 
 
 
@@ -228,12 +247,14 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_launchYear( 0 )
     , m_albumCode()
     , m_store ( 0 )
+    , m_downloadMembership ( false )
 
 {
 }
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
+    , m_downloadMembership ( false )
 {
     debug() << "create album from result row: " << resultRow;
 
@@ -243,6 +264,7 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     m_albumCode = resultRow[6];
 
     m_store = 0;
+    
 
 }
 
@@ -292,13 +314,22 @@ MagnatuneStore * Meta::MagnatuneAlbum::store()
     return m_store;
 }
 
-
+void Meta::MagnatuneAlbum::setDownloadMembership()
+{
+    DEBUG_BLOCK
+    m_downloadMembership = true;
+}
 
 QList< QAction * > MagnatuneAlbum::customActions()
 {
     DEBUG_BLOCK
     QList< QAction * > actions;
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
+
+    QString text = i18n( "&Buy" );
+    if ( m_downloadMembership )
+        text = i18n( "&Download" );
+
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), text, 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
 
@@ -320,8 +351,6 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
-
-
 
 
 
