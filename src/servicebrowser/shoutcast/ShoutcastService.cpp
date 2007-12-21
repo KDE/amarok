@@ -79,6 +79,7 @@ void ShoutcastService::polish()
     if ( m_polished )
         return;
 
+    m_bottomPanel->hide();
     m_collection = new ShoutcastServiceCollection();
     QList<int> levels;
     levels << CategoryId::Genre;
