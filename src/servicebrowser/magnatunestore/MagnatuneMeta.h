@@ -94,6 +94,8 @@ public:
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
 
+    virtual QList< QAction *> customActions();
+
 
 
 };

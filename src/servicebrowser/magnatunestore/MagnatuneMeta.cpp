@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
@@ -21,7 +22,13 @@
 
 #include "MagnatuneMeta.h"
 
+#include "amarok.h"
 #include "debug.h"
+
+#include "debug.h"
+
+#include <KIcon>
+#include <KLocale>
 
 using namespace Meta;
 
@@ -250,6 +257,21 @@ QString MagnatuneAlbum::coverUrl() const
 {
     return m_coverUrl;
 }
+
+
+QList< QAction * > MagnatuneAlbum::customActions()
+{
+    DEBUG_BLOCK
+            QList< QAction * > actions;
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
+
+    //TODO connect some slot to the action, also, give the damn action a parent please
+    actions.append( action );
+    return actions;
+}
+
+
+
 
 
 
