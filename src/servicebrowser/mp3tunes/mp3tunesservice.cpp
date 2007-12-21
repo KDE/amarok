@@ -87,6 +87,8 @@ Mp3tunesService::~Mp3tunesService()
 
 void Mp3tunesService::polish()
 {
+    m_bottomPanel->hide();
+    
     if ( !m_authenticated )
         authenticate( m_email, m_password );
 
