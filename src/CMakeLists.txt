@@ -69,6 +69,7 @@ include_directories(
     podcasts
     widgets
     playlistbrowser
+    playlistmanager
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDE_DIR}
@@ -231,6 +232,8 @@ set(meta_SRCS
     meta/stream/Stream.cpp
     meta/PlaylistFileSupport.cpp
     meta/MetaUtility.cpp
+    meta/XSPFPlaylist.cpp
+    meta/EditablePlaylistCapability.cpp
 )
 
 #####################################################################
