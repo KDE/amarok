@@ -59,12 +59,11 @@ AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 void MagnatuneServiceFactory::init()
 {
     MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
-
     MagnatuneConfig config;
 
     if ( config.isMember() )
         service->setMembership( config.membershipType(), config.username(), config.password() );
-    
+
     emit newService( service );
 }
 
@@ -75,11 +74,9 @@ QString MagnatuneServiceFactory::name()
 
 KPluginInfo MagnatuneServiceFactory::info()
 {
-
-    KPluginInfo pluginInfo(  "amarok_service_magnatunestore.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
-    
 }
 
 KConfigGroup MagnatuneServiceFactory::config()
@@ -215,7 +212,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".xml" );
-    tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
+    tempFile.setAutoRemove( false );  //file must be removed later
     if( !tempFile.open() )
     {
         return false; //error
