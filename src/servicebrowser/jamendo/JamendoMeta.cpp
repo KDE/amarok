@@ -33,7 +33,7 @@ JamendoMetaFactory::JamendoMetaFactory( const QString & dbPrefix, JamendoService
 {
 }
 
-TrackPtr JamendoMetaFactory::createTrack(const QStringList & rows)
+TrackPtr JamendoMetaFactory::createTrack( const QStringList & rows )
 {
     return TrackPtr( new JamendoTrack( rows ) );
 }
@@ -58,7 +58,7 @@ QString JamendoMetaFactory::getAlbumSqlRows()
     return sqlRows;
 }
 
-AlbumPtr JamendoMetaFactory::createAlbum(const QStringList & rows)
+AlbumPtr JamendoMetaFactory::createAlbum( const QStringList & rows )
 {
     JamendoAlbum * album = new JamendoAlbum( rows );
     album->setService( m_service );
@@ -83,13 +83,13 @@ QString JamendoMetaFactory::getArtistSqlRows()
     return sqlRows;
 }
 
-ArtistPtr JamendoMetaFactory::createArtist(const QStringList & rows)
+ArtistPtr JamendoMetaFactory::createArtist( const QStringList & rows )
 {
     return ArtistPtr( new JamendoArtist( rows ) );
 }
 
 
-GenrePtr JamendoMetaFactory::createGenre(const QStringList & rows)
+GenrePtr JamendoMetaFactory::createGenre( const QStringList & rows )
 {
     return GenrePtr( new JamendoGenre( rows ) );
 }
@@ -102,9 +102,23 @@ JamendoTrack::JamendoTrack( const QString &name )
 {
 }
 
-JamendoTrack::JamendoTrack(const QStringList & resultRow)
+JamendoTrack::JamendoTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
 {
+}
+
+QList< QAction * > Meta::JamendoTrack::customActions()
+{
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Download" ), 0 );
+
+    JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
+
+    QObject::connect( action, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
+
+    actions.append( action );
+    return actions;
 }
 
 
@@ -116,7 +130,7 @@ JamendoArtist::JamendoArtist( const QString &name )
 {
 }
 
-JamendoArtist::JamendoArtist(const QStringList & resultRow)
+JamendoArtist::JamendoArtist( const QStringList & resultRow )
     : ServiceArtist( resultRow )
 {
     m_country = resultRow[3];
@@ -126,7 +140,7 @@ JamendoArtist::JamendoArtist(const QStringList & resultRow)
 
 }
 
-void JamendoArtist::setCountry(const QString & country)
+void JamendoArtist::setCountry( const QString & country )
 {
     m_country = country;
 }
@@ -179,7 +193,7 @@ JamendoAlbum::JamendoAlbum( const QString &name )
 {
 }
 
-JamendoAlbum::JamendoAlbum(const QStringList & resultRow)
+JamendoAlbum::JamendoAlbum( const QStringList & resultRow )
     : ServiceAlbumWithCover( resultRow )
 {
 
@@ -222,7 +236,7 @@ QString JamendoAlbum::genre( ) const
 }
 
 
-void JamendoAlbum::setPopularity(float popularity)
+void JamendoAlbum::setPopularity( float popularity )
 {
     m_popularity = popularity;
 }
@@ -232,7 +246,7 @@ float JamendoAlbum::popularity() const
     return m_popularity;
 }
 
-void JamendoAlbum::setMp3TorrentUrl(QString url)
+void JamendoAlbum::setMp3TorrentUrl( QString url )
 {
     m_mp3TorrentUrl = url;
 }
@@ -242,7 +256,7 @@ QString JamendoAlbum::mp3TorrentUrl()
     return m_mp3TorrentUrl;
 }
 
-void JamendoAlbum::setOggTorrentUrl(QString url)
+void JamendoAlbum::setOggTorrentUrl( QString url )
 {
    m_oggTorrentUrl = url;
 }
@@ -252,7 +266,7 @@ QString JamendoAlbum::oggTorrentUrl()
     return m_oggTorrentUrl;
 }
 
-void Meta::JamendoAlbum::setService(JamendoService * service)
+void Meta::JamendoAlbum::setService( JamendoService * service )
 {
     m_service = service;
 }
@@ -279,15 +293,17 @@ QList< QAction * > Meta::JamendoAlbum::customActions()
 
 
 
-JamendoGenre::JamendoGenre(const QString & name)
+JamendoGenre::JamendoGenre( const QString & name )
     : ServiceGenre( name )
 {
 }
 
-JamendoGenre::JamendoGenre(const QStringList & resultRow)
+JamendoGenre::JamendoGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 

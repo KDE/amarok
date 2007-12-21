@@ -72,6 +72,8 @@ public:
     JamendoTrack( const QString &name );
     JamendoTrack( const QStringList &resultRow );
 
+    virtual QList< QAction *> customActions();
+
 };
 
 
