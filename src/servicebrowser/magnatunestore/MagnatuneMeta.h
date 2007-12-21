@@ -45,6 +45,8 @@ public:
     QString lofiUrl();
     void setLofiUrl( const QString &url );
 
+    virtual QList< QAction *> customActions();
+
 private:
     QString m_lofiUrl;
 
@@ -98,6 +100,7 @@ public:
     virtual QList< QAction *> customActions();
 
     void setStore( MagnatuneStore * store );
+    MagnatuneStore * store();
 
 private:
 

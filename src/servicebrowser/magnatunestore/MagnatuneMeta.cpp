@@ -200,6 +200,21 @@ QString MagnatuneArtist::magnatuneUrl() const
     return m_magnatuneUrl;
 }
 
+QList< QAction * > Meta::MagnatuneTrack::customActions()
+{
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
+
+    MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
+
+    QObject::connect( action, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
+
+    actions.append( action );
+    return actions;
+}
+
+
 
 
 
@@ -272,11 +287,17 @@ void Meta::MagnatuneAlbum::setStore(MagnatuneStore * store)
     m_store = store;
 }
 
+MagnatuneStore * Meta::MagnatuneAlbum::store()
+{
+    return m_store;
+}
+
+
 
 QList< QAction * > MagnatuneAlbum::customActions()
 {
     DEBUG_BLOCK
-            QList< QAction * > actions;
+    QList< QAction * > actions;
     QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
@@ -299,6 +320,8 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 
