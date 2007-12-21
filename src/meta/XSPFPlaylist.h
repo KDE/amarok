@@ -95,6 +95,8 @@ public:
     void endMetaDataUpdate() {};
     void abortMetaDataUpdate() {};
 
+    bool isEditable() const { return true; };
+
     /* Meta::Playlist virtual functions */
     bool hasCapabilityInterface( Capability::Type type ) const;
 
