@@ -11,6 +11,7 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
+#include "Capability.h"
 
 #include <QList>
 #include <QMetaType>
@@ -39,6 +40,38 @@ namespace Meta
 
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
+
+            /* the following has been copied from Meta.h
+            * it is my hope that we can integrate Playlists
+            * better into the rest of the Meta framework someday ~Bart Cerneels
+            * TODO: Playlist : public MetaBase
+            */
+            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const = 0;
+
+            virtual Capability* asCapabilityInterface( Capability::Type type ) = 0;
+
+            /**
+             * Retrieves a specialized interface which represents a capability of this
+             * MetaBase object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+            template <class CapIface> CapIface *as()
+            {
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+                Meta::Capability *iface = asCapabilityInterface(type);
+                return qobject_cast<CapIface *>(iface);
+            }
+
+            /**
+             * Tests if a MetaBase object provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+            template <class CapIface> bool is() const
+            {
+                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+            }
     };
 
 }

@@ -224,6 +224,10 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
         PodcastEpisodeList episodes() { return m_episodes; };
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { return static_cast<Meta::Capability *>( 0 ); };
+        
     private:
 
         KUrl m_link;
