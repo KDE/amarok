@@ -97,7 +97,7 @@ void JamendoService::polish()
     m_downloadButton->setEnabled( false );
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
-    connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( downloadButtonClicked() ) );
+    connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
 
 
     m_infoParser = new JamendoInfoParser();
@@ -114,7 +114,7 @@ void JamendoService::polish()
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-    ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo" );
+    ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
 
@@ -244,7 +244,7 @@ void JamendoService::itemSelected( CollectionTreeItem * selectedItem ){
     return;
 }
 
-void JamendoService::downloadButtonClicked()
+void JamendoService::download()
 {
 
     if ( m_currentAlbum ){

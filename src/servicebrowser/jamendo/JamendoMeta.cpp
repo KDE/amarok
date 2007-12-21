@@ -21,12 +21,15 @@
 
 #include "JamendoMeta.h"
 
+#include "jamendoservice.h"
+
 #include "debug.h"
 
 using namespace Meta;
 
-JamendoMetaFactory::JamendoMetaFactory(const QString & dbPrefix)
+JamendoMetaFactory::JamendoMetaFactory( const QString & dbPrefix, JamendoService * service )
     : ServiceMetaFactory( dbPrefix )
+    , m_service( service )
 {
 }
 
@@ -57,7 +60,9 @@ QString JamendoMetaFactory::getAlbumSqlRows()
 
 AlbumPtr JamendoMetaFactory::createAlbum(const QStringList & rows)
 {
-    return AlbumPtr( new JamendoAlbum( rows ) );
+    JamendoAlbum * album = new JamendoAlbum( rows );
+    album->setService( m_service );
+    return AlbumPtr( album );
 }
 
 int JamendoMetaFactory::getArtistSqlRowCount()
@@ -247,8 +252,29 @@ QString JamendoAlbum::oggTorrentUrl()
     return m_oggTorrentUrl;
 }
 
+void Meta::JamendoAlbum::setService(JamendoService * service)
+{
+    m_service = service;
+}
+
+JamendoService * Meta::JamendoAlbum::service()
+{
+    return m_service;
+}
 
 
+
+QList< QAction * > Meta::JamendoAlbum::customActions()
+{
+    DEBUG_BLOCK
+            QList< QAction * > actions;
+    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&download" ), 0 );
+
+    QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
+
+    actions.append( action );
+    return actions;
+}
 
 
 
@@ -262,16 +288,6 @@ JamendoGenre::JamendoGenre(const QStringList & resultRow)
     : ServiceGenre( resultRow )
 {
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -29,12 +29,13 @@
 #include <QStringList>
 #include <QList>
 
+class JamendoService;
 
 class JamendoMetaFactory : public ServiceMetaFactory
 {
 
 public:
-    JamendoMetaFactory( const QString &dbPrefix );
+    JamendoMetaFactory( const QString &dbPrefix, JamendoService * service );
     virtual ~JamendoMetaFactory() {}
 
     //virtual int getTrackSqlRowCount();
@@ -52,6 +53,10 @@ public:
     //virtual int getGenreSqlRowCount();
     //virtual QString getGenreSqlRows();
     virtual Meta::GenrePtr createGenre( const QStringList &rows );
+
+private:
+
+    JamendoService * m_service;
 
 };
 
@@ -133,7 +138,14 @@ public:
 
     void setOggTorrentUrl( QString url );
     QString oggTorrentUrl();
-    
+
+    virtual QList< QAction *> customActions();
+
+    void setService( JamendoService * store );
+    JamendoService * service();
+
+private:
+    JamendoService * m_service;
 
 
 };

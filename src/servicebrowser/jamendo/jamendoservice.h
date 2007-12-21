@@ -66,7 +66,7 @@ public:
 private slots:
 
     void updateButtonClicked();
-    void downloadButtonClicked();
+    void download();
     void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
     void torrentDownloadComplete( KJob* downloadJob);
