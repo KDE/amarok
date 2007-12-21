@@ -123,7 +123,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 
 
-void MagnatuneStore::purchaseButtonClicked( )
+void MagnatuneStore::purchase( )
 {
     if ( m_purchaseInProgress )
         return;
@@ -193,7 +193,7 @@ void MagnatuneStore::initBottomPanel()
 
     connect( m_showInfoToggleButton, SIGNAL( toggled( bool ) ), this, SLOT( showInfo( bool ) ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
-    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchaseButtonClicked() ) );
+    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
 }
 
 void MagnatuneStore::updateButtonClicked()
@@ -398,7 +398,7 @@ void MagnatuneStore::polish( )
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-        MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune" );
+        MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
 
         if( m_isMember ) {
             metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );

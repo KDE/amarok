@@ -21,6 +21,7 @@
 
 
 #include "MagnatuneMeta.h"
+#include "MagnatuneStore.h"
 
 #include "amarok.h"
 #include "debug.h"
@@ -30,17 +31,20 @@
 #include <KIcon>
 #include <KLocale>
 
+#include <QObject>
+
 using namespace Meta;
 
-MagnatuneMetaFactory::MagnatuneMetaFactory(const QString & dbPrefix)
+MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneStore * store )
     : ServiceMetaFactory( dbPrefix )
     , m_membershipPrefix( QString() )
     , m_userName( QString() )
     , m_password( QString() )
+    , m_store( store )
 {
 }
 
-void MagnatuneMetaFactory::setMembershipInfo(QString prefix, QString userName, QString password)
+void MagnatuneMetaFactory::setMembershipInfo( QString prefix, QString userName, QString password )
 {
     m_membershipPrefix = prefix;
     m_userName = userName;
@@ -101,7 +105,9 @@ QString MagnatuneMetaFactory::getAlbumSqlRows()
 
 AlbumPtr MagnatuneMetaFactory::createAlbum(const QStringList & rows)
 {
-    return AlbumPtr( new MagnatuneAlbum( rows ) );
+    MagnatuneAlbum * album = new MagnatuneAlbum( rows );
+    album->setStore( m_store );
+    return AlbumPtr( album );
 }
 
 int MagnatuneMetaFactory::getArtistSqlRowCount()
@@ -206,6 +212,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
+    , m_store ( 0 )
 
 {
 }
@@ -219,6 +226,8 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     m_coverUrl = resultRow[4];
     m_launchYear = resultRow[5].toInt();
     m_albumCode = resultRow[6];
+
+    m_store = 0;
 
 }
 
@@ -258,6 +267,11 @@ QString MagnatuneAlbum::coverUrl() const
     return m_coverUrl;
 }
 
+void Meta::MagnatuneAlbum::setStore(MagnatuneStore * store)
+{
+    m_store = store;
+}
+
 
 QList< QAction * > MagnatuneAlbum::customActions()
 {
@@ -265,7 +279,8 @@ QList< QAction * > MagnatuneAlbum::customActions()
             QList< QAction * > actions;
     QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Buy" ), 0 );
 
-    //TODO connect some slot to the action, also, give the damn action a parent please
+    QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
+
     actions.append( action );
     return actions;
 }
@@ -284,6 +299,7 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
 
 
 

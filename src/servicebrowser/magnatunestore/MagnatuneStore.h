@@ -92,7 +92,7 @@ private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
-    void purchaseButtonClicked();
+    void purchase();
 
     /**
      * Slot for recieving notification that the update button has been clicked.

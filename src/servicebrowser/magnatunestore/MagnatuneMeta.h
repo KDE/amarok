@@ -30,10 +30,11 @@
 #include <QStringList>
 
 class MagnatuneAlbumCoverDownloader;
+class MagnatuneStore;
 
 namespace Meta
 {
-
+    
 class MagnatuneTrack  : public ServiceTrack
 {
 
@@ -96,6 +97,12 @@ public:
 
     virtual QList< QAction *> customActions();
 
+    void setStore( MagnatuneStore * store );
+
+private:
+
+    MagnatuneStore * m_store;
+
 
 
 };
@@ -115,7 +122,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
 {
 
     public:
-        MagnatuneMetaFactory( const QString &dbPrefix );
+        MagnatuneMetaFactory( const QString &dbPrefix, MagnatuneStore * store );
         virtual ~MagnatuneMetaFactory() {}
 
         virtual int getTrackSqlRowCount();
@@ -144,7 +151,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         QString m_membershipPrefix;
         QString m_userName;
         QString m_password;
-
+        MagnatuneStore * m_store;
 };
 
 
