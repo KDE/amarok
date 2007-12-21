@@ -98,6 +98,8 @@ AmpacheService::~AmpacheService()
 
 void AmpacheService::polish()
 {
+    m_bottomPanel->hide();
+            
     if ( !m_authenticated )
         authenticate( m_server, m_username, m_password );
 
