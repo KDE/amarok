@@ -42,6 +42,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setAnimated( true );
     setAlternatingRowColors( true );
 
+    m_treeModel = 0;
+    m_filterModel = 0;
 
     connect( this, SIGNAL( collapsed( const QModelIndex ) ), SLOT( slotCollapsed( const QModelIndex ) ) );
 
