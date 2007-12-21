@@ -20,7 +20,7 @@
 
 class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
-class CollectionTreeItemModel;
+class CollectionTreeItemModelBase;
 
 class CollectionTreeView: public QTreeView {
     Q_OBJECT
@@ -62,7 +62,7 @@ class CollectionTreeView: public QTreeView {
         void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode ) const;
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
         CollectionSortFilterProxyModel *m_filterModel;
-        CollectionTreeItemModel *m_treeModel;
+        CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
         QPoint m_dragStartPosition;
         bool m_showTrackNumbers;

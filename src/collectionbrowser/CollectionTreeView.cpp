@@ -32,14 +32,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
     , m_dragStartPosition()
 {
-    KConfigGroup config = Amarok::config( "Collection Browser" );
-    QList<int> cats = config.readEntry( "TreeCategory", QList<int>() );
-    if ( cats.isEmpty() )
-        cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
-
-    m_treeModel = new CollectionTreeItemModel( cats );
-    setModel( m_treeModel );
-
+    
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -49,16 +42,21 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     //setAnimated( true );
     setAlternatingRowColors( true );
 
-    m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
+
     connect( this, SIGNAL( collapsed( const QModelIndex ) ), SLOT( slotCollapsed( const QModelIndex ) ) );
 
-    connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex ) ), SLOT( slotExpand( const QModelIndex ) ) );
+   
 }
 
 
 void CollectionTreeView::setModel(QAbstractItemModel * model)
 {
+    m_treeModel = static_cast<CollectionTreeItemModelBase *> ( model );
+
+    m_filterTimer.setSingleShot( true );
+    connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
+    connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex ) ), SLOT( slotExpand( const QModelIndex ) ) );
+
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
     m_filterModel->setFilterRole( CustomRoles::FilterRole );
@@ -74,8 +72,10 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
 
 
 CollectionTreeView::~CollectionTreeView() {
-    KConfigGroup config = Amarok::config( "Collection Browser" );
-    config.writeEntry( "TreeCategory", m_treeModel->levels() );
+
+    //we dont know what collection this is as this class is used with many different collections...
+    //KConfigGroup config = Amarok::config( "Collection Browser" );
+    //config.writeEntry( "TreeCategory", m_treeModel->levels() );
     delete m_treeModel;
     delete m_filterModel;
 }

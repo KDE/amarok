@@ -21,6 +21,7 @@
 #include "CollectionWidget.h"
 #include "CollectionTreeView.h"
 #include "querybuilder.h"
+#include "collectionbrowser/CollectionTreeItemModel.h"
 
 #include <QVBoxLayout>
 
@@ -44,6 +45,13 @@ CollectionWidget::CollectionWidget( const char* name )
     SearchWidget *sw = new SearchWidget( this );
 
     m_treeView = new CollectionTreeView( this );
+
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    QList<int> cats = config.readEntry( "TreeCategory", QList<int>() );
+    if ( cats.isEmpty() )
+        cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
+
+    m_treeView->setModel( new CollectionTreeItemModel( cats ) );
     sw->setup( m_treeView );
 
     QAction *action = new QAction( i18n("Artist"), menubar );
