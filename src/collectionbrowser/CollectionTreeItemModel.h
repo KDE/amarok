@@ -41,6 +41,7 @@ Q_OBJECT
 
     private slots:
         virtual void requestCollectionsExpansion();
+        void update();
 
     private:
 

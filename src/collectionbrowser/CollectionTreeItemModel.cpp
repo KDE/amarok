@@ -43,20 +43,9 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
 
 void
 CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
-    delete m_rootItem; //clears the whole tree!
-    m_levelType = levelType;
-    m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
-    d->m_collections.clear();
-    QList<Collection*> collections = CollectionManager::instance()->collections();
-    foreach( Collection *coll, collections )
-    {
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
-    }
-    m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
-    updateHeaderText();
-    m_expandedItems.clear();
 
-    reset(); //resets the whole model, as the data changed
+    m_levelType = levelType;
+    update();
     if ( d->m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
@@ -142,6 +131,7 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
 
 void
 CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
+    DEBUG_BLOCK
     if ( !newCollection )
         return;
 
@@ -216,5 +206,23 @@ namespace Amarok {
 
         str.truncate( newLen );
     }
+}
+
+void CollectionTreeItemModel::update()
+{
+    DEBUG_BLOCK
+    delete m_rootItem; //clears the whole tree!
+    m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
+    d->m_collections.clear();
+    QList<Collection*> collections = CollectionManager::instance()->collections();
+    foreach( Collection *coll, collections )
+    {
+        connect( coll, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
+    }
+    m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
+    updateHeaderText();
+    m_expandedItems.clear();
+    reset();
 }
 #include "CollectionTreeItemModel.moc"

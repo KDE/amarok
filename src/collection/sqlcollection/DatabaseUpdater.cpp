@@ -56,6 +56,10 @@ void
 DatabaseUpdater::createTemporaryTables()
 {
     DEBUG_BLOCK
+
+    //debug stuff
+    //removeTemporaryTables();
+            
     //this is a copy of the relevant code in createTables()
     //TODO refactor this to make it easier to keep the tables created by those methods in sync
     {
@@ -188,6 +192,7 @@ DatabaseUpdater::removeTemporaryTables()
     m_collection->query( "DROP TABLE composers_temp;" );
     m_collection->query( "DROP TABLE artists_temp;" );
     m_collection->query( "DROP TABLE urls_temp;" );
+    m_collection->query( "DROP TABLE directories_temp" );
 }
 
 void
@@ -245,7 +250,7 @@ DatabaseUpdater::copyToPermanentTables()
 
     //insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
-    m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
+    //m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
     //insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
 
     QStringList urlIdList = m_collection->query( "SELECT urls.id FROM urls;" );
@@ -260,11 +265,16 @@ DatabaseUpdater::copyToPermanentTables()
     //update the directories table
     //we don't know in which rows the changedate was updated, so we simply copy the whole
     //temporary table. We need a transaction here if we start to use foreign keys
+
+    //why does this fail?
     m_collection->query( "DELETE FROM directories;" );
     m_collection->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 
     //copy tracks last so that we don't get problems with foreign key constraints
+    //m_collection->query( "DELETE FROM tracks;" );
     m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
+
+    m_collection->sendChangedSignal();
 }
 
 void
