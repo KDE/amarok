@@ -76,18 +76,18 @@ public:
             // value from Plasma::VBoxLayout because it's not exposed. arg!
 
 
-            kDebug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
+//             kDebug() << "found maxHeight:" << maxHeight << "and maxColumn:" << maxColumn << "and maxAppletHeight" << maxAppletHeight;
             found = false;
             for( int i = 0; i < numColumns; i++ )
             {
                 if( i == maxColumn ) continue; // don't bother
-                    kDebug() << "checking for column" << i << "of" << numColumns - 1;
-                kDebug() << "doing math:" << columns[ i ]->sizeHint().height() << "+" << maxAppletHeight;
+//                     kDebug() << "checking for column" << i << "of" << numColumns - 1;
+//                 kDebug() << "doing math:" << columns[ i ]->sizeHint().height() << "+" << maxAppletHeight;
                 qreal newColHeight = columns[ i ]->sizeHint().height() + maxAppletHeight;
-                kDebug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
+//                 kDebug() << "checking if newColHeight:" << newColHeight << "is less than:" << maxHeight;
                 if( newColHeight < maxHeight ) // found a new place for this applet
                 {
-                    kDebug() << "found new place for an applet: column" << i;
+//                     kDebug() << "found new place for an applet: column" << i;
                     columns[ i ]->addItem( columns[ maxColumn ]->takeAt( columns[ maxColumn ]->count() - 1 ) );
                     found = true;
                     break;
@@ -127,13 +127,13 @@ void ContextLayout::addItem(LayoutItem* item)
     int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
     for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
     {                                           // the applet in
-        kDebug() << "comparing this column, size:" << d->columns[ i ]->sizeHint().height();
+//         kDebug() << "comparing this column, size:" << d->columns[ i ]->sizeHint().height();
         if( d->columns[ i ]->sizeHint().height() < min )
             smallestColumn = i;
     }
-    kDebug() << "smallest column is" << smallestColumn << "th (" << min << ")" << "of" << d->columns.size();
+//     kDebug() << "smallest column is" << smallestColumn << "th (" << min << ")" << "of" << d->columns.size();
     
-    kDebug() << "found" << d->columns.size() << " column, adding applet to column:" << smallestColumn;
+//     kDebug() << "found" << d->columns.size() << " column, adding applet to column:" << smallestColumn;
     d->columns[ smallestColumn ]->addItem( item );
     if (animator()) {
         animator()->setCurrentState(item,Plasma::LayoutAnimator::InsertedState);
@@ -242,12 +242,12 @@ void ContextLayout::relayout()
             d->columns << new VerticalLayout( this );
     } if( numColumns < d->columns.size() ) // view was shrunk
     {
-        kDebug() << "gotta shrink!";
+//         kDebug() << "gotta shrink!";
         VerticalLayout* column = d->columns[ d->columns.size() - 1 ];
         d->columns.removeAt( d->columns.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
-            kDebug() << "trying to put away an item";
+//             kDebug() << "trying to put away an item";
             LayoutItem* applet = column->takeAt( i );
             int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
             for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
@@ -255,7 +255,7 @@ void ContextLayout::relayout()
             if( d->columns[ i ]->sizeHint().height() < min )
                     smallestColumn = i;
             }
-            kDebug() << "found column for item:" << smallestColumn;
+//             kDebug() << "found column for item:" << smallestColumn;
             d->columns[ smallestColumn ]->addItem( applet );
         }
     }
@@ -265,13 +265,13 @@ void ContextLayout::relayout()
 
     for( int i = 0; i < numColumns; i++ ) // lay out columns
     {
-        kDebug() << "setting columns to width:" << columnWidth;
+//         kDebug() << "setting columns to width:" << columnWidth;
         QPointF pos( ( ( i + 1 ) * margin( Plasma::Layout::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::Layout::LeftMargin ) );
         QSizeF size( columnWidth, qMax( d->columns[ i ]->sizeHint().height(),
                                                          rect.height() ) );
          d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
-    kDebug() << "columns laid out, now balancing";
+//     kDebug() << "columns laid out, now balancing";
     d->balanceColumns();
     foreach( VerticalLayout* column, d->columns )
         column->setGeometry( column->geometry() );

@@ -139,6 +139,7 @@ void ColumnApplet::appletRemoved( QObject* object ) // SLOT
     Q_UNUSED( object )
     recalculate();
 }
+
 /*
 // parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
 void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
@@ -205,7 +206,7 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 Applet* ColumnApplet::addApplet( Applet* applet )
 {
     DEBUG_BLOCK
-    debug() << "m_columns:" << m_columns;
+//     debug() << "m_columns:" << m_columns;
      m_columns->addItem( applet );
     
     recalculate();
@@ -214,7 +215,7 @@ Applet* ColumnApplet::addApplet( Applet* applet )
 
 void ColumnApplet::recalculate()
 {
-    debug() << "got child item that wants a recalculation";
+//     debug() << "got child item that wants a recalculation";
     m_columns->invalidate();
 }
 
