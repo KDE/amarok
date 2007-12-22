@@ -27,17 +27,18 @@ class WikipediaApplet : public Context::Applet
 public:
     WikipediaApplet( QObject* parent, const QVariantList& args );
 
+    void init();
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
-    QSizeF contentSizeHint() const { return m_size; } 
-    void constraintsUpdated();
+    void constraintsUpdated( Plasma::Constraints );
 
+    bool hasHeightForWidth() const;
+    qreal heightForWidth( qreal width ) const;
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
     void calculateHeight();
-    void resize( qreal newWidth, qreal aspectRatio );
 
     Context::Svg* m_theme;
     Context::Svg* m_header;
