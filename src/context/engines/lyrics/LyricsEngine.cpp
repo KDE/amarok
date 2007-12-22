@@ -59,7 +59,10 @@ void LyricsEngine::update()
 {
     DEBUG_BLOCK
 
-    QString lyrics = EngineController::instance()->currentTrack()->cachedLyrics();
+        Meta::TrackPtr curtrack = EngineController::instance()->currentTrack();
+    if( !curtrack )
+        return;
+    QString lyrics = curtrack->cachedLyrics();
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
 

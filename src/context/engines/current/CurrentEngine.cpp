@@ -98,6 +98,8 @@ void CurrentEngine::update()
 {
     DEBUG_BLOCK
     m_currentTrack = EngineController::instance()->currentTrack();
+    if( !m_currentTrack )
+        return;
     m_currentTrack->subscribe( this );
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
