@@ -57,14 +57,14 @@ public:
 
     ~XSPFPlaylist();
 
-    QString name();
-    QString prettyName();
+    virtual QString name() const { return title(); }
+    virtual QString prettyName() const { return title(); }
 
     /** returns all tracks in this playlist */
     TrackList tracks();
 
     /* convenience functions */
-    QString title();
+    QString title() const;
     QString creator();
     QString annotation();
     KUrl info();

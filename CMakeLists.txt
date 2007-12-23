@@ -19,7 +19,11 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 
 find_package(Taglib REQUIRED)
-find_package(RUBY REQUIRED)
+if (WIN32)
+    find_package(RUBY)
+else (WIN32)
+    find_package(RUBY REQUIRED)
+endif (WIN32)
 
 add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})

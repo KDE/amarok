@@ -125,7 +125,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QGroupBox">
+        <widget class="Q3GroupBox">
             <property name="name">
                 <cstring>groupingGroup</cstring>
             </property>
@@ -245,7 +245,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QGroupBox">
+        <widget class="Q3GroupBox">
             <property name="name">
                 <cstring>replacementGroup</cstring>
             </property>
@@ -364,7 +364,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QGroupBox">
+        <widget class="Q3GroupBox">
             <property name="name">
                 <cstring>previewBox</cstring>
             </property>

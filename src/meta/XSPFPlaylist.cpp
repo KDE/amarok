@@ -69,25 +69,14 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
     return true;
 }
 
-QString
-XSPFPlaylist::name()
-{
-    return title();
-}
-
-QString
-XSPFPlaylist::prettyName()
-{
-    return title();
-}
-
 TrackList
 XSPFPlaylist::tracks()
 {
+    return TrackList();
 }
 
 QString
-XSPFPlaylist::title()
+XSPFPlaylist::title() const
 {
     return documentElement().namedItem( "title" ).firstChild().nodeValue();
 }

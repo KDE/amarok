@@ -44,7 +44,7 @@
                 <property name="margin">
                     <number>0</number>
                 </property>
-                <widget class="QGroupBox">
+                <widget class="Q3GroupBox">
                     <property name="name">
                         <cstring>groupBox1</cstring>
                     </property>
@@ -102,7 +102,7 @@
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <widget class="QListBox">
+                                        <widget class="Q3ListBox">
                                             <property name="name">
                                                 <cstring>m_supportedListBox</cstring>
                                             </property>
@@ -200,7 +200,7 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="Q3GroupBox">
                     <property name="name">
                         <cstring>groupBox2</cstring>
                     </property>
@@ -406,9 +406,9 @@
     </connection>
     <connection>
         <sender>m_supportedListBox</sender>
-        <signal>doubleClicked(QListBoxItem*)</signal>
+        <signal>doubleClicked(Q3ListBoxItem*)</signal>
         <receiver>GenericMediaDeviceConfigDialog</receiver>
-        <slot>supportedListBoxDoubleClicked(QListBoxItem*)</slot>
+        <slot>supportedListBoxDoubleClicked(Q3ListBoxItem*)</slot>
     </connection>
     <connection>
         <sender>m_songLocationBox</sender>
@@ -439,18 +439,18 @@
     <include location="global" impldecl="in implementation">metabundle.h</include>
     <include location="global" impldecl="in implementation">qstringx.h</include>
     <include location="local" impldecl="in declaration">genericmediadevice.h</include>
-    <include location="global" impldecl="in declaration">qpopupmenu.h</include>
+    <include location="global" impldecl="in declaration">q3popupmenu.h</include>
     <include location="global" impldecl="in declaration">q3combobox.h</include>
 </includes>
 <variables>
-    <variable access="private">QPopupMenu *m_unsupportedMenu;</variable>
+    <variable access="private">Q3PopupMenu *m_unsupportedMenu;</variable>
     <variable access="private">MetaBundle *m_previewBundle;</variable>
     <variable access="private">GenericMediaDevice *m_device;</variable>
 </variables>
 <slots>
     <slot>addSupportedButtonClicked( int id )</slot>
     <slot specifier="non virtual">removeSupportedButtonClicked()</slot>
-    <slot specifier="non virtual">supportedListBoxDoubleClicked( QListBoxItem * item )</slot>
+    <slot specifier="non virtual">supportedListBoxDoubleClicked( Q3ListBoxItem * item )</slot>
     <slot>updatePreviewLabel()</slot>
     <slot>updatePreviewLabel( const QString &amp; format )</slot>
 </slots>

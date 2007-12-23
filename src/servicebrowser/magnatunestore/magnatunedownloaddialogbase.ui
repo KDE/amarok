@@ -38,7 +38,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QTextEdit" row="0" column="0">
+                <widget class="Q3TextEdit" row="0" column="0">
                     <property name="name">
                         <cstring>infoEdit</cstring>
                     </property>
