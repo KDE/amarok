@@ -37,9 +37,11 @@ class PlaylistManager : public QObject
     Q_OBJECT
 
     public:
+        //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamicly.
         enum PlaylistCategory
         {
-            UserPlaylist = 1,
+            CurrentPlaylist = 1,
+            UserPlaylist,
             PodcastChannel,
             PodcastPlaylist,
             Dynamic,
@@ -94,7 +96,16 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         virtual ~PlaylistProvider() {};
 
         virtual QString prettyName() const = 0;
+
+        /**
+         * @returns An unique integer that identifies the category of offered playlists.
+         * Use the PlaylistManager::PlaylistCategory enum.
+         */
         virtual int category() const = 0;
+
+        /**
+         * @returns A string to identify the category of the Playlist. Alway use a plural form.
+         */
         virtual QString typeName() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;

@@ -1,7 +1,7 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // Author: Nikolaj Hald Nielsen (C) Copyright 2007
-// Author: Casey Link (C) Copyright 2007    
+// Author: Casey Link (C) Copyright 2007
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
 // .asx file support added by Michael Seiwert Copyright (C) 2006
 // .asx file support from Kaffeine, Copyright (C) 2004-2005 by Jürgen Kofler (GPL 2 or later)
@@ -45,7 +45,7 @@
 
 
 
-using namespace Meta;
+// using namespace Meta;
 
 
 PlaylistHandler::PlaylistHandler()
@@ -217,8 +217,8 @@ PlaylistHandler::loadPls( QTextStream &stream )
     DEBUG_BLOCK
 
 
-    TrackList tracks;
-    TrackPtr currentTrack;
+    Meta::TrackList tracks;
+    Meta::TrackPtr currentTrack;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -362,7 +362,7 @@ PlaylistHandler::savePls( Meta::TrackList tracks, const QString &location )
     KUrl::List urls;
     QStringList titles;
     QList<int> lengths;
-    foreach( TrackPtr track, tracks )
+    foreach( Meta::TrackPtr track, tracks )
     {
         urls << track->url();
         titles << track->name();
@@ -409,7 +409,7 @@ PlaylistHandler::loadM3u( QTextStream &stream )
 {
     DEBUG_BLOCK
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
     const QString directory = m_path.left( m_path.lastIndexOf( '/' ) + 1 );
 
@@ -477,7 +477,7 @@ PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location )
     KUrl::List urls;
     QStringList titles;
     QList<int> lengths;
-    foreach( TrackPtr track, tracks )
+    foreach( Meta::TrackPtr track, tracks )
     {
         urls << track->url();
         titles << track->name();
@@ -528,7 +528,7 @@ PlaylistHandler::loadRealAudioRam( QTextStream &stream )
 {
     DEBUG_BLOCK
 
-    TrackList tracks;
+    Meta::TrackList tracks;
     QString url;
     //while loop adapted from Kaffeine 0.5
     while (!stream.atEnd())
@@ -570,7 +570,7 @@ PlaylistHandler::loadSMIL( QTextStream &stream )
     QDomNode node;
     QDomElement element;
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
     //audio sources...
     nodeList = doc.elementsByTagName( "audio" );
@@ -605,7 +605,7 @@ bool
 PlaylistHandler::loadASX( QTextStream &stream )
 {
     //adapted from Kaffeine 0.7
-    TrackList tracks;
+    Meta::TrackList tracks;
     QDomDocument doc;
     QString errorMsg;
     int errorLine, errorColumn;
@@ -693,7 +693,7 @@ PlaylistHandler::loadASX( QTextStream &stream )
         }
         if (!url.isEmpty())
         {
-            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( url ) ) );
+            Meta::TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( url ) ) );
             Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
             if( ec )
                 ec->setTitle( title );
@@ -732,7 +732,7 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
 
     XSPFtrackList trackList = doc->trackList();
 
-    TrackList tracks;
+    Meta::TrackList tracks;
     foreach( const XSPFtrack &track, trackList )
     {
         KUrl location = track.location;
@@ -744,14 +744,14 @@ PlaylistHandler::loadXSPF( QTextStream &stream )
 
         if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.path() ) ) )
         {
-            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
+            Meta::TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
             tracks.append( trackPtr );
         }
         else
         {
             debug() << location << ' ' << artist << ' ' << title << ' ' << album;
 
-            TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
+            Meta::TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
             Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
             if( ec )
             {
@@ -809,21 +809,21 @@ recurse( const KUrl &url )
 
 namespace Amarok
 {
-    
+
     //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
     KUrl::List
     recursiveUrlExpand ( const KUrl &url )
     {
         typedef QMap<QString, KUrl> FileMap;
-    
+
         KDirLister lister ( false );
         lister.setAutoUpdate ( false );
         lister.setAutoErrorHandlingEnabled ( false, 0 );
         lister.openUrl ( url );
-    
+
         while ( !lister.isFinished() )
             kapp->processEvents ( QEventLoop::ExcludeUserInput );
-    
+
         KFileItemList items = lister.items();
         KUrl::List urls;
         FileMap files;
@@ -832,7 +832,7 @@ namespace Amarok
             if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
             if ( it.isDir() ) urls += recurse ( it.url() );
         }
-    
+
         oldForeachType ( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
@@ -841,7 +841,7 @@ namespace Amarok
             urls += *it;
         return urls;
     }
-    
+
         KUrl::List
     recursiveUrlExpand ( const KUrl::List &list )
     {
@@ -850,7 +850,7 @@ namespace Amarok
         {
             urls += recursiveUrlExpand ( *it );
         }
-    
+
         return urls;
     }
 }

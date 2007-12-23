@@ -85,8 +85,6 @@ PodcastModel::data(const QModelIndex & index, int role) const
             return QVariant();
         }
 
-        debug() << "index " << index.column();
-        debug() << "using role " << role;
         switch( role )
         {
             case Qt::DisplayRole: return title; break;

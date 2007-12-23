@@ -205,6 +205,8 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
         virtual TrackList tracks() { return m_tracks; };
 
+        virtual KUrl retrievableUrl() { return KUrl(); };
+
         //PodcastMetaCommon methods
         virtual int podcastType() { return ChannelType; };
 
@@ -227,7 +229,7 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { return static_cast<Meta::Capability *>( 0 ); };
-        
+
     private:
 
         KUrl m_link;

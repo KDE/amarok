@@ -1,19 +1,19 @@
 /***************************************************************************
- * copyright        : (C) 2007 Ian Monroe <ian@monroe.nu> 
+ * copyright        : (C) 2007 Ian Monroe <ian@monroe.nu>
  *                  : (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
@@ -48,7 +48,7 @@
 #include <KUrl>
 
 using namespace Playlist;
-using namespace Meta;
+// using namespace Meta;
 
 namespace Amarok
 {
@@ -126,16 +126,16 @@ Model::data( const QModelIndex& index, int role ) const
     else*/
     if( role == ItemRole && ( row != -1 ) )
         return QVariant::fromValue( m_items.at( row ) );
-    
+
     else if( role == ActiveTrackRole )
         return ( row == m_activeRow );
-    
+
     else if( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
         return QVariant::fromValue( m_items.at( row )->track() );
-    
+
     else if ( role == GroupRole )
     {
-        TrackPtr track = m_items.at( row )->track();
+        Meta::TrackPtr track = m_items.at( row )->track();
 
         if ( !track->album() )
             return None;  // no albm set
@@ -146,32 +146,32 @@ Model::data( const QModelIndex& index, int role ) const
         return albumGroup->groupMode( row );
 
     }
-    
+
     else if ( role == GroupedTracksRole )
     {
-        TrackPtr track = m_items.at( row )->track();
+        Meta::TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         return albumGroup->elementsInGroup( row );
     }
-    
+
     else if ( role == GroupedAlternateRole )
     {
-        TrackPtr track = m_items.at( row )->track();
+        Meta::TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         if( albumGroup )
             return albumGroup->alternate( row );
         return true;
     }
-    
+
     else if ( role == GroupedCollapsibleRole )
     {
-        TrackPtr track = m_items.at( row )->track();
+        Meta::TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         //we cannot collapse the group that contains the currently selected track.
         return ( albumGroup->firstInGroup( m_activeRow ) == -1 );
 
     }
-    
+
     else if( role == Qt::DisplayRole && row != -1 )
     {
         switch( index.column() )
@@ -224,17 +224,17 @@ Model::data( const QModelIndex& index, int role ) const
 // }
 
 void
-Model::insertTrack( int row, TrackPtr track )
+Model::insertTrack( int row, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    TrackList list;
+    Meta::TrackList list;
     list.append( track );
     insertTracks( row, list );
 
 }
 
 void
-Model::insertTracks( int row, TrackList tracks )
+Model::insertTracks( int row, Meta::TrackList tracks )
 {
     m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
 }
@@ -405,14 +405,14 @@ Model::setActiveRow( int row )
     if ( !m_items[ row ]->track()->album().isNull() ) {
         albumName = m_items[ row ]->track()->album()->prettyName();
     }
-    
+
     if( m_albumGroups.contains( albumName ) && !albumName.isEmpty() )
     {
         m_albumGroups[ albumName ]->setCollapsed( row,  false );
         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
-    
+
 }
 
 void
@@ -443,8 +443,8 @@ Model::metadataChanged(Meta::Album * album)
 {
     DEBUG_BLOCK
     //process each track
-    TrackList tracks = album->tracks();
-    foreach( TrackPtr track, tracks ) {
+    Meta::TrackList tracks = album->tracks();
+    foreach( Meta::TrackPtr track, tracks ) {
         metadataChanged( track.data() );
     }
 
@@ -457,7 +457,7 @@ Model::clear()
         return;
     removeRows( 0, m_items.size() );
     m_albumGroups.clear();
-    m_lastAddedTrackAlbum = AlbumPtr();
+    m_lastAddedTrackAlbum = Meta::AlbumPtr();
     The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 //    m_activeRow = -1;
 }
@@ -557,6 +557,40 @@ Model::insertOptioned( Meta::TrackPtr track, int options )
 }
 
 void
+Model::insertOptioned( Meta::PlaylistList list, int options )
+{
+    foreach( Meta::PlaylistPtr playlist, list )
+    {
+        insertOptioned( playlist, options );
+    }
+}
+
+void
+Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
+{
+    DEBUG_BLOCK
+    //TODO: Add this Meta::Playlist to the observed list
+    insertOptioned( playlist->tracks(), options );
+}
+
+void
+Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    //TODO: this is for Tracks, do something similar for Playlists
+//     m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
+}
+
+void
+Model::insertPlaylists( int row, Meta::PlaylistList playlists )
+{
+    foreach( Meta::PlaylistPtr playlist, playlists )
+    {
+        insertPlaylist( row, playlist );
+    }
+}
+
+void
 Model::insertOptioned( QueryMaker *qm, int options )
 {
     qm->startTrackQuery();
@@ -638,6 +672,26 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             return true;
         }
     }
+    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    {
+        debug() << "Found playlist mime type";
+
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+            if( row < 0 )
+            {
+                debug() << "Inserting at row: " << row << " so we're appending to the list.";
+                insertOptioned( dragList->playlists(), Playlist::Append );
+            }
+            else
+            {
+                debug() << "Inserting at row: " << row <<" so its inserted correctly.";
+                insertPlaylists( row, dragList->playlists() );
+            }
+            return true;
+        }
+    }
     else if( data->hasUrls() )
     {
         //probably a drop from an external source
@@ -663,7 +717,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 
 
 void
-Model::insertTracksCommand( int row, TrackList list )
+Model::insertTracksCommand( int row, Meta::TrackList list )
 {
     DEBUG_BLOCK
     debug() << "inserting... " << row << ' ' << list.count();
@@ -672,7 +726,7 @@ Model::insertTracksCommand( int row, TrackList list )
 
     beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
     int i = 0;
-    foreach( TrackPtr track , list )
+    foreach( Meta::TrackPtr track , list )
     {
         if( track )
         {
@@ -706,7 +760,7 @@ Model::insertTracksCommand( int row, TrackList list )
 }
 
 
-TrackList
+Meta::TrackList
 Model::removeRowsCommand( int position, int rows )
 {
     DEBUG_BLOCK
@@ -715,7 +769,7 @@ Model::removeRowsCommand( int position, int rows )
 //     TrackList::iterator start = m_tracks.begin() + position;
 //     TrackList::iterator end = start + rows;
 //     m_tracks.erase( start, end );
-    TrackList ret;
+    Meta::TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
         Item* item = m_items.takeAt( position ); //take at position, row times
@@ -725,7 +779,7 @@ Model::removeRowsCommand( int position, int rows )
         ret.push_back( item->track() );
         delete item;
     }
-    
+
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
@@ -993,7 +1047,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
         }
 
 
-    } 
+    }
 
     //debug stuff
     debug() << "Groups after offsetting:";
@@ -1007,7 +1061,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
        //debug() << "i: " << i;
 
-       TrackPtr track = m_items.at( i )->track();
+       Meta::TrackPtr track = m_items.at( i )->track();
 
        if ( !track->album() )
            continue;
@@ -1018,7 +1072,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
        if ( !track->album().isNull() ) {
            albumName = track->album()->prettyName();
        }
-       
+
        if ( m_albumGroups.contains( albumName ) && !albumName.isEmpty() ) {
            m_albumGroups[ albumName ]->addRow( i );
        } else {
@@ -1042,7 +1096,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
        //debug() << "i: " << i;
 
-       TrackPtr track = m_items.at( i )->track();
+       Meta::TrackPtr track = m_items.at( i )->track();
 
        if ( !track->album() )
            continue;

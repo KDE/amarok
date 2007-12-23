@@ -25,6 +25,7 @@
 #include <QUrl>
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
+const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlistss";
 
 class AmarokMimeData::Private
 {
@@ -39,8 +40,10 @@ public:
     }
 
     Meta::TrackList tracks;
+    Meta::PlaylistList playlists;
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
+    QMap<QueryMaker*, Meta::PlaylistList> playlistMap;
     bool deleteQueryMakers;
     int completedQueries;
 
@@ -65,6 +68,7 @@ AmarokMimeData::formats() const
     if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty())
     {
         formats.append( TRACK_MIME );
+        formats.append( PLAYLIST_MIME );
         if( !formats.contains( "text/uri-list" ) )
             formats.append( "text/uri-list" );
         if( !formats.contains( "text/plain" ) )
@@ -76,8 +80,12 @@ AmarokMimeData::formats() const
 bool
 AmarokMimeData::hasFormat( const QString &mimeType ) const
 {
-    if( mimeType == TRACK_MIME || mimeType == "text/uri-list" || mimeType == "text/plain" )
+    if( mimeType == TRACK_MIME )
         return !d->tracks.isEmpty() || !d->queryMakers.isEmpty();
+    else if( mimeType == PLAYLIST_MIME )
+        return !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
+    else if( mimeType == "text/uri-list" || mimeType == "text/plain" )
+        return !d->tracks.isEmpty() || !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
     else
         return QMimeData::hasFormat( mimeType );
 }
@@ -110,6 +118,34 @@ AmarokMimeData::addTracks( const Meta::TrackList &tracks )
     d->tracks << tracks;
 }
 
+Meta::PlaylistList
+AmarokMimeData::playlists() const
+{
+    while( d->completedQueries < d->queryMakers.count() )
+    {
+        QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
+    }
+    Meta::PlaylistList result = d->playlists;
+//     foreach( QueryMaker *qm, d->queryMakers )
+//     {
+//         if( d->trackMap.contains( qm ) )
+//             result << d->trackMap.value( qm );
+//     }
+    return result;
+}
+
+void
+AmarokMimeData::setPlaylists( const Meta::PlaylistList &playlists )
+{
+    d->playlists = playlists;
+}
+
+void
+AmarokMimeData::addPlaylists( const Meta::PlaylistList &playlists )
+{
+    d->playlists << playlists;
+}
+
 QList<QueryMaker*>
 AmarokMimeData::queryMakers()
 {
@@ -133,6 +169,7 @@ QVariant
 AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
 {
     Meta::TrackList tracks = this->tracks();
+    Meta::PlaylistList playlists = this->playlists();
     if( !tracks.isEmpty() )
     {
         if( mimeType == "text/uri-list" && type == QVariant::List )
@@ -141,6 +178,10 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             foreach( Meta::TrackPtr track, tracks )
             {
                 list.append( QVariant( QUrl( track->playableUrl().url() ) ) );
+            }
+            foreach( Meta::PlaylistPtr playlist, playlists )
+            {
+                list.append( QVariant( QUrl( playlist->retrievableUrl().url() ) ) );
             }
             return QVariant( list );
         }
@@ -154,6 +195,12 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += track->artist()->prettyName();
                 result += " - ";
                 result += track->prettyName();
+            }
+            foreach( Meta::PlaylistPtr playlist, playlists )
+            {
+                if( !result.isEmpty() )
+                    result += '\n';
+                result += playlist->prettyName();
             }
             return QVariant( result );
         }

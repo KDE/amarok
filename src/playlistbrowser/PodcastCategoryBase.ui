@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>301</width>
+    <width>339</width>
     <height>574</height>
    </rect>
   </property>
@@ -18,117 +18,107 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>11</x>
-     <y>1</y>
-     <width>281</width>
-     <height>571</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" >
-    <item>
-     <layout class="QHBoxLayout" >
-      <item>
-       <widget class="QToolButton" name="addPodcastButton" >
-        <property name="toolTip" >
-         <string>Add Podcast...</string>
-        </property>
-        <property name="text" >
-         <string>add podcast...</string>
-        </property>
-        <property name="icon" >
-         <iconset>../images/icons/hi16-action-amarok_add_playlist.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="refreshPodcastsButton" >
-        <property name="text" >
-         <string>Refresh All Podcasts</string>
-        </property>
-        <property name="icon" >
-         <iconset>../images/icons/hi16-action-amarok_refresh.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="configurePodcastsButton" >
-        <property name="toolTip" >
-         <string>Configure Podcasts...</string>
-        </property>
-        <property name="text" >
-         <string>Configure Podcasts...</string>
-        </property>
-        <property name="icon" >
-         <iconset>../images/icons/hi16-action-amarok_configure.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="podcastsIntervalButton" >
-        <property name="text" >
-         <string>Scan Interval...</string>
-        </property>
-        <property name="icon" >
-         <iconset>../images/icons/hi16-action-amarok_configure.png</iconset>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QTreeView" name="podcastTreeView" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" >
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QToolButton" name="addPodcastButton" >
+       <property name="toolTip" >
+        <string>Add Podcast...</string>
+       </property>
+       <property name="text" >
+        <string>add podcast...</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/icons/hi16-action-amarok_add_playlist.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="refreshPodcastsButton" >
+       <property name="text" >
+        <string>Refresh All Podcasts</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/icons/hi16-action-amarok_refresh.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="configurePodcastsButton" >
+       <property name="toolTip" >
+        <string>Configure Podcasts...</string>
+       </property>
+       <property name="text" >
+        <string>Configure Podcasts...</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/icons/hi16-action-amarok_configure.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="podcastsIntervalButton" >
+       <property name="text" >
+        <string>Scan Interval...</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/icons/hi16-action-amarok_configure.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeView" name="podcastTreeView" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <resources/>

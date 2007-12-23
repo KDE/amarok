@@ -21,6 +21,7 @@
 
 #include "PodcastCategory.h"
 #include "PodcastModel.h"
+#include "PodcastMeta.h"
 
 #include <QAction>
 #include <QToolBar>
@@ -29,6 +30,9 @@
 #include <QIcon>
 #include <QPainter>
 #include <QPixmapCache>
+#include <QLinearGradient>
+#include <QFontMetrics>
+#include <QRegExp>
 
 namespace PlaylistBrowserNS {
 
@@ -72,9 +76,10 @@ PodcastCategoryDelegate::paint(QPainter * painter, const QStyleOptionViewItem & 
     DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
+    debug() << "width = " << width;
     int height = 90;
-    int iconWidth = 22;
-    int iconHeight = 22;
+    int iconWidth = 32;
+    int iconHeight = 32;
     int iconPadX = 8;
     int iconPadY = 4;
 
@@ -86,14 +91,6 @@ PodcastCategoryDelegate::paint(QPainter * painter, const QStyleOptionViewItem & 
     background.fill( Qt::transparent );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
-
-
-    if (option.state & QStyle::State_Selected)
-        painter->setPen(Qt::blue);
-    else
-        painter->setPen(Qt::gray);
-
-    //painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66, 8 ,8 );
 
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
@@ -111,19 +108,39 @@ PodcastCategoryDelegate::paint(QPainter * painter, const QStyleOptionViewItem & 
     titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 ) );
     titleRect.setHeight( iconHeight + iconPadY );
 
-    QString title = index.data( Qt::DisplayRole ).toString();
-    debug() << "title is " << title;
-    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignVCenter, title );
+    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
     painter->setFont(QFont("Arial", 9));
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
     textRect.setTop( option.rect.top() + iconHeight + iconPadY );
-    textRect.setWidth( width - iconPadX * 2 );
+    textRect.setWidth( width - iconPadX * 2 - m_view->indentation() );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
-    painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
+    QString description = index.data( ShortDescriptionRole ).toString();
+
+    description.replace( QRegExp("\n\n"), "\n" );
+    QFontMetricsF fm( painter->font() );
+    QRectF textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
+    bool toWide = textBound.width() > textRect.width();
+    bool toHigh = textBound.height() > textRect.height();
+    if ( toHigh || toWide ) {
+        QLinearGradient gradient;
+        gradient.setStart( textRect.topLeft() );
+
+        if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
+        else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
+        else gradient.setFinalStop( textRect.bottomLeft() );
+
+        gradient.setColorAt(0.8, painter->pen().color());
+        gradient.setColorAt(1.0, Qt::transparent);
+        QPen pen;
+        pen.setBrush(QBrush(gradient));
+        painter->setPen(pen);
+    }
+
+    painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
 
     painter->restore();
 
@@ -133,12 +150,17 @@ QSize
 PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     Q_UNUSED( option );
-    Q_UNUSED( index );
 
     //DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
+
+    Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int heigth = 90;
+    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
+    {
+        heigth = 40;
+    }
 
     return QSize ( width, heigth );
 }

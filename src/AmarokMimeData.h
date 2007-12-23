@@ -21,6 +21,7 @@
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
+#include "meta/Playlist.h"
 #include "collection/QueryMaker.h"
 
 #include <QList>
@@ -32,6 +33,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
     Q_OBJECT
     public:
         static const QString TRACK_MIME;
+        static const QString PLAYLIST_MIME;
 
         AmarokMimeData();
         virtual ~AmarokMimeData();
@@ -42,6 +44,10 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         Meta::TrackList tracks() const;
         void setTracks( const Meta::TrackList &tracks );
         void addTracks( const Meta::TrackList &tracks );
+
+        Meta::PlaylistList playlists() const;
+        void setPlaylists( const Meta::PlaylistList &playlists );
+        void addPlaylists( const Meta::PlaylistList &playlists );
 
         QList<QueryMaker*> queryMakers();
         void addQueryMaker( QueryMaker *queryMaker );
