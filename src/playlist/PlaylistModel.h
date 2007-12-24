@@ -112,6 +112,7 @@ class TrackNavigator;
     class Model : public QAbstractListModel, Meta::Observer
     {
         friend class AddTracksCmd;
+        friend class AddPlaylistsCmd;
         friend class RemoveTracksCmd;
         Q_OBJECT
 
@@ -225,7 +226,12 @@ class TrackNavigator;
              * @arg row Row number in the playlist to insert the list after.
              * @arg list The list to be inserted.
              */
-            Meta::TrackList removeRowsCommand( int position, int rows );
+            Meta::TrackList removeTracksCommand( int position, int rows );
+
+            //TODO: implement these once Meta::Observer works for Meta::Playlists
+            void registerPlaylist( Meta::PlaylistPtr playlist ) { };
+
+            void unRegisterPlaylist( Meta::PlaylistPtr playlist ) { };
 
              /**
              * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha
@@ -248,6 +254,8 @@ class TrackNavigator;
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
             PlaylistHandler * m_playlistHandler;
+
+            Meta::PlaylistList m_registeredPlaylists;
 
             mutable QMap< QString, AlbumGroup * > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;

@@ -48,7 +48,6 @@
 #include <KUrl>
 
 using namespace Playlist;
-// using namespace Meta;
 
 namespace Amarok
 {
@@ -501,17 +500,17 @@ Model::insertOptioned( Meta::TrackList list, int options )
     bool playlistAdded = false;
 
     //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
-    for( int i = 0; i < list.size(); ++i )
-    {
-        if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
-            playlistAdded = true;
-            m_playlistHandler->load( list.takeAt( i )->url() );
-        }
-    }
+//     for( int i = 0; i < list.size(); ++i )
+//     {
+//         if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
+//             playlistAdded = true;
+//             m_playlistHandler->load( list.takeAt( i )->url() );
+//         }
+//     }
 
     //fix crash when list is empty
-    if ( list.isEmpty() )
-        return;
+//     if ( list.isEmpty() )
+//         return;
 
 
     int firstItemAdded = -1;
@@ -720,7 +719,7 @@ void
 Model::insertTracksCommand( int row, Meta::TrackList list )
 {
     DEBUG_BLOCK
-    debug() << "inserting... " << row << ' ' << list.count();
+    debug() << "inserting... row: " << row << ' ' << list.count() << " Tracks";
     if( !list.size() )
         return;
 
@@ -761,7 +760,7 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
 
 
 Meta::TrackList
-Model::removeRowsCommand( int position, int rows )
+Model::removeTracksCommand( int position, int rows )
 {
     DEBUG_BLOCK
 
