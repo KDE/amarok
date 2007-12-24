@@ -213,15 +213,6 @@ Model::data( const QModelIndex& index, int role ) const
         } */
 }
 
-// void
-// insertColumns( int column, Column type )
-// {
-//     beginInsertColumns( QModelIndex(), column, column + 1 );
-//     m_columns.insert( column, type );
-//     endInsertColumns();
-//     return true;
-// }
-
 void
 Model::insertTrack( int row, Meta::TrackPtr track )
 {
@@ -244,7 +235,6 @@ Model::removeRows( int position, int rows, const QModelIndex& /*parent*/  )
     m_undoStack->push( new RemoveTracksCmd( 0, position, rows ) );
     return true;
 }
-
 
 void
 Model::insertTracks( int row, QueryMaker *qm )
@@ -496,23 +486,6 @@ Model::insertOptioned( Meta::TrackList list, int options )
             Amarok::ContextStatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
-    int orgCount = rowCount(); //needed because recursion messes up counting
-    bool playlistAdded = false;
-
-    //HACK! Check if any of the incomming tracks is really a playlist. Warning, this can get highly recursive
-//     for( int i = 0; i < list.size(); ++i )
-//     {
-//         if ( m_playlistHandler->isPlaylist( list.at( i )->url() ) ) {
-//             playlistAdded = true;
-//             m_playlistHandler->load( list.takeAt( i )->url() );
-//         }
-//     }
-
-    //fix crash when list is empty
-//     if ( list.isEmpty() )
-//         return;
-
-
     int firstItemAdded = -1;
     if( options & Replace )
     {
@@ -522,29 +495,26 @@ Model::insertOptioned( Meta::TrackList list, int options )
     }
     else if( options & Append )
     {
-        if ( playlistAdded )
-           firstItemAdded = orgCount;
-        else
-           firstItemAdded = rowCount();
-           insertTracks( firstItemAdded, list );
-           if( orgCount == 0 && (EngineController::engine()->state() != Engine::Playing ) )
-               play( firstItemAdded );
+        firstItemAdded = rowCount();
+        insertTracks( firstItemAdded, list );
+        if( EngineController::engine()->state() != Engine::Playing )
+            play( firstItemAdded );
     }
     else if( options & Queue )
     {
         //TODO implement queue
     }
+
     if( options & DirectPlay )
     {
         if ( rowCount() > firstItemAdded )
-        play( firstItemAdded );
+            play( firstItemAdded );
     }
     else if( ( options & StartPlay ) && ( EngineController::engine()->state() != Engine::Playing ) && ( rowCount() != 0 ) )
     {
         play( firstItemAdded );
     }
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 }
 
 void
@@ -752,8 +722,10 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
         //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
     dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
+    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
+
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
     emit playlistCountChanged( rowCount() );
 }
@@ -803,6 +775,8 @@ Model::removeTracksCommand( int position, int rows )
     regroupAlbums( position, rows, OffsetAfter, 0 - rows );
 
     endRemoveRows();
+
+    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
     emit playlistCountChanged( rowCount() );
     return ret;
