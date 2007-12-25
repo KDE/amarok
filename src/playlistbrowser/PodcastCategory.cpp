@@ -34,6 +34,8 @@
 #include <QFontMetrics>
 #include <QRegExp>
 
+#include <typeinfo>
+
 namespace PlaylistBrowserNS {
 
 PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel )
