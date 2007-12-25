@@ -78,7 +78,8 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(TagLibFileName fileName,
     QString fn = QFile::decodeName( fileName );
     KMimeType::Ptr mimetype = KMimeType::findByPath( fn );
 
-    if( mimetype->is( "audio/mpeg" )
+    if( mimetype->is( "audio/aac" )
+            || mimetype->is( "audio/mpeg" )
             || mimetype->is( "audio/x-mpegurl" )
             || mimetype->is( "audio/mpeg" ))
     {
