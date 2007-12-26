@@ -29,6 +29,22 @@ The::playlistManager()
     return PlaylistManager::instance();
 }
 
+bool
+PlaylistManager::isPlaylist( const KUrl & path )
+{
+    const QString ext = Amarok::extension( path.fileName() );
+
+    if( ext == "m3u" ) return true;
+    if( ext == "pls" ) return true;
+    if( ext == "ram" ) return true;
+    if( ext == "smil") return true;
+    if( ext == "asx" || ext == "wax" ) return true;
+    if( ext == "xml" ) return true;
+    if( ext == "xspf" ) return true;
+
+    return false;
+}
+
 PlaylistManager::PlaylistManager()
 {}
 

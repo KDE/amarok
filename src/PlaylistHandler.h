@@ -46,7 +46,6 @@ public:
 
     PlaylistHandler();
 
-    static bool isPlaylist( const KUrl &path );
     void load( const QString &path );
 
     enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };

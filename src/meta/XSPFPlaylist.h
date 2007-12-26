@@ -26,6 +26,14 @@
 #include <QtXml>
 
 class QTextStream;
+class KUrl;
+
+namespace Meta
+{
+class XSPFPlaylist;
+
+typedef KSharedPtr<XSPFPlaylist> XSPFPlaylistPtr;
+typedef QList<XSPFPlaylistPtr> XSPFPlaylistList;
 
 /* convenience struct for internal use */
 typedef struct {
@@ -40,12 +48,10 @@ typedef struct {
     uint trackNum;
     uint duration;
     KUrl link;
-} XSPFtrack;
+} XSPFTrack;
 
-typedef QList<XSPFtrack> XSPFtrackList;
+typedef QList<XSPFTrack> XSPFTrackList;
 
-namespace Meta
-{
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -100,12 +106,18 @@ public:
     /* Meta::Playlist virtual functions */
     bool hasCapabilityInterface( Capability::Type type ) const;
 
+    KUrl retrievableUrl() { return KUrl(); };
+
     Capability* asCapabilityInterface( Capability::Type type );
 
 private:
-    XSPFtrackList trackList();
+    XSPFTrackList trackList();
     bool loadXSPF( QTextStream& );
 };
 
 }
+
+Q_DECLARE_METATYPE( Meta::XSPFPlaylistPtr )
+Q_DECLARE_METATYPE( Meta::XSPFPlaylistList )
+
 #endif

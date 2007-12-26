@@ -21,6 +21,7 @@
 #include "XSPFPlaylist.h"
 
 #include "debug.h"
+#include "CollectionManager.h"
 
 #include <kurl.h>
 
@@ -72,7 +73,14 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
-    return TrackList();
+    XSPFTrackList xspfTracks = trackList();
+    TrackList tracks;
+
+    foreach( const XSPFTrack &track, xspfTracks )
+    {
+        tracks << CollectionManager::instance()->trackForUrl( track.location );
+    }
+    return tracks;
 }
 
 QString
@@ -321,10 +329,10 @@ XSPFPlaylist::setLink( KUrl link )
         documentElement().namedItem( "link" ).replaceChild( createTextNode( link.url() ), documentElement().namedItem( "link" ).firstChild() );
 }
 
-XSPFtrackList
+XSPFTrackList
 XSPFPlaylist::trackList()
 {
-    XSPFtrackList list;
+    XSPFTrackList list;
 
     QDomNode trackList = documentElement().namedItem( "trackList" );
     QDomNode subNode = trackList.firstChild();
@@ -332,7 +340,7 @@ XSPFPlaylist::trackList()
 
     while ( !subNode.isNull() )
     {
-        XSPFtrack track;
+        XSPFTrack track;
         subSubNode = subNode.firstChild();
         if ( subNode.nodeName() == "track" )
         {
@@ -381,7 +389,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 
     QDomNode node = createElement( "trackList" );
 
-    XSPFtrackList::iterator it;
+    XSPFTrackList::iterator it;
 
     Meta::TrackPtr track;
     foreach( track, trackList )

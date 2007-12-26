@@ -51,6 +51,8 @@ class PlaylistManager : public QObject
 
         static PlaylistManager * instance();
 
+        static bool isPlaylist( const KUrl &path );
+
         /**
          * returns playlists of a certain category from all registered PlaylistProviders
          */

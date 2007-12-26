@@ -30,10 +30,11 @@
 #include "meta/EditCapability.h"
 #include "meta/proxy/MetaProxy.h"
 #include "PlaylistHandler.h"
+#include "PlaylistManager.h"
 #include "playlist/PlaylistModel.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
-#include "xspfplaylist.h"
+#include "meta/XSPFPlaylist.h"
 
 #include <kdirlister.h>
 #include <KMessageBox>
@@ -43,31 +44,11 @@
 #include <QFile>
 #include <QtXml>
 
-
-
-// using namespace Meta;
-
-
 PlaylistHandler::PlaylistHandler()
     : QObject( 0 )
     , m_format( Unknown )
 {
 
-}
-
-bool PlaylistHandler::isPlaylist(const KUrl & path)
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" ) return true;
-    if( ext == "pls" ) return true;
-    if( ext == "ram" ) return true;
-    if( ext == "smil") return true;
-    if( ext == "asx" || ext == "wax" ) return true;
-    if( ext == "xml" ) return true;
-    if( ext == "xspf" ) return true;
-
-    return false;
 }
 
 void PlaylistHandler::load(const QString & path)
@@ -727,47 +708,10 @@ QTime PlaylistHandler::stringToTime(const QString& timeString)
 bool
 PlaylistHandler::loadXSPF( QTextStream &stream )
 {
-    DEBUG_BLOCK
-    XSPFPlaylist* doc = new XSPFPlaylist( stream );
+//     DEBUG_BLOCK
+    Meta::XSPFPlaylistPtr playlist = Meta::XSPFPlaylistPtr( new Meta::XSPFPlaylist( stream ) );
 
-    XSPFtrackList trackList = doc->trackList();
-
-    Meta::TrackList tracks;
-    foreach( const XSPFtrack &track, trackList )
-    {
-        KUrl location = track.location;
-        QString artist = track.creator;
-        debug() << "TRACK CREATOR IS: " << track.creator;
-        QString title  = track.title;
-        QString album  = track.album;
-
-
-        if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.path() ) ) )
-        {
-            Meta::TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
-            tracks.append( trackPtr );
-        }
-        else
-        {
-            debug() << location << ' ' << artist << ' ' << title << ' ' << album;
-
-            Meta::TrackPtr trackPtr = Meta::TrackPtr( new MetaProxy::Track( KUrl( location ) ) );
-            Meta::EditCapability *ec = trackPtr->as<Meta::EditCapability>();
-            if( ec )
-            {
-                debug() << "Have EditCapability";
-                ec->setTitle( title );
-                ec->setArtist( artist );
-                ec->setAlbum( album );
-                ec->setComment( track.annotation );
-            }
-            delete ec;
-            tracks.append( trackPtr );
-
-        }
-    }
-
-    delete doc;
+    Meta::TrackList tracks = playlist->tracks();
 
     The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     return true;
@@ -778,7 +722,7 @@ PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
 {
     if( tracks.isEmpty() )
         return false;
-    XSPFPlaylist playlist;
+   Meta::XSPFPlaylist playlist;
 
     playlist.setCreator( "Amarok" );
     playlist.setTitle( tracks[0]->artist()->name() );
@@ -837,7 +781,7 @@ namespace Amarok
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
-        if ( !PlaylistHandler::isPlaylist( ( *it ).fileName() ) )
+        if ( !PlaylistManager::isPlaylist( ( *it ).fileName() ) )
             urls += *it;
         return urls;
     }

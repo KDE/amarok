@@ -428,7 +428,7 @@ set(amaroklib_LIB_SRCS
     widgets/volumewidget.cpp
     widgets/MainToolbar.cpp
     xmlloader.cpp
-    xspfplaylist.cpp
+#    xspfplaylist.cpp
 )
 
 
