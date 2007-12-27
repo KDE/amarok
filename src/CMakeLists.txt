@@ -233,6 +233,7 @@ set(meta_SRCS
     meta/PlaylistFileSupport.cpp
     meta/MetaUtility.cpp
     meta/XSPFPlaylist.cpp
+    meta/M3UPlaylist.cpp
     meta/EditablePlaylistCapability.cpp
 )
 

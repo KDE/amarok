@@ -21,7 +21,7 @@
 #include "amarok.h"
 #include "amarok_export.h"
 #include "plugin/plugin.h"
-#include "meta/Playlist.h"
+#include "Playlist.h"
 
 #include <QMultiMap>
 
@@ -72,6 +72,8 @@ class PlaylistManager : public QObject
 
         PlaylistProvider * playlistProvider( int category, QString name );
 
+        void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
+
     signals:
         void updated();
 
@@ -81,12 +83,15 @@ class PlaylistManager : public QObject
 
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );
+        void downloadComplete( KJob *job );
 
     private:
         static PlaylistManager* s_instance;
 
         QMultiMap<int, PlaylistProvider*> m_map;
         QList<int> m_customCategories;
+
+        KIO::StoredTransferJob * m_downloadJob;
 
 };
 

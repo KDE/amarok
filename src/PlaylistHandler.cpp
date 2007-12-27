@@ -35,6 +35,7 @@
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "meta/XSPFPlaylist.h"
+#include "meta/M3UPlaylist.h"
 
 #include <kdirlister.h>
 #include <KMessageBox>
@@ -452,54 +453,13 @@ PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location )
         return false;
     }
 
-    QTextStream stream( &file );
-    stream << "#EXTM3U\n";
 
-    KUrl::List urls;
-    QStringList titles;
-    QList<int> lengths;
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        urls << track->url();
-        titles << track->name();
-        lengths << track->length();
-    }
+    Meta::M3UPlaylist playlist( tracks );
 
-    //Port 2.0 is this still necessary?
-//     foreach( KUrl url, urls)
-//     {
-//         if( url.isLocalFile() && QFileInfo( url.path() ).isDir() )
-//             urls += recurse( url );
-//         else
-//             urls += url;
-//     }
-
-    for( int i = 0, n = urls.count(); i < n; ++i )
-    {
-        const KUrl &url = urls[i];
-
-        if( !titles.isEmpty() && !lengths.isEmpty() )
-        {
-            stream << "#EXTINF:";
-            stream << QString::number( lengths[i] );
-            stream << ',';
-            stream << titles[i];
-            stream << '\n';
-        }
-        if (url.protocol() == "file" ) {
-            if ( relative ) {
-                const QFileInfo fi(file);
-                stream << KUrl::relativePath(fi.path(), url.path());
-            } else
-                stream << url.path();
-        } else {
-            stream << url.url();
-        }
-        stream << "\n";
-    }
+    playlist.save( file, relative );
 
     file.close(); // Flushes the file, before we read it
-//     PlaylistBrowser::instance()->addPlaylist( path, 0, true ); //Port 2.0: re add when we have a playlistbrowser
+//     The::userPlaylistProvider->addPlaylist( path, 0, true ); //Port 2.0: re add when we have a playlistbrowser
 
     return true;
 }
@@ -722,7 +682,7 @@ PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
 {
     if( tracks.isEmpty() )
         return false;
-   Meta::XSPFPlaylist playlist;
+    Meta::XSPFPlaylist playlist;
 
     playlist.setCreator( "Amarok" );
     playlist.setTitle( tracks[0]->artist()->name() );

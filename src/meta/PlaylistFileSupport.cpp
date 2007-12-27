@@ -19,7 +19,7 @@
  **************************************************************************/
 
 #include "PlaylistFileSupport.h"
-
+#include "debug.h"
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "meta/XSPFPlaylist.h"

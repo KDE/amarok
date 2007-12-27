@@ -16,10 +16,14 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "ContextStatusBar.h"
 #include "PlaylistManager.h"
 #include "TheInstances.h"
-
 #include "debug.h"
+
+#include <kio/jobclasses.h>
+#include <kio/job.h>
+#include <KLocale>
 
 PlaylistManager * PlaylistManager::s_instance = 0;
 
@@ -117,6 +121,37 @@ PlaylistManager::playlistProvider(int category, QString name)
     }
 
     return 0;
+}
+
+void
+PlaylistManager::downloadPlaylist( const KUrl & path, Meta::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+
+    m_downloadJob =  KIO::storedGet( path );
+
+    connect( m_downloadJob, SIGNAL( result( KJob * ) ),
+             this, SLOT( downloadComplete( KJob * ) ) );
+
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_downloadJob )
+            .setDescription( i18n( "Downloading Playlist" ) );
+}
+
+void
+PlaylistManager::downloadComplete( KJob * job )
+{
+    DEBUG_BLOCK
+
+    if ( !job->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+
+    QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
+    QTextStream stream;
+    stream.setString( &contents );
+
 }
 
 #include "PlaylistManager.moc"
