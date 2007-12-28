@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
+   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
