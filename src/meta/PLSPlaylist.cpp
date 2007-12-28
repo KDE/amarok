@@ -59,7 +59,6 @@ QString PLSPlaylist::name() const
 
 bool
 PLSPlaylist::loadPls( QTextStream &stream )
-
 {
     DEBUG_BLOCK
 

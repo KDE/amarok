@@ -230,6 +230,8 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { return static_cast<Meta::Capability *>( 0 ); };
 
+        virtual bool load( QTextStream &stream ) { return false; };
+
     private:
 
         KUrl m_link;

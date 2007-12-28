@@ -27,6 +27,7 @@
 
 class PlaylistManager;
 class PlaylistProvider;
+class KJob;
 
 /**
  * Facility for managing PlaylistProviders registered by other
@@ -90,9 +91,7 @@ class PlaylistManager : public QObject
 
         QMultiMap<int, PlaylistProvider*> m_map;
         QList<int> m_customCategories;
-
-        KIO::StoredTransferJob * m_downloadJob;
-
+        QMap<KJob *, Meta::PlaylistPtr> m_downloadJobMap;
 };
 
 class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin

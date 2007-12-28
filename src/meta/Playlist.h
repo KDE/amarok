@@ -23,6 +23,8 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
+class QTextStream;
+
 namespace Meta
 {
 
@@ -51,6 +53,8 @@ namespace Meta
             virtual Capability* asCapabilityInterface( Capability::Type type ) = 0;
 
             virtual KUrl retrievableUrl() = 0;
+
+            virtual bool load( QTextStream &stream ) = 0;
 
             /**
              * Retrieves a specialized interface which represents a capability of this

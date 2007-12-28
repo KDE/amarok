@@ -53,6 +53,8 @@ class PLSPlaylist : public Playlist
 
         KUrl retrievableUrl() { return KUrl(); };
 
+        bool load( QTextStream &stream ) { return loadPls( stream ); };
+
     private:
         bool loadPls( QTextStream &stream );
         unsigned int loadPls_extractIndex( const QString &str ) const;

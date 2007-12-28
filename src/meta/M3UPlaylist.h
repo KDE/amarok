@@ -54,11 +54,14 @@ class M3UPlaylist : public Playlist
         * better into the rest of the Meta framework someday ~Bart Cerneels
         * TODO: Playlist : public MetaBase
             */
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
+        bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
 
-        virtual Capability* asCapabilityInterface( Capability::Type type ) { return 0; };
+        Capability* asCapabilityInterface( Capability::Type type ) { return 0; };
 
-        virtual KUrl retrievableUrl() { return KUrl( m_path ); };
+        KUrl retrievableUrl() { return KUrl( m_path ); };
+
+        bool load( QTextStream &stream ) { return loadM3u( stream ); };
+
     private:
         bool loadM3u( QTextStream &stream );
 

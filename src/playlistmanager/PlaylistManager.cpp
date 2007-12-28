@@ -128,12 +128,14 @@ PlaylistManager::downloadPlaylist( const KUrl & path, Meta::PlaylistPtr playlist
 {
     DEBUG_BLOCK
 
-    m_downloadJob =  KIO::storedGet( path );
+    KIO::StoredTransferJob * downloadJob =  KIO::storedGet( path );
 
-    connect( m_downloadJob, SIGNAL( result( KJob * ) ),
+    m_downloadJobMap[downloadJob] = playlist;
+
+    connect( downloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( downloadComplete( KJob * ) ) );
 
-    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_downloadJob )
+    Amarok::ContextStatusBar::instance()->newProgressOperation( downloadJob )
             .setDescription( i18n( "Downloading Playlist" ) );
 }
 
@@ -148,9 +150,13 @@ PlaylistManager::downloadComplete( KJob * job )
         return ;
     }
 
+    Meta::PlaylistPtr playlist = m_downloadJobMap.take( job );
+
     QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
     QTextStream stream;
     stream.setString( &contents );
+
+    playlist->load( stream );
 
 }
 

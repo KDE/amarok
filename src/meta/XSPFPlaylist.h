@@ -66,6 +66,8 @@ public:
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return title(); }
 
+    bool load( QTextStream &stream ) { return loadXSPF( stream ); };
+
     /** returns all tracks in this playlist */
     TrackList tracks();
 
