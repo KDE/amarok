@@ -68,9 +68,16 @@ void
 PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 {
     DEBUG_BLOCK
+
+    bool newCategory = false;
+    if( !m_map.uniqueKeys().contains( category ) )
+            newCategory = true;
+
     m_map.insert( category, provider );
     connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
-    emit(updated());
+
+    if( newCategory )
+        emit( categoryAdded( category ) );
 }
 
 int

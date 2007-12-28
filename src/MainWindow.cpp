@@ -54,7 +54,7 @@
 #include "volumewidget.h"
 #include "PodcastCollection.h"
 #include "playlistmanager/PlaylistManager.h"
-
+#include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistbrowser/PlaylistBrowser.h"
 
 #include "queuemanager/QueueManager.h"
@@ -240,10 +240,15 @@ void MainWindow::init()
 
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
 
-        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "NeoPlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
+        //TODO: find a better place to load the default collections and providers
+        PodcastCollection *localPodcasts = new PodcastCollection();
+        The::playlistManager()->addProvider( localPodcasts->channelProvider(), PlaylistManager::PodcastChannel );
+        CollectionManager::instance()->addUnmanagedCollection( localPodcasts );
 
-        PodcastCollection *podcastCollection = new PodcastCollection();
-        The::playlistManager()->addProvider( podcastCollection->channelProvider(), PlaylistManager::PodcastChannel );
+        PlaylistFileProvider *playlistFiles = new PlaylistFileProvider();
+        The::playlistManager()->addProvider( playlistFiles, PlaylistManager::UserPlaylist );
+
+        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), Amarok::icon( "files" ) )
 

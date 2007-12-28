@@ -23,6 +23,9 @@
 
 #include <QString>
 
+class QToolBox;
+class PodcastCollection;
+
 namespace PlaylistBrowserNS {
 
 class PodcastCategory;
@@ -37,7 +40,14 @@ public:
 
     ~PlaylistBrowser();
 
+public slots:
+    void addCategory( int category );
+
 private:
+    QWidget * loadPodcastCategory();
+
+    QToolBox *m_toolBox;
+    PodcastCollection *m_localPodcasts;
     PodcastCategory * m_podcastCategory;
 };
 

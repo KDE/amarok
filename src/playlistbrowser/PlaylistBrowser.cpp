@@ -17,11 +17,14 @@
 */
 
 #include "amarok.h"
+#include "debug.h"
 #include "PlaylistBrowser.h"
 #include "Playlist.h"
 #include "PodcastMeta.h"
 #include "PodcastModel.h"
 #include "PodcastCategory.h"
+#include "TheInstances.h"
+#include "PlaylistManager.h"
 
 #include <kicon.h>
 #include <klocale.h>
@@ -35,23 +38,64 @@ namespace PlaylistBrowserNS {
 PlaylistBrowser::PlaylistBrowser( const char *name )
  : KVBox()
 {
+    DEBUG_BLOCK
+
     setObjectName( name );
-    QToolBox *toolBox = new QToolBox( this );
-    PodcastModel *podcastModel = new PodcastModel();
+    m_toolBox = new QToolBox( this );
 
-    m_podcastCategory = new PodcastCategory( podcastModel );
+    QList<int> categories = The::playlistManager()->availableCategories();
+    debug() << categories.size() << " categories available";
+    foreach( int category, categories )
+    {
+        debug() << "adding category nr. " << category;
+        addCategory( category );
+    }
 
-    toolBox->addItem( new QTreeView( toolBox ),
-            KIcon( Amarok::icon( "playlist" ) ) , QString("Playlists") );
-    toolBox->addItem( m_podcastCategory, KIcon( Amarok::icon( "playlist" ) ) , i18n("Podcasts") );
-    toolBox->addItem( new QTreeView( toolBox ),
-            KIcon( Amarok::icon( "playlist" ) ) , QString("Streams") );
+    connect( The::playlistManager(), SIGNAL(categoryAdded(int)), SLOT(addCategory(int)) );
 }
-
 
 PlaylistBrowser::~PlaylistBrowser()
 {
 }
 
+//SLOT
+void
+PlaylistBrowser::addCategory( int category )
+{
+    DEBUG_BLOCK
+
+    QString typeName = The::playlistManager()->typeName( category );
+    debug() << typeName;
+
+    QWidget *widget;
+
+    //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
+    KIcon icon = KIcon( Amarok::icon( "playlist" ) );
+
+    switch( category )
+    {
+        //we don't show the current playlist in the PlaylistBrowser (yet)
+        case PlaylistManager::CurrentPlaylist: return;
+        //TODO: add the UserPlaylistCategory widget
+        case PlaylistManager::UserPlaylist: widget = new QTreeView( m_toolBox ); break;
+
+        case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
+        //TODO: add the DynamicPlaylistCategory widget
+        case PlaylistManager::Dynamic: widget = new QTreeView( m_toolBox ); break;
+        //TODO: add the SmartPlaylistCategory widget
+        case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
+        //This must be a custom category
+        default: break;//TODO: widget = loadCustomCategory( int category );
+    }
+
+    m_toolBox->addItem( widget, icon, typeName );
+}
+
+QWidget *
+PlaylistBrowser::loadPodcastCategory()
+{
+    PodcastModel *podcastModel = new PodcastModel();
+    return new PodcastCategory( podcastModel );
+}
 
 }

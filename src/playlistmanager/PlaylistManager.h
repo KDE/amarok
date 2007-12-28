@@ -24,6 +24,7 @@
 #include "Playlist.h"
 
 #include <QMultiMap>
+#include <QList>
 
 class PlaylistManager;
 class PlaylistProvider;
@@ -56,6 +57,11 @@ class PlaylistManager : public QObject
         static bool isPlaylist( const KUrl &path );
 
         /**
+         * @returns all available categories registered at that moment
+         */
+        QList<int> availableCategories() { return m_map.uniqueKeys(); };
+
+        /**
          * @returns A translated string to identify the category of the Playlist. Always a plural form.
          */
         QString typeName( int playlistCategory );
@@ -86,6 +92,7 @@ class PlaylistManager : public QObject
 
     signals:
         void updated();
+        void categoryAdded( int category );
 
     protected:
         PlaylistManager();
