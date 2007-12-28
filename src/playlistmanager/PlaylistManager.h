@@ -39,20 +39,26 @@ class PlaylistManager : public QObject
 
     public:
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamicly.
+
+        //Dont forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
         enum PlaylistCategory
         {
             CurrentPlaylist = 1,
             UserPlaylist,
             PodcastChannel,
-            PodcastPlaylist,
             Dynamic,
             SmartPlaylist,
-            Lastfm
+            Custom
         };
 
         static PlaylistManager * instance();
 
         static bool isPlaylist( const KUrl &path );
+
+        /**
+         * @returns A translated string to identify the category of the Playlist. Always a plural form.
+         */
+        QString typeName( int playlistCategory );
 
         /**
          * returns playlists of a certain category from all registered PlaylistProviders
@@ -62,14 +68,17 @@ class PlaylistManager : public QObject
         /**
          * Add a PlaylistProvider that contains Playlists of a category defined
          * in the PlaylistCategory enum.
+         * @arg provider a PlaylistProvider
+         * @arg category a default Category from the PlaylistManager::PlaylistCategory enum or a custom one registered before with registerCustomCategory.
          */
-        void addProvider( PlaylistProvider * provider, PlaylistCategory category );
+        void addProvider( PlaylistProvider * provider, int category );
 
-        /** Add a PlaylistProvider of a custom category.
-         * This is supposed to be used by plugins and scripts.
-         * Make sure custom categories don't conflict with the default category enum.
+        /**
+         * Makes sure custom categories don't conflict with the default PlaylistCategory enum or
+         * other custom category by dynamicly providing a integer that identifies it.
+         * @arg name a translated name that can be used to identify playlists offered by this provider
          */
-        void addCustomProvider( PlaylistProvider * provider, int customCategory );
+        int registerCustomCategory( const QString &name );
 
         PlaylistProvider * playlistProvider( int category, QString name );
 
@@ -89,8 +98,9 @@ class PlaylistManager : public QObject
     private:
         static PlaylistManager* s_instance;
 
-        QMultiMap<int, PlaylistProvider*> m_map;
-        QList<int> m_customCategories;
+        QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
+        QMap<int, QString> m_customCategories;
+
         QMap<KJob *, Meta::PlaylistPtr> m_downloadJobMap;
 };
 
@@ -101,18 +111,16 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
     public:
         virtual ~PlaylistProvider() {};
 
+        /**
+        * @returns A translated string to identify this Provider.
+        */
         virtual QString prettyName() const = 0;
 
         /**
-         * @returns An unique integer that identifies the category of offered playlists.
+         * @returns An unique integer that identifies the category of the offered playlists.
          * Use the PlaylistManager::PlaylistCategory enum.
          */
         virtual int category() const = 0;
-
-        /**
-         * @returns A string to identify the category of the Playlist. Alway use a plural form.
-         */
-        virtual QString typeName() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
 

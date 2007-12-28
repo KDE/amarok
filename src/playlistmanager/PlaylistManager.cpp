@@ -65,7 +65,7 @@ PlaylistManager::instance()
 }
 
 void
-PlaylistManager::addProvider( PlaylistProvider * provider, PlaylistCategory category )
+PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 {
     DEBUG_BLOCK
     m_map.insert( category, provider );
@@ -73,19 +73,14 @@ PlaylistManager::addProvider( PlaylistProvider * provider, PlaylistCategory cate
     emit(updated());
 }
 
-void
-PlaylistManager::addCustomProvider( PlaylistProvider * provider, int customCategory )
+int
+PlaylistManager::registerCustomCategory( const QString & name )
 {
-    m_map.insert( customCategory, provider );
-    if ( !m_customCategories.contains( customCategory ) )
-    {
-        m_customCategories << customCategory;
-        //notify PlaylistBrowser of new custom category.
-    }
-    connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
-    emit(updated());
-}
+    int typeNumber = Custom + m_customCategories.size() + 1;
 
+    //TODO: find the name in the configfile, might have been registered before.
+    m_customCategories[typeNumber] = name;
+}
 
 void
 PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
@@ -158,6 +153,24 @@ PlaylistManager::downloadComplete( KJob * job )
 
     playlist->load( stream );
 
+}
+
+QString PlaylistManager::typeName(int playlistCategory)
+{
+    switch( playlistCategory )
+    {
+        case CurrentPlaylist: return i18n("Current Playlist");
+        case UserPlaylist: return i18n("My Playlists");
+        case PodcastChannel: return i18n("Podcasts");
+        case Dynamic: return i18n("Dynamic Playlists");
+        case SmartPlaylist: return i18n("Smart Playlist");
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+    if( m_customCategories.contains( playlistCategory ) )
+        return m_customCategories[playlistCategory];
+    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return QString("!!!Invalid Playlist Category!!!");
 }
 
 #include "PlaylistManager.moc"

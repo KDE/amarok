@@ -16,35 +16,41 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "UserPlaylistProvider.h"
+#include "PlaylistFileProvider.h"
+#include "amarok.h"
+#include "debug.h"
 
 #include <QString>
 
+#include <KConfigGroup>
 #include <KLocale>
 #include <KUrl>
 
-UserPlaylistProvider::UserPlaylistProvider()
+PlaylistFileProvider::PlaylistFileProvider()
  : PlaylistProvider()
 {
+    //load the playlists defined in the config
+    KConfigGroup userPlaylistConfig = Amarok::config( "Loaded Playlist Files" );
+    QStringList keys = userPlaylistConfig.keyList();
+    debug() << "keys " << keys;
+
+    //ConfigEntry: name, type, key_for_type
 }
 
-UserPlaylistProvider::~UserPlaylistProvider()
+PlaylistFileProvider::~PlaylistFileProvider()
 {
+    //Write loaded playlists to
+    KConfigGroup userPlaylistConfig = Amarok::config( "Loaded Playlist Files" );
 }
 
 QString
-UserPlaylistProvider::prettyName() const
+PlaylistFileProvider::prettyName() const
 {
-    return ki18n("My Playlists").toString();
-}
-
-QString UserPlaylistProvider::typeName() const
-{
-    return ki18n("User-defined Playlists").toString();
+    return i18n("Playlist Files");
 }
 
 Meta::PlaylistList
-UserPlaylistProvider::playlists()
+PlaylistFileProvider::playlists()
 {
     return m_playlists;
 }

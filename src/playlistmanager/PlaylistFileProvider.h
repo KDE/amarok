@@ -16,31 +16,29 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef USERPLAYLISTPROVIDER_H
-#define USERPLAYLISTPROVIDER_H
+#ifndef PLAYLISTFILEPROVIDER_H
+#define PLAYLISTFILEPROVIDER_H
 
 #include <PlaylistManager.h>
 
 class KUrl;
 
 /**
-	@author Bart Cerneels <bart.cerneels@kde.org>
+    @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class UserPlaylistProvider : public PlaylistProvider
+class PlaylistFileProvider : public PlaylistProvider
 {
     public:
-        UserPlaylistProvider();
+        PlaylistFileProvider();
 
-        ~UserPlaylistProvider();
+        ~PlaylistFileProvider();
 
         QString prettyName() const;
         int category() const { return PlaylistManager::UserPlaylist; };
-        QString typeName() const;
 
         Meta::PlaylistList playlists();
 
     private:
-//         m_acceptedMimetypes;
         Meta::PlaylistList m_playlists;
 };
 
