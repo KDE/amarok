@@ -485,7 +485,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
 void CollectionTreeItemModelBase::loadingAnimationTick()
 {
 
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( m_animFrame == 0 )
         m_currentAnimPixmap = m_loading2;
     else
