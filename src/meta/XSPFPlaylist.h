@@ -60,11 +60,12 @@ class XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlayli
 public:
     XSPFPlaylist();
     XSPFPlaylist( QTextStream &stream );
+    XSPFPlaylist( const KUrl &url );
 
     ~XSPFPlaylist();
 
     virtual QString name() const { return title(); }
-    virtual QString prettyName() const { return title(); }
+    virtual QString prettyName() const { return name(); }
 
     bool load( QTextStream &stream ) { return loadXSPF( stream ); };
 
@@ -108,13 +109,15 @@ public:
     /* Meta::Playlist virtual functions */
     bool hasCapabilityInterface( Capability::Type type ) const;
 
-    KUrl retrievableUrl() { return KUrl(); };
+    KUrl retrievableUrl() { return m_url; };
 
     Capability* asCapabilityInterface( Capability::Type type );
 
 private:
     XSPFTrackList trackList();
     bool loadXSPF( QTextStream& );
+
+    KUrl m_url;
 };
 
 }

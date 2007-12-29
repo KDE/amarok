@@ -55,6 +55,7 @@ class PlaylistManager : public QObject
         static PlaylistManager * instance();
 
         static bool isPlaylist( const KUrl &path );
+        static KUrl newPlaylistFilePath( const QString& fileExtension );
 
         /**
          * @returns all available categories registered at that moment

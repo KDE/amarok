@@ -21,6 +21,8 @@
 #include "Meta.h"
 #include "proxy/MetaProxy.h"
 #include "EditCapability.h"
+#include "TheInstances.h"
+#include "PlaylistManager.h"
 
 #include <KLocale>
 
@@ -32,29 +34,56 @@
 namespace Meta {
 
 PLSPlaylist::PLSPlaylist()
- : Playlist()
+    : Playlist()
+    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
 {
 }
 
 PLSPlaylist::PLSPlaylist( TrackList tracks )
     : Playlist()
     , m_tracks( tracks )
+    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
 {
 }
 
 PLSPlaylist::PLSPlaylist( QTextStream &stream )
     : Playlist()
+    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
 {
     loadPls( stream );
 }
 
-PLSPlaylist::~PLSPlaylist()
+PLSPlaylist::PLSPlaylist( const KUrl &url )
+    : Playlist()
+    , m_url( url )
 {
+    DEBUG_BLOCK
+    debug() << "url: " << m_url;
+
+    //check if file is local or remote
+    if ( m_url.isLocalFile() )
+    {
+        QFile file( m_url.path() );
+        if( !file.open( QIODevice::ReadOnly ) ) {
+            debug() << "cannot open file";
+            return;
+        }
+
+        QString contents = QString( file.readAll() );
+        file.close();
+
+        QTextStream stream;
+        stream.setString( &contents );
+        loadPls( stream );
+    }
+    else
+    {
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+    }
 }
 
-QString PLSPlaylist::name() const
+PLSPlaylist::~PLSPlaylist()
 {
-    return i18n( "PLS Playlist" );
 }
 
 bool

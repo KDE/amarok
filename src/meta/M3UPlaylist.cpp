@@ -34,36 +34,34 @@ namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
     : Playlist()
-    , m_path( QString() )
+    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
 {
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
     : Playlist()
-    , m_path( QString() )
+    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
     , m_tracks( tracks )
 {
 }
 
 M3UPlaylist::M3UPlaylist( QTextStream & stream )
     : Playlist()
-    , m_path( QString() )
+    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
 {
 }
 
-M3UPlaylist::M3UPlaylist( const QString &path )
+M3UPlaylist::M3UPlaylist( const KUrl &url )
     : Playlist()
+    , m_url( url )
 {
     DEBUG_BLOCK
-    debug() << "file: " << path;
+    debug() << "url: " << m_url;
 
     //check if file is local or remote
-    KUrl url( path );
-    m_path = url.path();
-
-    if ( url.isLocalFile() )
+    if ( m_url.isLocalFile() )
     {
-        QFile file( url.path() );
+        QFile file( m_url.path() );
         if( !file.open( QIODevice::ReadOnly ) ) {
             debug() << "cannot open file";
             return;
@@ -75,11 +73,10 @@ M3UPlaylist::M3UPlaylist( const QString &path )
         QTextStream stream;
         stream.setString( &contents );
         loadM3u( stream );
-
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
     }
 }
 
@@ -87,22 +84,12 @@ M3UPlaylist::~M3UPlaylist()
 {
 }
 
-QString
-M3UPlaylist::prettyName() const
-{
-    QString name = QString("M3U");
-    if( !m_path.isEmpty() )
-        name += QString(": ") + m_path;
-
-    return name;
-}
-
 bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {
     DEBUG_BLOCK
 
-    const QString directory = m_path.left( m_path.lastIndexOf( '/' ) + 1 );
+    const QString directory = m_url.directory();
 
     for( QString line; !stream.atEnd(); )
     {

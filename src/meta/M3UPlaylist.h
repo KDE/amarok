@@ -36,7 +36,7 @@ class M3UPlaylist : public Playlist
         M3UPlaylist();
         M3UPlaylist( Meta::TrackList tracks );
         M3UPlaylist( QTextStream &stream );
-        M3UPlaylist( const QString &path );
+        M3UPlaylist( const KUrl &url );
 
         ~M3UPlaylist();
 
@@ -44,7 +44,7 @@ class M3UPlaylist : public Playlist
 
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };
-        virtual QString prettyName() const;
+        virtual QString prettyName() const { return m_url.fileName(); };
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks() { return m_tracks; };
@@ -58,14 +58,14 @@ class M3UPlaylist : public Playlist
 
         Capability* asCapabilityInterface( Capability::Type type ) { return 0; };
 
-        KUrl retrievableUrl() { return KUrl( m_path ); };
+        KUrl retrievableUrl() { return m_url; };
 
         bool load( QTextStream &stream ) { return loadM3u( stream ); };
 
     private:
         bool loadM3u( QTextStream &stream );
 
-        QString m_path;
+        KUrl m_url;
 
         TrackList m_tracks;
 

@@ -24,6 +24,9 @@
 #include <kio/jobclasses.h>
 #include <kio/job.h>
 #include <KLocale>
+#include <KUrl>
+
+#include <QFileInfo>
 
 PlaylistManager * PlaylistManager::s_instance = 0;
 
@@ -47,6 +50,20 @@ PlaylistManager::isPlaylist( const KUrl & path )
     if( ext == "xspf" ) return true;
 
     return false;
+}
+
+KUrl
+PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
+{
+    int trailingNumber = 1;
+    QString fileName = i18n("Playlist_%1");
+    KUrl url( Amarok::saveLocation( "playlists" ) );
+    url.addPath( fileName.arg( trailingNumber ) );
+
+    while( QFileInfo( url.path() ).exists() )
+        url.setFileName( fileName.arg( ++trailingNumber ) );
+
+    return KUrl( url.path() + fileExtension );
 }
 
 PlaylistManager::PlaylistManager()

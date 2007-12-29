@@ -28,9 +28,11 @@
 
 
 #include <KLocale>
+#include <KUrl>
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 
 namespace Meta {
 
@@ -182,10 +184,10 @@ loadPlaylist( QFile &file )
     PlaylistPtr playlist;
     switch( format ) {
         case PLS:
-            playlist = new PLSPlaylist( stream );
+            playlist = new PLSPlaylist( KUrl( QFileInfo(file).filePath()) );
             break;
         case M3U:
-            playlist = new M3UPlaylist( stream );
+            playlist = new M3UPlaylist( KUrl( QFileInfo(file).filePath()) );
             break;
 //         case RAM:
 //             playlist = loadRealAudioRam( stream );
@@ -197,7 +199,7 @@ loadPlaylist( QFile &file )
 //             playlist = loadSMIL( stream );
 //             break;
         case XSPF:
-            playlist = new XSPFPlaylist( stream );
+            playlist = new XSPFPlaylist( KUrl( QFileInfo(file).filePath()) );
             break;
 
         default:

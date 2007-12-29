@@ -22,6 +22,8 @@
 
 #include "debug.h"
 #include "CollectionManager.h"
+#include "PlaylistManager.h"
+#include "TheInstances.h"
 
 #include <kurl.h>
 
@@ -32,7 +34,8 @@ namespace Meta
 {
 
 XSPFPlaylist::XSPFPlaylist()
- : Meta::Playlist()
+    : Meta::Playlist()
+    , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
 {
     QDomElement root = createElement( "playlist" );
 
@@ -45,9 +48,39 @@ XSPFPlaylist::XSPFPlaylist()
 }
 
 XSPFPlaylist::XSPFPlaylist( QTextStream &stream )
- : Meta::Playlist()
+    : Meta::Playlist()
+    , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
 {
     loadXSPF( stream );
+}
+
+XSPFPlaylist::XSPFPlaylist( const KUrl &url )
+    : Playlist()
+    , m_url( url )
+{
+    DEBUG_BLOCK
+    debug() << "url: " << m_url;
+
+    //check if file is local or remote
+    if ( m_url.isLocalFile() )
+    {
+        QFile file( m_url.path() );
+        if( !file.open( QIODevice::ReadOnly ) ) {
+            debug() << "cannot open file";
+            return;
+        }
+
+        QString contents = QString( file.readAll() );
+        file.close();
+
+        QTextStream stream;
+        stream.setString( &contents );
+        loadXSPF( stream );
+    }
+    else
+    {
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+    }
 }
 
 XSPFPlaylist::~XSPFPlaylist()

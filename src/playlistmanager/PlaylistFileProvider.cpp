@@ -42,6 +42,7 @@ PlaylistFileProvider::PlaylistFileProvider()
         QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
         QFile file( KUrl( configEntry[1] ).path() );
         Meta::PlaylistPtr playlist = Meta::loadPlaylist( file );
+        //TODO: make this work
 //         if( playlist->is<Meta::EditablePlaylistCapability>() )
 //         {
 //             QString title = configEntry[0];
@@ -51,11 +52,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     }
     if( m_playlists.isEmpty() )
     {
-        QFile file("~/tmp/playlist.m3u");
-        //load test file
-        debug() << "loading " << file.fileName();
-        Meta::PlaylistPtr playlist = Meta::loadPlaylist( file );
-        m_playlists << playlist;
+        //TODO: find playlist files in the configured collection directories and home folder
     }
 }
 
@@ -75,8 +72,9 @@ PlaylistFileProvider::~PlaylistFileProvider()
         configEntry << url.url();
 
         Amarok::config( "Loaded Playlist Files" ).writeXdgListEntry(
-                        QString("Playlist %1").arg( i++ ), configEntry );
+                        QString("Playlist %1").arg( ++i ), configEntry );
     }
+    Amarok::config( "Loaded Playlist Files" ).sync();
 }
 
 QString

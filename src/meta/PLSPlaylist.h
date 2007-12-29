@@ -35,14 +35,15 @@ class PLSPlaylist : public Playlist
         PLSPlaylist();
         PLSPlaylist( TrackList tracks );
         PLSPlaylist( QTextStream &stream );
+        PLSPlaylist( const KUrl &url );
 
         ~PLSPlaylist();
 
         bool save( QFile &file, bool relative );
 
-        /* Meta::Playlist virtual functions */
-        QString name() const;
-        QString prettyName() const { return name(); };
+        /* Playlist virtual functions */
+        virtual QString name() const { return prettyName(); };
+        virtual QString prettyName() const { return m_url.fileName(); };
 
         /** returns all tracks in this playlist */
         TrackList tracks() { return m_tracks; };
@@ -51,7 +52,7 @@ class PLSPlaylist : public Playlist
 
         Capability* asCapabilityInterface( Capability::Type type ) { return 0; };
 
-        KUrl retrievableUrl() { return KUrl(); };
+        KUrl retrievableUrl() { return m_url; };
 
         bool load( QTextStream &stream ) { return loadPls( stream ); };
 
@@ -60,6 +61,7 @@ class PLSPlaylist : public Playlist
         unsigned int loadPls_extractIndex( const QString &str ) const;
 
         Meta::TrackList m_tracks;
+        KUrl m_url;
 
 };
 
