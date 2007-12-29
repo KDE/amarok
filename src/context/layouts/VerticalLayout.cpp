@@ -94,7 +94,7 @@ void VerticalLayout::relayout()
     
     QRectF rect = geometry().adjusted(margin(Plasma::Layout::LeftMargin), margin(Plasma::Layout::TopMargin), margin(Plasma::Layout::RightMargin), margin(Plasma::Layout::BottomMargin));
 
-    debug() << "laying out column in rect::" << rect;
+//     debug() << "laying out column in rect::" << rect;
 
     qreal topleft = 0.0;
 
@@ -111,7 +111,7 @@ void VerticalLayout::relayout()
                                             rect.width(),
                                             height );
                                             
-        debug() << "laying out child item with geometry:" << newgeom;
+//         debug() << "laying out child item with geometry:" << newgeom;
                                             
         topleft += height + spacing();;
         

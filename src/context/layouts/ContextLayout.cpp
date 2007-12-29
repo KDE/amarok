@@ -273,11 +273,11 @@ void ContextLayout::relayout()
     }
 //     kDebug() << "columns laid out, now balancing";
     d->balanceColumns();
-    foreach( VerticalLayout* column, d->columns )
-        column->setGeometry( column->geometry() );
-    kDebug() << "result is we have:" << d->columns.size() << "columns:";
-    foreach( VerticalLayout* column, d->columns )
-        kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
+//     foreach( VerticalLayout* column, d->columns )
+//         column->setGeometry( column->geometry() );
+//     kDebug() << "result is we have:" << d->columns.size() << "columns:";
+//     foreach( VerticalLayout* column, d->columns )
+//         kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();
 }
 
 Qt::Orientations ContextLayout::expandingDirections() const

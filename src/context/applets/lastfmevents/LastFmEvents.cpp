@@ -44,7 +44,8 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     Context::Theme::self()->setApplication( "amarok" );
 
     debug() << "Loading LastFmEvents applet";
-
+    
+    setDrawStandardBackground( false );
     setHasConfigurationInterface( true );
 
     if( args.size() > 0 ) // we are being told what position to start at

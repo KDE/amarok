@@ -49,12 +49,20 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
 
+    setDrawStandardBackground( false );
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
 
+    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ), this );
+    m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
+    m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
+    m_scoreLabel = new QGraphicsSimpleTextItem( i18n( "Score:" ), this );
+    m_numPlayedLabel = new QGraphicsSimpleTextItem( i18n( "Played:" ), this );
+    m_playedLastLabel = new QGraphicsSimpleTextItem( i18n( "Played Last:" ), this );
+    
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
     m_album = new QGraphicsSimpleTextItem( this );
@@ -62,7 +70,14 @@ void CurrentTrack::init()
     m_numPlayed = new QGraphicsSimpleTextItem( this );
     m_playedLast = new QGraphicsSimpleTextItem( this );
     m_albumCover = new QGraphicsPixmapItem( this );
-
+    
+    m_titleLabel->setBrush( QBrush( Qt::white ) );
+    m_artistLabel->setBrush( QBrush( Qt::white ) );
+    m_albumLabel->setBrush( QBrush( Qt::white ) );
+    m_scoreLabel->setBrush( QBrush( Qt::white ) );
+    m_numPlayedLabel->setBrush( QBrush( Qt::white ) );
+    m_playedLastLabel->setBrush( QBrush( Qt::white ) );
+    
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
     m_album->setBrush( QBrush( Qt::white ) );
@@ -90,6 +105,13 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 
 
     // here we put all of the text items into the correct locations
+    m_titleLabel->setPos( m_theme->elementRect( "tracklabel" ).topLeft() );
+    m_artistLabel->setPos( m_theme->elementRect( "artistlabel" ).topLeft() );
+    m_albumLabel->setPos( m_theme->elementRect( "albumlabel" ).topLeft() );
+    m_scoreLabel->setPos( m_theme->elementRect( "scorelabel" ).topLeft() );
+    m_numPlayedLabel->setPos( m_theme->elementRect( "numplayedlabel" ).topLeft() );
+    m_playedLastLabel->setPos( m_theme->elementRect( "playedlastlabel" ).topLeft() );
+
     m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
     m_artist->setPos( m_theme->elementRect( "artist" ).topLeft() );
     m_album->setPos( m_theme->elementRect( "album" ).topLeft() );
@@ -98,6 +120,13 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
+    m_titleLabel->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "tracklabel" ) ) );
+    m_artistLabel->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artistlabel" ) ) );
+    m_albumLabel->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "albumlabel" ) ) );
+    m_scoreLabel->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "scorelabel" ) ) );
+    m_numPlayedLabel->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayedlabel" ) ) );
+    m_playedLastLabel->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlastlabel" ) ) );
+    
     m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
     m_artist->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artist" ) ) );
     m_album->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "album" ) ) );
