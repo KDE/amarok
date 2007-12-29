@@ -65,7 +65,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["lyrics"]               = "view-media-lyrics";
         iconMap["magnatune"]            = "services";
         iconMap["mostplayed"]           = "favorites";
-        iconMap["music"]                = "media-podcast";
+        iconMap["music"]                = "x-media-podcast";
         iconMap["next"]                 = "media-skip-forward";
         iconMap["pause"]                = "media-playback-pause";
         iconMap["play"]                 = "media-playback-start";
@@ -100,8 +100,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["settings_view"]        = "preferences-desktop-theme";
         iconMap["statistics"]           = "view-statistics";
         iconMap["stop"]                 = "media-playback-stop";
-        iconMap["podcast"]              = "media-podcast";
-        iconMap["podcast2"]             = "media-podcast-new";
+        iconMap["podcast"]              = "x-media-podcast";
         iconMap["track"]                = "audio-x-generic";
         iconMap["undo"]                 = "edit-undo";
         iconMap["visualizations"]       = "view-media-visualization";
