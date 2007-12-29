@@ -110,7 +110,6 @@ bool PlaylistHandler::save( Meta::TrackList tracks,
 
 PlaylistHandler::Format PlaylistHandler::getFormat( const KUrl &path )
 {
-
     const QString ext = Amarok::extension( path.fileName() );
 
     if( ext == "m3u" ) return M3U;
@@ -198,8 +197,9 @@ bool
 PlaylistHandler::loadPls( QTextStream &stream )
 {
 
-    Meta::PLSPlaylist playlist = Meta::PLSPlaylist( stream );
-    The::playlistModel()->insertOptioned( playlist.tracks(), Playlist::Append );
+    Meta::PLSPlaylistPtr playlist( new Meta::PLSPlaylist() );
+    playlist->load( stream );
+    The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
 
     return true;
 }
@@ -225,51 +225,9 @@ PlaylistHandler::savePls( Meta::TrackList tracks, const QString &location )
 bool
 PlaylistHandler::loadM3u( QTextStream &stream )
 {
-    DEBUG_BLOCK
-
-    Meta::TrackList tracks;
-
-    const QString directory = m_path.left( m_path.lastIndexOf( '/' ) + 1 );
-
-    for( QString line; !stream.atEnd(); )
-    {
-        line = stream.readLine();
-
-        if( line.startsWith( "#EXTINF" ) ) {
-            const QString extinf = line.section( ':', 1 );
-            const int length = extinf.section( ',', 0, 0 ).toInt();
-            //b.setTitle( extinf.section( ',', 1 ) );
-            //b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
-        }
-
-        else if( !line.startsWith( "#" ) && !line.isEmpty() )
-        {
-            // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
-            QString url = line;
-            if( url.startsWith( "/" ) )
-                url.prepend( "file://" );
-
-            if( KUrl::isRelativeUrl( url ) ) {
-                KUrl kurl( KUrl( directory + line ) );
-                kurl.cleanPath();
-                debug() << "found track: " << kurl.path();
-                tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
-            }
-            else {
-                tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( line ) ) ) );
-                debug() << "found track: " << line;
-            }
-
-            // Ensure that we always have a title: use the URL as fallback
-            //if( b.title().isEmpty() )
-            //    b.setTitle( url );
-
-        }
-    }
-
-    debug() << QString( "inserting %1 tracks from playlist" ).arg( tracks.count() );
-    The::playlistModel()->insertOptioned( tracks, Playlist::Append );
-
+    Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist() );
+    playlist->load( stream );
+    The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
 
     return true;
 }
@@ -505,7 +463,8 @@ bool
 PlaylistHandler::loadXSPF( QTextStream &stream )
 {
 //     DEBUG_BLOCK
-    Meta::XSPFPlaylistPtr playlist = Meta::XSPFPlaylistPtr( new Meta::XSPFPlaylist( stream ) );
+    Meta::XSPFPlaylistPtr playlist( new Meta::XSPFPlaylist() );
+    playlist->load( stream );
 
     Meta::TrackList tracks = playlist->tracks();
 

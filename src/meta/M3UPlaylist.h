@@ -27,6 +27,11 @@ class QFile;
 
 namespace Meta {
 
+class M3UPlaylist;
+
+typedef KSharedPtr<M3UPlaylist> M3UPlaylistPtr;
+typedef QList<M3UPlaylistPtr> M3UPlaylistList;
+
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -71,5 +76,8 @@ class M3UPlaylist : public Playlist
 };
 
 }
+
+Q_DECLARE_METATYPE( Meta::M3UPlaylistPtr )
+Q_DECLARE_METATYPE( Meta::M3UPlaylistList )
 
 #endif

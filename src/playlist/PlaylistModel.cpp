@@ -81,7 +81,6 @@ Model::Model( QObject* parent )
 void
 Model::init()
 {
-
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
     undoButton->setIcon( KIcon( Amarok::icon( "undo" ) ) );

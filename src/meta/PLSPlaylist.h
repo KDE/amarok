@@ -26,6 +26,11 @@ class QFile;
 
 namespace Meta {
 
+class PLSPlaylist;
+
+typedef KSharedPtr<PLSPlaylist> PLSPlaylistPtr;
+typedef QList<PLSPlaylistPtr> PLSPlaylistList;
+
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -65,5 +70,8 @@ class PLSPlaylist : public Playlist
 };
 
 }
+
+Q_DECLARE_METATYPE( Meta::PLSPlaylistPtr )
+Q_DECLARE_METATYPE( Meta::PLSPlaylistList )
 
 #endif
