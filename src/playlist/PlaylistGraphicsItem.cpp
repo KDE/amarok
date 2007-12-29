@@ -692,6 +692,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 {
 
     QRectF trackRect = option->rect;
+    trackRect.setHeight( trackRect.height() - 2 );
     painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
 
     //paint cover
