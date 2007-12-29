@@ -35,7 +35,6 @@ class M3UPlaylist : public Playlist
     public:
         M3UPlaylist();
         M3UPlaylist( Meta::TrackList tracks );
-        M3UPlaylist( QTextStream &stream );
         M3UPlaylist( const KUrl &url );
 
         ~M3UPlaylist();

@@ -45,12 +45,6 @@ M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
 {
 }
 
-M3UPlaylist::M3UPlaylist( QTextStream & stream )
-    : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
-{
-}
-
 M3UPlaylist::M3UPlaylist( const KUrl &url )
     : Playlist()
     , m_url( url )

@@ -46,13 +46,6 @@ PLSPlaylist::PLSPlaylist( TrackList tracks )
 {
 }
 
-PLSPlaylist::PLSPlaylist( QTextStream &stream )
-    : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
-{
-    loadPls( stream );
-}
-
 PLSPlaylist::PLSPlaylist( const KUrl &url )
     : Playlist()
     , m_url( url )

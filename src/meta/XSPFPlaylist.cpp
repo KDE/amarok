@@ -47,13 +47,6 @@ XSPFPlaylist::XSPFPlaylist()
     appendChild( root );
 }
 
-XSPFPlaylist::XSPFPlaylist( QTextStream &stream )
-    : Meta::Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
-{
-    loadXSPF( stream );
-}
-
 XSPFPlaylist::XSPFPlaylist( const KUrl &url )
     : Playlist()
     , m_url( url )

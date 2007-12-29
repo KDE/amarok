@@ -59,7 +59,6 @@ class XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlayli
 {
 public:
     XSPFPlaylist();
-    XSPFPlaylist( QTextStream &stream );
     XSPFPlaylist( const KUrl &url );
 
     ~XSPFPlaylist();

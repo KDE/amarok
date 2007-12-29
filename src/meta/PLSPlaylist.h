@@ -34,7 +34,6 @@ class PLSPlaylist : public Playlist
     public:
         PLSPlaylist();
         PLSPlaylist( TrackList tracks );
-        PLSPlaylist( QTextStream &stream );
         PLSPlaylist( const KUrl &url );
 
         ~PLSPlaylist();
