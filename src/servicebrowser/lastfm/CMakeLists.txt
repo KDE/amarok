@@ -27,9 +27,7 @@
                 libUnicorn/UnicornCommonMac.cpp)
         endif (APPLE)
         
-        if (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
-            add_definitions(-fexceptions)
-        endif (UNIX AND CMAKE_COMPILER_IS_GNUCXX)
+        add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
         set(amarok_service_lastfm_PART_SRCS
             AudioController.cpp
