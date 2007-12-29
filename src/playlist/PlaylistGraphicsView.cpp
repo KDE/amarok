@@ -42,6 +42,7 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
     , m_model( 0 )
     , m_contextMenuItem( 0 )
+    , m_isAnimating( false )
 {
     setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -51,6 +52,8 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     scene()->addItem( Playlist::DropVis::instance() );
 
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+    m_timer = 0;
 }
 
 void
@@ -366,10 +369,14 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     if( stopPosition < 0 || stopPosition > m_tracks.size() )
         stopPosition = m_tracks.size();
 
-    QTimeLine *timer = new QTimeLine( 300 ); // 0.3 second duration
-    timer->setCurveShape( QTimeLine::EaseInCurve );
-    timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
+    if ( m_timer == 0 ) {
+        m_timer = new QTimeLine( 300 ); // 0.3 second duration
+        m_timer->setCurveShape( QTimeLine::EaseInCurve );
+        m_timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
                                     //that results in items not moving all the way
+        connect( m_timer, SIGNAL( finished () ), this, SLOT( animationComplete() ) );
+        
+    }
 
     double cumulativeHeight = 0;
 
@@ -394,6 +401,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
               ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
                ( itemHeight != 0 ) )
         {
+
+            m_isAnimating = true;
             bool moveUp = false;
             if( desiredY > currentY )
                 moveUp = true;
@@ -402,7 +411,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
     
             QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
             animator->setItem( item );
-            animator->setTimeLine( timer );
+            animator->setTimeLine( m_timer );
     
             // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
             for( qreal i = 0; i < distanceMoved; ++i )
@@ -411,6 +420,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
                 animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
             }
             animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
+
+            m_animators.append( animator );
         }
         else
         {
@@ -420,7 +431,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         }
 
     }
-    timer->start();
+    m_timer->start();
 }
 
 void
@@ -463,6 +474,14 @@ void Playlist::GraphicsView::groupingChanged()
 
 namespace The {
     Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
+}
+
+void Playlist::GraphicsView::animationComplete()
+{
+    while( !m_animators.empty () ) {
+        delete m_animators.takeFirst();
+    }
+    m_isAnimating = false;
 }
 
 #include "PlaylistGraphicsView.moc"

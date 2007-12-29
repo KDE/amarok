@@ -24,7 +24,9 @@
 
 #include "Meta.h"
 
+#include <QGraphicsItemAnimation>
 #include <QGraphicsView>
+#include <QTimeLine>
 
 class GraphicsItem;
 class QModelIndex;
@@ -70,6 +72,7 @@ namespace Playlist
             void showItemImage();
             void fetchItemImage();
             void unsetItemImage();
+            void animationComplete();
         
         private:
             GraphicsView( QWidget *parent = 0 );
@@ -78,6 +81,9 @@ namespace Playlist
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
             Playlist::GraphicsItem *m_contextMenuItem;
+            QTimeLine * m_timer;
+            QList<QGraphicsItemAnimation *> m_animators;
+            bool m_isAnimating;
     };
 
 }
