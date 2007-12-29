@@ -32,8 +32,16 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+class QFile;
+
 namespace Meta
 {
+    enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
+
+    Format getFormat( const QString &filename );
+
+    PlaylistPtr loadPlaylist( QFile &file );
+
     /**
      * Save the given TrackList tracks at the specified path as a M3U file.
      */

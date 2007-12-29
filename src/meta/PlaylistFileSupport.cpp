@@ -23,6 +23,8 @@
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "meta/XSPFPlaylist.h"
+#include "meta/PLSPlaylist.h"
+#include "meta/M3UPlaylist.h"
 
 
 #include <KLocale>
@@ -150,6 +152,61 @@ saveXSPF( const TrackList &tracks, const KUrl &path, bool relative )
 
     file.close();
     return true;
+}
+
+Meta::Format
+getFormat( const QString &filename )
+{
+
+    const QString ext = Amarok::extension( filename );
+
+    if( ext == "m3u" ) return M3U;
+    if( ext == "pls" ) return PLS;
+    if( ext == "ram" ) return RAM;
+    if( ext == "smil") return SMIL;
+    if( ext == "asx" || ext == "wax" ) return ASX;
+    if( ext == "xml" ) return XML;
+    if( ext == "xspf" ) return XSPF;
+
+    return Unknown;
+}
+
+PlaylistPtr
+loadPlaylist( QFile &file )
+{
+    DEBUG_BLOCK
+
+    Format format = getFormat( file.fileName() );
+
+    QTextStream stream( new QString( file.readAll() ) );
+    PlaylistPtr playlist;
+    switch( format ) {
+        case PLS:
+            playlist = new PLSPlaylist( stream );
+            break;
+        case M3U:
+            playlist = new M3UPlaylist( stream );
+            break;
+//         case RAM:
+//             playlist = loadRealAudioRam( stream );
+//             break;
+//         case ASX:
+//             playlist = loadASX( stream );
+//             break;
+//         case SMIL:
+//             playlist = loadSMIL( stream );
+//             break;
+        case XSPF:
+            playlist = new XSPFPlaylist( stream );
+            break;
+
+        default:
+            debug() << "unknown type!";
+            break;
+    }
+
+    return playlist;
+
 }
 
 }

@@ -127,6 +127,7 @@ MainWindow::~MainWindow()
     DEBUG_BLOCK
     AmarokConfig::setMainWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setMainWindowSize( size() ); //TODO de XT?
+    delete m_playlistFiles;
 }
 
 
@@ -245,8 +246,8 @@ void MainWindow::init()
         The::playlistManager()->addProvider( localPodcasts->channelProvider(), PlaylistManager::PodcastChannel );
         CollectionManager::instance()->addUnmanagedCollection( localPodcasts );
 
-        PlaylistFileProvider *playlistFiles = new PlaylistFileProvider();
-        The::playlistManager()->addProvider( playlistFiles, PlaylistManager::UserPlaylist );
+        m_playlistFiles = new PlaylistFileProvider();
+        The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 

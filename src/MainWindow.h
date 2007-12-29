@@ -30,6 +30,7 @@ class QTimer;
 class SearchWidget;
 class SideBar;
 class QSplitter;
+class PlaylistFileProvider;
 
 /**
   * @class MainWindow
@@ -114,6 +115,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
         QSplitter     *m_splitter;
+
+        PlaylistFileProvider *m_playlistFiles;
 
         void    createActions();
         void    createMenus();

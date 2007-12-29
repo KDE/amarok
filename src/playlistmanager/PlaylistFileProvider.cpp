@@ -17,10 +17,13 @@
 */
 
 #include "PlaylistFileProvider.h"
+#include "PlaylistFileSupport.h"
+#include "EditablePlaylistCapability.h"
 #include "amarok.h"
 #include "debug.h"
 
 #include <QString>
+#include <QFile>
 
 #include <KConfigGroup>
 #include <KLocale>
@@ -30,17 +33,50 @@ PlaylistFileProvider::PlaylistFileProvider()
  : PlaylistProvider()
 {
     //load the playlists defined in the config
-    KConfigGroup userPlaylistConfig = Amarok::config( "Loaded Playlist Files" );
-    QStringList keys = userPlaylistConfig.keyList();
+    QStringList keys = Amarok::config( "Loaded Playlist Files" ).keyList();
     debug() << "keys " << keys;
 
-    //ConfigEntry: name, type, key_for_type
+    //ConfigEntry: name, file
+    foreach( QString key, keys )
+    {
+        QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
+        QFile file( KUrl( configEntry[1] ).path() );
+        Meta::PlaylistPtr playlist = Meta::loadPlaylist( file );
+//         if( playlist->is<Meta::EditablePlaylistCapability>() )
+//         {
+//             QString title = configEntry[0];
+//             playlist->as<Meta::EditablePlaylistCapability>()->setTitle( title );
+//         }
+        m_playlists << playlist;
+    }
+    if( m_playlists.isEmpty() )
+    {
+        QFile file("~/tmp/playlist.m3u");
+        //load test file
+        debug() << "loading " << file.fileName();
+        Meta::PlaylistPtr playlist = Meta::loadPlaylist( file );
+        m_playlists << playlist;
+    }
 }
 
 PlaylistFileProvider::~PlaylistFileProvider()
 {
-    //Write loaded playlists to
-    KConfigGroup userPlaylistConfig = Amarok::config( "Loaded Playlist Files" );
+    DEBUG_BLOCK
+    //Write loaded playlists to config file
+    debug() << m_playlists.size()  << " Playlists loaded";
+    int i = 0;
+    foreach( Meta::PlaylistPtr playlist, m_playlists )
+    {
+        QStringList configEntry;
+        KUrl url = playlist->retrievableUrl();
+        debug() << "storing: " << playlist->name() << " : " << url.url();
+
+        configEntry << playlist->name();
+        configEntry << url.url();
+
+        Amarok::config( "Loaded Playlist Files" ).writeXdgListEntry(
+                        QString("Playlist %1").arg( i++ ), configEntry );
+    }
 }
 
 QString

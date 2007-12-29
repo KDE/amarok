@@ -131,6 +131,10 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
 
         virtual Meta::PlaylistList playlists() = 0;
 
+        virtual bool canSavePlaylists() { return false; };
+
+        virtual void save( Meta::PlaylistPtr playlist ) {};
+
     signals:
         virtual void updated();
 
