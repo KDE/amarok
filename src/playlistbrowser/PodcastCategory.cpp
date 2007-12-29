@@ -123,7 +123,7 @@ PodcastCategoryDelegate::paint(QPainter * painter, const QStyleOptionViewItem & 
 
     QString description = index.data( ShortDescriptionRole ).toString();
 
-    description.replace( QRegExp("\n\n"), "\n" );
+    description.replace( QRegExp("\n+"), "\n" );
     QFontMetricsF fm( painter->font() );
     QRectF textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
     bool toWide = textBound.width() > textRect.width();
