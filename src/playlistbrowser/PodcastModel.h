@@ -53,12 +53,14 @@ class PodcastModel : public QAbstractItemModel
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+
     public slots:
         void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
         void configurePodcasts();
         void setPodcastsInterval();
+        void emitLayoutChanged();
 
     private:
         Meta::PodcastChannelList m_channels;

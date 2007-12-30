@@ -27,6 +27,7 @@
 namespace PlaylistBrowserNS {
 
 class PodcastModel;
+class ViewKicker;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
@@ -40,6 +41,22 @@ class PodcastCategory : public Ui_PodcastCategoryBase, public QWidget
 
     private:
         PodcastModel *m_podcastModel;
+        ViewKicker * m_viewKicker;
+
+};
+
+
+class ViewKicker : public QObject
+{
+Q_OBJECT
+    public:
+        ViewKicker( QTreeView * treeView );
+
+    private:
+        QTreeView * m_treeView;
+
+    public slots:
+        void kickView();
 
 };
 
@@ -60,6 +77,7 @@ class PodcastCategoryDelegate : public QItemDelegate
     private:
 
         QTreeView *m_view;
+        mutable int m_lastHeight;
 
 };
 

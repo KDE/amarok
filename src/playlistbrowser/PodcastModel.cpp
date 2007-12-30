@@ -293,4 +293,13 @@ void PodcastModel::setPodcastsInterval()
 }
 
 }
+
+void PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
+{
+    DEBUG_BLOCK
+    emit( layoutChanged() );
+}
+
 #include "PodcastModel.moc"
+
+
