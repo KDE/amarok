@@ -217,7 +217,10 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         prettyLength = Meta::secToPrettyTime( seconds );
     }
     else
-        prettyLength = Meta::secToPrettyTime( track->length() );
+        if ( track->length() > 0 )
+            prettyLength = Meta::secToPrettyTime( track->length() );
+        else 
+            prettyLength = QString();
         
     QString album;
     if( track->album() )
@@ -256,7 +259,11 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
     } else {
         m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
-        m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+        if ( track->trackNumber() > 0 )
+            m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+        else
+            m_items->bottomLeftText->setEditableText( track->name() , spaceForBottomLeft );
+        
         m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
     }
     if ( m_groupMode == None ) {
