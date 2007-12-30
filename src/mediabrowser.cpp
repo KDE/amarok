@@ -1159,7 +1159,9 @@ MediaBrowser::pluginSelected( const QString &udi, const QString &plugin )
     if( !plugin.isEmpty() )
     {
         debug() << "Device udi is " << udi << " and plugin selected is: " << plugin;
-        if( MediaDeviceCache::instance()->deviceType( udi )  == MediaDeviceCache::ManualType )
+        if( plugin == "dummy" )
+            Amarok::config( "PortableDevices" ).deleteEntry( udi );
+        else if( MediaDeviceCache::instance()->deviceType( udi )  == MediaDeviceCache::ManualType )
             Amarok::config( "PortableDevices" ).writeEntry( udi, plugin );
 
         bool success = true;
@@ -1183,6 +1185,9 @@ MediaBrowser::pluginSelected( const QString &udi, const QString &plugin )
                 break;
             }
         }
+
+        if( plugin == "dummy" )
+            return;
 
         if( success )
         {
