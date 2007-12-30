@@ -93,6 +93,7 @@ class MediaDevicePluginManager : public QObject
         void selectedPlugin( const QString &, const QString & );
 
     public slots:
+        void slotAddDevice( const QString &udi );
         void slotDeleteDevice( const QString &udi );
         void slotGenericVolumes();
         void slotNewDevice();
@@ -101,7 +102,7 @@ class MediaDevicePluginManager : public QObject
 
     private:
         bool detectDevices();
-        QMap<QString, MediaDeviceConfig*> m_deletedMap;
+        QStringList m_deletedList;
         QList<MediaDeviceConfig*> m_deviceList;
         QWidget *m_widget;
 
@@ -159,12 +160,16 @@ class MediaDeviceVolumeMarkerDialog : public KDialog
     public:
         MediaDeviceVolumeMarkerDialog();
         ~MediaDeviceVolumeMarkerDialog();
+        const QStringList getAddedList() const { return m_addedList; }
+        const QStringList getRemovedList() const { return m_removedList; }
 
     private slots:
         void slotOk();
 
     private:
         KVBox *m_mountPointBox;
+        QStringList m_addedList;
+        QStringList m_removedList;
         QTableWidget *m_table;
 };
 

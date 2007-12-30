@@ -126,7 +126,13 @@ MediaDevicePluginManager::slotGenericVolumes()
 {
     MediaDeviceVolumeMarkerDialog *mdvmd = new MediaDeviceVolumeMarkerDialog();
     mdvmd->exec();
+    const QStringList addedList = mdvmd->getAddedList();
+    const QStringList removedList = mdvmd->getRemovedList();
     delete mdvmd;
+    foreach( QString udi, addedList )
+        MediaBrowser::instance()->deviceAdded( udi );
+    foreach( QString udi, removedList )
+        MediaBrowser::instance()->deviceRemoved( udi );
     detectDevices();
 }
 
@@ -150,7 +156,9 @@ MediaDevicePluginManager::detectDevices()
             {
                 skipflag = true;
                 debug() << "skipping: already listed";
-                //TODO: Handle case where no longer has .is_audio_player
+                if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType &&
+                        !MediaDeviceCache::instance()->isGenericEnabled( udi ) )
+                    slotDeleteDevice( udi );
             }
         }
 
@@ -164,14 +172,8 @@ MediaDevicePluginManager::detectDevices()
             continue;
         }
         else
-        {
-            MediaDeviceConfig *dev = new MediaDeviceConfig( udi, m_widget );
-            m_deviceList.append( dev );
-            connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString &)) );
-            foundNew = true;
-        }
+            slotAddDevice( udi );
     }
-
     return foundNew;
 }
 
@@ -219,21 +221,30 @@ MediaDevicePluginManager::slotSolidDeviceRemoved( const QString &udi )
 }
 
 void
-MediaDevicePluginManager::slotDeleteDevice( const QString &udi  )
+MediaDevicePluginManager::slotDeleteDevice( const QString &udi )
 {
     DEBUG_BLOCK
-    int i = 0;
-    while( i < m_deviceList.size() )
+    for( int i = 0; i < m_deviceList.size(); ++i )
     {
-        if( m_deviceList[i]->udi() == udi )
+        if( i < m_deviceList.size() && m_deviceList[i] && m_deviceList[i]->udi() == udi )
         {
             debug() << "putting device " << udi << " on deleted map";
-            m_deletedMap[udi] = m_deviceList[i];
+            m_deletedList.append( udi );
+            MediaDeviceConfig *config = m_deviceList[i];
             m_deviceList.removeAt( i );
+            delete config;
+            --i;
         }
-        else
-            i++;
     }
+}
+
+void
+MediaDevicePluginManager::slotAddDevice( const QString &udi )
+{
+    DEBUG_BLOCK
+    MediaDeviceConfig *dev = new MediaDeviceConfig( udi, m_widget );
+    m_deviceList.append( dev );
+    connect( dev, SIGNAL(deleteDevice(const QString &)), this, SLOT(slotDeleteDevice(const QString &)) );
 }
 
 void
@@ -253,13 +264,13 @@ MediaDevicePluginManager::finished()
     }
 
     KConfigGroup config = Amarok::config( "PortableDevices" );
-    foreach( const QString &udi, m_deletedMap.keys() )
+    foreach( const QString &udi, m_deletedList )
     {
         config.deleteEntry( udi );
-        MediaBrowser::instance()->deviceRemoved( udi );
+        emit selectedPlugin( udi, "dummy" );
     }
     MediaDeviceCache::instance()->refreshCache();
-    m_deletedMap.clear();
+    m_deletedList.clear();
 }
 
 void
@@ -547,7 +558,10 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
 
 MediaDeviceConfig::~MediaDeviceConfig()
 {
-    disconnect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( slotDetailsActivated( const QString & ) ) );
+    DEBUG_BLOCK
+    debug() << "null here?";
+    disconnect( m_label_details, SIGNAL( linkActivated(const QString &) ), this, SLOT( slotDetailsActivated(const QString &) ) );
+    debug() << "or here?";
     disconnect( m_removeButton, SIGNAL(clicked()), this, SLOT(slotDeleteDevice()) );
 }
 
@@ -570,7 +584,6 @@ MediaDeviceConfig::slotDeleteDevice() //slot
 {
     DEBUG_BLOCK
     emit deleteDevice( m_udi );
-    delete this;
 }
 
 void
@@ -647,6 +660,7 @@ MediaDeviceVolumeMarkerDialog::~MediaDeviceVolumeMarkerDialog()
 void
 MediaDeviceVolumeMarkerDialog::slotOk()
 {
+    QStringList udiList = MediaDeviceCache::instance()->getAll();
     for( int row = 0; row < m_table->rowCount(); row++ )
     {
         QString mountPoint = m_table->item( row, 0 )->text();
@@ -659,7 +673,14 @@ MediaDeviceVolumeMarkerDialog::slotOk()
             //attempt to write the file
             QFile file( mountPoint + "/.is_audio_player" );
             if( file.open( QIODevice::WriteOnly ) )
+            {
                 file.close();
+                foreach( const QString &udi, udiList )
+                {
+                    if( MediaDeviceCache::instance()->volumeMountPoint( udi ) == mountPoint )
+                        m_addedList.append( udi );
+                }
+            }
             else
                 QMessageBox::critical( this, i18n( "Well, we tried..." ),
                         i18n( "Could not create the marking file at %1.\n"
@@ -678,6 +699,14 @@ MediaDeviceVolumeMarkerDialog::slotOk()
                               "Ensure that you have the correct permissions\n"
                               "to remove that file.",
                               QString( mountPoint + "/.is_audio_player" ) ) );
+            }
+            else
+            {
+                foreach( const QString &udi, udiList )
+                {
+                    if( MediaDeviceCache::instance()->volumeMountPoint( udi ) == mountPoint )
+                        m_removedList.append( udi );
+                }
             }
         }
     }

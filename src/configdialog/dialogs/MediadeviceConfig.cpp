@@ -65,7 +65,6 @@ MediadeviceConfig::~MediadeviceConfig()
 {
     disconnect( m_genericDevices, SIGNAL(clicked()), m_pluginManager, SLOT(slotGenericVolumes()) );
     disconnect( m_add, SIGNAL(clicked()), m_pluginManager, SLOT(slotNewDevice()) );
-    m_pluginManager->finished();
     delete m_pluginManager;
 }
 
@@ -89,6 +88,8 @@ MediadeviceConfig::isDefault()
 void
 MediadeviceConfig::updateSettings()
 {
+    if( m_pluginManager )
+        m_pluginManager->finished();
 }
 
 
