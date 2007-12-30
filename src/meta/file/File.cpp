@@ -80,11 +80,16 @@ Track::~Track()
 QString
 Track::name() const
 {
+    DEBUG_BLOCK
     KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) );
-    if( item.isValid() )
+    if( item.isValid() && !item.value().toString().isEmpty() ) {
+        debug() << "NOT Here!";
         return item.value().toString();
-    else
-        return QString();
+    } else {
+        debug() << "Here!";
+        //lets use the filename, or it will look really dull in the playlist
+        return d->url.fileName();
+    }
 }
 
 QString

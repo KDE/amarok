@@ -29,6 +29,7 @@
 
 #include <kfilemetainfo.h>
 #include <kfilemetainfoitem.h>
+#include <KLocale>
 
 namespace MetaFile
 {
@@ -87,13 +88,13 @@ public:
         if( d )
         {
             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) );
-            if( item.isValid() )
+            if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return QString();
+                return i18n( "Unknown" );
         }
         else
-            return QString();
+            return i18n( "Unknown" );
     }
 
     QString prettyName() const
@@ -137,13 +138,13 @@ public:
         if( d )
         {
             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) );
-            if( item.isValid() )
+            if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return QString();
+                return i18n( "Unknown" );
         }
         else
-            return QString();
+            return i18n( "Unknown" );
     }
 
     QString prettyName() const
@@ -177,13 +178,13 @@ public:
         if( d )
         {
             KFileMetaInfoItem item = d->metaInfo.item(Meta::Field::xesamPrettyToFullFieldName(  Meta::Field::GENRE ) );
-            if( item.isValid() )
+            if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return QString();
+                return i18n( "Unknown" );
         }
         else
-            return QString();
+            return i18n( "Unknown" );
     }
 
     QString prettyName() const
@@ -212,13 +213,13 @@ public:
         if( d )
         {
             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) );
-            if( item.isValid() )
+            if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return QString();
+                return i18n( "Unknown" );
         }
         else
-            return QString();
+            return i18n( "Unknown" );
     }
 
     QString prettyName() const
@@ -247,13 +248,13 @@ public:
         if( d )
         {
             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) );
-            if( item.isValid() )
+            if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return QString();
+                return i18n( "Unknown" );
         }
         else
-            return QString();
+            return i18n( "Unknown" );
     }
 
     QString prettyName() const
