@@ -84,7 +84,8 @@ void PlaylistHandler::load(const QString & path)
 
 }
 
-bool PlaylistHandler::save( Meta::TrackList tracks,
+bool
+PlaylistHandler::save( Meta::TrackList tracks,
                             const QString &location )
 {
     KUrl url( location );

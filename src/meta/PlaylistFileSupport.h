@@ -40,19 +40,7 @@ namespace Meta
 
     Format getFormat( const QString &filename );
 
-    PlaylistPtr loadPlaylist( QFile &file );
-
-    /**
-     * Save the given TrackList tracks at the specified path as a M3U file.
-     */
-    bool saveM3u( const TrackList &tracks, const KUrl &path, bool relative );
-
-    TrackList loadM3u( QTextStream &stream, const QString &playlistDir );
-
-    /**
-     * Save the given TrackList tracks at the specified path as a M3U file.
-     */
-    void saveXspf( const TrackList &tracks, const KUrl &path );
+    PlaylistPtr loadPlaylist( const KUrl &url );
 
 }
 

@@ -18,8 +18,10 @@
 
 #include "ContextStatusBar.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 #include "TheInstances.h"
 #include "debug.h"
+#include "M3UPlaylist.h"
 
 #include <kio/jobclasses.h>
 #include <kio/job.h>
@@ -179,7 +181,8 @@ PlaylistManager::downloadComplete( KJob * job )
 
 }
 
-QString PlaylistManager::typeName(int playlistCategory)
+QString
+PlaylistManager::typeName(int playlistCategory)
 {
     switch( playlistCategory )
     {
@@ -195,6 +198,18 @@ QString PlaylistManager::typeName(int playlistCategory)
     else
         //note: this shouldn't happen so I'm not translating it to facilitate bug reports
         return QString("!!!Invalid Playlist Category!!!");
+}
+
+bool
+PlaylistManager::save( Meta::TrackList tracks,
+                        const QString &location )
+{
+    KUrl url( location );
+    Meta::Format playlistFormat = Meta::getFormat( location );
+    Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
+    QFile file( location );
+    playlist->save( file, false );
+    return true;
 }
 
 #include "PlaylistManager.moc"

@@ -40,8 +40,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     foreach( QString key, keys )
     {
         QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
-        QFile file( KUrl( configEntry[1] ).path() );
-        Meta::PlaylistPtr playlist = Meta::loadPlaylist( file );
+        Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );
         //TODO: make this work
 //         if( playlist->is<Meta::EditablePlaylistCapability>() )
 //         {

@@ -21,7 +21,7 @@
 #include "amarok.h"
 #include "amarok_export.h"
 #include "plugin/plugin.h"
-#include "Playlist.h"
+#include "meta/Playlist.h"
 
 #include <QMultiMap>
 #include <QList>
@@ -90,6 +90,8 @@ class PlaylistManager : public QObject
         PlaylistProvider * playlistProvider( int category, QString name );
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
+
+        bool save( Meta::TrackList tracks, const QString &location );
 
     signals:
         void updated();

@@ -71,7 +71,6 @@ Model::Model( QObject* parent )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
-    , m_playlistHandler ( new PlaylistHandler )
 {
     connect( EngineController::instance(), SIGNAL( orderNext( bool ) ), this, SLOT( trackFinished() ), Qt::QueuedConnection );
     connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ), Qt::QueuedConnection );
@@ -99,10 +98,9 @@ Model::~Model()
         {
             list << item->track();
         }
-        m_playlistHandler->save( list, defaultPlaylistPath() );
+        The::playlistManager()->save( list, defaultPlaylistPath() );
     }
     delete m_advancer;
-    delete m_playlistHandler;
 }
 
 int
@@ -574,7 +572,7 @@ Model::saveM3U( const QString &path ) const
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
         tl << item->track();
-    if( m_playlistHandler->save( tl, path ) )
+    if( The::playlistManager()->save( tl, path ) )
         return true;
     return false;
 }

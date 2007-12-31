@@ -1,6 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
-// (c) 2005 Seb Ruiz <ruiz@kde.org>  
+// (c) 2005 Seb Ruiz <ruiz@kde.org>
 // (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // (c) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>
 /***************************************************************************
@@ -25,6 +25,7 @@
 #include "mediabrowser.h"
 #include "MediaItem.h"
 #include "meta/file/File.h"
+#include "meta/Playlist.h"
 #include "meta/PlaylistFileSupport.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
@@ -181,17 +182,7 @@ MediaDevice::updateRootItems()
 Meta::TrackList
 MediaDevice::tracksToSync( const QString &name, const KUrl &url )
 {
-    QFile file( url.url() );
-
-    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
-        return Meta::TrackList();
-    }
-
-    QTextStream stream( &file );
-
-    Meta::TrackList tracks = Meta::loadM3u( stream, url.directory() );
+    Meta::TrackList tracks = Meta::loadPlaylist( url )->tracks();
 
     preparePlaylistForSync( name, tracks );
 

@@ -23,8 +23,9 @@
 
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
+#include "playlistmanager/PlaylistManager.h"
+#include "meta/PlaylistFileSupport.h"
 #include "PlaylistAlbumGroup.h"
-#include "PlaylistHandler.h"
 
 #include "UndoCommands.h"
 
@@ -140,7 +141,7 @@ class TrackNavigator;
             //other methods
             void init();
             ///Restore playlist from previous session of Amarok
-            void restoreSession() { m_playlistHandler->load( defaultPlaylistPath() ); }
+            void restoreSession() { insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append ); }
             ///Save M3U of current playlist to a given location
             bool saveM3U( const QString &path ) const;
 
@@ -253,12 +254,12 @@ class TrackNavigator;
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
-            PlaylistHandler * m_playlistHandler;
-
             Meta::PlaylistList m_registeredPlaylists;
 
             mutable QMap< QString, AlbumGroup * > m_albumGroups;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
+
+            Meta::PlaylistPtr m_observedPlaylist;   //! This is used for observing a dynamic or random playlist.
 
     };
 }
