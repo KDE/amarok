@@ -93,7 +93,8 @@ void StatusBarMessageLabel::setMessage( const QString& text, KDE::StatusBar::Mes
     switch( type )
     {
         case KDE::StatusBar::OperationCompleted:
-            iconName = "ok";
+            iconName = "dialog-ok";
+            // "ok" icon should probably be "dialog-success", but we don't have that icon in KDE 4.0
             m_closeButton->hide();
             break;
 
