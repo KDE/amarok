@@ -106,6 +106,8 @@ PlaylistManager::registerCustomCategory( const QString & name )
 
     //TODO: find the name in the configfile, might have been registered before.
     m_customCategories[typeNumber] = name;
+
+    return typeNumber;
 }
 
 void
