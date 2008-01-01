@@ -231,6 +231,7 @@ void CurrentTrack::showConfigurationInterface()
         m_config->setCaption( i18n( "Configure Current Track Applet" ) );
 
         QWidget* widget = new QWidget( m_config );
+        m_config->setMainWidget(widget);
         m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
         connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
         connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
