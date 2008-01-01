@@ -91,7 +91,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["rescan"]               = "view-refresh";
         iconMap["rewind"]               = "media-seek-backward";
         iconMap["save"]                 = "document-save";
-        iconMap["scripts"]              = "media-scripts";
+        iconMap["scripts"]              = "preferences-plugin-script";
         iconMap["search"]               = "edit-find";
         iconMap["settings_engine"]      = "amarok";
         iconMap["settings_general"]     = "preferences-other";
