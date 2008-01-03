@@ -71,15 +71,15 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_homeButton = new QPushButton( commonPanel );
     m_homeButton->setIcon( KIcon("go-previous") );
-    m_homeButton->setIconSize( QSize( 32, 32 ) );
-    m_homeButton->setFixedSize( 44, 44 );
+    m_homeButton->setIconSize( QSize( 16, 16 ) );
+    m_homeButton->setFixedSize( 28, 28 );
     connect( m_homeButton, SIGNAL( clicked( bool ) ), this, SLOT( homeButtonClicked( ) ) );
 
     QLabel * nameLabel = new QLabel( commonPanel );
-    nameLabel->setMinimumSize( 230 , 44 );
+    nameLabel->setMinimumSize( 230 , 28 );
     nameLabel->setText( m_name );
-    nameLabel->setFont(QFont("Arial", 18));
-    nameLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    nameLabel->setFont(QFont("Arial", 10));
+    nameLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
    
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new CollectionTreeView( m_mainSplitter );
