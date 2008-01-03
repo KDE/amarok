@@ -149,7 +149,7 @@ FileBrowser::Widget::Widget( const char * name )
   //coll->action( "home" )->setShortcut( Qt::CTRL + Qt::ALT + Qt::Key_Home );
 
   // bookmarks action!
-  KActionMenu *acmBookmarks = new KActionMenu( KIcon("bookmark"), i18n("Bookmarks"), this );
+  KActionMenu *acmBookmarks = new KActionMenu( KIcon("bookmarks"), i18n("Bookmarks"), this );
   m_actionCollection->addAction( "bookmarks", acmBookmarks );
   acmBookmarks->setDelayed( false );
   m_bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->menu() );
