@@ -78,8 +78,8 @@ ServiceBase::ServiceBase( const QString &name )
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
     nameLabel->setText( m_name );
-    nameLabel->setFont(QFont("Arial", 10));
-    nameLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+    nameLabel->setFont(QFont("Arial", 12, QFont::Bold));
+    nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
    
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new CollectionTreeView( m_mainSplitter );
