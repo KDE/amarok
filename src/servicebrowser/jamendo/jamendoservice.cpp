@@ -81,15 +81,18 @@ void JamendoService::polish()
     generateWidgetInfo();
     if ( m_polished ) return;
 
+    KHBox * bottomPanelLayout = new KHBox;
+    bottomPanelLayout->setParent( m_bottomPanel );
+
     m_updateListButton = new QPushButton;
-    m_updateListButton->setParent( m_bottomPanel );
+    m_updateListButton->setParent( bottomPanelLayout );
     m_updateListButton->setText( i18n( "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
 
 
     m_downloadButton = new QPushButton;
-    m_downloadButton->setParent( m_bottomPanel );
+    m_downloadButton->setParent( bottomPanelLayout );
     m_downloadButton->setText( i18n( "Download" ) );
     m_downloadButton->setObjectName( "downloadButton" );
     m_downloadButton->setIcon( KIcon( Amarok::icon( "download" ) ) );
