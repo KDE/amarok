@@ -722,24 +722,28 @@ IpodMediaDevice::tagsChanged( MediaItem *item, const MetaBundle &bundle )
 void
 IpodMediaDevice::synchronizeDevice()
 {
+#if 1
     debug() << "Syncing iPod!" << endl;
     Amarok::StatusBar::instance()->newProgressOperation( this )
         .setDescription( i18n( "Flushing iPod filesystem transfer cache" ) )
         .setTotalSteps( 1 );
     writeITunesDB();
     Amarok::StatusBar::instance()->endProgressOperation( this );
+#else
+    m_dbChanged = true;
+    debug() << "Deferring sync of iPod!" << endl;
+#endif
 }
 
 MediaItem *
 IpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    IpodMediaItem *item = getTrack( bundle.artist(),
-            bundle.album(),
-            bundle.title(),
-            bundle.discNumber(),
-            bundle.track() );
-
-    return item;
+    return getTrack( bundle.artist(),
+                bundle.album(),
+                bundle.title(),
+                bundle.discNumber(),
+                bundle.track(),
+                bundle.podcastBundle() );
 }
 
 MediaItem *
@@ -2012,7 +2016,8 @@ IpodMediaDevice::getAlbum(const QString &artist, const QString &album)
 }
 
 IpodMediaItem *
-IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QString &title, int discNumber, int trackNumber)
+IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QString &title,
+        int discNumber, int trackNumber, const PodcastEpisodeBundle *peb)
 {
     IpodMediaItem *item = getAlbum(artist, album);
     if(item)
@@ -2051,7 +2056,9 @@ IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
                     track = dynamic_cast<IpodMediaItem *>(item->findItem(title, track)) )
             {
                 if( ( discNumber==-1 || track->bundle()->discNumber()==discNumber )
-                        && ( trackNumber==-1 || track->bundle()->track()==trackNumber ) )
+                        && ( trackNumber==-1 || track->bundle()->track()==trackNumber )
+                        && ( !track->bundle()->podcastBundle() || !peb
+                             || track->bundle()->podcastBundle()->url() == peb->url() ) )
                     return track;
             }
         }

@@ -153,7 +153,8 @@ class IpodMediaDevice : public MediaDevice
         IpodMediaItem    *getAlbum( const QString &artist, const QString &album );
         IpodMediaItem    *getTrack( const QString &artist, const QString &album,
                                     const QString &title,
-                                    int discNumber = -1, int trackNumber = -1 );
+                                    int discNumber = -1, int trackNumber = -1,
+                                    const PodcastEpisodeBundle *peb = 0 );
         IpodMediaItem    *getTrack( const Itdb_Track *itrack );
 
         bool              removeDBTrack( Itdb_Track *track );
