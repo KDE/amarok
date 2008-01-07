@@ -116,12 +116,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     int iconHeight = 16;
     int iconPadX = 8;
     int iconPadY = 4;
-    int height = (iconPadY * 2) + iconHeight;
-    if ( option.state & QStyle::State_Selected )
-    {
-        height = 90;
-	//debug() << "Option is selected; height = " << height;
-    }
+    int height = option.rect.height();
+
 
     //HACK:Just for testing!!
     /*if  ( m_lastHeight > 1 ) {
@@ -172,24 +168,35 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     QRectF titleRect;
     titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
     titleRect.setTop( option.rect.top() );
-    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 ) );
+    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 + m_view->indentation() ) );
     titleRect.setHeight( iconHeight + iconPadY );
 
     QString title = index.data( Qt::DisplayRole ).toString();
-    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignVCenter, title );
+
+
+    //TODO: these metrics should be made static members so they are not created all the damn time!!
+    QFontMetricsF tfm( painter->font() );
+
+    title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width(), Qt::AlignHCenter );
+    
+    painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, title );
 
     painter->setFont(QFont("Arial", 8));
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
     textRect.setTop( option.rect.top() + iconHeight + iconPadY );
-    textRect.setWidth( width - iconPadX * 2 - m_view->indentation() );
+    textRect.setWidth( width - ( iconPadX * 2 + m_view->indentation() + 16) );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
+
+    
     QFontMetricsF fm( painter->font() );
     QRectF textBound;
+    
     QString description = index.data( ShortDescriptionRole ).toString();
     description.replace( QRegExp("\n+"), "\n" );
+ 
     if (option.state & QStyle::State_Selected)
         textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
     else
@@ -201,9 +208,9 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         QLinearGradient gradient;
         gradient.setStart( textRect.topLeft() );
 
-        if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
-        else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
-        else gradient.setFinalStop( textRect.bottomLeft() );
+        //if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
+        //else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
+        gradient.setFinalStop( textRect.bottomLeft() );
 
         gradient.setColorAt(0.8, painter->pen().color());
         gradient.setColorAt(1.0, Qt::transparent);
@@ -242,7 +249,14 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     }
     if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
     {
-        heigth = 90;
+        //lets try to do heights based on amount of text...
+
+        QString description = index.data( ShortDescriptionRole ).toString();
+        
+        QFontMetrics fm( QFont( "Arial", 8 ) );
+        heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000, Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap , description ).height() + 20;
+        
+
 	    debug() << "Option is selected, height = " << heigth;
     }
     //else
