@@ -56,7 +56,7 @@ bool ScriptableServiceManager::createService( const QString &name, const QString
 
     m_rootHtml = rootHtml;
     ScriptableService * service = new ScriptableService ( name );
-    service->setIcon( KIcon( Amarok::icon( "download" ) ) );
+    service->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
     service->infoChanged( m_rootHtml );
 
@@ -91,7 +91,7 @@ bool ScriptableServiceManager::createDynamicService(const QString & name, const 
 
     m_rootHtml = rootHtml;
     ScriptableService * service = new ScriptableService ( name );
-    service->setIcon( KIcon( Amarok::icon( "download" ) ) );
+    service->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
     service->infoChanged( m_rootHtml );
 

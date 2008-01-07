@@ -91,7 +91,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     item->setSelected( true );
     event->accept();
 
-    KAction *playAction = new KAction( KIcon( Amarok::icon( "play" ) ), i18n( "&Play" ), this );
+    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
     playAction->setData( QVariant( sceneClickPos ) );
     connect( playAction, SIGNAL( triggered() ), this, SLOT( playTrack() ) );
 

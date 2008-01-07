@@ -192,7 +192,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_customAction->setText( i18n("Special Device Functions") );
     m_customAction->setToolTip( i18n("Device-specific special functions or information") );
     m_toolbar->addAction(m_customAction);
-//     m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
+//     m_toolbar->insertButton( "list-add-amarok", CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
 //     m_toolbar->getButton(TRANSFER)->setToolTip( i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -200,7 +200,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_configAction = new KAction(KIcon("configure"), i18n("Configure"), this);
     connect(m_configAction, SIGNAL(triggered()), this, SLOT(config()));
     m_toolbar->addAction(m_configAction);
-//     m_toolbar->insertButton( Amarok::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
+//     m_toolbar->insertButton( "configure-amarok", CONFIGURE, true, i18n("Configure") );
 //     m_toolbar->getButton(CONFIGURE)->setToolTip( i18n( "Configure device" ) );
 
 
@@ -237,7 +237,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_queue = new MediaQueue( this );
     m_progressBox  = new KHBox( this );
     m_progress     = new QProgressBar( m_progressBox );
-    m_cancelButton = new KPushButton( KIcon( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
+    m_cancelButton = new KPushButton( KIcon( "cancel" ), i18n("Cancel"), m_progressBox );
 
 
     m_stats = new SpaceLabel(this);
@@ -2105,10 +2105,10 @@ MediaQueue::slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int 
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
     if( item )
-        menu.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+        menu.insertItem( KIcon( "list-remove-amarok" ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
 
-    menu.insertItem( KIcon( Amarok::icon( "playlist_clear" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
-    menu.insertItem( KIcon( Amarok::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.insertItem( KIcon( "edit-clear-list-amarok" ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( KIcon( "view-refresh-amarok" ), i18n( "&Start Transfer" ), START_TRANSFER );
     menu.setItemEnabled( START_TRANSFER,
             MediaBrowser::instance()->currentDevice() &&
             MediaBrowser::instance()->currentDevice()->isConnected() &&

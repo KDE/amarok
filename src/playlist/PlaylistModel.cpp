@@ -82,11 +82,11 @@ Model::init()
 {
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
-    undoButton->setIcon( KIcon( Amarok::icon( "undo" ) ) );
+    undoButton->setIcon( KIcon( "edit-undo-amarok" ) );
     ac->addAction("playlist_undo", undoButton);
     QAction* redoButton  = m_undoStack->createRedoAction( this, i18n("Redo") );
     ac->addAction("playlist_redo", redoButton);
-    redoButton->setIcon( KIcon( Amarok::icon( "redo" ) ) );
+    redoButton->setIcon( KIcon( "edit-redo-amarok" ) );
 }
 
 Model::~Model()

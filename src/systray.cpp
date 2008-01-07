@@ -97,10 +97,10 @@ Amarok::TrayIcon::event( QEvent *e )
             if( !list.isEmpty() )
             {
                 KMenu *popup = new KMenu;
-                popup->addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), this, SLOT( appendDrops() ) );
-                popup->addAction( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ), this, SLOT( appendAndPlayDrops() ) );
+                popup->addAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), this, SLOT( appendDrops() ) );
+                popup->addAction( KIcon( "list-add-amarok" ), i18n( "Append && &Play" ), this, SLOT( appendAndPlayDrops() ) );
                 if( The::playlistModel()->activeRow() >= 0 )
-                    popup->addAction( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
+                    popup->addAction( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
 
                 popup->addSeparator();
                 popup->addAction( i18n( "&Cancel" ) );

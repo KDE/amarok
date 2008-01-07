@@ -209,7 +209,7 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
             icon = "clock";
             break;
     }
-    return KIconLoader::global()->loadIcon( Amarok::icon( icon ), KIconLoader::Toolbar, KIconLoader::SizeSmall );
+    return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const

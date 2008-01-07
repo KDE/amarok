@@ -57,7 +57,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     : ServiceBase( name )
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
-    setIcon( KIcon( Amarok::icon( "amarok_audioscrobbler" ) ) );
+    setIcon( KIcon( "amarok_audioscrobbler" ) );
     m_scrobbler = scrobble ? new ScrobblerAdapter( this, username, password ) : 0;
     m_radio = new RadioAdapter( this, username, password );
 

@@ -329,12 +329,12 @@ StatisticsList::renderView()
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
     m_newestItem->setSubtext( i18n("First played %1", Amarok::verboseTimeSince( firstPlay ) ) );
 
-    m_trackItem     ->setIcon( Amarok::icon("track") );
-    m_mostplayedItem->setIcon( Amarok::icon("mostplayed") );
-    m_artistItem    ->setIcon( Amarok::icon("artist") );
-    m_albumItem     ->setIcon( Amarok::icon("album") );
-    m_genreItem     ->setIcon( Amarok::icon("favourite_genres") );
-    m_newestItem    ->setIcon( Amarok::icon("clock") );
+    m_trackItem     ->setIcon( "audio-x-generic-amarok" );
+    m_mostplayedItem->setIcon( "favorites-amarok" );
+    m_artistItem    ->setIcon( "view-media-artist-amarok" );
+    m_albumItem     ->setIcon( "media-optical-audio-amarok" );
+    m_genreItem     ->setIcon( "system-file-manager-amarok" );
+    m_newestItem    ->setIcon( "view-history-amarok" );
 }
 
 void
@@ -689,12 +689,12 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
     Q3PopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
-    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), QUEUE );
 
     menu.addSeparator();
 
-    menu.insertItem( KIcon( Amarok::icon( "edit_properties" ) ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( "document-properties-amarok" ), i18nc( "[only-singular]", "Edit Track &Information..." ), INFO );
 
 
     //PORT 2.0

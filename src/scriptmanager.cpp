@@ -168,11 +168,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_transcodeCategory->setFlags( Qt::ItemIsEnabled );
     m_contextCategory  ->setFlags( Qt::ItemIsEnabled );
 
-    m_generalCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_lyricsCategory   ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_scoreCategory    ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_transcodeCategory->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
-    m_contextCategory  ->setIcon( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_generalCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_lyricsCategory   ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_scoreCategory    ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_transcodeCategory->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_contextCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     
     // Restore the open/closed state of the category items
     KConfigGroup config = Amarok::config( "ScriptManager" );
@@ -194,13 +194,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_gui->installButton  ->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    m_gui->retrieveButton ->setIcon( KIcon( Amarok::icon( "download" ) ) );
-    m_gui->uninstallButton->setIcon( KIcon( Amarok::icon( "remove" ) ) );
-    m_gui->runButton      ->setIcon( KIcon( Amarok::icon( "play" ) ) );
-    m_gui->stopButton     ->setIcon( KIcon( Amarok::icon( "stop" ) ) );
-    m_gui->configureButton->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    m_gui->aboutButton    ->setIcon( KIcon( Amarok::icon( "info" ) ) );
+    m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
+    m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
+    m_gui->runButton      ->setIcon( KIcon( "media-playback-start-amarok" ) );
+    m_gui->stopButton     ->setIcon( KIcon( "media-playback-stop-amarok" ) );
+    m_gui->configureButton->setIcon( KIcon( "configure-amarok" ) );
+    m_gui->aboutButton    ->setIcon( KIcon( "help-about-amarok" ) );
 
     QSize sz = sizeHint();
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
@@ -588,7 +588,7 @@ ScriptManager::slotRunScript( bool silent )
         return false;
     }
 
-    li->setIcon( 0, SmallIcon( Amarok::icon( "play" ) ) );
+    li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
     debug() << "Running script: " << url.path();
 
     m_scripts[name].process = script;
@@ -678,8 +678,8 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     enum { SHOW_LOG, EDIT };
     KMenu menu;
     menu.addTitle( i18n( "Debugging" ) );
-    QAction* logAction = menu.addAction( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ) );
-    QAction* editAction = menu.addAction( KIcon( Amarok::icon( "edit_properties" ) ), i18n( "&Edit" ) );
+    QAction* logAction = menu.addAction( KIcon( "view-history-amarok" ), i18n( "Show Output &Log" ) );
+    QAction* editAction = menu.addAction( KIcon( "document-properties-amarok" ), i18n( "&Edit" ) );
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
 

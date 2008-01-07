@@ -546,7 +546,7 @@ void TagDialog::init()
     connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
     // set an icon for the open-in-konqui button
-    pushButton_open->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    pushButton_open->setIcon( KIcon( "folder-amarok" ) );
 
     //Update lyrics on Context Browser
 //    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );

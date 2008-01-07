@@ -146,17 +146,17 @@ Controller::Controller()
 {
     setObjectName( "lastfmController" );
     KActionCollection* ac = Amarok::actionCollection();
-    KAction *action = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n( "Ban" ), ac );
+    KAction *action = new KAction( KIcon( "edit-delete-amarok" ), i18n( "Ban" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( ban() ) );
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_B ) );
     m_actionList.append( action );
 
-    action = new KAction( KIcon( Amarok::icon( "love" ) ), i18n( "Love" ), ac );
+    action = new KAction( KIcon( "love-amarok" ), i18n( "Love" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( love() ) );
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_L ) );
     m_actionList.append( action );
 
-    action = new KAction( KIcon( Amarok::icon( "next" ) ), i18n( "Skip" ), ac );
+    action = new KAction( KIcon( "media-skip-forward-amarok" ), i18n( "Skip" ), ac );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT(  skip() ) );
     action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_K ) );
     m_actionList.append( action );

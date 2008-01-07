@@ -1323,18 +1323,18 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
         case MediaItem::ARTIST:
         case MediaItem::ALBUM:
         case MediaItem::TRACK:
-            menu.insertItem( KIcon( Amarok::icon( "collection" ) ), i18n("&Copy Files to Collection..."), DOWNLOAD );
-            menu.insertItem( KIcon( Amarok::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
-            menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), UPDATE_ALBUM_ART );
+            menu.insertItem( KIcon( "collection-amarok" ), i18n("&Copy Files to Collection..."), DOWNLOAD );
+            menu.insertItem( KIcon( "view-media-playlist-amarok" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+            menu.insertItem( KIcon( "covermanager-amarok" ), i18n( "Refresh Cover Images" ), UPDATE_ALBUM_ART );
             break;
         case MediaItem::PLAYLIST:
-            menu.insertItem( KIcon( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
+            menu.insertItem( KIcon( "edit-rename-amarok" ), i18n( "Rename" ), RENAME );
             break;
         default:
             break;
         }
 
-        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        menu.insertItem( KIcon( "edit-delete-amarok" ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )

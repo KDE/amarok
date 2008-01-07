@@ -652,11 +652,11 @@ IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
     if ( item )
     {
         KMenu menu( m_view );
-        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "Download" ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( "collection-amarok" ), i18n( "Download" ), DOWNLOAD );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( "edit-rename-amarok" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "edit-delete-amarok" ), i18n( "Delete" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )
@@ -686,7 +686,7 @@ IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
     if( isConnected() )
     {
         KMenu menu( m_view );
-        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         int id =  menu.exec( point );
         switch( id )
         {

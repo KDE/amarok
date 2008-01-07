@@ -191,7 +191,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         menu->addTitle( i18np( "1 Queued Track", "%1 Queued Tracks", count ) );
     menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));
 
-    menu->insertAction( new QAction( KIcon( Amarok::icon( "rewind" ) ),
+    menu->insertAction( new QAction( KIcon( "media-seek-backward-amarok" ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ),
                       menu ), 0 );
     menu->addSeparator();

@@ -49,10 +49,10 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     podcastTreeView->header()->hide();
     podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(podcastTreeView) );
 
-    addPodcastButton->setIcon( KIcon( Amarok::icon( "add_playlist" ) ) );
-    refreshPodcastsButton->setIcon( KIcon( Amarok::icon( "refresh" ) ) );
-    configurePodcastsButton->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    podcastsIntervalButton->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+    addPodcastButton->setIcon( KIcon( "list-add-amarok" ) );
+    refreshPodcastsButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    configurePodcastsButton->setIcon( KIcon( "configure-amarok" ) );
+    podcastsIntervalButton->setIcon( KIcon( "configure-amarok" ) );
 
     connect( addPodcastButton, SIGNAL( pressed() ), m_podcastModel, SLOT( addPodcast() ) );
     connect( refreshPodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( refreshPodcasts() ) );

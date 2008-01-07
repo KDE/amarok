@@ -63,7 +63,7 @@ ShoutcastService::ShoutcastService( const char *name )
 {
     setObjectName( name );
     setShortDescription( i18n( "The biggest damn list of online radio stations on the net :-)" ) );
-    setIcon( KIcon( Amarok::icon( "network-wireless" ) ) );
+    setIcon( KIcon( "network-wireless" ) );
     showInfo( false );
 }
 

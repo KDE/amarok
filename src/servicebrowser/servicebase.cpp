@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #include "servicebase.h"
@@ -70,7 +70,7 @@ ServiceBase::ServiceBase( const QString &name )
 
 
     m_homeButton = new QPushButton( commonPanel );
-    m_homeButton->setIcon( KIcon("go-previous") );
+    m_homeButton->setIcon( KIcon("go-previous-amarok") );
     m_homeButton->setIconSize( QSize( 16, 16 ) );
     m_homeButton->setFixedSize( 28, 28 );
     connect( m_homeButton, SIGNAL( clicked( bool ) ), this, SLOT( homeButtonClicked( ) ) );

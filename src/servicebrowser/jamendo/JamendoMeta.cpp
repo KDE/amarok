@@ -111,7 +111,7 @@ QList< QAction * > Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
     QList< QAction * > actions;
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&Download" ), 0 );
+    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
 
     JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
 
@@ -282,7 +282,7 @@ QList< QAction * > Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
             QList< QAction * > actions;
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), i18n( "&download" ), 0 );
+    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&download" ), 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
 

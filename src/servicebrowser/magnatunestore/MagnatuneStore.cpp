@@ -98,7 +98,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 
     setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
-    setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
+    setIcon( KIcon( "amarok_magnatune" ) );
 
 
     debug() << "Magnatune browser starting...";
@@ -173,7 +173,7 @@ void MagnatuneStore::initBottomPanel()
     m_purchaseAlbumButton->setParent( m_bottomPanel );
     m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
-    m_purchaseAlbumButton->setIcon( KIcon( Amarok::icon( "download" ) ) );
+    m_purchaseAlbumButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
     m_purchaseAlbumButton->setMaximumHeight( 24 );
 
@@ -181,13 +181,13 @@ void MagnatuneStore::initBottomPanel()
     m_updateListButton->setParent( hBox );
     m_updateListButton->setText( i18n( "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
-    m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
+    m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
     m_showInfoToggleButton = new QPushButton;
     m_showInfoToggleButton->setText( i18n( "Show Info" ) );
     m_showInfoToggleButton->setParent( hBox );
     m_showInfoToggleButton->setObjectName( "showInfoCheckbox" );
     m_showInfoToggleButton->setCheckable( true );
-    m_showInfoToggleButton->setIcon( KIcon( Amarok::icon( "info" ) ) );
+    m_showInfoToggleButton->setIcon( KIcon( "help-about-amarok" ) );
     m_showInfoToggleButton->setChecked( true );
 
     m_isInfoShown = true;

@@ -69,7 +69,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
             title = channel->title();
             description = channel->description();
             isChannel = true;
-            icon = KIcon( Amarok::icon( "podcast" ) );
+            icon = KIcon( "x-media-podcast-amarok" );
         }
         else if ( typeid( * pmc ) == typeid( PodcastEpisode ) )
         {
@@ -77,7 +77,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
             title = episode->title();
             description = episode->description();
             isChannel = false;
-            icon = KIcon( Amarok::icon( "podcast_new" ) );
+            icon = KIcon( "podcast_new" );
         }
         else
         {

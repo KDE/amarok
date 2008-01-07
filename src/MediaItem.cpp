@@ -81,12 +81,12 @@ MediaItem::init()
 {
     // preload pixmaps used in browser
     KIconLoader iconLoader;
-    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( Amarok::icon( "unknown" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ));
-    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ));
-    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( Amarok::icon( "sound" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( Amarok::icon( "podcast" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( Amarok::icon( "files2" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( "unknown", KIconLoader::Toolbar, KIconLoader::SizeSmall ));
+    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "view-media-playlist-amarok", KIconLoader::Toolbar, KIconLoader::SizeSmall ));
+    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( "sound", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( "x-media-podcast-amarok", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( "view-media-playlist-amarok", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( "folder-red-amarok", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
     // history
     // favorites
     // collection
@@ -95,15 +95,15 @@ MediaItem::init()
     // player_playlist_2
     // cancel
     // sound
-    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "personal" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cdrom_unmount" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( Amarok::icon( "folder" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( Amarok::icon( "play" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "process-stop" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
-    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( "personal", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( "cdrom_unmount", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( "cancel", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( "cancel", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( "cancel", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( "folder", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( "media-playback-start-amarok", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( "process-stop", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
+    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( "cancel", KIconLoader::Toolbar, KIconLoader::SizeSmall ) );
     
     m_meta = Meta::DataPtr();
     m_order=0;

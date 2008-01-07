@@ -637,11 +637,11 @@ NjbMediaDevice::rmbPressed(Q3ListViewItem* qitem, const QPoint& point, int )
     if ( item )
     {
         KMenu menu( m_view);
-        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
-        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
+        menu.insertItem( SmallIconSet( "collection-amarok" ), i18n("Download file"), DOWNLOAD );
+        menu.insertItem( SmallIconSet( "collection-amarok" ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
         menu.insertSeparator();
-        //menu.insertItem( SmallIconSet( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        //menu.insertItem( SmallIconSet( "edit-rename-amarok" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "edit-delete-amarok" ), i18n( "Delete from device" ), DELETE );
 
 
         int id =  menu.exec( point );

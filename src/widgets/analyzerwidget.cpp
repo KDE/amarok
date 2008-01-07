@@ -61,7 +61,7 @@ AnalyzerWidget::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
     KMenu menu;
-    menu.addAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"),
+    menu.addAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"),
                            Vis::Selector::instance(), SLOT(show()) );
 
     menu.exec( mapToGlobal( e->pos() ) );

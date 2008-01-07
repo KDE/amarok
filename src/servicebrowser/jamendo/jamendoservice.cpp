@@ -66,7 +66,7 @@ JamendoService::JamendoService(const QString & name)
 {
 
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
-    setIcon( KIcon( Amarok::icon( "amarok_jamendo" ) ) );
+    setIcon( KIcon( "amarok_jamendo" ) );
 
 }
 
@@ -88,14 +88,14 @@ void JamendoService::polish()
     m_updateListButton->setParent( bottomPanelLayout );
     m_updateListButton->setText( i18n( "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
-    m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
+    m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 
 
     m_downloadButton = new QPushButton;
     m_downloadButton->setParent( bottomPanelLayout );
     m_downloadButton->setText( i18n( "Download" ) );
     m_downloadButton->setObjectName( "downloadButton" );
-    m_downloadButton->setIcon( KIcon( Amarok::icon( "download" ) ) );
+    m_downloadButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
     m_downloadButton->setEnabled( false );
 

@@ -930,22 +930,22 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     if ( item )
     {
         K3PopupMenu menu( m_view );
-        menu.insertItem( KIcon( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( KIcon( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( KIcon( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertItem( KIcon( "view-media-playlist-amarok" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( KIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( KIcon( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
-        menu.insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
-        menu.insertItem( KIcon( Amarok::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+        menu.insertItem( KIcon( "collection-amarok" ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
+        menu.insertItem( KIcon( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-        menu.insertItem( KIcon( Amarok::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+        menu.insertItem( KIcon( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
-        menu.insertItem( KIcon( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
-        menu.insertItem( KIcon( Amarok::icon( "rename" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( KIcon( "folder" ), i18n( "Add Directory" ), DIRECTORY );
+        menu.insertItem( KIcon( "edit-rename-amarok" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( KIcon( "edit-delete-amarok" ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
         // NOTE: need better icon
-        menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
+        menu.insertItem( KIcon( "list-add-amarok" ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
         menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
@@ -1002,11 +1002,11 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     if( isConnected() )
     {
         K3PopupMenu menu( m_view );
-        menu.insertItem( KIcon( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( KIcon( "folder" ), i18n("Add Directory" ), DIRECTORY );
         if ( MediaBrowser::queue()->childCount())
         {
             menu.insertSeparator();
-            menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+            menu.insertItem( KIcon( "list-add-amarok" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
         }
         int id =  menu.exec( point );
         switch( id )

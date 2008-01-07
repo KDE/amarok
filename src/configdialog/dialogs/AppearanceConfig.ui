@@ -20,28 +20,6 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="Q3GroupBox" name="groupBox6" >
-     <property name="title" >
-      <string>Icons</string>
-     </property>
-     <layout class="QVBoxLayout" >
-      <item>
-       <widget class="QCheckBox" name="kcfg_UseCustomIconTheme" >
-        <property name="toolTip" >
-         <string>Check to enable Amarok's custom icon theme.&lt;br></string>
-        </property>
-        <property name="whatsThis" >
-         <string>Check to enable Amarok's custom icon theme.</string>
-        </property>
-        <property name="text" >
-         <string>Use custom icon &amp;theme (requires restart)</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="Q3GroupBox" name="groupBox4" >
      <property name="title" >
       <string>Fonts</string>

@@ -189,7 +189,7 @@ QList< QAction * > Meta::MagnatuneTrack::customActions()
     if ( m_downloadMembership )
         text = i18n( "&Download" );
     
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), text, 0 );
+    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
 
     MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
 
@@ -329,7 +329,7 @@ QList< QAction * > MagnatuneAlbum::customActions()
     if ( m_downloadMembership )
         text = i18n( "&Download" );
 
-    QAction * action = new QAction( KIcon(Amarok::icon( "download" ) ), text, 0 );
+    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
 

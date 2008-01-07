@@ -56,15 +56,15 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* services    = new ServiceConfig( this );
 
-    addPage( general,     i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
-    addPage( appearance,  i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
-    addPage( playback,    i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
-    addPage( engine,      i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
-    addPage( osd,         i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
-    addPage( lastfm,      i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
-    addPage( collection,  i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
-    addPage( mediadevice, i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
-    addPage( services,    i18n( "Services" ), Amarok::icon( "download" ), i18n( "Configure Services" ) );
+    addPage( general,     i18n( "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
+    addPage( appearance,  i18n( "Appearance" ), "preferences-desktop-theme-amarok", i18n( "Configure Amarok's Appearance" ) );
+    addPage( playback,    i18n( "Playback" ), "preferences-desktop-sound-amarok", i18n( "Configure Playback" ) );
+    addPage( engine,      i18n( "Engine" ), "amarok-amarok", i18n( "Configure Engine" ) );
+    addPage( osd,         i18n( "OSD" ), "preferences-desktop-display-amarok", i18n( "Configure On-Screen-Display" ) );
+    addPage( lastfm,      i18n( "last.fm" ), "audioscrobbler-amarok", i18n( "Configure last.fm Support" ) );
+    addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
+    addPage( mediadevice, i18n( "Media Devices" ), "multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
+    addPage( services,    i18n( "Services" ), "get-hot-new-stuff-amarok", i18n( "Configure Services" ) );
     
 
     setButtons( Help | Ok | Apply | Cancel );

@@ -70,7 +70,7 @@ PlaylistBrowser::addCategory( int category )
     QWidget *widget;
 
     //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
-    KIcon icon = KIcon( Amarok::icon( "playlist" ) );
+    KIcon icon = KIcon( "view-media-playlist-amarok" );
 
     switch( category )
     {

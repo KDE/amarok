@@ -246,16 +246,16 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             break;
         default:
             urls = m_view->nodeBuildDragList( 0 );
-            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-            menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
+            menu.insertItem( SmallIconSet( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
+            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
 
             // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
             {
-                menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18nc( "[only-singular]", "Track &Information..." ), INFO );
+                menu.insertItem( SmallIconSet( "help-about-amarok" ), i18nc( "[only-singular]", "Track &Information..." ), INFO );
             }
             break;
     }
@@ -461,7 +461,7 @@ DaapClient::customClicked()
                 showButtonSeparator( true );
 
                 m_base = new AddHostBase( this, "DaapAddHostBase" );
-                m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( Amarok::icon( "download" ), -KIconLoader::SizeEnormous ) ) );
+                m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( "get-hot-new-stuff-amarok", -KIconLoader::SizeEnormous ) ) );
                 m_base->m_hostName->setFocus();
                 setMainWidget( m_base );
             }

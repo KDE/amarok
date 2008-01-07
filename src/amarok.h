@@ -176,11 +176,6 @@ namespace Amarok
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
-     * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
-     */
-    AMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
-
-    /**
      * Removes accents from the string
      * @param path The original path.
      * @return The cleaned up path.

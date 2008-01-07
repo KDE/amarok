@@ -385,7 +385,6 @@ set(amaroklib_LIB_SRCS
     filebrowser/mydirlister.cpp
     filebrowser/mydiroperator.cpp
     hintlineedit.cpp
-    IconLoader.cpp
     k3bexporter.cpp
     ktrm.cpp
     lastfm.cpp

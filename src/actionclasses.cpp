@@ -210,17 +210,17 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     switch( state ) {
     case Engine::Playing:
         setChecked( false );
-        setIcon( KIcon(Amarok::icon( "pause" )) );
+        setIcon( KIcon("media-playback-pause-amarok") );
         setText( i18n( "Pause" ) );
         break;
     case Engine::Paused:
         setChecked( true );
-        setIcon( KIcon(Amarok::icon( "pause" )) );
+        setIcon( KIcon("media-playback-pause-amarok") );
         setText( i18n( "Pause" ) );
         break;
     case Engine::Empty:
         setChecked( false );
-        setIcon( KIcon(Amarok::icon( "play" )) );
+        setIcon( KIcon("media-playback-start-amarok") );
         setText( i18n( "Play" ) );
         break;
     case Engine::Idle:
@@ -321,7 +321,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Tracks" ) << i18n( "&Albums" ) );
     setCurrentItem( AmarokConfig::randomMode() );
-    setIcons( QStringList() << Amarok::icon( "random_no" ) << Amarok::icon( "random_track" ) << Amarok::icon( "random_album" ) );
+    setIcons( QStringList() << "go-next-amarok" << "media-playlist-shuffle-amarok" << "media-album-shuffle" );
 }
 
 void
@@ -357,7 +357,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
-    setIcons( QStringList() << Amarok::icon( "repeat_no" ) << Amarok::icon( "repeat_track" ) << Amarok::icon( "repeat_album" ) << Amarok::icon( "repeat_playlist" ) );
+    setIcons( QStringList() << "go-down-amarok" << "media-track-repeat" << "media-album-repeat" << "media-playlist-repeat-amarok" );
     setCurrentItem( AmarokConfig::repeat() );
 }
 
@@ -433,7 +433,7 @@ StopAction::StopAction( KActionCollection *ac )
   : KAction( 0 )
 {
     setText( i18n( "Stop" ) );
-    setIcon( KIcon(Amarok::icon( "stop" )) );
+    setIcon( KIcon("media-playback-stop-amarok") );
     connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
     ac->addAction( "stop", this );
 }
@@ -459,7 +459,7 @@ StopAction::plug( QWidget *w, int )
         //KToolBarButton* button = bar->getButton( id );
         //button->setDelayedPopup( Amarok::StopMenu::instance() );
         //button->setObjectName( "toolbutton_stop_menu" );
-        //button->setIcon( Amarok::icon( "stop" ) );
+        //button->setIcon( "media-playback-stop-amarok" );
         //button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
         return associatedWidgets().count() - 1;

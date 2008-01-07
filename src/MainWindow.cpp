@@ -239,7 +239,7 @@ void MainWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
              m_browserNames.append( name ); }
 
-        addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
+        addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), "collection-amarok" )
 
         //TODO: find a better place to load the default collections and providers
         PodcastCollection *localPodcasts = new PodcastCollection();
@@ -249,13 +249,13 @@ void MainWindow::init()
         m_playlistFiles = new PlaylistFileProvider();
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
-        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
+        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), "view-media-playlist-amarok" )
 
-        addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), Amarok::icon( "files" ) )
+        addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
 
         //cant use macros here since we need access to the browsers directly
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
-        m_browsers->addWidget( KIcon( Amarok::icon( "magnatune" ) ), i18n("Internet"), internetContentServiceBrowser );
+        m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
 
 
@@ -268,7 +268,7 @@ void MainWindow::init()
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {
-            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), "multimedia-player-amarok" )
         }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
@@ -318,7 +318,7 @@ void MainWindow::addBrowser( const QString &name, QWidget *browser, const QStrin
 {
     if( !m_browserNames.contains( name ) )
     {
-        m_browsers->addWidget( KIcon(Amarok::icon( icon )), text, browser );
+        m_browsers->addWidget( KIcon( icon ), text, browser );
         m_browserNames.append( name );
     }
 }
@@ -799,41 +799,41 @@ void MainWindow::createActions()
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( "configure-shortcuts-amarok" ) );
+    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( "configure-amarok" ) );
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
-    KAction *action = new KAction( KIcon( Amarok::icon( "files" ) ), i18n("&Add Media..."), this );
+    KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
     ac->addAction( "playlist_add", action );
 
-    action = new KAction( KIcon( Amarok::icon( "playlist_clear" ) ), i18nc( "clear playlist", "&Clear" ), this );
+    action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear" ), this );
     connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( KIcon( Amarok::icon( "files" ) ), i18n("&Add Stream..."), this );
+    action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
 
-    action = new KAction( KIcon( Amarok::icon( "save" ) ), i18n("&Save Playlist As..."), this );
+    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Save Playlist As..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    KAction *burn = new KAction( KIcon(Amarok::icon( "burn" )), i18n( "Burn Current Playlist" ), this );
+    KAction *burn = new KAction( KIcon("tools-media-optical-burn-amarok"), i18n( "Burn Current Playlist" ), this );
     connect( burn, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
     burn->setEnabled( K3bExporter::isAvailable() );
     ac->addAction( "playlist_burn", burn );
 
-    KAction *covermanager = new KAction( KIcon(Amarok::icon( "covermanager" )), i18n( "Cover Manager" ), this );
+    KAction *covermanager = new KAction( KIcon("covermanager-amarok"), i18n( "Cover Manager" ), this );
     connect( covermanager, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", covermanager );
 
-    KAction *visuals = new KAction( KIcon( Amarok::icon("visualizations") ), i18n("&Visualizations"), this );
+    KAction *visuals = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
     // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
     ac->addAction( "visualizations", visuals );
 
-    KAction *equalizer = new KAction( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer"), this );
+    KAction *equalizer = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
     connect( equalizer, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
     ac->addAction( "equalizer", equalizer );
 
@@ -848,46 +848,46 @@ void MainWindow::createActions()
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
-//     //update_podcasts->setIcon( KIcon(Amarok::icon( "refresh" )) );
+//     //update_podcasts->setIcon( KIcon("view-refresh-amarok") );
 //     ac->addAction( "podcasts_update", update_podcasts );
 //     connect(update_podcasts, SIGNAL(triggered(bool)),
 //             The::podcastCollection(), SLOT(slotUpdateAll()));
 
-    KAction *playact = new KAction( KIcon(Amarok::icon( "files" )), i18n("Play Media..."), this );
+    KAction *playact = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
     ac->addAction( "playlist_playmedia", playact );
 
-    KAction *acd = new KAction( KIcon( Amarok::icon( "album" ) ), i18n("Play Audio CD"), this );
+    KAction *acd = new KAction( KIcon( "media-optical-audio-amarok" ), i18n("Play Audio CD"), this );
     connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
     ac->addAction( "play_audiocd", acd );
 
-    KAction *script = new KAction( KIcon(Amarok::icon( "scripts" )), i18n("Script Manager"), this );
+    KAction *script = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
     ac->addAction( "script_manager", script );
 
-    KAction *queue = new KAction( KIcon( Amarok::icon( "queue" )), i18n( "Queue Manager" ), this );
+    KAction *queue = new KAction( KIcon( "go-bottom-amarok"), i18n( "Queue Manager" ), this );
     connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
     ac->addAction( "queue_manager", queue );
 
-    KAction *seekForward = new KAction( KIcon( Amarok::icon( "fastforward" ) ), i18n("&Seek Forward"), this );
+    KAction *seekForward = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     seekForward->setShortcut( Qt::Key_Right );
     connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
     ac->addAction( "seek_forward", seekForward );
 
-    KAction *seekBackward = new KAction( KIcon( Amarok::icon( "rewind" ) ), i18n("&Seek Backward"), this );
+    KAction *seekBackward = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
     seekForward->setShortcut( Qt::Key_Left );
     connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
     ac->addAction( "seek_backward", seekBackward );
 
-    KAction *statistics = new KAction( KIcon(Amarok::icon( "statistics" )), i18n( "Statistics" ), this );
+    KAction *statistics = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
     ac->addAction( "statistics", statistics );
 
-    KAction *update = new KAction( KIcon(Amarok::icon( "refresh")), i18n( "Update Collection" ), this );
+    KAction *update = new KAction( KIcon("view-refresh-amarok"), i18n( "Update Collection" ), this );
     connect(update, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", update );
 
-    KAction *rescan = new KAction( KIcon(Amarok::icon( "rescan")), i18n( "Rescan Collection" ), this );
+    KAction *rescan = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
     connect(rescan, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
     rescan->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
     ac->addAction( "rescan_collection", rescan );
@@ -915,7 +915,7 @@ void MainWindow::createActions()
         addTagRadioMenu->addAction( lastfmAction );
     }
 
-    KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
+    KActionMenu* playLastfm = new KActionMenu( KIcon("audioscrobbler-amarok"), i18n( "Play las&t.fm Stream" ), ac);
     KMenu* playLastfmMenu = playLastfm->menu();
     playLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
     playLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
@@ -923,7 +923,7 @@ void MainWindow::createActions()
     playLastfmMenu->addMenu( playTagRadioMenu );
     ac->addAction( "lastfm_play", playLastfm );
 
-    KActionMenu* addLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Add las&t.fm Stream" ), ac);
+    KActionMenu* addLastfm = new KActionMenu( KIcon("audioscrobbler-amarok"), i18n( "Add las&t.fm Stream" ), ac);
     KMenu* addLastfmMenu = addLastfm->menu();
     addLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
     addLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
@@ -932,25 +932,25 @@ void MainWindow::createActions()
     ac->addAction( "lastfm_add", addLastfm );
 
     KAction *previous = new KAction( this );
-    previous->setIcon( KIcon(Amarok::icon( "back" )) );
+    previous->setIcon( KIcon("media-skip-backward-amarok") );
     previous->setText( i18n( "Previous Track" ) );
     ac->addAction( "prev", previous );
     connect( previous, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
 
     KAction *play = new KAction( this );
-    play->setIcon( KIcon(Amarok::icon( "play" )) );
+    play->setIcon( KIcon("media-playback-start-amarok") );
     play->setText( i18n( "Play" ) );
     ac->addAction( "play", play );
     connect( play, SIGNAL(triggered(bool)), ec, SLOT( play() ));
 
     KAction *pause = new KAction( this );
-    pause->setIcon( KIcon(Amarok::icon( "pause" )) );
+    pause->setIcon( KIcon("media-playback-pause-amarok") );
     pause->setText( i18n( "Pause" ));
     ac->addAction( "pause", pause );
     connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
 
     KAction *next = new KAction( this );
-    next->setIcon( KIcon(Amarok::icon( "next" )) );
+    next->setIcon( KIcon("media-skip-forward-amarok") );
     next->setText( i18n( "Next Track" ) );
     ac->addAction( "next", next );
     connect( next, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );

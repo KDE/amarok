@@ -123,7 +123,7 @@ CoverManager::CoverManager()
     ArtistItem *item = 0;
     QList<QTreeWidgetItem*> items;
     item = new ArtistItem( i18n( "All Artists" ) );
-    item->setIcon(0, SmallIcon( Amarok::icon( "album" ) ) );
+    item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     items.append( item );
 
     Collection *coll;
@@ -138,7 +138,7 @@ CoverManager::CoverManager()
     foreach( Meta::ArtistPtr artist, artists )
     {
         item = new ArtistItem( m_artistView, artist );
-        item->setIcon( 0, SmallIcon( Amarok::icon( "artist" ) ) );
+        item->setIcon( 0, SmallIcon( "view-media-artist-amarok" ) );
         items.append( item );
     }
     m_artistView->insertTopLevelItems( 0, items );
@@ -227,18 +227,18 @@ CoverManager::CoverManager()
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     {
-        QAction* viewMenuAction = new QAction( KIcon( Amarok::icon( "view_choose" ) ), i18nc( "@title buttontext for popup-menu", "View" ), this );
+        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
         viewMenuAction->setMenu( m_viewMenu );
         toolBar->addAction( viewMenuAction );
     }
     {
-        QAction* localeMenuAction = new QAction( KIcon( Amarok::icon( "babelfish" ) ),  i18n( "Amazon Locale" ), this );
+        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this );
         localeMenuAction->setMenu( m_amazonLocaleMenu );
         toolBar->addAction( localeMenuAction );
     }
 
     //fetch missing covers button
-    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), Amarok::icon( "download" ) ), hbox );
+    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
 
 
@@ -547,20 +547,20 @@ void CoverManager::showCoverMenu( QListWidgetItem *item, const QPoint &p ) //SLO
     QList<CoverViewItem*> selected = selectedItems();
     const int nSelected = selected.count();
 
-    QAction* fetchSelectedAction = new QAction( KIcon( Amarok::icon( "download" ) )
+    QAction* fetchSelectedAction = new QAction( KIcon( "get-hot-new-stuff-amarok" )
         , ( nSelected == 1 ? i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() )
                            : i18n( "&Fetch Selected Covers" ) )
         , &menu );
     connect( fetchSelectedAction, SIGNAL( triggered() ), this, SLOT( fetchSelectedCovers() ) );
 
-    QAction* setCustomAction = new QAction( KIcon( Amarok::icon( "files" ) )
+    QAction* setCustomAction = new QAction( KIcon( "folder-amarok" )
         , i18np( "Set &Custom Cover", "Set &Custom Cover for Selected Albums", nSelected )
         , &menu );
     connect( setCustomAction, SIGNAL( triggered() ), this, SLOT( setCustomSelectedCovers() ) );
-    QAction* unsetAction = new QAction( KIcon( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
+    QAction* unsetAction = new QAction( KIcon( "edit-delete-amarok" ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
     connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
 
-    QAction* playAlbumAction = new QAction( KIcon( Amarok::icon( "add_playlist" ) )
+    QAction* playAlbumAction = new QAction( KIcon( "list-add-amarok" )
         , i18np( "&Append to Playlist", "&Append Selected Albums to Playlist", nSelected )
         , &menu );
 
@@ -573,7 +573,7 @@ void CoverManager::showCoverMenu( QListWidgetItem *item, const QPoint &p ) //SLO
         menu.addAction( unsetAction );
     }
     else {
-        QAction* viewAction = new QAction( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), &menu );
+        QAction* viewAction = new QAction( KIcon( "zoom-in-amarok" ), i18n( "&Show Fullsize" ), &menu );
         connect( viewAction, SIGNAL( triggered() ), this, SLOT( viewSelectedCover() ) );
         viewAction ->setEnabled( item->hasCover() );
         unsetAction->setEnabled( item->canRemoveCover() );
