@@ -501,7 +501,7 @@ else(Q_WS_MAC)
         ${CMAKE_CURRENT_SOURCE_DIR}/hi64-app-amarok.png
         ${CMAKE_CURRENT_SOURCE_DIR}/hi128-app-amarok.png
     )
-    kde4_add_win32_app_icon(amarok_SRCS ${amarok_icons})
+    kde4_add_app_icon(amarok_SRCS ${amarok_icons})
 
     kde4_add_executable(amarok ${amarok_SRCS})
     target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amaroklib )
