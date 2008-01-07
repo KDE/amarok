@@ -61,7 +61,7 @@ unless Dir::getwd().split( "/" ).last() == "amarok"
     exit(1)
 end
 
-file = File.new("src/iconloader.cpp", File::RDONLY)
+file = File.new("src/IconLoader.cpp", File::RDONLY)
 str = file.read 
 @name_table = Hash.new
 
