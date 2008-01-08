@@ -825,7 +825,7 @@ void MainWindow::createActions()
     burn->setEnabled( K3bExporter::isAvailable() );
     ac->addAction( "playlist_burn", burn );
 
-    KAction *covermanager = new KAction( KIcon("covermanager-amarok"), i18n( "Cover Manager" ), this );
+    KAction *covermanager = new KAction( KIcon("media-album-cover-amarok"), i18n( "Cover Manager" ), this );
     connect( covermanager, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", covermanager );
 

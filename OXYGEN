@@ -1,0 +1,9 @@
+##### menus #####
+* media-album-cover-amarok              open cover manager                                      ?media-album-cover
+* view-list-icons                       change view in cover manager                            ?view-media-cover-amarok
+* ?preferences-desktop-locale-amarok    change locale in cover manager
+
+##### devices #####
+* connect                               connect/mount media device                              ?media-connect
+* rebuild                               tansfer to/from media device                            ?media-transfer
+

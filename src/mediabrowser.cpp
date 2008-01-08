@@ -166,7 +166,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
     //TODO: how to fix getButton
     // perhaps the action can be referenced instead?
-    m_connectAction = new KAction(KIcon("connect_creating"), i18n("Connect"), this);
+    m_connectAction = new KAction(KIcon("connect"), i18n("Connect"), this);
     connect(m_connectAction, SIGNAL(triggered()), this, SLOT(connectClicked()));
     m_toolbar->addAction(m_connectAction);
 //     m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );

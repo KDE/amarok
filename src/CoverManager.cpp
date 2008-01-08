@@ -227,12 +227,12 @@ CoverManager::CoverManager()
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     {
-        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
+        QAction* viewMenuAction = new QAction( KIcon( "view-list-icons" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
         viewMenuAction->setMenu( m_viewMenu );
         toolBar->addAction( viewMenuAction );
     }
     {
-        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this );
+        QAction* localeMenuAction = new QAction( KIcon( "preferences-desktop-locale-amarok" ),  i18n( "Amazon Locale" ), this );
         localeMenuAction->setMenu( m_amazonLocaleMenu );
         toolBar->addAction( localeMenuAction );
     }
