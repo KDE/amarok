@@ -39,7 +39,7 @@ def Amarok()
   Dir.chdir("..") #amarok
 
   # Remove crap
-  toberemoved = ["release_scripts","supplementary_scripts"]
+  toberemoved = ["release_scripts","supplementary_scripts","src/history"]
   for object in toberemoved
     FileUtils.rm_rf(object)
   end
