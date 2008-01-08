@@ -1,7 +1,11 @@
 ##### menus #####
 * media-album-cover-amarok              open cover manager                                      ?media-album-cover
+* view-media-visualization-amarok       totally SUXXXX
 * view-list-icons                       change view in cover manager                            ?view-media-cover-amarok
 * ?preferences-desktop-locale-amarok    change locale in cover manager
+
+##### collection #####
+* collection                            generic collection icon for collection tab              ?media-collection
 
 ##### devices #####
 * connect                               connect/mount media device                              ?media-connect
