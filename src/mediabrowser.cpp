@@ -187,7 +187,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_toolbar->addSeparator();
 
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
-    m_customAction = new KAction(KIcon( "add_playlist" ), i18n("custom"), this);
+    m_customAction = new KAction(KIcon( "list-add-amarok" ), i18n("custom"), this);
     connect(m_customAction, SIGNAL(triggered()), this, SLOT(customClicked()));
     m_customAction->setText( i18n("Special Device Functions") );
     m_customAction->setToolTip( i18n("Device-specific special functions or information") );

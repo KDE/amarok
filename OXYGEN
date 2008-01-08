@@ -1,13 +1,22 @@
 ##### menus #####
 * media-album-cover-amarok              open cover manager                                      ?media-album-cover
 * view-media-visualization-amarok       totally SUXXXX
-* view-list-icons                       change view in cover manager                            ?view-media-cover-amarok
+* view-list-icons                       change view in cover manager                            ?view-media-cover
 * ?preferences-desktop-locale-amarok    change locale in cover manager
 
 ##### collection #####
 * collection                            generic collection icon for collection tab              ?media-collection
 
 ##### devices #####
-* connect                               connect/mount media device                              ?media-connect
+* connect                               connect/mount media device                              ?multimedia-player-connect
+* media-eject                           disconnect/umount media device                          ?multimedia-player-disconnect
 * rebuild                               tansfer to/from media device                            ?media-transfer
+* media-playlist-add-amarok             add a playlist/add smth to a playlist                   ?view-media-playlist-add
 
+##### services #####
+* ampache                               Ampache service icon                                    view-services-ampache
+* jamendo                               jamendo.com service icon                                view-services-jamendo
+* lastfm                                last.fm service icon                                    view-services-lastfm
+* magnatune                             magnatune.com service icon                              view-services-magnatune
+* mp3tunes                              mp3tunes.com service icon                               view-services-mp3tunes
+* shoutcast                             shoutcast.com service icon                              view-services-shoutcast

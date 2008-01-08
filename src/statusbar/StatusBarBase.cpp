@@ -110,7 +110,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->hide();
     addWidget(mainProgressBarBox);
 
-    shortLongButton->setIcon( KIcon( "edit_add" ) );
+    shortLongButton->setIcon( KIcon( "edit-add" ) );
     shortLongButton->setToolTip( i18n( "Show details" ) );
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 

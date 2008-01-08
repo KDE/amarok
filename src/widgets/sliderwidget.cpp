@@ -241,7 +241,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     if( EngineController::hasEngineProperty( "HasEqualizer" ) )
     {
         menu.addSeparator();
-        menu.addAction( KIcon( "equalizer" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
+        menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
             ->setData( -1 );
     }
 
