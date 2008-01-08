@@ -25,6 +25,7 @@ BASEPATH  = Dir.getwd()
 require 'fileutils'
 require './lib/librelease.rb'
 require './lib/libl10n.rb'
+require './lib/libtag.rb'
 
 def Amarok()
   # Change version
@@ -57,6 +58,10 @@ FetchTranslations()
 
 FetchDocumentation()
 
+Tag()
+
 Amarok()
 
 CreateTar()
+
+

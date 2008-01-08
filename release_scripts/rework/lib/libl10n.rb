@@ -2,7 +2,7 @@
 #
 # Generic ruby library for KDE extragear/playground releases
 #
-# Copyright (C) 2007 Harald Sitter <harald@getamarok.com>
+# Copyright (C) 2007-2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,8 +28,9 @@ def FetchTranslations()
   Dir.mkdir("l10n")
   Dir.mkdir("po")
 
-  l10nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
-  subdirs   = false
+  l10nlangs     = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
+  @translations = []
+  subdirs       = false
 
   bar.maxvalue = l10nlangs.count("\n")
   step         = 0
@@ -40,15 +41,17 @@ def FetchTranslations()
     bar.progress = step
     step        += 1
 
-    pofilename = "l10n-kde4/#{lang}/messages/#{COMPONENT}-#{SECTION}/#{NAME}.po"
+    pofilename = "l10n-kde4/#{lang}/messages/#{COMPONENT}-#{SECTION}"
     # TODO: ruby-svn
-    `svn cat #{@repo}/#{pofilename} 2> /dev/null | tee l10n/#{NAME}.po`
-    next if FileTest.size( "l10n/#{NAME}.po" ) == 0
+    FileUtils.rm_rf("l10n")
+    `svn co #{@repo}/#{pofilename} l10n 2> /dev/null`
+    next if not FileTest.exists?( "l10n/#{NAME}.po" )
 
     dest = "po/#{lang}"
     Dir.mkdir( dest )
     puts "Copying #{lang}'s #{NAME}.po over ..."
     FileUtils.mv( "l10n/#{NAME}.po", dest )
+    FileUtils.mv( "l10n/.svn", dest )
     puts "done.\n"
 
     # create lang's cmake files
@@ -57,14 +60,15 @@ def FetchTranslations()
     cmakefile << "GETTEXT_PROCESS_PO_FILES(${CURRENT_LANG} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR} ${_po_files} )\n"
     cmakefile.close()
 
+    # add to SVN in case we are tagging
+    `svn add #{dest}/CMakeLists.txt`
+    @translations += [lang]
+
     subdirs = true
   end
   bar.close
 
   if subdirs
-    # Remove x-test language
-    FileUtils.rm_rf( "po/x-test" )
-
     # create po's cmake file
     cmakefile = File.new( "po/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
     cmakefile << "find_package(Gettext REQUIRED)\n"
