@@ -45,6 +45,7 @@
 #include <KPluginInfo>
 
 class ServiceBase;
+class SearchWidget;
 
 class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
 {
@@ -153,6 +154,8 @@ protected:
     KUrl::List   m_urlsToInsert;
 
     InfoParserBase * m_infoParser;
+
+    SearchWidget * m_searchWidget;
 
     //void addToPlaylist( CollectionTreeItem * item );
 

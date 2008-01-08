@@ -69,6 +69,9 @@ QueryMaker * AmpacheServiceQueryMaker::reset()
     m_parentArtistId = QString();
     m_parentAlbumId = QString();
 
+    m_artistFilter = QString();
+    m_lastArtistFilter = QString();
+
     return this;
 }
 
@@ -222,17 +225,24 @@ void AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
 void AmpacheServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    if ( m_collection->artistMap().values().count() != 0 ) {
+    if ( ( m_collection->artistMap().values().count() != 0 ) && ( m_artistFilter == m_lastArtistFilter ) ) {
         handleResult( m_collection->artistMap().values() );
         debug() << "no need to fetch artists again! ";
     }
     else {
+
+        m_lastArtistFilter = m_artistFilter;
 
         QString urlString = "<SERVER>/server/xml.server.php?action=artists&auth=<SESSION_ID>";
 
         urlString.replace( "<SERVER>", m_server);
         urlString.replace( "<SESSION_ID>", m_sessionId);
 
+        if ( !m_artistFilter.isEmpty() ) {
+            urlString += QString( "&filter=" + m_artistFilter );
+        }
+
+        debug() << "Artist url: urlString";
 
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -322,7 +332,7 @@ void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
 
     ArtistList artists;
 
-    debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    //debug() << "recieved artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -341,7 +351,7 @@ void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
 
         int artistId = e.attribute( "id", "0").toInt();
 
-        debug() << "Adding artist: " << element.text() << " with id: " << artistId;
+        //debug() << "Adding artist: " << element.text() << " with id: " << artistId;
 
         artist->setId( artistId );
 
@@ -372,7 +382,7 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Recieved response: " << m_storedTransferJob->data();
+    //debug() << "Recieved response: " << m_storedTransferJob->data();
 
     AlbumList albums;
 
@@ -412,9 +422,9 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 
         AlbumPtr albumPtr( album );
 
-        debug() << "Adding album: " <<  title;
-        debug() << "   Id: " <<  albumId;
-        debug() << "   Cover url: " <<  coverUrl;
+        //debug() << "Adding album: " <<  title;
+        //debug() << "   Id: " <<  albumId;
+        //debug() << "   Cover url: " <<  coverUrl;
 
 
         m_collection->addAlbum( title,  albumPtr );
@@ -428,7 +438,7 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
         if ( artistPtr.data() != 0 )
         {
-           debug() << "Found parent artist";
+           //debug() << "Found parent artist";
            //ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            album->setAlbumArtist( artistPtr );
         }
@@ -458,7 +468,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Recieved response: " << m_storedTransferJob->data();
+    //debug() << "Recieved response: " << m_storedTransferJob->data();
 
     TrackList tracks;
 
@@ -485,7 +495,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         ServiceTrack * track = new ServiceTrack( title  );
         TrackPtr trackPtr( track );
 
-        debug() << "Adding track: " <<  title;
+        //debug() << "Adding track: " <<  title;
 
         track->setId( trackId );
 
@@ -511,7 +521,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         ArtistPtr artistPtr = m_collection->artistById( artistId );
         if ( artistPtr.data() != 0 ) {
-            debug() << "Found parent artist " << artistPtr->name();
+            //debug() << "Found parent artist " << artistPtr->name();
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
            artist->addTrack( trackPtr );
@@ -519,7 +529,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         AlbumPtr albumPtr = m_collection->albumById( albumId );
         if ( albumPtr.data() != 0 ) {
-            debug() << "Found parent album " << albumPtr->name() ;
+           //debug() << "Found parent album " << albumPtr->name() ;
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
            track->setAlbum( albumPtr );
            album->addTrack( trackPtr );
@@ -535,6 +545,14 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
    handleResult( tracks );
    emit queryDone();
 
+}
+
+QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+{
+    DEBUG_BLOCK
+    debug() << "Filter: " << filter;
+    m_artistFilter = filter;
+    return this;
 }
 
 #include "AmpacheServiceQueryMaker.moc"

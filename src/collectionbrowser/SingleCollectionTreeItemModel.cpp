@@ -31,6 +31,8 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * colle
     :CollectionTreeItemModelBase( ) 
 {
     m_collection = collection;
+    //we only have one collection that, by its very nature, is always expanded
+    m_expandedCollections.insert( m_collection );
     setLevels( levelType );
 
     connect( collection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
@@ -43,6 +45,9 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
+
+    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, new CollectionTreeItem( Meta::DataPtr(0), 0 ) ) );
+    
     updateHeaderText();
     m_expandedItems.clear();
     reset(); //resets the whole model, as the data changed

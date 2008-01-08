@@ -497,7 +497,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     //trigger an update of all items being populated at the moment;
     QList<CollectionTreeItem* > items = d->m_childQueries.values();
 
-    foreach (CollectionTreeItem* item, items) {
+    foreach ( CollectionTreeItem* item, items ) {
 
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
     }
@@ -520,7 +520,10 @@ CollectionTreeItemModelBase::slotFilter()
         foreach( Collection *expanded, m_expandedCollections )
         {
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
-            emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
+            if ( expandedItem == 0 ) {
+                debug() << "ARRG! expandedItem is 0!!! id=" << expanded->collectionId() ;
+            } else
+                emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
         }
     }
 }

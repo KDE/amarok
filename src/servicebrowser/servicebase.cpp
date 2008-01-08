@@ -26,6 +26,7 @@
 
 
 #include "TheInstances.h"
+#include "searchwidget.h"
 #include "ServiceInfoProxy.h"
 
 #include <khbox.h>
@@ -126,14 +127,9 @@ ServiceBase::ServiceBase( const QString &name )
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
 
+    m_searchWidget = new SearchWidget( m_topPanel );
+    m_searchWidget->setup( m_contentView );
 
-
-
-    //QDirModel * dirModel = new QDirModel ( m_contentView );
-
-    //m_contentView->setModel( dirModel );
-    //m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
-    //m_contentView->show();
 
 }
 
