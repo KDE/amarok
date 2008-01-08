@@ -20,37 +20,47 @@
 require 'fileutils'
 
 def TagSource()
+  Dir.chdir( BASEPATH + "/" + @folder )
+
   @tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}" DEBUG
 
-  `svn mkdir -m "Create tag #{NAME} #{@version} root directory" #{@tag}`
-  `svn cp -m "Tag #{NAME} #{@version}." #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@tag}`
+  `svn mkdir -m "Create tag #{NAME} #{@version} root directory" #{@tag1}`
+  `svn cp -m "Tag #{NAME} #{@version}." #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@tag1}`
 end
 
 
 def TagTranslations()
-  `svn co -N #{@tag} ../tagging`
+  Dir.chdir( BASEPATH + "/" + @folder )
+  `svn co -N #{@tag1} tagging`
 
-  @tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
+  tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
 
-  FileUtils.cp_r("po/.", "../tagging/po-co", :verbose => true)
-
-  `svn mkdir -m "Create tag #{NAME} #{@version} po directory" #{@tag}`
-  `svn up ../tagging/po`
+  `svn mkdir -m "Create tag #{NAME} #{@version} po directory" #{tag}`
+  `svn up tagging/po`
   for translation in @translations do
-    `svn mkdir ../tagging/po/#{translation}`
-    `svn cp ../tagging/po-co/#{translation}/#{NAME}.po ../tagging/po/#{translation}/#{NAME}.po`
+    `svn mkdir tagging/po/#{translation}`
+    `svn cp po/#{translation}/#{NAME}.po tagging/po/#{translation}/#{NAME}.po`
   end
-  `svn ci -m "Tag #{NAME} #{@version} - translations." ../tagging/po`
+  `svn ci -m "Tag #{NAME} #{@version} - translations." tagging/po`
 
-  FileUtils.rm_rf("../tagging")
+  FileUtils.rm_rf("tagging")
 end
 
 
 def TagDocumentations()
-  @tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/doc" DEBUG
+  Dir.chdir( BASEPATH + "/" + @folder )
+  `svn co -N #{@tag1} tagging`
 
-  `svn mkdir -m "Create tag #{NAME} #{@version} doc directory" #{@tag}`
-#   `svn cp -m "Tag #{NAME} #{@version} - docs." #{@repo}/#{COMPONENT}/#{SECTION}/doc/#{NAME} #{@tag}`
+  tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
+
+  `svn mkdir -m "Create tag #{NAME} #{@version} doc directory" #{tag}`
+  `svn up tagging/doc`
+  for doc in @docs do
+    `svn cp doc/#{doc} tagging/doc/`
+  end
+  `svn ci -m "Tag #{NAME} #{@version} - documentations." tagging/doc`
+
+  FileUtils.rm_rf( "tagging" )
 end
 
 
@@ -62,5 +72,5 @@ end
 def Tag()
   TagSource()
   TagTranslations()
-#   TagDocumentations()
+  TagDocumentations()
 end

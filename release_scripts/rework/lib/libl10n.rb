@@ -45,14 +45,13 @@ def FetchTranslations()
     # TODO: ruby-svn
     FileUtils.rm_rf("l10n")
     `svn co #{@repo}/#{pofilename} l10n 2> /dev/null`
-    next if not FileTest.exists?( "l10n/#{NAME}.po" )
+    next unless FileTest.exists?( "l10n/#{NAME}.po" )
 
     dest = "po/#{lang}"
     Dir.mkdir( dest )
     puts "Copying #{lang}'s #{NAME}.po over ..."
     FileUtils.mv( "l10n/#{NAME}.po", dest )
     FileUtils.mv( "l10n/.svn", dest )
-    puts "done.\n"
 
     # create lang's cmake files
     cmakefile = File.new( "#{dest}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
@@ -63,6 +62,8 @@ def FetchTranslations()
     # add to SVN in case we are tagging
     `svn add #{dest}/CMakeLists.txt`
     @translations += [lang]
+
+    puts "done.\n"
 
     subdirs = true
   end
@@ -99,42 +100,46 @@ end
 
 
 def FetchDocumentation()
-  bar  = @dlg.progressbar("preparing l10n processing",1)
-  Dir.chdir(BASEPATH + "/" + @folder)
-  Dir.mkdir("doc")
-  Dir.chdir("doc")
+  bar  = @dlg.progressbar("preparing doc processing",1)
+  Dir.chdir( BASEPATH + "/" + @folder )
 
   l10nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
+  @docs     = []
   subdirs   = false
 
-  bar.maxvalue = l10nlangs.count("\n")
+  bar.maxvalue = l10nlangs.count( "\n" )
   step         = 0
 
-  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/doc/#{NAME}`
-
-  Dir.chdir(BASEPATH + "/" + @folder)
-  Dir.mkdir( "l10n" )
-  Dir.chdir( "l10n" )
+  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/doc/#{NAME} doc/en_US`
+  cmakefile = File.new( "doc/en_US/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
+  cmakefile << "kde4_create_handbook(index.docbook INSTALL_DESTINATION \${HTML_INSTALL_DIR}/\${CURRENT_LANG}/ SUBDIR #{NAME} )\n"
+  cmakefile.close()
 
   # docs
   for lang in l10nlangs
     lang.chomp!()
-
     bar.label    = "processing #{lang}'s #{NAME} documentation"
     bar.progress = step
     step        += 1
 
-    FileUtils.rm_rf( "../doc/#{lang}" )
-    FileUtils.rm_rf( NAME )
-    docdirname = "l10n-kde4/#{lang}/docs/extragear-multimedia/amarok"
-    `svn co -q #{@repo}/#{docdirname} > /dev/null 2>&1`
-    next unless FileTest.exists?( "amarok" )
-    puts "Copying #{lang}'s #{NAME} documentation over... "
-    `cp -R amarok/ ../doc/#{lang}`
+    docdirname = "l10n-kde4/#{lang}/docs/#{COMPONENT}-#{SECTION}/#{NAME}"
+    # TODO: ruby-svn
+    FileUtils.rm_rf( "l10n" )
+    `svn co #{@repo}/#{docdirname} l10n 2> /dev/null`
+    puts "svn co #{@repo}/#{docdirname} l10n 2> /dev/null"
+    next unless FileTest.exists?( "l10n" )
 
-    cmakefile = File.new( "../doc/#{lang}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
+    dest = "doc/#{lang}"
+    puts "Copying #{lang}'s #{NAME} documentation over... "
+    FileUtils.mv( "l10n", dest )
+
+    cmakefile = File.new( "doc/#{lang}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
     cmakefile << "kde4_create_handbook(index.docbook INSTALL_DESTINATION \${HTML_INSTALL_DIR}/\${CURRENT_LANG}/ SUBDIR #{NAME} )\n"
     cmakefile.close()
+
+    # add to SVN in case we are tagging
+    `svn add doc/#{lang}/CMakeLists.txt`
+    @docs += [lang]
 
     puts( "done.\n" )
 
@@ -156,7 +161,7 @@ def FetchDocumentation()
 
     # adapt cmake file
     cmakefile = File.new( "CMakeLists.txt", File::APPEND | File::RDWR )
-    unless File.exists?("po")
+    unless File.exists?( "po" )
       cmakefile << "include(MacroOptionalAddSubdirectory)\n"
     end
     cmakefile << "macro_optional_add_subdirectory( doc )\n"
