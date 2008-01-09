@@ -292,10 +292,10 @@ CollectionScanner::readTags( const MetaBundle& mb )
 
     AttributeMap attributes;
 
-    /*if ( !mb.isValidMedia() ) {
+    if ( !mb.isValidMedia() ) {
         std::cout << "<dud/>";
         return attributes;
-    }*/
+    }
 
     attributes["path"]    = mb.url().path();
     attributes["title"]   = mb.title();
