@@ -91,7 +91,8 @@ class ServiceSqlQueryMaker : public QueryMaker
         void linkTables();
         void buildQuery();
 
-        //QString nameForValue( qint64 value );
+        QString nameForValue( qint64 value );
+        QString andOr() const;
 
         void handleTracks( const QStringList &result );
         void handleArtists( const QStringList &result );

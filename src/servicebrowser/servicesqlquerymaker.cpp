@@ -27,6 +27,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QStack>
+
 using namespace Meta;
 
 class ServiceSqlWorkerThread : public ThreadWeaver::Job
@@ -79,6 +81,7 @@ struct ServiceSqlQueryMaker::Private
     bool withoutDuplicates;
     int maxResultSize;
     ServiceSqlWorkerThread *worker;
+    QStack<bool> andStack;
 };
 
 ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
@@ -116,6 +119,8 @@ ServiceSqlQueryMaker::reset()
     //d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
+    d->andStack.clear();
+    d->andStack.push( true );
     return this;
 }
 
@@ -171,7 +176,7 @@ ServiceSqlQueryMaker::startTrackQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_tracks";
+        //d->queryFrom = ' ' + prefix + "_tracks";
         
         d->withoutDuplicates = true;
 
@@ -197,7 +202,8 @@ ServiceSqlQueryMaker::startArtistQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_artists";
+        //d->queryFrom = ' ' + prefix + "_artists";
+        d->linkedTables |= Private::ARTISTS_TABLE;
         d->queryType = Private::ARTIST;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
@@ -212,8 +218,9 @@ ServiceSqlQueryMaker::startAlbumQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_albums";
+        //d->queryFrom = ' ' + prefix + "_albums";
         d->queryType = Private::ALBUM;
+        d->linkedTables |= Private::ALBUMS_TABLE;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows();
@@ -242,11 +249,13 @@ ServiceSqlQueryMaker::startGenreQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_genre";
+        //d->queryFrom = ' ' + prefix + "_genre";
         d->queryType = Private::GENRE;
+        d->linkedTables |= Private::ALBUMS_TABLE;
+        d->linkedTables |= Private::GENRE_TABLE;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getGenreSqlRows();
-        d->queryFilter = " GROUP BY " + prefix +"_genre.name HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
+        d->queryOrderBy = " GROUP BY " + prefix +"_genre.name HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
     }
     return this;
 }
@@ -354,14 +363,14 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
  
     //genres link to albums in the database, so we need to start from here unless soig a track query
     
-    if (  d->queryType == Private::TRACK ) {
-        d->queryFrom = ' ' + prefix + "_tracks";
+   // if (  d->queryType == Private::TRACK ) {
+        //d->queryFrom = ' ' + prefix + "_tracks";
         d->linkedTables |= Private::ALBUMS_TABLE;
-    } else 
-        d->queryFrom = ' ' + prefix + "_albums";
+    //} else 
+        //d->queryFrom = ' ' + prefix + "_albums";
     
-        if ( d->queryType == Private::ARTIST )
-        d->linkedTables |= Private::ARTISTS_TABLE;
+        //if ( d->queryType == Private::ARTIST )
+        //d->linkedTables |= Private::ARTISTS_TABLE;
     d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
     
@@ -396,12 +405,17 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    Q_UNUSED( value );
+    
+    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    return this;
+    
+   /* Q_UNUSED( value );
     Q_UNUSED( filter );
     Q_UNUSED( matchBegin );
     Q_UNUSED( matchEnd );
     //TODO
-    return this;
+    return this;*/
 }
 
 QueryMaker*
@@ -445,26 +459,6 @@ ServiceSqlQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
-QueryMaker*
-ServiceSqlQueryMaker::beginAnd()
-{
-    //TODO
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::beginOr()
-{
-    //TODO
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::endAndOr()
-{
-    //TODO
-    return this;
-}
 
 void
 ServiceSqlQueryMaker::linkTables()
@@ -475,10 +469,12 @@ ServiceSqlQueryMaker::linkTables()
 
     QString prefix = m_metaFactory->tablePrefix();
 
+    d->queryFrom = ' ' + prefix + "_tracks";
+
     if( d->linkedTables & Private::ALBUMS_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     if( d->linkedTables & Private::ARTISTS_TABLE )
-       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_tracks.artist_id = " + prefix + "_artists.id";
     if( d->linkedTables & Private::GENRE_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
@@ -497,7 +493,13 @@ ServiceSqlQueryMaker::buildQuery()
     query += " WHERE 1 "; // oh... to not have to bother with the leadig "AND"
                           // that may or may not be needed
     query += d->queryMatch;
-    query += d->queryFilter;
+    if ( !d->queryFilter.isEmpty() )
+    {
+        query += " AND ( 1 ";
+        query += d->queryFilter;
+        query += " ) ";
+    }
+    //query += d->queryFilter;
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
         query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
@@ -559,34 +561,31 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     //queryDone will be emitted in done(Job*)
 }
 
-/*QString
-ServiceSqlQueryMaker::nameForValue( qint64 value )
+QString
+ServiceSqlQueryMaker::nameForValue(qint64 value)
 {
+
+    QString prefix = m_metaFactory->tablePrefix();
+    
     switch( value )
     {
-        case valUrl:
-
-            return "tags.url";  //TODO figure out how to handle deviceid
         case valTitle:
-
-            return "tags.title";
+            d->linkedTables |= Private::TRACKS_TABLE;
+            return prefix + "_tracks.name";
         case valArtist:
-
-            return "artist.name";
+            d->linkedTables |= Private::ARTISTS_TABLE;
+            return prefix + "_artists.name";
         case valAlbum:
-
-            return "album.name";
+            d->linkedTables |= Private::ALBUMS_TABLE;
+            return prefix + "_albums.name";
         case valGenre:
-
-            return "genre.name";
-        case valComposer:
-
-
-            return "statistics.playcounter";
+            d->linkedTables |= Private::ALBUMS_TABLE;
+            d->linkedTables |= Private::GENRE_TABLE;
+            return prefix + "_genre.name";
         default:
-            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64): value=" + value;
+            return "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue(qint64): value=" + value;
     }
-}*/
+}
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
@@ -738,6 +737,44 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
 
     return ret;
 }
+
+
+QueryMaker*
+ServiceSqlQueryMaker::beginAnd()
+{
+    DEBUG_BLOCK
+    d->queryFilter += andOr();
+    d->queryFilter += " ( 1 ";
+    d->andStack.push( true );
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::beginOr()
+{
+    DEBUG_BLOCK
+    d->queryFilter += andOr();
+    d->queryFilter += " ( 0 ";
+    d->andStack.push( false );
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::endAndOr()
+{
+    DEBUG_BLOCK
+    d->queryFilter += ')';
+    d->andStack.pop();
+    return this;
+}
+
+QString
+ServiceSqlQueryMaker::andOr() const
+{
+    DEBUG_BLOCK
+    return d->andStack.top() ? " AND " : " OR ";
+}
+
 
 #include "servicesqlquerymaker.moc"
 
