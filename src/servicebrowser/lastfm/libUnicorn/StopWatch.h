@@ -151,9 +151,10 @@ private:
 
     QDateTime mLastTime;
 
+    int mnTotalMs;
     int mnTimer;
     int mnTimeout;
-    
+
     bool mbTimedOut;
 
     QMutex mMutex;

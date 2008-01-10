@@ -27,9 +27,10 @@
 ******************************************************************************/
 StopWatch::StopWatch() :
     QThread(),
-    mState(STOPPED),
-    mnTimer(0),
-    mnTimeout(0),
+    mState( STOPPED ),
+    mnTotalMs( 0 ),
+    mnTimer( 0 ),
+    mnTimeout( 0 ),
     mbTimedOut( false )
 {
 }
@@ -68,6 +69,7 @@ StopWatch::clone(
     const StopWatch& that)
 {
     QMutexLocker grab(&mMutex);
+    mnTotalMs   = that.mnTotalMs;
     mnTimer     = that.mnTimer;
     mnTimeout   = that.mnTimeout;
     mState      = that.mState;
@@ -120,6 +122,7 @@ StopWatch::reset()
 {
     mMutex.lock();
     mnTimer = 0;
+    mnTotalMs = 0;
     mbTimedOut = false;
     mMutex.unlock();
 
@@ -155,8 +158,6 @@ StopWatch::run()
     bool bStopped = false;
     mLastTime = QDateTime::currentDateTime();
 
-    int totalMs = 0;
-
     do
     {
         int nSleepInterval = 250;
@@ -173,12 +174,12 @@ StopWatch::run()
         {
             mLastTime = currentTime;
 
-            totalMs += msSpentSleeping;
-            mnTimer = totalMs / (int)1000;
+            mnTotalMs += msSpentSleeping;
+            mnTimer = mnTotalMs / (int)1000;
 
             /*
             LOGL( 3, "msSpent: " << msSpentSleeping );
-            LOGL( 3, "ms: " << totalMs );
+            LOGL( 3, "ms: " << mnTotalMs );
             LOGL( 3, "s: " << mnTimer );
             */
 
