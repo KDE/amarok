@@ -2,7 +2,7 @@
 #
 # Generic ruby library for KDE extragear/playground releases
 #
-# Copyright (C) 2007 Harald Sitter <harald@getamarok.com>
+# Copyright (C) 2007-2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,56 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require './lib/libkdialog.rb'
 require 'fileutils'
-
-@dlg = KDialog.new("#{NAME} release script","cookie")
-
-def InformationQuery()
-  def CheckoutLocation()
-    location = @dlg.combobox("Select checkout\\'s place:", "Trunk Stable Tag")
-    puts location #DEBUG
-    if location == "Stable"
-      @useStable = true
-    elsif location == "Tag"
-      @tag = @dlg.inputbox("Enter the tag name:")
-      puts @tag #DEBUG
-    end
-  end
-
-  def ReleaseVersion()
-    if @tag and not @tag.empty?()
-      @version = @tag
-    else
-      @version = @dlg.inputbox("Enter the release version:")
-    end
-    puts @version #DEBUG
-  end
-
-  def SvnProtcol()
-    @protocol = @dlg.radiolist("Do you use svn+ssh, https or anonsvn :",["svn+ssh","https","anonsvn"],1)
-    puts @protocol #DEBUG
-  end
-
-  def SvnUsername()
-    if @protocol == "anonsvn"
-      @protocol = "svn"
-      @user = "anonsvn"
-    else
-      @user = @dlg.inputbox("Your SVN user:")
-      @user += "@svn"
-    end
-    puts @user #DEBUG
-  end
-
-  @version  = "2.0.0" #DEBUG
-  @protocol = "anonsvn" #DEBUG
-  #   CheckoutLocation()
-  #   ReleaseVersion()
-  #   SvnProtcol()
-  SvnUsername()
-end
-
 
 def FetchSource()
   bar  = @dlg.progressbar("fetching source code",1)
@@ -81,12 +32,13 @@ def FetchSource()
     branch = "tags/#{NAME}/#{@tag}"
   end
 
-  @repo = "#{@protocol}://#{@user}.kde.org/home/kde/#{branch}"
+#   @repo = "#{@protocol}://#{@user}.kde.org/home/kde/#{branch}"
+  @repo = "file:///home/kde/#{branch}"
   puts @repo #DEBUG
 
   puts "Fetching source from #{branch}...\n\n"
   # TODO: ruby-svn
-  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@folder}`
+  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@folder} -N`
 
   bar.progress = 1
   bar.close
@@ -103,4 +55,22 @@ def CreateTar()
   bar.progress = 3
   FileUtils.rm_rf(@folder)
   bar.close
+end
+
+
+def CreateCheckSums()
+  puts "MD5Sum: #{`md5sum #{@folder}.tar.bz2`}"
+  puts "SHA1Sum: #{`sha1sum #{@folder}.tar.bz2`}"
+end
+
+
+def CreateMailNotification()
+end
+
+
+def CreateMailAnnouncement()
+end
+
+
+def CreateChangeLogHtml()
 end

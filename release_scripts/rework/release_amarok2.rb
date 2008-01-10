@@ -2,7 +2,7 @@
 #
 # Generates an Amarok release tarball from KDE SVN
 #
-# Copyright (C) 2007 Harald Sitter <harald@getamarok.com>
+# Copyright (C) 2007-2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ SECTION   = "multimedia"
 BASEPATH  = Dir.getwd()
 
 require 'fileutils'
+require './lib/libbase.rb'
 require './lib/librelease.rb'
 require './lib/libl10n.rb'
 require './lib/libtag.rb'
@@ -50,13 +51,16 @@ end
 
 InformationQuery()
 
-@folder = "#{NAME}-#{@version}" #create folder constant
+# TODO: why is this done here?
+@folder = "#{NAME}-#{@version}" #create folder instance var
 
 FetchSource()
 
 FetchTranslations()
 
 FetchDocumentation()
+
+CreateTranslationStats()
 
 Tag()
 
