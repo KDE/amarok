@@ -19,6 +19,7 @@
 
 require 'fileutils'
 
+# DOC TODO
 def FetchSource()
   bar  = @dlg.progressbar("fetching source code",1)
   FileUtils.rm_rf( @folder )
@@ -44,10 +45,12 @@ def FetchSource()
   bar.close
 end
 
-
+# Removes all .svn directories, creates a tar.bz2 and removes the source folder.
+# You probably want to run this command as one of the last actions, since for
+# example tagging heavily depends on the presence of the .svn directories.
 def CreateTar()
   bar  = @dlg.progressbar("creating tarball",4)
-  `find -name ".svn" | xargs rm -rf`
+  `find -name ".svn" #{@folder} | xargs rm -rf`
   bar.progress = 1
   `tar -cf #{@folder}.tar #{@folder}`
   bar.progress = 2
@@ -57,20 +60,20 @@ def CreateTar()
   bar.close
 end
 
-
+# TODO
 def CreateCheckSums()
   puts "MD5Sum: #{`md5sum #{@folder}.tar.bz2`}"
   puts "SHA1Sum: #{`sha1sum #{@folder}.tar.bz2`}"
 end
 
-
+# TODO
 def CreateMailNotification()
 end
 
-
+# TODO
 def CreateMailAnnouncement()
 end
 
-
+# TODO
 def CreateChangeLogHtml()
 end
