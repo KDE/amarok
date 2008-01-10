@@ -17,28 +17,65 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require './lib/libkdialog.rb'
+require 'lib/libkdialog'
 require 'fileutils'
 
 @dlg = KDialog.new("#{NAME} release script","cookie")
 
-def BaseDir()
+# This will return you to the default src directory, which is by default:
+#  execution dir + / + src folder name (NAME-VERSION)
+def SrcDir()
   Dir.chdir(BASEPATH + "/" + @folder)
 end
 
-def InformationQuery()
-  @version  = "2.0.0" #DEBUG
-  @protocol = "anonsvn" #DEBUG
-  #   CheckoutLocation()
-  #   ReleaseVersion()
-  #   SvnProtcol()
-  SvnUsername()
+
+# Queries the executer for all sorts of so called information.
+# By default it will query for:
+#  - SVN location to checkout (trunk, stable, tag)
+#  - Release version
+#  - SVN protcol to use (ssh, https, anonsvn)
+#  - If protocl is not 'anonsvn' it will also ask for a user name
+#
+# You can override the query by providing these information when calling the method.
+# For example:
+#    InformationQuery("trunk","1.0.0","https","sitter")
+def InformationQuery(location=nil, version=nil, protocol=nil, user=nil)
+    @version  = "2.0.0" #DEBUG
+    @protocol = "anonsvn" #DEBUG
+
+#   unless location
+#     CheckoutLocation()
+#   else
+#     CheckoutLocationDef(location)
+#   end
+# 
+#   unless version
+#     ReleaseVersion()
+#   else
+#     @version = version
+#   end
+# 
+#   unless protocol
+#     SvnProtcol()
+#   else
+#     @protocol = protocol
+#   end
+
+  unless user
+    SvnUsername()
+  else
+    @user = user + "@svn"
+  end
 end
 
-
+private
 def CheckoutLocation()
   location = @dlg.combobox("Select checkout\\'s place:", "Trunk Stable Tag")
   puts location #DEBUG
+  CheckoutLocationDef(location)
+end
+
+def CheckoutLocationDef(location)
   if location == "Stable"
     @useStable = true
   elsif location == "Tag"
