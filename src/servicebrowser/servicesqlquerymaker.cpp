@@ -221,6 +221,7 @@ ServiceSqlQueryMaker::startAlbumQuery()
         //d->queryFrom = ' ' + prefix + "_albums";
         d->queryType = Private::ALBUM;
         d->linkedTables |= Private::ALBUMS_TABLE;
+        d->linkedTables |= Private::ARTISTS_TABLE;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows();
@@ -474,7 +475,7 @@ ServiceSqlQueryMaker::linkTables()
     if( d->linkedTables & Private::ALBUMS_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     if( d->linkedTables & Private::ARTISTS_TABLE )
-       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_tracks.artist_id = " + prefix + "_artists.id";
+       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
     if( d->linkedTables & Private::GENRE_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 

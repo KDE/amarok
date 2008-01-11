@@ -67,6 +67,10 @@ JamendoDatabaseHandler::createDatabase( )
 
     QStringList result = db->query( queryString );
 
+    db->query( "CREATE INDEX jamendo_tracks_id ON jamendo_tracks(id);" );
+    db->query( "CREATE INDEX jamendo_tracks_album_id ON jamendo_tracks(album_id);" );
+    db->query( "CREATE INDEX jamendo_tracks_artist_id ON jamendo_tracks(artist_id);" );
+
     //Create album table
     queryString = "CREATE TABLE jamendo_albums ("
                   "id INTEGER PRIMARY KEY, "
@@ -83,6 +87,9 @@ JamendoDatabaseHandler::createDatabase( )
     debug() << "Creating jamendo_albums: " << queryString;
 
     result = db->query( queryString );
+
+    db->query( "CREATE INDEX jamendo_albums_name ON jamendo_albums(name);" );
+    db->query( "CREATE INDEX jamendo_albums_artist_id ON jamendo_albums(artist_id);" );
 
     //Create artist table
     queryString = "CREATE TABLE jamendo_artists ("
@@ -101,6 +108,8 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
+    db->query( "CREATE INDEX jamendo_artists_name ON jamendo_artists(name);" );
+
     //create genre table
     queryString = "CREATE TABLE jamendo_genre ("
                   "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
@@ -111,24 +120,8 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
-    //create a few indexes ( its all about the SPEEED baby! )
-
-
-
-    queryString = "CREATE INDEX jamendo_album_album_id on jamendo_albums (id);";
-    result = db->query( queryString );
-
-    queryString = "CREATE INDEX jamendo_album_artist_id on jamendo_albums (artist_id);";
-    result = db->query( queryString );
-
-    queryString = "CREATE INDEX jamendo_artist_artist_id on jamendo_artists (id);";
-    result = db->query( queryString );
-
-    queryString = "CREATE INDEX jamendo_genre_album_id on jamendo_genre (album_id);";
-    result = db->query( queryString );
-
-    queryString = "CREATE INDEX jamendo_genre_name on jamendo_genre (name);";
-    result = db->query( queryString );
+    db->query( "CREATE INDEX jamendo_genre_name ON jamendo_genre(name);" );
+    db->query( "CREATE INDEX jamendo_genre_album_id ON jamendo_genre(album_id);" );
 
 }
 
@@ -139,18 +132,27 @@ JamendoDatabaseHandler::destroyDatabase( )
     debug() << "Destroy Jamendo database ";
 
     CollectionDB *db = CollectionDB::instance();
+    debug() << "here1";
     QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
+    debug() << "here1";
     result = db->query( "DROP TABLE jamendo_albums;" );
+    debug() << "here1";
     result = db->query( "DROP TABLE jamendo_artists;" );
+    debug() << "here1";
     result = db->query( "DROP TABLE jamendo_genre;" );
 
+    debug() << "here1";
 
-    result = db->query( "DROP INDEX jamendo_album_album_id;");
+    result = db->query( "DROP INDEX jamendo_tracks_id;");
+    result = db->query( "DROP INDEX jamendo_tracks_artist_id;");
+    result = db->query( "DROP INDEX jamendo_tracks_album_id;");
+    result = db->query( "DROP INDEX jamendo_album_name;");
     result = db->query( "DROP INDEX jamendo_album_artist_id;");
-    result = db->query( "DROP INDEX jamendo_artist_artist_id;");
+    result = db->query( "DROP INDEX jamendo_artist_name;");
     result = db->query( "DROP INDEX jamendo_genre_album_id;");
-    result = db->query( "DROP INDEX jamenod_genre_name;");
+    result = db->query( "DROP INDEX jamendo_genre_name;");
 
+    debug() << "here2";
     if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
         db->query( QString( "DROP SEQUENCE jamendo_track_seq;" ) );

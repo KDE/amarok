@@ -82,6 +82,9 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     QStringList result = sqlDb->query( queryString );
 
+    sqlDb->query( "CREATE INDEX magnatune_tracks_album_id ON magnatune_tracks(album_id);" );
+    sqlDb->query( "CREATE INDEX magnatune_tracks_artist_id ON magnatune_tracks(artist_id);" );
+
     //Create album table
     queryString = "CREATE TABLE magnatune_albums ("
                   "id INTEGER PRIMARY KEY " + albumsAutoIncrement + ',' +
@@ -96,6 +99,10 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     result = sqlDb->query( queryString );
 
+    sqlDb->query( "CREATE INDEX magnatune_albums_name ON magnatune_albums(name);" );
+    sqlDb->query( "CREATE INDEX magnatune_albums_artist_id ON magnatune_albums(artist_id);" );
+
+
     //Create artist table
     queryString = "CREATE TABLE magnatune_artists ("
                   "id INTEGER PRIMARY KEY " + artistAutoIncrement + ',' +
@@ -108,6 +115,8 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     result = sqlDb->query( queryString );
 
+    sqlDb->query( "CREATE INDEX magnatune_artists_name ON magnatune_artists(name);" );
+
     //create genre table
     queryString = "CREATE TABLE magnatune_genre ("
                   "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
@@ -115,6 +124,9 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "album_id INTEGER" + ");";
 
     result = sqlDb->query( queryString );
+
+    sqlDb->query( "CREATE INDEX magnatune_genre_name ON magnatune_genre(name);" );
+    sqlDb->query( "CREATE INDEX magnatune_genre_album_id ON magnatune_genre(album_id);" );
 
 
     //create moods table
@@ -140,6 +152,15 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     result = sqlDb->query( "DROP TABLE magnatune_artists;" );
     result = sqlDb->query( "DROP TABLE magnatune_genre;" );
     result = sqlDb->query( "DROP TABLE magnatune_moods;" );
+
+
+    result = sqlDb->query( "DROP INDEX magnatune_tracks_artist_id;");
+    result = sqlDb->query( "DROP INDEX magnatune_tracks_album_id;");
+    result = sqlDb->query( "DROP INDEX magnatune_album_name;");
+    result = sqlDb->query( "DROP INDEX magnatune_album_artist_id;");
+    result = sqlDb->query( "DROP INDEX magnatune_artist_name;");
+    result = sqlDb->query( "DROP INDEX magnatune_genre_album_id;");
+    result = sqlDb->query( "DROP INDEX magnatune_genre_name;");
 
    /* if ( sqlDb->type() == DbConnection::postgresql )
     {
