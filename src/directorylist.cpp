@@ -73,11 +73,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 #ifdef Q_OS_WIN32
     foreach( QFileInfo drive, QDir::drives () )
     {
-        if ( drive.isReadable() )
-        {
-            // exclude trailing slash on drive letter
-            new CollectionFolder::Item( m_view, drive.filePath().left( 2 ) );
-        }
+        // exclude trailing slash on drive letter
+        new CollectionFolder::Item( m_view, drive.filePath().left( 2 ) );
     }
 #else
     new CollectionFolder::Item( m_view, "/" );
@@ -141,7 +138,11 @@ Item::Item( Q3ListView *parent, const QString &root )
         static_cast<Q3CheckListItem*>( this )->setOn(true);
     m_lister.setDirOnlyMode( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
+#ifdef Q_OS_WIN32
+    setExpandable( true );
+#else
     setOpen( true );
+#endif
     setVisible( true );
 }
 
