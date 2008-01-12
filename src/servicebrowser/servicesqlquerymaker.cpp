@@ -77,6 +77,7 @@ struct ServiceSqlQueryMaker::Private
     QString queryOrderBy;
     //bool includedBuilder;
     //bool collectionRestriction;
+    AlbumQueryMode albumMode;
     bool resultAsDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
@@ -256,7 +257,7 @@ ServiceSqlQueryMaker::startGenreQuery()
         d->linkedTables |= Private::GENRE_TABLE;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getGenreSqlRows();
-        d->queryOrderBy = " GROUP BY " + prefix +"_genre.name HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
+        d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
     }
     return this;
 }
@@ -484,6 +485,10 @@ ServiceSqlQueryMaker::linkTables()
 void
 ServiceSqlQueryMaker::buildQuery()
 {
+
+    if( d->albumMode == OnlyCompilations )
+        return;
+    
     linkTables();
     QString query = "SELECT ";
     if ( d->withoutDuplicates )
@@ -520,6 +525,10 @@ QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
     DEBUG_BLOCK
+
+   if( d->albumMode == OnlyCompilations )
+       return QStringList();
+            
     debug() << "Query string: " << query;
     return m_collection->query( query );
 }
@@ -774,6 +783,12 @@ ServiceSqlQueryMaker::andOr() const
 {
     DEBUG_BLOCK
     return d->andStack.top() ? " AND " : " OR ";
+}
+
+QueryMaker * ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
+{
+    d->albumMode = mode;
+    return this;
 }
 
 

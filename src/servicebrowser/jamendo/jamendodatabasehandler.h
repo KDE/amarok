@@ -97,6 +97,15 @@ public:
     void commit();
 
 
+    
+     /**
+      * Remove all genres that are applied to too few albums in an attempt to weed out the worst mistags and
+      * speed up queries a bit!
+      * @param minCount cutoff value...
+      */
+     void trimGenres( int minCount );
+
+
 
 protected:
 

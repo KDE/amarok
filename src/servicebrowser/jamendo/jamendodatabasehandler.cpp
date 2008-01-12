@@ -287,6 +287,14 @@ JamendoDatabaseHandler::commit( )
     mgr->sqlStorage()->query( queryString );
 }
 
+void JamendoDatabaseHandler::trimGenres(int minCount)
+{
+    QString query = QString("delete from jamendo_genre where name IN ( SELECT name from jamendo_genre GROUP BY jamendo_genre.name HAVING COUNT ( jamendo_genre.name ) < %1 );").arg( minCount );
+
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    sqlDb->query( query );
+}
+
 
 
 
