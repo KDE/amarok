@@ -26,7 +26,7 @@
 #include "MetaQueryBuilder.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
-#include "meta/lastfm/LastFmMeta.h"
+//#include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
 #include "scrobbler.h"
 #include "SqlStorage.h"
@@ -234,9 +234,6 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a lastfm track, another stream
     //or a file which is not in any collection
     debug() << "track for url: " << url.url();
-    //check lastfm track
-    if( url.protocol() == "lastfm" )
-        return Meta::TrackPtr( new LastFm::Track( url.url() ) );
 
     foreach( Collection *coll, d->collections )
     {

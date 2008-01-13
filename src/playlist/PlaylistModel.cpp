@@ -38,7 +38,6 @@
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "collection/QueryMaker.h"
-#include "meta/lastfm/LastFmMeta.h"
 
 #include <QAction>
 #include <QStringList>

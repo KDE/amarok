@@ -212,13 +212,6 @@ set(libstatusbar_SRCS
 )
 
 #####################################################################
-# LAST.FM
-#####################################################################
-set(lastfm_SRCS
-    meta/lastfm/LastFmMeta.cpp
-)
-
-#####################################################################
 # META
 #####################################################################
 set(meta_SRCS
@@ -350,7 +343,6 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
-    ${lastfm_SRCS}
     ${meta_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}

@@ -5,6 +5,7 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
         ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
         ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
+        ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES} )
@@ -36,6 +37,8 @@
             LastFmSettings.cpp
             RadioAdapter.cpp
             ScrobblerAdapter.cpp
+            
+            meta/LastFmMeta.cpp
         
             core/Radio.cpp
             core/RadioPlaylist.cpp

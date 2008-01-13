@@ -74,6 +74,7 @@ class Track::Private : public QObject
         }
 
     public slots:
+#if 0
         void metaDataFinished( int /* id */, bool error )
         {
             DEBUG_BLOCK
@@ -136,6 +137,7 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
+#endif
 };
 
 // internal helper classes

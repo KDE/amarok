@@ -104,6 +104,7 @@ Track::sortableName() const
 KUrl
 Track::playableUrl() const
 {
+#if 0
     if( !d->proxyUrl.isValid() )
     {
         d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
@@ -113,6 +114,8 @@ Track::playableUrl() const
         d->service->addObserver( d );
     }
     return d->proxyUrl;
+#endif
+    return "";
 }
 
 QString
