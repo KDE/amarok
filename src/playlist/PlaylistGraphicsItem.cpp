@@ -437,7 +437,7 @@ Playlist::GraphicsItem::dataChanged()
 const bool
 Playlist::GraphicsItem::hasImage() const
 {
-    return m_items->track->album()->hasImage();
+    return m_items->track->album() && m_items->track->album()->hasImage();
 }
 
 void
