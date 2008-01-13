@@ -24,6 +24,11 @@ public:
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
+
+    virtual QueryMaker* queryMaker();
 };
 
 #endif // LASTFMSERVICECOLLECTION_H

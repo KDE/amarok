@@ -16,14 +16,21 @@
 #include "LastFmServiceCollection.h"
 #include "meta/LastFmMeta.h"
 
+#include "support/MemoryQueryMaker.h"
+
+#include <KLocale>
+
+
 LastFmServiceCollection::LastFmServiceCollection()
     : ServiceDynamicCollection( "last.fm", "last.fm" ) 
 {
 }
 
+
 LastFmServiceCollection::~LastFmServiceCollection()
 {
 }
+
 
 bool 
 LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
@@ -31,8 +38,31 @@ LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
     return url.protocol() == "lastfm";
 }
 
+
 Meta::TrackPtr 
 LastFmServiceCollection::trackForUrl( const KUrl &url )
 {
     return Meta::TrackPtr( new LastFm::Track( url.url() ) );
+}
+
+
+QString 
+LastFmServiceCollection::collectionId() const
+{
+    return "last.fm";
+}
+
+
+QString 
+LastFmServiceCollection::prettyName() const
+{
+    return i18n( "last.fm" );
+}
+
+
+QueryMaker*
+LastFmServiceCollection::queryMaker()
+{
+    // TODO
+    return new MemoryQueryMaker( this, collectionId() );
 }

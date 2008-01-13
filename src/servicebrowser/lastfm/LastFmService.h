@@ -19,6 +19,7 @@
 class ScrobblerAdapter;
 class RadioAdapter;
 class LastFmService;
+class LastFmServiceCollection;
 
 namespace The
 {
@@ -55,6 +56,7 @@ public:
 private:
     ScrobblerAdapter *m_scrobbler;
     RadioAdapter *m_radio;
+    LastFmServiceCollection *m_collection;
 
     static LastFmService *ms_service;
 

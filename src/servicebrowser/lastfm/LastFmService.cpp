@@ -12,9 +12,12 @@
  ***************************************************************************/
 
 #include "LastFmService.h"
+#include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "RadioAdapter.h"
 #include "ScrobblerAdapter.h"
+
+#include "CollectionManager.h"
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -54,12 +57,15 @@ LastFmServiceFactory::config()
 
 
 LastFmService::LastFmService( const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
-    : ServiceBase( name )
+    : ServiceBase( name ),
+      m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
+      m_radio( new RadioAdapter( this, username, password ) ),
+      m_collection( new LastFmServiceCollection( ) )
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( "amarok_audioscrobbler" ) );
-    m_scrobbler = scrobble ? new ScrobblerAdapter( this, username, password ) : 0;
-    m_radio = new RadioAdapter( this, username, password );
+
+    CollectionManager::instance()->addUnmanagedCollection( m_collection );
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
@@ -69,6 +75,9 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
 LastFmService::~LastFmService()
 {
     ms_service = 0;
+
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    delete m_collection;
 }
 
 
