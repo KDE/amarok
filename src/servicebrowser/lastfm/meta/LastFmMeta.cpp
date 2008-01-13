@@ -115,7 +115,7 @@ Track::playableUrl() const
     }
     return d->proxyUrl;
 #endif
-    return "";
+    return KUrl("");
 }
 
 QString
