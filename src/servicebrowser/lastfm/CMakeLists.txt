@@ -1,6 +1,7 @@
 
         include_directories( 
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/..
         ${CMAKE_CURRENT_SOURCE_DIR}/../..
         ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
         ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
@@ -33,6 +34,7 @@
         set(amarok_service_lastfm_PART_SRCS
             AudioController.cpp
             LastFmService.cpp
+            LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
             LastFmSettings.cpp
             RadioAdapter.cpp
