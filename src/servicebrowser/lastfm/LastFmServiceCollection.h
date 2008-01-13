@@ -19,6 +19,7 @@
 class LastFmServiceCollection : public ServiceDynamicCollection
 {
 public:
+    LastFmServiceCollection();
     virtual ~LastFmServiceCollection();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const;

@@ -16,6 +16,11 @@
 #include "LastFmServiceCollection.h"
 #include "meta/LastFmMeta.h"
 
+LastFmServiceCollection::LastFmServiceCollection()
+    : ServiceDynamicCollection( "last.fm", "last.fm" ) 
+{
+}
+
 LastFmServiceCollection::~LastFmServiceCollection()
 {
 }
