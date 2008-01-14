@@ -25,7 +25,6 @@
 #include "amarokconfig.h"
 #include "Collection.h"
 #include "CollectionManager.h"
-#include "lastfm.h"
 #include "Meta.h"
 
 #include <QImage>

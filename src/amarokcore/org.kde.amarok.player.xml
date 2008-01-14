@@ -111,9 +111,9 @@
       <arg type="s" direction="out"/>
       <arg name="path" type="s" direction="in"/>
     </method>
-   <method name="lastfmStation" >
+   <!--<method name="lastfmStation" >
       <arg type="s" direction="out"/>
-    </method>
+    </method>-->
    <method name="configEqualizer" />
    <method name="enableOSD" >
       <arg name="enable" type="b" direction="in"/>

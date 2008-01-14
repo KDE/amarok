@@ -32,7 +32,6 @@
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
-#include "lastfm.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/Meta.h"
@@ -250,10 +249,11 @@ namespace Amarok
         return track ? track->cachedLyrics() : QString();
     }
 
-    QString DbusPlayerHandler::lastfmStation()
-    {
-       return LastFm::Controller::stationDescription(); //return QString::null if not playing
-    }
+    // TODO: reimplement via last.fm service
+    //QString DbusPlayerHandler::lastfmStation()
+    //{
+    //   return LastFm::Controller::stationDescription(); //return QString::null if not playing
+    //}
 
     QString DbusPlayerHandler::nowPlaying()
     {

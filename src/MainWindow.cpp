@@ -31,7 +31,6 @@
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
-#include "lastfm.h"           //check credentials when adding lastfm streams
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
@@ -556,7 +555,8 @@ void MainWindow::slotAddStream() //SLOT
     The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
 
-
+// TODO: need to add these menu items via last.fm service
+#if 0
 void MainWindow::playLastfmPersonal() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
@@ -661,7 +661,7 @@ void MainWindow::addLastfmGlobaltag() //SLOT
 
     The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
-
+#endif
 
 void MainWindow::playAudioCD() //SLOT
 {
@@ -897,6 +897,8 @@ void MainWindow::createActions()
     rescan->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
     ac->addAction( "rescan_collection", rescan );
 
+    // TODO: Add these via last.fm service
+#if 0
     m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
                  << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
@@ -935,6 +937,7 @@ void MainWindow::createActions()
     addLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
     addLastfmMenu->addMenu( addTagRadioMenu );
     ac->addAction( "lastfm_add", addLastfm );
+#endif
 
     KAction *previous = new KAction( this );
     previous->setIcon( KIcon("media-skip-backward-amarok") );

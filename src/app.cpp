@@ -40,7 +40,6 @@ email                : markey@web.de
 #include "pluginmanager.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
-#include "scrobbler.h"
 #include "ContextStatusBar.h"
 #include "systray.h"
 #include "threadmanager.h"
@@ -582,7 +581,6 @@ void App::applySettings( bool firstTime )
     //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
     //TrackToolTip::instance()->removeFromWidget( m_tray );
 #endif
-    Scrobbler::instance()->applySettings();
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
 #ifndef Q_WS_MAC

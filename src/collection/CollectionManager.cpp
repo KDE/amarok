@@ -26,9 +26,7 @@
 #include "MetaQueryBuilder.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
-//#include "meta/lastfm/LastFmMeta.h"
 #include "pluginmanager.h"
-#include "scrobbler.h"
 #include "SqlStorage.h"
 
 #include <QtAlgorithms>

@@ -20,7 +20,6 @@
 #include "collection/CollectionManager.h"
 #include "debug.h"
 #include "enginebase.h"
-#include "lastfm.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/Meta.h"
@@ -518,7 +517,8 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 
 void EngineController::pause() //SLOT
 {
-    if ( m_engine->loaded() && !LastFm::Controller::instance()->isPlaying() )
+    // TODO: will need to re-implement last.fm check!
+    if ( m_engine->loaded() /*&& !LastFm::Controller::instance()->isPlaying()*/ )
         m_engine->pause();
 }
 

@@ -37,6 +37,8 @@
 #include <KIO/Job>
 #include <KMessageBox>
 
+#include <QTimer>
+
 #include <unistd.h>
 
 MediaDevice::MediaDevice()
@@ -463,7 +465,7 @@ MediaDevice::connectDevice( bool silent )
     if( m_syncStats )
     {
         syncStatsFromDevice( 0 );
-        Scrobbler::instance()->m_submitter->syncComplete();
+        //Scrobbler::instance()->m_submitter->syncComplete();
     }
 
     // delete podcasts already played

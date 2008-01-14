@@ -24,8 +24,6 @@
 
 #include "debug.h"
 
-#include "lastfm.h"
-
 #include <QPointer>
 
 #include <KSharedPtr>

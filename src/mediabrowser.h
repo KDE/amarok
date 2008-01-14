@@ -21,7 +21,6 @@
 #include "Meta.h"
 #include "pluginmanager.h"
 #include "plugin/plugin.h"   //baseclass
-#include "scrobbler.h"       //SubmitItem
 
 #include <k3listview.h>       //baseclass
 #include <KHBox>

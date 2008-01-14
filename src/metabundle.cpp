@@ -61,7 +61,6 @@
 #include "metadata/m4a/mp4itunestag.h"
 #endif
 
-#include "lastfm.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
 
@@ -178,7 +177,6 @@ MetaBundle::MetaBundle()
         , m_tempSaveDigest( 0 )
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
-        , m_lastFmBundle( 0 )
         , m_isSearchDirty(true)
 {
     init();
@@ -212,7 +210,6 @@ MetaBundle::MetaBundle( const KUrl &url, bool noCache, TagLib::AudioProperties::
     , m_tempSaveDigest( 0 )
     , m_saveFileref( 0 )
     , m_podcastBundle( 0 )
-    , m_lastFmBundle( 0 )
     , m_isSearchDirty(true)
 {
     if ( exists() )
@@ -268,7 +265,6 @@ MetaBundle::MetaBundle( const QString& title,
         , m_tempSaveDigest( 0 )
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
-        , m_lastFmBundle( 0 )
 	, m_isSearchDirty(true)
 {
     if( title.count( '-' ) )
@@ -292,7 +288,6 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
 MetaBundle::~MetaBundle()
 {
     delete m_podcastBundle;
-    delete m_lastFmBundle;
 
     if( m_moodbar != 0 )
       delete m_moodbar;
@@ -356,11 +351,6 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_podcastBundle = 0;
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
-
-//    delete m_lastFmBundle; same as above
-    m_lastFmBundle = 0;
-    if( bundle.m_lastFmBundle )
-        setLastFmBundle( *bundle.m_lastFmBundle );
 
 	m_isSearchDirty = true;
     return *this;
@@ -701,14 +691,6 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     {
         delete m_podcastBundle;
         m_podcastBundle = 0;
-    }
-
-    if( bundle.m_lastFmBundle )
-        setLastFmBundle( *bundle.m_lastFmBundle );
-    else
-    {
-        delete m_lastFmBundle;
-        m_lastFmBundle = 0;
     }
 }
 
@@ -1376,15 +1358,6 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
     delete m_podcastBundle;
     m_podcastBundle = new PodcastEpisodeBundle;
     *m_podcastBundle = peb;
-}
-
-void
-MetaBundle::setLastFmBundle( const LastFm::Bundle &last )
-{
-    delete m_lastFmBundle;
-   // m_lastFmBundle = new LastFm::Bundle(last);
-   m_lastFmBundle = new LastFm::Bundle;
-   *m_lastFmBundle = last;
 }
 
 void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images ) const

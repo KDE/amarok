@@ -47,7 +47,6 @@
 #include <QPixmap>
 
 #include "scriptmanager.h"
-#include "scrobbler.h"
 #include "ContextStatusBar.h"
 #include "threadmanager.h"
 
@@ -297,8 +296,8 @@ CollectionDB::CollectionDB()
 
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
-    connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
-             this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
+    //connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
+    //         this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 
     // If we're supposed to monitor dirs for changes, make sure we run it once
     // on startup, since inotify can't inform us about old events
@@ -4345,8 +4344,8 @@ CollectionDB::similarArtists( const QString &artist, uint count )
     values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
                                  .arg( escapeString( artist ), randomFunc(), QString::number( count ) ) );
 
-    if ( values.isEmpty() )
-        Scrobbler::instance()->similarArtists( artist );
+    //if ( values.isEmpty() )
+    //    Scrobbler::instance()->similarArtists( artist );
 
     return values;
 }

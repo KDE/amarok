@@ -23,7 +23,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "lastfm.h"
 #include "Meta.h"
 
 #include <QImage>
@@ -47,7 +46,6 @@ class Track::Private : public QObject
         QString lastFmUri;
 
         QList<Meta::Observer*> observers;
-        WebService *service;
 
         QPixmap albumArt;
         QString artist;

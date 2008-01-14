@@ -22,6 +22,7 @@
 #include <KWindowSystem>
 
 #include <QCheckBox>
+#include <QDomNode>
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>

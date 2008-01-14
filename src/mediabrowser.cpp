@@ -39,7 +39,6 @@
 #include "pluginmanager.h"
 #include "AmarokProcess.h"
 #include "scriptmanager.h"
-#include "scrobbler.h"
 #include "searchwidget.h"
 #include "ContextStatusBar.h"
 #include "transferdialog.h"

@@ -45,9 +45,6 @@ namespace TagLib {
 }
 class PodcastEpisodeBundle;
 
-namespace LastFm {
-    class Bundle;
-}
 
 /**
  * @class MetaBundle
@@ -279,7 +276,6 @@ public: //accessors
     int fileType() const;  // returns a value from enum FileType
     bool exists() const; // true for everything but local files that aren't there
     PodcastEpisodeBundle *podcastBundle() const;
-    LastFm::Bundle *lastFmBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
     QString uniqueId() const;
@@ -327,7 +323,6 @@ public: //modifiers
     void setCompilation( int compilation );
     bool checkExists();
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
-    void setLastFmBundle( const LastFm::Bundle &last );
     void setUniqueId(); //uses database for lookup
     void setUniqueId( const QString &id ); //SEE COMMENT in .CPP
     const TagLib::ByteVector readUniqueIdHelper( TagLib::FileRef fileref ) const;
@@ -405,7 +400,6 @@ protected:
     TagLib::FileRef* m_saveFileref;
 
     PodcastEpisodeBundle *m_podcastBundle;
-    LastFm::Bundle *m_lastFmBundle;
 
     // The vars below are used to optimize search by storing
     // the full text to be searched. They are mutable, as they
@@ -524,7 +518,6 @@ inline QString MetaBundle::type() const
            : i18n( "Stream" );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
-inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
 
 inline QString MetaBundle::prettyUrl() const { return url().prettyUrl(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }

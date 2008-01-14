@@ -377,7 +377,6 @@ set(amaroklib_LIB_SRCS
     hintlineedit.cpp
     k3bexporter.cpp
     ktrm.cpp
-    lastfm.cpp
     MainWindow.cpp
     mediabrowser.cpp
     MediaItem.cpp
@@ -397,7 +396,6 @@ set(amaroklib_LIB_SRCS
     querybuilder.cpp
     refreshimages.cpp
     scriptmanager.cpp
-    scrobbler.cpp
     Sidebar.h
     SmartPlaylistEditor.cpp
     socketserver.cpp

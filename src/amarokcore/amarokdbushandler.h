@@ -67,7 +67,8 @@ class DbusPlayerHandler : public QObject
       virtual QString genre();
       virtual QString lyrics();
       virtual QString lyricsByPath( QString path );
-      virtual QString lastfmStation();
+      // TODO: reimplement via last.fm service
+      //virtual QString lastfmStation();
       virtual QString nowPlaying();
       virtual QString path();
       virtual QString title();

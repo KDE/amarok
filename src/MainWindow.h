@@ -76,6 +76,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
+        // TODO: reimplement with last.fm service
+#if 0
         void playLastfmPersonal();
         void addLastfmPersonal();
         void playLastfmNeighbor();
@@ -84,6 +86,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void addLastfmCustom();
         void playLastfmGlobaltag();
         void addLastfmGlobaltag();
+#endif
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();
