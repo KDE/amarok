@@ -146,7 +146,6 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.cpp
     configdialog/dialogs/EngineConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
-    configdialog/dialogs/LastfmConfig.cpp
     configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
@@ -157,7 +156,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/AppearanceConfig.ui
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
-    configdialog/dialogs/LastfmConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     EditCoverSearchDialog.ui

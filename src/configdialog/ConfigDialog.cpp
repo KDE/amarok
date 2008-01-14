@@ -26,7 +26,6 @@
 #include "CollectionConfig.h"
 #include "EngineConfig.h"
 #include "GeneralConfig.h"
-#include "LastfmConfig.h"
 #include "MediadeviceConfig.h"
 #include "OsdConfig.h"
 #include "PlaybackConfig.h"
@@ -50,7 +49,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* collection  = new CollectionConfig( this );
     ConfigDialogBase* engine      = new EngineConfig( this );
     ConfigDialogBase* general     = new GeneralConfig( this );
-    ConfigDialogBase* lastfm      = new LastfmConfig( this );
     ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
@@ -61,7 +59,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( playback,    i18n( "Playback" ), "preferences-desktop-sound-amarok", i18n( "Configure Playback" ) );
     addPage( engine,      i18n( "Engine" ), "amarok-amarok", i18n( "Configure Engine" ) );
     addPage( osd,         i18n( "OSD" ), "preferences-desktop-display-amarok", i18n( "Configure On-Screen-Display" ) );
-    addPage( lastfm,      i18n( "last.fm" ), "audioscrobbler-amarok", i18n( "Configure last.fm Support" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( mediadevice, i18n( "Media Devices" ), "multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
     addPage( services,    i18n( "Services" ), "get-hot-new-stuff-amarok", i18n( "Configure Services" ) );
