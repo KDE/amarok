@@ -37,6 +37,7 @@
 #include <KPushButton>
 #include <KVBox>
 #include <Solid/Device>
+#include <Solid/StorageAccess>
 
 #include <QFile>
 #include <QGroupBox>
@@ -469,7 +470,6 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
     setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     setSpacing( 5 );
 
-    const QString labelTextNone = i18n( "(none)" );
     QString row = "<tr><td>%1</td><td>%2</td></tr>";
     QString table;
     int deviceType = MediaDeviceCache::instance()->deviceType( m_udi );
@@ -499,6 +499,12 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
                 if( !device.parent().product().isEmpty() )
                     table += row.arg( Qt::escape( i18n( "Product:" ) ),
                         Qt::escape( device.parent().product() ) );
+                Solid::StorageAccess *sa = device.as<Solid::StorageAccess>();
+                if( sa )
+                    table += row.arg( Qt::escape( i18n( "Mount Point:" ) ),
+                            ( sa->isAccessible() ?
+                                Qt::escape( sa->filePath() ) :
+                                Qt::escape( i18n( "Not Mounted" ) ) ) );
             } 
         }
     }

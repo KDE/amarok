@@ -91,7 +91,7 @@ MediaDeviceCache::refreshCache()
             if( ssa->isAccessible() )
             {
                 m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
-                m_name[device.udi()] = device.parent().vendor() + " - " + device.parent().product();
+                m_name[device.udi()] = ssa->filePath();
             }
             else
             {
@@ -119,6 +119,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     Solid::Device device( udi );
     debug() << "Found new Solid device with udi = " << device.udi();
     debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+    Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
@@ -129,19 +130,19 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         debug() << "Storage drive found, will wait for the volume";
         return;
     }
-    else if( device.as<Solid::StorageAccess>() )
+    else if( ssa )
     {
         debug() << "volume is generic storage";
         if( !m_volumes.contains( device.udi() ) )
         {
-            connect( device.as<Solid::StorageAccess>(), SIGNAL( accessibilityChanged(bool, const QString&) ),
+            connect( ssa, SIGNAL( accessibilityChanged(bool, const QString&) ),
                 this, SLOT( slotAccessibilityChanged(bool, const QString&) ) );
             m_volumes.append( device.udi() );
         }
-        if( device.as<Solid::StorageAccess>()->isAccessible() )
+        if( ssa->isAccessible() )
         {
             m_type[udi] = MediaDeviceCache::SolidVolumeType;
-            m_name[udi] = device.parent().vendor() + " - " + device.parent().product();
+            m_name[udi] = ssa->filePath();
         }
         else
         {
@@ -194,7 +195,9 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
     {
         Solid::Device device( udi );
         m_type[udi] = MediaDeviceCache::SolidVolumeType;
-        m_name[udi] = device.parent().vendor() + " - " + device.parent().product();
+        Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
+        if( ssa )
+            m_name[udi] = ssa->filePath();
         emit deviceAdded( udi );
         return;
     }
