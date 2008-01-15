@@ -23,7 +23,7 @@ if title.empty?
     output += `dcop amarok player nowPlaying`.chomp
 else
     # Strip file extension
-    extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc"
+    extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc", ".ogg"
     ext = File.extname( title ).downcase
 
     if extensions.include?( ext )

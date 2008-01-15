@@ -15,6 +15,7 @@ MyDirLister::matchesFilter( const KFileItem &item ) const
         item.name().endsWith( ".m4v", Qt::CaseInsensitive ) || //for adding to iPod
         item.name().endsWith( ".m4b", Qt::CaseInsensitive ) || //for adding to iPod
         item.name().endsWith( ".ogg", Qt::CaseInsensitive ) ||
+        item.name().endsWith( ".oga", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".flac", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".wma", Qt::CaseInsensitive );
 }
