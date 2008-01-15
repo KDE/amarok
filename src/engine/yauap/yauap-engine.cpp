@@ -504,7 +504,7 @@ yauapEngine::load( const KURL &url, bool isStream )
     Engine::Base::load( url, isStream || url.protocol() == "http" );
     change_state(Engine::Idle);
 
-    if (!con->call("load", DBUS_TYPE_STRING, &curl, DBUS_TYPE_INVALID))
+    if (!curl || !con->call("load", DBUS_TYPE_STRING, &curl, DBUS_TYPE_INVALID))
         return false;
 
     loaded_url = url;
