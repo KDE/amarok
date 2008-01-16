@@ -37,11 +37,13 @@ public:
     {
         const QStringList text = (*this).split( QRegExp( "%\\d+" ), QString::KeepEmptyParts );
 
-        QList<QString>::ConstIterator itrText = text.begin();
-        QList<QString>::ConstIterator itrArgs = args.begin();
+        QList<QString>::ConstIterator itrText = text.constBegin();
+        QList<QString>::ConstIterator itrArgs = args.constBegin();
+        QList<QString>::ConstIterator endText = text.constEnd();
+        QList<QString>::ConstIterator endArgs = args.constEnd();
         QString merged = (*itrText);
         ++itrText;
-        while ( itrText != text.end() && itrArgs != args.end() )
+        while ( itrText != endText && itrArgs != endArgs )
         {
             merged += (*itrArgs) + (*itrText);
             ++itrText;

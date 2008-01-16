@@ -365,7 +365,8 @@ MoodServer::queueJob( MetaBundle *bundle )
 
     // Check if there's already a job in the queue for that URL
     Q3ValueList<ProcData>::iterator it;
-    for( it = m_jobQueue.begin(); it != m_jobQueue.end(); ++it )
+    Q3ValueList<ProcData>::const_iterator end = m_jobQueue.constEnd();
+    for( it = m_jobQueue.begin(); it != end; ++it )
       {
         if( (*it).m_url == bundle->url() )
           {

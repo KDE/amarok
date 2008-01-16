@@ -1084,7 +1084,7 @@ QueryBuilder::buildQuery( bool withDeviceidPlaceholder )
                 m_query += " AND tags.deviceid IN (";
                 oldForeachType( IdList, list )
                 {
-                    if ( it != list.begin() ) m_query += ',';
+                    if ( it != list.constBegin() ) m_query += ',';
                     m_query += QString::number( *it );
                 }
                 m_query += ')';

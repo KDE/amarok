@@ -48,8 +48,8 @@ RefreshImages::RefreshImages()
 {
     //"SELECT asin, locale, filename FROM amazon WHERE refetchdate > %1 ;"
     const QStringList staleImages = CollectionDB::instance()->staleImages();
-    QStringList::ConstIterator it = staleImages.begin();
-    QStringList::ConstIterator end = staleImages.end();
+    QStringList::ConstIterator it = staleImages.constBegin();
+    QStringList::ConstIterator end = staleImages.constEnd();
 
     while( it != end )
     {

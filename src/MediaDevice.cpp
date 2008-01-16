@@ -765,8 +765,8 @@ MediaDevice::transferFiles()
             setProgress( progress(), MediaBrowser::instance()->m_progress->maximum() + tracks.count() - 1 );
 
         QString playlist = transferredItem->m_playlistName;
-        for( Meta::TrackList::const_iterator it = tracks.begin();
-                it != tracks.end();
+        for( Meta::TrackList::const_iterator it = tracks.constBegin(), end = tracks.constEnd();
+                it != end;
                 ++it )
         {
             if( isCanceled() )
@@ -935,14 +935,14 @@ MediaDevice::transferFiles()
     if( unplayable.count() + existing.count() > 0 )
     {
         QString longMsg = i18n( "The following tracks were not transferred: ");
-        for( KUrl::List::Iterator it = existing.begin();
-                it != existing.end();
+        for( KUrl::List::ConstIterator it = existing.constBegin(), end = existing.constEnd();
+                it != end;
                 it++ )
         {
             longMsg += "<br>" + (*it).prettyUrl();
         }
-        for( KUrl::List::Iterator it = unplayable.begin();
-                it != unplayable.end();
+        for( KUrl::List::ConstIterator it = unplayable.constBegin(), end = unplayable.constEnd();
+                it != end;
                 it++ )
         {
             longMsg += "<br>" + (*it).prettyUrl();

@@ -764,8 +764,8 @@ void EditFilterDialog::slotDefault() // SLOT
         else if (m_actionCheck[1]->isChecked())
         {
             // at least one word
-            m_filterText += *(list.begin());
-            for ( QStringList::Iterator it = ++list.begin(); it != list.end(); ++it )
+            m_filterText += *(list.constBegin());
+            for ( QStringList::ConstIterator it = ++list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " OR " + *it;
         }
         else if (m_actionCheck[2]->isChecked())
@@ -776,7 +776,7 @@ void EditFilterDialog::slotDefault() // SLOT
         else if (m_actionCheck[3]->isChecked())
         {
             // exclude words
-            for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
+            for ( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " -" + *it;
         }
     }

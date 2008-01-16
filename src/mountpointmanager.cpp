@@ -586,7 +586,7 @@ void UrlUpdateJob::updateLabels( )
                 existingLabelids = " AND labelid NOT IN (";
                 oldForeach( labelids )
                 {
-                    if( it != labelids.begin() )
+                    if( it != labelids.constBegin() )
                         existingLabelids += ',';
                     existingLabelids += *it;
                 }
