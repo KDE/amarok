@@ -141,7 +141,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
     else {
         debug() << "recv() error, closing socket: " << sockfd;
         ::close( sockfd );
-        delete this;
+        deleteLater();
     }
 }
 

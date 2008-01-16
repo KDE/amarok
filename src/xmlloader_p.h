@@ -50,7 +50,7 @@ class MetaBundle::XmlLoader::ThreadedLoader: public QThread
                     QApplication::postEvent( m_target, new BundleLoadedEvent( loader.m_lastError ) );
             }
 
-            delete this;
+            deleteLater();
         }
 };
 
