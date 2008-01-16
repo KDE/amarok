@@ -967,7 +967,7 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
 //     const QStringList values = CollectionDB::instance()->query( sql.arg( CollectionDB::likeCondition( item->album() ) ) );
 // 
 //     KUrl::List urls;
-//     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
+//     for( QStringList::ConstIterator it = values.constBegin(), end = values.constEnd(); it != end; ++it )
 //         urls += *it;
 // 
 //     QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );

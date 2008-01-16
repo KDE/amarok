@@ -91,10 +91,11 @@ CollectionSetup::writeConfig()
     //subdirectories of the selected directories
     if ( recursive() )
     {
-        for ( QStringList::iterator it=m_dirs.begin(); it!=m_dirs.end(); ++it )
+        for ( QStringList::ConstIterator it=m_dirs.constBegin(), end = m_dirs.constEnd(); it!=end; ++it )
         {
-            QStringList::iterator jt=m_dirs.begin();
-            while ( jt!=m_dirs.end() )
+            QStringList::Iterator jt=m_dirs.begin();
+            QStringList::ConstIterator dirsEnd = m_dirs.constEnd();
+            while ( jt!=dirsEnd )
             {
                 if ( it==jt )
                 {
@@ -211,7 +212,8 @@ Item::stateChange( bool b )
         if ( CollectionSetup::instance()->recursive() )
         {
             QStringList::Iterator diriter = cs_m_dirs.begin();
-            while ( diriter != cs_m_dirs.end() )
+            QStringList::ConstIterator end = cs_m_dirs.constEnd();
+            while ( diriter != end )
             {
                 // Since the dir "/" starts with '/', we need a hack to stop it removing
                 // itself (it being the only path with a trailing '/')
@@ -233,7 +235,8 @@ Item::stateChange( bool b )
         if ( it != cs_m_dirs.end() )
             cs_m_dirs.erase( it );
         QStringList::Iterator diriter = cs_m_dirs.begin();
-        while ( diriter != cs_m_dirs.end() )
+        QStringList::ConstIterator end = cs_m_dirs.constEnd();
+        while ( diriter != end )
         {
             if ( (*diriter).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )   //path(1) adds a trailing '/'
             {
@@ -266,7 +269,7 @@ Item::activate()
 void
 Item::newItems( const KFileItemList &list ) //SLOT
 {
-    for( KFileItemList::const_iterator it = list.begin(); it != list.end(); ++it )
+    for( KFileItemList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
     {
         //Fully disable (always appears off and grayed-out) if it is "/proc", "/sys" or
         //"/dev" or one of their children. This is because we will never scan them, so we
@@ -303,7 +306,8 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
     // Figure out if a child folder is activated
-    for ( QStringList::const_iterator iter = cs_m_dirs.begin(); iter != cs_m_dirs.end();
+    for ( QStringList::ConstIterator iter = cs_m_dirs.constBegin(), end = cs_m_dirs.constEnd();
+            iter != end;
             ++iter )
         if ( ( *iter ).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )
             if ( *iter != "/" ) // "/" should not match as a child of "/"
