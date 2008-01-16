@@ -176,7 +176,7 @@ TagDialog::previousTrack()
 //     {
         storeTags( *m_currentURL );
 
-        if( m_currentURL != m_urlList.begin() )
+        if( m_currentURL != m_urlList.constBegin() )
             --m_currentURL;
         loadTags( *m_currentURL );
         enableItems();
@@ -240,7 +240,7 @@ void
 TagDialog::enableItems()
 {
     checkBox_perTrack->setChecked( m_perTrack );
-    pushButton_previous->setEnabled( m_perTrack && m_currentURL != m_urlList.begin() );
+    pushButton_previous->setEnabled( m_perTrack && m_currentURL != m_urlList.constBegin() );
     KUrl::List::ConstIterator next = m_currentURL;
     ++next;
     pushButton_next->setEnabled( m_perTrack && next != m_urlList.end());
@@ -893,7 +893,7 @@ TagDialog::readMultipleTracks()
 
     //Check which fields are the same for all selected tracks
     const KUrl::List::ConstIterator end = m_urlList.end();
-    KUrl::List::ConstIterator it = m_urlList.begin();
+    KUrl::List::ConstIterator it = m_urlList.constBegin();
 
     m_bundle = MetaBundle();
 
@@ -1027,8 +1027,8 @@ TagDialog::getCommonLabels()
 {
     DEBUG_BLOCK
     QMap<QString, int> counterMap;
-    const KUrl::List::ConstIterator end = m_urlList.end();
-    KUrl::List::ConstIterator iter = m_urlList.begin();
+    const KUrl::List::ConstIterator end = m_urlList.constEnd();
+    KUrl::List::ConstIterator iter = m_urlList.constBegin();
     for(; iter != end; ++iter )
     {
         QStringList labels = labelsForURL( *iter );
@@ -1042,8 +1042,8 @@ TagDialog::getCommonLabels()
     }
     int n = m_urlList.count();
     QStringList result;
-    QMap<QString, int>::ConstIterator counterEnd( counterMap.end() );
-    for(QMap<QString, int>::ConstIterator it = counterMap.begin(); it != counterEnd; ++it )
+    QMap<QString, int>::ConstIterator counterEnd( counterMap.constEnd() );
+    for(QMap<QString, int>::ConstIterator it = counterMap.constBegin(); it != counterEnd; ++it )
     {
         if ( it.value() == n )
             result.append( it.key() );
@@ -1301,22 +1301,22 @@ TagDialog::saveTags()
         storeTags();
     }
 
-    QMap<QString, float>::ConstIterator endScore( storedScores.end() );
-    for(QMap<QString, float>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
+    QMap<QString, float>::ConstIterator endScore( storedScores.constEnd() );
+    for(QMap<QString, float>::ConstIterator it = storedScores.constBegin(); it != endScore; ++it ) {
         CollectionDB::instance()->setSongPercentage( it.key(), it.value() );
     }
-    QMap<QString, int>::ConstIterator endRating( storedRatings.end() );
-    for(QMap<QString, int>::ConstIterator it = storedRatings.begin(); it != endRating; ++it ) {
+    QMap<QString, int>::ConstIterator endRating( storedRatings.constEnd() );
+    for(QMap<QString, int>::ConstIterator it = storedRatings.constBegin(); it != endRating; ++it ) {
         CollectionDB::instance()->setSongRating( it.key(), it.value() );
     }
-    QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
-    for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
+    QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.constEnd() );
+    for(QMap<QString, QString>::ConstIterator it = storedLyrics.constBegin(); it != endLyrics; ++it ) {
         CollectionDB::instance()->setLyrics( it.key(), it.value(),
                CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ) );
         emit lyricsChanged( it.key() );
     }
-    QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
-    for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
+    QMap<QString, QStringList>::ConstIterator endLabels( newLabels.constEnd() );
+    for(QMap<QString, QStringList>::ConstIterator it = newLabels.constBegin(); it != endLabels; ++it ) {
         CollectionDB::instance()->setLabels( it.key(), it.value(),
                 CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ), CollectionDB::typeUser );
     }
@@ -1331,8 +1331,8 @@ TagDialog::applyToAllTracks()
 {
     generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->toPlainText() ) );
 
-    const KUrl::List::ConstIterator end = m_urlList.end();
-    for ( KUrl::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
+    const KUrl::List::ConstIterator end = m_urlList.constEnd();
+    for ( KUrl::List::ConstIterator it = m_urlList.constBegin(); it != end; ++it ) {
 
         /* we have to update the values if they changed, so:
            1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
@@ -1403,11 +1403,13 @@ TagDialog::applyToAllTracks()
 
         QStringList tmpLabels = labelsForURL( *it );
         //apply delta
-        for( QStringList::Iterator iter = m_removedLabels.begin(); iter != m_removedLabels.end(); ++iter )
+        QStringList::ConstIterator end = m_removedLabels.constEnd();
+        for( QStringList::Iterator iter = m_removedLabels.begin(); iter != end; ++iter )
         {
             tmpLabels.erase( iter );
         }
-        for( QStringList::Iterator iter = m_addedLabels.begin(); iter != m_addedLabels.end(); ++iter )
+        end = m_addedLabels.constEnd();
+        for( QStringList::Iterator iter = m_addedLabels.begin(); iter != end; ++iter )
         {
             if( tmpLabels.indexOf( *iter ) == tmpLabels.indexOf( *tmpLabels.end() ) )
                 tmpLabels.append( *iter );
@@ -1431,8 +1433,8 @@ TagDialog::labelListFromText( const QString &text )
         }
     }
     QStringList result;
-    QMap<QString, int>::ConstIterator endMap( map.end() );
-    for(QMap<QString, int>::ConstIterator it = map.begin(); it != endMap; ++it ) {
+    QMap<QString, int>::ConstIterator endMap( map.constEnd() );
+    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it ) {
         result.append( it.key() );
     }
     return result;
@@ -1539,8 +1541,8 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
           m_failCount    ( 0 )
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.end();
-    for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.begin(); it != end; ++it ) {
+    QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.constEnd();
+    for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.constBegin(); it != end; ++it ) {
         MetaBundle mb = it.value();
         m_tags += mb;
     }

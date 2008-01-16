@@ -325,8 +325,9 @@ ManualDeviceAdder::ManualDeviceAdder()
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
     m_mdaCombo = new KComboBox( false, vbox1 );
     m_mdaCombo->setObjectName( "m_mdacombo" );
-    for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
-            it != MediaBrowser::instance()->getPlugins().end();
+    KService::List::ConstIterator end = MediaBrowser::instance()->getPlugins().constEnd();
+    for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().constBegin();
+            it != end;
             ++it )
         m_mdaCombo->addItem( (*it)->name() );
     if( m_mdaCombo->count() > 0 )
@@ -546,8 +547,9 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
     else
     {
         m_pluginCombo->addItem( i18n( "Do not handle" ) );
-        for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
-                it != MediaBrowser::instance()->getPlugins().end();
+        KService::List::ConstIterator end = MediaBrowser::instance()->getPlugins().constEnd();
+        for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().constBegin();
+                it != end;
                 ++it ){
             m_pluginCombo->addItem( (*it)->name() );
             if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config.readEntry( m_udi, QString() ) )
