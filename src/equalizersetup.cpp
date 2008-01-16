@@ -427,8 +427,8 @@ EqualizerSetup::updatePresets(QString selectTitle)
 
     // Sort titles
     QStringList titles;
-    QMap< QString, QList<int> >::Iterator end = m_presets.end();
-    for ( QMap< QString, QList<int> >::Iterator it = m_presets.begin(); it != end; ++it )
+    QMap< QString, QList<int> >::ConstIterator end = m_presets.constEnd();
+    for ( QMap< QString, QList<int> >::ConstIterator it = m_presets.constBegin(); it != end; ++it )
         titles << it.key();
 
     titles.sort();
@@ -437,8 +437,8 @@ EqualizerSetup::updatePresets(QString selectTitle)
     int i = 0;
     int newIndex = -1;
     m_presetCombo->clear();
-    QStringList::Iterator titlesEnd = titles.end();
-    for ( QStringList::Iterator it = titles.begin(); it != titlesEnd; ++it ) {
+    QStringList::ConstIterator titlesEnd = titles.constEnd();
+    for ( QStringList::ConstIterator it = titles.constBegin(); it != titlesEnd; ++it ) {
         m_presetCombo->addItem( *it );
         if ( *it == selectTitle )
             newIndex = i;

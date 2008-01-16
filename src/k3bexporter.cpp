@@ -174,8 +174,8 @@ void K3bExporter::exportViaCmdLine( const KUrl::List &urls, int openmode )
     *process << cmdOption;
 
     KUrl::List::ConstIterator it;
-    KUrl::List::ConstIterator end( urls.end() );
-    for( it = urls.begin(); it != end; ++it )
+    KUrl::List::ConstIterator constEnd( urls.end() );
+    for( it = urls.constBegin(); it != end; ++it )
         *process << ( *it ).path();
 
     if( !process->start( K3Process::DontCare ) )

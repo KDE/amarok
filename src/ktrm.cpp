@@ -855,7 +855,8 @@ void KTRMLookup::finished()
 double stringSimilarity(QStringList &l, QString &s)
 {
     double max = 0, current = 0;
-    for ( QStringList::Iterator it = l.begin(); it != l.end(); ++it ) {
+    QStringList::ConstIterator end = l.constEnd();
+    for ( QStringList::ConstIterator it = l.constBegin(); it != end; ++it ) {
        if( max < (current = stringSimilarity((*it),s)))
             max = current;
     }

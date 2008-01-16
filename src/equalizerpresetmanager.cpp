@@ -90,8 +90,8 @@ EqualizerPresetManager::setPresets(QMap< QString, QList<int> > presets)
     m_presets = presets;
     m_presetsView->clear();
 
-    QMap< QString, QList<int> >::Iterator end = presets.end();
-    for ( QMap< QString, QList<int> >::Iterator it = presets.begin(); it != end; ++it )
+    QMap< QString, QList<int> >::ConstIterator end = presets.constEnd();
+    for ( QMap< QString, QList<int> >::ConstIterator it = presets.constBegin(); it != end; ++it )
         if ( it.key() != i18n( "Zero" ) && it.key() != i18n( "Manual" ) ) // Don't add 'Manual' and 'Zero'
             new K3ListViewItem( m_presetsView, it.key() );
 }

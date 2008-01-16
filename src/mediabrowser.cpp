@@ -226,7 +226,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_pluginAmarokName["ignore"] = i18n( "Do not handle" );
     // query available device plugins
     m_plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'mediadevice'" );
-    for( KService::List::ConstIterator it = m_plugins.begin(); it != m_plugins.end(); ++it ) {
+    KService::List::ConstIterator end = m_plugins.constEnd();
+    for( KService::List::ConstIterator it = m_plugins.constBegin(); it != end; ++it ) {
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-Amarok-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
@@ -270,8 +271,8 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     //TODO: If we will be supporting manually adding devices, probably need the following section
     /*m_haveDevices = false;
     QMap<QString,QString> savedDevices = Amarok::config( "MediaBrowser" ).entryMap();
-    for( QMap<QString,QString>::Iterator it = savedDevices.begin();
-            it != savedDevices.end();
+    for( QMap<QString,QString>::ConstIterator it = savedDevices.constBegin(), end = savedDevices.constEnd();
+            it != end;
             ++it )
     {
         if( it.data() != "deleted" && it.data() != "ignore" )
@@ -286,7 +287,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 bool
 MediaBrowser::blockQuit() const
 {
-    for( QList<MediaDevice *>::const_iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::ConstIterator it = m_devices.constBegin(), end = m_devices.constEnd();
             it != m_devices.end();
             ++it )
     {
@@ -374,7 +375,7 @@ void
 MediaBrowser::activateDevice( const MediaDevice *dev )
 {
     int index = 0;
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::ConstIterator it = m_devices.constBegin(), end = m_devices.constEnd();
             it != m_devices.end();
             it++ )
     {
@@ -466,8 +467,9 @@ MediaBrowser::removeDevice( MediaDevice *device )
 
     debug() << "remove device: type=" << device->type();
 
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
+    QList<MediaDevice *>::ConstIterator end = m_devices.constEnd();
+    for( QList<MediaDevice *>::Iterator it = m_devices.begin();
+            it != end;
             it++ )
     {
         if( *it == device )
@@ -547,8 +549,8 @@ bool
 MediaBrowser::deviceSwitch( const QString &name )
 {
     int index = 0;
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
+    for( QList<MediaDevice *>::ConstIterator it = m_devices.constBegin(), end = m_devices.constEnd();
+            it != end;
             it++ )
     {
         if( (*it)->name() == name )
@@ -644,7 +646,7 @@ MediaBrowser::prepareToQuit()
 {
     m_waitForTranscode = false;
     m_quitting = true;
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QList<MediaDevice *>::ConstIterator it = m_devices.constBegin(), end = m_devices.constEnd();
             it != m_devices.end();
             ++it )
     {
@@ -1028,7 +1030,7 @@ MediaBrowser::deviceAdded( const QString &udi )
     if( md )
     {
         addDevice( md );
-        if( m_currentDevice == *(m_devices.begin()) || m_currentDevice == *(m_devices.end()) )
+        if( m_currentDevice == *(m_devices.constBegin()) || m_currentDevice == *(m_devices.constEnd()) )
             activateDevice( m_devices.count()-1, false );
     }
 }
@@ -1036,8 +1038,8 @@ MediaBrowser::deviceAdded( const QString &udi )
 void
 MediaBrowser::deviceRemoved( const QString &udi )
 {
-    for( QList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
+    for( QList<MediaDevice *>::ConstIterator it = m_devices.constBegin(), end = m_devices.constEnd();
+            it != end;
             it++ )
     {
         if( (*it)->m_udi == udi )
@@ -1364,8 +1366,8 @@ MediaView::setFilter( const QString& /* &filter */, MediaItem* /* *parent */ )
             {
                 bool match = true;
                 QStringList list = filter.split( " ", QString::SkipEmptyParts );
-                for( QStringList::iterator i = list.begin();
-                        i != list.end();
+                for( QStringList::ConstIterator i = list.constBegin(), end = list.constEnd();
+                        i != end;
                         ++i )
                 {
                     if( !(*it).text(0).contains( *i ) )
@@ -1441,8 +1443,8 @@ MediaQueue::addUrl( const KUrl& url2, Meta::TrackPtr meta, const QString &playli
 //             return;
 //         }
 //
-//         for( BundleList::iterator it = playlist.bundles().begin();
-//                 it != playlist.bundles().end();
+//         for( BundleList::ConstIterator it = playlist.bundles().constBegin(), end = playlist.bundles().constEnd();
+//                 it != end;
 //                 ++it )
 //         {
 //             addUrl( (*it).url(), 0, name );
@@ -1564,8 +1566,8 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
 void
 MediaQueue::addUrls( const KUrl::List urls, const QString &playlistName )
 {
-    KUrl::List::ConstIterator it = urls.begin();
-    for ( ; it != urls.end(); ++it )
+    KUrl::List::ConstIterator it = urls.constBegin(), end = urls.constEnd();
+    for ( ; it != end; ++it )
         addUrl( *it, Meta::TrackPtr(), playlistName );
 
     URLsAdded();
