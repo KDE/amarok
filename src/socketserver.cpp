@@ -193,7 +193,8 @@ Vis::Selector::Selector( QWidget *parent )
 
     const QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
 
-    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
+    QStringList::ConstIterator end = entries.constEnd();
+    for( QStringList::ConstIterator it = entries.constBegin(); it != end; ++it )
         new Item( this, "amarok_libvisual", *it, "libvisual" );
 
     resize( sizeHint() + QSize(20,0) );

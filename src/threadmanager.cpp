@@ -47,7 +47,7 @@ ThreadManager::~ThreadManager()
 {
     DEBUG_BLOCK
 
-    for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+    for( ThreadList::ConstIterator it = m_threads.constBegin(), end = m_threads.constEnd(); it != end; ++it )
     {
 #ifdef HAVE_INOTIFY
         // we don't delete the thread's job as amarok is gone
@@ -73,7 +73,7 @@ ThreadManager::jobCount( const QByteArray &name )
 {
     uint count = 0;
 
-    for( JobList::Iterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+    for( JobList::ConstIterator it = m_jobs.constBegin(), end = m_jobs.constEnd(); it != end; ++it )
         if ( name == (*it)->name() )
             count++;
 
@@ -146,7 +146,7 @@ ThreadManager::abortAllJobsNamed( const QByteArray &name )
 
     int count = 0;
 
-    for( JobList::Iterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+    for( JobList::ConstIterator it = m_jobs.constBegin(), end = m_jobs.constEnd(); it != end; ++it )
         if ( name == (*it)->name() ) {
             count++;
             (*it)->abort();
@@ -158,7 +158,7 @@ ThreadManager::abortAllJobsNamed( const QByteArray &name )
 ThreadManager::Thread*
 ThreadManager::gimmeThread()
 {
-    for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+    for( ThreadList::ConstIterator it = m_threads.constBegin(), end = m_threads.constEnd(); it != end; ++it )
         if ( !(*it)->isRunning() && (*it)->job() == 0 )
             return *it;
 
@@ -194,7 +194,7 @@ ThreadManager::event( QEvent *e )
         d << ": " << name;
         d << ". Jobs pending: " << jobCount( name );
 
-        for( JobList::ConstIterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+        for( JobList::ConstIterator it = m_jobs.constBegin(), end = m_jobs.constEnd(); it != end; ++it )
             if ( name == (*it)->name() ) {
                 thread->runJob( (*it) );
                 return true;

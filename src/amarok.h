@@ -244,7 +244,7 @@ namespace Amarok
  *         debug() << *it << endl;
  */
 #define oldForeach( x ) \
-    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
+    for( QStringList::ConstIterator it = x.constBegin(), end = x.constEnd(); it != end; ++it )
 
 /**
  * You can use this for lists that aren't QStringLists.
@@ -255,7 +255,7 @@ namespace Amarok
  *         debug() << *it.url() << endl;
  */
 #define oldForeachType( Type, x ) \
-    for( Type::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
+    for( Type::ConstIterator it = x.constBegin(), end = x.constEnd(); it != end; ++it )
 
 /**
  * Creates iterators of type @p Type.
@@ -266,7 +266,7 @@ namespace Amarok
  *         debug() << *it.url() << endl;
  */
 #define for_iterators( Type, x ) \
-    Type::ConstIterator it = x.begin(), end = x.end(), last = x.fromLast()
+    Type::ConstIterator it = x.constBegin(), end = x.constEnd(), last = x.fromLast()
 
 
 /// Update this when necessary

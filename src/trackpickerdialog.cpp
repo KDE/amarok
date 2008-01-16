@@ -75,8 +75,8 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
 #endif
 
     m_base->fileLabel->setText(name);
-    KTRMResultList::ConstIterator end( results.end() );
-    for(KTRMResultList::ConstIterator it = results.begin(); it != end; ++it)
+    KTRMResultList::ConstIterator end( results.constEnd() );
+    for(KTRMResultList::ConstIterator it = results.constBegin(); it != end; ++it)
         new TrackPickerItem(m_base->trackList, *it);
 //     for( int j = 0; j < 5; j++ ) {
 //             m_base->trackList->adjustColumn( j );

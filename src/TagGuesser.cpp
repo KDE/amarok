@@ -216,8 +216,8 @@ TagGuesser::TagGuesser( const QString &absFileName )
 void TagGuesser::loadSchemes()
 {
     const QStringList schemes = schemeStrings();
-    QStringList::ConstIterator it = schemes.begin();
-    QStringList::ConstIterator end = schemes.end();
+    QStringList::ConstIterator it = schemes.constBegin();
+    QStringList::ConstIterator end = schemes.constEnd();
     for ( ; it != end; ++it )
         m_schemes += FileNameScheme( *it );
 }
@@ -226,8 +226,8 @@ void TagGuesser::guess( const QString &absFileName )
 {
     m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString();
 
-    FileNameScheme::List::ConstIterator it = m_schemes.begin();
-    FileNameScheme::List::ConstIterator end = m_schemes.end();
+    FileNameScheme::List::ConstIterator it = m_schemes.constBegin();
+    FileNameScheme::List::ConstIterator end = m_schemes.constEnd();
     for ( ; it != end; ++it ) {
         const FileNameScheme schema( *it );
         if( schema.matches( absFileName ) ) {

@@ -1363,7 +1363,7 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
 void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images ) const
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
-    oldForeachType( TagLib::ID3v2::FrameList, l ) {
+    for( TagLib::ID3v2::FrameList::Iterator it = l.begin(), end = l.end(); it != end; ++it ) {
         debug() << "Found APIC frame";
         TagLib::ID3v2::AttachedPictureFrame *ap = static_cast<TagLib::ID3v2::AttachedPictureFrame*>( *it );
 

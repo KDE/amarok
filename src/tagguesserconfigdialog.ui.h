@@ -42,8 +42,8 @@ void TagGuesserConfigDialog::init()
     bMoveDown->setIconSet( SmallIconSet( "1downarrow" ) );
 
     const QStringList schemes = TagGuesser::schemeStrings();
-    QStringList::ConstIterator it = schemes.begin();
-    QStringList::ConstIterator end = schemes.end();
+    QStringList::ConstIterator it = schemes.constBegin();
+    QStringList::ConstIterator end = schemes.constEnd();
     for ( ; it != end; ++it ) {
         K3ListViewItem *item = new K3ListViewItem( lvSchemes, *it );
         item->moveItem( lvSchemes->lastItem() );

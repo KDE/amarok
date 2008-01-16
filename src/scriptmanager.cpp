@@ -808,7 +808,8 @@ ScriptManager::ensureScoreScriptRunning()
         return def;
 
     const QStringList scripts = scoreScripts();
-    for( QStringList::const_iterator it = scripts.begin(), end = scripts.end(); it != end; ++it )
+    QStringList::ConstIterator end = scripts.constEnd();
+    for( QStringList::ConstIterator it = scripts.constBegin(); it != end; ++it )
         if( runScript( *it, true ) )
             return *it;
 
