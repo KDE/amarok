@@ -21,7 +21,7 @@
 #include "UnicornCommonMac.h"
 
 #include <QDir>
-
+#include <QString>
 #include <Carbon/Carbon.h>
 
 namespace UnicornUtils
@@ -31,8 +31,6 @@ namespace UnicornUtils
 QString
 applicationSupportFolderPath()
 {
-    std::string outString;
-
     OSErr err;
 
     short vRefNum = 0;
@@ -65,9 +63,7 @@ applicationSupportFolderPath()
     if ( err != noErr )
         return "";
 
-    // ...and copy this into the result.
-    outString = (const char*)path;
-    return QDir::homePath() + QString::fromStdString( outString );
+    return QDir::homePath() + QString::fromUtf8(reinterpret_cast<char *>(path));
 }
 
 

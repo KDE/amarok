@@ -26,6 +26,23 @@
 #include <strings.h>
 #include <wchar.h>
 
+#ifdef __APPLE__
+int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
+{
+     int i;
+
+     for (i = 0;
+	  s1[i] != L'\0' && s2[i] != L'\0';
+	  i++) {
+	  wint_t x = towlower(s1[i]);
+	  wint_t y = towlower(s2[i]);
+	  if (x != y)
+	       return x - y;
+     }
+     return towlower(s1[i]) - towlower(s2[i]);
+}
+#endif
+
 
 bool
 CheckExtensionImpl(const char *fileName, const char *extension)

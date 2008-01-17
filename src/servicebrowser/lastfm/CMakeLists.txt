@@ -103,7 +103,9 @@
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
-
+        if (APPLE)
+          target_link_libraries(amarok_service_lastfm /System/Library/Frameworks/SystemConfiguration.framework)
+        endif (APPLE)
 
         install(TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 
