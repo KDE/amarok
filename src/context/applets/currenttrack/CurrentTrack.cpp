@@ -56,12 +56,13 @@ void CurrentTrack::init()
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
 
-    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ), this );
+
+    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ) , this );
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
     m_scoreLabel = new QGraphicsSimpleTextItem( i18n( "Score:" ), this );
     m_numPlayedLabel = new QGraphicsSimpleTextItem( i18n( "Played:" ), this );
-    m_playedLastLabel = new QGraphicsSimpleTextItem( i18n( "Played Last:" ), this );
+    m_playedLastLabel = new QGraphicsSimpleTextItem(i18n( "Played Last:" ), this );
     
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
@@ -120,19 +121,22 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
-    m_titleLabel->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "tracklabel" ) ) );
-    m_artistLabel->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artistlabel" ) ) );
-    m_albumLabel->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "albumlabel" ) ) );
-    m_scoreLabel->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "scorelabel" ) ) );
-    m_numPlayedLabel->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayedlabel" ) ) );
-    m_playedLastLabel->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlastlabel" ) ) );
-    
+
     m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
     m_artist->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artist" ) ) );
     m_album->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "album" ) ) );
     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
+    
+    m_titleLabel->setFont( m_title->font() );
+    m_artistLabel->setFont( m_artist->font() );
+    m_albumLabel->setFont( m_album->font() );
+    m_scoreLabel->setFont( m_score->font() );
+    m_numPlayedLabel->setFont( m_numPlayed->font());
+    m_playedLastLabel->setFont( m_playedLast->font() );
+    
+
 
     QPixmap cover = m_albumCover->pixmap();
     if( !cover.isNull() )
@@ -269,8 +273,8 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
 {
     Q_UNUSED( text );
     int size = 12; // start here, shrink if needed
-    QFont font( QString(), size, QFont::Bold );
-    font.setStyleHint( QFont::Times );
+    QFont font( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     QFontMetrics fm( font );
@@ -287,10 +291,11 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
     
     // for aesthetics, we make it one smaller
     size--;
+
+    QFont returnFont( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
+    font.setStyleStrategy( QFont::PreferAntialias );
     
-    QFont returnFont( QString(), size, QFont::Bold );
-    returnFont.setStyleHint( QFont::Times );
-    returnFont.setStyleStrategy( QFont::PreferAntialias );
     return QFont( returnFont );
 }
 
