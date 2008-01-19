@@ -259,53 +259,9 @@
             </layout>
            </item>
            <item>
-            <widget class="QCheckBox" name="kcfg_OsdUseFakeTranslucency" >
+            <widget class="QCheckBox" name="kcfg_OsdUseTranslucency" >
              <property name="text" >
               <string>Make the &amp;background translucent</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="Q3GroupBox" name="osdText" >
-          <property name="title" >
-           <string>Display &amp;Text</string>
-          </property>
-          <property name="flat" >
-           <bool>false</bool>
-          </property>
-          <property name="frameShape" >
-           <enum>Q3GroupBox::GroupBoxPanel</enum>
-          </property>
-          <layout class="QVBoxLayout" >
-           <item>
-            <widget class="QCheckBox" name="kcfg_OsdUsePlaylistColumns" >
-             <property name="text" >
-              <string>Display the same information as the columns in the playlist</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="KTextEdit" name="kcfg_OsdText" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>16777215</width>
-               <height>100</height>
-              </size>
-             </property>
-             <property name="lineWidth" >
-              <number>2</number>
-             </property>
-             <property name="tabChangesFocus" >
-              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -426,11 +382,6 @@
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
-  </customwidget>
  </customwidgets>
  <includes>
   <include location="local" >osd.h</include>
@@ -476,22 +427,6 @@
    <signal>toggled(bool)</signal>
    <receiver>OsdConfig</receiver>
    <slot>useCustomColorsToggled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_OsdUsePlaylistColumns</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_OsdText</receiver>
-   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

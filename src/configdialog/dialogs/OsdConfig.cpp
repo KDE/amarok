@@ -84,14 +84,6 @@ OsdConfig::OsdConfig( QWidget* parent )
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
                 "<pre>%19</pre>"
             "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
-
-    kcfg_OsdText->setToolTip( text.args( QStringList()
-            // we don't translate these, it is not sensible to do so
-            << "%title"  << "%album"   << "%artist"  << "%genre"     << "%bitrate"
-            << "%year "  << "%length"  << "%track"   << "%filename"  << "%directory"
-            << "%type"   << "%comment" << "%score"   << "%playcount" << "%discnumber"
-            << "%rating" << "%moodbar" << "%elapsed"
-            << "%title {" + i18n( "Score: %1" ).arg( "%score" ) +'}' ) );
 }
 
 OsdConfig::~OsdConfig()
@@ -119,6 +111,7 @@ OsdConfig::updateSettings()
 {
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
+    AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 }
 
 

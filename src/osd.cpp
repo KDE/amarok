@@ -64,8 +64,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    // Fixme: we should reenable at some point..
-//     setWindowOpacity( 0.7 );
+    if( AmarokConfig::osdUseTranslucency() )
+        setWindowOpacity( 0.7 );
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
