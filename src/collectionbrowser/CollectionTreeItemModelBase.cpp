@@ -192,13 +192,13 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
     QString icon;
         switch( m_levelType[level] ) {
         case CategoryId::Album :
-            icon = "album";
+            icon = "view-media-album-amarok";
             break;
         case CategoryId::Artist :
-            icon = "artist";
+            icon = "view-media-artist-amarok";
             break;
         case CategoryId::Composer :
-            icon = "artist";
+            icon = "view-media-artist-amarok";
             break;
 
         case CategoryId::Genre :
