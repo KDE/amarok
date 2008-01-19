@@ -75,6 +75,7 @@ void
 OSDWidget::show( const QString &text, QImage newImage )
 {
     DEBUG_BLOCK
+    m_volume = false;
     if ( !newImage.isNull() )
     {
         m_cover = newImage;
@@ -82,6 +83,8 @@ OSDWidget::show( const QString &text, QImage newImage )
         int h = m_scaledCover.height();
         m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
+    else
+        m_cover = Amarok::icon();
 
     m_text = text;
     debug() << m_text;
@@ -185,16 +188,16 @@ OSDWidget::determineMetrics( const uint M )
 
         rect = tmpRect;
 
-	//TODO: Fix the blurred-ness of the icon. It's too small as is.
-	if( m_newvolume > 66 )
-	    m_cover = KIcon( "audio-volume-high" ).pixmap( 100, 100 ).toImage();
-	else if ( m_newvolume > 33 )
-	    m_cover = KIcon( "audio-volume-medium" ).pixmap( 100, 100 ).toImage();
-	else if ( m_newvolume > 0 )
-	    m_cover = KIcon( "audio-volume-low" ).pixmap( 100, 100 ).toImage();
-	else
-	    m_cover = KIcon( "audio-volume-muted" ).pixmap( 100, 100 ).toImage();
-	
+    //TODO: Fix the blurred-ness of the icon. It's too small as is.
+    if( m_newvolume > 66 )
+        m_cover = KIcon( "audio-volume-high" ).pixmap( 100, 100 ).toImage();
+    else if ( m_newvolume > 33 )
+        m_cover = KIcon( "audio-volume-medium" ).pixmap( 100, 100 ).toImage();
+    else if ( m_newvolume > 0 )
+        m_cover = KIcon( "audio-volume-low" ).pixmap( 100, 100 ).toImage();
+    else
+        m_cover = KIcon( "audio-volume-muted" ).pixmap( 100, 100 ).toImage();
+
     }
 
     if( m_rating )
