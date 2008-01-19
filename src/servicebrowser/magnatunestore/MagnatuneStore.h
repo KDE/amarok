@@ -175,7 +175,7 @@ private:
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
-    QPushButton *m_advancedFeaturesButton;
+    QPushButton *m_redownloadButton;
     QPushButton *m_updateListButton;
     QPushButton *m_purchaseAlbumButton;
     QPushButton *m_showInfoToggleButton;

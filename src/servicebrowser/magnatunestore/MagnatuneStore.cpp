@@ -148,43 +148,46 @@ void MagnatuneStore::purchase( )
 void MagnatuneStore::initTopPanel( )
 {
 
-    KHBox *hBox = new KHBox( m_topPanel);
-
-    m_advancedFeaturesButton = new QPushButton;
-    m_advancedFeaturesButton->setParent( hBox );
-    m_advancedFeaturesButton->setText( i18n( "Advanced" ) );
-    m_advancedFeaturesButton->setObjectName( "advancedButton" );
-    connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
-
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
 }
 
 void MagnatuneStore::initBottomPanel()
 {
-    m_bottomPanel->setMaximumHeight( 54 );
+    m_bottomPanel->setMaximumHeight( 72 );
 
 
-    KHBox *hBox = new KHBox( m_bottomPanel);
-    hBox->setMaximumHeight( 24 );
-    hBox->setSpacing( 2 );
+    KHBox *hBoxTop = new KHBox( m_bottomPanel);
+    KHBox *hBoxBottom = new KHBox( m_bottomPanel);
+    hBoxTop->setMaximumHeight( 36 );
+    hBoxTop->setSpacing( 2 );
+    hBoxBottom->setMaximumHeight( 36 );
+    hBoxBottom->setSpacing( 2 );
     //hBox->setMargin( 2 );
 
+    m_redownloadButton = new QPushButton;
+    m_redownloadButton->setParent( hBoxTop );
+    m_redownloadButton->setText( i18n( "Redownload" ) );
+    m_redownloadButton->setObjectName( "advancedButton" );
+    connect( m_redownloadButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
+
     m_purchaseAlbumButton = new QPushButton;
-    m_purchaseAlbumButton->setParent( m_bottomPanel );
+    m_purchaseAlbumButton->setParent( hBoxTop );
     m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
     m_purchaseAlbumButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
-    m_purchaseAlbumButton->setMaximumHeight( 24 );
+    //m_purchaseAlbumButton->setMaximumHeight( 30 );
 
     m_updateListButton = new QPushButton;
-    m_updateListButton->setParent( hBox );
+    m_updateListButton->setParent( hBoxBottom );
     m_updateListButton->setText( i18n( "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
+
+
     m_showInfoToggleButton = new QPushButton;
     m_showInfoToggleButton->setText( i18n( "Show Info" ) );
-    m_showInfoToggleButton->setParent( hBox );
+    m_showInfoToggleButton->setParent( hBoxBottom );
     m_showInfoToggleButton->setObjectName( "showInfoCheckbox" );
     m_showInfoToggleButton->setCheckable( true );
     m_showInfoToggleButton->setIcon( KIcon( "help-about-amarok" ) );
