@@ -64,7 +64,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    setWindowOpacity( 0.7 );
+    // Fixme: we should reenable at some point..
+//     setWindowOpacity( 0.7 );
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
@@ -474,12 +475,14 @@ OSDWidget::useMoodbar( void )
 #include <klocale.h>
 
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
-        : OSDWidget( parent, "osdpreview" )
+        : OSDWidget( parent )
         , m_dragging( false )
 {
+    setObjectName( "osdpreview" );
     m_text = i18n( "OSD Preview - drag to reposition" );
     m_duration = 0;
-    m_alignment = Center;
+    m_alignment = static_cast<Alignment>( AmarokConfig::osdAlignment() );
+    m_y = AmarokConfig::osdYOffset();
     m_cover = Amarok::icon();
     QFont f = font();
     f.setPointSize( 16 );
@@ -582,6 +585,8 @@ void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
     DEBUG_BLOCK
+    setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
+    setOffset( AmarokConfig::osdYOffset() );
     QString text = "";
     if( track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );

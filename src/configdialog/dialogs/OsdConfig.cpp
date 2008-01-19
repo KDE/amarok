@@ -117,6 +117,8 @@ OsdConfig::isDefault()
 void
 OsdConfig::updateSettings()
 {
+    AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->y() );
 }
 
 
