@@ -840,11 +840,9 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
 void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
 {
     QRectF trackRect = option->rect;
-    trackRect.setWidth( trackRect.width() - 2 );
 
-    painter->drawPixmap( 0, 0, getCachedSvg( "bodyleft", 1, trackRect.height() ) );
-    painter->drawPixmap( 1, 0, getCachedSvg( "body", trackRect.width(), trackRect.height() ) );
-    painter->drawPixmap( trackRect.width()+1, 0, getCachedSvg( "bodyright", 1, trackRect.height() ) );
+    painter->drawPixmap( 0, 0, getCachedSvg( "body", trackRect.width(), trackRect.height() ) );
+
 
     //draw alternate background if needed
     if ( alternate )
