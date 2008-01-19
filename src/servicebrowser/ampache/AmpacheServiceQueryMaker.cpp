@@ -242,7 +242,7 @@ void AmpacheServiceQueryMaker::fetchArtists()
             urlString += QString( "&filter=" + m_artistFilter );
         }
 
-        debug() << "Artist url: urlString";
+        debug() << "Artist url: " << urlString;
 
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
