@@ -42,6 +42,10 @@ namespace ShadowEngine
     QImage makeShadow( const QPixmap &textPixmap, const QColor &bgColor );
 }
 
+namespace Amarok
+{
+    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
+}
 
 #define MOODBAR_HEIGHT 20
 
@@ -88,7 +92,7 @@ OSDWidget::show( const QString &text, QImage newImage )
 
     m_text = text;
     debug() << m_text;
-    if( !isShown() )
+    if( !isVisible() )
         show();
 }
 
@@ -469,11 +473,6 @@ OSDWidget::useMoodbar( void )
 #include <kiconloader.h>
 #include <klocale.h>
 
-namespace Amarok
-{
-    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
-}
-
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         : OSDWidget( parent, "osdpreview" )
         , m_dragging( false )
@@ -482,6 +481,10 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     m_duration = 0;
     m_alignment = Center;
     m_cover = Amarok::icon();
+    QFont f = font();
+    f.setPointSize( 16 );
+    setFont( f );
+    show( m_text, m_cover );
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
@@ -627,10 +630,9 @@ Amarok::OSD::applySettings()
 void
 Amarok::OSD::forceToggleOSD()
 {
-    if ( !isShown() ) {
+    if ( !isVisible() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        //TODO port 2.0: fix this
         show( EngineController::instance()->currentTrack() );
         setEnabled( b );
     }
