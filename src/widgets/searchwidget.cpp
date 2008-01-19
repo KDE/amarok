@@ -50,6 +50,7 @@ void
 SearchWidget::init( QWidget *parent )
 {
     Q_UNUSED( parent )
+    setContentsMargins(0,0,0,0);
     KHBox *searchBox = new KHBox( this );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
@@ -62,6 +63,7 @@ SearchWidget::init( QWidget *parent )
                                 "Enter space-separated terms to search in the playlist." ) );
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
+    layout->setContentsMargins(0,0,0,0);
     setLayout( layout );
 
 //    m_filterButton = new KPushButton( "...", searchBox );
