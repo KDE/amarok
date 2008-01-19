@@ -85,7 +85,9 @@ void LyricsApplet::init()
 //     m_siteLabel->setText( i18n( "Site" ) + ':' );
 
     m_lyrics->setDefaultTextColor( Qt::white );
-    m_lyrics->setFont( KGlobalSettings::smallestReadableFont() );
+    QFont f = KGlobalSettings::smallestReadableFont();
+    f.setPointSize( f.pointSize() - 1 ); // The smallest is still too big..
+    m_lyrics->setFont( f );
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
 //     m_site->setBrush( QBrush( Qt::white ) );
