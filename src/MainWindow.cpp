@@ -149,30 +149,36 @@ void MainWindow::init()
         m_controlBar = new MainToolbar( this );
         m_controlBar->setMaximumSize( 20000, 62 );
         m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-
-        AnalyzerWidget *aw = new AnalyzerWidget( m_controlBar );
-        aw->setMinimumSize( 200, 30 );
-
-        m_controlBar->layout()->setAlignment( aw, Qt::AlignLeft );
+        m_controlBar->setContentsMargins(0,0,0,2);
+        m_controlBar->layout()->setContentsMargins(0,0,0,2);
 
         KVBox *aVBox     = new KVBox( m_controlBar );
         aVBox->setMaximumSize( 50000, 60 );
+        aVBox->setContentsMargins(0,0,0,0);
+        aVBox->layout()->setContentsMargins(0,0,0,0);
 
         KHBox *insideBox = new KHBox( aVBox );
         insideBox->setMaximumSize( 600000, 45 );
+        insideBox->setContentsMargins(0,0,0,0);
+        insideBox->layout()->setContentsMargins(0,0,0,0);
+
+        AnalyzerWidget *aw = new AnalyzerWidget( insideBox );
+        aw->setMinimumSize( 200, 30 );
+
+        insideBox->layout()->setAlignment( aw, Qt::AlignLeft );
 
         KToolBar *playerControlsToolbar = new Amarok::ToolBar( insideBox );
 
         playerControlsToolbar->setMinimumSize( 180, 45 );
         insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
 
-        QWidget * spacer = new QWidget( m_controlBar );
-        spacer->setMinimumSize( 50, 30 );
-        m_controlBar->layout()->setAlignment( spacer, Qt::AlignRight );
+//         QWidget * spacer = new QWidget( m_controlBar );
+//         spacer->setMinimumSize( 50, 30 );
+//         m_controlBar->layout()->setAlignment( spacer, Qt::AlignRight );
 
-        VolumeWidget *vw = new VolumeWidget( m_controlBar );
+        VolumeWidget *vw = new VolumeWidget( insideBox );
         vw->setMinimumSize( 150, 30 );
-        m_controlBar->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
+        insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
 
         ProgressWidget *pWidget = new ProgressWidget( aVBox );
         pWidget->setMinimumSize( 400, 17 );

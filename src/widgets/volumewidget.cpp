@@ -29,6 +29,7 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
+    setContentsMargins(0,0,0,0);
 
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 

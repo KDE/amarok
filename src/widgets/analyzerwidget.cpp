@@ -29,6 +29,7 @@ AnalyzerWidget::AnalyzerWidget( QWidget *parent )
 {
     setObjectName(  "AnalyzerWidget" );
     setToolTip( i18n( "Click for more analyzers" ) );
+    setContentsMargins(0,0,0,0);
     changeAnalyzer();
 }
 
