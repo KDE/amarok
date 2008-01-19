@@ -225,7 +225,6 @@ ScriptManager::~ScriptManager()
             runningScripts << key;
         }
     }
-
     // Save config
     KConfigGroup config = Amarok::config( "ScriptManager" );
     config.writeEntry( "Running Scripts", runningScripts );
@@ -236,6 +235,7 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Score category open", m_scoreCategory->isExpanded() );
     config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
     config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
+    config.sync();
     s_instance = 0;
 }
 
