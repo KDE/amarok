@@ -31,11 +31,11 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_lyricsLabel( 0 )
     , m_titleLabel( 0 )
     , m_artistLabel( 0 )
-    , m_siteLabel( 0 )
+//     , m_siteLabel( 0 )
     , m_lyrics( 0 )
     , m_title( 0 )
     , m_artist( 0 )
-    , m_site( 0 )
+//     , m_site( 0 )
 {
     Context::Theme::self()->setApplication( "amarok" );
     setHasConfigurationInterface( false );
@@ -56,11 +56,11 @@ void LyricsApplet::init()
     m_lyricsLabel = new QGraphicsSimpleTextItem( this );
     m_titleLabel = new QGraphicsSimpleTextItem( this );
     m_artistLabel = new QGraphicsSimpleTextItem( this );
-    m_siteLabel = new QGraphicsSimpleTextItem( this );
+//     m_siteLabel = new QGraphicsSimpleTextItem( this );
     m_lyrics = new QGraphicsTextItem( this );
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
-    m_site = new QGraphicsSimpleTextItem( this );
+//     m_site = new QGraphicsSimpleTextItem( this );
 
     QFont labelFont;
     labelFont.setBold( true );
@@ -80,15 +80,15 @@ void LyricsApplet::init()
     m_artistLabel->setFont( labelFont );
     m_artistLabel->setText( i18n( "Artist" ) + ':' );
 
-    m_siteLabel->setBrush( Qt::white );
-    m_siteLabel->setFont( labelFont );
-    m_siteLabel->setText( i18n( "Site" ) + ':' );
+//     m_siteLabel->setBrush( Qt::white );
+//     m_siteLabel->setFont( labelFont );
+//     m_siteLabel->setText( i18n( "Site" ) + ':' );
 
     m_lyrics->setDefaultTextColor( Qt::white );
     m_lyrics->setFont( KGlobalSettings::smallestReadableFont() );
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
-    m_site->setBrush( QBrush( Qt::white ) );
+//     m_site->setBrush( QBrush( Qt::white ) );
 }
 
 void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
@@ -109,12 +109,12 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
     m_titleLabel->setPos( m_header->elementRect( "artistlabel" ).topLeft() );
-    m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() );
+//     m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() );
 
     m_lyrics->setPos( m_header->elementRect( "lyrics" ).topLeft() );
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
-    m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
+//     m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
     
 }
 
@@ -152,9 +152,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "lyrics" ) )
     {
         QVariantList lyrics  = data[ "lyrics" ].toList();
-        m_title->setText( lyrics[ 0 ].toString() );
-        m_artist->setText( lyrics[ 1 ].toString() );
-        m_site->setText( lyrics[ 2 ].toString() );
+        m_title->setText( lyrics[ 1 ].toString() );
+        m_artist->setText( lyrics[ 0 ].toString() );
+//         m_site->setText( lyrics[ 2 ].toString() );
 
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
         m_lyrics->adjustSize();
@@ -174,12 +174,12 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
     m_titleLabel->setPos( m_header->elementRect( "artistlabel" ).topLeft() );
-    m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() );
+//     m_siteLabel->setPos( m_header->elementRect( "sitelabel" ).topLeft() );
 
     m_lyrics->setPos( m_header->elementRect( "lyrics" ).topLeft() );
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
-    m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
+//     m_site->setPos( m_header->elementRect( "lyricslyricssite" ).topLeft() );
 }
 
 void LyricsApplet::calculateHeight()
