@@ -592,7 +592,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         if( track->artist() )
             text = track->artist()->prettyName() + " - " + text;
         if( track->album() )
-            text += "\n (" + track->album()->prettyName() + ")";
+            text += "\n (" + track->album()->prettyName() + ") ";
         if( track->length() > 0)
             text += Meta::secToPrettyTime( track->length() );
     }
