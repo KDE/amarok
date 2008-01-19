@@ -94,7 +94,7 @@ Widget::Widget( QWidget* parent )
 
 
     { //START Playlist toolbar
-        plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+//         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
@@ -104,12 +104,15 @@ Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo") );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo") );
-        plBar->addSeparator();
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("repeat") ), plBar ) );
-        plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("random_mode") ), plBar ) );
-        plBar->addAction( new KToolBarSpacerAction( this ) );
-        plBar->addSeparator();
+//TODO: Re add when these work...
+//         plBar->addSeparator();
+
+// //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("repeat") ), plBar ) );
+// //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("random_mode") ), plBar ) );
+//         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
+        plBar->addAction( new KToolBarSpacerAction( this ) );
+
     } //END Playlist Toolbar
 
     layout->addWidget( new AmarokStatusBar( this ) );
