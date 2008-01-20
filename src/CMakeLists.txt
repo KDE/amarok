@@ -227,6 +227,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/PLSPlaylist.cpp
     meta/EditablePlaylistCapability.cpp
+    meta/MultiPlayableCapability.cpp
 )
 
 #####################################################################

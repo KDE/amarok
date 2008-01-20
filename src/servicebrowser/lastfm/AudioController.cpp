@@ -14,12 +14,14 @@
 #include "AudioController.h"
 #include "core/Radio.h"
 #include "enginecontroller.h"
+#include "LastFmService.h"
+#include "RadioAdapter.h"
 
 #include <KLocale>
 
 
 AudioController::AudioController( QObject *parent ) 
-    : QObject( parent )
+    : QObject( parent ), EngineObserver( EngineController::instance() )
 {
 }
 
@@ -71,7 +73,7 @@ AudioController::play( const TrackInfo &track )
 void 
 AudioController::stop() 
 {
-    EngineController::instance()->stop();
+    // do nothing, we ignore the radio's plea to stop and handle it elsewhere
 }
 
 
@@ -80,7 +82,7 @@ AudioController::loadNext()
 {
     if ( m_playlist == 0 )
     {
-        stop();
+        The::lastFmService()->radio()->stop();
     }
     else if ( m_playlist->hasMore() )
     {
@@ -90,8 +92,68 @@ AudioController::loadNext()
     else
     {
         emit error( Radio_OutOfPlaylist, i18n( "Radio playlist has ended." ) );
+    }
+}
 
-        stop();
+
+QString 
+AudioController::currentTrackUrl() const
+{
+    LastFm::TrackPtr track = The::lastFmService()->radio()->currentTrack();
+    return track ? track->url() : "";
+}
+
+
+void 
+AudioController::engineStateChanged( Engine::State currentState, Engine::State oldState )
+{
+    if( currentState != oldState )
+    {
+        switch( currentState )
+        {
+            case Engine::Empty:
+                emit stateChanged( State_Stopping );
+                emit stateChanged( State_Stopped );
+                break;
+
+            case Engine::Idle:
+                emit stateChanged( State_Stopped );
+                break;
+
+            case Engine::Playing:
+                emit stateChanged( State_Streaming );
+                break;
+
+            case Engine::Paused:
+                m_paused = true;
+                EngineController::instance()->stop();
+                break;
+        }
+    }
+}
+
+
+void 
+AudioController::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
+{
+    if( The::lastFmService()->radio()->currentTrack() )
+    {
+        emit trackEnded( m_currentTrackInfo, finalPosition );
+        if( reason == "stop" )
+            The::lastFmService()->radio()->stop();
+    }
+}
+
+
+void 
+AudioController::engineNewTrackPlaying()
+{
+    if( The::lastFmService()->radio()->currentTrack() )
+    {
+        if( Meta::TrackPtr::staticCast( The::lastFmService()->radio()->currentTrack() ) == EngineController::instance()->currentTrack() )
+            emit trackStarted( m_currentTrackInfo );
+        else
+            The::lastFmService()->radio()->stop();
     }
 }
 
@@ -99,4 +161,19 @@ AudioController::loadNext()
 void
 AudioController::playTrack( const TrackInfo &track )
 {
+    LastFm::TrackPtr lfmTrack = The::lastFmService()->radio()->currentTrack();
+    if( lfmTrack )
+    {
+        if( !m_currentTrackInfo.isEmpty() )
+        {
+            TrackInfo old = m_currentTrackInfo;
+            m_currentTrackInfo = track;
+            emit trackChanged( m_currentTrackInfo, old );
+        }
+        else
+        {
+            m_currentTrackInfo = track;
+        }
+        lfmTrack->setTrackInfo( track ); // will emit new playable url and kick off playback
+    }
 }

@@ -12,19 +12,71 @@
  ***************************************************************************/
 
 #include "RadioAdapter.h"
+#include "amarok.h"
 #include "core/Radio.h"
 #include "LastFmService.h"
+#include "LastFmSettings.h"
+#include "libUnicorn/WebService.h"
 
+#include "statusbar/AmarokStatusBar.h"
 
 RadioAdapter::RadioAdapter( QObject *parent, const QString &username, const QString &password )
-    : QObject( parent )
+    : QObject( parent ), m_radio( new Radio( this ) )
 {
-    m_radio = new Radio( this );
+    The::webService()->setUsername( username );
+    The::webService()->setPassword( password );
+    m_radio->init( username, password, APP_VERSION );
+
+    connect( m_radio, SIGNAL( error( RadioError, const QString& ) ), this, SLOT( error( RadioError, const QString& ) ) );
 }
 
 
 RadioAdapter::~RadioAdapter()
 {
+}
+
+
+void
+RadioAdapter::play( const LastFm::TrackPtr &track )
+{
+    if( track != m_currentTrack )
+    {
+        bool newStation = The::currentUser().resumeStation() != track->url();
+        m_currentTrack = track;
+        if( newStation || The::radio().state() != State_Stopped && The::radio().state() != State_Handshaken )
+            The::radio().playStation( track->url() );
+        else
+            The::radio().resumeStation();
+    }
+}
+
+
+void
+RadioAdapter::next()
+{
+    if( m_currentTrack )
+    {
+        The::audioController().loadNext();
+    }
+}
+
+
+void
+RadioAdapter::stop()
+{
+    if( m_currentTrack )
+    {
+        m_currentTrack->setTrackInfo( TrackInfo() ); // will emit an empty playable url, thus moving to next track in playlist
+        m_currentTrack = 0;
+    }
+}
+
+
+void
+RadioAdapter::error( RadioError errorCode, const QString& message )
+{
+    The::amarokStatusBar()->setMessage( message, KDE::StatusBar::Error );
+    stop();
 }
 
 

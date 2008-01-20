@@ -66,6 +66,7 @@ EngineController::EngineController()
         , m_lastFm( false )
         , m_positionOffset( 0 )
         , m_lastPositionOffset( 0 )
+        , m_multi( 0 )
 {
     m_voidEngine = m_engine = loadEngine( "void-engine" );
 
@@ -75,6 +76,8 @@ EngineController::EngineController()
 EngineController::~EngineController()
 {
     DEBUG_FUNC_INFO //we like to know when singletons are destroyed
+
+    delete m_multi;
 }
 
 
@@ -340,8 +343,24 @@ void EngineController::play() //SLOT
 void EngineController::play( const Meta::TrackPtr& track, uint offset )
 {
     DEBUG_BLOCK
+
+    delete m_multi;
     m_currentTrack = track;
-    KUrl url = track->playableUrl();
+    m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
+
+    if( m_multi )
+    {
+        connect( m_multi, SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
+        m_multi->fetchFirst();
+    }
+    else
+    {
+        playUrl( track->playableUrl(), offset );
+    }
+}
+
+void EngineController::playUrl( const KUrl &url, uint offset )
+{
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
     {
         if( m_engine->play( offset ) )
@@ -527,6 +546,10 @@ void EngineController::stop() //SLOT
 {
     //Reset failure counter as after stop, everything else is unrelated
     m_playFailureCount = 0;
+
+    // will need to get a new instance of multi if played again
+    delete m_multi;
+    m_multi = 0;
 
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack )
@@ -756,6 +779,27 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     }
 
     stateChangedNotify( newState );
+}
+
+void EngineController::trackDone()
+{
+    emit trackFinished(); 
+    if( m_multi )
+        m_multi->fetchNext();
+    else
+        next( false );
+}
+
+void EngineController::slotPlayableUrlFetched( const KUrl &url )
+{
+    if( url.isEmpty() )
+    {
+        next( false );
+    }
+    else
+    {
+        playUrl( url, 0 );
+    }
 }
 
 uint EngineController::trackPosition() const

@@ -25,6 +25,8 @@
 #include "amarokconfig.h"
 #include "Meta.h"
 
+#include "libUnicorn/TrackInfo.h"
+
 #include <QImage>
 #include <QList>
 #include <QPixmap>
@@ -34,7 +36,8 @@
 #include <kio/jobclasses.h>
 
 
-using namespace LastFm;
+namespace LastFm
+{
 
 class Track::Private : public QObject
 {
@@ -42,7 +45,7 @@ class Track::Private : public QObject
 
     public:
         Track *t;
-        KUrl proxyUrl;
+        QString trackPath;
         QString lastFmUri;
 
         QList<Meta::Observer*> observers;
@@ -71,7 +74,18 @@ class Track::Private : public QObject
                 observer->metadataChanged( t );
         }
 
+        void setTrackInfo( const TrackInfo &trackInfo )
+        {
+            artist = trackInfo.artist();
+            album = trackInfo.album();
+            track = trackInfo.track();
+            length = trackInfo.duration();
+            trackPath = trackInfo.path();
+            notifyObservers();
+        }
+
     public slots:
+
 #if 0
         void metaDataFinished( int /* id */, bool error )
         {
@@ -302,5 +316,7 @@ public:
 
     Track::Private * const d;
 };
+
+}
 
 #endif

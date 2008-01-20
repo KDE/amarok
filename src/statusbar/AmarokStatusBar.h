@@ -35,7 +35,7 @@ class QLabel;
  * The statusbar allows to show messages and progress
  * information.
  */
-class AmarokStatusBar : public KHBox
+class AMAROK_EXPORT AmarokStatusBar : public KHBox
 {
     Q_OBJECT
 

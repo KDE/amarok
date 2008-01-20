@@ -18,6 +18,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "MetaConstants.h"
+#include "meta/LastFmMeta.h"
 
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, const QString &password )
@@ -53,7 +54,9 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
         checkScrobble();
 
         Meta::TrackPtr track = EngineController::instance()->currentTrack();
-        if( track && track->playableUrl().protocol() == "file" ) // TODO: handle radio
+        bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
+        bool isLocal = track && track->playableUrl().protocol() == "file";
+        if( isLocal || isRadio )
         {
             m_current.timeStampMe();
 
@@ -67,7 +70,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
             // TODO: need to get music brainz id from somewhere
             // m_current.setMbId( );
 
-            m_current.setSource( TrackInfo::Player ); // TODO: handle radio
+            m_current.setSource( isRadio ? TrackInfo::Radio : TrackInfo::Player );
             m_current.setUsername( m_username );
 
             if( !m_current.isEmpty() )
@@ -104,6 +107,27 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 
 
 void
+ScrobblerAdapter::skip()
+{
+    m_current.setRatingFlag( TrackInfo::Skipped );
+}
+
+
+void
+ScrobblerAdapter::love()
+{
+    m_current.setRatingFlag( TrackInfo::Loved );
+}
+
+
+void
+ScrobblerAdapter::ban()
+{
+    m_current.setRatingFlag( TrackInfo::Banned );
+}
+
+
+void
 ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
 {
     debug() << "statusChanged: statusCode=" << statusCode;
@@ -122,7 +146,7 @@ void
 ScrobblerAdapter::checkScrobble()
 {
     // note: in the 1.2 protocol submits are always done at end of file
-    if( m_totalPlayed >= m_current.duration() * 1000 / 2 && !m_current.isEmpty() )
+    if( ( m_current.isSkippedLovedOrBanned() || m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isEmpty() )
     {
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
         m_manager->scrobble( m_current );

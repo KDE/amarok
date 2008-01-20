@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Shane King <kde@dontletsstart.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +24,8 @@
 #include "meta/Capability.h"
 
 #include <QObject>
+
+class TrackInfo;
 
 namespace LastFm
 {
@@ -87,6 +90,8 @@ namespace LastFm
 
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
+            void setTrackInfo( const TrackInfo &trackInfo );
+
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
         public slots:
@@ -94,11 +99,16 @@ namespace LastFm
             void ban();
             void skip();
 
+        // MultiPlayableCapability methods
+            void playCurrent();
+            void playNext();
+
         private:
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
     };
 
+    typedef KSharedPtr<Track> TrackPtr;
 }
 
 #endif

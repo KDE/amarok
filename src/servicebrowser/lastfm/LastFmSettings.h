@@ -38,7 +38,10 @@ public:
     void addRecentStation( const class Station& );
 
 protected:
-    KConfigGroup config;
+    KConfigGroup m_config;
+
+private:
+    StationUrl m_resumeStation;
 };
 
 class LastFmSettings : public LastFmUserSettings

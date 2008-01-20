@@ -24,42 +24,42 @@
 
 LastFmUserSettings::LastFmUserSettings()
 {
-    config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
+    m_config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
 }
 
 
 void 
 LastFmUserSettings::setDiscovery( bool discovery )
 {
-    config.writeEntry( "discovery", discovery );
+    m_config.writeEntry( "discovery", discovery );
 }
 
 
 bool 
 LastFmUserSettings::isDiscovery() const
 {
-    return config.readEntry( "discovery", false );
+    return m_config.readEntry( "discovery", false );
 }
 
 
 void 
 LastFmUserSettings::setResumeStation( StationUrl station )
 {
-    config.writeEntry( "resumestation", static_cast<QString>( station ) );
+    m_resumeStation = station; // don't save across sessions
 }
 
 
 StationUrl 
 LastFmUserSettings::resumeStation() const
 {
-    return StationUrl( config.readEntry( "resumestation", QString() ) );
+     return m_resumeStation; // don't save across sessions
 }
 
 
 void 
 LastFmUserSettings::addRecentStation( const class Station& )
 {
-    // todo
+    // TODO
 }
 
 

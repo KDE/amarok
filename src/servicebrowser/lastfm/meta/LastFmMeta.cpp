@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Shane King <kde@dontletsstart.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,6 +22,13 @@
 #include "LastFmMeta_p.moc"
 #include "LastFmCapabilityImpl_p.h"
 #include "LastFmCapabilityImpl_p.moc"
+#include "MultiPlayableCapabilityImpl_p.h"
+#include "MultiPlayableCapabilityImpl_p.moc"
+
+#include "core/Radio.h"
+#include "LastFmService.h"
+#include "RadioAdapter.h"
+#include "ScrobblerAdapter.h"
 
 #include "debug.h"
 
@@ -28,7 +36,7 @@
 
 #include <KSharedPtr>
 
-using namespace LastFm;
+namespace LastFm {
 
 class LastFmArtist;
 class LastFmAlbum;
@@ -70,21 +78,7 @@ Track::name() const
 QString
 Track::prettyName() const
 {
-    //return QString(); //TODO
-    QString name = "%1 from %2";
-    QStringList tokens = d->lastFmUri.split( '/', QString::SkipEmptyParts );
-    if( tokens[1] == "user" )
-    {
-        name.arg( tokens[3] );
-    }
-    else if( tokens[1] == "globaltags" )
-    {
-    }
-    else
-    {
-        //what else??
-    }
-    return name;
+    return name();
 }
 
 QString
@@ -102,18 +96,7 @@ Track::sortableName() const
 KUrl
 Track::playableUrl() const
 {
-#if 0
-    if( !d->proxyUrl.isValid() )
-    {
-        d->proxyUrl = LastFm::Controller::instance()->getNewProxy( d->lastFmUri );
-        d->service = LastFm::Controller::instance()->getService();
-        if( !d->service )
-            return KUrl();
-        d->service->addObserver( d );
-    }
-    return d->proxyUrl;
-#endif
-    return KUrl();
+    return KUrl( d->trackPath );
 }
 
 QString
@@ -132,7 +115,7 @@ bool
 Track::isPlayable() const
 {
     //we could check connectivity here...
-    return true;
+    return !d->trackPath.isEmpty();
 }
 
 Meta::AlbumPtr
@@ -281,39 +264,72 @@ Track::unsubscribe( Meta::Observer *observer )
         d->observers.removeAll( observer );
 }
 
+void 
+Track::setTrackInfo( const TrackInfo &trackInfo )
+{
+    d->setTrackInfo( trackInfo );
+}
+
 void
 Track::love()
 {
-    //TODO
+    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
+        The::lastFmService()->scrobbler()->love();
 }
 
 void
 Track::ban()
 {
-    //TODO
+    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
+    {
+        The::lastFmService()->scrobbler()->ban();
+        The::radio().skip();
+    }
 }
 
 void
 Track::skip()
 {
-    //TODO
+    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
+    {
+        The::lastFmService()->scrobbler()->skip();
+        The::radio().skip();
+    }
+}
+
+void
+Track::playCurrent()
+{
+    The::lastFmService()->radio()->play( TrackPtr( this ) );
+}
+
+void
+Track::playNext()
+{
+    The::lastFmService()->radio()->next();
 }
 
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::LastFm;
+    return type == Meta::Capability::LastFm || type == Meta::Capability::MultiPlayable;
 }
 
 Meta::Capability*
 Track::asCapabilityInterface( Meta::Capability::Type type )
 {
-    if( type == Meta::Capability::LastFm )
-        return new LastFmCapabilityImpl( this );
-    else
-        return 0;
-
+    switch( type )
+    {
+        case Meta::Capability::LastFm:
+            return new LastFmCapabilityImpl( this );
+        case Meta::Capability::MultiPlayable:
+            return new MultiPlayableCapabilityImpl( this );
+        default: 
+            return 0;
+    }
 }
+
+} // namespace LastFm
 
 #include "LastFmMeta.moc"
 

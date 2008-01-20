@@ -16,6 +16,7 @@
 #include "enginebase.h"
 #include "engineobserver.h"
 #include "meta/Meta.h"
+#include "meta/MultiPlayableCapability.h"
 
 #include <QHash>
 #include <QMap>
@@ -104,7 +105,9 @@ private slots:
     void slotMainTimer();
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
-    void trackDone() { emit trackFinished(); next(false); }
+    void trackDone();
+    void slotPlayableUrlFetched( const KUrl &url );
+
 protected:
     EngineController();
    ~EngineController();
@@ -117,6 +120,7 @@ private:
     static ExtensionCache s_extensionCache;
 
     EngineBase* loadEngine( const QString &engineName );
+    void playUrl( const KUrl &url, uint offset );
 
     EngineBase*     m_engine;
     EngineBase*     m_voidEngine;
@@ -131,6 +135,7 @@ private:
     bool            m_lastFm;
     uint            m_positionOffset, m_lastPositionOffset;
     Meta::TrackPtr  m_currentTrack;
+    Meta::MultiPlayableCapability *m_multi;
 };
 
 

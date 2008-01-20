@@ -30,8 +30,7 @@ void
 TrackNavigator::setCurrentTrack( int position )
 {
     DEBUG_BLOCK
-    m_playlistModel->setActiveRow( position );
-    EngineController::instance()->play( m_playlistModel->activeTrack() );
+    m_playlistModel->play( position );
 }
 
 void Playlist::TrackNavigator::recedeTrack()

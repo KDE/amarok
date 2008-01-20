@@ -15,6 +15,7 @@
 #define LASTFMRADIOADAPTER_H
 
 #include "core/Radio.h"
+#include "meta/LastFmMeta.h"
 
 class RadioAdapter : public QObject
 {
@@ -24,8 +25,18 @@ public:
     RadioAdapter( QObject *parent, const QString &username, const QString &password );
     virtual ~RadioAdapter();
 
+    LastFm::TrackPtr currentTrack() const { return m_currentTrack; }
+
+    void play( const LastFm::TrackPtr &track );
+    void next();
+    void stop();
+
+private slots:
+    void error( RadioError errorCode, const QString& message );
+
 private:
     Radio *m_radio;
+    LastFm::TrackPtr m_currentTrack;
 
     friend Radio &The::radio();
 };

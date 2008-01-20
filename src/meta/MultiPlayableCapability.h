@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Shane King <kde@dontletsstart.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -16,34 +16,30 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CAPABILITY_H
-#define AMAROK_CAPABILITY_H
+#ifndef AMAROK_MULTIPLAYABLECAPABILITY_H
+#define AMAROK_MULTIPLAYABLECAPABILITY_H
 
-#include "amarok_export.h"
+#include "meta/Capability.h"
 
-#include <QObject>
+#include <KUrl>
 
 namespace Meta
 {
-    class AMAROK_EXPORT Capability : public QObject
+    class AMAROK_EXPORT MultiPlayableCapability : public Capability
     {
         Q_OBJECT
-        Q_ENUMS( Type )
 
-        public:
-            //add additional capabilities here
-            enum Type { Unknown = 0
-                        , Editable = 1
-                        , LastFm = 2
-                        , Buyable = 3
-                        , CustomActions = 4
-                        , EditablePlaylist = 5
-                        , MultiPlayable = 6 };
+    public:
+        virtual ~MultiPlayableCapability();
 
-            virtual ~Capability();
+        static Type capabilityInterfaceType() { return Meta::Capability::MultiPlayable; }
 
+        virtual void fetchFirst() = 0;
+        virtual void fetchNext() = 0;
+
+    signals:
+        void playableUrlFetched( const KUrl &url );
     };
 }
 
-
-#endif
+#endif // AMAROK_MULTIPLAYABLECAPABILITY_H

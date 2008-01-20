@@ -31,6 +31,10 @@ public:
     virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
 
+    void skip();
+    void love();
+    void ban();
+
 private slots:
     void statusChanged( int statusCode, QVariant data );
 

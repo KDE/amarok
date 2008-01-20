@@ -15,11 +15,12 @@
 #define LASTFMAUDIOCONTROLLER_H
 
 #include "core/RadioPlaylist.h"
+#include "engineobserver.h"
 #include "TrackInfo.h"
 
 #include <QStringList>
 
-class AudioController : public QObject
+class AudioController : public QObject, public EngineObserver
 {
     Q_OBJECT
 
@@ -35,11 +36,16 @@ public:
     void stop();
     void loadNext();
 
-    const QString& currentTrackUrl() const { return m_currentTrackUrl; }
+    QString currentTrackUrl() const;
 
     // these are unused, dummy implementations should be OK
     QStringList soundSystems() { return QStringList(); } 
     QStringList devices() { return QStringList(); } 
+
+    // EngineObserver
+    virtual void engineStateChanged( Engine::State currentState, Engine::State oldState = Engine::Empty );
+    virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void engineNewTrackPlaying();
 
 signals:
     void stateChanged( RadioState );
@@ -52,8 +58,9 @@ signals:
 private:
     void playTrack( const TrackInfo &track );
 
-    QString m_currentTrackUrl;
+    bool m_paused;
     RadioPlaylist *m_playlist;
+    TrackInfo m_currentTrackInfo;
 };
 
 #endif // LASTFMAUDIOCONTROLLER_H
