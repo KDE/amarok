@@ -78,21 +78,6 @@ class Proxy
     myputs( "COPY from serv -> amarok" )
     cp_to_empty_inward( serv, amaroks )
 
-    if @engine == 'gst10-engine'
-      3.times do
-        myputs( "gst10-engine waiting for reconnect" )
-        sleep 1
-        break if amaroks.eof
-      end
-      amaroks = amarok.accept
-      safe_write( amaroks, "HTTP/1.0 200 OK\r\n\r\n" )
-      amaroks.each_line do |data|
-        myputs( data )
-        data.chomp!
-        break if data.empty?
-      end
-    end
-
     # Now stream the music!
     myputs( "Before cp_all()" )
     cp_all_inward( serv, amaroks )
