@@ -50,7 +50,7 @@ end
 # example tagging heavily depends on the presence of the .svn directories.
 def CreateTar()
   bar  = @dlg.progressbar("creating tarball",4)
-  `find ".svn" -name #{@folder} | xargs rm -rf`
+  `find #{@folder} -name ".svn" | xargs rm -rf`
   bar.progress = 1
   `tar -cf #{@folder}.tar #{@folder}`
   bar.progress = 2
