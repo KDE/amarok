@@ -61,7 +61,8 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     : ServiceBase( name ),
       m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
       m_radio( new RadioAdapter( this, username, password ) ),
-      m_collection( new LastFmServiceCollection( ) )
+      m_collection( new LastFmServiceCollection( ) ),
+      m_polished( false )
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( "amarok_audioscrobbler" ) );
@@ -85,32 +86,37 @@ LastFmService::~LastFmService()
 void
 LastFmService::polish()
 {
-    m_bottomPanel->setMaximumHeight( 24 );
+    if( !m_polished )
+    {
+        m_bottomPanel->setMaximumHeight( 36 );
 
-    m_buttonBox = new KHBox(m_bottomPanel);
-    m_buttonBox->setSpacing( 3 );
+        m_buttonBox = new KHBox(m_bottomPanel);
+        m_buttonBox->setSpacing( 3 );
 
-    m_loveButton = new QPushButton( m_buttonBox );
-    m_loveButton->setText( i18n( "Love" ) );
-    m_loveButton->setObjectName( "loveButton" );
-    m_loveButton->setIcon( KIcon( "amarok_love" ) );
-    connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
+        m_loveButton = new QPushButton( m_buttonBox );
+        m_loveButton->setText( i18n( "Love" ) );
+        m_loveButton->setObjectName( "loveButton" );
+        m_loveButton->setIcon( KIcon( "amarok_love" ) );
+        connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
 
-    m_banButton = new QPushButton( m_buttonBox );
-    m_banButton->setText( i18n( "Ban" ) );
-    m_banButton->setObjectName( "banButton" );
-    m_banButton->setIcon( KIcon( "amarok_ban" ) );
-    connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
+        m_banButton = new QPushButton( m_buttonBox );
+        m_banButton->setText( i18n( "Ban" ) );
+        m_banButton->setObjectName( "banButton" );
+        m_banButton->setIcon( KIcon( "amarok_ban" ) );
+        connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
 
-    m_skipButton = new QPushButton( m_buttonBox );
-    m_skipButton->setText( i18n( "Skip" ) );
-    m_skipButton->setObjectName( "skipButton" );
-    m_skipButton->setIcon( KIcon( "amarok_skip" ) );
-    connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
+        m_skipButton = new QPushButton( m_buttonBox );
+        m_skipButton->setText( i18n( "Skip" ) );
+        m_skipButton->setObjectName( "skipButton" );
+        m_skipButton->setIcon( KIcon( "amarok_skip" ) );
+        connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
 
-    connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
+        connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
 
-    setButtonsEnabled( m_radio->currentTrack() );
+        setButtonsEnabled( m_radio->currentTrack() );
+
+        m_polished = true;
+    }
 }
 
 

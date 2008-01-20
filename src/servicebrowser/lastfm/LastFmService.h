@@ -67,6 +67,7 @@ private:
     RadioAdapter *m_radio;
     LastFmServiceCollection *m_collection;
 
+    bool m_polished;
     KHBox *m_buttonBox;
     QPushButton *m_loveButton;
     QPushButton *m_banButton;
