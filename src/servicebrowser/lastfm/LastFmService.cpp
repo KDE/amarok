@@ -102,13 +102,13 @@ LastFmService::polish()
         m_banButton = new QPushButton( m_buttonBox );
         m_banButton->setText( i18n( "Ban" ) );
         m_banButton->setObjectName( "banButton" );
-        m_banButton->setIcon( KIcon( "amarok_ban" ) );
+        m_banButton->setIcon( KIcon( "amarok_remove" ) );
         connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
 
         m_skipButton = new QPushButton( m_buttonBox );
         m_skipButton->setText( i18n( "Skip" ) );
         m_skipButton->setObjectName( "skipButton" );
-        m_skipButton->setIcon( KIcon( "amarok_skip" ) );
+        m_skipButton->setIcon( KIcon( "media-seek-forward-amarok" ) );
         connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
 
         connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
