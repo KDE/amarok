@@ -24,6 +24,14 @@ namespace Phonon {
     class VolumeFaderEffect;
 }
 
+#ifdef Q_OS_WIN
+// due to the "joys" of DirectShow, we can't accurately seek VBR files
+// so this hack is better than nothing ... scale our seek relative to the
+// garbage it returns for length. This "mostly" works, except in the case
+// of a file with very inconsistent bitrates (eg long sections of silence).
+#define VBR_SEEK_HACK
+#endif
+
 class /*AMAROK_PHONON_ENGINE_EXPORT*/ PhononEngine : public Engine::Base
 {
     Q_OBJECT
@@ -64,6 +72,11 @@ public:
 
 private slots:
     void slotMetaDataChanged();
+
+private:
+#ifdef VBR_SEEK_HACK
+    uint m_usedSeekHack;
+#endif
 };
 
 #endif

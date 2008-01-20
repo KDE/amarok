@@ -40,6 +40,9 @@ PhononEngine::PhononEngine()
         , m_mediaObject( 0 )
         , m_audioOutput( 0 )
         , m_fader( 0 )
+#ifdef VBR_SEEK_HACK
+        , m_usedSeekHack( 0 )
+#endif
 {
     debug() << "Yay for Phonon being constructed";
 }
@@ -88,7 +91,7 @@ PhononEngine::play( uint offset )
 
     delete m_fader;
     m_mediaObject->pause();
-    m_mediaObject->seek( offset );
+    seek( offset );
     m_mediaObject->play();
     emit stateChanged( Engine::Playing );
 
@@ -182,7 +185,20 @@ uint
 PhononEngine::position() const
 {
     if( state() != Engine::Empty )
+    {
+#ifdef VBR_SEEK_HACK
+        if( m_usedSeekHack )
+        {
+            Meta::TrackPtr track = EngineController::instance()->currentTrack();
+            if( track )
+            {
+                // work out the amount of real time since the seek, plus the seek position in real time
+                return m_mediaObject->currentTime() - m_usedSeekHack + ((double)m_usedSeekHack * track->length()) / (length() / 1000.0);
+            }
+        }
+#endif
         return m_mediaObject->currentTime();
+    }
 
     return 0;
 }
@@ -197,6 +213,18 @@ PhononEngine::length() const
 void
 PhononEngine::seek( uint ms )
 {
+#ifdef VBR_SEEK_HACK
+    m_usedSeekHack = 0;
+    if( ms != 0 )
+    {
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        if( track )
+        {
+            ms = ((double)ms * length()) / (track->length() * 1000.0);
+            m_usedSeekHack = ms;
+        }
+    }
+#endif
     m_mediaObject->seek( ms );
 }
 
