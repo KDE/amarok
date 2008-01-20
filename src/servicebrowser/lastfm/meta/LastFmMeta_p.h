@@ -106,6 +106,12 @@ class Track::Private : public QObject
             track = trackInfo.track();
             length = trackInfo.duration();
             trackPath = trackInfo.path();
+
+            // need to reset other items
+            albumUrl = "";
+            trackUrl = "";
+            albumArt = QPixmap();
+
             notifyObservers();
 
             if( !trackInfo.isEmpty() )
