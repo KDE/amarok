@@ -6,7 +6,7 @@ MyDirLister::matchesFilter( const KFileItem &item ) const
 {
     return
         ( item.isDir() && !item.isHidden() ) ||
-        EngineController::canDecode( item.url() ) ||
+//         EngineController::canDecode( item.url() ) || //FIXME: The way canDecode works in phonon this produces a hell of a lot of false positives.
         item.url().protocol() == "audiocd" ||
         PlaylistManager::isPlaylist( item.url() ) ||
         item.name().endsWith( ".mp3", Qt::CaseInsensitive ) || //for now this is less confusing for the user
@@ -18,6 +18,7 @@ MyDirLister::matchesFilter( const KFileItem &item ) const
         item.name().endsWith( ".oga", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".flac", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".wma", Qt::CaseInsensitive );
+
 }
 
 #include "MyDirLister.moc"
