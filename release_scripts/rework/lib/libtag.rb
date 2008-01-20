@@ -33,7 +33,7 @@ def TagTranslations()
   Dir.chdir( BASEPATH + "/" + @folder )
   `svn co -N #{@tag1} tagging`
 
-  tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
+  @tag1 = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
 
   `svn mkdir -m "Create tag #{NAME} #{@version} po directory" #{tag}`
   `svn up tagging/po`
