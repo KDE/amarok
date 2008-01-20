@@ -30,6 +30,7 @@ require './lib/libtag.rb'
 
 def Amarok()
   # Change version
+  Dir.chdir(BASEPATH + "/" + @folder)
   Dir.chdir("src")
   file = File.new( "#{NAME}.h", File::RDWR )
   str = file.read()
