@@ -31,6 +31,9 @@ public:
     void next();
     void stop();
 
+signals:
+    void haveTrack( bool track );
+
 private slots:
     void error( RadioError errorCode, const QString& message );
 

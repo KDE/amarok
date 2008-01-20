@@ -21,6 +21,8 @@ class RadioAdapter;
 class LastFmService;
 class LastFmServiceCollection;
 
+class KHBox;
+
 namespace The
 {
     LastFmService *lastFmService();
@@ -53,10 +55,22 @@ public:
     RadioAdapter *radio() { return m_radio; }
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
+private slots:
+    void love();
+    void skip();
+    void ban();
+
+    void setButtonsEnabled( bool enable );
+
 private:
     ScrobblerAdapter *m_scrobbler;
     RadioAdapter *m_radio;
     LastFmServiceCollection *m_collection;
+
+    KHBox *m_buttonBox;
+    QPushButton *m_loveButton;
+    QPushButton *m_banButton;
+    QPushButton *m_skipButton;
 
     static LastFmService *ms_service;
 

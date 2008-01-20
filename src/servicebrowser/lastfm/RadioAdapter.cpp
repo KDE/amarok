@@ -43,6 +43,7 @@ RadioAdapter::play( const LastFm::TrackPtr &track )
     {
         bool newStation = The::currentUser().resumeStation() != track->url();
         m_currentTrack = track;
+        emit haveTrack( true );
         if( newStation || The::radio().state() != State_Stopped && The::radio().state() != State_Handshaken )
             The::radio().playStation( track->url() );
         else
@@ -68,6 +69,7 @@ RadioAdapter::stop()
     {
         m_currentTrack->setTrackInfo( TrackInfo() ); // will emit an empty playable url, thus moving to next track in playlist
         m_currentTrack = 0;
+        emit haveTrack( false );
     }
 }
 

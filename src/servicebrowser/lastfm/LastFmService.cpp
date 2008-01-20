@@ -18,6 +18,7 @@
 #include "ScrobblerAdapter.h"
 
 #include "CollectionManager.h"
+#include "meta/LastFmCapability.h"
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -84,6 +85,65 @@ LastFmService::~LastFmService()
 void
 LastFmService::polish()
 {
+    m_bottomPanel->setMaximumHeight( 24 );
+
+    m_buttonBox = new KHBox(m_bottomPanel);
+    m_buttonBox->setSpacing( 3 );
+    m_buttonBox->setEnabled( false );
+
+    m_loveButton = new QPushButton( m_buttonBox );
+    m_loveButton->setText( i18n( "Love" ) );
+    m_loveButton->setObjectName( "loveButton" );
+    m_loveButton->setIcon( KIcon( "amarok_love" ) );
+    connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
+
+    m_banButton = new QPushButton( m_buttonBox );
+    m_banButton->setText( i18n( "Ban" ) );
+    m_banButton->setObjectName( "banButton" );
+    m_banButton->setIcon( KIcon( "amarok_ban" ) );
+    connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
+
+    m_skipButton = new QPushButton( m_buttonBox );
+    m_skipButton->setText( i18n( "Skip" ) );
+    m_skipButton->setObjectName( "skipButton" );
+    m_skipButton->setIcon( KIcon( "amarok_skip" ) );
+    connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
+
+    connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
+}
+
+
+void
+LastFmService::love()
+{
+    LastFm::TrackPtr track = radio()->currentTrack();
+    if( track )
+        track->love();
+}
+
+
+void
+LastFmService::ban()
+{
+    LastFm::TrackPtr track = radio()->currentTrack();
+    if( track )
+        track->ban();
+}
+
+
+void
+LastFmService::skip()
+{
+    LastFm::TrackPtr track = radio()->currentTrack();
+    if( track )
+        track->skip();
+}
+
+
+void
+LastFmService::setButtonsEnabled( bool enable )
+{
+    m_buttonBox->setEnabled( enable );
 }
 
 
