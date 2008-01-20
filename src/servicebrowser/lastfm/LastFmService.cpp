@@ -89,7 +89,6 @@ LastFmService::polish()
 
     m_buttonBox = new KHBox(m_bottomPanel);
     m_buttonBox->setSpacing( 3 );
-    m_buttonBox->setEnabled( false );
 
     m_loveButton = new QPushButton( m_buttonBox );
     m_loveButton->setText( i18n( "Love" ) );
@@ -110,6 +109,8 @@ LastFmService::polish()
     connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
 
     connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
+
+    setButtonsEnabled( m_radio->currentTrack() );
 }
 
 

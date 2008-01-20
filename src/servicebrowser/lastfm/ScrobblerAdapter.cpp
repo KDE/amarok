@@ -98,7 +98,7 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 {
     // note: in the 1.2 protocol, it's OK to submit if the user seeks
     // so long as they meet the half file played requirement.
-    if( !userSeek )
+    if( !userSeek && position > m_lastPosition )
         m_totalPlayed += position - m_lastPosition;
     m_lastPosition = position;
 }
