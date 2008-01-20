@@ -125,7 +125,7 @@ AudioController::engineStateChanged( Engine::State currentState, Engine::State o
                 break;
 
             case Engine::Paused:
-                m_paused = true;
+                // not supposed to pause the radio, so we'll just stop it
                 EngineController::instance()->stop();
                 break;
         }

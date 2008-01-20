@@ -58,7 +58,6 @@ signals:
 private:
     void playTrack( const TrackInfo &track );
 
-    bool m_paused;
     RadioPlaylist *m_playlist;
     TrackInfo m_currentTrackInfo;
 };

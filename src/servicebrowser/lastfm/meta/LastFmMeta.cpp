@@ -280,9 +280,10 @@ Track::love()
 void
 Track::ban()
 {
-    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
+    if( The::lastFmService()->radio()->currentTrack() == this )
     {
-        The::lastFmService()->scrobbler()->ban();
+        if( The::lastFmService()->scrobbler() )
+            The::lastFmService()->scrobbler()->ban();
         The::radio().skip();
     }
 }
@@ -290,9 +291,10 @@ Track::ban()
 void
 Track::skip()
 {
-    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
+    if( The::lastFmService()->radio()->currentTrack() == this )
     {
-        The::lastFmService()->scrobbler()->skip();
+        if( The::lastFmService()->scrobbler() )
+            The::lastFmService()->scrobbler()->skip();
         The::radio().skip();
     }
 }
