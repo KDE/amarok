@@ -611,7 +611,11 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    OSDWidget::show( text );
+    QImage image;
+    if( track->album() )
+        image = track->album()->image().toImage();
+
+    OSDWidget::show( text , image );
 }
 
 void
