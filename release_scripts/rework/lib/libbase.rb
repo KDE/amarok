@@ -40,26 +40,26 @@ end
 # For example:
 #    InformationQuery("trunk","1.0.0","https","sitter")
 def InformationQuery(location=nil, version=nil, protocol=nil, user=nil)
-    @version  = "2.0.0" #DEBUG
-    @protocol = "anonsvn" #DEBUG
+#     @version  = "2.0.0" #DEBUG.
+#     @protocol = "anonsvn" #DEBUG
 
-#   unless location
-#     CheckoutLocation()
-#   else
-#     CheckoutLocationDef(location)
-#   end
-# 
-#   unless version
-#     ReleaseVersion()
-#   else
-#     @version = version
-#   end
-# 
-#   unless protocol
-#     SvnProtcol()
-#   else
-#     @protocol = protocol
-#   end
+  unless location
+    CheckoutLocation()
+  else
+    CheckoutLocationDef(location)
+  end
+
+  unless version
+    ReleaseVersion()
+  else
+    @version = version
+  end
+
+  unless protocol
+    SvnProtcol()
+  else
+    @protocol = protocol
+  end
 
   unless user
     SvnUsername()

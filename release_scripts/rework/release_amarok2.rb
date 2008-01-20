@@ -35,7 +35,7 @@ def Amarok()
   str = file.read()
   file.rewind()
   file.truncate( 0 )
-  str.sub!( /APP_version \".*\"/, "APP_version \"#{@version}\"" )
+  str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{@version}\"" )
   file << str
   file.close()
   Dir.chdir("..") #amarok

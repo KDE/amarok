@@ -33,13 +33,13 @@ def FetchSource()
     branch = "tags/#{NAME}/#{@tag}"
   end
 
-#   @repo = "#{@protocol}://#{@user}.kde.org/home/kde/#{branch}"
-  @repo = "file:///home/kde/#{branch}"
+  @repo = "#{@protocol}://#{@user}.kde.org/home/kde/#{branch}"
+#   @repo = "file:///home/kde/#{branch}"
   puts @repo #DEBUG
 
   puts "Fetching source from #{branch}...\n\n"
   # TODO: ruby-svn
-  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@folder} -N`
+  `svn co #{@repo}/#{COMPONENT}/#{SECTION}/#{NAME} #{@folder}`
 
   bar.progress = 1
   bar.close
@@ -50,7 +50,7 @@ end
 # example tagging heavily depends on the presence of the .svn directories.
 def CreateTar()
   bar  = @dlg.progressbar("creating tarball",4)
-  `find -name ".svn" #{@folder} | xargs rm -rf`
+  `find ".svn" -name #{@folder} | xargs rm -rf`
   bar.progress = 1
   `tar -cf #{@folder}.tar #{@folder}`
   bar.progress = 2
