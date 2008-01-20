@@ -23,9 +23,11 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "LastFmSettings.h"
+#include "libUnicorn/TrackInfo.h"
+#include "libUnicorn/WebService/Request.h"
 #include "Meta.h"
 
-#include "libUnicorn/TrackInfo.h"
 
 #include <QImage>
 #include <QList>
@@ -67,7 +69,23 @@ class Track::Private : public QObject
         Meta::ComposerPtr composerPtr;
         Meta::YearPtr yearPtr;
 
+        Request *m_webServiceRequest;
+
     public:
+        Private()
+            : m_webServiceRequest( 0 )
+        {
+        }
+
+        ~Private()
+        {
+            if( m_webServiceRequest )
+            {
+                m_webServiceRequest->abort();
+                m_webServiceRequest->deleteLater();
+            }
+        }
+
         void notifyObservers()
         {
             foreach( Meta::Observer *observer, observers )
@@ -76,66 +94,64 @@ class Track::Private : public QObject
 
         void setTrackInfo( const TrackInfo &trackInfo )
         {
+            if( m_webServiceRequest )
+            {
+                m_webServiceRequest->abort();
+                m_webServiceRequest->deleteLater();
+                m_webServiceRequest = 0;
+            }
+
             artist = trackInfo.artist();
             album = trackInfo.album();
             track = trackInfo.track();
             length = trackInfo.duration();
             trackPath = trackInfo.path();
             notifyObservers();
+
+            if( !trackInfo.isEmpty() )
+            {
+                TrackMetaDataRequest *tmdr = new TrackMetaDataRequest();
+                m_webServiceRequest = tmdr;
+                connect( m_webServiceRequest, SIGNAL( result( Request * ) ), this, SLOT( requestResult( Request * ) ) );
+                m_webServiceRequest->setLanguage( The::settings().appLanguage() );
+                tmdr->setTrack( trackInfo );
+                m_webServiceRequest->start();
+            }
         }
 
     public slots:
-
-#if 0
-        void metaDataFinished( int /* id */, bool error )
+        void requestResult( Request *request )
         {
-            DEBUG_BLOCK
+            m_webServiceRequest->deleteLater();
+            m_webServiceRequest = 0;
 
-            AmarokHttp* http = (AmarokHttp*) sender();
-            http->deleteLater();
-            if( error ) return;
-
-            const QString result( http->readAll() );
-            debug() << result << endl;
-
-            int errCode = service->parameter( "error", result ).toInt();
-            if ( errCode > 0 ) {
-                debug() << "Metadata failed with error code: " << errCode << endl;
-                service->showError( errCode );
-                return;
-            }
-            artist = service->parameter( "artist", result );
-            album = service->parameter( "album", result );
-            track = service->parameter( "track", result );
-            length = service->parameter( "trackduration", result ).toInt();
-            artistUrl = service->parameter( "artist_url", result );
-            albumUrl = service->parameter( "album_url", result );
-            trackUrl = service->parameter( "track_url", result );
-
-            QString imageUrl = service->parameter( "albumcover_medium", result );
-            if( imageUrl == "http://static.last.fm/coverart/" ||
-                imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
+            TrackMetaDataRequest *tmdr = static_cast<TrackMetaDataRequest *>( request );
+            if( request->succeeded() )
             {
-                //no image available, get default image.
-                albumArt = QPixmap();
+                albumUrl = tmdr->metaData().albumPageUrl();
+                trackUrl = tmdr->metaData().trackPageUrl();
+
+                // TODO: need a seperate request to get artist url, it can wait until we're ready to do something with it
+
                 notifyObservers();
-                return;
+
+                if( !tmdr->metaData().albumPicUrl().isEmpty() )
+                {
+                    KIO::Job* job = KIO::storedGet( KUrl( tmdr->metaData().albumPicUrl() ), KIO::Reload, KIO::HideProgressInfo );
+                    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
+                }
             }
-            KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
-            connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
         }
 
         void fetchImageFinished( KJob* job )
         {
             if( job->error() == 0 ) {
-                //do we still need to save the image to disk??
-                const QString path = Amarok::saveLocation() + "lastfm_image.png";
                 const int size = AmarokConfig::coverPreviewSize();
 
                 QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
                 if( !img.isNull() )
                 {
-                    img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ).save( path, "PNG" );
+                    img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
 
                     albumArt = QPixmap::fromImage( img );
                 }
@@ -149,7 +165,6 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
-#endif
 };
 
 // internal helper classes
