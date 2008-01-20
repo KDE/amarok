@@ -142,11 +142,13 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 6) If this is your first night at ::paint method, you HAVE to paint.
     Q_UNUSED( painter ); Q_UNUSED( widget );
 
-    //debug() << "painting row: " << m_currentRow;
+    debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
     if( m_dataChanged || !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
+
+        debug() << "Data changed";
 
         if( !m_items )
         {
@@ -156,6 +158,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
             init( track );
         }
         m_groupModeChanged = false;
+        m_dataChanged = false;
         resize( m_items->track, option->rect.width() );
     }
 
@@ -202,6 +205,7 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
 void
 Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 {
+    DEBUG_BLOCK
     if( totalWidth == -1 /*|| totalWidth == m_items->lastWidth */) //no change needed
         return;
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
@@ -324,7 +328,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         QRectF trackRect;
         if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
-            trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_fm->height() /*+ MARGIN*/ );
+            trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_fm->height() );
         } else {
             trackRect = QRectF( 0, 0, totalWidth, m_height );
             if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
@@ -433,6 +437,7 @@ void
 Playlist::GraphicsItem::dataChanged()
 {
     m_dataChanged = true;
+    refresh();
 }
 
 const bool
@@ -569,7 +574,7 @@ Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 void
 Playlist::GraphicsItem::refresh()
 {
-    QPixmap albumPixmap;
+    /*QPixmap albumPixmap;
     if( !m_items || !m_items->track )
         return;
 
@@ -580,7 +585,10 @@ Playlist::GraphicsItem::refresh()
 //             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-    }
+    }*/
+
+    if (m_items && m_items->track ) 
+        resize( m_items->track,m_items->lastWidth );
 
     //m_items->albumArt->hide();
     //delete ( m_items->albumArt );
@@ -699,6 +707,7 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
 
+    DEBUG_BLOCK
     QRectF trackRect = option->rect;
     trackRect.setHeight( trackRect.height() - 2 );
     painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
@@ -945,6 +954,7 @@ QPixmap Playlist::GraphicsItem::getCachedSvg( QString name, int width, int heigh
 
 void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
 {
+    DEBUG_BLOCK
     if( active )
     {
         if( !m_items->foreground )
