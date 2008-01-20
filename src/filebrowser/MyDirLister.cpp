@@ -1,4 +1,4 @@
-#include "mydirlister.h"
+#include "MyDirLister.h"
 #include "PlaylistManager.h"
 
 bool
@@ -20,4 +20,4 @@ MyDirLister::matchesFilter( const KFileItem &item ) const
         item.name().endsWith( ".wma", Qt::CaseInsensitive );
 }
 
-#include "mydirlister.moc"
+#include "MyDirLister.moc"

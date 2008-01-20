@@ -1,7 +1,7 @@
 #ifndef MYDIROPERATOR_H
 #define MYDIROPERATOR_H
 
-#include "mydirlister.h"
+#include "MyDirLister.h"
 
 #include <kaction.h>
 #include <kdiroperator.h>

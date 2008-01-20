@@ -26,7 +26,7 @@
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
-#include "filebrowser/mydiroperator.h"
+#include "filebrowser/MyDirOperator.h"
 #include "filebrowser/kbookmarkhandler.h"
 
 #include <QLayout>
