@@ -454,7 +454,7 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
      if( m_tracks.count() > index.row() )
      {
         debug() << "Refreshing item...";
-//        m_tracks.at( index.row() )->dataChanged();
+        m_tracks.at( index.row() )->dataChanged();
      }
 }
 
