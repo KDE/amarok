@@ -49,35 +49,33 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
 {
     debug() << "engineNewMetaData: trackChanged=" << trackChanged;
 
-    if (trackChanged)
+    // if trackChanged, it's a local file
+    // also need to handle radio case
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
+    if (track && trackChanged || isRadio)
     {
         checkScrobble();
 
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
-        bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
-        bool isLocal = track && track->playableUrl().protocol() == "file";
-        if( isLocal || isRadio )
+        m_current.timeStampMe();
+
+        m_current.setTrack( track->name() );
+        m_current.setDuration( track->length() );
+        if( track->artist() )
+            m_current.setArtist( track->artist()->name() );
+        if( track->album() )
+            m_current.setAlbum( track->album()->name() );
+
+        // TODO: need to get music brainz id from somewhere
+        // m_current.setMbId( );
+
+        m_current.setSource( isRadio ? TrackInfo::Radio : TrackInfo::Player );
+        m_current.setUsername( m_username );
+
+        if( !m_current.isEmpty() )
         {
-            m_current.timeStampMe();
-
-            m_current.setTrack( track->name() );
-            m_current.setDuration( track->length() );
-            if( track->artist() )
-                m_current.setArtist( track->artist()->name() );
-            if( track->album() )
-                m_current.setAlbum( track->album()->name() );
-
-            // TODO: need to get music brainz id from somewhere
-            // m_current.setMbId( );
-
-            m_current.setSource( isRadio ? TrackInfo::Radio : TrackInfo::Player );
-            m_current.setUsername( m_username );
-
-            if( !m_current.isEmpty() )
-            {
-                debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
-                m_manager->nowPlaying( m_current );
-            }
+            debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
+            m_manager->nowPlaying( m_current );
         }
     }
 }

@@ -251,6 +251,9 @@ public:
             return d->albumArt;
     }
 
+    // return true since we handle our own fetching
+    bool hasImage( int size = 1) const { Q_UNUSED( size ); return true; }
+
     Track::Private * const d;
 };
 
