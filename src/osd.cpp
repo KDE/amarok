@@ -193,15 +193,14 @@ OSDWidget::determineMetrics( const uint M )
 
         rect = tmpRect;
 
-        //TODO: Fix the blurred-ness of the icon. It's too small as is.
         if( m_newvolume > 66 )
-            m_cover = KIcon( "audio-volume-high" ).pixmap( 100, 100 ).toImage();
+            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
         else if ( m_newvolume > 33 )
-            m_cover = KIcon( "audio-volume-medium" ).pixmap( 100, 100 ).toImage();
+            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
         else if ( m_newvolume > 0 )
-            m_cover = KIcon( "audio-volume-low" ).pixmap( 100, 100 ).toImage();
+            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
         else
-            m_cover = KIcon( "audio-volume-muted" ).pixmap( 100, 100 ).toImage();
+            m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
 
     }
 
