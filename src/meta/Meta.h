@@ -80,6 +80,7 @@ namespace Meta
     class AMAROK_EXPORT MetaBase : public QSharedData
     {
         public:
+            MetaBase() {}
             virtual ~MetaBase() {}
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
@@ -123,6 +124,9 @@ namespace Meta
 
         protected:
             QSet<Meta::Observer*> m_observers;
+
+        private: // no copy allowed, since it's not safe with observer list
+            Q_DISABLE_COPY(MetaBase);
     };
 
     class AMAROK_EXPORT Track : public MetaBase
