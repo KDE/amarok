@@ -50,8 +50,6 @@ class Track::Private : public QObject
         QString trackPath;
         QString lastFmUri;
 
-        QList<Meta::Observer*> observers;
-
         QPixmap albumArt;
         QString artist;
         QString album;
@@ -86,11 +84,7 @@ class Track::Private : public QObject
             }
         }
 
-        void notifyObservers()
-        {
-            foreach( Meta::Observer *observer, observers )
-                observer->metadataChanged( t );
-        }
+        void notifyObservers();
 
         void setTrackInfo( const TrackInfo &trackInfo )
         {
@@ -210,6 +204,8 @@ public:
     }
 
     Track::Private * const d;
+
+    friend class Track::Private;
 };
 
 class LastFmAlbum : public Meta::Album
@@ -261,6 +257,8 @@ public:
     bool hasImage( int size = 1) const { Q_UNUSED( size ); return true; }
 
     Track::Private * const d;
+
+    friend class Track::Private;
 };
 
 class LastFmGenre : public Meta::Genre
@@ -287,6 +285,8 @@ public:
     }
 
     Track::Private * const d;
+
+    friend class Track::Private;
 };
 
 class LastFmComposer : public Meta::Composer
@@ -313,6 +313,8 @@ public:
     }
 
     Track::Private * const d;
+
+    friend class Track::Private;
 };
 
 class LastFmYear : public Meta::Year
@@ -339,7 +341,18 @@ public:
     }
 
     Track::Private * const d;
+
+    friend class Track::Private;
 };
+
+void
+Track::Private::notifyObservers()
+{
+    // TODO: only notify what actually has changed
+    t->notifyObservers();
+    static_cast<LastFmAlbum *>( t->album().data() )->notifyObservers();
+    static_cast<LastFmArtist *>( t->artist().data() )->notifyObservers();
+}
 
 }
 

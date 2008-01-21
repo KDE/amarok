@@ -146,7 +146,10 @@ void
 Meta::Track::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Track*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Track*>( this ) );
+    }
 }
 
 uint
@@ -173,7 +176,10 @@ void
 Meta::Artist::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Artist*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Artist*>( this ) );
+    }
 }
 
 bool
@@ -194,7 +200,10 @@ void
 Meta::Album::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Album*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Album*>( this ) );
+    }
 }
 
 QPixmap
@@ -243,7 +252,10 @@ void
 Meta::Genre::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Genre*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Genre*>( this ) );
+    }
 }
 
 bool
@@ -264,7 +276,10 @@ void
 Meta::Composer::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Composer*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Composer*>( this ) );
+    }
 }
 
 bool
@@ -285,7 +300,10 @@ void
 Meta::Year::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
-        observer->metadataChanged( const_cast<Meta::Year*>( this ) );
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( const_cast<Meta::Year*>( this ) );
+    }
 }
 
 bool

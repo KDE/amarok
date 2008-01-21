@@ -83,9 +83,6 @@ namespace LastFm
             virtual bool inCollection() const;
             virtual Collection *collection() const;
 
-            virtual void subscribe( Meta::Observer *observer );
-            virtual void unsubscribe( Meta::Observer *observer );
-
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );

@@ -250,20 +250,6 @@ Track::collection() const
     return 0;
 }
 
-void
-Track::subscribe( Meta::Observer *observer )
-{
-    if( observer && !d->observers.contains( observer ) )
-        d->observers.append( observer );
-}
-
-void
-Track::unsubscribe( Meta::Observer *observer )
-{
-    if( observer )
-        d->observers.removeAll( observer );
-}
-
 void 
 Track::setTrackInfo( const TrackInfo &trackInfo )
 {
