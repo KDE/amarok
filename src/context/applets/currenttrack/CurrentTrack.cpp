@@ -60,9 +60,9 @@ void CurrentTrack::init()
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ) , this );
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
-    m_scoreLabel = new QGraphicsSimpleTextItem( i18n( "Score:" ), this );
-    m_numPlayedLabel = new QGraphicsSimpleTextItem( i18n( "Played:" ), this );
-    m_playedLastLabel = new QGraphicsSimpleTextItem(i18n( "Played Last:" ), this );
+    m_scoreLabel = new QGraphicsSimpleTextItem( i18n( "S" ), this );
+    m_numPlayedLabel = new QGraphicsSimpleTextItem( i18n( "#" ), this );
+    m_playedLastLabel = new QGraphicsSimpleTextItem(i18n( "L" ), this );
     
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );

@@ -30,8 +30,8 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="767"
-     inkscape:window-width="826"
+     inkscape:window-height="923"
+     inkscape:window-width="1209"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -41,12 +41,12 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="1"
-     inkscape:cx="251.9451"
-     inkscape:cy="63.096988"
-     inkscape:window-x="96"
-     inkscape:window-y="0"
-     inkscape:current-layer="background"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="316.48249"
+     inkscape:cy="87.498918"
+     inkscape:window-x="1467"
+     inkscape:window-y="59"
+     inkscape:current-layer="g5561"
      showgrid="true" />
   <defs
      id="defs2583">
@@ -855,89 +855,89 @@
        transform="translate(-34,-3)"
        id="g5561">
       <rect
-         style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:0;fill:#00a700;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="track"
-         y="28"
-         x="242"
-         height="20"
-         width="292" />
+         y="34.99736"
+         x="269"
+         height="30"
+         width="265" />
       <rect
-         style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:0;fill:#ad0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="artist"
-         y="8"
-         x="242"
-         height="20"
-         width="292" />
+         y="4.9973602"
+         x="269"
+         height="30"
+         width="265" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="album"
-         y="48"
-         x="242"
-         height="20"
-         width="292" />
+         y="64.99736"
+         x="269"
+         height="30"
+         width="265" />
       <rect
-         style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:0;fill:#e2eb00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="numplayed"
-         y="120"
-         x="300"
-         height="20"
-         width="234" />
+         y="129.99736"
+         x="324"
+         height="30"
+         width="45" />
       <rect
-         style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:0;fill:#0000be;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="score"
-         y="100"
-         x="300"
-         height="20"
-         width="234" />
+         y="129.99736"
+         x="229"
+         height="30"
+         width="45" />
       <rect
-         style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:0;fill:#7bb500;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="playedlast"
-         y="140"
-         x="300"
-         height="20"
-         width="234" />
+         y="129.99736"
+         x="419"
+         height="30"
+         width="115" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#c18a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none;stroke-opacity:0"
          id="artistlabel"
-         width="58"
-         height="20"
-         x="173"
-         y="8" />
+         width="70"
+         height="30"
+         x="194"
+         y="4.9973602" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
          id="tracklabel"
-         width="59"
-         height="20"
-         x="173"
-         y="28" />
+         width="70"
+         height="30"
+         x="194"
+         y="34.99736" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#883885;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
          id="albumlabel"
-         width="62"
-         height="20"
-         x="173"
-         y="48" />
+         width="70"
+         height="30"
+         x="194"
+         y="64.99736" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
          id="scorelabel"
-         width="62"
-         height="20"
-         x="173"
-         y="100" />
+         width="30"
+         height="30"
+         x="194"
+         y="129.99736" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#888ae8;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
          id="numplayedlabel"
-         width="114"
-         height="20"
-         x="173"
-         y="120" />
+         width="30"
+         height="30"
+         x="289"
+         y="129.99736" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         style="opacity:0;fill:#881485;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
          id="playedlastlabel"
-         width="99"
-         height="20"
-         x="173"
-         y="140" />
+         width="30"
+         height="30"
+         x="384"
+         y="129.99736" />
     </g>
   </g>
 </svg>
