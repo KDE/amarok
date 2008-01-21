@@ -42,6 +42,7 @@ set(plasma_LIB_SRCS
     plasma/datacontainer.cpp
     plasma/dataengine.cpp
     plasma/dataenginemanager.cpp
+    plasma/desktoptoolbox.cpp
     plasma/layouts/boxlayout.cpp
     plasma/layouts/borderlayout.cpp
     plasma/layouts/freelayout.cpp
@@ -60,7 +61,6 @@ set(plasma_LIB_SRCS
     plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp
-    plasma/toolbox.cpp
     plasma/uiloader.cpp
     plasma/view.cpp
     plasma/widgets/checkbox.cpp
@@ -72,6 +72,7 @@ set(plasma_LIB_SRCS
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
 #    plasma/widgets/rectangle.cpp
+    plasma/widgets/tooltip.cpp
     plasma/widgets/widget.cpp
     plasma/widgets/signalplotter.cpp
     plasma/widgets/meter.cpp
