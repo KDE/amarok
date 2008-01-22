@@ -108,7 +108,10 @@ void CurrentEngine::update()
     if( m_currentTrack->album() )
         m_currentTrack->album()->subscribe( this );
     clearData( "current" );
-    setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
+    if( m_currentTrack->album() )
+        setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
+    else
+        setData( "current", "albumart", QVariant( QPixmap() ) );
     setData( "current", "current", trackInfo );
 }
 
