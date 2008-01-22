@@ -105,7 +105,8 @@ void CurrentEngine::update()
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
 
     int width = coverWidth();
-    m_currentTrack->album()->subscribe( this );
+    if( m_currentTrack->album() )
+        m_currentTrack->album()->subscribe( this );
     clearData( "current" );
     setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
     setData( "current", "current", trackInfo );
