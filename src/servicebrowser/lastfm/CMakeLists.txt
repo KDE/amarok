@@ -36,6 +36,7 @@
             LastFmService.cpp
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
+            LastFmServiceQueryMaker.cpp
             LastFmSettings.cpp
             RadioAdapter.cpp
             ScrobblerAdapter.cpp

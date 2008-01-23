@@ -11,59 +11,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "lastfm"
-
-#include "LastFmServiceCollection.h"
 #include "LastFmServiceQueryMaker.h"
-#include "meta/LastFmMeta.h"
 
-#include "support/MemoryQueryMaker.h"
-
-#include <KLocale>
-
-
-LastFmServiceCollection::LastFmServiceCollection()
-    : ServiceDynamicCollection( "last.fm", "last.fm" ) 
+LastFmServiceQueryMaker::LastFmServiceQueryMaker( LastFmServiceCollection *collection )
+    : m_resultAsDataPtrs( false )
 {
 }
 
 
-LastFmServiceCollection::~LastFmServiceCollection()
+LastFmServiceQueryMaker::~LastFmServiceQueryMaker()
 {
 }
 
 
-bool 
-LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
+QueryMaker *
+LastFmServiceQueryMaker::reset()
 {
-    return url.protocol() == "lastfm";
+    m_resultAsDataPtrs = false;
+    return this;
 }
 
-
-Meta::TrackPtr 
-LastFmServiceCollection::trackForUrl( const KUrl &url )
+    
+void 
+LastFmServiceQueryMaker::run()
 {
-    return Meta::TrackPtr( new LastFm::Track( url.url() ) );
 }
+    
 
-
-QString 
-LastFmServiceCollection::collectionId() const
+void 
+LastFmServiceQueryMaker::abortQuery()
 {
-    return "last.fm";
-}
-
-
-QString 
-LastFmServiceCollection::prettyName() const
-{
-    return i18n( "last.fm" );
 }
 
 
 QueryMaker*
-LastFmServiceCollection::queryMaker()
+LastFmServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
-    // TODO
-    return new LastFmServiceQueryMaker( this );
+    m_resultAsDataPtrs = resultAsDataPtrs;
+    return this;
 }
