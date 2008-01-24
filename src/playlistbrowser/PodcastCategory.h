@@ -23,6 +23,7 @@
 
 #include <QItemDelegate>
 #include <QListView>
+#include <QSvgRenderer>
 
 namespace PlaylistBrowserNS {
 
@@ -75,7 +76,6 @@ class PodcastCategoryDelegate : public QItemDelegate
         QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
     private:
-
         QTreeView *m_view;
         mutable int m_lastHeight;
 

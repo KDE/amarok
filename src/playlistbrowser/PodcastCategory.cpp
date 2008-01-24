@@ -35,6 +35,10 @@
 #include <QLinearGradient>
 #include <QFontMetrics>
 #include <QRegExp>
+#include <QSvgRenderer>
+#include <QFile>
+
+#include <KStandardDirs>
 
 #include <typeinfo>
 
@@ -118,7 +122,6 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     int iconPadY = 4;
     int height = option.rect.height();
 
-
     //HACK:Just for testing!!
     /*if  ( m_lastHeight > 1 ) {
         //m_lastHeight = 1;
@@ -131,25 +134,31 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     painter->setRenderHint ( QPainter::Antialiasing );
 
     QPixmap background( width - 4, height - 4 );
-    if (option.state & QStyle::State_Selected)
-    {
-        background.fill( Qt::blue );
-        QPixmap grad( background.size() );
-        QPainter p( &grad );
-        QLinearGradient g( grad.width() / 2, 0, grad.width() / 2, grad.height() );
-        g.setColorAt(0, Qt::gray);
-        g.setColorAt(0.1, QColor(50, 50, 50));
-        g.setColorAt(0.4, Qt::black);
-        g.setColorAt(0.6, Qt::black);
-        g.setColorAt(0.9, QColor(50, 50, 50));
-        g.setColorAt(1, Qt::gray);
-        p.setBrush(g);
-        p.setPen(Qt::NoPen);
-        p.drawRect( 0, 0, grad.width(), grad.height() );
-        background.setAlphaChannel( grad );
-    }
-    else
-        background.fill( Qt::transparent );
+    QString key;
+
+    if (option.state & QStyle::State_Selected) {
+        /*TODO: don't open file every time; it's only this way
+        because I had problems getting it to work as a member
+        variable like it is in the ServiceListDelegate class;
+        I'm not sure why it didn't work, but it crashed every
+        time; I think I was doing it wrong. */
+        iconPadY = 12; //looks bad if too close to border
+        iconPadX = 12;
+        key = QString("service_list_item_selected:%1x%2").arg( width ).arg( height );
+        if (!QPixmapCache::find(key, background)) {
+            background.fill( Qt::transparent );
+            QPainter pt( &background );
+            //only opens if selected AND not in cache, see TODO above
+            QFile file( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
+            file.open( QIODevice::ReadOnly );
+            QString svg_source( file.readAll() );
+            QSvgRenderer *svgRenderer = new QSvgRenderer( svg_source.toAscii() );
+
+            svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 20, height - 4 ) );
+            QPixmapCache::insert(key, background);
+        }
+    } else { background.fill( Qt::transparent ); }
+
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
@@ -157,7 +166,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 
     painter->setFont(QFont("Arial", 9));
 
-    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
+    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) ,
+                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
 
     QRectF titleRect;
@@ -173,8 +183,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     QFontMetricsF tfm( painter->font() );
 
     title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width(), Qt::AlignHCenter );
-    
-    painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, title );
+    //TODO: has a weird overlap
+    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignBottom, title );
 
     painter->setFont(QFont("Arial", 8));
 
@@ -190,35 +200,36 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     QRectF textBound;
     
     QString description = index.data( ShortDescriptionRole ).toString();
+    description.replace( QRegExp("\n "), "\n" );
     description.replace( QRegExp("\n+"), "\n" );
- 
+
+
     if (option.state & QStyle::State_Selected)
         textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
     else
         textBound = fm.boundingRect( titleRect, Qt::TextWordWrap | Qt::AlignHCenter, title );
-/*
-    //AFAIK this section is uneccessary because of the section in sizeHint() which
-    //gives height based on text amount
+
     bool toWide = textBound.width() > textRect.width();
     bool toHigh = textBound.height() > textRect.height();
     if ( toHigh || toWide ) {
         QLinearGradient gradient;
-        gradient.setStart( textRect.topLeft() );
+        gradient.setStart( textRect.bottomLeft().x(), textRect.bottomLeft().y() - 16 );
 
         //if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
         //else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
         gradient.setFinalStop( textRect.bottomLeft() );
 
-        gradient.setColorAt(0.8, painter->pen().color());
-        gradient.setColorAt(1.0, Qt::transparent);
+        gradient.setColorAt(0, painter->pen().color());
+        gradient.setColorAt(0.5, Qt::transparent);
+        gradient.setColorAt(1, Qt::transparent);
         QPen pen;
         pen.setBrush(QBrush(gradient));
         painter->setPen(pen);
     }
-*/
+
     if (option.state & QStyle::State_Selected)
     {
-        painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignRight, description );
+        painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
 	//debug() << "drawing description text";
     }
 
@@ -251,7 +262,9 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
         QString description = index.data( ShortDescriptionRole ).toString();
         
         QFontMetrics fm( QFont( "Arial", 8 ) );
-        heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000, Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap , description ).height() + 20;
+        heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
+                                   Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
+                                   description ).height() + 40;
         
 
 	    debug() << "Option is selected, height = " << heigth;
