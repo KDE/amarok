@@ -206,6 +206,20 @@ void
 Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 {
     DEBUG_BLOCK
+
+
+
+    //just for good meassure:
+
+    QFont font = m_items->topRightText->font();
+    font.setBold( false );
+    m_items->topRightText->setFont( font );
+
+    font = m_items->topLeftText->font();
+    font.setBold( false );
+    m_items->topLeftText->setFont( font );
+
+    
     if( totalWidth == -1 /*|| totalWidth == m_items->lastWidth */) //no change needed
         return;
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
@@ -290,8 +304,24 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
 
-        m_items->topRightText->setPos( topRightAlignX, headingCenter );
-        m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
+        //make the artist and album lines two lines
+
+        int firstLineYOffset = ( ( MARGIN + ALBUM_WIDTH ) -s_fm->height() * 2 ) / 2;
+        int headTextWidth = qreal( totalWidth ) - ( ALBUM_WIDTH + MARGIN * 4 );
+
+        font = m_items->topRightText->font();
+        font.setBold( true );
+        m_items->topRightText->setFont( font );
+
+        album = s_fm->elidedText ( album, Qt::ElideRight, headTextWidth );
+
+        int albumWidth = s_fm->width( album );
+        
+        int offsetX = MARGIN + ALBUM_WIDTH + ( ( headTextWidth - albumWidth ) / 2 );
+
+        //album goes at the bottom
+        m_items->topRightText->setPos( offsetX , firstLineYOffset + MARGIN + s_fm->height() );
+        m_items->topRightText->setEditableText( album, albumWidth );
 
         {
             QString artist;
@@ -305,12 +335,22 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                 if( artist.isEmpty() )
                     artist = i18n( "Various Artists" );
             }
-            m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
-            m_items->topLeftText->setPos( leftAlignX, headingCenter );
+
+            font = m_items->topLeftText->font();
+            font.setBold( true );
+            m_items->topLeftText->setFont( font );
+
+            
+            artist = s_fm->elidedText ( artist, Qt::ElideRight, headTextWidth );
+            int artistWidth = s_fm->width( artist );
+            offsetX = MARGIN + ALBUM_WIDTH + ( ( headTextWidth - artistWidth ) / 2);
+            
+            m_items->topLeftText->setEditableText( artist, artistWidth );
+            m_items->topLeftText->setPos( offsetX, firstLineYOffset );
         }
 
         int underImageY = (int)( MARGIN + ALBUM_WIDTH + 6 );
-
+        
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
 
