@@ -218,7 +218,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 */
     if (option.state & QStyle::State_Selected)
     {
-        painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
+        painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignRight, description );
 	//debug() << "drawing description text";
     }
 
