@@ -295,7 +295,8 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     font.setPixelSize( 9 );
     p.setFont( font );
     const QRect rect( 0, 0, 34, 15 );
-    p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
+    if ( underMouse() )
+        p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
 }
 
 void
