@@ -217,7 +217,7 @@ SqlCollection::boolFalse() const
 QString
 SqlCollection::idType() const
 {
-    return " INTEGER PRIMARY KEY AUTO_INCREMENT";
+    return "INTEGER PRIMARY KEY AUTO_INCREMENT";
 }
 
 QString
