@@ -133,32 +133,27 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     QPixmap background( width - 4, height - 4 );
     if (option.state & QStyle::State_Selected)
     {
-        //debug() << "Selected, painting blue gradient";
-	background.fill( Qt::blue );
-	QPixmap grad( background.size() );
-	QPainter p( &grad );
-	QLinearGradient g( grad.width() / 2, 0, grad.width() / 2, grad.height() );
-	g.setColorAt(0, Qt::gray);
-	g.setColorAt(0.1, QColor(50, 50, 50));
-	g.setColorAt(0.4, Qt::black);
-	g.setColorAt(0.6, Qt::black);
-	g.setColorAt(0.9, QColor(50, 50, 50));
-	g.setColorAt(1, Qt::gray);
-	p.setBrush(g);
-	p.setPen(Qt::NoPen);
-	p.drawRect( 0, 0, grad.width(), grad.height() );
-	background.setAlphaChannel( grad );
+        background.fill( Qt::blue );
+        QPixmap grad( background.size() );
+        QPainter p( &grad );
+        QLinearGradient g( grad.width() / 2, 0, grad.width() / 2, grad.height() );
+        g.setColorAt(0, Qt::gray);
+        g.setColorAt(0.1, QColor(50, 50, 50));
+        g.setColorAt(0.4, Qt::black);
+        g.setColorAt(0.6, Qt::black);
+        g.setColorAt(0.9, QColor(50, 50, 50));
+        g.setColorAt(1, Qt::gray);
+        p.setBrush(g);
+        p.setPen(Qt::NoPen);
+        p.drawRect( 0, 0, grad.width(), grad.height() );
+        background.setAlphaChannel( grad );
     }
     else
         background.fill( Qt::transparent );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
-/*  //used to test the blue on blue effect
-    if (option.state & QStyle::State_Selected)
-        painter->setPen(Qt::blue);
-    else */
-        painter->setPen(Qt::black);
+    painter->setPen(Qt::black);
 
     painter->setFont(QFont("Arial", 9));
 
@@ -201,7 +196,9 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
     else
         textBound = fm.boundingRect( titleRect, Qt::TextWordWrap | Qt::AlignHCenter, title );
-
+/*
+    //AFAIK this section is uneccessary because of the section in sizeHint() which
+    //gives height based on text amount
     bool toWide = textBound.width() > textRect.width();
     bool toHigh = textBound.height() > textRect.height();
     if ( toHigh || toWide ) {
@@ -218,7 +215,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         pen.setBrush(QBrush(gradient));
         painter->setPen(pen);
     }
-
+*/
     if (option.state & QStyle::State_Selected)
     {
         painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
