@@ -66,9 +66,9 @@ private:
     QGraphicsSimpleTextItem* m_titleLabel;
     QGraphicsSimpleTextItem* m_artistLabel;
     QGraphicsSimpleTextItem* m_albumLabel;
-    QGraphicsSimpleTextItem* m_scoreLabel;
-    QGraphicsSimpleTextItem* m_numPlayedLabel;
-    QGraphicsSimpleTextItem* m_playedLastLabel;
+    QGraphicsPixmapItem* m_scoreLabel;
+    QGraphicsPixmapItem* m_numPlayedLabel;
+    QGraphicsPixmapItem* m_playedLastLabel;
     
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;

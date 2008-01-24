@@ -18,6 +18,10 @@
 #include "context/Svg.h"
 #include "meta/MetaUtility.h"
 
+
+#include <KIconLoader>
+
+
 #include <QPainter>
 #include <QBrush>
 #include <QFont>
@@ -26,6 +30,8 @@
 #include <QSpinBox>
 #include <QLabel>
 #include <QMap>
+
+
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
@@ -48,7 +54,7 @@ CurrentTrack::~CurrentTrack()
 
 void CurrentTrack::init()
 {
-
+    DEBUG_BLOCK
     setDrawStandardBackground( false );
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
@@ -56,13 +62,19 @@ void CurrentTrack::init()
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
 
+    KIconLoader iconLoader;
 
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ) , this );
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
-    m_scoreLabel = new QGraphicsSimpleTextItem( i18n( "S" ), this );
-    m_numPlayedLabel = new QGraphicsSimpleTextItem( i18n( "#" ), this );
-    m_playedLastLabel = new QGraphicsSimpleTextItem(i18n( "L" ), this );
+    
+    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "love", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "knotify", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "month", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+
+    m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
+    m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
+    m_playedLastLabel->setTransformationMode( Qt::SmoothTransformation );
     
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
@@ -75,9 +87,9 @@ void CurrentTrack::init()
     m_titleLabel->setBrush( QBrush( Qt::white ) );
     m_artistLabel->setBrush( QBrush( Qt::white ) );
     m_albumLabel->setBrush( QBrush( Qt::white ) );
-    m_scoreLabel->setBrush( QBrush( Qt::white ) );
-    m_numPlayedLabel->setBrush( QBrush( Qt::white ) );
-    m_playedLastLabel->setBrush( QBrush( Qt::white ) );
+    //m_scoreLabel->setBrush( QBrush( Qt::white ) );
+    //m_numPlayedLabel->setBrush( QBrush( Qt::white ) );
+    //m_playedLastLabel->setBrush( QBrush( Qt::white ) );
     
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
@@ -132,9 +144,24 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_titleLabel->setFont( m_title->font() );
     m_artistLabel->setFont( m_artist->font() );
     m_albumLabel->setFont( m_album->font() );
-    m_scoreLabel->setFont( m_score->font() );
-    m_numPlayedLabel->setFont( m_numPlayed->font());
-    m_playedLastLabel->setFont( m_playedLast->font() );
+
+
+    //calc scale factor..
+    m_scoreLabel->resetTransform ();
+    m_numPlayedLabel->resetTransform ();
+    m_playedLastLabel->resetTransform ();
+    
+    float currentHeight = m_scoreLabel->boundingRect().height();
+    float desiredHeight = m_theme->elementRect( "scorelabel" ).height();
+
+    float scaleFactor = desiredHeight / currentHeight;
+    //float scaleFactor = currentHeight / desiredHeight;
+    
+    debug() << "scale factor: " << scaleFactor;
+    
+    m_scoreLabel->scale( scaleFactor, scaleFactor );
+    m_numPlayedLabel->scale( scaleFactor, scaleFactor );
+    m_playedLastLabel->scale( scaleFactor, scaleFactor );
     
 
 
