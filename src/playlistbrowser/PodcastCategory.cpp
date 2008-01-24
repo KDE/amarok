@@ -227,10 +227,9 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         painter->setPen(pen);
     }
 
-    if (option.state & QStyle::State_Selected)
-    {
+    if (option.state & QStyle::State_Selected) {
         painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
-	//debug() << "drawing description text";
+        //debug() << "drawing description text";
     }
 
     painter->restore();
@@ -251,12 +250,10 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     //todo: the heigth should be defined the way it is in the delegate: iconpadY*2 + iconheight
     Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int heigth = 24;
-    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
-    {
+    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) ) {
         heigth = 24;
     }
-    if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
-    {
+    if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index ) {
         //lets try to do heights based on amount of text...
 
         QString description = index.data( ShortDescriptionRole ).toString();
@@ -265,8 +262,6 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
         heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
                                    description ).height() + 40;
-        
-
 	    debug() << "Option is selected, height = " << heigth;
     }
     //else
