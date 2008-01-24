@@ -390,7 +390,8 @@ DEBUG_BLOCK
             break;
         const int pos = KApplication::random() % m_cachedItemSet.count();
         KURL::List::iterator newItem = m_cachedItemSet.at( pos );
-        retrieval << (*newItem);
+        if( QFile::exists( (*newItem).path() ) )
+            retrieval << (*newItem);
         m_cachedItemSet.remove( newItem );
     }
 

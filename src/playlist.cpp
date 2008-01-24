@@ -1002,9 +1002,8 @@ Playlist::playNextTrack( bool forceNext )
             }
             else
                 for( MyIt it( this ); *it; ++it )
-                    if ( !m_prevTracks.containsRef( *it ) )
+                    if ( !m_prevTracks.containsRef( *it ) && checkFileStatus( *it ) && (*it)->exists() )
                         tracks.push_back( *it );
-
             if( tracks.isEmpty() )
             {
                 //we have played everything

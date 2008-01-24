@@ -3,6 +3,13 @@ Amarok ChangeLog
 (C) 2002-2007 the Amarok authors.
 
 
+VERSION 1.4.9
+  BUGFIXES:
+    * Don't insert items into Dynamic Mode that don't exist.
+    * If unavailable tracks are in the Playlist and random mode is on, don't
+      stop those track is selected; continue with available tracks.
+
+
 VERSION 1.4.8
   CHANGES:
     * Optimise some database queries with the mysql backend. Patch by Alf
