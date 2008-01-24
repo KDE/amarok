@@ -129,8 +129,6 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     } else
     {
         lyrics = el.text();
-        // TODO this crashes amarok.
-        // BAD META!
         EngineController::instance()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
 
         const QString title      = el.attribute( "title" );
