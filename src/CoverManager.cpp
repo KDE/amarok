@@ -1009,7 +1009,10 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     , m_coverPixmap( )
 {
     m_album = album->prettyName();
-    m_artist = album->albumArtist()->prettyName();
+    if( album->albumArtist() )
+        m_artist = album->albumArtist()->prettyName();
+    else
+        m_artist = i18n( "No Artist" );
     setText( album->prettyName() );
     setIcon( album->image( 100 ) );
     album->subscribe( qobject_cast<CoverManager*>(parent->parent()->parent()) );
