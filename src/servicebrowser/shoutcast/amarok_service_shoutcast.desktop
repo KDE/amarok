@@ -9,8 +9,6 @@ Comment=A service that allows browsing of thousands of shoutcast stations
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_service_shoutcast
-
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
 X-KDE-Amarok-framework-version=30
@@ -25,3 +23,5 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-Library=amarok_service_shoutcast
+X-KDE-PluginInfo-Name=amarok_service_shoutcast

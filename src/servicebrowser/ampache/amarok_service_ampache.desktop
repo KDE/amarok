@@ -9,7 +9,6 @@ Comment=Service plugin for Amarok
 
 ServiceTypes=Amarok/Plugin
 
-#X-KDE-Library=amarok_service_ampache
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com

@@ -87,7 +87,10 @@ void ServicePluginManager::init()
 
         //check if this service is enabled
 
-        if ( factory->config().readEntry( "Enabled", true ) ) 
+        QString pluginName = factory->info().pluginName();
+
+        debug() << "PLUGIN CHECK: " << pluginName;
+        if ( factory->config().readEntry( pluginName + "Enabled", true ) )
             factory->init();
     }
 
