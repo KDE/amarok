@@ -83,7 +83,10 @@
 #include <KPushButton>
 #include <KToolBar>
 #include <kdeversion.h>
-#include <fixx11h.h>
+
+#ifdef Q_WS_X11 
+#include <fixx11h.h>        // not present in qt-mac builds 
+#endif
 
 class ContextWidget : public KVBox
 {
