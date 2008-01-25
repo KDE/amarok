@@ -535,7 +535,7 @@ GenericMediaDevice::buildDestination( const QString &format, const Meta::TrackPt
 
     //these additional columns from MetaBundle were used before but haven't
     //been ported yet. Do they need to be?
-    //Bpm,Directory,Type,Length,Bitrate,SampleRate,Rating,Mood,Filesize
+    //Bpm,Directory,Bitrate,SampleRate,Mood
     args["title"] = cleanPath( track->prettyName() );
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
@@ -546,7 +546,10 @@ GenericMediaDevice::buildDestination( const QString &format, const Meta::TrackPt
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();
-    args["filetype"] = track->url().section( ".", -1 ).toLower();
+    args["filetype"] = track->type();
+    args["rating"] = track->rating();
+    args["filesize"] = track->filesize();
+    args["length"] = track->length();
     QString trackNum;
     if ( track->trackNumber() )
         trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
@@ -857,7 +860,8 @@ GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
         if( baseName.endsWith( "mp3", Qt::CaseInsensitive ) || baseName.endsWith( "wma", Qt::CaseInsensitive ) ||
             baseName.endsWith( "wav", Qt::CaseInsensitive ) || baseName.endsWith( "ogg", Qt::CaseInsensitive ) ||
             baseName.endsWith( "asf", Qt::CaseInsensitive ) || baseName.endsWith( "flac", Qt::CaseInsensitive ) ||
-            baseName.endsWith( "aac", Qt::CaseInsensitive ) || baseName.endsWith( "m4a", Qt::CaseInsensitive ) )
+            baseName.endsWith( "aac", Qt::CaseInsensitive ) || baseName.endsWith( "m4a", Qt::CaseInsensitive ) ||
+            baseName.endsWith( "oga", Qt::CaseInsensitive ) )
 
             newItem->getViewItem()->setType( MediaItem::TRACK );
 

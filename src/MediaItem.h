@@ -33,7 +33,6 @@
 #include "Meta.h"
 
 class MediaDevice;
-//class MetaBundle;
 
 class AMAROK_EXPORT MediaItem : public K3ListViewItem
 {

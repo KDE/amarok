@@ -160,11 +160,11 @@ GenericMediaDeviceConfigDialog::updateConfigDialogLists( const QStringList & sup
 }
 
 QString
-GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const MetaBundle &mb ) const
+GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const Meta::TrackPtr track ) const
 {
-    bool isCompilation = mb.compilation() > 0;
+    bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
-    QString artist = mb.artist();
+    QString artist = track->artist()->name();
     QString albumartist = artist;
     if( isCompilation )
         albumartist = i18n( "Various Artists" );
@@ -177,20 +177,20 @@ GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const M
         Amarok::manipulateThe( albumartist, true );
 
     albumartist = cleanPath( albumartist );
-    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
-    {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
-            continue;
-        args[mb.exactColumnName( i ).toLower()] = cleanPath( mb.prettyText( i ) );
-    }
+//    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
+//    {
+//        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+//            continue;
+//        args[mb.exactColumnName( i ).toLower()] = cleanPath( mb.prettyText( i ) );
+//    }
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();
-    args["filetype"] = mb.url().path().section( ".", -1 ).toLower();
-    QString track;
-    if ( mb.track() )
-        track.sprintf( "%02d", mb.track() );
-    args["track"] = track;
+    args["filetype"] = track->type();
+    QString trackNum;
+    if ( track->trackNumber() )
+        trackNum.sprintf( "%02d", track->trackNumber() );
+    args["track"] = trackNum;
 
     Amarok::QStringx formatx( format );
     QString result = m_device->mountPoint().append( formatx.namedOptArgs( args ) );
@@ -223,13 +223,13 @@ QString GenericMediaDeviceConfigDialog::cleanPath( const QString &component ) co
 void
 GenericMediaDeviceConfigDialog::updatePreviewLabel()
 {
-    m_previewLabel->setText( buildDestination( m_songLocationBox->text(), *m_previewBundle ) );
+    m_previewLabel->setText( buildDestination( m_songLocationBox->text(), *m_previewMeta ) );
 }
 
 void
 GenericMediaDeviceConfigDialog::updatePreviewLabel( const QString& format)
 {
-    m_previewLabel->setText( buildDestination( format , *m_previewBundle ) );
+    m_previewLabel->setText( buildDestination( format , *m_previewMeta ) );
 }
 
 void
@@ -252,12 +252,12 @@ QString
 GenericMediaDeviceConfigDialog::buildFormatTip() const
 {
     QMap<QString, QString> args;
-    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
-    {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
-            continue;
-        args[MetaBundle::exactColumnName( i ).toLower()] = MetaBundle::prettyColumnName( i );
-    }
+//    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
+//    {
+//        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+//            continue;
+//        args[MetaBundle::exactColumnName( i ).toLower()] = MetaBundle::prettyColumnName( i );
+//    }
     args["albumartist"] = i18n( "%1 or %2" ).arg( "Album Artist, The" , "The Album Artist" );
     args["thealbumartist"] = "The Album Artist";
     args["theartist"] = "The Artist";
@@ -286,27 +286,27 @@ GenericMediaDeviceConfigDialog::buildFormatTip() const
 void
 GenericMediaDeviceConfigDialog::init()
 {
-    m_previewBundle = new MetaBundle();
-    m_previewBundle->setAlbum( AtomicString( "Some Album" ) );
-    m_previewBundle->setArtist( AtomicString( "The One Artist" ) );
-    m_previewBundle->setBitrate( 128 );
-    m_previewBundle->setComment( AtomicString( "Some Comment" ) );
-    m_previewBundle->setCompilation( 0 );
-    m_previewBundle->setComposer( AtomicString( "The One Composer" ) );
-    m_previewBundle->setDiscNumber( 1 );
-    m_previewBundle->setFileType( 2 );
-    m_previewBundle->setFilesize( 1003264 );
-    m_previewBundle->setGenre( AtomicString( "Some Genre" ) );
-    m_previewBundle->setLength( 193 );
-    m_previewBundle->setPlayCount( 2 );
-    m_previewBundle->setRating( 3 );
-    m_previewBundle->setSampleRate( 44100 );
-    m_previewBundle->setScore( 3.f );
-    m_previewBundle->setTitle( AtomicString( "Some Title" ) );
-    m_previewBundle->setTrack( 7 );
-    m_previewBundle->setUrl( KUrl( "/some%20directory/some%20file.mp3" ) );
-    m_previewBundle->setYear( 2006 );
-
+/*    m_previewMeta = new Meta::TrackPtr();
+    m_previewMeta->album() = new Meta::AlbumPtr( AtomicString( "Some Album" ) );
+    m_previewMeta->artist() = new Meta::ArtistPtr( AtomicString( "The One Artist" ) );
+    m_previewMeta->setBitrate( 128 );
+    m_previewMeta->setComment( AtomicString( "Some Comment" ) );
+    m_previewMeta->album()->setCompilation( 0 );
+    m_previewMeta->setComposer( AtomicString( "The One Composer" ) );
+    m_previewMeta->setDiscNumber( 1 );
+    m_previewMeta->setFileType( 2 );
+    m_previewMeta->setFilesize( 1003264 );
+    m_previewMeta->setGenre( AtomicString( "Some Genre" ) );
+    m_previewMeta->setLength( 193 );
+    m_previewMeta->setPlayCount( 2 );
+    m_previewMeta->setRating( 3 );
+    m_previewMeta->setSampleRate( 44100 );
+    m_previewMeta->setScore( 3.f );
+    m_previewMeta->setTitle( AtomicString( "Some Title" ) );
+    m_previewMeta->setTrack( 7 );
+    m_previewMeta->setUrl( KUrl( "/some%20directory/some%20file.mp3" ) );
+    m_previewMeta->setYear( 2006 );
+*/
     m_formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 

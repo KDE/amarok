@@ -436,7 +436,7 @@
     </connection>
 </connections>
 <includes>
-    <include location="global" impldecl="in implementation">metabundle.h</include>
+    <include location="global" impldecl="in implementation">MediaDeviceMeta.h</include>
     <include location="global" impldecl="in implementation">qstringx.h</include>
     <include location="local" impldecl="in declaration">genericmediadevice.h</include>
     <include location="global" impldecl="in declaration">q3popupmenu.h</include>
@@ -444,7 +444,7 @@
 </includes>
 <variables>
     <variable access="private">Q3PopupMenu *m_unsupportedMenu;</variable>
-    <variable access="private">MetaBundle *m_previewBundle;</variable>
+    <variable access="private">Meta::TrackPtr *m_previewMeta;</variable>
     <variable access="private">GenericMediaDevice *m_device;</variable>
 </variables>
 <slots>
@@ -456,7 +456,7 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">updateConfigDialogLists( const QStringList &amp; supportedFileTypes )</function>
-    <function access="private" specifier="non virtual" returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb ) const</function>
+    <function access="private" specifier="non virtual" returnType="QString">buildDestination( const QString &amp; format, const Meta::TrackPtr track ) const</function>
     <function access="private" specifier="non virtual" returnType="QString">cleanPath( const QString &amp; component ) const</function>
     <function specifier="non virtual">setDevice( GenericMediaDevice * device )</function>
     <function access="private" specifier="non virtual" returnType="QString">buildFormatTip() const</function>

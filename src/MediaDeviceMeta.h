@@ -36,7 +36,8 @@ class MediaDeviceAlbum : public Meta::Album
 {
     public:
         MediaDeviceAlbum( QString name )
-            : m_name( name )
+            : m_name( name ),
+              m_isCompilation( false )
         {
         }
 
@@ -47,13 +48,15 @@ class MediaDeviceAlbum : public Meta::Album
         QString prettyName() const { return name(); }
 
         // from Meta::Album
-        bool isCompilation() const { return false; }
+        bool isCompilation() const { return m_isCompilation; }
+        void setCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
         bool hasAlbumArtist() const { return false; }
         Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
         Meta::TrackList tracks() { return Meta::TrackList(); }
 
     private:
         QString m_name;
+        bool m_isCompilation;
 };
 
 
@@ -123,7 +126,20 @@ class MediaDeviceTrack : public Meta::Track
     public:
         MediaDeviceTrack( MediaDevice *device, QString title )
             : m_device( device ),
-              m_name( title )
+              m_name( title ),
+              m_comment( QString() ),
+              m_score( 0.0 ),
+              m_rating( 0 ),
+              m_length( 0 ),
+              m_filesize( 0 ),
+              m_samplerate( 0 ),
+              m_bitrate( 0 ),
+              m_trackNumber( 0 ),
+              m_discNumber( 0 ),
+              m_lastPlayed( 0 ),
+              m_firstPlayed( 0 ),
+              m_playCount( 0 ),
+              m_type( QString() )
         {
         }
 
@@ -143,25 +159,50 @@ class MediaDeviceTrack : public Meta::Track
         virtual Meta::ComposerPtr composer() const { return Meta::ComposerPtr(); }
         virtual Meta::GenrePtr genre() const { return Meta::GenrePtr(); }
         virtual Meta::YearPtr year() const { return Meta::YearPtr(); }
-        virtual QString comment() const { return QString(); }
+        virtual QString comment() const { return m_comment; }
+        virtual void setComment( QString comment ) { m_comment = comment; }
         virtual double score() const { return 0; }
-        virtual void setScore( double newScore ) { Q_UNUSED(newScore); return; }
+        virtual void setScore( double score ) { m_score = score; }
         virtual int rating() const { return 0; }
-        virtual void setRating( int newRating ) { Q_UNUSED(newRating); return; }
+        virtual void setRating( int rating ) { m_rating = rating; }
         virtual int length() const { return 0; }
+        virtual void setLength( int length ) { m_length = length; }
         virtual int filesize() const { return 0; }
+        virtual void setFileSize( int size ) { m_filesize = size; }
         virtual int sampleRate() const { return 0; }
+        virtual void setSampleRate( int rate ) { m_samplerate = rate; }
         virtual int bitrate() const { return 0; }
+        virtual void setBitrate( int rate ) { m_bitrate = rate; }
         virtual int trackNumber() const { return 0; }
+        virtual void setTrackNumber( int number ) { m_trackNumber = number; }
         virtual int discNumber() const { return 0; }
+        virtual void setDiscNumber( int number ) { m_discNumber = number; }
         virtual uint lastPlayed() const { return 0; }
+        virtual void setLastPlayed( uint last ) { m_lastPlayed = last; }
         virtual uint firstPlayed() const { return 0; }
+        virtual void setFirstPlayed( uint first ) { m_firstPlayed = first; }
         virtual int playCount() const { return 0; }
-        virtual QString type() const { return QString(); }
+        virtual void setPlayCount( int count ) { m_playCount = count; }
+        virtual QString type() const { return m_type; }
+        virtual void setType( QString type ) { m_type = type; }
+
 
     private:
         MediaDevice *m_device;
         QString m_name;
+        QString m_comment;
+        double m_score;
+        int m_rating;
+        int m_length;
+        int m_filesize;
+        int m_samplerate;
+        int m_bitrate;
+        int m_trackNumber;
+        int m_discNumber;
+        uint m_lastPlayed;
+        uint m_firstPlayed;
+        int m_playCount;
+        QString m_type;
 };
 
 
