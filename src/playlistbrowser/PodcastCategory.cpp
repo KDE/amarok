@@ -75,9 +75,6 @@ PodcastCategory::~PodcastCategory()
 {
 }
 
-
-
-
 ViewKicker::ViewKicker( QTreeView * treeView )
 {
      DEBUG_BLOCK
@@ -90,16 +87,8 @@ void ViewKicker::kickView()
     m_treeView->setRootIndex( QModelIndex() );
 }
 
-
-
-
-
-
-
-
 PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view ) : QItemDelegate()
         , m_view( view )
-
 {
 }
 
@@ -122,21 +111,14 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     int iconPadY = 4;
     int height = option.rect.height();
 
-    //HACK:Just for testing!!
-    /*if  ( m_lastHeight > 1 ) {
-        //m_lastHeight = 1;
-        PodcastModel * podcastModel = ( PodcastModel * ) index.model();
-        debug() << "HEEEEEEEEEEEEEEEEREEEEEEEEEEE DAMMMMITTTTTT!!!!!";
-        podcastModel->emitLayoutChanged();
-    }*/
-
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
     QPixmap background( width - 4, height - 4 );
     QString key;
 
-    if (option.state & QStyle::State_Selected) {
+    if (option.state & QStyle::State_Selected)
+    {
         /*TODO: don't open file every time; it's only this way
         because I had problems getting it to work as a member
         variable like it is in the ServiceListDelegate class;
@@ -145,7 +127,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         iconPadY = 12; //looks bad if too close to border
         iconPadX = 12;
         key = QString("service_list_item_selected:%1x%2").arg( width ).arg( height );
-        if (!QPixmapCache::find(key, background)) {
+        if (!QPixmapCache::find(key, background))
+        {
             background.fill( Qt::transparent );
             QPainter pt( &background );
             //only opens if selected AND not in cache, see TODO above
@@ -157,7 +140,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
             svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 20, height - 4 ) );
             QPixmapCache::insert(key, background);
         }
-    } else { background.fill( Qt::transparent ); }
+    } else
+        background.fill( Qt::transparent );
 
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
@@ -211,7 +195,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 
     bool toWide = textBound.width() > textRect.width();
     bool toHigh = textBound.height() > textRect.height();
-    if ( toHigh || toWide ) {
+    if ( toHigh || toWide )
+    {
         QLinearGradient gradient;
         gradient.setStart( textRect.bottomLeft().x(), textRect.bottomLeft().y() - 16 );
 
@@ -227,10 +212,8 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         painter->setPen(pen);
     }
 
-    if (option.state & QStyle::State_Selected) {
+    if (option.state & QStyle::State_Selected)
         painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
-        //debug() << "drawing description text";
-    }
 
     painter->restore();
 
@@ -250,12 +233,12 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     //todo: the heigth should be defined the way it is in the delegate: iconpadY*2 + iconheight
     Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int heigth = 24;
-    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) ) {
+    /* Why is this here anyways? 
+    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
         heigth = 24;
-    }
-    if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index ) {
-        //lets try to do heights based on amount of text...
-
+    */
+    if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
+    {
         QString description = index.data( ShortDescriptionRole ).toString();
         
         QFontMetrics fm( QFont( "Arial", 8 ) );
