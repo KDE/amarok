@@ -22,6 +22,11 @@ require 'fileutils'
 
 @dlg = KDialog.new("#{NAME} release script","cookie")
 
+# This will return you to the default execution directory, which is by default:
+def BaseDir()
+  Dir.chdir(BASEPATH)
+end
+
 # This will return you to the default src directory, which is by default:
 #  execution dir + / + src folder name (NAME-VERSION)
 def SrcDir()

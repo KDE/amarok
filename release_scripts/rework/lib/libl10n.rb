@@ -17,14 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require './lib/libkdialog.rb'
+require 'lib/libkdialog.rb'
+require 'lib/libbase.rb'
 require 'fileutils'
 
 @dlg = KDialog.new("#{NAME} release script","cookie")
 
 def FetchTranslations()
   bar  = @dlg.progressbar("preparing l10n processing",1)
-  Dir.chdir(BASEPATH + "/" + @folder)
+  SrcDir()
   Dir.mkdir("l10n")
   Dir.mkdir("po")
 
@@ -101,7 +102,7 @@ end
 
 def FetchDocumentation()
   bar  = @dlg.progressbar("preparing doc processing",1)
-  Dir.chdir( BASEPATH + "/" + @folder )
+  SrcDir()
 
   l10nlangs = `svn cat #{@repo}/l10n-kde4/subdirs`.chomp!()
   @docs     = []
@@ -147,7 +148,7 @@ def FetchDocumentation()
   end
   bar.close
 
-  Dir.chdir(BASEPATH + "/" + @folder)
+  SrcDir()
 
   if subdirs
     # create doc's cmake file
@@ -178,6 +179,7 @@ def CompressDocumentationImages()
 end
 
 
+# TODO: there are some rough edges :-S
 def CreateTranslationStats()
   @clang    = -2 #current language
   @cfuzzy   = 0  #fuzzies
@@ -240,6 +242,7 @@ def CreateTranslationStats()
   end
 
   def Stats( lang )
+    SrcDir()
     values = nil
 
     if lang != "." and lang != ".." and lang != "CMakeLists.txt" then
@@ -271,7 +274,7 @@ def CreateTranslationStats()
         fcolor = "#FF0000" #red
       end
 
-      BaseDir()
+      SrcDir()
 
       `echo "
       <tr><td align="left" valign="middle" width="60" height="12">
@@ -306,7 +309,7 @@ def CreateTranslationStats()
   end
 
   puts "Entering Dir..."
-  BaseDir()
+  SrcDir()
 
   puts "Writing the header..."
   Header()
@@ -320,5 +323,6 @@ def CreateTranslationStats()
   puts "Writing the footer..."
   Footer()
 
+  FileUtils.mv( @file, ".." )
   puts "Creation finished..."
 end
