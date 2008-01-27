@@ -21,6 +21,28 @@
   <defs
      id="defs4592">
     <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4133">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop4135" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop4137" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4133"
+       id="linearGradient10418"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4529407,0,0,0.3544798,-322.16055,-185.08551)"
+       x1="313.73923"
+       y1="563.98224"
+       x2="313.73923"
+       y2="538.56927" />
+    <linearGradient
        y2="50.284199"
        x2="104.1499"
        y1="50.284199"
@@ -656,20 +678,36 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-635.37858,-325.79716)">
-    <g
-       id="g3496">
-      <path
-         id="path2163"
-         d="M 641.18538,326.04907 C 638.44952,326.04907 636.23813,327.21868 636.23813,328.67884 L 636.23813,455.69042 C 636.23813,457.15059 638.44952,458.32017 641.18538,458.32017 L 655.87901,458.32017 L 655.87901,326.04907 L 641.18538,326.04907 z "
-         style="fill:#555555;fill-opacity:1;stroke:none;stroke-width:0.70896137;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:0" />
-      <path
-         style="fill:url(#linearGradient3494);fill-opacity:1.0;stroke:#000000;stroke-width:0.69800806;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:0"
-         d="M 641.37701,326.39871 C 638.70998,326.39871 636.55423,327.56171 636.55423,329.01363 L 636.55423,455.30824 C 636.55423,456.76016 638.70998,457.92314 641.37701,457.92314 L 655.70098,457.92314 L 655.70098,326.39871 L 641.37701,326.39871 z "
-         id="rect28701" />
-    </g>
     <path
        d="M 840.94462,345.53758 C 847.6155,345.53758 853.68225,343.61383 858.21412,340.4717 C 856.01962,333.00583 849.11062,327.53758 840.94462,327.53758 C 832.77824,327.53758 825.86924,333.0062 823.6755,340.4717 C 828.20662,343.61383 834.27337,345.53758 840.94462,345.53758 z "
        id="path60"
        style="opacity:0.5;fill:url(#linearGradient2405)" />
+    <g
+       id="g10408"
+       transform="matrix(0.8998735,0,0,1.1227203,628.49367,190.65191)"
+       inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
+       inkscape:export-xdpi="89.999985"
+       inkscape:export-ydpi="89.999985">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         height="21.654406"
+         x="-238.77266"
+         y="7.8736377"
+         ry="1.7578418"
+         rx="2.3398566"
+         width="117.43475"
+         id="rect10410"
+         style="fill:#666765;fill-opacity:1;stroke:url(#linearGradient10418);stroke-width:0.3986938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
+         inkscape:export-xdpi="89.999985"
+         inkscape:export-ydpi="89.999985" />
+      <path
+         style="opacity:0.8;fill:#878782;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         d="M 9.1782295,235.54515 C 9.1782295,236.81812 9.877029,237.8435 10.737019,237.8435 L 17.702945,237.8435 C 20.269928,199.95241 19.854161,161.41972 17.702945,122.51372 L 10.737019,122.51372 C 9.877029,122.51372 9.1782295,123.5391 9.1782295,124.81208 L 9.1782295,235.54515 z "
+         id="path10412"
+         inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
+         inkscape:export-xdpi="89.999985"
+         inkscape:export-ydpi="89.999985" />
+    </g>
   </g>
 </svg>

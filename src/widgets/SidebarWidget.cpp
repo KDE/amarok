@@ -197,6 +197,8 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
     setIcon( icon );
     setText( text );
 
+    setForegroundRole( QPalette::HighlightedText );
+
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
 
@@ -264,6 +266,9 @@ void SideBarButton::slotAnimTimer()
 
 void SideBarButton::paintEvent( QPaintEvent* )
 {
+    DEBUG_BLOCK
+
+    //TODO Cache this please
     QFile file( KStandardDirs::locate( "data","amarok/images/sidebar_button.svg" ) );
     file.open( QIODevice::ReadOnly );
     QString svg_source( file.readAll() );
@@ -271,19 +276,25 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.initFrom( this );
 
+    QColor baseColor( "#878782" );
+    
     QColor c;
     if( isDown() )
-        c = blendColors( palette().highlight().color().darker( 150 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().darker( 150 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() && underMouse() )
-        c = blendColors( palette().highlight().color().lighter( 110 ), palette().window().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().lighter( 110 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() )
         c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
     else if( underMouse() )
-        c = blendColors( palette().highlight().color().lighter(), palette().highlight().color(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().lighter(), baseColor, static_cast<int>( m_animCount * 3.5 ) );
     else
-        c = blendColors( palette().window().color(), palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
 
-    svg_source.replace( "stop-color:#6193cf", "stop-color:" + c.name() );
+    debug() << "new color name: " << c.name();
+
+    debug() << "Contains fill:#878782: " << svg_source.contains( "fill:#878782" );
+    
+    svg_source.replace( "fill:#878782", "fill:" + c.name() );
     QSvgRenderer svg( svg_source.toAscii() );
     svg.render( &p );
 

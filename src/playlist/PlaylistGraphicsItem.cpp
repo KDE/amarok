@@ -763,6 +763,10 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+
+    m_items->topRightText->setDefaultTextColor( Qt::black );
+    m_items->topLeftText->setDefaultTextColor( Qt::black );
+    
         //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
@@ -771,15 +775,15 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 
 
     //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
+    /*if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }
+    }*/
 
 
     //set overlay if item is active:
-    handleActiveOverlay( trackRect, active );
+    //handleActiveOverlay( trackRect, active );
 
 }
 
@@ -817,7 +821,26 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
-        //and make sure the top text elements are shown
+
+    //draw active track marker if needed
+    if ( active )
+        painter->drawPixmap( trackRect.x() + 5, trackRect.y(), getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+
+    m_items->topRightText->setDefaultTextColor( Qt::white );
+    m_items->topLeftText->setDefaultTextColor( Qt::white );
+
+    if ( active ) {
+
+        m_items->bottomRightText->setDefaultTextColor( Qt::white );
+        m_items->bottomLeftText->setDefaultTextColor( Qt::white );
+
+    } else {
+
+        m_items->bottomRightText->setDefaultTextColor( Qt::black );
+        m_items->bottomLeftText->setDefaultTextColor( Qt::black );
+    }
+    
+    //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
     if( !m_items->topLeftText->isVisible() )
@@ -825,14 +848,14 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
 
     //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
+    /*if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap( 2, (int)trackRect.top() + 2, getCachedSvg( "selection_left", 40, trackRect.height() ) );
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top() + 2, getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }
+    }*/
 
     //set overlay if item is active:
-    handleActiveOverlay( trackRect, active );
+    //handleActiveOverlay( trackRect, active );
 
 }
 
@@ -869,6 +892,11 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+
+
+    m_items->topRightText->setDefaultTextColor( Qt::white );
+    m_items->topLeftText->setDefaultTextColor( Qt::white );
+    
         //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
@@ -876,14 +904,14 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
         m_items->topLeftText->show();
 
     //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
+    /*if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }
+    }*/
 
     //set overlay if item is active
-    handleActiveOverlay( trackRect, active );
+    //handleActiveOverlay( trackRect, active );
 
 }
 
@@ -898,6 +926,14 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     if ( alternate )
         painter->drawPixmap( 5, 0, getCachedSvg( "body_background", trackRect.width() - 10, trackRect.height() ) );
 
+    //draw active track marker if needed
+    if ( active )
+        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+
+
+    m_items->topRightText->setDefaultTextColor( Qt::black );
+    m_items->topLeftText->setDefaultTextColor( Qt::black );
+    
     //make sure that the top text items are not shown
     if( m_items->topRightText->isVisible() )
         m_items->topRightText->hide();
@@ -909,15 +945,26 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
         m_items->bottomLeftText->show();
 
     //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
+    /*if( option->state & QStyle::State_Selected )
     {
 
         painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
+    }*/
+
+    if ( active ) {
+
+        m_items->bottomRightText->setDefaultTextColor( Qt::white );
+        m_items->bottomLeftText->setDefaultTextColor( Qt::white );
+
+    } else {
+
+        m_items->bottomRightText->setDefaultTextColor( Qt::black );
+        m_items->bottomLeftText->setDefaultTextColor( Qt::black );
     }
 
     //set overlay if item is active
-    handleActiveOverlay( trackRect, active );
+    //handleActiveOverlay( trackRect, active );
 
 
 }
@@ -939,6 +986,10 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
 
     }
 
+    //draw active track marker if needed
+    if ( active )
+        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+
     //make sure that the top text items are not shown
     if( m_items->topRightText->isVisible() )
         m_items->topRightText->hide();
@@ -950,15 +1001,15 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
         m_items->bottomLeftText->show();
 
     //set selection marker if needed
-    if( option->state & QStyle::State_Selected )
+   /* if( option->state & QStyle::State_Selected )
     {
 
         painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }
+    }*/
 
     //set overlay if item is active
-    handleActiveOverlay( trackRect, active );
+    //handleActiveOverlay( trackRect, active );
 
 }
 
@@ -1003,7 +1054,7 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
             debug() << "Creating active track overlay";
             m_items->foreground = new QGraphicsPixmapItem( this );
             m_items->foreground->setPos( 0.0, rect.top() );
-            m_items->foreground->setZValue( 10.0 );
+            //m_items->foreground->setZValue( 10.0 );
 
             m_items->foreground->setPixmap( getCachedSvg( "active_overlay", rect.width(), rect.height() ) );
             m_items->foreground->show();
