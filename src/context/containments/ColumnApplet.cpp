@@ -16,12 +16,16 @@
 #include "ContextScene.h"
 #include "debug.h"
 #include "Svg.h"
+#include "SvgTinter.h"
+#include "TheInstances.h"
 
 #include "plasma/layouts/layoutanimator.h"
 #include "plasma/phase.h"
 
 #include <KAuthorized>
 #include <KMenu>
+#include <KTemporaryFile>
+#include <KStandardDirs>
 
 #include <QAction>
 #include <QGraphicsScene>
@@ -45,8 +49,28 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_columns->setMargin( Plasma::Layout::RightMargin, 3 );
     m_columns->setMargin( Plasma::Layout::BottomMargin, 3 );
 
+    //HACK alert!
+
+    QString svgFile = KStandardDirs::locate( "data","desktoptheme/default/widgets/amarok-wallpaper.svg" );
+    QString svg_source =  The::svgTinter()->tint( svgFile );
+
+
     
-    m_background = new Svg( "widgets/amarok-wallpaper", this );
+    KTemporaryFile tintedSvg;
+    tintedSvg.setSuffix( ".svg" );
+    tintedSvg.setAutoRemove( false );  //TODO
+    tintedSvg.open();
+    
+    QFile file( tintedSvg.fileName() );
+    file.open( QIODevice::WriteOnly | QIODevice::Text );
+
+    QTextStream out( &file );
+    out << svg_source;
+    file.close();
+
+    debug() << "temp filename: " << tintedSvg.fileName();
+    
+    m_background = new Svg( tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?

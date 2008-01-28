@@ -14,14 +14,13 @@
    id="svg2465"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
-   sodipodi:docbase="/home/lee/Work/amarok"
+   sodipodi:docbase="/home/amarok-dev/amarok/src/images"
    sodipodi:docname="playlist_items.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
      id="defs2467">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient34783">
       <stop
          style="stop-color:#444444;stop-opacity:1;"
@@ -32,16 +31,6 @@
          offset="1"
          id="stop34787" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient34783"
-       id="linearGradient9356"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1,0,0,-1,-59.129633,261.78141)"
-       x1="1336.5818"
-       y1="109.43237"
-       x2="1336.5818"
-       y2="140.9046" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3180"
@@ -1980,11 +1969,11 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="543.69761"
-     inkscape:cy="254.18766"
+     inkscape:zoom="2.8284272"
+     inkscape:cx="338.84682"
+     inkscape:cy="249.32712"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="track"
      showgrid="true"
      inkscape:window-width="1680"
      inkscape:window-height="972"
@@ -2171,17 +2160,17 @@
        inkscape:export-ydpi="89.999985">
       <path
          d="M 1137.4365,136.4931 C 1137.4365,134.58639 1138.99,133.03533 1140.8998,133.03533 L 1414.0046,133.03533 C 1415.9144,133.03533 1417.4679,134.58639 1417.4679,136.4931 L 1417.4679,143.40868 C 1417.4679,145.31539 1415.9144,146.86645 1414.0046,146.86645 L 1140.8998,146.86645 C 1138.99,146.86645 1137.4365,145.31539 1137.4365,143.40868 L 1137.4365,136.4931 z "
-         style="fill:url(#linearGradient9356);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1"
+         style="fill:#444444;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1"
          id="path6373" />
       <path
-         style="fill:#878782;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1;opacity:0.27868852"
          d="M 1140.9016,133.03704 C 1138.9919,133.03704 1137.433,134.59909 1137.4329,136.50579 L 1137.4329,141.16204 C 1137.5675,141.15409 1137.7021,141.16204 1137.8392,141.16204 L 1417.4642,141.16204 L 1417.4642,136.50579 C 1417.4642,134.59908 1415.9052,133.03704 1413.9954,133.03704 L 1140.9016,133.03704 z "
          id="path6375" />
     </g>
     <path
        id="body_background"
-       d="M 96.05947,540.34304 L 96.05947,560.03055 L 390.05946,560.03055 L 390.05946,540.34304 L 96.05947,540.34304 z "
-       style="fill:#cdcec9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+       d="M 96.00001,535.15802 L 96.00001,554.84553 L 390,554.84553 L 390,535.15802 L 96.00001,535.15802 z "
+       style="opacity:0.15;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
     <g
        id="selection_right"
        transform="matrix(0.9999961,0,0,1,2.8224977e-3,-134.99997)">
@@ -2226,7 +2215,7 @@
        id="head"
        transform="translate(-330.00001,47.90016)">
       <path
-         style="fill:#6b6b6a;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1"
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1"
          id="path12573"
          d="M 760.48366,396.15802 C 760.48366,386.27802 761.11366,385.65802 771.05366,385.65802 L 1043.9137,385.65802 C 1053.8537,385.65802 1054.4837,386.27802 1054.4837,396.15802 L 1054.4837,445.65802 L 760.48366,445.65802 L 760.48366,396.15802 z "
          clip-rule="evenodd" />
@@ -2251,7 +2240,7 @@
          d="M 761.60361,457.32298 L 1053.3612,457.32298"
          style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e8e8e8;stroke-width:1.29975498;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         style="fill:#878782;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21"
          d="M 767.7992,387.05785 C 764.58728,387.05785 762,389.11885 762,391.65535 L 762,412.20054 C 857.60672,419.77154 954.83237,418.54524 1053,412.20054 L 1053,391.65535 C 1053,389.11885 1050.4123,387.05785 1047.2005,387.05785 L 767.7992,387.05785 z "
          id="path28191"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
@@ -2266,14 +2255,14 @@
          clip-rule="evenodd"
          d="M 730.48365,436.15802 C 730.48365,426.27802 731.11365,425.65802 741.05365,425.65802 L 1013.9137,425.65802 C 1023.8537,425.65802 1024.4837,426.27802 1024.4837,436.15802 L 1024.4837,485.65802 L 730.48365,485.65802 L 730.48365,436.15802 z "
          id="path12609"
-         style="fill:#6b6b6a;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
       <path
          inkscape:export-ydpi="89.999985"
          inkscape:export-xdpi="89.999985"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          id="path12621"
          d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.11885 731.99999,431.65535 L 731.99999,452.20054 C 827.60671,459.77154 924.83236,458.54524 1023,452.20054 L 1023,431.65535 C 1023,429.11885 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
-         style="fill:#878782;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21" />
     </g>
     <g
        id="collapsed_head"
@@ -2286,20 +2275,20 @@
            clip-rule="evenodd"
            d="M 730.48365,436.15802 C 730.48365,426.27802 731.11365,425.65802 741.05365,425.65802 L 1013.9137,425.65802 C 1023.8537,425.65802 1024.4837,426.27802 1024.4837,436.15802 L 1024.4837,485.65802 L 730.48365,485.65802 L 730.48365,436.15802 z "
            id="path12694"
-           style="fill:#6b6b6a;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
+           style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
         <path
            inkscape:export-ydpi="89.999985"
            inkscape:export-xdpi="89.999985"
            inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
            id="path12696"
            d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.11885 731.99999,431.65535 L 731.99999,452.20054 C 827.60671,459.77154 924.83236,458.54524 1023,452.20054 L 1023,431.65535 C 1023,429.11885 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
-           style="fill:#878782;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+           style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21" />
       </g>
       <path
          clip-rule="evenodd"
          d="M 430.36446,899.40101 C 430.36446,904.32829 430.99433,904.6375 440.93215,904.6375 L 713.73231,904.6375 C 723.67013,904.6375 724.3,904.32829 724.3,899.40101 L 724.3,874.71472 L 430.36446,874.71472 L 430.36446,899.40101 z "
          id="path12638"
-         style="fill:#6b6b6a;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          style="fill:none;fill-opacity:0;fill-rule:evenodd;stroke:#2e3436;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
          d="M 724.34347,874.7132 L 724.34347,893.41661"

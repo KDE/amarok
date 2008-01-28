@@ -34,6 +34,7 @@ namespace QueueManagerNS {
 }
 
 class ServiceInfoProxy;
+class SvgTinter;
 
 namespace The {
     AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
@@ -41,6 +42,7 @@ namespace The {
     PlaylistManager*                 playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
     ServiceInfoProxy *               serviceInfoProxy();
+    AMAROK_EXPORT SvgTinter *        svgTinter();
 }
 
 #endif

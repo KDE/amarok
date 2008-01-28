@@ -27,6 +27,7 @@
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
+#include "SvgTinter.h"
 #include "TheInstances.h"
 #include "CoverManager.h"
 
@@ -114,7 +115,11 @@ Playlist::GraphicsItem::GraphicsItem()
     }
 
     if ( !s_svgRenderer ) {
-        s_svgRenderer = new QSvgRenderer( KStandardDirs::locate( "data","amarok/images/playlist_items.svg" ));
+
+        QString file = KStandardDirs::locate( "data","amarok/images/playlist_items.svg" );
+        QString svg_source =  The::svgTinter()->tint( file );
+        
+        s_svgRenderer = new QSvgRenderer( svg_source.toAscii() );
         if ( ! s_svgRenderer->isValid() )
             debug() << "svg is kaputski";
     }
@@ -764,9 +769,9 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     }
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
 
-    m_items->topRightText->setDefaultTextColor( Qt::black );
+    /*m_items->topRightText->setDefaultTextColor( Qt::black );
     m_items->topLeftText->setDefaultTextColor( Qt::black );
-    
+    */
         //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
@@ -826,10 +831,10 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if ( active )
         painter->drawPixmap( trackRect.x() + 5, trackRect.y(), getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
 
-    m_items->topRightText->setDefaultTextColor( Qt::white );
+    /*m_items->topRightText->setDefaultTextColor( Qt::white );
     m_items->topLeftText->setDefaultTextColor( Qt::white );
-
-    if ( active ) {
+*/
+    /*if ( active ) {
 
         m_items->bottomRightText->setDefaultTextColor( Qt::white );
         m_items->bottomLeftText->setDefaultTextColor( Qt::white );
@@ -838,7 +843,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
         m_items->bottomRightText->setDefaultTextColor( Qt::black );
         m_items->bottomLeftText->setDefaultTextColor( Qt::black );
-    }
+    }*/
     
     //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
@@ -894,9 +899,9 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
-    m_items->topRightText->setDefaultTextColor( Qt::white );
+    /*m_items->topRightText->setDefaultTextColor( Qt::white );
     m_items->topLeftText->setDefaultTextColor( Qt::white );
-    
+    */
         //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
@@ -931,9 +936,9 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
 
 
-    m_items->topRightText->setDefaultTextColor( Qt::black );
+    /*m_items->topRightText->setDefaultTextColor( Qt::black );
     m_items->topLeftText->setDefaultTextColor( Qt::black );
-    
+    */
     //make sure that the top text items are not shown
     if( m_items->topRightText->isVisible() )
         m_items->topRightText->hide();
@@ -952,7 +957,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
     }*/
 
-    if ( active ) {
+    /*if ( active ) {
 
         m_items->bottomRightText->setDefaultTextColor( Qt::white );
         m_items->bottomLeftText->setDefaultTextColor( Qt::white );
@@ -961,7 +966,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
 
         m_items->bottomRightText->setDefaultTextColor( Qt::black );
         m_items->bottomLeftText->setDefaultTextColor( Qt::black );
-    }
+    }*/
 
     //set overlay if item is active
     //handleActiveOverlay( trackRect, active );

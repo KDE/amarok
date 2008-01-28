@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "servicebase.h"
 #include "ServiceListModel.h"
+#include "SvgTinter.h"
+#include "TheInstances.h"
 
 #include <QApplication>
 #include <QIcon>
@@ -35,10 +37,8 @@ ServiceListDelegate::ServiceListDelegate( QListView *view )
 {
     DEBUG_BLOCK
 
-
-    QFile file( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
-    file.open( QIODevice::ReadOnly );
-    QString svg_source( file.readAll() );
+    QString file = KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" );
+    QString svg_source =  The::svgTinter()->tint( file );
 
 
     m_svgRendererActive = new  QSvgRenderer( svg_source.toAscii() );
@@ -102,7 +102,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
 
-    if (option.state & QStyle::State_Selected)
+    /*if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
     else 
         painter->setPen(Qt::gray);
@@ -112,7 +112,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     if (option.state & QStyle::State_Selected)
         painter->setPen(Qt::blue);
     else 
-        painter->setPen(Qt::black);
+        painter->setPen(Qt::black);*/
 
     painter->setFont(QFont("Arial", 14));
 
@@ -127,7 +127,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     titleRect.setHeight( iconHeight + iconPadY );
 
 
-    painter->setPen( QPen ( Qt::white ) );
+    /*painter->setPen( QPen ( Qt::white ) );*/
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
     painter->setFont(QFont("Arial", 9));

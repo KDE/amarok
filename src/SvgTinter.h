@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2007 Mark Kretschmann <markey@web.de>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,60 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef SVGTINTER_H
+#define SVGTINTER_H
 
-#include "MainToolbar.h"
-#include "SvgTinter.h"
-#include "TheInstances.h"
+#include "amarok_export.h"
 
-#include "debug.h"
+#include <QColor>
+#include <QFile>
+#include <QMap>
+#include <QString>
 
-#include <KStandardDirs>   
+/**
+This singleton class is used to tint the svg artwork to attempt to better match the users color scheme. 
 
-#include <QPainter>
-#include <QPixmapCache>
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
+class SvgTinter{
 
-MainToolbar::MainToolbar( QWidget * parent )
- : KHBox( parent )
-{
+    public:
 
-    QString file = KStandardDirs::locate( "data","amarok/images/toolbar-background.svg" );
-    
-    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
-    if ( ! m_svgRenderer->isValid() )
-        debug() << "svg is kaputski";
-}
+    static AMAROK_EXPORT SvgTinter * instance();
+    ~SvgTinter();
 
+    QString AMAROK_EXPORT tint( QString filename );
+    void init( QColor systemColor, QList<QString> baseColorNames, int tintPercentage );
 
-MainToolbar::~MainToolbar()
-{
-}
+    QColor blendColors( const QColor& color1, const QColor& color2, int percent );
 
-void MainToolbar::paintEvent(QPaintEvent *)
-{
+    protected:
+        SvgTinter();
 
-    int middle = contentsRect().width() / 2;
-    QRect controlRect( middle - 90, 0, 180, 50 );
+        static SvgTinter * m_instance;
+        QMap<QString, QString> m_tintMap;
 
+};
 
-    QString key = QString("toolbar-background:%1x%2")
-                            .arg(contentsRect().width())
-                            .arg(contentsRect().height());
-
-    QPixmap background(contentsRect().width(), contentsRect().height() );
-
-    if (!QPixmapCache::find(key, background)) {
-        debug() << QString("toolbar background %1 not in cache...").arg(key);
-
-        QPainter pt( &background );
-        m_svgRenderer->render( &pt, "toolbarbackground",  contentsRect() );
-        m_svgRenderer->render( &pt, "buttonbar",  controlRect );
-        QPixmapCache::insert(key, background);
-    }
-
-
-    QPainter painter( this );
-    painter.drawPixmap( 0, 0, background );
-
-}
-
-
+#endif

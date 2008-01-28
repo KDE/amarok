@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/lee/Work/amarok"
+   sodipodi:docbase="/home/amarok-dev/amarok/src/images"
    sodipodi:docname="service-browser-element.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
@@ -394,18 +394,6 @@
        x2="313.73923"
        y2="538.56927"
        gradientTransform="matrix(1.1199931,0,0,0.9990677,-195.43805,1063.5518)" />
-    <filter
-       inkscape:collect="always"
-       x="-0.021849263"
-       width="1.0436985"
-       y="-0.10217193"
-       height="1.2043439"
-       id="filter6349">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.666188"
-         id="feGaussianBlur6351" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4141"
@@ -567,7 +555,7 @@
      inkscape:cx="134.13609"
      inkscape:cy="-1.2183021"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g34622"
      inkscape:showpageshadow="false"
      inkscape:window-width="1110"
      inkscape:window-height="632"
@@ -604,7 +592,7 @@
          inkscape:export-ydpi="89.999985"
          inkscape:export-xdpi="89.999985"
          inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
-         style="fill:#6b6b6a;fill-opacity:1;stroke:#878782;stroke-width:1.05251479;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         style="fill:#666765;fill-opacity:1;stroke:#878782;stroke-width:1.05251479;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
          id="rect6405"
          width="290.38263"
          rx="5.7857981"
@@ -618,7 +606,7 @@
          inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
          id="path6407"
          d="M 191.94864,545.18145 C 188.76937,545.18145 186.20847,547.28804 186.20847,549.88057 L 186.20847,570.88005 C 280.84234,578.61847 377.07859,577.36511 474.24723,570.88005 L 474.24723,549.88057 C 474.24723,547.28804 471.68632,545.18145 468.50703,545.18145 L 191.94864,545.18145 z "
-         style="fill:#878782;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21" />
     </g>
   </g>
 </svg>
