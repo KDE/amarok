@@ -65,5 +65,6 @@ QueryMaker*
 LastFmServiceCollection::queryMaker()
 {
     // TODO
-    return new LastFmServiceQueryMaker( this );
+    //return new LastFmServiceQueryMaker( this );
+    return new MemoryQueryMaker( this, collectionId() );
 }
