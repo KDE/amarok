@@ -58,18 +58,19 @@ namespace Amarok
     static QString
     runCommand( const QByteArray &command )
     {
-        static const uint SIZE = 40960; //40 KiB
-        static char stdoutBuf[ SIZE ] = {0};
+        char buf[128];
+        QString out;
 
-//        std::cout << "Running: " << command << std::endl;
-
-        FILE *process = ::popen( command, "r" );
-        if ( process )
+        FILE *pipe = popen( command, "r" );
+        if ( pipe )
         {
-            stdoutBuf[ std::fread( static_cast<void*>( stdoutBuf ), sizeof(char), SIZE-1, process ) ] = '\0';
-            ::pclose( process );
+            while( fgets( buf, 128, pipe ) )
+                out += QString::fromLocal8Bit( buf );
+
+            pclose( pipe );
         }
-        return QString::fromLocal8Bit( stdoutBuf );
+        
+        return out;
     }
 
     void
