@@ -110,7 +110,7 @@ class TrackNavigator;
     };
 
 
-    class Model : public QAbstractListModel, Meta::Observer
+    class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver
     {
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
@@ -194,6 +194,9 @@ class TrackNavigator;
             bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
 
             void setCollapsed( int row, bool collapsed );
+
+            //Meta::PlaylistObserver virtual methods
+            void trackListChanged( Meta::Playlist * playlist );
 
             static Model* s_instance; //! instance variable
 

@@ -33,6 +33,15 @@ namespace Meta
     typedef KSharedPtr<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
 
+    class AMAROK_EXPORT PlaylistObserver
+    {
+        public:
+            /** This method is called when  a playlist has changed.
+             */
+            virtual void trackListChanged( Playlist* playlist ) {};
+            virtual ~PlaylistObserver() {};
+    };
+
     class AMAROK_EXPORT Playlist : public QSharedData
     {
         public:
@@ -42,6 +51,11 @@ namespace Meta
 
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
+
+            virtual void subscribe( PlaylistObserver *observer )
+                    { if( observer ) m_observers.insert( observer ); };
+            virtual void unsubscribe( PlaylistObserver *observer )
+                    { m_observers.remove( observer ); };
 
             /* the following has been copied from Meta.h
             * it is my hope that we can integrate Playlists
@@ -78,6 +92,15 @@ namespace Meta
             {
                 return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
             }
+
+        protected:
+            virtual void notifyObservers() const {
+                foreach( PlaylistObserver *observer, m_observers )
+                    observer->trackListChanged( const_cast<Meta::Playlist*>( this ) );
+            };
+
+        protected:
+            QSet<Meta::PlaylistObserver*> m_observers;
     };
 
 }

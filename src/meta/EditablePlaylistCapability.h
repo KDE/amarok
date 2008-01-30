@@ -34,35 +34,37 @@ namespace Meta {
 */
 class EditablePlaylistCapability : public Capability
 {
-public:
+    Q_OBJECT
 
-    virtual ~EditablePlaylistCapability();
+    public:
 
-    static Type capabilityInterfaceType() { return Meta::Capability::EditablePlaylist; }
+        virtual ~EditablePlaylistCapability();
 
-    /** Returns true if the tags of this track are currently editable */
-    virtual bool isEditable() const = 0;
+        static Type capabilityInterfaceType() { return Meta::Capability::EditablePlaylist; }
 
-    virtual void setTitle( QString title ) {};
-    virtual void setCreator( QString creator ) {};
-    virtual void setAnnotation( QString annotation ) {};
-    virtual void setInfo( KUrl info ) {};
-    virtual void setLocation( KUrl location ) {};
-    virtual void setIdentifier( QString identifier ) {};
-    virtual void setImage( KUrl image ) {};
-    virtual void setDate( QDateTime date ) {};
-    virtual void setLicense( KUrl license ) {};
-    virtual void setAttribution( KUrl attribution, bool append = true ) {};
-    virtual void setLink( KUrl link ) {};
-    virtual void setTrackList( TrackList trackList, bool append = false ) {};
+        /** Returns true if the tags of this track are currently editable */
+        virtual bool isEditable() const = 0;
 
-    /** The playlist object should not store changed meta data immediately but cache the
-    changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
-    virtual void beginMetaDataUpdate() = 0;
-    /** All meta data has been updated and the object should commit the changed */
-    virtual void endMetaDataUpdate() = 0;
-    /** Abort the meta data update without committing the changes */
-    virtual void abortMetaDataUpdate() = 0;
+        virtual void setTitle( QString title ) {};
+        virtual void setCreator( QString creator ) {};
+        virtual void setAnnotation( QString annotation ) {};
+        virtual void setInfo( KUrl info ) {};
+        virtual void setLocation( KUrl location ) {};
+        virtual void setIdentifier( QString identifier ) {};
+        virtual void setImage( KUrl image ) {};
+        virtual void setDate( QDateTime date ) {};
+        virtual void setLicense( KUrl license ) {};
+        virtual void setAttribution( KUrl attribution, bool append = true ) {};
+        virtual void setLink( KUrl link ) {};
+        virtual void setTrackList( TrackList trackList, bool append = false ) {};
+
+        /** The playlist object should not store changed meta data immediately but cache the
+        changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
+        virtual void beginMetaDataUpdate() = 0;
+        /** All meta data has been updated and the object should commit the changed */
+        virtual void endMetaDataUpdate() = 0;
+        /** Abort the meta data update without committing the changes */
+        virtual void abortMetaDataUpdate() = 0;
 
 };
 

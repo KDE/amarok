@@ -42,11 +42,11 @@ PlaylistFileProvider::PlaylistFileProvider()
         QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
         Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );
         //TODO: make this work
-//         if( playlist->is<Meta::EditablePlaylistCapability>() )
-//         {
-//             QString title = configEntry[0];
-//             playlist->as<Meta::EditablePlaylistCapability>()->setTitle( title );
-//         }
+        if( playlist->is<Meta::EditablePlaylistCapability>() )
+        {
+            QString title = configEntry[0];
+            playlist->as<Meta::EditablePlaylistCapability>()->setTitle( title );
+        }
         m_playlists << playlist;
     }
     if( m_playlists.isEmpty() )

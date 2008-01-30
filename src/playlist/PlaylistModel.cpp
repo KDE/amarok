@@ -436,6 +436,15 @@ Model::metadataChanged(Meta::Album * album)
 }
 
 void
+Model::trackListChanged( Meta::Playlist * playlist )
+{
+    DEBUG_BLOCK
+    //So what if it changes, we don't care. We shouldn't even receive these events!
+    if( m_observedPlaylist != playlist)
+        return;
+}
+
+void
 Model::clear()
 {
     if( m_items.size() < 1 )
@@ -542,16 +551,17 @@ void
 Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
-    //TODO: this is for Tracks, do something similar for Playlists
-//     m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
+    m_undoStack->push( new AddTracksCmd( 0, row, playlist->tracks() ) );
 }
 
 void
 Model::insertPlaylists( int row, Meta::PlaylistList playlists )
 {
+    int lastRow = row;
     foreach( Meta::PlaylistPtr playlist, playlists )
     {
-        insertPlaylist( row, playlist );
+        insertPlaylist( lastRow, playlist );
+        lastRow += playlist->tracks().size();
     }
 }
 
@@ -1110,13 +1120,5 @@ void Playlist::Model::setCollapsed(int row, bool collapsed)
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
-
-
-
-
-
-
-
-
 
 #include "PlaylistModel.moc"

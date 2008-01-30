@@ -18,7 +18,7 @@ ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 if(MP4V2_FOUND)
     ADD_DEFINITIONS(-DHAVE_MP4V2)
     include_directories( ${MP4V2_INCLUDE_DIR} )
-endif(MP4V2_FOUND)
+		endif(MP4V2_FOUND)
 
 if(APPLE)
     set(mac_SRCS app_mac.cpp)
@@ -227,6 +227,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/PLSPlaylist.cpp
     meta/EditablePlaylistCapability.cpp
+    meta/DynamicPlaylist.cpp
     meta/MultiPlayableCapability.cpp
 )
 
@@ -419,7 +420,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainToolbar.cpp
     xmlloader.cpp
     SvgTinter.cpp
-#    xspfplaylist.cpp
+    xspfplaylist.cpp
 )
 
 
