@@ -34,7 +34,7 @@ class CollectionTreeView: public QTreeView {
         void setLevel( int level, int type );
 
         void setModel ( QAbstractItemModel * model );
-	    void contextMenuEvent(QContextMenuEvent* event);
+        void contextMenuEvent(QContextMenuEvent* event);
 
         void setShowYears( bool show ) { m_showYears = show; }
         const bool showYears() const { return m_showYears; }
