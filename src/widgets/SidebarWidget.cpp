@@ -21,6 +21,9 @@
 #include "debug.h"
 #include "SidebarWidget.h"
 
+#include "SvgTinter.h"
+#include "TheInstances.h"
+
 #include <KStandardDirs>
 
 #include <QAbstractItemDelegate>
@@ -268,16 +271,20 @@ void SideBarButton::paintEvent( QPaintEvent* )
 {
     DEBUG_BLOCK
 
-    //TODO Cache this please
-    QFile file( KStandardDirs::locate( "data","amarok/images/sidebar_button.svg" ) );
-    file.open( QIODevice::ReadOnly );
-    QString svg_source( file.readAll() );
 
     QPainter p( this );
     p.initFrom( this );
 
-    QColor baseColor( "#878782" );
-    
+    QString file = KStandardDirs::locate( "data","amarok/images/sidebar_button.svg" );
+    QSvgRenderer svg( The::svgTinter()->tint( file ).toAscii() );
+    if ( ! svg.isValid() )
+        debug() << "svg is kaputski";
+
+    svg.render( &p );
+
+    QColor baseColor = palette().text();
+
+
     QColor c;
     if( isDown() )
         c = blendColors( palette().highlight().color().darker( 150 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
@@ -290,22 +297,15 @@ void SideBarButton::paintEvent( QPaintEvent* )
     else
         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
 
-    debug() << "new color name: " << c.name();
-
-    debug() << "Contains fill:#878782: " << svg_source.contains( "fill:#878782" );
-    
-    svg_source.replace( "fill:#878782", "fill:" + c.name() );
-    QSvgRenderer svg( svg_source.toAscii() );
-    svg.render( &p );
-
-    const QString txt = text().replace( "&", "" );
-
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+    const QString txt = text().replace( "&", "" );
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
     p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height() - 2, 0 );
     p.rotate( -90 );
+
+    p.setPen( QPen( c ) );
     p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
 

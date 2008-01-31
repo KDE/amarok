@@ -48,7 +48,7 @@ void MainToolbar::paintEvent(QPaintEvent *)
 {
 
     int middle = contentsRect().width() / 2;
-    QRect controlRect( middle - 90, 0, 180, 50 );
+    QRect controlRect( middle - 90, 0, 180, 40 );
 
 
     QString key = QString("toolbar-background:%1x%2")
