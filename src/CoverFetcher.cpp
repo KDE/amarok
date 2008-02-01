@@ -299,6 +299,13 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
     }
+
+    if( m_albums.isEmpty() ) {
+
+        finishWithError( i18n("Internal error, no albums in queue"), job );
+        return;
+    }
+    
     if ( job ) {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
