@@ -66,13 +66,11 @@ class PodcastCollection : public Collection, public MemoryCollection
 
     public slots:
         void slotUpdateAll();
-        void slotUpdate( QString podcastChannelName );
+        void slotUpdate( Meta::PodcastChannelPtr channel );
         void slotReadResult( PodcastReader *podcastReader, bool result );
 
     private:
         static PodcastCollection* s_instance;
-
-        QList<KUrl> urls;
 
         Meta::PodcastChannelList m_channels;
         PodcastChannelProvider* m_channelProvider;

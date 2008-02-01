@@ -58,6 +58,7 @@ class PodcastModel : public QAbstractItemModel
         void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
+        void refreshPodcast( Meta::PodcastChannelPtr channel );
         void configurePodcasts();
         void setPodcastsInterval();
         void emitLayoutChanged();

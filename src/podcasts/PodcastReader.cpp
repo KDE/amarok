@@ -47,13 +47,13 @@ bool PodcastReader::read ( QIODevice *device )
 }
 
 bool
-PodcastReader::read(const QString & url)
+PodcastReader::read(const KUrl &url)
 {
     DEBUG_BLOCK
 
     m_url = url;
 
-    KIO::TransferJob *getJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    KIO::TransferJob *getJob = KIO::storedGet( m_url, KIO::Reload, KIO::HideProgressInfo );
 
 //     connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
 //              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
@@ -73,6 +73,15 @@ PodcastReader::read(const QString & url)
     return !getJob->isErrorPage();
 }
 
+bool
+PodcastReader::update( PodcastChannelPtr channel )
+{
+    m_channel = channel;
+    m_current = static_cast<PodcastMetaCommon *>(channel.data());
+
+    return read( m_channel->url() );
+}
+
 void
 PodcastReader::slotAddData( KIO::Job *, const QByteArray & data)
 {
@@ -83,7 +92,18 @@ PodcastReader::slotAddData( KIO::Job *, const QByteArray & data)
     read();
 }
 
-bool PodcastReader::read()
+void
+PodcastReader::downloadResult( KJob * job )
+{
+    DEBUG_BLOCK
+
+    QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
+    //parse some more data
+    read();
+}
+
+bool
+PodcastReader::read()
 {
     DEBUG_BLOCK
     bool result = true;
@@ -130,6 +150,7 @@ bool PodcastReader::read()
                         {
                             debug() << "new channel";
                             m_channel = new Meta::PodcastChannel();
+                            m_channel->setUrl( m_url );
                             debug() << "m_channel.data(): " << m_channel.data();
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
@@ -155,15 +176,19 @@ bool PodcastReader::read()
             if( isStartElement() )
             {
                 debug() << "startElement: " << QXmlStreamReader::name().toString();
-                if (QXmlStreamReader::name() == "title")
-                    m_current->setTitle( readTitle() );
-                else if (QXmlStreamReader::name() == "description")
-                    m_current->setDescription( readDescription() );
-                else if (QXmlStreamReader::name() == "item")
+                if (QXmlStreamReader::name() == "item")
                 {
                     debug() << "new episode";
                     m_current = new Meta::PodcastEpisode( m_channel );
                 }
+                else if( QXmlStreamReader::name() == "title" )
+                    m_current->setTitle( readTitle() );
+                else if( QXmlStreamReader::name() == "description" )
+                    m_current->setDescription( readDescription() );
+                else if( QXmlStreamReader::name() == "guid" )
+                    static_cast<PodcastEpisode *>(m_current)->setGuid( readGuid() );
+                else if( QXmlStreamReader::name() == "enclosure" )
+                    static_cast<PodcastEpisode *>(m_current)->setUrl( readUrl() );
             }
             else if( isEndElement() )
             {
@@ -231,15 +256,15 @@ PodcastReader::readLink()
     return readElementText();
 }
 
-QString
-PodcastReader::readEnclosure()
+KUrl
+PodcastReader::readUrl()
 {
     DEBUG_BLOCK
     Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "enclosure" );
     //TODO: need to get the url argument here
     QString url = attributes().value( "", "url").toString();
     debug() << readElementText();
-    return url;
+    return KUrl( url );
 }
 
 QString
@@ -258,7 +283,8 @@ PodcastReader::readPubDate()
     return readElementText();
 }
 
-void PodcastReader::readUnknownElement()
+void
+PodcastReader::readUnknownElement()
 {
     DEBUG_BLOCK
     Q_ASSERT ( isStartElement() );
@@ -300,8 +326,11 @@ void
 PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
-    debug() << "commit Podcast Channel (as Album) " << m_channel->title();
 
+    if( m_collection->channels().contains( m_channel ) )
+        return;
+
+    debug() << "commit new Podcast Channel (as Album) " << m_channel->title();
     m_collection->acquireReadLock();
     m_collection->addChannel( PodcastChannelPtr( m_channel ) );
     m_collection->releaseLock();
@@ -313,29 +342,59 @@ void
 PodcastReader::commitEpisode()
 {
     Q_ASSERT( m_current );
-    debug() << "commit episode " << m_current->title();
     PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode *>(m_current) );
     item->setAlbum( m_channel->name() );
 
-    m_collection->acquireReadLock();
-    m_collection->addEpisode( item );
-    m_collection->releaseLock();
+    PodcastEpisodePtr episodeMatch = podcastEpisodeCheck( item );
+    if( episodeMatch == item )
+    {
+        debug() << "commit episode " << m_current->title();
+        m_collection->acquireReadLock();
+        m_collection->addEpisode( item );
+        m_collection->releaseLock();
 
-    Q_ASSERT( m_channel );
-    //make a copy of the pointer and add that to the channel
-    m_channel->addEpisode( PodcastEpisodePtr( item ) );
+        Q_ASSERT( m_channel );
+        //make a copy of the pointer and add that to the channel
+        m_channel->addEpisode( PodcastEpisodePtr( item ) );
+    }
 
     m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }
 
-void PodcastReader::downloadResult( KJob * job )
+Meta::PodcastEpisodePtr
+PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
 {
     DEBUG_BLOCK
+    Meta::PodcastEpisodePtr episodeMatch = episode;
+    Meta::PodcastEpisodeList episodes = m_channel->episodes();
 
-//     KIO::StoredTransferJob *sjob = ;
-    QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
-    //parse some more data
-    read();
+    debug() << "episode title: " << episode->title();
+    debug() << "episode url: " << episode->url();
+    debug() << "episode guid: " << episode->guid();
+
+    foreach( PodcastEpisodePtr match, episodes )
+    {
+        debug() << "match title: " << match->title();
+        debug() << "match url: " << match->url();
+        debug() << "match guid: " << match->guid();
+
+        int score = 0;
+        if( !episode->title().isEmpty() && episode->title() == match->title() )
+            score += 1;
+        if( !episode->url().isEmpty() && episode->url() == match->url() )
+            score += 3;
+        if( !episode->guid().isEmpty() && episode->guid() == match->guid() )
+            score += 3;
+
+        debug() << "score: " << score;
+        if( score >= 3 )
+        {
+            episodeMatch = match;
+            break;
+        }
+    }
+
+    return episodeMatch;
 }
 
 #include "PodcastReader.moc"

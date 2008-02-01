@@ -77,11 +77,14 @@ void
 PodcastCollection::slotUpdateAll()
 {
     //TODO: just calling it for the first one now
-    slotUpdate( urls.first().url() );
+    foreach( Meta::PodcastChannelPtr channel, m_channels )
+    {
+        slotUpdate( channel );
+    }
 }
 
 void
-PodcastCollection::slotUpdate( QString url )
+PodcastCollection::slotUpdate( Meta::PodcastChannelPtr channel )
 {
     DEBUG_BLOCK
 
@@ -91,7 +94,7 @@ PodcastCollection::slotUpdate( QString url )
     connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
              SLOT( slotReadResult( PodcastReader *, bool ) ) );
 
-    result = podcastReader->read( url );
+    result = podcastReader->update( channel );
 }
 
 void
@@ -130,10 +133,14 @@ PodcastCollection::addPodcast(const QString & url)
     }
 
     KUrl kurl = KUrl( url );
-    //TODO: do some checks here
-    urls << kurl;
-    debug() << url << " added";
-    slotUpdate( url );
+
+    bool result = false;
+    PodcastReader * podcastReader = new PodcastReader( this );
+
+    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
+             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+
+    result = podcastReader->read( kurl );
 }
 
 void

@@ -149,9 +149,12 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         //PodcastEpisode methods
         virtual QString pubDate() const { return m_pubDate; };
         virtual int duration() const { return m_duration; };
+        virtual QString guid() const { return m_guid; };
 
+        virtual void setUrl( const KUrl &url ) { m_url = url; };
         virtual void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
         virtual void setDuration( int duration ) { m_duration = duration; };
+        virtual void setGuid( const QString &guid ) { m_guid = guid; };
 
         virtual int sequence() { return m_sequenceNmbr; };
         virtual void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
@@ -162,6 +165,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
     protected:
         PodcastChannelPtr m_channel;
         QString m_pubDate;
+        QString m_guid;
         KUrl m_url;
         KUrl m_playableUrl;
         int m_duration;
@@ -188,11 +192,13 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
         //PodcastChannel specific methods
 
+        virtual KUrl url() const { return m_url; };
         virtual KUrl link() const { return m_link; };
         virtual QPixmap image() const { return m_image; };
         virtual QString copyright() { return m_copyright; };
         virtual QStringList categories() const { return m_categories; };
 
+        virtual void setUrl( KUrl &url ) { m_url = url; };
         virtual void setLink( KUrl &link ) { m_link = link; };
         virtual void setImage( QPixmap &image ) { m_image = image; };
         virtual void setCopyright( QString &copyright ) { m_copyright = copyright; };
@@ -209,6 +215,7 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         virtual bool load( QTextStream &stream ) { return false; };
 
     protected:
+        KUrl m_url;
         KUrl m_link;
         QStringList m_categories;
         QString m_copyright;

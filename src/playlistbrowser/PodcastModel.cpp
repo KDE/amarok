@@ -283,6 +283,12 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 }
 
 void
+PlaylistBrowserNS::PodcastModel::refreshPodcast( PodcastChannelPtr channel )
+{
+
+}
+
+void
 PlaylistBrowserNS::PodcastModel::configurePodcasts()
 {
     debug() << "configure Podcasts";

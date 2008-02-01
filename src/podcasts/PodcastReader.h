@@ -38,29 +38,15 @@ class PodcastReader : public QObject, public QXmlStreamReader
         PodcastReader( PodcastCollection * collection );
 
         bool read( QIODevice *device );
-        bool read( const QString &url );
+        bool read( const KUrl &url );
         bool read();
-        QString & url() { return m_url; }
+        bool update( Meta::PodcastChannelPtr channel );
+        KUrl & url() { return m_url; }
 
         ~PodcastReader();
 
     signals:
         void finished( PodcastReader *podcastReader, bool result );
-
-    private:
-        QString readTitle();
-        QString readLink();
-        QString readDescription();
-        QString readEnclosure();
-        QString readGuid();
-        QString readPubDate();
-        void readUnknownElement();
-    //     void readImage();
-    //     void readCopyright();
-        PodcastCollection * m_collection;
-
-        void commitChannel();
-        void commitEpisode();
 
     private slots:
         void slotRedirection( KIO::Job *job, const KUrl & url );
@@ -72,9 +58,30 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void downloadResult( KJob * );
 
     private:
-        QString m_url;
+        KUrl m_url;
+        PodcastCollection * m_collection;
         Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
+
+        QString readTitle();
+        QString readLink();
+        QString readDescription();
+        KUrl readUrl();
+        QString readGuid();
+        QString readPubDate();
+        void readUnknownElement();
+    //     void readImage();
+    //     void readCopyright();
+
+        /** podcastEpisodeCheck
+        * Check if this PodcastEpisode has been fetched before. Uses a scoring algorithm.
+        * @return A pointer to a PodcastEpisode that has been fetched before or the \
+        *   same pointer as the argument.
+        */
+        Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
+
+        void commitChannel();
+        void commitEpisode();
 };
 
 #endif
