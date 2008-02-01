@@ -70,7 +70,7 @@ QueryMaker * AmpacheServiceQueryMaker::reset()
     m_parentAlbumId = QString();
 
     m_artistFilter = QString();
-    m_lastArtistFilter = QString();
+    //m_lastArtistFilter = QString(); this one really should survive a reset....
 
     return this;
 }
@@ -225,13 +225,17 @@ void AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
 void AmpacheServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    if ( ( m_collection->artistMap().values().count() != 0 ) && ( m_artistFilter == m_lastArtistFilter ) ) {
+
+    //this stuff causes crashes and "whiteouts" and will need to change anyway if the Ampache API is updated to
+    // allow multilevel filtering. Hence it is commented out but left in for future reference
+    /*if ( ( m_collection->artistMap().values().count() != 0 ) && ( m_artistFilter == m_lastArtistFilter ) ) {
         handleResult( m_collection->artistMap().values() );
         debug() << "no need to fetch artists again! ";
-    }
-    else {
+        debug() << "    filter: " << m_artistFilter;
+        debug() << "    last filter: " << m_lastArtistFilter;
 
-        m_lastArtistFilter = m_artistFilter;
+    }*/
+    //else {
 
         QString urlString = "<SERVER>/server/xml.server.php?action=artists&auth=<SESSION_ID>";
 
@@ -248,7 +252,9 @@ void AmpacheServiceQueryMaker::fetchArtists()
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( artistDownloadComplete( KJob *) ) );
-    }
+    //}
+
+    m_lastArtistFilter = m_artistFilter;
 }
 
 void AmpacheServiceQueryMaker::fetchAlbums()
@@ -550,8 +556,11 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     DEBUG_BLOCK
-    debug() << "Filter: " << filter;
-    m_artistFilter = filter;
+    //for now, only accept artist filters
+    if ( value == valArtist ) {
+        debug() << "Filter: " << filter;
+        m_artistFilter = filter;
+    }
     return this;
 }
 
