@@ -24,6 +24,7 @@
 #include "PodcastCategory.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
+#include "TheInstances.h"
 
 #include <QAction>
 #include <QToolBar>
@@ -33,41 +34,78 @@
 #include <QPainter>
 #include <QPixmapCache>
 #include <QLinearGradient>
+#include <QModelIndexList>
 #include <QFontMetrics>
 #include <QRegExp>
 #include <QSvgRenderer>
 #include <QFile>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
+#include <KMenu>
 #include <KStandardDirs>
+#include <KIcon>
 
 #include <typeinfo>
 
 namespace PlaylistBrowserNS {
 
 PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel )
- : Ui_PodcastCategoryBase()
+    : QWidget()
     , m_podcastModel( podcastModel )
 {
-    Ui_PodcastCategoryBase::setupUi( this );
-    podcastTreeView->setModel( podcastModel );
-    podcastTreeView->header()->hide();
-    podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(podcastTreeView) );
+    resize(339, 574);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
+    setSizePolicy(sizePolicy);
 
-    addPodcastButton->setIcon( KIcon( "list-add-amarok" ) );
-    refreshPodcastsButton->setIcon( KIcon( "view-refresh-amarok" ) );
-    configurePodcastsButton->setIcon( KIcon( "configure-amarok" ) );
-    podcastsIntervalButton->setIcon( KIcon( "configure-amarok" ) );
+    QVBoxLayout *vLayout = new QVBoxLayout( this );
 
-    connect( addPodcastButton, SIGNAL( pressed() ), m_podcastModel, SLOT( addPodcast() ) );
-    connect( refreshPodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( refreshPodcasts() ) );
-    connect( configurePodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( configurePodcasts() ) );
-    connect( podcastsIntervalButton, SIGNAL( pressed() ), m_podcastModel, SLOT( setPodcastsInterval() ) );
+    QHBoxLayout *hLayout = new QHBoxLayout( this );
+    hLayout->setSpacing(6);
+    m_addPodcastButton = new QToolButton( this );
+    m_addPodcastButton->setIcon( KIcon( "list-add-amarok" ) );
+    hLayout->addWidget( m_addPodcastButton );
 
-    m_viewKicker = new ViewKicker( podcastTreeView );
-    
+    m_refreshPodcastsButton = new QToolButton( this );
+    m_refreshPodcastsButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    hLayout->addWidget( m_refreshPodcastsButton );
+
+    m_configurePodcastsButton = new QToolButton( this );
+    m_configurePodcastsButton->setIcon( KIcon( "configure-amarok" ) );
+    hLayout->addWidget( m_configurePodcastsButton );
+
+    m_podcastsIntervalButton = new QToolButton( this );
+    m_podcastsIntervalButton->setIcon( KIcon( "configure-amarok" ) );
+    hLayout->addWidget( m_podcastsIntervalButton );
+
+    vLayout->addLayout( hLayout );
+
+    m_podcastTreeView = new PodcastView( this );
+    m_podcastTreeView->setModel( podcastModel );
+    m_podcastTreeView->header()->hide();
+    m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
+
+    QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+    sizePolicy1.setHorizontalStretch(0);
+    sizePolicy1.setVerticalStretch(0);
+    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
+    m_podcastTreeView->setSizePolicy(sizePolicy1);
+
+    vLayout->addWidget( m_podcastTreeView );
+
+    connect( m_addPodcastButton, SIGNAL( pressed() ), m_podcastModel, SLOT( addPodcast() ) );
+    connect( m_refreshPodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( refreshPodcasts() ) );
+    connect( m_configurePodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( configurePodcasts() ) );
+    connect( m_podcastsIntervalButton, SIGNAL( pressed() ), m_podcastModel, SLOT( setPodcastsInterval() ) );
+
+    m_viewKicker = new ViewKicker( m_podcastTreeView );
+
     //connect( podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), podcastModel, SLOT( emitLayoutChanged() ) );
-    connect( podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
-    
+    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
+
 
 }
 
@@ -77,8 +115,8 @@ PodcastCategory::~PodcastCategory()
 
 ViewKicker::ViewKicker( QTreeView * treeView )
 {
-     DEBUG_BLOCK
-     m_treeView = treeView;
+    DEBUG_BLOCK
+    m_treeView = treeView;
 }
 
 void ViewKicker::kickView()
@@ -179,10 +217,10 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
 
-    
+
     QFontMetricsF fm( painter->font() );
     QRectF textBound;
-    
+
     QString description = index.data( ShortDescriptionRole ).toString();
     description.replace( QRegExp("\n "), "\n" );
     description.replace( QRegExp("\n+"), "\n" );
@@ -233,14 +271,14 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     //todo: the heigth should be defined the way it is in the delegate: iconpadY*2 + iconheight
     Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int heigth = 24;
-    /* Why is this here anyways? 
+    /* Why is this here anyways?
     if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
         heigth = 24;
     */
     if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
     {
         QString description = index.data( ShortDescriptionRole ).toString();
-        
+
         QFontMetrics fm( QFont( "Arial", 8 ) );
         heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
@@ -254,6 +292,85 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     return QSize ( width, heigth );
 }
 
+}
+
+PlaylistBrowserNS::PodcastView::PodcastView( QWidget * parent )
+    : QTreeView( parent )
+{
+}
+
+PlaylistBrowserNS::PodcastView::~PodcastView()
+{
+}
+
+void
+PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
+{
+    DEBUG_BLOCK
+
+    QModelIndexList indices = selectedIndexes();
+
+    if( !indices.isEmpty() )
+    {
+
+        KMenu menu;
+        QAction* loadAction = new QAction( KIcon("file_open" ), i18n( "&Load" ), &menu );
+        QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
+
+        menu.addAction( loadAction );
+        menu.addAction( appendAction );
+
+        //TODO: only for Channels and Folders
+        QAction* refreshAction = new QAction( KIcon("view-refresh-amarok"), i18n("&Refresh"), &menu );
+        QAction *at = refreshAction;
+
+        menu.addSeparator();
+        menu.addAction( refreshAction );
+
+        QAction *result = menu.exec( event->globalPos(), at );
+        if( result == loadAction )
+        {
+            debug() << "load " << indices.count() << " episodes";
+            loadItems( indices, Playlist::Replace );
+        }
+        else if( result == appendAction )
+        {
+            debug() << "append " << indices.count() << " episodes";
+            loadItems( indices, Playlist::Append );
+        }
+        else if( result == refreshAction )
+        {
+            debug() << "refresh " << indices.count() << " items";
+            refreshItems( indices );
+        }
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastView::loadItems(QModelIndexList list, Playlist::AddOptions insertMode)
+{
+    Meta::TrackList episodes;
+    Meta::PlaylistList channels;
+    foreach( QModelIndex item, list )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>( item.internalPointer() );
+        switch( pmc->podcastType() )
+        {
+            case Meta::PodcastMetaCommon::ChannelType:
+                channels << Meta::PlaylistPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+                break;
+            case Meta::PodcastMetaCommon::EpisodeType:
+                episodes << Meta::TrackPtr( static_cast<Meta::PodcastEpisode *>(pmc) ); break;
+            default: debug() << "error, neither Channel nor Episode";
+        }
+    }
+    The::playlistModel()->insertOptioned( episodes, insertMode );
+    The::playlistModel()->insertOptioned( channels, insertMode );
+}
+
+void
+PlaylistBrowserNS::PodcastView::refreshItems(QModelIndexList list)
+{
 }
 
 #include "PodcastCategory.moc"

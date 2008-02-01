@@ -19,21 +19,26 @@
 #ifndef PODCASTCATEGORY_H
 #define PODCASTCATEGORY_H
 
-#include <ui_PodcastCategoryBase.h>
-
+#include <QContextMenuEvent>
 #include <QItemDelegate>
 #include <QListView>
 #include <QSvgRenderer>
+#include <QToolButton>
+#include <QTreeView>
+
+#include "playlist/PlaylistModel.h"
 
 namespace PlaylistBrowserNS {
 
 class PodcastModel;
+class PodcastView;
+class PodcastCategoryDelegate;
 class ViewKicker;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PodcastCategory : public Ui_PodcastCategoryBase, public QWidget
+class PodcastCategory : public QWidget
 {
     public:
     PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
@@ -41,9 +46,14 @@ class PodcastCategory : public Ui_PodcastCategoryBase, public QWidget
     ~PodcastCategory();
 
     private:
-        PodcastModel *m_podcastModel;
-        ViewKicker * m_viewKicker;
+        QToolButton *m_addPodcastButton;
+        QToolButton *m_refreshPodcastsButton;
+        QToolButton *m_configurePodcastsButton;
+        QToolButton *m_podcastsIntervalButton;
 
+        PodcastModel *m_podcastModel;
+        PodcastView *m_podcastTreeView;
+        ViewKicker * m_viewKicker;
 };
 
 
@@ -59,6 +69,19 @@ Q_OBJECT
     public slots:
         void kickView();
 
+};
+
+class PodcastView : public QTreeView
+{
+    public:
+        PodcastView( QWidget *parent = 0 );
+        ~PodcastView();
+
+        void contextMenuEvent( QContextMenuEvent* event );
+
+    private:
+        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+        void refreshItems( QModelIndexList list );
 };
 
 /**

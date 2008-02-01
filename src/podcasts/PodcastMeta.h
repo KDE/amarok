@@ -43,30 +43,6 @@ typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;
 
-// class PodcastMetaFactory
-// {
-//
-//     public:
-//         PodcastMetaFactory( const QString &dbPrefix );
-//         virtual ~PodcastMetaFactory() {};
-//
-//         QString tablePrefix();
-//
-//         virtual TrackPtr createTrack( const QStringList &rows );
-//
-//         virtual AlbumPtr createAlbum( const QStringList &rows );
-//
-//         virtual ArtistPtr createArtist( const QStringList &rows );
-//
-//         virtual GenrePtr createGenre( const QStringList &rows );
-//
-//     private:
-//
-//         QString m_dbTablePrefix;
-//
-//
-// };
-
 class PodcastMetaCommon
 {
     public:
@@ -75,23 +51,24 @@ class PodcastMetaCommon
             ChannelType = 0,
             EpisodeType
         };
+
 //         PodcastMetaCommon();
         virtual ~PodcastMetaCommon() {}
 
-        QString title() const { return m_title;} ;
-        QString description() const { return m_description; };
-        QStringList keywords() const { return m_keywords; };
-        QString subtitle() const { return m_subtitle; };
-        QString summary() const { return m_summary; };
-        QString author() const { return m_author; };
+        virtual QString title() const { return m_title;} ;
+        virtual QString description() const { return m_description; };
+        virtual QStringList keywords() const { return m_keywords; };
+        virtual QString subtitle() const { return m_subtitle; };
+        virtual QString summary() const { return m_summary; };
+        virtual QString author() const { return m_author; };
 
         virtual void setTitle( const QString &title ) { m_title = title; };
-        void setDescription( const QString &description ) { m_description = description; };
-        void setKeywords( const QStringList &keywords ) { m_keywords = keywords; };
-        void addKeyword( const QString &keyword ) { m_keywords << keyword; };
-        void setSubtitle( const QString &subtitle ) { m_subtitle = subtitle; };
-        void setSummary( const QString &summary ) { m_summary = summary; };
-        void setAuthor( const QString &author ) { m_author = author; };
+        virtual void setDescription( const QString &description ) { m_description = description; };
+        virtual void setKeywords( const QStringList &keywords ) { m_keywords = keywords; };
+        virtual void addKeyword( const QString &keyword ) { m_keywords << keyword; };
+        virtual void setSubtitle( const QString &subtitle ) { m_subtitle = subtitle; };
+        virtual void setSummary( const QString &summary ) { m_summary = summary; };
+        virtual void setAuthor( const QString &author ) { m_author = author; };
 
         virtual int podcastType() = 0;
 
@@ -170,19 +147,19 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual int podcastType() { return EpisodeType; };
 
         //PodcastEpisode methods
-        QString pubDate() const { return m_pubDate; };
-        int duration() const { return m_duration; };
+        virtual QString pubDate() const { return m_pubDate; };
+        virtual int duration() const { return m_duration; };
 
-        void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
-        void setDuration( int duration ) { m_duration = duration; };
+        virtual void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
+        virtual void setDuration( int duration ) { m_duration = duration; };
 
-        int sequence() { return m_sequenceNmbr; };
-        void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
+        virtual int sequence() { return m_sequenceNmbr; };
+        virtual void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
 
-        PodcastChannelPtr channel() { return m_channel; };
-        void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
+        virtual PodcastChannelPtr channel() { return m_channel; };
+        virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
 
-    private:
+    protected:
         PodcastChannelPtr m_channel;
         QString m_pubDate;
         KUrl m_url;
@@ -196,7 +173,6 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
 class PodcastChannel : public Playlist, public PodcastMetaCommon
 {
     public:
-        PodcastChannel() {};
         virtual ~PodcastChannel() {};
 
         //Playlist virtual methods
@@ -212,19 +188,19 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
         //PodcastChannel specific methods
 
-        KUrl link() const { return m_link; };
-        QPixmap image() const { return m_image; };
-        QString copyright() { return m_copyright; };
-        QStringList categories() const { return m_categories; };
+        virtual KUrl link() const { return m_link; };
+        virtual QPixmap image() const { return m_image; };
+        virtual QString copyright() { return m_copyright; };
+        virtual QStringList categories() const { return m_categories; };
 
-        void setLink( KUrl &link ) { m_link = link; };
-        void setImage( QPixmap &image ) { m_image = image; };
-        void setCopyright( QString &copyright ) { m_copyright = copyright; };
-        void setCategories( QStringList &categories ) { m_categories = categories; };
-        void addCategory( QString &category ) { m_categories << category; };
+        virtual void setLink( KUrl &link ) { m_link = link; };
+        virtual void setImage( QPixmap &image ) { m_image = image; };
+        virtual void setCopyright( QString &copyright ) { m_copyright = copyright; };
+        virtual void setCategories( QStringList &categories ) { m_categories = categories; };
+        virtual void addCategory( QString &category ) { m_categories << category; };
 
-        void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
-        PodcastEpisodeList episodes() { return m_episodes; };
+        virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
+        virtual PodcastEpisodeList episodes() { return m_episodes; };
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
 
@@ -232,8 +208,7 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
         virtual bool load( QTextStream &stream ) { return false; };
 
-    private:
-
+    protected:
         KUrl m_link;
         QStringList m_categories;
         QString m_copyright;
