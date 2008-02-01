@@ -30,9 +30,7 @@
 
 using namespace Meta;
 
-namespace PlaylistBrowserNS {
-
-PodcastModel::PodcastModel()
+PlaylistBrowserNS::PodcastModel::PodcastModel()
  : QAbstractItemModel()
 {
     QList<PlaylistPtr> playlists =
@@ -45,12 +43,12 @@ PodcastModel::PodcastModel()
 }
 
 
-PodcastModel::~PodcastModel()
+PlaylistBrowserNS::PodcastModel::~PodcastModel()
 {
 }
 
 QVariant
-PodcastModel::data(const QModelIndex & index, int role) const
+PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
     if ( !index.isValid() )
         return QVariant();
@@ -97,7 +95,7 @@ PodcastModel::data(const QModelIndex & index, int role) const
 }
 
 QModelIndex
-PodcastModel::index(int row, int column, const QModelIndex & parent) const
+PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & parent) const
 {
     if (!hasIndex(row, column, parent))
         return QModelIndex();
@@ -133,7 +131,7 @@ PodcastModel::index(int row, int column, const QModelIndex & parent) const
 }
 
 QModelIndex
-PodcastModel::parent(const QModelIndex & index) const
+PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 {
     if (!index.isValid())
         return QModelIndex();
@@ -158,7 +156,7 @@ PodcastModel::parent(const QModelIndex & index) const
 }
 
 int
-PodcastModel::rowCount(const QModelIndex & parent) const
+PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
 {
     if (parent.column() > 0)
         return 0;
@@ -188,13 +186,13 @@ PodcastModel::rowCount(const QModelIndex & parent) const
 }
 
 int
-PodcastModel::columnCount(const QModelIndex & /*parent*/) const
+PlaylistBrowserNS::PodcastModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return 1;
 }
 
 Qt::ItemFlags
-PodcastModel::flags(const QModelIndex & index) const
+PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 {
     if (!index.isValid())
         return 0;
@@ -203,7 +201,7 @@ PodcastModel::flags(const QModelIndex & index) const
 }
 
 QVariant
-PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
+PlaylistBrowserNS::PodcastModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
@@ -219,7 +217,7 @@ PodcastModel::headerData(int section, Qt::Orientation orientation, int role) con
 }
 
 void
-PodcastModel::slotUpdate()
+PlaylistBrowserNS::PodcastModel::slotUpdate()
 {
     //TODO: emit dataChanged( QModelIndex(),  QModelIndex() );
 
@@ -237,7 +235,8 @@ PodcastModel::slotUpdate()
     emit layoutChanged();
 }
 
-void PodcastModel::addPodcast()
+void
+PlaylistBrowserNS::PodcastModel::addPodcast()
 {
     debug() << "adding Podcast";
 
@@ -266,7 +265,8 @@ void PodcastModel::addPodcast()
 
 }
 
-void PodcastModel::refreshPodcasts()
+void
+PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 {
     debug() << "refresh Podcasts";
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
@@ -282,24 +282,23 @@ void PodcastModel::refreshPodcasts()
     }
 }
 
-void PodcastModel::configurePodcasts()
+void
+PlaylistBrowserNS::PodcastModel::configurePodcasts()
 {
     debug() << "configure Podcasts";
 }
 
-void PodcastModel::setPodcastsInterval()
+void
+PlaylistBrowserNS::PodcastModel::setPodcastsInterval()
 {
     debug() << "set Podcasts update interval";
 }
 
-}
-
-void PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
+void
+PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
 {
     DEBUG_BLOCK
     emit( layoutChanged() );
 }
 
 #include "PodcastModel.moc"
-
-
