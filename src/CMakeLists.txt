@@ -13,7 +13,7 @@ MESSAGE(STATUS "reactivate konquesidebar when it is ported")
 #    MESSAGE(STATUS "Konqueror sidebar will not be compiled.")
 #endif(KONQSIDEBAR_INCLUDE_DIR)
 
-ADD_DEFINITIONS(${TAGLIB_CFLAGS})
+ADD_DEFINITIONS(${TAGLIB_CFLAGS} -DQT_STL)
 
 if(MP4V2_FOUND)
     ADD_DEFINITIONS(-DHAVE_MP4V2)
