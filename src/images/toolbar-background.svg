@@ -104,7 +104,7 @@
        xlink:href="#linearGradient3023"
        id="linearGradient2791"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.4511825,0,0,0.3936343,-390.77675,1027.8223)"
+       gradientTransform="matrix(0.4511825,0,0,0.3936343,-390.7768,1027.4122)"
        x1="-660.00189"
        y1="337.59998"
        x2="-379.78619"
@@ -121,10 +121,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="290.07533"
-     inkscape:cy="6.6592444"
+     inkscape:cx="213.7506"
+     inkscape:cy="137.05599"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="toolbarbackground"
      inkscape:window-width="1680"
      inkscape:window-height="972"
      inkscape:window-x="0"
@@ -152,7 +152,7 @@
     <g
        inkscape:label="#toolbarbackground2"
        id="toolbarbackground2"
-       transform="translate(1.000001,142)">
+       transform="translate(1.1661377e-6,140)">
       <g
          id="g4481"
          transform="matrix(0.9976247,0,0,1,4.0820951,-102.85711)">
@@ -239,9 +239,9 @@
          id="rect4515" />
     </g>
     <g
-       id="toolbarbackground"
-       inkscape:label="#toolbarbackground">
+       id="toolbarbackground">
       <g
+         style="opacity:1"
          transform="matrix(0.9976247,0,0,1,4.0820951,-102.85711)"
          id="g4477">
         <rect
@@ -254,9 +254,9 @@
            style="opacity:0.9;fill:#2e3436;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.02646151;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
         <rect
            id="rect3349"
-           x="518.55853"
+           x="515.70135"
            y="1051.2189"
-           width="1200"
+           width="1202.8572"
            height="79.999977"
            style="opacity:0.9;fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.02646151;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
         <g
@@ -324,11 +324,11 @@
          y="948.36176"
          width="1200"
          height="80"
-         style="opacity:0.9;fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.02646151;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="opacity:0.8;fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.02646151;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
     <g
        id="buttonbar"
-       transform="translate(-3.1579014,-0.9544576)">
+       transform="translate(-12.249274,-0.9544573)">
       <path
          id="rect7773"
          d="M 1065.284,960.23984 C 1058.2549,960.23984 1052.6141,969.2636 1052.6141,980.48781 L 1052.6141,997.19009 C 1052.6141,1008.4141 1058.2549,1017.4381 1065.284,1017.4381 L 1218.1229,1017.4381 C 1225.152,1017.4381 1230.7927,1008.4141 1230.7928,997.19009 L 1230.7928,980.48781 C 1230.7928,969.2636 1225.152,960.23984 1218.1229,960.23984 L 1065.284,960.23984 z M 1066.5171,961.73263 L 1217.5989,961.73263 C 1224.5491,961.73263 1230.1453,970.32379 1230.1453,980.95432 L 1230.1453,996.72345 C 1230.1454,1007.354 1224.5491,1015.9452 1217.5989,1015.9452 L 1066.5171,1015.9452 C 1059.5669,1015.9452 1053.9705,1007.354 1053.9705,996.72345 L 1053.9705,980.95432 C 1053.9705,970.32379 1059.5669,961.73263 1066.5171,961.73263 z "
@@ -478,8 +478,8 @@
        height="3.7886403"
        rx="0.41977933"
        ry="1.4425241"
-       x="-688.55847"
-       y="1158.5731"
+       x="-688.55853"
+       y="1158.163"
        id="rect6865"
        style="opacity:1;fill:url(#linearGradient2791);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.20116687;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        transform="scale(-1,1)" />

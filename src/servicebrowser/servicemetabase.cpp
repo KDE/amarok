@@ -587,7 +587,7 @@ ServiceAlbum::ServiceAlbum(const QStringList & resultRow)
     m_name = resultRow[1];
     m_description = resultRow[2];
     m_artistId = resultRow[3].toInt();
-    m_artistName = resultRow[4];
+    //m_artistName = resultRow[4];
 }
 
 

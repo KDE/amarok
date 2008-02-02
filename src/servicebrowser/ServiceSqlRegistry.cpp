@@ -207,6 +207,7 @@ ServiceSqlRegistry::getYear( const QString &name, int id )
 AlbumPtr
 ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
 {
+    DEBUG_BLOCK
     int id = rowData[0].toInt();
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( id ) )
@@ -214,17 +215,28 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
     else
     {
 
-        int index = 0;
+        debug() << "here1";
+
+        int index = 0; 
+
+        debug() << "row length: " << rowData.size();
+        debug() << "index " << index << " to " << m_metaFactory->getAlbumSqlRowCount();
+        
+        QStringList testString = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
+        debug() << "album row: " << testString;
 
         AlbumPtr albumPtr = m_metaFactory->createAlbum( rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() ) );
         m_albumMap.insert( id, albumPtr );
-
+        debug() << "here1.5";
+        
         index += m_metaFactory->getAlbumSqlRowCount();
 
         ServiceAlbum* album = static_cast<ServiceAlbum *> ( albumPtr.data() );
 
         ArtistPtr artistPtr;
 
+        debug() << "here2";
+        
         // we need to set the artist for thsi album
         if ( m_artistMap.contains( album->artistId() ) )
             artistPtr = m_artistMap.value( album->artistId() );
@@ -239,6 +251,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
 
         ServiceArtist * artist = static_cast<ServiceArtist *> ( artistPtr.data() );
 
+        debug() << "here3";
         album->setAlbumArtist( artistPtr );
 
         m_artistMap.insert( artist->id(), artistPtr );

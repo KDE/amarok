@@ -55,7 +55,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
 
     MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album.data() );
 
-    const QString artistName = "Artist";
+    const QString artistName = album->albumArtist()->name();
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";

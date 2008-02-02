@@ -189,7 +189,7 @@ ServiceSqlQueryMaker::startTrackQuery()
 
         if ( d->linkedTables & Private::ARTISTS_TABLE ) {
             d->linkedTables |= Private::ALBUMS_TABLE;
-            d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //ake sure items are added as album groups
+            d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
         }
 
     }
@@ -348,6 +348,8 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
         return this;
     
     d->linkedTables |= Private::ALBUMS_TABLE;
+    d->linkedTables |= Private::ARTISTS_TABLE;
+    d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
     return this;
 }
@@ -667,10 +669,17 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
     // SqlRegistry* reg = m_collection->registry();
     int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
+
+    debug() << "got " << result.size() << " rows";
+    debug() << "at " << rowCount << "row per item";
+    
     for( int i = 0; i < resultRows; i++ )
     {
+        debug() << i;
         QStringList row = result.mid( i*rowCount, rowCount );
+        debug() << "row: " << row;
         albums.append( m_registry->getAlbum( row ) );
+        debug() << "got one!";
     }
     emitProperResult( AlbumPtr, albums );
 }
