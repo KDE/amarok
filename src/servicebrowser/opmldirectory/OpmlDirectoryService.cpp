@@ -22,7 +22,10 @@
 #include "debug.h"
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlDirectoryXmlParser.h"
+#include "playlistmanager/PlaylistManager.h"
+#include "podcasts/PodcastCollection.h"
 #include "ServiceSqlRegistry.h"
+#include "TheInstances.h"
 
 #include <KTemporaryFile>
 #include <KRun>
@@ -62,7 +65,7 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 
 OpmlDirectoryService::OpmlDirectoryService(const QString & name)
  : ServiceBase( name )
- , m_currentAlbum( 0 )
+ , m_currentFeed( 0 )
 {
 
     setShortDescription(  i18n( "A large listing of podcasts" ) );
@@ -86,15 +89,15 @@ void OpmlDirectoryService::polish()
 
     m_updateListButton = new QPushButton;
     m_updateListButton->setParent( bottomPanelLayout );
-    m_updateListButton->setText( i18n( "Subscribe" ) );
-    m_updateListButton->setObjectName( "subscribeButton" );
+    m_updateListButton->setText( i18n( "Update" ) );
+    m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 
 
     m_subscribeButton = new QPushButton;
     m_subscribeButton->setParent( bottomPanelLayout );
-    m_subscribeButton->setText( i18n( "Download" ) );
-    m_subscribeButton->setObjectName( "downloadButton" );
+    m_subscribeButton->setText( i18n( "Subscribe" ) );
+    m_subscribeButton->setObjectName( "subscribeButton" );
     m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
     m_subscribeButton->setEnabled( false );
@@ -130,7 +133,7 @@ void OpmlDirectoryService::polish()
 
 }
 
-void OpmlDirectoryService::subscribeButtonClicked()
+void OpmlDirectoryService::updateButtonClicked()
 {
     m_updateListButton->setEnabled( false );
 
@@ -208,36 +211,49 @@ void OpmlDirectoryService::doneParsing()
     m_collection->emitUpdated();
 }
 
-/*void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
+void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
     DEBUG_BLOCK
 
-    //we only enable the download button if there is only one item selected and it happens to
-    //be an album or a track
+    //we only enable the subscribe button if there is only one item selected and it happens to
+    //be a feed
     DataPtr dataPtr = selectedItem->data();
 
-    if ( typeid( * dataPtr.data() ) == typeid( OpmlDirectoryTrack ) )  {
+    if ( typeid( * dataPtr.data() ) == typeid( OpmlDirectoryFeed ) )  {
 
-        debug() << "is right type (track)";
-        OpmlDirectoryTrack * track = static_cast<OpmlDirectoryTrack *> ( dataPtr.data() );
-        m_currentAlbum = static_cast<OpmlDirectoryAlbum *> ( track->album().data() );
-        m_downloadButton->setEnabled( true );
-
-    } else if ( typeid( * dataPtr.data() ) == typeid( OpmlDirectoryAlbum ) ) {
-
-        m_currentAlbum = static_cast<OpmlDirectoryAlbum *> ( dataPtr.data() );
-        debug() << "is right type (album) named " << m_currentAlbum->name();
-
-        m_downloadButton->setEnabled( true );
+        debug() << "is right type (feed)";
+        OpmlDirectoryFeed * feed = static_cast<OpmlDirectoryFeed *> ( dataPtr.data() );
+        m_currentFeed = feed;
+        m_subscribeButton->setEnabled( true );
+        
     } else {
 
         debug() << "is wrong type";
-        m_downloadButton->setEnabled( false );
+        m_currentFeed = 0;
+        m_subscribeButton->setEnabled( false );
 
     }
 
     return;
-}*/
+}
+
+void OpmlDirectoryService::subscribe()
+{
+    
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        if ( m_currentFeed != 0 ) {
+            PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
+            channelProvider->addPodcast( m_currentFeed->url() );
+        }
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
+}
 
 
 

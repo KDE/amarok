@@ -63,17 +63,17 @@ public:
 
 private slots:
 
-    void subscribeButtonClicked();
-    //void download();
+    void updateButtonClicked();
+    void subscribe();
     void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
     void doneParsing();
 
     /**
-    * Checks if purchase button should be enabled
+    * Checks if subscribe button should be enabled
     * @param selection the new selection
     */
-    //void itemSelected( CollectionTreeItem * selectedItem );
+    void itemSelected( CollectionTreeItem * selectedItem );
 
 
 private:
@@ -81,12 +81,10 @@ private:
     QPushButton *m_updateListButton;
     QPushButton *m_subscribeButton;
     KIO::FileCopyJob * m_listDownloadJob;
-    KIO::FileCopyJob *m_torrentDownloadJob;
     OpmlDirectoryDatabaseHandler * m_dbHandler;
-    QString m_tempFileName;
-    QString m_torrentFileName;
     ServiceSqlCollection * m_collection;
-    Meta::OpmlDirectoryCategory * m_currentAlbum;
+    Meta::OpmlDirectoryFeed * m_currentFeed;
+    QString m_tempFileName;
 };
 
 #endif

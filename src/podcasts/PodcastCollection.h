@@ -33,7 +33,7 @@ class PodcastChannelProvider;
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
 */
-class PodcastCollection : public Collection, public MemoryCollection
+AMAROK_EXPORT class PodcastCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
@@ -52,7 +52,7 @@ class PodcastCollection : public Collection, public MemoryCollection
 
         virtual QString prettyName() const { return i18n("Local Podcasts"); };
 
-        void addPodcast( const QString &url );
+        AMAROK_EXPORT void addPodcast( const QString &url );
 
         void addChannel( Meta::PodcastChannelPtr channel );
         void addEpisode( Meta::PodcastEpisodePtr episode );

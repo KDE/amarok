@@ -87,7 +87,7 @@ class PlaylistManager : public QObject
          */
         int registerCustomCategory( const QString &name );
 
-        PlaylistProvider * playlistProvider( int category, QString name );
+        AMAROK_EXPORT PlaylistProvider * playlistProvider( int category, QString name );
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
 
