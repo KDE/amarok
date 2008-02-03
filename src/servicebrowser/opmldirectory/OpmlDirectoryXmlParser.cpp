@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <QFile>
 
+#include <KLocale>
 #include <KFilterDev>
 
 using namespace Meta;
@@ -58,11 +59,10 @@ OpmlDirectoryXmlParser::doJob( )
 void
 OpmlDirectoryXmlParser::completeJob( )
 {
-    /*Amarok::ContextStatusBar::instance()->longMessage(
-        i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories" )
-        .arg( m_nNumberOfTracks )
-        .arg( m_nNumberOfAlbums ), KDE::StatusBar::Information );
-*/
+    Amarok::ContextStatusBar::instance()->longMessage(
+        i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories", m_nNumberOfFeeds, m_nNumberOfCategories ),
+        KDE::StatusBar::Information );
+
 
     debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_nNumberOfCategories;
     debug() << "OpmlDirectoryXmlParser: total number of tracks: " << m_nNumberOfFeeds;
@@ -168,7 +168,7 @@ void OpmlDirectoryXmlParser::parseFeed( const  QDomElement &e)
 
     QString name = e.attribute( "text", "Unknown" );
     QString url = e.attribute( "url", "" );
-    debug() << "got url: " << url;
+    //debug() << "got url: " << url;
 
     OpmlDirectoryFeed currentFeed ( name );
 

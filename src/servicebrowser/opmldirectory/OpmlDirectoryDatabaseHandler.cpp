@@ -64,7 +64,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
                   "description " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER );";
 
-    debug() << "Creating opmldirectory_albums: " << queryString;
+   // debug() << "Creating opmldirectory_albums: " << queryString;
 
     result = db->query( queryString );
     db->query( "CREATE INDEX opmldirectory_albums_name ON jamendo_albums(name);" );
@@ -78,7 +78,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
             "name " + db->textColumnType() + ',' +
             "description " + db->exactTextColumnType() + ");";
 
-    debug() << "Creating opmldirectory_artists: " << queryString;
+    //debug() << "Creating opmldirectory_artists: " << queryString;
     result = db->query( queryString );
 
     //now, insert a default artist
@@ -86,7 +86,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
     queryString = "INSERT INTO opmldirectory_artists ( id, name, description "
             ") VALUES ( 1, 'dummy', 'dummy' );";
 
-    debug() << "Adding  opmldirectory artist " << queryString;
+    //debug() << "Adding  opmldirectory artist " << queryString;
     sqlDb->insert( queryString, QString() );
 
     //create genre table
@@ -107,7 +107,7 @@ void
 OpmlDirectoryDatabaseHandler::destroyDatabase( )
 {
 
-    debug() << "Destroy OpmlDirectory database ";
+    //debug() << "Destroy OpmlDirectory database ";
 
     CollectionDB *db = CollectionDB::instance();
     QStringList result = db->query( "DROP TABLE opmldirectory_tracks;" );
@@ -137,7 +137,7 @@ OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( 1 ) + ", '"
                           + db->escapeString( track->url() ) + "' );";
 
-    debug() << "Adding opmldirectory_track " << queryString;
+   // debug() << "Adding opmldirectory_track " << queryString;
     int trackId = db->insert( queryString, NULL );
 
     return trackId;
@@ -155,7 +155,7 @@ OpmlDirectoryDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + sqlDb->escape( album->description() ) + "', "
                   + QString::number( 1 ) + ");";
 
-    debug() << "Adding Jamendo album " << queryString;
+    //debug() << "Adding OpmlDirectory album " << queryString;
 
     int newAlbumId =  sqlDb->insert( queryString, QString() );
 
@@ -165,7 +165,7 @@ OpmlDirectoryDatabaseHandler::insertAlbum( ServiceAlbum *album )
             ") VALUES ( "
             + QString::number ( newAlbumId ) + ", 'dummy');";
 
-    debug() << "Adding Jamendo genre " << queryString;
+    //debug() << "Adding OpmlDirectory genre " << queryString;
 
     return sqlDb->insert( queryString, 0 );
 }
