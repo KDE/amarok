@@ -1,6 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+   Copyright (c) 2007,2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
    Copyright (c) 2007  Henry de Valence <hdevalence@gmail.com>
 
    This program is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
 #include "PodcastCategory.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
+#include "SvgTinter.h"
 #include "TheInstances.h"
 
 #include <QAction>
@@ -170,12 +171,13 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
             background.fill( Qt::transparent );
             QPainter pt( &background );
             //only opens if selected AND not in cache, see TODO above
-            QFile file( KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" ) );
-            file.open( QIODevice::ReadOnly );
-            QString svg_source( file.readAll() );
+
+            QString file = KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" );
+            QString svg_source =  The::svgTinter()->tint( file );
+
             QSvgRenderer *svgRenderer = new QSvgRenderer( svg_source.toAscii() );
 
-            svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 20, height - 4 ) );
+            svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 40, height - 4 ) );
             QPixmapCache::insert(key, background);
         }
     } else
@@ -204,7 +206,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     //TODO: these metrics should be made static members so they are not created all the damn time!!
     QFontMetricsF tfm( painter->font() );
 
-    title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width(), Qt::AlignHCenter );
+    title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width() - 8, Qt::AlignHCenter );
     //TODO: has a weird overlap
     painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignBottom, title );
 
