@@ -55,10 +55,10 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* services    = new ServiceConfig( this );
 
     addPage( general,     i18n( "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( appearance,  i18n( "Appearance" ), "preferences-desktop-theme-amarok", i18n( "Configure Amarok's Appearance" ) );
-    addPage( playback,    i18n( "Playback" ), "preferences-desktop-sound-amarok", i18n( "Configure Playback" ) );
-    addPage( engine,      i18n( "Engine" ), "amarok-amarok", i18n( "Configure Engine" ) );
-    addPage( osd,         i18n( "OSD" ), "preferences-desktop-display-amarok", i18n( "Configure On-Screen-Display" ) );
+    addPage( appearance,  i18n( "Appearance" ), "preferences-view-amarok", i18n( "Configure Amarok's Appearance" ) );
+    addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
+    addPage( engine,      i18n( "Engine" ), "preferences-media-engine-amarok", i18n( "Configure Engine" ) );
+    addPage( osd,         i18n( "OSD" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( mediadevice, i18n( "Media Devices" ), "multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
     addPage( services,    i18n( "Services" ), "get-hot-new-stuff-amarok", i18n( "Configure Services" ) );
