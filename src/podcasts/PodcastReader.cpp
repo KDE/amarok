@@ -76,6 +76,8 @@ PodcastReader::read(const KUrl &url)
 bool
 PodcastReader::update( PodcastChannelPtr channel )
 {
+    DEBUG_BLOCK
+    debug() << "channel = " << (unsigned int)(channel.data());
     m_channel = channel;
     m_current = static_cast<PodcastMetaCommon *>(channel.data());
 

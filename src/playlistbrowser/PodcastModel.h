@@ -20,6 +20,7 @@
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
 #include "PodcastMeta.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -53,17 +54,19 @@ class PodcastModel : public QAbstractItemModel
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+        void refreshItems( QModelIndexList list );
 
     public slots:
         void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
-        void refreshPodcast( Meta::PodcastChannelPtr channel );
         void configurePodcasts();
         void setPodcastsInterval();
         void emitLayoutChanged();
 
     private:
+        void refreshPodcast( Meta::PodcastChannelPtr channel );
         Meta::PodcastChannelList m_channels;
 };
 

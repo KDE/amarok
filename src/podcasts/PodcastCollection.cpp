@@ -76,7 +76,6 @@ PodcastCollection::location() const
 void
 PodcastCollection::slotUpdateAll()
 {
-    //TODO: just calling it for the first one now
     foreach( Meta::PodcastChannelPtr channel, m_channels )
     {
         slotUpdate( channel );

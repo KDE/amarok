@@ -19,14 +19,15 @@
 #ifndef PODCASTCATEGORY_H
 #define PODCASTCATEGORY_H
 
+#include "playlist/PlaylistModel.h"
+#include "PodcastModel.h"
+
 #include <QContextMenuEvent>
 #include <QItemDelegate>
 #include <QListView>
 #include <QSvgRenderer>
 #include <QToolButton>
 #include <QTreeView>
-
-#include "playlist/PlaylistModel.h"
 
 namespace PlaylistBrowserNS {
 
@@ -74,14 +75,13 @@ Q_OBJECT
 class PodcastView : public QTreeView
 {
     public:
-        PodcastView( QWidget *parent = 0 );
+        PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
 
         void contextMenuEvent( QContextMenuEvent* event );
 
     private:
-        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-        void refreshItems( QModelIndexList list );
+        PodcastModel *m_model;
 };
 
 /**
@@ -101,7 +101,6 @@ class PodcastCategoryDelegate : public QItemDelegate
     private:
         QTreeView *m_view;
         mutable int m_lastHeight;
-
 };
 
 }

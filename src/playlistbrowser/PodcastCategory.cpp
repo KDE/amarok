@@ -84,7 +84,7 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
 
     vLayout->addLayout( hLayout );
 
-    m_podcastTreeView = new PodcastView( this );
+    m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
     m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
@@ -139,7 +139,7 @@ void
 PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
                                 const QModelIndex & index ) const
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     //debug() << "Option state = " << option.state;
 
     int width = m_view->viewport()->size().width() - 4;
@@ -264,7 +264,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
 {
     Q_UNUSED( option );
 
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
     //debug() << "Option state = " << option.state;
 
@@ -296,8 +296,9 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
 
 }
 
-PlaylistBrowserNS::PodcastView::PodcastView( QWidget * parent )
+PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : QTreeView( parent )
+        ,m_model( model )
 {
 }
 
@@ -333,46 +334,19 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         if( result == loadAction )
         {
             debug() << "load " << indices.count() << " episodes";
-            loadItems( indices, Playlist::Replace );
+            m_model->loadItems( indices, Playlist::Replace );
         }
         else if( result == appendAction )
         {
             debug() << "append " << indices.count() << " episodes";
-            loadItems( indices, Playlist::Append );
+            m_model->loadItems( indices, Playlist::Append );
         }
         else if( result == refreshAction )
         {
             debug() << "refresh " << indices.count() << " items";
-            refreshItems( indices );
+            m_model->refreshItems( indices );
         }
     }
-}
-
-void
-PlaylistBrowserNS::PodcastView::loadItems(QModelIndexList list, Playlist::AddOptions insertMode)
-{
-    Meta::TrackList episodes;
-    Meta::PlaylistList channels;
-    foreach( QModelIndex item, list )
-    {
-        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>( item.internalPointer() );
-        switch( pmc->podcastType() )
-        {
-            case Meta::PodcastMetaCommon::ChannelType:
-                channels << Meta::PlaylistPtr( static_cast<Meta::PodcastChannel *>(pmc) );
-                break;
-            case Meta::PodcastMetaCommon::EpisodeType:
-                episodes << Meta::TrackPtr( static_cast<Meta::PodcastEpisode *>(pmc) ); break;
-            default: debug() << "error, neither Channel nor Episode";
-        }
-    }
-    The::playlistModel()->insertOptioned( episodes, insertMode );
-    The::playlistModel()->insertOptioned( channels, insertMode );
-}
-
-void
-PlaylistBrowserNS::PodcastView::refreshItems(QModelIndexList list)
-{
 }
 
 #include "PodcastCategory.moc"
