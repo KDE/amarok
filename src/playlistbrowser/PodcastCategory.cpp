@@ -323,12 +323,17 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         menu.addAction( loadAction );
         menu.addAction( appendAction );
 
+        menu.addSeparator();
+
         //TODO: only for Channels and Folders
         QAction* refreshAction = new QAction( KIcon("view-refresh-amarok"), i18n("&Refresh"), &menu );
         QAction *at = refreshAction;
 
-        menu.addSeparator();
         menu.addAction( refreshAction );
+
+        //TODO: only for Episodes
+        QAction* downloadAction = new QAction( KIcon("action-download-amarok"), i18n("&Download"), &menu );
+        menu.addAction( downloadAction );
 
         QAction *result = menu.exec( event->globalPos(), at );
         if( result == loadAction )
@@ -345,6 +350,11 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         {
             debug() << "refresh " << indices.count() << " items";
             m_model->refreshItems( indices );
+        }
+        else if( result == downloadAction )
+        {
+            debug() << "download " << indices.count() << " items";
+            m_model->downloadItems( indices );
         }
     }
 }

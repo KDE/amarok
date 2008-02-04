@@ -274,10 +274,10 @@ PlaylistBrowserNS::PodcastModel::loadItems(QModelIndexList list, Playlist::AddOp
         switch( pmc->podcastType() )
         {
             case Meta::PodcastMetaCommon::ChannelType:
-                channels << Meta::PlaylistPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+                channels << Meta::PlaylistPtr( reinterpret_cast<Meta::PodcastChannel *>(pmc) );
                 break;
             case Meta::PodcastMetaCommon::EpisodeType:
-                episodes << Meta::TrackPtr( static_cast<Meta::PodcastEpisode *>(pmc) ); break;
+                episodes << Meta::TrackPtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ); break;
                 default: debug() << "error, neither Channel nor Episode";
         }
     }
@@ -295,7 +295,8 @@ PlaylistBrowserNS::PodcastModel::refreshItems( QModelIndexList list )
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
         {
-            refreshPodcast( Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) ) );
+            refreshPodcast( Meta::PodcastChannelPtr(
+                            reinterpret_cast<Meta::PodcastChannel *>(pmc) ) );
         }
     }
 }
@@ -319,6 +320,40 @@ PlaylistBrowserNS::PodcastModel::refreshPodcast( Meta::PodcastChannelPtr channel
     {
         PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
         channelProvider->update( channel );
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
+{
+    DEBUG_BLOCK
+    debug() << "number of items: " << list.count();
+    foreach( QModelIndex index, list )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        if( typeid( * pmc ) == typeid( Meta::PodcastEpisode ) )
+        {
+            downloadEpisode( Meta::PodcastEpisodePtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ) );
+        }
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+    debug() << "downloading " << episode->title();
+
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
+        channelProvider->downloadEpisode( episode );
     }
     else
     {

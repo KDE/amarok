@@ -24,6 +24,7 @@
 #include "PodcastMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <kio/jobclasses.h>
 #include <klocale.h>
 
 class KUrl;
@@ -67,13 +68,20 @@ AMAROK_EXPORT class PodcastCollection : public Collection, public MemoryCollecti
     public slots:
         void slotUpdateAll();
         void slotUpdate( Meta::PodcastChannelPtr channel );
+        void slotDownloadEpisode( Meta::PodcastEpisodePtr episode );
+        void downloadResult( KJob * );
+        void redirected( KIO::Job *, const KUrl& );
+
         void slotReadResult( PodcastReader *podcastReader, bool result );
 
     private:
-        static PodcastCollection* s_instance;
+        static PodcastCollection *s_instance;
 
         Meta::PodcastChannelList m_channels;
-        PodcastChannelProvider* m_channelProvider;
+        PodcastChannelProvider *m_channelProvider;
+
+        QMap<KJob *, Meta::PodcastEpisodePtr> m_jobMap;
+        QMap<KJob *, QString> m_fileNameMap;
 
 };
 
@@ -88,6 +96,8 @@ class PodcastChannelProvider: public PlaylistProvider
 
         void updateAll() { m_parent->slotUpdateAll() ; };
         void update( Meta::PodcastChannelPtr channel ) { m_parent->slotUpdate( channel ); };
+        void downloadEpisode( Meta::PodcastEpisodePtr episode )
+                { m_parent->slotDownloadEpisode( episode ); };
 
         // PlaylistProvider methods
         virtual QString prettyName() const { return i18n( "Local Podcasts" ); };

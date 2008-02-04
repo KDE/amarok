@@ -55,6 +55,7 @@ class PodcastModel : public QAbstractItemModel
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+        void downloadItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
 
     public slots:
@@ -66,6 +67,7 @@ class PodcastModel : public QAbstractItemModel
         void emitLayoutChanged();
 
     private:
+        void downloadEpisode( Meta::PodcastEpisodePtr episode );
         void refreshPodcast( Meta::PodcastChannelPtr channel );
         Meta::PodcastChannelList m_channels;
 };

@@ -48,7 +48,8 @@ class PodcastMetaCommon
     public:
         enum Type
         {
-            ChannelType = 0,
+            NoType = 0,
+            ChannelType,
             EpisodeType
         };
 
@@ -70,7 +71,7 @@ class PodcastMetaCommon
         virtual void setSummary( const QString &summary ) { m_summary = summary; };
         virtual void setAuthor( const QString &author ) { m_author = author; };
 
-        virtual int podcastType() = 0;
+        virtual int podcastType() { return NoType; };
 
     protected:
         QString m_title;
@@ -151,6 +152,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual int duration() const { return m_duration; };
         virtual QString guid() const { return m_guid; };
 
+        virtual KUrl remoteUrl() const { return m_url; };
         virtual void setUrl( const KUrl &url ) { m_url = url; };
         virtual void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
         virtual void setDuration( int duration ) { m_duration = duration; };
@@ -161,6 +163,8 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
 
         virtual PodcastChannelPtr channel() { return m_channel; };
         virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
+
+        virtual void setPlayableUrl( const KUrl &url ) { m_playableUrl = url; };
 
     protected:
         PodcastChannelPtr m_channel;

@@ -18,16 +18,19 @@
 
 #include "PodcastCollection.h"
 
+#include "amarok.h"
+#include "AmarokStatusBar.h"
+#include "ContextStatusBar.h"
 #include "debug.h"
 #include "PodcastReader.h"
 #include "support/MemoryQueryMaker.h"
 #include "TheInstances.h"
 
 #include <kurl.h>
+#include <klocale.h>
+#include <kio/job.h>
 
 #include <QFile>
-
-#include <klocale.h>
 
 using namespace Meta;
 
@@ -85,8 +88,6 @@ PodcastCollection::slotUpdateAll()
 void
 PodcastCollection::slotUpdate( Meta::PodcastChannelPtr channel )
 {
-    DEBUG_BLOCK
-
     bool result = false;
     PodcastReader * podcastReader = new PodcastReader( this );
 
@@ -156,6 +157,61 @@ PodcastCollection::addEpisode( Meta::PodcastEpisodePtr episode )
     addTrack( episode->name(), TrackPtr::dynamicCast( episode ) );
 }
 
+void
+PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+
+    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->url(), KIO::Reload, KIO::HideProgressInfo );
+
+    m_jobMap[storedTransferJob] = episode;
+    m_fileNameMap[storedTransferJob] = episode->remoteUrl().fileName();
+
+    The::contextStatusBar()->newProgressOperation( storedTransferJob )
+            .setDescription( episode->title().isEmpty()
+            ? i18n( "Downloading Podcast Media" )
+    : i18n( "Downloading Podcast \"%1\"" ).arg( episode->title() ) )
+            .setAbortSlot( this, SLOT( abortDownload()) )
+            .setProgressSignal( storedTransferJob, SIGNAL( percent( KJob *, unsigned long ) ) );
+
+    connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
+    connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
+}
+
+void
+PodcastCollection::downloadResult( KJob * job )
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        Amarok::ContextStatusBar::instance()->longMessage( job->errorText() );
+        debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText() << endl;
+    }
+    else
+    {
+        Meta::PodcastEpisodePtr episode = m_jobMap[job];
+        KUrl localUrl = KUrl::fromPath( Amarok::saveLocation("podcasts") );
+        localUrl.addPath( episode->channel()->title() );
+        localUrl.setFileName( m_fileNameMap[job] );
+
+        QFile *localFile = new QFile( localUrl.path() );
+        localFile->open( IO_WriteOnly );
+        localFile->writeBlock( static_cast<KIO::StoredTransferJob *>(job)->data() );
+        localFile->close();
+
+        episode->setPlayableUrl( localUrl );
+    }
+    //remove it from the jobmap
+    m_jobMap.remove( job );
+    m_fileNameMap.remove( job );
+}
+
+void
+PodcastCollection::redirected( KIO::Job *job, const KUrl & redirectedUrl )
+{
+    debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName();
+    m_fileNameMap[job] = redirectedUrl.fileName();
+}
 
 PodcastChannelProvider::PodcastChannelProvider( PodcastCollection *parent) : PlaylistProvider(),
         m_parent( parent )
