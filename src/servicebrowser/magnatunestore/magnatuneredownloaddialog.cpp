@@ -29,6 +29,7 @@
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
+    setupUi(this);
     redownloadButton->setEnabled ( false );
 
     redownloadListView->setColumnWidthMode( 0, Q3ListView::Manual );

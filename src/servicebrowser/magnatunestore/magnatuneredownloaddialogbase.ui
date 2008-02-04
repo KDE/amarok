@@ -1,112 +1,130 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>magnatuneReDownloadDialogBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>magnatuneReDownloadDialogBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>466</width>
-            <height>431</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Redownload manager</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>These are the albums that you have previously downloaded:</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="1">
-            <property name="name">
-                <cstring>redownloadButton</cstring>
-            </property>
-            <property name="text">
-                <string>Re&amp;download</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="2">
-            <property name="name">
-                <cstring>cancelButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Cancel</string>
-            </property>
-        </widget>
-        <spacer row="2" column="0">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>170</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="Q3ListView" row="1" column="0" rowspan="1" colspan="3">
-            <column>
-                <property name="text">
-                    <string>Artist - Album</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>redownloadListView</cstring>
-            </property>
-            <property name="shadeSortColumn">
-                <bool>false</bool>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>redownloadButton</sender>
-        <signal>clicked()</signal>
-        <receiver>magnatuneReDownloadDialogBase</receiver>
-        <slot>redownload()</slot>
-    </connection>
-    <connection>
-        <sender>cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>magnatuneReDownloadDialogBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>redownloadListView</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>magnatuneReDownloadDialogBase</receiver>
-        <slot>selectionChanged()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot access="protected">redownload()</slot>
-    <slot access="protected">selectionChanged()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Q3ListView</includehint>
-</includehints>
-</UI>
+<ui version="4.0" >
+ <class>magnatuneReDownloadDialogBase</class>
+ <widget class="QDialog" name="magnatuneReDownloadDialogBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>466</width>
+    <height>431</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Redownload manager</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="3" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>These are the albums that you have previously downloaded:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="redownloadButton" >
+     <property name="text" >
+      <string>Re&amp;download</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="cancelButton" >
+     <property name="text" >
+      <string>&amp;Cancel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>170</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="Q3ListView" name="redownloadListView" >
+     <column>
+      <property name="text" >
+       <string>Artist - Album</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local" >Q3ListView</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>redownloadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>magnatuneReDownloadDialogBase</receiver>
+   <slot>redownload()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>magnatuneReDownloadDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>redownloadListView</sender>
+   <signal>selectionChanged()</signal>
+   <receiver>magnatuneReDownloadDialogBase</receiver>
+   <slot>selectionChanged()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

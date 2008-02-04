@@ -39,7 +39,7 @@ MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 MagnatuneDownloadInfo::~MagnatuneDownloadInfo()
 {}
 
-bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName )
+bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName, bool membershipDownload  )
 {
     QString xml;
 
@@ -59,12 +59,13 @@ bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName )
 
 
     //debug() << "XML from file: '" << xml << "'";
-    return initFromString( xml );
+    return initFromString( xml, membershipDownload );
 }
 
-bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
+bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool membershipDownload  )
 {
 
+    m_membershipDownload = membershipDownload;
     //complete overkill to do a full SAX2 parser for this at the moment... I think....
 
     // lets make sure that this is actually a valid result
@@ -78,46 +79,52 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString )
     int startIndex;
     int endIndex;
 
-    startIndex = downloadInfoString.indexOf( "<DL_USERNAME>", 0, Qt::CaseInsensitive );
-    if ( startIndex != -1 )
-    {
-        endIndex = downloadInfoString.indexOf( "</DL_USERNAME>", 0, Qt::CaseInsensitive );
-        if ( endIndex != -1 )
+    if ( membershipDownload == false ) {
+        startIndex = downloadInfoString.indexOf( "<DL_USERNAME>", 0, Qt::CaseInsensitive );
+        if ( startIndex != -1 )
         {
-            startIndex += 13;
+            endIndex = downloadInfoString.indexOf( "</DL_USERNAME>", 0, Qt::CaseInsensitive );
+            if ( endIndex != -1 )
+            {
+                startIndex += 13;
 
-            debug() << "found username: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
-            m_userName = downloadInfoString.mid( startIndex, endIndex - startIndex );
+                debug() << "found username: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
+                m_userName = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
             return false;
         }
-    }
-    else
-    {
-        return false;
-    }
 
 
-    startIndex = downloadInfoString.indexOf( "<DL_PASSWORD>", 0, Qt::CaseInsensitive );
-    if ( startIndex != -1 )
-    {
-        endIndex = downloadInfoString.indexOf( "</DL_PASSWORD>", 0, Qt::CaseInsensitive );
-        if ( endIndex != -1 )
+        startIndex = downloadInfoString.indexOf( "<DL_PASSWORD>", 0, Qt::CaseInsensitive );
+        if ( startIndex != -1 )
         {
-            startIndex += 13;
-            debug() << "found password: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
-            m_password = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            endIndex = downloadInfoString.indexOf( "</DL_PASSWORD>", 0, Qt::CaseInsensitive );
+            if ( endIndex != -1 )
+            {
+                startIndex += 13;
+                debug() << "found password: " << downloadInfoString.mid( startIndex, endIndex - startIndex );
+                m_password = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
             return false;
         }
-    }
-    else
-    {
-        return false;
+
+    } else {
+        m_userName  = QString();
+        m_password = QString();
     }
 
 
@@ -263,6 +270,17 @@ MagnatuneAlbum * MagnatuneDownloadInfo::album()
 void MagnatuneDownloadInfo::setAlbum(MagnatuneAlbum * album )
 {
     m_album = album;
+}
+
+bool MagnatuneDownloadInfo::isMembershipDownload()
+{
+    return m_membershipDownload;
+}
+
+void MagnatuneDownloadInfo::setMembershipInfo(QString username, QString password)
+{
+    m_userName = username;
+    m_password = password;
 }
 
 

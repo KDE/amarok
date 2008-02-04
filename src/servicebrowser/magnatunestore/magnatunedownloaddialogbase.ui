@@ -1,120 +1,134 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>MagnatuneDownloadDialogBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>MagnatuneDownloadDialogBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>526</width>
-            <height>568</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Magnatune.com Album Download</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <class>magnatuneDownloadDialogBase</class>
+ <widget class="QDialog" name="magnatuneDownloadDialogBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>526</width>
+    <height>568</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Magnatune.com Album Download</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="downloadButton" >
+     <property name="text" >
+      <string>&amp;Download</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="Q3GroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Magnatune info</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="Q3TextEdit" name="infoEdit" >
+        <property name="hScrollBarMode" >
+         <enum>Q3ScrollView::AlwaysOff</enum>
         </property>
-        <widget class="QPushButton" row="2" column="0">
-            <property name="name">
-                <cstring>downloadButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Download</string>
-            </property>
-        </widget>
-        <widget class="QGroupBox" row="1" column="0">
-            <property name="name">
-                <cstring>groupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>Magnatune info</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="Q3TextEdit" row="0" column="0">
-                    <property name="name">
-                        <cstring>infoEdit</cstring>
-                    </property>
-                    <property name="hScrollBarMode">
-                        <enum>AlwaysOff</enum>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Download options</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QComboBox" row="0" column="1">
-                    <property name="name">
-                        <cstring>formatComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="KUrlRequester" row="1" column="1">
-                    <property name="name">
-                        <cstring>downloadTargetURLRequester</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Select Format:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Download to:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>If you download to a location that is already being monitored by Amarok, the album will automatically be added to your collection.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>downloadButton</sender>
-        <signal>clicked()</signal>
-        <receiver>MagnatuneDownloadDialogBase</receiver>
-        <slot>downloadButtonClicked()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot access="protected">downloadButtonClicked()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kurlrequester.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
-</UI>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="Q3GroupBox" name="groupBox1" >
+     <property name="title" >
+      <string>Download options</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Select Format:</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="formatComboBox" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="textLabel2" >
+        <property name="text" >
+         <string>Download to:</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="KUrlRequester" name="downloadTargetURLRequester" />
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="textLabel1_2" >
+        <property name="text" >
+         <string>If you download to a location that is already being monitored by Amarok, the album will automatically be added to your collection.</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QFrame</extends>
+   <header>kurlrequester.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local" >kurlrequester.h</include>
+  <include location="local" >klineedit.h</include>
+  <include location="local" >kpushbutton.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>downloadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>magnatuneDownloadDialogBase</receiver>
+   <slot>downloadButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

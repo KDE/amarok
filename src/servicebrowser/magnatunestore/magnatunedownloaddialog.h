@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
+ *   Copyright (c) 2006, 2007, 2008                                        *
  *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/ 
 
 #ifndef MAGNATUNEDOWNLOADDIALOG_H
 #define MAGNATUNEDOWNLOADDIALOG_H
 
-#include "magnatunedownloaddialogbase.h"
+#include "ui_magnatunedownloaddialogbase.h"
 #include "magnatunedownloadinfo.h"
 
 #include <qmap.h>
@@ -32,7 +32,7 @@
  
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneDownloadDialog : public QDialog, public Ui::MagnatuneDownloadDialogBase
+class MagnatuneDownloadDialog : public QDialog, public Ui::magnatuneDownloadDialogBase
 {
     Q_OBJECT
 

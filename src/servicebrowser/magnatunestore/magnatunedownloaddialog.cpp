@@ -35,7 +35,8 @@
 MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
-    downloadTargetURLRequester->fileDialog() ->setMode( KFile::Directory );
+    setupUi(this);
+    downloadTargetURLRequester->fileDialog()->setMode( KFile::Directory );
     m_currentDownloadInfo = 0;
 
 }

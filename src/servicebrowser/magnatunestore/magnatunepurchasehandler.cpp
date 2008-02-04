@@ -23,6 +23,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
+#include "MagnatuneConfig.h"
 #include "ContextStatusBar.h"
 
 #include <KMessageBox>
@@ -41,6 +42,7 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         , m_albumDownloader( 0 )
         , m_currentAlbum( 0 )
         , m_giftCardPurchase ( false )
+        , m_membershipDownload( false )
 {
 }
 
@@ -58,8 +60,33 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
     DEBUG_BLOCK
     m_currentAlbum = album;
 
-    showPurchaseDialog( QString() );
+    //do we have a membership that allows free downloads?
 
+    MagnatuneConfig config;
+
+    if ( config.isMember() && config.membershipType() == "Download") {
+        debug() << "membership download...";
+        membershipDownload( config.membershipType().toLower(), config.username(), config.password() );
+    } else {
+        showPurchaseDialog( QString() );
+    }
+
+}
+
+
+
+void MagnatunePurchaseHandler::membershipDownload(QString membershipType, QString username, QString password)
+{
+    QString purchaseURL = "http://" + username + ":" + password + "@" + membershipType + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
+
+    m_giftCardPurchase = false;
+    m_membershipDownload = true;
+
+    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
+    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing download" ) );
+    connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
+
+    
 }
 
 void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLocation )
@@ -141,10 +168,13 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     if ( !downloadJob->error() == 0 )
     {
         //TODO: error handling here
+        debug() << "Job error... " << downloadJob->error();
         return ;
     }
-    if ( downloadJob != m_resultDownloadJob )
+    if ( downloadJob != m_resultDownloadJob ) {
+        debug() << "Wrong job...";
         return ; //not the right job, so let's ignore it
+    }
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downloadJob );
     QString resultXml = QString( storedJob->data() );
@@ -166,23 +196,26 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     }
 
 
-
-
     MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
-    if ( downloadInfo->initFromString( resultXml ) )
+    if ( downloadInfo->initFromString( resultXml, m_membershipDownload ) )
     {
 
-
         downloadInfo->setAlbum( m_currentAlbum );
-
-        saveDownloadInfo( resultXml );
+        
+        if ( m_membershipDownload ) {
+            MagnatuneConfig config;
+            downloadInfo->setMembershipInfo( config.username(), config.password() );
+        } else {
+            saveDownloadInfo( resultXml );
+        }
+        
         m_downloadDialog->setDownloadInfo( downloadInfo );
         //m_purchaseDialog->close();
         delete m_purchaseDialog;
         m_purchaseDialog = 0;
         m_downloadDialog->show();
     }
-    else
+    else if ( m_membershipDownload == false )
     {
         QString checkInfoMessage;
 
@@ -193,10 +226,14 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
 
 
         KMessageBox::information( m_parent, "Could not process payment",
-                                  "There seems to be an error in the information entered (" + checkInfoMessage + "), please try again\n" );
+            "There seems to be an error in the information entered (" + checkInfoMessage + "), please try again\n" );
 
 
         m_purchaseDialog->setEnabled( true );
+    } else {
+        
+        KMessageBox::information( m_parent, "Could not process download",
+            "There seems to be an error in the supplied membership information. Please correct this and try again." );
     }
 }
 
@@ -262,6 +299,7 @@ void MagnatunePurchaseHandler::albumPurchaseCancelled( )
 
     emit( purchaseCompleted( false ) );
 }
+
 
 
 

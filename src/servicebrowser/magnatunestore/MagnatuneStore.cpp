@@ -126,8 +126,11 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 void MagnatuneStore::purchase( )
 {
+    DEBUG_BLOCK
     if ( m_purchaseInProgress )
         return;
+
+    debug() << "here";
 
     m_purchaseInProgress = true;
     m_purchaseAlbumButton->setEnabled( false );
@@ -172,7 +175,13 @@ void MagnatuneStore::initBottomPanel()
 
     m_purchaseAlbumButton = new QPushButton;
     m_purchaseAlbumButton->setParent( hBoxTop );
-    m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
+
+    MagnatuneConfig config;
+    if ( config.isMember() && config.membershipType() == "Download" )
+        m_purchaseAlbumButton->setText( i18n( "Download Album" ) );
+    else
+        m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
+    
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
     m_purchaseAlbumButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );

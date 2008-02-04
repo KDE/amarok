@@ -31,7 +31,13 @@
             MagnatuneConfig.cpp
         )
 
-        kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
+#kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
+#           magnatunedownloaddialogbase.ui
+#           magnatuneredownloaddialogbase.ui
+#           magnatunepurchasedialogbase.ui
+#       )
+
+        kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
             magnatunedownloaddialogbase.ui
             magnatuneredownloaddialogbase.ui
             magnatunepurchasedialogbase.ui

@@ -66,8 +66,10 @@ private:
     Meta::MagnatuneAlbum * m_currentAlbum;
     QString m_currentAlbumCoverName;
     bool m_giftCardPurchase;
+    bool m_membershipDownload;
 
     bool parseDownloadXml( const QString &xml );
+    void membershipDownload( QString membershipType, QString username, QString password );
 
     /**
      * This function saves the xml download info received from Magnatune.com after a

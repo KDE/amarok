@@ -118,6 +118,8 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
         .setDescription( i18n( "Adding album cover to collection" ) )
         .setAbortSlot( this, SLOT( coverAddAborted() ) );
 
+        emit( downloadComplete( true ) );
+
     } else {
 
         //we do not know exactly what album this is (we are most likely using the redownload manager)
@@ -125,7 +127,6 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     }
 
 }
-
 
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )

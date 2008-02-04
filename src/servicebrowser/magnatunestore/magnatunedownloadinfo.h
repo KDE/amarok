@@ -42,8 +42,11 @@ public:
     MagnatuneDownloadInfo();
     ~MagnatuneDownloadInfo();
 
-    bool initFromString( const QString &downloadInfoString );
-    bool initFromFile( const QString &downloadInfoFileName );
+    bool initFromString( const QString &downloadInfoString, bool membershipDownload );
+    bool initFromFile( const QString &downloadInfoFileName, bool membershipDownload );
+
+    void setMembershipInfo( QString username, QString password );
+    bool isMembershipDownload();
 
     DownloadFormatMap getFormatMap();
     QString getUserName();
@@ -69,6 +72,7 @@ protected:
     QString m_downloadMessage;
 
     Meta::MagnatuneAlbum * m_album;
+    bool m_membershipDownload;
 
     //the following members are for storing the user selections regarding a download
     QString m_unpackUrl;

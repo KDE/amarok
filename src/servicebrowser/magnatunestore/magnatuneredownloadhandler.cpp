@@ -126,7 +126,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
 
 
     MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
-    if ( downloadInfo->initFromFile( absFileName ) )
+    if ( downloadInfo->initFromFile( absFileName, false ) )
     {
 
         debug() << "Showing download dialog";
