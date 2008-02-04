@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_magnatune
+Icon=view-services-magnatune-amarok
 Name=Magnatune Store
 Comment=Preview and buy music from the non evil Magnatune record label
 

@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_audioscrobbler
+Icon=view-services-lastfm-amarok
 Name=Last.fm Service
 Comment=A service that integrates last.fm functionality into Amarok
 

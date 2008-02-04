@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=amarok_audioscrobbler
+Icon=view-services-lastfm-amarok
 Type=Service
 ServiceTypes=Amarok/Plugin
 X-KDE-ServiceTypes=KCModule

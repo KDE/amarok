@@ -98,7 +98,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 
     setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
-    setIcon( KIcon( "amarok_magnatune" ) );
+    setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
 
     debug() << "Magnatune browser starting...";

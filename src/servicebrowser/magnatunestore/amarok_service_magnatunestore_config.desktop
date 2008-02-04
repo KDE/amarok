@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=amarok_download
+Icon=view-services-magnatune-amarok
 Type=Service
 ServiceTypes=Amarok/Plugin
 X-KDE-ServiceTypes=KCModule

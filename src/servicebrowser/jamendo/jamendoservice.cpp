@@ -66,7 +66,7 @@ JamendoService::JamendoService(const QString & name)
 {
 
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
-    setIcon( KIcon( "amarok_jamendo" ) );
+    setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
 }
 

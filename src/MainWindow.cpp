@@ -834,12 +834,12 @@ void MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    KAction *burn = new KAction( KIcon("tools-media-optical-burn-amarok"), i18n( "Burn Current Playlist" ), this );
+    KAction *burn = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
     connect( burn, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
     burn->setEnabled( K3bExporter::isAvailable() );
     ac->addAction( "playlist_burn", burn );
 
-    KAction *covermanager = new KAction( KIcon("media-album-cover-amarok"), i18n( "Cover Manager" ), this );
+    KAction *covermanager = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( covermanager, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", covermanager );
 

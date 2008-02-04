@@ -65,7 +65,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
       m_polished( false )
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
-    setIcon( KIcon( "amarok_audioscrobbler" ) );
+    setIcon( KIcon( "view-services-lastfm-amarok" ) );
     showInfo( false );
 
     CollectionManager::instance()->addUnmanagedCollection( m_collection );
