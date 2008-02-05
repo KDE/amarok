@@ -1003,7 +1003,7 @@ void MainWindow::createMenus()
     extern void qt_mac_set_dock_menu(QMenu *); 
     qt_mac_set_dock_menu(actionsMenu); 
     // Change to avoid duplicate menu titles in OS X
-    actionsMenu->setTitle( i18n("&File") );
+    actionsMenu->setTitle( i18n("&Engage") );
     #elif
     actionsMenu->setTitle( i18n("&Amarok") );
     #endif
