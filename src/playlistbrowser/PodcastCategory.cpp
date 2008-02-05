@@ -64,25 +64,26 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
 
-    QHBoxLayout *hLayout = new QHBoxLayout( this );
-    hLayout->setSpacing(6);
-    m_addPodcastButton = new QToolButton( this );
-    m_addPodcastButton->setIcon( KIcon( "list-add-amarok" ) );
-    hLayout->addWidget( m_addPodcastButton );
+    QToolBar *toolBar = new QToolBar( this );
+    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_refreshPodcastsButton = new QToolButton( this );
-    m_refreshPodcastsButton->setIcon( KIcon( "view-refresh-amarok" ) );
-    hLayout->addWidget( m_refreshPodcastsButton );
+    QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
+    toolBar->addAction( addPodcastAction );
+    connect( addPodcastAction, SIGNAL(triggered( bool )), m_podcastModel, SLOT(addPodcast()) );
 
-    m_configurePodcastsButton = new QToolButton( this );
-    m_configurePodcastsButton->setIcon( KIcon( "configure-amarok" ) );
-    hLayout->addWidget( m_configurePodcastsButton );
+    QAction* updateAllAction = new QAction( KIcon("view-refresh-amarok"),
+                                            i18n("&Update All"), toolBar );
+    toolBar->addAction( updateAllAction );
+    connect( updateAllAction, SIGNAL(triggered( bool )),
+                                m_podcastModel, SLOT(refreshPodcasts()) );
 
-    m_podcastsIntervalButton = new QToolButton( this );
-    m_podcastsIntervalButton->setIcon( KIcon( "configure-amarok" ) );
-    hLayout->addWidget( m_podcastsIntervalButton );
+    QAction* configureAction = new QAction( KIcon("configure-amarok"),
+                                            i18n("&Configure"), toolBar );
+    toolBar->addAction( configureAction );
+    connect( configureAction, SIGNAL(triggered( bool )),
+             m_podcastModel, SLOT(configurePodcasts()) );
 
-    vLayout->addLayout( hLayout );
+    vLayout->addWidget( toolBar );
 
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setModel( podcastModel );
@@ -96,11 +97,6 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_podcastTreeView->setSizePolicy(sizePolicy1);
 
     vLayout->addWidget( m_podcastTreeView );
-
-    connect( m_addPodcastButton, SIGNAL( pressed() ), m_podcastModel, SLOT( addPodcast() ) );
-    connect( m_refreshPodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( refreshPodcasts() ) );
-    connect( m_configurePodcastsButton, SIGNAL( pressed() ), m_podcastModel, SLOT( configurePodcasts() ) );
-    connect( m_podcastsIntervalButton, SIGNAL( pressed() ), m_podcastModel, SLOT( setPodcastsInterval() ) );
 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
