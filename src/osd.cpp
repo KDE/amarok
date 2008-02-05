@@ -64,7 +64,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    if( AmarokConfig::osdUseTranslucency() )
+    if( AmarokConfig::osdUseTransparency() )
         setWindowOpacity( 0.7 );
     unsetColors();
 
@@ -288,18 +288,6 @@ OSDWidget::paintEvent( QPaintEvent* )
     // From qt sources
     const uint xround = (M * 200) / size.width();
     const uint yround = (M * 200) / size.height();
-
-    {   /// apply the mask
-        static QBitmap mask;
-
-        mask.resize( size );
-        mask.fill( Qt::color0 );
-
-        QPainter p( &mask );
-        p.setBrush( Qt::color1 );
-        p.drawRoundRect( rect, xround, yround );
-        setMask( mask );
-    }
 
     QColor shadowColor;
     {

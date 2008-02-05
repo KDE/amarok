@@ -10,16 +10,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
+   <property name="margin" >
     <number>0</number>
    </property>
    <item>
@@ -48,7 +39,7 @@
        <property name="sizeType" >
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>16</width>
          <height>20</height>
@@ -65,16 +56,7 @@
         <enum>Q3GroupBox::NoFrame</enum>
        </property>
        <layout class="QVBoxLayout" >
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin" >
          <number>0</number>
         </property>
         <item>
@@ -146,16 +128,7 @@
                   <enum>Q3GroupBox::NoFrame</enum>
                  </property>
                  <layout class="QGridLayout" >
-                  <property name="leftMargin" >
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin" >
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin" >
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin" >
+                  <property name="margin" >
                    <number>0</number>
                   </property>
                   <item row="1" column="0" >
@@ -259,9 +232,9 @@
             </layout>
            </item>
            <item>
-            <widget class="QCheckBox" name="kcfg_OsdUseTranslucency" >
+            <widget class="QCheckBox" name="kcfg_OsdUseTransparency" >
              <property name="text" >
-              <string>Make the &amp;background translucent</string>
+              <string>Make the &amp;background transparent</string>
              </property>
             </widget>
            </item>
