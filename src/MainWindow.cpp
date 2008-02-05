@@ -993,11 +993,16 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    m_menubar = menuBar();//new MenuBar( this );
+    // m_menubar = menuBar();//new MenuBar( this );
+    m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
 
     //BEGIN Actions menu
     KMenu *actionsMenu = new KMenu( m_menubar );
-    actionsMenu->setTitle( i18n("&Amarok") );
+    #ifdef Q_WS_MAC
+    	actionsMenu->setTitle( i18n("&File") );
+    #elif
+    	actionsMenu->setTitle( i18n("&Amarok") );
+    #endif
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
     actionsMenu->addAction( actionCollection()->action("lastfm_play") );
     actionsMenu->addAction( actionCollection()->action("play_audiocd") );
@@ -1006,8 +1011,15 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("play_pause") );
     actionsMenu->addAction( actionCollection()->action("stop") );
     actionsMenu->addAction( actionCollection()->action("next") );
+    #ifndef Q_WS_MAC 	// Don't show in OS X. Avoids multiple "Quit"s in dock menu
     actionsMenu->addSeparator();
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+    #endif
+    
+	#ifdef Q_WS_MAC 	// Add these functions to the dock icon menu in OS X
+	extern void qt_mac_set_dock_menu(QMenu *); 
+	qt_mac_set_dock_menu(actionsMenu); 
+	#endif
     //END Actions menu
 
     //BEGIN Playlist menu
