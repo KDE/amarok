@@ -993,19 +993,23 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    // m_menubar = menuBar();//new MenuBar( this );
-    m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
+
+    
 
     //BEGIN Actions menu
-    KMenu *actionsMenu = new KMenu( m_menubar );
+    KMenu *actionsMenu;
     #ifdef Q_WS_MAC
-    // Add these functions to the dock icon menu in OS X
-    extern void qt_mac_set_dock_menu(QMenu *); 
-    qt_mac_set_dock_menu(actionsMenu); 
-    // Change to avoid duplicate menu titles in OS X
-    actionsMenu->setTitle( i18n("&Engage") );
+        m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
+        actionsMenu = new KMenu( m_menubar );
+        // Add these functions to the dock icon menu in OS X
+        extern void qt_mac_set_dock_menu(QMenu *); 
+        qt_mac_set_dock_menu(actionsMenu); 
+        // Change to avoid duplicate menu titles in OS X
+        actionsMenu->setTitle( i18n("&Engage") );
     #else
-    actionsMenu->setTitle( i18n("&Amarok") );
+        m_menubar = menuBar();
+        actionsMenu = new KMenu( m_menubar );
+        actionsMenu->setTitle( i18n("&Amarok") );
     #endif
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
     actionsMenu->addAction( actionCollection()->action("lastfm_play") );
