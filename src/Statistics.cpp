@@ -44,7 +44,7 @@
 
 namespace Amarok {
 
-    /*    
+    /*
      * Transform to be usable within HTML/HTML attributes
      */
     QString escapeHTMLAttr( const QString &s )
@@ -119,19 +119,12 @@ Statistics::Statistics( QWidget *parent, const char *name )
         bar->setIconDimensions( 22 ); //looks more sensible
         bar->setMovable( false ); //removes the ugly frame
         bar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-
-        QToolButton *clearButton = new QToolButton( bar );
-        clearButton->setIcon( KIcon("edit-clear-locationbar-ltr") ); // RTL support?
-        clearButton->setToolTip( i18n( "Clear search field" ) );
-
-        m_lineEdit = new KLineEdit( bar );
+        m_lineEdit = new KLineEdit( box );
         m_lineEdit->setClickMessage( i18n( "Enter search terms here" ) );
-
+        m_lineEdit->setClearButtonShown( true );
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_lineEdit->setFrame( QFrame::Sunken );
-        m_lineEdit->installEventFilter( this ); //we intercept keyEvents
-
-        connect( clearButton,SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );
+        m_lineEdit->installEventFilter(this); //we intercept keyEvents
         connect( m_timer,    SIGNAL( timeout() )                    , SLOT( slotSetFilter() ) );
         connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
         connect( m_lineEdit, SIGNAL( returnPressed() )              , SLOT( slotSetFilter() ) );
@@ -705,13 +698,13 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 //                 Playlist::instance()->insertMediaSql( item->getSQL() ):
 //                 The::playlistModel()->insertMedia( KUrl( item->url() ) );
 //             break;
-// 
+//
 //         case QUEUE:
 //             hasSQL ?
 //                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
 //                 The::playlistModel()->insertMedia( KUrl( item->url() ), Playlist::Queue );
 //             break;
-// 
+//
 //         case INFO:
 //             if( hasSQL )
 //             {
