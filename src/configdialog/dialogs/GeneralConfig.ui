@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>798</width>
-    <height>483</height>
+    <height>453</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -35,13 +35,13 @@
        <number>11</number>
       </property>
       <property name="topMargin" >
-       <number>11</number>
+       <number>4</number>
       </property>
       <property name="rightMargin" >
        <number>11</number>
       </property>
       <property name="bottomMargin" >
-       <number>11</number>
+       <number>4</number>
       </property>
       <item>
        <widget class="QCheckBox" name="kcfg_ShowSplashscreen" >
@@ -361,13 +361,13 @@
        <number>11</number>
       </property>
       <property name="topMargin" >
-       <number>11</number>
+       <number>4</number>
       </property>
       <property name="rightMargin" >
        <number>11</number>
       </property>
       <property name="bottomMargin" >
-       <number>11</number>
+       <number>4</number>
       </property>
       <item>
        <widget class="QCheckBox" name="kcfg_SavePlaylist" >
@@ -404,6 +404,12 @@
       <string>Scores</string>
      </property>
      <layout class="QGridLayout" >
+      <property name="topMargin" >
+       <number>4</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>4</number>
+      </property>
       <item row="0" column="0" >
        <widget class="QCheckBox" name="kcfg_UseScores" >
         <property name="toolTip" >
@@ -439,189 +445,177 @@
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
+      <property name="topMargin" >
+       <number>4</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>4</number>
+      </property>
       <item row="0" column="0" >
-       <widget class="Q3Frame" name="moodFrame" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
+       <widget class="QLabel" name="moodbarHelpLabel" >
+        <property name="text" >
+         <string>You need the moodbar package installed to enable the moodbar feature.</string>
         </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="lineWidth" >
-         <number>0</number>
-        </property>
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <layout class="QVBoxLayout" >
-         <item>
-          <widget class="QLabel" name="moodbarHelpLabel" >
-           <property name="text" >
-            <string>You need the moodbar package installed to enable the moodbar feature.</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="kcfg_ShowMoodbar" >
-           <property name="enabled" >
-            <bool>true</bool>
-           </property>
-           <property name="toolTip" >
-            <string>Displays a visual representation of the current track in the column of the playlist window.</string>
-           </property>
-           <property name="whatsThis" >
-            <string>Displays a visual representation of the current track in the column of the playlist window.</string>
-           </property>
-           <property name="text" >
-            <string>Use &amp;moods</string>
-           </property>
-           <property name="checked" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <property name="leftMargin" >
-            <number>11</number>
-           </property>
-           <property name="topMargin" >
-            <number>0</number>
-           </property>
-           <property name="rightMargin" >
-            <number>11</number>
-           </property>
-           <property name="bottomMargin" >
-            <number>0</number>
-           </property>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType" >
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>16</width>
-               <height>21</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="kcfg_MakeMoodier" >
-             <property name="enabled" >
-              <bool>true</bool>
-             </property>
-             <property name="toolTip" >
-              <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-             </property>
-             <property name="whatsThis" >
-              <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-             </property>
-             <property name="text" >
-              <string>Make m&amp;oodier:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="kcfg_AlterMood" >
-             <property name="enabled" >
-              <bool>false</bool>
-             </property>
-             <item>
-              <property name="text" >
-               <string>Happy Like a Rainbow</string>
-              </property>
-             </item>
-             <item>
-              <property name="text" >
-               <string>Angry as Hell</string>
-              </property>
-             </item>
-             <item>
-              <property name="text" >
-               <string>Frozen in the Arctic</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType" >
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>130</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <property name="leftMargin" >
-            <number>11</number>
-           </property>
-           <property name="topMargin" >
-            <number>0</number>
-           </property>
-           <property name="rightMargin" >
-            <number>11</number>
-           </property>
-           <property name="bottomMargin" >
-            <number>0</number>
-           </property>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType" >
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>16</width>
-               <height>21</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="kcfg_MoodsWithMusic" >
-             <property name="enabled" >
-              <bool>true</bool>
-             </property>
-             <property name="toolTip" >
-              <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
-             </property>
-             <property name="whatsThis" >
-              <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
-             </property>
-             <property name="text" >
-              <string>Stor&amp;e mood data files with music</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
        </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="kcfg_ShowMoodbar" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="toolTip" >
+         <string>Displays a visual representation of the current track in the column of the playlist window.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Displays a visual representation of the current track in the column of the playlist window.</string>
+        </property>
+        <property name="text" >
+         <string>Use &amp;moods</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>16</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="kcfg_MakeMoodier" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="toolTip" >
+           <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+          </property>
+          <property name="text" >
+           <string>Make m&amp;oodier:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="kcfg_AlterMood" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <item>
+           <property name="text" >
+            <string>Happy Like a Rainbow</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Angry as Hell</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Frozen in the Arctic</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>130</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>11</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>11</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>16</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="kcfg_MoodsWithMusic" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="toolTip" >
+           <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
+          </property>
+          <property name="whatsThis" >
+           <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
+          </property>
+          <property name="text" >
+           <string>Stor&amp;e mood data files with music</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -635,12 +629,6 @@
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
    <container>1</container>
   </customwidget>
   <customwidget>
