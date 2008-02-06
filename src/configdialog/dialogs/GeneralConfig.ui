@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>521</height>
+    <width>798</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -18,8 +18,8 @@
   <property name="windowTitle" >
    <string>General</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <item>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
     <widget class="Q3GroupBox" name="generalBox" >
      <property name="title" >
       <string>General Options</string>
@@ -345,56 +345,101 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="Q3GroupBox" name="componentsBox" >
+   <item row="1" column="0" >
+    <widget class="Q3GroupBox" name="groupBox2" >
      <property name="title" >
-      <string>Components</string>
+      <string>Playlist-Window Options</string>
      </property>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>11</number>
+      </property>
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
+      </property>
       <item>
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="QCheckBox" name="kcfg_UseScores" >
-          <property name="toolTip" >
-           <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
-          </property>
-          <property name="text" >
-           <string>Use &amp;scores</string>
-          </property>
-          <property name="checked" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="kcfg_UseRatings" >
-          <property name="toolTip" >
-           <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
-          </property>
-          <property name="text" >
-           <string>Use ratings</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line1" >
-        <property name="frameShape" >
-         <enum>QFrame::HLine</enum>
+       <widget class="QCheckBox" name="kcfg_SavePlaylist" >
+        <property name="toolTip" >
+         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br></string>
         </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Sunken</enum>
+        <property name="whatsThis" >
+         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
         </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+        <property name="text" >
+         <string>&amp;Remember current playlist on exit</string>
         </property>
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
+        <property name="toolTip" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="whatsThis" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="text" >
+         <string>Manually sa&amp;ved playlists use relative path</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Scores</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="kcfg_UseScores" >
+        <property name="toolTip" >
+         <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
+        </property>
+        <property name="text" >
+         <string>Use &amp;scores</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="kcfg_UseRatings" >
+        <property name="toolTip" >
+         <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
+        </property>
+        <property name="text" >
+         <string>Use ratings</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="Q3GroupBox" name="componentsBox" >
+     <property name="title" >
+      <string>Moodbar</string>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
        <widget class="Q3Frame" name="moodFrame" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
@@ -580,75 +625,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <widget class="Q3GroupBox" name="groupBox2" >
-     <property name="title" >
-      <string>Playlist-Window Options</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>11</number>
-      </property>
-      <property name="topMargin" >
-       <number>11</number>
-      </property>
-      <property name="rightMargin" >
-       <number>11</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>11</number>
-      </property>
-      <item>
-       <widget class="QCheckBox" name="kcfg_SavePlaylist" >
-        <property name="toolTip" >
-         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br></string>
-        </property>
-        <property name="whatsThis" >
-         <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
-        </property>
-        <property name="text" >
-         <string>&amp;Remember current playlist on exit</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
-        <property name="toolTip" >
-         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-        </property>
-        <property name="whatsThis" >
-         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-        </property>
-        <property name="text" >
-         <string>Manually sa&amp;ved playlists use relative path</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>586</width>
-       <height>50</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
