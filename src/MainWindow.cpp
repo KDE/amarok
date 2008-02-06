@@ -1004,7 +1004,7 @@ void MainWindow::createMenus()
     qt_mac_set_dock_menu(actionsMenu); 
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Engage") );
-    #elif
+    #else
     actionsMenu->setTitle( i18n("&Amarok") );
     #endif
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
