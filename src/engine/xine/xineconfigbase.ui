@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>437</width>
-            <height>458</height>
+            <height>481</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -144,6 +144,9 @@
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
+                                        <property name="spacing">
+                                            <number>0</number>
+                                        </property>
                                         <widget class="QLabel" row="0" column="0">
                                             <property name="name">
                                                 <cstring>textLabel2_3</cstring>
@@ -221,6 +224,9 @@
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
+                                        <property name="spacing">
+                                            <number>0</number>
+                                        </property>
                                         <widget class="QLabel">
                                             <property name="name">
                                                 <cstring>textLabel1</cstring>
@@ -275,6 +281,9 @@
                                     <vbox>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
+                                        </property>
+                                        <property name="spacing">
+                                            <number>0</number>
                                         </property>
                                         <widget class="QLayoutWidget">
                                             <property name="name">
@@ -373,6 +382,9 @@
                                     <hbox>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
+                                        </property>
+                                        <property name="spacing">
+                                            <number>0</number>
                                         </property>
                                         <widget class="QLayoutWidget">
                                             <property name="name">
@@ -476,23 +488,6 @@
                                 </widget>
                             </vbox>
                         </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer3</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>16</height>
-                                </size>
-                            </property>
-                        </spacer>
                     </vbox>
                 </widget>
             </hbox>
@@ -503,4 +498,7 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcombobox.h</includehint>
+</includehints>
 </UI>
