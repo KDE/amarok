@@ -583,18 +583,15 @@ void App::applySettings( bool firstTime )
 #endif
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
-#ifndef Q_WS_MAC
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
     //TrackToolTip::instance()->addToWidget( m_tray );
-#endif
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
-#ifndef Q_WS_MAC
+
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
-#endif
     {
         main_window->show();
 
@@ -673,9 +670,9 @@ App::continueInit()
     //CollectionDB::instance()->checkDatabase();
 
     m_mainWindow = new MainWindow();
-#ifndef Q_WS_MAC
+
     m_tray           = new Amarok::TrayIcon( mainWindow() );
-#endif
+
     mainWindow()->init(); //creates the playlist, browsers, etc.
     //FIXME: we shouldn't have to do this.
     pApp->mainWindow()->show();

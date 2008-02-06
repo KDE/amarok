@@ -100,9 +100,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
         // ATTRIBUTES ------
         MainWindow          *m_mainWindow;
-#ifndef Q_WS_MAC
         Amarok::TrayIcon    *m_tray;
-#endif
         MediaDeviceManager  *m_mediaDeviceManager;
         KSplashScreen       *m_splash;
 };
