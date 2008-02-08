@@ -60,8 +60,8 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( engine,      i18n( "Engine" ), "preferences-media-engine-amarok", i18n( "Configure Engine" ) );
     addPage( osd,         i18n( "OSD" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
-    addPage( mediadevice, i18n( "Media Devices" ), "multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
-    addPage( services,    i18n( "Services" ), "get-hot-new-stuff-amarok", i18n( "Configure Services" ) );
+    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
+    addPage( services,    i18n( "Services" ), "services-amarok", i18n( "Configure Services" ) );
     
 
     setButtons( Help | Ok | Apply | Cancel );
