@@ -269,7 +269,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     {
 
         ( *it )->setAlbumId( m_pCurrentAlbum->id() );
-        ( *it )->setArtistId( m_pCurrentArtist->id() );
+        ( *it )->setArtistId( artistId );
         m_dbHandler->insertTrack( ( *it ) );
         m_nNumberOfTracks++;
     }
