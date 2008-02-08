@@ -30,6 +30,8 @@
 #include <kpassworddialog.h>
 #include <KMD5>
 
+#include <QDomDocument>
+
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
 
 void AmpacheServiceFactory::init()

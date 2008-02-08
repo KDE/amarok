@@ -29,6 +29,8 @@
 #include <KMessageBox>
 #include <kpassworddialog.h>
 
+#include <QDomDocument>
+
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
 void Mp3tunesServiceFactory::init()
