@@ -22,9 +22,9 @@ add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 
 find_package(Taglib REQUIRED)
 if (WIN32)
-    find_package(RUBY)
+    find_package(Ruby)
 else (WIN32)
-    find_package(RUBY REQUIRED)
+    find_package(Ruby REQUIRED)
 endif (WIN32)
 
 add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
