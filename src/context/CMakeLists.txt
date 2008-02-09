@@ -42,11 +42,13 @@ set(plasma_LIB_SRCS
     plasma/datacontainer.cpp
     plasma/dataengine.cpp
     plasma/dataenginemanager.cpp
+    plasma/dialog.cpp
     plasma/layouts/boxlayout.cpp
     plasma/layouts/borderlayout.cpp
     plasma/layouts/freelayout.cpp
     plasma/layouts/nodelayout.cpp
     plasma/layouts/flowlayout.cpp
+    plasma/layouts/fliplayout.cpp
     plasma/layouts/layout.cpp
     plasma/layouts/layoutanimator.cpp
     plasma/layouts/layoutitem.cpp
@@ -54,15 +56,19 @@ set(plasma_LIB_SRCS
     plasma/phase.cpp
     plasma/plasma.cpp
     plasma/plasma_export.h
-    plasma/scriptengine.cpp
     plasma/searchcontext.cpp
     plasma/searchmatch.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
+    plasma/svgpanel.cpp
     plasma/theme.cpp
-    plasma/toolbox.cpp
+    plasma/desktoptoolbox.cpp
     plasma/uiloader.cpp
     plasma/view.cpp
+    plasma/scripting/appletscript.cpp
+    plasma/scripting/dataenginescript.cpp
+    plasma/scripting/runnerscript.cpp
+    plasma/scripting/scriptengine.cpp
     plasma/widgets/checkbox.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
@@ -72,6 +78,7 @@ set(plasma_LIB_SRCS
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
 #    plasma/widgets/rectangle.cpp
+    plasma/widgets/tooltip.cpp
     plasma/widgets/widget.cpp
     plasma/widgets/signalplotter.cpp
     plasma/widgets/meter.cpp
