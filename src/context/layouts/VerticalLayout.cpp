@@ -92,7 +92,7 @@ Plasma::LayoutItem* VerticalLayout::takeAt(int i)
 void VerticalLayout::relayout()
 {
     
-    QRectF rect = geometry().adjusted(margin(Plasma::Layout::LeftMargin), margin(Plasma::Layout::TopMargin), margin(Plasma::Layout::RightMargin), margin(Plasma::Layout::BottomMargin));
+    QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), margin(Plasma::RightMargin), margin(Plasma::BottomMargin));
 
 //     debug() << "laying out column in rect::" << rect;
 

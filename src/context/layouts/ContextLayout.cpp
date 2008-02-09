@@ -233,7 +233,7 @@ T qSum(const QList<T>& container)
 
 void ContextLayout::relayout()
 {
-    QRectF rect = geometry().adjusted(margin(LeftMargin), margin(TopMargin), -margin(RightMargin), -margin(BottomMargin));
+    QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), -margin(Plasma::RightMargin), -margin(Plasma::BottomMargin));
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     if( numColumns > d->columns.size() ) // need to make more columns
@@ -266,7 +266,7 @@ void ContextLayout::relayout()
     for( int i = 0; i < numColumns; i++ ) // lay out columns
     {
 //         kDebug() << "setting columns to width:" << columnWidth;
-        QPointF pos( ( ( i + 1 ) * margin( Plasma::Layout::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::Layout::LeftMargin ) );
+        QPointF pos( ( ( i + 1 ) * margin( Plasma::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::LeftMargin ) );
         QSizeF size( columnWidth, qMax( d->columns[ i ]->sizeHint().height(),
                                                          rect.height() ) );
          d->columns[ i ]->setGeometry( QRectF( pos, size ) );
