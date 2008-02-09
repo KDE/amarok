@@ -60,15 +60,11 @@ set(plasma_LIB_SRCS
     plasma/searchmatch.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
-    plasma/svgpanel.cpp
     plasma/theme.cpp
     plasma/desktoptoolbox.cpp
+    plasma/scriptengine.cpp
     plasma/uiloader.cpp
     plasma/view.cpp
-    plasma/scripting/appletscript.cpp
-    plasma/scripting/dataenginescript.cpp
-    plasma/scripting/runnerscript.cpp
-    plasma/scripting/scriptengine.cpp
     plasma/widgets/checkbox.cpp
     plasma/widgets/flash.cpp
     plasma/widgets/icon.cpp
