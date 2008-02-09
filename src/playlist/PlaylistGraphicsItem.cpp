@@ -401,6 +401,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     }
 
     m_items->lastWidth = totalWidth;
+
+    m_dataChanged = false;
 }
 
 QString
