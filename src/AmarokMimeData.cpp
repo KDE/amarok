@@ -25,7 +25,7 @@
 #include <QUrl>
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
-const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlistss";
+const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
 
 class AmarokMimeData::Private
 {
