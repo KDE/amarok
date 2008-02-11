@@ -19,6 +19,8 @@
 
 #include "CollectionManager.h"
 #include "meta/LastFmCapability.h"
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -89,8 +91,9 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-        m_bottomPanel->setMaximumHeight( 36 );
-
+        m_bottomPanel->setMaximumHeight( 100 );
+        
+        
         m_buttonBox = new KHBox(m_bottomPanel);
         m_buttonBox->setSpacing( 3 );
 
@@ -116,6 +119,17 @@ LastFmService::polish()
 
         setButtonsEnabled( m_radio->currentTrack() );
 
+        KHBox * customStationBox = new KHBox( m_bottomPanel );
+        customStationBox->setSpacing( 3 );
+        m_customStationEdit = new KLineEdit( customStationBox );
+        m_customStationEdit->setClickMessage( i18n( "Enter artist name" ) );
+        m_customStationButton = new QPushButton( customStationBox );
+        m_customStationButton->setText( i18n( "Go" ) );
+        m_customStationButton->setObjectName( "customButton" );
+        m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
+
+        connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
+        
         m_polished = true;
     }
 }
@@ -163,5 +177,17 @@ namespace The
     LastFmService *lastFmService()
     {
         return LastFmService::ms_service;
+    }
+}
+
+void LastFmService::playCustomStation()
+{
+    DEBUG_BLOCK
+    QString band = m_customStationEdit->text();
+
+    if ( !band.isEmpty() ) {
+        QString url = "lastfm://artist/" + band + "/similarartists";
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+        The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
     }
 }

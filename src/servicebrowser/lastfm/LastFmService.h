@@ -16,6 +16,8 @@
 
 #include "../servicebase.h"
 
+#include <KLineEdit>
+
 class ScrobblerAdapter;
 class RadioAdapter;
 class LastFmService;
@@ -60,6 +62,8 @@ private slots:
     void skip();
     void ban();
 
+    void playCustomStation();
+
     void setButtonsEnabled( bool enable );
 
 private:
@@ -72,6 +76,9 @@ private:
     QPushButton *m_loveButton;
     QPushButton *m_banButton;
     QPushButton *m_skipButton;
+
+    KLineEdit * m_customStationEdit;
+    QPushButton * m_customStationButton;
 
     static LastFmService *ms_service;
 
