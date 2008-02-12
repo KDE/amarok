@@ -25,6 +25,7 @@
 #include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
+#include "MetaUtility.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
 
@@ -39,6 +40,7 @@
 
 #include <KAction>
 #include <kcodecs.h>
+#include <KFileMetaInfo>
 #include <klocale.h>
 #include <KSharedPtr>
 
@@ -414,7 +416,6 @@ SqlTrack::endMetaDataUpdate()
 void
 SqlTrack::abortMetaDataUpdate()
 {
-    //TODO method stub
     m_batchUpdate = false;
     delete m_cache;
 }
@@ -423,7 +424,17 @@ SqlTrack::abortMetaDataUpdate()
 void
 SqlTrack::writeMetaDataToFile()
 {
-    //TODO method stub
+    KFileMetaInfo info( m_url );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) ).setValue( m_album->name() );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) ).setValue( m_artist->name() );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) ).setValue( m_comment );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( m_composer->name() );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( m_discNumber );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::GENRE ) ).setValue( m_genre->name() );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) ).setValue( m_title );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) ).setValue( m_trackNumber );
+    info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) ).setValue( m_year->name() );
+    info.applyChanges();
 }
 
 void
