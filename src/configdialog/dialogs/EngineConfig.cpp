@@ -41,6 +41,8 @@ EngineConfig::EngineConfig( QWidget* parent )
     groupBox            = new QGroupBox( i18n("Sound System"), this );
     m_engineConfigFrame = new QGroupBox( this );
     //m_engineConfigFrame->setInsideMargin( 4 );
+
+    groupBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     
     m_soundSystem       = new QComboBox( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
