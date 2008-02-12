@@ -40,18 +40,17 @@ EngineConfig::EngineConfig( QWidget* parent )
     QWidget *groupBox, *aboutEngineButton;
     groupBox            = new QGroupBox( i18n("Sound System"), this );
     m_engineConfigFrame = new QGroupBox( this );
-    //m_engineConfigFrame->setInsideMargin( 4 );
 
-    groupBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-    
     m_soundSystem       = new QComboBox( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
-    
+
+    groupBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+    m_soundSystem->setMaximumHeight(50);
+        
     QHBoxLayout* groupBoxLayout = new QHBoxLayout( groupBox );
     groupBoxLayout->addWidget( m_soundSystem );
     groupBoxLayout->addWidget( aboutEngineButton );
-   // groupBox->setLayout( configFrameLayout );
-    
+
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->setSpacing( KDialog::spacingHint() );
     mainLayout->addWidget( groupBox );
