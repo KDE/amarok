@@ -602,6 +602,7 @@ Model::mimeTypes() const //reimplemented
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
+    ret << "text/uri-list"; //we do accept urls
     return ret;
 }
 
