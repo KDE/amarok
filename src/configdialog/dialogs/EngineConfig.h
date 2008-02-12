@@ -23,7 +23,7 @@
 #include "ConfigDialogBase.h"
 #include <QMap>
 
-class Q3GroupBox;
+class QGroupBox;
 class QComboBox;
 
 namespace Amarok { class PluginConfig; }
@@ -49,7 +49,7 @@ class EngineConfig : public ConfigDialogBase
     private:
         void soundSystemChanged();
 
-        Q3GroupBox* m_engineConfigFrame;
+        QGroupBox* m_engineConfigFrame;
         QComboBox* m_soundSystem;
         Amarok::PluginConfig *m_engineConfig;
 

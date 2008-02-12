@@ -23,9 +23,10 @@
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QComboBox>
 #include <QPushButton>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 
 #include <KDialog>
@@ -36,14 +37,21 @@ EngineConfig::EngineConfig( QWidget* parent )
     : ConfigDialogBase( parent )
     , m_engineConfig( 0 )
 {
-    QVBoxLayout* mainLayout = new QVBoxLayout( this );
-    mainLayout->setSpacing( KDialog::spacingHint() );
     QWidget *groupBox, *aboutEngineButton;
-    groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), this );
-    m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, this );
-    m_engineConfigFrame->setInsideMargin( 4 );
+    groupBox            = new QGroupBox( i18n("Sound System"), this );
+    m_engineConfigFrame = new QGroupBox( this );
+    //m_engineConfigFrame->setInsideMargin( 4 );
+    
     m_soundSystem       = new QComboBox( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
+    
+    QHBoxLayout* groupBoxLayout = new QHBoxLayout( groupBox );
+    groupBoxLayout->addWidget( m_soundSystem );
+    groupBoxLayout->addWidget( aboutEngineButton );
+   // groupBox->setLayout( configFrameLayout );
+    
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+    mainLayout->setSpacing( KDialog::spacingHint() );
     mainLayout->addWidget( groupBox );
     mainLayout->addWidget( m_engineConfigFrame );
 
@@ -66,7 +74,7 @@ EngineConfig::EngineConfig( QWidget* parent )
     }
 
     connect( aboutEngineButton, SIGNAL( clicked() ), SLOT( aboutEngine() ) );
-    connect( m_soundSystem, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
+    connect( m_soundSystem, SIGNAL( activated( int ) ), parent, SLOT( updateSettings() ) );
 }
 
 EngineConfig::~EngineConfig()
