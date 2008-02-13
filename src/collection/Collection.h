@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,17 @@ class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
 
 };
 
-class AMAROK_EXPORT Collection : public QObject
+class AMAROK_EXPORT TrackProvider
+{
+    public:
+        TrackProvider();
+        virtual ~TrackProvider();
+
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+};
+
+class AMAROK_EXPORT Collection : public QObject, public TrackProvider
 {
     Q_OBJECT
     public:
@@ -59,9 +69,6 @@ class AMAROK_EXPORT Collection : public QObject
 
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
-
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
         virtual CollectionLocation* location() const;
 

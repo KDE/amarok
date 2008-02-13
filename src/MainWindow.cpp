@@ -252,7 +252,7 @@ void MainWindow::init()
         //TODO: find a better place to load the default collections and providers
         PodcastCollection *localPodcasts = new PodcastCollection();
         The::playlistManager()->addProvider( localPodcasts->channelProvider(), PlaylistManager::PodcastChannel );
-        CollectionManager::instance()->addUnmanagedCollection( localPodcasts );
+        CollectionManager::instance()->addTrackProvider( localPodcasts );
 
         m_playlistFiles = new PlaylistFileProvider();
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );

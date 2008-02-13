@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ struct CollectionManager::Private
     SqlStorage *sqlDatabase;
     QList<Collection*> unmanagedCollections;
     QList<Collection*> managedCollections;
+    QList<TrackProvider*> trackProviders;
 };
 
 class CollectionManagerSingleton
@@ -71,6 +72,7 @@ CollectionManager::~CollectionManager()
 {
     d->collections.clear();
     d->unmanagedCollections.clear();
+    d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
 
     foreach( CollectionFactory *fac, d->factories )
@@ -143,6 +145,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     debug() << "New collection with collectionId: " << newCollection->collectionId();
     d->collections.append( newCollection );
     d->managedCollections.append( newCollection );
+    d->trackProviders.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
     connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
     SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
@@ -167,6 +170,7 @@ CollectionManager::slotRemoveCollection()
     {
         d->collections.removeAll( collection );
         d->managedCollections.removeAll( collection );
+        d->trackProviders.removeAll( collection );
         SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
         if( sqlDb && sqlDb == d->sqlDatabase )
         {
@@ -231,13 +235,12 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a podcast, in that case we'll have additional meta information
     //might be a lastfm track, another stream
     //or a file which is not in any collection
-    debug() << "track for url: " << url.url();
 
-    foreach( Collection *coll, d->collections )
+    foreach( TrackProvider *provider, d->trackProviders )
     {
-        if( coll->possiblyContainsTrack( url ) )
+        if( provider->possiblyContainsTrack( url ) )
         {
-            Meta::TrackPtr track = coll->trackForUrl( url );
+            Meta::TrackPtr track = provider->trackForUrl( url );
             if( track )
                 return track;
         }
@@ -304,6 +307,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection )
     {
         d->unmanagedCollections.append( newCollection );
         d->collections.append( newCollection );
+        d->trackProviders.append( newCollection );
         emit collectionAdded( newCollection );
     }
 }
@@ -315,8 +319,21 @@ CollectionManager::removeUnmanagedCollection( Collection *collection )
     if( collection && d->unmanagedCollections.removeAll( collection ) )
     {
         d->collections.removeAll( collection );
+        d->trackProviders.removeAll( collection );
         emit collectionRemoved( collection->collectionId() );
     }
+}
+
+void
+CollectionManager::addTrackProvider( TrackProvider *provider )
+{
+    d->trackProviders.append( provider );
+}
+
+void
+CollectionManager::removeTrackProvider( TrackProvider *provider )
+{
+    d->trackProviders.removeAll( provider );
 }
 
 #include "CollectionManager.moc"

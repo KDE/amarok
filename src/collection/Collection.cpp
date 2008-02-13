@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,27 +29,36 @@ CollectionFactory::~CollectionFactory()
 }
 
 
-Collection::Collection()
-    : QObject()
+TrackProvider::TrackProvider()
 {
 }
 
-Collection::~Collection()
+TrackProvider::~TrackProvider()
 {
 }
 
 bool
-Collection::possiblyContainsTrack( const KUrl &url ) const
+TrackProvider::possiblyContainsTrack( const KUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-Collection::trackForUrl( const KUrl &url )
+TrackProvider::trackForUrl( const KUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
+}
+
+Collection::Collection()
+    : QObject()
+    , TrackProvider()
+{
+}
+
+Collection::~Collection()
+{
 }
 
 CollectionLocation*

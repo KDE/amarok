@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
     Q_OBJECT
 
     public:
-        /*AMAROK_EXPORT*/ static CollectionManager * instance();
+        static CollectionManager * instance();
 
         ~CollectionManager();
 
@@ -47,7 +47,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
             could be created for the url.
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
-        /*AMAROK_EXPORT*/ Meta::TrackList tracksForUrls( const KUrl::List &urls );
+        Meta::TrackList tracksForUrls( const KUrl::List &urls );
         Meta::ArtistList relatedArtists( Meta::ArtistPtr artist, int maxArtists );
 
         /**
@@ -58,6 +58,29 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         void addUnmanagedCollection( Collection *newCollection );
         void removeUnmanagedCollection( Collection *collection );
+
+        /**
+         * adds a TrackProvider to the list of TrackProviders,
+         * which allows CollectionManager to create tracks in trackForUrl.
+         * CollectionManager does not take ownership of the TrackProvider pointer
+         *
+         * Note: collections that CollectionManager knows about are automatically
+         * added to the list of TrackProviders.
+         *
+         * @param provider the new TrackProvider
+         */
+        void addTrackProvider( TrackProvider *provider );
+
+        /**
+         * removes a TrackProvider. Does not do anything if
+         * CollectionManager does not know the given TrackProvider.
+         *
+         * Note: collections will be automatically removed from
+         * the list of available TrackProviders.
+         *
+         * @param provider the provider to be removed
+         */
+        void removeTrackProvider( TrackProvider *provider );
 
     public slots:
         void startFullScan();

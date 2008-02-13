@@ -70,6 +70,8 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
     showInfo( false );
 
+    CollectionManager::instance()->addTrackProvider( m_collection );
+
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
 }
@@ -79,7 +81,7 @@ LastFmService::~LastFmService()
 {
     ms_service = 0;
 
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    CollectionManager::instance()->removeTrackProvider( m_collection );
     delete m_collection;
 }
 
