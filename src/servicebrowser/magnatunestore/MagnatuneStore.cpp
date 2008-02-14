@@ -224,7 +224,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
 
     KTemporaryFile tempFile;
-    tempFile.setSuffix( ".xml" );
+    tempFile.setSuffix( ".bz2" );
     tempFile.setAutoRemove( false );  //file must be removed later
     if( !tempFile.open() )
     {
@@ -233,7 +233,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     m_tempFileName = tempFile.fileName();
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
     Amarok::ContextStatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );

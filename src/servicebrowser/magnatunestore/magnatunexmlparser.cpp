@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "ContextStatusBar.h"
 
+#include <KFilterDev>
 #include <KLocale>
 
 #include <QDomDocument>
@@ -71,17 +72,25 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
 
     QDomDocument doc( "config" );
 
-    QFile file( filename );
-    if ( !file.open( QIODevice::ReadOnly ) ) {
+    if ( !QFile::exists( filename ) )
+    {
+        debug() << "Magnatune xml file does not exist";
+        return;
+    }
+
+    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-bzip2", true );
+    if ( !file || !file->open( QIODevice::ReadOnly ) ) {
         debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
-    } if ( !doc.setContent( &file ) )
+    }
+    if ( !doc.setContent( file ) )
     {
         debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
-        file.close();
+        file->close();
         return ;
     }
-    file.close();
+    file->close();
+    delete file;
 
 
     m_dbHandler->destroyDatabase();
