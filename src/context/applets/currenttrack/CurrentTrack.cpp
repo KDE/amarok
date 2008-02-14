@@ -334,6 +334,11 @@ bool CurrentTrack::resizeCover(QPixmap cover){
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
         else
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
+
+        //center the cover : if the cover is not squared, we get the missing pixels and center
+        qreal moveBy = qAbs(cover.rect().width()-cover.rect().height())/2.0;
+        m_albumCover->setPos(m_albumCover->x()+ moveBy, m_albumCover->y());
+
         m_albumCover->setPixmap( cover );
         return true;
     }
