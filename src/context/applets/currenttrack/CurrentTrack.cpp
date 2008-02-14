@@ -162,18 +162,9 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_scoreLabel->scale( scaleFactor, scaleFactor );
     m_numPlayedLabel->scale( scaleFactor, scaleFactor );
     m_playedLastLabel->scale( scaleFactor, scaleFactor );
-    
 
+    resizeCover(m_bigCover);
 
-    QPixmap cover = m_albumCover->pixmap();
-    if( !cover.isNull() )
-    {
-        debug() << "getting album rect:" <<  m_theme->elementRect( "albumart" ).size();
-        cover = cover.scaledToWidth( qMin( m_theme->elementRect( "albumart" ).size().width(),
-                                                            m_theme->elementRect( "albumart" ).size().height() )
-                                                            , Qt::SmoothTransformation );
-        m_albumCover->setPixmap( cover );
-    }
     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
@@ -198,18 +189,11 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
     m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
-    // scale pixmap on demand
-    QPixmap cover = data[ "albumart" ].value<QPixmap>();
-    if( !cover.isNull() )
-    {
-        QSize rectSize = m_theme->elementRect( "albumart" ).size();
-        //for some reason the rectangle is not square
-        int size = qMin( rectSize.width(), rectSize.height() );
-        debug() << "changing pixmap size from " << cover.width() << " to " << size;
-        cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-        m_albumCover->setPixmap( cover );
-    }
-    else
+    //scale pixmap on demand
+    //store the big cover : avoid blur when resizing the applet
+    m_bigCover = data[ "albumart" ].value<QPixmap>();
+
+    if(!resizeCover(m_bigCover))
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
     }
@@ -338,6 +322,25 @@ QString CurrentTrack::truncateTextToFit( QString text, const QFont& font, const 
     return text;
 }
 
+bool CurrentTrack::resizeCover(QPixmap cover){
+    if( !cover.isNull() )
+    {
+        QSize rectSize = m_theme->elementRect( "albumart" ).size();
+        debug() << "getting album rect:" <<  rectSize;
+        int size = qMin( rectSize.width(), rectSize.height() );
+        qreal pixmapRatio = (qreal)cover.width()/size;
 
+        if(cover.height()/pixmapRatio > rectSize.height())
+            cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
+        else
+            cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
+        m_albumCover->setPixmap( cover );
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 #include "CurrentTrack.moc"

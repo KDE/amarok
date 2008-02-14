@@ -81,6 +81,9 @@ private:
     int m_trackLength;
 
     QGraphicsPixmapItem* m_albumCover;
+    QPixmap m_bigCover;
+
+    bool resizeCover(QPixmap cover);
 
 };
 
