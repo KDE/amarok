@@ -25,6 +25,7 @@
 #include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
+#include "meta/OrganiseCapability.h"
 #include "MetaUtility.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
@@ -72,6 +73,27 @@ class EditCapabilityImpl : public Meta::EditCapability
         KSharedPtr<SqlTrack> m_track;
 };
 
+class OrganiseCapabilityImpl : public Meta::OrganiseCapability
+{
+    Q_OBJECT
+    public:
+        OrganiseCapabilityImpl( SqlTrack *track )
+            : Meta::OrganiseCapability()
+            , m_track( track ) {}
+
+        virtual void deleteTrack()
+        {
+            if( QFile::remove( m_track->playableUrl().path() ) )
+            {
+                QString sql = QString( "DELETE FROM tracks WHERE id = %1;" ).arg( m_track->trackId() );
+                m_track->sqlCollection()->query( sql );
+            }
+        }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
 struct SqlTrack::MetaCache
 {
     QString title;
@@ -91,7 +113,7 @@ QString
 SqlTrack::getTrackReturnValues()
 {
     return "urls.deviceid, urls.rpath, "
-           "tracks.title, tracks.comment, "
+           "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
            "statistics.score, statistics.rating, "
            "tracks.bitrate, tracks.length, "
@@ -134,19 +156,20 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_deviceid = result[0].toInt();
     m_rpath = result[1];
     m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
-    m_title = result[2];
-    m_comment = result[3];
-    m_trackNumber = result[4].toInt();
-    m_discNumber = result[5].toInt();
-    m_score = result[6].toDouble();
-    m_rating = result[7].toInt();
-    m_bitrate = result[8].toInt();
-    m_length = result[9].toInt();
-    m_filesize = result[10].toInt();
-    m_sampleRate = result[11].toInt();
-    m_firstPlayed = result[12].toInt();
-    m_lastPlayed = result[13].toUInt();
-    m_playCount = result[14].toInt();
+    m_trackId = result[2].toInt();
+    m_title = result[3];
+    m_comment = result[4];
+    m_trackNumber = result[5].toInt();
+    m_discNumber = result[6].toInt();
+    m_score = result[7].toDouble();
+    m_rating = result[8].toInt();
+    m_bitrate = result[9].toInt();
+    m_length = result[10].toInt();
+    m_filesize = result[11].toInt();
+    m_sampleRate = result[12].toInt();
+    m_firstPlayed = result[13].toInt();
+    m_lastPlayed = result[14].toUInt();
+    m_playCount = result[15].toInt();
     //file type
     //BPM
 
@@ -578,6 +601,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::Editable:
         case Meta::Capability::CustomActions:
+        case Meta::Capability::Organisable:
             return true;
 
         default:
@@ -600,6 +624,11 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
             // Find a better parent to avoid this memory leak.
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
+        }
+
+        case Meta::Capability::Organisable:
+        {
+            return new OrganiseCapabilityImpl( this );
         }
 
         default:

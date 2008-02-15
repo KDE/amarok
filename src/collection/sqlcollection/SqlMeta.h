@@ -116,6 +116,8 @@ class SqlTrack : public Meta::Track
         //SqlTrack specific methods
         int deviceid() const { return m_deviceid; }
         QString rpath() const { return m_rpath; }
+        int trackId() const { return m_trackId; }
+        SqlCollection* sqlCollection() const { return m_collection; }
 
     protected:
         void commitMetaDataChanges();
@@ -131,6 +133,7 @@ class SqlTrack : public Meta::Track
 
         int m_deviceid;
         QString m_rpath;
+        int m_trackId;
 
         int m_length;
         int m_filesize;

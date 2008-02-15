@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -16,35 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CAPABILITY_H
-#define AMAROK_CAPABILITY_H
+#include "OrganiseCapability.h"
 
-#include "amarok_export.h"
-
-#include <QObject>
-
-namespace Meta
+Meta::OrganiseCapability::~OrganiseCapability()
 {
-    class AMAROK_EXPORT Capability : public QObject
-    {
-        Q_OBJECT
-        Q_ENUMS( Type )
-
-        public:
-            //add additional capabilities here
-            enum Type { Unknown = 0
-                        , Editable = 1
-                        , LastFm = 2
-                        , Buyable = 3
-                        , CustomActions = 4
-                        , EditablePlaylist = 5
-                        , MultiPlayable = 6
-                        , Organisable = 7 };
-
-            virtual ~Capability();
-
-    };
+    //nothing to do
 }
-
-
-#endif
