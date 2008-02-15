@@ -25,6 +25,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QList>
+#include <QImage>
+#include <QPixmapCache>
 
 #include <KTemporaryFile>
 
@@ -87,6 +89,8 @@ private:
     qreal m_aspectRatio;
 
     KTemporaryFile m_tintedSvg;
+    QImage m_masterImage;
+    QPixmapCache m_cache;
 };
 
 K_EXPORT_AMAROK_APPLET( context, ColumnApplet )

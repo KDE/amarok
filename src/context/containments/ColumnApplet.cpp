@@ -26,8 +26,10 @@
 #include <KMenu>
 #include <KTemporaryFile>
 #include <KStandardDirs>
+#include <KSvgRenderer>
 
 #include <QAction>
+#include <QDesktopWidget>
 #include <QGraphicsScene>
 #include <QTimeLine>
 
@@ -67,8 +69,13 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     file.close();
 
     debug() << "temp filename: " << m_tintedSvg.fileName();
+
+    KSvgRenderer renderer( file.fileName() );
+    m_masterImage = QImage(  QApplication::desktop()->screenGeometry( QApplication::desktop()->primaryScreen() ).size(), QImage::Format_ARGB32 );
+    QPainter painter ( &m_masterImage );
+    renderer.render( &painter );
     
-    m_background = new Svg( m_tintedSvg.fileName(), this );
+    //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
@@ -138,7 +145,7 @@ void ColumnApplet::updateSize() // SLOT
     DEBUG_BLOCK
     m_geometry = scene()->sceneRect();
     debug() << "setting geometry:" << scene()->sceneRect();
-    if( scene() ) m_columns->setGeometry( scene()->sceneRect() );
+    m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
 }
 
@@ -147,7 +154,9 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     DEBUG_BLOCK
     Q_UNUSED( option );
     painter->save();
-    m_background->paint( painter, rect );
+    //m_background->paint( painter, rect );
+    QImage scaled = m_masterImage.scaled( rect.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation );
+    painter->drawImage( rect, scaled );
     painter->restore();
     QSize size = m_logo->size();
     
