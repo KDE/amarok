@@ -126,7 +126,7 @@ namespace Meta
             QSet<Meta::Observer*> m_observers;
 
         private: // no copy allowed, since it's not safe with observer list
-            Q_DISABLE_COPY(MetaBase);
+            Q_DISABLE_COPY(MetaBase)
     };
 
     class AMAROK_EXPORT Track : public MetaBase
