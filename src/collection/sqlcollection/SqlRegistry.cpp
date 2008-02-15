@@ -155,7 +155,6 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
 void
 SqlRegistry::emptyCache()
 {
-    DEBUG_BLOCK
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
 
