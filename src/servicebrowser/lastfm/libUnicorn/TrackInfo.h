@@ -205,6 +205,6 @@ inline QDebug operator<<( QDebug& d, const TrackInfo& t )
 
 
 #include <QMetaType>
-Q_DECLARE_METATYPE( TrackInfo );
+Q_DECLARE_METATYPE( TrackInfo )
 
 #endif

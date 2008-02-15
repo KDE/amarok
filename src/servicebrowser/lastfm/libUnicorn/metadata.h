@@ -138,6 +138,6 @@ class UNICORN_DLLEXPORT MetaData : public TrackInfo
 };
 
 
-Q_DECLARE_METATYPE( MetaData );
+Q_DECLARE_METATYPE( MetaData )
 
 #endif
