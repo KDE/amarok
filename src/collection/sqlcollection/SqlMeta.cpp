@@ -127,6 +127,12 @@ SqlTrack::getTrackReturnValues()
            "years.name, years.id";
 }
 
+int
+SqlTrack::getTrackReturnValueCount()
+{
+    return 29;
+}
+
 TrackPtr
 SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
 {
@@ -153,32 +159,34 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     , m_batchUpdate( false )
     , m_cache( 0 )
 {
-    m_deviceid = result[0].toInt();
-    m_rpath = result[1];
+    QStringList::ConstIterator iter = result.constBegin();
+    m_deviceid = (*(iter++)).toInt();
+    m_rpath = (*(iter++));
     m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
-    m_trackId = result[2].toInt();
-    m_title = result[3];
-    m_comment = result[4];
-    m_trackNumber = result[5].toInt();
-    m_discNumber = result[6].toInt();
-    m_score = result[7].toDouble();
-    m_rating = result[8].toInt();
-    m_bitrate = result[9].toInt();
-    m_length = result[10].toInt();
-    m_filesize = result[11].toInt();
-    m_sampleRate = result[12].toInt();
-    m_firstPlayed = result[13].toInt();
-    m_lastPlayed = result[14].toUInt();
-    m_playCount = result[15].toInt();
-    //file type
-    //BPM
+    m_trackId = (*(iter++)).toInt();
+    m_title = (*(iter++));
+    m_comment = (*(iter++));
+    m_trackNumber = (*(iter++)).toInt();
+    m_discNumber = (*(iter++)).toInt();
+    m_score = (*(iter++)).toDouble();
+    m_rating = (*(iter++)).toInt();
+    m_bitrate = (*(iter++)).toInt();
+    m_length = (*(iter++)).toInt();
+    m_filesize = (*(iter++)).toInt();
+    m_sampleRate = (*(iter++)).toInt();
+    m_firstPlayed = (*(iter++)).toInt();
+    m_lastPlayed = (*(iter++)).toUInt();
+    m_playCount = (*(iter++)).toInt();
+    iter++; //file type
+    iter++; //BPM
 
     SqlRegistry* registry = m_collection->registry();
-    m_artist = registry->getArtist( result[18], result[19].toInt() );
-    m_album = registry->getAlbum( result[20], result[21].toInt(), result[22].toInt() );
-    m_genre = registry->getGenre( result[23], result[24].toInt() );
-    m_composer = registry->getComposer( result[25], result[26].toInt() );
-    m_year = registry->getYear( result[27], result[28].toInt() );
+    m_artist = registry->getArtist( (*(iter++)), (*(iter++)).toInt() );
+    m_album = registry->getAlbum( (*(iter++)), (*(iter++)).toInt(), (*(iter++)).toInt() );
+    m_genre = registry->getGenre( (*(iter++)), (*(iter++)).toInt() );
+    m_composer = registry->getComposer( (*(iter++)), (*(iter++)).toInt() );
+    m_year = registry->getYear( *(iter++), (*(iter++)).toInt() );
+    Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 }
 
 bool

@@ -36,6 +36,8 @@ class SqlTrack : public Meta::Track
     public:
         /** returns a string of all database values that can be fetched for a track */
         static QString getTrackReturnValues();
+        /** returns the number of return values in getTrackReturnValues() */
+        static int getTrackReturnValueCount();
         static TrackPtr getTrack( int deviceid, const QString &rpath, SqlCollection *collection );
 
         SqlTrack( SqlCollection *collection, const QStringList &queryResult );
