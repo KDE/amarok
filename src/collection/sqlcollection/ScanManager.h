@@ -78,6 +78,9 @@ class XmlParseJob : public ThreadWeaver::Job
 
         void setIsIncremental( bool incremental );
 
+    signals:
+        void incrementProgress();
+
     private:
         SqlCollection *m_collection;
         bool m_isIncremental;

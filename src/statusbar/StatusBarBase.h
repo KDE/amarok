@@ -92,16 +92,16 @@ namespace KDE
          * @see incrementProgress( QObject* )
          * @see setProgressStatus( const QObject*, const QString& )
          */
-        ProgressBar &newProgressOperation( QObject *owner );
+        AMAROK_EXPORT ProgressBar &newProgressOperation( QObject *owner );
 
         /**
          * Monitor progress for a KIO::Job, very handy.
          */
         AMAROK_EXPORT ProgressBar &newProgressOperation( KJob* );
 
-        void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
-        void incrementProgress( const QObject *owner );
-        void setProgressStatus( const QObject *owner, const QString &text );
+        AMAROK_EXPORT void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
+        AMAROK_EXPORT void incrementProgress( const QObject *owner );
+        AMAROK_EXPORT void setProgressStatus( const QObject *owner, const QString &text );
 
     public slots:
         /**

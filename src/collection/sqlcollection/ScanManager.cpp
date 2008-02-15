@@ -20,6 +20,8 @@
 #include "ScanManager.h"
 
 #include "amarokconfig.h"
+#include "statusbar/ContextStatusBar.h"
+#include "statusbar/progressBar.h"
 #include "debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
@@ -316,11 +318,14 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_collection( collection )
     , m_isIncremental( false )
 {
+    Amarok::ContextStatusBar::instance()->newProgressOperation( this )
+            .setDescription( i18n( "Scanning music" ) );
+    connect( this, SIGNAL( incrementProgress() ), Amarok::ContextStatusBar::instance(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 XmlParseJob::~XmlParseJob()
 {
-    //nothing to do
+    Amarok::ContextStatusBar::instance()->endProgressOperation( this );
 }
 
 void
@@ -355,14 +360,16 @@ XmlParseJob::run()
                 QStringRef localname = m_reader.name();
                 if( localname == "dud" || localname == "tags" || localname == "playlist" )
                 {
-                    //TODO increment progress
+                    emit incrementProgress();
                 }
                 if( localname == "itemcount" )
                 {
                     //TODO handle itemcount
+                    Amarok::ContextStatusBar::instance()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
+                    emit incrementProgress();
                     //TODO handle tag data
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QHash<QString, QString> data;
@@ -432,6 +439,7 @@ XmlParseJob::run()
         {
             processor.addDirectory( dir, directories.value( dir ) );
         }
+        Amarok::ContextStatusBar::instance()->setProgressStatus( this, i18n( "Processing scan results" ) );
         processor.processScanResult( audioFileData );
     }
 }
