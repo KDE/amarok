@@ -46,6 +46,7 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent(QPaintEvent *)
 {
+    DEBUG_BLOCK
 
     int middle = contentsRect().width() / 2;
     QRect controlRect( middle - 90, 0, 180, 40 );

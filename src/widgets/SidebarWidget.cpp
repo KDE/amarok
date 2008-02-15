@@ -269,9 +269,6 @@ void SideBarButton::slotAnimTimer()
 
 void SideBarButton::paintEvent( QPaintEvent* )
 {
-    DEBUG_BLOCK
-
-
     QPainter p( this );
     p.initFrom( this );
 
