@@ -174,11 +174,11 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     //BPM
 
     SqlRegistry* registry = m_collection->registry();
-    m_artist = registry->getArtist( result[17], result[18].toInt() );
-    m_album = registry->getAlbum( result[19], result[20].toInt(), result[21].toInt() );
-    m_genre = registry->getGenre( result[22], result[23].toInt() );
-    m_composer = registry->getComposer( result[24], result[25].toInt() );
-    m_year = registry->getYear( result[26], result[27].toInt() );
+    m_artist = registry->getArtist( result[18], result[19].toInt() );
+    m_album = registry->getAlbum( result[20], result[21].toInt(), result[22].toInt() );
+    m_genre = registry->getGenre( result[23], result[24].toInt() );
+    m_composer = registry->getComposer( result[25], result[26].toInt() );
+    m_year = registry->getYear( result[27], result[28].toInt() );
 }
 
 bool
