@@ -26,6 +26,8 @@
 #include <QGraphicsView>
 #include <QList>
 
+#include <KTemporaryFile>
+
 namespace Context
 {
 
@@ -83,6 +85,8 @@ private:
     Plasma::Svg* m_logo;
     qreal m_width;
     qreal m_aspectRatio;
+
+    KTemporaryFile m_tintedSvg;
 };
 
 K_EXPORT_AMAROK_APPLET( context, ColumnApplet )

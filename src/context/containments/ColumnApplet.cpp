@@ -56,21 +56,19 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
 
     
-    KTemporaryFile tintedSvg;
-    tintedSvg.setSuffix( ".svg" );
-    tintedSvg.setAutoRemove( false );  //TODO
-    tintedSvg.open();
+    m_tintedSvg.setSuffix( ".svg" );
+    m_tintedSvg.open();
     
-    QFile file( tintedSvg.fileName() );
+    QFile file( m_tintedSvg.fileName() );
     file.open( QIODevice::WriteOnly | QIODevice::Text );
 
     QTextStream out( &file );
     out << svg_source;
     file.close();
 
-    debug() << "temp filename: " << tintedSvg.fileName();
+    debug() << "temp filename: " << m_tintedSvg.fileName();
     
-    m_background = new Svg( tintedSvg.fileName(), this );
+    m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
@@ -146,6 +144,7 @@ void ColumnApplet::updateSize() // SLOT
 
 void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
 {
+    DEBUG_BLOCK
     Q_UNUSED( option );
     painter->save();
     m_background->paint( painter, rect );
