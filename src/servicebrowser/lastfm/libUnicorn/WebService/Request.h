@@ -211,12 +211,12 @@ private slots:
  * should be MD5 hashed. */
 class UNICORN_DLLEXPORT VerifyUserRequest : public Request
 {
-    PROP_GET_SET( QString, username, Username );
-    PROP_GET_SET( QString, passwordMd5, PasswordMd5 );
-    PROP_GET_SET( QString, passwordMd5Lower, PasswordMd5Lower );
+    PROP_GET_SET( QString, username, Username )
+    PROP_GET_SET( QString, passwordMd5, PasswordMd5 )
+    PROP_GET_SET( QString, passwordMd5Lower, PasswordMd5Lower )
 
-    PROP_GET( BootStrapCode, bootStrapCode );
-    PROP_GET( UserAuthCode, userAuthCode );
+    PROP_GET( BootStrapCode, bootStrapCode )
+    PROP_GET( UserAuthCode, userAuthCode )
 
 public:
     VerifyUserRequest();
@@ -238,7 +238,7 @@ class UNICORN_DLLEXPORT RecommendRequest : public Request
     QString m_token;
     int m_type;
 
-    PROP_GET_SET( QString, language, Language );
+    PROP_GET_SET( QString, language, Language )
 
 public:
     RecommendRequest();
@@ -348,8 +348,8 @@ public:
 
 class UNICORN_DLLEXPORT ReportRebufferingRequest : public Request
 {
-    PROP_GET_SET( QString, streamerHost, StreamerHost );
-    PROP_GET_SET( QString, userName, UserName );
+    PROP_GET_SET( QString, streamerHost, StreamerHost )
+    PROP_GET_SET( QString, userName, UserName )
 
 public:
     ReportRebufferingRequest();
@@ -397,7 +397,7 @@ class UNICORN_DLLEXPORT FriendsRequest : public Request
 {
     PROP_GET_SET( QString, username, Username )
     PROP_GET( QStringList, usernames )
-    PROP_GET_SET( ImageSize, imageSize, ImageSize );
+    PROP_GET_SET( ImageSize, imageSize, ImageSize )
 
     QMap<QString, QString> m_avatars;
 
@@ -416,7 +416,7 @@ public:
 class UNICORN_DLLEXPORT UserPicturesRequest : public Request
 {
     PROP_GET_SET( QStringList, names, Names )
-    PROP_GET_SET( ImageSize, imageSize, ImageSize );
+    PROP_GET_SET( ImageSize, imageSize, ImageSize )
 
     QMap<QString, QString> m_urls;
 
@@ -454,9 +454,9 @@ public:
 
 class UNICORN_DLLEXPORT SimilarArtistsRequest : public Request
 {
-    PROP_GET( QString const, artist );
-    PROP_GET( WeightedStringList, artists );
-    PROP_GET( QStringList, images );
+    PROP_GET( QString const, artist )
+    PROP_GET( WeightedStringList, artists )
+    PROP_GET( QStringList, images )
 
 public:
     SimilarArtistsRequest( QString artist );
@@ -764,18 +764,18 @@ class UNICORN_DLLEXPORT Handshake : public Request
 {
     Q_OBJECT
     
-    PROP_GET_SET( QString, username, Username );
-    PROP_GET_SET( QString, password, Password );
-    PROP_GET_SET( QString, version, Version );
-    PROP_GET_SET( QString, language, Language );
-    PROP_GET_SET( QString, fingerprintUploadUrl, FingerprintUploadUrl );
+    PROP_GET_SET( QString, username, Username )
+    PROP_GET_SET( QString, password, Password )
+    PROP_GET_SET( QString, version, Version )
+    PROP_GET_SET( QString, language, Language )
+    PROP_GET_SET( QString, fingerprintUploadUrl, FingerprintUploadUrl )
     
-    PROP_GET( QString, session );
-    PROP_GET( QString, baseHost );
-    PROP_GET( QString, basePath );
-    PROP_GET( QUrl, streamUrl );
-    PROP_GET( bool, isSubscriber );
-    PROP_GET( QString, message );
+    PROP_GET( QString, session )
+    PROP_GET( QString, baseHost )
+    PROP_GET( QString, basePath )
+    PROP_GET( QUrl, streamUrl )
+    PROP_GET( bool, isSubscriber )
+    PROP_GET( QString, message )
 
     bool m_permitBootstrap;
 
