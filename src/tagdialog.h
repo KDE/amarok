@@ -16,14 +16,12 @@
 #include "config-amarok.h"
 
 #include "ktrm.h"
-#include "metabundle.h"       //stack alloc
 #include "playlist/PlaylistItem.h"
 #include "tagdialogbase.h"    //baseclass
 
 #include "meta/Meta.h"
 
 #include <khtml_part.h>
-#include <KUrl>             //stack alloc
 
 #include <QDateTime>
 #include <QLabel>
@@ -39,6 +37,8 @@ namespace TagLib {
     }
 }
 
+class QueryMaker;
+
 class TagDialog : public TagDialogBase
 {
     Q_OBJECT
@@ -50,6 +50,7 @@ class TagDialog : public TagDialogBase
 
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
+        explicit TagDialog( QueryMaker *qm, QWidget *parent=0 );
         ~TagDialog();
 
         void setTab( int id );
@@ -80,6 +81,9 @@ class TagDialog : public TagDialogBase
         void fillSelected( KTRMResult selected );
         void resetMusicbrainz();
 
+        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void queryDone();
+
     private:
         void init();
         void readTags();
@@ -103,7 +107,6 @@ class TagDialog : public TagDialogBase
         QStringList labelsForTrack( const Meta::TrackPtr &track );
         QStringList getCommonLabels();
         void saveTags();
-        bool writeTag( MetaBundle &mb, bool updateCB=true );
         const QString unknownSafe( QString );
         const QStringList statisticsData();
         void applyToAllTracks();
@@ -128,7 +131,6 @@ class TagDialog : public TagDialogBase
         QStringList m_labels;
         QStringList m_addedLabels;
         QStringList m_removedLabels;
-        KUrl m_mbTrack;
         QString m_commaSeparatedLabels;
         KHTMLPart *m_labelCloud;
         //HTMLView *m_labelCloud;
@@ -138,6 +140,7 @@ class TagDialog : public TagDialogBase
         Meta::TrackPtr m_currentTrack;
         QListIterator<Meta::TrackPtr > m_trackIterator;
         QVariantMap m_currentData;
+        QueryMaker *m_queryMaker;
 };
 
 

@@ -21,6 +21,7 @@
 #include "metabundle.h" // TagLibEncodeName
 #include "MetaUtility.h"
 #include "querybuilder.h"
+#include "QueryMaker.h"
 #include "ContextStatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
@@ -48,6 +49,7 @@
 #include <QLayout>
 #include <QPair>
 #include <QPushButton>
+#include <QTimer>
 #include <QToolTip>
 
 #include "metadata/tfile_helper.h" //TagLib::File::isWritable
@@ -104,6 +106,7 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     , m_tracks( tracks )
     , m_currentTrack( tracks.first() )
     , m_trackIterator( m_tracks )
+    , m_queryMaker( 0 )
 {
     init();
 }
@@ -114,6 +117,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     , m_tracks()
     , m_currentTrack( track )
     , m_trackIterator( m_tracks )   //makes the compiler happy
+    , m_queryMaker( 0 )
 {
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
@@ -121,6 +125,19 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     init();
 }
 
+TagDialog::TagDialog( QueryMaker *qm, QWidget *parent )
+    :TagDialogBase( parent )
+    , m_currentCover()
+    , m_tracks()
+    , m_currentTrack()
+    , m_trackIterator( m_tracks )
+    , m_queryMaker( qm )
+{
+    qm->startTrackQuery();
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ) );
+    qm->run();
+}
 
 TagDialog::~TagDialog()
 {
@@ -140,6 +157,30 @@ TagDialog::setTab( int id )
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    Q_UNUSED( collectionId )
+    m_tracks << tracks;
+}
+
+void
+TagDialog::queryDone()
+{
+    delete m_queryMaker;
+    m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
+    if( m_tracks.size() )
+    {
+        m_currentTrack = m_tracks.first();
+        init();
+        QTimer::singleShot( 0, this, SLOT( show() ) );
+    }
+    else
+    {
+        deleteLater();
+    }
+}
 
 void
 TagDialog::cancelPressed() //SLOT
@@ -459,12 +500,12 @@ void TagDialog::init()
     //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
     new QVBoxLayout( labels_favouriteLabelsFrame );
-    labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
-    const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
-    QString html = generateHTML( favoriteLabels );
-    m_labelCloud->write( html );
-    connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments& ) ),
-             this,                             SLOT( openUrlRequest( const KUrl & ) ) );
+    //labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
+    //const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
+    //QString html = generateHTML( favoriteLabels );
+    //m_labelCloud->write( html );
+    //connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments& ) ),
+    //         this,                             SLOT( openUrlRequest( const KUrl & ) ) );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -1484,7 +1525,7 @@ TagDialog::generateHTML( const QStringList &labels )
         html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
                               .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
     }
-    html.append( "</html></body>" );
+    html.append( "</body></html>" );
     debug() << "Dumping HTML for label cloud: " << html;
     return html;
 }
@@ -1506,7 +1547,7 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
     }
 }
 
-bool
+/*bool
 TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
     TagLibFileName path = TagLibEncodeName( mb.url().path() );
@@ -1529,7 +1570,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
     QApplication::restoreOverrideCursor();
 
     return result;
-}
+}*/
 
 TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
         : ThreadManager::Job( "TagDialogWriter" ),
