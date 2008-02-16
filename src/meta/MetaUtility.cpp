@@ -293,8 +293,8 @@ Meta::prettyRating( int rating )
 {
     switch( rating )
     {
-        case 1: return i18n( "Abysmal" );
-        case 2: return i18n( "Awful" );
+        case 1: return i18n( "Awful" );
+        case 2: return i18n( "Bad" );
         case 3: return i18n( "Barely tolerable" );
         case 4: return i18n( "Tolerable" );
         case 5: return i18n( "Okay" );
