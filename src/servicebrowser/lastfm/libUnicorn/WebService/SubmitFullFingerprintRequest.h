@@ -27,12 +27,12 @@
 
 class UNICORN_DLLEXPORT SubmitFullFingerprintRequest : public Request
 {
-    PROP_GET_SET( QString, username, Username );
-    PROP_GET_SET( QString, passwordMd5, PasswordMd5 );
-    PROP_GET_SET( QString, passwordMd5Lower, PasswordMd5Lower );
-    PROP_GET_SET( int, size, Size );
-    PROP_GET_SET( QString, sha256, Sha256 );
-    PROP_GET_SET( QString, fpVersion, FpVersion );
+    PROP_GET_SET( QString, username, Username )
+    PROP_GET_SET( QString, passwordMd5, PasswordMd5 )
+    PROP_GET_SET( QString, passwordMd5Lower, PasswordMd5Lower )
+    PROP_GET_SET( int, size, Size )
+    PROP_GET_SET( QString, sha256, Sha256 )
+    PROP_GET_SET( QString, fpVersion, FpVersion )
 
     public:
         SubmitFullFingerprintRequest();

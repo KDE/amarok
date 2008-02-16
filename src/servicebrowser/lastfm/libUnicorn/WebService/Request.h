@@ -436,7 +436,7 @@ class UNICORN_DLLEXPORT NeighboursRequest : public Request
 {
     PROP_GET_SET( QString, username, Username ) //TODO mxcl all Requests should have a target username? or maybe a base for those
     PROP_GET( WeightedStringList, usernames )
-    PROP_GET_SET( ImageSize, imageSize, ImageSize );
+    PROP_GET_SET( ImageSize, imageSize, ImageSize )
 
     QMap<QString, QString> m_avatars;
 

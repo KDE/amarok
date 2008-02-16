@@ -32,8 +32,8 @@ class UNICORN_DLLEXPORT UserLabelsRequest : public Request
 {
     Q_OBJECT
     
-    PROP_GET_SET( QString, username, Username );
-    PROP_GET_SET( QString, passwordMd5, PasswordMd5 );
+    PROP_GET_SET( QString, username, Username )
+    PROP_GET_SET( QString, passwordMd5, PasswordMd5 )
     
     public:
         UserLabelsRequest();

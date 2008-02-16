@@ -32,9 +32,9 @@
 
 class UNICORN_DLLEXPORT TrackToIdRequest : public Request
 {
-    PROP_GET( int, id );
-    PROP_GET( bool, isStreamable );
-    PROP_GET_SET( Track, track, Track );
+    PROP_GET( int, id )
+    PROP_GET( bool, isStreamable )
+    PROP_GET_SET( Track, track, Track )
 
 public:
     TrackToIdRequest( Track );

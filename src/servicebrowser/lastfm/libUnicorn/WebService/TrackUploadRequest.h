@@ -29,8 +29,8 @@ class TrackUploadRequest : public Request
 {
     Q_OBJECT
     
-    PROP_GET_SET( TrackInfo, track, Track );
-    PROP_GET_SET( QString, label, Label );
+    PROP_GET_SET( TrackInfo, track, Track )
+    PROP_GET_SET( QString, label, Label )
     
     public:
         TrackUploadRequest();

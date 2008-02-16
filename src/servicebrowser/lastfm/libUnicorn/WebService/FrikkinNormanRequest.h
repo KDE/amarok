@@ -28,10 +28,10 @@
 class UNICORN_DLLEXPORT FrikkinNormanRequest : public Request
 {
     // Parameters
-    PROP_GET_SET( QString, fpId, FpId );
+    PROP_GET_SET( QString, fpId, FpId )
 
     // Return values
-    PROP_GET_SET( QString, metadata, Metadata );
+    PROP_GET_SET( QString, metadata, Metadata )
 
     public:
         FrikkinNormanRequest();
