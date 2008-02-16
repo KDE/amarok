@@ -103,7 +103,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     menu->addSeparator();
     ( menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) ) )->setEnabled( false );
     menu->addSeparator();
-    ( menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) ) )->setEnabled( false );
+    menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) );
     menu->addSeparator();
     
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
@@ -150,6 +150,17 @@ Playlist::GraphicsView::unsetItemImage()
     if( !m_contextMenuItem )
         return;
     m_contextMenuItem->unsetImage();
+    m_contextMenuItem = 0;
+}
+
+void
+Playlist::GraphicsView::editTrackInformation()
+{
+    if( !m_contextMenuItem )
+    {
+        return;
+    }
+    m_contextMenuItem->editTrackInformation();
     m_contextMenuItem = 0;
 }
 

@@ -73,6 +73,7 @@ namespace Playlist
             void fetchItemImage();
             void unsetItemImage();
             void animationComplete();
+            void editTrackInformation();
         
         private:
             GraphicsView( QWidget *parent = 0 );

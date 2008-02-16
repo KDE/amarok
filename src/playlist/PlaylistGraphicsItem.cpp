@@ -28,6 +28,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
 #include "SvgTinter.h"
+#include "tagdialog.h"
 #include "TheInstances.h"
 #include "CoverManager.h"
 
@@ -485,6 +486,13 @@ Playlist::GraphicsItem::dataChanged()
 {
     m_dataChanged = true;
     refresh();
+}
+
+void
+Playlist::GraphicsItem::editTrackInformation()
+{
+    TagDialog *dialog = new TagDialog( m_items->track, Playlist::GraphicsView::instance() );
+    dialog->show();
 }
 
 const bool
