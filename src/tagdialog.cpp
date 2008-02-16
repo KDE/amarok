@@ -18,6 +18,7 @@
 #include "CoverFetcher.h"
 #include "debug.h"
 #include "EditCapability.h"
+#include "MainWindow.h"
 #include "metabundle.h" // TagLibEncodeName
 #include "MetaUtility.h"
 #include "querybuilder.h"
@@ -125,8 +126,8 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     init();
 }
 
-TagDialog::TagDialog( QueryMaker *qm, QWidget *parent )
-    :TagDialogBase( parent )
+TagDialog::TagDialog( QueryMaker *qm )
+    :TagDialogBase( MainWindow::self() )
     , m_currentCover()
     , m_tracks()
     , m_currentTrack()

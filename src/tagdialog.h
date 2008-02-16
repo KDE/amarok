@@ -50,7 +50,7 @@ class TagDialog : public TagDialogBase
 
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
-        explicit TagDialog( QueryMaker *qm, QWidget *parent=0 );
+        explicit TagDialog( QueryMaker *qm );
         ~TagDialog();
 
         void setTab( int id );
