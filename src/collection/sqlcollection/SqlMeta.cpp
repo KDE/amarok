@@ -159,8 +159,6 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     , m_batchUpdate( false )
     , m_cache( 0 )
 {
-    DEBUG_BLOCK
-    debug() << result;
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);
@@ -175,15 +173,13 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_bitrate = (*(iter++)).toInt();
     m_length = (*(iter++)).toInt();
     m_filesize = (*(iter++)).toInt();
-    debug() << "filesize:" << m_filesize;
-    debug() << "huh?" << *iter;
     m_sampleRate = (*(iter++)).toInt();
     m_firstPlayed = (*(iter++)).toInt();
     m_lastPlayed = (*(iter++)).toUInt();
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
-    debug() << "test: " << *iter;
+    
     SqlRegistry* registry = m_collection->registry();
     QString artist = *(iter++);
     int artistId = (*(iter++)).toInt();
