@@ -14,9 +14,11 @@
 #include "context/ContextView.h"
 #include "mediabrowser.h"
 #include "Meta.h"
+#include "MetaQueryBuilder.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistModel.h"
-#include "querybuilder.h"
+#include "QueryMaker.h"
+#include "tagdialog.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
@@ -132,8 +134,11 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         KMenu menu;
         QAction* loadAction = new QAction( KIcon("file_open" ), i18n( "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
+        QAction* editAction = new QAction( i18n( "Edit Track Information" ), &menu );
         menu.addAction( loadAction );
         menu.addAction( appendAction );
+        menu.addSeparator();
+        menu.addAction( editAction );
 
         if( indices.count() == 1 )
         {
@@ -166,6 +171,10 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
             playChildTracks( items, Playlist::Replace );
         else if( result == appendAction )
             playChildTracks( items, Playlist::Append );
+        else if( result == editAction )
+        {
+            editTracks( items );
+        }
     }
     else
         debug() << "invalid index or null internalPointer";
@@ -311,6 +320,44 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
         playChildTracks( item, first ? insertMode : Playlist::Append );
         first = false;
     }
+}
+
+void
+CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
+{
+    //find all selected parents in the list and ignore the rest
+    QSet<CollectionTreeItem*> parents;
+    foreach( CollectionTreeItem *item, items )
+    {
+        CollectionTreeItem *tmpItem = item;
+        while( tmpItem )
+        {
+            if( items.contains( tmpItem->parent() ) )
+            {
+                tmpItem = tmpItem->parent();
+            }
+            else
+            {
+                parents.insert( tmpItem );
+                break;
+            }
+        }
+    }
+    QList<QueryMaker*> queryMakers;
+    foreach( CollectionTreeItem *item, parents )
+    {
+        QueryMaker *qm = item->queryMaker();
+        CollectionTreeItem *tmp = item;
+        while( tmp->isDataItem() )
+        {
+            qm->addMatch( tmp->data() );
+            tmp = tmp->parent();
+        }
+        m_treeModel->addFilters( qm );
+        queryMakers.append( qm );
+    }
+    QueryMaker *qm = new MetaQueryBuilder( queryMakers );
+    TagDialog *dialog = new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
 #include "CollectionTreeView.moc"
