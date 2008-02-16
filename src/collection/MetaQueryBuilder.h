@@ -29,7 +29,8 @@ class MetaQueryBuilder : public QueryMaker
     Q_OBJECT
 
     public:
-        MetaQueryBuilder( const QList<Collection*> &collections);
+        MetaQueryBuilder( const QList<Collection*> &collections );
+        MetaQueryBuilder( const QList<QueryMaker*> &queryMakers );
         ~MetaQueryBuilder();
 
         virtual QueryMaker* reset();

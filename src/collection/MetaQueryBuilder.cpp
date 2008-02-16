@@ -44,6 +44,27 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     }
 }
 
+MetaQueryBuilder::MetaQueryBuilder( const QList<QueryMaker*> &queryMakers )
+    : QueryMaker()
+    , builders( queryMakers )
+    , m_queryDoneCount( 0 )
+    , m_queryDoneCountMutex()
+{
+    foreach( QueryMaker *b, builders )
+    {
+        connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
+        //relay signals directly
+        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SIGNAL( newResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SIGNAL( newResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
+    }
+}
+
 MetaQueryBuilder::~MetaQueryBuilder()
 {
     foreach( QueryMaker *b, builders )
