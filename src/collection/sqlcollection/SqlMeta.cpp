@@ -477,6 +477,9 @@ SqlTrack::writeMetaDataToFile()
     info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) ).setValue( m_trackNumber );
     info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) ).setValue( m_year->name() );
     info.applyChanges();
+    //updating the fields might have changed the filesize
+    //read the current filesize so that we can update the db
+    m_filesize = info.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::FILESIZE ) ).value().toInt();
 }
 
 void
@@ -512,8 +515,11 @@ SqlTrack::commitMetaDataChanges()
         m_year = m_collection->registry()->getYear( m_cache->year );
         KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
 
-        writeMetaDataToDb();
+        //updating the tags of the file might change the filesize
+        //therefore write the tag to the file first, and update the db
+        //with the new filesize
         writeMetaDataToFile();
+        writeMetaDataToDb();
         updateStatisticsInDb();
     }
 }
@@ -536,6 +542,7 @@ SqlTrack::writeMetaDataToDb()
     tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
               QString::number( m_trackNumber ), QString::number( m_discNumber ),
               artist, album, genre, composer, year );
+    tags += QString( ",filesize=%1" ).arg( m_filesize );
     update.arg( tags, QString::number( id ) );
     m_collection->query( update );
 }
