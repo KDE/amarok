@@ -57,9 +57,9 @@ class UNICORN_DLLEXPORT WebService : public QObject
         QString challengeString();
 
     //////
-        PROP_GET( bool, isAutoDetectedProxy );
-        PROP_GET( QString, proxyHost );
-        PROP_GET( int, proxyPort );
+        PROP_GET( bool, isAutoDetectedProxy )
+        PROP_GET( QString, proxyHost )
+        PROP_GET( int, proxyPort )
 
     signals:
         //TODO this system sucks
