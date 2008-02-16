@@ -44,7 +44,7 @@ namespace Amarok
 
         protected:  /* reimpl from engineobserver */
             virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-            virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+            virtual void engineNewTrackPlaying();
     };
     
     /**

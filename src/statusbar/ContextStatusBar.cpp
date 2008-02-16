@@ -24,7 +24,6 @@
 #include "amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "ContextStatusBar.h"
@@ -82,15 +81,16 @@ ContextStatusBar::engineStateChanged( Engine::State state, Engine::State /*oldSt
 }
 
 void
-ContextStatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+ContextStatusBar::engineNewTrackPlaying()
 {
-    QString title       = Qt::escape( bundle.title() );
-    QString prettyTitle = Qt::escape( bundle.prettyTitle() );
-    QString artist      = Qt::escape( bundle.artist() );
-    QString album       = Qt::escape( bundle.album() );
-    QString length      = Qt::escape( bundle.prettyLength() );
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    QString title       = Qt::escape( track->name() );
+    QString prettyTitle = Qt::escape( track->prettyName() );
+    QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
+    QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+    QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
 
-    if ( bundle.artist() == QString("Mike Oldfield") && bundle.title() == QString("Amarok") ) {
+    if ( artist == "Mike Oldfield" && title == "Amarok" ) {
         longMessage( i18n(
                 "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
                 "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
