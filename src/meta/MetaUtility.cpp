@@ -24,6 +24,9 @@
 
 #include <QChar>
 
+#include <klocale.h>
+#include <kio/global.h>
+
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
         static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
@@ -265,4 +268,41 @@ Meta::secToPrettyTime( int seconds )
     s.prepend( QString::number( hours ) );
 
     return s;
+}
+
+QString
+Meta::prettyFilesize( int size )
+{
+    return KIO::convertSize( size );
+}
+
+QString
+Meta::prettyBitrate( int bitrate )
+{
+    //the point here is to force sharing of these strings returned from prettyBitrate()
+    static const QString bitrateStore[9] = {
+        "?", "32", "64", "96", "128", "160", "192", "224", "256" };
+
+    return (bitrate >=0 && bitrate <= 256 && bitrate % 32 == 0)
+                ? bitrateStore[ bitrate / 32 ]
+    : QString( "%1" ).arg( bitrate );
+}
+
+QString
+Meta::prettyRating( int rating )
+{
+    switch( rating )
+    {
+        case 2: return i18n( "Awful" );
+        case 3: return i18n( "Barely tolerable" );
+        case 4: return i18n( "Tolerable" );
+        case 5: return i18n( "Okay" );
+        case 6: return i18n( "Good" );
+        case 7: return i18n( "Very good" );
+        case 8: return i18n( "Excellent" );
+        case 9: return i18n( "Amazing" );
+        case 10: return i18n( "Favorite" );
+        case 0: default: return i18n( "Not rated" ); // assume weird values as not rated
+    }
+    return "if you can see this, then that's a bad sign.";
 }
