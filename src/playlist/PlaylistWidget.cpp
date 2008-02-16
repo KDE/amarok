@@ -115,7 +115,6 @@ Widget::Widget( QWidget* parent )
 
     } //END Playlist Toolbar
 
-    layout->addWidget( new AmarokStatusBar( this ) );
 }
 
 void Widget::switchView()

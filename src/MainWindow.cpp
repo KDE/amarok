@@ -19,6 +19,7 @@
 #include "actionclasses.h"    //see toolbar construction
 #include "amarokconfig.h"
 #include "amarok.h"
+#include "AmarokStatusBar.h"
 #include "analyzerwidget.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
@@ -210,7 +211,6 @@ void MainWindow::init()
     contextWidget->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
     new Context::ContextView( contextWidget );
     {
-        new Amarok::ContextStatusBar( contextWidget );
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( contextWidget );
@@ -230,8 +230,23 @@ void MainWindow::init()
     m_splitter->addWidget( contextWidget );
     m_splitter->addWidget( playlistWidget );
 
+
+    //make room for a full width statusbar at the bottom of everything
+
+    KHBox * m_statusbarArea = new KHBox( this );
+    m_statusbarArea->setMinimumHeight( 26 );
+    m_statusbarArea->setMaximumHeight( 26 );
+    new Amarok::ContextStatusBar( m_statusbarArea );
+    new AmarokStatusBar( m_statusbarArea );
+
+    
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
+    mainLayout->addWidget( m_statusbarArea);
+
+
+
+    
     setCentralWidget( centralWidget );
 
     //<Browsers>
