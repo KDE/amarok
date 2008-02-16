@@ -18,7 +18,7 @@
 #include "LastFmSettings.h"
 #include "libUnicorn/WebService.h"
 
-#include "statusbar/AmarokStatusBar.h"
+#include "statusbar/ContextStatusBar.h"
 
 RadioAdapter::RadioAdapter( QObject *parent, const QString &username, const QString &password )
     : QObject( parent ), m_radio( new Radio( this ) )
@@ -77,7 +77,7 @@ RadioAdapter::stop()
 void
 RadioAdapter::error( RadioError errorCode, const QString& message )
 {
-    The::amarokStatusBar()->setMessage( message, KDE::StatusBar::Error );
+    The::contextStatusBar()->longMessage( message, KDE::StatusBar::Error );
     stop();
 }
 

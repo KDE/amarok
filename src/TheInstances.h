@@ -39,7 +39,7 @@ class SvgTinter;
 namespace The {
     AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
     Playlist::GraphicsView*          playlistView();
-    AMAROK_EXPORT PlaylistManager*                 playlistManager();
+    AMAROK_EXPORT PlaylistManager*   playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
     ServiceInfoProxy *               serviceInfoProxy();
     AMAROK_EXPORT SvgTinter *        svgTinter();

@@ -56,54 +56,65 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 {
     setFrameStyle( QFrame::Panel | QFrame::Raised );
     setFrameShape( QFrame::StyledPanel );
-    setWindowFlags( Qt::WX11BypassWM );
+    setWindowFlags( Qt::WX11BypassWM | Qt::Popup);
+
+    setMinimumWidth( 26 );
+    setMinimumHeight( 26 );
+    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
     QPalette p = QToolTip::palette();
     setPalette( p );
 
-    QHBoxLayout *hbox;
+    KHBox *hbox;
     QLabel *label;
     QLabel *alabel;
 
     m_layout = new QVBoxLayout( this );
-    m_layout->setMargin( 9 );
-    m_layout->setSpacing( 6 );
+    //m_layout->setMargin( 9 );
+    //m_layout->setSpacing( 6 );
+    
 
-    hbox = new QHBoxLayout;
-    hbox->setParent( m_layout );
-    hbox->setSpacing( 12 );
-
-    m_countdownFrame = new QFrame( this );
+    hbox = new KHBox( this );
+    //hbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    hbox->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    m_layout->addWidget( hbox );
+    
+    //hbox->setSpacing( 12 );
+    
+    m_countdownFrame = new QFrame( hbox );
     m_countdownFrame->setObjectName( "counterVisual" );
-    hbox->addWidget( m_countdownFrame );
+    //hbox->addWidget( m_countdownFrame );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     QPalette pal;
     pal.setColor( m_countdownFrame->foregroundRole(), p.dark() );
     m_countdownFrame->setPalette( pal );
 
-    label = new QLabel( this );
+/*  label = new QLabel( this );
     label->setObjectName( "image" );
     hbox->addWidget( label );
-
-    alabel = new QLabel;
-    alabel->setParent( this );
+*/
+    //QLabel *alabel;
+    alabel = new QLabel( "hello, world", hbox );
+    //alabel->setBackgroundRole( QPalette::Highlight );
+    //alabel->setParent( this );
+    alabel->setWordWrap( true );
     alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 
-    hbox->addWidget( alabel );
+    //m_layout->addWidget( alabel );
 
-    hbox = new QHBoxLayout;
-    hbox->setParent( m_layout );
 
-    hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    KPushButton *button = new KPushButton( KStandardGuiItem::close(), this );
+    hbox = new KHBox( this );
+    m_layout->addWidget( hbox );
+
+    //hbox->addItem( new QSpacerItem( hbox, 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
+    KPushButton *button = new KPushButton( KStandardGuiItem::close(), hbox );
     button->setObjectName( "closeButton" );
-    hbox->addWidget( button );
 
-    connect( button, SIGNAL(clicked()), SLOT(close()) );
+    //connect( button, SIGNAL(clicked()), SLOT(close()) );
 }
 
 void PopupMessage::addWidget( QWidget *widget )
@@ -128,6 +139,7 @@ void PopupMessage::setShowCounter( const bool show )
 void PopupMessage::setText( const QString &text )
 {
     findChild<QLabel*>( "label" )->setText( text );
+    findChild<QLabel*>( "label" )->adjustSize();
     adjustSize();
 }
 
@@ -157,6 +169,9 @@ void PopupMessage::close() //SLOT
 
 void PopupMessage::display() //SLOT
 {
+    setGeometry ( 0, 0, 0, 0 );
+    adjustSize();
+    reposition();
     m_dissolveSize = 24;
     m_dissolveDelta = -1;
 
@@ -317,10 +332,14 @@ void PopupMessage::plainMask()
 
 void PopupMessage::slideMask()
 {
+
+    int anchorY = m_anchor->mapToGlobal( m_anchor->pos() ).y();
+    int ourY = m_anchor->mapToGlobal( pos() ).y();
+    
     switch( m_stage )
     {
         case 1: //raise
-            move( 0, m_parent->y() - m_offset );
+            move( 0, anchorY - m_offset );
 
             m_offset++;
             if( m_offset > height() )
@@ -342,11 +361,32 @@ void PopupMessage::slideMask()
 
         case 3: //lower
             m_offset--;
-            move( 0, m_parent->y() - m_offset );
+            move( 0, anchorY - m_offset );
 
             if( m_offset < 0 )
                 deleteLater();
     }
+
+    //now, make sure the part that is not supposed to be visible is hidden:
+
+    QPainter maskPainter(&m_mask);
+    //m_mask.fill(Qt::black);
+    m_mask.fill(Qt::white);
+    /*maskPainter.setBrush(Qt::white);
+    maskPainter.setPen(Qt::white);
+
+    maskPainter.setCompositionMode( QPainter::CompositionMode_SourceOut );
+
+
+    QRectF visibleRect( m_mask.rect().x(), m_mask.rect().y(), m_mask.rect().width(), anchorY - ourY );
+    
+    maskPainter.drawRect( visibleRect );
+*/
+    
+    setMask(m_mask);
+
+    
+
 
 }
 

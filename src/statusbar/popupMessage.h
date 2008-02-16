@@ -27,6 +27,8 @@
 
 #include "overlayWidget.h"
 
+#include <KVBox>
+
 #include <QBitmap>
 #include <QLayout>
 #include <QPixmap>
@@ -86,7 +88,7 @@ namespace KDE
         void slideMask();
 
     private:
-        QVBoxLayout *m_layout;
+        QVBoxLayout       *m_layout;
         QFrame      *m_countdownFrame;
         QWidget     *m_anchor;
         QWidget     *m_parent;

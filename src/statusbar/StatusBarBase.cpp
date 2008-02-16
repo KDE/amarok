@@ -31,6 +31,7 @@
 #include <kiconloader.h>
 #include <kjob.h>
 #include <klocale.h>
+#include <KStandardDirs>
 #include <kstandardguiitem.h>
 #include <kvbox.h>
 
@@ -288,7 +289,17 @@ StatusBar::longMessage( const QString &text, MessageType type )
     //TODO: Remove before release
     debug() << "Long Message: " << text;
 
-    m_messageLabel->setMessage( text, type );
+    //m_messageLabel->setMessage( text, type );
+
+
+    PopupMessage * popup = new PopupMessage( this, this, 5000 );
+    popup->setText( text );
+    //popup->setImage( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
+
+
+    popup->setMaskEffect( PopupMessage::Plain );
+    //popup->setShowCloseButton( false);
+    popup->display();
 
     writeLogFile( text );
 }

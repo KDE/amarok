@@ -24,6 +24,8 @@
 //Added by qt3to4:
 #include <QEvent>
 
+#include "debug.h"
+
 
 namespace KDE {
 
@@ -42,26 +44,35 @@ OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name
 void
 OverlayWidget::reposition()
 {
-    setMaximumSize( parentWidget()->size() );
+    //setMaximumSize( parentWidget()->size() );
+    //setMaximumSize( QSize( 200, 100 ) );
+    //setMinimumSize( QSize( 200, 100 ) );
     adjustSize();
 
     // p is in the alignWidget's coordinates
     QPoint p;
 
-    p.setX( m_anchor->width() - width() );
-    p.setY( -height() );
+   // p.setX( m_anchor->width() - width() );
+    p.setX( m_anchor->x() );
+    p.setY( m_anchor->y() - height() );
 
-    // Position in the toplevelwidget's coordinates
-    QPoint pTopLevel = m_anchor->mapTo( topLevelWidget(), p );
+    debug() << "p before: " << p;
+
+    p = m_anchor->mapToGlobal( p );
+
+    debug() << "p after: " << p;
+
+    //// Position in the toplevelwidget's coordinates
+    //QPoint pTopLevel = m_anchor->mapTo( topLevelWidget(), p );
 
     // Position in the widget's parentWidget coordinates
-    QPoint pParent = parentWidget() ->mapFrom( topLevelWidget(), pTopLevel );
+    //QPoint pParent = parentWidget() ->mapFrom( topLevelWidget(), pTopLevel );
     // keep it on the screen
-    if( pParent.x() < 0 )
-        pParent.rx() = 0;
+    //if( pParent.x() < 0 )
+    //    pParent.rx() = 0;
 
     // Move 'this' to that position.
-    move( pParent );
+    move( p );
 }
 
 // bool
