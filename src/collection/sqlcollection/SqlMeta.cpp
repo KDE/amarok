@@ -490,11 +490,28 @@ SqlTrack::commitMetaDataChanges()
         m_rating = m_cache->rating;
         m_trackNumber = m_cache->trackNumber;
         m_discNumber = m_cache->discNumber;
+
+        //invalidate the cache of both the old and the new object
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
         m_artist = m_collection->registry()->getArtist( m_cache->artist );
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         m_album = m_collection->registry()->getAlbum( m_cache->album );
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
         m_composer = m_collection->registry()->getComposer( m_cache->composer );
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
         m_genre = m_collection->registry()->getGenre( m_cache->genre );
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
         m_year = m_collection->registry()->getYear( m_cache->year );
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+
         writeMetaDataToDb();
         writeMetaDataToFile();
         updateStatisticsInDb();
