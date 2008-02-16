@@ -27,7 +27,9 @@
 
 #include <QDateTime>
 #include <QLabel>
+#include <QListIterator>
 #include <QMap>
+#include <QVariant>
 #include <QtGui/QWidget>
 
 
@@ -46,9 +48,6 @@ class TagDialog : public TagDialogBase
         enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8, LABELSCHANGED=16 };
         enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB, LABELSTAB };
 
-        explicit TagDialog( const KUrl& url, QWidget* parent = 0 );
-        explicit TagDialog( const KUrl::List list, QWidget* parent = 0 );
-        TagDialog( const MetaBundle& mb, Playlist::Item* item, QWidget* parent = 0 );
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
         ~TagDialog();
@@ -72,7 +71,7 @@ class TagDialog : public TagDialogBase
         void perTrack();
         void checkModified();
 
-        void loadCover( const QString &artist, const QString &album );
+        void loadCover();
 
         void musicbrainzQuery();
         void guessFromFilename();
@@ -91,17 +90,17 @@ class TagDialog : public TagDialogBase
         bool hasChanged();
         int changes();
         void storeTags();
-        void storeTags( const KUrl& url );
-        void storeTags( const KUrl& url, int changes, const MetaBundle &mb );
-        void storeLabels( const KUrl &url, const QStringList &labels );
-        void loadTags( const KUrl& url );
-        void loadLyrics( const KUrl& url );
-        void loadLabels( const KUrl &url );
-        MetaBundle bundleForURL( const KUrl &url );
-        float scoreForURL( const KUrl &url );
-        int ratingForURL( const KUrl &url );
-        QString lyricsForURL( const KUrl &url );
-        QStringList labelsForURL( const KUrl &url );
+        void storeTags( const Meta::TrackPtr &track );
+        void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
+        void storeLabels( const Meta::TrackPtr &track, const QStringList &labels );
+        void loadTags( const Meta::TrackPtr &track );
+        void loadLyrics( const Meta::TrackPtr &track );
+        void loadLabels( const Meta::TrackPtr &track );
+        QVariantMap dataForTrack( const Meta::TrackPtr &track );
+        double scoreForTrack( const Meta::TrackPtr &track );
+        int ratingForTrack( const Meta::TrackPtr &track );
+        QString lyricsForTrack( const Meta::TrackPtr &track );
+        QStringList labelsForTrack( const Meta::TrackPtr &track );
         QStringList getCommonLabels();
         void saveTags();
         bool writeTag( MetaBundle &mb, bool updateCB=true );
@@ -115,18 +114,14 @@ class TagDialog : public TagDialogBase
         void generateDeltaForLabelList( const QStringList &list );
         QString generateHTML( const QStringList &labels );
 
-        MetaBundle m_bundle;
-        KUrl::List::iterator m_currentURL;
         QString m_lyrics;
         bool m_perTrack;
-        Playlist::Item* m_playlistItem;
-        QMap<QString, MetaBundle> storedTags;
-        QMap<QString, float> storedScores;
-        QMap<QString, int> storedRatings;
-        QMap<QString, QString> storedLyrics;
-        QMap<QString, QStringList> newLabels;
-        QMap<QString, QStringList> originalLabels;
-        KUrl::List m_urlList;
+        QMap<Meta::TrackPtr, QVariantMap > storedTags;
+        QMap<Meta::TrackPtr, double> storedScores;
+        QMap<Meta::TrackPtr, int> storedRatings;
+        QMap<Meta::TrackPtr, QString> storedLyrics;
+        QMap<Meta::TrackPtr, QStringList> newLabels;
+        QMap<Meta::TrackPtr, QStringList> originalLabels;
         QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
@@ -141,6 +136,8 @@ class TagDialog : public TagDialogBase
         //2.0 stuff
         Meta::TrackList m_tracks;
         Meta::TrackPtr m_currentTrack;
+        QListIterator<Meta::TrackPtr > m_trackIterator;
+        QVariantMap m_currentData;
 };
 
 
