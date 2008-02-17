@@ -1003,7 +1003,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 3 ) );
 
     //make sure that the top text items are not shown
     if( m_items->topRightText->isVisible() )
