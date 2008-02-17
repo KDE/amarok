@@ -91,10 +91,15 @@ void ScanManager::startIncrementalScan()
         debug() << "scanner already running";
         return;
     }
+    QStringList dirs = getDirsToScan();
+    if( dirs.isEmpty() )
+    {
+        return;
+    }
     m_scanner = new AmarokProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    *m_scanner << getDirsToScan();
+    *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
     connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
@@ -262,6 +267,10 @@ ScanManager::getDirsToScan() const
         QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
         m_collection->query( sql );
     }
+    if( result.isEmpty() )
+        debug() << "incremental scan not necessary";
+    else
+        debug() << "scanning dirs: " << result;
     return result;
 }
 
