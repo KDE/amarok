@@ -27,6 +27,7 @@
 #include <k3urldrag.h>          //startDrag()
 #include <KApplication>
 #include <KIconLoader>
+#include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
 #include <KWindowSystem>
