@@ -60,6 +60,7 @@ ScanManager::startFullScan()
         debug() << "scanner already running";
         return;
     }
+    cleanTables();
     m_scanner = new AmarokProcess( this );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
@@ -318,6 +319,17 @@ ScanManager::handleRestart()
         connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
         ThreadWeaver::Weaver::instance()->enqueue( m_parser );
     }
+}
+
+void
+ScanManager::cleanTables()
+{
+    m_collection->query( "DELETE FROM tracks;" );
+    m_collection->query( "DELETE FROM genres;" );
+    m_collection->query( "DELETE FROM years;" );
+    m_collection->query( "DELETE FROM composers;" );
+    m_collection->query( "DELETE FROM albums;" );
+    m_collection->query( "DELETE FROM artists;" );
 }
 
 //XmlParseJob

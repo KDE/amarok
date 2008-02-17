@@ -54,6 +54,7 @@ class ScanManager : public QObject
     private:
         QStringList getDirsToScan() const;
         void handleRestart();
+        void cleanTables();
 
     private:
         SqlCollection *m_collection;
