@@ -60,6 +60,7 @@ set(plasma_LIB_SRCS
     plasma/searchmatch.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
+    plasma/svgpanel.cpp
     plasma/theme.cpp
     plasma/desktoptoolbox.cpp
     plasma/scriptengine.cpp
