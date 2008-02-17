@@ -37,6 +37,23 @@
 
 namespace KDE
 {
+
+    class CountdownFrame : public QFrame {
+
+    public:
+        CountdownFrame( QWidget * parent = 0);
+        void setFilledRatio( float filled ); // 0 to 1
+
+        virtual void paintEvent(QPaintEvent * e);
+        
+    protected:
+
+        float m_filled;
+
+};
+
+    
+    
     /**
      * @class PopupMessage
      * @short Widget that animates itself into a position relative to an anchor widget
@@ -89,7 +106,7 @@ namespace KDE
 
     private:
         QVBoxLayout       *m_layout;
-        QFrame      *m_countdownFrame;
+        CountdownFrame    *m_countdownFrame;
         QWidget     *m_anchor;
         QWidget     *m_parent;
         QBitmap      m_mask;

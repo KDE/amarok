@@ -56,7 +56,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 {
     setFrameStyle( QFrame::Panel | QFrame::Raised );
     setFrameShape( QFrame::StyledPanel );
-    setWindowFlags( Qt::WX11BypassWM | Qt::Popup);
+    setWindowFlags( Qt::WX11BypassWM | Qt::Tool | Qt::FramelessWindowHint );
 
     setMinimumWidth( 26 );
     setMinimumHeight( 26 );
@@ -79,9 +79,9 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     m_layout->addWidget( hbox );
     
-    //hbox->setSpacing( 12 );
+    hbox->setSpacing( 12 );
     
-    m_countdownFrame = new QFrame( hbox );
+    m_countdownFrame = new CountdownFrame( hbox );
     m_countdownFrame->setObjectName( "counterVisual" );
     //hbox->addWidget( m_countdownFrame );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
@@ -220,13 +220,14 @@ void PopupMessage::countDown()
         return;
     }
 
-    QFrame *&h = m_countdownFrame;
+    CountdownFrame *&h = m_countdownFrame;
 
     if( m_counter < h->height() - 3 )
     {
         QPalette p = palette();
         p.setCurrentColorGroup( QPalette::Active );
-        QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, p.highlight() );
+        h->setFilledRatio( (float) m_counter / ( float ) h->height() );
+        h->repaint();
     }
 
     if( !testAttribute(Qt::WA_UnderMouse))
@@ -390,6 +391,25 @@ void PopupMessage::slideMask()
 
 }
 
+}
+
+KDE::CountdownFrame::CountdownFrame(QWidget * parent)
+    : QFrame( parent )
+{
+}
+
+void KDE::CountdownFrame::setFilledRatio(float filled)
+{
+    m_filled = filled;
+}
+
+void KDE::CountdownFrame::paintEvent( QPaintEvent * e )
+{
+    QFrame::paintEvent( e );
+
+    QPalette p = palette();
+    p.setCurrentColorGroup( QPalette::Active );
+    QPainter( this ).fillRect( 2, m_filled * ( height() - 4 ), width() - 4, height() -2, p.highlight() );
 }
 
 #include "popupMessage.moc"
