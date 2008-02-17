@@ -800,6 +800,15 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
+    
+    
+    if ( active ) {
+
+        const qreal lineTwoY = m_height / 2 + MARGIN;
+        
+        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "active_overlay", trackRect.width() - ( ALBUM_WIDTH + MARGIN + 4 ), s_fm->height() ) );
+    }
+
 }
 
 void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
