@@ -593,7 +593,7 @@ void TagDialog::init()
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
     connect( ui->pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
-    if( m_tracks.count() ) {   //editing multiple tracks
+    if( m_tracks.count() > 1 ) {   //editing multiple tracks
         m_perTrack = false;
         setMultipleTracksMode();
         readMultipleTracks();
@@ -1448,16 +1448,13 @@ TagDialog::applyToAllTracks()
 
         QStringList tmpLabels = labelsForTrack( track );
         //apply delta
-        QStringList::ConstIterator end = m_removedLabels.constEnd();
-        for( QStringList::Iterator iter = m_removedLabels.begin(); iter != end; ++iter )
+        foreach( QString label, m_removedLabels )
         {
-            tmpLabels.removeAll( *iter );
+            tmpLabels.removeAll( label );
         }
-        end = m_addedLabels.constEnd();
-        for( QStringList::Iterator iter = m_addedLabels.begin(); iter != end; ++iter )
+        foreach( QString label, m_addedLabels )
         {
-            if( tmpLabels.indexOf( *iter ) == tmpLabels.indexOf( *tmpLabels.end() ) )
-                tmpLabels.append( *iter );
+            tmpLabels.append( label );
         }
         storeLabels( track, tmpLabels );
     }
