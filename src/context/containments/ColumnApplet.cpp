@@ -48,8 +48,8 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
     m_columns->setSpacing( 3 );
-    m_columns->setMargin( Plasma::Layout::RightMargin, 3 );
-    m_columns->setMargin( Plasma::Layout::BottomMargin, 3 );
+    m_columns->setMargin( Plasma::RightMargin, 3 );
+    m_columns->setMargin( Plasma::BottomMargin, 3 );
 
     //HACK alert!
 
