@@ -225,8 +225,6 @@ void PopupMessage::countDown()
 
     if( m_counter < h->height() - 3 )
     {
-        QPalette p = palette();
-        p.setCurrentColorGroup( QPalette::Active );
         h->setFilledRatio( (float) m_counter / ( float ) h->height() );
         h->repaint();
     }
@@ -238,6 +236,9 @@ void PopupMessage::countDown()
     {
         m_stage = 3;
         killTimer( m_timerId );
+
+        h->setFilledRatio( 1 );
+        h->repaint();
         m_timerId = startTimer( 6 );
     }
     else
@@ -410,7 +411,7 @@ void KDE::CountdownFrame::paintEvent( QPaintEvent * e )
 
     QPalette p = palette();
     p.setCurrentColorGroup( QPalette::Active );
-    QPainter( this ).fillRect( 2, m_filled * ( height() - 4 ), width() - 4, height() -2, p.highlight() );
+    QPainter( this ).fillRect( 2, m_filled * height(), width() - 4, height() - m_filled * height(), p.highlight() );
 }
 
 #include "popupMessage.moc"
