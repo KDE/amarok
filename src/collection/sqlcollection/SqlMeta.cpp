@@ -686,6 +686,7 @@ SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) :
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
+    ,m_mutex( QMutex::Recursive )
 {
     //nothing to do (yet)
 }
@@ -841,6 +842,7 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     ,m_artistId( artist )
     ,m_tracksLoaded( false )
     ,m_artist()
+    ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
 }
@@ -1093,6 +1095,7 @@ SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
+    ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
 }
@@ -1136,6 +1139,7 @@ SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : G
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
+    ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
 }
@@ -1179,6 +1183,7 @@ SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Yea
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
+    ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
 }
