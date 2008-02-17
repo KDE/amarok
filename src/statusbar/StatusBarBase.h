@@ -176,7 +176,7 @@ namespace KDE
         void hideMainProgressBar();
         void updateProgressAppearance();
         void showShortLongDetails();
-        void popupDeleted( QObject* );
+        void popupDeleted();
 
     protected:
         virtual void polish();
@@ -224,6 +224,9 @@ namespace KDE
         StatusBarMessageLabel* m_messageLabel;
 
         QLayout *m_otherWidgetLayout;
+
+        QList<QString> m_longMessageQueue;
+        bool popupShown;
 
     };
 }

@@ -90,6 +90,7 @@ namespace SingleShotPool
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : QStatusBar( parent )
         , m_logCounter( -1 )
+        , popupShown ( false )
 {
     setObjectName( name );;
 
@@ -142,6 +143,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_messageLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_messageLabel->setMinimumTextHeight( barHeight );
+
+
+
 }
 
 /// reimplemented functions
@@ -172,6 +176,7 @@ StatusBar::polish()
         QWidget *o = *it;
         o->setFixedHeight( h );
     }
+
 }
 
 void
@@ -292,23 +297,36 @@ StatusBar::longMessage( const QString &text, MessageType type )
 
     //m_messageLabel->setMessage( text, type );
 
-
-    PopupMessage * popup = new PopupMessage( this, this, 5000 );
-    popup->setText( text );
-    //popup->setImage( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
-
-
-    popup->setMaskEffect( PopupMessage::Plain );
-    //popup->setShowCloseButton( false);
-    popup->display();
-
+    m_longMessageQueue.append( text );
+    
+    if ( popupShown == false ) {
+        popupDeleted( );
+    }
+    
     writeLogFile( text );
 }
 
 void
-StatusBar::popupDeleted( QObject *obj )
+StatusBar::popupDeleted( )
 {
-    m_messageQueue.remove( static_cast<QWidget*>( obj ) );
+
+    if ( !m_longMessageQueue.isEmpty() ) {
+        
+        PopupMessage * popup = new PopupMessage( this, this, 5000 );
+        popup->setText( m_longMessageQueue.takeFirst() );
+        //popup->setImage( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
+
+        popup->setMaskEffect( PopupMessage::Plain );
+        //popup->setShowCloseButton( false);
+        connect( popup, SIGNAL( deleted() ), this, SLOT( popupDeleted() ) );
+        popup->display();
+        popupShown = true;
+
+    } else {
+        popupShown = false;
+    }
+    
+    //m_messageQueue.remove( static_cast<QWidget*>( obj ) );
 }
 
 void

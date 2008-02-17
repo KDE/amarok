@@ -77,7 +77,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     hbox = new KHBox( this );
     //hbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-    hbox->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //hbox->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     m_layout->addWidget( hbox );
     
     hbox->setSpacing( 12 );
@@ -328,6 +328,7 @@ void PopupMessage::plainMask()
             break;
 
         case 3: // Lower/Remove
+            emit( deleted() );
             deleteLater();
     }
 }

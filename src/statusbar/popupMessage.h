@@ -86,6 +86,10 @@ namespace KDE
         void close();
         void display();
 
+    signals:
+
+        void deleted();
+
     protected:
         void timerEvent( QTimerEvent* );
         void countDown();
