@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
  *                 2005 by Seb Ruiz <ruiz@kde.org>                         *
+ *                 2008 by Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>  *
  *                                                                         *
  *   Dissolve Mask (c) Kicker Authors kickertip.cpp, 2005/08/17            *
  *                                                                         *
