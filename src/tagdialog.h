@@ -17,11 +17,11 @@
 
 #include "ktrm.h"
 #include "playlist/PlaylistItem.h"
-#include "tagdialogbase.h"    //baseclass
 
 #include "meta/Meta.h"
 
 #include <khtml_part.h>
+#include <KDialog>
 
 #include <QDateTime>
 #include <QLabel>
@@ -37,9 +37,14 @@ namespace TagLib {
     }
 }
 
+namespace Ui
+{
+    class TagDialogBase;
+}
+
 class QueryMaker;
 
-class TagDialog : public TagDialogBase
+class TagDialog : public KDialog
 {
     Q_OBJECT
 
@@ -141,6 +146,8 @@ class TagDialog : public TagDialogBase
         QListIterator<Meta::TrackPtr > m_trackIterator;
         QVariantMap m_currentData;
         QueryMaker *m_queryMaker;
+
+        Ui::TagDialogBase *ui;
 };
 
 

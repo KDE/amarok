@@ -433,13 +433,14 @@ kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   newdynamic.ui
    collectionbrowser/OrganizeCollectionDialog.ui
-   tagdialogbase.ui
+#   tagdialogbase.ui
 #   tagguesserconfigdialog.ui
 )
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     deletedialogbase.ui
     scriptmanagerbase.ui
+    tagdialogbase.ui
     tagguesserconfigdialog.ui
     playlistbrowser/PodcastCategoryBase.ui
     trackpickerdialogbase.ui
