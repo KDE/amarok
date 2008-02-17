@@ -804,7 +804,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 
 void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
-    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN+ 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
     QRectF headRect = option->rect;
 
     painter->drawPixmap( 0, 0, getCachedSvg( "head", headRect.width(), headRect.height() ) );
