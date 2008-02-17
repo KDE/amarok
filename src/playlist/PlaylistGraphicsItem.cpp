@@ -294,7 +294,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     if ( m_groupMode == None ) {
 
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
-        m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
+        m_items->topRightText->setEditableText( album, totalWidth - ( topRightAlignX + 4 ) );
 
         {
             QString artist;
