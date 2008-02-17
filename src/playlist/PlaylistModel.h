@@ -233,9 +233,9 @@ class TrackNavigator;
             Meta::TrackList removeTracksCommand( int position, int rows );
 
             //TODO: implement these once Meta::Observer works for Meta::Playlists
-            void registerPlaylist( Meta::PlaylistPtr playlist ) { };
+            void registerPlaylist( Meta::PlaylistPtr playlist ) { Q_UNUSED( playlist ) };
 
-            void unRegisterPlaylist( Meta::PlaylistPtr playlist ) { };
+            void unRegisterPlaylist( Meta::PlaylistPtr playlist ) { Q_UNUSED( playlist ) };
 
              /**
              * This Method regroups albums between two modified rows. It also modifies adjacant groups ans needed, so tha
