@@ -15,11 +15,7 @@
 
         if (WIN32)
             set(amarok_service_lastfm_extra_sources
-                libUnicorn/UnicornCommonWin.cpp
-                
-                simple/BlockingClient.cpp
-                simple/EncodingUtils.cpp
-                simple/ScrobSubmitter.cpp)
+                libUnicorn/UnicornCommonWin.cpp)
                 
             add_definitions(-DUNICODE -D_UNICODE)
         endif (WIN32)
