@@ -59,7 +59,7 @@ public:
     virtual void setCoverUrl( const QString &coverUrl ) = 0;
     virtual QString coverUrl() const = 0;
 
-    void setImage( const QImage & image ) const;
+    void setImage( const QImage & image );
     void imageDownloadCanceled() const;
 
 
@@ -84,14 +84,14 @@ class ServiceAlbumCoverDownloader : public QObject
         ServiceAlbumCoverDownloader();
         ~ServiceAlbumCoverDownloader();
 
-        void downloadCover( const Meta::ServiceAlbumWithCover * album );
+        void downloadCover( Meta::ServiceAlbumWithCover * album );
 
     private slots:
 
         void coverDownloadComplete( KJob * downloadJob );
         void coverDownloadCanceled( KJob * downloadJob );
     private:
-        const ServiceAlbumWithCover * m_album;
+        ServiceAlbumWithCover * m_album;
         QString m_coverDownloadPath;
         KIO::FileCopyJob * m_albumDownloadJob;
         KTempDir * m_tempDir;

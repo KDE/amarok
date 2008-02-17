@@ -97,7 +97,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
     return Album::image( size, withShadow );
 }
 
-void ServiceAlbumWithCover::setImage( const QImage & image ) const
+void ServiceAlbumWithCover::setImage( const QImage & image )
 {
     m_cover = image;
     m_hasFetchedCover = true;
@@ -126,7 +126,7 @@ ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
     delete m_tempDir;
 }
 
-void ServiceAlbumCoverDownloader::downloadCover( const  ServiceAlbumWithCover * album )
+void ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 {
     m_album = album;
 
