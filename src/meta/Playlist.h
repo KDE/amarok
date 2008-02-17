@@ -38,7 +38,7 @@ namespace Meta
         public:
             /** This method is called when  a playlist has changed.
              */
-            virtual void trackListChanged( Playlist* playlist ) {};
+            virtual void trackListChanged( Playlist* playlist ) = 0;
             virtual ~PlaylistObserver() {};
     };
 
