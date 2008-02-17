@@ -370,16 +370,8 @@ Model::setActiveRow( int row )
 {
     DEBUG_BLOCK
 
-    int max = qMax( row, m_activeRow );
-    int min = qMin( row, m_activeRow );
-    if( ( max - min ) == 1 )
-        emit dataChanged( createIndex( min, 0 ), createIndex( max, 0 ) );
-    else
-    {
-        emit dataChanged( createIndex( min, 0 ), createIndex( min, 0 ) );
-        emit dataChanged( createIndex( max, 0 ), createIndex( max, 0 ) );
-    }
-    debug() << "between " << min << " and " << max;
+    emit dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, 0 ) );
+    emit dataChanged( createIndex( row, 0 ), createIndex( row, 0 ) );
 
     m_activeRow = row;
 
