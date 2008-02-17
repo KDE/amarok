@@ -452,6 +452,7 @@ void TagDialog::init()
     ui->setupUi( this );
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
+    setButtons( KDialog::None );
 
     KConfigGroup config = Amarok::config( "TagDialog" );
 
@@ -1450,7 +1451,7 @@ TagDialog::applyToAllTracks()
         QStringList::ConstIterator end = m_removedLabels.constEnd();
         for( QStringList::Iterator iter = m_removedLabels.begin(); iter != end; ++iter )
         {
-            tmpLabels.erase( iter );
+            tmpLabels.removeAll( *iter );
         }
         end = m_addedLabels.constEnd();
         for( QStringList::Iterator iter = m_addedLabels.begin(); iter != end; ++iter )
