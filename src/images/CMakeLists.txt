@@ -34,5 +34,6 @@ install(
         xine_logo.png
         toolbar-background.svg
         playlist_items.svg
+        emblem-magnatune.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

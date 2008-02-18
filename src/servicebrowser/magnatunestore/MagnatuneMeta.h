@@ -49,6 +49,11 @@ public:
 
     virtual QList< QAction *> customActions();
 
+
+    virtual QString sourceName();
+    virtual QString sourceDescription();
+    virtual QPixmap emblem();
+
 private:
     QString m_lofiUrl;
     bool m_downloadMembership;

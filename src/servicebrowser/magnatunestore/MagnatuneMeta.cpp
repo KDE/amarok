@@ -30,6 +30,7 @@
 
 #include <KIcon>
 #include <KLocale>
+#include <KStandardDirs>
 
 #include <QObject>
 
@@ -200,6 +201,22 @@ QList< QAction * > Meta::MagnatuneTrack::customActions()
 }
 
 
+QString Meta::MagnatuneTrack::sourceName()
+{
+    return "Magnatune.com";
+}
+
+QString Meta::MagnatuneTrack::sourceDescription()
+{
+    return "The non evil record label that is fair to artists and customers alike";
+}
+
+QPixmap Meta::MagnatuneTrack::emblem()
+{
+    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-magnatune.png" ) );
+}
+
+
 //// MagnatuneArtist ////
 
 MagnatuneArtist::MagnatuneArtist( const QString &name )
@@ -351,6 +368,7 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
 
 
 
