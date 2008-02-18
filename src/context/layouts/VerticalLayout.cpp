@@ -144,3 +144,8 @@ QSizeF VerticalLayout::sizeHint() const
 }
 
 }
+
+void Context::VerticalLayout::releaseManagedItems()
+{
+    //FIXME!!
+}

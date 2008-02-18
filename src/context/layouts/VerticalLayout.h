@@ -46,6 +46,8 @@ public:
     virtual void setGeometry(const QRectF &geometry);
     virtual QRectF geometry() const;
     virtual int count() const;
+
+    virtual void releaseManagedItems();
     
     virtual QSizeF sizeHint() const;
     

@@ -56,6 +56,8 @@ public:
     virtual void setColumnWidth( const qreal width );
     virtual qreal columnWidth() const;
 
+    virtual void releaseManagedItems();
+
 protected:
     void relayout();
 

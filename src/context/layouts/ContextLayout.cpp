@@ -295,3 +295,8 @@ void ContextLayout::setColumnWidth( const qreal width )
     d->columnWidth = width;
 }
 
+void Context::ContextLayout::releaseManagedItems()
+{
+    //FIXME!!
+}
+

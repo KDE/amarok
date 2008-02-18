@@ -63,7 +63,10 @@ set(plasma_LIB_SRCS
     plasma/svgpanel.cpp
     plasma/theme.cpp
     plasma/desktoptoolbox.cpp
-    plasma/scriptengine.cpp
+    plasma/scripting/scriptengine.cpp
+    plasma/scripting/appletscript.cpp
+    plasma/scripting/dataenginescript.cpp    
+    plasma/scripting/runnerscript.cpp
     plasma/uiloader.cpp
     plasma/view.cpp
     plasma/widgets/checkbox.cpp
