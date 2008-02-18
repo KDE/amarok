@@ -230,6 +230,7 @@ set(meta_SRCS
     meta/EditablePlaylistCapability.cpp
     meta/DynamicPlaylist.cpp
     meta/MultiPlayableCapability.cpp
+    meta/SourceInfoCapability.cpp
 )
 
 #####################################################################

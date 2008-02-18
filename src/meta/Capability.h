@@ -39,7 +39,8 @@ namespace Meta
                         , CustomActions = 4
                         , EditablePlaylist = 5
                         , MultiPlayable = 6
-                        , Organisable = 7 };
+                        , Organisable = 7
+                        , SourceInfo = 8};
 
             virtual ~Capability();
 
