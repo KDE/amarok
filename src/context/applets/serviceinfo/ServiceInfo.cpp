@@ -79,6 +79,10 @@ void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
 
 
     m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
+    //make the text as large as possible:
+    m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_theme->elementRect( "service_name" ) ) );
+
+    
     //QSizeF infoSize( 200, 200 );
     QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
 
@@ -148,6 +152,36 @@ bool ServiceInfo::hasHeightForWidth() const
 qreal ServiceInfo::heightForWidth(qreal width) const
 {
     return width * m_aspectRatio;
+}
+
+QFont ServiceInfo::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
+{
+
+    int size = 30; // start here, shrink if needed
+    QFont font( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
+    font.setStyleStrategy( QFont::PreferAntialias );
+
+    QFontMetrics fm( font );
+    while( fm.height() > bounds.height() + 4 )
+    {
+        if( size < 0 )
+        {
+            size = 5;
+            break;
+        }
+        size--;
+        fm = QFontMetrics( QFont( QString(), size ) );
+    }
+    
+    // for aesthetics, we make it one smaller
+    size--;
+
+    QFont returnFont( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
+    font.setStyleStrategy( QFont::PreferAntialias );
+    
+    return QFont( returnFont );
 }
 
 #include "ServiceInfo.moc"
