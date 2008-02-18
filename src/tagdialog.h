@@ -43,6 +43,7 @@ namespace Ui
 }
 
 class QueryMaker;
+class QComboBox;
 
 class TagDialog : public KDialog
 {
@@ -121,6 +122,8 @@ class TagDialog : public KDialog
         QStringList labelListFromText( const QString &text );
         void generateDeltaForLabelList( const QStringList &list );
         QString generateHTML( const QStringList &labels );
+
+        void selectOrInsertText( const QString &text, QComboBox *comboBox );
 
         QString m_lyrics;
         bool m_perTrack;

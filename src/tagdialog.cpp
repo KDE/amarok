@@ -726,12 +726,12 @@ void TagDialog::readTags()
     ui->trackArtistAlbumLabel2->setText( niceTitle );
 
     ui->kLineEdit_title->setText( m_currentTrack->name() );
-    ui->kComboBox_artist->setItemText( ui->kComboBox_artist->currentIndex(), m_currentTrack->artist()->name() );
-    ui->kComboBox_album->setItemText( ui->kComboBox_album->currentIndex(), m_currentTrack->album()->name() );
-    ui->kComboBox_genre->setItemText( ui->kComboBox_genre->currentIndex(), m_currentTrack->genre()->name() );
+    selectOrInsertText( m_currentTrack->artist()->name(), ui->kComboBox_artist );
+    selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
+    selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
+    selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
     ui->kComboBox_rating->setCurrentIndex( m_currentTrack->rating() ? m_currentTrack->rating() - 1 : 0 );
     ui->qSpinBox_track->setValue( m_currentTrack->trackNumber() );
-    ui->kComboBox_composer->setItemText( ui->kComboBox_composer->currentIndex(), m_currentTrack->composer()->name() );
     ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
@@ -795,18 +795,19 @@ void TagDialog::readTags()
     ui->pixmap_cover->setMaximumSize( s, s );
 
 
-    // enable only for local files
-    ui->kLineEdit_title->setReadOnly( !local );
-    ui->kComboBox_artist->setEnabled( local );
-    ui->kComboBox_album->setEnabled( local );
-    ui->kComboBox_genre->setEnabled( local );
-    ui->kComboBox_rating->setEnabled( local );
-    ui->qSpinBox_track->setEnabled( local );
-    ui->qSpinBox_year->setEnabled( local );
-    ui->qSpinBox_score->setEnabled( local );
-    ui->kTextEdit_comment->setEnabled( local );
-    ui->kTextEdit_selectedLabels->setEnabled( local );
-    m_labelCloud->view()->setEnabled( local );
+    // enable only for editable files
+    bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
+    ui->kLineEdit_title->setReadOnly( !editable );
+    ui->kComboBox_artist->setEnabled( editable );
+    ui->kComboBox_album->setEnabled( editable );
+    ui->kComboBox_genre->setEnabled( editable );
+    ui->kComboBox_rating->setEnabled( editable );
+    ui->qSpinBox_track->setEnabled( editable );
+    ui->qSpinBox_year->setEnabled( editable );
+    ui->qSpinBox_score->setEnabled( editable );
+    ui->kTextEdit_comment->setEnabled( editable );
+    ui->kTextEdit_selectedLabels->setEnabled( editable );
+    m_labelCloud->view()->setEnabled( editable );
 
     if( local )
     {
@@ -903,7 +904,6 @@ TagDialog::setSingleTrackMode()
 void
 TagDialog::readMultipleTracks()
 {
-
     setWindowTitle( KDialog::makeStandardCaption( i18np("1 Track", "Information for %1 Tracks", m_tracks.count()) ) );
 
     //Check which fields are the same for all selected tracks
@@ -930,29 +930,30 @@ TagDialog::readMultipleTracks()
             scoreSum += data.value( Meta::Field::SCORE ).toDouble();
         }
 
-        if( it.peekPrevious()->playableUrl().isLocalFile() ) {
+        if( !it.peekPrevious()->playableUrl().isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing
             artist = album = genre = comment = year = false;
             score  = rating = composer = discNumber = false;
             continue;
         }
-        if ( artist && data.value( Meta::Field::ARTIST ) != first.value( Meta::Field::ARTIST ) )
+        if ( artist && data.value( Meta::Field::ARTIST ).toString() != first.value( Meta::Field::ARTIST ).toString() )
             artist=false;
-        if ( album && data.value( Meta::Field::ALBUM ) != first.value( Meta::Field::ALBUM ) )
+        if ( album && data.value( Meta::Field::ALBUM ).toString() != first.value( Meta::Field::ALBUM ).toString() )
             album=false;
-        if ( genre && data.value( Meta::Field::GENRE ) != first.value( Meta::Field::GENRE ) )
+        if ( genre && data.value( Meta::Field::GENRE ).toString() != first.value( Meta::Field::GENRE ).toString() )
             genre=false;
-        if ( comment && data.value( Meta::Field::COMMENT ) != first.value( Meta::Field::COMMENT ) )
+        if ( comment && data.value( Meta::Field::COMMENT ).toString() != first.value( Meta::Field::COMMENT ).toString() )
             comment=false;
-        if ( year && data.value( Meta::Field::YEAR ) != first.value( Meta::Field::YEAR ) )
+        if ( year && data.value( Meta::Field::YEAR ).toInt() != first.value( Meta::Field::YEAR ).toInt() )
             year=false;
-        if ( composer && data.value( Meta::Field::COMPOSER ) != first.value( Meta::Field::COMPOSER ) )
+        if ( composer && data.value( Meta::Field::COMPOSER ).toString() != first.value( Meta::Field::COMPOSER ).toString() )
             composer=false;
-        if ( discNumber && data.value( Meta::Field::DISCNUMBER ) != first.value( Meta::Field::DISCNUMBER ) )
+        if ( discNumber && data.value( Meta::Field::DISCNUMBER ).toInt() != first.value( Meta::Field::DISCNUMBER ).toInt() )
             discNumber=false;
-        if ( score && data.value( Meta::Field::SCORE ) != first.value( Meta::Field::SCORE ) )
+        //score is double internally, but we only show ints in the tab
+        if ( score && data.value( Meta::Field::SCORE ).toInt() != first.value( Meta::Field::SCORE ).toInt() )
             score = false;
-        if ( rating && data.value( Meta::Field::RATING ) != first.value( Meta::Field::RATING ) )
+        if ( rating && data.value( Meta::Field::RATING ).toInt() != first.value( Meta::Field::RATING ).toInt() )
             rating = false;
     }
     // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
@@ -960,17 +961,17 @@ TagDialog::readMultipleTracks()
     if (artist) {
         cur_item = ui->kComboBox_artist->currentIndex();
         m_currentData.insert( Meta::Field::ARTIST, first.value( Meta::Field::ARTIST ) );
-        ui->kComboBox_artist->setItemText( cur_item, first.value( Meta::Field::ARTIST ).toString() );
+        selectOrInsertText( first.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
     }
     if (album) {
         cur_item = ui->kComboBox_album->currentIndex();
         m_currentData.insert( Meta::Field::ALBUM, first.value( Meta::Field::ALBUM ) );
-        ui->kComboBox_album->setItemText( cur_item, first.value( Meta::Field::ALBUM ).toString() );
+        selectOrInsertText( first.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
     }
     if (genre) {
         cur_item = ui->kComboBox_genre->currentIndex();
         m_currentData.insert( Meta::Field::GENRE, first.value( Meta::Field::GENRE ) );
-        ui->kComboBox_genre->setItemText( cur_item, first.value( Meta::Field::GENRE ).toString() );
+        selectOrInsertText( first.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     }
     if (comment) {
         m_currentData.insert( Meta::Field::COMMENT, first.value( Meta::Field::COMMENT ) );
@@ -979,7 +980,7 @@ TagDialog::readMultipleTracks()
     if (composer) {
         cur_item = ui->kComboBox_composer->currentIndex();
         m_currentData.insert( Meta::Field::COMPOSER, first.value( Meta::Field::COMPOSER ) );
-        ui->kComboBox_composer->setItemText( cur_item, first.value( Meta::Field::COMPOSER ).toString() );
+        selectOrInsertText( first.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     }
     if (year) {
         m_currentData.insert( Meta::Field::YEAR, first.value( Meta::Field::YEAR ) );
@@ -1576,6 +1577,21 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 
     return result;
 }*/
+
+void
+TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
+{
+    int index = comboBox->findText( text );
+    if( index == -1 )
+    {
+        comboBox->insertItem( 0, text );    //insert at the beginning
+        comboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+        comboBox->setCurrentIndex( index );
+    }
+}
 
 TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
         : ThreadManager::Job( "TagDialogWriter" ),
