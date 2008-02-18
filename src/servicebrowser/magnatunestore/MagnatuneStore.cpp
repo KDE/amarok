@@ -234,7 +234,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
-    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_listDownloadJob )
+    Amarok::ContextStatusBar::instance()->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 

@@ -27,7 +27,7 @@
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
 #include "PlaylistWidget.h"
-#include "statusbar/AmarokStatusBar.h"
+//#include "statusbar/AmarokStatusBar.h"
 #include "statusbar/selectLabel.h"
 #include "TheInstances.h"
 #include "toolbar.h"

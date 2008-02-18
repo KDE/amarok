@@ -43,7 +43,7 @@
 #include "timeLabel.h"
 
 
-namespace Amarok {
+using namespace Amarok;
 
 
 KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
@@ -157,5 +157,8 @@ MessageQueue::sendMessages()
      }
 }
 
-} //namespace Amarok
+
+namespace The {
+    AMAROK_EXPORT Amarok::ContextStatusBar* statusBar() { return Amarok::ContextStatusBar::instance(); }
+}
 

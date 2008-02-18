@@ -19,7 +19,7 @@
 #include "PodcastCollection.h"
 
 #include "amarok.h"
-#include "AmarokStatusBar.h"
+//#include "AmarokStatusBar.h"
 #include "ContextStatusBar.h"
 #include "debug.h"
 #include "PodcastReader.h"

@@ -36,6 +36,10 @@ namespace QueueManagerNS {
 class ServiceInfoProxy;
 class SvgTinter;
 
+namespace Amarok {
+    class ContextStatusBar;
+}
+
 namespace The {
     AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
     Playlist::GraphicsView*          playlistView();
@@ -43,6 +47,7 @@ namespace The {
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
     ServiceInfoProxy *               serviceInfoProxy();
     AMAROK_EXPORT SvgTinter *        svgTinter();
+    AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
 }
 
 #endif

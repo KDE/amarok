@@ -19,7 +19,7 @@
 #include "actionclasses.h"    //see toolbar construction
 #include "amarokconfig.h"
 #include "amarok.h"
-#include "AmarokStatusBar.h"
+//#include "AmarokStatusBar.h"
 #include "analyzerwidget.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
@@ -237,9 +237,7 @@ void MainWindow::init()
     m_statusbarArea->setMinimumHeight( 26 );
     m_statusbarArea->setMaximumHeight( 26 );
     new Amarok::ContextStatusBar( m_statusbarArea );
-    new AmarokStatusBar( m_statusbarArea );
 
-    
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
     mainLayout->addWidget( m_statusbarArea);
