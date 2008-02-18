@@ -22,6 +22,7 @@
 
 #include "Meta.h"
 #include "meta/Capability.h"
+#include "servicemetabase.h" // for the SourceInfoProvider
 
 #include <QObject>
 
@@ -29,7 +30,7 @@ class TrackInfo;
 
 namespace LastFm
 {
-    class Track : public QObject, public Meta::Track
+    class Track : public QObject, public Meta::Track, public SourceInfoProvider
     {
         Q_OBJECT
         public:
@@ -88,6 +89,10 @@ namespace LastFm
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
             void setTrackInfo( const TrackInfo &trackInfo );
+
+            virtual QString sourceName();
+            virtual QString sourceDescription();
+            virtual QPixmap emblem();
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)

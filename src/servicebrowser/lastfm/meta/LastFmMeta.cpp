@@ -24,6 +24,7 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
+#include "ServiceSourceInfoCapability.h"
 
 #include "core/Radio.h"
 #include "LastFmService.h"
@@ -35,6 +36,7 @@
 #include <QPointer>
 
 #include <KSharedPtr>
+#include <KStandardDirs>
 
 namespace LastFm {
 
@@ -374,7 +376,7 @@ Track::playNext()
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::LastFm || type == Meta::Capability::MultiPlayable;
+    return type == Meta::Capability::LastFm || type == Meta::Capability::MultiPlayable || Meta::Capability::SourceInfo;
 }
 
 Meta::Capability*
@@ -386,12 +388,29 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             return new LastFmCapabilityImpl( this );
         case Meta::Capability::MultiPlayable:
             return new MultiPlayableCapabilityImpl( this );
+        case Meta::Capability::SourceInfo:
+            return new ServiceSourceInfoCapability( this );
         default: 
             return 0;
     }
 }
 
 } // namespace LastFm
+
+QString LastFm::Track::sourceName()
+{
+    return "Last.fm";
+}
+
+QString LastFm::Track::sourceDescription()
+{
+    return "Last.fm is cool...";
+}
+
+QPixmap LastFm::Track::emblem()
+{
+    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
+}
 
 #include "LastFmMeta.moc"
 

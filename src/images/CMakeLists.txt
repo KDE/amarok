@@ -35,5 +35,6 @@ install(
         toolbar-background.svg
         playlist_items.svg
         emblem-magnatune.png
+        emblem-lastfm.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
