@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -11,14 +14,24 @@
    height="509"
    id="svg2581"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.45.1"
    sodipodi:docname="amarok-serviceinfo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/serviceinfo"
-   sodipodi:modified="true">
+   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/serviceinfo">
+  <metadata
+     id="metadata77">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
   <sodipodi:namedview
      inkscape:window-height="977"
-     inkscape:window-width="1680"
+     inkscape:window-width="1670"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -444,7 +457,7 @@
   <g
      id="background">
     <rect
-       style="opacity:0.29775281;fill:#0000ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.29775281;fill:#080000;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="service_name"
        y="6.5548873"
        x="5.5063281"
@@ -452,13 +465,12 @@
        width="575.10101"
        inkscape:label="#rect2499" />
     <rect
-       style="opacity:0.30337079;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.30337088;fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="main_info"
        y="46.17976"
        x="6.5639806"
-       height="464.95032"
+       height="455.09683"
        width="575.10107"
-       inkscape:label="#rect2499"
-       transform="matrix(1,0,0,0.9617439,0,9.7003794)" />
+       inkscape:label="#rect2499" />
   </g>
 </svg>
