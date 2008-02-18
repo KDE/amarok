@@ -68,8 +68,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
 {
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
-    showInfo( false );
-
+    
     CollectionManager::instance()->addTrackProvider( m_collection );
 
     Q_ASSERT( ms_service == 0 );

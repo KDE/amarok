@@ -193,18 +193,6 @@ void MagnatuneStore::initBottomPanel()
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 
-
-    m_showInfoToggleButton = new QPushButton;
-    m_showInfoToggleButton->setText( i18n( "Show Info" ) );
-    m_showInfoToggleButton->setParent( hBoxBottom );
-    m_showInfoToggleButton->setObjectName( "showInfoCheckbox" );
-    m_showInfoToggleButton->setCheckable( true );
-    m_showInfoToggleButton->setIcon( KIcon( "help-about-amarok" ) );
-    m_showInfoToggleButton->setChecked( true );
-
-    m_isInfoShown = true;
-
-    connect( m_showInfoToggleButton, SIGNAL( toggled( bool ) ), this, SLOT( showInfo( bool ) ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
 }
@@ -458,11 +446,6 @@ void MagnatuneStore::polish( )
             "'Update' button below." )
             + "</td></tr></tbody></table>";
 
-    m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
-    m_infoBox->write( infoString );
-    m_infoBox->end();
-
-    debug() << "image url: " << imagePath + "/magnatune_logo.png";
 
     generateWidgetInfo( infoString );
 

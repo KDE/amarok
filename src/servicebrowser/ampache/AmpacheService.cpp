@@ -83,7 +83,6 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
 
     setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
     setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    showInfo( false );
 
     m_server = url;
     m_username = username;

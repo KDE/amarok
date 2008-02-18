@@ -78,7 +78,6 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
 
     setShortDescription( i18n( "The Mp3Tunes Locker service. Access your stored music!" ) );
     setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    showInfo( false );
 
 }
 

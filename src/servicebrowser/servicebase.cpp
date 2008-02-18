@@ -82,8 +82,7 @@ ServiceBase::ServiceBase( const QString &name )
     nameLabel->setFont(QFont("Arial", 12, QFont::Bold));
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
    
-    m_mainSplitter = new QSplitter( Qt::Vertical, this );
-    m_contentView = new CollectionTreeView( m_mainSplitter );
+    m_contentView = new CollectionTreeView( this );
 
     m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
@@ -97,23 +96,8 @@ ServiceBase::ServiceBase( const QString &name )
     //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
-     connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+    connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
-    m_infoBox = new KHTMLPart( m_mainSplitter );
-    //m_infoBox->view()->widget()->setFrameStyle(QFrame::StyledPanel | QFrame::Plain); //kdelibs error?
-
-
-    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" " 
-                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
-    infoHtml += "<div align=\"center\"><strong>";
-    infoHtml += "Welcome to";
-    infoHtml += "</strong><br><br>";
-    infoHtml += m_name;
-    infoHtml += "</div></BODY></HTML>";
-
-    m_infoBox->begin();
-    m_infoBox->write(infoHtml);
-    m_infoBox->end();
 
     m_bottomPanel = new KVBox( this );
     m_bottomPanel->setFixedHeight( 50 );
@@ -135,22 +119,6 @@ ServiceBase::ServiceBase( const QString &name )
 
 ServiceBase::~ServiceBase()
 {
-    delete m_infoBox;
-}
-
-
-void ServiceBase::showInfo( bool show )
-{
-    if ( show )
-    {
-        m_isInfoShown = true;
-        m_infoBox->widget()->setMaximumHeight( 2000 );
-    }
-    else
-    {
-        m_infoBox->widget()->setMaximumHeight( 0 );
-        m_isInfoShown = false;
-    }
 }
 
 
@@ -218,11 +186,6 @@ void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
 
     DEBUG_BLOCK
-
-    m_infoBox->begin( );
-    m_infoBox->write( infoHtml ); 
-    m_infoBox->end();
-
 
     QVariantMap map;
     map["service_name"] = m_name;

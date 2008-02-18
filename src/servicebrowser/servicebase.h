@@ -116,11 +116,6 @@ signals:
 
 protected slots:
 
-    /**
-     * Toggles the info area on and off
-     * @param show If true the info box is shown, if false it is hidden
-     */
-    void showInfo(bool show);
 
     void homeButtonClicked();
 
@@ -135,15 +130,12 @@ protected:
 
     static ServiceBase *s_instance;
 
-    QSplitter *m_mainSplitter;
     CollectionTreeView *m_contentView;
-    KHTMLPart   *m_infoBox;
 
     QPushButton *m_homeButton;
 
     KVBox       *m_topPanel;
     KVBox       *m_bottomPanel;
-    bool         m_isInfoShown;
     bool         m_polished;
 
     QString      m_name;
