@@ -5,27 +5,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
-    <height>623</height>
+    <width>678</width>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Track Information</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>4</x>
      <y>4</y>
      <width>672</width>
-     <height>615</height>
+     <height>611</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3" >
     <item>
      <widget class="KTabWidget" name="kTabWidget" >
       <property name="currentIndex" >
-       <number>1</number>
+       <number>4</number>
       </property>
       <property name="currentPage" stdset="0" >
        <number>4</number>
@@ -36,18 +36,18 @@
          <x>0</x>
          <y>0</y>
          <width>658</width>
-         <height>494</height>
+         <height>490</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>S&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;ummary</string>
+        <string>S&amp;ummary</string>
        </attribute>
        <widget class="QWidget" name="" >
         <property name="geometry" >
          <rect>
-          <x>5</x>
-          <y>5</y>
-          <width>651</width>
+          <x>6</x>
+          <y>6</y>
+          <width>648</width>
           <height>481</height>
          </rect>
         </property>
@@ -118,7 +118,20 @@
            </property>
            <property name="sizeHint" stdset="0" >
             <size>
-             <width>21</width>
+             <width>646</width>
+             <height>318</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>638</width>
              <height>20</height>
             </size>
            </property>
@@ -133,13 +146,13 @@
          <x>0</x>
          <y>0</y>
          <width>658</width>
-         <height>494</height>
+         <height>490</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>Ta&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;gs</string>
+        <string>Ta&amp;gs</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>4</x>
@@ -460,11 +473,11 @@
          <x>0</x>
          <y>0</y>
          <width>658</width>
-         <height>494</height>
+         <height>490</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>L&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;yrics</string>
+        <string>L&amp;yrics</string>
        </attribute>
        <layout class="QHBoxLayout" >
         <item>
@@ -485,19 +498,19 @@
          <x>0</x>
          <y>0</y>
          <width>658</width>
-         <height>494</height>
+         <height>490</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>St&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;atistics</string>
+        <string>St&amp;atistics</string>
        </attribute>
        <widget class="QWidget" name="" >
         <property name="geometry" >
          <rect>
-          <x>4</x>
-          <y>4</y>
-          <width>711</width>
-          <height>391</height>
+          <x>5</x>
+          <y>5</y>
+          <width>651</width>
+          <height>481</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -606,6 +619,19 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <spacer name="horizontalSpacer_3" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>638</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </widget>
       </widget>
@@ -615,19 +641,19 @@
          <x>0</x>
          <y>0</y>
          <width>658</width>
-         <height>494</height>
+         <height>490</height>
         </rect>
        </property>
        <attribute name="title" >
-        <string>La&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;bels</string>
+        <string>La&amp;bels</string>
        </attribute>
        <widget class="QWidget" name="" >
         <property name="geometry" >
          <rect>
-          <x>4</x>
-          <y>4</y>
-          <width>711</width>
-          <height>391</height>
+          <x>0</x>
+          <y>5</y>
+          <width>661</width>
+          <height>481</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout" >
