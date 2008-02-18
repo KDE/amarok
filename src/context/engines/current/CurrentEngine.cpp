@@ -20,6 +20,7 @@
 #include "enginecontroller.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
+#include "meta/SourceInfoCapability.h"
 
 #include <QVariant>
 
@@ -108,11 +109,31 @@ void CurrentEngine::update()
     if( m_currentTrack->album() )
         m_currentTrack->album()->subscribe( this );
     clearData( "current" );
-    if( m_currentTrack->album() )
-        setData( "current", "albumart",  QVariant( m_currentTrack->album()->image( width ) ) );
+    if( m_currentTrack->album() ) {
+
+        //add a source info emblem ( if available ) to the cover
+
+        QPixmap art = m_currentTrack->album()->image( width );
+        setData( "current", "albumart",  QVariant( art ) );
+
+     }
     else
         setData( "current", "albumart", QVariant( QPixmap() ) );
     setData( "current", "current", trackInfo );
+
+    Meta::SourceInfoCapability *sic = m_currentTrack->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( !source.isEmpty() ) {
+            setData( "current", "source_emblem",  QVariant( sic->emblem() ) );
+        }
+        delete sic;
+    } else {
+        setData( "current", "source_emblem",  QVariant( QPixmap() ) );
+    }
+    
 }
 
 #include "CurrentEngine.moc"

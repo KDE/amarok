@@ -83,6 +83,7 @@ void CurrentTrack::init()
     m_numPlayed = new QGraphicsSimpleTextItem( this );
     m_playedLast = new QGraphicsSimpleTextItem( this );
     m_albumCover = new QGraphicsPixmapItem( this );
+    m_sourceEmblem = new QGraphicsPixmapItem( this );
     
     m_titleLabel->setBrush( QBrush( Qt::white ) );
     m_artistLabel->setBrush( QBrush( Qt::white ) );
@@ -132,6 +133,7 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
+    m_sourceEmblem->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
 
     m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
@@ -192,6 +194,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
     m_bigCover = data[ "albumart" ].value<QPixmap>();
+    m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
     if(!resizeCover(m_bigCover))
     {
@@ -335,11 +338,15 @@ bool CurrentTrack::resizeCover(QPixmap cover){
         else
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
 
+
         //center the cover : if the cover is not squared, we get the missing pixels and center
         qreal moveBy = qAbs(cover.rect().width()-cover.rect().height())/2.0;
         m_albumCover->setPos(m_albumCover->x()+ moveBy, m_albumCover->y());
-
+        
+        m_sourceEmblem->setPos(m_albumCover->x()+ moveBy, m_albumCover->y());
+        
         m_albumCover->setPixmap( cover );
+        m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;
     }
     else
