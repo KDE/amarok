@@ -31,6 +31,7 @@
 #include "tagdialog.h"
 #include "TheInstances.h"
 #include "CoverManager.h"
+#include "meta/SourceInfoCapability.h"
 
 #include "KStandardDirs"
 
@@ -779,6 +780,22 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     }
     painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
 
+
+    //check if there is a emblem to display
+    //does this track have the SourceInfoCapability?
+    Meta::SourceInfoCapability *sic = m_items->track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( !source.isEmpty() ) {
+            debug() << "Got SourceInfoCapability, source: " << sic->sourceName();
+            painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
+        }
+
+    }
+
+
     /*m_items->topRightText->setDefaultTextColor( Qt::black );
     m_items->topLeftText->setDefaultTextColor( Qt::black );
     */
@@ -881,6 +898,24 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
+        //check if there is a emblem to display
+    //does this track have the SourceInfoCapability?
+
+    Meta::SourceInfoCapability *sic = m_items->track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+
+        debug() << "Got SourceInfoCapability!!";
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( !source.isEmpty() ) {
+
+            painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
+        }
+
+    }
+
+
 }
 
 void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
@@ -936,6 +971,21 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
 
     //set overlay if item is active
     //handleActiveOverlay( trackRect, active );
+
+
+    //check if there is a emblem to display
+    //does this track have the SourceInfoCapability?
+    Meta::SourceInfoCapability *sic = m_items->track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( !source.isEmpty() ) {
+
+            painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
+        }
+    }
+
 
 }
 
