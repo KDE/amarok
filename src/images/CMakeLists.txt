@@ -36,5 +36,6 @@ install(
         playlist_items.svg
         emblem-magnatune.png
         emblem-lastfm.png
+        emblem-jamendo.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

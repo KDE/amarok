@@ -788,8 +788,8 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     {
         //is the source defined
         QString source = sic->sourceName();
+        debug() << "Got SourceInfoCapability, source: " << source;
         if ( !source.isEmpty() ) {
-            debug() << "Got SourceInfoCapability, source: " << sic->sourceName();
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
 

@@ -24,6 +24,7 @@
 #include "jamendoservice.h"
 
 #include "debug.h"
+#include <KStandardDirs>
 
 using namespace Meta;
 
@@ -119,6 +120,22 @@ QList< QAction * > Meta::JamendoTrack::customActions()
 
     actions.append( action );
     return actions;
+}
+
+
+QString Meta::JamendoTrack::sourceName()
+{
+    return "Jamendo.com";
+}
+
+QString Meta::JamendoTrack::sourceDescription()
+{
+    return "A site where artists can freely share their music";
+}
+
+QPixmap Meta::JamendoTrack::emblem()
+{
+    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-jamendo.png" ) );
 }
 
 

@@ -72,6 +72,10 @@ public:
     JamendoTrack( const QString &name );
     JamendoTrack( const QStringList &resultRow );
 
+    virtual QString sourceName();
+    virtual QString sourceDescription();
+    virtual QPixmap emblem();
+
     virtual QList< QAction *> customActions();
 
 };
