@@ -42,7 +42,6 @@ email                : markey@web.de
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 #include "systray.h"
-#include "threadmanager.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
 #include "metadata/tplugins.h"
@@ -221,10 +220,6 @@ App::~App()
 
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
-
-    CollectionDB::instance()->stopScan();
-
-    ThreadManager::deleteInstance(); //waits for jobs to finish
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,

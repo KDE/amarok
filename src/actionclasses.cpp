@@ -25,7 +25,6 @@
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "ContextStatusBar.h"
-#include "threadmanager.h"
 #include "timeLabel.h"
 
 #include <KHBox>

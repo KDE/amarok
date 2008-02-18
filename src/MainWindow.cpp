@@ -50,7 +50,6 @@
 #include "Statistics.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
-#include "threadmanager.h"
 #include "volumewidget.h"
 #include "PodcastCollection.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -748,7 +747,6 @@ void MainWindow::slotToggleToolbar() //SLOT
 void MainWindow::toolsMenuAboutToShow() //SLOT
 {
     Amarok::actionCollection()->action( "equalizer" )->setEnabled( !EngineController::hasEngineProperty( "HasEqualizer" ) );
-    Amarok::actionCollection()->action( "rescan_collection" )->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 }
 
 
@@ -916,7 +914,6 @@ void MainWindow::createActions()
 
     KAction *rescan = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
     connect(rescan, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
-    rescan->setEnabled( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
     ac->addAction( "rescan_collection", rescan );
 
     // TODO: Add these via last.fm service
