@@ -114,8 +114,8 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     //hbox->addItem( new QSpacerItem( hbox, 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     KPushButton *button = new KPushButton( KStandardGuiItem::close(), hbox );
     button->setObjectName( "closeButton" );
-
-    //connect( button, SIGNAL(clicked()), SLOT(close()) );
+    connect( button, SIGNAL(clicked()), SLOT(close()) );
+    
 }
 
 void PopupMessage::addWidget( QWidget *widget )
