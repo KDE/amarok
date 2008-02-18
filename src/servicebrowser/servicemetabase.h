@@ -27,6 +27,7 @@
 #include "meta/CustomActionsCapability.h"
 #include "meta/SourceInfoCapability.h"
 #include "ServiceCustomActionsCapability.h"
+#include "ServiceSourceInfoCapability.h"
 
 #include <QAction>
 #include <QStringList>
@@ -87,7 +88,7 @@ class AMAROK_EXPORT CustomActionsProvider
 
 };
 
-class AMAROK_EXPORT SourceInfoProvider : public Meta::SourceInfoCapability
+class AMAROK_EXPORT SourceInfoProvider
 {
 
     public:
@@ -206,7 +207,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfo
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo )
-                return this;
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }
@@ -270,14 +271,17 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayIn
         
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                    ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }
@@ -320,14 +324,17 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                    ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }
@@ -378,14 +385,17 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfo
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                    ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }
@@ -421,14 +431,17 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDispl
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                    ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }
@@ -456,14 +469,17 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoPr
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                    ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return new ServiceSourceInfoCapability( this );
             else
                 return 0;
         }

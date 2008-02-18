@@ -793,6 +793,8 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
 
+        delete sic;
+
     }
 
 
@@ -913,6 +915,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
 
+        delete sic;
+
     }
 
 
@@ -984,6 +988,8 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
 
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
+
+        delete sic;
     }
 
 
