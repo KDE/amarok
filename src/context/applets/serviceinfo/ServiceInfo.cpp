@@ -29,7 +29,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
-    , m_aspectRatio( 0.0 )
+    , m_aspectRatio( 0 )
     , m_size( QSizeF() )
 
 {
@@ -45,8 +45,11 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_width = globalConfig().readEntry( "width", 500 );
 
     m_serviceName = new QGraphicsSimpleTextItem( this );
-    m_serviceMainInfo = new QGraphicsTextItem( this );
-    m_serviceMainInfo->setDefaultTextColor( Qt::white  );
+
+    m_webView = new QWebView();
+    m_serviceMainInfo = new QGraphicsProxyWidget( this );
+    m_serviceMainInfo->setWidget( m_webView );
+
 
 
     m_serviceName->setBrush( QBrush( Qt::white ) );
@@ -62,13 +65,28 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
 ServiceInfo::~ServiceInfo()
 {
-    DEBUG_BLOCK
+
 }
 
-void ServiceInfo::constraintsUpdated()
+void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
 {
-    m_serviceName->setPos( m_theme->elementRect( "track" ).topLeft() );
-    updateGeometry();
+
+    prepareGeometryChange();
+
+    if (constraints & Plasma::SizeConstraint && m_theme) {
+        m_theme->resize(contentSize().toSize());
+    }
+
+
+    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
+    //QSizeF infoSize( 200, 200 );
+    QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
+
+    if ( infoSize.isValid() ) {
+        m_serviceMainInfo->setMinimumSize( infoSize );
+        m_serviceMainInfo->setMaximumSize( infoSize );
+    }
+
 }
 
 void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -80,7 +98,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
     kDebug() << "got data from engine: " << data[ "service_name" ].toString();
     m_serviceName->setText( data[ "service_name" ].toString() );
-    m_serviceMainInfo->setHtml( data[ "main_info" ].toString() );
+    m_webView->setHtml( data[ "main_info" ].toString() );
 
 }
 
@@ -95,7 +113,15 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 
     m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
     m_serviceMainInfo->setPos( m_theme->elementRect( "main_info" ).topLeft() );
-    //m_serviceMainInfo->
+
+
+    
+    QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
+    //infoSize.setHeight(  infoSize.height() - 50 );
+
+    m_serviceMainInfo->setMinimumSize( infoSize );
+    m_serviceMainInfo->setMaximumSize( infoSize );
+    m_serviceMainInfo->show();
 
 }
 
@@ -111,15 +137,17 @@ void ServiceInfo::configAccepted() // SLOT
 
 void ServiceInfo::resize( qreal newWidth, qreal aspectRatio )
 {
-    qreal height = aspectRatio * newWidth;
-    m_size.setWidth( newWidth );
-    m_size.setHeight( height );
 
-    m_serviceMainInfo->setTextWidth ( newWidth - 20 );
+}
 
-    m_theme->resize( m_size );
-    kDebug() << "set new size: " << m_size;
-    constraintsUpdated();
+bool ServiceInfo::hasHeightForWidth() const
+{
+    return true;
+}
+
+qreal ServiceInfo::heightForWidth(qreal width) const
+{
+    return width * m_aspectRatio;
 }
 
 #include "ServiceInfo.moc"

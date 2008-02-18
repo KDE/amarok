@@ -45,6 +45,11 @@ ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
     ServiceInfoProxy::instance()->subscribe( this );
 }
 
+ServiceEngine::~ ServiceEngine()
+{
+    ServiceInfoProxy::instance()->unsubscribe( this );
+}
+
 QStringList ServiceEngine::sources() const
 {
     return m_sources; // we don't have sources, if connected, it is enabled.
@@ -87,3 +92,5 @@ void ServiceEngine::update()
 
 
 #include "ServiceEngine.moc"
+
+

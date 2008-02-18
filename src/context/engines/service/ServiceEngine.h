@@ -48,6 +48,7 @@ class ServiceEngine : public Context::DataEngine,
 public:
 
     ServiceEngine( QObject* parent, const QList<QVariant>& args );
+    ~ServiceEngine();
 
     QStringList sources() const;
     void message( const Context::ContextState& state );

@@ -8,7 +8,7 @@ include_directories( ../../..
                     ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
 
 kde4_add_plugin(amarok_context_applet_serviceinfo ${serviceinfo_SRCS})
-target_link_libraries(amarok_context_applet_serviceinfo amaroklib ${KDE4_KIO_LIBS})
+target_link_libraries(amarok_context_applet_serviceinfo amaroklib QtWebKit ${KDE4_KIO_LIBS})
 
 install(TARGETS amarok_context_applet_serviceinfo DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-serviceinfo.desktop DESTINATION ${SERVICES_INSTALL_DIR})

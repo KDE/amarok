@@ -21,6 +21,9 @@
 
 #include <KDialog>
 
+#include <QGraphicsProxyWidget>
+#include <qwebview.h>
+
 class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
@@ -36,8 +39,10 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    void constraintsUpdated();
-    QSizeF contentSizeHint() const { return m_size; }
+    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
+
+    bool hasHeightForWidth() const;
+    qreal heightForWidth( qreal width ) const;
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -60,7 +65,9 @@ private:
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_serviceName;
-    QGraphicsTextItem* m_serviceMainInfo;
+    QGraphicsProxyWidget* m_serviceMainInfo;
+
+    QWebView * m_webView;
 
 
 };
