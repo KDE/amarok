@@ -1,7 +1,7 @@
 project(Amarok)
 
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
-#set(KDE_MIN_VERSION "4.00.80")
+set(KDE_MIN_VERSION "4.00.61")
 find_package(KDE4 REQUIRED)
 include (KDE4Defaults)
 include (MacroLibrary)
