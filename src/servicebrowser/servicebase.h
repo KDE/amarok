@@ -131,7 +131,7 @@ protected slots:
 
 protected:
 
-    virtual void generateWidgetInfo() const;
+    virtual void generateWidgetInfo( QString html = QString() ) const;
 
     static ServiceBase *s_instance;
 

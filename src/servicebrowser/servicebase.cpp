@@ -251,10 +251,11 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
 
 }
 
-void ServiceBase::generateWidgetInfo() const
+void ServiceBase::generateWidgetInfo( QString html ) const
 {
     QVariantMap map;
     map["service_name"] = m_name;
+    map["main_info"] = html;
     The::serviceInfoProxy()->setInfo( map );
 }
 

@@ -393,7 +393,6 @@ void MagnatuneStore::polish( )
 
     DEBUG_BLOCK;
 
-
     if (!m_polished) {
         m_polished = true;
 
@@ -439,22 +438,33 @@ void MagnatuneStore::polish( )
         m_contentView->setSortingEnabled ( true );
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
     */
+        
 
-        m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
-        m_infoBox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
-          "<tr align='center'><td><div align='center'>"
-          "<IMG src='magnatune_logo.png' width='200' height='36' align='center' border='0'>"
-          "</div></td></tr><tr><td><BR>"
-        + i18n( "Welcome to Amarok's integrated Magnatune.com store. If this is the "
-                "first time you run it, you must update the database by pressing the "
-                "'Update' button below." )
-        + "</td></tr></tbody></table>" );
-        m_infoBox->end();
+
 
 
     }
 
-     generateWidgetInfo();
+    KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+    QString imagePath = url.url();
+
+    
+    QString infoString = "<table align='center' border='0'><tbody align='center' valign='top'>"
+            "<tr align='center'><td><div align='center'>"
+            "<IMG src='" + imagePath + "/magnatune_logo.png' width='200' height='36' align='center' border='0'>"
+            "</div></td></tr><tr><td><BR>"
+            + i18n( "Welcome to Amarok's integrated Magnatune.com store. If this is the "
+            "first time you run it, you must update the database by pressing the "
+            "'Update' button below." )
+            + "</td></tr></tbody></table>";
+
+    m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
+    m_infoBox->write( infoString );
+    m_infoBox->end();
+
+    debug() << "image url: " << imagePath + "/magnatune_logo.png";
+
+    generateWidgetInfo( infoString );
 
 
 
