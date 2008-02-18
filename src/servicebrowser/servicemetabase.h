@@ -25,6 +25,7 @@
 #include "infoparserbase.h"
 #include "Meta.h"
 #include "meta/CustomActionsCapability.h"
+#include "meta/SourceInfoCapability.h"
 #include "ServiceCustomActionsCapability.h"
 
 #include <QAction>
@@ -86,6 +87,19 @@ class AMAROK_EXPORT CustomActionsProvider
 
 };
 
+class AMAROK_EXPORT SourceInfoProvider : public Meta::SourceInfoCapability
+{
+
+    public:
+        SourceInfoProvider() {}
+        virtual ~SourceInfoProvider() {}
+
+        virtual QString sourceName() { return QString(); }
+        virtual QString sourceDescription() { return QString(); }
+        virtual QPixmap emblem()  { return QPixmap(); }
+
+};
+
 
 
 namespace Meta
@@ -113,7 +127,7 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -182,14 +196,17 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfo
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
-            return type == Meta::Capability::CustomActions;
+            return ( type == Meta::Capability::CustomActions ) ||
+                   ( type == Meta::Capability::SourceInfo );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
             DEBUG_BLOCK
-                    if( type == Meta::Capability::CustomActions )
-                    return new ServiceCustomActionsCapability( this );
+            if ( type == Meta::Capability::CustomActions )
+                return new ServiceCustomActionsCapability( this );
+            else if ( type == Meta::Capability::SourceInfo )
+                return this;
             else
                 return 0;
         }
@@ -233,7 +250,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfo
         QString m_type;
 };
 
-class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
 
@@ -283,7 +300,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayIn
 
 };
 
-class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -345,7 +362,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
         QString m_artistName;
 };
 
-class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -389,7 +406,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfo
         TrackList m_tracks;
 };
 
-class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -424,7 +441,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDispl
         TrackList m_tracks;
 };
 
-class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider
+class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
 {
     public:
         ServiceYear( const QString &name );
