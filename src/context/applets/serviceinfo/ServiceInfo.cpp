@@ -45,6 +45,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_width = globalConfig().readEntry( "width", 500 );
 
     m_serviceName = new QGraphicsSimpleTextItem( this );
+    m_serviceName->setText( "Service Info ( No sevice Active )" );
 
     m_webView = new QWebView();
     m_serviceMainInfo = new QGraphicsProxyWidget( this );
@@ -78,9 +79,21 @@ void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
     }
 
 
-    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
+
     //make the text as large as possible:
     m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_theme->elementRect( "service_name" ) ) );
+
+    //center it
+
+    float textWidth = m_serviceName->boundingRect().width();
+    float totalWidth = m_theme->elementRect( "service_name" ).width();
+    float offsetX =  ( totalWidth - textWidth ) / 2;
+
+    kDebug() << "offset: " << offsetX;
+    
+    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
+
+    
 
     
     //QSizeF infoSize( 200, 200 );
@@ -115,7 +128,7 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     p->restore();
 
 
-    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
+    //m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
     m_serviceMainInfo->setPos( m_theme->elementRect( "main_info" ).topLeft() );
 
 
