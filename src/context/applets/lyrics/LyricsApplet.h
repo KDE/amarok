@@ -19,7 +19,8 @@
 #include "context/Svg.h"
 
 class QGraphicsSimpleTextItem;
-class QGraphicsTextItem;
+class QGraphicsProxyWidget;
+class QTextEdit;
 
 class LyricsApplet : public Context::Applet
 {
@@ -49,7 +50,8 @@ private:
     QGraphicsSimpleTextItem* m_artistLabel;
     QGraphicsSimpleTextItem* m_siteLabel;
     // holds main body
-    QGraphicsTextItem* m_lyrics;
+    QGraphicsProxyWidget *m_lyricsProxy;
+    QTextEdit* m_lyrics;
     // titles
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
