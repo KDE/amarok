@@ -86,21 +86,20 @@ void LyricsApplet::init()
     m_lyrics->setFont( f );
     m_title->setBrush( QBrush( Qt::white ) );
     m_artist->setBrush( QBrush( Qt::white ) );
+
+    constraintsUpdated();
 }
 
 void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
+
+    kDebug() << "LyricsApplet::constraintsUpdated";
+            
     prepareGeometryChange();
 
-    // we changed size, so lets resize the theme
-    if (constraints & Plasma::SizeConstraint && m_header)
-    {
-       QSizeF newsize( contentSize().toSize() );
-       newsize.setHeight( m_headerAspectRatio * newsize.width() );
-       m_header->resize( newsize );
-//         m_header->resize( contentSize().toSize().width(), m_headerAspectRatio * contentSize().toSize().width() );
-       m_lyricsProxy->resize( m_lyrics->size() );
+    if (constraints & Plasma::SizeConstraint && m_header) {
+        m_header->resize(contentSize().toSize());
     }
     
     // align items
@@ -111,6 +110,13 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_lyricsProxy->setPos( m_header->elementRect( "lyrics" ).topLeft() );
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
+
+    QSizeF infoSize( m_header->elementRect( "lyrics" ).bottomRight().x() - m_header->elementRect( "lyrics" ).topLeft().x(), m_header->elementRect( "lyrics" ).bottomRight().y() - m_header->elementRect( "lyrics" ).topLeft().y() );
+
+    if ( infoSize.isValid() ) {
+        m_lyricsProxy->setMinimumSize( infoSize );
+        m_lyricsProxy->setMaximumSize( infoSize );
+    }
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -148,7 +154,7 @@ void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     QRectF tmp( 0, 0, contentsRect.width(), 0 );
     tmp.setHeight( contentsRect.width() * m_headerAspectRatio );
-    m_header->paint( p, tmp, "lyricsheader" );
+    //m_header->paint( p, tmp, "lyricsheader" );
 
     // align items
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());

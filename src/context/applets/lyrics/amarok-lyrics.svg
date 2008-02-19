@@ -9,14 +9,14 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="521.62"
-   height="99.714859"
+   width="513.12482"
+   height="290.2124"
    id="svg3486"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
    sodipodi:docname="amarok-lyrics.svg"
-   sodipodi:docbase="/home/hydrogen"
+   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/lyrics"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3488">
@@ -54,13 +54,13 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
      inkscape:cx="297.49459"
-     inkscape:cy="30.527159"
+     inkscape:cy="93.583418"
      inkscape:document-units="px"
      inkscape:current-layer="svg3486"
      inkscape:window-width="1430"
      inkscape:window-height="814"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-x="103"
+     inkscape:window-y="69"
      width="381.21px"
      height="143.0905px" />
   <metadata
@@ -76,58 +76,45 @@
   </metadata>
   <rect
      width="140"
-     height="12.377051"
-     x="79.361504"
-     y="31.337807"
+     height="12"
+     x="76.118927"
+     y="30.568537"
      id="lyricstrackname"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <g
-     id="lyricsheader"
-     style="opacity:1"
-     transform="matrix(1.3683315,0,0,0.7242212,-1.0101525,0)">
-    <path
-       style="opacity:0.79059825;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path5275"
-       d="M 6.48053,1.88522 C 3.18351,1.88522 0.52938,6.92344 0.52938,13.16647 L 0.52938,19.32272 L 0.52938,20.32272 L 0.52938,21.91647 L 0.52938,86.51022 L 0.52938,88.04147 L 0.52938,91.57272 L 380.49492,91.57272 L 380.49492,88.04147 L 380.49492,86.51022 L 380.49492,19.32272 L 380.49492,13.16647 C 380.49493,6.92344 377.84081,1.88522 374.54377,1.88522 L 6.48053,1.88522 z " />
-    <path
-       d="M 5.97501,0 C 2.66698,0 0,4.43799 0,9.94487 C 0,9.94487 0.15586,20.29282 0.44673,21.46516 L 380.76209,21.46516 C 381.05295,20.29282 381.20879,19.00913 381.20879,17.65788 L 381.20879,9.94487 C 381.20879,4.43799 378.54182,0 375.23382,0 L 5.97501,0 z "
-       id="rect3285"
-       style="fill:url(#linearGradient3891);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  </g>
   <rect
      width="140"
-     height="12.377051"
-     x="340.74734"
-     y="31.337807"
+     height="12"
+     x="337.50476"
+     y="30.568537"
      id="lyricsartist"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="titlelabel"
      width="60"
-     height="11.407652"
-     x="16.287254"
-     y="32.307205" />
+     height="12"
+     x="13.044676"
+     y="30.568537" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="artistlabel"
      width="60"
-     height="11.407653"
-     x="278.0589"
-     y="32.307205" />
+     height="12"
+     x="274.81631"
+     y="30.568537" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="title"
      width="119.90112"
-     height="16.637806"
-     x="204.05415"
-     y="1.431464" />
+     height="16"
+     x="200.81157"
+     y="0" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="lyrics"
-     width="498.9827"
-     height="3.0304568"
-     x="3.242579"
-     y="58.298607"
+     width="513.12482"
+     height="233.34525"
+     x="0"
+     y="56.867142"
      inkscape:label="#rect2170" />
 </svg>

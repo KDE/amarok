@@ -34,7 +34,7 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-    void constraintsUpdated( Plasma::Constraints );
+    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
