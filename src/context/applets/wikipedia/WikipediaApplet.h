@@ -18,6 +18,9 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
+#include <QGraphicsProxyWidget>
+#include <qwebview.h>
+
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
 
@@ -30,7 +33,7 @@ public:
     void init();
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
-    void constraintsUpdated( Plasma::Constraints );
+    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
@@ -38,7 +41,6 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
-    void calculateHeight();
 
     Context::Svg* m_theme;
     Context::Svg* m_header;
@@ -49,7 +51,8 @@ private:
     QGraphicsSimpleTextItem* m_wikipediaLabel;
     QGraphicsSimpleTextItem* m_currentLabel;
 
-    QGraphicsTextItem* m_wikiPage;
+    QGraphicsProxyWidget* m_wikiPage;
+    QWebView * m_webView;
 
 };
 

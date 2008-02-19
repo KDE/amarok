@@ -127,12 +127,9 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();
 
-
     //m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
     m_serviceMainInfo->setPos( m_theme->elementRect( "main_info" ).topLeft() );
 
-
-    
     QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
     //infoSize.setHeight(  infoSize.height() - 50 );
 

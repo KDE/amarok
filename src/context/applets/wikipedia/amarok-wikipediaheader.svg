@@ -10,15 +10,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="617.14288"
-   height="185.71428"
+   height="345.71429"
    id="svg2581"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
-   sodipodi:docbase="/home/leo/Desktop/amarok/src/context/applets/wikipedia"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/wikipedia"
    sodipodi:docname="amarok-wikipediaheader.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   version="1.0"
-   sodipodi:modified="true">
+   version="1.0">
   <defs
      id="defs2583">
     <linearGradient
@@ -3011,13 +3010,15 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
      inkscape:cx="307.86728"
-     inkscape:cy="-41.014064"
+     inkscape:cy="188.35217"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:window-width="722"
-     inkscape:window-height="566"
-     inkscape:window-x="0"
-     inkscape:window-y="258" />
+     inkscape:current-layer="header"
+     inkscape:window-width="791"
+     inkscape:window-height="590"
+     inkscape:window-x="129"
+     inkscape:window-y="216"
+     height="185.71px"
+     width="617.14288px" />
   <metadata
      id="metadata2586">
     <rdf:RDF>
@@ -3794,18 +3795,18 @@
          height="28.789333"
          width="157.49458" />
       <rect
-         style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:1;fill:#39ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="wikipediainformation"
          y="232.34094"
-         x="-35.428158"
-         height="31.880037"
-         width="550.36896" />
+         x="-53.999588"
+         height="209.02289"
+         width="583.22607" />
       <rect
-         ry="43.67522"
+         ry="81.303108"
          rx="114.01875"
          y="101.64954"
          x="-69.291428"
-         height="185.71428"
+         height="345.71429"
          width="617.14288"
          id="rect3638"
          style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0" />

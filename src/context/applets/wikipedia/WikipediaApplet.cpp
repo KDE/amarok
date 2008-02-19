@@ -19,6 +19,7 @@
 
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
+#include <QPainter>
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
@@ -41,23 +42,25 @@ void WikipediaApplet::init()
     
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
     
-    m_theme = new Context::Svg( "widgets/amarok-wikipedia", this );
-    m_theme->setContentType( Context::Svg::SingleImage );
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height()
-        / (qreal)m_theme->size().width();
-    m_size = m_theme->size();
-    
-    m_header = new Context::Svg( "widgets/amarok-wikipediaheader", this );
+    //m_theme = new Context::Svg( "widgets/amarok-wikipedia", this );
+    //m_theme->setContentType( Context::Svg::SingleImage );
+
+    m_header = new Context::Svg( "widgets/amarok-wikipedia", this );
     m_header->setContentType( Context::Svg::SingleImage );
-    m_header->resize();
-    m_headerAspectRatio = (qreal)m_header->size().height()
-        / (qreal)m_header->size().width();
     
+    //m_theme->resize();
+    m_header->resize();
+    m_aspectRatio = (qreal)m_header->size().height()
+        / (qreal)m_header->size().width();
+    m_size = m_header->size();
+    
+
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
     m_currentLabel = new QGraphicsSimpleTextItem( this );
     
-    m_wikiPage = new QGraphicsTextItem( this );
+    m_webView = new QWebView();
+    m_wikiPage = new QGraphicsProxyWidget( this );
+    m_wikiPage->setWidget( m_webView );
     
     QFont labelFont;
     labelFont.setBold( true );
@@ -69,24 +72,40 @@ void WikipediaApplet::init()
     m_currentLabel->setBrush( Qt::white );
     labelFont.setBold( false );
     m_currentLabel->setFont( labelFont );
-    
-    m_wikiPage->setDefaultTextColor( Qt::white );
+
+    constraintsUpdated();
+
 }
 
 void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
+
+    kDebug() << "WikipediaApplet::constraintsUpdated start";
+    
     prepareGeometryChange();
     if ( constraints & Plasma::SizeConstraint && m_header )
     {
-        QSizeF newsize( contentSize().toSize() );
-        newsize.setHeight( m_headerAspectRatio * newsize.width() );
-        m_header->resize( newsize );
+        m_header->resize(contentSize().toSize());
     }
     
     m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
     m_currentLabel->setPos( m_header->elementRect( "currentlabel" ).topLeft() );
 
+    kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
+
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
+
+    QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
+
+    if ( infoSize.isValid() ) {
+        m_wikiPage->setMinimumSize( infoSize );
+        m_wikiPage->setMaximumSize( infoSize );
+    }
+
+    m_wikiPage->show();
+
+    kDebug() << "m_wikiPage top left: " <<  m_wikiPage->boundingRect().topLeft();
+
 
 }
 
@@ -97,11 +116,7 @@ bool WikipediaApplet::hasHeightForWidth() const
 
 qreal WikipediaApplet::heightForWidth( qreal width ) const
 {
-    if( m_wikiPage )
-        return (width * m_headerAspectRatio) + m_wikiPage->boundingRect().height() + 40;
-    else
-        return 25; // enough for the error text
-    
+    return width * m_aspectRatio;;
 }
 
 
@@ -114,46 +129,41 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     if( data.size() == 0 ) return;
 
     if( data.contains( "message" ) )
-        m_wikiPage->setPlainText( data[ "message" ].toString() );
+        m_webView->setHtml( data[ "message" ].toString() );
     else
     {
         m_currentLabel->setText( data.keys()[ 0 ] ); // set type of data
-        m_wikiPage->setHtml( data[ data.keys()[ 0 ] ].toString() ); // set data
+        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString() ); // set data
     }
-    calculateHeight();
 }
 
 void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
 
-//     m_theme->paint( p, contentsRect, "background" );
-    QRectF headerRect( 0, 0, contentsRect.width(), 0 );
-    headerRect.setHeight( contentsRect.width() * m_headerAspectRatio );
-    m_header->resize( headerRect.size() );
-    m_header->paint( p, headerRect, "header" );
+    kDebug() << "WikipediaApplet::paintInterface start";
+
+   m_header->resize(contentSize().toSize());
+    
+    p->save();
+    m_header->paint( p, contentsRect/*, "header" */);
+    p->restore();
+
+    kDebug() << "1";
+    
+   /* m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
+    
+    QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
+    //infoSize.setHeight(  infoSize.height() - 50 );
+
+    kDebug() << "2";
+    
+    m_wikiPage->setMinimumSize( infoSize );
+    m_wikiPage->setMaximumSize( infoSize );
+    m_wikiPage->show();*/
+
+    kDebug() << "WikipediaApplet::paintInterface end";
 
 }
 
-void WikipediaApplet::calculateHeight()
-{
-    qreal textHeight = m_wikiPage->boundingRect().height();
-    qreal boxHeight = m_theme->size().height() - m_header->size().height();
-
-    if( textHeight > boxHeight ) // too short
-    {
-        qreal expandBy = textHeight - boxHeight;
-        m_size.setHeight( m_size.height() + expandBy );
-    } /*else if( lyricsheight < m_theme->elementRect( "lyrics" ).height() )
-    { // too long
-        qreal shrinkBy = m_theme->elementRect( "lyrics" ).height() - lyricsheight;
-        debug() << "shrinking by:" << shrinkBy
-            << "final height:" << m_size.height() - shrinkBy;
-        m_size.setHeight( m_size.height() - shrinkBy );
-    }*/
-
-    setContentSize( m_size );
-//     emit changed();
-//     debug() << "newheight:" << m_size.height();
-}
 #include "WikipediaApplet.moc"
