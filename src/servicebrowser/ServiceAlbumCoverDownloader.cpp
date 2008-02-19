@@ -81,7 +81,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
 
 
     if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) ) {
-        debug() << "Image exists in cache";
+        //debug() << "Image exists in cache";
         img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
         return QPixmap::fromImage( img );
     }
