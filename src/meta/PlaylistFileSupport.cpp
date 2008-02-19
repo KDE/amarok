@@ -28,6 +28,7 @@
 
 
 #include <KLocale>
+#include <KTemporaryFile>
 #include <KUrl>
 
 #include <QDir>
@@ -58,14 +59,56 @@ loadPlaylist( const KUrl &url )
 {
     DEBUG_BLOCK
 
-    QFile file( url.path() );
+    QFile file;
     PlaylistPtr playlist;
 
-    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        debug() << "could not read file " << url.path();
-        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
-        return playlist;
+    if ( url.isLocalFile() ){
+
+        debug() << "local file";
+
+        file.setFileName( url.path() );
+        file.open( QFile::ReadOnly );
+
+        if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+        {
+            debug() << "could not read file " << url.path();
+            Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
+            return playlist;
+        }
+    } else {
+
+        debug() << "remote file: " << url;
+
+        //FIXME: for now, just do a blocking download... Someone please come up with a better way...
+
+        
+        KTemporaryFile tempFile;
+
+        tempFile.setSuffix(  url.url().right(url.url().length() - url.url().lastIndexOf(".") ) );
+        tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
+        if( !tempFile.open() )
+        {
+            return playlist; //error
+        }
+
+
+        QString tempFileName = tempFile.fileName();
+        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite );
+
+        if ( !job->exec() )
+        {
+            debug() << "error";
+            job->deleteLater();
+            return playlist;
+        }
+        else
+        {
+            debug() << "gotcha: " << tempFileName;
+            job->deleteLater();
+            file.setFileName( tempFileName );
+            file.open( QFile::ReadOnly );
+        }
+
     }
 
     Format format = getFormat( file.fileName() );

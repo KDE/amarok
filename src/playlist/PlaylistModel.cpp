@@ -28,6 +28,7 @@
 #include "enginecontroller.h"
 #include "PlaylistItem.h"
 #include "PlaylistGraphicsView.h"
+#include "PlaylistFileSupport.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
 #include "ContextStatusBar.h"
@@ -698,12 +699,34 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
     {
         if( track )
         {
-            track->subscribe( this );
-            if( track->album() )
-                track->album()->subscribe( this );
 
-            m_items.insert( row + i, new Item( track ) );
-            i++;
+            if ( Meta::getFormat( track->url() ) != Meta::NotPlaylist ) {
+
+                debug() << "caught a playlist masquerading as a track, url: " << track->url();
+                Meta::PlaylistPtr playlist = Meta::loadPlaylist( track->url() );
+                if ( playlist ) {
+                    registerPlaylist( playlist );
+                    foreach( Meta::TrackPtr plTrack, playlist->tracks() ) {
+                        debug() << "got a track from this playlist: " << plTrack->url();
+                        plTrack->subscribe( this );
+                        if( plTrack->album() )
+                            plTrack->album()->subscribe( this );
+
+                        m_items.insert( row + i, new Item( plTrack ) );
+                        i++;
+                    }
+                }
+
+            } else {
+                
+                track->subscribe( this );
+                if( track->album() )
+                    track->album()->subscribe( this );
+
+                m_items.insert( row + i, new Item( track ) );
+                i++;
+
+            }
         }
     }
 
