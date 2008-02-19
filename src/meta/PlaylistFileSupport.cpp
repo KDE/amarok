@@ -84,7 +84,7 @@ loadPlaylist( const KUrl &url )
         
         KTemporaryFile tempFile;
 
-        tempFile.setSuffix(  url.url().right(url.url().length() - url.url().lastIndexOf(".") ) );
+        tempFile.setSuffix(  "." + Amarok::extension( url.url() ) );
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
         {
