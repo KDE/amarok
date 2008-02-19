@@ -68,14 +68,20 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
 
 
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+
+    //make sure that this dir exists
+    if ( !cacheCoverDir.exists() ) {
+        cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
+    }
+    
     if ( size <= 1 )
         size = AmarokConfig::coverPreviewSize();
     QString sizeKey = QString::number( size ) + '@';
     QImage img;
 
 
-    if( cacheCoverDir.exists( sizeKey + coverName ) ) {
-        //debug() << "Image exists in cache";
+    if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) ) {
+        debug() << "Image exists in cache";
         img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
         return QPixmap::fromImage( img );
     }
