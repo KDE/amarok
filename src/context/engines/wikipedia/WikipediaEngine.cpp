@@ -117,14 +117,14 @@ void WikipediaEngine::wikiResult( KJob* job )
         return; //not the right job, so let's ignore it
 
 
-    debug() << "So far so good!";
+    //debug() << "So far so good!";
 
     
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     m_wiki = QString( storedJob->data() );
 
 
-    debug() << "reply: " << m_wiki;
+    //debug() << "reply: " << m_wiki;
     
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
     if ( m_wiki.contains( "charset=utf-8"  ) ) {
@@ -155,7 +155,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     }
 
 
-    debug() << "Even better";
+    //debug() << "Even better";
     
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( "\n", " " );
@@ -230,7 +230,7 @@ void WikipediaEngine::wikiResult( KJob* job )
 //     debug() << "sending wiki page:" << m_wikiHTMLSource;
     setData( "wikipedia", selection(), m_wikiHTMLSource );
 
-    debug() << m_wikiHTMLSource;
+    //debug() << m_wikiHTMLSource;
     
     m_wikiJob = 0;
 }
