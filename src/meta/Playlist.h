@@ -49,6 +49,9 @@ namespace Meta
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
 
+            /**override showing just the filename */
+            void setName( QString name ) { m_name = name; }
+
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
 
@@ -56,6 +59,7 @@ namespace Meta
                     { if( observer ) m_observers.insert( observer ); };
             virtual void unsubscribe( PlaylistObserver *observer )
                     { m_observers.remove( observer ); };
+
 
             /* the following has been copied from Meta.h
             * it is my hope that we can integrate Playlists
@@ -101,6 +105,7 @@ namespace Meta
 
         protected:
             QSet<Meta::PlaylistObserver*> m_observers;
+            QString m_name;
     };
 
 }

@@ -37,6 +37,7 @@ XSPFPlaylist::XSPFPlaylist()
     : Meta::Playlist()
     , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
 {
+    m_name = m_url.fileName();
     QDomElement root = createElement( "playlist" );
 
     root.setAttribute( "version", 1 );
@@ -53,6 +54,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
+    m_name = m_url.fileName();
 
     //check if file is local or remote
     if ( m_url.isLocalFile() )

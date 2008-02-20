@@ -37,6 +37,7 @@ PLSPlaylist::PLSPlaylist()
     : Playlist()
     , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
 {
+    m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( TrackList tracks )
@@ -44,6 +45,7 @@ PLSPlaylist::PLSPlaylist( TrackList tracks )
     , m_tracks( tracks )
     , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
 {
+    m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
@@ -52,6 +54,8 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
+
+    m_name = m_url.fileName();
 
     //check if file is local or remote
     if ( m_url.isLocalFile() )

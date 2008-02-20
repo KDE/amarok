@@ -36,6 +36,7 @@ M3UPlaylist::M3UPlaylist()
     : Playlist()
     , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
 {
+    m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
@@ -43,6 +44,7 @@ M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
     , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
     , m_tracks( tracks )
 {
+    m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( const KUrl &url )
@@ -51,6 +53,7 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
+    m_name = m_url.fileName();
 
     //check if file is local or remote
     if ( m_url.isLocalFile() )
