@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CURRENT_TRACK_APPLET_H
-#define CURRENT_TRACK_APPLET_H
+#ifndef SERVICE_INFO_APPLET_H
+#define SERVICE_INFO_APPLET_H
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>

@@ -45,7 +45,7 @@ namespace The {
     Playlist::GraphicsView*          playlistView();
     AMAROK_EXPORT PlaylistManager*   playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
-    ServiceInfoProxy *               serviceInfoProxy();
+    AMAROK_EXPORT ServiceInfoProxy * serviceInfoProxy();
     AMAROK_EXPORT SvgTinter *        svgTinter();
     AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
 }

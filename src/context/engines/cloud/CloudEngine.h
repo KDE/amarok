@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,47 +18,55 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOPROXY_H
-#define SERVICEINFOPROXY_H
+#ifndef AMAROK_CLOUD_ENGINE
+#define AMAROK_CLOUD_ENGINE
 
-#include "amarok_export.h"
+#include "ContextObserver.h"
 #include "ServiceInfoObserver.h"
-
-#include <QVariant>
-#include <QSet>
-
+#include "context/DataEngine.h"
 
 /**
-A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "THE" namespace for easy access
+    This class provides context information realted to the currently active service 
 
-	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    There is no data source: if you connect to the engine, you immediately
+    start getting updates when there is data. 
+
+    The key of the data is "service".
+    The data is a QMap with the keys
+        * service_name - the name of the currently running service
+ 
+
 */
-class AMAROK_EXPORT ServiceInfoProxy{
+
+class CloudEngine : public Context::DataEngine,
+                      public ServiceInfoObserver,
+                      public ContextObserver
+{
+    Q_OBJECT
+
+    
 public:
 
-    static /*AMAROK_EXPORT*/ ServiceInfoProxy * instance();
-    ~ServiceInfoProxy();
+    CloudEngine( QObject* parent, const QList<QVariant>& args );
+    ~CloudEngine();
 
-    void /*AMAROK_EXPORT*/ subscribe( ServiceInfoObserver *observer );
-    void /*AMAROK_EXPORT*/ subscribeForCloud( ServiceInfoObserver *observer );
-    void /*AMAROK_EXPORT*/ unsubscribe( ServiceInfoObserver *observer );
+    QStringList sources() const;
+    void message( const Context::ContextState& state );
 
-    void setInfo( QVariantMap infoMap );
-    QVariantMap /*AMAROK_EXPORT*/ info(); // info about the service
-    QVariantMap /*AMAROK_EXPORT*/ cloud(); //cloud view for the service
+    void serviceInfoChanged( QVariantMap infoMap );
 
+protected:
+    bool sourceRequested( const QString& name );
+    
 private:
+    void update();
 
-    ServiceInfoProxy();
-    void notifyObservers( QVariantMap infoMap ) const;
-    void notifyCloudObservers( QVariantMap cloudMap ) const;
-    QSet<ServiceInfoObserver *> m_observers;
-    QSet<ServiceInfoObserver *> m_cloudObservers;
-
-    static ServiceInfoProxy * m_instance;
-
-    QVariantMap m_storedInfo;
+    QStringList m_sources;
+    bool m_requested;
     QVariantMap m_storedCloud;
+
 };
+
+K_EXPORT_AMAROK_DATAENGINE( service, CloudEngine )
 
 #endif

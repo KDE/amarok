@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,7 +20,7 @@
 
 
 
-#include "ServiceEngine.h"
+#include "CloudEngine.h"
 
 #include "amarok.h"
 #include "debug.h"
@@ -33,29 +33,29 @@
 
 using namespace Context;
 
-ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
+CloudEngine::CloudEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , m_requested( true )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK
     m_sources = QStringList();
-    m_sources << "service";
+    m_sources << "cloud";
 
-    The::serviceInfoProxy()->subscribe( this );
+    The::serviceInfoProxy()->subscribeForCloud( this );
 }
 
-ServiceEngine::~ ServiceEngine()
+CloudEngine::~ CloudEngine()
 {
     The::serviceInfoProxy()->unsubscribe( this );
 }
 
-QStringList ServiceEngine::sources() const
+QStringList CloudEngine::sources() const
 {
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
-bool ServiceEngine::sourceRequested( const QString& name )
+bool CloudEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
@@ -65,32 +65,33 @@ bool ServiceEngine::sourceRequested( const QString& name )
     return true;
 }
 
-void ServiceEngine::message( const ContextState& state )
+void CloudEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK;
     if( state == Current && m_requested ) {
-        m_storedInfo = The::serviceInfoProxy()->info();
+        m_storedCloud = The::serviceInfoProxy()->cloud();
         update();
     }
 }
 
 
-void ServiceEngine::serviceInfoChanged(QVariantMap infoMap)
+void CloudEngine::serviceInfoChanged(QVariantMap infoMap)
 {
-    m_storedInfo = infoMap;
+    m_storedCloud = infoMap;
     update();
 }
 
-void ServiceEngine::update()
+void CloudEngine::update()
 {
     DEBUG_BLOCK;
-    setData( "service", "service_name", m_storedInfo["service_name"] );
-    setData( "service", "main_info", m_storedInfo["main_info"] );
+    setData( "cloud", "cloud_name", m_storedCloud["cloud_name"] );
+    setData( "cloud", "cloud_strings", m_storedCloud["cloud_strings"] );
+    setData( "cloud", "cloud_weights", m_storedCloud["cloud_weights"] );
 
 }
 
 
 
-#include "ServiceEngine.moc"
+#include "CloudEngine.moc"
 
 

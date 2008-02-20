@@ -33,6 +33,23 @@ ServiceInfoProxy * ServiceInfoProxy::instance()
 
 ServiceInfoProxy::ServiceInfoProxy()
 {
+
+    
+    DEBUG_BLOCK;
+    //for testing
+
+
+    QList<QVariant> strings;
+    QList<QVariant> weights;
+
+    strings << "This" << "is" << "just" << "a" << "very" << "small" << "and" << "quite" << "silly" << "defalt" << "text"
+            << "as" << "I" << "currently" << "have" <<  "nothing" << "better" << "to" << "show";
+    
+    weights << 10 << 4 << 8 << 2 << 6 << 5 << 10 << 9 << 3 << 1 << 3 << 5 << 7 << 9 << 3 << 2 << 10 << 6 << 4;
+
+    m_storedCloud["cloud_name"] = QVariant( "test cloud" );
+    m_storedCloud["cloud_strings"] = QVariant( strings );
+    m_storedCloud["cloud_weights"] = QVariant( weights );
 }
 
 ServiceInfoProxy::~ServiceInfoProxy()
@@ -43,13 +60,25 @@ ServiceInfoProxy::~ServiceInfoProxy()
 void ServiceInfoProxy::subscribe(ServiceInfoObserver * observer)
 {
     DEBUG_BLOCK;
-    if( observer )
+    if( observer ) {
         m_observers.insert( observer );
+        observer->serviceInfoChanged( m_storedInfo );
+    }
+}
+
+void ServiceInfoProxy::subscribeForCloud(ServiceInfoObserver * observer)
+{
+    DEBUG_BLOCK;
+    if( observer ) {
+        m_cloudObservers.insert( observer );
+        observer->serviceInfoChanged( m_storedCloud );
+    }
 }
 
 void ServiceInfoProxy::unsubscribe(ServiceInfoObserver * observer)
 {
     m_observers.remove( observer );
+    m_cloudObservers.remove( observer );
 }
 
 void ServiceInfoProxy::notifyObservers(QVariantMap infoMap) const
@@ -58,11 +87,17 @@ void ServiceInfoProxy::notifyObservers(QVariantMap infoMap) const
         observer->serviceInfoChanged( infoMap );
 }
 
+void ServiceInfoProxy::notifyCloudObservers(QVariantMap cloudMap) const
+{
+    foreach( ServiceInfoObserver *observer, m_cloudObservers )
+        observer->serviceInfoChanged( cloudMap );
+}
+
 void ServiceInfoProxy::setInfo(QVariantMap infoMap)
 {
     DEBUG_BLOCK;
     m_storedInfo = infoMap;
-    notifyObservers( m_storedInfo );
+    ( m_storedInfo );
 }
 
 QVariantMap ServiceInfoProxy::info()
@@ -70,9 +105,20 @@ QVariantMap ServiceInfoProxy::info()
     return m_storedInfo;
 }
 
+QVariantMap ServiceInfoProxy::cloud()
+{
+    return m_storedCloud;
+}
+
 
 namespace The {
-    ServiceInfoProxy* serviceInfoProxy() { return ServiceInfoProxy::instance(); }
+    AMAROK_EXPORT ServiceInfoProxy* serviceInfoProxy() { return ServiceInfoProxy::instance(); }
 }
+
+
+
+
+
+
 
 
