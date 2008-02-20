@@ -223,7 +223,49 @@ Model::insertTrack( int row, Meta::TrackPtr track )
 void
 Model::insertTracks( int row, Meta::TrackList tracks )
 {
-    m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
+    //check if any tracks in this list ha a url that is actuall a playlist
+    bool containsPlaylists = false;
+    QList<int> playlistIndices;
+    int index = 0;
+    foreach( Meta::TrackPtr track, tracks ) {
+
+        if( The::playlistManager()->canExpand( track ) ) {
+            containsPlaylists = true;
+            playlistIndices.append( index );
+            index++;
+        }
+    }
+
+
+    if ( !containsPlaylists ) {
+         //if its all plain tracks, do the easy thing
+        m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
+    } else {
+        //split it up, but add as much as possible as groups to keep the undo stuff usable
+
+        int lastIndex = 0;
+        int offset = 0;
+
+        foreach( int playlistIndex, playlistIndices ) {
+
+            if( ( playlistIndex  - lastIndex ) > 0 ) {
+                m_undoStack->push( new AddTracksCmd( 0, row + lastIndex + offset, tracks.mid( lastIndex, playlistIndex  - lastIndex ) ) );
+                row = row + ( playlistIndex  - lastIndex );
+            }
+
+            Meta::PlaylistPtr playlist =  The::playlistManager()->expand( tracks.at( playlistIndex ) );
+            m_undoStack->push( new AddTracksCmd( 0, row + playlistIndex + offset, playlist->tracks() ) );
+            offset += playlist->tracks().size();
+
+            lastIndex = playlistIndex + 1;
+        }
+        
+
+    }
+
+
+
+    
 }
 
 bool
@@ -700,33 +742,12 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
         if( track )
         {
 
-            if ( Meta::getFormat( track->url() ) != Meta::NotPlaylist ) {
+            track->subscribe( this );
+            if( track->album() )
+                track->album()->subscribe( this );
 
-                debug() << "caught a playlist masquerading as a track, url: " << track->url();
-                Meta::PlaylistPtr playlist = Meta::loadPlaylist( track->url() );
-                if ( playlist ) {
-                    registerPlaylist( playlist );
-                    foreach( Meta::TrackPtr plTrack, playlist->tracks() ) {
-                        debug() << "got a track from this playlist: " << plTrack->url();
-                        plTrack->subscribe( this );
-                        if( plTrack->album() )
-                            plTrack->album()->subscribe( this );
-
-                        m_items.insert( row + i, new Item( plTrack ) );
-                        i++;
-                    }
-                }
-
-            } else {
-                
-                track->subscribe( this );
-                if( track->album() )
-                    track->album()->subscribe( this );
-
-                m_items.insert( row + i, new Item( track ) );
-                i++;
-
-            }
+            m_items.insert( row + i, new Item( track ) );
+            i++;
         }
     }
 

@@ -93,6 +93,14 @@ class PlaylistManager : public QObject
 
         bool save( Meta::TrackList tracks, const QString &location );
 
+
+        //the next two functions are needed to support some services that have no othe rway of presenting data to the user
+        //than wrapping the url to a playlist in a track.
+
+        bool canExpand( Meta::TrackPtr track );
+        Meta::PlaylistPtr expand( Meta::TrackPtr track );
+
+
     signals:
         void updated();
         void categoryAdded( int category );

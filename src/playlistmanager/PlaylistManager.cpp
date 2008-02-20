@@ -215,3 +215,15 @@ PlaylistManager::save( Meta::TrackList tracks,
 }
 
 #include "PlaylistManager.moc"
+
+
+bool PlaylistManager::canExpand( Meta::TrackPtr track )
+{
+    return Meta::getFormat( track->url() ) != Meta::NotPlaylist;
+}
+
+Meta::PlaylistPtr PlaylistManager::expand( Meta::TrackPtr track )
+{
+   //this should really be made asyncrhonous
+   return Meta::loadPlaylist( track->url() );
+}
