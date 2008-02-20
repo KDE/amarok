@@ -55,7 +55,7 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     DEBUG_BLOCK
-    setDrawStandardBackground( false );
+    setDrawStandardBackground( true );
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
