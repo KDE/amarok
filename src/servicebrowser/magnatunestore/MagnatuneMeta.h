@@ -45,6 +45,9 @@ public:
     QString lofiUrl();
     void setLofiUrl( const QString &url );
 
+    QList<QString> moods();
+    void setMoods(  QList<QString> moods );
+
     void setDownloadMembership();
 
     virtual QList< QAction *> customActions();
@@ -57,6 +60,7 @@ public:
 private:
     QString m_lofiUrl;
     bool m_downloadMembership;
+    QList<QString> m_moods;
 
 };
 

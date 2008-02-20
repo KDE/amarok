@@ -28,7 +28,7 @@
 
 
 /**
-A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "THE" namespace for easy access
+A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "The" namespace for easy access
 
 	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */

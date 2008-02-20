@@ -217,6 +217,17 @@ QPixmap Meta::MagnatuneTrack::emblem()
 }
 
 
+QList< QString > Meta::MagnatuneTrack::moods()
+{
+    return m_moods;
+}
+
+void Meta::MagnatuneTrack::setMoods(QList< QString > moods)
+{
+    m_moods = moods;
+}
+
+
 //// MagnatuneArtist ////
 
 MagnatuneArtist::MagnatuneArtist( const QString &name )
@@ -368,11 +379,6 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
-
-
-
-
-
 
 
 

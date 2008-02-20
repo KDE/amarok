@@ -279,7 +279,11 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
         ( *it )->setAlbumId( m_pCurrentAlbum->id() );
         ( *it )->setArtistId( artistId );
-        m_dbHandler->insertTrack( ( *it ) );
+        int trackId = m_dbHandler->insertTrack( ( *it ) );
+
+
+        m_dbHandler->insertMoods( trackId, ( *it )->moods() );
+        
         m_nNumberOfTracks++;
     }
 
@@ -288,7 +292,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
     foreach( const QString &genreName, magnatuneGenres ) {
 
-        debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName;
+        //debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName;
         ServiceGenre currentGenre( genreName );
         currentGenre.setAlbumId( albumId );
         m_dbHandler->insertGenre( &currentGenre );
@@ -359,14 +363,14 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
         n = n.nextSibling();
     }
 
-    //pCurrentTrack->setMoods( m_currentTrackMoodList );
+    pCurrentTrack->setMoods( m_currentTrackMoodList );
     m_currentAlbumTracksList.append( pCurrentTrack );
 
 }
 
 void MagnatuneXmlParser::parseMoods( const QDomElement &e )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QDomNode n = e.firstChild();
 
     QDomElement childElement;
@@ -383,6 +387,7 @@ void MagnatuneXmlParser::parseMoods( const QDomElement &e )
 
             if ( sElementName == "mood" )
             {
+                debug() << "mood: " <<  childElement.text();
                 m_currentTrackMoodList.append( childElement.text() );
             }
             else
