@@ -20,12 +20,9 @@
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" colspan="2" >
-    <widget class="Q3GroupBox" name="generalBox" >
+    <widget class="QGroupBox" name="generalBox" >
      <property name="title" >
       <string>General Options</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
       <property name="spacing" >
@@ -346,12 +343,9 @@
     </widget>
    </item>
    <item row="1" column="0" >
-    <widget class="Q3GroupBox" name="groupBox2" >
+    <widget class="QGroupBox" name="groupBox2" >
      <property name="title" >
       <string>Playlist-Window Options</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QVBoxLayout" >
       <property name="spacing" >
@@ -437,12 +431,9 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="2" >
-    <widget class="Q3GroupBox" name="moodFrame" >
+    <widget class="QGroupBox" name="moodFrame" >
      <property name="title" >
       <string>Moodbar</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="topMargin" >
@@ -626,9 +617,8 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
+   <class>QGroupBox</class>
+   <header>QGroupBox</header>
    <container>1</container>
   </customwidget>
   <customwidget>
