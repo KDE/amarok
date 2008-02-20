@@ -43,6 +43,7 @@ public:
     void /*AMAROK_EXPORT*/ unsubscribe( ServiceInfoObserver *observer );
 
     void setInfo( QVariantMap infoMap );
+    void setCloud( QVariantMap cloudMap );
     QVariantMap /*AMAROK_EXPORT*/ info(); // info about the service
     QVariantMap /*AMAROK_EXPORT*/ cloud(); //cloud view for the service
 

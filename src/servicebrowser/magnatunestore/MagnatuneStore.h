@@ -144,6 +144,9 @@ private slots:
      */
     void itemSelected( CollectionTreeItem * selectedItem );
 
+
+    void moodMapReady( QMap<QString, int> map );
+
 private:
     /**
      * Helper function that initializes the button panel below the list view

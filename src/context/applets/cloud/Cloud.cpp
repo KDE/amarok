@@ -41,6 +41,8 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
 
+    m_initialized = false;
+
     m_maxFontSize = 30;
     m_minFontSize = 3;
 
@@ -100,28 +102,9 @@ void Cloud::constraintsUpdated( Plasma::Constraints constraints )
     
     m_cloudName->setPos( m_theme->elementRect( "cloud_name" ).topLeft() + QPointF ( offsetX, 0 ) );
 
+    drawCloud();
 
-    //clear all and start over
-    m_maxHeightInFirstLine = 0.0;
-    
-    while ( !m_textItems.isEmpty() ) {
-        delete m_textItems.takeFirst();
-    }
-        
-    m_runningY = m_theme->elementRect( "cloud_name" ).topLeft().y();
-    
-    if ( m_strings.size() == m_weights.size() ) {
-        int index = 0;
-        foreach( QVariant stringVariant, m_strings ) {
-            QString string = stringVariant.toString();
-            int weight = m_weights.at( index ).toInt();
-            index++;
-
-            kDebug() << "Adding string '" << string << "' with weight " << weight;
-            addText( string, weight );
-        }
-        adjustCurrentLinePos();
-    }
+    m_initialized = true;
 
 }
 
@@ -133,10 +116,17 @@ void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     if( data.size() == 0 ) return;
 
     kDebug() << "got data from engine: " << data[ "cloud_name" ].toString();
-    //m_cloudName->setText( data[ "cloud_name" ].toString() );
+    
 
+    //kDebug() << "got new data" << infoMap;
+    
     m_strings = data[ "cloud_strings" ].toList();
     m_weights = data[ "cloud_weights" ].toList();
+
+    if ( m_initialized ) {
+        m_cloudName->setText( data[ "cloud_name" ].toString() );
+        drawCloud();
+    }
 
 }
 
@@ -216,7 +206,7 @@ void Cloud::addText( QString text, int weight )
     //item->setParentItem( this );
     //item->connect ( item, SIGNAL( clicked( QString ) ), receiver, slot );
     QFont font = item->font();
-    font.setPointSize( weight * 2 + 6 );
+    font.setPointSize( weight * 1.5 + 10 );
     item->setFont( font );
 
     QRectF itemRect = item->boundingRect();
@@ -263,6 +253,8 @@ void Cloud::adjustCurrentLinePos()
     //First we run through the list to get the max height of an item
     // and the total width of all items.
     foreach( currentItem, m_currentLineItems ) {
+        //currentItem->setTextWidth ( -1 ); //do not break lines, ever!
+        //currentItem->adjustSize();
         currentItemRect = currentItem->boundingRect();
         totalWidth += currentItemRect.width();
         if ( currentItemRect.height() > maxHeight ) maxHeight = currentItemRect.height();
@@ -287,15 +279,20 @@ void Cloud::adjustCurrentLinePos()
         currentItem = m_currentLineItems.takeFirst();
         currentItemRect = currentItem->boundingRect();
         offsetY = ( (maxHeight - currentItemRect.height()) / 2 );
-        currentItem->setPos( QPointF( currentX + offsetX, m_runningY + offsetY + m_maxHeightInFirstLine ) );
-        currentX += currentItemRect.width();
+
+        //untill we get a scroll area, dont print beyound the bottom of the rect
+        if ( m_runningY + offsetY + m_maxHeightInFirstLine + currentItemRect.height() >  m_theme->elementRect( "cloud" ).bottomLeft().y() ) {
+            m_textItems.remove( currentItem );
+            delete currentItem;
+        } else {
+            currentItem->setPos( QPointF( currentX + offsetX, m_runningY + offsetY + m_maxHeightInFirstLine ) );
+            currentX += currentItemRect.width();
+        }
     }
 
     m_runningY += maxHeight;
 
 }
-
-
 
 
 
@@ -353,6 +350,86 @@ void CloudTextItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     debug() << "Mouse clicked!! " << endl;
     emit( clicked( toPlainText() ) );
+}
+
+void Cloud::drawCloud()
+{
+        //clear all and start over
+    m_maxHeightInFirstLine = 0.0;
+    
+    while ( !m_textItems.isEmpty() ) {
+        delete m_textItems.takeFirst();
+    }
+
+
+    //make the cloud map valuse sane:
+    cropAndNormalize( 1, 40 );
+        
+    m_runningY = m_theme->elementRect( "cloud_name" ).topLeft().y();
+    
+    if ( m_strings.size() == m_weights.size() ) {
+        int index = 0;
+        foreach( QVariant stringVariant, m_strings ) {
+            QString string = stringVariant.toString();
+            int weight = m_weights.at( index ).toInt();
+            index++;
+
+            kDebug() << "Adding string '" << string << "' with weight " << weight;
+            addText( string, weight );
+        }
+        adjustCurrentLinePos();
+    }
+}
+
+void Cloud::cropAndNormalize( int minCount, int maxCount )
+{
+
+    int min = 100000;
+    int max = 0;
+    
+    foreach( QVariant weight, m_weights ) {
+
+        if ( weight.toInt() < min )
+            min = weight.toInt();
+        if (  weight.toInt() > max )
+            max = weight.toInt();
+    }
+
+    if ( min < minCount )
+        min = minCount;
+    if ( max > maxCount )
+        max = maxCount;
+
+    //determine scale factor
+    int range = max - min;
+    int scaleFactor = range / 10;
+
+    if ( scaleFactor == 0 )
+        scaleFactor = 1;
+
+    int index = 0;
+
+    //meh, opimize later of needed...
+    QList<QVariant> m_newStrings;
+    QList<QVariant> m_newWeights;
+    
+    foreach( QVariant stringVariant, m_strings ) {
+        int weight = m_weights.at( index ).toInt();
+        if ( ( weight >= minCount ) && ( weight < maxCount ) ) {
+            m_newStrings.append( stringVariant.toString() );
+            m_newWeights.append( weight / scaleFactor );
+        } else if ( weight > maxCount ) {
+            m_newStrings.append( stringVariant.toString() );
+            m_newWeights.append( maxCount / scaleFactor );
+        }
+        
+        index++;
+    }
+
+    m_strings = m_newStrings;
+    m_weights = m_newWeights;
+
+    
 }
 
 #include "Cloud.moc"

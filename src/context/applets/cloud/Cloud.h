@@ -95,6 +95,10 @@ private:
 
     void addText(QString text, int weight );
 
+    void cropAndNormalize( int minCount, int maxCount );
+
+    void drawCloud();
+
      /**
      * Adjusts the current line in the cloud so all ellements are aligned vertically
      * and the whole line is centered in the cloud box
@@ -127,6 +131,8 @@ private:
 
     QList<QVariant> m_strings;
     QList<QVariant> m_weights;
+
+    bool m_initialized;
 
 
 

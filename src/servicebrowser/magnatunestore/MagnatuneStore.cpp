@@ -25,8 +25,10 @@
 #include "ContextStatusBar.h"
 #include "debug.h"
 #include "MagnatuneConfig.h"
+#include "MagnatuneDatabaseWorker.h"
 #include "magnatuneinfoparser.h"
 #include "playlist/PlaylistModel.h"
+#include "ServiceInfoProxy.h"
 #include "ServiceSqlRegistry.h"
 #include "TheInstances.h"
 
@@ -450,6 +452,12 @@ void MagnatuneStore::polish( )
     generateWidgetInfo( infoString );
 
 
+    //get a mood map we can show to the cloud view
+
+    MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
+    databaseWorker->fetchMoodMap();
+    connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
+    ThreadManager::instance() ->queueJob( databaseWorker );
 
 
 }
@@ -510,6 +518,27 @@ void MagnatuneStore::setMembership(const QString & type, const QString & usernam
     m_username = username;
     m_password = password;
     
+}
+
+void MagnatuneStore::moodMapReady(QMap< QString, int > map)
+{
+
+    QVariantMap variantMap;
+    QList<QVariant> strings;
+    QList<QVariant> weights;
+
+    foreach( QString key, map.keys() ) {
+    
+        strings << key;
+        weights << map.value( key );
+
+    }
+
+    variantMap["cloud_name"] = QVariant( "Magnatune Moods" );
+    variantMap["cloud_strings"] = QVariant( strings );
+    variantMap["cloud_weights"] = QVariant( weights );
+    
+    The::serviceInfoProxy()->setCloud( variantMap );
 }
 
 

@@ -81,13 +81,13 @@ void ServiceInfoProxy::unsubscribe(ServiceInfoObserver * observer)
     m_cloudObservers.remove( observer );
 }
 
-void ServiceInfoProxy::notifyObservers(QVariantMap infoMap) const
+void ServiceInfoProxy::notifyObservers( QVariantMap infoMap ) const
 {
     foreach( ServiceInfoObserver *observer, m_observers )
         observer->serviceInfoChanged( infoMap );
 }
 
-void ServiceInfoProxy::notifyCloudObservers(QVariantMap cloudMap) const
+void ServiceInfoProxy::notifyCloudObservers( QVariantMap cloudMap) const
 {
     foreach( ServiceInfoObserver *observer, m_cloudObservers )
         observer->serviceInfoChanged( cloudMap );
@@ -97,7 +97,14 @@ void ServiceInfoProxy::setInfo(QVariantMap infoMap)
 {
     DEBUG_BLOCK;
     m_storedInfo = infoMap;
-    ( m_storedInfo );
+    notifyObservers( m_storedInfo );
+}
+
+void ServiceInfoProxy::setCloud(QVariantMap cloudMap)
+{
+    DEBUG_BLOCK;
+    m_storedCloud = cloudMap;
+    notifyCloudObservers( m_storedCloud );
 }
 
 QVariantMap ServiceInfoProxy::info()
@@ -114,6 +121,8 @@ QVariantMap ServiceInfoProxy::cloud()
 namespace The {
     AMAROK_EXPORT ServiceInfoProxy* serviceInfoProxy() { return ServiceInfoProxy::instance(); }
 }
+
+
 
 
 
