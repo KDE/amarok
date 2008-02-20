@@ -3,7 +3,7 @@
 <svg
    xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +14,13 @@
    height="600.00006"
    id="svg11068"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.45+devel"
    sodipodi:docname="amarok-wallpaper.svg"
-   sodipodi:docbase="/home/amarok-dev/amarok/src/themes/context/default/widgets"
+   sodipodi:docbase="/home/lee/Work/amarok"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <sodipodi:namedview
      inkscape:window-height="972"
-     inkscape:window-width="1670"
+     inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -36,7 +36,8 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg11068"
-     inkscape:showpageshadow="false" />
+     inkscape:showpageshadow="false"
+     showgrid="false" />
   <metadata
      id="metadata1076">
     <rdf:RDF>
