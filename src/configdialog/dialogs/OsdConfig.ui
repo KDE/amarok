@@ -48,33 +48,21 @@
       </spacer>
      </item>
      <item>
-      <widget class="Q3GroupBox" name="mainBox" >
+      <widget class="QGroupBox" name="mainBox" >
        <property name="title" >
         <string/>
-       </property>
-       <property name="frameShape" >
-        <enum>Q3GroupBox::NoFrame</enum>
        </property>
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
         </property>
         <item>
-         <widget class="Q3GroupBox" name="fontBox" >
+         <widget class="QGroupBox" name="fontBox" >
           <property name="title" >
            <string>&amp;Font</string>
           </property>
           <property name="flat" >
            <bool>false</bool>
-          </property>
-          <property name="frameShape" >
-           <enum>Q3GroupBox::GroupBoxPanel</enum>
-          </property>
-          <property name="frameShadow" >
-           <enum>Q3GroupBox::Sunken</enum>
-          </property>
-          <property name="lineWidth" >
-           <number>1</number>
           </property>
           <layout class="QVBoxLayout" >
            <item>
@@ -88,7 +76,7 @@
          </widget>
         </item>
         <item>
-         <widget class="Q3GroupBox" name="groupBox9" >
+         <widget class="QGroupBox" name="groupBox9" >
           <property name="title" >
            <string>C&amp;olors</string>
           </property>
@@ -114,7 +102,7 @@
              <item>
               <layout class="QHBoxLayout" >
                <item>
-                <widget class="Q3GroupBox" name="colorsBox" >
+                <widget class="QGroupBox" name="colorsBox" >
                  <property name="enabled" >
                   <bool>false</bool>
                  </property>
@@ -123,9 +111,6 @@
                  </property>
                  <property name="flat" >
                   <bool>false</bool>
-                 </property>
-                 <property name="frameShape" >
-                  <enum>Q3GroupBox::NoFrame</enum>
                  </property>
                  <layout class="QGridLayout" >
                   <property name="margin" >
@@ -242,7 +227,7 @@
          </widget>
         </item>
         <item>
-         <widget class="Q3GroupBox" name="groupBox22" >
+         <widget class="QGroupBox" name="groupBox22" >
           <property name="title" >
            <string/>
           </property>
@@ -340,9 +325,8 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
+   <class>QGroupBox</class>
+   <header>QGroupBox</header>
    <container>1</container>
   </customwidget>
   <customwidget>
