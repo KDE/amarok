@@ -20,7 +20,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="Q3GroupBox" name="groupBox4" >
+    <widget class="QGroupBox" name="groupBox4" >
      <property name="title" >
       <string>Fonts</string>
      </property>
@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item>
-       <widget class="Q3GroupBox" name="fontGroupBox" >
+       <widget class="QGroupBox" name="fontGroupBox" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
@@ -57,12 +57,6 @@
         </property>
         <property name="flat" >
          <bool>true</bool>
-        </property>
-        <property name="frameShape" >
-         <enum>Q3GroupBox::NoFrame</enum>
-        </property>
-        <property name="lineWidth" >
-         <number>0</number>
         </property>
         <layout class="QGridLayout" >
          <item row="0" column="0" >
@@ -116,7 +110,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="groupBox3" >
+    <widget class="QGroupBox" name="groupBox3" >
      <property name="title" >
       <string>Color Scheme</string>
      </property>
@@ -192,9 +186,8 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
+   <class>QGroupBox</class>
+   <header>QGroupBox</header>
    <container>1</container>
   </customwidget>
   <customwidget>
