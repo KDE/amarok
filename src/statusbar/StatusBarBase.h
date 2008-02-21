@@ -110,6 +110,15 @@ namespace KDE
          */
         void setMainText( const QString &text );
 
+
+         /**
+         * Set a small, optional, 16x16 pixel icon that can be
+         * shown alongside the mainText
+         */
+        void setMainTextIcon( QPixmap icon );
+
+        void hideMainTextIcon();
+
         /// resets mainText if you've done a shortMessage
         void resetMainText();
 
@@ -186,6 +195,7 @@ namespace KDE
 
 
         QLabel *m_mainTextLabel;
+        QLabel *m_iconLabel;
 
     private:
         struct Message

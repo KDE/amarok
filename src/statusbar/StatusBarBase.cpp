@@ -97,6 +97,14 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_mainTextLabel = new QLabel();
     m_mainTextLabel->setObjectName( "mainTextLabel" );
     addPermanentWidget( m_mainTextLabel );
+
+    m_iconLabel = new QLabel();
+    m_iconLabel->setObjectName( "iconLabel" );
+    m_iconLabel->setMaximumSize( QSize( 16,16) );
+    m_iconLabel->setMinimumSize( QSize( 16,16) );
+    m_iconLabel->hide();
+    addPermanentWidget( m_iconLabel );
+    
     QToolButton *shortLongButton = new QToolButton();
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
@@ -229,6 +237,7 @@ StatusBar::shortMessage( const QString &text, bool longShort )
 
     m_mainTextLabel->setText( text );
     m_mainTextLabel->setPalette( QToolTip::palette() );
+    m_iconLabel->hide();
 
     SingleShotPool::startTimer( longShort ? 8000 : 5000, this, SLOT(resetMainText()) );
 
@@ -249,6 +258,13 @@ StatusBar::resetMainText()
     {
         m_mainTextLabel->setText( m_mainText );
         m_mainTextLabel->show();
+        if ( m_iconLabel->pixmap() && !m_iconLabel->pixmap()->isNull() ) {
+
+            debug() << "showing emblem";
+            m_iconLabel->show();
+        }    
+        else
+            m_iconLabel->hide();
     }
 
     else
@@ -685,7 +701,23 @@ StatusBar::writeLogFile( const QString &text )
     stream << "[" << KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() ) << "] " << text << endl;
 }
 
+void StatusBar::setMainTextIcon(QPixmap icon)
+{
+    m_iconLabel->setPixmap( icon );
+    m_iconLabel->show();
+}
+
+void StatusBar::hideMainTextIcon()
+{
+    m_iconLabel->hide();
+    m_iconLabel->setPixmap( QPixmap() );
+}
+
+
 } //namespace KDE
+
+
+
 
 
 #include "StatusBarBase.moc"

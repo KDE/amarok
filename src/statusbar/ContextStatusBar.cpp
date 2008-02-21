@@ -117,6 +117,8 @@ ContextStatusBar::engineNewTrackPlaying()
 
 
     // check if we have any source info:
+    hideMainTextIcon();
+    
     Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
     if( sic )
     {
@@ -124,6 +126,7 @@ ContextStatusBar::engineNewTrackPlaying()
         QString source = sic->sourceName();
         if ( !source.isEmpty() ) {
             title += ' ' + i18n("from") + " <b>" + source + "</b>";
+            setMainTextIcon( sic->emblem() );
         }
 
         delete sic;
