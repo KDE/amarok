@@ -121,6 +121,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     if  ( m_initialized ) {
         m_serviceName->setText( data[ "service_name" ].toString() );
         m_webView->setHtml( data[ "main_info" ].toString() );
+        constraintsUpdated();
     }
 
 }
