@@ -26,6 +26,7 @@
 #include "enginecontroller.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
+#include "meta/SourceInfoCapability.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
 
@@ -114,12 +115,32 @@ ContextStatusBar::engineNewTrackPlaying()
     if( title.isEmpty() )
         title = i18n( "Unknown track" );
 
+
+    // check if we have any source info:
+    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( !source.isEmpty() ) {
+            title += ' ' + i18n("from") + " <b>" + source + "</b>";
+        }
+
+        delete sic;
+
+    }
+    
     // don't show '-' or '?'
     if( length.length() > 1 ) {
         title += " (";
         title += length;
         title += ')';
     }
+
+
+
+
+    
 
     setMainText( i18n( "Playing: %1", title ) );
 }
