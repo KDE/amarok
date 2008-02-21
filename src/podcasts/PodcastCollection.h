@@ -53,26 +53,28 @@ AMAROK_EXPORT class PodcastCollection : public Collection, public MemoryCollecti
 
         virtual QString prettyName() const { return i18n("Local Podcasts"); };
 
-        AMAROK_EXPORT void addPodcast( const QString &url );
+        AMAROK_EXPORT virtual void addPodcast( const QString &url );
 
-        void addChannel( Meta::PodcastChannelPtr channel );
-        void addEpisode( Meta::PodcastEpisodePtr episode );
+        virtual void addChannel( Meta::PodcastChannelPtr channel );
+        virtual void addEpisode( Meta::PodcastEpisodePtr episode );
 
-        Meta::PodcastChannelList channels() { return m_channels; };
+        virtual Meta::PodcastChannelList channels() { return m_channels; };
 
-        PodcastChannelProvider * channelProvider() { return m_channelProvider; };
+        virtual PodcastChannelProvider * channelProvider() { return m_channelProvider; };
 
     signals:
         void remove();
 
     public slots:
-        void slotUpdateAll();
-        void slotUpdate( Meta::PodcastChannelPtr channel );
-        void slotDownloadEpisode( Meta::PodcastEpisodePtr episode );
+        virtual void slotUpdateAll();
+        virtual void slotUpdate( Meta::PodcastChannelPtr channel );
+        virtual void slotDownloadEpisode( Meta::PodcastEpisodePtr episode );
+
+        virtual void slotReadResult( PodcastReader *podcastReader, bool result );
+
+    private slots:
         void downloadResult( KJob * );
         void redirected( KIO::Job *, const KUrl& );
-
-        void slotReadResult( PodcastReader *podcastReader, bool result );
 
     private:
         static PodcastCollection *s_instance;

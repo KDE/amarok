@@ -63,12 +63,14 @@ class PodcastReader : public QObject, public QXmlStreamReader
         Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
 
-        QString readTitle();
-        QString readLink();
-        QString readDescription();
-        KUrl readUrl();
-        QString readGuid();
-        QString readPubDate();
+        QString m_currentTag;
+        QString m_titleString;
+        QString m_linkString;
+        QString m_descriptionString;
+        QString m_urlString;
+//         KUrl readUrl();
+        QString m_guidString;
+        QString m_pubDateString;
         void readUnknownElement();
     //     void readImage();
     //     void readCopyright();

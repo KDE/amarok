@@ -53,10 +53,10 @@ PodcastReader::read(const KUrl &url)
 
     m_url = url;
 
-    KIO::TransferJob *getJob = KIO::storedGet( m_url, KIO::Reload, KIO::HideProgressInfo );
+    KIO::TransferJob *getJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-//     connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-//              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+    connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+             SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
 
     connect( getJob, SIGNAL(  result( KJob * ) ),
              SLOT( downloadResult( KJob * ) ) );
@@ -98,7 +98,7 @@ PodcastReader::downloadResult( KJob * job )
 {
     DEBUG_BLOCK
 
-    QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
+//     QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
     //parse some more data
     read();
 }
@@ -118,7 +118,11 @@ PodcastReader::read()
         }
         else if ( error() == PrematureEndOfDocumentError )
         {
-            debug() << "recovering from PrematureEndOfDocumentError";
+            debug() << "recovering from PrematureEndOfDocumentError for "
+                    << QXmlStreamReader::name().toString() << " at "
+                    << QXmlStreamReader::lineNumber();
+            readNext();
+            debug() << "reading " << tokenString();
         }
         else
             debug() << "some other error occured: " << errorString();
@@ -182,14 +186,7 @@ PodcastReader::read()
                     debug() << "new episode";
                     m_current = new Meta::PodcastEpisode( m_channel );
                 }
-                else if( QXmlStreamReader::name() == "title" )
-                    m_current->setTitle( readTitle() );
-                else if( QXmlStreamReader::name() == "description" )
-                    m_current->setDescription( readDescription() );
-                else if( QXmlStreamReader::name() == "guid" )
-                    static_cast<PodcastEpisode *>(m_current)->setGuid( readGuid() );
-                else if( QXmlStreamReader::name() == "enclosure" )
-                    static_cast<PodcastEpisode *>(m_current)->setUrl( readUrl() );
+                m_currentTag = QXmlStreamReader::name().toString();
             }
             else if( isEndElement() )
             {
@@ -197,7 +194,6 @@ PodcastReader::read()
                 if (QXmlStreamReader::name() == "item")
                 {
                     commitEpisode();
-//                     commitChannel(); //DEBUG: should not commit here.
                 }
                 else if( QXmlStreamReader::name() == "channel" )
                 {
@@ -205,6 +201,41 @@ PodcastReader::read()
                     emit finished( this, true );
                     break;
                 }
+                else if( QXmlStreamReader::name() == "title")
+                {
+                    m_current->setTitle( m_titleString );
+                    m_titleString.clear();
+                }
+                else if( QXmlStreamReader::name() == "description" )
+                {
+                    m_current->setDescription( m_descriptionString );
+                    m_descriptionString.clear();
+                }
+                else if( QXmlStreamReader::name() == "guid" )
+                {
+                    static_cast<PodcastEpisode *>(m_current)->setGuid( m_guidString );
+                    m_guidString.clear();
+                }
+                else if( QXmlStreamReader::name() == "enclosure" )
+                {
+                    static_cast<PodcastEpisode *>(m_current)->setUrl( m_urlString );
+                    m_urlString.clear();
+                }
+            }
+            else if( isCharacters() && !isWhitespace() )
+            {
+                if( m_currentTag == "title" )
+                    m_titleString += text().toString();
+                else if( m_currentTag == "link" )
+                    m_linkString += text().toString();
+                else if( m_currentTag == "description" )
+                    m_descriptionString += text().toString();
+                else if( m_currentTag == "url" )
+                    m_urlString += text().toString();
+                else if( m_currentTag == "pubDate" )
+                    m_pubDateString += text().toString();
+                else if( m_currentTag == "guid" )
+                    m_guidString += text().toString();
             }
         }
     }
@@ -229,59 +260,6 @@ PodcastReader::read()
         }
     }
     return result;
-}
-
-QString
-PodcastReader::readTitle()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "title" );
-
-    return readElementText();
-}
-
-QString
-PodcastReader::readDescription()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "description" );
-
-    return readElementText();
-}
-
-QString
-PodcastReader::readLink()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "link" );
-    return readElementText();
-}
-
-KUrl
-PodcastReader::readUrl()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "enclosure" );
-    //TODO: need to get the url argument here
-    QString url = attributes().value( "", "url").toString();
-    debug() << readElementText();
-    return KUrl( url );
-}
-
-QString
-PodcastReader::readGuid()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "guid" );
-    return readElementText();
-}
-
-QString
-PodcastReader::readPubDate()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() && QXmlStreamReader::name() == "pubDate" );
-    return readElementText();
 }
 
 void
@@ -365,19 +343,19 @@ PodcastReader::commitEpisode()
 Meta::PodcastEpisodePtr
 PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     Meta::PodcastEpisodePtr episodeMatch = episode;
     Meta::PodcastEpisodeList episodes = m_channel->episodes();
 
-    debug() << "episode title: " << episode->title();
-    debug() << "episode url: " << episode->url();
-    debug() << "episode guid: " << episode->guid();
+//     debug() << "episode title: " << episode->title();
+//     debug() << "episode url: " << episode->url();
+//     debug() << "episode guid: " << episode->guid();
 
     foreach( PodcastEpisodePtr match, episodes )
     {
-        debug() << "match title: " << match->title();
-        debug() << "match url: " << match->url();
-        debug() << "match guid: " << match->guid();
+//         debug() << "match title: " << match->title();
+//         debug() << "match url: " << match->url();
+//         debug() << "match guid: " << match->guid();
 
         int score = 0;
         if( !episode->title().isEmpty() && episode->title() == match->title() )
@@ -387,7 +365,7 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
         if( !episode->guid().isEmpty() && episode->guid() == match->guid() )
             score += 3;
 
-        debug() << "score: " << score;
+//         debug() << "score: " << score;
         if( score >= 3 )
         {
             episodeMatch = match;
