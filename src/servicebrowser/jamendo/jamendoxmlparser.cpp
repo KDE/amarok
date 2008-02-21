@@ -27,6 +27,7 @@
 #include <QFile>
 
 #include <KFilterDev>
+#include <KLocale>
 
 using namespace Meta;
 
@@ -57,12 +58,10 @@ JamendoXmlParser::doJob( )
 void
 JamendoXmlParser::completeJob( )
 {
-    /*Amarok::ContextStatusBar::instance()->longMessage(
-        i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists" )
-        .arg( m_nNumberOfTracks )
-        .arg( m_nNumberOfAlbums )
-        .arg( m_nNumberOfArtists ), KDE::StatusBar::Information );
-*/
+
+
+    Amarok::ContextStatusBar::instance()->longMessage( i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists",  m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), KDE::StatusBar::Information );
+
 
     debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists;
     debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums;
