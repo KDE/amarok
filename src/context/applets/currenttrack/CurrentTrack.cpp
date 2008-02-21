@@ -137,8 +137,14 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 
 
     m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
+    m_title->setText( truncateTextToFit( m_title->text(), m_title->font(), m_theme->elementRect( "track" ) ) );
+    
     m_artist->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artist" ) ) );
+    m_artist->setText( truncateTextToFit( m_artist->text(), m_artist->font(), m_theme->elementRect( "artist" ) ) );
+    
     m_album->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "album" ) ) );
+    m_album->setText( truncateTextToFit( m_album->text(), m_album->font(), m_theme->elementRect( "album" ) ) );
+    
     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
@@ -182,9 +188,11 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     QVariantMap currentInfo = data[ "current" ].toMap();
     kDebug() << "got data from engine: " << currentInfo;
-    m_title->setText( currentInfo[ Meta::Field::TITLE ].toString() );
-    m_artist->setText( currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString() );
-    m_album->setText( currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString() );
+    m_title->setText( truncateTextToFit( currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
+    QString artist = currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+    m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
+    QString album = currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
     m_rating = currentInfo[ Meta::Field::RATING ].toInt();
     m_score->setText( currentInfo[ Meta::Field::SCORE ].toString() );
     m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
@@ -317,12 +325,8 @@ QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& boun
 QString CurrentTrack::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
 {
     QFontMetrics fm( font );
-    while( fm.width( text) > bounds.width() )
-    {
-        text.chop( 4 );
-        text += "...";
-    }
-    return text;
+    return fm.elidedText ( text, Qt::ElideRight, bounds.width() );
+    
 }
 
 bool CurrentTrack::resizeCover(QPixmap cover){
