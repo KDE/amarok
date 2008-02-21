@@ -630,26 +630,11 @@ Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 void
 Playlist::GraphicsItem::refresh()
 {
-    /*QPixmap albumPixmap;
-    if( !m_items || !m_items->track )
-        return;
-
-    if( m_items->track->album() )
-    {
-        if( !m_items->track->album()->hasImage( int(ALBUM_WIDTH) ) )
-        {
-//             The::coverFetcher()->queueAlbum( m_items->track->album() );
-        }
-        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-    }*/
 
     if (m_items && m_items->track ) 
         resize( m_items->track,m_items->lastWidth );
 
-    //m_items->albumArt->hide();
-    //delete ( m_items->albumArt );
-    //m_items->albumArt = new QGraphicsPixmapItem( albumPixmap, this );
-    //m_items->albumArt->setPos( 0.0, MARGIN );
+
 }
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
@@ -868,19 +853,6 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if ( active )
         painter->drawPixmap( trackRect.x() + 5, trackRect.y(), getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
 
-    /*m_items->topRightText->setDefaultTextColor( Qt::white );
-    m_items->topLeftText->setDefaultTextColor( Qt::white );
-*/
-    /*if ( active ) {
-
-        m_items->bottomRightText->setDefaultTextColor( Qt::white );
-        m_items->bottomLeftText->setDefaultTextColor( Qt::white );
-
-    } else {
-
-        m_items->bottomRightText->setDefaultTextColor( Qt::black );
-        m_items->bottomLeftText->setDefaultTextColor( Qt::black );
-    }*/
     
     //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
@@ -888,16 +860,6 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if( !m_items->topLeftText->isVisible() )
         m_items->topLeftText->show();
 
-
-    //set selection marker if needed
-    /*if( option->state & QStyle::State_Selected )
-    {
-        painter->drawPixmap( 2, (int)trackRect.top() + 2, getCachedSvg( "selection_left", 40, trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top() + 2, getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }*/
-
-    //set overlay if item is active:
-    //handleActiveOverlay( trackRect, active );
 
         //check if there is a emblem to display
     //does this track have the SourceInfoCapability?
@@ -974,16 +936,6 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     if( !m_items->topLeftText->isVisible() )
         m_items->topLeftText->show();
 
-    //set selection marker if needed
-    /*if( option->state & QStyle::State_Selected )
-    {
-        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }*/
-
-    //set overlay if item is active
-    //handleActiveOverlay( trackRect, active );
-
 
     //check if there is a emblem to display
     //does this track have the SourceInfoCapability?
@@ -1000,12 +952,6 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
         delete sic;
     }
 
-    //set selection marker if needed
-    /*if( option->state & QStyle::State_Selected )
-    {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
-    }*/
 
 
 }
