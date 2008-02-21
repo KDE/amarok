@@ -46,7 +46,7 @@ SvgTinter::SvgTinter()
 
     //QColor systemColor = QPalette::Window;
     
-    init( App::instance()->palette().window().color(), baseColors, 20 );
+    init( App::instance()->palette().window().color(), baseColors, 80 );
 
     debug() << "QPalette::Window: " << App::instance()->palette().highlight().color().name();
     
@@ -85,14 +85,18 @@ void SvgTinter::init(QColor systemColor, QList< QString > baseColorNames, int ti
         m_tintMap.insert( baseColorName, tintedColor.name() );
 
     }
+    
+    //insert a color for bright ( highlight color )
+    m_tintMap.insert( "#66ffff", blendColors( App::instance()->palette().highlight().color(), "#66ffff", 100 ).name() );
 
 }
 
 
 QColor SvgTinter::blendColors( const QColor& color1, const QColor& color2, int percent )
 {
-    const float factor1 = ( 100 - ( float ) percent ) / 100;
-    const float factor2 = ( float ) percent / 100;
+    
+    const float factor1 = ( float ) percent / 100;
+    const float factor2 = ( 100 - ( float ) percent ) / 100;
 
     const int r = static_cast<int>( color1.red() * factor1 + color2.red() * factor2 );
     const int g = static_cast<int>( color1.green() * factor1 + color2.green() * factor2 );
