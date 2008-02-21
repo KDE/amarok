@@ -923,7 +923,7 @@ ScriptManager::engineStateChanged( Engine::State state, Engine::State /*oldState
 
 
 void
-ScriptManager::engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ )
+ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ )
 {
     notifyScripts( "trackChange" );
 }

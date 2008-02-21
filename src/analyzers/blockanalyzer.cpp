@@ -32,7 +32,6 @@
 //Added by qt3to4:
 #include <QContextMenuEvent>
 #include <QResizeEvent>
-#include <Q3PopupMenu>
 
 static inline uint myMax( uint v1, uint v2 ) { return v1 > v2 ? v1 : v2; }
 
@@ -373,7 +372,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 {
    DEBUG_BLOCK
 
-   const QColor bg = palette().active().background();
+   const QColor bg = palette().color( QPalette::Active, QPalette::Background );
    const QColor fg = ensureContrast( bg, KGlobalSettings::activeTitleColor() );
 
    m_topBarPixmap.fill( fg );
@@ -391,11 +390,11 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
       p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
 
    {
-      const QColor bg = palette().active().background().dark( 112 );
+      const QColor bg = palette().color( QPalette::Active, QPalette::Background ).dark( 112 );
 
       //make a complimentary fadebar colour
       //TODO dark is not always correct, dumbo!
-      int h,s,v; palette().active().background().dark( 150 ).getHsv( &h, &s, &v );
+      int h,s,v; palette().color( QPalette::Active, QPalette::Background ).dark( 150 ).getHsv( &h, &s, &v );
       const QColor fg = QColor::fromHsv( h + 60, s, v );
 
       const double dr = fg.red() - bg.red();
@@ -405,7 +404,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 
       // Precalculate all fade-bar pixmaps
       for( uint y = 0; y < FADE_SIZE; ++y ) {
-         m_fade_bars[y].fill( palette().active().background() );
+         m_fade_bars[y].fill( palette().color( QPalette::Active, QPalette::Background ) );
          QPainter f( &m_fade_bars[y] );
          for( int z = 0; (uint)z < m_rows; ++z ) {
             const double Y = 1.0 - (log10( static_cast<float>(FADE_SIZE) - y ) / log10( static_cast<float>(FADE_SIZE) ));
@@ -422,7 +421,7 @@ BlockAnalyzer::drawBackground()
 {
     DEBUG_BLOCK
 
-    const QColor bg = palette().active().background();
+    const QColor bg = palette().color( QPalette::Active, QPalette::Background);
     const QColor bgdark = bg.dark( 112 );
 
     background()->fill( bg );

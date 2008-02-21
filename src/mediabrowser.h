@@ -68,7 +68,7 @@ class SpaceLabel : public QLabel {
     void paintEvent(QPaintEvent *e)
     {
         QPainter p(this);
-        p.fillRect(e->rect(), palette().brush(QColorGroup::Background));
+        p.fillRect(e->rect(), palette().brush(QPalette::Background));
 
         if(m_total > 0)
         {
@@ -111,7 +111,7 @@ class SpaceLabel : public QLabel {
                 if(scheduled > left)
                     left = scheduled;
                 int right = e->rect().right();
-                p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, palette().brush(QColorGroup::Background));
+                p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, palette().brush(QPalette::Background));
             }
         }
         QLabel::paintEvent(e);

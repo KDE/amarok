@@ -190,8 +190,6 @@ Analyzer::Base<W>::demo() //virtual
 Analyzer::Base2D::Base2D( QWidget *parent, uint timeout, uint scopeSize )
    : Base<QWidget>( parent, timeout, scopeSize )
 {
-    setWindowFlags( Qt::WNoAutoErase ); //no flicker
-
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }
 

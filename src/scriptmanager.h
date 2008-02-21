@@ -162,7 +162,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         /** EngineObserver reimplementations **/
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-        void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );
+        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
         void engineVolumeChanged( int newVolume );
 
         /////////////////////////////////////////////////////////////////////////////////////
