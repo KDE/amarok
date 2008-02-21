@@ -823,8 +823,8 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     if( option->state & QStyle::State_Selected )
     {
         const qreal lineTwoY = m_height / 2 + MARGIN;
-        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height(), s_fm->height() ) );
-        painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() + 2 ), lineTwoY, getCachedSvg( "selection_right", s_fm->height(), s_fm->height() ) );
+        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height() * 3, s_fm->height() ) );
+        painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() * 3 + 2 ), lineTwoY, getCachedSvg( "selection_right", s_fm->height() * 3, s_fm->height() ) );
     }
 
 }
@@ -922,8 +922,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() ) );
     }
 
 
@@ -1064,8 +1064,8 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() ) );
     }
 
 
@@ -1116,8 +1116,8 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() ) );
     }
 
 }
