@@ -226,7 +226,7 @@ namespace KDE
         QProgressBar  *m_mainProgressBar;
 
         ProgressMap          m_progressMap;
-        Q3ValueList<QWidget*> m_messageQueue;
+        QList<QWidget*>      m_messageQueue;
         QString              m_mainText;
         QString              m_shortLongText;
         MessageType          m_shortLongType;
