@@ -70,6 +70,8 @@ private:
 
     QWebView * m_webView;
 
+    bool m_initialized;
+
 
 };
 

@@ -31,6 +31,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     , m_width( 0 )
     , m_aspectRatio( 0 )
     , m_size( QSizeF() )
+    , m_initialized( false )
 
 {
     DEBUG_BLOCK
@@ -104,6 +105,8 @@ void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
         m_serviceMainInfo->setMaximumSize( infoSize );
     }
 
+    m_initialized = true;
+
 }
 
 void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -114,8 +117,11 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     if( data.size() == 0 ) return;
 
     kDebug() << "got data from engine: " << data[ "service_name" ].toString();
-    m_serviceName->setText( data[ "service_name" ].toString() );
-    m_webView->setHtml( data[ "main_info" ].toString() );
+
+    if  ( m_initialized ) {
+        m_serviceName->setText( data[ "service_name" ].toString() );
+        m_webView->setHtml( data[ "main_info" ].toString() );
+    }
 
 }
 
