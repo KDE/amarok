@@ -233,8 +233,16 @@ void MainWindow::init()
     //make room for a full width statusbar at the bottom of everything
 
     KHBox * m_statusbarArea = new KHBox( this );
-    m_statusbarArea->setMinimumHeight( 26 );
-    m_statusbarArea->setMaximumHeight( 26 );
+
+    //figure out the needed heigh tbased on system font settings
+
+    QFont currentFont = font();
+    currentFont.setBold( true );
+    QFontMetrics fm( currentFont );
+    int fontHeight = fm.height();
+    
+    m_statusbarArea->setMinimumHeight( fontHeight );
+    m_statusbarArea->setMaximumHeight( fontHeight );
     new Amarok::ContextStatusBar( m_statusbarArea );
 
     mainLayout->addWidget( m_controlBar );
