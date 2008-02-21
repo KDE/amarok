@@ -101,7 +101,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     ( menu->addAction( i18n( "Queue Track" ), this, SLOT( queueItem() ) ) )->setEnabled( false );
     ( menu->addAction( i18n( "Stop Playing After Track" ), this, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
     menu->addSeparator();
-    ( menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) ) )->setEnabled( false );
+    ( menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) ) )->setEnabled( true );
     menu->addSeparator();
     menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) );
     menu->addSeparator();
