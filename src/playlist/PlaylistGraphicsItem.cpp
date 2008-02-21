@@ -808,24 +808,23 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
         m_items->topLeftText->show();
 
 
-    //set selection marker if needed
-    /*if( option->state & QStyle::State_Selected )
-    {
-        painter->drawPixmap( 2, (int)trackRect.top(), getCachedSvg( "selection_left", 40, trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.width() - 42, (int)trackRect.top(), getCachedSvg( "selection_right", 40, trackRect.height() ) );
-    }*/
-
 
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
-    
-    
     if ( active ) {
 
         const qreal lineTwoY = m_height / 2 + MARGIN;
         
         painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "active_overlay", trackRect.width() - ( ALBUM_WIDTH + MARGIN + 4 ), s_fm->height() ) );
+    }
+    
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        const qreal lineTwoY = m_height / 2 + MARGIN;
+        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height(), s_fm->height() ) );
+        painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() + 2 ), lineTwoY, getCachedSvg( "selection_right", s_fm->height(), s_fm->height() ) );
     }
 
 }
@@ -920,6 +919,15 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     }
 
 
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+    }
+
+
+
 }
 
 void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
@@ -992,6 +1000,13 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
         delete sic;
     }
 
+    //set selection marker if needed
+    /*if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+    }*/
+
 
 }
 
@@ -1046,6 +1061,13 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     //set overlay if item is active
     //handleActiveOverlay( trackRect, active );
 
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+    }
+
 
 }
 
@@ -1090,6 +1112,13 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
 
     //set overlay if item is active
     //handleActiveOverlay( trackRect, active );
+
+    //set selection marker if needed
+    if( option->state & QStyle::State_Selected )
+    {
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height(), trackRect.height() ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height(), trackRect.height() ) );
+    }
 
 }
 
