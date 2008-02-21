@@ -265,6 +265,7 @@ Playlist::GraphicsView::removeSelection()
             }
         }
         count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
+        debug() << "removing from index " << index << " and the next " << count << " elements";
         m_model->removeRows( index, count );
     }
 

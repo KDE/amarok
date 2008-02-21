@@ -786,6 +786,8 @@ Model::removeTracksCommand( int position, int rows )
     Meta::TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
+
+        debug() << "delete index " << i;
         Item* item = m_items.takeAt( position ); //take at position, row times
         item->track()->unsubscribe( this );
         if( item->track()->album() )
@@ -794,8 +796,6 @@ Model::removeTracksCommand( int position, int rows )
         delete item;
     }
 
-
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
 
     //update m_activeRow
     bool activeRowChanged = true;
@@ -813,6 +813,7 @@ Model::removeTracksCommand( int position, int rows )
     }
     dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
 
+
     //we need to regroup everything below this point as all the index changes
     //also, use the count before the rows was removed to make sure all groups are deleted
     regroupAlbums( position, rows, OffsetAfter, 0 - rows );
@@ -821,7 +822,11 @@ Model::removeTracksCommand( int position, int rows )
 
     The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+
+
     emit playlistCountChanged( rowCount() );
+    
     return ret;
 }
 
@@ -1141,7 +1146,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
       }
    }
 
-    //reset();
+   //reset();
 
 }
 
