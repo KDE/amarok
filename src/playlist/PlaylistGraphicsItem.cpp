@@ -724,7 +724,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 10;
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 4;
                 if ( !m_items ) {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
                     m_items = new Playlist::GraphicsItem::ActiveItems();
@@ -924,7 +924,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
 void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
-    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN * 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
     QRectF headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
 
     //paint background
