@@ -1,0 +1,1569 @@
+eThis package was debianized by Armin Berres on
+Sat, 27 Oct 2007 14:06:42 +0200.
+
+It was downloaded from ftp://ftp.kde.org
+
+Upstream Author: The KDE development team <kde-core-devel@kde.org>
+Numerous people, too many to count, have contributed to kdelibs as a
+whole. The KDE project tries to make an extensive list of people who contributed
+to KDE at http://www.kde.org/people/credits/
+
+Copyright:
+Unless something else is mentioned, copyright is
+(C) 1996-2008, The K Desktop Enviroment project http://www.kde.org
+
+
+
+License:
+
+Unless something else is mentioned, the code files in this package are under
+the GNU General Public License:
+
+    | This program is free software; you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation; version 2 dated June, 1991.
+    |
+    | This package is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program; if not, write to the Free Software Foundation,
+    | Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+
+  The full text of the GNU General Public License version 2 is available on
+  Debian systems in /usr/share/common-licenses/GPL-2.
+
+
+
+
+The documentation docbook files in this package, placed under docs/, are under 
+the GNU Free Documentation License:
+
+    | Permission is granted to copy, distribute and/or modify this
+    | document under the terms of the GNU Free Documentation License,
+    | Version 1.1 or any later version published by the Free Software
+    | Foundation; with no Invariant Sections, with no Front-Cover Texts,
+    | and with no Back-Cover Texts.
+
+  The full text of the GNU Free Documentation License is available on
+  Debian systems in /usr/share/common-licenses/GFDL-1.2
+
+As well, all the Manpages.dox included are under this license, unless specified 
+otherwise below.
+
+
+
+kdebase copyright situation is a bit complex. The following table tries
+to detail the copyright/license information of the files that are not under the
+directories detailed above.
+
+ file ~ license ~ copyright holder
+------~---------~------------------
+
+Files
+ AUTHORS ~ unspec ~ unspec
+ CMakeLists.txt ~ unspec ~ unspec
+ configure.in.in ~ unspec ~ unspec
+ COPYING ~ unspec ~ unspec
+ COPYING-DOCS ~ unspec ~ unspec
+ COPYING.LIB ~ unspec ~ unspec
+ Mainpage.dox ~ unspec ~ unspec
+ README ~ unspec ~ unspec
+
+Files under cmake:
+
+ cmake/CMakeLists.txt ~ unspec ~ unspec
+ cmake/modules/CMakeLists.txt ~ unspec ~ unspec
+ cmake/modules/FindXCB.cmake ~ BSD ~ Copyright (c) 2007, Matthias Kretz, <kretz@kde.org>
+ cmake/modules/FindXine.cmake ~ BSD ~ Copyright (c) 2006,2007 Laurent Montel, <montel@kde.org>
+                                              Copyright (c) 2006, Matthias Kretz, <kretz@kde.org>
+
+
+Files under drkonqi:
+
+ drkonqi/AUTHORS ~ unspec ~ unspec
+ drkonqi/backtrace.cpp ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/backtrace.h ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/CMakeLists.txt ~ unspec ~ unspec
+ drkonqi/debugger.cpp ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/debugger.h ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/debuggers/CMakeLists.txt ~ unspec ~ unspec
+ drkonqi/debuggers/gdbrc ~ unspec ~ unspec
+ drkonqi/drbugreport.cpp ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org> 
+ drkonqi/drbugreport.h ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/krashadaptor.cpp ~ unspec ~  * dbusidl2cpp is Copyright (C) 2006 Trolltech AS. All rights reserved.
+ drkonqi/krashadaptor.h ~ MIT~  * Copyright (C) 2003 Hamish Rodda <rodda@kde.org>
+ drkonqi/krashconf.cpp ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/krashconf.h ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/LICENSE ~ unspec ~ unspec
+ drkonqi/main.cpp ~ LGPLv2 ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/Messages.sh ~ unspec ~ unspec
+ drkonqi/pics/CMakeLists.txt ~ unspec ~ unspec
+ drkonqi/pics/konqi.png ~ unspec ~ unspec
+ drkonqi/presets/CMakeLists.txt ~ unspec ~ unspec
+ drkonqi/presets/developerrc ~ unspec ~ unspec
+ drkonqi/presets/enduserrc ~ unspec ~ unspec
+ drkonqi/README ~ unspec ~ unspec
+ drkonqi/tests/CMakeLists.txt ~ unspec ~ unspec
+ drkonqi/tests/crashtest.cpp ~ unspec ~ unspec
+ drkonqi/toplevel.cpp ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ drkonqi/toplevel.h ~ MIT ~  * Copyright (C) 2000-2003 Hans Petter Bieker <bieker@kde.org>
+ 
+
+Files under kcmshell:
+
+ kcmshell/CMakeLists.txt ~ unspec ~ unspec
+ kcmshell/main.cpp ~ LGPLv2h ~ Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+                                       Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                       Copyright (c) 2004 Frans Englich <frans.englich@telia.com>
+ kcmshell/main.h ~ LGPLv2 h~  Copyright (c) 2001 Waldo Bastian <bastian@kde.org>
+                                      Copyright (c) 2004 Frans Englich <frans.englich@telia.com>
+ kcmshell/Mainpage.dox ~ unspec ~ unspec
+ kcmshell/Messages.sh ~ unspec ~ unspec
+
+
+Files under kcontrol:
+
+ kcontrol/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/componentchooser/browserconfig_ui.ui ~ unspec ~ unspec
+ kcontrol/componentchooser/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/componentchooser/componentchooser.cpp ~ GPLv2 ~     copyright        : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/componentchooser.desktop ~ unspec ~ unspec
+ kcontrol/componentchooser/componentchooser.h ~ GPLv2 ~     copyright      : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/componentchooserterminal.cpp ~ GPLv2 ~  copyright        : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/componentchooserterminal.h ~ GPLv2 ~     copyright       : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/componentchooser_ui.ui ~ unspec ~ unspec
+ kcontrol/componentchooser/componentconfig_ui.ui ~ unspec ~ unspec
+ kcontrol/componentchooser/componentservices/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/componentchooser/componentservices/kcm_browser.desktop ~ unspec ~ unspec
+ kcontrol/componentchooser/componentservices/kcm_kemail.desktop ~ unspec ~ unspec
+ kcontrol/componentchooser/componentservices/kcm_terminal.desktop ~ unspec ~ unspec
+ kcontrol/componentchooser/emailclientconfig_ui.ui ~ unspec ~ unspec
+ kcontrol/componentchooser/EXAMPLE.desktop ~ unspec ~ unspec
+ kcontrol/componentchooser/kcm_componentchooser.cpp ~ GPLv2 ~     copyright            : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/kcm_componentchooser.h ~ GPLv2 ~     copyright            : (C) 2002 by Joseph Wenninger
+ kcontrol/componentchooser/Messages.sh ~ unspec ~ unspec
+ kcontrol/componentchooser/terminalemulatorconfig_ui.ui ~ unspec ~ unspec
+ kcontrol/dnssd/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/dnssd/configdialog.ui ~ unspec ~ unspec
+ kcontrol/dnssd/kcmdnssd.cpp ~ GPLv2h ~  *   Copyright (C) 2004,2005 by Jakub Stachowski                           *
+ kcontrol/dnssd/kcmdnssd.h ~ GPLv2h ~  *   Copyright (C) 2004,2005 by Jakub Stachowski                           *
+ kcontrol/dnssd/kcm_kdnssd.desktop ~ unspec ~ unspec
+ kcontrol/dnssd/Messages.sh ~ unspec ~ unspec
+ kcontrol/icons/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/icons/cr16-app-icons.png ~ unspec ~ unspec
+ kcontrol/icons/cr22-app-icons.png ~ unspec ~ unspec
+ kcontrol/icons/cr32-app-icons.png ~ unspec ~ unspec
+ kcontrol/icons/cr48-app-icons.png ~ unspec ~ unspec
+ kcontrol/icons/cr64-app-icons.png ~ unspec ~ unspec
+ kcontrol/icons/icons.cpp ~ GPLv2 ~  * Copyright (C) 2000 Geert Jansen <jansen@kde.org>
+ kcontrol/icons/icons.desktop ~ unspec ~ unspec
+ kcontrol/icons/icons.h ~ GPLv2 ~  * Copyright (C) 2000 Geert Jansen <jansen@kde.org>
+ kcontrol/icons/iconthemes.cpp ~ GPLv2h ~  *  Copyright (c) 2000 Antonio Larrosa <larrosa@kde.org>
+ kcontrol/icons/iconthemes.h ~ GPLv2h ~  * Copyright (c) 2000 Antonio Larrosa <larrosa@kde.org>
+ kcontrol/icons/main.cpp ~ GPLv2h ~  * Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/icons/main.h ~ GPLv2h ~  * Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/icons/Messages.sh ~ unspec ~ unspec
+ kcontrol/icons/tests/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/icons/tests/testicons.cpp ~ unspec ~ unspec
+ kcontrol/infocenter/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/infocenter/ioslaveinfo/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/infocenter/ioslaveinfo/ioslaveinfo.desktop ~ unspec ~ unspec
+ kcontrol/infocenter/ioslaveinfo/kcmioslaveinfo.cpp ~ GPLv2h ~ Copyright 2001 Alexander Neundorf <neundorf@kde.org>
+                                                                      Copyright 2001 George Staikos  <staikos@kde.org>
+ kcontrol/infocenter/ioslaveinfo/kcmioslaveinfo.h ~ GPLv2h ~  Copyright 2001 Alexander Neundorf  <alexander.neundorf@rz.tu-ilmenau.de>, Copyright 2001 George Staikos  <staikos@kde.org>
+ kcontrol/infocenter/ioslaveinfo/Messages.sh ~ unspec ~ unspec
+ kcontrol/kcontrol/about/* ~ unspec ~ unspec
+ kcontrol/kcontrol/aboutwidget.cpp ~ GPLv2h ~   Copyright (c) 2000,2001 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/aboutwidget.h ~ GPLv2h ~   Copyright (c) 2000,2001 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/kcontrol/cr128-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/cr16-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/cr22-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/cr32-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/cr48-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/cr64-app-hwinfo.png ~ unspec ~ unspec
+ kcontrol/kcontrol/crsc-app-hwinfo.svgz ~ unspec ~ unspec
+ kcontrol/kcontrol/dockcontainer.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/dockcontainer.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/global.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/global.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/helpwidget.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/helpwidget.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/indexwidget.cpp ~ GPLv2h ~ Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                                      Copyright (c) 2003 Frauke Oster <frauke.oster@t-online.de>
+ kcontrol/kcontrol/indexwidget.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/KControl_NoDisplay.desktop ~ unspec ~ unspec
+ kcontrol/kcontrol/kcrootonly.cpp ~ GPLv2h ~   Copyright (c) 2001 Waldo Bastian <bastian@kde.org>
+ kcontrol/kcontrol/kcrootonly.h ~ unspec ~ unspec
+ kcontrol/kcontrol/kinfocenter.desktop ~ unspec ~ unspec
+ kcontrol/kcontrol/kinfocenterui.rc ~ unspec ~ unspec
+ kcontrol/kcontrol/main.cpp ~ GPLv2h ~ Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+                                                Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/main.h ~ GPLv2h ~ Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+                                              Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/Messages.sh ~ unspec ~ unspec
+ kcontrol/kcontrol/moduleiconview.cpp ~ GPLv2h ~  Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                                         Copyright (c) 2003 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kcontrol/moduleiconview.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/moduleIface.cpp ~ GPLv2h ~   Copyright (c) 2001 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kcontrol/moduleIface.h ~ GPLv2h ~   Copyright (c) 2001 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kcontrol/modulemenu.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/modulemenu.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/modules.cpp ~ GPLv2h ~   Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/modules.h ~ GPLv2h ~   Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/moduletreeview.cpp ~ GPLv2h ~  Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                                          Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/moduletreeview.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/proxywidget.cpp ~ GPLv2h ~   Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/proxywidget.h ~ GPLv2h ~   Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+ kcontrol/kcontrol/quickhelp.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/quickhelp.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/searchwidget.cpp ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                                         Copyright (c) 2004 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kcontrol/searchwidget.h ~ GPLv2h ~   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+                                                       Copyright (c) 2004 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kcontrol/toplevel.cpp ~ GPLv2h ~ Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+                                                   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/toplevel.h ~ GPLv2h ~   Copyright (c) 1999 Matthias Hoelzer-Kluepfel <hoelzer@kde.org>
+                                                   Copyright (c) 2000 Matthias Elter <elter@kde.org>
+ kcontrol/kcontrol/version.h ~ unspec ~ unspec
+
+
+ kcontrol/kded/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/kded/kcmkded.cpp ~ LGPLv2 ~    Copyright (C) 2002 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kded/kcmkded.desktop ~ unspec ~ unspec
+ kcontrol/kded/kcmkded.h ~ LGPLv2 ~    Copyright (C) 2002 Daniel Molkentin <molkentin@kde.org>
+ kcontrol/kded/Messages.sh ~ unspec ~ unspec
+ kcontrol/knotify/CHANGES ~ unspec ~ unspec
+ kcontrol/knotify/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/knotify/cr16-app-knotify.png ~ unspec ~ unspec
+ kcontrol/knotify/cr32-app-knotify.png ~ unspec ~ unspec
+ kcontrol/knotify/cr48-app-knotify.png ~ unspec ~ unspec
+ kcontrol/knotify/cr64-app-knotify.png ~ unspec ~ unspec
+ kcontrol/knotify/kcmnotify.desktop ~ unspec ~ unspec
+ kcontrol/knotify/knotify.cpp ~ GPLv2h ~ Copyright (C) 2000,2002 Carsten Pfeiffer <pfeiffer@kde.org>
+                                                 Copyright (C) 2005,2006 Olivier Goffart <ogoffart at kde.org>
+ kcontrol/knotify/knotify.h ~ GPLv2h ~ Copyright (C) 2000,2002 Carsten Pfeiffer <pfeiffer@kde.org>
+                                               Copyright (C) 2005,2006 Olivier Goffart <ogoffart at kde.org>
+ kcontrol/knotify/Messages.sh ~ unspec ~ unspec
+ kcontrol/knotify/playersettings.ui ~ unspec ~ unspec
+ kcontrol/knotify/play.png ~ unspec ~ unspec
+ kcontrol/knotify/README ~ unspec ~ unspec
+ kcontrol/knotify/sounds/* ~ unspec ~ unspec
+ kcontrol/locale/AUTHORS ~ unspec ~ unspec
+ kcontrol/locale/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/locale/cr128-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/cr16-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/cr22-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/cr32-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/cr48-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/cr64-app-locale.png ~ unspec ~ unspec
+ kcontrol/locale/crsc-app-locale.svgz ~ unspec ~ unspec
+ kcontrol/locale/default/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/locale/default/entry.desktop ~ unspec ~ unspec
+ kcontrol/locale/kcmlocale.cpp ~ GPLv2h ~ Copyright (c) 1998 Matthias Hoelzer (hoelzer@physik.uni-wuerzburg.de)
+                                                  Copyright (c) 1999 Preston Brown <pbrown@kde.org>
+                                                  Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/kcmlocale.h ~ GPLv2h ~ Copyright (c) 1998 Matthias Hoelzer <hoelzer@physik.uni-wuerzburg.de>
+                                                Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/klocalesample.cpp ~ GPLv2h ~  Copyright (c) 1998 Matthias Hoelzer (hoelzer@physik.uni-wuerzburg.de)
+                                                      Copyright (c) 1999 Preston Brown <pbrown@kde.org>
+                                                      Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/klocalesample.h ~ GPLv2h ~ Copyright (c) 1998 Matthias Hoelzer (hoelzer@physik.uni-wuerzburg.de)
+                                                     Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/language.desktop ~ unspec ~ unspec
+ kcontrol/locale/language.ui ~ unspec ~ unspec
+ kcontrol/locale/localemon.cpp ~ GPLv2h ~  Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localemon.h ~ GPLv2h ~ Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localenum.cpp ~ GPLv2h ~  Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localenum.h ~ GPLv2h ~ Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localeother.cpp ~ GPLv2h ~ Copyright (c) 2001-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localeother.h ~ GPLv2h ~ Copyright (c) 2001-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localetime.cpp ~ GPLv2h ~ Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/localetime.h ~ GPLv2h ~  Copyright (c) 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/main.cpp ~ GPLv2h ~   Copyright 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/Messages.sh ~ unspec ~ unspec
+ kcontrol/locale/pics/background.png ~ unspec ~ unspec
+ kcontrol/locale/pics/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/locale/TIMEZONES ~ unspec ~ unspec
+ kcontrol/locale/toplevelbase.ui ~ unspec ~ unspec
+ kcontrol/locale/toplevel.cpp ~ GPLv2h ~  Copyright 1998 Matthias Hoelzer
+                                                  Copyright 1999-2003 Hans Petter Bieker <bieker@kde.org>
+ kcontrol/locale/toplevel.h ~ GPLv2h ~  Copyright 1998 Matthias Hoelzer.
+                                                Copyright 1999-2003 Hans Petter Bieker <bieker@kde.org>.
+ kcontrol/menus/C* ~ unspec ~ unspec
+ kcontrol/pics/* ~ unspec ~ unspec
+ kcontrol/samba/AUTHORS ~ unspec ~ unspec
+ kcontrol/samba/CMakeLists.txt ~ unspec ~ unspec
+ kcontrol/samba/cr128-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/cr16-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/cr22-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/cr32-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/cr48-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/cr64-app-samba.png ~ unspec ~ unspec
+ kcontrol/samba/crsc-app-samba.svgz ~ unspec ~ unspec
+ kcontrol/samba/kcmsambaimports.cpp ~ GPLv2h ~ Copyright (c) 2000 Alexander Neundorf <alexander.neundorf@rz.tu-ilmenau.de>
+ kcontrol/samba/kcmsambaimports.h ~ GPLv2h ~ Copyright (c) 2000 Alexander Neundorf <alexander.neundorf@rz.tu-ilmenau.de>
+ kcontrol/samba/kcmsambalog.cpp ~ GPLv2h ~ Copyright (c) 2000 Alexander Neundorf <neundorf@kde.org>
+ kcontrol/samba/kcmsambalog.h ~ GPLv2h ~  Copyright (c) 2000 Alexander Neundorf <neundorf@kde.org>
+ kcontrol/samba/kcmsambastatistics.cpp ~ GPLv2h ~  * Copyright (c) 2000 Alexander Neundorf <alexander.neundorf@rz.tu-ilmenau.de>
+ kcontrol/samba/kcmsambastatistics.h ~ GPLv2h ~ Copyright (c) 2000 Alexander Neundorf <alexander.neundorf@rz.tu-ilmenau.de>
+ kcontrol/samba/ksmbstatus.cpp ~ unspec ~ unspec
+ kcontrol/samba/ksmbstatus.h ~ unspec ~ unspec
+ kcontrol/samba/main.cpp ~ unspec ~ unspec
+ kcontrol/samba/Messages.sh ~ unspec ~ unspec
+ kcontrol/samba/smbstatus.desktop ~ unspec ~ unspec
+
+
+Files under kdebugdialog:
+
+ kdebugdialog/CMakeLists.txt ~ unspec ~ unspec
+ kdebugdialog/kabstractdebugdialog.cpp ~ LGPLv2h ~     Copyright (C) 2000 David Faure <faure@kde.org>
+ kdebugdialog/kabstractdebugdialog.h ~ LGPLv2h ~     Copyright (C) 2000 David Faure <faure@kde.org>
+ kdebugdialog/kdebugdialog.cpp ~ LGPLv2h ~  Copyright (C) 1997 Matthias Kalle Dalheimer (kalle@kde.org)
+                                                    Copyright (C) 1999 David Faure (faure@kde.org)
+ kdebugdialog/kdebugdialog.h ~ LGPLv2 ~  Copyright (C) 1997 Matthias Kalle Dalheimer (kalle@kde.org)
+ kdebugdialog/klistdebugdialog.cpp ~ LGPLv2h ~ Copyright (C) 2000 David Faure <faure@kde.org>
+                                                       Copyright (C) 2005 Hamish Rodda <rodda@kde.org>
+ kdebugdialog/klistdebugdialog.h ~ LGPLv2h ~  Copyright (C) 2000 David Faure <faure@kde.org>
+ kdebugdialog/main.cpp ~ LGPLv2h ~    Copyright (C) 2000 David Faure <faure@kde.org>
+ kdebugdialog/Messages.sh ~ unspec ~ unspec
+ kdebugdialog/README ~ unspec ~ unspec
+
+
+Files under kdeeject:
+
+ kdeeject/CMakeLists.txt ~ unspec ~ unspec
+ kdeeject/kdeeject ~ GPLv2 ~ Copyright GPL v2 by David Faure <david@mandrakesoft.com>
+
+
+Files under kde-menu:
+
+ kde-menu/CMakeLists.txt ~ unspec ~ unspec
+ kde-menu/kde-menu.cpp ~ LGPLv2 ~  *  Copyright (C) 2003 Waldo Bastian <bastian@kde.org>
+ kde-menu/Messages.sh ~ unspec ~ unspec
+
+
+Files under kdesu:
+
+ kdesu/AUTHORS ~ unspec ~ unspec
+ kdesu/ChangeLog ~ unspec ~ unspec
+ kdesu/CMakeLists.txt ~ unspec ~ unspec
+ kdesu/configure.in.in ~ unspec ~ unspec
+ kdesu/FAQ ~ unspec ~ unspec
+ kdesu/kdesu/CMakeLists.txt ~ unspec ~ unspec
+ kdesu/kdesud/CMakeLists.txt ~ unspec ~ unspec
+ kdesu/kdesud/handler.cpp ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesud/handler.h ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesud/kdesud.cpp ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+            ki18n("Copyright (c) 1999,2000 Geert Jansen"));
+ kdesu/kdesud/lexer.cpp ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesud/lexer.h ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesud/Messages.sh ~ unspec ~ unspec
+ kdesu/kdesud/repo.cpp ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <g.t.jansen@stud.tue.nl>
+ kdesu/kdesud/repo.h ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesud/secure.cpp ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <g.t.jansen@stud.tue.nl>
+ kdesu/kdesud/secure.h ~ unspec  ~  * Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesu/kdesu.cpp ~ unspec ~  * Copyright (C) 1998 Pietro Iglio <iglio@fub.it>
+ kdesu/kdesu/Messages.sh ~ unspec ~ unspec
+ kdesu/kdesu/sudlg.cpp ~ unspec ~  * Copyright (C) 2000 Geert Jansen <jansen@kde.org>
+ kdesu/kdesu/sudlg.h ~ unspec ~  * Copyright (C) 2000 Geert Jansen <jansen@kde.org>
+ kdesu/LICENSE.readme ~ unspec ~ unspec
+ kdesu/README ~ unspec ~ unspec
+ kdesu/TODO ~ unspec ~ unspec
+
+
+Files under kfile:
+
+ kfile/CMakeLists.txt ~ unspec ~ unspec
+ kfile/fileprops.cpp ~ LGPLv2 ~    Copyright (C) 2002,2003 Carsten Pfeiffer <pfeiffer@kde.org>
+ kfile/fileprops.h ~ LGPLv2 ~     Copyright (C) 2002 Carsten Pfeiffer <pfeiffer@kde.org>
+ kfile/Messages.sh ~ unspec ~ unspec
+ kfile/README ~ unspec ~ unspec
+
+
+Files under khelpcenter:
+
+ khelpcenter/application.cpp ~ GPLv2h ~  *  Copyright (c) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/application.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/CMakeLists.txt ~ unspec ~ unspec
+ khelpcenter/COPYING ~ LGPLv2 ~  Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+ khelpcenter/DESIGN ~ unspec ~ unspec
+ khelpcenter/docentry.cpp ~ unspec ~ unspec
+ khelpcenter/docentry.h ~ unspec ~ unspec
+ khelpcenter/docentrytraverser.cpp ~ unspec ~ unspec
+ khelpcenter/docentrytraverser.h ~ unspec ~ unspec
+ khelpcenter/docmetainfo.cpp ~ unspec ~ unspec
+ khelpcenter/docmetainfo.h ~ unspec ~ unspec
+ khelpcenter/fontdialog.cpp ~ GPLv2h ~  *  Copyright (C) 2003 Frerich Raabe <raabe@kde.org>
+ khelpcenter/fontdialog.h ~ GPLv2h ~  *  Copyright (C) 2003 Frerich Raabe <raabe@kde.org>
+ khelpcenter/formatter.cpp ~ GPLv2h ~     Copyright (c) 2003 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/formatter.h ~ GPLv2h ~     Copyright (c) 2003 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/glossary.cpp ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/glossary.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/glossary.html.in ~ unspec ~ unspec
+ khelpcenter/glossary.xslt ~ unspec ~ unspec
+ khelpcenter/Help.desktop ~ unspec ~ unspec
+ khelpcenter/history.cpp ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/history.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/htmlsearch/checked.xpm ~ unspec ~ unspec
+ khelpcenter/htmlsearch/CMakeLists.txt ~ unspec ~ unspec
+ khelpcenter/htmlsearchconfig.cpp ~ GPLv2h ~  *  Copyright (c) 2000 Matthias Hölzer-Klüpfel <hoelzer@kde.org>
+ khelpcenter/htmlsearchconfig.h ~ GPLv2h ~  * Copyright (c) 2000 Matthias Hölzer-Klüpfel <hoelzer@kde.org>
+ khelpcenter/htmlsearch.cpp ~ unspec ~ unspec
+ khelpcenter/htmlsearch/cr128-app-help_index.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/cr16-app-help_index.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/cr32-app-help_index.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/cr48-app-help_index.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/cr64-app-help_index.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch.h ~ unspec ~ unspec
+ khelpcenter/htmlsearch/htmlsearch.cpp ~ unspec ~ unspec
+ khelpcenter/htmlsearch/htmlsearch.desktop ~ unspec ~ unspec
+ khelpcenter/htmlsearch/htmlsearch.h ~ unspec ~ unspec
+ khelpcenter/htmlsearch/index.cpp ~ unspec ~ unspec
+ khelpcenter/htmlsearch/kcmhtmlsearch.cpp ~ GPLv2h ~  *  Copyright (c) 2000 Matthias Hölzer-Klüpfel <hoelzer@kde.org>
+ khelpcenter/htmlsearch/kcmhtmlsearch.h ~ GPLv2h ~  * Copyright (c) 2000 Matthias Hölzer-Klüpfel <hoelzer@kde.org>
+ khelpcenter/htmlsearch/klangcombo.cpp ~ GPLv2h ~  * Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
+ khelpcenter/htmlsearch/klangcombo.h ~ GPLv2h ~  * Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
+ khelpcenter/htmlsearch/ktagcombobox.cpp ~ GPLv2h ~  * Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
+ khelpcenter/htmlsearch/ktagcombobox.h ~ GPLv2h ~  * Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
+ khelpcenter/htmlsearch/long.html ~ unspec ~ unspec
+ khelpcenter/htmlsearch/meinproc_wrapper ~ unspec ~ unspec
+ khelpcenter/htmlsearch/Messages.sh ~ unspec ~ unspec
+ khelpcenter/htmlsearch/nomatch.html ~ unspec ~ unspec
+ khelpcenter/htmlsearch/progressdialog.cpp ~ unspec ~ unspec
+ khelpcenter/htmlsearch/progressdialog.h ~ unspec ~ unspec
+ khelpcenter/htmlsearch/short.html ~ unspec ~ unspec
+ khelpcenter/htmlsearch/star_blank.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/star.png ~ unspec ~ unspec
+ khelpcenter/htmlsearch/syntax.html ~ unspec ~ unspec
+ khelpcenter/htmlsearch/unchecked.xpm ~ unspec ~ unspec
+ khelpcenter/htmlsearch/wrapper.html ~ unspec ~ unspec
+ khelpcenter/index.html.in ~ unspec ~ unspec
+ khelpcenter/infotree.cpp ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/infotree.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/intro.html.in ~ unspec ~ unspec
+ khelpcenter/kcmhelpcenter.cpp ~ GPLv2h ~   Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/kcmhelpcenter.desktop ~ unspec ~ unspec
+ khelpcenter/kcmhelpcenter.h ~ GPLv2h ~   Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/khc_indexbuilder.cpp ~ GPLv2h ~   Copyright (c) 2003 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/khc_indexbuilder.h ~ GPLv2h ~  *  Copyright (C) 2003 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/khelpcenter.desktop ~ unspec ~ unspec
+ khelpcenter/khelpcenter.kcfg ~ unspec ~ unspec
+ khelpcenter/khelpcenterui.rc ~ unspec ~ unspec
+ khelpcenter/mainwindow.cpp ~ GPLv2h ~ Copyright (C) 1999 Matthias Elter (me@kde.org)
+                                                2001 Stephan Kulow (coolo@kde.org)
+ khelpcenter/mainwindow.h ~ unspec ~ unspec
+ khelpcenter/Messages.sh ~ unspec ~ unspec
+ khelpcenter/navigatorappitem.cpp ~ GPLv2 ~  *  Copyright (C) 2001 Waldo Bastian <bastian@kde.org>
+ khelpcenter/navigatorappitem.h ~ GPLv2h ~  *  Copyright (C) 2001 Waldo Bastian <bastian@kde.org>
+ khelpcenter/navigator.cpp ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/navigator.h ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/navigatoritem.cpp ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/navigatoritem.h ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/org.kde.khelpcenter.kcmhelpcenter.xml ~ unspec ~ unspec
+ khelpcenter/pics/CMakeLists.txt ~ unspec ~ unspec
+ khelpcenter/pics/hi128-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hi16-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hi22-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hi32-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hi48-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hi64-app-khelpcenter.png ~ unspec ~ unspec
+ khelpcenter/pics/hisc-app-khelpcenter.svgz ~ unspec ~ unspec
+ khelpcenter/plugins/* ~ unspec ~ unspec
+ khelpcenter/plugintraverser.cpp ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/plugintraverser.h ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/prefs.kcfgc ~ unspec ~ unspec
+ khelpcenter/README.htdig ~ unspec ~ unspec
+ khelpcenter/README.metadata ~ unspec ~ unspec
+ khelpcenter/scopeitem.h ~ unspec ~ unspec
+ khelpcenter/scrollkeepertreebuilder.cpp ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/scrollkeepertreebuilder.h ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/searchengine.cpp ~ unspec ~ unspec
+ khelpcenter/searchengine.h ~ unspec ~ unspec
+ khelpcenter/searchhandler.cpp ~ GPLv2h ~     Copyright (c) 2005 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/searchhandler.h ~ GPLv2h ~     Copyright (c) 2005 Cornelius Schumacher <schumacher@kde.org>
+ khelpcenter/searchhandlers/CMakeLists.txt ~ unspec ~ unspec
+ khelpcenter/searchhandlers/docbook.desktop ~ unspec ~ unspec
+ khelpcenter/searchhandlers/htdig.desktop ~ unspec ~ unspec
+ khelpcenter/searchhandlers/htdig_long.html ~ unspec ~ unspec
+ khelpcenter/searchhandlers/khc_docbookdig.pl.cmake ~ GPLv2h ~ Copyright (C) 2002  SuSE Linux AG, Nuernberg
+ khelpcenter/searchhandlers/khc_htdig.pl.cmake ~ GPLv2h ~ Copyright (C) 2002  SuSE Linux AG, Nuernberg
+ khelpcenter/searchhandlers/khc_htsearch.pl ~ unspec ~ unspec
+ khelpcenter/searchhandlers/khc_mansearch.pl ~ GPLv2h ~ Copyright (C) 2002  SuSE Linux AG, Nuernberg
+ khelpcenter/searchhandlers/man.desktop ~ unspec ~ unspec
+ khelpcenter/searchhandlers/README.searchhandlers ~ unspec ~ unspec
+ khelpcenter/searchwidget.cpp ~ GPLv2h ~ Copyright (C) 1999 Matthias Elter (me@kde.org)
+                                                  (C) 2000 Matthias Hoelzer-Kluepfel (hoelzer@kde.org)     
+ khelpcenter/searchwidget.h ~ GPLv2h ~  *  Copyright (C) 1999 Matthias Elter (me@kde.org)
+ khelpcenter/table-of-contents.xslt ~ unspec ~ unspec
+ khelpcenter/tests/CMakeLists.txt ~ unspec ~ unspec
+ khelpcenter/tests/testmetainfo.cpp ~ unspec ~ unspec
+ khelpcenter/toc.cpp ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/toc.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe (raabe@kde.org)
+ khelpcenter/treebuilder.cpp ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/treebuilder.h ~ GPLv2h ~  *  Copyright (C) 2002 Frerich Raabe <raabe@kde.org>
+ khelpcenter/version.h ~ unspec ~ unspec
+ khelpcenter/view.cpp ~ unspec ~ unspec
+ khelpcenter/view.h ~ unspec ~ unspec
+
+
+Files under kinstalltheme:
+
+ kinstalltheme/CMakeLists.txt ~ unspec ~ unspec
+ kinstalltheme/main.cpp ~ MIT ~   Copyright (c) 2002 Maksim Orlovich <mo002j@mail.rochester.edu>
+
+
+Files under kioclient:
+
+ kioclient/CMakeLists.txt ~ unspec ~ unspec
+ kioclient/kioclient.cpp ~ LGPLv2 ~    Copyright (C) 1999-2006 David Faure <faure@kde.org>
+ kioclient/kioclient.h ~ LGPLv2 ~    Copyright (C) 1999-2006 David Faure <faure@kde.org>
+ kioclient/Messages.sh ~ unspec ~ unspec
+
+
+Files under kioexec:
+
+ kioexec/CMakeLists.txt ~ unspec ~ unspec
+ kioexec/main.cpp ~ GPLv2h ~ Copyright (C) 1998, 1999 Torben Weis <weis@kde.org>
+                                     Copyright (C)  2000-2005 David Faure <faure@kde.org>
+                                     Copyright (C)       2001 Waldo Bastian <bastian@kde.org>
+ kioexec/main.h ~ GPLv2h ~   Copyright (C) 1998, 1999 Torben Weis <weis@kde.org>
+                                     Copyright (C)  2000-2005 David Faure <faure@kde.org>
+                                     Copyright (C)       2001 Waldo Bastian <bastian@kde.org>
+ kioexec/Messages.sh ~ unspec ~ unspec
+ kioexec/README ~ unspec ~ unspec
+
+
+Files under kioslave:
+
+ kioslave/about/about.protocol ~ unspec ~ unspec
+ kioslave/about/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/about/kio_about.cpp ~ LGPLv2h ~     Copyright (c) 2002 John Firebaugh <jfirebaugh@kde.org>
+ kioslave/about/kio_about.h ~ LGPLv2h ~     Copyright (c) 2002 John Firebaugh <jfirebaugh@kde.org>
+ kioslave/about/Messages.sh ~ unspec ~ unspec
+ kioslave/cgi/cgi.cpp ~ GPLv2h ~    Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ kioslave/cgi/cgi.h ~ GPLv2h ~    Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ kioslave/cgi/cgi.protocol ~ unspec ~ unspec
+ kioslave/cgi/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/cgi/kcmcgi/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/cgi/kcmcgi/kcmcgi.cpp ~ GPLv2h ~    Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ kioslave/cgi/kcmcgi/kcmcgi.desktop ~ unspec ~ unspec
+ kioslave/cgi/kcmcgi/kcmcgi.h ~ GPLv2h ~    Copyright (C) 2002 Cornelius Schumacher <schumacher@kde.org>
+ kioslave/cgi/kcmcgi/Messages.sh ~ unspec ~ unspec
+ kioslave/cgi/README ~ unspec ~ unspec
+ kioslave/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/DEBUG.howto ~ unspec ~ unspec
+ kioslave/DESIGN ~ unspec ~ unspec
+ kioslave/filter/bzip2.protocol ~ unspec ~ unspec
+ kioslave/filter/bzip.protocol ~ unspec ~ unspec
+ kioslave/filter/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/filter/filter.cc ~ MIT ~  Copyright (C) 1999-2000 Waldo Bastian (bastian@kde.org)
+ kioslave/filter/filter.h ~ MIT ~  Copyright (C) 2000 Waldo Bastian (bastian@kde.org)
+ kioslave/filter/gzip.protocol ~ unspec ~ unspec
+ kioslave/finger/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/finger/finger.protocol ~ unspec ~ unspec
+ kioslave/finger/kio_finger.cpp ~ GPLv2h ~     copyright            : (C) 2000 by Andreas Schlapbach
+ kioslave/finger/kio_finger.css ~ unspec ~ unspec
+ kioslave/finger/kio_finger.h ~ GPLv2h ~     copyright            : (C) 2000 by Andreas Schlapbach
+ kioslave/finger/kio_finger.pl ~ unspec ~ # Copyright Andreas Schlapbach, schlpbch@iam.unibe.ch, 2001
+ kioslave/finger/Messages.sh ~ unspec ~ unspec
+ kioslave/fish/AUTHORS ~ unspec ~ unspec
+ kioslave/fish/ChangeLog ~ unspec ~ unspec
+ kioslave/fish/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/fish/config-fish.h.cmake ~ unspec ~ unspec
+ kioslave/fish/configure.in.in ~ unspec ~ unspec
+ kioslave/fish/COPYING ~ LGPLv2 ~  Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+ kioslave/fish/FAQ ~ unspec ~ unspec
+ kioslave/fish/fish.cpp ~ GPLv2 ~     copyright            : (C) 2001-2003 by Jörg Walter
+ kioslave/fish/fish.h ~ GPLv2 ~     copyright            : (C) 2001 by Jörg Walter
+ kioslave/fish/fish.pl ~ GPLv2 ~ unspec
+ kioslave/fish/fish.protocol ~ unspec ~ unspec
+ kioslave/fish/generate_fishcode.sh ~ unspec ~ unspec
+ kioslave/fish/INSTALL ~ unspec ~ unspec
+ kioslave/fish/Messages.sh ~ unspec ~ unspec
+ kioslave/fish/README ~ unspec ~ unspec
+ kioslave/fish/TODO ~ unspec ~ unspec
+ kioslave/floppy/AUTHORS ~ unspec ~ unspec
+ kioslave/floppy/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/floppy/floppy.protocol ~ unspec ~ unspec
+ kioslave/floppy/kio_floppy.cpp ~ GPLv2h ~     Copyright (C) 2000 Alexander Neundorf <neundorf@kde.org>
+ kioslave/floppy/kio_floppy.h ~ GPLv2h ~     Copyright (C) 2000 Alexander Neundorf <neundorf@kde.org>
+ kioslave/floppy/Messages.sh ~ unspec ~ unspec
+ kioslave/floppy/program.cpp ~ GPLv2h ~     Copyright (C) 2000-2002 Alexander Neundorf <neundorf@kde.org>
+ kioslave/floppy/program.h ~ GPLv2h ~     Copyright (C) 2000-2002 Alexander Neundorf <neundorf@kde.org>
+ kioslave/floppy/README ~ unspec ~ unspec
+ kioslave/floppy/TODO ~ unspec ~ unspec
+ kioslave/info/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/info/info.cc ~ unspec ~ unspec
+ kioslave/info/info.h ~ unspec ~ unspec
+ kioslave/info/info.protocol ~ unspec ~ unspec
+ kioslave/info/kde-info2html ~ GPL ~ Karl Guggisberg  <guggis@iam.unibe.ch>, (c) 1999 Matthias ELter
+ kioslave/info/kde-info2html.conf ~ unspec ~ Karl Guggisberg  <guggis@iam.unibe.ch>
+ kioslave/info/LICENSE ~ unspec ~ unspec
+ kioslave/info/Messages.sh ~ unspec ~ unspec
+ kioslave/ldap/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/ldap/kio_ldap.cpp ~ unspec ~ unspec
+ kioslave/ldap/kio_ldap.h ~ unspec ~ unspec
+ kioslave/ldap/ldap.protocol ~ unspec ~ unspec
+ kioslave/ldap/ldaps.protocol ~ unspec ~ unspec
+ kioslave/ldap/LICENSE ~ unspec ~ unspec
+ kioslave/ldap/Messages.sh ~ unspec ~ unspec
+ kioslave/man/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/man/kio_man.cpp ~ LGPLv2h ~     Copyright (c) 2000 Matthias Hoelzer-Kluepfel <mhk@caldera.de>
+ kioslave/man/kio_man.css ~ unspec ~ unspec
+ kioslave/man/kio_man.h ~ LGPLv2h ~     Copyright (c) 2000 Matthias Hoelzer-Kluepfel <mhk@caldera.de>
+ kioslave/man/kmanpart.cpp ~ LGPLv2h ~     Copyright (C) 2002 Alexander Neundorf <neundorf@kde.org>
+ kioslave/man/kmanpart.desktop ~ unspec ~ unspec
+ kioslave/man/kmanpart.h ~ LGPLv2h ~     Copyright (C) 2002 Alexander Neundorf <neundorf@kde.org>
+ kioslave/man/LICENSE ~ unspec ~ unspec
+ kioslave/man/man2html.cpp ~ unspec ~     Copyright (C) 2005 Nicolas GOUTTE <goutte@kde.org>
+ kioslave/man/man2html.h ~ unspec ~ unspec
+ kioslave/man/man.protocol ~ unspec ~ unspec
+ kioslave/man/Messages.sh ~ unspec ~ unspec
+ kioslave/man/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/man/tests/kio_man_test.cpp ~ unspec ~ unspec
+ kioslave/media/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/config-media.h.cmake ~ unspec ~ unspec
+ kioslave/media/configure.in.in ~ unspec ~ unspec
+ kioslave/media/contrib/mediamanager_usbstorage.dev ~ unspec ~ unspec
+ kioslave/media/contrib/README ~ unspec ~ unspec
+ kioslave/media/contrib/usbcam ~ unspec ~ unspec
+ kioslave/media/kcmodule/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/kcmodule/main.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/main.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/managermodule.cpp ~ LGPLv2 ~    Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/managermodule.h ~ LGPLv2 ~    Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/managermoduleview.ui ~ unspec ~ unspec
+ kioslave/media/kcmodule/media.desktop ~ unspec ~ unspec
+ kioslave/media/kcmodule/Messages.sh ~ unspec ~ unspec
+ kioslave/media/kcmodule/mimetypelistboxitem.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>, Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/mimetypelistboxitem.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                  Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/notifiermodule.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                               Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/notifiermodule.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                             Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/notifiermoduleview.ui ~ unspec ~ unspec
+ kioslave/media/kcmodule/serviceconfigdialog.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/serviceconfigdialog.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/kcmodule/serviceview.ui ~ unspec ~ unspec
+ kioslave/media/kfile-plugin/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/kfile-plugin/kfile_media.desktop ~ unspec ~ unspec
+ kioslave/media/kfile-plugin/kfilemediaplugin.cpp ~ LGPLv2h ~    Copyright (C) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/kfile-plugin/kfilemediaplugin.h ~ LGPLv2h ~    Copyright (C) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/kio_media.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/kio_media.h ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/actionlistboxitem.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/actionlistboxitem.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/libmediacommon/mediamanagersettings.kcfg ~ unspec ~ unspec
+ kioslave/media/libmediacommon/mediamanagersettings.kcfgc ~ unspec ~ unspec
+ kioslave/media/libmediacommon/medium.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/medium.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifieraction.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifieraction.h ~ LGPLv2 ~  Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                     Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifiernothingaction.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifiernothingaction.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifieropenaction.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifieropenaction.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifierserviceaction.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifierserviceaction.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifiersettings.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/libmediacommon/notifiersettings.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                      Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediaimpl.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/mediaimpl.h ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/backendbase.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/backendbase.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/mediamanager/fstabbackend.cpp ~ LGPLv2 ~ Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+                                                                Copyright (c) 2005 Bernhard Rosenkraenzer <bero arklinux org>
+ kioslave/media/mediamanager/fstabbackend.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/halbackend.cpp ~ LGPLv2 ~    Copyright (c) 2004-2005 Jérôme Lodewyck <jerome dot lodewyck at normalesup dot org>
+ kioslave/media/mediamanager/halbackend.h ~ LGPLv2 ~    Copyright (c) 2004-2005 Jérôme Lodewyck <jerome dot lodewyck at normalesup dot org>
+ kioslave/media/mediamanageriface.cpp ~ unspec ~Copyright (C) 2006 Trolltech AS. All rights reserved.
+ kioslave/media/mediamanageriface.h ~ unspec ~ Copyright (C) 2006 Trolltech AS. All rights reserved.
+ kioslave/media/mediamanager/linuxcdpolling.cpp ~ LGPLv2 ~    Copyright (c) 2003 Gav Wood <gav kde org>
+                                                                     Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/linuxcdpolling.h ~ LGPLv2 ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/mediadirnotify.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/mediadirnotify.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/medialist.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/medialist.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/mediamanager.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/mediamanager.desktop ~ unspec ~ unspec
+ kioslave/media/mediamanager/mediamanager.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/removablebackend.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/mediamanager/removablebackend.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/medianotifier/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/medianotifier/medianotifier.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+                                                                   Copyright (c) 2007 Alexis Ménard <darktears31@gmail.com>
+ kioslave/media/medianotifier/medianotifier.desktop ~ unspec ~ unspec
+ kioslave/media/medianotifier/medianotifier.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kevin Ottens <ervin ipsquad net>
+ kioslave/media/medianotifier/Messages.sh ~ unspec ~ unspec
+ kioslave/media/medianotifier/notificationdialog.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/medianotifier/notificationdialog.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                                   Copyright (c) 2005 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/medianotifier/notificationdialogview.ui ~ unspec ~ unspec
+ kioslave/media/media.protocol ~ unspec ~ unspec
+ kioslave/media/Messages.sh ~ unspec ~ unspec
+ kioslave/media/mounthelper/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/mounthelper/kio_media_mounthelper.cpp ~ LGPLv2h ~ Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+                                                                       Copyright 2003 Waldo Bastian <bastian@kde.org>
+ kioslave/media/mounthelper/kio_media_mounthelper.h ~ LGPLv2h ~ Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+                                                                       Copyright 2003 Waldo Bastian <bastian@kde.org>
+ kioslave/media/org.kde.MediaManager.xml ~ unspec ~ unspec
+ kioslave/media/services/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/services/media_eject.desktop ~ unspec ~ unspec
+ kioslave/media/services/media_mount.desktop ~ unspec ~ unspec
+ kioslave/media/services/media_safelyremove.desktop ~ unspec ~ unspec
+ kioslave/media/services/media_unmount.desktop ~ unspec ~ unspec
+ kioslave/media/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/media/tests/testmedia.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/media/tests/testmedia.h ~ LGPLv2h	 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/nfs/AUTHORS ~ unspec ~ unspec
+ kioslave/nfs/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/nfs/kio_nfs.cpp ~ LGPLv2h ~     Copyright (C) 2000 Alexander Neundorf <neundorf@kde.org>
+ kioslave/nfs/kio_nfs.h ~ LGPLv2h ~     Copyright (C) 2000 Alexander Neundorf <neundorf@kde.org>
+ kioslave/nfs/Messages.sh ~ unspec ~ unspec
+ kioslave/nfs/mount.h ~ Sun ~ Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/mount.x ~ Sun ~ Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/mount_xdr.c ~ Sun ~ Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/nfs_prot.h ~ Sun ~  Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/nfs.protocol ~ unspec ~ unspec
+ kioslave/nfs/nfs_prot.x ~ Sun ~ Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/nfs_prot_xdr.c ~ Sun ~  Copyright (c) 1985, 1990 by Sun Microsystems, Inc.
+ kioslave/nfs/README ~ unspec ~ unspec
+ kioslave/nfs/TODO ~ unspec ~ unspec
+ kioslave/nntp/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/nntp/LICENSE ~ LGPLv2 ~ The above copyright notice and this permission notice shall be included in
+ kioslave/nntp/Messages.sh ~ unspec ~ unspec
+ kioslave/nntp/nntp.cpp ~ LGPLv2 ~  Copyright (C) 2000 by Wolfram Diestel <wolfram@steloj.de>
+                                            Copyright (C) 2005 by Tim Way <tim@way.hrcoxmail.com>
+                                            Copyright (C) 2005 by Volker Krause <volker.krause@rwth-aachen.de>
+ kioslave/nntp/nntp.h ~ LGPLv2 ~  Copyright (C) 2000 by Wolfram Diestel <wolfram@steloj.de>
+                                          Copyright (C) 2005 by Tim Way <tim@way.hrcoxmail.com>
+                                          Copyright (C) 2005 by Volker Krause <volker.krause@rwth-aachen.de>
+ kioslave/nntp/nntp.protocol ~ unspec ~ unspec
+ kioslave/nntp/nntps.protocol ~ unspec ~ unspec
+ kioslave/pop3/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/pop3/Messages.sh ~ unspec ~ unspec
+ kioslave/pop3/pop3.cc ~ MIT ~ Copyright (c) 1999-2001 Alex Zepeda
+                                       Copyright (c) 2001-2002 Michael Haeckel <haeckel@kde.org> 
+ kioslave/pop3/pop3-config.h.cmake ~ unspec ~ unspec
+ kioslave/pop3/pop3.h ~ MIT ~  * Copyright (c) 1999,2000 Alex Zepeda
+ kioslave/pop3/pop3.protocol ~ unspec ~ unspec
+ kioslave/pop3/pop3s.protocol ~ unspec ~ unspec
+ kioslave/remote/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/remote/kdedmodule/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/remote/kdedmodule/remotedirnotify.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/remote/kdedmodule/remotedirnotify.desktop ~ unspec ~ unspec
+ kioslave/remote/kdedmodule/remotedirnotify.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/remote/kdedmodule/remotedirnotifymodule.cpp ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/remote/kdedmodule/remotedirnotifymodule.h ~ LGPLv2 ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/remote/kio_remote.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/remote/kio_remote.h ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/remote/Messages.sh ~ unspec ~ unspec
+ kioslave/remote/remoteimpl.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/remote/remoteimpl.h ~ LGPLv2h ~    Copyright (c) 2004 Kevin Ottens <ervin ipsquad net>
+ kioslave/remote/remote.protocol ~ unspec ~ unspec
+ kioslave/remote/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/remote/tests/testremote.cpp ~ LGPLv2h ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/remote/tests/testremote.h ~ LGPLv2h ~    Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+ kioslave/settings/applications.protocol ~ unspec ~ unspec
+ kioslave/settings/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/settings/kio_settings.cc ~ LGPLv2h ~    Copyright (C) 2003 Joseph Wenninger <jowenn@kde.org>
+ kioslave/settings/kio_settings.h ~ unspec ~ unspec
+ kioslave/settings/Messages.sh ~ unspec ~ unspec
+ kioslave/settings/programs.protocol ~ unspec ~ unspec
+ kioslave/settings/settings.protocol ~ unspec ~ unspec
+ kioslave/sftp/atomicio.cpp ~ BSD ~  * Copyright (c) 1995,1999 Theo de Raadt.  All rights reserved. 
+ kioslave/sftp/atomicio.h ~ BSD ~  * Copyright (c) 1995,1999 Theo de Raadt.  All rights reserved.
+ kioslave/sftp/AUTHORS ~ unspec ~ unspec
+ kioslave/sftp/CHANGELOG ~ unspec ~ unspec
+ kioslave/sftp/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/sftp/DEBUGGING ~ unspec ~ unspec
+ kioslave/sftp/kio_sftp.cpp ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/kio_sftp.h ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/ksshprocess.cpp ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/ksshprocess.h ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/Messages.sh ~ unspec ~ unspec
+ kioslave/sftp/process.cpp ~ LGPLv2 ~ Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+                                              Copyright (c) 1997,1998 by Lars Doelle <lars.doelle@on-line.de> 
+ kioslave/sftp/process.h ~ LGPLv2 ~  Copyright (C) 1999,2000 Geert Jansen <jansen@kde.org>
+ kioslave/sftp/sftpfileattr.cpp ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/sftpfileattr.h ~ GPLv2h ~     copyright            : (C) 2001 by Lucas Fisher
+ kioslave/sftp/sftp.h ~ BSD ~ Copyright (c) 2001 Markus Friedl.  All rights reserved.
+ kioslave/sftp/sftp.protocol ~ unspec ~ unspec
+ kioslave/sftp/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/sftp/tests/ksshprocesstest.cpp ~ unspec ~ unspec
+ kioslave/sftp/TODO ~ unspec ~ unspec
+ kioslave/smb/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/smb/kio_smb_auth.cpp ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_browse.cpp ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_config.cpp ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb.cpp ~ GPLv2.1h~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_dir.cpp ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_file.cpp ~ GPLv2.1h~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb.h ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_internal.cpp ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_internal.h ~ GPLv2.1h ~ // Copyright (c) 2000  Caldera Systems, Inc.
+ kioslave/smb/kio_smb_mount.cpp ~ GPLv2h ~     Copyright (C) 2000 Alexander Neundorf <neundorf@kde.org>
+ kioslave/smb/libsmbclient-HOWTO.txt ~ unspec ~ unspec
+ kioslave/smb/Messages.sh ~ unspec ~ unspec
+ kioslave/smb/smb-network.desktop ~ unspec ~ unspec
+ kioslave/smb/smb.protocol ~ unspec ~ unspec
+ kioslave/smtp/capabilities.cc ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>    
+ kioslave/smtp/capabilities.h ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/smtp/command.cc ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/command.h ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/compliance.txt ~ unspec ~ unspec
+ kioslave/smtp/Messages.sh ~ unspec ~ unspec
+ kioslave/smtp/request.cc ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/request.h ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/response.cc ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/response.h ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/smtp.cc ~ BSD ~ Copyright (c) 2000, 2001 Alex Zepeda <zipzippy@sonic.net>
+                                        Copyright (c) 2001 Michael H�kel <Michael@Haeckel.Net>
+                                        Copyright (c) 2002 Aaron J. Seigo <aseigo@olympusproject.org>
+                                        Copyright (c) 2003 Marc Mutz <mutz@kde.org> 
+ kioslave/smtp/smtp-config.h.cmake ~ unspec ~ unspec
+ kioslave/smtp/smtp.h ~ BSD ~ Copyright (c) 2000, 2001 Alex Zepeda <zipzippy@sonic.net>
+                                       Copyright (c) 2001 Michael H�kel <Michael@Haeckel.Net>
+ kioslave/smtp/smtp.protocol ~ unspec ~ unspec
+ kioslave/smtp/smtps.protocol ~ unspec ~ unspec
+ kioslave/smtp/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/smtp/tests/interactivesmtpserver.cc ~ GPLv2 ~     Copyright (c) 2004 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/tests/interactivesmtpserver.h ~ GPLv2 ~     Copyright (c) 2004 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/tests/test_commands.cc ~ unspec ~ unspec
+ kioslave/smtp/tests/test_headergeneration.cc ~ unspec ~ unspec
+ kioslave/smtp/tests/test_responseparser.cc ~ unspec ~ unspec
+ kioslave/smtp/tests/test_responseparser.h ~ LGPLv2h ~     Copyright (c) 2006 Volker Krause <vkrause@kde.org>
+ kioslave/smtp/TODO ~ unspec ~ unspec
+ kioslave/smtp/transactionstate.cc ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/smtp/transactionstate.h ~ GPLv2 ~     Copyright (c) 2003 Marc Mutz <mutz@kde.org>
+ kioslave/tar/ar.protocol ~ unspec ~ unspec
+ kioslave/tar/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/tar/Messages.sh ~ unspec ~ unspec
+ kioslave/tar/tar.cc ~ LGPLv2h ~     Copyright (C) 2000 David Faure <faure@kde.org>
+ kioslave/tar/tar.h ~ LGPLv2h ~     Copyright (C) 2000 David Faure <faure@kde.org>
+ kioslave/tar/tar.protocol ~ unspec ~ unspec
+ kioslave/tar/zip.protocol ~ unspec ~ unspec
+ kioslave/thumbnail/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/thumbnail/cursorcreator.cpp ~ LGPLv2h ~     Copyright (C) 2003 Fredrik Höglund <fredrik@kde.org>
+ kioslave/thumbnail/cursorcreator.h ~ LGPLv2h ~     Copyright (C) 2003 Fredrik Höglund <fredrik@kde.org>
+ kioslave/thumbnail/cursorthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/djvucreator.cpp ~ LGPLv2h ~     Copyright (C) 2001 Malte Starostik <malte@kde.org>
+                                                       Copyright (C) 2001 Leon Bottou <leon@bottou.org>
+ kioslave/thumbnail/djvucreator.h ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+                                                       Copyright (C) 2003 Leon Bottou <leon@bottou.org>
+ kioslave/thumbnail/djvuthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/exrcreator.cpp ~ LGPLv2h ~     Copyright (C) 2004 Brad Hards <bradh@frogmouth.net>
+ kioslave/thumbnail/exrcreator.h ~ LGPLv2h ~     Copyright (C) 2004 Brad Hards <bradh@frogmouth.net>
+ kioslave/thumbnail/exrthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/htmlcreator.cpp ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+                                                       Copyright (C) 2006 Roberto Cappuccio <roberto.cappuccio@gmail.com>
+ kioslave/thumbnail/htmlcreator.h ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+                                                       Copyright (C) 2006 Roberto Cappuccio <roberto.cappuccio@gmail.com>
+ kioslave/thumbnail/htmlthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/imagecreator.cpp ~ LGPLv2h ~     Copyright (C) 2000 Carsten Pfeiffer <pfeiffer@kde.org>
+ kioslave/thumbnail/imagecreator.h ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+ kioslave/thumbnail/imagethumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/Messages.sh ~ unspec ~ unspec
+ kioslave/thumbnail/svgcreator.cpp ~ LGPLv2h ~     Copyright (c) 2006 Pascal Létourneau <pascal.letourneau@kdemail.net>
+ kioslave/thumbnail/svgcreator.h ~ LGPLv2h ~     Copyright (c) 2006 Pascal Létourneau <pascal.letourneau@kdemail.net>
+ kioslave/thumbnail/svgthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/textcreator.cpp ~ LGPLv2h ~     Copyright (C) 2000,2002 Carsten Pfeiffer <pfeiffer@kde.org>
+ kioslave/thumbnail/textcreator.h ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+ kioslave/thumbnail/textthumbnail.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/thumbcreator.desktop ~ unspec ~ unspec
+ kioslave/thumbnail/thumbnail.cpp ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+ kioslave/thumbnail/thumbnail.h ~ LGPLv2h ~     Copyright (C) 2000 Malte Starostik <malte@kde.org>
+ kioslave/thumbnail/thumbnail.protocol ~ unspec ~ unspec
+ kioslave/trash/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/trash/DESIGN ~ unspec ~ unspec
+ kioslave/trash/kio_trash.cpp ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/kio_trash.h ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/ktrash.cpp ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/Messages.sh ~ unspec ~ unspec
+ kioslave/trash/tests/CMakeLists.txt ~ unspec ~ unspec
+ kioslave/trash/tests/testtrash.cpp ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/tests/testtrash.h ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/trashimpl.cpp ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/trashimpl.h ~ LGPLv2h ~    Copyright (C) 2004 David Faure <faure@kde.org>
+ kioslave/trash/trash.protocol ~ unspec ~ unspec
+ kioslave/trash/trashthroughanalyzer.cpp ~ LGPLv2 ~    Copyright (C) 2004 David Faure <faure@kde.org>
+
+
+Files under kmimetypefinder:
+
+ kmimetypefinder/CMakeLists.txt ~ unspec ~ unspec
+ kmimetypefinder/kmimetypefinder.cpp ~ LGPLv2 ~  *  Copyright (C) 2002 David Faure   <faure@kde.org>
+ kmimetypefinder/Messages.sh ~ unspec ~ unspec
+
+
+Files under knetattach:
+
+ knetattach/CMakeLists.txt ~ unspec ~ unspec
+ knetattach/hi128-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hi16-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hi22-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hi32-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hi48-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hi64-app-knetattach.png ~ unspec ~ unspec
+ knetattach/hisc-app-knetattach.svgz ~ unspec ~ unspec
+ knetattach/knetattach.cpp ~ GPLv2h ~    Copyright (C) 2004 George Staikos <staikos@kde.org>
+ knetattach/knetattach.desktop ~ unspec ~ unspec
+ knetattach/knetattach.h ~ GPLv2h ~    Copyright (C) 2004 George Staikos <staikos@kde.org>
+ knetattach/knetattach.ui ~ unspec ~ unspec
+ knetattach/main.cpp ~ GPLv2h ~    Copyright (C) 2004 George Staikos <staikos@kde.org>
+ knetattach/Messages.sh ~ unspec ~ unspec
+ knetattach/TODO ~ unspec ~ unspec
+
+
+Files under knewstuff:
+
+ knewstuff/CMakeLists.txt ~ unspec ~ unspec
+ knewstuff/khotnewstuff.cpp ~ LGPLv2h ~     Copyright (c) 2002 Cornelius Schumacher <schumacher@kde.org>
+ knewstuff/khotnewstuffrc ~ unspec ~ unspec
+ knewstuff/Messages.sh ~ unspec ~ unspec
+ knewstuff/ox16-action-knewstuff.png ~ unspec ~ unspec
+ knewstuff/ox32-action-knewstuff.png ~ unspec ~ unspec
+ knewstuff/ox64-action-knewstuff.png ~ unspec ~ unspec
+
+
+Files under knotify:
+
+ knotify/CMakeLists.txt ~ unspec ~ unspec
+ knotify/kde.notifyrc ~ unspec ~ unspec
+ knotify/knotify4.desktop ~ unspec ~ unspec
+ knotify/knotifyconfig.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/knotifyconfig.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/knotify.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/knotify.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/knotifyplugin.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/knotifyplugin.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/main.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/Mainpage.dox ~ unspec ~ unspec
+ knotify/Messages.sh ~ unspec ~ unspec
+ knotify/notifybyexecute.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybyexecute.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybylogfile.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybylogfile.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybypopup.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybypopup.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybysound.cpp ~ GPLv2h ~ Copyright (c) 1997 Christian Esken (esken@kde.org)
+                                                            2000 Charles Samuels (charles@kde.org)
+                                                            2000 Stefan Schimanski (1Stein@gmx.de)
+                                                            2000 Matthias Ettrich (ettrich@kde.org)
+                                                            2000 Waldo Bastian <bastian@kde.org>
+                                                            2000-2003 Carsten Pfeiffer <pfeiffer@kde.org>
+                                                            2005 Allan Sandfeld Jensen <kde@carewolf.com>
+                                                            2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybysound.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybytaskbar.cpp ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/notifybytaskbar.h ~ GPLv2h ~    Copyright (C) 2005-2006 by Olivier Goffart <ogoffart at kde.org>
+ knotify/org.kde.knotify.service.cmake ~ unspec ~ unspec
+
+
+Files under kpasswdserver:
+
+ kpasswdserver/CMakeLists.txt ~ unspec ~ unspec
+ kpasswdserver/DESIGN ~ unspec ~ unspec
+ kpasswdserver/kpasswdserver.cpp ~ GPLv2 ~ Copyright (C) 2002 Waldo Bastian (bastian@kde.org)
+                                                   Copyright (C) 2005 David Faure (faure@kde.org)
+ kpasswdserver/kpasswdserver.h ~ GPLv2 ~     Copyright (C) 2002 Waldo Bastian (bastian@kde.org)
+ kpasswdserver/Messages.sh ~ unspec ~ unspec
+
+
+Files under kquitapp:
+
+ kquitapp/CMakeLists.txt ~ unspec ~ unspec
+ kquitapp/kquitapp.cpp ~ LGPLv2 ~  *   Copyright (C) 2006 Aaron Seigo <aseigo@kde.org>
+ kquitapp/Messages.sh ~ unspec ~ unspec
+
+
+Files under kreadconfig:
+
+ kreadconfig/CMakeLists.txt ~ unspec ~ unspec
+ kreadconfig/kreadconfig.cpp ~ unspec ~ (c) 2001 Red Hat, Inc.
+ kreadconfig/kwriteconfig.cpp ~ unspec ~ (c) 2001 Red Hat, Inc. & Luís Pedro Coelho
+ kreadconfig/Messages.sh ~ unspec ~ unspec
+
+
+Files under kstart:
+
+ kstart/CMakeLists.txt ~ unspec ~ unspec
+ kstart/kstart.cpp ~ Artistic ~  * Copyright (C) 1997-2000 Matthias Ettrich <ettrich@kde.org>
+ kstart/kstart.h ~ Artistic ~  * Copyright (C) 1997-2000 Matthias Ettrich <ettrich@kde.org>
+ kstart/LICENSE.readme ~ unspec ~ unspec
+ kstart/Messages.sh ~ unspec ~ unspec
+ kstart/version.h ~ unspec ~ unspec
+
+
+Files under kstyles:
+
+ kstyles/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/highcolor/bitmaps.h ~ unspec ~ unspec
+ kstyles/highcolor/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/highcolor/highcolor.cpp ~ LGPLv2 ~  Copyright (C) 2001-2002 Karol Szwed      <gallium@kde.org>
+                                                     (C) 2001-2002 Fredrik Höglund  <fredrik@kde.org>
+                                                     Copyright (C) 2000 Daniel M. Duley       <mosfet@kde.org>
+                                                     (C) 2000 Dirk Mueller          <mueller@kde.org>
+                                                     (C) 2001 Martijn Klingens      <klingens@kde.org>
+ kstyles/highcolor/highcolor.h ~ LGPLv2 ~  Copyright (C) 2001-2002 Karol Szwed      <gallium@kde.org>
+                                                     (C) 2001-2002 Fredrik Höglund  <fredrik@kde.org>
+                                                     Copyright (C) 2000 Daniel M. Duley       <mosfet@kde.org>
+                                                     (C) 2000 Dirk Mueller          <mueller@kde.org>
+                                                     (C) 2001 Martijn Klingens      <klingens@kde.org>
+ kstyles/highcontrast/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/highcontrast/config/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/highcontrast/config/highcontrastconfig.cpp ~ MIT ~ Copyright (c) 2005 Luciano Montanaro <mikelima@cirulla.net>
+                                                               Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/highcontrast/config/highcontrastconfig.h ~ MIT ~ Copyright (c) 2005 Luciano Montanaro <mikelima@cirulla.net>
+                                                              Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/highcontrast/highcontrast.cpp ~ LGPLv2 ~  *     Copyright (C) 2004 Olaf Schmidt <ojschmidt@kde.org>
+ kstyles/highcontrast/highcontrast.h ~ LGPLv2 ~  *     Copyright (C) 2004 Olaf Schmidt <ojschmidt@kde.org> kstyles/highcontrast/highcontrast.themerc ~ unspec ~ unspec
+ kstyles/highcontrast/TODO ~ unspec ~ unspec
+ kstyles/keramik/bitmaps.h ~ unspec ~ unspec
+ kstyles/keramik/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/keramik/colorutil.cpp ~ LGPLv2h ~    Copyright (c) 2002 Malte Starostik <malte@kde.org>
+                                                     (c) 2002 Maksim Orlovich <mo002j@mail.rochester.edu>
+ kstyles/keramik/colorutil.h ~ LGPLv2h ~    Copyright (c) 2002 Malte Starostik <malte@kde.org>
+                                                     (c) 2002 Maksim Orlovich <mo002j@mail.rochester.edu>
+ kstyles/keramik/genembed.cpp ~ MIT ~ Copyright (c) 2002, 2005 Maksim Orlovich <maksim@kde.org>
+ kstyles/keramik/gradients.cpp ~ LGPLv2h ~    Copyright (c) 2002       Malte Starostik <malte@kde.org>
+                                                    (c) 2002, 2005 Maksim Orlovich <maksim@kde.org>
+
+ kstyles/keramik/gradients.h ~ LGPLv2h ~    Copyright (c) 2002       Malte Starostik <malte@kde.org>
+                                                    (c) 2002, 2005 Maksim Orlovich <maksim@kde.org>
+ kstyles/keramik/keramik.cpp ~ LGPLv2h ~    Copyright (c) 2002       Malte Starostik <malte@kde.org>
+                                                    (c) 2002-2005  Maksim Orlovich <maksim@kde.org>
+ kstyles/keramik/keramikimage.h ~ LGPLv2h ~    Copyright (c) 2002 Malte Starostik <malte@kde.org>
+ kstyles/keramik/pics/* ~ unspec ~ unspec
+ kstyles/keramik/pixmaploader.cpp ~ LGPLv2h ~    Copyright (c) 2002 Malte Starostik <malte@kde.org>
+                                                          (c) 2002,2003 Maksim Orlovich <maksim@kde.org>
+ kstyles/keramik/pixmaploader.h ~ LGPLv2h ~    Copyright (c) 2003-2005 Maksim Orlovich <maksim@kde.org>
+                                                      Copyright (c) 2002 Malte Starostik <malte@kde.org>
+ kstyles/kthemestyle/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/kthemestyle/kstyledirs.cpp ~ unspec ~ unspec
+ kstyles/kthemestyle/kstyledirs.h ~ unspec ~ unspec
+ kstyles/kthemestyle/kthemebase.cpp ~ LGPLv2 ~  Copyright (C) 1999 Daniel M. Duley <mosfet@kde.org>
+                                                         Copyright (C) 1997 Matthias Kalle Dalheimer (kalle@kde.org)
+                                                         Copyright (C) 1998, 1999, 2000 KDE Team
+                                                         Copyright (C) 2001 Karol Szwed       <gallium@kde.org>
+                                                         Copyright (C) 2000 Daniel M. Duley   <mosfet@kde.org>
+ kstyles/kthemestyle/kthemebase.h ~ LGPLv2 ~  Copyright (C) 1999 Daniel M. Duley <mosfet@kde.org>
+                                                      Copyright (C) 1997 Matthias Kalle Dalheimer (kalle@kde.org)
+                                                      Copyright (C) 1998, 1999, 2000 KDE Team
+ kstyles/kthemestyle/kthemestyle.cpp ~ LGPLv2 ~  Copyright (C) 1999 Daniel M. Duley <mosfet@kde.org>
+
+ kstyles/kthemestyle/kthemestyle.h ~ LGPLv2 ~ Copyright (C) 1999 Daniel M. Duley <mosfet@kde.org>
+ kstyles/light/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/light/light.cpp ~ MIT ~   Copyright (c) 2000-2001 Trolltech AS (info@trolltech.com)
+  
+ kstyles/light/lightstyle-v2.cpp ~ MIT ~   Copyright (c) 2000-2001 Trolltech AS (info@trolltech.com)
+
+ kstyles/light/lightstyle-v2.h ~ MIT ~   Copyright (c) 2000-2001 Trolltech AS (info@trolltech.com)
+
+ kstyles/light/lightstyle-v3.cpp ~ MIT ~   Copyright (c) 2000-2001 Trolltech AS (info@trolltech.com)
+ kstyles/light/lightstyle-v3.h ~ MIT ~   Copyright (c) 2000-2001 Trolltech AS (info@trolltech.com)
+ kstyles/Mainpage.dox ~ unspec ~ unspec
+ kstyles/Messages.sh ~ unspec ~ unspec
+ kstyles/oxygen/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/oxygen/config/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/oxygen/config/oxygenconf.cpp ~ MIT ~ Copyright (C) 2003 Sandro Giessl <ceebx@users.sourceforge.net>
+                                                      Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/oxygen/config/oxygenconf.h ~ MIT ~ Copyright (C) 2003 Sandro Giessl <ceebx@users.sourceforge.net>
+                                                    Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/oxygen/helper.cpp ~ LGPLv2 ~ Copyright 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>
+                                              Copyright 2007 Casper Boemann <cbr@boemann.dk>
+ kstyles/oxygen/helper.h ~ LGPLv2 ~  Copyright 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>
+                                             Copyright 2007 Casper Boemann <cbr@boemann.dk>
+ kstyles/oxygen/lib/helper.cpp ~ LGPLv2 ~  Copyright 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>
+                                                   Copyright 2007 Casper Boemann <cbr@boemann.dk>
+                                                   Copyright 2007 Fredrik Höglund <fredrik@kde.org>
+ kstyles/oxygen/lib/helper.h ~ LGPLv2 ~  * Copyright 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>
+                                                   Copyright 2007 Casper Boemann <cbr@boemann.dk>
+                                                   Copyright 2007 Fredrik Höglund <fredrik@kde.org>
+ kstyles/oxygen/oxygen.cpp ~ LGPLv2 ~    Copyright (C) 2007 Casper Boemann <cbr@boemann.dk>
+ kstyles/oxygen/oxygen.h ~ LGPLv2 ~    Copyright (C) 2003-2005 Sandro Giessl <sandro@giessl.com>
+ kstyles/oxygen/oxygen.themerc ~ unspec ~ unspec
+ kstyles/oxygen/tileset.cpp ~ LGPLv2 ~    Copyright (C) 2006-2007 Thomas Luebking <thomas.luebking@web.de>
+   Copyright (C) 2007 Casper Boemann <cbr@boemann.dk>
+ kstyles/oxygen/tileset.h ~ LGPLv2 ~    Copyright (C) 2006-2007 Thomas Luebking <thomas.luebking@web.de>
+ kstyles/oxygen/TODO ~ unspec ~ unspec
+ kstyles/plastik/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/plastik/config/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/plastik/config/plastikconf.cpp ~ MIT ~ Copyright (C) 2003 Sandro Giessl <ceebx@users.sourceforge.net>
+                                                        Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/plastik/config/plastikconf.h ~ MIT ~ Copyright (C) 2003 Sandro Giessl <ceebx@users.sourceforge.net>
+                                                      Copyright (c) 2003 Maksim Orlovich <maksim.orlovich@kdemail.net>
+ kstyles/plastik/misc.cpp ~ GPLv2 ~  * Copyright 2003, Sandro Giessl <ceebx@users.sourceforge.net>
+ kstyles/plastik/misc.h ~ GPLv2 ~  * Copyright 2003, Sandro Giessl <ceebx@users.sourceforge.net>
+ kstyles/plastik/plastik.cpp ~ LGPLv2 ~    Copyright (C) 2003-2005 Sandro Giessl <sandro@giessl.com>
+ kstyles/plastik/plastik.h ~ LGPLv2 ~    Copyright (C) 2003-2005 Sandro Giessl <sandro@giessl.com>
+ kstyles/plastik/plastik.themerc ~ unspec ~ unspec
+ kstyles/riscos/* ~ unspec ~ Made by Rich Wareham.
+ kstyles/themes/*~ unspec ~ unspec
+ kstyles/web/CMakeLists.txt ~ unspec ~ unspec
+ kstyles/web/plugin.cpp ~ unspec ~ unspec
+ kstyles/web/README ~ unspec ~ unspec
+ kstyles/web/webstyle.cpp ~ LGPLv2h ~  *  Copyright (C) 2001 Rik Hemsley (rikkus) <rik@kde.org>
+ kstyles/web/webstyle.h ~ LGPLv2h ~  *  Copyright (C) 2001 Rik Hemsley (rikkus) <rik@kde.org>
+ kstyles/web/web.themerc ~ unspec ~ unspec
+
+
+Files under ktimezoned:
+
+ ktimezoned/CMakeLists.txt ~ unspec ~ unspec
+ ktimezoned/ktimezoned.cpp ~ LGPLv2 ~    Copyright (c) 2005-2007 David Jarvie <software@astrojar.org.uk>
+                                               Copyright (c) 2005 S.R.Haque <srhaque@iee.org>.
+ ktimezoned/ktimezoned.desktop ~ unspec ~ unspec
+ ktimezoned/ktimezoned.h ~ LGPLv2h ~    Copyright (c) 2007 David Jarvie <software@astrojar.org.uk>
+ ktimezoned/org.kde.KTimeZoned.xml ~ unspec ~ unspec
+
+
+Files under ktraderclient:
+
+ ktraderclient/CMakeLists.txt ~ unspec ~ unspec
+ ktraderclient/ktraderclient.cpp ~ LGPLv2 ~  *  Copyright (C) 2002, 2003 David Faure   <faure@kde.org>
+ ktraderclient/Messages.sh ~ unspec ~ unspec
+
+
+Files under kuiserver:
+ kuiserver/CMakeLists.txt ~ unspec ~ unspec
+ kuiserver/kuiserver.desktop ~ unspec ~ unspec
+ kuiserver/kuiserversettings.kcfg ~ unspec ~ unspec
+ kuiserver/kuiserversettings.kcfgc ~ unspec ~ unspec
+ kuiserver/Messages.sh ~ unspec ~ unspec
+ kuiserver/pics/CMakeLists.txt ~ unspec ~ unspec
+ kuiserver/pics/cr16-app-kio_uiserver.png ~ unspec ~ unspec
+ kuiserver/progresslistdelegate.cpp ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/progresslistdelegate.h ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/progresslistdelegate_p.h ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/progresslistmodel.cpp ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/progresslistmodel.h ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/tests/CMakeLists.txt ~ unspec ~ unspec
+ kuiserver/tests/kuiservertest.cpp ~ LGPLv2 ~   * Copyright (C) 2007 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/tests/kuiservertest.h ~ LGPLv2 ~   * Copyright (C) 2007 Rafael Fernández López <ereslibre@gmail.com>
+ kuiserver/uiserverConfigDialog.ui ~ unspec ~ unspec
+ kuiserver/uiserver.cpp ~ LGPLv2 ~  Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+                                            Copyright (C) 2001 George Staikos <staikos@kde.org>
+                                            Copyright (C) 2000 Matej Koss <koss@miesto.sk>
+ kuiserver/uiserver.h ~ LGPLv2 ~ Copyright (C) 2007, 2006 Rafael Fernández López <ereslibre@gmail.com>
+                                         Copyright (C) 2000 Matej Koss <koss@miesto.sk>
+ kuiserver/uiserver_p.h ~ LGPLv2 ~ Copyright (C) 2007 Rafael Fernández López <ereslibre@gmail.com>
+
+
+Files under kurifilter-plugins:
+
+ kurifilter-plugins/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/fixhost/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/fixhost/fixhosturifilter.cpp ~ GPLv2 ~     Copyright (C) 2007 Lubos Lunak <llunak@suse.cz>
+ kurifilter-plugins/fixhost/fixhosturifilter.desktop ~ unspec ~ unspec
+ kurifilter-plugins/fixhost/fixhosturifilter.h ~ GPLv2 ~     Copyright (C) 2007 Lubos Lunak <llunak@suse.cz>
+ kurifilter-plugins/ikws/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/ikws/ikwsopts.cpp ~ GPLv2h ~  Copyright (c) 2000 Yves Arrouye <yves@realnames.com>
+                                                          Copyright (c) 2001, 2002 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/ikwsopts.h ~ GPLv2h ~  Copyright (c) 2000 Yves Arrouye <yves@realnames.com>
+                                                        Copyright (c) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/ikwsopts_ui.ui ~ unspec ~ unspec
+ kurifilter-plugins/ikws/kuriikwsfilter.cpp ~ GPLv2h ~ Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                               Copyright (C) 2000 Yves Arrouye <yves@realnames.com>
+                                                               Copyright (C) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/kuriikwsfilter.desktop ~ unspec ~ unspec
+ kurifilter-plugins/ikws/kuriikwsfiltereng.cpp ~ GPLv2h ~ Copyright (C) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+                                                                  Copyright (C) 2000 Yves Arrouye <yves@realnames.com>
+                                                                  Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                         Copyright (C) 2001 Andreas Hochsteger <e9625392@student.tuwien.ac.at>
+ kurifilter-plugins/ikws/kuriikwsfiltereng.h ~ GPLv2h ~ Copyright (C) 2002,2003 Dawit Alemayehu <adawit@kde.org>
+                                                                 Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                                 Copyright (C) 1999 Yves Arrouye <yves@realnames.com>
+                                                          Copyright (C) 2001 Andreas Hochsteger <e9625392@student.tuwien.ac.at>
+ kurifilter-plugins/ikws/kuriikwsfilter.h ~ GPLv2h ~ Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                              Copyright (C) 2000 Yves Arrouye <yves@realnames.com>
+                                                             Copyright (C) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/kuriikwsfilter.upd ~ unspec ~ unspec
+ kurifilter-plugins/ikws/kurisearchfilter.cpp ~ GPLv2h ~ Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                                 Copyright (C) 2000 Yves Arrouye <yves@realnames.com>
+                                                                 Copyright (C) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/kurisearchfilter.desktop ~ unspec ~ unspec
+ kurifilter-plugins/ikws/kurisearchfilter.h ~ GPLv2h ~  Copyright (C) 1999 Simon Hausmann <hausmann@kde.org>
+                                                                Copyright (C) 2000 Yves Arrouye <yves@realnames.com>
+                                                                Copyright (C) 2002, 2003 Dawit Alemayehu <adawit@kde.org>
+ kurifilter-plugins/ikws/Messages.sh ~ unspec ~ unspec
+ kurifilter-plugins/ikws/searchprovider.cpp ~ GPLv2h ~  * Copyright (c) 2000 Malte Starostik <malte@kde.org>
+ kurifilter-plugins/ikws/searchprovider.desktop ~ unspec ~ unspec
+ kurifilter-plugins/ikws/searchproviderdlg.cpp ~ GPLv2h ~  * Copyright (c) 2000 Malte Starostik <malte@kde.org>
+ kurifilter-plugins/ikws/searchproviderdlg.h ~ GPLv2h ~  * Copyright (c) 2000 Malte Starostik <malte@kde.org>
+ kurifilter-plugins/ikws/searchproviderdlg_ui.ui ~ unspec ~ unspec
+ kurifilter-plugins/ikws/searchprovider.h ~ GPLv2h ~  * Copyright (c) 2000 Malte Starostik <malte@kde.org>
+ kurifilter-plugins/ikws/searchproviders/* ~ unspec ~ unspec
+ kurifilter-plugins/localdomain/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/localdomain/klocaldomainurifilterhelper.c ~ GPLv2 ~     Copyright (C) 2002 Lubos Lunak <llunak@suse.cz>
+ kurifilter-plugins/localdomain/localdomainurifilter.cpp ~ GPLv2 ~     Copyright (C) 2002 Lubos Lunak <llunak@suse.cz>
+ kurifilter-plugins/localdomain/localdomainurifilter.desktop ~ unspec ~ unspec
+ kurifilter-plugins/localdomain/localdomainurifilter.h ~ GPLv2 ~     Copyright (C) 2002 Lubos Lunak <llunak@suse.cz>
+ kurifilter-plugins/shorturi/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/shorturi/kshorturifilter.cpp ~ GPLv2h ~ Copyright (C) 2000 Dawit Alemayehu <adawit@kde.org>
+                                                                    Copyright (C) 2000 Malte Starostik <starosti@zedat.fu-berlin.de>
+ kurifilter-plugins/shorturi/kshorturifilter.desktop ~ unspec ~ unspec
+ kurifilter-plugins/shorturi/kshorturifilter.h ~ GPLv2h ~  Copyright (C) 2000 Dawit Alemayehu <adawit@kde.org>
+                                                                   Copyright (C) 2000 Malte Starostik <starosti@zedat.fu-berlin.de>
+ kurifilter-plugins/shorturi/kshorturifilterrc ~ unspec ~ unspec
+ kurifilter-plugins/shorturi/Messages.sh ~ unspec ~ unspec
+ kurifilter-plugins/tests/CMakeLists.txt ~ unspec ~ unspec
+ kurifilter-plugins/tests/kurifiltertest.cpp ~ LGPLv2 ~  *  Copyright (C) 2002, 2003 David Faure   <faure@kde.org>
+ kurifilter-plugins/tests/kurifiltertest.h ~ LGPLv2 ~  *  Copyright (C) 2006 David Faure   <faure@kde.org>
+
+
+Files under l10n:
+
+ l10n/* ~ unspec ~ unspec
+
+
+Files under nepomuk:
+
+
+ nepomuk/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/coreservices/cache.cpp ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+                                                   Copyright (C) 2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/cache.h ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+ nepomuk/coreservices/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/coreservices/coreservices.cpp ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/coreservices.h ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/dbusinterface.cpp ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/dbusinterface.h ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/main.cpp ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/Messages.sh ~ unspec ~ unspec
+ nepomuk/coreservices/nepomuk-coreservices.desktop ~ unspec ~ unspec
+ nepomuk/coreservices/querydefinition.cpp ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+                                                             Copyright (C) 2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/querydefinition.h ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+ nepomuk/coreservices/sopranordfrepository.cpp ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+                                                                  Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/sopranordfrepository.h ~ GPLv2h ~  Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+                                                                 Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/coreservices/uniqueurigenerator.cpp ~ GPLv2h ~ Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+ nepomuk/coreservices/uniqueurigenerator.h ~ GPLv2h ~  Copyright (C) 2006 Daniele Galdi <daniele.galdi@gmail.com>
+ nepomuk/Mainpage.dox ~ unspec ~ unspec
+ nepomuk/service-registry/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/service-registry/core/backend.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/service-registry/core/core.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/core.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/dbusbackend.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/dbusbackend.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/dbusbackendinterface.cpp ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/dbusbackendinterface.h ~ GPLv2h ~ Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/httpbackend.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/httpbackend.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/service.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/service.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/servicewaiter.cpp ~ GPLv2h ~  * Copyright (C) 2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/core/servicewaiter.h ~ GPLv2h ~  * Copyright (C) 2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/daemon/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/service-registry/daemon/main.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/service-registry/daemon/org.semanticdesktop.nepomuk.ServiceRegistry.service.cmake ~ unspec ~ unspec
+ nepomuk/service-registry/TODO ~ unspec ~ unspec
+ nepomuk/tests/CMakeLists.txt ~ unspec ~ unspec
+ nepomuk/tests/rdfrepositorytest.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/tests/rdfrepositorytest.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/tests/statementiteratortest.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/tests/statementiteratortest.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/tests/testbase.cpp ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+ nepomuk/tests/testbase.h ~ GPLv2h ~  * Copyright (C) 2006-2007 Sebastian Trueg <trueg@kde.org>
+
+
+Files under phonon:
+
+ phonon/CMakeLists.txt ~ unspec ~ unspec
+ phonon/org.kde.Phonon.ServiceRegistry.xml ~ unspec ~ unspec
+ phonon/serviceregistry.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/abstractaudiooutput.cpp ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/abstractaudiooutput.h ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                      Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audiodataoutput.cpp ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+ phonon/xine/audiodataoutput.h ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+ phonon/xine/audiooutput.cpp ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audiooutput.h ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audioport.cpp ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audioport.h ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audioport_p.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audiopostlist.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/audiopostlist.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/backend.cpp ~ LGPLv2 ~  Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                             Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/backend.h ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+ phonon/xine/brightnesscontrol.cpp ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/brightnesscontrol.h ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/BUGS ~ unspec ~ unspec
+ phonon/xine/bytestream.cpp ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/bytestream.h ~ LGPLv2 ~   Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                               Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/bytestreamplugin.cpp ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/CMakeLists.txt ~ unspec ~ unspec
+ phonon/xine/deinterlacefilter.cpp ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/deinterlacefilter.h ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/effect.cpp ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                            Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/effect.h ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                         Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/events.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/kcm/CMakeLists.txt ~ unspec ~ unspec
+ phonon/xine/kcm/kcm_phononxine.desktop ~ unspec ~ unspec
+ phonon/xine/kcm/Messages.sh ~ unspec ~ unspec
+ phonon/xine/kcm/xineoptions.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/kcm/xineoptions.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/kcm/xineoptions.ui ~ unspec ~ unspec
+ phonon/xine/mediaobject.cpp ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/mediaobject.h ~ LGPLv2 ~  Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                              Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/mediaproducer.cpp ~ unspec ~ unspec
+ phonon/xine/Messages.sh ~ unspec ~ unspec
+ phonon/xine/mixer_plugin.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/net_buf_ctrl.c ~ LGPLv2 ~ Copyright (C) 2000-2003 the xine project
+                                                Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/net_buf_ctrl.h ~ LGPLv2 ~ Copyright (C) 2000-2003 the xine project
+                                               Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/nullsink.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/nullsink.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/ox128-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/ox16-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/ox22-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/ox32-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/ox48-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/ox64-app-phonon-xine.png ~ unspec ~ unspec
+ phonon/xine/oxsc-app-phonon-xine.svgz ~ unspec ~ unspec
+ phonon/xine/plugins.c ~ unspec ~ unspec
+ phonon/xine/sinknode.cpp ~ LGPLv2 ~ Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/sinknode.h ~ LGPLv2 ~  Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/sourcenode.cpp ~ LGPLv2 ~ Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/sourcenode.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videodataoutput.cpp ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videodataoutput.h ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videoeffect.cpp ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videoeffect.h ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videowidget.cpp ~ GPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/videowidget.h ~ LGPLv2 ~     Copyright (C) 2005-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/visualization.cpp ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/visualization.h ~ LGPLv2 ~     Copyright (C) 2006 Matthias Kretz <kretz@kde.org>
+ phonon/xine/volumefadereffect.cpp ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/volumefadereffect.h ~ LGPLv2 ~     Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                                    Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/volumefader_plugin.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/wirecall.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xine.desktop ~ unspec ~ unspec
+ phonon/xine/xineengine.cpp ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                               Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xineengine.h ~ LGPLv2 ~ Copyright (C) 2006 Tim Beaulen <tbscope@gmail.com>
+                                               Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xineengine_p.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xinestream.cpp ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xinestream.h ~ LGPLv2 ~     Copyright (C) 2006-2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xinethread.cpp ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+ phonon/xine/xinethread.h ~ LGPLv2 ~     Copyright (C) 2007 Matthias Kretz <kretz@kde.org>
+
+
+Files under pics:
+
+ pics/CMakeLists.txt ~ unspec ~ unspec
+ pics/emoticons/* ~ unspec ~ unspec
+ pics/hicolor/CMakeLists.txt ~ unspec ~ unspec
+ pics/hicolor/index.theme ~ unspec ~ unspec
+ pics/ksvgtopng.cpp ~ unspec ~ unspec
+
+ pics/oxygen/
+  As you can read at pics/oxygen/COPYING:
+
+Copyright: The Oxygen Icon Theme
+  |     Copyright (C) 2007 David Vignoni <david@icon-king.com>
+  |     Copyright (C) 2007 Johann Ollivier Lapeyre <johann@oxygen-icons.org>
+  |     Copyright (C) 2007 Kenneth Wimer <kwwii@bootsplash.org>
+  |     Copyright (C) 2007 Nuno Fernades Pinheiro <nf.pinheiro@gmail.com>
+  |     Copyright (C) 2007 Riccardo Iaconelli <riccardo@oxygen-icons.org>
+  |     Copyright (C) 2007 David Miller <miller@oxygen-icons.org>
+  | 
+  | and others.
+  | 
+  | You may copy it under the Creative Common Attribution-ShareAlike 3.0
+  | license, as found here:
+  | 
+  |     http://creativecommons.org/licenses/by-sa/3.0/
+  | 
+  | or the GNU Library General Public License (with following clarification).
+  | 
+  |     This library is free software; you can redistribute it and/or
+  |     modify it under the terms of the GNU Library General Public
+  |     License as published by the Free Software Foundation; either
+  |     version 2 of the License, or (at your option) any later version.
+  | 
+  |     This library is distributed in the hope that it will be useful,
+  |     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  |     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  |     Library General Public License for more details.
+  | 
+  |     You should have received a copy of the GNU Library General Public
+  |     License along with this library; if not, write to the Free Software
+  |     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
+  | 
+  | Clarification:
+  | 
+  |   The GNU Lesser General Public License or LGPL is written for
+  |   software libraries in the first place. We expressly want the LGPL to
+  |   be valid for this artwork library too.
+  | 
+  |   KDE Oxygen theme icons is a special kind of software library, it is an
+  |   artwork library, it's elements can be used in a Graphical User Interface, or
+  |   GUI.
+  | 
+  |   Source code, for this library means:
+  |    - where they exist, SVG;
+  |    - otherwise, if applicable, the multi-layered formats xcf or psd, or
+  |   otherwise png.
+  | 
+  |   The LGPL in some sections obliges you to make the files carry
+  |   notices. With images this is in some cases impossible or hardly useful.
+  | 
+  |   With this library a notice is placed at a prominent place in the directory
+  |   containing the elements. You may follow this practice.
+  | 
+  |   The exception in section 6 of the GNU Lesser General Public License covers
+  |   the use of elements of this art library in a GUI.
+  | 
+
+Files under soliduiserver:
+
+ soliduiserver/CMakeLists.txt ~ unspec ~ unspec
+ soliduiserver/deviceaction.cpp ~ LGPLv2 ~  Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                    Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceaction.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                      Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceactionsdialog.cpp ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                              Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceactionsdialog.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                       Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceactionsdialogview.ui ~ unspec ~ unspec
+ soliduiserver/devicenothingaction.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                          Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/devicenothingaction.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                        Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceserviceaction.cpp ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                          Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/deviceserviceaction.h ~ LGPLv2 ~ Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                        Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+ soliduiserver/Messages.sh ~ unspec ~ unspec
+ soliduiserver/soliduiserver.cpp ~ LGPLv2 ~  Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                     Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+                                                     Copyright (c) 2007 Alexis Ménard <darktears31@gmail.com>
+ soliduiserver/soliduiserver.desktop ~ unspec ~ unspec
+ soliduiserver/soliduiserver.h ~ LGPLv2 ~    Copyright (c) 2005 Jean-Remy Falleri <jr.falleri@laposte.net>
+                                                     Copyright (c) 2005-2007 Kevin Ottens <ervin@kde.org>
+
+
+-------------------------------------------------------------------------------
+Legend:
+ - "unspec":    The file contains no specific copyright/license notice. This
+                means that the copyright holder is the KDE Development Team (as
+                listed above) and the license is GPL2, unless specified otherwise.
+ - "GPL":       The GNU General Public License, without versioning constraints.
+ - "GPLv2":     The GNU General Public License, version 2.
+ - "GPLv2h":    The GNU General Public License, version 2 or (at your
+                option) higher.
+ - "LGPLv2h":   The Lesser (or Library) GNU General Public License, version
+                2 or (at your option).
+ - "BSD"        Files under the BSD license.
+ - "GFDL1.1":   The GNU Free Documentation License, version 1.1 or (at your
+                option) higher. The listed documents use the GFDL with no
+                Invariant Sections, no Front-Cover Texts, and no Back-Cover
+                Texts.
+  - "MIT":      Permission is hereby granted, free of charge, to any person obtaining a copy
+                of this software and associated documentation files (the "Software"), to deal
+                in the Software without restriction, including without limitation the rights
+                to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                copies of the Software, and to permit persons to whom the Software is
+                furnished to do so, subject to the following conditions:
+                The above copyright notice and this permission notice shall be included in
+                all copies or substantial portions of the Software.
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                THE SOFTWARE.
+  - "Artistic": Files under the Artistic license.
+  - "Sun":      * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
+                * unrestricted use provided that this legend is included on all tape
+                * media and as a part of the software program in whole or part.  Users
+                * may copy or modify Sun RPC without charge, but are not authorized
+                * to license or distribute it to anyone else except as part of a product or
+                * program developed by the user or with the express written consent of
+                * Sun Microsystems, Inc.
+                *
+                * SUN RPC IS PROVIDED AS IS WITH NO WARRANTIES OF ANY KIND INCLUDING THE
+                * WARRANTIES OF DESIGN, MERCHANTIBILITY AND FITNESS FOR A PARTICULAR
+                * PURPOSE, OR ARISING FROM A COURSE OF DEALING, USAGE OR TRADE PRACTICE.
+                *
+                * Sun RPC is provided with no support and without any obligation on the
+                * part of Sun Microsystems, Inc. to assist in its use, correction,
+                * modification or enhancement.
+                *
+                * SUN MICROSYSTEMS, INC. SHALL HAVE NO LIABILITY WITH RESPECT TO THE
+                * INFRINGEMENT OF COPYRIGHTS, TRADE SECRETS OR ANY PATENTS BY SUN RPC
+                * OR ANY PART THEREOF.
+                *
+                * In no event will Sun Microsystems, Inc. be liable for any lost revenue
+                * or profits or other special, indirect and consequential damages, even if
+                * Sun has been advised of the possibility of such damages.
+                *
+                * Sun Microsystems, Inc.
+                * 2550 Garcia Avenue
+                * Mountain View, California  94043
+
+On Debian systems, you can find the complete texts of these licenses at:
+  - Artistic: /usr/share/common-licenses/Artistic
+  - BSD:      /usr/share/common-licenses/BSD
+  - GPL:      /usr/share/common-licenses/GPL
+  - GPLv2:    /usr/share/common-licenses/GPL-2
+  - LGPLv2:   /usr/share/common-licenses/LGPL-2
+  - GFDL:     /usr/share/common-licenses/GFDL
+  - BSD:      /usr/share/common-licenses/BSD
+
+-------------------------------------------------------------------------------
+
+
+The Debian packaging is (C) 2008, Debian Qt/KDE Maintainers
+<debian-qt-kde@lists.debian.org> and is licensed under the GPL, 
+see `/usr/share/common-licenses/GPL'.

@@ -1,0 +1,6 @@
+#!/usr/bin/make -f
+
+-include /opt/amarok-nightly/cdbs/kde.mk
+
+clean::
+

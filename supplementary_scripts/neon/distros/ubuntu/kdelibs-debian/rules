@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+RUNTIME_DEPS := amarok-nightly-kdebase-runtime
+CURRENTVERSION := $(shell head -1 debian/changelog  | sed 's/[^(]*(\([^)]*\)).*/\1/')
+DEB_DH_MAKESHLIBS_ARGS_kdelibs5 := -V'amarok-nightly-kdelibs (>= $(CURRENTVERSION)), $(RUNTIME_DEPS)'  
+#In general we shouldn't bump on each upload, but in the beta cycles,
+#it is probably good. Else on upstream versions it is probably a good thing.
+
+-include /opt/amarok-nightly/cdbs/kde.mk
+
+makebuilddir/amarok-nightly-kdelibs::
+	rm -f debian/shlibs.local
+
+DEB_CMAKE_EXTRA_FLAGS += -DKDESU_USE_SUDO_DEFAULT=true
+
+# Generate shlibs local files
+common-binary-fixup-arch :: 
+	sed 's/>=[^)]*/= $(CURRENTVERSION)/;s/, $(RUNTIME_DEPS)//' debian/amarok-nightly-kdelibs/DEBIAN/shlibs >> debian/shlibs.local ;\
+
+clean::
+

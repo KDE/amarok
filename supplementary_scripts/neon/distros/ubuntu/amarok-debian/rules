@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE=1
+
+-include /opt/amarok-nightly/cdbs/kde.mk
+
+#For Kubuntu paths create custom binary wrapper and .desktop menu files
+kde4-wrapper-creation:
+	mkdir -p $(DEB_DESTDIR)/usr/bin
+		echo "#!/bin/sh" > $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo export LD_LIBRARY_PATH=/opt/amarok-nightly/lib >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo export KDEHOME=~/.amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo export KDEDIRS=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo export PATH=/opt/amarok-nightly/bin:\$$PATH >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo /opt/amarok-nightly/bin/amarok \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+
+	mkdir -p $(DEB_DESTDIR)/usr/share/applications
+		cat $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop \
+		| sed 's/Name.*=.*$$/& Nightly/' \
+		| sed 's/Exec=[a-z]*/&-nightly/' \
+		 > $(DEB_DESTDIR)/usr/share/applications/amarok-nightly.desktop; \
+
+	rm $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop
+
+	mkdir -p $(DEB_DESTDIR)/opt/amarok-nightly/share/kde4/servicetypes
+	cp -r $(DEB_SRCDIR)/src/context/plasma/servicetypes/* $(DEB_DESTDIR)/opt/amarok-nightly/share/kde4/servicetypes/
+
+common-install-indep:: kde4-wrapper-creation
+common-install-arch:: kde4-wrapper-creation
+
+clean::
+	

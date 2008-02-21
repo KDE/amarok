@@ -1,0 +1,18 @@
+Source: amarok-nightly-kdebase-runtime
+Section: kde
+Priority: optional
+Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs,
+ amarok-nightly-strigi,
+ libclucene-dev, libsmbclient-dev, libxcb1-dev, libxine-dev
+Standards-Version: 3.7.3
+
+Package: amarok-nightly-kdebase-runtime
+Section: kde
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: runtime components from the official KDE release
+ KDE (the K Desktop Environment) is a powerful Open Source graphical desktop
+ environment for Unix workstations. It combines ease of use, contemporary
+ functionality, and outstanding graphical design with the technological
+ superiority of the Unix operating system.
