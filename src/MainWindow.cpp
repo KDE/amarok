@@ -219,6 +219,7 @@ void MainWindow::init()
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins( 1, 1, 1, 1 );
+    mainLayout->setSpacing( 1 );
 
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
@@ -235,11 +236,13 @@ void MainWindow::init()
     KHBox * m_statusbarArea = new KHBox( this );
 
     //figure out the needed heigh tbased on system font settings
+    // do make sure that it is at least 26 pixels tall though
+    //or progess bars will not fit...
 
     QFont currentFont = font();
     currentFont.setBold( true );
     QFontMetrics fm( currentFont );
-    int fontHeight = fm.height();
+    int fontHeight = qMax( 26, fm.height() );
     
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
