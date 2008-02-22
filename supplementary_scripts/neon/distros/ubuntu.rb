@@ -18,7 +18,7 @@
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
-PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","amarok"]
+PACKAGES    = ["kdelibs","kdebase-runtime","amarok"]
 
 class UploadUbuntu
   def initialize()
@@ -46,8 +46,8 @@ class UploadUbuntu
     end
 
     Dir.chdir(ROOTPATH)
-#     Dir.mkdir(DEBBASEPATH)
-#     FileUtils.cp_r("#{BASEPATH}/.", DEBBASEPATH)
+    Dir.mkdir(DEBBASEPATH)
+    FileUtils.cp_r("#{BASEPATH}/.", DEBBASEPATH)
 
     for package in PACKAGES
       if package != "amarok"
