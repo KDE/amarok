@@ -1,3 +1,9 @@
+amarok-nightly-kdelibs (20080222-0amarok1) gutsy; urgency=low
+
+  * Nightly Build
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Fri, 22 Feb 2008 16:56:14 +0100
+
 amarok-nightly-qt (20080218-0ubuntu0amarok1) gutsy; urgency=low
 
   * Nightly Build
