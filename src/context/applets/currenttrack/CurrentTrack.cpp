@@ -68,9 +68,9 @@ void CurrentTrack::init()
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
     
-    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "love", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
-    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "knotify", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
-    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "month", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "smiley", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
 
     m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
     m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
