@@ -37,13 +37,12 @@ class UploadUbuntu
     end
     
     def Slap(package)
-      url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0ubuntu0amarok#{REV}_i386.deb`"
+      url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb`"
       `wget '#{url}'`
 	while $? != "0"
 	  sleep 600
 	  `wget '#{url}'`
 	end
-	sleep 600
     end
 
     Dir.chdir(ROOTPATH)
