@@ -16,30 +16,15 @@ AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
 # BEGIN TAGLIB CHECK
 ###############################################################################
 
-TAGLIB_REQ_VERSION="1.4.0";
-AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
+PKG_CHECK_MODULES([TAGLIB], [taglib >= 1.5], [taglib_15_found=yes], [PKG_CHECK_MODULES([TAGLIB], [taglib >= 1.4])])
 
-AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
+AM_CONDITIONAL([TAGLIB_15_FOUND], [test "x$taglib_15_found" = "xyes")
+AC_SUBST(TAGLIB_CFLAGS)
+AC_SUBST(TAGLIB_LIBS)
 
-if test "x$TAGLIB_CONFIG" = "xno" ; then
-    amarok_error_notaglib=yes
-    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-    no_amarok=yes
-else
-    AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
-    taglib_includes=[`$TAGLIB_CONFIG --cflags`]
-    taglib_libs=[`$TAGLIB_CONFIG --libs`]
-    taglib_version=[`$TAGLIB_CONFIG --version`]
-
-    if test VERSION_TO_NUMBER(echo $taglib_version) -lt VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
-        amarok_error_taglibold=yes
-        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-        no_amarok=yes
-    fi
+if test "x$taglib_15_found" = "xyes"; then
+	AC_DEFINE([TAGLIB_15], 1, [Taglib 1.5 or later found, disabling duplicate metadata plugins])
 fi
-
-AC_SUBST(taglib_includes)
-AC_SUBST(taglib_libs)
 
 ###############################################################################
 # END TAGLIB CHECK

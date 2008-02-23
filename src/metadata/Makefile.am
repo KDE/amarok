@@ -6,7 +6,11 @@ MP4_SUBDIR = m4a
 MP4_LDADD = m4a/libtagm4a.la
 endif
 
-SUBDIRS = speex wavpack trueaudio asf audible rmff $(MP4_SUBDIR) aac wav
+if !TAGLIB_15_FOUND
+TAGLIB_INCLUDES = speex wavpack trueaudio
+endif
+
+SUBDIRS = $(TAGLIB_INCLUDES) asf audible rmff $(MP4_SUBDIR) aac wav
 
 
 INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(taglib_includes)
