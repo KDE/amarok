@@ -19,8 +19,8 @@ AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
 PKG_CHECK_MODULES([TAGLIB], [taglib >= 1.5], [taglib_15_found=yes], [PKG_CHECK_MODULES([TAGLIB], [taglib >= 1.4])])
 
 AM_CONDITIONAL([TAGLIB_15_FOUND], [test "x$taglib_15_found" = "xyes"])
-AC_SUBST(taglib_includes)
-AC_SUBST(taglib_libs)
+AC_SUBST(TAGLIB_CFLAGS)
+AC_SUBST(TAGLIB_LIBS)
 
 if test "x$taglib_15_found" = "xyes"; then
 	AC_DEFINE([TAGLIB_15], 1, [Taglib 1.5 or later found, disabling duplicate metadata plugins])

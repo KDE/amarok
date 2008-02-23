@@ -14,7 +14,7 @@ endif
 SUBDIRS = $(TAGLIB14_SUBDIRS) asf audible rmff $(MP4_SUBDIR) aac wav
 
 
-INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(taglib_includes)
+INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(TAGLIB_CFLAGS)
 METASOURCES        = AUTO
 libmetadata_la_LDFLAGS  = $(all_libraries)
 noinst_LTLIBRARIES = libmetadata.la

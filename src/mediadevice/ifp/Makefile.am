@@ -9,7 +9,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/mediadevice \
     $(IFP_CFLAGS) \
-    $(taglib_includes) \
+    $(TAGLIB_CFLAGS) \
     $(all_includes)
 
 libamarok_ifp_mediadevice_la_LIBADD = \

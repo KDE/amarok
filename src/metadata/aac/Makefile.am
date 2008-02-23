@@ -1,6 +1,6 @@
 SUBDIRS =
 METASOURCES        = AUTO
-INCLUDES = $(all_includes) $(taglib_includes)
+INCLUDES = $(all_includes) $(TAGLIB_CFLAGS)
 
 libtagaac_la_LDFLAGS  = $(all_libraries)
 noinst_LTLIBRARIES = libtagaac.la

@@ -9,7 +9,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/mediadevice \
-    $(taglib_includes) \
+    $(TAGLIB_CFLAGS) \
     $(all_includes)
 
 METASOURCES = AUTO

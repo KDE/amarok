@@ -1,6 +1,6 @@
 SUBDIRS =
 
-INCLUDES           = $(all_includes) $(MP4V2_INCLUDES) $(taglib_includes)
+INCLUDES           = $(all_includes) $(MP4V2_INCLUDES) $(TAGLIB_CFLAGS)
 METASOURCES        = AUTO
 libtagmp4_la_LDFLAGS  = $(all_libraries) $(MP4V2_LIBS)
 noinst_LTLIBRARIES = libtagmp4.la

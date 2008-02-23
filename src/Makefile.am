@@ -44,7 +44,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/device \
     -I$(top_srcdir)/amarok/src \
     -I$(kde_includes)/arts \
-    $(taglib_includes) \
+    $(TAGLIB_CFLAGS) \
     $(sqlite_includes) \
     $(mysql_includes) \
     $(postgresql_includes) \
@@ -158,7 +158,7 @@ libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(top_builddir)/amarok/src/magnatunebrowser/libmagnatunebrowser.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) \
+    $(TAGLIB_LIBS) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) \
     $(LIB_TUNEPIMP) \
     $(mysql_libs) \
     $(postgresql_libs)
@@ -196,7 +196,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
+    $(TAGLIB_LIBS) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \
     $(mysql_libs) \
     $(postgresql_libs)

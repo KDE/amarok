@@ -1,6 +1,6 @@
 SUBDIRS =
 
-INCLUDES           = $(all_includes) $(taglib_includes)
+INCLUDES           = $(all_includes) $(TAGLIB_CFLAGS)
 METASOURCES        = AUTO
 libtagspeex_la_LDFLAGS  = $(all_libraries)
 noinst_LTLIBRARIES = libtagspeex.la

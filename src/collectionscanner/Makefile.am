@@ -4,7 +4,7 @@ METASOURCES = AUTO
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
-    $(taglib_includes) \
+    $(TAGLIB_CFLAGS) \
     $(all_includes)
 
 noinst_HEADERS = \
@@ -21,7 +21,7 @@ amarokcollectionscanner_LDADD = \
     $(top_builddir)/amarok/src/libamarok.la \
     $(LIB_QT) \
     $(LIB_KDECORE) \
-    $(taglib_libs)
+    $(TAGLIB_LIBS)
 
 amarokcollectionscanner_LDFLAGS = \
     $(all_libraries) \
