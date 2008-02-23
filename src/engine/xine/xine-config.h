@@ -15,7 +15,7 @@
 
 #include "plugin/pluginconfig.h"
 //#include "plugin/pluginconfig.moc"
-#include "xineconfigbase.h"
+#include "ui_xineconfigbase.h"
 
 #include <xine.h>
 //Added by qt3to4:
@@ -23,6 +23,14 @@
 #include <Q3PtrList>
 
 class XineConfigDialog;
+
+class XineConfigBase : public QWidget, public Ui::XineConfigBase
+{
+public:
+  XineConfigBase( QWidget *parent ) : QWidget( parent ) {
+    setupUi( this );
+  }
+};
 
 class XineGeneralEntry : public QObject
 {

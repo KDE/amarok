@@ -10,7 +10,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 set(amarok_xine-engine_PART_SRCS xine-engine.cpp xine-scope.c xine-config.cpp )
 
-kde4_add_ui3_files(amarok_xine-engine_PART_SRCS
+kde4_add_ui_files(amarok_xine-engine_PART_SRCS
    xineconfigbase.ui
 )
 
