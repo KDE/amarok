@@ -59,6 +59,9 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_name = name;
 
+    setContentsMargins( 1, 1, 1, 1 );
+    setSpacing( 1 );
+
     m_topPanel = new KVBox( this );
 
     m_topPanel->setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
