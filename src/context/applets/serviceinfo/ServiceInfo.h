@@ -35,7 +35,7 @@ class ServiceInfo : public Context::Applet
     Q_OBJECT
 public:
     ServiceInfo( QObject* parent, const QVariantList& args );
-    ~ServiceInfo();
+    virtual ~ServiceInfo();
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
