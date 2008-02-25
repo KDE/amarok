@@ -37,6 +37,15 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 
 }
 
+WikipediaApplet::~ WikipediaApplet()
+{
+    //hacky stuff to keep QWebView from causing a crash
+    m_wikiPage->setWidget( 0 );
+    delete m_wikiPage;
+    m_wikiPage = 0;
+    delete m_webView;
+}
+
 void WikipediaApplet::init()
 {
     
@@ -165,5 +174,7 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
     kDebug() << "WikipediaApplet::paintInterface end";
 
 }
+
+
 
 #include "WikipediaApplet.moc"

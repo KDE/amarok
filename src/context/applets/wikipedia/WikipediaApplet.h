@@ -29,6 +29,7 @@ class WikipediaApplet : public Context::Applet
     Q_OBJECT
 public:
     WikipediaApplet( QObject* parent, const QVariantList& args );
+    ~WikipediaApplet();
 
     void init();
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
