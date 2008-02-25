@@ -361,7 +361,7 @@ TagDialog::guessFromFilename() //SLOT
 void
 TagDialog::musicbrainzQuery() //SLOT
 {
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
     kDebug() ;
 
     m_mbTrack = m_currentTrack->playableUrl();
@@ -378,7 +378,7 @@ TagDialog::musicbrainzQuery() //SLOT
 void
 TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
 {
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
 
     if ( !error.isEmpty() ) {
         KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\".", error) );
@@ -408,7 +408,7 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
 void
 TagDialog::fillSelected( KTRMResult selected ) //SLOT
 {
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
     kDebug() ;
 
 
@@ -436,7 +436,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 
 void TagDialog::resetMusicbrainz() //SLOT
 {
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
+
     m_mbTrack = "";
 #endif
 }
@@ -584,7 +585,7 @@ void TagDialog::init()
 
 
 
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
     connect( ui->pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
 #else
     ui->pushButton_musicbrainz->setToolTip( i18n("Please install MusicBrainz to enable this functionality") );
@@ -832,7 +833,8 @@ void TagDialog::readTags()
                               || storedLyrics.count() > 0 || storedRatings.count() > 0
                               || newLabels.count() > 0 );
 
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
+
     // Don't enable button if a query is in progress already (or if the file isn't local)
     ui->pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() && m_mbTrack.isEmpty() );
 #else

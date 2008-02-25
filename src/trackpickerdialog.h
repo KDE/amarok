@@ -18,7 +18,7 @@
 
 #include "config-amarok.h"
 
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
 #include "ui_trackpickerdialogbase.h"
 #include <KDialog.h>
 
