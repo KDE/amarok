@@ -48,7 +48,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_serviceName = new QGraphicsSimpleTextItem( this );
     m_serviceName->setText( "Service Info ( No sevice Active )" );
 
-    m_webView = new QWebView();
+    m_webView = new QWebView( 0 );
     m_serviceMainInfo = new QGraphicsProxyWidget( this );
     m_serviceMainInfo->setWidget( m_webView );
 
@@ -67,6 +67,11 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
 ServiceInfo::~ServiceInfo()
 {
+    //hacky stuff to keep QWebView from causing a crash
+    m_serviceMainInfo->setWidget( 0 );
+    delete m_serviceMainInfo;
+    m_serviceMainInfo = 0;
+    delete m_webView;
 
 }
 
