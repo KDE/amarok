@@ -58,7 +58,10 @@ void WikipediaEngine::update()
 {
     DEBUG_BLOCK
     QString tmpWikiStr;
-    
+
+    if ( !EngineController::instance()->currentTrack() ) {
+        return;
+    }
 
     if( selection() == "artist" ) // default, or applet told us to fetch artist 
     {
