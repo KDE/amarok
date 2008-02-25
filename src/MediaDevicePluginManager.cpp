@@ -519,7 +519,8 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
     Q_UNUSED( label_devicename );
     QLabel* m_label_details = new QLabel( "<qt>(<a href='details'>" + i18n( "Details" ) + "</a>)</qt>", this );
     m_label_details->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard );
-    connect( m_label_details, SIGNAL( linkActivated( const QString & ) ), this, SLOT( slotDetailsActivated( const QString & ) ) );
+    debug() << "Making link activated, m_label_details = " << m_label_details;
+    connect( m_label_details, SIGNAL( linkActivated(const QString &) ), this, SLOT( slotDetailsActivated(const QString &) ) );
 
     QLabel* label_plugin = new QLabel( i18n("Plugin:"), this );
     Q_UNUSED( label_plugin );
@@ -567,7 +568,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
 MediaDeviceConfig::~MediaDeviceConfig()
 {
     DEBUG_BLOCK
-    debug() << "null here?";
+    debug() << "null here? m_label_details = " << m_label_details;
     disconnect( m_label_details, SIGNAL( linkActivated(const QString &) ), this, SLOT( slotDetailsActivated(const QString &) ) );
     debug() << "or here?";
     disconnect( m_removeButton, SIGNAL(clicked()), this, SLOT(slotDeleteDevice()) );
