@@ -1597,8 +1597,6 @@ void MetaBundle::setPath( const QString &path )
 
 void MetaBundle::setUniqueId()
 {
-    //if the file isn't already in the database, not checking for amarokcollectionscanner
-    //will result in the UID being set to QString::null during the scan...bad!
     if( !isFile() )
         return;
 
