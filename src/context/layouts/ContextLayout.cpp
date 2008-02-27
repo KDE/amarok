@@ -47,7 +47,7 @@ public:
     // moving the last applet to another column
     void balanceColumns()
     {
-        //     DEBUG_BLOCK
+        kDebug() << "balanceColumns";
         int numColumns = columns.size();
         if( numColumns == 1 ) // no balancing to do :)
             return;
@@ -145,6 +145,8 @@ void ContextLayout::addItem(LayoutItem* item)
 
 void ContextLayout::removeItem(LayoutItem* item)
 {
+    kDebug() << "Remove item...";
+    
     if(!item) {
         return;
     }
@@ -233,21 +235,39 @@ T qSum(const QList<T>& container)
 
 void ContextLayout::relayout()
 {
+    kDebug() << "relayout";
+    
     QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), -margin(Plasma::RightMargin), -margin(Plasma::BottomMargin));
-    const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
+    //const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
+    const int numColumns = 1;
+    
     if( numColumns > d->columns.size() ) // need to make more columns
     {
-        for( int i = d->columns.size(); i < numColumns; i++ )
+        //for some reason we cannot trust the collums we already have, so make all new ones!
+        d->columns.clear();
+
+        for( int i = 0; i < numColumns; i++ ) {
+            kDebug() << "adding collumn!";
             d->columns << new VerticalLayout( this );
-    } if( numColumns < d->columns.size() ) // view was shrunk
+            kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+        }
+
+        kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+        
+        /*for( int i = d->columns.size(); i < numColumns; i++ ) {
+            kDebug() << "adding collumn!";
+            d->columns << new VerticalLayout( this );
+        }*/
+        
+    } else if( numColumns < d->columns.size() ) // view was shrunk
     {
-//         kDebug() << "gotta shrink!";
+        kDebug() << "gotta shrink!";
         VerticalLayout* column = d->columns[ d->columns.size() - 1 ];
         d->columns.removeAt( d->columns.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
-//             kDebug() << "trying to put away an item";
+            kDebug() << "trying to put away an item";
             LayoutItem* applet = column->takeAt( i );
             int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
             for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
@@ -259,17 +279,27 @@ void ContextLayout::relayout()
             d->columns[ smallestColumn ]->addItem( applet );
         }
     }
+
+    kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
     
-    qreal columnWidth = rect.width() / numColumns;
+    qreal columnWidth = rect.width() / d->columns.size();
 //     columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
 
-    for( int i = 0; i < numColumns; i++ ) // lay out columns
+    kDebug() << "numColumns: " << d->columns.size();
+    for( int i = 0; i < d->columns.size(); i++ ) // lay out columns
     {
-//         kDebug() << "setting columns to width:" << columnWidth;
+        kDebug() << "setting columns to width:" << columnWidth;
         QPointF pos( ( ( i + 1 ) * margin( Plasma::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::LeftMargin ) );
-        QSizeF size( columnWidth, qMax( d->columns[ i ]->sizeHint().height(),
-                                                         rect.height() ) );
-         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
+        kDebug() << "i: " << i;
+        kDebug() << ", d->columns[ i ]: " << d->columns[ i ];
+        kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+        kDebug() << ", d->columns[ i ]->sizeHint(): " << d->columns[ i ]->sizeHint();
+        kDebug() << ", d->columns[ i ]->sizeHint().height(): " << d->columns[ i ]->sizeHint().height();
+        int height1 = d->columns[ i ]->sizeHint().height();
+        int height2 = rect.height();
+        int maxHeight = qMax( height1, height2 );
+        QSizeF size( columnWidth, maxHeight );
+        d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
 //     kDebug() << "columns laid out, now balancing";
     d->balanceColumns();

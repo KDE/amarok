@@ -37,6 +37,7 @@ VerticalLayout::VerticalLayout(LayoutItem *parent)
 
 VerticalLayout::~VerticalLayout()
 {
+    kDebug() << "help help, I'm being repressed: " << this;
     delete d;
 }
 
