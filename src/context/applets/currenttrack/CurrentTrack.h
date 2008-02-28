@@ -87,6 +87,10 @@ private:
 
     bool resizeCover(QPixmap cover);
 
+
+    //keep this safe as we might need it when resizing
+    QVariantMap m_currentInfo;
+
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )

@@ -136,14 +136,17 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_sourceEmblem->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
 
-    m_title->setFont( shrinkTextSizeToFit( m_title->text(), m_theme->elementRect( "track" ) ) );
-    m_title->setText( truncateTextToFit( m_title->text(), m_title->font(), m_theme->elementRect( "track" ) ) );
-    
-    m_artist->setFont( shrinkTextSizeToFit( m_artist->text(), m_theme->elementRect( "artist" ) ) );
-    m_artist->setText( truncateTextToFit( m_artist->text(), m_artist->font(), m_theme->elementRect( "artist" ) ) );
-    
-    m_album->setFont( shrinkTextSizeToFit( m_album->text(), m_theme->elementRect( "album" ) ) );
-    m_album->setText( truncateTextToFit( m_album->text(), m_album->font(), m_theme->elementRect( "album" ) ) );
+    QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
+    m_title->setFont( shrinkTextSizeToFit( title, m_theme->elementRect( "track" ) ) );
+    m_title->setText( truncateTextToFit( title, m_title->font(), m_theme->elementRect( "track" ) ) );
+
+    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+    m_artist->setFont( shrinkTextSizeToFit( artist, m_theme->elementRect( "artist" ) ) );
+    m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
+
+    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    m_album->setFont( shrinkTextSizeToFit( album, m_theme->elementRect( "album" ) ) );
+    m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
     
     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
@@ -186,18 +189,18 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
-    QVariantMap currentInfo = data[ "current" ].toMap();
-    kDebug() << "got data from engine: " << currentInfo;
-    m_title->setText( truncateTextToFit( currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
-    QString artist = currentInfo.contains( Meta::Field::ARTIST ) ? currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+    m_currentInfo = data[ "current" ].toMap();
+    kDebug() << "got data from engine: " << m_currentInfo;
+    m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
+    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
-    QString album = currentInfo.contains( Meta::Field::ALBUM ) ? currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
-    m_rating = currentInfo[ Meta::Field::RATING ].toInt();
-    m_score->setText( currentInfo[ Meta::Field::SCORE ].toString() );
-    m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
-    m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
-    m_numPlayed->setText( currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
+    m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
+    m_score->setText( m_currentInfo[ Meta::Field::SCORE ].toString() );
+    m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
+    m_playedLast->setText( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
+    m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
