@@ -361,10 +361,12 @@ bool CurrentTrack::resizeCover(QPixmap cover){
 
 
         //center the cover : if the cover is not squared, we get the missing pixels and center
-        qreal moveBy = qAbs(cover.rect().width()-cover.rect().height())/2.0;
-        m_albumCover->setPos(m_albumCover->x()+ moveBy, m_albumCover->y());
+        qreal moveByX = qAbs(cover.rect().width() - cover.rect().height())/2.0;
+        qreal moveByY = qAbs(cover.rect().height() - cover.rect().width())/2.0;
         
-        m_sourceEmblem->setPos(m_albumCover->x()+ moveBy, m_albumCover->y());
+        m_albumCover->setPos( m_albumCover->x()+ moveByX, m_albumCover->y() + moveByY );
+        
+        m_sourceEmblem->setPos( m_albumCover->x()+ moveByX, m_albumCover->y() + moveByY );
         
         m_albumCover->setPixmap( cover );
         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
