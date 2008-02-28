@@ -228,6 +228,20 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 //     DEBUG_BLOCK
     Q_UNUSED( option )
 
+    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
+    //context view has been minimized completely
+    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) {
+        debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
+            childItem->hide();
+         }
+         return;
+    } else {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
+            childItem->show();
+        }
+    }
+
     p->setRenderHint(QPainter::SmoothPixmapTransform);
 
 //     debug() << "painting rect: " << contentsRect << endl;
