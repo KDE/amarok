@@ -45,7 +45,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 
     debug() << "Loading LastFmEvents applet";
     
-    setDrawStandardBackground( false );
+    setDrawStandardBackground( true );
     setHasConfigurationInterface( true );
 
     if( args.size() > 0 ) // we are being told what position to start at
