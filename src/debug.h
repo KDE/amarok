@@ -18,6 +18,7 @@
 #undef KDE_NO_DEBUG_OUTPUT
 
 #include <KGlobal>
+#include <KCmdLineArgs>
 #include <KConfig>
 #include <KConfigGroup>
 #include <kdebug.h>
@@ -133,13 +134,16 @@ namespace Debug
 
     typedef kndbgstream NoDebugStream;
 
-    static inline void perfLog( const QString &message )
+    static inline void perfLog( const QString &message, const QString &func )
     {
+#ifdef Q_OS_UNIX
         if( !debugEnabled() )
         {
             return;
         }
-        access( message.toLocal8Bit().data(), F_OK );
+        QString str = QString( "MARK: %1: %2 %3" ).arg( KCmdLineArgs::appName(), func, message );
+        access( str.toLocal8Bit().data(), F_OK );
+#endif
     }
 }
 
@@ -164,6 +168,8 @@ using Debug::DebugStream;
 /// Use this to alert other developers to stop using a function
 #define AMAROK_DEPRECATED warning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
 
+/// Performance logging
+#define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
 
 namespace Debug
 {
