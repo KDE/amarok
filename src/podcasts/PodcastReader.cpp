@@ -68,8 +68,6 @@ PodcastReader::read(const KUrl &url)
              SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
              const KUrl &) ) );
 
-//     read();
-
     return !getJob->isErrorPage();
 }
 
@@ -98,7 +96,6 @@ PodcastReader::downloadResult( KJob * job )
 {
     DEBUG_BLOCK
 
-//     QXmlStreamReader::addData( static_cast<KIO::StoredTransferJob *>(job)->data() );
     //parse some more data
     read();
 }
@@ -156,11 +153,8 @@ PodcastReader::read()
                             debug() << "new channel";
                             m_channel = new Meta::PodcastChannel();
                             m_channel->setUrl( m_url );
-                            debug() << "m_channel.data(): " << m_channel.data();
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
-//                         else
-//                             readUnknownElement();
                     }
                 }
                 else
@@ -180,7 +174,6 @@ PodcastReader::read()
         {
             if( isStartElement() )
             {
-                debug() << "startElement: " << QXmlStreamReader::name().toString();
                 if (QXmlStreamReader::name() == "item")
                 {
                     debug() << "new episode";
@@ -190,7 +183,6 @@ PodcastReader::read()
             }
             else if( isEndElement() )
             {
-                debug() << "endElement: " << QXmlStreamReader::name().toString();;
                 if (QXmlStreamReader::name() == "item")
                 {
                     commitEpisode();
