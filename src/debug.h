@@ -132,6 +132,15 @@ namespace Debug
     #undef AMK_PREFIX
 
     typedef kndbgstream NoDebugStream;
+
+    static inline void perfLog( const QString &message )
+    {
+        if( !debugEnabled() )
+        {
+            return;
+        }
+        access( message.toLocal8Bit().data(), F_OK );
+    }
 }
 
 using Debug::debug;
