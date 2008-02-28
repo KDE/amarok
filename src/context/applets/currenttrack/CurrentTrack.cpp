@@ -35,7 +35,6 @@
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
-    , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
     , m_aspectRatio( 0.0 )
@@ -44,7 +43,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
 
-    setHasConfigurationInterface( true );
+    setHasConfigurationInterface( false );
 }
 
 CurrentTrack::~CurrentTrack()
@@ -268,42 +267,12 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 void CurrentTrack::showConfigurationInterface()
 {
-    if (m_config == 0)
-    {
-        m_config = new KDialog();
-        m_config->setCaption( i18n( "Configure Current Track Applet" ) );
 
-        QWidget* widget = new QWidget( m_config );
-        m_config->setMainWidget(widget);
-        m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-        connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
-        connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
-
-        m_configLayout = new QHBoxLayout( widget );
-        m_spinWidth = new QSpinBox();
-        m_spinWidth->setRange( 200, 700 );
-        m_spinWidth->setValue( m_width );
-
-        QLabel *labelWidth = new QLabel(i18n("Width"));
-        m_configLayout->addWidget( labelWidth );
-        m_configLayout->addWidget( m_spinWidth );
-
-    }
-
-    m_config->show();
 }
 
 void CurrentTrack::configAccepted() // SLOT
 {
-    KConfigGroup cg = globalConfig();
 
-    m_width = m_spinWidth->value();
-    resize( m_width, m_aspectRatio );
-
-    cg.writeEntry( "width", m_width );
-
-    cg.sync();
-    constraintsUpdated();
 }
 
 // TODO abstract code into superclass so this is not duplicated in LastFmEvents, this is useful code for many applets

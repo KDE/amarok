@@ -54,7 +54,6 @@ private:
     QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
-    KDialog* m_config;
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
