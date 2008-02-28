@@ -28,13 +28,28 @@
 #include <KStandardDirs>
 #include <KSvgRenderer>
 
+#include <threadweaver/ThreadWeaver.h>
+#include <threadweaver/Job.h>
+
 #include <QAction>
+#include <QApplication>
 #include <QDesktopWidget>
 #include <QGraphicsScene>
+#include <QThread>
 #include <QTimeLine>
+
+
 
 namespace Context
 {
+
+void SvgRenderJob::run()
+{
+    KSvgRenderer renderer( m_file );
+    m_image = QImage(  QApplication::desktop()->screenGeometry( QApplication::desktop()->primaryScreen() ).size(), QImage::Format_ARGB32 );
+    QPainter painter ( &m_image );
+    renderer.render( &painter );
+}
 
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
@@ -70,10 +85,13 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     debug() << "temp filename: " << m_tintedSvg.fileName();
 
-    KSvgRenderer renderer( file.fileName() );
-    m_masterImage = QImage(  QApplication::desktop()->screenGeometry( QApplication::desktop()->primaryScreen() ).size(), QImage::Format_ARGB32 );
-    QPainter painter ( &m_masterImage );
-    renderer.render( &painter );
+    m_job = new SvgRenderJob( file.fileName() );
+    //the background is not really important for the use of Amarok,
+    //and running this in a thread makes startup quite a bit faster
+    //consider only starting the thread if QThread::idealThreadCount > 1
+    //if the background *has* to be there in time most of the time
+    connect( m_job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( jobDone() ) );
+    ThreadWeaver::Weaver::instance()->enqueue( m_job );
     
     //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
@@ -154,11 +172,18 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     Q_UNUSED( option );
     painter->save();
     //m_background->paint( painter, rect );
+    if( !m_masterImage.isNull() )
+    {
     QImage scaled = m_masterImage.scaled( rect.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation );
     painter->drawImage( rect, scaled );
+    }
+    else
+    {
+        painter->fillRect( rect, QApplication::palette().window() );
+    }
     painter->restore();
-    QSize size = m_logo->size();
     
+    QSize size = m_logo->size();
     QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
@@ -299,6 +324,14 @@ void ColumnApplet::appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::A
             }
         }
     }
+}
+
+void ColumnApplet::jobDone()
+{
+    m_masterImage = m_job->m_image;
+    m_job->deleteLater();
+    m_job = 0;
+    //we should request a redraw of the applet now, but I have now idea how to do that
 }
 
 

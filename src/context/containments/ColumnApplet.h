@@ -29,9 +29,13 @@
 #include <QPixmapCache>
 
 #include <KTemporaryFile>
+#include <threadweaver/Job.h>
+
+
 
 namespace Context
 {
+    class SvgRenderJob;
 
 class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
 {
@@ -73,6 +77,8 @@ protected slots:
 private slots:
     void destroyApplet();
     void appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim);
+
+    void jobDone();
 private:
     QAction* m_appletBrowserAction;
     Plasma::AppletBrowser* m_appletBrowser;
@@ -91,10 +97,28 @@ private:
     KTemporaryFile m_tintedSvg;
     QImage m_masterImage;
     QPixmapCache m_cache;
+
+    SvgRenderJob *m_job;
 };
 
 K_EXPORT_AMAROK_APPLET( context, ColumnApplet )
-    
+
+
+class SvgRenderJob : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        SvgRenderJob( const QString &file )
+                : ThreadWeaver::Job()
+                , m_file( file ) {}
+
+        virtual void run();
+
+        QImage m_image;
+    private:
+        QString m_file;
+};
+
 } // namespace
 
 #endif
