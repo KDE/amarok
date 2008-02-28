@@ -41,6 +41,14 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     setHasConfigurationInterface( false );
 }
 
+LyricsApplet::~ LyricsApplet()
+{
+    m_lyricsProxy->setWidget( 0 );
+    delete m_lyricsProxy;
+    m_lyricsProxy = 0;
+    delete m_lyrics;
+}
+
 void LyricsApplet::init()
 {
 
@@ -197,5 +205,7 @@ void LyricsApplet::calculateHeight()
         m_size.setHeight( m_size.height() - shrinkBy );
     }*/
 }
+
+
 
 #include "LyricsApplet.moc"

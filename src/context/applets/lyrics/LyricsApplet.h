@@ -27,6 +27,7 @@ class LyricsApplet : public Context::Applet
     Q_OBJECT
 public:
     LyricsApplet( QObject* parent, const QVariantList& args );
+    ~LyricsApplet();
 
     void init();
 
