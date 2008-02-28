@@ -56,7 +56,9 @@ ContextView::ContextView( QWidget* parent )
 //     setFrameShape( QFrame::NoFrame );
     setAutoFillBackground( true );
 
+    PERF_LOG( "Creating contextScene" )
     setScene( new ContextScene( rect(), this ) );
+    PERF_LOG( "Created ContextScene" )
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
@@ -68,18 +70,25 @@ ContextView::ContextView( QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
 
+    PERF_LOG( "Accessing Plasma::Theme" );
     // here we initialize all the Plasma paths to Amarok paths
     Theme::self()->setApplication( "amarok" );
+    PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
+    PERF_LOG( "Loading default contextScene" )
     contextScene()->loadDefaultSetup();
-    
+    PERF_LOG( "Loaded default contextScene" )
+
+    PERF_LOG( "Creating containment" )
     createContainment();
+    PERF_LOG( "Created containment" )
 
     connect(scene(), SIGNAL( appletRemoved( QObject * ) ), m_columns, SLOT( appletRemoved( QObject* ) ) );
 
-
+    PERF_LOG( "Showing home in contextview" )
     showHome();
+    PERF_LOG( "done showing home in contextview" )
 }
 
 ContextView::~ContextView()

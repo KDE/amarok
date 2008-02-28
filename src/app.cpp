@@ -99,6 +99,7 @@ App::App()
         , m_splash( 0 )
 {
     DEBUG_BLOCK
+    PERF_LOG( "Begin Application ctor" )
 
     if( AmarokConfig::showSplashscreen() )
     {
@@ -107,7 +108,9 @@ App::App()
         m_splash->show();
     }
 
+    PERF_LOG( "Registering taglib plugins" )
     registerTaglibPlugins();
+    PERF_LOG( "Done Registering taglib plugins" )
 
     qRegisterMetaType<MetaBundle>();
 
@@ -174,6 +177,7 @@ App::App()
     }
 #endif
 
+    PERF_LOG( "Creating DBus handlers" )
     //needs to be created before the wizard
      new Amarok::DbusPlayerHandler(); // Must be created first
      new Amarok::DbusPlaylistHandler();
@@ -182,6 +186,7 @@ App::App()
      new Amarok::DbusCollectionHandler();
 //     new Amarok::DbusMediaBrowserHandler();
      new Amarok::DbusScriptHandler();
+     PERF_LOG( "Done creating DBus handlers" )
 
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
@@ -193,6 +198,7 @@ App::App()
 #endif
     QDBusConnection::sessionBus().registerService("org.kde.amarok");
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
+    PERF_LOG( "Done App ctor" )
 }
 
 App::~App()
@@ -643,12 +649,16 @@ void
 App::continueInit()
 {
     DEBUG_BLOCK
+
+    PERF_LOG( "Begin App::continueInit" )
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
+    PERF_LOG( "Starting moodserver" )
     // Make this instance so it can start receiving signals
     MoodServer::instance();
+    PERF_LOG( "Done starting mood server" )
 
     // Remember old folder setup, so we can detect changes after the wizard was used
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
@@ -664,11 +674,15 @@ App::continueInit()
 
     //CollectionDB::instance()->checkDatabase();
 
+    PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
+    PERF_LOG( "Done creating MainWindow" )
 
     m_tray           = new Amarok::TrayIcon( mainWindow() );
 
+    PERF_LOG( "Start init of MainWindow" )
     mainWindow()->init(); //creates the playlist, browsers, etc.
+    PERF_LOG( "Init of MainWindow done" )
     //FIXME: we shouldn't have to do this.
     pApp->mainWindow()->show();
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
@@ -699,13 +713,10 @@ App::continueInit()
 
         AmarokConfig::setSoundSystem( engine );
     }
-    Debug::stamp();
     //create engine, show TrayIcon etc.
     applySettings( true );
-    Debug::stamp();
     // Start ScriptManager. Must be created _after_ MainWindow.
     ScriptManager::instance();
-    Debug::stamp();
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
@@ -734,6 +745,7 @@ App::continueInit()
 
     delete m_splash;
     m_splash = 0;
+    PERF_LOG( "App init done" )
 }
 
 void App::engineStateChanged( Engine::State state, Engine::State oldState )

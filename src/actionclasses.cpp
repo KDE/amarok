@@ -197,8 +197,9 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 {
     setText(i18n( "Play/Pause" ));
     ac->addAction("play_pause", this);
-
+    PERF_LOG( "PlayPauseAction: before engineStateChanged" )
     engineStateChanged( EngineController::engine()->state() );
+    PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
     connect( this, SIGNAL(triggered()), EngineController::instance(), SLOT(playPause()) );
 }

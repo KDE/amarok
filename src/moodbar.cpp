@@ -324,11 +324,14 @@ MoodServer::MoodServer( void )
     : m_moodbarBroken( false )
     , m_currentProcess( 0 )
 {
+    PERF_LOG( "MoodServer: Connect to App" )
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
              SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
+    PERF_LOG( "MoodServer:Connect to CollectionDB" )
     connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );
+    PERF_LOG( "MoodServer: Connected to ColelctionDB" )
     connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );

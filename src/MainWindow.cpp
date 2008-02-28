@@ -105,12 +105,15 @@ MainWindow::MainWindow()
     setObjectName("MainWindow");
     s_instance = this;
 
+    PERF_LOG( "Creating PlaylistModel" )
     new Playlist::Model( this );
+    PERF_LOG( "Created PlaylistModel" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-
+    PERF_LOG( "Set Top Widget" )
     createActions();
+    PERF_LOG( "Created actions" )
 
     //new K3bExporter();
 
@@ -121,6 +124,7 @@ MainWindow::MainWindow()
         resize( AmarokConfig::mainWindowSize() );
         move( AmarokConfig::mainWindowPos() );
     }
+    PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
 }
 
@@ -146,7 +150,9 @@ void MainWindow::init()
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
+    PERF_LOG( "Create Playlist" )
     Playlist::Widget *playlistWidget = new Playlist::Widget( this );
+    PERF_LOG( "Playlist created" )
 
     {
         m_controlBar = new MainToolbar( this );
@@ -206,9 +212,13 @@ void MainWindow::init()
 
     createMenus();
 
+    PERF_LOG( "Creating ContextWidget" )
     ContextWidget *contextWidget = new ContextWidget( this );
+    PERF_LOG( "ContextWidget created" )
     contextWidget->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
+    PERF_LOG( "Creating ContextView" )
     new Context::ContextView( contextWidget );
+    PERF_LOG( "ContextView created" )
     {
 
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
@@ -270,39 +280,53 @@ void MainWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
              m_browserNames.append( name ); }
 
+        PERF_LOG( "Creating CollectionWidget" )
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), "collection-amarok" )
+        PERF_LOG( "Created CollectionWidget" )
 
+        PERF_LOG( "Do podcast stuff" )
         //TODO: find a better place to load the default collections and providers
         PodcastCollection *localPodcasts = new PodcastCollection();
         The::playlistManager()->addProvider( localPodcasts->channelProvider(), PlaylistManager::PodcastChannel );
         CollectionManager::instance()->addTrackProvider( localPodcasts );
+        PERF_LOG( "Podcast stuff done" )
 
         m_playlistFiles = new PlaylistFileProvider();
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
+        PERF_LOG( "Creating PlaylistBrowser" )
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), "view-media-playlist-amarok" )
+        PERF_LOG( "CreatedPlaylsitBrowser" )
 
+        PERF_LOG( "Creating FileBrowser" )
         addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
+        PERF_LOG( "Created FileBrowser" )
 
         //cant use macros here since we need access to the browsers directly
+        PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
         m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
+        PERF_LOG( "Created ServiceBrowser" )
 
 
         //get the plugin manager
         ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
+        PERF_LOG( "Initialising ServicePluginManager" )
         ServicePluginManager::instance()->init();
+        PERF_LOG( "Initialised ServicePluginManager" )
 
         internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
-
+        PERF_LOG( "ScriptableServiceManager done" )
         new MediaBrowser( "MediaBrowser" );
+        PERF_LOG( "created mediabrowser" )
         if( MediaBrowser::isAvailable() )
         {
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), "multimedia-player-amarok" )
         }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
+        PERF_LOG( "finished MainWindow::init" )
     }
     //</Browsers>
 
@@ -918,11 +942,11 @@ void MainWindow::createActions()
     KAction *statistics = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
     ac->addAction( "statistics", statistics );
-
+    PERF_LOG( "MainWindow::createActions 6" )
     KAction *update = new KAction( KIcon("view-refresh-amarok"), i18n( "Update Collection" ), this );
     connect(update, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", update );
-
+    PERF_LOG( "MainWindow::createActions 7" )
     KAction *rescan = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
     connect(rescan, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
     ac->addAction( "rescan_collection", rescan );
@@ -997,13 +1021,18 @@ void MainWindow::createActions()
     toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
     connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
 
+    PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
     new Amarok::PlayPauseAction( ac );
+    PERF_LOG( "Before Repeat Action" )
     new Amarok::RepeatAction( ac );
+    PERF_LOG( "Before RandomAction" )
     new Amarok::RandomAction( ac );
+    PERF_LOG( "BeforeFavorAction" )
     new Amarok::FavorAction( ac );
 
+    PERF_LOG( "MainWindow::createActions 9" )
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
 
@@ -1040,7 +1069,7 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("play_pause") );
     actionsMenu->addAction( actionCollection()->action("stop") );
     actionsMenu->addAction( actionCollection()->action("next") );
-    #ifndef Q_WS_MAC	// Hide in OS X. Avoids duplicate "Quit" in dock menu
+    #ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addSeparator();
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
     #endif

@@ -68,7 +68,9 @@ EngineController::EngineController()
         , m_lastPositionOffset( 0 )
         , m_multi( 0 )
 {
+    PERF_LOG( "EngineController: loading void engine" )
     m_voidEngine = m_engine = loadEngine( "void-engine" );
+    PERF_LOG( "EngineController: loaded void engine" )
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
