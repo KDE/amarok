@@ -283,6 +283,25 @@ A useful service is http://lxr.kde.org. Lxr is a cross reference of the entire
 KDE SVN repository. You can for instance use it to search for example code
 from other applications for a given KDElibs method.
 
+Markey's .vimrc
+---------------
+
+let ruby_no_expensive = 1
+syntax on
+
+set shiftwidth=4
+set tabstop=4
+set expandtab
+set hlsearch
+set ruler
+set smartindent
+set nowrap
+
+set ignorecase
+set smartcase
+
+set title
+
 
 Copyright
 ---------
