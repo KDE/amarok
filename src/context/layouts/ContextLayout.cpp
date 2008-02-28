@@ -20,6 +20,7 @@
 
 #include "ContextLayout.h"
 
+#include "Applet.h"
 #include "VerticalLayout.h"
 
 #include <limits.h>
@@ -248,12 +249,12 @@ void ContextLayout::relayout()
         d->columns.clear();
 
         for( int i = 0; i < numColumns; i++ ) {
-            kDebug() << "adding collumn!";
+            //kDebug() << "adding collumn!";
             d->columns << new VerticalLayout( this );
-            kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+            //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
         }
 
-        kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+        //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
         
         /*for( int i = d->columns.size(); i < numColumns; i++ ) {
             kDebug() << "adding collumn!";
@@ -262,12 +263,12 @@ void ContextLayout::relayout()
         
     } else if( numColumns < d->columns.size() ) // view was shrunk
     {
-        kDebug() << "gotta shrink!";
+        //kDebug() << "gotta shrink!";
         VerticalLayout* column = d->columns[ d->columns.size() - 1 ];
         d->columns.removeAt( d->columns.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
-            kDebug() << "trying to put away an item";
+          //  kDebug() << "trying to put away an item";
             LayoutItem* applet = column->takeAt( i );
             int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
             for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
@@ -280,21 +281,21 @@ void ContextLayout::relayout()
         }
     }
 
-    kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+    //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
     
     qreal columnWidth = rect.width() / d->columns.size();
 //     columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
 
-    kDebug() << "numColumns: " << d->columns.size();
+    //kDebug() << "numColumns: " << d->columns.size();
     for( int i = 0; i < d->columns.size(); i++ ) // lay out columns
     {
-        kDebug() << "setting columns to width:" << columnWidth;
+        //kDebug() << "setting columns to width:" << columnWidth;
         QPointF pos( ( ( i + 1 ) * margin( Plasma::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::LeftMargin ) );
-        kDebug() << "i: " << i;
-        kDebug() << ", d->columns[ i ]: " << d->columns[ i ];
-        kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
-        kDebug() << ", d->columns[ i ]->sizeHint(): " << d->columns[ i ]->sizeHint();
-        kDebug() << ", d->columns[ i ]->sizeHint().height(): " << d->columns[ i ]->sizeHint().height();
+        //kDebug() << "i: " << i;
+       // kDebug() << ", d->columns[ i ]: " << d->columns[ i ];
+        //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
+        //kDebug() << ", d->columns[ i ]->sizeHint(): " << d->columns[ i ]->sizeHint();
+        //kDebug() << ", d->columns[ i ]->sizeHint().height(): " << d->columns[ i ]->sizeHint().height();
         int height1 = d->columns[ i ]->sizeHint().height();
         int height2 = rect.height();
         int maxHeight = qMax( height1, height2 );
@@ -303,8 +304,18 @@ void ContextLayout::relayout()
     }
 //     kDebug() << "columns laid out, now balancing";
     d->balanceColumns();
-//     foreach( VerticalLayout* column, d->columns )
-//         column->setGeometry( column->geometry() );
+
+    //make sure any items that previously hid themselves because of there not being enough room
+    //has a chance to determine if there is enough room for them now
+    /*foreach( VerticalLayout* column, d->columns ) {
+        for( int i = 0; i < column->count() ; i++ )
+        {
+            Applet* applet = dynamic_cast<Applet *>( column->itemAt( i ) );
+            if ( applet && !applet->isVisible() )
+                applet->show();
+        }
+
+    }*/
 //     kDebug() << "result is we have:" << d->columns.size() << "columns:";
 //     foreach( VerticalLayout* column, d->columns )
 //         kDebug() << "column rect:" << column->geometry() <<  "# of children:" << column->count();

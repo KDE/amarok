@@ -226,6 +226,20 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     Q_UNUSED( option );
 
     debug() << "painting currenttrack applet in:" << contentsRect;
+
+    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
+    //context view has been minimized completely
+    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) {
+        debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
+            childItem->hide();
+        }
+        return;
+    } else {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
+            childItem->show();
+        }
+    }
     
     p->save();
     m_theme->paint( p, contentsRect, "background" );
