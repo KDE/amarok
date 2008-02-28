@@ -57,7 +57,6 @@ public:
 
 
 private:
-
     ShoutcastServiceCollection * m_collection;
     QString m_tempFileName;
     KIO::StoredTransferJob * m_storedTransferJob;
