@@ -127,6 +127,7 @@ LastFmService::polish()
         m_customStationButton->setObjectName( "customButton" );
         m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
 
+        connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
         connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
         
         m_polished = true;
