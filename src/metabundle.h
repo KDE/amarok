@@ -22,7 +22,7 @@
 #include "expression.h"
 #include "atomicstring.h"
 #include "moodbar.h"
-#include "metadata/tfile_helper.h" // TagLibFileName
+#include "metadata/tfile_helper.h" // TagLib::FileName
 
 #include "amarok_export.h"
 
@@ -543,14 +543,14 @@ inline bool MetaBundle::hasExtendedMetaInformation() const
 
 #ifdef COMPLEX_TAGLIB_FILENAME
 
-inline TagLibFileName TagLibEncodeName(const QString &filename) 
+inline TagLib::FileName TagLibEncodeName(const QString &filename) 
 { 
     return reinterpret_cast<const wchar_t *>(filename.utf16()); 
 }
 
 #else
 
-inline TagLibFileName TagLibEncodeName(const QString &filename) 
+inline TagLib::FileName TagLibEncodeName(const QString &filename) 
 { 
     return QFile::encodeName( filename ); 
 }

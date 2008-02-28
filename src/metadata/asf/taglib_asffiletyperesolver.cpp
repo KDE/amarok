@@ -25,7 +25,7 @@
 
 #include <string.h>
 
-TagLib::File *ASFFileTypeResolver::createFile(TagLibFileName fileName,
+TagLib::File *ASFFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

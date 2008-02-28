@@ -28,7 +28,7 @@
 
 class TTAFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
-    TagLib::File *createFile(TagLibFileName fileName,
+    TagLib::File *createFile(TagLib::FileName fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
     ~TTAFileTypeResolver() {}

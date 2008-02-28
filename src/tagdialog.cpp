@@ -1558,7 +1558,7 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
 /*bool
 TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
-    TagLibFileName path = TagLibEncodeName( mb.url().path() );
+    TagLib::FileName path = TagLibEncodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         Amarok::ContextStatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
@@ -1612,7 +1612,7 @@ bool
 TagDialogWriter::doJob()
 {
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        TagLibFileName path = TagLibEncodeName( m_tags[i].url().path() );
+        TagLib::FileName path = TagLibEncodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );

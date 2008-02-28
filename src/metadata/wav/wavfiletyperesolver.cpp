@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *WavFileTypeResolver::createFile(TagLibFileName fileName,
+TagLib::File *WavFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

@@ -27,14 +27,6 @@
 
 #include <tfile.h>
 
-// need to make everything compile against old versions of taglib
-// where TagLib::FileName wasn't typedef'd to const char *
-#ifdef HAVE_TAGLIB_FILENAME
-#define TagLibFileName TagLib::FileName
-#else
-#define TagLibFileName const char *
-#endif
-
 // need to be able to deal with either the straight forward char version
 // or a char/wchar hybrid version of the filename
 #ifdef COMPLEX_TAGLIB_FILENAME
@@ -50,7 +42,7 @@
         : fopen(filename, mode))
 
 #include <iostream>
-inline std::basic_ostream<char> &operator<<(std::basic_ostream<char> &stream, TagLibFileName fileName)
+inline std::basic_ostream<char> &operator<<(std::basic_ostream<char> &stream, TagLib::FileName fileName)
 {
     if (static_cast<const char *>(fileName) == 0) 
         stream << static_cast<const wchar_t *>(fileName);

@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *AudibleFileTypeResolver::createFile(TagLibFileName fileName,
+TagLib::File *AudibleFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

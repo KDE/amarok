@@ -80,7 +80,7 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      explicit File(TagLibFileName file, bool readProperties = true,
+      explicit File(TagLib::FileName file, bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
@@ -89,7 +89,7 @@ namespace TagLib {
        * false, \a propertiesStyle is ignored. The frames will be created using
        * \a frameFactory.
        */
-      File(TagLibFileName file, ID3v2::FrameFactory *frameFactory,
+      File(TagLib::FileName file, ID3v2::FrameFactory *frameFactory,
            bool readProperties = true,
            Properties::ReadStyle propertiesStyle = Properties::Average);
 

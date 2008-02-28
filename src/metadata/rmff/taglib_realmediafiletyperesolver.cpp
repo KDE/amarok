@@ -32,7 +32,7 @@
 
 #include <string.h>
 
-TagLib::File *RealMediaFileTypeResolver::createFile(TagLibFileName fileName,
+TagLib::File *RealMediaFileTypeResolver::createFile(TagLib::FileName fileName,
                                                     bool readProperties,
                                                     TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

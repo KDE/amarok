@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-TagLib::File *SpeexFileTypeResolver::createFile(TagLibFileName fileName,
+TagLib::File *SpeexFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {

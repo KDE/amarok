@@ -39,7 +39,7 @@ namespace TagLib {
                  * file's audio properties will also be read using \a propertiesStyle.  If
                  * false, \a propertiesStyle is ignored.
                  */
-                explicit File(TagLibFileName file, bool readProperties = true,
+                explicit File(TagLib::FileName file, bool readProperties = true,
                         TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average,
                         MP4FileHandle handle=MP4_INVALID_FILE_HANDLE);
 

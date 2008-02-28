@@ -49,7 +49,7 @@ macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)
 
-check_taglib_filename(HAVE_TAGLIB_FILENAME COMPLEX_TAGLIB_FILENAME)
+check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 configure_file (config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
