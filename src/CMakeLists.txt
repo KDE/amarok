@@ -74,6 +74,7 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDE_DIR}
     ${QT_INCLUDES}
+    ${KDEMULTIMEDIA_INCLUDE_DIR}
 )
 
 
@@ -324,6 +325,17 @@ set(libplaylist_SRCS
 )
 
 #####################################################################
+# AUDIO CD SUPPORT
+#####################################################################
+
+if(KDEMULTIMEDIA_FOUND)
+    set(audiocdsupport_SRCS
+        meta/audiocd/AudioCdTrackProvider.cpp
+        meta/audiocd/AudioCdTrackProvider_p.cpp
+       )
+endif(KDEMULTIMEDIA_FOUND)
+
+#####################################################################
 # MEDIADEVICE
 #####################################################################
 set(mediadevice_SRCS
@@ -457,6 +469,8 @@ target_link_libraries(amaroklib
     ${KDE4_KFILE_LIBS}
     ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KCDDB_LIBRARY}
+    ${KCOMPACTDISC_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
