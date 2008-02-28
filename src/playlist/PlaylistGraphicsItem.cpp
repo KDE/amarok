@@ -763,7 +763,11 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
-    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+    
+    //offset cover if non square
+    QPointF offset = centerImage( albumPixmap, imageLocation() );
+    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
     //check if there is a emblem to display
@@ -847,7 +851,11 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
-    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+
+    //offset cover if non square
+    QPointF offset = centerImage( albumPixmap, imageLocation() );
+    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
     //draw active track marker if needed
     if ( active )
@@ -924,7 +932,11 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
         }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
     }
-    painter->drawPixmap( imageLocation(), albumPixmap, QRectF( albumPixmap.rect() ) );
+    
+    //offset cover if non square
+    QPointF offset = centerImage( albumPixmap, imageLocation() );
+    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
     /*m_items->topRightText->setDefaultTextColor( Qt::white );
@@ -1121,6 +1133,25 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
     }
     else if( m_items->foreground && m_items->foreground->isVisible() )
         m_items->foreground->hide();
+}
+
+QPointF Playlist::GraphicsItem::centerImage(QPixmap pixmap, QRectF rect)
+{
+
+    qreal pixmapRatio = (qreal) pixmap.width() / (qreal) pixmap.height();
+
+    debug() << "ratio: " << pixmapRatio;
+
+    qreal moveByX = 0.0;
+    qreal moveByY = 0.0;
+
+    if( pixmapRatio >= 1 )
+        moveByY = ( rect.height() - ( rect.width() / pixmapRatio ) ) / 2.0;
+    else
+        moveByX = ( rect.width() - ( rect.height() * pixmapRatio ) ) / 2.0;
+
+    return QPointF( moveByX, moveByY );
+
 }
 
 

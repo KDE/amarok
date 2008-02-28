@@ -83,6 +83,12 @@ namespace Playlist
             QString findArtistForCurrentAlbum() const;
 
             
+            /**
+             * Calculated the needed offset to center the pixmap within the defined rect
+             */
+            QPointF centerImage( QPixmap pixmap, QRectF rect );
+
+            
             void paintSingleTrack ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
             void paintHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
             void paintCollapsedHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
