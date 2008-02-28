@@ -47,12 +47,10 @@ A service for showing the shoutcast directory of online radio stations. Based on
 */
 class ShoutcastService : public ServiceBase
 {
-
-Q_OBJECT
+    Q_OBJECT
 
 public:
     ShoutcastService( const char *name );
-
     ~ShoutcastService();
 
     void polish();
@@ -63,7 +61,8 @@ private:
     ShoutcastServiceCollection * m_collection;
     QString m_tempFileName;
     KIO::StoredTransferJob * m_storedTransferJob;
-
 };
 
+
 #endif
+

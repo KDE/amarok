@@ -27,16 +27,17 @@
 #include <KTemporaryFile>
 
 
-
 using namespace Meta;
 
 AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
+
 
 void ShoutcastServiceFactory::init()
 {
     ServiceBase* service = new ShoutcastService( "Shoutcast.com" );
     emit newService( service );
 }
+
 
 QString ShoutcastServiceFactory::name()
 {
@@ -51,11 +52,11 @@ KPluginInfo ShoutcastServiceFactory::info()
     return pluginInfo;
 }
 
+
 KConfigGroup ShoutcastServiceFactory::config()
 {
     return Amarok::config( "Service_Shoutcast" );
 }
-
 
 
 ShoutcastService::ShoutcastService( const char *name )
@@ -68,8 +69,7 @@ ShoutcastService::ShoutcastService( const char *name )
 
 
 ShoutcastService::~ShoutcastService()
-{
-}
+{}
 
 void ShoutcastService::polish()
 {
@@ -84,13 +84,8 @@ void ShoutcastService::polish()
     levels << CategoryId::Genre;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     m_polished = true;
-
 }
 
 
 #include "ShoutcastService.moc"
-
-
-
-
 
