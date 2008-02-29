@@ -20,6 +20,12 @@ DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
 PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","amarok"]
 
+debemail    = ENV['DEBEMAIL']
+debfullname = ENV['DEBFULLNAME']
+
+ENV['DEBEMAIL']    = "nightly@getamarok.com"
+ENV['DEBFULLNAME'] = "Amarok Nightly Builds"
+
 class UploadUbuntu
   def initialize()
     def BaseDir()
@@ -29,7 +35,7 @@ class UploadUbuntu
     def CreateNUpload(package)
       `cp -rf #{DEBPATH}/#{package}-debian ./debian`
     
-      `dch -b -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
+      `dch -D "gutsy" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
       `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
       `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
 
@@ -37,7 +43,7 @@ class UploadUbuntu
     end
     
     def Slap(package)
-      url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb`"
+      url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
       `wget '#{url}'`
 	while $? != "0"
 	  sleep 600
@@ -63,4 +69,7 @@ class UploadUbuntu
       Slap(package)
     end
   end
+  rescue
+    ENV['DEBEMAIL']    = debemail
+    ENV['DEBFULLNAME'] = debfullname
 end
