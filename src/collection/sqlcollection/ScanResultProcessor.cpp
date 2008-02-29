@@ -88,6 +88,7 @@ ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QStr
 
     QList<QHash<QString, QString> > dirData;
     bool firstTrack = true;
+    bool firstDir = true;
     QString dir;
     QHash<QString,QString> track;
     debug() << "Processing " << scanResult.size() << " tracks";
@@ -103,6 +104,7 @@ ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QStr
         KUrl url( track.value( Field::URL ) );
         if( url.directory() == dir )
         {
+            debug() << "directory = dir = " << dir;
             dirData.append( track );
         }
         else
@@ -111,8 +113,14 @@ ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QStr
             dirData.clear();
             dirData.append( track );
             dir = url.directory();
+            firstDir = false;
         }
     }
+
+    // When only one directory contains music, we still need to process it here
+    if( firstDir )
+        processDirectory( dirData );
+
     if( m_type == FullScan )
     {
         //TODO clean permanent tables
@@ -131,6 +139,8 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
     //if all tracks have the same artist, use it as albumartist
     //try to find the albumartist A: tracks must have the artist A or A feat. B (and variants)
     //if no albumartist could be found, it's a compilation
+    DEBUG_BLOCK
+
     QSet<QString> artists;
     QString album;
     bool multipleAlbums = false;
