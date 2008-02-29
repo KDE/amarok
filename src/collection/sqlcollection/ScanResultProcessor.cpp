@@ -37,12 +37,12 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     , m_setupComplete( false )
     , m_type( FullScan )
 {
-    //nothing to do
+    DEBUG_BLOCK
 }
 
 ScanResultProcessor::~ScanResultProcessor()
 {
-    //nothing to do
+    DEBUG_BLOCK
 }
 
 void
@@ -81,7 +81,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 }
 
 void
-ScanResultProcessor::processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult )
+ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QString> > &scanResult )
 {
     DEBUG_BLOCK
     setupDatabase();
@@ -243,6 +243,8 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 void
 ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
 {
+    DEBUG_BLOCK
+
     //amarok 1 stored all tracks of a compilation in different directories.
     //try to detect these cases
     QString albumName = trackData.value( Field::ALBUM );
