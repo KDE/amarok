@@ -74,8 +74,11 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDE_DIR}
     ${QT_INCLUDES}
-    ${KDEMULTIMEDIA_INCLUDE_DIR}
 )
+
+if ( KDEMULTIMEDIA_FOUND )
+    include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
+endif ( KDEMULTIMEDIA_FOUND )
 
 
 set(libamarokcore_SRCS
@@ -469,8 +472,6 @@ target_link_libraries(amaroklib
     ${KDE4_KFILE_LIBS}
     ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KCDDB_LIBRARY}
-    ${KCOMPACTDISC_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
@@ -478,6 +479,12 @@ target_link_libraries(amaroklib
     amarokplasma
 )
 
+if(KDEMULTIMEDIA_FOUND)
+    target_link_libraries(amaroklib
+        ${KCDDB_LIBRARY}
+        ${KCOMPACTDISC_LIBRARY}
+    )
+endif(KDEMULTIMEDIA_FOUND)
 if(NOT WIN32)
     target_link_libraries(amaroklib dl)
 endif(NOT WIN32)
