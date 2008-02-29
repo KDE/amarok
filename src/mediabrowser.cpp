@@ -202,7 +202,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 //     m_toolbar->insertButton( "configure-amarok", CONFIGURE, true, i18n("Configure") );
 //     m_toolbar->getButton(CONFIGURE)->setToolTip( i18n( "Configure device" ) );
 
-
+    PERF_LOG( "Created actions" )
     m_deviceCombo = new KComboBox( this );
 
     // searching/filtering
@@ -254,8 +254,10 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
     setFocusProxy( m_queue );
 
+    PERF_LOG( "before updateStats()" )
     updateStats();
 
+    PERF_LOG( "refeshing media device cache" )
     MediaDeviceCache::instance()->refreshCache();
     foreach( QString udi, MediaDeviceCache::instance()->getAll() )
         deviceAdded( udi );
