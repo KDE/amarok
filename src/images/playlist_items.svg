@@ -38,12 +38,12 @@
     <linearGradient
        id="linearGradient4217">
       <stop
-         style="stop-color:#000000;stop-opacity:0.39215687;"
+         style="stop-color:#000000;stop-opacity:0.58823532;"
          offset="0"
          id="stop4219" />
       <stop
          id="stop4239"
-         offset="0.125"
+         offset="0.2"
          style="stop-color:#000000;stop-opacity:0;" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
@@ -52,33 +52,33 @@
       <stop
          id="stop4223"
          offset="0.28"
-         style="stop-color:#ffffff;stop-opacity:0;" />
+         style="stop-color:#66ffff;stop-opacity:0;" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.19607843;"
+         style="stop-color:#66ffff;stop-opacity:0.39215687;"
          offset="0.38"
          id="stop4241" />
       <stop
          id="stop4247"
          offset="0.5"
-         style="stop-color:#ffffff;stop-opacity:0.39215686;" />
+         style="stop-color:#66ffff;stop-opacity:0.58823532;" />
       <stop
          id="stop4245"
          offset="0.62"
-         style="stop-color:#ffffff;stop-opacity:0.19607843;" />
+         style="stop-color:#66ffff;stop-opacity:0.39215687;" />
       <stop
          id="stop4243"
          offset="0.72000003"
-         style="stop-color:#ffffff;stop-opacity:0;" />
+         style="stop-color:#66ffff;stop-opacity:0;" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
          offset="0.75"
          id="stop7162" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
-         offset="0.88"
+         offset="0.80000001"
          id="stop4237" />
       <stop
-         style="stop-color:#000000;stop-opacity:0.39215687;"
+         style="stop-color:#000000;stop-opacity:0.58823532;"
          offset="1"
          id="stop4221" />
     </linearGradient>
@@ -278,9 +278,9 @@
        xlink:href="#linearGradient10055"
        id="linearGradient10061"
        x1="552.14453"
-       y1="718.91879"
+       y1="718.91876"
        x2="598.46002"
-       y2="718.91879"
+       y2="718.91876"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.2213741,0,0,1,-122.23049,0)" />
     <linearGradient
@@ -305,10 +305,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284273"
-     inkscape:cx="391.63972"
-     inkscape:cy="47.550541"
+     inkscape:cx="289.8197"
+     inkscape:cy="104.11908"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="active_overlay"
      showgrid="false"
      inkscape:window-width="1670"
      inkscape:window-height="972"
@@ -609,7 +609,7 @@
          id="path12642" />
     </g>
     <rect
-       style="opacity:1;fill:url(#linearGradient10061);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:url(#linearGradient10061);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="selection_left"
        width="56.568542"
        height="31.466251"

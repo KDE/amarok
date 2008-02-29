@@ -40,13 +40,13 @@ SvgTinter::SvgTinter()
     QList<QString> baseColors;
     baseColors << "#666765";
     baseColors << "#878782";
-    baseColors << "#e8e8e8";
+    //baseColors << "#e8e8e8";
     baseColors << "#cdcec9";
     baseColors << "#444444";
 
     //QColor systemColor = QPalette::Window;
     
-    init( App::instance()->palette().window().color(), baseColors, 80 );
+    init( App::instance()->palette().window().color(), baseColors, 100 );
 
     debug() << "QPalette::Window: " << App::instance()->palette().highlight().color().name();
     
@@ -88,7 +88,10 @@ void SvgTinter::init(QColor systemColor, QList< QString > baseColorNames, int ti
     
     //insert a color for bright ( highlight color )
     m_tintMap.insert( "#66ffff", blendColors( App::instance()->palette().highlight().color(), "#66ffff", 100 ).name() );
-
+    //a slightly lighter than window color:
+    m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
+    //a slightly darker than window color:
+   // m_tintMap.insert( "#66ffff", blendColors( App::instance()->palette().highlight().color(), "#66ffff", 100 ).name() );
 }
 
 
