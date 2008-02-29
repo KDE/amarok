@@ -109,8 +109,6 @@ add_definitions(-DMAKE_PLASMA_LIB)
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS amarokplasma DESTINATION ${LIB_INSTALL_DIR})
 
-# base plasma not compiled under windows, so we need to install these here
-if(WIN32)
 install(FILES
     plasma/servicetypes/plasma-animator.desktop
     plasma/servicetypes/plasma-applet.desktop
@@ -118,7 +116,6 @@ install(FILES
     plasma/servicetypes/plasma-runner.desktop
     plasma/servicetypes/plasma-scriptengine.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
-endif(WIN32)
 
 ########### install files ###############
 
