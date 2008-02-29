@@ -118,7 +118,7 @@ install(FILES
     plasma/servicetypes/plasma-runner.desktop
     plasma/servicetypes/plasma-scriptengine.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
-if(WIN32 OR MACOSX)
+endif(WIN32 OR MACOSX)
 
 ########### install files ###############
 
