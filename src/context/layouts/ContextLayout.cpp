@@ -288,7 +288,7 @@ void ContextLayout::relayout()
 
     //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
     
-    qreal columnWidth = rect.width() / d->columns.size();
+    qreal columnWidth = ( rect.width() - margin( Plasma::LeftMargin ) ) / d->columns.size();
 //     columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
 
     //kDebug() << "numColumns: " << d->columns.size();
