@@ -104,7 +104,6 @@ ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QStr
         KUrl url( track.value( Field::URL ) );
         if( url.directory() == dir )
         {
-            debug() << "directory = dir = " << dir;
             dirData.append( track );
         }
         else
