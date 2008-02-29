@@ -592,12 +592,12 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
 
+
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
+        PERF_LOG( "showing main window again" )
         main_window->show();
-
-        //takes longer but feels shorter. Crazy eh? :)
-        kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
+        PERF_LOG( "after showing mainWindow" )
     }
 
 
@@ -607,8 +607,10 @@ void App::applySettings( bool firstTime )
         if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-Amarok-name" ).toString() )
         {
+            PERF_LOG( "loading engine. didn't we do this somewhere else already?" )
             //will unload engine for us first if necessary
             engine = EngineController::instance()->loadEngine();
+            PERF_LOG( "done loading engine" )
         }
 
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
@@ -629,12 +631,14 @@ void App::applySettings( bool firstTime )
     } //</Context>
 
     {   // delete unneeded cover images from cache
+        PERF_LOG( "Begin cover handling" )
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
         const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
         const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
         foreach( const QString &it, obsoleteCovers )
             if ( !it.startsWith( size  ) && !it.startsWith( "50@" ) )
                 QFile( cacheDir.filePath( it ) ).remove();
+        PERF_LOG( "done cover handling" )
     }
 
     //if ( !firstTime )
@@ -683,8 +687,6 @@ App::continueInit()
     PERF_LOG( "Start init of MainWindow" )
     mainWindow()->init(); //creates the playlist, browsers, etc.
     PERF_LOG( "Init of MainWindow done" )
-    //FIXME: we shouldn't have to do this.
-    pApp->mainWindow()->show();
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
@@ -697,6 +699,7 @@ App::continueInit()
     // dbus call is causing a ~30 second timeout. Disable for now.
 #ifndef Q_WS_WIN
     initGlobalShortcuts();
+    PERF_LOG( "Global shortcuts done" )
 #endif
     //load previous playlist in separate thread
     //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
@@ -716,7 +719,9 @@ App::continueInit()
     //create engine, show TrayIcon etc.
     applySettings( true );
     // Start ScriptManager. Must be created _after_ MainWindow.
+    PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
+    PERF_LOG( "ScriptManager started" )
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
@@ -724,18 +729,21 @@ App::continueInit()
 
     //set a default interface
     engineStateChanged( Engine::Empty );
-
+    PERF_LOG( "Engine state changed" )
     if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         EngineController::instance()->restoreSession();
     }
 
+    PERF_LOG( "before cover refresh" )
     // Refetch covers every 80 days to comply with Amazon license
     new RefreshImages();
 
+    PERF_LOG( "Before accessing ColelctionDB" )
     CollectionDB *collDB = CollectionDB::instance();
-
+    PERF_LOG( "After accessing CollectionDB" )
+    
     if ( AmarokConfig::monitorChanges() )
         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( scanModifiedDirs() ) );
         CollectionManager::instance()->checkCollectionChanges();
