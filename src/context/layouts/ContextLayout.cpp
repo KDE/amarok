@@ -122,6 +122,7 @@ int ContextLayout::count() const
 
 void ContextLayout::addItem(LayoutItem* item)
 {
+    kDebug() << "Add item";
     if( d->columns.size() == 0 )
         d->columns << new VerticalLayout( this );
     
@@ -239,27 +240,31 @@ void ContextLayout::relayout()
     kDebug() << "relayout";
     
     QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), -margin(Plasma::RightMargin), -margin(Plasma::BottomMargin));
-    //const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
+    const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
-    const int numColumns = 1;
+    //const int numColumns = 1;
     
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         //for some reason we cannot trust the collums we already have, so make all new ones!
-        d->columns.clear();
+        /*d->columns.clear();
 
         for( int i = 0; i < numColumns; i++ ) {
             //kDebug() << "adding collumn!";
-            d->columns << new VerticalLayout( this );
-            //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
-        }
-
-        //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
-        
-        /*for( int i = d->columns.size(); i < numColumns; i++ ) {
-            kDebug() << "adding collumn!";
-            d->columns << new VerticalLayout( this );
+            d->columns << new VerticalLayout();
+            addItem( d->columns.last() );
         }*/
+
+        
+        for( int i = d->columns.size(); i < numColumns; i++ ) {
+            kDebug() << "adding collumn!";
+            VerticalLayout * newColumn = new VerticalLayout( 0 );
+            d->columns << newColumn;
+            kDebug() << "1";
+            //addItem( newColumn );
+            newColumn->setManagingLayout( this );
+            kDebug() << "2";
+        }
         
     } else if( numColumns < d->columns.size() ) // view was shrunk
     {
