@@ -268,6 +268,7 @@ SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCol
         : KSelectAction( 0 )
         , m_function( f )
 {
+    PERF_LOG( "In SelectAction" );
     setText(text);
     ac->addAction(name, this);
 }
@@ -296,8 +297,10 @@ void SelectAction::setEnabled( bool b )
 void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
-    for( int i = 0, n = items().count(); i < n; ++i )
-        menu()->changeItem( i, KIconLoader::global()->loadIconSet( icons.at( i ), KIconLoader::Small ), menu()->text( i ) );
+    foreach( QAction *a, selectableActionGroup()->actions() )
+    {
+        a->setIcon( KIcon(icons.takeFirst()) );
+    }
 }
 
 QStringList SelectAction::icons() const { return m_icons; }
@@ -355,9 +358,12 @@ FavorAction::FavorAction( KActionCollection *ac ) :
 RepeatAction::RepeatAction( KActionCollection *ac ) :
     SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
 {
+    PERF_LOG( "Before setItems" );
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
+    PERF_LOG( "Before setIcons");
     setIcons( QStringList() << "go-down-amarok" << "media-track-repeat" << "media-album-repeat" << "media-playlist-repeat-amarok" );
+    PERF_LOG( "before setCurrentItem" );
     setCurrentItem( AmarokConfig::repeat() );
 }
 
